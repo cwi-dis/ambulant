@@ -140,7 +140,7 @@ class abstract_active_datasource : public ambulant::lib::ref_counted_obj {
 
         // a readdone cal is made by the client if he is ready with len bytes of data.
     virtual void readdone(int len) = 0;
-    virtual void callback() = 0 ;
+//    virtual void callback() = 0 ;
     virtual bool end_of_file() = 0;
 	virtual bool buffer_full() = 0;
 		
@@ -158,7 +158,6 @@ class abstract_audio_datasource : public abstract_active_datasource {
 
         // a readdone cal is made by the client if he is ready with len bytes of data.
     virtual void readdone(int len) = 0;
-    virtual void callback() = 0 ;
     virtual bool end_of_file() = 0;
 	virtual bool buffer_full() = 0;
 		
@@ -169,6 +168,8 @@ class abstract_audio_datasource : public abstract_active_datasource {
   	virtual int get_nbits () = 0;
 	virtual int get_bitrate () = 0;
 	virtual int select_decoder(char* file_ext) = 0;
+  protected:
+    virtual void callback() = 0 ;
  
 };
 
