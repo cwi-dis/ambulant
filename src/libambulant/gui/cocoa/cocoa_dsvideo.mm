@@ -86,6 +86,8 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 		[m_image release];
 		m_image = NULL;
 	}
+	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::show_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
+	assert(size == m_size.w * m_size.h * 4);
 	// XXXX Who keeps reference to frame?
 	NSSize nssize = NSMakeSize(m_size.w, m_size.h);
 	m_image = [[NSImage alloc] initWithSize: nssize];
@@ -96,7 +98,7 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 		return;
 	}
 	NSBitmapImageRep *bitmaprep = [[NSBitmapImageRep alloc]
-		initWithBitmapDataPlanes: (unsigned char **)&frame
+		initWithBitmapDataPlanes: NULL
 		pixelsWide: m_size.w
 		pixelsHigh: m_size.h
 		bitsPerSample: 8
@@ -112,7 +114,11 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 		m_lock.leave();
 		return;
 	}
+	memcpy([bitmaprep bitmapData], frame, size);
 	[m_image addRepresentation: bitmaprep];
+	[m_image setFlipped: true];
+	[bitmaprep release];
+	if (m_dest) m_dest->need_redraw();
 	m_lock.leave();
 }
 
