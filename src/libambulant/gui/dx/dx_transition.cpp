@@ -306,9 +306,8 @@ void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::screen_rect<int>& src, lib
 	smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 	assert(p);
 	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;
-	lib::point pt = src.left_top();
-	lib::screen_rect<int>& r3 = dummy->get_src_rect(); r3.translate(pt);
-	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(pt);
+	lib::screen_rect<int>& r3 = dummy->get_src_rect(); r3.translate(src.left_top());
+	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
 	src &= r3;
 	dst &= r4;
 }
