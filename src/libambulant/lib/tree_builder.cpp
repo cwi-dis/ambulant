@@ -49,12 +49,12 @@
 /* 
  * @$Id$ 
  */
-#include "ambulant/common/preferences.h"
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/net/url.h"
+#include "ambulant/common/preferences.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>

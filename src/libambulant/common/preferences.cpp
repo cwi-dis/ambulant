@@ -45,16 +45,29 @@
  * which carries forward this exception. 
  * 
  */
+#include <stdlib.h>
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
-#include <stdlib.h>
+
+#ifdef	WITH_XERCES
+#include <xercesc/parsers/SAXParser.hpp>
+#endif/*WITH_XERCES*/
 
 using namespace ambulant;
 
 using namespace common;
 
 preferences::preferences()
-:	m_parser_id(ANY)
+#ifdef	WITH_XERCES
+  :	m_parser_id(ANY),
+	m_validation_scheme(AUTO),
+	m_do_namespaces(false),
+	m_do_schema(false),
+	m_do_validation(false),
+	m_validation_schema_full_checking(false)
+#else /*WITH_XERCES*/
+ :	m_parser_id(ANY)
+#endif/*WITH_XERCES*/
 {
 	char *parser = getenv("AMBULANT_USE_PARSER");
 	if (parser) {
@@ -65,6 +78,33 @@ preferences::preferences()
 		else
 			lib::logger::get_logger()->error("Unknown parser in environment: AMBULANT_USE_PARSER=%s", parser);
 	}
+#ifdef	WITH_XERCES
+	char *validation_scheme = getenv("AMBULANT_VALIDATION_SCHEME");
+	if (validation_scheme != NULL) {
+		if (strcmp(validation_scheme,"always") == 0
+		    || strcmp(validation_scheme,"ALWAYS") == 0) {
+			m_validation_scheme = ALWAYS;
+		} else if (strcmp(validation_scheme,"auto") == 0
+			   || strcmp(validation_scheme,"AUTO") == 0) {
+			m_validation_scheme = AUTO;
+		} else if (strcmp(validation_scheme,"never") == 0
+			   || strcmp(validation_scheme,"NEVER") == 0) {
+			m_validation_scheme = NEVER;
+		}
+	}
+	char *do_namespaces = getenv("AMBULANT_DO_NAMESPACES");
+	if (do_namespaces != NULL && strcmp(do_namespaces,"false") != 0)
+		m_do_namespaces = true;
+	char *do_schema = getenv("AMBULANT_DO_SCHEMA");
+	if (do_schema != NULL && strcmp(do_schema,"false") != 0)
+		m_do_schema = true;
+	char *do_validation = getenv("AMBULANT_DO_VALIDATION");
+	if (do_validation != NULL && strcmp(do_validation,"false") != 0)
+		m_do_validation = true;
+	char *validation_schema_full_checking = getenv("AMBULANT_VALIDATION_SCHEMA_FULL_CHECKING");
+	if (validation_schema_full_checking != NULL && strcmp(validation_schema_full_checking,"false") != 0)
+		m_validation_schema_full_checking = true;
+#endif/*WITH_XERCES*/
 }
 	
 preferences::~preferences()

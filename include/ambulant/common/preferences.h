@@ -67,6 +67,20 @@ class preferences {
 
 	enum parser_id {ANY = 0, EXPAT, XERCES};
 
+#ifdef	WITH_XERCES
+	enum val_scheme {NEVER = 0, ALWAYS, AUTO};
+
+	val_scheme m_validation_scheme;
+
+	bool m_do_namespaces;
+
+	bool m_do_schema;
+
+	bool m_do_validation;
+
+	bool m_validation_schema_full_checking;
+#endif/*WITH_XERCES*/
+
 	static preferences* get_preferences();
 
 	parser_id get_parser_id();

@@ -51,9 +51,13 @@
  */
 
 #include "ambulant/lib/xerces_parser.h"
+#include "ambulant/common/preferences.h"
+
+#ifdef	WITH_XERCES
 #include <xercesc/framework/MemBufInputSource.hpp>
 
 using namespace ambulant;
+
 using namespace lib;
 
 xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
@@ -68,20 +72,23 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 	
+	common::preferences* prefs = common::preferences::get_preferences();
 	// Val_Never, Val_Always, Val_Auto
-	m_saxparser->setValidationScheme(SAXParser::Val_Auto);
+	m_saxparser->setValidationScheme
+	  (ambulant_val_scheme_2_xerces_ValSchemes(prefs->m_validation_scheme));
 	
 	// If set to true, namespace processing must also be turned on
-	m_saxparser->setDoSchema(true);
+	m_saxparser->setDoSchema(prefs->m_do_schema);
+
+	// True to turn on full schema constraint checking
+	m_saxparser->setDoValidation(prefs->m_do_validation);
 	
 	// True to turn on full schema constraint checking
-	m_saxparser->setDoValidation(true);
-	
-	// True to turn on full schema constraint checking
-	m_saxparser->setValidationSchemaFullChecking(true);
+	m_saxparser->setValidationSchemaFullChecking
+		(prefs->m_validation_schema_full_checking);
 	
 	// true: understand namespaces; false: otherwise
-	m_saxparser->setDoNamespaces(true);
+	m_saxparser->setDoNamespaces(prefs->m_do_namespaces);
 	
 	m_saxparser->setDocumentHandler(this);
 	m_saxparser->setErrorHandler(this);
@@ -204,3 +211,23 @@ xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
 	XMLString::release(&cname);
 	return  qn;
 }
+
+SAXParser::ValSchemes
+xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(common::preferences::val_scheme v) {
+	SAXParser::ValSchemes rv;
+
+	switch(v) {
+	default:
+	case common::preferences::NEVER:
+		rv = SAXParser::Val_Never;
+		break;
+	case common::preferences::ALWAYS:
+		rv = SAXParser::Val_Always;
+		break;
+	case common::preferences::AUTO:
+		rv = SAXParser::Val_Auto;
+		break;
+	}
+	return rv;
+}
+#endif/*WITH_XERCES*/

@@ -55,11 +55,14 @@
 
 #include "ambulant/config/config.h"
 
+#include "ambulant/common/preferences.h"
+
 #include "ambulant/lib/sax_handler.h"
 
 // temp for inline impl
 #include "ambulant/lib/logger.h"
 
+#ifdef	WITH_XERCES
 // Assuming "xml-xerces/c/src" of the distribution 
 // is in the include path and bin directory in the lib path
 #include "xercesc/parsers/SAXParser.hpp"
@@ -120,6 +123,8 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
 	static q_name_pair to_q_name_pair(const XMLCh* name);
 
+	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(common::preferences::val_scheme v);
+
 	SAXParser *m_saxparser;  
 	lib::logger *m_logger;
 	sax_content_handler *m_content_handler;
@@ -133,5 +138,6 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 } // namespace lib
  
 } // namespace ambulant
+#endif/*WITH_XERCES*/
 
 #endif // AMBULANT_LIB_XERCES_PARSER_H
