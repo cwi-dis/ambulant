@@ -164,6 +164,9 @@
 					RelativePath=".\lib\delta_timer.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\document.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\expat_parser.cpp">
 				</File>
 				<File
