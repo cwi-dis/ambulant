@@ -1,1 +1,3 @@
 Makefile
+*.suo
+*.ncb
