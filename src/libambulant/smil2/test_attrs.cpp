@@ -248,7 +248,7 @@ bool test_attrs::test_custom_attribute(const char *value) const {
 		// What's the state of this attr as defined by the filter?
 		std::map<std::string, bool>::const_iterator oit =
 			active_custom_tests_attrs_map.find(id);
-		if(oit != active_custom_tests_attrs_map.end()) {
+		if(!(oit == active_custom_tests_attrs_map.end())) {
 			// The attr is defined in the filter
 			// Can this be ovveriden
 			std::map<std::string, custom_test>::const_iterator cit =
