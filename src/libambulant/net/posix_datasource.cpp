@@ -178,6 +178,7 @@ active_datasource::size() const
 {
 	// const method - cannot use the lock.
 	int rv = m_buffer->size();
+	return rv;
 }
 
 void

@@ -2156,6 +2156,20 @@
 			settings = {
 			};
 		};
+		049F6F4B061430590082B27A = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libz.dylib;
+			path = /usr/lib/libz.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		049F6F4C061430590082B27A = {
+			fileRef = 049F6F4B061430590082B27A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04AC5D0A05FF6C04003CD4DC = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2865,6 +2879,7 @@
 				04508B3B0507E27700F0FD74,
 				047FC13905CEA19A003C9A89,
 				040565AC06139A8600C9C7B2,
+				049F6F4B061430590082B27A,
 				1058C7A6FEA54F5311CA2CBB,
 				1058C7A8FEA54F5311CA2CBB,
 				0444D2DD051F2EEF0010C447,
@@ -3239,6 +3254,7 @@
 				048A7E3205CDB4BA003C92BF,
 				047FC13A05CEA19A003C9A89,
 				040565AD06139A8600C9C7B2,
+				049F6F4C061430590082B27A,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

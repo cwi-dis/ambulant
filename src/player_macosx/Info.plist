@@ -68,6 +68,26 @@
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>grins</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/x-grins-smil</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>GRiNS SMIL document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>????</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>NSDocumentClass</key>
+			<string>MyDocument</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>cocoambulant</string>

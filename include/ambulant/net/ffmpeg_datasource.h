@@ -56,6 +56,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/unix/unix_thread.h"
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
@@ -107,15 +108,34 @@ class ffmpeg_audio_filter_finder : public audio_filter_finder {
 
 #ifdef WITH_FFMPEG_AVFORMAT
 
+class ffmpeg_parser_datasource;
+
+namespace detail {
+
+class ffmpeg_parser_thread : public lib::unix::thread {
+  public:
+	ffmpeg_parser_thread(ffmpeg_parser_datasource *parent, AVFormatContext *con)
+	:   m_parent(parent),
+		m_con(con) {}
+	~ffmpeg_parser_thread() {}
+  protected:
+	unsigned long run();
+  private:
+    ffmpeg_parser_datasource *m_parent;
+	AVFormatContext *m_con;
+};
+
+}
+
 class ffmpeg_parser_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_parser_datasource(const std::string& url);
+	 ffmpeg_parser_datasource(const std::string& url, AVFormatContext *context);
     ~ffmpeg_parser_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  
 
     void readdone(int len);
-    void data_avail();
+    void data_avail(int64_t pts, uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
 		
@@ -123,16 +143,18 @@ class ffmpeg_parser_datasource: virtual public audio_datasource, virtual public 
 	int size() const;   
 	audio_format& get_audio_format();
 
-	static bool supported(const std::string& url);
+	static AVFormatContext *supported(const std::string& url);
 	  
   private:
     bool _end_of_file();
 	const std::string m_url;
+	AVFormatContext *m_con;
 	audio_format m_fmt;
+	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
 
 	databuffer m_buffer;
-		
+	detail::ffmpeg_parser_thread *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
 };
