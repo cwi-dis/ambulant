@@ -39,6 +39,9 @@
 // std::ostream for debug output
 #include <ostream>
 
+// floor
+#include <math.h>
+
 namespace ambulant {
 
 namespace lib {
