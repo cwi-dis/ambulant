@@ -82,6 +82,7 @@ class playable_factory;
 namespace smil2 {
 
 class smil_layout_manager;
+class animation_engine;
 
 class smil_player : public common::player, public time_node_context, public common::playable_notification {
   public:
@@ -167,6 +168,8 @@ class smil_player : public common::player, public time_node_context, public comm
 	// user changes custom test preferences. 
 	void build_timegraph();
 	
+	animation_engine* get_animation_engine() { return m_animation_engine;}
+	
  private:
 	common::playable *new_playable(const lib::node *n); 
 	void destroy_playable(common::playable *r, const lib::node *n); 
@@ -180,6 +183,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
 	lib::system *m_system;
+	animation_engine *m_animation_engine;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
 	smil_layout_manager *m_layout_manager;

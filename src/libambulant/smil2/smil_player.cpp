@@ -64,9 +64,9 @@
 #include "ambulant/smil2/smil_player.h"
 #include "ambulant/smil2/timegraph.h"
 #include "ambulant/smil2/smil_layout.h"
-#include "ambulant/smil2/smil_animation.h"
+#include "ambulant/smil2/animate_e.h"
 
-//#define AM_DBG
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -90,6 +90,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_wf(wf),
 	m_pf(pf),
 	m_system(sys),
+	m_animation_engine(0),
 	m_root(0),
 	m_dom2tn(0),
 	m_layout_manager(0),
@@ -122,6 +123,7 @@ smil_player::~smil_player() {
 	delete m_event_processor;
 	delete m_timer;
 	delete m_dom2tn;
+	delete m_animation_engine;
 	delete m_root;
 	delete m_doc;
 	delete m_layout_manager;
@@ -130,8 +132,12 @@ smil_player::~smil_player() {
 void smil_player::build_layout() {
 	if(m_state != common::ps_idle && m_state != common::ps_done)
 		return;
-	if(m_layout_manager) delete m_layout_manager;
+	if(m_layout_manager) {
+		delete m_layout_manager;
+		delete m_animation_engine;
+	}
 	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
+	m_animation_engine = new animation_engine(m_event_processor, m_layout_manager);
 }
 
 void smil_player::build_timegraph() {
@@ -341,10 +347,6 @@ smil_player::new_playable(const lib::node *n) {
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
 	
-	if (tag == "animate") {
-		/*AM_DBG*/ m_logger->trace("%s[%s].new_playable returning animation_playable", tag.c_str(), (pid?pid:"no-id"));
-		return new animation_playable(this, nid, n, m_event_processor, m_layout_manager, m_doc);
-	}
 	surface *surf = m_layout_manager->get_surface(n);
 	AM_DBG m_logger->trace("%s[%s].new_playable  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
 		::repr(surf->get_rect()).c_str(),
