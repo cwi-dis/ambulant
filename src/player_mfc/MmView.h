@@ -70,6 +70,7 @@ public:
 	CString m_curPathName;
 	CString m_curFilter;
 	UINT m_cursor_id;
+	bool m_autoplay;
 	
 // Overrides
 	public:
@@ -113,6 +114,9 @@ public:
 	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnUpdateViewTests(CCmdUI *pCmdUI);
+//	afx_msg void OnDropFiles(HDROP hDropInfo);
+	afx_msg void OnViewAutoplay();
+	afx_msg void OnUpdateViewAutoplay(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

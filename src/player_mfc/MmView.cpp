@@ -69,6 +69,7 @@
 
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
+#include ".\mmview.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -143,6 +144,9 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
 	ON_WM_MOUSEMOVE()
 	ON_UPDATE_COMMAND_UI(ID_VIEW_TESTS, OnUpdateViewTests)
+//	ON_WM_DROPFILES()
+ON_COMMAND(ID_VIEW_AUTOPLAY, OnViewAutoplay)
+ON_UPDATE_COMMAND_UI(ID_VIEW_AUTOPLAY, OnUpdateViewAutoplay)
 END_MESSAGE_MAP()
 
 
@@ -153,6 +157,7 @@ MmView::MmView()
 	// TODO: add construction code here
 	m_timer_id = 0;
 	m_cursor_id = 0;
+	m_autoplay = true;
 	lib::logger::get_logger()->set_ostream(&log_os);
 }
 
@@ -247,6 +252,8 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 	dummy = create_player_instance(lpszPathName);
 	m_curPathName = lpszPathName;
 	player = dummy;
+	if(m_autoplay)
+		PostMessage(WM_COMMAND, ID_FILE_PLAY);
 }
 
 void MmView::OnFilePlay()
@@ -407,4 +414,15 @@ void MmView::OnViewFilter()
 void MmView::OnUpdateViewFilter(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(!m_curFilter.IsEmpty());
+}
+
+void MmView::OnViewAutoplay()
+{
+	m_autoplay = !m_autoplay;
+}
+
+void MmView::OnUpdateViewAutoplay(CCmdUI *pCmdUI)
+{	
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(m_autoplay?1:0);
 }
