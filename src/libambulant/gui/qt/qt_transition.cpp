@@ -235,22 +235,35 @@ void
 qt_transition_blitclass_rectlist::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist: not yet implemented");
-#ifdef	JUNK
-	qt_window *window = (qt_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
+	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
+	QImage img1 = qpm->convertToImage();
+	QImage img2 = npm->convertToImage();
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(qt_dstrect_whole);
-#endif
-#endif/*JUNK*/
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	int L = dstrect_whole.left(), T = dstrect_whole.top(),
+		W = dstrect_whole.width(), H = dstrect_whole.height();
+//	lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
+	QPainter paint;
+	QRegion clip_region;
+	paint.begin(qpm);
+	paint.drawImage(L,T,img1,0,0,W,H);
+	std::vector< lib::screen_rect<int> >::iterator newrect;
+	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+		lib::screen_rect<int> corner_rect = *newrect;
+		corner_rect.translate(m_dst->get_global_topleft());
+		int L = corner_rect.left(), T = corner_rect.top(),
+        		W = corner_rect.width(), H = corner_rect.height();
+//		lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
+		QRegion newcorner(L,T,W,H);
+		clip_region += newcorner;
+	}
+	paint.setClipRegion(clip_region);
+	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.flush();
+	paint.end();
 }
 
 void
@@ -262,16 +275,15 @@ qt_transition_blitclass_poly::update()
 	QPixmap *npm = aqw->get_ambulant_surface();
 	QImage img1 = qpm->convertToImage();
 	QImage img2 = npm->convertToImage();
-	QImage res = img1.copy();
 	std::vector<lib::point>::iterator newpoint;
-	QPointArray* qpa = new QPointArray(m_newpolygon.size());
+	QPointArray qpa;
 	int idx = 0;
 	for( newpoint=m_newpolygon.begin();
 	     newpoint != m_newpolygon.end(); newpoint++) {
 		lib::point p = *newpoint;
-		qpa->setPoint(idx++, p.x, p.y);
+		qpa.putPoints(idx++, 1, p.x, p.y);
 	}
-	QRegion* qreg = new QRegion(*qpa, true);
+	QRegion qreg(qpa, true);
 	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
@@ -281,13 +293,11 @@ qt_transition_blitclass_poly::update()
 	AM_DBG lib::logger::get_logger()->trace(
 				  "qt_transition_blitclass_fade::update(): "
 				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
-	paint.drawImage(L,T,res,0,0,W,H);
-	paint.setClipRegion(*qreg);
+	paint.drawImage(L,T,img1,0,0,W,H);
+	paint.setClipRegion(qreg);
 	paint.drawImage(L,T,img2,0,0,W,H);
 	paint.flush();
 	paint.end();
-	delete qpa;
-	delete qreg;
 }
 
 void
