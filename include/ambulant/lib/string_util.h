@@ -58,6 +58,7 @@
 #include <string>
 #include <vector>
 #include <ctype.h>
+#include <assert.h>
 
 namespace ambulant {
 
@@ -69,28 +70,41 @@ class tokens_vector : public std::vector<std::string> {
 	std::string join(size_type i, char sep);
 };
 
-const std::string space_chars = " \r\n\t\v";
+const std::string space_chars = " \t\r\n";
 const std::string dec_digits = "0123456789";
-
 //const std::wstring wspace_chars = L" \r\n\t\v";
 //const std::wstring wdec_digits = L"0123456789";
 
 
-inline std::string trim(const std::string& s) {
-	size_t i1 = s.find_first_not_of(space_chars);
-	if(i1==std::string::npos) return "";
-
-	// XXXX Need a signed type here...
-	size_t i2 = s.length();
-	while(i2>0 && isspace(s[i2-1])) i2--;
-	if(i2==0) return "";
-
-	return std::string(s.c_str()+i1,s.c_str()+i2);
+inline std::string trim(const char* psz) {
+	if(!psz || !psz[0]) return "";
+	
+	// find_first_not_of space_chars or eos
+	const char* b = psz;
+	while(*b && ::isspace(*b)) b++;
+	if(!*b)  return "";
+	
+	// find_last_not_of space_chars
+	const char* e = b;
+	while(*e) e++;
+	e--;
+	while(e != b && ::isspace(*e)) e--;
+	
+	return std::string(b, ++e);
 }
 
-inline std::string trim(const char* psz) {
-	std::string s(psz);
-	return trim(s);
+inline std::string trim(const std::string& s, const std::string& w) {
+	if(s.empty()) return s;
+	size_t i1 = s.find_first_not_of(w);
+	if(i1==std::string::npos) return "";
+	size_t i2 = s.find_last_not_of(w);
+	assert(i2!=std::string::npos);
+	const char *p = s.c_str();
+	return std::string(p + i1, p + i2 + 1);
+}
+
+inline std::string trim(const std::string& s) {
+	return trim(s, space_chars);
 }
 
 inline std::string xml_quote(const char *p) {

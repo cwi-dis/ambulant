@@ -313,7 +313,6 @@ lib::clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 // offset_value_p and converter to ms
 // offset-value ::= (( S? "+" | "-" S? )? ( Clock-value )
 
-
 std::ptrdiff_t 
 lib::offset_value_p::parse(const_iterator& it, const const_iterator& end) {
 		const_iterator test_it = it;
@@ -343,53 +342,5 @@ lib::offset_value_p::parse(const_iterator& it, const const_iterator& end) {
 		return rd;
 }
 
-//////////////////////
-// nmtoken_offset_p
-
-std::ptrdiff_t lib::nmtoken_offset_p::parse(const_iterator& it, const const_iterator& end) {
-	const_iterator test_it = it;
-	std::ptrdiff_t rd = 0;
-	m_result.offset = 0;
-	
-	delimiter_p space(" \t\r\n");
-	star_p<delimiter_p> opt_space_inst = make_star(space);
-
-	std::ptrdiff_t d0 = opt_space_inst.parse(test_it, end);
-	rd += (d0 == -1)?0:d0;
-	
-	// lookahead for begin/end to limit nmtoken scan 
-	const_iterator d1_begin = test_it;
-	const_iterator d1_end = end;
-	const_iterator look_it = test_it;
-	while(look_it != end && !::isdigit(*look_it) && !isspace(*look_it) && *look_it != '+' && *look_it != '-' )
-		look_it++;
-	string_type look = string_type(test_it, look_it);
-	if(ends_with(look, "begin") || ends_with(look, "end")) {
-		d1_end = look_it;
-	}
-	
-	std::ptrdiff_t d1 = -1;
-	if(test_it != end && !::isdigit(*test_it) && *test_it != '+' && *test_it != '-') {
-		xml_nmtoken_p p1;
-		d1 = p1.parse(test_it, d1_end);
-		if(d1 != -1) {
-			rd += d1;
-			m_result.nmtoken = string_type(d1_begin, test_it);
-		} else {
-			m_result.nmtoken = "";
-		}
-	}
-	offset_value_p p2;
-	std::ptrdiff_t d2 = p2.parse(test_it, end);
-	if(d1 == -1 && d2 == -1) return -1;
-	if(d2 != -1) {
-		rd += d2;
-		m_result.offset = p2.m_result;
-	} else {
-		m_result.offset = 0;
-	}
-	it = test_it;
-	return rd;
-}
 
 

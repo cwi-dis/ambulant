@@ -88,8 +88,9 @@ class basic_parselet {
 	virtual ~basic_parselet() {}
 	virtual std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) = 0;
 	
-	bool matches(const string_type& s) const {
-		return parse(s.begin(), s.end()) == s.length();
+	bool matches(const string_type& s) {
+		const_iterator b = s.begin(), e = s.end();
+		return parse(b, e) == s.length();
 	}
 };
 
@@ -454,7 +455,6 @@ class or_trio_p : public parselet {
 			m_third.parse(ita[2], end)};
 		std::ptrdiff_t dmax = -1;
 		for(int i=0;i<3;i++) {
-			std::cout << "d[" << i << "]=" << int(d[i]) << std::endl;
 			if(d[i] != -1 && (dmax == -1 || d[i] > dmax)) {
 				dmax = d[i];
 			}
@@ -636,7 +636,7 @@ class clock_value_p : public parselet {
 	result_type get_value() const { return m_result;}
 };
 
-// offset-value   ::= (( S? "+" | "-" S? )? ( Clock-value )
+// offset-value ::= (( S? "+" | "-" S? )? ( Clock-value )
 class offset_value_p : public parselet {
   public:
 	typedef clock_value_p self_type;
@@ -644,21 +644,6 @@ class offset_value_p : public parselet {
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 	result_type get_value() const { return m_result;}
-};
-
-// parse: (nmtoken? offset) | (nmtoken offset?)
-class nmtoken_offset_p : public parselet {
-  public:
-	typedef clock_value_p self_type;
-	enum time_symbol {ts_begin, ts_end };
-	typedef struct {
-		string_type nmtoken;
-		long offset;
-	} result_type;
-	result_type m_result;
-	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
-	string_type get_nmtoken() const { return m_result.nmtoken;}
-	long get_offset() const { return m_result.offset;}
 };
 
 
