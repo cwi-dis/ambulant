@@ -62,6 +62,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/net/posix_datasource.h"
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
@@ -140,7 +141,7 @@ class active_renderer : public active_basic_renderer {
   protected:
 	virtual void readdone();
 
-  	net::active_datasource *m_src;
+  	net::datasource *m_src;
 	surface *m_dest;
 //	lib::event *m_readdone;
 };

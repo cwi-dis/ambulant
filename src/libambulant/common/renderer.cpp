@@ -143,16 +143,20 @@ active_final_renderer::readdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_data_size = m_src->size();
-	if ((m_data = malloc(m_data_size)) == NULL) {
-		lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", m_data_size);
-#ifndef AMBULANT_NO_ABORT
-		abort();
-#endif
-	}
-	m_src->read((char *)m_data, m_data_size);
+	//if ((m_data = malloc(m_data_size)) == NULL) {
+	//	lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", m_data_size);
+//#ifndef AMBULANT_NO_ABORT
+	//	abort();
+//#endif
+	//}
+	m_data = m_src->get_read_ptr();
+	//m_src->read((char *)m_data, m_data_size);
 	if (m_dest)
 		m_dest->need_redraw();
 	stopped_callback();
+	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
+	m_src->readdone(m_data_size);
+	
 }
 
 global_playable_factory::global_playable_factory()

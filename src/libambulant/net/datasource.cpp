@@ -51,6 +51,8 @@
  */
 
 #include "ambulant/net/datasource.h"
+#include "ambulant/net/databuffer.h"
+#include "ambulant/net/posix_datasource.h"
 #include <unistd.h>
 
 //#define AM_DBG
@@ -201,6 +203,7 @@ net::databuffer::readdone(int size)
         m_used = m_size - m_rear;
     }
 }
+// *********************** datasource_factory ***********************************************
 
 
 
@@ -208,7 +211,7 @@ net::databuffer::readdone(int size)
 
 
 
-net::active_datasource* net::passive_datasource::activate()
+net::datasource* net::passive_datasource::activate()
 {
 	int in;
 	
@@ -249,11 +252,6 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
 	}
 }
 
-bool
-net::active_datasource::buffer_full()
-{
-	return m_buffer->buffer_full();
-}
 
 void
 net::active_datasource::callback()

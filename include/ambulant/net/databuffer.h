@@ -45,48 +45,72 @@
  * which carries forward this exception. 
  * 
  */
-
  
-#ifndef AMBULANT_NET_DATASOURCE_H
-#define AMBULANT_NET_DATASOURCE_H
+ 
+#ifndef AMBULANT_NET_DATABUFFER_H
+#define AMBULANT_NET_DATABUFFER_H
 
-#include "ambulant/config/config.h"
-
-#include "ambulant/lib/callback.h"
-#include "ambulant/lib/refcount.h"
-#include "ambulant/lib/event_processor.h"
-
-
+#include <iostream>
+#ifndef AMBULANT_NO_OSTREAM
+#include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
 
 namespace ambulant {
 
 namespace net {
 
-class datasource : virtual public ambulant::lib::ref_counted {  	
+typedef char bytes; 
+
+class databuffer  
+{							
   public:
-	~datasource() {}
+	// constructors
+	databuffer();				
+	databuffer(int max_size);	
+	
+	// destructor
+	~databuffer();
 
-	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
-    virtual void readdone(int len) = 0;
+	
+	// show information about the buffer, if verbose is true the buffer is dumped to cout;
+	void dump(std::ostream& os, bool verbose) const;		
+	
+								
+	//void get_data(char *data, int size); 				
 
-    virtual bool end_of_file() = 0;
-	virtual char* get_read_ptr() = 0;
-	virtual int size() const = 0;		
+	// this one puts data alway at the end.															
+	//void put_data(char *data , int size);			 							 
+	
+	// returns the amount of bytes that are used.
+	int  size() const;
+ 	bool buffer_full();
+    bool buffer_not_empty();
+	// client call to tell the databuffer it is ready to with size bytes of data
+	void readdone(int size); 
+	char* get_write_ptr(int size);
+	void  pushdata(int size);
+    char* get_read_ptr();
+	
+  private: 
+    char* m_buffer; 			
+	unsigned long int m_rear;
+	unsigned long int m_size;  			
+ 	unsigned long int m_max_size; 														 
+	unsigned long int m_used;							
+	bool m_buffer_full;
+
+	
 };
 
-
-class audio_datasource : virtual public datasource {
-  public:
-	~audio_datasource() {};
-		  
-	virtual int get_nchannels() = 0;
-  	virtual int get_nbits() = 0;
-	virtual int get_samplerate() = 0;
-};
-
+inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
+		os << "databuffer(" << (void *)&n << ", used=" << n.size() << ")";
+		return os;
+	}
+	
 } // end namespace net
 
 } //end namespace ambulant
-
-
+	
 #endif

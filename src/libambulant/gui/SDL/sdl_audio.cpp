@@ -52,6 +52,7 @@
 #endif
 
 #include "ambulant/gui/SDL/sdl_audio.h"
+#include "ambulant/net/posix_datasource.h"
 #include <stdlib.h>
 
 using namespace ambulant;
