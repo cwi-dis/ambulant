@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_TEXTPTR_H
 #define AMBULANT_LIB_TEXTPTR_H
 
+#include "ambulant/config/config.h"
+
 #ifdef AMBULANT_PLATFORM_WIN32
 	#ifndef _INC_WINDOWS
 	#include <windows.h>
@@ -61,8 +63,6 @@
 	#include <stdio.h>
 	#include <wchar.h>
 #endif 
-
-#include "ambulant/config/config.h"
 
 namespace ambulant {
 
