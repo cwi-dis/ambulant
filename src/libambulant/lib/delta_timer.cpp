@@ -29,7 +29,7 @@ using namespace ambulant;
 // A scheduler for timeout events
 // Uses delta timer pattern
 
-lib::delta_timer::delta_timer(timer *t)
+lib::delta_timer::delta_timer(abstract_timer *t)
 :   m_last_run(t->elapsed()),
     m_timer(t) {}
 	

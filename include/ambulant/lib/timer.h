@@ -13,68 +13,76 @@
 #ifndef AMBULANT_LIB_TIMER_H
 #define AMBULANT_LIB_TIMER_H
 
+#include <set>
+
 namespace ambulant {
 
 namespace lib {
 
-class timer {
+class abstract_timer_client {
+  public:
+	// this timer time type (assumed in msecs)
+	typedef std::set<abstract_timer_client *> client_set;
+	typedef client_set::iterator client_index;
+	
+	virtual ~abstract_timer_client() {}
+
+	virtual void speed_changed();
+	// A child clock can call add_dependent to have calls that change
+	// timing (such as set_speed) forwarded to it
+	client_index add_dependent(abstract_timer_client *child);
+	void remove_dependent(client_index pos);
+	void remove_dependent(abstract_timer_client *child);
+	
+  protected:
+    client_set m_dependents;
+};
+
+class abstract_timer : public abstract_timer_client {
   public:
 	// this timer time type (assumed in msecs)
 	typedef unsigned long time_type;
 	
-	virtual ~timer() {}
+	virtual ~abstract_timer() {}
 		
 	// returns the time elapsed
 	// e.g. return (time_now>ref_time)?time_now - ref_time:0;
 	virtual time_type elapsed() const = 0;
+	virtual void set_speed(double speed) = 0;
+	virtual double get_realtime_speed() const = 0;
+};
+
+// Note: timer objects are not refcounted, because it is assumed that
+// a parent timer will always automatically live longer than a child
+// timer. If this does not hold in future then we should add refcounting.
+class timer : public abstract_timer {
+  public:
+	timer(abstract_timer *parent, double speed);
+	timer(abstract_timer *parent);
+	~timer();
+//	void add_dependent(timer& child);
+		
+	// returns the time elapsed
+	// e.g. return (time_now>ref_time)?time_now - ref_time:0;
+	time_type elapsed() const;
+	void set_speed(double speed);
+	double lib::timer::get_realtime_speed() const;
+  private:
+	void re_epoch();
 	
-	// resets the reference time to now
-	virtual void restart() = 0;
-	
-	//virtual void set_speed(double speed) = 0;
+	abstract_timer *m_parent;
+//	std::vector<timer&> m_children;
+	time_type m_parent_epoch;
+	time_type m_local_epoch;
+	double m_speed;
 };
 
 // A (machine-dependent) routine to create a timer object
-timer *timer_factory();
+abstract_timer *realtime_timer_factory();
 
 } // namespace lib
  
 } // namespace ambulant
-
-
-////////////////////////////
-// crt_timer 
-// a simple timer based on the c-runtime-library function clock() 
-// may fail for too long intervals
-// ( ~ 36 minutes for CLOCKS_PER_SEC = 1000000)
-
-#include <time.h>
-#include <math.h>
-
-namespace ambulant {
-
-namespace lib {
-
-class crt_timer : public timer {
-  public:
-	crt_timer() : m_start_time(clock()) {}
-	
-	virtual time_type elapsed() const { return conv(clock() - m_start_time);}
-	virtual void restart() { m_start_time = clock();}
-	
-  private:
-	clock_t m_start_time;
-	
-	static time_type conv(clock_t ctv) { 
-		return (time_type)floor(0.5 + 1000.0 * (ctv / double(CLOCKS_PER_SEC)));
-	}
-};
-
-} // namespace lib
- 
-} // namespace ambulant
-
-
 #endif // AMBULANT_LIB_TIMER_H
 
 

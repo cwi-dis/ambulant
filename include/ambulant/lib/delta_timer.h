@@ -31,10 +31,10 @@ namespace lib {
 
 class delta_timer {
   public:
-	typedef timer::time_type time_type;
+	typedef abstract_timer::time_type time_type;
 	typedef std::pair<event*, time_type> timeout_event;
 	
-	delta_timer(timer *t);
+	delta_timer(abstract_timer *t);
 	virtual ~delta_timer();
 
 	// called periodically
@@ -68,7 +68,7 @@ class delta_timer {
 	time_type m_last_run;
 	
 	// timer
-	timer *m_timer;
+	abstract_timer *m_timer;
 	};
 
 } // namespace lib

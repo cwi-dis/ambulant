@@ -27,9 +27,9 @@ namespace cocoa {
 
 class cocoa_passive_window : public lib::passive_window {
   public:
-  	cocoa_passive_window(const std::string &name, lib::size bounds, void *view)
+  	cocoa_passive_window(const std::string &name, lib::size bounds, void *_view)
   	:	lib::passive_window(name, bounds),
-  		m_view(view) {}
+  		m_view(_view) {}
   		
 	void need_redraw(const lib::screen_rect<int> &r);
 	void *view() { return m_view; }
@@ -37,7 +37,7 @@ class cocoa_passive_window : public lib::passive_window {
     void *m_view;
 };
 
-class cocoa_window_factory : lib::window_factory {
+class cocoa_window_factory : public lib::window_factory {
   public:
   	cocoa_window_factory(void *view)
   	:	m_view(view) {}
@@ -47,7 +47,7 @@ class cocoa_window_factory : lib::window_factory {
     void *m_view;
 };
 
-class cocoa_renderer_factory : lib::renderer_factory {
+class cocoa_renderer_factory : public lib::renderer_factory {
   public:
   	cocoa_renderer_factory() {}
   	

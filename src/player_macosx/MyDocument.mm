@@ -8,7 +8,6 @@
 
 #import "MyDocument.h"
 #import "MyAmbulantView.h"
-#include "mainloop.h"
 
 @implementation MyDocument
 
@@ -34,6 +33,8 @@
 {
     [super windowControllerDidLoadNib:aController];
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
+    myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
+    myMainloop = new mainloop();
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType
@@ -48,14 +49,42 @@
     return YES;
 }
 
+- (BOOL) validateMenuItem:(id)menuItem
+{
+	SEL theAction = [menuItem action];
+	if (theAction == @selector(play:)) {
+		if (myMainloop->is_running() && myMainloop->get_speed() == 1.0)
+			[menuItem setState: NSOnState];
+		else
+			[menuItem setState: NSOffState];
+		return !myMainloop->is_running() || myMainloop->get_speed() == 0.0;
+	} else if (theAction == @selector(stop:)) {
+		if (!myMainloop->is_running())
+			[menuItem setState: NSOnState];
+		else
+			[menuItem setState: NSOffState];
+		return myMainloop->is_running();
+	} else if (theAction == @selector(pause:)) {
+		if (myMainloop->is_running() && myMainloop->get_speed() == 0.0)
+			[menuItem setState: NSOnState];
+		else
+			[menuItem setState: NSOffState];
+		return myMainloop->is_running();
+	}
+	return NO;
+}
+
 - (IBAction)pause:(id)sender
 {
-    NSLog(@"Pause");
+    myMainloop->set_speed(1.0 - myMainloop->get_speed());
 }
 
 - (IBAction)play:(id)sender
 {
-    [NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
+	if (myMainloop->is_running())
+		myMainloop->set_speed(1.0);
+	else
+		[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
 }
 
 - (void)startPlay: (id)dummy
@@ -66,9 +95,7 @@
     if (![NSThread isMultiThreaded]) {
         NSLog(@"startPlay: still not multi-threaded!");
     }
-    ambulant::gui::cocoa::cocoa_window_factory *wf = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
-    mainloop *ml = new mainloop();
-    ml->run([filename UTF8String], (ambulant::lib::window_factory *)wf);
+    myMainloop->run([filename UTF8String], myWindowFactory);
     [pool release];
 }
 

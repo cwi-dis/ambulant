@@ -30,6 +30,9 @@ class event_processor {
 	
 	// serves waiting events 
 	virtual void serve_events() = 0;
+
+	// Get the underlying timer
+	virtual abstract_timer *get_timer() const = 0;
 };
 
 } // namespace lib
@@ -42,6 +45,7 @@ class event_processor {
 // abstract_event_processor
 
 #include <queue>
+#include <cassert>
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/delta_timer.h"
@@ -53,17 +57,19 @@ namespace lib {
 
 class abstract_event_processor : public event_processor {
   public:
-	abstract_event_processor(timer *t, critical_section *pcs) 
+	abstract_event_processor(abstract_timer *t, critical_section *pcs) 
 	:	m_timer(t),
 		m_high_delta_timer(t), 
 		m_med_delta_timer(t), 
 		m_low_delta_timer(t), 
-		m_delta_timer_cs(pcs) {}
+		m_delta_timer_cs(pcs) { assert(t); }
 	
 	~abstract_event_processor() {
 		delete m_timer;
 		delete m_delta_timer_cs;
 	}
+	
+	abstract_timer *get_timer() const { return m_timer; }
 	
 	void add_event(event *pe, time_type t, event_priority priority = low) {
 		m_delta_timer_cs->enter();
@@ -131,7 +137,7 @@ class abstract_event_processor : public event_processor {
 	virtual void wait_event() = 0;
 	
 	// the timer for this processor
-	timer *m_timer;
+	abstract_timer *m_timer;
 	
 	// high priority delta timer
 	delta_timer m_high_delta_timer;
@@ -147,7 +153,7 @@ class abstract_event_processor : public event_processor {
 };
 
 // Machine-dependent factory function
-event_processor *event_processor_factory();
+event_processor *event_processor_factory(abstract_timer *t);
 
 } // namespace lib
 

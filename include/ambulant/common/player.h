@@ -59,6 +59,7 @@ class active_player : public ref_counted_obj {
 	
 	void start(event_processor *evp, event *playdone);
 	void stop();
+	void set_speed(double speed);
 	
 	inline void timeline_done_callback() {
 		m_done = true;
@@ -66,7 +67,9 @@ class active_player : public ref_counted_obj {
 	
   private:
   	passive_timeline *build_timeline();
+	
 	node *m_tree;
+	timer *m_timer;
   	event_processor *const m_event_processor;
 	passive_player *const m_source;
 	bool m_playing;

@@ -33,6 +33,7 @@ libambulant_la_SOURCES = \
 	lib/smil_handler.cpp \
 	lib/timeline_builder.cpp \
 	lib/timelines.cpp \
+	lib/timer.cpp \
 	lib/tree_builder.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \

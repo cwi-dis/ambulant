@@ -180,9 +180,9 @@ inline void node_navigator<N>::delete_tree(N *n) {
 		delete tmp;
 		while(e) {
 			e->up(0);
-			N *tmp = e;
+			N *tmp2 = e;
 			e = e->next();
-			delete tmp;
+			delete tmp2;
 		}
 	}
 }

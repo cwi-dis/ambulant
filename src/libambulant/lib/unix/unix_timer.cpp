@@ -11,40 +11,39 @@
 
  
 #include "ambulant/lib/unix/unix_timer.h"
+#include "ambulant/lib/logger.h"
 #include <sys/time.h>
 
 using namespace ambulant;
 
-lib::unix::os_timer::os_timer()
-:	m_start_time(millitime())
+lib::unix::unix_timer::time_type
+lib::unix::unix_timer::elapsed() const
 {
-}
-
-lib::unix::os_timer::time_type
-lib::unix::os_timer::elapsed() const
-{
-	return millitime()-m_start_time;
+	return os_millitime();
 }
 
 void
-lib::unix::os_timer::restart()
+lib::unix::unix_timer::set_speed(double speed)
 {
-	m_start_time = millitime();
+	lib::logger::get_logger()->fatal("unix_timer: cannot set speed of realtime timer");
 }
 
-lib::unix::os_timer::time_type
-lib::unix::os_timer::millitime()
+lib::unix::unix_timer::time_type
+lib::unix::unix_timer::os_millitime()
 {
 	struct timeval tv;
+	static time_t epoch = 0;
 	
 	if (gettimeofday(&tv, NULL) < 0) return 0;
-	return (tv.tv_sec*1000 + tv.tv_usec / 1000);
+	if (epoch == 0)
+		epoch = tv.tv_sec;
+	return (tv.tv_sec-epoch)*1000 + tv.tv_usec / 1000;
 }
 
 // Factory routine for the machine-independent
 // timer class
-lib::timer *
-lib::timer_factory()
+lib::abstract_timer *
+lib::realtime_timer_factory()
 {
-	return (timer *)new lib::unix::os_timer();
+	return new lib::unix::unix_timer();
 }
