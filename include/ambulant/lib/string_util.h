@@ -80,6 +80,55 @@ inline std::string xml_quote(const char *p) {
 inline std::string xml_quote(const std::string& s)
 	{ return xml_quote(s.c_str());}
 
+///////////////////////////
+// A generic string scanner/tokenizer
+// May be used to tokenize URLs when we pass ":/?" as delimiters.
+
+class scanner {
+  private:
+	typedef std::string::size_type size_type;
+	std::string s;
+	size_type i, end;
+	char tok;
+	std::string tokval;
+	std::string sig;
+	std::string delims;
+	
+  public:
+	scanner(const std::string& sa, const std::string& d)
+	:	s(sa), i(0),end(sa.length()),tok(0), delims(d) {}
+	
+	char next() {
+		tokval.clear();
+		if(i == end) return 0;
+		size_type ix = delims.find_first_of(s[i]);
+		if(ix != std::string::npos) {
+			tok = delims[ix];
+			i++;
+		} else {
+			tok = 'n'; 
+			scan_part_not_of(delims.c_str());
+		}
+		sig += tok;
+		return tok;
+	}
+	
+	void scan_part_not_of(const char *delim) {
+		size_type ni = s.find_first_of(delim, i);
+		if(ni != std::string::npos) {
+			tokval = std::string(s.c_str() + i, ni-i);
+			i = ni;
+		} else {
+			tokval = std::string(s.c_str() + i);
+			i = end;
+		}
+	}
+	bool has_tok() const { return i != end;}
+	char get_tok() const { return tok;}
+	const std::string& get_tokval() const { return tokval;}
+	const std::string& get_sig() const { return sig;}
+};
+
 } // namespace lib
  
 } // namespace ambulant
