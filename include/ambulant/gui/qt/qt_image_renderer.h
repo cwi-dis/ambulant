@@ -59,6 +59,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/transition.h"
 #include "ambulant/gui/none/none_gui.h"
 
 
@@ -66,6 +67,9 @@
 namespace ambulant {
 
 namespace gui {
+
+using namespace lib;
+using namespace common;
 
 namespace qt {
 
@@ -77,18 +81,25 @@ class qt_active_image_renderer : public common::active_final_renderer {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-    	net::datasource_factory *df)
-:	 common::active_final_renderer(context, cookie, node, evp, df),
- 	m_image(NULL),
-	m_image_loaded(false) {
-	};
+		net::datasource_factory *df)
+	:	common::active_final_renderer(context, cookie, node, evp, df),
+	 	m_image(NULL),
+	 	m_image_loaded(false),
+	 	m_trans_engine(NULL) 
+	 	{};
 	~qt_active_image_renderer();
     
+	void start(double where);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
+	void start_outtransition(lib::transition_info *info);
+
  private:
+	void transition_step();
+
 	QImage m_image;
 	bool m_image_loaded;
-	lib::critical_section m_lock;
+	smil2::transition_engine *m_trans_engine;
+	critical_section m_lock;
 };
 
 } // namespace qt

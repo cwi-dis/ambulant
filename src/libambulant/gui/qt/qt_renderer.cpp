@@ -52,7 +52,7 @@
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -77,7 +77,9 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   common::gui_events *region)
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
-	m_pixmap(NULL)
+	m_pixmap(NULL),
+	m_oldmap(NULL),
+	m_surface(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
 }
@@ -111,9 +113,57 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 QPixmap*
 ambulant_qt_window::ambulant_pixmap()
 {
-	//AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x)",(void *)m_ambulant_widget);
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x)",(void *)m_pixmap);
 //	return m_ambulant_widget;
         return m_pixmap;
+}
+
+qt_ambulant_widget*
+ambulant_qt_window::get_ambulant_widget()
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::get_ambulant_widget(0x%x)",(void *)m_ambulant_widget);
+	return m_ambulant_widget;
+//       return m_pixmap;
+}
+
+QPixmap*
+ambulant_qt_window::new_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+//	return m_ambulant_widget;
+	QSize size = m_pixmap->size();
+	m_surface = new QPixmap(size.width(), size.height());
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+        return m_surface;
+}
+QPixmap*
+ambulant_qt_window::get_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
+        return m_surface;
+}
+
+void
+ambulant_qt_window::reset_ambulant_surface(void)
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::reset_ambulant_surface(0x%x) m_oldmap = 0x%x",(void *)this,(void *)m_oldmap);
+	if (m_oldmap != NULL) m_pixmap = m_oldmap;
+}
+
+void
+ambulant_qt_window::set_ambulant_surface(QPixmap* surf)
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
+	m_oldmap = m_pixmap;
+	if (surf != NULL) m_pixmap = surf;
+}
+
+void
+ambulant_qt_window::delete_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::delete_ambulant_surface(0x%x) m_surface = 0x%x",(void *)this, (void *)m_surface);
+	delete m_surface;
+	m_surface = NULL;
 }
 
 void

@@ -53,8 +53,11 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
+#include "ambulant/gui/qt/qt_transition.h"
+#include "ambulant/common/region_info.h"
+#include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -66,7 +69,30 @@ qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_image_renderer::~qt_active_image_renderer()");
+	if (m_trans_engine) delete m_trans_engine;
 	m_lock.leave();
+}
+	
+void
+qt_active_image_renderer::start(double where)
+{
+	AM_DBG logger::get_logger()->trace("qt_active_image_renderer.start(0x%x) m_dest=0x%x", (void *)this, (void*)m_dest);
+	if (m_intransition) {
+		m_trans_engine = qt_transition_engine(m_dest, false, m_intransition);
+		if (m_trans_engine)
+			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
+	}
+	if (m_outtransition) {
+		// XXX Schedule beginning of out transition
+		//lib::event *ev = new transition_callback(this, &transition_outbegin);
+		//m_event_processor->add_event(ev, XXXX);
+	}
+	common::active_final_renderer::start(where);
+}
+
+void
+qt_active_image_renderer::start_outtransition(lib::transition_info *info)
+{
 }
 
 void
@@ -85,11 +111,27 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 		m_image_loaded = m_image.loadFromData(
 			(const uchar*)m_data, m_data_size);
 	}
+	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
+	QPixmap *surf = NULL;
+	if (m_trans_engine && m_trans_engine->is_done()) {
+		delete m_trans_engine;
+		m_trans_engine = NULL;
+	}
+	// See whether we're in a transition
+	if (m_trans_engine) {
+		surf = aqw->get_ambulant_surface();
+		if (surf == NULL)
+			surf = aqw->new_ambulant_surface();
+		if (surf != NULL) {
+			aqw->set_ambulant_surface(surf);	
+//			[surf lockFocus];
+		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to transition surface");
+		}
+	}
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_image_renderer.redraw: info=0x%x", info);
-	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
 	// background drawing
@@ -125,7 +167,7 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    W = dstrect.width(),
 		    H = dstrect.height();
 		AM_DBG lib::logger::get_logger()->trace(
-			" qt_active_image_renderer.redraw(0x%x):"
+			"qt_active_image_renderer.redraw(0x%x):"
 			" drawImage at (L=%d,T=%d,W=%d,H=%d)",
 			(void *)this,L,T,W,H);
 		paint.drawImage(L,T,m_image,0,0,W,H);
@@ -137,7 +179,30 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 			(void *)this
 		);
 	}
+#ifdef	JUNK
+#endif/*JUNK*/
+//	if (surf) [surf unlockFocus];
+	if (surf != NULL) {
+		aqw->reset_ambulant_surface();
+	}
+	if (m_trans_engine && surf) {
+		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to view");
+		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
+		typedef lib::no_arg_callback<qt_active_image_renderer> transition_callback;
+		lib::event *ev = new transition_callback(this, &qt_active_image_renderer::transition_step);
+		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
+	}
+
+
 	paint.flush();
 	paint.end();
 	m_lock.leave();
+
+}
+
+void
+qt_active_image_renderer::transition_step()
+{
+  AM_DBG logger::get_logger()->trace("qt_active_image_renderer.:transition_step(x%x) m_dest=",(void*)this, (void*) m_dest);
+	if (m_dest) m_dest->need_redraw();
 }

@@ -82,16 +82,24 @@ class ambulant_qt_window : public common::gui_window {
 			   
 	void set_ambulant_widget(qt_ambulant_widget* qaw);
 	QPixmap* ambulant_pixmap();
+	qt_ambulant_widget* get_ambulant_widget();
 
 	void need_redraw(const lib::screen_rect<int> &r);
 	void redraw(const lib::screen_rect<int> &r);
 	void mouse_region_changed();
 	void user_event(const lib::point &where);
 	void need_events(bool want);
+	QPixmap* new_ambulant_surface();
+	QPixmap* get_ambulant_surface();
+	void reset_ambulant_surface(void);
+	void set_ambulant_surface(QPixmap* surf);
+	void delete_ambulant_surface();
 
   private:
 	qt_ambulant_widget* m_ambulant_widget;
 	QPixmap* m_pixmap;
+	QPixmap* m_oldmap;
+	QPixmap* m_surface;
 };  // class ambulant_qt_window
 
 class qt_ambulant_widget : public QWidget {
