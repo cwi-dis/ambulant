@@ -133,8 +133,7 @@ animate_reg_dim_node<F>::~animate_reg_dim_node() {
 template <class F>
 void animate_reg_dim_node<F>::prepare_interval() {
 	time_type ad = m_interval.end - m_interval.begin;
-	bool sum = false;
-	m_animate_f = new animate_f<F>(m_simple_f, ad(), sum);
+	m_animate_f = new animate_f<F>(m_simple_f, ad(), m_aattrs->is_accumulative());
 }
 
 template <class F>
@@ -156,6 +155,57 @@ bool animate_reg_dim_node<F>::apply_value(common::animation_destination *dst) {
 }
 
 ////////////////////////////////////
+// animate_bgcolor_node
+
+template <class F>
+class animate_bgcolor_node : public animate_node {
+  public:
+	animate_bgcolor_node(context_type *ctx, const node *n, animate_attrs *aattrs);
+	~animate_bgcolor_node();
+	
+	void prepare_interval();
+	bool apply_value(common::animation_destination *dst);
+	
+  private:
+	F m_simple_f;
+	animate_f<F> *m_animate_f;
+};
+
+template <class F>
+animate_bgcolor_node<F>::animate_bgcolor_node(context_type *ctx, const node *n, animate_attrs *aattrs)
+:	animate_node(ctx, n, aattrs) {
+	std::vector<lib::color_t> v;
+	m_aattrs->get_color_values(v);
+	if(aattrs->get_calc_mode() == "paced") {
+		init_map_f_paced(calc_dur()(), v, m_simple_f);
+	} else {
+		init_map_f(calc_dur()(), v, m_simple_f);
+	}
+}
+
+template <class F>
+animate_bgcolor_node<F>::~animate_bgcolor_node() {
+	delete m_animate_f;
+}
+
+template <class F>
+void animate_bgcolor_node<F>::prepare_interval() {
+	time_type ad = m_interval.end - m_interval.begin;
+	m_animate_f = new animate_f<F>(m_simple_f, ad(), m_aattrs->is_accumulative());
+}
+
+template <class F>
+bool animate_bgcolor_node<F>::apply_value(common::animation_destination *dst) {
+	if(!m_animate_f) return false;
+	lib::timer::time_type t = m_timer->elapsed();
+	lib::color_t newcolor = m_animate_f->at(t);
+	dst->set_bgcolor(newcolor);
+	// XXX: check for additivity
+	// XXX: return true when attr has changed else false
+	return true;
+}
+
+////////////////////////////////////
 
 //static 
 animate_node* animate_node::new_instance(context_type *ctx, const node *n, const node* tparent) {
@@ -167,6 +217,14 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		} else {
 			typedef linear_map_f<common::region_dim> F;
 			return new animate_reg_dim_node<F>(ctx, n, aattrs);
+		}
+	} else if(aattrs->get_target_attr_type() == "bgcolor") {
+		if(aattrs->get_calc_mode() == "discrete") {
+			typedef discrete_map_f<lib::color_t> F;
+			return new animate_bgcolor_node<F>(ctx, n, aattrs);
+		} else {
+			typedef linear_map_f<lib::color_t> F;
+			return new animate_bgcolor_node<F>(ctx, n, aattrs);
 		}
 	}
 	return new animate_node(ctx, n, aattrs);

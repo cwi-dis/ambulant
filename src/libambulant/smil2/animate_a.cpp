@@ -53,6 +53,7 @@
 #include "ambulant/smil2/animate_a.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
+#include "ambulant/lib/colors.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/lib/logger.h"
 
@@ -126,7 +127,7 @@ void animate_attrs::locate_target_attr() {
 	}
 	if(!m_attrtype.empty()) return;
 	if(m_attrname == "backgroundColor") {
-		m_attrtype = "color";
+		m_attrtype = "bgcolor";
 	} else if(m_attrname == "z-index") {
 		m_attrtype = "int";
 	} else if(m_attrname == "soundLevel") {
@@ -242,6 +243,38 @@ void animate_attrs::get_values(std::vector<common::region_dim>& v) {
 		const char *pby = m_node->get_attribute("by");
 		v.push_back(0);
 		v.push_back(safeatoi(pby));
+	}
+}
+
+void animate_attrs::get_color_values(std::vector<lib::color_t>& v) {
+	using lib::to_color;
+	const char *pvalues = m_node->get_attribute("values");
+	if(m_animtype == "values") {
+		const char *pvalues = m_node->get_attribute("values");
+		std::list<std::string> c;
+		if(pvalues) 
+			lib::split_trim_list(pvalues, c, ';');
+		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
+			v.push_back(to_color((*it).c_str()));
+	} else if(m_animtype == "from-to") {
+		const char *pfrom = m_node->get_attribute("from");
+		const char *pto = m_node->get_attribute("to");
+		v.push_back(to_color(pfrom));
+		v.push_back(to_color(pto));
+	} else if(m_animtype == "from-by") {
+		const char *pfrom = m_node->get_attribute("from");
+		const char *pby = m_node->get_attribute("by");
+		lib::color_t v1 = to_color(pfrom);
+		lib::color_t dv = to_color(pby);
+		v.push_back(v1);
+		v.push_back(v1+dv);
+	} else if(m_animtype == "to") {
+		const char *pto = m_node->get_attribute("to");
+		v.push_back(to_color(pto));
+	} else if(m_animtype == "by") {
+		const char *pby = m_node->get_attribute("by");
+		v.push_back(0);
+		v.push_back(to_color(pby));
 	}
 }
 

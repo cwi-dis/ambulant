@@ -54,6 +54,7 @@
 #define AMBULANT_SMIL2_ANIMATE_A_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/colors.h"
 
 #include <string>
 #include <vector>
@@ -82,11 +83,12 @@ class animate_attrs {
 	const std::string& get_target_attr_type() const { return m_attrtype;}
 	const std::string& get_animate_type() const { return m_animtype;}
 	bool is_additive() const { return m_additive;}
-	bool is_accumulate() const { return m_accumulate;}
+	bool is_accumulative() const { return m_accumulate;}
 	const std::string& get_calc_mode() const { return m_calc_mode;}
 	
 	void get_values(std::vector<int>& v);
 	void get_values(std::vector<common::region_dim>& v);
+	void get_color_values(std::vector<lib::color_t>& v);
 	
   private:
 	
