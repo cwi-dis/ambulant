@@ -873,10 +873,12 @@ void time_node::activate(qtime_type timestamp) {
 		if(!is_discrete() && needs_implicit_dur() && m_mediadur != time_type::unresolved) {
 			// we need this due to the set-of-implicit-dur-on-eom mechanism
 			m_media_offset = sd_offset.rem(m_mediadur);
-		} else 
+		} else {
 			m_media_offset = sd_offset;
+		}
+		m_context->create_playable(m_node);
+		m_context->wantclicks_playable(m_node, m_want_activate_events);
 		m_context->start_playable(m_node, time_type_to_secs(m_media_offset()));
-		m_context->wantclicks_playable(m_node, want_activate_event());
 	}
 	
 	// Schedule a check for the next S-transition e.g. repeat or end.
