@@ -240,27 +240,28 @@ detail::ffmpeg_demux::supported(const net::url& url)
 	// Setup struct to allow ffmpeg to determine whether it supports this
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
+	std::string url_str(url.get_url());
 	
-	probe_data.filename = url.get_url().c_str();
+	probe_data.filename = url_str.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
 	fmt = av_probe_input_format(&probe_data, 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): av_probe_input_format: 0x%x", repr(url).c_str(), (void*)fmt);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): av_probe_input_format: 0x%x", url_str.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
-	int err = av_open_input_file(&ic, url.get_url().c_str(), fmt, 0, 0);
+	int err = av_open_input_file(&ic, url_str.c_str(), fmt, 0, 0);
 	if (err) {
-		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
+		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
 		return NULL;
 	}
 	//err = av_read_play(ic);
 	err = av_find_stream_info(ic);
 	if (err < 0) {
-		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
+		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
 		return NULL;
 	}
-	AM_DBG dump_format(ic, 0, repr(url).c_str(), 0);
+	AM_DBG dump_format(ic, 0, url_str.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
 	return ic;
 }
