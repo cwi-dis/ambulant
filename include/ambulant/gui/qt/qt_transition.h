@@ -75,7 +75,7 @@ class qt_transition_blitclass_fade : virtual public smil2::transition_blitclass_
 	void update();
 };
 
-class qt_transition_blitclass_r1r2 : virtual public smil2::transition_blitclass_r1r2 {
+class qt_transition_blitclass_rect : virtual public smil2::transition_blitclass_rect {
   protected:
 	void update();
 };
@@ -85,75 +85,75 @@ class qt_transition_blitclass_r1r2r3r4 : virtual public smil2::transition_blitcl
 	void update();
 };
 
-class qt_transition_blitclass_rlistr2 : virtual public smil2::transition_blitclass_rlistr2 {
+class qt_transition_blitclass_rectlist : virtual public smil2::transition_blitclass_rectlist {
   protected:
 	void update();
 };
 
-class qt_transition_blitclass_polyr2 : virtual public smil2::transition_blitclass_polyr2 {
+class qt_transition_blitclass_poly : virtual public smil2::transition_blitclass_poly {
   protected:
 	void update();
 };
 
-class qt_transition_blitclass_polylistr2 : virtual public smil2::transition_blitclass_polylistr2 {
+class qt_transition_blitclass_polylist : virtual public smil2::transition_blitclass_polylist {
   protected:
 	void update();
 };
 
 class qt_transition_engine_barwipe :
-	virtual public qt_transition_blitclass_r1r2,
+	virtual public qt_transition_blitclass_rect,
 	virtual public smil2::transition_engine_barwipe {};
 
 class qt_transition_engine_boxwipe :
-	virtual public qt_transition_blitclass_r1r2,
+	virtual public qt_transition_blitclass_rect,
 	virtual public smil2::transition_engine_boxwipe {};
 
 class qt_transition_engine_fourboxwipe :
-	virtual public qt_transition_blitclass_rlistr2,
+	virtual public qt_transition_blitclass_rectlist,
 	virtual public smil2::transition_engine_fourboxwipe {};
 
 class qt_transition_engine_barndoorwipe :
-	virtual public qt_transition_blitclass_r1r2,
+	virtual public qt_transition_blitclass_rect,
 	virtual public smil2::transition_engine_barndoorwipe {};
 
 class qt_transition_engine_diagonalwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_diagonalwipe {};
 
 class qt_transition_engine_miscdiagonalwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_miscdiagonalwipe {};
 
 class qt_transition_engine_veewipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_veewipe {};
 
 class qt_transition_engine_barnveewipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_barnveewipe {};
 
 class qt_transition_engine_zigzagwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_zigzagwipe {};
 
 class qt_transition_engine_barnzigzagwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_barnzigzagwipe {};
 
 class qt_transition_engine_bowtiewipe :
-	virtual public qt_transition_blitclass_polylistr2,
+	virtual public qt_transition_blitclass_polylist,
 	virtual public smil2::transition_engine_bowtiewipe {};
 
 class qt_transition_engine_doublesweepwipe :
-	virtual public qt_transition_blitclass_polylistr2,
+	virtual public qt_transition_blitclass_polylist,
 	virtual public smil2::transition_engine_doublesweepwipe {};
 
 class qt_transition_engine_saloondoorwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_saloondoorwipe {};
 
 class qt_transition_engine_windshieldwipe :
-	virtual public qt_transition_blitclass_polyr2,
+	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_windshieldwipe {};
 
 class qt_transition_engine_pushwipe :

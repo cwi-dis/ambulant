@@ -181,6 +181,7 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 //	if (qApp->locked())
 //		return;
 	qApp->processEvents();
+//	qApp->mainWidget()-
 #endif
 }
   

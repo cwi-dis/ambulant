@@ -100,7 +100,8 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 void
 qt_transition_blitclass_fade::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) -- being implemented", m_progress);
+	return; //TMP
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -169,9 +170,9 @@ qt_transition_blitclass_fade::update()
 }
 
 void
-qt_transition_blitclass_r1r2::update()
+qt_transition_blitclass_rect::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rect::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -186,7 +187,7 @@ void
 qt_transition_blitclass_r1r2r3r4::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_rlist_r1r2r3r4: being implemented");
+	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: being implemented");
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -242,10 +243,10 @@ qt_transition_blitclass_r1r2r3r4::update()
 }
 
 void
-qt_transition_blitclass_rlistr2::update()
+qt_transition_blitclass_rectlist::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rlistr2::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_rlistr2: not yet implemented");
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist: not yet implemented");
 #ifdef	JUNK
 	qt_window *window = (qt_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
@@ -264,10 +265,10 @@ qt_transition_blitclass_rlistr2::update()
 }
 
 void
-qt_transition_blitclass_polyr2::update()
+qt_transition_blitclass_poly::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_polyr2::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_polyr2: not yet implemented");
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_poly::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("qt_transition_blitclass_poly: not yet implemented");
 #ifdef	JUNK
 	qt_window *window = (qt_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
@@ -286,10 +287,10 @@ qt_transition_blitclass_polyr2::update()
 }
 
 void
-qt_transition_blitclass_polylistr2::update()
+qt_transition_blitclass_polylist::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_polylistr2::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_polylistr2: not yet implemented");
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_polylist::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: not yet implemented");
 #ifdef	JUNK
 	qt_window *window = (qt_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
