@@ -64,7 +64,7 @@ namespace ambulant {
 namespace gui {
 namespace none {	  
 
-class none_video_renderer : public common::active_basic_renderer, public lib::timer_events {
+class none_video_renderer : public common::active_video_renderer {
   public:
     none_video_renderer(
     common::playable_notification *context,
@@ -74,7 +74,7 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
 	net::datasource_factory *df);
 
   	~none_video_renderer() {};
-	double now();
+	
       
   	bool is_paused() { return m_is_paused; };
   	bool is_stopped() { return !m_is_playing;};
@@ -98,6 +98,7 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
 	common::surface *get_surface() { abort(); }
 		  
   private:
+	  double now();
 	  lib::event_processor* m_evp;
   	  net::raw_video_datasource* m_src; 
   	  unsigned long int m_epoch;

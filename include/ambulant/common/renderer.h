@@ -62,6 +62,8 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/net/datasource.h"
+//XXX The raw_video_datasource should not be here, should be fixed with the factories.
+#include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
@@ -190,6 +192,52 @@ class global_playable_factory : public playable_factory {
   private:
     std::vector<playable_factory *> m_factories;
     playable_factory *m_default_factory;
+};
+
+
+class active_video_renderer : public common::active_basic_renderer, public lib::timer_events {
+  public:
+	active_video_renderer(
+    common::playable_notification *context,
+    common::playable_notification::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *evp,
+	net::datasource_factory *df);
+
+  	~active_video_renderer() {};
+	
+      
+  	bool is_paused() { return m_is_paused; };
+  	bool is_stopped() { return !m_is_playing;};
+  	bool is_playing() { return m_is_playing; };  
+	
+	virtual void show_frame(char* frame) = 0;
+	
+	void start(double where);
+    void stop() { m_is_playing = false; };
+    void pause();
+    void resume();
+	void freeze() {};
+    void speed_changed() {};
+    void data_avail();
+    void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+	void wantclicks(bool want) {};
+    void user_event(const lib::point &where, int what=0) {};
+	void playdone() {};
+
+	void set_surface(common::surface *dest) { abort(); }
+	common::surface *get_surface() { abort(); }
+	
+  private:
+	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
+	  double now();
+	  lib::event_processor* m_evp;
+  	  net::raw_video_datasource* m_src; 
+  	  unsigned long int m_epoch;
+	  bool m_is_playing;
+	  bool m_is_paused;
+	  unsigned long int m_paused_epoch;
+	  lib::critical_section m_lock;  
 };
 
 // background_renderer is a convenience class: it implements some of the

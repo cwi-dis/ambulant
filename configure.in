@@ -230,7 +230,7 @@ AC_ARG_WITH(ffmpeg,
 	  no)  ffmpeg=false
 	  	;;
 	  *) ffmpeg=true
-	     FFMPEG_CODEC_INCLUDE=${withval}
+	     FFMPEG_CODEC_INCLUDE=`cd ${withval}; pwd`
 	     FFMPEG_FORMAT_INCLUDE=`cd ${withval}/../libavformat; pwd`	     
 	     FFMPEG_CODEC_LIB=${withval}
 	     FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
