@@ -1,4 +1,4 @@
-#include "ambulant.h"
+#include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/player.h"
 #include "ambulant/lib/event_processor.h"

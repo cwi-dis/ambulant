@@ -3,6 +3,7 @@ library_includedir=$(includedir)/ambulant/lib
 library_include_HEADERS= \
 	abstract_mtsync.h \
 	asb.h \
+	basic_types.h \
 	callback.h \
 	colors.h \
 	delta_timer.h \

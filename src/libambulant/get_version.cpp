@@ -1,12 +1,12 @@
 
-#include "ambulant.h"
+#include "ambulant/version.h"
 
 namespace ambulant {
 
-char *
+const char *
 get_version(void) {
 
 	return AMBULANT_VERSION;
 }
- 
+
 } // namespace ambulant
