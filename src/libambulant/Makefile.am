@@ -2,8 +2,11 @@ lib_LTLIBRARIES = libambulant.la
 expat_dir = $(top_builddir)/third_party_packages/expat-unix
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include
 
+if WITH_COCOA
 toolkit_dep_sources = gui/none/none_gui.cpp gui/cocoa/cocoa_gui.cpp
-# toolkit_dep_sources = gui/cocoa/cocoa_gui.cpp
+else
+toolkit_dep_sources = gui/cocoa/cocoa_gui.cpp
+endif
 
 libambulant_la_SOURCES = \
 	get_version.cpp \

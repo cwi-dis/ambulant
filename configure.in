@@ -48,6 +48,15 @@ AC_SUBST(EXPAT_INCLUDES)
 
 AC_MSG_RESULT($EXPAT_PREFIX)
 
+AC_ARG_WITH(cocoa,
+     [  --with-cocoa    Turn on Cocoa support],
+     [case "${withval}" in
+       yes) cocoa=true ;;
+       no)  cocoa=false ;;
+       *) AC_MSG_ERROR(bad value ${withval} for --with-cocoa) ;;
+     esac],[cocoa=false])
+AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
+
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
