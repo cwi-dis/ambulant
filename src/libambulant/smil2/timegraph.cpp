@@ -63,6 +63,8 @@
 #include <stack>
 #include <cstdlib>
 
+//#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -75,18 +77,19 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 	m_schema(sch), 
 	m_root(0),
 	m_dom2tn(0) {
-	assert(doc);
-	assert(sch);
+	assert(doc!=0);
+	assert(sch!=0);
+	m_logger = lib::logger::get_logger();
 	m_dom2tn = new std::map<int, time_node*>();
 	m_root = build_time_tree(doc->get_root());
-	AM_DBG logger::get_logger()->trace("Time nodes created: %d", time_node::get_node_counter());
+	AM_DBG m_logger->trace("Time nodes created: %d", time_node::get_node_counter());
 	build_time_graph();
 }
 
 timegraph::~timegraph() {
 	if(m_root) {
 		delete m_root;
-		AM_DBG logger::get_logger()->trace("Undeleted time nodes: %d", time_node::get_node_counter());
+		AM_DBG m_logger->trace("Undeleted time nodes: %d", time_node::get_node_counter());
 	} // else detached
 	if(m_dom2tn)
 		delete m_dom2tn;
@@ -163,7 +166,11 @@ timegraph::build_time_tree(const lib::node *root) {
 			std::string ident;
 			const char *pid = n->get_attribute("id");
 			if(pid) ident = pid;
-			else ident << "aid" << localIdCounter++;
+			else {
+					ident += "aid";
+					char b[32];sprintf(b,"%u",localIdCounter++);
+					ident += b;
+			}
 			m_id2tn[ident] = tn;
 			
 			if(stack.empty()) {
@@ -230,6 +237,8 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 		// add implicit begin rule
 		sync_rule *sr = create_impl_syncbase_begin_rule(tn);
 		tn->add_begin_rule(sr);
+		if(tn->get_time_attrs()->get_tag()=="area")
+			tn->set_want_activate_event(true);
 		return;
 	}
 	
@@ -274,7 +283,7 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			if(!base) continue;
 			sync_event event = sync_event_from_str(svs.event);
 			if(event == tn_activate_event)
-				base->want_activate_event(true);			
+				base->set_want_activate_event(true);			
 			sync_rule *sr = new event_rule(base, event, svs.offset);
 			tn->add_begin_rule(sr);
 		} else if(svs.type == sv_repeat) {
@@ -339,7 +348,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			if(!base) continue;
 			sync_event event = sync_event_from_str(svs.event);
 			if(event == tn_activate_event)
-				base->want_activate_event(true);
+				base->set_want_activate_event(true);
 			sync_rule *sr = new event_rule(base, event, svs.offset);
 			tn->add_end_rule(sr);
 		} else if(svs.type == sv_repeat) {
@@ -362,7 +371,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 sync_rule*
 timegraph::create_impl_syncbase_begin_rule(time_node *tn) {
 	time_node *parent = tn->up();
-	assert(parent);
+	assert(parent!=0);
 	sync_rule *sr = 0;
 	if(parent->is_par()) {
 		sr = new offset_rule(parent, tn_begin, 0);
@@ -385,7 +394,7 @@ timegraph::create_impl_syncbase_begin_rule(time_node *tn) {
 sync_rule*
 timegraph::create_impl_syncbase_rule(time_node *tn, time_type offset) {
 	time_node *parent = tn->up();
-	assert(parent);
+	assert(parent!=0);
 	sync_rule *sr = 0;
 	if(parent->is_par()) {
 		sr = new offset_rule(parent, tn_begin, offset);

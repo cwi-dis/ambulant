@@ -57,6 +57,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/system.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
@@ -84,7 +85,7 @@ class smil_player : public common::player, public time_node_context, public comm
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf);
+	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, lib::system *sys = 0);
 	~smil_player();
 		
 	///////////////////
@@ -142,6 +143,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	// Time node context: Services
 	
 	lib::timer* get_timer() { return m_timer;}
+	void show_link(const lib::node *n, const std::string& href);
 	lib::event_processor* get_evp() { return m_event_processor;}	
 	virtual time_value_type elapsed() const { return m_timer->elapsed();}
 	virtual void schedule_event(lib::event *ev, time_type t, lib::event_priority ep = ep_low);
@@ -174,6 +176,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	lib::document *m_doc;
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
+	lib::system *m_system;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
 	smil_layout_manager *m_layout_manager;

@@ -115,8 +115,8 @@ abstract_sync_rule::from_ref(time_type instance) const {
 	return tc.to_descendent(m_target->sync_node());
 }
 
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 std::string abstract_sync_rule::to_string() {
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::ostringstream os;
 	os << m_target->to_string() << "."  << rule_type_str(m_target_attr);
 	os << "=";
@@ -129,8 +129,9 @@ std::string abstract_sync_rule::to_string() {
 	else
 		os << m_syncbase->to_string() << "." << sync_event_str(m_syncbase_event) << "+offset";
 	return os.str();
-}
 #endif 
+	return "sync_rule";
+}
 
 //////////////////////////////////
 // offset_rule implementation is inline

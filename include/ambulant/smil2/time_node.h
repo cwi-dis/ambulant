@@ -87,27 +87,25 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
 // Time nodes context requirements
-class time_node_context : public event_scheduler<time_traits::value_type> {
+class time_node_context : public lib::event_scheduler<time_traits::value_type> {
   public:
 	// Services
 	virtual time_traits::value_type elapsed() const = 0;
 	virtual timer* get_timer() = 0;
+	virtual void show_link(const lib::node *n, const std::string& href) = 0;
 	
 	// Playable commands
 	virtual void create_playable(const lib::node *n) = 0;
-	virtual void start_playable(const node *n, double t) = 0;
-	virtual void stop_playable(const node *n) = 0;
-	virtual void pause_playable(const node *n, pause_display d = display_show) = 0;
-	virtual void resume_playable(const node *n) = 0;
-	virtual void wantclicks_playable(const node *n, bool want) = 0;
+	virtual void start_playable(const lib::node *n, double t) = 0;
+	virtual void stop_playable(const lib::node *n) = 0;
+	virtual void pause_playable(const lib::node *n, pause_display d = display_show) = 0;
+	virtual void resume_playable(const lib::node *n) = 0;
+	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const node *n) = 0;
-	
+	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
+		
 	// Notifications
 	virtual void started_playback() = 0;
 	virtual void done_playback() = 0;
@@ -136,8 +134,8 @@ class time_node : public time_traits {
 	virtual void stop();
 	virtual void pause();
 	
-	void want_activate_event(bool want) { m_want_activate_events = want;}
-	bool want_activate_event() const { return m_want_activate_events;}
+	void set_want_activate_event(bool want) { m_want_activate_events = want;}
+	bool wants_activate_event() const { return m_want_activate_events;}
 	void want_accesskey(bool want) { m_want_accesskey = want;}
 	bool want_accesskey() const { return m_want_accesskey;}
 
@@ -247,6 +245,7 @@ class time_node : public time_traits {
 	bool is_discrete() const { return m_discrete;}
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
+	bool is_area() const {return m_attrs.get_tag() == "area";}
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
 	bool needs_implicit_dur() const;
 	

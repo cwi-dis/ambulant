@@ -61,11 +61,19 @@
 #include <string>
 #include <map>
 
+
+//////////////////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
 #ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
 #else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
 #endif/*AMBULANT_NO_OSTREAM*/
+
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+//////////////////////////////////////
+
 
 namespace ambulant {
 
@@ -78,6 +86,7 @@ namespace smil2 {
 class lib::document;
 class common::schema;
 class lib::node;
+class lib::logger;
 
 // Builds the time tree and the time graph.
 // Wraps the time root.
@@ -119,6 +128,7 @@ class timegraph : public time_traits {
 	time_node* m_root;
 	std::map<std::string, time_node*> m_id2tn;
 	std::map<int, time_node*> *m_dom2tn;
+	lib::logger *m_logger;
 };
 
 

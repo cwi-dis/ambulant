@@ -54,6 +54,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/system.h"
 
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
@@ -64,6 +65,8 @@
 #include "ambulant/smil2/timegraph.h"
 #include "ambulant/smil2/smil_layout.h"
 
+//#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -72,14 +75,15 @@ using namespace ambulant;
 using namespace smil2;
 
 common::player *
-common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf){
+common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf) {
 	return new smil_player(doc, wf, pf);
 }
 
-smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf)
+smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, lib::system *sys)
 :	m_doc(doc),
 	m_wf(wf),
 	m_pf(pf),
+	m_system(sys),
 	m_root(0),
 	m_dom2tn(0),
 	m_layout_manager(0),
@@ -94,6 +98,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	// build DOM level objects
 	test_attrs::read_custom_attributes(m_doc);
 	
+		
 	// build the layout (we need the top-level layout)
 	build_layout();
 	
@@ -271,7 +276,7 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 void smil_player::clicked(int n, double t) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end() && (*it).second->want_activate_event()) {
+	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
 		activate_event_cb *cb = new activate_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
@@ -283,7 +288,7 @@ void smil_player::clicked(int n, double t) {
 void smil_player::pointed(int n, double t) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end() && (*it).second->want_activate_event())
+	if(it != m_dom2tn->end() && (*it).second->wants_activate_event())
 		m_cursorid = 1;
 }
 
@@ -326,15 +331,15 @@ void smil_player::on_char(int ch) {
 common::playable *
 smil_player::new_playable(const lib::node *n) {
 	int nid = n->get_numid();
+	std::string tag = n->get_local_name();
+	const char *pid = n->get_attribute("id");
+	const char *reg = n->get_attribute("region");
+	
 	surface *surf = m_layout_manager->get_surface(n);
-	if(true) {
-		const char *pid = n->get_attribute("id");
-		std::string tag = n->get_local_name();
-		AM_DBG m_logger->trace("%s[%s].new_playable  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
-			::repr(surf->get_rect()).c_str(),
-			::repr(surf->get_global_topleft()).c_str()
-			);
-	}
+	AM_DBG m_logger->trace("%s[%s].new_playable  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+		::repr(surf->get_rect()).c_str(),
+		::repr(surf->get_global_topleft()).c_str());
+		
 	common::playable *np = m_pf->new_playable(this, nid, n, m_event_processor);
 	// And connect it to the rendering surface
 	if (np) {
@@ -352,3 +357,6 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	np->release();
 }
 
+void smil_player::show_link(const lib::node *n, const std::string& href) {
+	if(m_system) m_system->show_file(href);
+}

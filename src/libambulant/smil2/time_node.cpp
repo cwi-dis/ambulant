@@ -200,7 +200,7 @@ void time_node::add_begin_rule(sync_rule *sr) {
 	sr->set_target(this, rt_begin);
 	time_node* tn = sr->get_syncbase();
 	sync_event se = sr->get_syncbase_event();
-	assert(tn);
+	assert(tn!=0);
 	tn->add_dependent(sr, se);
 	m_begin_list.push_back(sr);
 }
@@ -211,7 +211,7 @@ void time_node::add_end_rule(sync_rule *sr) {
 	sr->set_target(this, rt_end);
 	time_node* tn = sr->get_syncbase();
 	sync_event se = sr->get_syncbase_event();
-	assert(tn);
+	assert(tn!=0);
 	tn->add_dependent(sr, se);
 	m_end_list.push_back(sr);
 }
@@ -525,8 +525,18 @@ time_node::calc_first_interval() {
 	// Get the begin instance list
 	time_mset begin_list;
 	get_instance_times(m_begin_list, begin_list);
-	if(begin_list.empty())
+	if(begin_list.empty()) {
+		AM_DBG tnlogger->trace("%s[%s].calc_first_interval(): begin list is empty [parent: %s]", 
+			m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), 
+			::repr(parent_interval).c_str());	
 		return failure;
+	} 
+	AM_DBG tnlogger->trace("%s[%s].calc_first_interval(): begin list(%s, ...) [parent: %s, %s]", 
+		m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		::repr(*begin_list.lower_bound(begin_after)).c_str(), 
+		::repr(parent_interval).c_str(),::repr(parent_simple_dur).c_str());	
 	
 	// clear event based end lists
 	
@@ -539,7 +549,7 @@ time_node::calc_first_interval() {
 		if(bit == begin_list.end()) return failure;
 		time_type temp_begin = *bit;
 		time_type temp_end;
-		if(temp_begin >= parent_simple_dur) return failure;
+		if(temp_begin > parent_simple_dur) return failure;
 		if(!m_attrs.specified_end()) {
 			temp_end = calc_end(temp_begin);
 		} else {
@@ -892,7 +902,7 @@ void time_node::activate(qtime_type timestamp) {
 // and apply any S-transitions for this node.
 void time_node::timer_event_callback(const timer_event *e) {
 	// ignore canceled events
-	if(m_pending_event != e) return;
+	if(m_pending_event != (lib::event*)e) return;
 	m_pending_event = 0;
 	
 	qtime_type timestamp =  e->m_timestamp;
@@ -995,7 +1005,7 @@ void time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
 // Scheduled transition callback
 void time_node::state_transition_callback(const transition_event *e) {
 	// ignore canceled events
-	if(m_pending_event != e) return;
+	if(m_pending_event != (lib::event*)e) return;
 	m_pending_event = 0;
 	
 	// this should be true
@@ -1290,7 +1300,7 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 		}
 	}
 	// 1.2 end
-	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
 		rule_type rt = (*it)->get_target_attr();
 		if(!owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
@@ -1303,7 +1313,7 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	
 	// 2. add event to active
 	// 2.1 end
-	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
 		rule_type rt = (*it)->get_target_attr();
 		if(owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
@@ -1314,7 +1324,7 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 		}
 	}
 	// 2.2 begin
-	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
 		rule_type rt = (*it)->get_target_attr();
 		if(owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
@@ -1399,6 +1409,10 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 		timestamp.second(), 
 		timestamp.as_doc_time_value());
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
+	if(is_area()) {
+		const char *href = m_node->get_attribute("href");
+		if(href) m_context->show_link(m_node, href);
+	}
 }
 
 void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
@@ -1501,8 +1515,12 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 	get_children(children);
 	std::list<time_node*>::iterator it;
 	qtime_type qt = timestamp.as_qtime_down_to(this);
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->kill(qt, oproot);
+	for(it = children.begin(); it != children.end(); it++) {
+		if((*it)->is_area() && oproot == (*it)->up())
+			(*it)->set_state(ts_postactive, timestamp, oproot);
+		else
+			(*it)->kill(qt, oproot);
+	}
 }
 
 // The timestamp clock can be any

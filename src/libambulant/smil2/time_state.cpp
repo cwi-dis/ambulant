@@ -161,6 +161,11 @@ void reset_state::exit(qtime_type timestamp, time_node *oproot) {
 void proactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	interval_type i = m_self->calc_first_interval();
+	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::enter calc_first_interval -> %s at DT:%ld", 
+		m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		::repr(i).c_str(),
+		timestamp.as_doc_time()());
 	if(i.is_valid()) {	
 		// Set the calc interval as current and update dependents
 		m_self->schedule_interval(timestamp, i);
@@ -263,7 +268,7 @@ void active_state::enter(qtime_type timestamp) {
 	m_self->startup_children(timestamp);
 	
 	// raise_begin_event async
-	m_self->raise_begin_event_async(timestamp);
+	m_self->raise_begin_event(timestamp);
 }
 
 void active_state::sync_update(qtime_type timestamp) {

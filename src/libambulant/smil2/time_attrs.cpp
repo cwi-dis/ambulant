@@ -60,6 +60,8 @@
 
 #include "ambulant/lib/logger.h"
 
+//#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -601,23 +603,29 @@ std::string smil2::repr(sync_value_type sv) {
 
 std::string smil2::repr(const sync_value_struct& svs) {
 	std::string os;
+	char sz[64];
 	if(svs.type == sv_offset) {
-		os << svs.offset;
+		sprintf(sz, "%d", svs.offset);
+		os += sz;
 	} else if(svs.type == sv_accesskey) {
-		os << "accesskey(" << char(svs.iparam) << ')';
-		if(svs.offset>0) os << " + " << svs.offset;
-		else if(svs.offset<0) os << " - " << -svs.offset;
+		sprintf(sz, "accesskey(%c)", char(svs.iparam));
+		os += sz;
+		if(svs.offset>0) {sprintf(sz, " + %d", svs.offset); os += sz;}
+		else if(svs.offset<0) {sprintf(sz, " - %d", -svs.offset); os += sz;}
 	} else  {
-		if(svs.base.empty())
-			os << svs.event;
-		else
-			os << svs.base << "." << svs.event;
-		if(svs.iparam != -1)
-			os << "(" << svs.iparam << ")";
-		else if(!svs.sparam.empty())
-			os << "(" << svs.sparam << ")";
-		if(svs.offset>0) os << " + " << svs.offset;
-		else if(svs.offset<0) os << " - " << -svs.offset;
+		if(svs.base.empty()) {
+			os += svs.event;
+		} else {
+			os += svs.base + "." + svs.event;
+		}
+		if(svs.iparam != -1) {
+			sprintf(sz, "(%d)", svs.iparam);
+			os += sz;
+		} else if(!svs.sparam.empty())
+			os += "(" + svs.sparam + ")";
+		if(svs.offset>0) {sprintf(sz, " + %d", svs.offset);os += sz;}
+		else if(svs.offset<0) {sprintf(sz, " - %d", -svs.offset);os += sz;}
+		
 	} 
 	return os;
 }
