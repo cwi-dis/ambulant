@@ -343,11 +343,11 @@ class screen_rect {
 	screen_rect(const basic_point<T>& p, const basic_point<T>& q) 
 	:	m_left(p.x), m_top(p.y), m_right(q.x), m_bottom(q.y) {}
 
-	template <typename S>
+	template <class S>
 	screen_rect(const basic_point<T>& p, const basic_size<S>& s) 
 	:	m_left(p.x), m_top(p.y), m_right(p.x+s.w), m_bottom(p.y+s.h) {}
 	
-	template <typename S>
+	template <class S>
 	screen_rect(const basic_rect<T, S>& r) 
 	:	m_left(r.x), m_top(r.y), m_right(r.x+r.w), m_bottom(r.y+r.h) {}
 	
@@ -355,7 +355,7 @@ class screen_rect {
 		m_left = l; m_top = t; m_right = r; m_bottom = b;
 	}
 	
-	template <typename S>
+	template <class S>
 	void set_coord(const basic_rect<T, S>& r) {
 		m_left = r.x; m_top = r.y; m_right = r.x+r.w; m_bottom = r.y+r.h;
 	}
@@ -580,6 +580,8 @@ typedef basic_rect<long, unsigned long> lrect;
 
 #include "ambulant/lib/string_util.h"
 
+#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
+
 inline std::string repr(const ambulant::lib::basic_point<int>& p) {
 	std::string s;
 	return s << '(' << p.x << ", " << p.y << ')';
@@ -594,6 +596,12 @@ inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
 	std::string s;
 	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
+
+#else 
+inline std::string repr(const ambulant::lib::basic_point<int>& p) { return "";}
+inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) { return "";}
+inline std::string repr(const ambulant::lib::screen_rect<int>& r) {return "";}
+#endif
 
 
 #ifndef AMBULANT_NO_IOSTREAMS

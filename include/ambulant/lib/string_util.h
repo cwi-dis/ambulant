@@ -59,7 +59,9 @@
 #include <vector>
 #include <list>
 #include <ctype.h>
-#include <assert.h>
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
+#include <cassert>
+#endif
 #include <stdio.h>
 
 // Workaround for toolsets with missing stringstream functionality.
@@ -233,7 +235,7 @@ class basic_scanner {
     operator void const*() const { return pos == end? 0: this;}
     basic_scanner& operator++() { next(); return *this; }
     char_type const& operator*() const  { return tok;}
-    char_type const* operator->() const { return &tok;}
+    //char_type const* operator->() const { return &tok;}
 		
 	// Returns true when there are more tokens
 	bool has_more() const { return pos != end;}
