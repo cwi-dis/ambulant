@@ -135,6 +135,9 @@
 						RelativePath=".\gui\dx\dx_gui.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_image_renderer.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_img.cpp">
 					</File>
 					<File
@@ -332,10 +335,16 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_gui.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_image_renderer.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_img.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_player.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_player_control.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_player_impl.h">
@@ -692,6 +701,9 @@
 				<Filter
 					Name="smil2"
 					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\smil2\region_node.h">
+					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\smil_layout.h">
 					</File>
