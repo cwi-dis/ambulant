@@ -8,7 +8,8 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_text.m \
 	gui/cocoa/cocoa_transition.m \
 	gui/cocoa/cocoa_audio.m \
-	gui/cocoa/cocoa_video.m
+	gui/cocoa/cocoa_video.m \
+	gui/cocoa/cocoa_dsvideo.m
 else
 toolkit_cocoa_libraries =
 endif

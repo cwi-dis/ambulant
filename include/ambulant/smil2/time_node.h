@@ -508,7 +508,6 @@ class time_node : public schedulable {
 	time_type m_last_cdur;
 	
 	// Provide access to the states
-	friend class time_state;
 	friend class reset_state;
 	friend class proactive_state;
 	friend class active_state;

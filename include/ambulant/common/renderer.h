@@ -241,6 +241,7 @@ class active_video_renderer : public common::active_basic_renderer {
   protected:
 	surface *m_dest;
 	alignment *m_alignment;
+	lib::size m_size;
   
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;

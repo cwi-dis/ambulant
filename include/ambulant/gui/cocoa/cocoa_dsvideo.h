@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_VIDEO_H
-#define AMBULANT_GUI_COCOA_COCOA_VIDEO_H
+#ifndef AMBULANT_GUI_COCOA_COCOA_DSVIDEO_H
+#define AMBULANT_GUI_COCOA_COCOA_DSVIDEO_H
 
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
@@ -66,29 +66,25 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_video_renderer : 
-	public renderer_playable {
+class cocoa_dsvideo_renderer : 
+	public common::active_video_renderer {
   public:
-	cocoa_video_renderer(
+	cocoa_dsvideo_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp);
-	~cocoa_video_renderer();
+		event_processor *evp,
+    	net::datasource_factory *df)
+	:	 common::active_video_renderer(context, cookie, node, evp, df),
+		m_image(NULL) {};
+	~cocoa_dsvideo_renderer();
 
-	void start(double where);
-//	void freeze() {}
-	void stop();
-
-	std::pair<bool, double> get_dur();
 	
-	void user_event(const point &where, int what = 0);
+//	void user_event(const point &where, int what = 0);
+    void show_frame(char* frame, int size);
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
   private:
-	void poll_playing();
-	std::string m_url;
-	NSMovie *m_movie;
-	NSMovieView *m_movie_view;
+	NSImage *m_image;
 	critical_section m_lock;
 };
 
@@ -98,4 +94,4 @@ class cocoa_video_renderer :
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_COCOA_COCOA_VIDEO_H
+#endif // AMBULANT_GUI_COCOA_COCOA_DSVIDEO_H

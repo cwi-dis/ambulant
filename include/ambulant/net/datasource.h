@@ -176,6 +176,9 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual bool has_audio() = 0;
 	virtual audio_datasource *get_audio_datasource() = 0;
 	
+	virtual int width() = 0;
+	virtual int height() = 0;
+	
 	virtual void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp) = 0;
   	
   	virtual bool end_of_file() = 0;

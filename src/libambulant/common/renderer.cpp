@@ -64,7 +64,7 @@ inline double round(double v) {return floor(v+0.5);}
 #define round(v) ((int)(v+0.5))
 #endif
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -261,13 +261,10 @@ active_video_renderer::active_video_renderer(
 	std::string url = node->get_url("src");
 	m_src = df->new_video_datasource(url);
 	if (m_src == NULL) {
-		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): PLACEHOLDER VIDEO: The path to the video files is fixed. (/ufs/dbenden/testmovie) FIXME");
-		m_src = new net::raw_video_datasource ("/ufs/dbenden/testmovie");
+		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
-
 }
-
 
 void
 active_video_renderer::start (double where = 1)
@@ -279,6 +276,12 @@ active_video_renderer::start (double where = 1)
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
+	if (!m_src) {
+		lib::logger::get_logger()->error("active_video_renderer.start: no datasource");
+		stopped_callback();
+		m_lock.leave();
+		return;
+	}
 	if (m_dest) {
 		m_dest->show(this);
 	} else {
@@ -338,6 +341,9 @@ active_video_renderer::data_avail()
 	unsigned long int event_time;
 	bool displayed;
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
+	m_size.w = m_src->width();
+	m_size.h = m_src->height();
+	/*AM_DBG*/lib::logger::get_logger()->trace("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
 	buf = m_src->get_frame(&ts, &size);
 	displayed = false;
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
@@ -345,6 +351,7 @@ active_video_renderer::data_avail()
 		if (ts <= now()) {
 			lib::logger::get_logger()->trace("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf, size);
+			m_dest->need_redraw();
 			displayed = true;
 			m_src->frame_done(ts);
 			if (!m_src->end_of_file()) {

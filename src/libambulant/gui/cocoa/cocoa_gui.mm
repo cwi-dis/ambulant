@@ -50,12 +50,16 @@
  * @$Id$ 
  */
 
+// Define this to prefer QuickTime-based video over datasource-based video
+#define AM_PREFER_QUICKTIME
+
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_audio.h"
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_video.h"
+#include "ambulant/gui/cocoa/cocoa_dsvideo.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
@@ -173,11 +177,26 @@ cocoa_renderer_factory::new_playable(
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else if ( tag == "video") {
+#ifdef AM_PREFER_QUICKTIME
 		rv = new cocoa_video_renderer(context, cookie, node, evp);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_video_renderer 0x%x", (void *)node, (void *)rv);
+		if (rv) {
+			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_video_renderer 0x%x", (void *)node, (void *)rv);
+		} else {
+			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
+			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+		}
+#else
+		rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
+		if (rv) {
+			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+		} else {
+			rv = new cocoa_video_renderer(context, cookie, node, evp);
+			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+		}
+#endif // AM_PREFER_QUICKTIME
 	} else {
 		// logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
-                return NULL;
+		return NULL;
 	}
 	return rv;
 }

@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -621,7 +621,7 @@ ffmpeg_video_datasource::width()
 int 
 ffmpeg_video_datasource::height()
 {
-	m_con->streams[m_stream_index]->codec.height;
+	return m_con->streams[m_stream_index]->codec.height;
 }
 
 //#undef AM_DBG
@@ -634,8 +634,8 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 	int got_pic;
 	AVFrame frame;
 	AVPicture picture;
-	AVCodecContext *context;
-	AVCodec codec;
+//	AVCodecContext *context;
+//	AVCodec codec;
 	int len, dummy2;
 	int pic_fmt, dst_pic_fmt;
 	int width,height;

@@ -57,6 +57,7 @@
 #include <Cocoa/Cocoa.h>
 #include <QuickTime/QuickTime.h>
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -80,7 +81,6 @@ cocoa_video_renderer::cocoa_video_renderer(
 	event_processor *evp)
 :	renderer_playable(context, cookie, node, evp),
 	m_url(node->get_url("src")),
-	m_dest(NULL),
 	m_movie(NULL),
 	m_movie_view(NULL)
 {
@@ -130,7 +130,12 @@ cocoa_video_renderer::get_dur()
 void
 cocoa_video_renderer::start(double where)
 {
-	if (!m_dest) return;
+	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer::start()");
+	if (!m_dest) {
+		lib::logger::get_logger()->trace("cocoa_video_renderer::start: no destination surface");
+		m_context->stopped(m_cookie);
+		return;
+	}
 	m_lock.enter();
 	m_dest->show(this); // XXX Do we need this?
 	m_lock.leave();
