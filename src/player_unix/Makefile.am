@@ -20,12 +20,15 @@ else
 qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
 endif
 if WITH_QSOUND
+extra_qsound_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_qsound.a
 extra_qsound_DEFINES=-DWITH_QSOUND
 else
+extra_qsound_LDADD=
 extra_qsound_DEFINES=
 endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
+	$(extra_qsound_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	$(qt_libs)
