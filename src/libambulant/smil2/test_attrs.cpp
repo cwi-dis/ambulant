@@ -58,6 +58,12 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
 
+#define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 using namespace smil2;
 
@@ -232,30 +238,46 @@ bool test_attrs::test_system_screen_size(const char *value) const {
 }
 
 bool test_attrs::test_custom_attribute(const char *value) const {
-	if(!m_custom_tests) return false;
 	std::string s = lib::trim(value);
 	if(s.empty()) return true;
 	std::list<std::string> list;
 	lib::split_trim_list(s, list, ' ');
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
-		std::map<std::string, custom_test>::const_iterator cit =
-			m_custom_tests->find(*it);
-		// if missing default to false
-		if(cit == m_custom_tests->end()) return false;
-		
-		// if state is false return false
-		const custom_test& ct = (*cit).second;
-		
-		// do we have an active value for this?
-		std::map<std::string, bool>::const_iterator oit;
-		oit = active_custom_tests_attrs_map.find(*it);
+		std::string id = lib::to_c_lower(*it);
+		// What's the state of this attr as defined by the filter?
+		std::map<std::string, bool>::const_iterator oit =
+			active_custom_tests_attrs_map.find(id);
 		if(oit != active_custom_tests_attrs_map.end()) {
-			// yes we have a value
-			if(!(*oit).second) return false;
+			// The attr is defined in the filter
+			// Can this be ovveriden
+			std::map<std::string, custom_test>::const_iterator cit =
+				m_custom_tests->find(id);
+			if(cit == m_custom_tests->end()) {
+				// Not specified in the doc, assume override is true
+				// if the filter specifies false return false
+				if(!(*oit).second) return false;
+				else continue;
+			} else {
+				// Specified in the document
+				if((*cit).second.override) {
+					// override is true
+					if(!(*oit).second) return false;
+					else continue;
+				} else {
+					// override is false
+					if(!(*cit).second.state) return false;
+					else continue;
+				}
+			}
 		} else {
-			// no value provided, use default
-			if(!ct.state) return false;
+			// not specified in the filter
+			// is this specified in the doc?
+			std::map<std::string, custom_test>::const_iterator cit =
+				m_custom_tests->find(id);
+			// if not specified in the document or specified but its defaultValue is false, return false
+			if(cit == m_custom_tests->end() || !(*cit).second.state) return false;
+			else continue;
 		}
 	}
 	// all present and evaluated to true
@@ -285,21 +307,26 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = root->end();
 	for(it = root->begin(); it != end; it++) {
-		std::pair<bool, const lib::node*> pair = *it;
-		const lib::node *n = pair.second;
+		if(!(*it).first) continue;
+		const lib::node *n = (*it).second;
 		const std::string& tag = n->get_local_name();
 		if(tag == "systemTest" || tag == "property") {
 			const char *name = n->get_attribute("name");
 			const char *value = n->get_attribute("value");
-			if(name && value)
+			if(name && value) {
 				active_tests_attrs_map[name] = value;
+				AM_DBG lib::logger::get_logger()->trace("systemTest %s: %s", name, value);
+			}
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
 			const char *value = n->get_attribute("value");
 			std::string sn = lib::trim(name);
 			std::string sv = lib::trim(value);
 			if(!sn.empty() && !sv.empty()) {
+				sn = lib::to_c_lower(sn);
 				active_custom_tests_attrs_map[sn] = (sv == "true")?true:false;
+				AM_DBG lib::logger::get_logger()->trace("customTest %s: %s",
+					sn.c_str(), (sv == "true")?"true":"false");
 			}
 		}
 	}	
