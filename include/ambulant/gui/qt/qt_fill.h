@@ -2,6 +2,18 @@
  *
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
+ * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+ *
+ * Ambulant Player is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Ambulant Player is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
  * Copyright (C) 2003 Stiching CWI,
  * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
  *
@@ -75,8 +87,7 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src)
+		lib::event_processor *const evp)
 : common::active_basic_renderer(context, cookie, node, evp),
 	m_dest(NULL),
 	m_playing(false) {
