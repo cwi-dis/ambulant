@@ -55,15 +55,8 @@ create_player_instance(const net::url& u) {
 	return new gui_player(u);
 }
 
-void lib::show_message(const char *format, ...) {
-	va_list	args;
-	va_start(args, format);
-	int size = 2048;
-	char *buf = new char[size];
-	vsprintf(buf, format, args);
-	va_end(args);
-	MessageBox(s_hwnd, textptr(buf), text_str("AmbulantPlayer"), MB_OK);
-	delete[] buf;
+void lib::win32::show_message(const char *message) {
+	MessageBox(s_hwnd, textptr(message), text_str("AmbulantPlayer"), MB_OK);
 }
 
 static  gui_player *player = 0;
