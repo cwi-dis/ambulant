@@ -102,7 +102,6 @@ class viewport {
 	// Blt back buffer to primary surface
 	void redraw();
 	void redraw(const lib::screen_rect<int>& rc);
-	void redraw(RECT *prc);
 	void redraw(HDC hdc) { redraw();}
 	
 	// Clears the back buffer using this viewport bgd color
