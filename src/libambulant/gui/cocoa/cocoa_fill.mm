@@ -54,6 +54,7 @@
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/common/region_info.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -69,10 +70,28 @@ namespace cocoa {
 cocoa_active_fill_renderer::~cocoa_active_fill_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_active_fill_renderer(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("~cocoa_active_fill_renderer(0x%x)", (void *)this);
 	m_lock.leave();
 }
 	
+void
+cocoa_active_fill_renderer::start(double where)
+{
+	AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.start(0x%x)", (void *)this);
+	if (!m_dest) {
+		AM_DBG logger::get_logger()->warn("cocoa_active_fill_renderer.start(0x%x): no surface", (void *)this);
+		return;
+	}
+	m_dest->show(this);
+}
+
+void
+cocoa_active_fill_renderer::stop()
+{
+	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.stop(0x%x)", (void *)this);
+	if (m_dest) m_dest->renderer_done();
+}
+
 void
 cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {

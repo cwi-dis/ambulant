@@ -78,15 +78,16 @@ class cocoa_active_fill_renderer : public active_basic_renderer {
 		m_playing(false) {};
 	~cocoa_active_fill_renderer();
 
-	void start(double where) {m_playing = 1; } // XXXX
 	void freeze() {}
-	void stop() { m_playing = 0; }
+	void start(double where);
+	void stop();
 	void pause() {}
 	void resume() {}
 	void wantclicks(bool want) { if (m_dest) m_dest->need_events(want); }
 
-	virtual void set_surface(surface *dest) { m_dest = dest; }
-	virtual surface *get_surface() { return m_dest;}
+	renderer *get_renderer() { return this; }
+	void set_surface(surface *dest) { m_dest = dest; }
+	surface *get_surface() { return m_dest;}
 	void user_event(const point &where) { clicked_callback(); }
     void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:

@@ -83,6 +83,7 @@ class cocoa_video_renderer :
 	void resume() {}
 	void wantclicks(bool want) { if (m_dest) m_dest->need_events(want); }
 
+	renderer *get_renderer() { return this; }
 	void set_surface(surface *dest) { m_dest = dest; }
 	surface *get_surface() { return m_dest;}
 	void user_event(const point &where) { clicked_callback(); }
