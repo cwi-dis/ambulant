@@ -1,8 +1,8 @@
 To make a distribution make sure you do:
 
 
-Before creating the distribution:
-=================================
+Before creating the distribution
+================================
 
 - make sure your CVS tree is up to date and that there are no uncommited files
 - change the version number in configure.in, in include/ambulant/version.h
@@ -25,8 +25,8 @@ Before creating the distribution:
   - Edit the various ".po" files. Especially check empty strings
     and fuzzy matches.
 
-To create the linux source distribution:
-========================================
+To create the linux source distribution
+=======================================
 
 - Use make distcheck
 - If make distcheck complains about not being able to find expat, 
@@ -35,6 +35,10 @@ To create the linux source distribution:
 
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
 
+Creating the third_party_packages-WIN32 distribution
+====================================================
+
+To be supplied.
 
 Binary distribution contents
 ============================
@@ -57,6 +61,54 @@ Zaurus needs:
 - README-ZAURUS from Documentation/misc
 - Documentation/user
 
+Creating the MacOSX installer
+=============================
+
+- Build *and install* the player.
+- Create a folder called something like "Ambulant Player 1.2", 
+  and copy the items mentioned above into it.
+- Use Applications->Utilities->Disk Utilities to create a .dmg
+  disk image from this folder (read only, compressed). Make sure the
+  version number is part of the disk image name.
+
+Creating the Windows desktop installer
+======================================
+
+Build the player.
+
+Open src/AmbulantWin32Installer/AmbulantWiseInstaller.wse with Wise.
+Make sure the files mentioned above are included. If you need to add more
+files: Wise will use absolute paths by default (for the source files), you
+want to turn these into relative paths.
+
+The installer will be deposited in bin/win32. You need to change the filename
+to include the version number.
+
+TBD: are there version numbers to be fixed?
+
+TBD: Wise version?
+
+Creating the Windows CE installer
+=================================
+
+Build the player.
+
+Open src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse with Wise.
+The procedure is pretty similar as for the desktop windows player, the
+installer ends up in bin/wince.
+
+Creating the Zaurus installer
+=============================
+
+To be supplied.
+
+Creating the Linux installer
+============================
+
+For this release we will probably not do Linux binary installers,
+but as we have done one before we should write down the procedure here.
+
+
 Testing the distributions
 =========================
 
@@ -70,6 +122,8 @@ Here are some random remarks about testing the distributions.
   clear out preferences before testing (unix: $HOME/.ambulant;
   mac: ~/Library/Preferences/org.ambulantplayer.ambulantplayer.plist;
   windows: HKEY_CURRENT_USER\Software\Ambulant\AmbulantPlayer in the registry).
+  
+- On windows, test on at least Win98, Win2K and WinXP.
   
 - Make sure Welcome plays at first run. Check that the preferences have
   sensible defaults (log level: trace, parser: expat, log window: closed).
@@ -92,7 +146,7 @@ Uploading the distributions
 ===========================
 
 To be supplied.
-- Don't forget to use different filenames (so SF stats work)
+- Don't forget to use different filenames (so SF stats work) for each release.
 
 Updating the website
 ====================
