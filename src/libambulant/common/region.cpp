@@ -39,11 +39,11 @@ lib::passive_region::show(active_region *cur)
 void
 lib::passive_region::redraw(const screen_rect<int> &r)
 {
-	lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d), bounds=(%d, %d, %d, %d))", (void *)this, r.left, r.top, r.right, r.bottom, m_bounds.left, m_bounds.top, m_bounds.right, m_bounds.bottom);
+	lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d), bounds=(%d, %d, %d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), m_bounds.left(), m_bounds.top(), m_bounds.right(), m_bounds.bottom());
 	screen_rect<int> our_rect = r & m_bounds;
 	if (our_rect.empty())
 		return;
-	lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left, our_rect.top, our_rect.right, our_rect.bottom);
+	lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
 		
 	if (m_cur_active_region) {
 		lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)m_cur_active_region);

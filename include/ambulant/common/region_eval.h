@@ -138,11 +138,13 @@ class region_evaluator {
 	
 	
 	basic_rect<int> get_rect() {
-		return basic_rect<int>(get_left(), get_top(), get_width(), get_height());
+		return basic_rect<int>(basic_point<int>(get_left(), get_top()),
+			basic_size<int>(get_width(), get_height()));
 	}
 	
 	screen_rect<int> get_screen_rect() {
-		return screen_rect<int>(get_left(), get_top(), get_left()+get_width(), get_top()+get_height());
+		return screen_rect<int>(basic_point<int>(get_left(), get_top()),
+			basic_point<int>(get_left()+get_width(), get_top()+get_height()));
 	}
 	
 	basic_point<int> get_origin() {

@@ -120,11 +120,13 @@ class basic_rect {
 	T x, y;
 	S w, h;
 	
+#if 0
 	basic_rect(S _w, S _h) 
 	:	x(0), y(0), w(_w), h(_h) {}
 	
 	basic_rect(T _x, T _y, S _w, S _h) 
 	:	x(_x), y(_y), w(_w), h(_h) {}
+#endif
 		 
 	basic_rect(const basic_rect<T, S>& o) 
 	:	x(o.x), y(o.y), w(o.w), h(o.h) {}
@@ -145,8 +147,28 @@ class basic_rect {
 		return x != o.x || y != o.y || w != o.w || h != o.h;
 	}
 	
-	basic_point<T> origin() const {
+	T left() const {
+		return x;
+	}
+	
+	T top() const {
+		return y;
+	}
+	
+	T right() const {
+		return x+w;
+	}
+	
+	T bottom() const {
+		return y+h;
+	}
+	
+	basic_point<T> left_top() const {
 		return basic_point<T>(x, y);
+	}
+	
+	basic_point<T> right_bottom() const {
+		return basic_point<T>(x+w, y+h);
 	}
 	
 	basic_size<S> size() const {
@@ -244,61 +266,79 @@ class basic_rect {
 template <class T>
 class screen_rect {
   public:
-	T left, top, right, bottom;
+	T m_left, m_top, m_right, m_bottom;
 		
 	screen_rect() 
-	:	left(0), top(0), right(0), bottom(0) {}
+	:	m_left(0), m_top(0), m_right(0), m_bottom(0) {}
 	
 	screen_rect(T l, T t, T r, T b) 
-	:	left(l), top(t), right(r), bottom(b) {}
+	:	m_left(l), m_top(t), m_right(r), m_bottom(b) {}
 	
 	screen_rect(const screen_rect<T>& o) 
-	:	left(o.left), top(o.top), right(o.right), bottom(o.bottom) {}
+	:	m_left(o.m_left), m_top(o.m_top), m_right(o.m_right), m_bottom(o.m_bottom) {}
 	
+	screen_rect(const basic_point<T>& p, const basic_point<T>& q) 
+	:	m_left(p.x), m_top(p.y), m_right(q.x), m_bottom(q.y) {}
+
 	template <typename S>
 	screen_rect(const basic_point<T>& p, const basic_size<S>& s) 
-	:	left(p.x), top(p.y), right(p.x+s.w), bottom(p.y+s.h) {}
+	:	m_left(p.x), m_top(p.y), m_right(p.x+s.w), m_bottom(p.y+s.h) {}
 	
 	template <typename S>
 	screen_rect(const basic_rect<T, S>& r) 
-	:	left(r.x), top(r.y), right(r.x+r.w), bottom(r.y+r.h) {}
+	:	m_left(r.x), m_top(r.y), m_right(r.x+r.w), m_bottom(r.y+r.h) {}
 	
 	void set_coord(T l, T t, T r, T b) {
-		left = l; top = t; right = r; bottom = b;
+		m_left = l; m_top = t; m_right = r; m_bottom = b;
 	}
 	
 	template <typename S>
 	void set_coord(const basic_rect<T, S>& r) {
-		left = r.x; top = r.y; right = r.x+r.w; bottom = r.y+r.h;
+		m_left = r.x; m_top = r.y; m_right = r.x+r.w; m_bottom = r.y+r.h;
 	}
-
 	bool valid() const {
-		return right>=left && bottom>=top;
+		return m_right>=m_left && m_bottom>=m_top;
 	}
 	
 	bool empty() const {
-		return right<=left || bottom<=top;
+		return m_right<=m_left || m_bottom<=m_top;
+	}
+	
+	T left() const {
+		return m_left;
+	}
+	
+	T top() const {
+		return m_top;
+	}
+	
+	T right() const {
+		return m_right;
+	}
+	
+	T bottom() const {
+		return m_bottom;
 	}
 	
 	basic_point<T> left_top() const {
-		return basic_point<T>(left, top);
+		return basic_point<T>(m_left, m_top);
 	}
 	
 	basic_point<T> right_bottom() const {
-		return basic_point<T>(right, bottom);
+		return basic_point<T>(m_right, m_bottom);
 	}
 	
 	basic_size<T> size() const {
-		return basic_size<T>(lmax(0,right-left), lmax(0,bottom-top));
+		return basic_size<T>(lmax(0,m_right-m_left), lmax(0,m_bottom-m_top));
 	}
 
 	void translate(const basic_point<T>& p) {
-		left += p.x; right += p.x;
-		top += p.y; bottom += p.y;
+		m_left += p.x; m_right += p.x;
+		m_top += p.y; m_bottom += p.y;
 	}
 	
 	void fix() {
-		set_coord(lmin(left, right), lmin(top, bottom), lmax(left, right), lmax(top, bottom));
+		set_coord(lmin(m_left, m_right), lmin(m_top, m_bottom), lmax(m_left, m_right), lmax(m_top, m_bottom));
 	}
 	
 	void operator+=(basic_point<T> p) {
@@ -344,7 +384,7 @@ class screen_rect {
 	}
 	
 	bool contains(T x, T y) const {
-		return (x >= left ) && (x < right) && (y >= top ) && (y < bottom);
+		return (x >= m_left ) && (x < m_right) && (y >= m_top ) && (y < m_bottom);
 	}
 	
 };
@@ -390,7 +430,7 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_rec
 
 template<class T>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::screen_rect<T>& r) { 
-	return os << '(' << r.left << ", " << r.top << ", " << r.right << ", " << r.bottom << ')';
+	return os << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
 
 #endif // AMBULANT_LIB_GTYPES_H
