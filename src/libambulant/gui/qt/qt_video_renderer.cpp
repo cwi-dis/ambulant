@@ -58,7 +58,7 @@
 #include "ambulant/gui/SDL/sdl_audio.h"
 #include "ambulant/common/playable.h"
 
-// #define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -87,7 +87,9 @@ qt_active_video_renderer::qt_active_video_renderer(
 		m_audio_ds = m_src->get_audio_datasource();
 		//XXXX This is wrong
 		if (m_audio_ds) {
+			lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: creating audio renderer !");
 			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
+			lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
 			//m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
 			//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
 		} else {
@@ -145,8 +147,8 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 
 
 void
-qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
-				 common::gui_window* w) {
+qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window* w) 
+{
 	
 	AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
@@ -198,5 +200,4 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	}
 	paint.flush();
 	paint.end();
-
 }

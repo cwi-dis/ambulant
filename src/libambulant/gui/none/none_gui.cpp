@@ -122,4 +122,3 @@ gui::none::none_window_factory::new_window(const std::string &name, size bounds,
 {
 	return new none_window(name, bounds, handler);
 }
-

@@ -225,6 +225,28 @@ global_playable_factory::new_playable(
     }
     return m_default_factory->new_playable(context, cookie, node, evp);
 }
+
+playable *
+global_playable_factory::new_aux_audio_playable(
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
+	net::audio_datasource *src)
+{
+    std::vector<playable_factory *>::iterator i;
+    playable *rv;
+    
+    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+        rv = (*i)->new_aux_audio_playable(context, cookie, node, evp, src);
+        if (rv) return rv;
+    }
+	
+    return m_default_factory->new_playable(context, cookie, node, evp);
+}
+
+
+
 void 
 active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {

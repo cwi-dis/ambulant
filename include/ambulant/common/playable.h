@@ -54,6 +54,7 @@
 #define AMBULANT_COMMON_PLAYABLE_H
 
 #include <utility>
+#include "ambulant/lib/logger.h"
 #include "ambulant/lib/refcount.h"
 
 namespace ambulant {
@@ -234,7 +235,10 @@ class playable_factory {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		net::audio_datasource *src) {return NULL;};	
+		net::audio_datasource *src) {
+			lib::logger::get_logger()->debug("new_aux_audio_playabel std definition called\n");
+			return NULL;
+			};	
 };
 
 } // namespace common

@@ -78,6 +78,7 @@ class sdl_renderer_factory : public common::playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp,
 		net::audio_datasource *src);	
+		
   private:
 	common::factories *m_factory;
 	

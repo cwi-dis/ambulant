@@ -46,7 +46,7 @@
  *
  */
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -245,7 +245,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 {
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x), ds = 0x%x",  (void*) this, (void*) ds);
 	if (init() != 0)
 		return;
 		

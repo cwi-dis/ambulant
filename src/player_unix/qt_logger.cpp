@@ -53,10 +53,19 @@
 #include "qt_logger.h"
 
 qt_logger_ostream::qt_logger_ostream()
-  :		buf_len(1024),
-		buf_idx(0) {
+ #if 0
+ :		buf_len(1024),
+		buf_idx(0)
+#endif
+{
+#if 0
 	buf = (char*) malloc(buf_len);
+	if (!buf) {
+	abort();	 
+	}
+#endif
 }
+
 bool 
 qt_logger_ostream::is_open() const {
 	std::string id("qt_logger_ostream:::is_open() const");
@@ -74,7 +83,7 @@ int
 qt_logger_ostream::write(const char *cstr)
 {
 //	std::string id("qt_logger_ostream::write(const char *cstr)");
-
+#if 0
         int cstr_len = strlen(cstr), i, line_len;
 	bool found = false;
 	// glue strings to lines
@@ -97,6 +106,9 @@ qt_logger_ostream::write(const char *cstr)
 		if (cstr_len > line_len+1)
 			write(&cstr[line_len+1]);
 	}
+#else
+	qt_logger::get_qt_logger()->get_logger_window()->append(cstr);
+#endif
 	return 1;
 }
 
@@ -133,7 +145,7 @@ qt_logger::qt_logger()
 		ambulant::lib::logger::get_logger();
 	// Connect logger to our message displayer and output processor
 	logger->set_show_message(show_message);
-	logger->set_ostream(new qt_logger_ostream);
+	//logger->set_ostream(new qt_logger_ostream);
 	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	logger->set_level(level);

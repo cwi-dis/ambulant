@@ -229,6 +229,14 @@ class global_playable_factory : public playable_factory {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
+  
+  	playable* new_aux_audio_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+  		net::audio_datasource *src);
+
   private:
     std::vector<playable_factory *> m_factories;
     playable_factory *m_default_factory;

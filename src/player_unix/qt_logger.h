@@ -86,9 +86,11 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 	int  write(std::string s);
 	void write(ambulant::lib::byte_buffer& bb);
 	void flush();
+#if 0
  private:
 	int buf_len;
 	char* buf;
 	int buf_idx;
+#endif
 };
 #endif/*__QT_LOGGER_H__*/
