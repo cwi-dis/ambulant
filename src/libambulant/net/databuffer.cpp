@@ -260,13 +260,13 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
-	if (m_max_unused_size > 0 && m_rear > m_max_unused_size) {
+	if (m_used == 0 || (m_max_unused_size > 0 && m_rear > m_max_unused_size)) {
 		 // Free the unused space in the buffer
-		 memcpy(m_buffer, m_buffer+m_rear, m_used);
+		 if (m_used) memcpy(m_buffer, m_buffer+m_rear, m_used);
 		 m_buffer = (char *)realloc(m_buffer, m_used);
 		 m_size = m_used;
 		 m_rear = 0;
-		 if (!m_buffer) {
+		 if (m_buffer == NULL && m_used > 0) {
 			 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
 		 }
 	}
