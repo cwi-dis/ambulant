@@ -74,8 +74,6 @@ net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(abstract_active_datasource
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
-	m_readdone = new readdone_callback(this, &net::ffmpeg_audio_datasource::callback);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() m_readdone = 0x%x", (void*)m_readdone);
 	init();
 }
 
@@ -112,8 +110,9 @@ net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulan
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
 		m_client_callback = callbackk;
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): calling m_src->start()");
-		m_src->start(m_event_processor,  m_readdone);
+		lib::event *e = new readdone_callback(this, &net::ffmpeg_audio_datasource::callback);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
+		m_src->start(m_event_processor,  e);
 	}
 	m_lock.leave();
 }

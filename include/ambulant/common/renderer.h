@@ -112,12 +112,10 @@ class active_renderer : public active_basic_renderer {
   	active_renderer()
   	:	active_basic_renderer(NULL, 0, NULL, NULL),
   		m_src(NULL),
-  		m_dest(0),
-  		m_readdone(NULL) {}
+  		m_dest(0) {}
   	active_renderer(const ambulant::lib::active_renderer& src)
   	:	active_basic_renderer(src.m_context, src.m_cookie, src.m_node, src.m_event_processor),
-  		m_dest(0),
-  		m_readdone(src.m_readdone) {}
+  		m_dest(0) {}
 	active_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
@@ -144,7 +142,7 @@ class active_renderer : public active_basic_renderer {
 
   	net::active_datasource *m_src;
 	abstract_rendering_surface *const m_dest;
-	lib::event *m_readdone;
+//	lib::event *m_readdone;
 };
 
 // active_final_renderer is a handy subclass of active_renderer:

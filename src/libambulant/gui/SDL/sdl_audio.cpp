@@ -57,6 +57,8 @@
 namespace ambulant {
 
 using namespace lib;
+
+typedef no_arg_callback<gui::sdl::sdl_active_audio_renderer> readdone_callback;
 	
 extern "C" {
 struct channel {
@@ -127,13 +129,17 @@ void free_channel_list()
 // returns zero if succesfull, -1 if the channel is alreay locked, -2 if channel_nr is to big.
 int lock_channel(void* ptr, int channel_nr)
 {
+	AM_DBG lib::logger::get_logger()->trace("sdl_audio:lock_channel(0x%x, %d)", ptr, channel_nr);
 	if(channel_nr < m_channel_list.m_channels_open) {
 		if (m_channel_list.m_list[channel_nr].m_free == false) {
+				lib::logger::get_logger()->error("sdl_audio:lock_channel(0x%x, %d): not free, m_ptr=0x%x", 
+					ptr, channel_nr, m_channel_list.m_list[channel_nr].m_ptr);
 				return -1;
 		}
 		m_channel_list.m_list[channel_nr].m_free = false;
 		m_channel_list.m_list[channel_nr].m_ptr = ptr;
 	} else {
+		lib::logger::get_logger()->error("sdl_audio:lock_channel(0x%x, %d): channel list full");
 		return -2;
 	}
 	return 0;
@@ -141,10 +147,13 @@ int lock_channel(void* ptr, int channel_nr)
 
 int unlock_channel(int channel_nr)
 {
+	AM_DBG lib::logger::get_logger()->trace("sdl_audio:unlock_channel(%d)", channel_nr);
 	if(channel_nr < m_channel_list.m_channels_open) {
 		m_channel_list.m_list[channel_nr].m_free = true;
 		m_channel_list.m_list[channel_nr].m_ptr = NULL;
 	} else {
+		lib::logger::get_logger()->error("sdl_audio:unlock_channel(%d): only %d channels open",
+			channel_nr, m_channel_list.m_channels_open);
 		return -2;
 	}
 	return 0;
@@ -155,10 +164,12 @@ void* get_ptr(int channel_nr)
 {
 	if(channel_nr < m_channel_list.m_channels_open) {
 		if (m_channel_list.m_list[channel_nr].m_free == true) {
+				AM_DBG lib::logger::get_logger()->trace("sdl_audio:get_ptr(%d): channel not in use!", channel_nr);
 				return NULL;
 		}
 		return m_channel_list.m_list[channel_nr].m_ptr;
 	}
+	lib::logger::get_logger()->error("sdl_audio:get_ptr(%d): only %d channels!", channel_nr, m_channel_list.m_channels_open);
 	return NULL;
 }
 
@@ -169,9 +180,11 @@ int free_channel()
 	int err;
 	for(i=0;i < m_channel_list.m_channels_open; i++) {
 		if(m_channel_list.m_list[i].m_free == true) {
+			AM_DBG lib::logger::get_logger()->trace("sdl_audio:free_channel(): returning %d", m_channel_list.m_list[i].m_channel_nr);
 			return m_channel_list.m_list[i].m_channel_nr;
 		}
 	}
+	AM_DBG lib::logger::get_logger()->trace("sdl_audio:free_channel(): all %d channels in use", m_channel_list.m_channels_open);
 	return -1;
 }
 
@@ -179,10 +192,14 @@ int free_channel()
 
 void channel_done(int channel)
 {
-        gui::sdl::sdl_active_audio_renderer* dummy;
-        dummy = (gui::sdl::sdl_active_audio_renderer*) get_ptr(channel);
+        gui::sdl::sdl_active_audio_renderer* object;
+        object = (gui::sdl::sdl_active_audio_renderer*) get_ptr(channel);
+		if (object == NULL) {
+			lib::logger::get_logger()->error("sdl_audio:channel_done(%d): get_ptr returned NULL, no object!", channel);
+			return;
+		}
 		// XXX playdone is the wrong call : more data may be coming.
-        dummy->playdone();
+        object->playdone();
 }
 
 } //end extern "C"
@@ -281,12 +298,12 @@ gui::sdl::sdl_active_audio_renderer::inc_channels()
 void
 gui::sdl::sdl_active_audio_renderer::playdone()
 {
-	assert(m_channel_used >= 0);
 	AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
-	unlock_channel(m_channel_used);
+	assert(m_channel_used >= 0);
 	if (m_audio_src->end_of_file()) {
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stopped_callback() this = (x%x)",this);
-	stopped_callback();
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stopped_callback() this = (x%x)",this);
+		unlock_channel(m_channel_used);
+		stopped_callback();
 	}
 }
 
@@ -350,8 +367,9 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone(): %d bytes still in buffer, EOF : %d",m_audio_src->size(), m_audio_src->end_of_file());
 	if ( !m_audio_src->end_of_file() ) {
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)m_readdone, this);
-		m_audio_src->start(m_event_processor, m_readdone);
+		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
+		m_audio_src->start(m_event_processor, e);
 	}
 
 }	
@@ -444,8 +462,9 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
 		init(m_rate, m_bits, m_channels);
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)m_readdone, this);
-		m_audio_src->start(m_event_processor, m_readdone);		
+		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
+		m_audio_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		stopped_callback();
@@ -453,4 +472,4 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 }
 
 
-}// end namespace ambulant
+} // end namespace ambulant

@@ -113,7 +113,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
   	AVCodec  *m_codec;
     AVCodecContext *m_con;  
     lib::event_processor *const m_event_processor;
-    lib::event *m_readdone;		// This is the callback our source makes to us
+//    lib::event *m_readdone;		// This is the callback our source makes to us
   	abstract_active_datasource* m_src;
 
 	uint8_t* m_inbuf;

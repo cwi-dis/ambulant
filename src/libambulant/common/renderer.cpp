@@ -71,10 +71,8 @@ lib::active_renderer::active_renderer(
 	abstract_rendering_surface *const dest)
 :	active_basic_renderer(context, cookie, node, evp),
 	m_src(src?src->activate():NULL),
-	m_dest(dest),
-	m_readdone(NULL)
+	m_dest(dest)
 {
-	m_readdone = new readdone_callback(this, &lib::active_renderer::readdone);
 }
 
 void
@@ -91,7 +89,8 @@ lib::active_renderer::start(double t)
 #endif
 	m_dest->show(this);
 	if (m_src) {
-		m_src->start(m_event_processor, m_readdone);
+		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		m_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		stopped_callback();
