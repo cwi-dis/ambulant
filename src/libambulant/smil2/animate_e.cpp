@@ -72,7 +72,9 @@ using namespace smil2;
 
 animation_engine::animation_engine(lib::event_processor* evp, smil_layout_manager *layout) 
 :	m_event_processor(evp), 
-	m_layout(layout) {
+	m_layout(layout), 
+	m_counter(0),
+	m_update_event(0) {
 }
 
 animation_engine::~animation_engine() {
@@ -90,6 +92,14 @@ void animation_engine::started(animate_node *animator) {
 	
 	m_counter++;
 	if(m_update_event == 0) schedule_update();
+	
+	AM_DBG {
+		const time_attrs* ata = animator->get_time_attrs();
+		lib::logger::get_logger()->trace("%s[%s] started targeting %s.%s", 
+			ata->get_tag().c_str(), ata->get_id().c_str(), 
+			 target->get_local_name().c_str(), 
+			animator->get_animation_attr().c_str());
+	}
 }
 
 // Remove animator from the active animations
@@ -115,6 +125,7 @@ void animation_engine::stopped(animate_node *animator) {
 
 // Evaluate all active animations
 void animation_engine::update() {
+	AM_DBG lib::logger::get_logger()->trace("Updating animators");
 	doc_animators_t::iterator it;
 	for(it = m_animators.begin();it != m_animators.end();it++) 
 		update_node((*it).first, (*it).second);
@@ -147,6 +158,10 @@ void animation_engine::update_attr(const std::string& attr, attribute_animators_
 	for(it = animators.begin();it != animators.end();it++)
 		(*it)->apply_self_effect(regs);
 	m_is_node_dirty = animator->set_animated_value(dst, regs); 
+	
+	// XXX: Until the layout or the protocol with the layout is fixed
+	// return always true e.g. always dirty
+	m_is_node_dirty = true;
 }
 
 void animation_engine::update_callback() {
