@@ -75,26 +75,26 @@ using namespace lib;
 namespace gui {
 
 namespace qt_renderer {
-  class qt_active_text_renderer : active_final_renderer {
 
+class qt_active_text_renderer : active_final_renderer {
   public:
-    qt_active_text_renderer(
-				active_playable_events *context,
-				active_playable_events::cookie_type cookie,
-				const node *node,
-    			event_processor *const evp,
-			    net::passive_datasource *src,
-			    abstract_rendering_surface *const dest)
-      : active_final_renderer(context, cookie, node, evp, src, dest),
-      m_text_storage(NULL){}
-    ~qt_active_text_renderer();
+	qt_active_text_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+    		event_processor *const evp,
+		net::passive_datasource *src,
+		abstract_rendering_surface *const dest)
+:	active_final_renderer(context, cookie, node, evp, src, dest),
+ 	m_text_storage(NULL){
+	}
+	~qt_active_text_renderer();
 
-    void redraw(const screen_rect<int> &r,
-		abstract_window* w);
+ 	void redraw(const screen_rect<int> &r, abstract_window* w);
 
   private:
-    char* m_text_storage;
-    critical_section m_lock;
+	char* m_text_storage;
+ 	critical_section m_lock;
 };
 
 } // namespace qt_renderer

@@ -56,19 +56,19 @@
 // Environment for testing design classes
 
 #include <iostream>
-#include <ambulant/version.h>
-#include <ambulant/lib/logger.h>
+#include "ambulant/version.h"
+#include "ambulant/lib/logger.h"
 //#define WITH_MMS_PLAYER
 #ifdef WITH_MMS_PLAYER
-#include <ambulant/common/mms_player.h>
+#include "ambulant/common/mms_player.h"
 #else
-#include <ambulant/common/smil_player.h>
+#include "ambulant/common/smil_player.h"
 #endif
-#include <ambulant/lib/event_processor.h>
-#include <ambulant/lib/asb.h>
-#include <qt_gui.h>
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/asb.h"
+#include "qt_gui.h"
 #include "ambulant/gui/none/none_gui.h"
-#include <qt_renderer.h>
+#include "ambulant/gui/qt/qt_renderer.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -77,29 +77,36 @@
 
 class qt_mainloop_callback_arg {
 };
+
 class qt_mainloop : public ambulant::lib::ref_counted {
 //  static bool m_done;
- public:
-  qt_mainloop(qt_gui* parent)
+  public:
+	qt_mainloop(qt_gui* parent)
     :	m_refcount(1),
-    m_parent(parent) {}
+	m_parent(parent) {
+	}
 	
-  static void* run(void* qt_gui);
-  long add_ref() {return ++m_refcount;}
-  
-  long release() {
-    if(--m_refcount == 0){
-      delete this;
-      return 0;
-    }
-    return m_refcount;
-  }
-  
-  long get_ref_count() const {return m_refcount;}
+	static void* run(void* qt_gui);
+
+	long add_ref() {
+		return ++m_refcount;
+	}
 	
- private:
-  qt_gui* m_parent;
-  ambulant::lib::basic_atomic_count<ambulant::lib::critical_section>
-          m_refcount;
+	long release() {
+		if(--m_refcount == 0) {
+			delete this;
+			return 0;
+		}
+		return m_refcount;
+	}
+	
+	long get_ref_count() const {
+		return m_refcount;
+	}
+	
+  private:
+	qt_gui* m_parent;
+	ambulant::lib::basic_atomic_count<ambulant::lib::critical_section>
+	m_refcount;
 };
 #endif/*__QT_MAINLOOP_H__*/

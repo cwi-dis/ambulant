@@ -77,45 +77,52 @@
 #include <qtooltip.h>
 #include <qwidget.h>
 
-#include "qt_renderer.h"
+#include "ambulant/gui/qt/qt_renderer.h"
 
 using namespace ambulant::gui::qt_renderer;
 
-class qt_gui : public QWidget
-{
-  Q_OBJECT;
+class qt_gui : public QWidget {
 
-public:
-  qt_gui(const char* title, 
-	 const char* initfile);
-  ~qt_gui();
-  void need_redraw(const void*, void*, const void*);
-  void player_done();
-  int  get_o_x() { return m_o_x; }
-  int  get_o_y() { return m_o_y; }
+   Q_OBJECT;
 
-  const char*  filename() { return m_smilfilename; }
+   public:
+  	qt_gui(const char* title, const char* initfile);
+	~qt_gui();
+	void need_redraw(const void*, void*, const void*);
+	void player_done();
+
+	int  get_o_x() {
+		return m_o_x;
+	}
+
+ 	int  get_o_y() {
+		return m_o_y;
+	}
+
+	const char*  filename() { 
+		return m_smilfilename;
+	}
  private:
-  const char*  m_programfilename;
-  QString      m_smilfilename;
-  QPopupMenu*  m_playmenu;
-  int          m_play_id;
-  int          m_pause_id;
-  bool         m_playing;
-  bool         m_pausing;
-  int	       m_o_x;	 // x coord of origin play window
-  int	       m_o_y;	 // y coord of origin play window
+	const char*  m_programfilename;
+	QString      m_smilfilename;
+	QPopupMenu*  m_playmenu;
+	int          m_play_id;
+	int          m_pause_id;
+	bool         m_playing;
+	bool         m_pausing;
+	int	       m_o_x;	 // x coord of origin play window
+	int	       m_o_y;	 // y coord of origin play window
 
 private slots:
-  void slot_about();
-  void slot_open();
-  void slot_play();
-  void slot_pause();
-  void slot_stop();
-  void slot_player_done();
+	void slot_about();
+	void slot_open();
+	void slot_play();
+	void slot_pause();
+	void slot_stop();
+	void slot_player_done();
 
 signals:
-  void signal_need_redraw(const void*, void*, const void*);
-  void signal_player_done();
+	void signal_need_redraw(const void*, void*, const void*);
+	void signal_player_done();
 };
 #endif/*__QT_GUI_H__*/

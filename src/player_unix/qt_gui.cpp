@@ -64,71 +64,76 @@
 #define AM_DBG if(0)
 #endif
 
-const QString about_text = 
-                    "This is the skeleton Qt GUI for Ambulant.\n"
-                     "Work in  progress by Kees Blom (C) 2004";
+const QString about_text = "This is the Qt GUI for Ambulant.\n"
+			   "Work in  progress by Kees Blom (C) 2004";
 
 qt_gui::qt_gui(const char* title,
 	       const char* initfile) {
 
-  m_programfilename = title;
-  if (initfile != NULL && initfile != "")
-    m_smilfilename = initfile;
-  else
-    m_smilfilename = QString("/home/zaurus/Documents/example.smil");
-  m_playing = false;
-  m_pausing = false;
-  setCaption(initfile);
+	m_programfilename = title;
+	if (initfile != NULL && initfile != "")
+		m_smilfilename = initfile;
+	else
+		m_smilfilename = QString(
+			"/home/zaurus/Documents/example.smil");
+	m_playing = false;
+	m_pausing = false;
+	setCaption(initfile);
 
-  /* Menu bar */
-  QMenuBar*  menubar = new QMenuBar(this,"MainMenu");
-  {
-    int id;
-    /* File */
-    QPopupMenu* filemenu = new QPopupMenu (this);
-    assert(filemenu);
-    filemenu->insertItem("&Open", this,SLOT(slot_open()));
-    filemenu->insertItem("&Full Screen", this,SLOT(showFullScreen()));
-    filemenu->insertItem("&Normal", this,SLOT(showNormal()));
-    filemenu->insertItem("&Quit", qApp, SLOT(quit()));
-    menubar->insertItem("&File", filemenu);
-    
-    /* Play */
-    m_playmenu = new QPopupMenu (this, "PlayA");
-    assert(m_playmenu);
-    m_play_id =  m_playmenu->insertItem("Pla&y",  this, SLOT(slot_play()));
-    m_playmenu->setItemEnabled(m_play_id, false);
-    m_pause_id = m_playmenu->insertItem("&Pause", this, SLOT(slot_pause()));
-    m_playmenu->setItemEnabled(m_pause_id, false);
-    m_playmenu->insertItem("&Stop",  this, SLOT(slot_stop()));
-    menubar->insertItem("Pla&y", m_playmenu);
-    
-    /* Help */
-    QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
-    assert(helpmenu);
-    helpmenu->insertItem("&About", this, SLOT(slot_about()));
-    menubar->insertItem("&Help", helpmenu);
-    menubar->setGeometry(0,0,320,20);
-    m_o_x = 0;
-    m_o_y = 27;
-  }
+	/* Menu bar */
+	QMenuBar* menubar = new QMenuBar(this,"MainMenu");
+	{
+		int id;
+		/* File */
+		QPopupMenu* filemenu = new QPopupMenu (this);
+		assert(filemenu);
+		filemenu->insertItem("&Open", this, SLOT(slot_open()));
+		filemenu->insertItem("&Full Screen", this,
+				     SLOT(showFullScreen()));
+		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
+		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
+		menubar->insertItem("&File", filemenu);
+		
+		/* Play */
+		m_playmenu = new QPopupMenu (this, "PlayA");
+		assert(m_playmenu);
+		m_play_id = m_playmenu->insertItem("Pla&y", this,
+						   SLOT(slot_play()));
+		m_playmenu->setItemEnabled(m_play_id, false);
+		m_pause_id = m_playmenu->insertItem("&Pause", this,
+						    SLOT(slot_pause()));
+		m_playmenu->setItemEnabled(m_pause_id, false);
+		m_playmenu->insertItem("&Stop",	this, SLOT(slot_stop()));
+		menubar->insertItem("Pla&y", m_playmenu);
+		
+		/* Help */
+		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
+		assert(helpmenu);
+		helpmenu->insertItem("&About", this, SLOT(slot_about()));
+		menubar->insertItem("&Help", helpmenu);
+		menubar->setGeometry(0,0,320,20);
+		m_o_x = 0;
+		m_o_y = 27;
+	}
 }
+
 qt_gui::~qt_gui() {
-  setCaption(QString::null);
+	setCaption(QString::null);
 }
+
 void qt_gui::slot_about() {
-  QMessageBox::information(this, m_programfilename, about_text,
-			   QMessageBox::Ok | QMessageBox::Default
-			   );
+	QMessageBox::information(this, m_programfilename, about_text,
+				 QMessageBox::Ok | QMessageBox::Default
+				 );
 }
 bool checkFilename(QString filename, int mode) {
-  QFile* file =  new QFile(filename);
-  return file->open(mode);
+	QFile* file =	new QFile(filename);
+	return file->open(mode);
 }
 void qt_gui::slot_open() {
 #ifndef QT_NO_FILEDIALOG
-  m_smilfilename =
-    QFileDialog::getOpenFileName(
+	m_smilfilename =
+		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
 				 "SMIL files (*.smil)", // file types
 				 this,
@@ -136,95 +141,91 @@ void qt_gui::slot_open() {
 				 "Double Click a file to open"
 				 );
 #endif/*QT_NO_FILEDIALOG*/
-  if (m_smilfilename.isNull()
-      || ! checkFilename(m_smilfilename, IO_ReadOnly)) {
-    char buf[1024];
-    sprintf(buf, "Cannot open file \"%s\"\n%s\n",
-	    (const char*) m_smilfilename, strerror(errno));
-    QMessageBox::information(this, m_programfilename, buf);
-    return;
-  }
-  char* filename = strdup(m_smilfilename);
-  setCaption(basename(filename));
-  free(filename);
-  m_playmenu->setItemEnabled(m_pause_id, false);
-  m_playmenu->setItemEnabled(m_play_id, true);
+	if (m_smilfilename.isNull()
+	|| ! checkFilename(m_smilfilename, IO_ReadOnly)) {
+		char buf[1024];
+		sprintf(buf, "Cannot open file \"%s\"\n%s\n",
+			(const char*) m_smilfilename, strerror(errno));
+		QMessageBox::information(this, m_programfilename, buf);
+		return;
+	}
+	char* filename = strdup(m_smilfilename);
+	setCaption(basename(filename));
+	free(filename);
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
 }
 void qt_gui::slot_player_done() {
-  printf("%s-%s\n", m_programfilename, "slot_player_done");
-  m_playmenu->setItemEnabled(m_pause_id, false);
-  m_playmenu->setItemEnabled(m_play_id, true);
-  m_playing = false;
-  QObject::disconnect(this, SIGNAL(signal_player_done()),
-		      this, SLOT(slot_player_done()));
+	printf("%s-%s\n", m_programfilename, "slot_player_done");
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
+	m_playing = false;
+	QObject::disconnect(this, SIGNAL(signal_player_done()),
+			    this, SLOT(slot_player_done()));
  }
 void qt_gui::need_redraw (const void* r, void* w, const void* pt) {
-  printf
-    ("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
-     (void *)this,r);
+	printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
+	(void *)this,r);
 }
 void qt_gui::player_done() {
-  printf("%s-%s\n", m_programfilename, "player_done");
-  emit signal_player_done();
+	printf("%s-%s\n", m_programfilename, "player_done");
+	emit signal_player_done();
 }
 void qt_gui::slot_play() {
-  AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
-  if (m_smilfilename == NULL) {
-    QMessageBox::information(this, m_programfilename,
-			     "Please first select File->Open"
-			     );
-    return;
-  }
-  if (!m_playing) {
-    m_playing = true;
-    QObject::connect(this, SIGNAL(signal_player_done()),
-		     this, SLOT(slot_player_done()));
-    m_playmenu->setItemEnabled(m_play_id, false);
-    m_playmenu->setItemEnabled(m_pause_id, true);
-    pthread_t playthread;
-    int rv = pthread_create(&playthread, NULL, &qt_mainloop::run,
-			    this);
-  }
-  if (!m_pausing) {
-     m_pausing = true;
-  } else {
-    m_pausing = false;
-  }
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
+	if (m_smilfilename == NULL) {
+		QMessageBox::information(
+			this, m_programfilename,
+			"Please first select File->Open");
+		return;
+	}
+	if (!m_playing) {
+		m_playing = true;
+		QObject::connect(this, SIGNAL(signal_player_done()),
+				 this, SLOT(slot_player_done()));
+		m_playmenu->setItemEnabled(m_play_id, false);
+		m_playmenu->setItemEnabled(m_pause_id, true);
+		pthread_t playthread;
+		int rv = pthread_create(&playthread, NULL,
+					&qt_mainloop::run,
+					this);
+	}
+	if (!m_pausing) {
+		 m_pausing = true;
+	} else {
+		m_pausing = false;
+	}
 }
 void qt_gui::slot_pause() {
-  printf("%s-%s\n", m_programfilename, "slot_pause");
-  m_playmenu->setItemEnabled(m_pause_id, false);
-  m_playmenu->setItemEnabled(m_play_id, true);
+	printf("%s-%s\n", m_programfilename, "slot_pause");
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
 }
 void qt_gui::slot_stop() {
-  printf("%s-%s\n", m_programfilename, "slot_stop");
-  QMessageBox::information(this, m_programfilename,
-			   "This will be \"Stop\"\n"
-			   );
+	printf("%s-%s\n", m_programfilename, "slot_stop");
+	QMessageBox::information(this, m_programfilename,
+				 "This will be \"Stop\"\n"
+				 );
 }
 
 int main (int argc, char*argv[]) {
-#ifndef QT_NO_FILEDIALOG    /* Assume plain Qt */
-  QApplication myapp(argc, argv);
-#else /*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
-  QPEApplication myapp(argc, argv);
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
+	QApplication myapp(argc, argv);
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	QPEApplication myapp(argc, argv);
 #endif/*QT_NO_FILEDIALOG*/
 
-  /* Setup widget */
-  qt_gui* mywidget
-                = new qt_gui(argv[0],
-		  argc > 1 ? argv[1] : "");
+	/* Setup widget */
+	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-  mywidget->setGeometry(750, 50, 320, 240);
-// mywidget->setGeometry(750, 50, 1024, 768);
-  /* Fire */
-  myapp.setMainWidget(mywidget);
+	mywidget->setGeometry(750, 50, 320, 240);
+	/* Fire */
+	myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
-  myapp.showMainWidget(mywidget);
+	myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
-  mywidget->show();
-  myapp.exec();
-  std::cout << "Exiting program" << std::endl;
+	mywidget->show();
+	myapp.exec();
+	std::cout << "Exiting program" << std::endl;
 	return 0;
-  return myapp.exec();
 }

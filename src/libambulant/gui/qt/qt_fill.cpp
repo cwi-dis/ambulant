@@ -1,30 +1,30 @@
 /*
- * 
+ *
  * This file is part of Ambulant Player, www.ambulantplayer.org.
- * 
- * Copyright (C) 2003 Stiching CWI, 
+ *
+ * Copyright (C) 2003 Stiching CWI,
  * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
- * 
+ *
  * Ambulant Player is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Ambulant Player is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * In addition, as a special exception, if you link Ambulant Player with
  * other files to produce an executable, this library does not by itself
  * cause the resulting executable to be covered by the GNU General Public
  * License. This exception does not however invalidate any other reason why
  * the executable file might be covered by the GNU General Public License.
- * 
+ *
  * As a special exception, the copyright holders of Ambulant Player give
  * you permission to link Ambulant Player with independent modules that
  * communicate with Ambulant Player solely through the region and renderer
@@ -36,14 +36,14 @@
  * being distributed under the terms of the GNU General Public License plus
  * this exception.  An independent module is a module which is not derived
  * from or based on Ambulant Player.
- * 
+ *
  * Note that people who make modified versions of Ambulant Player are not
  * obligated to grant this special exception for their modified versions;
  * it is their choice whether to do so.  The GNU General Public License
  * gives permission to release a modified version without this exception;
  * this exception also makes it possible to release a modified version
- * which carries forward this exception. 
- * 
+ * which carries forward this exception.
+ *
  */
 
 #include "ambulant/gui/qt/qt_includes.h"
@@ -65,72 +65,84 @@ namespace gui {
 
 namespace qt_renderer {
 	
-  void
-  qt_active_fill_renderer::redraw(const screen_rect<int> &dirty,
-				  abstract_window *window)
-  {
-    m_lock.enter();
-    const abstract_smil_region_info *info = m_dest->get_info();
-    const screen_rect<int> &r = m_dest->get_rect();
-    ambulant_qt_window* aqw = (ambulant_qt_window*) window;
-    QPainter paint;
-    paint.begin(aqw->ambulant_widget());
-    // background drawing
-    if (info && !info->get_transparent()) {
-      // First find our whole area (which we have to clear to background color)
-      screen_rect<int> dstrect_whole = r;
-      dstrect_whole.translate(m_dest->get_global_topleft());
-      int L = dstrect_whole.left(), T = dstrect_whole.top(),
-	W = dstrect_whole.width(), H = dstrect_whole.height();
-      // XXXX Fill with background color
-      color_t bgcolor = info->get_bgcolor();
-      AM_DBG lib::logger::get_logger()->trace
-	("qt_active_fill_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-      QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
- 	AM_DBG logger::get_logger()->trace
-	  ("qt_active_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",
-	   (void *)this, L,T,W,H);
-      paint.setBrush(*bgc);
-      paint.drawRect(L,T,W,H);
-    }
-    paint.flush();
-    paint.end();
-    m_lock.leave();
-  }
+void
+qt_active_fill_renderer::redraw(const screen_rect<int> &dirty,
+				abstract_window *window) {
+	m_lock.enter();
+	const abstract_smil_region_info *info = m_dest->get_info();
+	const screen_rect<int> &r = m_dest->get_rect();
+	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+	QPainter paint;
+	paint.begin(aqw->ambulant_widget());
+	// background drawing
+	if (info && !info->get_transparent()) {
+	// First find our whole area to be cleared to background color
+		screen_rect<int> dstrect_whole = r;
+		dstrect_whole.translate(m_dest->get_global_topleft());
+		int L = dstrect_whole.left(), 
+		    T = dstrect_whole.top(),
+		    W = dstrect_whole.width(), 
+		    H = dstrect_whole.height();
+		// XXXX Fill with background color
+		color_t bgcolor = info->get_bgcolor();
+		AM_DBG lib::logger::get_logger()->trace(
+			"qt_active_fill_renderer.redraw:"
+			" clearing to 0x%x", (long)bgcolor);
+		QColor* bgc = new QColor(redc(bgcolor),
+					 greenc(bgcolor),
+					 bluec(bgcolor));
+		AM_DBG logger::get_logger()->trace(
+			"qt_active_fill_renderer.redraw(0x%x,"
+			" local_ltrb=(%d,%d,%d,%d)",
+			(void *)this, L,T,W,H);
+		paint.setBrush(*bgc);
+		paint.drawRect(L,T,W,H);
+	}
+	paint.flush();
+	paint.end();
+	m_lock.leave();
+}
 
-  void
-  qt_background_renderer::drawbackground(const abstract_smil_region_info *src,
-					 const screen_rect<int> &dirty, 
-					 abstract_rendering_surface *dst,
-					 abstract_window *window)
-  {
-    const screen_rect<int> &r = dst->get_rect();
-    AM_DBG logger::get_logger()->trace
-      ("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
-    if (src && !src->get_transparent()) {
-      // First find our whole area (which we have to clear to background color)
-      ambulant_qt_window* aqw = (ambulant_qt_window*) window;
-      QPainter paint;
-      paint.begin(aqw->ambulant_widget());
-      screen_rect<int> dstrect_whole = r;
-      dstrect_whole.translate(dst->get_global_topleft());
-      int L = dstrect_whole.left(), T = dstrect_whole.top(),
-	W = dstrect_whole.width(), H = dstrect_whole.height();
-      // XXXX Fill with background color
-      color_t bgcolor = src->get_bgcolor();
-      AM_DBG lib::logger::get_logger()->trace
-	("qt__background_renderer::drawbackground:%s0x%x,%s(%d,%d,%d,%d)",
-	" clearing to ", (long)bgcolor, " local_ltwh=",L,T,W,H);
-      QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
-      paint.setBrush(*bgc);
-      paint.drawRect(L,T,W,H);
-      paint.flush();
-      paint.end();
-    }
-  }
-  
+void
+qt_background_renderer::drawbackground(
+	const abstract_smil_region_info *src,
+	const screen_rect<int> &dirty,
+	abstract_rendering_surface *dst,
+	abstract_window *window) {
+	const screen_rect<int> &r = dst->get_rect();
+	AM_DBG logger::get_logger()->trace
+		("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
+	if (src && !src->get_transparent()) {
+	// First find our whole area to be cleared to background color
+		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+		QPainter paint;
+		paint.begin(aqw->ambulant_widget());
+		screen_rect<int> dstrect_whole = r;
+		dstrect_whole.translate(dst->get_global_topleft());
+		int L = dstrect_whole.left(),
+		    T = dstrect_whole.top(),
+		    W = dstrect_whole.width(),
+		    H = dstrect_whole.height();
+		// XXXX Fill with background color
+		color_t bgcolor = src->get_bgcolor();
+		AM_DBG lib::logger::get_logger()->trace(
+			"qt__background_renderer::drawbackground:"
+			 " %s0x%x,%s(%d,%d,%d,%d)",
+			" clearing to ", (long)bgcolor, 
+			" local_ltwh=",L,T,W,H);
+		QColor* bgc = new QColor(redc(bgcolor),
+					 greenc(bgcolor),
+					 bluec(bgcolor));
+		paint.setBrush(*bgc);
+		paint.drawRect(L,T,W,H);
+		paint.flush();
+		paint.end();
+	}
+}
+
+
 } // namespace qt_renderer
 
 } // namespace gui
 
-} //namespace ambulant
+} // namespace ambulant
