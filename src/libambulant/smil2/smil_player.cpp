@@ -66,7 +66,7 @@
 #include "ambulant/smil2/smil_layout.h"
 #include "ambulant/smil2/smil_animation.h"
 
-//#define AM_DBG
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -356,7 +356,11 @@ smil_player::new_playable(const lib::node *n) {
 		common::renderer *rend = np->get_renderer();
 		if (rend) {
 			rend->set_surface(surf);
+		} else {
+			AM_DBG m_logger->trace("smil_player::new_playable: surface not set becasue rend == NULL");
 		}
+
+		
 	}
 	return np;
 }
