@@ -9,12 +9,13 @@ REM Third Party Packages home directory
 set TPP_HOME=.
 
 set WCE_ARM_LIB=%AMB_HOME%\lib\wince-arm
+set WCE_ARM_BIN=%AMB_HOME%\bin\wince
 
 REM Create required directories
 if not exist %AMB_HOME%\lib md %AMB_HOME%\lib
 if not exist %AMB_HOME%\lib\wince-arm md %AMB_HOME%\lib\wince-arm
 if not exist %AMB_HOME%\bin md %AMB_HOME%\bin
-if not exist %AMB_HOME%\bin\wince-arm md %AMB_HOME%\bin\wince-arm
+if not exist %AMB_HOME%\bin\wince md %AMB_HOME%\bin\wince
 
 REM Expat static library
 copy %TPP_HOME%\expat\lib\ARMRel\libexpat.lib %WCE_ARM_LIB%\libexpat.lib
@@ -27,6 +28,9 @@ copy %TPP_HOME%\zlibce\ARMRel\zlibce.lib %WCE_ARM_LIB%\zlibce.lib
 
 REM JPEG static library
 copy %TPP_HOME%\jpeg\wince\ARMRel\libjpeg.lib %WCE_ARM_LIB%\libjpeg.lib
+
+REM JPEG dll library
+copy %TPP_HOME%\jpeg\wince\ARMRel\libjpeg.dll %WCE_ARM_BIN%\libjpeg.dll
 
 REM MP3LIB static library
 copy %TPP_HOME%\mp3lib\ARMRel\mp3lib.lib %WCE_ARM_LIB%\mp3lib.lib
