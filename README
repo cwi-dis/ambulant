@@ -16,6 +16,17 @@ binary installer for a specific platform. This README file
 is common to all distributions, see below for instructions on building 
 from source.
 
+Feedback
+--------
+
+Please let us know about any problem you encounter: there is a 99%
+chance we are not aware of it at this stage. Either send email to
+<Ambulant-feedback@ambulantplayer.org> or fill out a bug report at the
+sourceforge bug repository, via <http://sourceforge.net/projects/ambulant>.
+
+See www.ambulantplayer.org for other community resources: mailing lists,
+demo document repositories, etc.
+
 Supported platforms
 -------------------
 
@@ -192,7 +203,20 @@ directory.
 Building for Zaurus
 -------------------
 
-For Zaurus, see detailed instructions in README-ZAURUS.
+You will first need to install the needed (cross-)development tools:
+qtopia 1.5.0, gcc 2.95 for strongarm and accompanying libraries and
+some method to talk between the host and the zaurus (over USB or network
+connection).
+
+Next you need to get the source for the third party packages needed (see
+third_party_packages.txt/readme), and crosscompile them (using --host and
+--build options to configure).
+
+Now you can use "configure --host=.... --build=..." and "make" to create
+the executable, which ends up in src/player_unix.
+
+More details on the exact packages to install, where to find them and how
+to build them can be found in the "README-ZAURUS" file.
 
 Building for Windows CE
 -----------------------
