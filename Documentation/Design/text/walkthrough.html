@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
+<title>How does the AmbulantPlayer play a SMIL document?</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="how-does-the-ambulantplayer-play-a-smil-document">
+<h1 class="title">How does the AmbulantPlayer play a SMIL document?</h1>
+<p>This section attempts to explain the basic structure of the Ambulant Player by
+loosely explaining what happens when you run it and play a document.</p>
+<p>The main program is platform dependent and GUI-toolkit dependent. The details
+of this main program are skipped here (and they can actually vary quite a bit
+for the platforms we support), but at some point after the program has started
+the GUI is put on the screen, with the usual set of menus for Open, Play, etc.</p>
+<div class="section" id="opening-a-document">
+<h1><a name="opening-a-document">Opening a document</a></h1>
+<p>When the user selects Open (or Open URL, or double-clicks or drags a document)
+we need to get the data, parse the document into a DOM tree and create a
+player to play that DOM tree. In addition, we need to tell the player how
+it can obtain media data, create windows, and more.</p>
+<p>Most player implementations (the Windows player is an exception) have a
+class with a name like <tt class="literal"><span class="pre">mainloop</span></tt> to handle this. Such a mainloop is created
+per SMIL document. This mainloop object will first create the various factories
+and populate them:</p>
+<ul class="simple">
+<li>A <tt class="literal"><span class="pre">window_factory</span></tt> is usually implemented by the main program itself. The
+player will call this when it needs a window. Usually the first request to
+create a window will actually return the document window (after resizing to
+the appropriate size).</li>
+<li>A <tt class="literal"><span class="pre">global_playable_factory</span></tt> is created. This is the object the player will
+use to create renderers for the various media types. The global factory
+is filled with the various renderers this ambulant player supports. In effect,
+this is the step where you get to decide how various media are rendered.</li>
+<li>A <tt class="literal"><span class="pre">datasource_factory</span></tt> is created and filled with the factory functions that
+will create datasources for audio, video or other, raw, data such as text.
+The factory functions that are added to the datasource_factory partially
+determine how data is retrieved over the net, which protocols and formats
+are supported and such. Partially, because some media items (audio and video,
+notably) may be rendered by simply passing the URL to some underlying media
+infrastructure such as DirectX or QuickTime.</li>
+</ul>
+<p>Next the factories are put together in a <tt class="literal"><span class="pre">factories</span></tt> struct, and if the
+architecture supports dynamically loadable plugins we get the <tt class="literal"><span class="pre">plugin_engine</span></tt>
+singleton object and ask it to load the plugins. This will search the plugin
+directories for dynamic objects with the correct naming convention, load them,
+and call their <tt class="literal"><span class="pre">initialize</span></tt> routine. The <tt class="literal"><span class="pre">factories</span></tt> object is passed to
+the <tt class="literal"><span class="pre">initialize</span></tt> routine, so the plugin itself can register any factories
+it wants.</p>
+<p>The next step is to create the DOM tree. One way to do this is to use
+<tt class="literal"><span class="pre">read_data_from_url</span></tt> to read the data from the document, and then pass this
+data to <tt class="literal"><span class="pre">document::create_from_string</span></tt>. This will return a <tt class="literal"><span class="pre">document</span></tt> object.
+This object contains the DOM tree itself (implemented by the <tt class="literal"><span class="pre">node</span></tt> object) and
+some context information (XML namespace information, original URL for resolving
+relative URLs used in the document, a mapping from XML IDs to node objects).</p>
+<p>The final step is to create a <tt class="literal"><span class="pre">player</span></tt> object. This is done through
+<tt class="literal"><span class="pre">create_smil2_player</span></tt>, passing the <tt class="literal"><span class="pre">document</span></tt>, the <tt class="literal"><span class="pre">factories</span></tt> and one
+final object, <tt class="literal"><span class="pre">embedder</span></tt>. This object is again implemented by the main program,
+and implements a small number of auxiliary functions, such as opening an
+external webbrowser or opening a new SMIL document.</p>
+</div>
+<div class="section" id="creating-the-player">
+<h1><a name="creating-the-player">Creating the player</a></h1>
+<p>When the <tt class="literal"><span class="pre">smil_player</span></tt> object is created it gets the <tt class="literal"><span class="pre">document</span></tt>, <tt class="literal"><span class="pre">factories</span></tt>
+and <tt class="literal"><span class="pre">embedder</span></tt> arguments. It now needs to create its internal data structures
+to facilitate playback later on:</p>
+<ul class="simple">
+<li>A <tt class="literal"><span class="pre">timer</span></tt> and <tt class="literal"><span class="pre">event_processor</span></tt> are created. The timer is the master clock
+for the presentation, and the event processor is a runqueue object that is
+used for low-level scheduling. Whenever the high-level scheduler wants some
+code to be executed it will add an <tt class="literal"><span class="pre">event</span></tt> to the <tt class="literal"><span class="pre">event_processor</span></tt>, possibly
+with a timeout and a priority. The event processor runs in a separate thread,
+waits for events in it runqueue to become elegible and then runs them.
+This mechanism is the underlying engine that makes the whole player work,
+anything that needs to wait doesn't do so inline but uses the event processor
+to get a callback at a later stage: the scheduler, renderers needing input data,
+etc.</li>
+<li>A <tt class="literal"><span class="pre">layout_manager</span></tt> is created, which will be used to find where media
+items should be displayed. The smil_layout_manager reads the <tt class="literal"><span class="pre">&lt;layout&gt;</span></tt> section
+of the DOM tree and builds a parallel layout tree (which also contains information
+on some of the body media nodes, the ones that have layout information themselves)
+of <tt class="literal"><span class="pre">region_node</span></tt> objects. Then this tree of <tt class="literal"><span class="pre">region_node</span></tt> objects is
+converted into a tree of <tt class="literal"><span class="pre">surface_template</span></tt> objects. For toplevel windows
+the <tt class="literal"><span class="pre">new_topsurface</span></tt> method of the window factory is used, and subregions are
+created using the <tt class="literal"><span class="pre">new_subsurface</span></tt> method of their parent <tt class="literal"><span class="pre">surface_template</span></tt>.
+The layout manager also contains mappings to be able to get from a <tt class="literal"><span class="pre">node</span></tt> to the
+corresponding <tt class="literal"><span class="pre">region_node</span></tt> to the <tt class="literal"><span class="pre">surface_template</span></tt>, and this will be used
+during playback to play media items in the correct location.</li>
+<li>A <tt class="literal"><span class="pre">timegraph</span></tt> is created. This is the internal representation of the <tt class="literal"><span class="pre">&lt;body&gt;</span></tt>
+part of the DOM tree that will be used to play back the document. In addition 
+a <tt class="literal"><span class="pre">scheduler</span></tt> is created, which will interpret the data in the <tt class="literal"><span class="pre">timegraph</span></tt>.</li>
+</ul>
+</div>
+<div class="section" id="starting-playback">
+<h1><a name="starting-playback">Starting playback</a></h1>
+<p>When the user selects Play we call the <tt class="literal"><span class="pre">start</span></tt> method of the <tt class="literal"><span class="pre">player</span></tt> object.
+This will invoke <tt class="literal"><span class="pre">start</span></tt> on the scheduler. This will start playing the root
+node of the tree. The scheduler will now do all the SMIL 2 magic, whereby events
+such as the root node being played causes other nodes to become playable, etc.</p>
+<p>At some point a media item needs to be rendered. The scheduler calls the <tt class="literal"><span class="pre">new_playable</span></tt>
+method from the <tt class="literal"><span class="pre">global_playable_factory</span></tt>. This will pass the DOM <tt class="literal"><span class="pre">node</span></tt> to the
+various factories until one singals it can create a <tt class="literal"><span class="pre">playable</span></tt> for the object.
+In addition, if the playable has a renderer (which is true for most media objects,
+but not for things like SMIL animations) we also obtain the <tt class="literal"><span class="pre">surface</span></tt> on which
+the media item should be renderered, through the <tt class="literal"><span class="pre">layout_manager</span></tt>. We then tell
+the renderer which surface to use.</p>
+<p>Soon afterwards the <tt class="literal"><span class="pre">start</span></tt> method of the playable is called to start playback.
+An average renderer will need to obtain data from some URL. It will do this by creating
+a <tt class="literal"><span class="pre">datasource</span></tt> for the document through the <tt class="literal"><span class="pre">datasource_factory</span></tt> object. Every time
+the renderer wants more data it calls the <tt class="literal"><span class="pre">start</span></tt> method of the datasource passing
+a callback routine. Whever data is available the datasource will schedule a call
+to the callback routine, through the event processor. When the renderer has enough
+information to start drawing it will not actually draw immedeately, but it will
+send a <tt class="literal"><span class="pre">need_redraw</span></tt> call to its surface. This will percolate up the surface
+hierarchy, to the GUI code, and eventually come back down as a <tt class="literal"><span class="pre">redraw</span></tt> call all
+the way to the renderer (assuming it is not obscured by other media items, etc).
+At this point the bits finally get drawn on the screen.</p>
+<p>Whenever anything &quot;interesting&quot; happens in the renderer (the media item stopped playing,
+the user clicked the mouse, etc) it invokes a corresponding method on its
+<tt class="literal"><span class="pre">playable_notification</span></tt>. This interface is implemented by the scheduler, and these
+notifications are how the scheduler gets informed that it can start scheduling new things,
+etc.</p>
+</div>
+</div>
+</body>
+</html>
