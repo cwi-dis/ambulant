@@ -145,8 +145,24 @@ Here are some random remarks about testing the distributions.
 Uploading the distributions
 ===========================
 
-To be supplied.
-- Don't forget to use different filenames (so SF stats work) for each release.
+Adding a new file release package.
+----------------------------------
+A release package is a collection of the ambulant player (binary or source) 
+for different platforms but the with same version number.
+To add a SF release package choose in the admin menu File Releases. At the bottom 
+of the page you will find a field where you can add the name of a new release 
+package. We have to use different names for our release packages. (such that the 
+latest release is always on top). I propose to use the following naming scheme, 
+Ambulant <version number> (eg Ambulant 1.0, Ambulant 1.2). The minor release number 
+is always even for stable releases, the development version uses the uneven numbers.
+
+Adding file releases to a release package.
+------------------------------------------
+
+Hiding a file release package
+-----------------------------
+Make sure that all file releases belonging to a file release package are hidden.
+If not, you can not hide the release package and it will stay active.
 
 Updating the website
 ====================
