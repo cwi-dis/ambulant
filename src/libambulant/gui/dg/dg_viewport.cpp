@@ -219,6 +219,50 @@ void gui::dg::viewport::draw(const std::basic_string<text_char>& text,
 		win_report_last_error("DrawText()");
 }
 
+#ifdef _WIN32_WCE
+static int wce_FrameRect(HDC hdc, const RECT* lprc, HBRUSH hbr)
+{
+  // Fill a "line-size" rectangle for each edge of the frame, using hbr
+  // Note that right/bottom borders not painted by FillRect (or FrameRect)
+  RECT rectEdge;	
+  if (SetRect(&rectEdge, lprc->left, lprc->top, lprc->right, 
+    lprc->top + 1) == FALSE) // Top edge of frame
+    return FALSE;
+  if (FillRect(hdc, &rectEdge, hbr) == FALSE)
+    return FALSE;
+  
+  if (SetRect(&rectEdge, lprc->right - 1, lprc->top, lprc->right, 
+    lprc->bottom) == FALSE) // Right edge of frame
+    return FALSE;
+  if (FillRect(hdc, &rectEdge, hbr) == FALSE)
+    return FALSE;
+  if (SetRect(&rectEdge, lprc->left, lprc->bottom - 1, lprc->right, 
+    lprc->bottom) == FALSE) // Bottom edge of frame
+    return FALSE;
+  if (FillRect(hdc, &rectEdge, hbr) == FALSE)
+    return FALSE;
+  if (SetRect(&rectEdge, lprc->left, lprc->top, lprc->left + 1, 
+    lprc->bottom) == FALSE) // Left edge of frame
+    return FALSE;
+  return FillRect(hdc, &rectEdge, hbr);
+}
+#endif
+
+// Frames the provided rect
+void gui::dg::viewport::frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr) {
+	if(!m_memdc) return;
+	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	HBRUSH hbr = CreateSolidBrush(clr);
+#ifdef _WIN32_WCE
+	if(wce_FrameRect(m_memdc, &RC, hbr) == 0)
+		win_report_last_error("FrameRect()");
+#else
+	if(FrameRect(m_memdc, &RC, hbr) == 0)
+		win_report_last_error("FrameRect()");
+#endif
+	DeleteObject((HGDIOBJ) hbr);
+}
+
 
 
 

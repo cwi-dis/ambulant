@@ -113,6 +113,7 @@ void gui::dg::dg_text_renderer::start(double t) {
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
+	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 		
 	// Request a redraw

@@ -56,6 +56,7 @@
 #define AM_DBG if(0)
 #endif
 
+
 #include "ambulant/gui/dg/dg_player.h"
 #include "ambulant/gui/dg/dg_viewport.h"
 #include "ambulant/gui/dg/dg_window.h"
@@ -67,6 +68,7 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/textptr.h"
 
 // Players
 #include "ambulant/smil2/smil_player.h"
@@ -107,7 +109,7 @@ gui::dg::dg_player::dg_player(const char *url)
 	
 	// Create a player instance
 	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_player = new smil2::smil_player(doc, this, this);
+	m_player = new smil2::smil_player(doc, this, this, this);
 }
 
 gui::dg::dg_player::~dg_player() {
@@ -203,7 +205,7 @@ void gui::dg::dg_player::on_done() {
 
 common::abstract_window *
 gui::dg::dg_player::new_window(const std::string &name, 
-	lib::size bounds, common::renderer *renderer) {
+	lib::size bounds, common::surface_source *src) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
 		name.c_str(), repr(bounds).c_str());
@@ -217,8 +219,8 @@ gui::dg::dg_player::new_window(const std::string &name,
 	// Create the associated dg viewport
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
 	
-	// XXX: Wrong arg in new_window() interface!
-	region *rgn = (region *) renderer;
+	// Region?
+	region *rgn = (region *) src;
 	
 	// Clear the viewport
 	const common::region_info *ri = rgn->get_info();
@@ -305,13 +307,13 @@ gui::dg::dg_player::new_playable(
 	} else if(tag == "audio") {
 		p = new dg_audio_renderer(context, cookie, node, evp, window);
 	} else if(tag == "video") {
-		p = new dg_area_renderer(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, window);
 	} else if(tag == "area") {
-		p = new dg_area_renderer(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, window);
 	} else if(tag == "brush") {
 		p = new dg_brush(context, cookie, node, evp, window);
 	} else {
-		p = new dg_area_renderer(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, window);
 	}
 	return p;
 }
@@ -354,6 +356,20 @@ gui::dg::dg_player::get_window(const lib::node* n) {
 	assert(it != m_windows.end());
 	wininfo* winfo = (*it).second;
 	return winfo->w;
+}
+
+void gui::dg::dg_player::show_file(const std::string& href) {
+#ifndef _WIN32_WCE
+	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.c_str()), NULL, NULL, SW_SHOWNORMAL);
+#else
+	SHELLEXECUTEINFO si;
+	memset(&si, 0, sizeof(si));
+	si.cbSize = sizeof(si);
+	si.lpVerb = text_str("open"); 
+	si.lpFile = textptr(href.c_str()).c_wstr(); 
+	si.nShow = SW_SHOWNORMAL; 
+	ShellExecuteEx(&si);
+#endif
 }
 
 
