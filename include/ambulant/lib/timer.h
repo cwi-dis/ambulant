@@ -59,62 +59,95 @@ namespace ambulant {
 
 namespace lib {
 
-class abstract_timer_client {
+// Notification interface for timer events such as speed change. 
+class timer_events {
   public:
-	// this timer time type (assumed in msecs)
-	typedef std::set<abstract_timer_client *> client_set;
-	typedef client_set::iterator client_index;
-	
-	virtual ~abstract_timer_client() {}
-
-	virtual void speed_changed();
-	// A child clock can call add_dependent to have calls that change
-	// timing (such as set_speed) forwarded to it
-	client_index add_dependent(abstract_timer_client *child);
-	void remove_dependent(client_index pos);
-	void remove_dependent(abstract_timer_client *child);
-	
-  protected:
-    client_set m_dependents;
+	virtual ~timer_events() {}
+	virtual void speed_changed() = 0;
 };
 
-class abstract_timer : public abstract_timer_client {
+
+class abstract_timer {
   public:
-	// this timer time type (assumed in msecs)
+	// The underline time type used by this timer 
+	// (assumed an integral type)
 	typedef unsigned long time_type;
 	
+	// Allows subclasses to be deleted using base pointers
 	virtual ~abstract_timer() {}
 		
-	// returns the time elapsed
-	// e.g. return (time_now>ref_time)?time_now - ref_time:0;
+	// Returns the time elapsed
 	virtual time_type elapsed() const = 0;
+	
+	// Sets the speed of this timer
 	virtual void set_speed(double speed) = 0;
+	
+	// Gets the realtime speed of this timer as modulated by its parent
 	virtual double get_realtime_speed() const = 0;
 };
 
-// Note: timer objects are not refcounted, because it is assumed that
-// a parent timer will always automatically live longer than a child
-// timer. If this does not hold in future then we should add refcounting.
-class timer : public abstract_timer {
-  public:
-	timer(abstract_timer *parent, double speed);
-	timer(abstract_timer *parent);
+
+// A timer class able to fulfill SMIL 2.0 timing requirements.
+class timer : public abstract_timer, public timer_events {
+  public:	
+	// Creates a timer with the provided parent, 
+	// ticking at the speed specified and
+	// initially running or paused as specified. 
+	timer(abstract_timer *parent, double speed = 1.0, bool running = true);
+	
 	~timer();
-//	void add_dependent(timer& child);
-		
-	// returns the time elapsed
-	// e.g. return (time_now>ref_time)?time_now - ref_time:0;
+	
+	// Returns the zero-based time elapsed.
 	time_type elapsed() const;
+	
+	// Starts ticking at t (t>=0).
+	void start(time_type t = 0);
+	
+	// Pauses ticking and rewinds to zero.
+	void stop();
+	
+	// Pauses ticking at elapsed().
+	// While paused this timer's elapsed() returns the same value. 
+	// Speed remains unchanged and when resumed
+	// will be ticking at that speed.
+	void pause();
+	
+	// Resumes ticking from elapsed().
+	void resume();
+	
+	// Sets the speed of this timer.
+	// At any state, paused or running, set_speed() 
+	// may be called to change speed.
+	// When paused, the new speed will be
+	// used when the timer is resumed else
+	// the new speed is applied immediately. 
 	void set_speed(double speed);
-	double lib::timer::get_realtime_speed() const;
+	
+	// Returns the speed of this timer.
+	double get_speed() const { return m_speed;}
+	
+	// Returns the realtime speed of this timer 
+	// as modulated by its parent.
+	double get_realtime_speed() const;
+	
+	// Receives timer_events notifications.
+	void speed_changed();
+	
+	// Add/remove timer_events listeners.
+	void add_listener(timer_events *listener);
+	void remove_listener(timer_events *listener);
+	
   private:
-	void re_epoch();
+	time_type apply_speed_manip(time_type dt) const;
 	
 	abstract_timer *m_parent;
-//	std::vector<timer&> m_children;
 	time_type m_parent_epoch;
 	time_type m_local_epoch;
 	double m_speed;
+	bool m_running;
+	
+	// Note: event listeners are not owned by this.
+	std::set<timer_events *> *m_listeners;
 };
 
 // A (machine-dependent) routine to create a timer object
