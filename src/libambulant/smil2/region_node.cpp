@@ -255,7 +255,8 @@ region_node::get_rect() const {
 		rc = inherit_region->get_rect();
 	}
 	common::region_evaluator re(rc.w, rc.h);
-	re.set(m_rds);
+	AM_DBG lib::logger::get_logger()->trace("HEIGHT=%s", repr(m_display_rds.height).c_str());
+	re.set(m_display_rds);
 	return re.get_rect();
 }
  
@@ -360,7 +361,7 @@ common::zindex_t region_node::get_region_zindex(bool fromdom) const {
 
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_dim(\"%s\")", which.c_str());
+	AM_DBG lib::logger::get_logger()->trace("region_node::set_region_dim(\"%s\", \"%s\") to %s", m_node->get_attribute("id"), which.c_str(), repr(rd).c_str());
 	common::region_dim_spec& rds = m_display_rds;
 	if(which == "left") rds.left = rd;
 	else if(which == "width") rds.width = rd;
@@ -372,14 +373,14 @@ void region_node::set_region_dim(const std::string& which, const common::region_
 
 // Sets the display value of the backgroundColor or color
 void region_node::set_region_color(const std::string& which, lib::color_t clr) {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_color(\"%s\")", which.c_str());
+	AM_DBG lib::logger::get_logger()->trace("region_node::set_region_color(\"%s\", \"%s\")", m_node->get_attribute("id"), which.c_str());
 	if(which == "backgroundColor") m_display_bgcolor = clr;
 	//else if(which == "color") set_fgcolor(clr);
 }
 
 // Sets the display value of the z-index
 void region_node::set_region_zindex(common::zindex_t z) {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_zindex()");
+	AM_DBG lib::logger::get_logger()->trace("region_node::set_region_zindex()");
 	m_display_zindex = z;
 }
 

@@ -128,7 +128,7 @@ class region_node : public common::animation_destination {
 	lib::color_t get_bgcolor() const;
 	bool get_transparent() const;
 	bool get_showbackground() const;
-	common::zindex_t get_zindex() const { return m_zindex; }
+	common::zindex_t get_zindex() const { return m_display_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
 	
 	// And corresponding setting interface
@@ -137,7 +137,7 @@ class region_node : public common::animation_destination {
 	void set_bgcolor(lib::color_t c, bool transparent, bool inherit);
 	void set_bgcolor(lib::color_t c) { set_bgcolor(c, false, false); };
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
-	void set_zindex(common::zindex_t z) { m_zindex = z; }
+	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
 	// animation_destination interface
