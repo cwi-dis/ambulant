@@ -1,0 +1,95 @@
+How the Ambulant implementation on Sharp SL-5600 Zaurus.was done.
+================================================================
+
+Starting point was a technical document by Sharp titled
+"Sharp SL-series Zaurus Qtopia Development Start-up Guide"
+available on-line at:
+"www.zaurus.com/dev/support/downloads/qte_programming-guide_v111.pdf"
+
+Not all utilities discussed in that paper were used. The tools "qmake",
+"tmake", "qvfb" and "uic" were skipped, to minimize dependencies of
+our environment and Qt. The only utility we really need edfrom them is
+"moc" (meta-object-compiler) which glues various GUI components together.
+
+Some information in that document is out-of-date, the "qtopia 1.5.0"
+build environment is no longer available at www.trolltech.com, but at:
+"http://community.zaurus.com/projects/qtopia-sdk"
+This environment is necessary since it matches the factory installed
+software on the device. The installed RPM was:
+qtopia-free-1.5.0-1.i386.rpm
+This RPM installs in "/opt/Qtopia".
+
+For cross-compilation, the needed RPM's were taken from the Sharp
+developer website: "http://www.zaurus.com/dev/tools/other.htm".
+The following RPM's were downloaded and installed:
+gcc-cross-sa1100-2.95.2-0.i386.rpm
+glibc-arm-2.2.2-0.i386.rpm
+binutils-cross-arm-2.11.2-0.i386.rpm
+linux-headers-arm-sa1100-2.4.6-3.i386.rpm
+These packages install in "/opt/Embedix/tools"
+
+In the environment (window) in which the "configure;make" was
+to obtain a cross-compiled AmbulantPlayer, PATH was prepended:
+
+	export PATH=/opt/Qtopia/sharp/bin:/opt/Embedix/tools/bin:$PATH
+
+Next set the environment variables QTDIR and QPEDIR to /opt/Qtopia
+by: 
+	export QTDIR=/opt/Qtopia
+        export QPEDIR=/opt/Qtopia.
+    
+configure was done on a Linux-PC box as follows:
+./configure --prefix=`pwd` --build=i686-pc-linux-gnu --host=arm-linux \
+--with-qt  --with-qtopia --without-arts 
+
+File transfer was done using the wireless connection.
+To make the connection active, stay close to a transmitter.
+Move "file" to be transferred to the place where your homepage
+resides, then using the Qtopia browser on the PDA "file" can
+be selected from your homepage environment and will be dumped in
+"/home/zaurus/Documents/file." with its execution bits lost.
+Type "cd /home/zaurus/Documents" followed by:
+chmod +x file.
+and start the program:
+./file.
+
+
+SDL On the Zaurus
+=================
+
+For SDL support on the zaurus you need to install the following
+development packages :
+http://www.gnurou.org/software/zaurus/SDL-dev-1.2.6cvs.tar.gz
+http://www.gnurou.org/software/zaurus/SDL_mixer-dev-1.2.5cvs.tar.gz
+and the following libraries on the zaurus :
+http://www.gnurou.org/software/zaurus/feed/libSDL_1.2.6cvs-1_arm.ipk
+http://www.gnurou.org/software/zaurus/feed/libSDL-mixer_1.2.5cvs-1_arm.ipk.
+
+To enable SDL support, prepend the directory were the "sdl-config"
+script was installed to you PATH and run configure with --with-sdl:
+
+	export PATH=.../SDL/bin:$PATH
+	./configure --prefix=`pwd` --build=i686-pc-linux-gnu \
+	--host=arm-linux --with-qt  --with-qtopia --without-arts --with-sdl
+
+ffmpeg on the Zaurus
+====================
+
+ffmpeg-0.4.8 was downloaded from ffmpeg.sourceforge.net and configured using
+./configure --cpu=armv4l --cc=arm-linux-gcc --disable-mmx --prefix=`pwd` \
+--enable-shared
+Then "make" produced the needed libraries libavcodec/libavcodec.a and
+libavformat/libavformat.a
+
+
+Version 0.7
+Kees Blom, May.25th, 2004.
+
+Version 0.5
+Kees Blom, Apr.19th, 2004.
+
+Version 0.3
+Daniel Benden, Feb. 4th 2004
+
+Version 0.2
+Kees Blom, Dec.11th, 2003.
