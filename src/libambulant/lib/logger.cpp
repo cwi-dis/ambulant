@@ -54,7 +54,10 @@
 
 #include <map>
 
+#ifndef AMBULANT_NO_TIME_H
 #include <time.h>
+#endif
+
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -77,11 +80,6 @@ int lib::logger::default_level = lib::logger::LEVEL_DEBUG;
 // Set this std::cout, to a file or socket ostream or whatever
 // This is the default, each specific named logger may 
 // be configured sepaately
-
-#ifndef AMBULANT_NO_IOSTREAMS
-// static
-std::ostream* lib::logger::default_pos = &std::cout;
-#endif
 
 // Output logging date as xx/xx/xx
 //static 
@@ -152,6 +150,27 @@ lib::logger* lib::logger::get_logger(const char *name, int pos) {
 	lname += sz;
 	return get_logger(lname.c_str());
 }
+
+lib::logger::logger(const std::string& name) 
+:	m_name(name),
+#ifndef AMBULANT_NO_IOSTREAMS
+	m_pos(new std_ostream(std::cout)),
+#else // AMBULANT_NO_IOSTREAMS
+	m_pos(0),
+#endif
+	m_level(logger::default_level) {
+}
+
+lib::logger::~logger() {
+	delete m_pos;
+}
+
+#ifndef AMBULANT_NO_IOSTREAMS
+void lib::logger::set_std_ostream(std::ostream& os) {
+	if(m_pos) delete m_pos; 
+	m_pos = new std_ostream(os); 
+}
+#endif // AMBULANT_NO_IOSTREAMS
 
 // static 
 void lib::logger::set_loggers_level(int level) {
@@ -232,7 +251,7 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
 	// Do we have a std function for this?
-#ifdef AMBULANT_PLATFORM_WIN32 
+#if defined(AMBULANT_PLATFORM_WIN32) && !defined(UNICODE) 
 	int size = _vscprintf(format, args) + 1;
 #else 
 	int size = 4096;
@@ -252,17 +271,24 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		show_message(buf);
 		return;
 	} 
-	
+	if(m_pos == 0) {
+		// Not set and no stdio
+		return;
+	}
+
+#ifndef AMBULANT_NO_TIME_H
 	struct tm *lt = NULL;
 	if(logger::logdate || logger::logtime) {
 		time_t t = time(NULL);
 		lt = localtime(&t);
 	}
+#endif // AMBULANT_NO_TIME_H
 
-#ifndef AMBULANT_NO_IOSTREAMS
-	std::ostream& os = *m_pos;
-	char tbuf[16];
+	ostream& os = *m_pos;
 	m_cs.enter();
+	
+#ifndef AMBULANT_NO_TIME_H
+	char tbuf[16];
 	if(logger::logdate) {
 		sprintf(tbuf, "%d/%02d/%02d ", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
 		os << tbuf;
@@ -271,16 +297,19 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		sprintf(tbuf, "%02d:%02d:%02d ", lt->tm_hour, lt->tm_min, lt->tm_sec);
 		os << tbuf;
 	}
+#endif // AMBULANT_NO_TIME_H
+
 	if(loglevel)
 		os << get_level_name(level) << "\t";
 	os << buf;
+	char hbuf[64];
 	if(logger::logname)
-		os << " [" <<  m_name << "]" ;
-	os << std::endl;
+		sprintf(hbuf, "[%.48s]%s", m_name.c_str(), line_separator.c_str());
+	else
+		sprintf(hbuf, "%s", line_separator.c_str());
+	os << hbuf;
 	os.flush();
 	m_cs.leave();
-#endif
-
 }
 
 // static

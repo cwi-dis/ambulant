@@ -55,6 +55,9 @@
 
 #include "ambulant/config/config.h"
 
+////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
 #	ifndef AMBULANT_NO_STRINGSTREAM
@@ -64,78 +67,20 @@
 #include <ostream.h>
 #endif
 
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+////////////////////////
+
 #include <string>
 #include <stdarg.h>
 #include <stdio.h>
 
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/asb.h"
+#include "ambulant/lib/amstream.h"
 
 namespace ambulant {
 
 namespace lib {
-
-// exclude the following stuff when no streams or when g++ 2.95 and othet old compilers
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-template<class T>
-class ostringstream_wrapper {
-  public:	
-	ostringstream_wrapper(T* logger, void (T::*logf)(const std::string& s)) 
-	:	m_pos(new std::ostringstream()),
-		m_logger(logger),
-		m_logf(logf) {
-	}
-	
-	~ostringstream_wrapper() {
-		delete m_pos;
-	}
-	
-	template<class V>
-	ostringstream_wrapper& operator<<(const V& v) {
-		*m_pos << v;
-		return *this;
-	}
-	ostringstream_wrapper& operator<<(const char *s) {
-		*m_pos << s;
-		return *this;
-	}
-	
-	ostringstream_wrapper& operator<<(ostringstream_wrapper& (*f)(ostringstream_wrapper&) ) {
-		return f(*this);
-	}
-	
-	void endl() {
-		if(m_logger && m_logf)
-			(m_logger->*m_logf)(m_pos->str());
-		m_pos->str("");
-	}
-	
-  private:
-	std::ostringstream *const m_pos;
-	T *const m_logger;
-	void (T::*m_logf)(const std::string& s);
-};
-
-#endif  // AMBULANT_NO_IOSTREAMS
-
-
-// exclude this stuff for g++ 2.95 and othet old compilers
-#ifndef AMBULANT_NO_OPERATORS_IN_NAMESPACE
-
-#ifdef AMBULANT_PLATFORM_WIN32
-#ifndef CDECL
-#define CDECL __cdecl
-#endif
-#else
-#define CDECL
-#endif // AMBULANT_PLATFORM_WIN32
-
-template<class T>
-inline T& CDECL endl(T& l) {
-	l.endl();
-	return l;
-}
-
-#endif // AMBULANT_NO_OPERATORS_IN_NAMESPACE
 
 class logger {
   public:
@@ -144,6 +89,7 @@ class logger {
 		LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL};
 		
 	logger(const std::string& name);
+	~logger();
 	
 	// static factory function to create loggers
 	static logger* get_logger(const char *name = NULL);
@@ -225,27 +171,15 @@ class logger {
 
 // exclude the following stuff when no streams
 #ifndef AMBULANT_NO_IOSTREAMS
-	void set_ostream(std::ostream* pos); 
+	void set_std_ostream(std::ostream& os); 
 #endif
-
-// exclude the following stuff when no streams or when g++ 2.95 and othet old compilers
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
-	// The following functions return an ostream like object. 
-	// The output operator<< may be used as for an ostream.
-	// Usage example:
-	// lib::logger::ostream os = logger->trace_stream();
-	// os << "message1: " << object1 << lib::endl;
-	// os << "message2: " << object2 << lib::endl;
-	// The lib::endl() injects the message at
-	// the appropriate log level. The above
-	// example would output 2 tracing messages.
-	typedef ostringstream_wrapper<logger> ostream;
-	ostream debug_stream() { return ostream(this, &logger::debug);} 
-	ostream trace_stream() { return ostream(this, &logger::trace);} 
-	ostream warn_stream() { return ostream(this, &logger::warn);} 
-	ostream error_stream() { return ostream(this, &logger::error);} 
-	ostream fatal_stream() { return ostream(this, &logger::fatal);} 
-#endif // AMBULANT_NO_IOSTREAMS && AMBULANT_NO_OPERATORS_IN_NAMESPACE
+	
+	// This becomes the owner of pos
+	// When this is deleted will delete pos.
+	void set_ostream(ostream* pos) {
+		if(m_pos) delete m_pos;
+		m_pos = pos;
+	} 
 	
   private:
 	static const char* get_level_name(int level);
@@ -253,16 +187,11 @@ class logger {
 	// this logger members
 	critical_section m_cs;
 	std::string m_name;	
-#ifndef AMBULANT_NO_IOSTREAMS
-	std::ostream* m_pos;
-#endif // AMBULANT_NO_IOSTREAMS
+	ostream* m_pos;
 	int m_level;
 	
 	// configuration and output format
 	static int default_level;
-#ifndef AMBULANT_NO_IOSTREAMS
-	static std::ostream* default_pos; 
-#endif // AMBULANT_NO_IOSTREAMS
 	static bool logdate;
 	static bool logtime;
 	static bool logname;
@@ -272,14 +201,6 @@ class logger {
 
 //////////////////////////////
 // Inline part of the implementation
-
-inline logger::logger(const std::string& name) 
-:	m_name(name),
-#ifndef AMBULANT_NO_IOSTREAMS
-	m_pos(logger::default_pos),
-#endif // AMBULANT_NO_IOSTREAMS
-	m_level(logger::default_level) {
-}
 
 template <class T>
 inline void logger::log_obj(int level, const T& obj) {
@@ -294,21 +215,14 @@ inline void logger::set_level(int level) {
 	m_level = level; 
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
-inline void logger::set_ostream(std::ostream* pos) { 
-	m_pos = pos; 
-}
-#endif // AMBULANT_NO_IOSTREAMS
-
 inline bool logger::suppressed(int level) {
 	return level < m_level;
 }
 
-
 #ifdef AMBULANT_PLATFORM_WIN32
 
 // A machine-dependent function to show a popup message
-void show_message(const char *format, ...);
+extern void show_message(const char *format, ...);
 
 #else 
 
