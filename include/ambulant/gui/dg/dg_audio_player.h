@@ -86,8 +86,9 @@ class audio_player {
   private:
 	void resample();
 	
-	enum { read_size = 8192, dec_size_estim = 81920};
-	enum { lo_limit = 1, hi_limit = 2};
+	enum { read_size = 8192, dec_size_estim = 98304};
+	enum { lo_limit = 8, hi_limit = 12};
+	enum { read_sync_size = 200000};
 	
 	lib::byte_buffer m_bbuf;
 	std::basic_string<char> *m_decbuf;

@@ -108,11 +108,12 @@ class viewport {
 	void clear(const lib::screen_rect<int>& rc, lib::color_t clr);
 
 	// Draw the whole DD surface to the back buffer and destination rectangle
-	void draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc, bool keysrc = false);
+	void draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc,  
+		bool keysrc = false, lib::color_t transp = CLR_INVALID);
 	
 	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
 	void draw(dib_surface_t* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc = false);
+		const lib::screen_rect<int>& dst_rc, bool keysrc = false, lib::color_t transp = CLR_INVALID);
 	
 	// Draw the text to the back buffer within destination rectangle
 	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);

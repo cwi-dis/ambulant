@@ -90,6 +90,7 @@ class dg_window : public common::abstract_window {
 	
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
+	void need_redraw();
 	
 	viewport *get_viewport() { return m_viewport;}
   private:
@@ -97,6 +98,7 @@ class dg_window : public common::abstract_window {
 	// passive_region *m_region;
 	region *m_rgn;
 	std::string m_name; // for easy access
+	lib::screen_rect<int> m_viewrc;	
 	common::window_factory *m_wf;
     viewport* m_viewport;
 };

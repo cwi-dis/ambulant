@@ -103,12 +103,31 @@ class surface {
 	}
 	
 	void fill(const ambulant::lib::screen_rect<int>& rc, value_type bkcolor) {
-		uchar_ptr pb = uchar_ptr(m_data);
-		for(int y=rc.bottom()-1;y>=rc.top();y--) {
-			pointer ptr = pointer(pb);
-			for(int x=rc.left();x<rc.right();x++)
-				*ptr++ = bkcolor;
-			pb += m_pitch;
+		int l = std::max(rc.left(), 0);
+		int r = std::min(rc.right(), m_width);
+		int t = std::max(rc.top(), 0);
+		int b = std::min(rc.bottom(), m_height);
+		for(int y=b-1;y>=t;y--) {
+			pointer ptr = get_row(y) + l;
+			for(int x=l;x<r;x++) *ptr++ = bkcolor;
+		}
+	}
+	
+	void blit(const surface<T>* ps, const ambulant::lib::screen_rect<int>& dst_rc, 
+		int sl, int st, value_type transp) {
+		if(!ps) return;
+		int l = std::max(dst_rc.left(), 0);
+		int r = std::min(dst_rc.right(), m_width);
+		int t = std::max(dst_rc.top(), 0);
+		int b = std::min(dst_rc.bottom(), m_height);
+		int ys = st + (b-t)-1;
+		for(int y=b-1;y>=t && ys>=st;y--, ys--) {
+			pointer ptr = get_row(y) + l;
+			const_pointer sptr = ps->get_row(ys) + sl;
+			int xs = sl;
+			for(int x=l;x<r && xs<ps->get_width();x++, xs++, ptr++, sptr++) {
+				if(*sptr != transp) *ptr = *sptr;
+			}
 		}
 	}
 
@@ -133,6 +152,11 @@ class surface {
 
 	pointer get_row(int y) {
 		if(y>=m_height) throw_range_error();
+		uchar_ptr pb = uchar_ptr(m_data) + (m_height - 1 - y)*m_pitch;
+		return pointer(pb);
+	}
+	const_pointer get_row(int y) const { 
+		assert(y<m_height);
 		uchar_ptr pb = uchar_ptr(m_data) + (m_height - 1 - y)*m_pitch;
 		return pointer(pb);
 	}

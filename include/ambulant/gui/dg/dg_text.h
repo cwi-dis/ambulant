@@ -79,6 +79,7 @@ class dg_text_renderer : public common::renderer_playable {
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
 	std::basic_string<text_char> m_text;
+	common::abstract_window *m_window;	
 };
 
 } // namespace dg

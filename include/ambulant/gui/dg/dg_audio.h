@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/event.h"
+#include "ambulant/lib/mtsync.h"
 #include "ambulant/common/renderer.h"
 
 namespace ambulant {
@@ -72,7 +73,8 @@ class dg_audio_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::abstract_window *window);
+		common::abstract_window *window,
+		lib::event_processor* worker);
 	~dg_audio_renderer();
 	void start(double t);
 	void stop();
@@ -85,6 +87,8 @@ class dg_audio_renderer : public common::renderer_playable {
 	void schedule_update();
 	audio_player *m_player;
  	lib::event *m_update_event;
+ 	lib::event_processor* m_worker;
+ 	lib::critical_section m_cs;
 };
 
 } // namespace dx

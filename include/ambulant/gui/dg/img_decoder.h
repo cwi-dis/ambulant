@@ -85,7 +85,8 @@ class img_decoder {
 	virtual void get_transparent_color(BYTE *rgb) { 
 		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
 	}
-	virtual lib::color_t get_transparent_color() { 
+	virtual lib::color_t get_transparent_color() {
+		if(!is_transparent()) return CLR_INVALID; 
 		BYTE rgb[3];get_transparent_color(rgb);
 		return lib::to_color(rgb[0], rgb[1], rgb[2]);
 	}

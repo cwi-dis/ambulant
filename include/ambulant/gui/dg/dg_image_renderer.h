@@ -59,6 +59,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/colors.h"
 
 #include "ambulant/gui/dg/dg_surface.h"
 #include "ambulant/gui/dg/dg_dib_surface.h"
@@ -82,6 +83,7 @@ class image_renderer {
 	bool is_transparent() const { return m_transparent;}
 	const lib::size& get_size() const { return m_size;}
 	dib_surface_t *get_dibsurf() { return m_dibsurf;}
+	lib::color_t get_transp_color() const { return m_transp_color;}
 	
   private:
 	void open(const std::string& url, viewport* v);
@@ -89,6 +91,7 @@ class image_renderer {
 	dib_surface_t *m_dibsurf;
 	lib::size m_size;
 	bool m_transparent;
+	lib::color_t m_transp_color;
 };
 
 } // namespace dg
