@@ -29,23 +29,24 @@
 // Define local preprocessor symbols and macros
 // The symbols and the macros will be undefined below
 
-#define XMLNS "http://www.w3.org/TR/REC-smil/2000/SMIL20/Language" 
-
 #define DEF_ELEMENT_HANDLER(name)\
 void start_##name(const q_name_pair& qn, const q_attributes_list& qattrs);\
 void end_##name(const q_name_pair& qn)
 
 #define REG_ELEMENT_HANDLER(name)\
-register_handler(q_name_pair(XMLNS,#name), smil_handler::start_##name, smil_handler::end_##name)
+register_handler(q_name_pair(smil_xmlns, #name), &smil_handler::start_##name, &smil_handler::end_##name)
 
 #define REG_ELEMENT_HANDLER2(ename, hname)\
-register_handler(q_name_pair(XMLNS,#ename), smil_handler::start_##hname, smil_handler::end_##hname)
+register_handler(q_name_pair(smil_xmlns, #ename), &smil_handler::start_##hname, &smil_handler::end_##hname)
 	
 ////////////////
 
 namespace ambulant {
 
 namespace lib {
+
+const std::string smil_xmlns =
+	"http://www.w3.org/TR/REC-smil/2000/SMIL20/Language";
 
 class smil_handler : 
 	public sax_content_handler, 
@@ -93,7 +94,7 @@ class smil_handler :
 	typedef std::pair<START_ELEMENT_HANDLER, END_ELEMENT_HANDLER> element_handler;
 	std::map<q_name_pair, element_handler> m_handlers;
 	void register_handler(const q_name_pair& qn, START_ELEMENT_HANDLER se, END_ELEMENT_HANDLER ee){ 
-		m_handlers[qn] = std::make_pair(se, ee);
+		m_handlers[qn] = element_handler(se, ee);
 	} 
 	
 	///////////////
