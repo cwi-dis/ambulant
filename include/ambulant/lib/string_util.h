@@ -65,31 +65,8 @@ namespace lib {
 
 class tokens_vector : public std::vector<std::string> {
   public:
-    tokens_vector(const char* entry, const char* delims) {
-		std::string s = (!entry || !entry[0])?"":entry;
-		typedef std::string::size_type size_type;
-		size_type offset = 0;
-		while(offset != std::string::npos) {
-			size_type i = s.find_first_of(delims, offset);
-			if(i != std::string::npos) {
-				push_back(std::string(s.c_str() + offset, i-offset));
-				offset = i+1;
-			} else {
-				push_back(std::string(s.c_str() + offset));
-				offset = std::string::npos;
-			}
-		}	
-	}			
-	std::string join(size_type i, char sep) {
-		std::string s;
-		size_type n = size();
-		if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-		for(;i<n;i++) {
-			s += sep;
-			s += (*this)[i];
-		}
-		return s;
-	}
+    tokens_vector(const char* entry, const char* delims);
+	std::string join(size_type i, char sep);
 };
 
 inline std::string trim(const std::string& s) {
@@ -172,7 +149,7 @@ class basic_scanner {
 	:	src(s), 
 		delims(d), 
 		end(s.length()),
-		pos(0), tok(0) {}
+		pos(0), tok(EOS) {}
 	
 	// Returns the next token or EOS if none is available.
 	// The current position is at the start of the next token or at end.
@@ -189,7 +166,7 @@ class basic_scanner {
 			tokval = tok = delims[ix];
 			pos++;
 		} else {
-			scan_part_not_of(delims.c_str());
+			scan_not_in_set_as(delims.c_str(), NOT_DELIM);
 		}
 		toks += tok;
 		vals.push_back(tokval);
@@ -217,7 +194,7 @@ class basic_scanner {
 	// Tokenizes the source string.
 	void tokenize() {
 		if(pos>0) reset();
-		while(next());
+		while(next() != EOS);
 	}
 	
 	// Returns the i_th token value.
@@ -240,10 +217,10 @@ class basic_scanner {
 	
   protected:
   
-	// Scans the non interesting part of the source string
-	void scan_part_not_of(const char *delim) {
-		tok = NOT_DELIM; 
-		size_type ni = src.find_first_of(delim, pos);
+	// Scans chars in the set 'cstr' as token 't'.
+	void scan_set_as(const char *cstr, char t) {
+		tok = t; 
+		size_type ni = src.find_first_not_of(cstr, pos);
 		if(vpos(ni)) {
 			tokval = string_type(src.c_str() + pos, ni-pos);
 			pos = ni;
@@ -253,10 +230,33 @@ class basic_scanner {
 		}
 	}
 	
+	// Scans chars not in the set 'cstr' as token 't'.
+	void scan_not_in_set_as(const char *cstr, char t) {
+		tok = t; 
+		size_type ni = src.find_first_of(cstr, pos);
+		if(vpos(ni)) {
+			tokval = string_type(src.c_str() + pos, ni-pos);
+			pos = ni;
+		} else {
+			tokval = string_type(src.c_str() + pos);
+			pos = end;
+		}
+	}
+	
+	// Skips chars in set 'cstr'.
+	void skip_set(const char *cstr) {
+		size_type ni = src.find_first_not_of(pszset, pos);
+		if(ni != std::basic_string<char_type>::npos) pos = ni;
+		else pos = end;
+	}
+	
+	// Skips space chars.
+	void skip_space() { skip_set(" \t\r\n");}
+	
 	// Resets this scanner; erases its memory
 	void reset() {
 		pos = 0;
-		tok = 0;
+		tok = EOS;
 		toks = "";
 		vals.clear();
 	}
@@ -269,7 +269,7 @@ class basic_scanner {
 	// The source of this scanner
 	const string_type src;
 	
-	// The tokens to recognize
+	// The literals to recognize
 	const string_type delims;
 	
 	// Source end position 
@@ -294,6 +294,175 @@ class basic_scanner {
 
 typedef basic_scanner<char> scanner;
 typedef basic_scanner<wchar_t> wscanner;
+
+
+} // namespace lib
+ 
+} // namespace ambulant
+
+
+//////////////////////////
+//
+// A simple not optimized NFA based regular expression matcher.
+//
+// May be used to match short strings created by 
+// the scanner against hand made (coded) regex. 
+
+#include <set>
+#include <stack>
+#include <cassert>
+
+namespace ambulant {
+
+namespace lib {
+
+const int EPSILON = -1;
+const int ACCEPT  = -9;
+const int REPEAT_LIMIT  = 1024;
+const int GROUP_BEGIN = 1;
+const int GROUP_END = 2;
+
+// An nfa node represents a node in a
+// nondderministic finite automaton (NFA)
+// and is associated with 2 transitions 
+// that occur on symbol 'edge'.
+//
+// NFA nodes could be linearized in a
+// continous memory buffer for efficiency.
+
+struct nfa_node {
+	typedef unsigned char uchar_t;
+	typedef std::string::size_type size_type;
+	
+	nfa_node(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
+	:	edge(e), next1(n1), next2(n2), anchor(0) { 
+	}
+	~nfa_node() {}
+
+	void set_transition(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
+		{ edge = e; next1 = n1; next2 = n2;}
+
+	bool is_epsilon_trans() { return edge == EPSILON;}
+	bool is_important_trans() { return edge != EPSILON;}
+	bool is_accept_node() { return edge == ACCEPT;}
+
+	// Used for expr construction
+	nfa_node *clone(std::set<nfa_node*>& clones);
+	
+	int edge;
+	nfa_node *next1;
+	nfa_node *next2;
+	int anchor;
+	nfa_node *myclone;
+};
+
+// An nfa_expr is a directed graph of nfa nodes and represents a NFA.
+// An nfa_expr object keeps a reference to the start and the accept nfa node.
+class nfa_expr {
+  public:
+  	typedef unsigned char uchar_t;
+	typedef std::string::size_type size_type;
+
+	nfa_expr() : start(0), accept(0) {}
+	
+	explicit nfa_expr(int edge) {
+		accept = new nfa_node(ACCEPT);
+		start = new nfa_node(edge, accept);
+	}
+	
+	nfa_expr(const char *psz)
+	:	start(0), accept(0) {
+		cat(psz);
+	}
+
+	// assignment constructor
+	nfa_expr(const nfa_expr& other) : start(other.start), accept(other.accept) {}
+
+	// explicit set instead of implicit =
+	const nfa_expr& set_to(nfa_expr& e);
+	
+	// Free the NFA nodes reachable by this
+	void free();
+	
+	// nullify this without deleting nodes
+	void release() { start = accept = 0;}
+
+	// deep copy
+	nfa_expr clone() const;
+
+	bool empty() const {return start == 0;}
+	
+	size_type size() const { 
+		std::set<nfa_node*> nodes; 
+		return get_nodes(nodes).size();
+	}
+
+	bool match(const std::string& str);
+	bool match(const std::string& str, bool anchors);
+	void move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack);
+	void closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes);
+	
+	// expr expr
+	// This becomes the owner of e
+	const nfa_expr& cat(nfa_expr& e);
+
+	// expr | expr
+	// This becomes the owner of e
+	const nfa_expr& or(nfa_expr& e);
+	
+	// expr | expr
+	const nfa_expr& or(const char *psz) {
+		nfa_expr e(psz);
+		or(e);
+		return *this;
+	}
+
+	// expr?
+	const nfa_expr& optional(){ return or(nfa_expr(EPSILON));}
+
+	// expr*
+	const nfa_expr& star();
+
+	// expr+
+	const nfa_expr& plus() {
+		nfa_expr e(clone());
+		e.star();
+		return cat(e);
+	}
+
+	const nfa_expr& cat(char ch){ return cat(nfa_expr(uchar_t(ch)));}
+
+	const nfa_expr& cat(const char *psz);
+
+	// expr{n}
+	const nfa_expr& power(int n);
+
+	// expr{n, m}
+	const nfa_expr& repeat(int n, int m);
+
+	const nfa_expr& operator+=(nfa_expr& e) {return cat(e);}
+
+	const nfa_expr& operator+=(char ch) {return cat(ch);}
+
+	const nfa_expr& operator+=(const char *psz) {return cat(psz);}
+
+	friend nfa_expr  operator+(nfa_expr& e1, nfa_expr& e2);
+
+	std::set<nfa_node*>& get_nodes(std::set<nfa_node*>& nodes) const;
+
+	// invariants checks
+	void verify1() const;
+	
+  private:
+	const nfa_expr& operator=(const nfa_expr& e) {
+		if(this != &e) free(); 
+		start = e.start; 
+		accept = e.accept; 
+		return *this;
+	}
+	nfa_node *start;
+	nfa_node *accept;
+};
 
 } // namespace lib
  
