@@ -173,7 +173,7 @@ arts_plugin::arts_plugin(
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
-	m_lock.enter();
+	m_lock.leave();
 }
 
 int
