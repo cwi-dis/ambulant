@@ -61,6 +61,7 @@ namespace ambulant {
 
 namespace lib {
 class node;
+class document;
 } // namespace lib
 
 namespace common {
@@ -162,13 +163,6 @@ class surface {
 	virtual const region_info *get_info() const = 0;
 };
 
-class layout_manager {
-  public:
-	virtual ~layout_manager() {};
-	
-	virtual surface *get_surface(const lib::node *node) = 0;
-};
-	
 // window_factory is subclassed by the various GUI implementations.
 // It should create a GUI window, and set up for that GUI window to forward
 // its redraw requests to the given region.
@@ -180,18 +174,33 @@ class window_factory {
 	virtual renderer *new_background_renderer(const region_info *src) = 0;
 };
 
-#if 0
-// abstract_bg_rendering_source is a pure virtual class used by regions to render their 
-// background, and in the future it may also
-// be used to do the bitblitting for transitions, etc.
-class abstract_bg_rendering_source {
+// surface_factory is an abstract baseclass used by the SMIL2 and MMS layout managers
+// to create hierarchical regions
+class surface_template {
   public:
-	virtual ~abstract_bg_rendering_source() {};
-	
-	virtual void drawbackground(const region_info *src, const lib::screen_rect<int> &dirty, 
-		surface *dst, abstract_window *window) = 0;
+	virtual ~surface_template() {}
+	virtual surface_template *new_subsurface(const region_info *info, renderer *bgrend) = 0;
+	virtual surface *activate() = 0;
 };
-#endif
+
+class surface_factory {
+  public:
+	virtual ~surface_factory() {}
+	virtual surface_template *new_topsurface(const region_info *info, renderer *bgrend, window_factory *wf) = 0;
+};
+
+class layout_manager {
+  public:
+	virtual ~layout_manager() {};
+	
+	virtual surface *get_surface(const lib::node *node) = 0;
+};
+
+// XXX These should be elsewhere
+layout_manager *create_smil2_layout_manager(window_factory *wf,lib::document *doc);
+//layout_manager *create_mms_layout_manager();
+surface_factory *create_smil_surface_factory();
+	
 } // namespace common
  
 } // namespace ambulant

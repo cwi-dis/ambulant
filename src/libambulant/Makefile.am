@@ -92,11 +92,11 @@ libambulant_la_SOURCES = \
 	net/url.cpp \
 	\
 	common/region.cpp \
-	common/region_node.cpp \
 	common/renderer.cpp \
 	common/schema.cpp \
 	common/smil_handler.cpp \
 	\
+	smil2/region_node.cpp \
 	smil2/smil_layout.cpp \
 	smil2/smil_player.cpp \
 	smil2/smil_time.cpp \

@@ -75,7 +75,7 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region : public surface, public renderer {
+class passive_region : public surface_template, public renderer {
 	friend class active_region;
 
   protected:
@@ -90,9 +90,8 @@ class passive_region : public surface, public renderer {
 	virtual void user_event(const point &where);
 	virtual void mouse_region_changed();
         
-	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
-	virtual passive_region *subregion(const region_info *info, renderer *bgrenderer);
-	active_region *activate(const node *node);
+	virtual common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
+	surface *activate();
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
@@ -127,6 +126,8 @@ class passive_region : public surface, public renderer {
 	point m_window_topleft;				// region top-left in window coordinate space XXXX do lazy
   	passive_region *m_parent;			// parent region
   	active_region *m_cur_active_region; // active region currently responsible for redraws
+  	active_region *m_bg_active_region; // active region responsible for background redraws
+	active_region *m_old_active_region; // previous active region (for transitions)
   	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
@@ -153,10 +154,8 @@ class passive_root_layout : public passive_region {
 
 class active_region : public surface, public renderer {
   public:
-	active_region(passive_region *const source,
-		const node *node)
+	active_region(passive_region *const source)
 	:	m_source(source),
-		m_node(node),
 		m_renderer(NULL),
 		m_mouse_region(NULL)
         {
@@ -192,9 +191,13 @@ class active_region : public surface, public renderer {
 
   protected:
 	passive_region *const m_source;
-	const node *m_node;
 	renderer *m_renderer;
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
+};
+
+class smil_surface_factory : public surface_factory {
+  public:
+	surface_template *new_topsurface(const region_info *info, renderer *bgrend, window_factory *wf);
 };
 
 } // namespace common

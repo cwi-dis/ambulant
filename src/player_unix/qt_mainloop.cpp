@@ -69,7 +69,9 @@ qt_mainloop::run(void* view) {
 		"qt_mainloop::run(qt_gui=0x%x)",
 		view);
 
-	document *doc = document::create_from_file(qt_view->filename());
+	const char *filename = qt_view->filename();
+	bool is_mms = strcmp(".mms", filename + strlen(filename) - 4) == 0;
+	document *doc = document::create_from_file(filename);
 
 	common::global_playable_factory *rf =
 		new common::global_playable_factory(); 
@@ -88,11 +90,11 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 			 	   qt_view->get_o_y());
 			 
 	common::abstract_player *a;
-#ifdef WITH_MMS_PLAYER
-	a = new mms::mms_player(doc, wf, rf);
-#else
-	a = new smil2::smil_player(doc, wf, rf);
-#endif
+	if (is_mms) {
+		a = common::create_mms_player(doc, wf, rf);
+	} else {
+		a = common::create_smil2_player(doc, wf, rf);
+	}
 				
 	a->start();
 

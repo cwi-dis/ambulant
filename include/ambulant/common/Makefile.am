@@ -7,7 +7,6 @@ library_include_HEADERS= \
 	region_dim.h \
 	region_eval.h \
 	region_info.h \
-	region_node.h \
 	region.h \
 	renderer.h \
 	schema.h \

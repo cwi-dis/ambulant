@@ -57,7 +57,6 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/smil2/smil_layout.h"
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/smil_player.h"
@@ -69,6 +68,12 @@
 
 using namespace ambulant;
 using namespace smil2;
+
+common::abstract_player *
+common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
+{
+	return new smil_player(doc, wf, rf);
+}
 
 smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
 :	m_doc(doc),
@@ -88,7 +93,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	test_attrs::read_custom_attributes(m_doc);
 	
 	// though we need only the top level windows at this moment
-	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
+	m_layout_manager = common::create_smil2_layout_manager(m_wf, m_doc);
 	
 }
 
@@ -105,7 +110,7 @@ smil_player::~smil_player() {
 
 void smil_player::build_layout() {
 	if(m_layout_manager) delete m_layout_manager;
-	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
+	m_layout_manager = common::create_smil2_layout_manager(m_wf, m_doc);
 }
 
 void smil_player::build_timegraph() {

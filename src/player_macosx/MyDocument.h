@@ -50,6 +50,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "mainloop.h"
+#include "ambulant/gui/cocoa/cocoa_gui.h"
 
 @interface MyDocument : NSDocument
 {

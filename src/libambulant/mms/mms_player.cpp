@@ -63,6 +63,12 @@
 using namespace ambulant;
 using namespace mms;
 
+common::abstract_player *
+common::create_mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
+{
+	return new mms_player(doc, wf, rf);
+}
+
 mms_player::mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
 :	m_doc(doc),
 	m_tree(doc->get_root()),

@@ -249,10 +249,6 @@ class node {
 	
 	static int get_node_counter() {return node_counter;}
 	
-	/////////////////////
-	// region nodes
-	virtual bool is_region_node() const { return false; }
-
   /////////////
   protected:
 	// node data 

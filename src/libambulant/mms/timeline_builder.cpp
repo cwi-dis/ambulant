@@ -51,7 +51,8 @@
  */
 
 #include "ambulant/lib/logger.h"
-#include "ambulant/common/region.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/mms/timeline_builder.h"
 #include <stdlib.h>
@@ -82,6 +83,7 @@ class mms_region_info : public common::region_info {
 	mms_region_info(std::string name, lib::screen_rect<int> bounds)
 	:   m_name(name),
 		m_bounds(bounds) {}
+	virtual ~mms_region_info() {}
 		
 	std::string get_name() const {return m_name; }
 	lib::basic_rect<int> get_rect() const { return lib::basic_rect<int>(m_bounds.left_top(), m_bounds.size()); }
@@ -134,12 +136,13 @@ mms_layout_manager::mms_layout_manager(common::window_factory *wf, const lib::do
 	mms_region_info *text_info = new mms_region_info("Text", text_rect);
 	mms_region_info *audio_info = new mms_region_info("Audio", lib::rect());
 	
-	common::passive_root_layout *root_layout = new common::passive_root_layout(
-			root_info, lib::size(176, 216), NULL, wf);
+	common::surface_factory *sfact = common::create_smil_surface_factory();
+	common::surface_template *root_layout = sfact->new_topsurface(
+			root_info, NULL, wf);
 	
-	m_audio_rgn = root_layout->subregion(audio_info, NULL);
-	m_text_rgn = root_layout->subregion(text_info, NULL);
-	m_image_rgn = root_layout->subregion(image_info, NULL);
+	m_audio_rgn = root_layout->new_subsurface(audio_info, NULL);
+	m_text_rgn = root_layout->new_subsurface(text_info, NULL);
+	m_image_rgn = root_layout->new_subsurface(image_info, NULL);
 }
 
 mms_layout_manager::~mms_layout_manager()
@@ -158,9 +161,9 @@ mms_layout_manager::get_surface(const lib::node *node)
 {
 	common::surface *rgn;
 	lib::xml_string tag = node->get_qname().second;
-	if (tag == "img" || tag == "video") rgn = m_image_rgn->activate(node);
-	else if ( tag == "text") rgn = m_text_rgn->activate(node);
-	else if ( tag == "audio") rgn = m_audio_rgn->activate(node);
+	if (tag == "img" || tag == "video") rgn = m_image_rgn->activate();
+	else if ( tag == "text") rgn = m_text_rgn->activate();
+	else if ( tag == "audio") rgn = m_audio_rgn->activate();
 	else {
 		lib::logger::get_logger()->error("timeline_builder.build_leaf: unknown node type %s", tag.c_str());
 		return NULL;

@@ -52,7 +52,7 @@
 #include <SDL_mixer.h>
 #include <iostream>
 
-#include "ambulant/common/region.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/gui/none/none_gui.h"

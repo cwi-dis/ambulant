@@ -47,16 +47,17 @@
  */
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/asb.h"
+#include "ambulant/lib/refcount.h"
+//#include "ambulant/lib/event_processor.h"
+//#include "ambulant/lib/asb.h"
 #include "ambulant/common/player.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/document.h"
-#include "ambulant/gui/cocoa/cocoa_gui.h"
 
 class mainloop : public ambulant::lib::ref_counted_obj {
   public:
-	mainloop(const char *filename, ambulant::common::window_factory *wf);
+	mainloop(const char *filename, ambulant::common::window_factory *wf, bool use_mms);
 	~mainloop();
 	
 	// The callback member function.
@@ -66,8 +67,8 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	
 	void run();
 	void set_speed(double speed);
-	double get_speed() const { return m_speed; };
-	bool is_running() const { return m_running; };
+	double get_speed() const { return m_speed; }
+	bool is_running() const { return m_running; }
 	
   private:
   	bool m_running;

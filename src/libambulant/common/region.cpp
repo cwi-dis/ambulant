@@ -61,6 +61,28 @@
 using namespace ambulant;
 using namespace common;
 
+// Factories
+common::surface_factory *
+common::create_smil_surface_factory()
+{
+	return new smil_surface_factory();
+}
+
+common::surface_template *
+smil_surface_factory::new_topsurface(
+	const common::region_info *info,
+	common::renderer *bgrend,
+	common::window_factory *wf)
+{
+	lib::size bounds = lib::size(200, 200);
+	if (info) {
+		lib::basic_rect<int, int> rect = info->get_rect();
+		bounds = lib::size(rect.width(), rect.height());
+	}
+	return new passive_root_layout(info, bounds, bgrend, wf);
+}
+
+
 passive_region::passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
 	const region_info *info, renderer *bgrenderer)
 :	m_name(name),
@@ -71,6 +93,8 @@ passive_region::passive_region(const std::string &name, passive_region *parent, 
 	m_window_topleft(bounds.left_top()),
 	m_parent(parent),
 	m_cur_active_region(NULL),
+	m_bg_active_region(NULL),
+	m_old_active_region(NULL),
 	m_mouse_region(NULL),
 	m_info(info),
 	m_bg_renderer(bgrenderer)
@@ -80,8 +104,10 @@ passive_region::passive_region(const std::string &name, passive_region *parent, 
 		m_mouse_region = parent->m_mouse_region->clone();
 		m_mouse_region->clear();
 	}
-	if (m_bg_renderer)
-		m_bg_renderer->set_surface(this);
+	if (m_bg_renderer) {
+		m_bg_active_region = static_cast<active_region *>(activate());
+		m_bg_renderer->set_surface(m_bg_active_region);
+	}
 }
 
 passive_region::~passive_region()
@@ -96,6 +122,9 @@ passive_region::~passive_region()
 	if (m_bg_renderer)
 		delete m_bg_renderer;
 	m_bg_renderer = NULL;
+	if (m_bg_active_region)
+		delete m_bg_active_region;
+	m_bg_active_region = NULL;
 //	if (m_mouse_region)
 //		delete m_mouse_region;
 	m_mouse_region = NULL;
@@ -107,18 +136,9 @@ passive_region::~passive_region()
 		delete (*i).second;
 	}
 }
-	
-passive_region *
-passive_region::subregion(const std::string &name, lib::screen_rect<int> bounds)
-{
-	AM_DBG lib::logger::get_logger()->trace("subbregion NO-INFO: ltrb=(%d, %d, %d, %d)", bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
-	passive_region *rv = new passive_region(name, this, bounds, NULL, NULL);
-	m_active_children.insert(std::make_pair(zindex_t(0), rv));
-	return rv;
-}
 
-passive_region *
-passive_region::subregion(const region_info *info, renderer *bgrenderer)
+common::surface_template *
+passive_region::new_subsurface(const region_info *info, renderer *bgrenderer)
 {
 	screen_rect<int> bounds = info->get_screen_rect();
 	zindex_t z = info->get_zindex();
@@ -129,10 +149,10 @@ passive_region::subregion(const region_info *info, renderer *bgrenderer)
 	return rv;
 }
 
-active_region *
-passive_region::activate(const lib::node *node)
+common::surface *
+passive_region::activate()
 {
-	active_region *rv = new active_region(this, node);
+	active_region *rv = new active_region(this);
 	AM_DBG lib::logger::get_logger()->trace("passive_region::activate(%s, 0x%x) -> 0x%x", m_name.c_str(), (void*)this, (void*)rv);
 	return rv;
 }

@@ -58,7 +58,6 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/region.h"
 #include "ambulant/mms/timelines.h"
 
 namespace ambulant {
@@ -72,7 +71,7 @@ class mms_layout_manager : public common::layout_manager {
 	
 	common::surface *get_surface(const lib::node *node);
   private:
-  	common::passive_region *m_audio_rgn, *m_text_rgn, *m_image_rgn;
+  	common::surface_template *m_audio_rgn, *m_text_rgn, *m_image_rgn;
 };
 
 class timeline_builder {

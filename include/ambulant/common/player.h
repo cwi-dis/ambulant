@@ -58,11 +58,14 @@
 namespace ambulant {
 
 namespace lib {
-	class timer;
-	class event_processor;
+class timer;
+class event_processor;
+class document;
 }
 
 namespace common {
+class window_factory;
+class playable_factory;
 
 class abstract_player {
   public:
@@ -79,6 +82,10 @@ class abstract_player {
 //	void set_speed(double speed);
 //	double get_speed() const;
 };
+
+// Factory functions - should these be here?
+abstract_player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
+abstract_player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf);
 
 } // namespace common
  

@@ -83,7 +83,8 @@
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *filename = [self fileName];
-    myMainloop = new mainloop([filename UTF8String], myWindowFactory);
+	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
+    myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms);
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType

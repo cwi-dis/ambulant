@@ -186,6 +186,15 @@ class region_dim {
 		}
 		throw std::runtime_error("Illegal call. Region dim is undefined");
 	}
+	
+	bool operator== (const region_dim& other) const {
+		if (m_type != other.m_type) return false;
+		if (m_type == rdt_absolute) return m_holder.int_val == other.m_holder.int_val;
+		if (m_type == rdt_relative) return m_holder.dbl_val == other.m_holder.dbl_val;
+		return true;
+	}
+
+	bool operator!= (const region_dim& other) const { return !(*this == other); }
 		
   private: 
 	// region dimension types
@@ -201,6 +210,12 @@ class region_dim {
 struct region_dim_spec {
 	region_dim left, width, right;
 	region_dim top, height, bottom;
+	bool operator== (region_dim_spec& other) const {
+		return left==other.left && width==other.width && right==other.height
+		    && top == other.top && height==other.height && bottom==other.bottom;
+	}
+	
+	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
 };
 
 } // namespace common

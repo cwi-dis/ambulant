@@ -62,11 +62,6 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
-#ifdef WITH_MMS_PLAYER
-#include "ambulant/mms/mms_player.h"
-#else
-#include "ambulant/smil2/smil_player.h"
-#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -80,7 +75,7 @@ usage()
 	exit(1);
 }
 
-mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf)
+mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, bool use_mms)
 :   m_running(false),
 	m_speed(1.0),
 	m_doc(NULL),
@@ -101,11 +96,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf)
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
 		return;
 	}
-#ifdef WITH_MMS_PLAYER
-	m_player = new mms::mms_player(m_doc, m_wf, m_rf);
-#else
-	m_player = new smil2::smil_player(m_doc, m_wf, m_rf);
-#endif
+	if (use_mms)
+		m_player = common::create_mms_player(m_doc, m_wf, m_rf);
+	else
+		m_player = common::create_smil2_player(m_doc, m_wf, m_rf);
 }
 
 mainloop::~mainloop()

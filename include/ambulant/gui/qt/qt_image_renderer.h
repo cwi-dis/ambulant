@@ -59,7 +59,6 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region_info.h"
-#include "ambulant/common/region_node.h"
 #include "ambulant/gui/none/none_gui.h"
 
 //#define AM_DBG
