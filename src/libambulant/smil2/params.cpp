@@ -65,7 +65,7 @@ using namespace smil2;
 params *
 params::for_node(const lib::node *n)
 {
-	bool has_params = n->get_first_child("param");
+	bool has_params = (bool)n->get_first_child("param");
 #ifdef SMIL_21
 	const char *indir_params = n->get_attribute("param");
 	if (indir_params) abort();
@@ -140,7 +140,7 @@ params::get_float(const std::string &paramname, float dft)
 {
 	const char *s_float = get_str(paramname);
 	if (s_float == NULL) return dft;
-	return atof(s_float);
+	return (float)atof(s_float);
 }
 
 

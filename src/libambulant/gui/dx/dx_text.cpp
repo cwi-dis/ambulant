@@ -60,6 +60,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/string_util.h"
+#include "ambulant/smil2/params.h"
 
 //#define AM_DBG
 
@@ -94,6 +95,27 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 			url.get_url().c_str());
 	}
 	m_text = new text_renderer(url, bounds, v);
+	
+	// Pass <param> settings, if applicable
+	smil2::params *params = smil2::params::for_node(m_node);
+	if (params) {
+		const char *fontname = params->get_str("font-family");
+//		const char *fontstyle = params->get_str("font-style");
+		lib::color_t text_color = params->get_color("color", 0);
+		float fontsize = params->get_float("font-size", 0.0);
+		if (fontname) {
+			m_text->set_text_font(fontname);
+		}
+		if (fontsize) {
+			m_text->set_text_size(fontsize);
+		}
+		if (text_color) {
+			m_text->set_text_color(text_color);
+		}
+		delete params;
+	}
+
+	m_text->open();
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {

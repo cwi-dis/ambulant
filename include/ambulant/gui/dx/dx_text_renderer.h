@@ -59,6 +59,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/colors.h"
 #include "ambulant/net/url.h"
 
 #include <string>
@@ -77,15 +78,23 @@ class text_renderer {
   public:
 	text_renderer(const net::url& u, const lib::size& bounds, viewport* v);
 	~text_renderer();
+	void open();
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return true;}
 	const lib::size& get_size() const { return m_size;}
 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
+	void set_text_color(lib::color_t color);
+	void set_text_size(float size);
+	void set_text_font(const char *font);
 	
   private:
-	void open(const net::url& u, viewport* v);
 	lib::size m_size;
+	net::url m_url;
+	viewport* m_viewport;
 	IDirectDrawSurface *m_ddsurf;
+	lib::color_t m_text_color;
+	float m_text_size;
+	const char *m_text_font;
 };
 
 } // namespace dx
