@@ -263,6 +263,9 @@ active_video_renderer::active_video_renderer(
 	if (m_src == NULL) {
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}
+	if (m_src->has_audio()) {
+		lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
+	}
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 }
 

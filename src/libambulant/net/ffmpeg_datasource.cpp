@@ -612,33 +612,41 @@ ffmpeg_video_datasource::~ffmpeg_video_datasource()
 bool
 ffmpeg_video_datasource::has_audio()
 {
-	return false;
+	if (get_audio_stream_nr() >= 0)
+		return true;
+
+	return false;	
 }
 
 audio_datasource *
 ffmpeg_video_datasource::get_audio_datasource()
-{
+{	
+	AVCodec *codec;
+	AVCodecContext *codeccontext;
 	int stream_index = get_audio_stream_nr();
+
+	if (stream_index < 0 ) 
+		return NULL;
+	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr() looking for the right codec");
 	codeccontext = &m_con->streams[stream_index]->codec; 
 	codec = avcodec_find_decoder(codeccontext->codec_id);
 	
 	if( !codec) {
 		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d not found", m_url.c_str(), codeccontext->codec_id);
-		return -1;
+		return NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): codec found !");
 	}
 
-	
 	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
 		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d: cannot open", m_url.c_str(), codeccontext->codec_id);
-		return -1;
+		return NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): succesfully opened codec");
 	}
 	
-	return NULL;
+	return new ffmpeg_audio_datasource(m_url, m_con, m_thread, stream_index);
 }
 
 void 
@@ -872,8 +880,7 @@ ffmpeg_video_datasource::buffer_full()
 
 int ffmpeg_video_datasource::get_audio_stream_nr()
 {
-	AVCodec *codec;
-	AVCodecContext *codeccontext;
+
 	int stream_index;
 	
 	ffmpeg_init();
