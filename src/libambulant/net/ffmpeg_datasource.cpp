@@ -48,16 +48,25 @@
  
 #include "ambulant/net/ffmpeg_datasource.h" 
 #include "ambulant/net/datasource.h"
+#include "ambulant/lib/logger.h"
 
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 
 using namespace ambulant;
-bool net::ffmpeg_audio_datasource::m_ffmpeg_init = false;
 
-net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(active_datasource *const src)
+typedef lib::no_arg_callback<net::ffmpeg_audio_datasource> readdone_callback;
+bool net::ffmpeg_audio_datasource::m_codec_selected = false;
+bool net::ffmpeg_audio_datasource::m_avcodec_open = false;
+
+
+net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(abstract_active_datasource *const src, lib::event_processor *const evp) : m_event_processor(evp)
 {
 	m_src = src;
+	m_readdone = new readdone_callback(this, &net::ffmpeg_audio_datasource::callback);
 	init();
 }
 
@@ -66,50 +75,67 @@ net::ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
 }	
 
 int
-net::ffmpeg_audio_datasource::decode(char* in, int size, char* out, int &outsize)
+net::ffmpeg_audio_datasource::decode(uint8_t* in, int size, uint8_t* out, int &outsize)
 {
-	return avcodec_decode_audio(in,size,out,&outsize);
+	return avcodec_decode_audio(m_con, (short*) out, &outsize, in, size);
 }
 		  
 void 
-net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
+net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
-		m_src->start(evp, callback);
+		m_src->start(m_event_processor,  m_readdone);
 	} else {
 		m_blocked_full = true;
 	}
 	
 	if( m_src->size() > 0 ) {
-		callbackk();
+		if (evp && callbackk) {
+			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+		evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 	} else {
 		m_client_waiting = true;
 	}
+}
 }
  
 void 
 net::ffmpeg_audio_datasource::readdone(int len)
 {
-	m_buffer->readdone(size);
+	m_buffer.readdone(len);
 	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
-		m_src->start(evp, callback);
+		m_src->start(m_event_processor, m_readdone);
 	}
 }
 
 void 
 net::ffmpeg_audio_datasource::callback()
 {
+	int result;
 	int size;
 	int outsize;
 	int decoded;
+	char* in_ptr;
 	
 	
 	
-	m_inbuf = m_src->get_ptr();
+	in_ptr = m_src->read_ptr();
+	m_inbuf = (uint8_t*) in_ptr;
 	size = m_src->size();
-	m_outbuf = m_buffer->prepare();
+	m_outbuf = (uint8_t*) m_buffer.prepare();
+	if(!m_codec_selected) {
+		select_decoder("mp3");
+		m_codec_selected = true;
+	}
+	if(!m_avcodec_open) {
+		result = avcodec_open(m_con, m_codec);
+    	if ( result < 0) {
+			lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback : Failed to open avcodec");
+		}
+		m_avcodec_open = true;
+	}
 	decoded = decode(m_inbuf, size, m_outbuf, outsize);
-	m_buffer->pushdata(outsize)
+	m_buffer.pushdata(outsize);
 	m_src->readdone(decoded);
 	
 	if ( m_client_waiting ) {
@@ -118,7 +144,7 @@ net::ffmpeg_audio_datasource::callback()
 	}
 		
 	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
-		m_src->start(evp, callback);
+		m_src->start(m_event_processor, m_readdone);
 	} else {
 		m_blocked_full = true;
 	}
@@ -134,23 +160,23 @@ net::ffmpeg_audio_datasource::end_of_file()
 bool 
 net::ffmpeg_audio_datasource::buffer_full()
 {
-	return m_buffer->is_full();
+	return m_buffer.is_full();
 }	
 
 char* 
 net::ffmpeg_audio_datasource::read_ptr()
 {
-	return m_src->read_ptr();
+	return m_buffer.get_read_ptr();
 }
 
 int 
-net::ffmpeg_audio_datasource::size() const;   
+net::ffmpeg_audio_datasource::size() const
 {
-	return m_src->size();
+		return m_buffer.used();
 }	
 
 int 
-net::ffmpeg_audio_datasource::get_nchannels();
+net::ffmpeg_audio_datasource::get_nchannels()
 {
 	return m_con->channels;
 }
@@ -171,9 +197,9 @@ net::ffmpeg_audio_datasource::get_bitrate ()
 int 
 net::ffmpeg_audio_datasource::select_decoder(char* file_ext)
 {
-	m_codec = avcodec_find_decoder_by_name(m_ext.cstr());
-	if (m_con == NULL) {
-			lib::logger::get_logger->error("ffmpeg_audio_datasource.select_decoder : Failed to open codec");
+	m_codec = avcodec_find_decoder_by_name(file_ext);
+	if (m_codec == NULL) {
+			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder : Failed to open codec");
 	}
 }
 

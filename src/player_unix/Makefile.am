@@ -26,7 +26,7 @@ endif
 
 if WITH_FFMPEG
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a
-extra_ffmpeg_ldflags=-lavcodec
+extra_ffmpeg_ldflags=-L/usr/lib -lavcodec
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG
 else
 extra_ffmpeg_LDADD=

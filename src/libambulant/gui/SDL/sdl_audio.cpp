@@ -206,6 +206,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_audio_format = AUDIO_S16;
 	m_buffer_size = 4096;
 	m_channel_used = 0;	
+	m_audio_src = new net::ffmpeg_audio_datasource(m_src, evp);
 }
 
 int

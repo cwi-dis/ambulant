@@ -71,15 +71,15 @@ qt_mainloop::run(void* view)
 
   document *doc = document::create_from_file(qt_view->filename());
 
-  lib::global_renderer_factory *rf = new lib::global_renderer_factory();
-#ifdef WITH_ARTS
-  rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
-#endif    
+  lib::global_renderer_factory *rf = new lib::global_renderer_factory();   
 #ifdef WITH_SDL
   AM_DBG logger::get_logger()->trace("add factory for SDL");
   rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
   AM_DBG logger::get_logger()->trace("add factory for SDL done");
 #endif
+#ifdef WITH_ARTS
+  rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
+#endif 
   rf->add_factory(new qt_renderer_factory());
  
   wf = new qt_window_factory(qt_view, 

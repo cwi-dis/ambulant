@@ -59,6 +59,7 @@
 #include "ambulant/net/datasource.h"
 
 #include "avcodec.h"
+#include "common.h"
 
 // temporary debug messages
 #include <iostream>
@@ -81,11 +82,10 @@ namespace ambulant
 namespace net
 {
 
-class ffmpeg_audio_datasource: public abstract_audio_datasource
-{
+class ffmpeg_audio_datasource: public abstract_audio_datasource {
   public:
-	 ffmpeg_audio_datasource(active_datasource *const src);
-     ~ffmpeg_audio_datasource();
+	 ffmpeg_audio_datasource(abstract_active_datasource *const src, lib::event_processor *const evp);
+    ~ffmpeg_audio_datasource();
      
 		  
     void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);  
@@ -98,25 +98,33 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource
 	char* read_ptr();
 	int size() const;   
 	
+ 
 	int get_nchannels();
   	int get_nbits ();
 	int get_bitrate ();
 	int select_decoder(char* file_ext);
-  
-  private:
-	int init();
-  	active_datasource m_src;
-	AVCodecContex *m_con;
-  	AVCodec *m_codec;
   	
-  	//cstring m_ext;
+  protected:
+	int init(); 
+  	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
+	  
+  private:
+
+  	AVCodec  *m_codec;
+    AVCodecContext *m_con;  
+    lib::event_processor *const m_event_processor;
+    lib::event *m_readdone;
+  	abstract_active_datasource* m_src;
+
   	bool m_ffmpeg_init;
-    active_datasource m_src;
-	char* m_inbuf;
-	char* m_outbuf;
-	net::databuffer m_buffer;
+	uint8_t* m_inbuf;
+	uint8_t* m_outbuf;
+	databuffer m_buffer;
 	bool m_blocked_full;
 	bool m_client_waiting;
+    static bool m_codec_selected;
+  	static bool m_avcodec_open;
+  
 };
 
 }	// end namespace net

@@ -147,9 +147,6 @@ class abstract_active_datasource : public ambulant::lib::ref_counted_obj {
 	virtual char* read_ptr() = 0;
 	virtual int size() const = 0 ;
 	
-  private:
-	virtual void filesize() = 0 ;
-    virtual void read_file() = 0 ;
 };
 
 

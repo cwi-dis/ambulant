@@ -50,7 +50,7 @@ endif
 
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
-libambulant_ffmpeg_la_LDFLAGS =  -lavcodec
+libambulant_ffmpeg_la_LDFLAGS =  -L/usr/lib -lavcodec
 ffmpegincludes = -I/usr/include/ffmpeg
 
 libambulant_ffmpeg_la_SOURCES = 	\

@@ -57,6 +57,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/net/ffmpeg_datasource.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 
@@ -77,48 +78,49 @@ using namespace lib;
 
 class sdl_active_audio_renderer : public active_renderer, public timer_events {
   public:
-      sdl_active_audio_renderer(
-      active_playable_events *context,
-      active_playable_events::cookie_type cookie,
-      const node *node,
-      event_processor *const evp,
-      net::passive_datasource *src);
+    sdl_active_audio_renderer(
+    active_playable_events *context,
+    active_playable_events::cookie_type cookie,
+    const node *node,
+    event_processor *const evp,
+    net::passive_datasource *src);
 
-      ~sdl_active_audio_renderer();
+  	~sdl_active_audio_renderer();
 
       
-  	  bool is_paused();
-  	  bool is_stopped();
-  	  bool is_playing();
+  	bool is_paused();
+  	bool is_stopped();
+  	bool is_playing();
   
  
-      void start(double where);
-      void stop();
-      void pause();
-      void resume();
-	  void freeze() {};
-      void speed_changed() {};
-      void readdone();
-      void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
-	  void wantclicks(bool want) {};
-      void user_event(const point &where) {};
-  	  void callback(void *userdata, Uint8 *stream, int len);
-	  void playdone();
+    void start(double where);
+    void stop();
+    void pause();
+    void resume();
+	void freeze() {};
+    void speed_changed() {};
+    void readdone();
+    void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
+	void wantclicks(bool want) {};
+    void user_event(const point &where) {};
+  	void callback(void *userdata, Uint8 *stream, int len);
+	void playdone();
 		  
-	private:
-	  int inc_channels();
-	  int init(int rate, int bits, int channels);
-      static bool m_sdl_init;
-	  static int m_mixed_channels;
-      Mix_Chunk m_audio_chunck;
-	  int m_use_channel;
-      int m_rate;
-	  int m_bits;
-      int m_channels;
-      int m_buffer_size;
-	  int m_channel_used;
-	  Uint16 m_audio_format;
-      event *m_playdone;
+  private:
+	net::ffmpeg_audio_datasource *m_audio_src;
+ 	int inc_channels();
+	int init(int rate, int bits, int channels);
+    static bool m_sdl_init;
+    static int m_mixed_channels;
+    Mix_Chunk m_audio_chunck;
+	int m_use_channel;
+    int m_rate;
+	int m_bits;
+    int m_channels;
+    int m_buffer_size;
+	int m_channel_used;
+	Uint16 m_audio_format;
+    event *m_playdone;
 };
 
 } // end namespace sdl
