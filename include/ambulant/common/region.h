@@ -112,7 +112,7 @@ class passive_region : public surface_template, public renderer {
 	void need_events(bool want) {abort();};
 	// And some renderer interface we don't support:
 	void set_surface(surface *dest) {abort(); }
-	surface *get_surface() {abort(); }
+	surface *get_surface() {abort(); return 0;}
 
 	void need_bounds();
 	void draw_background(const screen_rect<int> &r, abstract_window *window);
@@ -186,7 +186,7 @@ class active_region : public surface, public renderer {
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
 	// And some renderer interface we don't support:
 	void set_surface(surface *dest) {abort(); }
-	surface *get_surface() {abort(); }
+	surface *get_surface() {abort(); return 0;}
 
   private:
 	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
