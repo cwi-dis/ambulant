@@ -175,13 +175,27 @@ void
 gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
 	m_static_lock.enter();
-	memset(stream, 0, len);
-	std::list<sdl_active_audio_renderer *>::iterator i;
-	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
-		Uint8 *next_data;
-		int next_len = (*i)->get_data(len, &next_data);
-		add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2));
-		(*i)->get_data_done(next_len);
+	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
+	if (m_renderers.size() == 1) {
+		// Exactly one active stream: use simple copy
+		Uint8 *single_data;
+		int single_len = (*first)->get_data(len, &single_data);
+		if (single_len != 0)
+			memcpy(stream, single_data, std::min(len, single_len));
+		(*first)->get_data_done(single_len);
+		if (single_len < len)
+			memset(stream+single_len, 0, (len-single_len));
+	} else {
+		// No streams, or more than one: use an accumulation buffer
+		memset(stream, 0, len);
+		std::list<sdl_active_audio_renderer *>::iterator i;
+		for (i=first; i != m_renderers.end(); i++) {
+			Uint8 *next_data;
+			int next_len = (*i)->get_data(len, &next_data);
+			if (next_len)
+				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2));
+			(*i)->get_data_done(next_len);
+		}
 	}
 	m_static_lock.leave();
 }
@@ -255,7 +269,8 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	// Acknowledge that we are ready with the data provided to us
 	// at the previous callback time
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
-	m_audio_src->readdone(size);
+	if (size)
+		m_audio_src->readdone(size);
 	bool still_busy;
 	still_busy = (size != 0);
 	still_busy |= restart_audio_input();
