@@ -73,25 +73,25 @@ std::list< net::url::handler_pair* > net::url::s_handlers;
 void net::url::init_statics() {
 
 	// workaround for g++ 2.95
-	static handler_pair h1 = {std::string("n://n:n/"), &url::set_from_host_port_uri};
+	static handler_pair h1 = {"n://n:n/", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1);
  	
-	static handler_pair h2 = {std::string("n://n/"), &url::set_from_host_uri};
+	static handler_pair h2 = {"n://n/", &url::set_from_host_uri};
  	s_handlers.push_back(&h2);
  	
-	static handler_pair h3 = { std::string("n:///"), &url::set_from_localhost_file_uri};
+	static handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h3);
  	
-	static handler_pair h4 = { std::string("n:///"), &url::set_from_localhost_file_uri};
+	static handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h4);
  	
-	static handler_pair h5 = {std::string("/n"), &url::set_from_unix_path};
+	static handler_pair h5 = {"/n", &url::set_from_unix_path};
  	s_handlers.push_back(&h5);
  	
-	static handler_pair h6 = {std::string("n:n"), &url::set_from_windows_path};
+	static handler_pair h6 = {"n:n", &url::set_from_windows_path};
  	s_handlers.push_back(&h6);
  	
-	static handler_pair h7 = {std::string("n:/n"), &url::set_from_windows_path};
+	static handler_pair h7 = {"n:/n", &url::set_from_windows_path};
  	s_handlers.push_back(&h7);
 	
 	/*
