@@ -86,7 +86,7 @@
 
 static const char* loglevels[] = 
   { "debug", "trace", "show", "warn", "error", "fatal", 0 };
-static const char* parsers[]   = { "any","expat", "xerces", 0 };
+static const char* parsers[]   = { "any", "expat", "xerces", 0 };
 static const char* val_schemes[] = {"never", "always", "auto", 0};
 
 QWidget* 
@@ -104,14 +104,17 @@ qt_settings::settings_select() {
 	m_loglevel_co->insertStrList(loglevels);
 	m_loglevel_co->setCurrentItem(m_preferences->m_log_level);
 
-	// This part takes care of the parser pref.
+	// This part takes care of the parser pref
+	const char* id	= m_preferences->m_parser_id.c_str();
+	int id_nr = index_in_string_array(id, parsers);
+	
 	m_parser_hb	= new QHBox(m_settings_vg);
 	m_parser_lb	= new QLabel(gettext("XML parser:"), m_parser_hb);
 	m_parser_co	= new QComboBox("QComboBox2", m_parser_hb);
 	m_parser_co->insertStrList(parsers);
-	const char* id	= m_preferences->m_parser_id.data();
-	m_parser_co->setCurrentItem(index_in_string_array(id, parsers));
-
+	//m_parser_co->setCurrentText(QString(id));
+	m_parser_co->setCurrentItem(id_nr);
+	
 	
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	m_xerces_vg	= new QVGroupBox(gettext("Xerces options:"),
@@ -126,7 +129,7 @@ qt_settings::settings_select() {
 	m_validation_co = new QComboBox("QComboBox3", m_validation_hb);
 	m_validation_co->insertStrList(val_schemes);
 	const char* scheme = m_preferences->m_validation_scheme.c_str();
-	m_parser_co->setCurrentItem(index_in_string_array(scheme, val_schemes));
+	m_validation_co->setCurrentItem(index_in_string_array(scheme, val_schemes));
 	
 	//m_validation_cb->setChecked(m_preferences->m_validation_scheme);
 
