@@ -26,9 +26,9 @@ template<class T>
 class ostringstream_wrapper {
   public:	
 	ostringstream_wrapper(T* logger, void (T::*logf)(const std::string& s)) 
-	:	m_logger(logger),
-		m_logf(logf),
-		m_pos(new std::ostringstream()) {
+	:	m_pos(new std::ostringstream()),
+		m_logger(logger),
+		m_logf(logf) {
 	}
 	
 	~ostringstream_wrapper() {
