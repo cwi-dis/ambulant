@@ -97,9 +97,10 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 		m_cur_active_region(NULL),
 		m_mouse_region(NULL),
 		m_info(NULL) {}
-	virtual ~passive_region() {}
+	virtual ~passive_region();
 	
 	virtual void show(active_region *cur);
+	virtual void active_region_done();
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
 	virtual void user_event(const point &where);
 	virtual void mouse_region_changed();

@@ -156,4 +156,12 @@
 {
     return view;
 }
+
+- (void)close
+{
+	NSLog(@"close");
+	if (myWindowFactory) delete myWindowFactory;
+	if (myMainloop) delete myMainloop;
+	[super close];
+}
 @end

@@ -54,7 +54,7 @@
 @interface MyDocument : NSDocument
 {
     IBOutlet id view;
-    void *window_factory;
+//    void *window_factory;
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
 	mainloop *myMainloop;
 }
@@ -64,4 +64,5 @@
 - (IBAction)stop:(id)sender;
 - (void *)view;
 - (void)startPlay: (id)dummy;
+- (void)close;
 @end

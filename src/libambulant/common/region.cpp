@@ -60,6 +60,28 @@
 
 using namespace ambulant;
 
+lib::passive_region::~passive_region()
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace("~passive_region(0x%x)", (void*)this);
+	m_parent = NULL;
+	if (m_cur_active_region) {
+		lib::logger::get_logger()->error("~passive_region(0x%x): m_cur_active_region = 0x%x", (void *)this, (void *)m_cur_active_region);
+		delete m_cur_active_region;
+	}
+	m_cur_active_region = NULL;
+//	if (m_mouse_region)
+//		delete m_mouse_region;
+	m_mouse_region = NULL;
+//	if (m_info)
+//		delete m_info;
+	m_info = NULL;
+	// Don't touch m_bg_renderer: it is shared and destroyed by the root window
+	std::multimap<zindex_t,passive_region *>::iterator i;
+	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
+		delete (*i).second;
+	}
+}
+	
 lib::passive_region *
 lib::passive_region::subregion(const std::string &name, screen_rect<int> bounds)
 {
@@ -91,8 +113,23 @@ lib::passive_region::activate(const node *node)
 void
 lib::passive_region::show(active_region *cur)
 {
+	if (m_cur_active_region) {
+		lib::logger::get_logger()->error("passive_region(0x%x).show(0x%x) but m_cur_active_region=0x%x!", (void*)this, (void*)cur, (void*)m_cur_active_region);
+	}
+	if (m_cur_active_region)
+		delete m_cur_active_region;
 	m_cur_active_region = cur;
 	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)m_cur_active_region);
+}
+
+void
+lib::passive_region::active_region_done()
+{
+	if (!m_cur_active_region) {
+		lib::logger::get_logger()->error("passive_region(0x%x).active_region_done() but m_cur_active_region=0x%x!", (void*)this, (void*)m_cur_active_region);
+	}
+	delete m_cur_active_region;
+	m_cur_active_region = NULL;
 }
 
 void
@@ -307,6 +344,10 @@ lib::passive_root_layout::passive_root_layout(const abstract_smil_region_info *i
 		
 lib::passive_root_layout::~passive_root_layout()
 {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("~passive_root_layout(0x%x)", (void*)this);
+	if (m_bg_renderer)
+		delete m_bg_renderer;
+	m_bg_renderer = NULL;
 	if (m_gui_window)
 		delete m_gui_window;
 	m_gui_window = NULL;
@@ -400,4 +441,6 @@ lib::active_region::renderer_done()
 	AM_DBG lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
 	need_redraw();
 	need_events(false);
+	m_source->active_region_done();
+	
 }

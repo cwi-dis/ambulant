@@ -67,6 +67,13 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 		m_smil_player(NULL)
 #endif
 		{}
+	~mainloop() {
+#ifdef WITH_MMS_PLAYER
+	if (m_active_player) delete m_active_player;
+#else
+	if (m_smil_player) delete m_smil_player;
+#endif
+	}
 	
 	// The callback member function.
 	void player_done_callback() {
