@@ -28,10 +28,10 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.0
+  Version File=1.2
   Version Description=Ambulant Player for SMIL 2.0
   Version Copyright=Copyright (c) 2004
-  Version Company=CWI
+  Version Company=Stichting CWI
   Crystal Format=10111100101100000010001001001001
   Crystal Destination=00000000000000000000000000001011
   Step View=Properties
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=Ambulant\Ambulant Player 1.0
+  Value=Ambulant\Ambulant Player 1.2
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer-1.0
+  Value=AmbulantPlayer-1.2
   Flags=10000000
 end
 item: Remark

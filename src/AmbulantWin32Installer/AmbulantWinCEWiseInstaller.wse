@@ -28,10 +28,10 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.0
+  Version File=1.2
   Version Description=Ambulant Player for Handheld
   Version Copyright=Copyright © 2004 Stichting CWI
-  Version Company=CWI
+  Version Company=Stichting CWI
   Crystal Format=10111100101100000010001001001001
   Crystal Destination=00000000000000000000000000001011
   Step View=Properties
@@ -955,137 +955,140 @@ item: WinCE Component
     Platform Support=37
   end
   item: WinCE Platform
-    Platform Text=Arm920 HPCPro
-    Platform Enum=12
-  end
-  item: WinCE Platform
-    Platform Text=Arm920 PPC
-    Platform Enum=11
-  end
-  item: WinCE Platform
-    Platform Text=Arm920 HPC
-    Platform Enum=10
-  end
-  item: WinCE Platform
-    Platform Text=Arm920
-    Platform Enum=9
-  end
-  item: WinCE Platform
-    Platform Text=Arm820 HPCPro
-    Platform Enum=8
-  end
-  item: WinCE Platform
-    Platform Text=Arm820 PPC
-    Platform Enum=7
-  end
-  item: WinCE Platform
-    Platform Text=Arm820 HPC
-    Platform Enum=6
-  end
-  item: WinCE Platform
-    Platform Text=Arm820
-    Platform Enum=5
-  end
-  item: WinCE Platform
-    Platform Text=Arm720 HPCPro
-    Platform Enum=4
-  end
-  item: WinCE Platform
-    Platform Text=Arm720 PPC
-    Platform Enum=3
-  end
-  item: WinCE Platform
-    Platform Text=Arm720 HPC
-    Platform Enum=2
-  end
-  item: WinCE Platform
-    Platform Text=Arm720
-    Platform Enum=1
-  end
-  item: WinCE Platform
-    Platform Text=Sh3 PPC
-    Platform Enum=15
+    Platform Text=Sh3
+    Platform Enum=13
   end
   item: WinCE Platform
     Platform Text=Sh3 HPC
     Platform Enum=14
   end
   item: WinCE Platform
-    Platform Text=Sh3
-    Platform Enum=13
+    Platform Text=Sh3 PPC
+    Platform Enum=15
   end
   item: WinCE Platform
-    Platform Text=Mips2000 HPCPro
-    Platform Enum=24
+    Platform Text=Arm720
+    Platform Enum=1
   end
   item: WinCE Platform
-    Platform Text=Mips2000 PPC
-    Platform Enum=23
+    Platform Text=Arm720 HPC
+    Platform Enum=2
   end
   item: WinCE Platform
-    Platform Text=Mips2000 HPC
-    Platform Enum=22
+    Platform Text=Arm720 PPC
+    Platform Enum=3
   end
   item: WinCE Platform
-    Platform Text=Mips2000
-    Platform Enum=21
+    Platform Text=Arm720 HPCPro
+    Platform Enum=4
   end
   item: WinCE Platform
-    Platform Text=Mips3000 HPCPro
-    Platform Enum=28
+    Platform Text=Arm820
+    Platform Enum=5
   end
   item: WinCE Platform
-    Platform Text=Mips3000 PPC
-    Platform Enum=27
+    Platform Text=Arm820 HPC
+    Platform Enum=6
   end
   item: WinCE Platform
-    Platform Text=Mips3000 HPC
-    Platform Enum=26
+    Platform Text=Arm820 PPC
+    Platform Enum=7
   end
   item: WinCE Platform
-    Platform Text=Mips3000
-    Platform Enum=25
+    Platform Text=Arm820 HPCPro
+    Platform Enum=8
   end
   item: WinCE Platform
-    Platform Text=Mips4000 PPC
-    Platform Enum=31
+    Platform Text=Arm920
+    Platform Enum=9
   end
   item: WinCE Platform
-    Platform Text=Mips4000 HPC
-    Platform Enum=30
+    Platform Text=Arm920 HPC
+    Platform Enum=10
   end
   item: WinCE Platform
-    Platform Text=Mips4000
-    Platform Enum=29
+    Platform Text=Arm920 PPC
+    Platform Enum=11
   end
   item: WinCE Platform
-    Platform Text=Sh4 HpcPro
-    Platform Enum=20
-  end
-  item: WinCE Platform
-    Platform Text=Sh4 PPC
-    Platform Enum=19
-  end
-  item: WinCE Platform
-    Platform Text=Sh4 HPC
-    Platform Enum=18
-  end
-  item: WinCE Platform
-    Platform Text=Sh4
-    Platform Enum=17
+    Platform Text=Arm920 HPCPro
+    Platform Enum=12
   end
   item: WinCE Platform
     Platform Text=Sh3 HpcPro
     Platform Enum=16
   end
   item: WinCE Platform
-    Platform Text=All
-    Platform Enum=37
-    Support=1
+    Platform Text=Sh4
+    Platform Enum=17
   end
   item: WinCE Platform
-    Platform Text=StrongArm HPCPro
-    Platform Enum=36
+    Platform Text=Sh4 HPC
+    Platform Enum=18
+  end
+  item: WinCE Platform
+    Platform Text=Sh4 PPC
+    Platform Enum=19
+  end
+  item: WinCE Platform
+    Platform Text=Sh4 HpcPro
+    Platform Enum=20
+  end
+  item: WinCE Platform
+    Platform Text=Mips4000
+    Platform Enum=29
+  end
+  item: WinCE Platform
+    Platform Text=Mips4000 HPC
+    Platform Enum=30
+  end
+  item: WinCE Platform
+    Platform Text=Mips4000 PPC
+    Platform Enum=31
+  end
+  item: WinCE Platform
+    Platform Text=Mips3000
+    Platform Enum=25
+  end
+  item: WinCE Platform
+    Platform Text=Mips3000 HPC
+    Platform Enum=26
+  end
+  item: WinCE Platform
+    Platform Text=Mips3000 PPC
+    Platform Enum=27
+  end
+  item: WinCE Platform
+    Platform Text=Mips3000 HPCPro
+    Platform Enum=28
+  end
+  item: WinCE Platform
+    Platform Text=Mips2000
+    Platform Enum=21
+  end
+  item: WinCE Platform
+    Platform Text=Mips2000 HPC
+    Platform Enum=22
+  end
+  item: WinCE Platform
+    Platform Text=Mips2000 PPC
+    Platform Enum=23
+  end
+  item: WinCE Platform
+    Platform Text=Mips2000 HPCPro
+    Platform Enum=24
+  end
+  item: WinCE Platform
+    Platform Text=Mips4000 HPCPro
+    Platform Enum=32
+  end
+  item: WinCE Platform
+    Platform Text=StrongArm
+    Platform Enum=33
+  end
+  item: WinCE Platform
+    Platform Text=StrongArm HPC
+    Platform Enum=34
   end
   item: WinCE Platform
     Platform Text=StrongArm_PPC
@@ -1093,16 +1096,13 @@ item: WinCE Component
     Support=1
   end
   item: WinCE Platform
-    Platform Text=StrongArm HPC
-    Platform Enum=34
+    Platform Text=StrongArm HPCPro
+    Platform Enum=36
   end
   item: WinCE Platform
-    Platform Text=StrongArm
-    Platform Enum=33
-  end
-  item: WinCE Platform
-    Platform Text=Mips4000 HPCPro
-    Platform Enum=32
+    Platform Text=All
+    Platform Enum=37
+    Support=1
   end
 end
 item: Remark
@@ -1167,7 +1167,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=Ambulant-1.0-WinCE
+  Value=Ambulant-1.2-WinCE
   Flags=10000000
 end
 item: Remark
