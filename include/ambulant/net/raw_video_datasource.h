@@ -45,7 +45,10 @@
  * which carries forward this exception. 
  * 
  */
- 
+	
+#ifndef _RAW_VIDEO_DATASOURCE_H
+#define _RAW_VIDEO_DATASOURCE_H
+
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/callback.h"
@@ -60,11 +63,9 @@ namespace ambulant {
 
 namespace net {
 	
-#ifndef _RAW_VIDEO_DATASOURCE_H
-#define _RAW_VIDEO_DATASOURCE_H
 class raw_video_datasource : virtual public lib::ref_counted_obj {
   public:
-	raw_video_datasource(string &directory);
+	raw_video_datasource(std::string &directory);
   	~raw_video_datasource();
   
 	void start_frame(lib::event_processor *evp, lib::event *callback, int timestamp);
@@ -75,14 +76,17 @@ class raw_video_datasource : virtual public lib::ref_counted_obj {
   	void frame_done(int timestamp);
   
   private:
-	bool read_next_frame();	  
+	bool read_next_frame();	 
+  	int filesize(int stream);
+  
 	int m_filenr;
   	long int m_size;
   	bool m_eof;
-	string m_directory;  
+	std::string m_directory;  
   	char* m_buffer;
 };
 
-
+}
+}
 
 #endif /* _RAW_VIDEO_DATASOURCE_H */

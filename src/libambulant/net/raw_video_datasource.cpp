@@ -47,27 +47,39 @@
  */
 
 #include "ambulant/net/raw_video_datasource.h"
+#include <string>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
 
-namespace ambulant {
+#include <unistd.h>
+
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+
 
 using namespace ambulant;
 using namespace net;
 
-raw_video_datasource(string &directory)
+raw_video_datasource::raw_video_datasource(std::string &directory) 
 :	m_filenr(0),
 	m_size(0),
 	m_eof(false),
 	m_directory(directory)
-	m_buffer(NULL);
+
 {
+	m_buffer = NULL;
 }
 
-~raw_video_datasource()
-{
+raw_video_datasource::~raw_video_datasource()
+{ 
 }
 
 void
-start_frame(lib::event_processor *evp, lib::event *cbevent, int timestamp)
+raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent, int timestamp)
 {
 	bool dummy;
 	
@@ -81,25 +93,25 @@ start_frame(lib::event_processor *evp, lib::event *cbevent, int timestamp)
 }
 
 char*
-get_frame(int &timestamp);
+raw_video_datasource::get_frame(int &timestamp)
 {
 	timestamp = m_filenr;
 	return m_buffer;
 }
 
 void
-frame_done(int timestamp)
+raw_video_datasource::frame_done(int timestamp)
 {
-	if (timestamp > filenr) {
-		filenr = timestamp;
+	if (timestamp > m_filenr) {
+		m_filenr = timestamp;
 	}
-	free (mbuffer);
+	free (m_buffer);
 	m_buffer = NULL;
 }
 
 
 int
-active_datasource::filesize(int stream)
+raw_video_datasource::filesize(int stream)
 {
  	using namespace std;
 	int filesize;
@@ -110,49 +122,50 @@ active_datasource::filesize(int stream)
 	 	dummy=lseek(stream, 0, SEEK_SET);		
 		return filesize;		
 	} else {
- 		lib::logger::get_logger()->fatal("active_datasource.filesize(): no file openXX");
+ 		lib::logger::get_logger()->fatal("raw_video_datasource.filesize(): no file open");
 		return 0;
 	}
 }
 
 bool
-read_next_frame()
+raw_video_datasource::read_next_frame()
 {
-	char ext[4];
-	char filename[12];
+	char filename[255];
 	int file;
 	int sz;
 	int nb_read;
 	char* buf_ptr;
-	
-	
+
 	m_filenr++;
-	strcpy(ext,".jpg")
-	itoa(m_filenr,filename);sz = filesize
-	strncat(filename,ext,4);
+
+	sprintf(filename, "%s/img%d.jpg", m_directory.c_str(),m_filenr);
 	
-		file = open(filename, O_RDONLY);
-		if (file < 0 ) {
-				m_eof = true;
-				return false;
+	file = open(filename, O_RDONLY); 
+
+	if (file < 0 ) {
+			AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): Unable to open file");
+			m_eof = true;
+			return false;
+	}
+
+	sz = filesize(file);
+	m_size = sz;
+	m_buffer = (char*) malloc(sz);
+	buf_ptr = m_buffer;
+	do {
+		nb_read = read(file, buf_ptr, sz);
+		if (nb_read != sz) {
+				lib::logger::get_logger()->fatal("raw_video_datasource.filesize(): Read error");
 		}
-		sz = filesize(file);
-		m_size = sz;
-		m_buffer = (char*) malloc(sz);
-		buf_ptr = m_buffer;
-		do {
-			nb_read = read(file, buf_ptr, BUFSIZ);
-			if (nb_read > 0) 
-					buf_ptr+=nb_read;
-		} while (nb_read < 1)
-		close(file);
-		buf_ptr = NULL;		
-		
-		return true;
+	} while (nb_read < 1);
+	close(file);
+	buf_ptr = NULL;		
+	
+	return true;
 }
 
 bool
-end_of_file()
+raw_video_datasource::end_of_file()
 {
 	return m_eof;
 }

@@ -180,7 +180,7 @@ stdio_datasource::read_file()
 	// private method - no need to lock
   	char *buf;
   	size_t n; 	
-	//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: start reading file ");
+	//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: 	reading file ");
 	if (m_stream >= 0) {
 		do {
 		//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: getting buffer pointer");

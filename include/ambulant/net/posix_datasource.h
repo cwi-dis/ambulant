@@ -1,4 +1,3 @@
-
 /*
  * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
@@ -147,9 +146,11 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
     bool _end_of_file();
 	void filesize();
     void read_file();
-	databuffer *m_buffer;
+	
+  	databuffer *m_buffer;
   	passive_datasource *m_source;
-	int m_filesize;
+
+  	int m_filesize;
 	int m_stream;
 	bool m_end_of_file;
 	lib::critical_section m_lock;

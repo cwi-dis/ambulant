@@ -55,7 +55,7 @@
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
-#endif
+#endif 
 
 // Bug workaround: define RESAMPLE_READ_ALL to let the resampler
 // collect all data before calling the client callback
@@ -556,7 +556,7 @@ ffmpeg_decoder_datasource::size() const
 {
 		return m_buffer.size();
 }	
-
+ 
 bool 
 ffmpeg_decoder_datasource::select_decoder(const char* file_ext)
 {
