@@ -112,6 +112,15 @@ preferences::~preferences()
 
 preferences*  ambulant::common::preferences::s_preferences = 0;
 
+void
+ambulant::common::preferences::set_preferences_singleton(preferences *prefs) {
+	if (s_preferences != 0) {
+		ambulant::lib::logger::get_logger()->error("Programmer error: preferences singleton already set");
+		return;
+	}
+	s_preferences = prefs;
+}
+
 preferences* 
 ambulant::common::preferences::get_preferences() {
 	if (s_preferences == 0) {

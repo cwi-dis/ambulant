@@ -90,6 +90,8 @@ class preferences {
 
 	virtual bool save_preferences();
 
+  protected:
+	static void set_preferences_singleton(preferences *prefs);
   private:
 	static preferences* s_preferences; // singleton
 	parser_id m_parser_id;
