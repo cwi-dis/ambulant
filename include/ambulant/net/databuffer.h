@@ -51,12 +51,19 @@
 #define AMBULANT_NET_DATABUFFER_H
 
 #include "ambulant/lib/mtsync.h"
+
+//////////////////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
 #include <iostream>
 #ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
 #else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
 #endif/*AMBULANT_NO_OSTREAM*/
+
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+//////////////////////////////////////
 
 namespace ambulant {
 
@@ -76,7 +83,9 @@ class databuffer
 
 	
 	// show information about the buffer, if verbose is true the buffer is dumped to cout;
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
 	void dump(std::ostream& os, bool verbose) const;		
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
 	
 								
 	//void get_data(char *data, int size); 				
@@ -104,10 +113,12 @@ class databuffer
 	lib::critical_section m_lock;
 };
 
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
 		os << "databuffer(" << (void *)&n << ", used=" << n.size() << ")";
 		return os;
 	}
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
 	
 } // end namespace net
 

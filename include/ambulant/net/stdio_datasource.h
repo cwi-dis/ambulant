@@ -62,6 +62,9 @@
 
 #include <stdio.h>
 
+//////////////////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
 // temporary debug messages
 #include <iostream>
 #ifndef AMBULANT_NO_OSTREAM
@@ -69,6 +72,10 @@
 #else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
 #endif/*AMBULANT_NO_OSTREAM*/
+
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+//////////////////////////////////////
+
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <iomanip>
@@ -110,10 +117,12 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
   
 	void read(char *data, int size);
   	
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
   	friend inline std::ostream& operator<<(std::ostream& os, const stdio_datasource& n) {
 		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url << ")";
 		return os;
 	}
+#endif
   private: 
     bool _end_of_file();
 	void filesize();
