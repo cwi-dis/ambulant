@@ -1,10 +1,8 @@
 Ambulant Player README
 ======================
 
-This directory contains version 0.7 of Ambulant,
+This directory contains version 1.0 of Ambulant Player,
 a playback engine for SMIL documents. 
-This release is known externally as AMBULANT/O
-It is an intermediate release of the Ambulant Player Project.
 The Ambulant homepage is at <http://www.ambulantplayer.org>.
 
 Ambulant consists of a core library implementing the engine,
@@ -13,19 +11,28 @@ and a number of player applications.
 
 Ambulant is distributed as either a source distribution or a
 binary installer for a specific platform. This README file
-is common to all distributions, see below for instructions on building 
-from source.
+is common to all distributions, see the INSTALL file for instructions on
+building from source.
+
+Ambulant is Open Source: the license is modified GPL. See the file
+COPYING for details.
 
 Feedback
 --------
 
-Please let us know about any problem you encounter: there is a 99%
+Please let us know about any problem you encounter: there is a good
 chance we are not aware of it at this stage. Either send email to
 <Ambulant-feedback@ambulantplayer.org> or fill out a bug report at the
 sourceforge bug repository, via <http://sourceforge.net/projects/ambulant>.
 
 See www.ambulantplayer.org for other community resources: mailing lists,
-demo document repositories, etc.
+demo document repositories, etc. We expect to do bugfix releases fairly
+regularly, join the (low-volume) announcements mailing list to be kept
+up-to-date.
+
+We are also specifically interested in cooperation: see the website if
+you are interested in helping to make Ambulant a better product, or
+combining it with your own work, porting to new platforms, etc.
 
 Supported platforms
 -------------------
@@ -58,32 +65,34 @@ Supported media types
   - MacOSX and Linux support audio through FFMPEG and SDL,
     giving support for MP3 and many other formats, but not
     all codecs may be supported on WMA or QuickTime files.
+  - Linux sometimes produces a hiss at the end of an MP3 file.
+    This is a known issue with ffmpeg that will be fixed in a later
+    release.
 - Video:
   - Windows supports video through DirectX.
   - Windows CE does not support video in this release.
   - MacOSX supports video through QuickTime.
-  - Linux supports video through FFMPEG, but audio tracks in
-    video files are not supported in this release. Also, the
-    number of codecs is limited.
+  - Linux supports video through FFMPEG. The number of codecs is limited.
 
 Networking support
 ------------------
 
-This release has limited support for networked media. The SMIL
-presentation itself must be in a local file, streaming media items can
-be retrieved via HTTP or RTP/RTSP on most platforms, static media
-items can be retrieved via HTTP or RTP/RTSP on Linux and Macintosh.
+This release has support for networked presentations. Streaming 
+media items can be retrieved via HTTP or RTP/RTSP on most platforms,
+static media items and the SMIL file itself can be retrieved via HTTP.
+RTSP support has not been tested very thoroughly, feedback is requested.
 
 SMIL support
 ------------
 
 This release supports full SMIL 2.0, with the following broad
 exceptions:
-- Incomplete support for internal linking; linking to external HTML sites
-  is supported.
-- Only in-transitions are supported.
 - tag names must match media type, and no support for mimetypes.
-- URL handling is not complete, things like data: urls are not supported.
+- No %-escapes in URLs, and limited support for data: URLs.
+
+As SMIL 2.0 is a big language there are undoubtedly areas where
+we have overseen something. Please let us know if you encounter
+problems.
 
 Documentation
 -------------
@@ -103,8 +112,8 @@ examples are placed in the toplevel distribution directory; in
 source distributions, they are in the Extras directory.
 
 The Welcome document is played automatically the very first time you
-start the Ambulant Player on MacOSX and can be played manually on other
-platforms.
+start the Ambulant Player. If you want to see it again you can play
+it via the Help menu.
 
 The DemoPresentation document is a slightly more elaborate example with
 some variations to show off various features of SMIL, a readme
@@ -115,167 +124,4 @@ Known problems
 
 A current list of known problems can be found in the ambulant
 sourceforge bug database, accessible via <http://www.ambulantplayer.org>.
-
-Building from source
-====================
-
-Prerequisites
--------------
-
-Obviously you will need a compiler/linker/development environment.
-For Windows you need Microsoft Visual Studio .NET version 7.1.
-For Linux desktop you need GNU gcc, at least version 3.2.
-For MacOSX you need the Apple Developer tools (gcc 3.3-based).
-For Windows CE you need Microsoft Embedded Visual C++ version 3.0.
-For Zaurus you need qtopia 1.5 with gcc 2.95.2.
-
-You also need to build and install several third party packages
-that Ambulant depends on. All these are supplied in the third_party_packages
-directory; see the readme file in that directory for detailed instructions 
-on the exact version numbers, download instructions, etc.
-
-These packages can be built from source, but because this may be
-difficult on some platforms (especially Windows and the PDA platforms)
-we have created archives of pre-configured and pre-built
-third_party_packages for a few common platforms. See
-<http://www.ambulantplayer.org> or the sourceforge download area for
-details.
-
-Building for Linux
-------------------
-
-First make sure you install the third party packages on which Ambulant
-depends, see third_party_packages/readme.txt.
-
-Then the normal "configure"/"make"/"make install" combo can be used here
-in the toplevel directory to create the player.
-
-Building for Mac OS X
----------------------
-
-First make sure you install the third party packages on which Ambulant
-depends, see third_party_packages/readme.txt.
-
-Then the normal "configure"/"make"/"sudo make install" combo can be used
-here in the toplevel directory to create the player.
-
-"make install" installs the shared libraries and such into the path
-specified with the --prefix configure option, but the application,
-"Ambulant Player.app" is always installed into /Applications.
-
-An XCode project is also available, mainly for debugging purposes, but
-this needs some handcrafting to get it to work (it contains absolute
-pathnames to include directories to work around an XCode bug).
-
-You need about 600MB of free diskspace to do the build. After build and
-install you can remove everything but the resultant application, including
-the ambulant and SDL installations in /usr/local, and the application
-is only a few megabytes.
-
-Building for Windows
---------------------
-
-Installing and building the third party packages on Windows is more of a
-pain than it is on unix. For this reason, read these instructions *very carefully*,
-please. We hope these instructions are complete, otherwise
-please report back.
-
-It is possible to build the various packages AmbulantPlayer depends on from
-source (but read on for an easier solution).
-Install the following distributions into directories in third_party_packages:
-- expat: XXXX
-- jpeg: XXXX
-- lpng125: XXXX
-- mp3lib: XXXX
-- zlib: XXXX
-As some of these need some fiddling (missing Visual Studio projects, that
-sort of things) you are best off downloading the
-third_party_packages-WIN.zip archive, it contains versions that
-are known to work on at least one machine. Download and unzip in a temporary
-location, then move the directories named above into third_party_packages
-in your ambulant distribution.
-
-Next, build these by opening
-third_party_packages\third_party_packages.sln in Visual Studio,
-selecting the "Release" configuration and doing Build->Build Solution.
-
-When this succeeds double-click the batchfile
-third_party_packages\copy_tpp_win32.bat, which copies the various
-libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
-lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
-copied to bin\win32 in the toplevel directory.
-NOTE: if this step fails please inspect the script and do the
-needed copies by hand.
-
-After these steps you are ready to build AmbulantPlayer itself: open
-src\Ambulant-win32.sln in Visual Studio, select the Release configuration
-and do Build->Build Solution.
-
-The resulting application is deposited in bin\win32 in the toplevel
-directory.
-
-Building for Zaurus
--------------------
-
-You will first need to install the needed (cross-)development tools:
-qtopia 1.5.0, gcc 2.95 for strongarm and accompanying libraries and
-some method to talk between the host and the zaurus (over USB or network
-connection).
-
-Next you need to get the source for the third party packages needed (see
-third_party_packages.txt/readme), and crosscompile them (using --host and
---build options to configure).
-
-Now you can use "configure --host=.... --build=..." and "make" to create
-the executable, which ends up in src/player_unix.
-
-More details on the exact packages to install, where to find them and how
-to build them can be found in the "README-ZAURUS" file.
-
-Building for Windows CE
------------------------
-
-Installing and building the third party packages for Windows CE is even more of a
-pain than it is for Windows desktop. For this reason, read these instructions
-*very carefully*, please. We hope these instructions are complete, otherwise
-please report back.
-
-The projects (and these instructions) have been tried only for Windows CE on various
-Compaq (or HP) iPaqs, the oldest one being a 3660. Of the various configurations
-in the project files, only the ones for this specific platform (ARM processor,
-non-debugging, PocketPC operating system) have been kept up-to-date.
-
-Install the following distributions into directories in third_party_packages:
-- expat: XXXX
-- jpeg: XXXX
-- lpng125: XXXX
-- mp3lib: XXXX
-- zlibce: XXXX
-As most of these need some fiddling (missing Visual Studio projects, that
-sort of things) you are best off downloading the
-third_party_packages-WIN.zip archive, it contains versions that
-are known to work on at least one machine. Download and unzip in a temporary
-location, then move the directories named above into third_party_packages
-in your ambulant distribution.
-
-Next, build these by opening
-third_party_packages\third_party_packages.vcw in Embedded Visual C++ 3.0,
-select the expat project as default project, 
-select the "ARM Release" configuration for the "PocketPC" platform and build.
-Repeat these steps for all projects in the workspace.
-
-When this succeeds double-click the batchfile
-third_party_packages\copy_tpp_wince.bat, which copies the various
-libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
-lib\wince-arm in the toplevel Ambulant directory. 
-
-NOTE: if this step fails please inspect the script and do the
-needed copies by hand.
-
-After these steps you are ready to build AmbulantPlayer itself: open
-src\Ambulant-wince.vcw in Embedded Visual C++ 3.0, select the "ARM Release" 
-configuration for the "PocketPC" platform and build.
-
-The resulting application is deposited in bin\wince-arm in the toplevel
-directory.
 
