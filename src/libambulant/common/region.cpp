@@ -379,7 +379,10 @@ passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, 
 		scale_min_horizontal = scale_max_horizontal = (double)x_region_left / (double)x_image_left;
 		if (x_image_right != 0) {
 			double scale_right = (double)x_region_right / (double)x_image_right;
-			scale_min_horizontal = std::min(scale_min_horizontal, scale_right);
+			if (scale_min_horizontal == 0)
+				scale_min_horizontal = scale_right;
+			else
+				scale_min_horizontal = std::min(scale_min_horizontal, scale_right);
 			scale_max_horizontal = std::max(scale_max_horizontal, scale_right);
 		}
 	}
@@ -389,7 +392,10 @@ passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, 
 		scale_min_vertical = scale_max_vertical = (double)y_region_top / (double)y_image_top;
 		if (y_image_bottom != 0) {
 			double scale_bottom = (double)y_region_bottom / (double)y_image_bottom;
-			scale_min_vertical = std::min(scale_min_vertical, scale_bottom);
+			if (scale_min_vertical == 0)
+				scale_min_vertical = scale_bottom;
+			else
+				scale_min_vertical = std::min(scale_min_vertical, scale_bottom);
 			scale_max_vertical = std::max(scale_max_vertical, scale_bottom);
 		}
 	}
@@ -399,7 +405,7 @@ passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, 
 	switch (fit) {
 	  case fit_fill:
 		// Fill the area with the image, ignore aspect ration
-		// XXX I don't think this is correct
+		// XXX I don't think this is correct. Or is it?
 		scale_horizontal = scale_min_horizontal;
 		scale_vertical = scale_min_vertical;
 		break;
@@ -417,6 +423,10 @@ passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, 
 		break;
 	}
 	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scale_hor=%f, scale_vert=%f", scale_horizontal, scale_vertical);
+	if (scale_horizontal == 0 || scale_vertical == 0) {
+		*out_src_rect = lib::rect(point(0,0), size(0,0));
+		return lib::screen_rect<int>(point(0,0), point(0,0));
+	}
 	// Convert the image fixpoint to scaled coordinates
 	int x_image_scaled = (int)((xy_image.x * scale_horizontal) + 0.5);
 	int y_image_scaled = (int)((xy_image.y * scale_vertical) + 0.5);
@@ -452,9 +462,9 @@ passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, 
 		y_region_for_image_bottom = region_height;
 		y_image_for_region_bottom = y_image_for_region_bottom - (int)((overshoot / scale_vertical) + 0.5);
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image selection lrtb=(%d, %d, %d, %d)", 
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
 		x_image_for_region_left, y_image_for_region_top, x_image_for_region_right, y_image_for_region_bottom);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: regeion selection lrtb=(%d, %d, %d, %d)", 
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	*out_src_rect = lib::rect(
 		point(x_image_for_region_left, y_image_for_region_top),

@@ -84,11 +84,25 @@ smil_alignment::create_for_dom_node(const lib::node *n)
 }
 
 smil_alignment::smil_alignment(const lib::node *n, const char *regPoint, const char *regAlign)
+:   m_image_fixpoint(regpoint_spec(0, 0)),
+	m_surface_fixpoint(regpoint_spec(0, 0))
 {
-	if (!decode_regpoint(m_image_fixpoint, regAlign))
-		lib::logger::get_logger()->error("smil_alignment: unknown regAlign value: %s", regAlign);
-	if (!decode_regpoint(m_surface_fixpoint, regPoint))
+	lib::node *regpoint_node = NULL;
+	if (!decode_regpoint(m_surface_fixpoint, regPoint) && regPoint != NULL) {
+		// Non-standard regpoint. Look it up.
 		lib::logger::get_logger()->error("smil_alignment: only standard regPoint values implemented", regAlign);
+	}
+	if (!decode_regpoint(m_image_fixpoint, regAlign)) {
+		// See if we can get one from the regPoint node, if there is one
+		bool found = false;
+		if (regpoint_node) {
+			const char *regPointAlign = regpoint_node->get_attribute("regAlign");
+			if (decode_regpoint(m_image_fixpoint, regPointAlign))
+				found = true;
+		}
+		if (!found && regAlign != NULL)
+			lib::logger::get_logger()->error("smil_alignment: unknown regAlign value: %s", regAlign);
+	}
 }
 
 lib::point
