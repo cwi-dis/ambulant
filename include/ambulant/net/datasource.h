@@ -7,11 +7,15 @@
 #ifndef AMBULANT_NET_DATASOURCE_H
 #define AMBULANT_NET_DATASOURCE_H
 
-#include "ambulant/lib/callback.h"
-#include "url.h"
+//#include "ambulant/lib/callback.h"
+
 
 // temporary debug messages
 #include <iostream>
+#include <ostream>
+#include <iomanip>
+#include <cstring>
+
 
 namespace ambulant {
 
@@ -19,43 +23,42 @@ namespace net {
 
 namespace datasource {
 	
+typedef char bytes; 
+typedef char url;
 
-class data_buffer {
+
+class databuffer 
+{
+ private: 
+	bytes *buffer; 				     // duh, pointer to the buffer.
+	int s;  																	 // the size of the bufer.
+	int used;																// howmany bytes are in the buffer 
 	
-	private:
-	 // bytes moet een int of long int of zo worden ?
-	 // ik wil hier eigenlijk niet nadenken over wat voor een data het is
-	 
-	bytes *buffer; // duh, pointer naar de buffer.
-	 public:
+	void shift_down(int pos);										// shift down all data above pos.
+
+ public:
 	// constructors
-	data_buffer()
-	data_buffer(bytes size)
+	databuffer();				    // default constructor
+	databuffer(int size);			    // natural constructor
+
+	databuffer(databuffer& buf);    	    // copy constructor
 	
 	// destructor
-	~data_buffer()
+	~databuffer();
 	
-	increase_buffer(bytes by)
-	decrease_buffer(bytes by)
 	
-	p_bytes get_data( ... )  // Haal data uit buffer, argumenten later bedenken.
-	put_data(p_bytes data, int pos ) // Zet data in buffer, pos geeft aan waar, begin of eind.
+	void show(bool verbose);									// show information about the buffer, if verbose is true the buffer is dumped to cout;
+	void get_data(bytes *data, int size); 				//retrieve data from buffer,  still thinking about arguments.
+																				//there should be something to pass on error messages.
+	void put_data(bytes *data , int size);			 	// this one puts data alway at the end.						 
 	
-}
+};
 
-class passive_datasource {
-	
-}
-
-class active_datasource {
-	
-}
-
-
-	
-	
 } //end namespace datasource
 
 } // end namespace net
 
 } //end namespace ambulant
+
+
+#endif  //AMBULANT_NET_DATASOURCE_H
