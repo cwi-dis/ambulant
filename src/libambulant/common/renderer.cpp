@@ -47,7 +47,11 @@
  */
 
 /* 
+<<<<<<< renderer.cpp
  * @$Id$ 
+=======
+ * @$Id$ 
+>>>>>>> 1.76.4.10
  */
 
 #include "ambulant/lib/logger.h"
@@ -127,6 +131,7 @@ void renderer_playable::user_event(const lib::point &where, int what) {
 	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
 	else assert(0);
 }
+
 
 renderer_playable_ds::renderer_playable_ds(
 	playable_notification *context,
@@ -334,7 +339,7 @@ void
 active_video_renderer::start (double where = 1)
 {
 	m_lock.enter();
-	int w;
+	long long int w;
 
 	if (m_audio_renderer) 
 		m_audio_renderer->start(where);
@@ -346,9 +351,9 @@ active_video_renderer::start (double where = 1)
 	m_timer = lib::realtime_timer_factory();
 #endif
 	m_epoch = m_timer->elapsed();
-	w = (int) round (where);
+	w = (long long int) round (where*1000000);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
+	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%lld) (this = 0x%x) ", w, (void *) this);
 	if (!m_src) {
 		lib::logger::get_logger()->trace("active_video_renderer.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
@@ -358,10 +363,10 @@ active_video_renderer::start (double where = 1)
 	if (m_dest) {
 		m_dest->show(this);
 	} else {
-		AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
+		AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%lld) (this = 0x%x) m_dest == NULL", w, (void *) this);
 	}
 	m_src->start_frame (m_event_processor, e, w);
-	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
+	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%lld) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
 	m_lock.leave();
 }
 
@@ -389,6 +394,8 @@ active_video_renderer::get_dur()
 	m_lock.leave();
 	return rv;
 }
+
+
 
 // now() returns the time in seconds !
 double
@@ -436,6 +443,7 @@ void
 active_video_renderer::data_avail()
 {
 	m_lock.enter();
+	long long int ts2;
 	double ts;
 	char *buf = NULL;
 	int size;
@@ -453,26 +461,29 @@ active_video_renderer::data_avail()
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
-	buf = m_src->get_frame(&ts, &size);
+	buf = m_src->get_frame((long long int) (round(now()*1000000)), &ts2, &size);
+	ts = ts2 / 1000000.0; // ts should be in seconds now !
 	displayed = false;
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
-		if (ts <= now()) {
+		//if (ts <= now()) {
+		
 			AM_DBG lib::logger::get_logger()->debug("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			displayed = true;
-			m_src->frame_done(ts, true);
+			m_src->frame_done(ts2, true);
+			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail m_src->end_of_file() returns %d", m_src->end_of_file());
 			if (!m_src->end_of_file()) {
 				lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-				m_src->start_frame (m_event_processor, e, ts);
+				m_src->start_frame (m_event_processor, e, ts2);
 			}
-		} else {
-			lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-			event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
-			m_event_processor->add_event(e, event_time, lib::event_processor::med);
-		}
-	} else {
+		//} else {
+		//	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
+		//	event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
+		//	m_event_processor->add_event(e, event_time, lib::event_processor::med);
+		//}
+	} else if(!m_is_playing) {
 		if (m_is_playing && !m_src->end_of_file()) {
 			lib::logger::get_logger()->debug("active_video_renderer::data_avial: No more data, but not end of file!");
 		}
@@ -481,6 +492,11 @@ active_video_renderer::data_avail()
 		m_lock.leave();
 		m_context->stopped(m_cookie, 0);
 		return;
+	} else {
+		if (!m_src->end_of_file()) {
+			lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
+			m_src->start_frame(m_event_processor, e,ts2);
+		}
 	}
-	m_lock.leave();
+		m_lock.leave();
 }

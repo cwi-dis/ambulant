@@ -51,6 +51,8 @@
 #define AMBULANT_NET_FFMPEG_DATASOURCE_H
 
 
+#include <vector>
+#include <queue>
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/callback.h"
@@ -81,13 +83,45 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <map>
+
+static void 
+ffmpeg_init()
+{
+	static bool is_inited = false;
+	if (is_inited) return;
+	avcodec_init();
+#ifdef WITH_FFMPEG_AVFORMAT
+	av_register_all();
+#else
+	avcodec_register_all();
+#endif
+	is_inited = true;
+}
+
+struct video_frame {
+	char* data;
+	int	  size;
+};
 
 namespace ambulant
 {
 
 namespace net
-{
-	
+{  
+
+class ffmpeg_codec_id {
+  public:
+	static ffmpeg_codec_id* instance();
+  	~ffmpeg_codec_id() {};
+
+	void add_codec(const char* codec_name, 	CodecID id);
+	CodecID get_codec_id(const char* codec_name);
+  private:
+	ffmpeg_codec_id(); 
+	static ffmpeg_codec_id* m_uniqueinstance;
+	std::map<std::string, CodecID> m_codec_id;		  
+};
 
 	
 class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
@@ -125,11 +159,33 @@ namespace detail {
 
 class datasink {
   public:
-    virtual void data_avail(int64_t pts, uint8_t *data, int size) = 0;
+    virtual void data_avail(timestamp_t pts, uint8_t *data, int size) = 0;
 	virtual bool buffer_full() = 0;
 };
 	
-class ffmpeg_demux : public lib::unix::thread, public lib::ref_counted_obj {
+class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
+  public:
+	virtual ~abstract_demux() {};	
+ 
+	virtual void add_datasink(datasink *parent, int stream_index) = 0;
+	virtual void remove_datasink(int stream_index) = 0;
+	virtual void cancel() = 0;
+	virtual int audio_stream_nr() = 0;
+	virtual int video_stream_nr() = 0;
+	virtual int nstreams() = 0;
+	virtual double duration() = 0;
+	//virtual int samplerate() = 0;
+	//virtual int channels() = 0;
+	virtual audio_format& get_audio_format() = 0;
+	virtual video_format& get_video_format() = 0;
+	//virtual bool end_of_file() =0 ;
+	
+  protected:
+	virtual unsigned long run() = 0;
+};
+
+
+class ffmpeg_demux : public abstract_demux {
   public:
 	ffmpeg_demux(AVFormatContext *con);
 	~ffmpeg_demux();
@@ -138,41 +194,48 @@ class ffmpeg_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	  
 	void add_datasink(datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
+    int audio_stream_nr();
+  	int video_stream_nr();
+    // XXX this should also be timestamp_t instead of double
+  	double duration();
+  	int nstreams();
+  
+    audio_format& get_audio_format() { return m_audio_fmt; };
+  	video_format& get_video_format();
 	void cancel();
   protected:
 	unsigned long run();
   private:
+	audio_format m_audio_fmt;
+  	video_format m_video_fmt;
     datasink *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
 	int m_nstream;
 };
 
-}
+} // end namespace detail
 
-class ffmpeg_audio_datasource: 
+class demux_audio_datasource: 
 	virtual public audio_datasource,
 	public detail::datasink,
 	virtual public lib::ref_counted_obj
 {
   public:
-	 static ffmpeg_audio_datasource *new_ffmpeg_audio_datasource(
-  		const net::url& url, 
-  		AVFormatContext *context,
-		detail::ffmpeg_demux *thread);
+	 static demux_audio_datasource *new_demux_audio_datasource(
+  		const net::url& url, detail::abstract_demux *thread);
   	
-  	ffmpeg_audio_datasource(
+  		demux_audio_datasource(
   		const net::url& url, 
-  		AVFormatContext *context,
-		detail::ffmpeg_demux *thread, 
+  		detail::abstract_demux *thread, 
   		int stream_index);
   
-    ~ffmpeg_audio_datasource();
+    ~demux_audio_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);
 	void stop();  
 
     void readdone(int len);
-    void data_avail(int64_t pts, uint8_t *data, int size);
+    void data_avail(timestamp_t pts, uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
 		
@@ -185,65 +248,148 @@ class ffmpeg_audio_datasource:
   private:
     bool _end_of_file();
 	const net::url m_url;
-	AVFormatContext *m_con;
+	//AVFormatContext *m_con;
 	int m_stream_index;
-	audio_format m_fmt;
+//	audio_format m_fmt;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
 
 	databuffer m_buffer;
-	detail::ffmpeg_demux *m_thread;
+	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
   
 };
 
-class ffmpeg_video_datasource:
+class demux_video_datasource: 
 	virtual public video_datasource,
 	public detail::datasink,
+	virtual public lib::ref_counted_obj
+{
+  public:
+	 static demux_video_datasource *new_demux_video_datasource(
+  		const net::url& url, detail::abstract_demux *thread);
+  	
+  		demux_video_datasource(
+  		const net::url& url, 
+  		detail::abstract_demux *thread, 
+  		int stream_index);
+  
+    ~demux_video_datasource();
+
+    void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
+    void stop();  
+	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
+    void frame_done(timestamp_t timestamp, bool keepdata);
+    void data_avail(timestamp_t pts, uint8_t *data, int size);
+    bool end_of_file();
+	bool buffer_full();
+  	int width();
+  	int height();
+  
+    bool has_audio();
+  	audio_datasource* get_audio_datasource();
+		
+	char* get_read_ptr();
+	int size() const;   
+
+	video_format& get_video_format();
+	
+	std::pair<bool, double> get_dur();
+
+  private:
+    bool _end_of_file();
+	const net::url m_url;
+	//AVFormatContext *m_con;
+	int m_stream_index;
+//	audio_format m_fmt;
+	bool m_src_end_of_file;
+    lib::event_processor *m_event_processor;
+	std::queue<std::pair<timestamp_t, video_frame> > m_frames;
+	std::pair<timestamp_t, video_frame> m_old_frame;
+	detail::abstract_demux *m_thread;
+	lib::event *m_client_callback;  // This is our calllback to the client
+  	audio_datasource* m_audio_src;
+	lib::critical_section m_lock;
+  
+};
+
+typedef std::pair<timestamp_t, char*> qelt;
+//~ class frame_qelt {
+  //~ public:
+	//~ frame_qelt(timestamp_t timestamp, char* data);
+  	//~ ~frame_qelt() { if (frame.second) free(frame.second);
+					//~ frame.second = NULL; };
+  	
+	//~ timestamp_t timestamp() { return frame.first; };
+  	//~ char* frame_data() { return frame.second; };
+  	
+	//~ // This is a strange < !!! (it's more a > :-) )
+  	//~ bool operator< (const frame_qelt & left) const {
+		//~ return left.frame.first < frame.first;
+	//~ }
+	
+  //~ protected:
+	//~ std::pair<timestamp_t, char*> frame;
+//~ };
+
+
+
+#if 0
+struct pts_comparison {
+	bool operator () (const std::pair<timestamp_t, video_frame> left, const std::pair<timestamp_t, video_frame> right) {
+    	return left.first > right.first;
+  	}
+};
+#endif
+
+class ffmpeg_video_decoder_datasource:
+	virtual public video_datasource,
 	virtual public lib::ref_counted_obj {
   public:
-	 static ffmpeg_video_datasource *new_ffmpeg_video_datasource(
-		const net::url& url, AVFormatContext *context,
-		detail::ffmpeg_demux *thread);
-
-	 ffmpeg_video_datasource(const net::url& url, AVFormatContext *context,
-		detail::ffmpeg_demux *thread, int stream_index);
-    ~ffmpeg_video_datasource();
+	 //ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
+	 ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
+	 
+    ~ffmpeg_video_decoder_datasource();
 
 	bool has_audio();
     int width();
   	int height();
 	audio_datasource *get_audio_datasource();
 
-    void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);  
+    void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);  
 	void stop();  
 
     bool end_of_file();
-	char* get_frame(double *timestamp, int *size);
-	void frame_done(double timestamp, bool keepdata);
+	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
+	void frame_done(timestamp_t timestamp, bool keepdata);
 	
-    void data_avail(int64_t ipts, uint8_t *data, int size);
+    void data_avail();
 	bool buffer_full();
 	std::pair<bool, double> get_dur();
-
+	bool select_decoder(const char* file_ext);
+	bool select_decoder(video_format &fmt);
+	
   private:
 	int get_audio_stream_nr();
     bool _end_of_file();
-	const net::url m_url;
-	AVFormatContext *m_con;
+	bool _buffer_full();
+	video_datasource* m_src;
+	AVCodecContext *m_con;
 	int m_stream_index;
-	bool m_src_end_of_file;
+  	video_format m_fmt;
+ 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
-	std::queue<std::pair<double, char*> > m_frames;
-	std::pair<double, char*> m_old_frame;
+  std::priority_queue<qelt, std::vector<qelt>, std::greater<qelt> > m_frames;
+	//std::priority_queue<qelt> m_frames;
+	qelt m_old_frame;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	bool m_thread_started;
-  	double m_pts_last_frame;
-  	double m_last_p_pts;
+  	timestamp_t m_pts_last_frame;
+  	timestamp_t m_last_p_pts;
     lib::critical_section m_lock;
 };
 
@@ -266,7 +412,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 		
 	char* get_read_ptr();
 	int size() const;   
-	
 	std::pair<bool, double> get_dur();
 	audio_format& get_audio_format();
 	bool select_decoder(const char* file_ext);

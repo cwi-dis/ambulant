@@ -1,4 +1,17 @@
 # See which toolkit-dependent libraries we want to make
+
+# temp variables to include the live.com stuff
+
+liveincludes = -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/BasicUsageEnvironment/include \
+			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/groupsock/include \
+			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/liveMedia/include \
+			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/UsageEnvironment/include
+
+livelibs	= -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/liveMedia/ -lliveMedia \
+			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
+			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/groupsock/ -lgroupsock  \
+			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/UsageEnvironment/ -lUsageEnvironment
+
 if WITH_EXPAT
 expat_parser_source = lib/expat_parser.cpp
 
@@ -108,6 +121,7 @@ INCLUDES = \
 	$(artsincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
+	$(liveincludes) \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = \
@@ -119,7 +133,7 @@ lib_LTLIBRARIES = \
 	$(toolkit_ffmpeg_libraries)
 
 # AM_CPPFLAGS=-rdynamic
-AM_LDFLAGS=-export-dynamic $(LIBLTDL)
+AM_LDFLAGS=-export-dynamic $(LIBLTDL) $(livelibs)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
@@ -150,6 +164,8 @@ libambulant_la_SOURCES = \
 	net/posix_datasource.cpp \
 	net/stdio_datasource.cpp \
 	net/raw_video_datasource.cpp \
+	net/rtsp_datasource.cpp \
+	net/rtsp_factory.cpp \
 	net/datasource.cpp \
 	net/databuffer.cpp \
 	net/url.cpp \

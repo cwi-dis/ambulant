@@ -9,4 +9,6 @@ library_include_HEADERS= \
 	url.h \
 	ffmpeg_datasource.h \
 	ffmpeg_rawdatasource.h \
-	raw_video_datasource.h
+	raw_video_datasource.h \
+	rtsp_datasource.h \
+	rtsp_factory.h

@@ -70,6 +70,9 @@
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
 #endif
+
+#include "ambulant/net/rtsp_factory.h"
+
 //#include "ambulant/lib/expat_parser.h"
 
 
@@ -129,7 +132,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui) :
 #endif
 	// First create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
-	
+	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+	m_factory->df->add_audio_factory(new net::live_audio_datasource_factory()); 
 #ifdef WITH_FFMPEG
     AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	m_factory->df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());

@@ -53,6 +53,7 @@
 #include "ambulant/lib/unix/unix_mtsync.h"
 #include "ambulant/lib/logger.h"
 #include <stdlib.h>
+#include <sys/time.h>
 
 using namespace ambulant;
 #undef unix
