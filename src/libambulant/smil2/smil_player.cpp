@@ -382,7 +382,11 @@ std::string smil_player::get_pointed_node_str() const {
 	} else {
 		reg = n->get_attribute("region");
 	}
+	const char *href = n->get_attribute("href");
 	char buf[256];
-	sprintf(buf, "%.32s - %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"));
+	if(href) 
+		sprintf(buf, "%.32s - %.32s : %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"), href);
+	else
+		sprintf(buf, "%.32s - %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"));
 	return buf;
 }
