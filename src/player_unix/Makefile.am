@@ -25,9 +25,17 @@ extra_arts_DEFINES=
 endif
 
 if WITH_FFMPEG
+#
+# Using the dynamic ffmpeg libraries will fail on RedHat 9, which has
+# incompatible ffmpeg libraries installed into /usr/lib, which will be
+# preferred over our libraries because of linker flags provided by sdl_config:-(
+#
+##extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
+##	-L$(FFMPEG_FORMAT_LIB) -lavformat \
+##	-L$(FFMPEG_CODEC_LIB)  -lavcodec
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
-	-L$(FFMPEG_FORMAT_LIB) -lavformat \
-	-L$(FFMPEG_CODEC_LIB)  -lavcodec
+	$(FFMPEG_FORMAT_LIB)/libavformat.a \
+	$(FFMPEG_CODEC_LIB)/libavcodec.a
 extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT

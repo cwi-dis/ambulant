@@ -55,9 +55,17 @@ endif
 
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
+#
+# Using the dynamic ffmpeg libraries will fail on RedHat 9, which has
+# incompatible ffmpeg libraries installed into /usr/lib, which will be
+# preferred over our libraries because of linker flags provided by sdl_config:-(
+#
+##libambulant_ffmpeg_la_LDFLAGS =  \
+##	-L$(FFMPEG_CODEC_LIB)  -lavcodec \
+##	-L$(FFMPEG_FORMAT_LIB) -lavformat
 libambulant_ffmpeg_la_LDFLAGS =  \
-	-L$(FFMPEG_CODEC_LIB)  -lavcodec \
-	-L$(FFMPEG_FORMAT_LIB) -lavformat
+	$(FFMPEG_FORMAT_LIB)/libavformat.a \
+	$(FFMPEG_CODEC_LIB)/libavcodec.a
 
 ffmpegincludes = -I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT
