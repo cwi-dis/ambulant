@@ -168,7 +168,7 @@ class event_callback : public event {
 	:	m_obj(obj), m_mf(mf) {}
 	
 	virtual void fire() { 
-		if(m_obj) (m_obj->*m_mf)((E)this);
+		if(m_obj) (m_obj->*m_mf)(reinterpret_cast<E*>(this));
 	}
 };
 
