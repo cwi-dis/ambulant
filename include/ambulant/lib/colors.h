@@ -134,6 +134,12 @@ struct color_trible {
 	template <typename T>
 	void red(T _r) { r = uchar(_r);}
 	
+	color_trible& operator=(color_t c) {
+		 b = bluec(c);
+		 g = greenc(c); 
+		 r = redc(c);
+	}
+	
 	bool operator==(color_trible o) const {
 		return b == o.b && g == o.g && r == o.r;
 	}
@@ -149,7 +155,7 @@ struct color_trible {
 		static color_encoding e = {24, 0, 8, 8, 8, 16, 8};
 		return e;
 	}
-	static size_t get_bits_size() { return 24;} 
+	static int get_bits_size() { return 24;} 
 };
 
 } // namespace lib
