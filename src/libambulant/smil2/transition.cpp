@@ -142,6 +142,7 @@ transition_engine::next_step_delay()
 
 // **********************
 
+// Series 1: edge wipes
 void
 transition_engine_barwipe::compute()
 {
@@ -219,64 +220,153 @@ void
 transition_engine_miscdiagonalwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype miscDiagonalWipe not yet implemented");
 }
 
 void
 transition_engine_veewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype veeWipe not yet implemented");
 }
 
 void
 transition_engine_barnveewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype barnVeeWipe not yet implemented");
 }
 
 void
 transition_engine_zigzagwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype zigZagWipe not yet implemented");
 }
 
 void
 transition_engine_barnzigzagwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype barnZigZagWipe not yet implemented");
 }
 
 void
 transition_engine_bowtiewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype bowTieWipe not yet implemented");
+}
+
+// series 2: iris wipes
+
+void
+transition_engine__iris::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype _irisWipe not yet implemented");
+}
+
+std::list<lib::dpoint> ambulant::smil2::transition_engine_iriswipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_pentagonwipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_arrowheadwipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_trianglewipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_hexagonwipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_eyewipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_roundrectwipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_ellipsewipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_starwipe::m_template;
+std::list<lib::dpoint> ambulant::smil2::transition_engine_miscshapewipe::m_template;
+
+// series 3: clock-type wipes
+
+void
+transition_engine_singlesweepwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype singleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_doublesweepwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype doubleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_saloondoorwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype saloonDoorWipe not yet implemented");
 }
 
 void
 transition_engine_windshieldwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype windshieldWipe not yet implemented");
 }
+
+void
+transition_engine_fanwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype fanWipe not yet implemented");
+}
+
+void
+transition_engine_doublefanwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype doubleFanWipe not yet implemented");
+}
+
+void
+transition_engine_pinwheelwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype pinWheelWipe not yet implemented");
+}
+
+// series 4: matrix wipe types
+
+void
+transition_engine_snakewipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype snakeWipe not yet implemented");
+}
+
+void
+transition_engine_waterfallwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype waterfallWipe not yet implemented");
+}
+
+void
+transition_engine_spiralwipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype spiralWipe not yet implemented");
+}
+
+void
+transition_engine_parallelsnakeswipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype parallelSnakesWipe not yet implemented");
+}
+
+void
+transition_engine_boxsnakeswipe::compute()
+{
+	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::logger::get_logger()->trace("transitiontype boxSnakesWipe not yet implemented");
+}
+
+// series 5: SMIL-specific types
 
 void
 transition_engine_pushwipe::compute()

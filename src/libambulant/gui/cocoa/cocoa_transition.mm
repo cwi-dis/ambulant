@@ -170,7 +170,7 @@ cocoa_transition_blitclass_poly::update()
 
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polyr2: not yet implemented");
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: not yet implemented");
 #ifdef FILL_PURPLE
 	// Debug: fill with purple
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
@@ -189,7 +189,7 @@ cocoa_transition_blitclass_polylist::update()
 
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylist::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylistr2: not yet implemented");
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylist: not yet implemented");
 #ifdef FILL_PURPLE
 	// Debug: fill with purple
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
@@ -206,9 +206,7 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 	smil2::transition_engine *rv;
 	
 	switch(info->m_type) {
-	case lib::fade:
-		rv = new cocoa_transition_engine_fade();
-		break;
+	// Series 1: edge wipes
 	case lib::barWipe:
 		rv = new cocoa_transition_engine_barwipe();
 		break;
@@ -242,6 +240,41 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 	case lib::bowTieWipe:
 		rv = new cocoa_transition_engine_bowtiewipe();
 		break;
+	// series 2: iris wipes
+	case lib::irisWipe:
+		rv = new cocoa_transition_engine_iriswipe();
+		break;
+	case lib::pentagonWipe:
+		rv = new cocoa_transition_engine_pentagonwipe();
+		break;
+	case lib::arrowHeadWipe:
+		rv = new cocoa_transition_engine_arrowheadwipe();
+		break;
+	case lib::triangleWipe:
+		rv = new cocoa_transition_engine_trianglewipe();
+		break;
+	case lib::hexagonWipe:
+		rv = new cocoa_transition_engine_hexagonwipe();
+		break;
+	case lib::eyeWipe:
+		rv = new cocoa_transition_engine_eyewipe();
+		break;
+	case lib::roundRectWipe:
+		rv = new cocoa_transition_engine_roundrectwipe();
+		break;
+	case lib::ellipseWipe:
+		rv = new cocoa_transition_engine_ellipsewipe();
+		break;
+	case lib::starWipe:
+		rv = new cocoa_transition_engine_starwipe();
+		break;
+	case lib::miscShapeWipe:
+		rv = new cocoa_transition_engine_miscshapewipe();
+		break;
+	// series 3: clock-type wipes
+	case lib::singleSweepWipe:
+		rv = new cocoa_transition_engine_singlesweepwipe();
+		break;
 	case lib::doubleSweepWipe:
 		rv = new cocoa_transition_engine_doublesweepwipe();
 		break;
@@ -251,11 +284,40 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 	case lib::windshieldWipe:
 		rv = new cocoa_transition_engine_windshieldwipe();
 		break;
+	case lib::fanWipe:
+		rv = new cocoa_transition_engine_fanwipe();
+		break;
+	case lib::doubleFanWipe:
+		rv = new cocoa_transition_engine_doublefanwipe();
+		break;
+	case lib::pinWheelWipe:
+		rv = new cocoa_transition_engine_pinwheelwipe();
+		break;
+	// series 4: matrix wipe types
+	case lib::snakeWipe:
+		rv = new cocoa_transition_engine_snakewipe();
+		break;
+	case lib::waterfallWipe:
+		rv = new cocoa_transition_engine_waterfallwipe();
+		break;
+	case lib::spiralWipe:
+		rv = new cocoa_transition_engine_spiralwipe();
+		break;
+	case lib::parallelSnakesWipe:
+		rv = new cocoa_transition_engine_parallelsnakeswipe();
+		break;
+	case lib::boxSnakesWipe:
+		rv = new cocoa_transition_engine_boxsnakeswipe();
+		break;
+	// series 5: SMIL-specific types
 	case lib::pushWipe:
 		rv = new cocoa_transition_engine_pushwipe();
 		break;
 	case lib::slideWipe:
 		rv = new cocoa_transition_engine_slidewipe();
+		break;
+	case lib::fade:
+		rv = new cocoa_transition_engine_fade();
 		break;
 	default:
 		lib::logger::get_logger()->warn("cocoa_transition_engine: transition type %s not yet implemented",
