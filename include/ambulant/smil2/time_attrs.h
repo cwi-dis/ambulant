@@ -268,6 +268,15 @@ struct priority_attrs {
 	static common::pause_display display_from_str(const std::string& spec);
 };
 
+class schedulable : public time_traits {
+  public:
+	virtual const time_attrs* get_time_attrs() const = 0;
+	
+	// Return unresolved when unknown
+	virtual time_type get_implicit_dur() = 0;
+	virtual time_type get_last_dur() const = 0;
+};
+
 } // namespace smil2
  
 } // namespace ambulant

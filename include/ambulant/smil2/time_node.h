@@ -120,10 +120,11 @@ class time_node_context : public lib::event_scheduler<time_traits::value_type> {
 class transition_event;
 class repeat_event;
 class timer_event;
+class time_calc;
 
 // Represents a node in the timing model.
 
-class time_node : public time_traits {
+class time_node : public schedulable {
   public:
 	typedef time_node_context context_type;
 	typedef node_navigator<time_node> nnhelper;
@@ -154,7 +155,7 @@ class time_node : public time_traits {
 	virtual time_node *append_child(time_node *child) {return nnhelper::append_child(this, child);}
 	virtual void get_children(std::list<time_node*>& l) { nnhelper::get_children(this, l);}
 	virtual void get_children(std::list<const time_node*>& l) const { const_nnhelper::get_children(this, l);}
-	virtual time_type calc_implicit_dur();
+	virtual time_type get_implicit_dur();
 	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const { return false;}
 	
 	// Forced transitions
@@ -252,7 +253,6 @@ class time_node : public time_traits {
 	value_type get_sync_simple_time() const;
 	value_type get_simple_time() const;
 	value_type get_rad() const { return m_rad;}
-	time_type time_manipulated(time_type d) const;
 
 	// Time type queries
 	time_container_type get_type() const { return m_type;}
@@ -338,7 +338,7 @@ class time_node : public time_traits {
 	// Used to avoid recursion when a child makes calcs 
 	// that depend on parent simple dur
 	// but parent's simple dur depends on the child
-	time_type get_last_cdur() const { return m_last_cdur;}
+	time_type get_last_dur() const { return m_last_cdur;}
 
 	// Returns the priority class of this node
 	// Applicable for excl children.
@@ -356,32 +356,14 @@ class time_node : public time_traits {
 	
 	// Calculates the simple duration of this node
 	time_type calc_dur();
-	
-	// Calculates the active duration (AD) of this node
-	// Uses simple duration calculation: calc_dur()
-	time_type calc_ad(time_type b, time_type e);
-	time_type calc_ad(time_type b);
-	
-	// AD helpers
-	time_type calc_preliminary_ad(time_type b, time_type e);
-	time_type calc_intermediate_ad();
-	time_type calc_active_rad();
-	time_type calc_preliminary_ad(time_type b);
-	
-	time_type calc_end(time_type b, time_type e);
-	time_type calc_end(time_type b);
-
+		
 	// Calculate interval
 	interval_type calc_first_interval();
 	interval_type calc_next_interval();
 	
 	// Re-calculate current interval end
 	time_type calc_current_interval_end();
-	
-	// Returns the current interval as clipped 
-	// by its parent simple duration.
-	interval_type calc_clipped_interval();
-	
+		
 	// Dump this branch to the provided std::ostream.
 #ifndef AMBULANT_NO_IOSTREAMS
 	void dump(std::ostream& os);
@@ -407,7 +389,6 @@ class time_node : public time_traits {
 	// Mimimize or eliminate usage after timegraph construction 
 	const node *m_node;
 	
-	
 	// Attributes parser
 	time_attrs m_attrs;
 	
@@ -425,8 +406,11 @@ class time_node : public time_traits {
 	// Summarizes the state variables below.
 	// For each state the analytic state variables below 
 	// take particular values.
-	time_state* m_state;
-			
+	time_state	*m_state;
+	
+	// Smil timing calculator
+	time_calc *m_time_calc;
+	
 	// The current interval associated with this time node.
 	// When this has not a current interval this is set to unresolved
 	interval_type m_interval;
@@ -567,7 +551,7 @@ class time_container : public time_node {
 	
 	~time_container() {}
 	
-	virtual time_type calc_implicit_dur();
+	virtual time_type get_implicit_dur();
 	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const;
   private:
 	time_type calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl);
@@ -588,7 +572,7 @@ class seq : public time_container {
 	seq(context_type *ctx, const lib::node *n) 
 	:	time_container(ctx, n, tc_seq) {}
 	~seq() {}
-	virtual time_type calc_implicit_dur();
+	virtual time_type get_implicit_dur();
 	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const;
 };
 
