@@ -281,28 +281,29 @@ qt_transition_blitclass_poly::update()
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_poly::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *npm, *qpm;
+	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
 	setup_transition(m_outtrans, aqw, &qpm, &npm);
-	QImage img1 = qpm->convertToImage();
+//	QImage img1 = qpm->convertToImage();
 	QImage img2 = npm->convertToImage();
 	QPointArray qpa;
 	int idx = 0;
 	std::vector<point>::iterator newpoint;
 	for( newpoint=m_newpolygon.begin();
 	     newpoint != m_newpolygon.end(); newpoint++) {
-	    	point p = *newpoint;
+	    	point p = *newpoint + dst_global_topleft;
 		qpa.putPoints(idx++, 1, p.x, p.y);
 	}
 	QRegion qreg(qpa, true);
 	screen_rect<int> newrect_whole =  m_dst->get_rect();
-	newrect_whole.translate(m_dst->get_global_topleft());
+	newrect_whole.translate(dst_global_topleft);
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
 	QPainter paint;
 	paint.begin(qpm);
 //	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
-	paint.drawImage(L,T,img1,0,0,W,H);
+//	paint.drawImage(L,T,img1,L,T,W,H);
 	paint.setClipRegion(qreg);
-	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.drawImage(L,T,img2,L,T,W,H);
 	paint.flush();
 	paint.end();
 	finalize_transition(m_outtrans, aqw, qpm);
@@ -315,8 +316,9 @@ qt_transition_blitclass_polylist::update()
 	logger::get_logger()->debug("qt_transition_blitclass_polylist: not yet tested");
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *npm, *qpm;
+	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
 	setup_transition(m_outtrans, aqw, &qpm, &npm);
-	QImage img1 = qpm->convertToImage();
+//	QImage img1 = qpm->convertToImage();
 	QImage img2 = npm->convertToImage();
 	QRegion clip_region;
 	logger::get_logger()->debug("qt_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
@@ -329,7 +331,7 @@ qt_transition_blitclass_polylist::update()
 	  int idx = 0;
 	  for( newpoint=partpolygon->begin();
 	       newpoint != partpolygon->end(); newpoint++) {
-	    point p = *newpoint;
+	    point p = *newpoint + dst_global_topleft;
 	    qpa.putPoints(idx++, 1, p.x, p.y);
 	  logger::get_logger()->debug("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
 	  }
@@ -337,14 +339,14 @@ qt_transition_blitclass_polylist::update()
 	  clip_region += qreg;
 	}
 	screen_rect<int> newrect_whole =  m_dst->get_rect();
-	newrect_whole.translate(m_dst->get_global_topleft());
+	newrect_whole.translate(dst_global_topleft);
 	int L = newrect_whole.left(), T = newrect_whole.top(),
 	 W = newrect_whole.width(), H = newrect_whole.height();
 	QPainter paint;
 	paint.begin(qpm);
-	paint.drawImage(L,T,img1,0,0,W,H);
+//	paint.drawImage(L,T,img1,L,T,W,H);
 	paint.setClipRegion(clip_region);
-	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.drawImage(L,T,img2,L,T,W,H);
 	paint.flush();
 	paint.end();
 	finalize_transition(m_outtrans, aqw, qpm);
