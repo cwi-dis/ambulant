@@ -46,6 +46,7 @@
  *
  */
 
+ #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -63,10 +64,11 @@ gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	net::passive_datasource *src)
 :	active_renderer(context, cookie, node, evp, src, NULL)
 {
-    arts_setup(44100,16,1,"arts_audio");
+    //arts_setup(44100,16,1,"arts_audio");
     m_rate = 44100;
     m_channels = 1;
     m_bits=16;
+    m_stream=NULL;
 }
 
 int
@@ -74,6 +76,7 @@ gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channe
 {
     int err;
     if (!m_stream) {
+     AM_DBG lib::logger::get_logger()->trace("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
     err = arts_init();
     if (err < 0) {
     AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
@@ -98,10 +101,15 @@ int
 gui::arts::arts_active_audio_renderer::arts_play(char *data, int size)
 {
     int err;
-    err = arts_write(m_stream, data, size);
-    AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): %s", (void *)this, arts_error_text(err));
-    arts_close_stream(m_stream);
-    arts_free();
+    if (m_stream) {
+        err = arts_write(m_stream, data, size);
+        if (err < 0) {
+            AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): %s", (void *)this, arts_error_text(err));
+            }
+        } else {
+        AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): No aRts stream opened", (void *)this);        
+        }
+        
     return err;
 }
 
