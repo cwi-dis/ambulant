@@ -129,7 +129,7 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
 		[surf lockFocus];
-		/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to transition surface");
+		AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to transition surface");
 	}
 	// First find our whole area (which we have to clear to background color)
 	screen_rect<int> dstrect_whole = r;
@@ -140,7 +140,7 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	if (!color_attr) {
 		lib::logger::get_logger()->warn("<brush> element without color attribute");
 		if (surf) {
-			/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
+			AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
 			[surf unlockFocus];
 		}
 		m_lock.leave();
@@ -157,7 +157,7 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine) {
 		assert(surf);
-		/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef lib::no_arg_callback<cocoa_active_fill_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_active_fill_renderer::transition_step);

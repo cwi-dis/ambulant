@@ -72,10 +72,26 @@ class cocoa_transition_blitclass_r1r2 : virtual public smil2::transition_blitcla
 	void update();
 };
 
-class cocoa_transition_engine_fade : 
-	virtual public cocoa_transition_blitclass_fade,
-	virtual public smil2::transition_engine_fade {};
-	
+class cocoa_transition_blitclass_r1r2r3r4 : virtual public smil2::transition_blitclass_r1r2r3r4 {
+  protected:
+	void update();
+};
+
+class cocoa_transition_blitclass_rlistr2 : virtual public smil2::transition_blitclass_rlistr2 {
+  protected:
+	void update();
+};
+
+class cocoa_transition_blitclass_polyr2 : virtual public smil2::transition_blitclass_polyr2 {
+  protected:
+	void update();
+};
+
+class cocoa_transition_blitclass_polylistr2 : virtual public smil2::transition_blitclass_polylistr2 {
+  protected:
+	void update();
+};
+
 class cocoa_transition_engine_barwipe :
 	virtual public cocoa_transition_blitclass_r1r2,
 	virtual public smil2::transition_engine_barwipe {};
@@ -84,10 +100,66 @@ class cocoa_transition_engine_boxwipe :
 	virtual public cocoa_transition_blitclass_r1r2,
 	virtual public smil2::transition_engine_boxwipe {};
 
+class cocoa_transition_engine_fourboxwipe :
+	virtual public cocoa_transition_blitclass_rlistr2,
+	virtual public smil2::transition_engine_fourboxwipe {};
+
 class cocoa_transition_engine_barndoorwipe :
 	virtual public cocoa_transition_blitclass_r1r2,
 	virtual public smil2::transition_engine_barndoorwipe {};
 
+class cocoa_transition_engine_diagonalwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_diagonalwipe {};
+
+class cocoa_transition_engine_miscdiagonalwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_miscdiagonalwipe {};
+
+class cocoa_transition_engine_veewipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_veewipe {};
+
+class cocoa_transition_engine_barnveewipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_barnveewipe {};
+
+class cocoa_transition_engine_zigzagwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_zigzagwipe {};
+
+class cocoa_transition_engine_barnzigzagwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_barnzigzagwipe {};
+
+class cocoa_transition_engine_bowtiewipe :
+	virtual public cocoa_transition_blitclass_polylistr2,
+	virtual public smil2::transition_engine_bowtiewipe {};
+
+class cocoa_transition_engine_doublesweepwipe :
+	virtual public cocoa_transition_blitclass_polylistr2,
+	virtual public smil2::transition_engine_doublesweepwipe {};
+
+class cocoa_transition_engine_saloondoorwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_saloondoorwipe {};
+
+class cocoa_transition_engine_windshieldwipe :
+	virtual public cocoa_transition_blitclass_polyr2,
+	virtual public smil2::transition_engine_windshieldwipe {};
+
+class cocoa_transition_engine_pushwipe :
+	virtual public cocoa_transition_blitclass_r1r2r3r4,
+	virtual public smil2::transition_engine_pushwipe {};
+
+class cocoa_transition_engine_slidewipe :
+	virtual public cocoa_transition_blitclass_r1r2r3r4,
+	virtual public smil2::transition_engine_slidewipe {};
+
+class cocoa_transition_engine_fade : 
+	virtual public cocoa_transition_blitclass_fade,
+	virtual public smil2::transition_engine_fade {};
+	
 smil2::transition_engine *cocoa_transition_engine(
 	common::surface *dst, bool is_outtrans, lib::transition_info *info);
 	

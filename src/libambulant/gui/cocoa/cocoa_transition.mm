@@ -54,7 +54,8 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
+//#define AM_DBG
+#define FILL_PURPLE
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -71,7 +72,7 @@ cocoa_transition_blitclass_fade::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = [view getTransitionNewSource];
-	/*AM_DBG*/ lib::logger::get_logger()->trace("cocoa_transition_blitclass_fade::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_fade::update(%f)", m_progress);
 	const lib::screen_rect<int> &r =  m_dst->get_rect();
 	lib::screen_rect<int> dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
@@ -90,7 +91,7 @@ cocoa_transition_blitclass_r1r2::update()
 
 	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
-	/*AM_DBG*/ lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2::update(%f)", m_progress);
 	lib::screen_rect<int> oldrect_whole = m_oldrect;
 	lib::screen_rect<int> newrect_whole = m_newrect;
 	oldrect_whole.translate(m_dst->get_global_topleft());
@@ -98,7 +99,7 @@ cocoa_transition_blitclass_r1r2::update()
 	NSRect cocoa_oldrect_whole = [view NSRectForAmbulantRect: &oldrect_whole];
 	NSRect cocoa_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
 
-#if 1
+#ifdef FILL_PURPLE
 	// Debug: fill with purple
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
@@ -118,6 +119,86 @@ cocoa_transition_blitclass_r1r2::update()
 		fraction: 1.0];
 }
 
+void
+cocoa_transition_blitclass_r1r2r3r4::update()
+{
+	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+
+	NSImage *oldsrc = [view getTransitionOldSource];
+	NSImage *newsrc = [view getTransitionNewSource];
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2r3r4: not yet implemented");
+#ifdef FILL_PURPLE
+	// Debug: fill with purple
+	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	[[NSColor purpleColor] set];
+	NSRectFill(cocoa_dstrect_whole);
+#endif
+}
+
+void
+cocoa_transition_blitclass_rlistr2::update()
+{
+	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+
+	NSImage *oldsrc = [view getTransitionOldSource];
+	NSImage *newsrc = [view getTransitionNewSource];
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rlistr2::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_rlistr2: not yet implemented");
+#ifdef FILL_PURPLE
+	// Debug: fill with purple
+	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	[[NSColor purpleColor] set];
+	NSRectFill(cocoa_dstrect_whole);
+#endif
+}
+
+void
+cocoa_transition_blitclass_polyr2::update()
+{
+	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+
+	NSImage *oldsrc = [view getTransitionOldSource];
+	NSImage *newsrc = [view getTransitionNewSource];
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polyr2::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polyr2: not yet implemented");
+#ifdef FILL_PURPLE
+	// Debug: fill with purple
+	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	[[NSColor purpleColor] set];
+	NSRectFill(cocoa_dstrect_whole);
+#endif
+}
+
+void
+cocoa_transition_blitclass_polylistr2::update()
+{
+	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+
+	NSImage *oldsrc = [view getTransitionOldSource];
+	NSImage *newsrc = [view getTransitionNewSource];
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylistr2::update(%f)", m_progress);
+	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylistr2: not yet implemented");
+#ifdef FILL_PURPLE
+	// Debug: fill with purple
+	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	[[NSColor purpleColor] set];
+	NSRectFill(cocoa_dstrect_whole);
+#endif
+}
+
 smil2::transition_engine *
 cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_info *info)
 {
@@ -133,8 +214,47 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 	case lib::boxWipe:
 		rv = new cocoa_transition_engine_boxwipe();
 		break;
+	case lib::fourBoxWipe:
+		rv = new cocoa_transition_engine_fourboxwipe();
+		break;
 	case lib::barnDoorWipe:
 		rv = new cocoa_transition_engine_barndoorwipe();
+		break;
+	case lib::diagonalWipe:
+		rv = new cocoa_transition_engine_diagonalwipe();
+		break;
+	case lib::miscDiagonalWipe:
+		rv = new cocoa_transition_engine_miscdiagonalwipe();
+		break;
+	case lib::veeWipe:
+		rv = new cocoa_transition_engine_veewipe();
+		break;
+	case lib::barnVeeWipe:
+		rv = new cocoa_transition_engine_barnveewipe();
+		break;
+	case lib::zigZagWipe:
+		rv = new cocoa_transition_engine_zigzagwipe();
+		break;
+	case lib::barnZigZagWipe:
+		rv = new cocoa_transition_engine_barnzigzagwipe();
+		break;
+	case lib::bowTieWipe:
+		rv = new cocoa_transition_engine_bowtiewipe();
+		break;
+	case lib::doubleSweepWipe:
+		rv = new cocoa_transition_engine_doublesweepwipe();
+		break;
+	case lib::saloonDoorWipe:
+		rv = new cocoa_transition_engine_saloondoorwipe();
+		break;
+	case lib::windshieldWipe:
+		rv = new cocoa_transition_engine_windshieldwipe();
+		break;
+	case lib::pushWipe:
+		rv = new cocoa_transition_engine_pushwipe();
+		break;
+	case lib::slideWipe:
+		rv = new cocoa_transition_engine_slidewipe();
 		break;
 	default:
 		lib::logger::get_logger()->warn("cocoa_transition_engine: transition type %s not yet implemented",

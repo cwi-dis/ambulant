@@ -56,7 +56,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -83,7 +83,7 @@ cocoa_active_image_renderer::~cocoa_active_image_renderer()
 void
 cocoa_active_image_renderer::start(double where)
 {
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.start(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.start(0x%x)", (void *)this);
 	if (m_intransition) {
 		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
@@ -132,7 +132,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 		surf = [view getTransitionSurface];
 		if ([surf isValid]) {
 			[surf lockFocus];
-			/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to transition surface");
+			AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to transition surface");
 		} else {
 			lib::logger::get_logger()->error("cocoa_active_image_renderer.redraw: cannot lockFocus for transition");
 			surf = NULL;
@@ -181,7 +181,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 	
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine && surf) {
-		/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef lib::no_arg_callback<cocoa_active_image_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_active_image_renderer::transition_step);

@@ -56,6 +56,7 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/transition_info.h"
+#include <vector>
 
 namespace ambulant {
 
@@ -86,6 +87,7 @@ class transition_engine {
 	bool m_outtrans;
 	lib::transition_info *m_info;
 	lib::transition_info::time_type m_begin_time;
+	int m_stepcount;
 	double m_progress;
 	double m_time2progress;
 };
@@ -101,15 +103,30 @@ class transition_blitclass_r1r2r3r4 : public transition_engine {
 };
 
 class transition_blitclass_rlistr2 : public transition_engine {
+  public:
+	~transition_blitclass_rlistr2() { clear(); }
   protected:
+	void clear() { m_newrectlist.clear(); };
+	std::vector< lib::screen_rect<int> > m_newrectlist;
+	lib::screen_rect<int> m_oldrect;
 };
 
 class transition_blitclass_polyr2 : public transition_engine {
+  public:
+	~transition_blitclass_polyr2() { clear(); }
   protected:
+	void clear() { m_newpolygon.clear(); };
+	std::vector<lib::point> m_newpolygon;
+	lib::screen_rect<int> m_oldrect;
 };
 
 class transition_blitclass_polylistr2 : public transition_engine {
+  public:
+	~transition_blitclass_polylistr2() { clear(); }
   protected:
+	void clear() { m_newpolygonlist.clear(); };
+	std::vector< std::vector<lib::point> > m_newpolygonlist;
+	lib::screen_rect<int> m_oldrect;
 };
 
 class transition_blitclass_fade : public transition_engine {
@@ -117,11 +134,6 @@ class transition_blitclass_fade : public transition_engine {
 };
 
 /////////////////////////////
-
-class transition_engine_fade : virtual public transition_blitclass_fade {
-  protected:
-	void compute();
-};
 
 class transition_engine_barwipe : virtual public transition_blitclass_r1r2 {
   protected:
@@ -133,9 +145,79 @@ class transition_engine_boxwipe : virtual public transition_blitclass_r1r2 {
     void compute();
 };
 
+class transition_engine_fourboxwipe : virtual public transition_blitclass_rlistr2 {
+  protected:
+    void compute();
+};
+
 class transition_engine_barndoorwipe : virtual public transition_blitclass_r1r2 {
   protected:
     void compute();
+};
+
+class transition_engine_diagonalwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_miscdiagonalwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_veewipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_barnveewipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_zigzagwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_barnzigzagwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_bowtiewipe : virtual public transition_blitclass_polylistr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_doublesweepwipe : virtual public transition_blitclass_polylistr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_saloondoorwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_windshieldwipe : virtual public transition_blitclass_polyr2 {
+  protected:
+    void compute();
+};
+
+class transition_engine_pushwipe : virtual public transition_blitclass_r1r2r3r4 {
+  protected:
+    void compute();
+};
+
+class transition_engine_slidewipe : virtual public transition_blitclass_r1r2r3r4 {
+  protected:
+    void compute();
+};
+
+class transition_engine_fade : virtual public transition_blitclass_fade {
+  protected:
+	void compute();
 };
 
 } // namespace smil2
