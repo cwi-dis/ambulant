@@ -52,8 +52,6 @@
 
 #include "ambulant/config/config.h"
 
-#ifndef AMBULANT_PLATFORM_WIN32
-
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
@@ -76,7 +74,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
+#ifndef AMBULANT_PLATFORM_WIN32
 #include <unistd.h>
 #endif
 
@@ -122,7 +120,7 @@ private:
 	
 
 
-class active_datasource : virtual public datasource, virtual public ambulant::lib::ref_counted_obj {
+class active_datasource : public datasource {
   public:
 	active_datasource();
 	active_datasource(passive_datasource *const source, int file);
@@ -156,7 +154,7 @@ class active_datasource : virtual public datasource, virtual public ambulant::li
 
 // This is a temporary class: it allows you to read raw audio files as
 // 16bit mono 44k1 samples
-class raw_audio_datasource : virtual public audio_datasource, virtual public ambulant::lib::ref_counted_obj {
+class raw_audio_datasource : public audio_datasource {
   public:
   	raw_audio_datasource()
   	:	m_src(new active_datasource()) {}
@@ -193,219 +191,5 @@ class raw_audio_datasource : virtual public audio_datasource, virtual public amb
 } // end namespace net
 
 } //end namespace ambulant
-
-
-#else // WIN32 is defined
-
-///////////////////////////////////////////////
-// WARNING: 
-// Though the implementation in this section is std c++
-// its only purpose is for testing under win32.
-// This implementation violates some parts of the assumed protocol.
-// For example:
-// active_datasource::read() when asked to fill
-// a buffer it returns a pointer to the data.
-// Renderer will call the c-function ::free against 
-// this pointer. So, ...
-
-
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/refcount.h"
-#include "ambulant/lib/callback.h"
-#include "ambulant/lib/event_processor.h"
-
-#include <string>
-
-// debug
-#include "ambulant/lib/logger.h"
-
-#ifndef AMBULANT_NO_IOSTREAMS
-#include <sstream>
-#include <fstream>
-#endif
-
-namespace ambulant {
-
-namespace net {
-
-typedef  std::basic_string<byte> databuffer;
-
-class active_datasource;
-
-using ambulant::lib::logger;
-
-class passive_datasource : public ambulant::lib::ref_counted_obj {
-
-  public:
-	passive_datasource(const char *url)
-	:	m_url(url?url:"") {
-		//logger::get_logger()->debug(repr() + "::cstr()");
-	}
-	
-	passive_datasource(const std::string& url)
-	:	 m_url(url) {
-		//logger::get_logger()->debug(repr() + "::cstr()");
-	}
-	
-	~passive_datasource() {
-		//logger::get_logger()->debug(repr() + "::dstr()");
-	}
-	
-	active_datasource *activate();
-	
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-	std::string repr() {
-		std::ostringstream os;
-		os << "passive_datasource(" << m_url << ")";
-		return os.str();
-	};
-#endif
-	
-	const std::string& get_url() const { return m_url;}
-	
-  private:
-	std::string m_url;
-};
-
-class active_datasource : public ambulant::lib::ref_counted_obj {
-  public:
-	typedef std::basic_string<byte> buffer_type;
-	typedef buffer_type::value_type value_type;
-	typedef buffer_type::pointer pointer;
-	typedef buffer_type::const_pointer const_pointer;
-	typedef buffer_type::size_type size_type;
-
-	active_datasource() 
-	:	m_source(0), m_gptr(0) {
-	}
-	
-	active_datasource(passive_datasource *source) 
-	:	m_source(source), m_gptr(0) {
-	}
-	
-	~active_datasource() {
-	}
-	
-	bool exists() const { 
-
-#ifndef AMBULANT_NO_IOSTREAMS
-		std::ifstream ifs(m_source->get_url().c_str());
-		bool exists = ifs && ifs.good();
-		ifs.close();
-		return exists;
-#else
-		return false;
-#endif
-
-	}
-	
-	databuffer& get_databuffer() { return m_buffer;}
-	
-	const std::string& get_url() const { return m_source->get_url();}
-	
-	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone) {
-#ifndef AMBULANT_NO_IOSTREAMS
-		std::ifstream ifs(m_source->get_url().c_str(), std::ios::in | std::ios::binary);
-		if(!ifs) {
-			logger::get_logger()->error(repr() + "::read() failed");
-			evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
-			return;
-		}
-		const size_t buf_size = 1024;
-		byte *buf = new byte[buf_size];
-		while(!ifs.eof() && ifs.good()){
-			ifs.read((char*)buf, buf_size);
-			m_buffer.append(buf, ifs.gcount());
-		}
-		delete[] buf;
-		m_gptr = 0;
-#endif
-		evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
-	}
-
-	size_type size() const { return m_buffer.size();}
-	
-	size_type available() const { return m_buffer.size() - m_gptr;}
-	
-	void seekg(size_type pos) { m_gptr = pos;}
-	
-	const byte* data() const { return  m_buffer.data();}
-	
-	const byte* gdata() { return m_buffer.data() + m_gptr;}
-	
-	byte get() { 
-		if(!available()) throw_range_error();
-		byte b = *gdata(); 
-		m_gptr++; 
-		return b;
-	}
-	
-	size_type read(byte *b, size_type nb) {
-		size_type nr = available();
-		size_type nt = (nr>=nb)?nb:nr;
-		if(nt>0) {
-			memcpy(b, gdata(), nt);
-			m_gptr += nt;
-		}
-		return nt;
-	}
-	
-	size_type skip(size_type nb) {
-		size_type nr = available();
-		size_type nt = (nr>=nb)?nb:nr;
-		if(nt>0) m_gptr += nt;
-		return nt;
-	}
-	
-	unsigned short get_be_ushort() {
-		byte b[2];
-		if(read(b, 2) != 2) throw_range_error();
-		return (b[1]<<8)| b[0];
-	}
-	
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-	std::string repr() {
-		std::ostringstream os;
-		os << "active_datasource[" << (m_source?m_source->repr():"NULL") + "]";
-		return os.str();
-	};
-#endif
-
-	size_type read(char *b, size_type nb) {
-		return read((byte*)b, nb);
-	}
-	
-#ifndef AMBULANT_NO_IOSTREAMS
-	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
-		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
-		return os;
-	}
-#endif
-
-  private:	
-	void throw_range_error() {
-		throw std::range_error("index out of range");
-	}
-	
-	passive_datasource *m_source;
-	databuffer m_buffer;
-	size_type m_gptr;
-  
-};
-
-//////////////////
-// Inline implemetation
-
-inline active_datasource *passive_datasource::activate() { 
-	return new active_datasource(this);
-}
-
-} // end namespace net
-
-} //end namespace ambulant
-
-#endif // end of (ifndef WIN32 / else / endif) block.
-
-///////////////////////////////////////////////
 
 #endif  //AMBULANT_NET_DATASOURCE_H
