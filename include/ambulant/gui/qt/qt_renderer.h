@@ -60,6 +60,10 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 class qt_gui;
 
 using namespace std;
@@ -79,7 +83,7 @@ namespace qt_renderer {
 					 size bounds, qt_gui* view) 
       : passive_window(name, bounds),
       m_view(view) {
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_passive_window::qt_passive_window(0x%x)", (void *)this);
     }
     void need_redraw(const screen_rect<int> &r);
@@ -94,7 +98,7 @@ namespace qt_renderer {
   public:
     qt_window_factory(qt_gui* view)
       : m_view(view) {
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_window_factory (0x%x)", (void*) this);
     }
     passive_window* new_window(const std::string &name, size bounds);
@@ -106,7 +110,7 @@ namespace qt_renderer {
 
   public:
     qt_renderer_factory() {
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_renderer factory (0x%x)", (void*) this);
     }
     active_renderer *new_renderer( event_processor *const evp,

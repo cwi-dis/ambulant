@@ -3,8 +3,12 @@ qt_gui-moc.cpp: $(top_builddir)/include/ambulant/gui/qt/qt_gui.h
 
 bin_PROGRAMS = qt_player
 qt_player_SOURCES = qt_gui.cpp  qt_gui-moc.cpp qt_mainloop.cpp
-LDADD = -L$(top_builddir)/src/libambulant -lambulant -lambulant_qt	\
-	-L$(EXPAT_PREFIX)/lib -lexpat				\
+#LDADD = -L$(top_builddir)/src/libambulant -lambulant -lambulant_qt	\
+#	-L$(EXPAT_PREFIX)/lib -lexpat				\
+#	-L$(QT_PREFIX)/lib -lqt-mt
+LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
+	$(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(EXPAT_PREFIX)/lib/libexpat.a \
 	-L$(QT_PREFIX)/lib -lqt-mt
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include	\

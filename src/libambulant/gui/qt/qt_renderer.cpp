@@ -55,6 +55,10 @@
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 namespace ambulant {
   
 using namespace lib;
@@ -65,7 +69,7 @@ namespace qt_renderer {
   void
   qt_passive_window::need_redraw(const screen_rect<int> &r)
   {
-    logger::get_logger()->trace
+    AM_DBG logger::get_logger()->trace
       ("qt_passive_window::need_redraw(0x%x), "
        "ltrb=(%d,%d,%d,%d)",
        (void *)this, r.left(), r.top(), r.right(), r.bottom());
@@ -84,23 +88,23 @@ namespace qt_renderer {
     if (tag == "img") {
       rv = (active_renderer*) 
 	new qt_active_image_renderer(evp, src, dest, node);
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning qt_active_image_renderer 0x%x", 
 	 (void*) node, (void*) rv);
     } else if ( tag == "text") {
       rv = (active_renderer*)
 	new qt_active_text_renderer(evp, src, dest, node);
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning qt_active_text_renderer 0x%x",
 	 (void*) node, (void*) rv);
     } else {
-      logger::get_logger()->error("qt_renderer_factory: "
+      AM_DBG logger::get_logger()->error("qt_renderer_factory: "
 				  "no Qt renderer for tag \"%s\"",
 				  tag.c_str());
       rv = new gui::none::none_active_renderer(evp, src, dest, node);
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning none_active_renderer 0x%x",
 	 (void*) node, (void*) rv);
@@ -110,7 +114,7 @@ namespace qt_renderer {
   passive_window *
   qt_window_factory::new_window(const std::string &name, size bounds)
   {
-    logger::get_logger()->trace
+    AM_DBG logger::get_logger()->trace
       ("qt_window_factory::new_window (0x%x) name=%s", 
        (void*) this, name.c_str());
       qt_passive_window * qpw = new qt_passive_window(name, bounds, m_view);

@@ -54,6 +54,10 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 namespace ambulant {
   
 using namespace lib;
@@ -73,7 +77,7 @@ namespace qt_renderer {
 				  const point& p)
   {
     m_lock.enter();
-    logger::get_logger()->trace
+    AM_DBG logger::get_logger()->trace
       ("qt_active_text_renderer.redraw(0x%x)"
        ",\nltrb=(%d,%d,%d,%d) m_data = %s"
        ", p=(%d,%d)",

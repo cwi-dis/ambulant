@@ -54,6 +54,10 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 namespace ambulant {
   
 using namespace lib;
@@ -63,7 +67,7 @@ namespace qt_renderer {
 
   qt_active_image_renderer::~qt_active_image_renderer() {
     m_lock.enter();
-    logger::get_logger()->trace
+    AM_DBG logger::get_logger()->trace
       ("qt_active_image_renderer::~qt_active_image_renderer()");
     m_lock.leave();
   }
@@ -73,7 +77,7 @@ namespace qt_renderer {
 				   const point& p)
   {
     m_lock.enter();
-    logger::get_logger()->trace
+    AM_DBG logger::get_logger()->trace
       ("qt_active_image_renderer.redraw(0x%x)"
        ", ltrb=(%d,%d,%d,%d)"
        ", p=(%d,%d)", 
@@ -86,7 +90,7 @@ namespace qt_renderer {
     if (m_image_loaded) {
       int L = r.left()+p.x, T = r.top()+p.y,
 	W = r.width(), H = r.height();
-      logger::get_logger()->trace
+      AM_DBG logger::get_logger()->trace
 	("qt_active_image_renderer.redraw(0x%x), "
 	 "drawImage at (L=%d,T=%d,W=%d,H=%d)",
 	 (void *)this,L,T,W,H);
@@ -98,7 +102,7 @@ namespace qt_renderer {
       paint.flush();
       paint.end();
      } else {
-      logger::get_logger()->error
+      AM_DBG logger::get_logger()->error
 	("qt_active_image_renderer.redraw(0x%x), "
 	 "no m_image",
 	 (void *)this

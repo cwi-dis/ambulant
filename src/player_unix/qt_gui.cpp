@@ -47,17 +47,20 @@
  */
 
 /* qt_gui.cpp - Qt GUI for Ambulant
- *              Contains some empty widgets (QDial, QSlider) that
- *              could be used in the future for Volume setting
- *              or Browsing through a MultiMedia presentation.
+ *              
+ *              Initial version renders images & text
  *
- * Kees Blom, Sept.25 2003
+ * Kees Blom, Oct.29 2003
  */
 
 #include <pthread.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 const QString about_text = 
                     "This is the skeleton Qt GUI for Ambulant.\n"
@@ -197,7 +200,7 @@ void qt_gui::slot_stop() {
 			   );
 }
 void qt_gui::paintEvent(QPaintEvent* e) {
-  printf("%s-%s\n", m_programfilename, "PaintEvent");
+  AM_DBG printf("%s-%s\n", m_programfilename, "PaintEvent");
   if (m_ambulant_window == NULL)
     printf("m_ambulant_window == NULL\n");
   else {
