@@ -181,11 +181,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 	if (m_renderers.size() == 1) {
 		// Exactly one active stream: use simple copy
 		Uint8 *single_data;
-		/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
 		int single_len = (*first)->get_data(len, &single_data);
 		if (single_len != 0)
 			memcpy(stream, single_data, std::min(len, single_len));
-		/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
 		(*first)->get_data_done(single_len);
 		if (single_len < len)
 			memset(stream+single_len, 0, (len-single_len));
@@ -195,11 +195,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		std::list<sdl_active_audio_renderer *>::iterator i;
 		for (i=first; i != m_renderers.end(); i++) {
 			Uint8 *next_data;
-			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
+			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			int next_len = (*i)->get_data(len, &next_data);
 			if (next_len)
 				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2));
-			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
+			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
 			(*i)->get_data_done(next_len);
 		}
 	}
@@ -301,7 +301,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		rv = 0;
 		m_read_ptr_called = false;
 	} else {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
 		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
 		m_read_ptr_called = true;
 		rv = m_audio_src->size();
@@ -322,7 +322,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	//if (size) {
 	if (m_audio_src) {
 		if (m_read_ptr_called) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
+			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
 			m_audio_src->readdone(size);
 			m_read_ptr_called = false;
 		}

@@ -70,6 +70,10 @@ class qt_gui;	// forward declaration
 
 class qt_logger {
  public:
+	enum custom_events {
+		CUSTOM_OFFSET=10000,
+		CUSTOM_LOGMESSAGE=-1
+	};
 	static qt_logger* get_qt_logger();
 	static void show_message(int level, const char *message);
 	QTextEdit* get_logger_window();
@@ -96,6 +100,11 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 	void flush();
  private:
 	QString m_qstring;
+};
+
+class qt_message_event : public QCustomEvent {
+ public:
+	qt_message_event(int type, char* message); 
 };
 #endif/*QT_NO_FILEDIALOG*/
 #endif/*__QT_LOGGER_H__*/

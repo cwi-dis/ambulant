@@ -52,6 +52,7 @@
 
 #include "qt_gui.h"
 #include "qt_logger.h"
+#include "qt_mainloop.h"
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qmessagebox.h>
 #include "ambulant/lib/logger.h"
@@ -112,7 +113,7 @@ qt_logger_ostream::flush() {
 qt_logger* qt_logger::s_qt_logger = 0;
 
 qt_logger::qt_logger() 
-  :	m_log_FILE(NULL),
+  : 	m_log_FILE(NULL),
 	m_gui(NULL) 
 {
 	common::preferences* prefs = 
@@ -128,9 +129,7 @@ qt_logger::qt_logger()
 	// Connect logger to our message displayer and output processor
 	//int loglevel = common::preferences::get_preferences()->m_log_level;
 	logger->set_show_message(show_message);
-	// Because QT_THREAD_SUPPORT is off by default, logging is
-	// in a terminal window on Linux.
-	//logger->set_ostream(new qt_logger_ostream);
+	logger->set_ostream(new qt_logger_ostream);
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
@@ -144,7 +143,7 @@ qt_logger::qt_logger()
 
 qt_logger*
 qt_logger::get_qt_logger() {
-	if (s_qt_logger == 0) {
+	if (s_qt_logger == NULL) {
 		s_qt_logger = new qt_logger();
 	}
 	return s_qt_logger;
@@ -152,7 +151,8 @@ qt_logger::get_qt_logger() {
 
 void
 qt_logger::set_qt_logger_gui(qt_gui* gui) {
-	if (s_qt_logger != NULL && s_qt_logger->m_gui == NULL) {
+	(void) get_qt_logger();
+	if (s_qt_logger->m_gui == NULL) {
 		s_qt_logger->m_gui = gui;
 	}
 }
@@ -163,24 +163,25 @@ qt_logger::log(QString logstring) {
  	if (m_log_FILE != NULL) {
 		fprintf(m_log_FILE, "%s", (const char*)logstring);
 	}
-	if (m_gui == NULL) {
-		// Initially the gui window is not there yet, but then
-		// w're single threaded, so the detour over the gui to
-		// avoid async reply errors from X11 is not needed
-		logger_window->append(logstring);
-	} else {
-		m_gui->log(s_qt_logger, logstring);
-	}
+	char* message = strdup(logstring.ascii());
+	s_qt_logger->m_gui->show_message(-1, message);
+	logger_window->append(logstring);
 }
 
 void
 qt_logger::show_message(int level, const char *msg) {
-	s_qt_logger->m_gui->show_message(level, msg);
+	char* message = strdup(msg);
+	s_qt_logger->m_gui->show_message(level, message);
 }
 
 QTextEdit*
 qt_logger::get_logger_window()
 {
 	return logger_window;
+}
+
+qt_message_event::qt_message_event(int level, char *msg)
+ : QCustomEvent((QEvent::Type)level, (void*) msg)
+{
 }
 #endif/*QT_NO_FILEDIALOG*/

@@ -61,13 +61,14 @@
 #include "qt_mainloop.h"
 #include "qt_logger.h"
 #include "qt_renderer.h"
+#include "qthread.h"
 #if 1
 #include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/version.h"
 #endif
 
-//#define AM_DBG
+// #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -87,7 +88,7 @@ const char *welcome_locations[] = {
 	"Extras/Welcome/Welcome.smil",
 	"../Extras/Welcome/Welcome.smil",
 #ifdef AMBULANT_DATADIR
-	AMBULANT_DATADIR "/Welcome/Welcome.smil"
+	AMBULANT_DATADIR "/Welcome/Welcome.smil",
 #else
 	"/usr/local/share/ambulant/Welcome/Welcome.smil",
 #endif
@@ -220,14 +221,8 @@ qt_gui::qt_gui(const char* title,
 		m_o_x = 0;
 		m_o_y = 27;
 	}
-	QObject::connect(this, SIGNAL(signal_show_message(int, const char*)),
-			 this, SLOT(slot_show_message(int, const char*)));
-	QObject::connect(this, SIGNAL(signal_log(qt_logger*, QString)),
-			 this, SLOT(slot_log(qt_logger*, QString)));
 	QObject::connect(this, SIGNAL(signal_player_done()),
 			    this, SLOT(slot_player_done()));
-	QObject::connect(this, SIGNAL(signal_player_start(QString,bool,bool)),
-			    this, SLOT(slot_player_start(QString,bool,bool)));
 }
 
 qt_gui::~qt_gui() {
@@ -428,13 +423,6 @@ qt_gui::slot_player_done() {
 	*/
 }
 
-
-void 
-qt_gui::slot_player_start(QString document_name, bool start, bool old) {
-	AM_DBG printf("%s-%s(%s)\n", m_programfilename, "slot_player_start", document_name.ascii());
-	m_mainloop->player_start(document_name, start, old);
-}
-
 void 
 qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
@@ -446,12 +434,6 @@ void
 qt_gui::player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "player_done");
 	emit signal_player_done();
-}
-
-void 
-qt_gui::player_start(QString document_name, bool start, bool old) {
-	AM_DBG printf("%s-%s\n", m_programfilename, "player_start");
-	emit signal_player_start(document_name, start, old);
 }
 
 void 
@@ -535,34 +517,6 @@ qt_gui::slot_settings_cancel() {
 }
 
 void
-qt_gui::slot_show_message(int level, const char* msg) {
-	if (level == ambulant::lib::logger::LEVEL_FATAL)
-		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
-	else if (level == ambulant::lib::logger::LEVEL_ERROR)
-		QMessageBox::warning(NULL, "AmbulantPlayer", msg);
-	else if (level == ambulant::lib::logger::LEVEL_WARN)
-		QMessageBox::information(NULL, "AmbulantPlayer", msg);
-	else
-		QMessageBox::information(NULL, "AmbulantPlayer", msg);
-}
-
-void
-qt_gui::show_message(int level, const char* message) {
-	emit signal_show_message(level, message);
-}
-
-void
-qt_gui::slot_log(qt_logger* logger, QString logstring) {
-	logger->get_logger_window()->append(logstring);
-//	QMessageBox::information(NULL, "AmbulantPlayer", msg);
-}
-
-void
-qt_gui::log(qt_logger* logger, QString logstring) {
-	emit signal_log(logger, logstring);
-}
-
-void
 qt_gui::slot_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
 	if (m_mainloop)	{
@@ -597,6 +551,42 @@ qt_gui::unsetCursor() { //XXXX Hack
 }
 #endif/*QT_NO_FILEDIALOG*/
 
+void
+qt_gui::customEvent(QCustomEvent* e) {
+	char* msg = (char*)e->data();
+//	std::string id("qt_gui::customEvent");
+//	std::cerr<<id<<std::endl;
+//	std::cerr<<id+" type: "<<e->type()<<" msg:"<<msg<<std::endl;
+	switch (e->type()-qt_logger::CUSTOM_OFFSET) {
+	case qt_logger::CUSTOM_LOGMESSAGE:
+		qt_logger::get_qt_logger()->
+			get_logger_window()->append(msg);
+		break;
+	case ambulant::lib::logger::LEVEL_FATAL:
+		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
+		break;
+	case ambulant::lib::logger::LEVEL_ERROR:
+		QMessageBox::warning(NULL, "AmbulantPlayer", msg);
+		break;
+	case ambulant::lib::logger::LEVEL_WARN:
+	default:
+		QMessageBox::information(NULL, "AmbulantPlayer", msg);
+		break;
+	}
+	free(msg);
+}
+
+void
+qt_gui::show_message(int level, char* msg) {
+	int msg_id = level+qt_logger::CUSTOM_OFFSET;
+  	qt_message_event* qme = new qt_message_event(msg_id, msg);
+#ifdef	QT_THREAD_SUPPORT
+	QThread::postEvent(this, qme);
+#else /*QT_THREAD_SUPPORT*/
+	QApplication::postEvent(this, qme);
+#endif/*QT_THREAD_SUPPORT*/
+}
+
 int
 main (int argc, char*argv[]) {
 
@@ -622,31 +612,18 @@ main (int argc, char*argv[]) {
 	FILE* DBG = stdout;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
-	// take log level from preferences
-	qt_logger* qt_logger = qt_logger::get_qt_logger();
-	lib::logger::get_logger()->debug("Ambulant Player: %s",
-					 "now logging to a window");
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QPEApplication myapp(argc, argv);
 #endif/*QT_NO_FILEDIALOG*/
 
-	// Print welcome banner
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
-#if ENABLE_NLS
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
-#endif
-
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
 				      : "AmbulantPlayer");
-	qt_logger::set_qt_logger_gui(mywidget);
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(240, 320, 320, 240);
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
-
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
 	if (argc > 1 && strcmp(argv[1], "-qcop") != 0)
 	  myapp.showMainWidget(mywidget);
@@ -654,7 +631,19 @@ main (int argc, char*argv[]) {
 	  myapp.showMainDocumentWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
-	
+/*TMP initialize logger after gui*/	
+	// take log level from preferences
+	qt_logger::set_qt_logger_gui(mywidget);
+	qt_logger* qt_logger = qt_logger::get_qt_logger();
+	lib::logger::get_logger()->debug("Ambulant Player: %s",
+					 "now logging to a window");
+	// Print welcome banner
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
+#if ENABLE_NLS
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+#endif
+
 	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
 	AM_DBG for (int i=1;i<argc;i++){fprintf(DBG,"%s\n", argv[i]);
 	}

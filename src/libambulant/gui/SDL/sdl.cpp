@@ -54,7 +54,6 @@
 #include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
 
-
 using namespace ambulant;
 using namespace gui::sdl;
 

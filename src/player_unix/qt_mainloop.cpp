@@ -74,13 +74,13 @@
 //#include "ambulant/lib/tree_builder.h"
 
 #include "qt_mainloop.h"
+#include <qapplication.h>
+#include <qevent.h>
 
 using namespace ambulant;
 using namespace gui::qt;
 
-
- 
-//#define AM_DBG
+// #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -338,7 +338,7 @@ qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 {
 	QString document_name(newdoc.get_url().c_str());
 	AM_DBG m_logger->trace("qt_mainloop: implementing: open \"%s\"",document_name.ascii());
-	m_gui->player_start(document_name, start, old);
+	player_start(document_name, start, old);
 }
 
 void

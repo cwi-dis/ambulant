@@ -65,6 +65,7 @@
 #endif/*QT_NO_FILEDIALOG*/
 #include <qcursor.h>
 #include <qdial.h>
+#include <qevent.h>
 #include <qhbox.h>
 #include <qfiledialog.h>
 #include <qimage.h>
@@ -112,17 +113,16 @@ class qt_gui : public QWidget {
 	bool openSMILfile(QString smilfilename, int mode);
 
 	// signal interfaces
-	void log(qt_logger*, QString);
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
 	void player_start(QString,bool,bool);
-	void show_message(int level, const char* message);
+	void show_message(int level, char* msg);
 
+/*TMP*/	qt_mainloop* m_mainloop;
    private:
 	bool	     m_busy;
 	QPushButton* m_cancel_pb; // for Settings window
 	QHBox* 	     m_finish_hb; // for Settings window
-	qt_mainloop* m_mainloop;
 	QMenuBar*    m_menubar;
 	QPushButton* m_ok_pb;	 // for Settings window
 	int	     m_o_x;	 // x coord of origin play window
@@ -162,29 +162,24 @@ class qt_gui : public QWidget {
 	void slot_homepage();
 	void slot_welcome();
 	void slot_help();
-	void slot_log(qt_logger*, QString);
   	void slot_logger_window();
 	void slot_open();
 	void slot_open_url();
 	void slot_pause();
 	void slot_player_done();
-	void slot_player_start(QString,bool,bool);
 	void slot_quit();
 	void slot_settings_cancel();
 	void slot_settings_ok();
 	void slot_settings_select();
-	void slot_show_message(int, const char*);
 	void slot_stop();
 
   signals:
-	void signal_log(qt_logger*, QString);
 	void signal_player_done();
-	void signal_player_start(QString,bool,bool);
 	void signal_need_redraw(const void*, void*, const void*);
-	void signal_show_message(int, const char*);
 
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   protected:
+	void customEvent(QCustomEvent*);
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	void unsetCursor(); //XXXX
 #endif/*QT_NO_FILEDIALOG*/
 };
