@@ -45,9 +45,11 @@
  * which carries forward this exception.
  *
  */
-#ifndef NONE_FACTORY_H
-#define NONE_FACTORY_H
+#ifndef QT_FACTORY_H
+#define QT_FACTORY_H
+
 #include "ambulant/common/playable.h"
+
 namespace ambulant {
 namespace gui {
 namespace qt {
@@ -55,7 +57,7 @@ namespace qt {
 class qt_video_factory : public common::playable_factory {
   public:
   
-	qt_video_factory(net::datasource_factory *df)
+	qt_video_factory(net::datasource_factory *df) {}
 	:   m_datasource_factory(df) {}
 	~qt_video_factory();
 		
