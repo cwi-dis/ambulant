@@ -78,6 +78,7 @@ using namespace gui::qt;
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+
 void
 open_web_browser(const std::string &href)
 {
