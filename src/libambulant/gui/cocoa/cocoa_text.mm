@@ -75,7 +75,7 @@ cocoa_text_renderer::cocoa_text_renderer(
 		const lib::node *node,
 		event_processor *evp,
 		common::factories *factory)
-:	cocoa_renderer(context, cookie, node, evp, factory),
+:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
 	m_text_storage(NULL),
 	m_text_color(NULL),
 	m_text_font(NULL)

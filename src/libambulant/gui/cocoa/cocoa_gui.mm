@@ -315,6 +315,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		// Debug code: dump the contents of the view into an image
 		[self dumpToImageID: "redraw"];
 #endif
+		[self releaseTransitionSurface];
     }
 //	redraw_lock.leave();
 }
@@ -432,17 +433,25 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (NSImage *)getTransitionSurface
 {
-	// XXX Need to rethink: we want to 
-	if (transition_surface) {
-		[transition_surface release];
-		transition_surface = NULL;
-	}
+//	// XXX Need to rethink: we want to 
+//	if (transition_surface) {
+//		[transition_surface release];
+//		transition_surface = NULL;
+//	}
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
 		transition_surface = [self getTransitionOldSource];
 		[transition_surface retain];
 	}
 	return transition_surface;
+}
+
+- (void)releaseTransitionSurface
+{
+	if (transition_surface) {
+		[transition_surface release];
+		transition_surface = NULL;
+	}
 }
 
 - (NSImage *)getTransitionTmpSurface

@@ -67,7 +67,38 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_renderer : public renderer_playable_dsall {
+class cocoa_transition_renderer : public ref_counted_obj {
+  public:
+	cocoa_transition_renderer(event_processor *evp)
+	:	m_event_processor(evp),
+		m_dest(NULL),
+		m_intransition(NULL),
+		m_outtransition(NULL),
+		m_trans_engine(NULL) {}
+	~cocoa_transition_renderer();
+	
+	void set_surface(common::surface *dest) { m_dest = dest;}
+	void start(double where);
+    void redraw_pre(gui_window *window);
+    void redraw_post(gui_window *window);
+	void set_intransition(const lib::transition_info *info) {
+		m_intransition = info;
+	}
+	void start_outtransition(const lib::transition_info *info);
+  private:
+	void transition_step();
+	void stop_transition();
+
+	event_processor *m_event_processor;
+	common::surface *m_dest;
+	const lib::transition_info *m_intransition;
+	const lib::transition_info *m_outtransition;
+	smil2::transition_engine *m_trans_engine;
+	critical_section m_lock;
+};
+
+template <class RP_Base>
+class cocoa_renderer : public RP_Base {
   public:
 	cocoa_renderer(
 		playable_notification *context,
@@ -75,25 +106,38 @@ class cocoa_renderer : public renderer_playable_dsall {
 		const lib::node *node,
 		event_processor *evp,
 		common::factories *factory)
-	:	renderer_playable_dsall(context, cookie, node, evp, factory),
-		m_intransition(NULL),
-		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
-	~cocoa_renderer();
+	:	RP_Base(context, cookie, node, evp, factory),
+		m_transition_renderer(new cocoa_transition_renderer(evp)) {};
+	~cocoa_renderer() {
+		m_transition_renderer->release();
+	}
 
-	void start(double where);
-    void redraw(const screen_rect<int> &dirty, gui_window *window);
-    virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
-	void set_intransition(const lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(const lib::transition_info *info);
-  private:
-	void transition_step();
-	void stop_transition();
+	void set_surface(common::surface *dest) {
+		RP_Base::set_surface(dest);
+		m_transition_renderer->set_surface(dest);
+	}
+
+	void start(double where) {
+		m_transition_renderer->start(where);
+		RP_Base::start(where);
+	}
 	
-	lib::transition_info *m_intransition;
-	lib::transition_info *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
-	critical_section m_lock;
+    void redraw(const screen_rect<int> &dirty, gui_window *window) {
+		m_transition_renderer->redraw_pre(window);
+		redraw_body(dirty, window);
+		m_transition_renderer->redraw_post(window);
+	}
+    virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
+
+	void set_intransition(const lib::transition_info *info) {
+		m_transition_renderer->set_intransition(info);
+	}
+	
+	void start_outtransition(const lib::transition_info *info) {
+		m_transition_renderer->start_outtransition(info);
+	}
+  private:
+	cocoa_transition_renderer *m_transition_renderer;
 };
 
 } // namespace cocoa

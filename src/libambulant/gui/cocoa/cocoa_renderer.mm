@@ -69,10 +69,10 @@ namespace gui {
 
 namespace cocoa {
 
-cocoa_renderer::~cocoa_renderer()
+cocoa_transition_renderer::~cocoa_transition_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("~cocoa_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("~cocoa_transition_renderer(0x%x)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
 	if (m_trans_engine) delete m_trans_engine;
@@ -81,24 +81,23 @@ cocoa_renderer::~cocoa_renderer()
 }
 	
 void
-cocoa_renderer::start(double where)
+cocoa_transition_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cocoa_renderer.start(0x%x, \"%s\")", (void *)this, m_node->get_url("src").get_url().c_str());
+	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start()");
 	if (m_intransition) {
 		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_lock.leave();
-	common::renderer_playable_dsall::start(where);
 }
 
 void
-cocoa_renderer::start_outtransition(const lib::transition_info *info)
+cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cocoa_renderer.start_outtransition(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
@@ -109,20 +108,21 @@ cocoa_renderer::start_outtransition(const lib::transition_info *info)
 }
 
 void
-cocoa_renderer::stop_transition()
+cocoa_transition_renderer::stop_transition()
 {
-	// private method - no locking
+	m_lock.enter();
 	delete m_trans_engine;
 	m_trans_engine = NULL;
-	m_dest->transition_done();
+	if (m_dest) m_dest->transition_done();
+	m_lock.leave();
 }
 
 void
-cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("cocoa_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
@@ -133,24 +133,35 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		surf = [view getTransitionSurface];
 		if ([surf isValid]) {
 			[surf lockFocus];
-			AM_DBG logger::get_logger()->debug("cocoa_renderer.redraw: drawing to transition surface");
+			AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw: drawing to transition surface");
 		} else {
-			lib::logger::get_logger()->trace("cocoa_renderer.redraw: cannot lockFocus for transition");
+			lib::logger::get_logger()->trace("cocoa_transition_renderer.redraw: cannot lockFocus for transition");
 			surf = NULL;
 		}
 	}
+	m_lock.leave();
+}
 
-	redraw_body(dirty, window);
-	
-	if (surf) [surf unlockFocus];
-	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug("cocoa_renderer.redraw: drawing to view");
+void
+cocoa_transition_renderer::redraw_post(gui_window *window)
+{
+	m_lock.enter();
+	cocoa_window *cwindow = (cocoa_window *)window;
+	AmbulantView *view = (AmbulantView *)cwindow->view();
+	NSImage *surf = NULL;	
+	if (m_trans_engine) {
+		surf = [view getTransitionSurface];
+		if (![surf isValid]) surf = NULL;
+	}
+	if (surf) {
+		[surf unlockFocus];
+		AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<cocoa_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &cocoa_renderer::transition_step);
+		typedef lib::no_arg_callback<cocoa_transition_renderer> transition_callback;
+		lib::event *ev = new transition_callback(this, &cocoa_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
 		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG lib::logger::get_logger()->debug("cocoa_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
+		AM_DBG lib::logger::get_logger()->debug("cocoa_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, lib::event_processor::med);
 	}
 
@@ -158,8 +169,8 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	// can end for our peer renderers.
 	// Note that we have to do this through an event because of locking issues.
 	if (m_trans_engine && m_trans_engine->is_done()) {
-		typedef lib::no_arg_callback<cocoa_renderer> stop_transition_callback;
-		lib::event *ev = new stop_transition_callback(this, &cocoa_renderer::stop_transition);
+		typedef lib::no_arg_callback<cocoa_transition_renderer> stop_transition_callback;
+		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop_transition);
 		m_event_processor->add_event(ev, 0, lib::event_processor::med);
 
 	}
@@ -167,12 +178,12 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 }
 
 void
-cocoa_renderer::transition_step()
+cocoa_transition_renderer::transition_step()
 {
-//	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("cocoa_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
 	if (m_dest) m_dest->need_redraw();
-//	m_lock.leave();
+	m_lock.leave();
 }
 
 

@@ -307,7 +307,7 @@ cocoa_transition_blitclass_polylist::update()
 }
 
 smil2::transition_engine *
-cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_info *info)
+cocoa_transition_engine(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 {
 	smil2::transition_engine *rv;
 	

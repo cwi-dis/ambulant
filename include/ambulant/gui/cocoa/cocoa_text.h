@@ -66,7 +66,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_text_renderer : public cocoa_renderer {
+class cocoa_text_renderer : public cocoa_renderer<renderer_playable_dsall> {
   public:
 	cocoa_text_renderer(
 		playable_notification *context,

@@ -67,7 +67,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_image_renderer : public cocoa_renderer {
+class cocoa_image_renderer : public cocoa_renderer<renderer_playable_dsall> {
   public:
 	cocoa_image_renderer(
 		playable_notification *context,
@@ -75,7 +75,7 @@ class cocoa_image_renderer : public cocoa_renderer {
 		const lib::node *node,
 		event_processor *evp,
 		common::factories *factory)
-	:	cocoa_renderer(context, cookie, node, evp, factory),
+	:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
 		m_image(NULL),
 		m_nsdata(NULL) {};
 	~cocoa_image_renderer();

@@ -158,6 +158,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (void) incrementTransitionCount;
 - (void) decrementTransitionCount;
 - (NSImage *)getTransitionSurface;
+- (void)releaseTransitionSurface;
 - (NSImage *)getTransitionTmpSurface;
 - (NSImage *)getTransitionOldSource;
 - (NSImage *)getTransitionNewSource;
