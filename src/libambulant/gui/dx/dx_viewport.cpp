@@ -518,10 +518,26 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 	// We should compute the visible part of the area
 	// This requires traversing the hierachy of clipping rects.
 	const lib::screen_rect<int>& rc = r->get_rc();
-	RECT src_rc = {0, 0, rc.width(), rc.height()};
-	RECT dst_rc = {rc.m_left, rc.m_top, rc.m_right, rc.m_bottom};
+	
+	RECT src_surf_rc = {0, 0, rc.width(), rc.height()};
+	RECT dst_surf_rc = {0, 0, m_width, m_height};
+	
+	// The source rect in viewport coord
+	RECT src_rc = {rc.m_left, rc.m_top, rc.m_right, rc.m_bottom};
+	
+	// Calc intersection
+	RECT dst_rc;
+	if(IntersectRect(&dst_rc, &dst_surf_rc, &src_rc) == 0) {
+		// nothing to draw
+		return;
+	}
+	// dst_rc is now filled with the intersection rect in viewport coord
+	// we need now to find the src surf rect that is mapped to this
+	RECT src_rc_clip = {dst_rc.left - src_rc.left, dst_rc.top - src_rc.top, 
+		dst_rc.right - src_rc.left, dst_rc.bottom - src_rc.top};
+	
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc, flags, NULL);
+	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc_clip, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
 	}
