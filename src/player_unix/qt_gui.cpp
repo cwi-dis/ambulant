@@ -166,7 +166,7 @@ void qt_gui::player_done() {
   emit signal_player_done();
 }
 void qt_gui::slot_play() {
-  printf("%s-%s\n", m_programfilename, "slot_play");
+  AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
   if (m_smilfilename == NULL) {
     QMessageBox::information(this, m_programfilename,
 			     "Please first select File->Open"
