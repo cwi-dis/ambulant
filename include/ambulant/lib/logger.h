@@ -89,6 +89,10 @@ class logger {
 	
 };
 
+// to simplify logging statements
+// when using the root/appl logger
+extern logger* app_logger;
+
 //////////////////////////////
 // Inline part of the implementation
 

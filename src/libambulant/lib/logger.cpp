@@ -79,6 +79,10 @@ loggers_manager::~loggers_manager() {
 static 
 loggers_manager loggers_singleton;
 
+// to simplify logging statements
+// when using the root/appl logger
+lib::logger* lib::app_logger = lib::logger::get_logger();
+
 ////////////////////////////////
 
 const std::string app_logger_name = "app_logger";
