@@ -87,6 +87,9 @@ class test_attrs {
 	static void read_custom_attributes(const lib::document *doc);
 	static void update_doc_custom_attributes(std::map<std::string, custom_test>& custom_tests);
 
+	const std::string& get_tag() const { return m_tag;}
+	const std::string& get_id() const { return m_id;}
+
   private:
 	typedef std::string::size_type size_type;
 	bool test_on_off_attr(const std::string& attr,const char *value) const;

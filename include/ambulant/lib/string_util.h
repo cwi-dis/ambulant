@@ -74,13 +74,17 @@
 //
 template<class T>
 inline std::string& operator<<(std::string& s, const T& c) { s += repr(c); return s;}
+
 inline std::string& operator<<(std::string& s, const std::string& c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, char c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, int c) { char sz[32];sprintf(sz,"%d",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, unsigned int c) { char sz[32];sprintf(sz,"%u",c); s+=sz; return s;}
+inline std::string& operator<<(std::string& s, unsigned long c) { char sz[32];sprintf(sz,"%u",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, long c) { char sz[32];sprintf(sz,"%ld",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, double c) { char sz[32];sprintf(sz,"%.3f",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, const char *c) { s+=c; return s;}
+inline std::string& operator<<(std::string& s, bool b) { s+=(b?"true":"false"); return s;}
+
 template <class T>
 inline std::string& operator<<(std::string& s, const T *p) { char sz[32];sprintf(sz,"0x%p", p); s+=sz; return s;}
 
@@ -181,6 +185,15 @@ inline bool ends_with(const std::string& s, const std::string& e) {
 
 void split_trim_list(const std::string& s, std::list<std::string>& c, char ch = ';');
 
+inline std::string to_c_lower(const char *psz) {
+	std::string s;
+	const char *p = psz;
+	while(*p) s += ::tolower(*p++);
+	return s;
+}
+inline std::string to_c_lower(const std::string& s) {
+	return to_c_lower(s.c_str());
+}
 ///////////////////////////
 // A generic string scanner/tokenizer
 // May be used to tokenize URLs when we pass ":/?#" as delimiters.

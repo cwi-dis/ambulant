@@ -77,7 +77,7 @@ namespace lib {
 
 using ambulant::lib::win32::sleep;
 using ambulant::lib::win32::sleep_msec;
-const std::string line_separator = "\r\n";
+const std::string line_separator = "\n";
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 const std::string file_separator = "\\/";
 #else 

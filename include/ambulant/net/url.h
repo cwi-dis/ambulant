@@ -137,9 +137,7 @@ class url {
 	}
 	
 	string get_file() const;
-	
-	std::string url::repr() const;
-	
+		
  	static void init_statics();
  	
   private:
@@ -237,10 +235,26 @@ url::string url::get_file() const {
 } // namespace ambulant
 
 
-#ifndef AMBULANT_NO_IOSTREAMS
-inline 
-std::ostream& operator<<(std::ostream& os, const ambulant::net::url& u) {
-	return os << u.repr();
+#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
+inline std::string repr(const ambulant::net::url& u) {
+	std::string os;
+	if(u.get_protocol() == "file") {
+		os << u.get_protocol() << "://" << 
+			((u.get_host()=="localhost")?"":u.get_host()) << "/" << u.get_path();
+	} else {
+		os << u.get_protocol() << "://" << u.get_host() << "/" << u.get_path();
+	}
+	if(!u.get_ref().empty()) 
+		os << "#" << u.get_ref();
+	if(!u.get_query().empty()) 
+		os << "?" << u.get_query();
+	return os;
+}
+#else 
+inline std::string repr(const ambulant::net::url& u) {
+	std::string os;
+	os += u.get_protocol() + "//" + u.get_host() + "/" + u.get_path();
+	return os;
 }
 #endif
 

@@ -189,26 +189,25 @@ class document : public node_context {
  
 } // namespace ambulant
 
+#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
+inline std::string repr(const ambulant::lib::custom_test& t) {
+	std::string s;
+	return s << '(' << t.id << ", state:" << t.state << ", override:" << t.override << ", \'" << t.title << "\')";
+}
+inline std::string repr(const ambulant::lib::document& d) {
+	std::string s;
+	return s << "document(" << &d << ", " << d.get_src_url() << ")";
+}
 
-////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
-#ifndef AMBULANT_NO_OSTREAM
-#include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-
-#endif //AMBULANT_NO_IOSTREAMS_HEADERS
-////////////////////////
-
-#ifndef AMBULANT_NO_IOSTREAMS
-inline 
-std::ostream& operator<<(std::ostream& os, const ambulant::lib::document& d) {
-	return os << "document(" << (void *)&d << ", \"" << d.get_src_url() << "\")";
+#else
+inline std::string repr(const ambulant::lib::custom_test& t) {
+	return t.id;
+}
+inline std::string repr(const ambulant::lib::custom_test& t) {
+	return "document";
 }
 #endif
+
 
 #endif // AMBULANT_LIB_DOCUMENT_H
 
