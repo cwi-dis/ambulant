@@ -153,6 +153,9 @@
 					RelativePath=".\lib\timelines.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\timer.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\tree_builder.cpp">
 				</File>
 				<Filter
@@ -173,6 +176,9 @@
 					<File
 						RelativePath=".\lib\win32\win32_thread.cpp">
 					</File>
+					<File
+						RelativePath=".\lib\win32\win32_timer.cpp">
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -187,9 +193,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath="..\..\include\ambulant.h">
-			</File>
 			<Filter
 				Name="ambulant"
 				Filter="">
@@ -212,6 +215,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\asb.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\basic_types.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\callback.h">
