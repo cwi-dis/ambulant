@@ -1,6 +1,6 @@
 SUFFIXES=-moc.cpp
 -moc.cpp.cpp:
-	moc -c -o $@ $<
+	$(QT_PREFIX)/bin/moc -c -o $@ $<
 if WITH_QT
 build_player_unix=player_unix
 else

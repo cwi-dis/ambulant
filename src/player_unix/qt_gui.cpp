@@ -54,6 +54,7 @@
  */
 
 #include <pthread.h>
+#include <libgen.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
@@ -71,7 +72,10 @@ qt_gui::qt_gui(const char* title,
 
   m_ambulant_window = NULL;
   m_programfilename = title;
-  m_smilfilename = QString("()");
+  if (initfile != NULL && initfile != "")
+    m_smilfilename = initfile;
+  else
+    m_smilfilename = QString("/home/zaurus/Documents/example.smil");
   m_playing = false;
   m_pausing = false;
   setCaption(initfile);
@@ -111,7 +115,7 @@ qt_gui::qt_gui(const char* title,
   assert(m_workspace);
   m_workspace->setGeometry(0,20,320,220);
   //  m_workspace->setBackgroundMode (Qt::PaletteBackground);
-  m_workspace->setBackgroundMode (Qt::PaletteLight);
+  m_workspace->setBackgroundMode (QWidget::PaletteLight);
   //  m_workspace->setScrollBarsEnabled(true);
 }
 qt_gui::~qt_gui() {
@@ -127,7 +131,8 @@ bool checkFilename(QString filename, int mode) {
   return file->open(mode);
 }
 void qt_gui::slot_open() {
-  QString smilfilename = 
+#ifndef QT_NO_FILEDIALOG
+  m_smilfilename =
     QFileDialog::getOpenFileName(
 				 ".", // Initial dir
 				 "SMIL files (*.smil)", // file types
@@ -135,16 +140,18 @@ void qt_gui::slot_open() {
 				 "open file dialog",
 				 "Double Click a file to open"
 				 );
-  if (smilfilename.isNull()
-      || ! checkFilename(smilfilename, IO_ReadOnly)) {
+#endif/*QT_NO_FILEDIALOG*/
+  if (m_smilfilename.isNull()
+      || ! checkFilename(m_smilfilename, IO_ReadOnly)) {
     char buf[1024];
     sprintf(buf, "Cannot open file \"%s\"\n%s\n",
-	    (const char*) smilfilename, strerror(errno));
+	    (const char*) m_smilfilename, strerror(errno));
     QMessageBox::information(this, m_programfilename, buf);
     return;
   }
-  m_smilfilename = smilfilename;
-  setCaption(basename(m_smilfilename));
+  char* filename = strdup(m_smilfilename);
+  setCaption(basename(filename));
+  free(filename);
   m_playmenu->setItemEnabled(m_pause_id, false);
   m_playmenu->setItemEnabled(m_play_id, true);
 }
@@ -215,15 +222,23 @@ void qt_gui::paintEvent(QPaintEvent* e) {
 }
 
 int main (int argc, char*argv[]) {
+#ifndef QT_NO_FILEDIALOG    /* Assume plain Qt */
   QApplication myapp(argc, argv);
+#else /*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
+  QPEApplication myapp(argc, argv);
+#endif/*QT_NO_FILEDIALOG*/
 
   /* Setup widget */
   qt_gui* mywidget
                 = new qt_gui(argv[0],
 		  argc > 1 ? argv[1] : "");
+#ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
   mywidget->setGeometry(750, 50, 320, 240);
   /* Fire */
   myapp.setMainWidget(mywidget);
+#else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
+    myapp.showMainWidget(mywidget);
+#endif/*QT_NO_FILEDIALOG*/
   mywidget->show();
   return myapp.exec();
 }

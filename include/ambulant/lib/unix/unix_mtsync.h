@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_UNIX_MTSYNC_H
 #define AMBULANT_LIB_UNIX_MTSYNC_H
 
+#include <errno.h>
+
 #include <pthread.h>
 
 #include "ambulant/lib/abstract_mtsync.h"

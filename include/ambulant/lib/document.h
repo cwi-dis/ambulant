@@ -69,6 +69,8 @@
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <ostream>
+#else
+#include <ostream.h>
 #endif
 
 // A class respresenting an XML document.

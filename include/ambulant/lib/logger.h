@@ -60,11 +60,14 @@
 #	ifndef AMBULANT_NO_STRINGSTREAM
 #	include <sstream>
 #	endif
+#else
+#include <ostream.h>
 #endif
 
 
 #include <string>
 #include <stdarg.h>
+#include <stdio.h>
 
 #include "ambulant/lib/mtsync.h"
 

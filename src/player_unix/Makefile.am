@@ -1,5 +1,5 @@
 qt_gui-moc.cpp: $(top_builddir)/include/ambulant/gui/qt/qt_gui.h
-	moc -o $@ $<
+	$(QT_PREFIX)/bin/moc -o $@ $<
 
 bin_PROGRAMS = qt_player
 qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h
@@ -14,12 +14,18 @@ extra_arts_LDADD=
 extra_arts_ldflags=
 extra_arts_DEFINES=
 endif
+if WITH_QTOPIA
+qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
+else
+qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
+endif
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
-	-L$(QT_PREFIX)/lib -lqt-mt
+	$(qt_libs)
+
 AM_LDFLAGS=$(extra_arts_ldflags)
  
 AM_CPPFLAGS = $(extra_arts_DEFINES) \

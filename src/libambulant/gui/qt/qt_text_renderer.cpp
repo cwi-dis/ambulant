@@ -97,7 +97,8 @@ namespace qt_renderer {
       paint.begin(qpw->view()->workspace());
       paint.setPen(Qt::blue);
       paint.eraseRect(L,T,W,H);
-      paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
+//    paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
+      paint.drawText(L,T,W,H, Qt::AlignLeft|Qt::AlignTop, m_text_storage); //QtE
       paint.flush();
       paint.end();
     }
