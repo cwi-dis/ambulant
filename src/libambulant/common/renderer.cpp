@@ -361,9 +361,7 @@ active_video_renderer::get_dur()
 	// video is the important one so we ask the video source
 	if (m_src) {
 		rv = m_src->get_dur();
-		rv2 = m_audio_ds->get_dur();
 		lib::logger::get_logger()->trace("active_video_renderer: get_dur() duration = %f", rv.second);
-		lib::logger::get_logger()->trace("active_video_renderer: get_dur() audio duration = %f", rv2.second);
 
 	}
 
