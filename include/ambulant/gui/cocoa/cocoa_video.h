@@ -88,7 +88,7 @@ class cocoa_video_renderer :
 	renderer *get_renderer() { return this; }
 	void set_surface(surface *dest) { m_dest = dest; }
 	void set_intransition(lib::transition_info *info) {  }
-	void set_outtransition(lib::transition_info *info) {  }
+	void start_outtransition(lib::transition_info *info) {  }
 	surface *get_surface() { return m_dest;}
 	void user_event(const point &where, int what = 0) { user_event_callback(what); }
 	void redraw(const screen_rect<int> &dirty, abstract_window *window);

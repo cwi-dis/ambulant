@@ -89,12 +89,18 @@ cocoa_active_fill_renderer::start(double where)
 		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
+	m_dest->show(this);
+}
+
+void
+cocoa_active_fill_renderer::start_outtransition(lib::transition_info *info)
+{
+	m_outtransition = info;
 	if (m_outtransition) {
 		// XXX Schedule beginning of out transition
 		//lib::event *ev = new transition_callback(this, &transition_outbegin);
 		//m_event_processor->add_event(ev, XXXX);
 	}
-	m_dest->show(this);
 }
 
 void

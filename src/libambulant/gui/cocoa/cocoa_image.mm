@@ -98,6 +98,11 @@ cocoa_active_image_renderer::start(double where)
 }
 
 void
+cocoa_active_image_renderer::start_outtransition(lib::transition_info *info)
+{
+}
+
+void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {
 	m_lock.enter();

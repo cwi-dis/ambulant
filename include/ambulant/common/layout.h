@@ -133,7 +133,7 @@ class renderer {
 	
 	virtual void set_surface(surface *destination) = 0;
 	virtual void set_intransition(lib::transition_info *info) = 0;
-	virtual void set_outtransition(lib::transition_info *info) = 0;
+	virtual void start_outtransition(lib::transition_info *info) = 0;
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	// XXXX This is a hack.
@@ -150,7 +150,7 @@ class surface_source : public renderer {
   public:
 	virtual const gui_region& get_mouse_region() const = 0;
 	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
-	void set_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
+	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
 };
 
 // class alignment is a pure virtual baseclass used for aligning an

@@ -125,6 +125,12 @@ active_renderer::start(double t)
 	}
 }
 
+void
+active_renderer::start_outtransition(lib::transition_info *info)
+{
+	lib::logger::get_logger()->warn("active_renderer::start_outtransition: renderer does not support out-transitions");
+}
+
 #if 0
 void
 active_renderer::readdone()

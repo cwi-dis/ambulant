@@ -228,19 +228,49 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::node *
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
-	if(np) {
-		np->start(t);
-		return;
+	if(!np) {
+		np = new_playable(n);
+		m_playables_cs.enter();
+		m_playables[n] = np;
+		m_playables_cs.leave();
 	}
-	np = new_playable(n);
-	m_playables_cs.enter();
-	m_playables[n] = np;
-	m_playables_cs.leave();
-	np->start(t);	
+	if (trans) {
+		common::renderer *rend = np->get_renderer();
+		if (!rend) {
+			const char *pid = n->get_attribute("id");
+			m_logger->warn("smil_player::start_playable: node %s has transition but is not visual", pid?pid:"no-id");
+		} else {
+			lib::transition_info *transinfo = lib::transition_info::from_node(trans);
+			rend->set_intransition(transinfo);
+		}
+	}
+	np->start(t);
 }
 
 // Request to start a transition of the playable of the node.
 void smil_player::start_transition(const lib::node *n, const lib::node *trans, bool in) {
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	common::playable *np = (it != m_playables.end())?(*it).second:0;
+	if(!np) {
+		const char *pid = n->get_attribute("id");
+		m_logger->warn("smil_player::start_transition: node %s has no playable", pid?pid:"no-id");
+		return;
+	}
+	common::renderer *rend = np->get_renderer();
+	if (!rend) {
+		const char *pid = n->get_attribute("id");
+		m_logger->warn("smil_player::start_transition: node %s has transition but is not visual", pid?pid:"no-id");
+	} else {
+		lib::transition_info *transinfo = lib::transition_info::from_node(trans);
+		if (in) {
+			// XXX Jack thinks there's no reason for this...
+			m_logger->warn("smil_player::start_transition: called for in-transition");
+			rend->set_intransition(transinfo);
+		} else {
+			rend->start_outtransition(transinfo);
+		}
+	}
 }
 
 // Request to stop the playable of the node.
@@ -379,30 +409,8 @@ smil_player::new_playable(const lib::node *n) {
 		if (rend) {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
-			const char *transin_id = n->get_attribute("transIn");
-			if (transin_id) {
-				lib::node *transin_node = n; /* XXXX */
-				if (n) {
-					lib::transition_info *transin = lib::transition_info::from_node(transin_node);
-					rend->set_intransition(transin);
-				} else {
-					m_logger->error("<%s id=\"%s\" transIn=\"%s\">: transition not found", 
-						tag.c_str(), (pid?pid:""), transin_id);
-				}
-			}
-			const char *transout_id = n->get_attribute("transOut");
-			if (transout_id) {
-				lib::node *transout_node = n; /* XXXX */
-				if (n) {
-					lib::transition_info *transout = lib::transition_info::from_node(transout_node);
-					rend->set_outtransition(transout);
-				} else {
-					m_logger->error("<%s id=\"%s\" transOut=\"%s\">: transition not found", 
-						tag.c_str(), (pid?pid:""), transout_id);
-				}
-			}
 		} else {
-			AM_DBG m_logger->trace("smil_player::new_playable: surface not set becasue rend == NULL");
+			AM_DBG m_logger->trace("smil_player::new_playable: surface not set because rend == NULL");
 		}
 
 		

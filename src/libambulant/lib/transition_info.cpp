@@ -68,7 +68,7 @@ transition_info::from_node(node *n)
 {
 	// Placeholder
 	transition_info *rv = new transition_info();
-#if 0
+#if 1
 	const char *ctype = n->get_attribute("type");
 	if (!ctype) {
 		lib::logger::get_logger()->error("transition: no type");
@@ -76,42 +76,43 @@ transition_info::from_node(node *n)
 		return NULL;
 	}
 	std::string type = ctype;
-	if (type == "barWipe") m_type = barWipe;
-	else if (type == "boxWipe") m_type = boxWipe;
-	else if (type == "fourBoxWipe") m_type = fourBoxWipe;
-	else if (type == "barnDoorWipe") m_type = barnDoorWipe;
-	else if (type == "diagonalWipe") m_type = diagonalWipe;
-	else if (type == "bowTieWipe") m_type = bowTieWipe;
-	else if (type == "miscDiagonalWipe") m_type = miscDiagonalWipe;
-	else if (type == "veeWipe") m_type = veeWipe;
-	else if (type == "barnVeeWipe") m_type = barnVeeWipe;
-	else if (type == "zigZagWipe") m_type = zigZagWipe;
-	else if (type == "barnZigZagWipe") m_type = barnZigZagWipe;
-	else if (type == "irisWipe") m_type = irisWipe;
-	else if (type == "triangleWipe") m_type = triangleWipe;
-	else if (type == "arrowHeadWipe") m_type = arrowHeadWipe;
-	else if (type == "pentagonWipe") m_type = pentagonWipe;
-	else if (type == "hexagonWipe") m_type = hexagonWipe;
-	else if (type == "ellipseWipe") m_type = ellipseWipe;
-	else if (type == "eyeWiperoundRectWipe") m_type = eyeWiperoundRectWipe;
-	else if (type == "starWipe") m_type = starWipe;
-	else if (type == "miscShapeWipe") m_type = miscShapeWipe;
-	else if (type == "clockWipe") m_type = clockWipe;
-	else if (type == "pinWheelWipe") m_type = pinWheelWipe;
-	else if (type == "singleSweepWipe") m_type = singleSweepWipe;
-	else if (type == "fanWipe") m_type = fanWipe;
-	else if (type == "doubleFanWipe") m_type = doubleFanWipe;
-	else if (type == "doubleSweepWipe") m_type = doubleSweepWipe;
-	else if (type == "saloonDoorWipe") m_type = saloonDoorWipe;
-	else if (type == "windshieldWipe") m_type = windshieldWipe;
-	else if (type == "snakeWipe") m_type = snakeWipe;
-	else if (type == "spiralWipe") m_type = spiralWipe;
-	else if (type == "parallelSnakesWipe") m_type = parallelSnakesWipe;
-	else if (type == "boxSnakesWipe") m_type = boxSnakesWipe;
-	else if (type == "waterfallWipe") m_type = waterfallWipe;
-	else if (type == "pushWipe") m_type = pushWipe;
-	else if (type == "slideWipe") m_type = slideWipe;
-	else if (type == "fade") m_type = fade;
+	if (type == "barWipe") rv->m_type = barWipe;
+	else if (type == "boxWipe") rv->m_type = boxWipe;
+	else if (type == "fourBoxWipe") rv->m_type = fourBoxWipe;
+	else if (type == "barnDoorWipe") rv->m_type = barnDoorWipe;
+	else if (type == "diagonalWipe") rv->m_type = diagonalWipe;
+	else if (type == "bowTieWipe") rv->m_type = bowTieWipe;
+	else if (type == "miscDiagonalWipe") rv->m_type = miscDiagonalWipe;
+	else if (type == "veeWipe") rv->m_type = veeWipe;
+	else if (type == "barnVeeWipe") rv->m_type = barnVeeWipe;
+	else if (type == "zigZagWipe") rv->m_type = zigZagWipe;
+	else if (type == "barnZigZagWipe") rv->m_type = barnZigZagWipe;
+	else if (type == "irisWipe") rv->m_type = irisWipe;
+	else if (type == "triangleWipe") rv->m_type = triangleWipe;
+	else if (type == "arrowHeadWipe") rv->m_type = arrowHeadWipe;
+	else if (type == "pentagonWipe") rv->m_type = pentagonWipe;
+	else if (type == "hexagonWipe") rv->m_type = hexagonWipe;
+	else if (type == "ellipseWipe") rv->m_type = ellipseWipe;
+	else if (type == "eyeWipe") rv->m_type = eyeWipe;
+	else if (type == "roundRectWipe") rv->m_type = roundRectWipe;
+	else if (type == "starWipe") rv->m_type = starWipe;
+	else if (type == "miscShapeWipe") rv->m_type = miscShapeWipe;
+	else if (type == "clockWipe") rv->m_type = clockWipe;
+	else if (type == "pinWheelWipe") rv->m_type = pinWheelWipe;
+	else if (type == "singleSweepWipe") rv->m_type = singleSweepWipe;
+	else if (type == "fanWipe") rv->m_type = fanWipe;
+	else if (type == "doubleFanWipe") rv->m_type = doubleFanWipe;
+	else if (type == "doubleSweepWipe") rv->m_type = doubleSweepWipe;
+	else if (type == "saloonDoorWipe") rv->m_type = saloonDoorWipe;
+	else if (type == "windshieldWipe") rv->m_type = windshieldWipe;
+	else if (type == "snakeWipe") rv->m_type = snakeWipe;
+	else if (type == "spiralWipe") rv->m_type = spiralWipe;
+	else if (type == "parallelSnakesWipe") rv->m_type = parallelSnakesWipe;
+	else if (type == "boxSnakesWipe") rv->m_type = boxSnakesWipe;
+	else if (type == "waterfallWipe") rv->m_type = waterfallWipe;
+	else if (type == "pushWipe") rv->m_type = pushWipe;
+	else if (type == "slideWipe") rv->m_type = slideWipe;
+	else if (type == "fade") rv->m_type = fade;
 	else {
 		lib::logger::get_logger()->error("transition: unknown type=\"%s\"", ctype);
 		delete rv;
@@ -123,7 +124,7 @@ transition_info::from_node(node *n)
 	else
 		rv->m_subtype = "";
 #else
-	rv->m_type = barnDoorWipe;
+	rv->rv->m_type = barnDoorWipe;
 	rv->m_subtype = "";
 #endif
 	rv->m_dur = 2000;
