@@ -91,7 +91,7 @@ gui::dg::audio_player::~audio_player() {
 }
 
 bool gui::dg::audio_player::can_play() const {
-	return m_ifs.is_open() && s_renderer.is_open();
+	return s_renderer.is_open();
 }
 	
 void gui::dg::audio_player::start(double t) {
