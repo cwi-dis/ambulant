@@ -111,15 +111,18 @@ initialize_logger()
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	// Install our preferences handler
 	mypreferences::install_singleton();
+	// Install our logger
 	initialize_logger();
+	// Initialize the default system test settings
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
 	if (systemTestSettingsPath) {
 		std::string path([systemTestSettingsPath cString]);
 		mainloop::set_preferences(path);
 	}
-
+	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	if ( [defaults boolForKey: @"welcomeDocumentSeen"] ) return;
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
@@ -137,6 +140,18 @@ initialize_logger()
 	} else {
 		ambulant::lib::logger::get_logger()->error("No Welcome.smil in application bundle");
 	}
+	// Ask for notification when preferences change.
+#if 0
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self
+		selector:@selector(preferencesChanged:)
+		name:NSUserDefaultsDidChangeNotification
+		object:nil];
+	// And these don't work either:-(
+	[defaults addObserver:self forKeyPath:@"observingKeyPath" options:NSKeyValueObservingOptionNew context:nil];
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.log_level" options:NSKeyValueObservingOptionNew context:nil];
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"log_level" options:NSKeyValueObservingOptionNew context:nil];
+#endif
 }
 
 - (IBAction)loadFilter:(id)sender
@@ -190,6 +205,17 @@ initialize_logger()
 - (IBAction)showPreferences:(id)sender
 {
 	NSLog(@"Show Preferences Window");
+}
+
+- (void)preferencesChanged:(NSNotification*)anObject
+{
+	NSLog(@"Preferences changed notification");
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
+	change:(NSDictionary *)change context:(void *)context
+{
+	NSLog(@"observeValueForKeyPath %@", keyPath);
 }
 #endif
 

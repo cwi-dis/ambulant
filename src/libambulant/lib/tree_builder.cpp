@@ -172,17 +172,13 @@ lib::tree_builder::reset() {
 		m_current = 0;
 	}
 	m_well_formed = false;
-	char* parser_id = common::preferences::get_preferences()->m_parser_id;
+	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
 #ifdef	WITH_XERCES
-	if (m_xmlparser == NULL 
-	    && (strcasecmp(parser_id, "xerces") == 0
-		|| strcasecmp(parser_id, "any") == 0))
+	if (m_xmlparser == NULL && (parser_id == "xerces" || parser_id == "any"))
 		m_xmlparser = new xerces_sax_parser(this, this);
 #endif/*WITH_XERCES*/
 #ifdef WITH_EXPAT
-	if (m_xmlparser == NULL 
-	    && (strcasecmp(parser_id, "expat") == 0 
-		|| strcasecmp(parser_id, "any") == 0))
+	if (m_xmlparser == NULL && (parser_id == "expat" || parser_id == "any"))
 		m_xmlparser = new expat_parser(this, this);
 #endif /*WITH_EXPAT*/
 	if (m_xmlparser == NULL) {

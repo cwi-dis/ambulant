@@ -63,8 +63,8 @@ using namespace ambulant;
 using namespace common;
 
 preferences::preferences()
-  :	m_parser_id(ANY),
-	m_validation_scheme(AUTO),
+  :	m_parser_id("any"),
+	m_validation_scheme("auto"),
 	m_do_namespaces(false),
 	m_do_schema(false),
 	m_do_validation(false),

@@ -61,14 +61,14 @@ mypreferences::load_preferences()
 {
 	NSLog(@"Loading preferences");
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-//	m_parser_id = (ambulant::common::preferences::parser_id)[prefs integerForKey: @"parser_id"];
-#ifdef	WITH_XERCES
-	m_validation_scheme = (ambulant::common::preferences::validation_scheme)[prefs integerForKey: @"validation_scheme"];
+	if ([prefs stringForKey: @"parser_id"])
+		m_parser_id = [[prefs stringForKey: @"parser_id"] cString];
+	if ([prefs stringForKey: @"validation_scheme"])
+		m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] cString];
 	m_do_namespaces = [prefs boolForKey: @"do_namespaces"];
 	m_do_schema = [prefs boolForKey: @"do_schema"];
 	m_do_validation = [prefs boolForKey: @"do_validation"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
-#endif
 	m_log_level = [prefs integerForKey: @"log_level"];
 	return true;
 }
@@ -78,14 +78,12 @@ mypreferences::save_preferences()
 {
 	NSLog(@"Saving preferences");
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-//	[prefs setInteger: (int)m_parser_id forKey: @"parser_id"];
-#ifdef	WITH_XERCES
-	[prefs setInteger: (int)m_validation_scheme forKey: @"validation_scheme"];
+	[prefs setObject: [NSString stringWithCString: m_parser_id.c_str()] forKey: @"parser_id"];
+	[prefs setObject: [NSString stringWithCString: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
 	[prefs setBool: m_do_namespaces forKey: @"do_namespaces"];
 	[prefs setBool: m_do_schema forKey: @"do_schema"];
 	[prefs setBool: m_do_validation forKey: @"do_validation"];
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
-#endif
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	return true;
 }

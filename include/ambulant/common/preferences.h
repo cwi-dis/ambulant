@@ -56,8 +56,8 @@ namespace common {
 const unsigned int default_layout_width = 640;
 const unsigned int default_layout_height = 480;
 
-static const char* parser_ids[] = {"any", "expat", "xerces"};
-static const char* val_schemes[] = {"never", "always", "auto"};
+//const char* parser_ids[] = {"any", "expat", "xerces"};
+//const char* val_schemes[] = {"never", "always", "auto"};
 
 class preferences {
 
@@ -68,7 +68,7 @@ class preferences {
 
   public:
 
-	char* m_validation_scheme;
+	std::string m_validation_scheme;
 
 	bool m_do_namespaces;
 
@@ -80,7 +80,7 @@ class preferences {
 
 	int m_log_level;
 
-	char* m_parser_id;
+	std::string m_parser_id;
 
 	static preferences* get_preferences();
 
