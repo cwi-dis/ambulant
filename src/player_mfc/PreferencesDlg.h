@@ -25,9 +25,10 @@ private:
 	int m_do_namespaces;
 	int m_do_schema;
 //	int m_do_dtd;
-	int m_do_validation;
 	int m_validation_schema_full_checking;
 public:
 	afx_msg void OnBnClickedOK();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnCbnSelchangeValidationScheme();
+	afx_msg void OnCbnSelchangeLogLevel();
 };

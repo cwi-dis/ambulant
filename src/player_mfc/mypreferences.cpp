@@ -67,11 +67,11 @@ mypreferences::load_preferences()
 	m_validation_scheme = (LPCTSTR)val;
 	m_do_namespaces = (bool)pApp->GetProfileInt("Settings", "do_namespaces", 0);
 	m_do_schema = (bool)pApp->GetProfileInt("Settings", "do_schema", 0);
-	m_do_validation = (bool)pApp->GetProfileInt("Settings", "do_validation", 0);
 	m_validation_schema_full_checking = (bool)pApp->GetProfileInt("Settings", "validation_schema_full_checking", 0);
 	m_log_level = pApp->GetProfileInt("Settings", "log_level", 0);
 	m_use_plugins = (bool)pApp->GetProfileInt("Settings", "use_plugins", 0);
 	m_plugin_dir = pApp->GetProfileString("Settings", "plugin_dir",0);
+
 	return true;
 }
 
@@ -84,7 +84,6 @@ mypreferences::save_preferences()
 	pApp->WriteProfileString("Settings", "validation_scheme", m_validation_scheme.c_str());
 	pApp->WriteProfileInt("Settings", "do_namespaces", (int)m_do_namespaces);
 	pApp->WriteProfileInt("Settings", "do_schema", (int)m_do_schema);
-	pApp->WriteProfileInt("Settings", "do_validation", (int)m_do_validation);
 	pApp->WriteProfileInt("Settings", "validation_schema_full_checking", (int)m_validation_schema_full_checking);
 	pApp->WriteProfileInt("Settings", "log_level", m_log_level);
 	pApp->WriteProfileInt("Settings", "use_plugins", m_use_plugins);

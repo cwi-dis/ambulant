@@ -212,16 +212,17 @@ BEGIN
                     WS_TABSTOP
     GROUPBOX        "Xerces options:",IDC_STATIC,7,54,161,107
     CONTROL         "Enable XML namespace support",IDC_DO_NAMESPACES,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,17,71,117,10
-    CONTROL         "Enable XML validation:",IDC_DO_VALIDATION,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,17,89,87,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,140,117,10
     CONTROL         "Using Schema",IDC_DO_SCHEMA,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,31,111,60,10
-    CONTROL         "Using DTD",IDC_DO_DTD,"Button",BS_AUTORADIOBUTTON,101,
-                    111,49,10
+                    WS_GROUP,21,90,60,10
+    CONTROL         "Using DTD",IDC_DO_DTD,"Button",BS_AUTORADIOBUTTON,91,90,
+                    49,10
     CONTROL         "Validation Schema full checking",
                     IDC_VALIDATION_SCHEMA_FULL_CHECKING,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,31,130,114,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,21,109,114,10
+    LTEXT           "Validate documents:",IDC_STATIC,14,71,66,8
+    COMBOBOX        IDC_VALIDATION_SCHEME,90,69,65,44,CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_LOG_WINDOW DIALOGEX 0, 0, 353, 93
@@ -349,6 +350,12 @@ BEGIN
 0x7245, 0x6f72, 0x0072, 
     IDC_LOG_LEVEL, 0x403, 6, 0
 0x6146, 0x6174, 0x006c, 
+    IDC_VALIDATION_SCHEME, 0x403, 6, 0
+0x656e, 0x6576, 0x0072, 
+    IDC_VALIDATION_SCHEME, 0x403, 7, 0
+0x6c61, 0x6177, 0x7379, "\000" 
+    IDC_VALIDATION_SCHEME, 0x403, 5, 0
+0x7561, 0x6f74, "\000" 
     0
 END
 
