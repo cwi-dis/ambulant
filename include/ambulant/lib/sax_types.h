@@ -88,17 +88,6 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::q_name_pa
 	os << n.second;
 	return os;
 }
-
-//////////////
-// begin g++ 2.95
-inline bool operator==(const ambulant::lib::xml_string& lhs, const char *rhs) {
-	if(!rhs) return false;
-	ambulant::lib::xml_string rhsstr = rhs;
-	return lhs == rhsstr;
-}
-// end g++ 2.95
-//////////////
-
 #endif
 
 #endif // AMBULANT_LIB_SAX_TYPES_H
