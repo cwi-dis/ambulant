@@ -57,6 +57,7 @@
 
 #include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/logger.h"
 
 #include "jpeglib.h"
 
@@ -71,6 +72,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 }
 
 gui::dx::dx_img_renderer::~dx_img_renderer() {
+	lib::logger::get_logger()->trace("~dx_img_renderer()");
 }
 
 void gui::dx::dx_img_renderer::start(lib::event *playdone) {
@@ -95,7 +97,6 @@ void gui::dx::dx_img_renderer::start(lib::event *playdone) {
 
 void gui::dx::dx_img_renderer::readdone() {
 	lib::logger::get_logger()->trace("dx_img_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
 	
 	// Prepare dx-region's pixel map
 	typedef jpg_decoder<net::active_datasource, lib::color_trible> decoder_class;
