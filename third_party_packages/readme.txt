@@ -5,12 +5,32 @@ packages, patched and ready to build, see the toplevel README file (section
 
 Here is a list of the packages, where they come from, plus the versions:
 
+***** Win32 *****
+
 expat-win32:
 	Windows only.
 	
 	James Clark's expat XML parser library, version 1.95.7. Download 
 	via <http://expat.sourceforge.net>. Installed with the win32 binary installer 
 	(it seems to be difficult to build from the source).
+
+
+xerces-win32:
+	windows only.
+	
+	Download xerces-C++ Version 2.5.0 Source Release from
+	<http://xml.apache.org> and extract xerces-c-src_2_5_0 and put its 
+	content in the directory .../ambulant/third_party_packages/
+	
+	Next read the Readme.html included in the xerces distribution and follow the MSVC Version 7
+	buil instructions. After building xerces copy xerces-c_2_6.dll and xerces-depcom_2_6.dll to 
+	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to ambulant/lib.win32.
+	The files are located in xerces-c-src_2_6_0\Build\Win32\VC7\Release. 
+
+	But I don't want any xerces!
+	If you want to compile AmbulantPlayer without xerces support use the Ambulant-win32-noxerces.sln
+	
+***** Unix *****
 	
 expat-unix:
 	Linux and Mac OS X.
@@ -40,13 +60,21 @@ xerces-unix:
 	For this release you need to build xerces from source, you cannot
 	use a pre-installed xerces.
 	
-	Download xerces-C++ Version 2.5.0 Source Release from
-	<http://xml.apache.org> and extract xerces-c-src_2_5_0 and put its 
-	content in the directory .../ambulant/third_party_packages/xerces-unix.
-	
+	Download xerces-C++ Version 2.6.0 Source Release from 
+	<http://xml.apache.org> and extract xerces-c-src_2_6_0 and extract into
+	xerces-c-src_2_6_0 in the directory (.../ambulant/third_party_packages).
+	Then do the following:
+		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
+
 	Next, follow the instructions for building xerces, open Readme.html
 	and navigate to "Building". You really want to do this, as they have
 	created some wrappers around the normal configure/make combo.
+	After this :
+		$ cd $tppdir/xerces-c-src_2_6_0/src/xercesc
+		$ ./configure --prefix=$tppdir/xerces-unix
+		$ gmake
+		$ gmake install
+	
 	
 	Mac OS X note: I had no success using the default net accessor (socket),
 	but building xerces-c with the "native" net accessor does seem to work.
@@ -106,4 +134,4 @@ arts:
 	
 	At some point Ambulant was also able to use Arts audio library instead of
 	SDL, but for this release that support is untested, and believed to be
-	broken.
+	very buggy.
