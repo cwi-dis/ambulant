@@ -341,10 +341,13 @@ net::active_datasource::read_ptr()
 void
 net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
  {
- 	read_file();
-    if (evp && callback) {
-		AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
-		evp->add_event(callback, 0, ambulant::lib::event_processor::high);
+ 	if (! end_of_file() ) read_file();
+	
+	if (m_buffer->used > 0) {	
+    	if (evp && callback) {
+			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+			evp->add_event(callback, 0, ambulant::lib::event_processor::high);
+		}
     }
 }
  
@@ -353,8 +356,3 @@ net::active_datasource::readdone(int size)
 {
 	m_buffer->readdone(size);
 }
-
-
-
-
-

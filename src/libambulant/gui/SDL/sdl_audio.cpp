@@ -321,7 +321,7 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	
 		result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
 	}
-	
+
 	if (result < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): Failed to play sound", (void *)this);	
 		AM_DBG printf("Mix_PlayChannel: %s\n",Mix_GetError());
@@ -332,10 +332,10 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	}
 	
 #ifdef WITH_FFMPEG
-    if (!m_audio_src->end_of_file()) {
+    if ((m_audio_src->size() > 0) || (!m_audio_src->end_of_file())) {
 		m_audio_src->start(m_event_processor, m_readdone);
 #else
-	if (!m_src->end_of_file()) {
+	if ((m_src->size() > 0) || (!m_src->end_of_file())) {
 		m_src->start(m_event_processor, m_readdone);
 #endif
 	} else {
