@@ -50,7 +50,7 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_transition.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -144,7 +144,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);	
-		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to transition surface");
+		AM_DBG logger::get_logger()->trace("qt_renderer.redraw: drawing to transition surface");
 		}
 	}
 

@@ -56,7 +56,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -82,8 +82,8 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	const screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->trace
 		("qt_active_image_renderer.redraw_body(0x%x):"
-		" ltrb=(%d,%d,%d,%d), p=(%d,%d)",
-		(void *)this,
+		" m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)",
+		 (void *)this, &m_image,
 		r.left(), r.top(), r.right(), r.bottom(),
 		p.x,p.y);
 	if (m_data && !m_image_loaded) {
@@ -93,7 +93,8 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
 	AM_DBG logger::get_logger()->trace(
-		"qt_active_image_renderer.redraw: info=0x%x", info);
+		"qt_active_image_renderer.redraw_body: info=0x%x",
+		info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
@@ -110,14 +111,14 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 		    W = dstrect.width(),
 		    H = dstrect.height();
 		AM_DBG lib::logger::get_logger()->trace(
-			"qt_active_image_renderer.redraw(0x%x):"
+			"qt_active_image_renderer.redraw_body(0x%x):"
 			" drawImage at (L=%d,T=%d,W=%d,H=%d)",
 			(void *)this,L,T,W,H);
 		paint.drawImage(L,T,m_image,0,0,W,H);
 	}
 	else {
 		AM_DBG lib::logger::get_logger()->error(
-			"qt_active_image_renderer.redraw(0x%x):"
+			"qt_active_image_renderer.redraw_body(0x%x):"
 			" no m_image",
 			(void *)this
 		);

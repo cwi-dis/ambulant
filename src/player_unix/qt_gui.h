@@ -62,6 +62,7 @@
 #include <qpe/applnk.h>
 #include <qpe/filemanager.h>
 #endif/*QT_NO_FILEDIALOG*/
+#include <qcursor.h>
 #include <qdial.h>
 #include <qfiledialog.h>
 #include <qimage.h>
@@ -112,7 +113,7 @@ class qt_gui : public QWidget {
 
 	bool openSMILfile(QString smilfilename, int mode);
 
- private:
+   private:
 	bool	     m_busy;
 	int	     m_o_x;	 // x coord of origin play window
 	int	     m_o_y;	 // y coord of origin play window
@@ -127,10 +128,10 @@ class qt_gui : public QWidget {
 
 	void	     fileError(QString smilfilename);
 
-public slots:
+  public slots:
 	void slot_play();
 
-private slots:
+  private slots:
 	void slot_about();
 	void slot_open();
 	void slot_pause();
@@ -138,8 +139,11 @@ private slots:
 	void slot_quit();
 	void slot_stop();
 
-signals:
+  signals:
 	void signal_player_done();
 	void signal_need_redraw(const void*, void*, const void*);
+
+  protected:
+	void unsetCursor(); //XXXX
 };
 #endif/*__QT_GUI_H__*/

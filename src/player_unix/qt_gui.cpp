@@ -340,6 +340,16 @@ qt_gui::slot_quit() {
 	qApp->quit();
 }
 
+void
+qt_gui::unsetCursor() { //XXXX Hack
+	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
+	if (m_mainloop->get_cursor()) 
+		setCursor(Qt::PointingHandCursor);
+	else
+		setCursor(Qt::ArrowCursor);
+	m_mainloop->set_cursor(0);
+}
+
 int
 main (int argc, char*argv[]) {
 	FILE* DBG = fopen("/tmp/ambulant.dbg", "w");
@@ -353,6 +363,8 @@ main (int argc, char*argv[]) {
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);
+	QCursor* qcursor = new QCursor(Qt::ArrowCursor);
+	mywidget->setCursor(*qcursor);
 	myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
 	myapp.showMainWidget(mywidget);

@@ -118,7 +118,14 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	long get_ref_count() const {
 		return m_refcount;
 	}
-	
+	int get_cursor() const { 
+		return m_player?m_player->get_cursor():0;
+	};
+
+	void set_cursor(int cursor) { 
+		if (m_player)
+		  m_player->set_cursor(cursor); 
+	}	
  private: 
 	ambulant::lib::document *create_document(const char *filename);
 	// sorted alphabetically on member name

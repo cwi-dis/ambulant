@@ -46,7 +46,7 @@
  *
  */
  
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -84,7 +84,7 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
 	m_pixmap(NULL),
-	m_oldmap(NULL),
+	m_oldpixmap(NULL),
 	m_surface(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
@@ -119,7 +119,7 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 QPixmap*
 ambulant_qt_window::ambulant_pixmap()
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x)",(void *)m_pixmap);
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
 //	return m_ambulant_widget;
         return m_pixmap;
 }
@@ -142,6 +142,7 @@ ambulant_qt_window::new_ambulant_surface()
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
         return m_surface;
 }
+
 QPixmap*
 ambulant_qt_window::get_ambulant_surface()
 {
@@ -149,18 +150,25 @@ ambulant_qt_window::get_ambulant_surface()
         return m_surface;
 }
 
+QPixmap*
+ambulant_qt_window::get_ambulant_oldpixmap()
+{
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
+        return m_oldpixmap;
+}
+
 void
 ambulant_qt_window::reset_ambulant_surface(void)
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::reset_ambulant_surface(0x%x) m_oldmap = 0x%x",(void *)this,(void *)m_oldmap);
-	if (m_oldmap != NULL) m_pixmap = m_oldmap;
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::reset_ambulant_surface(0x%x) m_oldpixmap = 0x%x",(void *)this,(void *)m_oldpixmap);
+	if (m_oldpixmap != NULL) m_pixmap = m_oldpixmap;
 }
 
 void
 ambulant_qt_window::set_ambulant_surface(QPixmap* surf)
 {
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
-	m_oldmap = m_pixmap;
+	m_oldpixmap = m_pixmap;
 	if (surf != NULL) m_pixmap = surf;
 }
 
@@ -206,14 +214,16 @@ ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 }
 
 void
-ambulant_qt_window::user_event(const lib::point &where) 
+ambulant_qt_window::user_event(const lib::point &where, int what) 
 {
-	m_handler->user_event(where);
+        AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
+	m_handler->user_event(where, what);
 }
+
 void
 ambulant_qt_window::need_events(bool want) 
 {
-  AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::need_events(0x%x): want=", this, want);
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::need_events(0x%x): want=%d", this, want);
 }
 
 // XXXX
@@ -231,6 +241,7 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	setGeometry(bounds->left(), bounds->top(), bounds->right(), bounds->bottom());
+	setMouseTracking(true);
 }
 
 qt_ambulant_widget::~qt_ambulant_widget()
@@ -245,8 +256,7 @@ qt_ambulant_widget::~qt_ambulant_widget()
 void
 qt_ambulant_widget::paintEvent(QPaintEvent* e)
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::paintEvent(0x%x): e=0x%x)",
-		(void*) this, (void*) e);
+	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::paintEvent(0x%x): e=0x%x)", (void*) this, (void*) e);
 	QRect qr = e->rect();
 	lib::screen_rect<int> r =  lib::screen_rect<int>(
 		lib::point(qr.left(),qr.top()),
@@ -270,6 +280,19 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 	}
 	lib::point amwhere = lib::point(e->x(), e->y());
 	m_qt_window->user_event(amwhere);
+}
+
+void 
+qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
+/*AM_DBG*/
+	int m_o_x = 0, m_o_y = 27; // XXXX Origin of MainWidget
+	AM_DBG lib::logger::get_logger()->trace("%s:(%d,%d)\n",
+	       "qt_ambulant_widget::mouseMoveEvent", e->x(),e->y());
+	ambulant::lib::point ap = ambulant::lib::point(e->x()-m_o_x,
+						       e->y()-m_o_y);
+	m_qt_window->user_event(ap, 1);
+	qApp->mainWidget()->unsetCursor(); //XXXX
+	repaint();
 }
 
 void 
