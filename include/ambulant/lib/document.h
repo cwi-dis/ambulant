@@ -62,12 +62,6 @@
 #include "ambulant/lib/nscontext.h"
 #include "ambulant/net/url.h"
 
-// A class respresenting an XML document.
-//
-// This class is reachable from node objects.
-// and provides context services to them.
-//
-
 namespace ambulant {
 
 namespace lib {
@@ -80,7 +74,7 @@ struct custom_test {
 	std::string uid;
 };
 
-// Interface accesible to nodes.
+/// Interface of document class accesible to nodes.
 class node_context {
   public:
 	
@@ -90,59 +84,65 @@ class node_context {
 	virtual const char* 
 	get_namespace_prefix(const xml_string& uri) const = 0;
 	
+	/// Resolve relative URLs.
 	virtual net::url 
-	resolve_url(const node *n, const net::url& rurl) const = 0;
+	resolve_url(const net::url& rurl) const = 0;
 	
+	/// Returns name-indexed mapping of all custom tests used.
 	virtual const std::map<std::string, custom_test>* 
 	get_custom_tests() const = 0;
 	
+	/// Return node with a given ID.
 	virtual const node* 
 	get_node(const std::string& idd) const = 0;
 };
 
 
+/// A class respresenting an XML document.
+///
+/// This class is reachable from node objects.
+/// and provides context services to them.
 class document : public node_context {
 
   public:
-	// A document factory function.
-	// Creates documents from a url.
+	/// A document factory function.
+	/// Creates documents from a url.
 	static document* create_from_url(const net::url& u);
   
-	// A document factory function.
-	// Creates documents from local files.
+	/// A document factory function.
+	/// Creates documents from local files.
 	static document* create_from_file(const std::string& filename);
 	
-	// A document factory function.
-	// Creates documents from source strings.
+	/// A document factory function.
+	/// Creates documents from source strings.
 	static document* create_from_string(const std::string& smil_src);
 	
-	// This class maybe extented to more specific documents.
-	// Therfore, use the virtual table to invoke the destructor.
+	/// This class may be extented to more specific documents.
+	/// Therefore, use the virtual table to invoke the destructor.
 	virtual ~document();
 	
-	// Returns the root node of this document
-	// The document remains the owner of the root unless detach is true.
+	/// Returns the root node of this document.
+	/// The document remains the owner of the root unless detach is true.
 	node* get_root(bool detach = false);
 	const node* get_root() const;
 	
-	// Locate a node with path
+	/// Locate a node with a given path.
 	node* locate_node(const char *path) {
 		return m_root?m_root->locate_node(path):0;
 	}
+
+	/// Locate a node with a given path.
 	const node* locate_node(const char *path) const {
 		return m_root?m_root->locate_node(path):0;
 	}
 		
-	// Returns the source url of this document
+	/// Returns the source url of this document.
 	const ambulant::net::url& get_src_url() const { return m_src_url;}
 	
 	// node_context interface
-	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
-	
+	void set_prefix_mapping(const std::string& prefix, const std::string& uri);	
 	const char* get_namespace_prefix(const xml_string& uri) const;
-	
-	net::url resolve_url(const node *n, const net::url& rurl) const;
-	
+	net::url resolve_url(const net::url& rurl) const;
 	// Returns the node with the provided id or null on none
 	const node* get_node(const std::string& idd) const {
 		if(idd.empty()) return 0;
@@ -150,10 +150,10 @@ class document : public node_context {
 			= m_id2node.find(idd);
 		return (it != m_id2node.end())?(*it).second:0;
 	}
-	
 	const std::map<std::string, custom_test>* get_custom_tests() const
 		{ return &m_custom_tests;}
 	
+	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
   protected:
 	document(node *root = 0);

@@ -151,10 +151,7 @@ lib::document::get_namespace_prefix(const xml_string& uri) const {
 }
 
 net::url 
-lib::document::resolve_url(const node *n, const net::url& rurl) const {
-	// XXX This code is incomplete. It currently handles only full absolute
-	// urls (with scheme and all) and relative urls if the document is
-	// a local file. 
+lib::document::resolve_url(const net::url& rurl) const {
 	net::url loc(rurl);
 	if (loc.is_absolute()) {
 		AM_DBG lib::logger::get_logger()->debug("document::resolve_url(%s): absolute URL", repr(rurl).c_str());
