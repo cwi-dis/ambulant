@@ -548,10 +548,9 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
 	
-	// value sep
+	// value sep opt
 	d = literal_p<','>().parse(tit, end);
-	if(d == -1) return -1;
-	sd += d;
+	sd += (d == -1)?0:d;
 
 	// S?
 	d = opt_space_inst.parse(tit, end);
