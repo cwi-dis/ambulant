@@ -63,8 +63,8 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\lib-src\jpeg" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\lib-src\jpeg" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -88,11 +88,15 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\common\player.cpp
+SOURCE=.\common\mms_player.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\common\region.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\common\region_node.cpp
 # End Source File
 # Begin Source File
 
@@ -105,6 +109,14 @@ SOURCE=.\common\skeleton.cpp
 # Begin Source File
 
 SOURCE=.\common\smil_handler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\common\smil_layout.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\common\smil_player.cpp
 # End Source File
 # Begin Source File
 
@@ -164,7 +176,15 @@ SOURCE=.\lib\logger.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\lib\nfa.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\lib\node.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib\parselets.cpp
 # End Source File
 # Begin Source File
 
@@ -172,7 +192,19 @@ SOURCE=.\lib\schema.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\lib\smil_time.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib\string_util.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\lib\sync_rule.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib\test_attrs.cpp
 # End Source File
 # Begin Source File
 
@@ -205,15 +237,6 @@ SOURCE=.\lib\tree_builder.cpp
 # Begin Source File
 
 SOURCE=.\net\url.cpp
-
-!IF  "$(CFG)" == "libambulant_win32 - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "libambulant_win32 - Win32 Debug"
-
-# ADD CPP /I "..\..\include" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\lib-src\jpeg"
-
-!ENDIF 
-
 # End Source File
 # End Group
 # End Group
@@ -226,6 +249,30 @@ SOURCE=.\net\url.cpp
 # Begin Source File
 
 SOURCE=..\..\include\ambulant\config\config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\posix_features.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\select_compiler_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\select_platform_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\select_stdlib_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\suffix.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\config\user.h
 # End Source File
 # End Group
 # Begin Group "inc_lib"
@@ -310,6 +357,10 @@ SOURCE=..\..\include\ambulant\lib\logger.h
 # Begin Source File
 
 SOURCE=..\..\include\ambulant\lib\mtsync.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\lib\nfa.h
 # End Source File
 # Begin Source File
 
