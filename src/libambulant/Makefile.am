@@ -1,5 +1,5 @@
 CXXFLAGS=-g -O0 -fno-inline $(PTHREAD_CFLAGS)
-expat_dir = $(top_builddir)/third_party_packages/expat-unix
+expat_dir = $(EXPAT_PREFIX)
 
 # See which toolkit-dependent libraries we want to make
 if WITH_COCOA
