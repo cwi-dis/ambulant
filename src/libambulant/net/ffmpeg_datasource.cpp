@@ -983,13 +983,17 @@ char*
 ffmpeg_video_datasource::get_frame(double *timestamp, int *size)
 {
 	m_lock.enter();
-	assert(m_frames.size() > 0);
+	if( m_frames.size() > 0 ) {
+	//assert(m_frames.size() > 0);
 	std::pair<double, char*> element = m_frames.front();
 	char *rv = element.second;
 	*timestamp = element.first;
 	*size = m_size;
 	m_lock.leave();
 	return rv;
+	}
+	
+	return NULL;
 }
 
 #endif // WITH_FFMPEG_AVFORMAT
@@ -1320,10 +1324,10 @@ ffmpeg_resample_datasource::stop()
 	if (m_src) {
 		m_src->stop();
 		int rem = m_src->release();
-		if (rem) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem); 
+		if (rem) lib::logger::get_logger()->debug("ffmpeg_resample_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem); 
 		m_src = NULL;
 	} else {
-		AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::stop(0x%x): m_src already NULL", (void*)this);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::stop(0x%x): m_src already NULL", (void*)this);
 	}
 	m_src = NULL;
 	if (m_resample_context) audio_resample_close(m_resample_context);

@@ -528,7 +528,7 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 #endif
 	np->stop();
 	int rem = np->release();
-	if (rem) m_logger->warn("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
+	if (rem) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
 void smil_player::show_link(const lib::node *n, const net::url& href, src_playstate srcstate, dst_playstate dststate) {
