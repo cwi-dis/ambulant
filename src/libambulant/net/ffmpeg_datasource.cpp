@@ -618,6 +618,26 @@ ffmpeg_video_datasource::has_audio()
 audio_datasource *
 ffmpeg_video_datasource::get_audio_datasource()
 {
+	int stream_index = get_audio_stream_nr();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr() looking for the right codec");
+	codeccontext = &m_con->streams[stream_index]->codec; 
+	codec = avcodec_find_decoder(codeccontext->codec_id);
+	
+	if( !codec) {
+		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d not found", m_url.c_str(), codeccontext->codec_id);
+		return -1;
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): codec found !");
+	}
+
+	
+	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
+		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d: cannot open", m_url.c_str(), codeccontext->codec_id);
+		return -1;
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): succesfully opened codec");
+	}
+	
 	return NULL;
 }
 
@@ -868,24 +888,7 @@ int ffmpeg_video_datasource::get_audio_stream_nr()
 		return -1;
 	} 
 
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr() looking for the right codec");
-	codeccontext = &m_con->streams[stream_index]->codec; 
-	codec = avcodec_find_decoder(codeccontext->codec_id);
-	
-	if( !codec) {
-		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d not found", m_url.c_str(), codeccontext->codec_id);
-		return -1;
-	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): codec found !");
-	}
 
-	
-	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
-		lib::logger::get_logger()->error("new_ffmpeg_video_datasource::get_audio_stream_nr(): %s: Codec %d: cannot open", m_url.c_str(), codeccontext->codec_id);
-		return -1;
-	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): succesfully opened codec");
-	}
 	
 	return stream_index;
 }
