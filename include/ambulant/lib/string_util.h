@@ -81,14 +81,14 @@ inline std::string trim(const char* psz) {
 	
 	// find_first_not_of space_chars or eos
 	const char* b = psz;
-	while(*b && ::isspace(*b)) b++;
+	while(*b && isspace(*b)) b++;
 	if(!*b)  return "";
 	
 	// find_last_not_of space_chars
 	const char* e = b;
 	while(*e) e++;
 	e--;
-	while(e != b && ::isspace(*e)) e--;
+	while(e != b && isspace(*e)) e--;
 	
 	return std::string(b, ++e);
 }
