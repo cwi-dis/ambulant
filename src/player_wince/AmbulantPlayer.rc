@@ -159,11 +159,10 @@ EXSTYLE 0x80000000L
 CAPTION "About AmbulantPlayer"
 FONT 8, "System"
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    LTEXT           "Ambulant Player v.1.2",IDC_AM_VERSION,31,17,78,8,
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    LTEXT           "Ambulant Player v.1.3",IDC_AM_VERSION,31,17,78,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,7,47,115,
-                    8
+    LTEXT           "(C) 2004-2005, Stichting CWI",IDC_STATIC,7,47,115,8
     CTEXT           "www.ambulantPlayer.org",IDC_STATIC,30,28,82,8
     LTEXT           "License: modified GPL",IDC_STATIC,7,56,70,8
 END
