@@ -5,6 +5,7 @@
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/none/none_gui.h"
 #include "ambulant/lib/renderer.h"
 
 #include <Cocoa/Cocoa.h>
@@ -164,8 +165,9 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 		rv = (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
 		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
-		rv = new active_renderer(evp, src, dest, node);
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning active_renderer 0x%x", (void *)node, (void *)rv);
+		logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
+		rv = new gui::none::none_active_renderer(evp, src, dest, node);
+		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning none_active_renderer 0x%x", (void *)node, (void *)rv);
 	}
 	return rv;
 }

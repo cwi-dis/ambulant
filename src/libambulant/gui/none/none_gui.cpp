@@ -11,19 +11,8 @@
 using namespace ambulant;
 using namespace lib;
 
-class none_active_renderer : public active_renderer {
-  public:
-	none_active_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node)
-	:	active_renderer(evp, src, dest, node) {};
-	
-	void redraw(const screen_rect<int> &r, passive_window *window, const point &window_topleft);
-};
-
 void
-none_active_renderer::redraw(const screen_rect<int> &r, passive_window *window, const point &window_topleft)
+gui::none::none_active_renderer::redraw(const screen_rect<int> &r, passive_window *window, const point &window_topleft)
 {
 	lib::logger::get_logger()->trace("none_active_renderer.redraw(0x%x)", (void *)this);
 }

@@ -29,6 +29,17 @@ class none_window_factory : public lib::window_factory {
 	lib::passive_window *new_window(const std::string &name, lib::size bounds);
 };
 
+class none_active_renderer : public lib::active_renderer {
+  public:
+	none_active_renderer(lib::event_processor *const evp,
+		net::passive_datasource *src,
+		lib::passive_region *const dest,
+		const lib::node *node)
+	:	lib::active_renderer(evp, src, dest, node) {};
+	
+	void redraw(const lib::screen_rect<int> &r, lib::passive_window *window, const lib::point &window_topleft);
+};
+
 class none_renderer_factory : public lib::renderer_factory {
   public:
   	none_renderer_factory() {}
