@@ -61,7 +61,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"D:\ufs\ambulant\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
@@ -93,7 +93,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"D:\ufs\ambulant\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
@@ -125,7 +125,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /windowsce:emulation /MACHINE:IX86
-# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"D:\ufs\ambulant\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"..\..\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
@@ -157,7 +157,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /windowsce:emulation /MACHINE:IX86
-# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"D:\ufs\ambulant\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"..\..\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
 
 !ENDIF 
 
@@ -178,12 +178,6 @@ SOURCE=.\AmbulantPlayer.cpp
 
 # PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
-	"..\..\include\ambulant\config\config.h"\
-	"..\..\include\ambulant\config\posix_features.h"\
-	"..\..\include\ambulant\config\select_compiler_config.h"\
-	"..\..\include\ambulant\config\select_platform_config.h"\
-	"..\..\include\ambulant\config\select_stdlib_config.h"\
-	"..\..\include\ambulant\config\suffix.h"\
 	"..\..\include\ambulant\lib\textptr.h"\
 	"..\..\include\ambulant\version.h"\
 	".\AmbulantPlayer.h"\
