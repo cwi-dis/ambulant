@@ -98,6 +98,34 @@
 	mainloop::set_preferences(path);
 }
 
+- (IBAction)playWelcome:(id)sender
+{
+	AM_DBG NSLog(@"Play Welcome");
+	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+	if (welcomePath) {
+		NSDocumentController *controller = [NSDocumentController sharedDocumentController];
+		MyDocument *welcomeDoc = [controller openDocumentWithContentsOfFile: welcomePath display: YES];
+		if (welcomeDoc) {
+			[welcomeDoc play: self];
+		} else {
+			NSLog(@"Could not open document Welcome.smil");
+		}
+	} else {
+		NSLog(@"No Welcome.smil in bundle");
+	}
+}
+
+- (IBAction)showHomepage:(id)sender
+{
+	NSLog(@"Show Homepage");
+	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
+	OSErr status;
+	
+	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
+	}
+}
 
 @end
 
