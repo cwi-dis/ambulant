@@ -288,14 +288,42 @@ void
 transition_engine_pushwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	int half_width = int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
+//	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
+	m_stepcount = dstrect.m_right - dstrect.m_left;
+	m_oldsrcrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left, dstrect.m_top),
+		lib::point(dstrect.m_right-half_width, dstrect.m_bottom));
+	m_olddstrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left+half_width, dstrect.m_top),
+		lib::point(dstrect.m_right, dstrect.m_bottom));
+	m_newsrcrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_right-half_width, dstrect.m_top),
+		lib::point(dstrect.m_right, dstrect.m_bottom));
+	m_newdstrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left, dstrect.m_top),
+		lib::point(dstrect.m_left+half_width, dstrect.m_bottom));
 }
 
 void
 transition_engine_slidewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	int half_width = int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
+//	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
+	m_stepcount = dstrect.m_right - dstrect.m_left;
+	m_oldsrcrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left+half_width, dstrect.m_top),
+		lib::point(dstrect.m_right, dstrect.m_bottom));
+	m_olddstrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left+half_width, dstrect.m_top),
+		lib::point(dstrect.m_right, dstrect.m_bottom));
+	m_newsrcrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_right-half_width, dstrect.m_top),
+		lib::point(dstrect.m_right, dstrect.m_bottom));
+	m_newdstrect = lib::screen_rect<int>(
+		lib::point(dstrect.m_left, dstrect.m_top),
+		lib::point(dstrect.m_left+half_width, dstrect.m_bottom));
 }
 
 void

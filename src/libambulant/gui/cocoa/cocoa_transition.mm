@@ -128,7 +128,18 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2r3r4: not yet implemented");
+	lib::screen_rect<int> oldsrcrect_whole = m_oldsrcrect;
+	lib::screen_rect<int> olddstrect_whole = m_olddstrect;
+	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
+	lib::screen_rect<int> newdstrect_whole = m_newdstrect;
+	oldsrcrect_whole.translate(m_dst->get_global_topleft());
+	olddstrect_whole.translate(m_dst->get_global_topleft());
+	newsrcrect_whole.translate(m_dst->get_global_topleft());
+	newdstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_oldsrcrect_whole = [view NSRectForAmbulantRect: &oldsrcrect_whole];
+	NSRect cocoa_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
+	NSRect cocoa_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
+	NSRect cocoa_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
 #ifdef FILL_PURPLE
 	// Debug: fill with purple
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
@@ -137,6 +148,15 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 	[[NSColor purpleColor] set];
 	NSRectFill(cocoa_dstrect_whole);
 #endif
+	[oldsrc drawInRect: cocoa_olddstrect_whole 
+		fromRect: cocoa_oldsrcrect_whole
+		operation: NSCompositeCopy
+		fraction: 1.0];
+
+	[newsrc drawInRect: cocoa_newdstrect_whole 
+		fromRect: cocoa_newsrcrect_whole
+		operation: NSCompositeSourceOver
+		fraction: 1.0];
 }
 
 void
