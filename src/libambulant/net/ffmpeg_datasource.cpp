@@ -50,7 +50,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/logger.h"
 
-
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -91,7 +91,7 @@ if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
 	
 	if( m_src->size() > 0 ) {
 		if (evp && callbackk) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.start: trigger readdone callback");
 		evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 	} else {
 		m_client_waiting = true;
@@ -103,6 +103,7 @@ void
 net::ffmpeg_audio_datasource::readdone(int len)
 {
 	m_buffer.readdone(len);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
 	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
 		m_src->start(m_event_processor, m_readdone);
 	}
@@ -115,16 +116,15 @@ net::ffmpeg_audio_datasource::callback()
 	int size;
 	int outsize;
 	int decoded;
-	char* in_ptr;
 	
-	
-	
-	in_ptr = m_src->read_ptr();
-	m_inbuf = (uint8_t*) in_ptr;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : I got a callback !");
+
+	m_inbuf = (uint8_t*) m_src->read_ptr();
 	size = m_src->size();
 	m_outbuf = (uint8_t*) m_buffer.prepare();
 	if(!m_codec_selected) {
 		select_decoder("mp3");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selected the MP3 decoder");
 		m_codec_selected = true;
 	}
 	if(!m_avcodec_open) {
@@ -132,9 +132,11 @@ net::ffmpeg_audio_datasource::callback()
     	if ( result < 0) {
 			lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback : Failed to open avcodec");
 		}
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : open avcodec succes !");
 		m_avcodec_open = true;
 	}
 	decoded = decode(m_inbuf, size, m_outbuf, outsize);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", size, outsize);
 	m_buffer.pushdata(outsize);
 	m_src->readdone(decoded);
 	

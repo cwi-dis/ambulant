@@ -299,8 +299,8 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 		m_rate = m_audio_src->get_samplerate();
 		m_bits = m_audio_src->get_nbits();
 		m_channels = m_audio_src->get_nchannels();
-#endif
 		init(m_rate, m_bits, m_channels);	
+#endif
 		}
 	if (m_channel_used == 0) {
 		m_channel_used = free_channel();
@@ -409,8 +409,8 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	if (m_audio_src) {
 #else
 	if (m_src) {
+		init(m_rate, m_bits, m_channels);
 #endif
-		//init(m_rate, m_bits, m_channels);
 #ifdef WITH_FFMPEG
 		m_audio_src->start(m_event_processor, m_readdone);
 #else
