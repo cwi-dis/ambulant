@@ -267,7 +267,8 @@ qt_mainloop::play()
 void
 qt_mainloop::stop()
 {
-	m_player->stop();
+	if (m_player)
+		m_player->stop();
 	AM_DBG m_logger->debug("qt_mainloop::stop(): returning");
 }
 
@@ -340,24 +341,19 @@ qt_mainloop::close(common::player *p)
 void
 qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 {
-  //X	QString document_name(newdoc.get_url().c_str());
-  //X	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",document_name.ascii());
-	AM_DBG m_logger->trace("qt_mainloop::open(\"%s\")",
-			       newdoc.get_url().c_str());
+	const char* document_name(newdoc.get_url().c_str());
+	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",document_name);
  	// Parse the provided URL. 
-  //X	m_doc = create_document(document_name);
- 	m_doc = create_document(newdoc.get_url().c_str());
+	m_doc = create_document(document_name);
 	if(!m_doc) {
 		m_logger->error(gettext("%s: Cannot build DOM tree"), 
-  //X				document_name.ascii());
-				newdoc.get_url().c_str());
+				document_name);
 		return;
 	}
 	// send msg to gui thread
 	std::string msg("");
 	msg += start ? "S-" : "  ";
 	msg += old   ? "O-" : "  ";
-  //X	msg += document_name.ascii();
 	msg += newdoc;
 	m_gui->internal_message(qt_logger::CUSTOM_NEW_DOCUMENT,
 				strdup(msg.c_str()));
