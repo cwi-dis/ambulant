@@ -30,8 +30,7 @@ AC_ARG_WITH([expat],[
 	])
 	
 if test ! -f $EXPAT_PREFIX/include/expat.h; then
-	set
-	AC_MSG_ERROR([expat not found in $EXPAT_PREFIX])
+	AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
 fi
 
 EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
