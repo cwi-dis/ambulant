@@ -172,6 +172,15 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 void
 qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window* w) 
 {
+	char *data=NULL;
+	if (m_frames.size() > 1) {
+		std::pair<int, char*> element = m_frames.front();
+		data = element.second;
+		free(data);
+		data = NULL;
+		m_frames.pop();
+	}	
+	
 	if (m_frames.size() > 0) {
 		//m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.redraw(0x%x)",(void*) this);
@@ -207,7 +216,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 		}
 	
 	
-		char *data=NULL;
+		
 		//data = NULL;
 	
 		if (m_frames.size() > 0 ) {
@@ -250,11 +259,11 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 			image = NULL;
 		}
 	
-		if (data) {
-			free(data);
-			data = NULL;
-		}
-		m_frames.pop();
+		//~ if (data) {
+			//~ free(data);
+			//~ data = NULL;
+		//~ }
+		//~ m_frames.pop();
 	//m_lock.leave();
 	}
 }

@@ -1516,7 +1516,10 @@ ffmpeg_resample_datasource::_end_of_file()
 {
 	// private method - no need to lock
 	if (m_buffer.buffer_not_empty()) return false;
-	return m_src->end_of_file();
+	if (m_src)
+		return m_src->end_of_file();
+	
+	return true;
 }
 
 bool 
