@@ -207,6 +207,15 @@ void lib::logger::fatal(const char *format, ...) {
 
 }
 
+void lib::logger::show(const char *format, ...) {
+	if(suppressed(LEVEL_SHOW))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_SHOW, format, args);
+	va_end(args);
+}
+
 // static
 void lib::logger::assert_expr(bool expr, const char *format, ...) {
 	if(expr) return;
@@ -231,6 +240,12 @@ void lib::logger::log_va_list(int level, const char *format, va_list args) {
 void lib::logger::log_cstr(int level, const char *buf) {
 	if(suppressed(level))
 		return;
+		
+	if(level == LEVEL_SHOW) {
+		show_message(buf);
+		return;
+	} 
+	
 	struct tm *lt = NULL;
 	if(logger::logdate || logger::logtime) {
 		time_t t = time(NULL);
@@ -270,6 +285,7 @@ lib::logger::get_level_name(int level) {
 	switch(level) {
 		case LEVEL_DEBUG: return "DEBUG";
 		case LEVEL_TRACE: return "TRACE";
+		case LEVEL_SHOW: return "SHOW";
 		case LEVEL_WARN: return "WARN";
 		case LEVEL_ERROR: return "ERROR";
 		case LEVEL_FATAL: return "FATAL";
