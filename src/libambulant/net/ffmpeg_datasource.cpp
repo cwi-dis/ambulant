@@ -1172,7 +1172,7 @@ ffmpeg_decoder_datasource::data_avail()
 				if(inbuf) {
 					// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
 					int cursz = sz;
-					//if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
+					if (cursz > AVCODEC_MAX_AUDIO_FRAME_SIZE/2) cursz = AVCODEC_MAX_AUDIO_FRAME_SIZE/2;
 					
 					//XXX Ugly hack, but it doesn't work  :-(
 					// Someone kicks away the buffer while we still need it.
