@@ -134,12 +134,12 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	m_factory->rf = new common::global_playable_factory();
 #ifdef WITH_NONE_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for none_video");
-	m_factory->rf->add_factory( new gui::none::none_video_factory(m_factory->df) );      
+	m_factory->rf->add_factory( new gui::none::none_video_factory(m_factory) );      
 #endif
-	m_factory->rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_factory->df));
+	m_factory->rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_factory));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
-	m_factory->rf->add_factory( new gui::sdl::sdl_renderer_factory(m_factory->df) );      
+	m_factory->rf->add_factory( new gui::sdl::sdl_renderer_factory(m_factory) );      
 #endif
 
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
