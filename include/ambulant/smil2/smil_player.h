@@ -62,6 +62,7 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
+#include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
@@ -103,6 +104,7 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	// user changes custom test preferences. 
 	void build_timegraph();
 	
+	
 	///////////////////
 	// UI commands
 	
@@ -110,8 +112,13 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	void stop();
 	void pause();
 	void resume();
-	bool is_done() const;
 	int get_cursor(int x, int y);
+	
+	bool is_playing() const { return m_state == common::ps_playing;}
+	bool is_pausing() const { return m_state == common::ps_pausing;}
+	bool is_done() const { return m_state == common::ps_done;}
+	common::play_state get_state() const {return m_state;}
+	
 	
 	//////////////////////
 	// Time node context: Services
@@ -138,8 +145,8 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	//////////////////
 	// Time node context: Notifications
 	
+	virtual void started_playback();
 	virtual void done_playback();
-
 	///////////////////
 	// playable_notification interface
 	
@@ -163,7 +170,9 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	common::layout_manager *m_layout_manager;
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;	
+	common::play_state m_state;
 	std::map<const lib::node*, common::playable *> m_playables;
+	critical_section m_playables_cs;
 	lib::logger *m_logger;
 };
 
