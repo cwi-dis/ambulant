@@ -56,7 +56,7 @@ class active_renderer : public ref_counted {
 	~active_renderer() {}
 	
 	virtual void start(event *playdone);
-	virtual void redraw(const screen_rect<int> &r);
+	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
 	virtual void stop();
 	
 	////////////////////////
@@ -90,7 +90,7 @@ class active_renderer : public ref_counted {
 // it waits until all data is available, reads it, and then calls
 // need_redraw on the region. If you subclass this you only
 // need to add a redraw method.
-class active_final_renderer : active_renderer {
+class active_final_renderer : public active_renderer {
   public:
 	active_final_renderer(event_processor *const evp,
 		net::passive_datasource *src,

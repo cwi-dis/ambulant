@@ -156,6 +156,7 @@ void lib::logger::fatal(const char *format, ...) {
 	va_start(args, format);
 	log_va_list(LEVEL_FATAL, format, args);
 	va_end(args);
+	abort();
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
