@@ -1,4 +1,4 @@
-SUBDIRS = src include Test
+SUBDIRS = src include Test third_party_packages
 EXTRA_DIST = Documentation
 
 dist-hook:

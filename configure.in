@@ -15,10 +15,12 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/lib/unix/Makefile
 	include/ambulant/net/Makefile
 	Test/Makefile
-	Test/designtests/Makefile])
+	Test/designtests/Makefile
+	third_party_packages/Makefile])
 #
 # Find expat
 #
+AC_MSG_CHECKING(for --with-expat)
 EXPAT_PREFIX=third_party_packages/expat-unix
 AC_ARG_WITH([expat],[
 	AC_HELP_STRING([--with-expat],
