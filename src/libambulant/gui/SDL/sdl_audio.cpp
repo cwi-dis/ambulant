@@ -46,7 +46,7 @@
  *
  */
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -250,10 +250,14 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
 	
 	// Ugly hack to get the resampler.
-	net::audio_datasource *resample_ds = df->new_filter_datasource(url, supported, ds);
-	if (resample_ds) 
-		m_audio_src = resample_ds;
-	
+	if (m_audio_src) {
+		net::audio_datasource *resample_ds = df->new_filter_datasource(url, supported, ds);
+		AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
+		if (resample_ds) {
+			m_audio_src = resample_ds;
+			AM_DBG lib::logger::get_logger()->error("sdl_active_audio_renderer: opened resample datasource !");
+		}
+	}
 }
 
 
