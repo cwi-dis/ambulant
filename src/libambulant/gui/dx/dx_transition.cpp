@@ -56,6 +56,12 @@
 
 #include <map>
 
+//#define AM_DBG if(1)
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using ambulant::lib::win32::win_report_last_error;
 
 using namespace ambulant;
@@ -171,7 +177,6 @@ smil2::blitter_type gui::dx::get_transition_blitter_type(lib::transition_type id
 		transition_factories_inst.btmap;
 	std::map<lib::transition_type, smil2::blitter_type>::iterator it = m.find(id);
 	if(it == m.end()) {
-		lib::logger::get_logger()->warn("Missing transition blitter entry for type %d. Returning default", id);
 		return m[lib::clockWipe];
 	}
 	return (*it).second;
@@ -238,7 +243,11 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	assert(p);
 	rectlist_adapter *dummy = (rectlist_adapter*)p;
 	std::vector< lib::screen_rect<int> >& v = dummy->get_rectlist();
-	if(v.empty()) return empty_region();
+	if(v.empty()) {
+		lib::logger::get_logger()->warn("%s: Returning empty region. Rectlist is empty!", 
+			tr->get_type_str().c_str());
+		return empty_region();
+	}
 	HRGN hrgn = CreateRectRgn(0, 0, 0, 0);
 	std::vector< lib::screen_rect<int> >::iterator it;
 	for(it = v.begin();it!=v.end();it++) {
@@ -248,8 +257,17 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 		DeleteObject((HGDIOBJ)next); 
 		if(!hrgn) {
 			win_report_last_error("CombineRgn()");
+			lib::logger::get_logger()->warn("%s: Returning empty region due to a fault", 
+				tr->get_type_str().c_str());
 			return empty_region();
 		}
+	}
+	AM_DBG {
+		RECT rc;
+		GetRgnBox(hrgn, &rc);
+		lib::logger::get_logger()->trace("RegionBox: %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
+		if(rc.left == rc.right || rc.top == rc.bottom)
+			lib::logger::get_logger()->trace("Region is empty");
 	}
 	return hrgn;
 }
