@@ -47,6 +47,10 @@
  */
 
 #include "qt_mainloop.h"
+#ifdef WITH_ARTS
+#include <ambulant/gui/arts/arts.h>
+#endif
+
 using namespace ambulant;
 using namespace lib;
 using namespace gui;
@@ -56,14 +60,19 @@ void*
 qt_mainloop::run(void* view)
 {
     qt_gui* qt_view = (qt_gui*) view;
+    qt_window_factory *wf;
+
     passive_player *p = new passive_player(qt_view->filename());
     if (!p) return NULL;
+    lib::global_renderer_factory *rf = new lib::global_renderer_factory();
+#ifdef WITH_ARTS
+    rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
+#endif    
+    rf->add_factory(new qt_renderer_factory());
+    wf = new qt_window_factory(qt_view);
  
-    qt_window_factory *wf = new qt_window_factory(qt_view);
-    qt_renderer_factory* qf = new qt_renderer_factory();
 		     
-    active_player *a = p->activate
-      ((window_factory *) wf, (renderer_factory *) qf);
+    active_player *a = p->activate ((window_factory *) wf, (renderer_factory *) rf);
     if (!a) return NULL;
 
     timer *our_timer = new timer(realtime_timer_factory());
