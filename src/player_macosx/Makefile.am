@@ -56,7 +56,7 @@ extra_expat_DEFINES=
 extra_expat_LDADD=
 endif
 
-if WITH_XERCES
+if WITH_XERCES_BUILTIN
 extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include
 extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
 else

@@ -204,6 +204,7 @@ plugin_engine::load_plugins(std::string dirname)
 
                 // Load the plugin
                 lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
+				system("printenv");
  	            lt_dlhandle handle = lt_dlopen(filename);
                 if (handle) {
                     AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);

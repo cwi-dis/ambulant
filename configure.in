@@ -110,7 +110,8 @@ if test x$expat = xtrue; then
 	if test  -f $EXPAT_PREFIX/include/expat.h; then
 		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
 		EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
-		EXPAT_INCLUDES="-I$EXPAT_PREFIX/include -DWITH_EXPAT"
+		EXPAT_INCLUDES="-I$EXPAT_PREFIX/include"
+		AC_DEFINE(WITH_EXPAT, 1, [Define to enable expat XML parser])
 	else
 		AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
 		expat=false
@@ -149,7 +150,8 @@ then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
      then
      	XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
 	XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
-	XERCES_INCLUDES="-I$XERCES_PREFIX/include -DWITH_XERCES"
+	XERCES_INCLUDES="-I$XERCES_PREFIX/include"
+	AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
      else  AC_MSG_ERROR([xerces not found in $XERCES_PREFIX, please use --with-xerces])
      fi
 else
@@ -160,6 +162,36 @@ AC_SUBST(XERCES_LIBS)
 AC_SUBST(XERCES_INCLUDES)
 AM_CONDITIONAL(WITH_XERCES, test x$xerces = xtrue)
 AC_MSG_RESULT($xerces)
+
+#
+# Do we want xerces in a plugin only?
+#
+AC_MSG_CHECKING(for --with-xerces-plugin)
+xerces_plugin=false
+
+AC_ARG_WITH([xerces-plugin],[
+	AC_HELP_STRING([--with-xerces-plugin],
+                   [Put the xerces parser in a plugin])
+    ],[
+    case "${withval}" in    
+     yes) xerces_plugin=true;;
+     no)  xerces_plugin=false ;;
+     *)   AC_MSG_ERROR("No value allowed for --with-xerces-plugin");;
+     esac])
+     
+if test x$xerces_plugin = xtrue;
+then
+	if test x$xerces = xfalse;
+	then
+		AC_MSG_ERROR("--with-xerces-plugin requires --with-xerces")
+	fi
+	# Disable builtin xerces support
+	AM_CONDITIONAL(WITH_XERCES, test false)
+fi
+AM_CONDITIONAL(WITH_XERCES_PLUGIN, test x$xerces_plugin = xtrue)
+AM_CONDITIONAL(WITH_XERCES_BUILTIN, test x$xerces = xtrue -a x$xerces_plugin = xfalse)
+AC_MSG_RESULT($xerces_plugin)
+
 #
 # Test that we have at least one XML parser available
 #

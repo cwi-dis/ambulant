@@ -17,10 +17,10 @@ arts_includes=
 endif
 
 # The XERCES plugin
-if WITH_XERCES
+if WITH_XERCES_PLUGIN
 xerces_plugin = libamplugin_xerces.la
-xerces_includes = -I$(XERCES_PREFIX)/src/
-libamplugin_xerces_la_LDFLAGS = -module -L$(XERCES_PREFIX)/lib/ -lxerces-c 
+xerces_includes = -I$(XERCES_PREFIX)/src
+libamplugin_xerces_la_LDFLAGS = -module -L$(XERCES_PREFIX)/lib -lxerces-c 
 libamplugin_xerces_la_SOURCES = xercesplugin.cpp \
 		$(top_builddir)/src/libambulant/lib/xerces_parser.cpp
 
@@ -33,8 +33,7 @@ endif
 # XXXX Need to set install directory
 
 pkglib_LTLIBRARIES = $(dummy_plugin) $(arts_plugin) $(xerces_plugin)
-AM_CPPFLAGS=-DWITH_XERCES
-#LDADD=$(top_builddir)/src/libambulant/.libs/libambulant.a
+
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	 $(arts_includes) $(xerces_includes)
 

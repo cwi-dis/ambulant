@@ -5,7 +5,7 @@ else
 expat_parser_source = 
 endif
 
-if WITH_XERCES
+if WITH_XERCES_BUILTIN
 xerces_parser_source = lib/xerces_parser.cpp
 else
 xerces_parser_source = 
