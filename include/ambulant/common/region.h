@@ -40,7 +40,7 @@ class passive_region {
 		m_bounds(screen_rect<int>(0, 0, 0, 0)),
 		m_parent(NULL),
 		m_cur_active_region(NULL) {}
-	~passive_region() {}
+	virtual ~passive_region() {}
 	
 	virtual void redraw(const screen_rect<int> &r);
 
@@ -56,8 +56,8 @@ class passive_region {
 
   	std::string m_name; // for debugging
   	screen_rect<int> m_bounds;
-  	active_region *m_cur_active_region;
   	passive_region *m_parent;
+  	active_region *m_cur_active_region;
   	std::vector<passive_region *>m_children;
 };
 
@@ -71,6 +71,7 @@ class passive_window : public passive_region {
   public:
   	passive_window(const std::string &name, size bounds)
   	:	passive_region(name, NULL, screen_rect<int>(0, 0, bounds.w, bounds.h)) {}
+  	virtual ~passive_window() {}
   	
 	virtual void need_redraw(const screen_rect<int> &r);
 };
@@ -95,7 +96,7 @@ class active_region {
 		m_source(source),
 		m_node(node),
 		m_renderer(NULL) {}
-	~active_region() {}
+	virtual ~active_region() {}
 	
 	virtual void show(active_renderer *renderer);
 	virtual void redraw(const screen_rect<int> &r);
