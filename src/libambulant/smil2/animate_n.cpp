@@ -118,6 +118,8 @@ class linear_values_animation : public animate_node {
 	void prepare_interval();
 	
   protected:
+	bool verify_key_times(std::vector<double>& keyTimes);
+	
 	F m_simple_f;
 	animate_f<F> *m_animate_f;
 	std::vector<T> m_values;
@@ -144,12 +146,43 @@ void linear_values_animation<F, T>::prepare_interval() {
 	if(m_aattrs->get_calc_mode() == "paced") {
 		m_simple_f.paced_init(sfdur(), m_values);
 	} else {
-		m_simple_f.init(sfdur(), m_values);
+		std::vector<double> keyTimes;
+		m_aattrs->get_key_times(keyTimes);
+		bool keyTimesValid = keyTimes.empty() || verify_key_times(keyTimes);
+		if(!keyTimes.empty() && keyTimesValid) {
+			m_simple_f.init(sfdur(), m_values, keyTimes);
+		} else	
+			m_simple_f.init(sfdur(), m_values);
 	}
 	m_simple_f.set_auto_reverse(ta->auto_reverse());
 	m_simple_f.set_accelerate(ta->get_accelerate(), ta->get_decelerate());	
 	time_type ad = m_interval.end - m_interval.begin;
 	m_animate_f = new animate_f<F>(m_simple_f, dur(), ad(), m_aattrs->is_accumulative());
+}
+
+template <class F, class T>
+bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTimes) {
+	bool keyTimesValid = true;
+	if(keyTimes.empty()) return true;
+	if(keyTimes.front() != 0.0 || keyTimes.size() != m_values.size())
+		keyTimesValid = false;
+	if(m_aattrs->get_calc_mode() != "discrete" && keyTimes.back() != 1.0)
+		keyTimesValid = false;
+	for(size_t i=1;i<keyTimes.size() && keyTimesValid ;i++) 	
+		keyTimesValid = (keyTimes[i]>keyTimes[i-1]);
+	if(!keyTimesValid)
+		m_logger->warn("%s[%s] invalid key times", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+	AM_DBG {
+		if(!keyTimes.empty() && keyTimesValid) {
+			std::string str;
+			for(size_t i=0;i<keyTimes.size();i++) {
+				char sz[16];sprintf(sz,"%.3f;", keyTimes[i]); str += sz;
+			}
+			m_logger->trace("%s[%s] keyTimes: %s", 
+				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), str.c_str());
+		}
+	}
+	return keyTimesValid;
 }
 
 ////////////////////////////////////
