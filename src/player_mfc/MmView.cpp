@@ -80,17 +80,29 @@ static std::string get_log_filename() {
 
 std::ofstream log_os(get_log_filename().c_str());
 
+static HWND s_hwnd;
+
+HWND new_os_window() {
+	// Return the single instance for now
+	return s_hwnd;
+}
+
+void destroy_os_window(HWND hwnd) {
+	// none for now
+}
+
 using namespace ambulant;
 
 static gui::dx::dx_player* 
-create_player_instance(std::string which, const char *url, HWND hwnd) {
+create_player_instance(std::string which, const char *url) {
 	if(which == "dx")
-		return new gui::dx::dx_player(url, hwnd);
+		return new gui::dx::dx_player(url);
 	return 0;
 }
 
 static gui::dx::dx_player *player = 0;
 static needs_done_redraw = false;
+
 // MmView
 
 IMPLEMENT_DYNCREATE(MmView, CView)
@@ -185,7 +197,10 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	m_timer_id = SetTimer(1, 500, 0);
-
+	
+	// Set static handle
+	s_hwnd = GetSafeHwnd();
+	
 	return 0;
 }
 
@@ -215,7 +230,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 		delete player;
 		player = 0;
 	}
-	player = create_player_instance("dx", lpszPathName, m_hWnd);
+	player = create_player_instance("dx", lpszPathName);
 	m_curPathName = lpszPathName;
 }
 
@@ -277,7 +292,7 @@ void MmView::OnTimer(UINT nIDEvent)
 void MmView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if(player) player->on_click(point.x, point.y);
+	if(player) player->on_click(point.x, point.y, GetSafeHwnd());
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -285,7 +300,7 @@ void MmView::OnLButtonDown(UINT nFlags, CPoint point)
 void MmView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if(player) {
-		int new_cursor_id = player->get_cursor(point.x, point.y);
+		int new_cursor_id = player->get_cursor(point.x, point.y, GetSafeHwnd());
 		if(new_cursor_id != m_cursor_id) {
 			HCURSOR new_cursor = 0;
 			if(new_cursor_id == 0) {
