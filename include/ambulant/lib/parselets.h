@@ -208,10 +208,14 @@ class delimiter_p : public parselet {
 	}
 };
 
+// Parses: FirstType SecondType
 template<typename FirstType, typename SecondType>
-struct cat_pair_p  : public parselet {
+class cat_pair_p  : public parselet {
+  public:
 	typedef FirstType first_type;
 	typedef SecondType second_type;
+	typedef typename FirstType::result_type first_result_type;
+	typedef typename SecondType::result_type second_result_type;
 	typedef cat_pair_p<FirstType, SecondType> self_type;
 	typedef std::pair<typename FirstType::result_type,
 		typename SecondType::result_type> result_type;
@@ -228,13 +232,19 @@ struct cat_pair_p  : public parselet {
 		m_result = std::make_pair(m_first.m_result, m_second.m_result);
 		return fd + sd;
 	}
+	
+	first_result_type get_first_result() const { return m_result.first;}
+	second_result_type get_second_result() const { return m_result.second;}
+	
 	first_type m_first;
 	second_type m_second;
 	result_type m_result;
 };
 
+// Parses: FirstType | SecondType
 template<typename FirstType, typename SecondType>
-struct or_pair_p : public parselet {
+class or_pair_p : public parselet {
+  public:
 	typedef FirstType first_type;
 	typedef SecondType second_type;
 	typedef or_pair_p<FirstType, SecondType> self_type;
@@ -270,20 +280,66 @@ struct or_pair_p : public parselet {
 		} 
 		return -1;
 	}
+	
+	bool matched_first() const { return m_result.first.first;}
+	bool matched_second() const { return m_result.second.first;}
+	first_result_type get_first_result() const { return m_result.first.second;}
+	second_result_type get_second_result() const { return m_result.second.second;}
 };
 
 template<typename FirstType, typename SecondType>
-cat_pair_p<FirstType, SecondType> cat_p(const FirstType& f, const SecondType& s) {
+cat_pair_p<FirstType, SecondType> make_cat_p(const FirstType& f, const SecondType& s) {
 	return cat_pair_p<FirstType, SecondType>(f, s);
 }
 template<typename FirstType, typename SecondType>
-or_pair_p<FirstType, SecondType> or_p(const FirstType& f, const SecondType& s) {
+or_pair_p<FirstType, SecondType> make_or_p(const FirstType& f, const SecondType& s) {
 	return or_pair_p<FirstType, SecondType>(f, s);
 }
 
+// Parses: P?
 template<typename P>
-or_pair_p<P, epsilon_p> optional(const P& p) {
-	return or_p(p, epsilon_p());
+class optional_p : public or_pair_p<P, epsilon_p> {
+  public:
+	optional_p(const P& p) : or_pair_p<P, epsilon_p>(p, epsilon_p()) {}
+	bool occured() const { return matched_first();}
+	first_result_type get_result() const { return get_first_result();}
+};
+
+template<typename P>
+optional_p<P> make_optional(const P& p) {
+	return optional_p<P>(p);
+}
+
+// Parses: P+
+template<typename P>
+class plus_p : public parselet {
+  public:
+	typedef plus_p<P> self_type;
+	typedef typename P::result_type atom_result_type;
+	typedef std::list<atom_result_type> result_type;
+	result_type m_result;
+	P m_p;
+	plus_p(const P& p) : m_p(p) {}
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		const_iterator test_it = it;
+		std::ptrdiff_t rd = m_p.parse(test_it, end);
+		if(rd<0) return -1;
+		it = test_it;
+		m_result.push_back(m_p.m_result);
+		while(test_it != end) {
+			std::ptrdiff_t d = m_p.parse(test_it, end);
+			if(d<0) break;
+			rd += d;
+			it = test_it;
+			m_result.push_back(m_p.m_result);		
+		}
+		return rd;
+	}
+};
+
+template<typename P>
+plus_p<P> make_plus(const P& p) {
+	return plus_p<P>(p);
 }
 
 ////////////////////////////////
