@@ -248,7 +248,10 @@ void MmView::OnDestroy()
 void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 	gui_player *dummy = player;
 	player = 0;
-	if(dummy) delete dummy;
+	if(dummy) {
+		dummy->stop();
+		delete dummy;
+	}
 	dummy = create_player_instance(lpszPathName);
 	m_curPathName = lpszPathName;
 	player = dummy;
