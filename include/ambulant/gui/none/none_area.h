@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/layout.h"
 
 namespace ambulant {
 
@@ -69,14 +70,15 @@ class none_area_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp) 
-	: common::renderer_playable(context, cookie, node, evp) {
-	}
-	~none_area_renderer() {}
-	void wantclicks(bool want);
+	:   common::renderer_playable(context, cookie, node, evp),
+		m_rgn(NULL) {}
+	~none_area_renderer();
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
+  private:
+	lib::screen_rect<int> *m_rgn;
 };
 } // namespace none
 
