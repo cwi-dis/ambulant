@@ -126,7 +126,9 @@ class passive_region : public surface_template, public renderer {
   	passive_region *m_parent;			// parent region
   	std::list<active_region *> m_active_regions; // active regions currently responsible for redraws
 	active_region *m_bg_active_region;  // The background
-  	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
+	typedef std::list<passive_region*> children_list_t;
+	typedef std::map<zindex_t, children_list_t> children_map_t;
+	children_map_t m_active_children;	// all subregions
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
 	renderer *m_bg_renderer;  // Background renderer

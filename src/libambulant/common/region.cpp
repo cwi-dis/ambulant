@@ -124,9 +124,10 @@ passive_region::~passive_region()
 		delete m_mouse_region;
 //	if (m_info)
 //		delete m_info;
-	std::multimap<zindex_t,passive_region *>::iterator i;
-	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
-		delete (*i).second;
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			delete (*it2);
 	}
 }
 
@@ -137,9 +138,7 @@ passive_region::new_subsurface(const region_info *info, renderer *bgrenderer)
 	zindex_t z = info->get_zindex();
 	AM_DBG lib::logger::get_logger()->trace("subbregion %s: ltrb=(%d, %d, %d, %d), z=%d", info->get_name().c_str(), bounds.left(), bounds.top(), bounds.right(), bounds.bottom(), z);
 	passive_region *rv = new passive_region(info->get_name(), this, bounds, info, bgrenderer);
-	
-	m_active_children.insert(std::make_pair(zindex_t(z), rv));
-	
+	m_active_children[zindex_t(z)].push_back(rv);
 	need_redraw(bounds);
 	return rv;
 }
@@ -209,10 +208,11 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 		(*ar)->redraw(our_rect, window);
 	}
 	// XXXX Should go per z-order value
-	std::multimap<zindex_t,passive_region *>::iterator i;
-	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) -> child 0x%x, z=%d", (void *)this, (void *)(*i).second, (*i).first);
-		(*i).second->redraw(our_rect, window);
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			//AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) -> child 0x%x, z=%d", (void *)this, (void *)(*i).second, (*i).first);
+			(*it2)->redraw(our_rect, window);
 	}
 }
 
@@ -265,10 +265,11 @@ passive_region::user_event(const lib::point &where, int what)
 		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
 		(*ari)->user_event(our_point, what);
 	}
-	std::multimap<zindex_t,passive_region *>::iterator i;
-	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*i).second, (*i).first);
-		(*i).second->user_event(our_point, what);
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			//AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*i).second, (*i).first);
+			(*it2)->user_event(our_point, what);;
 	}
 }
 
@@ -334,10 +335,12 @@ passive_region::mouse_region_changed()
     for (ari=m_active_regions.begin(); ari!=m_active_regions.end(); ari++) {
         *m_mouse_region |= (*ari)->get_mouse_region();
 	}
-    std::multimap<zindex_t,passive_region *>::iterator i;
-    for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
-        *m_mouse_region |= (*i).second->get_mouse_region();
-    }
+	
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			*m_mouse_region |= (*it2)->get_mouse_region();
+	}
     // Convert to our parent coordinate space
     *m_mouse_region += m_outer_bounds.left_top();
     // Tell our parent, if we have one
