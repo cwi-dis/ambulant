@@ -72,8 +72,8 @@ gui::dg::dg_window::dg_window(const std::string& name,
 	m_name(name),
 	m_wf(wf),
 	m_viewport(v) {
-	AM_DBG lib::logger::get_logger()->trace_stream() 
-		<< "dg_window(" << name << ", " << bounds << ")" << lib::endl;
+	//AM_DBG lib::logger::get_logger()->trace_stream() 
+	//	<< "dg_window(" << name << ", " << bounds << ")" << lib::endl;
 }
 
 gui::dg::dg_window::~dg_window() {
@@ -82,8 +82,8 @@ gui::dg::dg_window::~dg_window() {
 }
   		
 void gui::dg::dg_window::need_redraw(const lib::screen_rect<int> &r) {
-	AM_DBG lib::logger::get_logger()->trace_stream()
-		<< "dg_window::need_redraw" << r << lib::endl;
+	//AM_DBG lib::logger::get_logger()->trace_stream()
+	//	<< "dg_window::need_redraw" << r << lib::endl;
 	m_rgn->redraw(r, this);
 	m_viewport->redraw(r);
 }

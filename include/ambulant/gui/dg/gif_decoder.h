@@ -65,13 +65,8 @@
 #include "ambulant/gui/dg/img_decoder.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/basic_types.h"
-
-
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
-
-using ambulant::lib::uchar;
+#include "ambulant/lib/win32/win32_error.h"
+using ambulant::lib::win32::win_show_last_error;
 
 namespace ambulant {
 
@@ -79,8 +74,8 @@ namespace gui {
 
 namespace dg {
 
-template <class DataSource, class ColorType>
-class gif_decoder : public img_decoder<DataSource, ColorType> {
+template <class DataSource>
+class gif_decoder : public img_decoder<DataSource> {
   public:
 	typedef unsigned short uint16_t;
 	
@@ -89,7 +84,7 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 	virtual ~gif_decoder();
 	
 	virtual bool can_decode();
-	virtual dib_surface<ColorType>* decode();	
+	virtual dib_surface<surf_color_t>* decode();	
 	virtual bool is_transparent() 
 		{ return m_transparent>=0;}
 	virtual void get_transparent_color(BYTE *rgb) {
@@ -103,10 +98,10 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 	}
 
   private:
-	dib_surface<ColorType>* parse_metadata();
-	dib_surface<ColorType>* parse_image();
+	dib_surface<surf_color_t>* parse_metadata();
+	dib_surface<surf_color_t>* parse_image();
 	bool parse_image_pixels(int width, int height, 
-		int interlace, surface<ColorType> *psurf);
+		int interlace, surface<surf_color_t> *psurf);
 
 	int next_block(uchar *m_buf);
 	int next_code(int code_size, bool flag);
@@ -135,9 +130,9 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 	lib::logger *m_logger;
 };
 
-template <class DataSource, class ColorType>
-gif_decoder<DataSource, ColorType>::gif_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+template <class DataSource>
+gif_decoder<DataSource>::gif_decoder(DataSource* src, HDC hdc)
+:	img_decoder<DataSource>(src, hdc), 
 	m_palette(NULL),
 	m_curbit(0), m_lastbit(0), m_lastbyte(0),
 	m_last_block_size(-1), m_done(false),
@@ -145,13 +140,13 @@ gif_decoder<DataSource, ColorType>::gif_decoder(DataSource* src, HDC hdc)
 	m_logger(lib::logger::get_logger()) {
 }
 
-template <class DataSource, class ColorType>
-inline gif_decoder<DataSource, ColorType>::~gif_decoder() {
+template <class DataSource>
+inline gif_decoder<DataSource>::~gif_decoder() {
 	if(m_palette) delete[] m_palette;
 }
 
-template <class DataSource, class ColorType>
-inline bool gif_decoder<DataSource, ColorType>::can_decode() {
+template <class DataSource>
+inline bool gif_decoder<DataSource>::can_decode() {
 	m_src->seekg(0);
 	uchar_t b[16];
 	if(m_src->read(b, 6) != 6) return false;
@@ -159,9 +154,9 @@ inline bool gif_decoder<DataSource, ColorType>::can_decode() {
 		(b[4] == '7' || b[4] == '9') && b[5] == 'a';
 }
 
-template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
-gif_decoder<DataSource, ColorType>::decode() {
+template <class DataSource>
+inline dib_surface<surf_color_t>* 
+gif_decoder<DataSource>::decode() {
 	if(!can_decode()) return NULL;
 
 	m_scr_width = m_src->get_be_ushort();
@@ -194,9 +189,9 @@ gif_decoder<DataSource, ColorType>::decode() {
 	return parse_metadata();
 }
 
-template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
-gif_decoder<DataSource, ColorType>::parse_metadata() {
+template <class DataSource>
+inline dib_surface<surf_color_t>* 
+gif_decoder<DataSource>::parse_metadata() {
 	uchar ext_buf[256];
 	while(true) {
 		uchar_t blockType = m_src->get();
@@ -236,8 +231,8 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 	return 0;
 }
 
-template <class DataSource, class ColorType>
-inline void gif_decoder<DataSource, ColorType>::skip_block() {
+template <class DataSource>
+inline void gif_decoder<DataSource>::skip_block() {
 	int length = 0;
 	do	{
 		length = m_src->get();
@@ -245,8 +240,8 @@ inline void gif_decoder<DataSource, ColorType>::skip_block() {
 	} while (length > 0);
 }
 
-template <class DataSource, class ColorType>
-inline int gif_decoder<DataSource, ColorType>::get_data_block(uchar *buf) {
+template <class DataSource>
+inline int gif_decoder<DataSource>::get_data_block(uchar *buf) {
 	int length = m_src->get();
 	if(m_src->read(buf, length) != length)
 		return -1;
@@ -254,9 +249,9 @@ inline int gif_decoder<DataSource, ColorType>::get_data_block(uchar *buf) {
 }
 
 // 9 bytes header + color_map + data
-template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
-gif_decoder<DataSource, ColorType>::parse_image() {
+template <class DataSource>
+inline dib_surface<surf_color_t>* 
+gif_decoder<DataSource>::parse_image() {
 	uint16_t imageLeftPosition = m_src->get_be_ushort();
 	uint16_t imageTopPosition = m_src->get_be_ushort();
     uint16_t imageWidth = m_src->get_be_ushort();
@@ -278,32 +273,31 @@ gif_decoder<DataSource, ColorType>::parse_image() {
 
 	/////////////
 	// create a bmp surface
-	ColorType *pBits = NULL;
-	BITMAPINFO *pbmpi = get_bmp_info(imageWidth, imageHeight, ColorType::get_bits_size());
-	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	surf_color_t *pBits = NULL;
+	BITMAPINFO *pbmpi = get_bmp_info(imageWidth, imageHeight, surf_color_t::get_bits_size());
+	HBITMAP bmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
-		m_logger->error("CreateDIBSection() failed");
+		win_show_last_error("CreateDIBSection");
 		return NULL;
 	}
-
-	surface<ColorType> *psurf = 
-		new surface<ColorType>(imageWidth, imageHeight, ColorType::get_bits_size(), pBits);
+	surface<surf_color_t> *psurf = 
+		new surface<surf_color_t>(imageWidth, imageHeight, surf_color_t::get_bits_size(), pBits);
 		
 	parse_image_pixels(imageWidth, imageHeight, interlaceFlag, psurf);
 	uchar_t img_terminator = m_src->get(); // read ';'
-	return new dib_surface<ColorType>(bmp, psurf);
+	return new dib_surface<surf_color_t>(bmp, psurf);
 }
 
-template <class DataSource, class ColorType>
-inline int gif_decoder<DataSource, ColorType>::next_block(uchar *buf) {
+template <class DataSource>
+inline int gif_decoder<DataSource>::next_block(uchar *buf) {
 	uchar count = m_src->get();
 	m_last_block_size = count;
 	m_src->read(buf, count);
 	return count;
 }
 
-template <class DataSource, class ColorType>
-inline int gif_decoder<DataSource, ColorType>::next_code(int code_size, bool flag) {
+template <class DataSource>
+inline int gif_decoder<DataSource>::next_code(int code_size, bool flag) {
 	int i,j;
 	uchar count;
 	if(flag)  {
@@ -341,8 +335,8 @@ inline int gif_decoder<DataSource, ColorType>::next_code(int code_size, bool fla
 	return ret;
 }
 
-template <class DataSource, class ColorType>
-inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input_code_size) {
+template <class DataSource>
+inline int gif_decoder<DataSource>::next_lzwbyte(bool flag, int input_code_size) {
 	static bool fresh = false;
 	int code, incode;
 	static int code_size, set_code_size;
@@ -457,10 +451,10 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 }   
 
 
-template <class DataSource, class ColorType>
-inline bool gif_decoder<DataSource, ColorType>::parse_image_pixels(
-	int width, int height, int interlace, surface<ColorType> *psurf) {
-	assert(psurf);
+template <class DataSource>
+inline bool gif_decoder<DataSource>::parse_image_pixels(
+	int width, int height, int interlace, surface<surf_color_t> *psurf) {
+	assert(psurf!=0);
 	uchar c = m_src->get();
 	int color;
 	int xpos=0, ypos=0, pass=0;
@@ -469,7 +463,7 @@ inline bool gif_decoder<DataSource, ColorType>::parse_image_pixels(
 		return false;
 	
 	while((color = next_lzwbyte(false, c)) >= 0) {
-		ColorType rgb(m_palette[color].r, m_palette[color].g, m_palette[color].b);
+		surf_color_t rgb(m_palette[color].r, m_palette[color].g, m_palette[color].b);
 		psurf->set_pixel(xpos, ypos, rgb);
 		++xpos;
 		if(xpos==width) {

@@ -49,6 +49,12 @@
 /* 
  * @$Id$ 
  */
+ 
+//#define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 #include "ambulant/gui/dg/dg_player.h"
 #include "ambulant/gui/dg/dg_viewport.h"
@@ -76,21 +82,17 @@
 // Playables
 #include "ambulant/gui/dg/dg_area.h"
 
+#include "ambulant/gui/dg/dg_audio.h"
+
 // Layout
 #include "ambulant/common/region.h"
 #include "ambulant/smil2/smil_layout.h"
-
-//#define AM_DBG
-
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
 
 using namespace ambulant;
 
 int gui::dg::dg_gui_region::s_counter = 0;
 
-gui::dg::dg_player::dg_player(const std::string& url) 
+gui::dg::dg_player::dg_player(const char *url) 
 :	m_url(url),
 	m_player(0),
 	m_logger(lib::logger::get_logger()) {
@@ -105,7 +107,7 @@ gui::dg::dg_player::dg_player(const std::string& url)
 	
 	// Create a player instance
 	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_player = new smil2::smil_player(doc, this, this);	
+	m_player = new smil2::smil_player(doc, this, this);
 }
 
 gui::dg::dg_player::~dg_player() {
@@ -152,7 +154,8 @@ bool gui::dg::dg_player::is_done() const {
 	return m_player && m_player->is_done();
 }
 
-void gui::dg::dg_player::set_preferences(const std::string& url) {
+void gui::dg::dg_player::set_preferences(const char *url) {
+	if(!url || !url[0]) return;
 	smil2::test_attrs::load_test_attrs(url);
 	if(is_playing()) stop();
 	if(m_player) m_player->build_timegraph();
@@ -300,7 +303,7 @@ gui::dg::dg_player::new_playable(
 	} else if(tag == "img") {
 		p = new dg_img_renderer(context, cookie, node, evp, window);
 	} else if(tag == "audio") {
-		p = new dg_area_renderer(context, cookie, node, evp, window);
+		p = new dg_audio_renderer(context, cookie, node, evp, window);
 	} else if(tag == "video") {
 		p = new dg_area_renderer(context, cookie, node, evp, window);
 	} else if(tag == "area") {

@@ -101,7 +101,7 @@ class dg_player :
 	public common::playable_factory {
 	
   public:
-	dg_player(const std::string& url);
+	dg_player(const char *url);
 	~dg_player();
 	
 	////////////////////
@@ -116,7 +116,7 @@ class dg_player :
 	bool is_pausing() const;
 	bool is_done() const;
 
-	void set_preferences(const std::string& url);
+	void set_preferences(const char *url);
 	
 	// should these be part of the player interface?
 	lib::timer* get_timer() { return 0;}
@@ -161,7 +161,7 @@ class dg_player :
 	common::abstract_window* get_window(const lib::node* n);
 	common::abstract_window* get_window(HWND hwnd);
 
-	std::string m_url;
+	std::basic_string<char> m_url;
 	smil2::smil_player *m_player;
 	
 	struct wininfo {HWND h; viewport *v; dg_window *w; long f;};

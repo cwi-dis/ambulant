@@ -56,6 +56,7 @@
 #include "ambulant/gui/dg/dg_image_renderer.h"
 
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
 
@@ -81,16 +82,14 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	m_image(0), m_window(window) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::ctr(0x%x)", this);
-	std::string url = m_node->get_url("src");
-	if(!window) {
-		lib::logger::get_logger()->show("get_window() failed. [%s]",
-			url.c_str());
-		return;
-	}
+	std::string rurl = m_node->get_url("src");
+	const lib::node_context *doc = m_node->get_context();
+	std::string url = doc->resolve_url(m_node, rurl);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();
 	if(lib::memfile::exists(url)) {
-		m_image = new image_renderer(m_node->get_url("src"), v);
+		//lib::logger::get_logger()->show("Reading image: [%s]", url.c_str());
+		m_image = new image_renderer(url, v);
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.c_str());
@@ -149,7 +148,7 @@ void gui::dg::dg_img_renderer::stop() {
 		viewport *v = dgwindow->get_viewport();
 		if(v) {
 			if(!m_msg_rect.empty()) {
-				v->draw("STOPPED", m_msg_rect, lib::to_color("red"));
+				v->draw(text_str("STOPPED"), m_msg_rect, lib::to_color("red"));
 				v->redraw(m_msg_rect);
 			}
 		}
@@ -194,7 +193,7 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	}	
 	
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::screen_rect<int> img_rect_dirty = reverse_transform(&img_reg_rc_dirty, 
+	lib::screen_rect<int> img_rect_dirty = lib::reverse_transform(&img_reg_rc_dirty, 
 		&img_rect, &img_reg_rc);
 		
 	// Translate img_reg_rc_dirty to viewport coordinates 

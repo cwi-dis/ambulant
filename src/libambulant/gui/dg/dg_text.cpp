@@ -57,7 +57,9 @@
 #include "ambulant/common/region_info.h"
 
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/lib/memfile.h"
+#include "ambulant/lib/textptr.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -76,7 +78,9 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer(0x%x)", this);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	
-	std::string url = m_node->get_url("src");
+	std::string rurl = m_node->get_url("src");
+	const lib::node_context *doc = m_node->get_context();
+	std::string url = doc->resolve_url(m_node, rurl);
 	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
 			m_node->get_url("src").c_str());
@@ -84,8 +88,12 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	}
 	lib::memfile mf(url);
 	mf.read();
-	lib::databuffer& db = mf.get_databuffer();
-	m_text.assign(db.begin(), db.end());
+#ifndef UNICODE
+	m_text.assign((const char*)mf.data(), mf.size());
+#else
+	std::string s((const char*)mf.data(), mf.size());
+	m_text = lib::textptr(s.c_str()).c_wstr();
+#endif
 }
 
 gui::dg::dg_text_renderer::~dg_text_renderer() {
@@ -113,7 +121,7 @@ void gui::dg::dg_text_renderer::start(double t) {
 
 void gui::dg::dg_text_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer::stop(0x%x)", this);
-	m_text = "";
+	m_text = text_str("");
 	m_dest->renderer_done();
 	m_activated = false;
 }

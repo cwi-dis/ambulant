@@ -102,7 +102,7 @@ class surface {
 		}
 	}
 	
-	void fill(const lib::screen_rect<int>& rc, value_type bkcolor) {
+	void fill(const ambulant::lib::screen_rect<int>& rc, value_type bkcolor) {
 		uchar_ptr pb = uchar_ptr(m_data);
 		for(int y=rc.bottom()-1;y>=rc.top();y--) {
 			pointer ptr = pointer(pb);
@@ -187,6 +187,18 @@ class surface {
 			}
 		}
 	}
+	
+	void rev_rgb_channels() {
+		uchar_ptr pb = uchar_ptr(m_data);
+		for (int y=m_height-1;y>=0;y--) {
+			pointer ptr = pointer(pb);
+			for(int x=0;x<m_width;x++) {
+				uchar_ptr pbt = (uchar_ptr)ptr;
+				*ptr++ = T(*pbt, *(pbt+1), *(pbt+2));
+			}
+			pb += m_pitch;
+		}
+	}
 
   private:
 	uchar_t blend(int w, uchar_t c1, uchar_t c2) {
@@ -194,7 +206,11 @@ class surface {
 	}
 
 	void throw_range_error() {
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::range_error("index out of range");
+#else 
+		assert(false);
+#endif
 	}
 
 	int m_width;

@@ -64,7 +64,6 @@
 #include "ambulant/gui/dg/dg_surface.h"
 #include "ambulant/gui/dg/dg_dib_surface.h"
 
-using ambulant::lib::uchar;
 
 namespace ambulant {
 
@@ -72,14 +71,16 @@ namespace gui {
 
 namespace dg {
 
-template<class DataSource, class ColorType>
+typedef lib::color_trible surf_color_t;
+
+template<class DataSource>
 class img_decoder {
   public:
 	img_decoder(DataSource *src, HDC hdc)
 	:	m_src(src), m_hdc(hdc) {}
 	virtual ~img_decoder() {}
 	virtual bool can_decode() = 0;
-	virtual dib_surface<ColorType>* decode() = 0;
+	virtual dib_surface<surf_color_t>* decode() = 0;
 	virtual bool is_transparent() { return false;}
 	virtual void get_transparent_color(BYTE *rgb) { 
 		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
@@ -109,6 +110,8 @@ struct file_reader {
 	
 	DataSource *m_src;
 };
+
+typedef unsigned char uchar;
 
 struct color_quad {
 	uchar b;

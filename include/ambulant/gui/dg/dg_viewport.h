@@ -115,7 +115,7 @@ class viewport {
 		const lib::screen_rect<int>& dst_rc, bool keysrc = false);
 	
 	// Draw the text to the back buffer within destination rectangle
-	void draw(const std::string& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
 	
 	int get_width() const { return m_width;}
 	

@@ -81,7 +81,7 @@ class dg_gui_region : public common::gui_region {
 	}
 		
 	// Creates a region that is equal in size and shape to the provided region
-	dg_gui_region(const gui_region& rgn) 
+	dg_gui_region(const common::gui_region& rgn) 
 	:	m_hrgn(CreateRectRgn(0, 0, 0, 0)) {
 		CombineRgn(m_hrgn, handle(rgn), 0, RGN_COPY);
 		s_counter++;
@@ -93,7 +93,7 @@ class dg_gui_region : public common::gui_region {
 	}
 	
 	// Clone factory function
-	gui_region *clone() const {
+	common::gui_region *clone() const {
 		HRGN hrgn = CreateRectRgn(0, 0, 0, 0);
 		CombineRgn(hrgn, m_hrgn, 0, RGN_COPY);
 		return new dg_gui_region(hrgn);

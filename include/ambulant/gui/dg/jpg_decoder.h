@@ -76,8 +76,8 @@ namespace gui {
 
 namespace dg {
 
-template <class DataSource, class ColorType>
-class jpg_decoder : public img_decoder<DataSource, ColorType> {
+template <class DataSource>
+class jpg_decoder : public img_decoder<DataSource> {
   public:
 	typedef unsigned int JDIMENSION;
 	typedef unsigned char JSAMPLE;
@@ -88,10 +88,10 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 	virtual ~jpg_decoder();
 
 	virtual bool can_decode();
-	virtual dib_surface<ColorType>* decode();
+	virtual dib_surface<surf_color_t>* decode();
 
 	private:
-	void write_pixel_rows(j_decompress_ptr cinfo, surface<ColorType> *psurf);
+	void write_pixel_rows(j_decompress_ptr cinfo, surface<surf_color_t> *psurf);
 	
 	void create_buffer(int row_width);
 	void free_buffer();
@@ -102,29 +102,29 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 	lib::logger *m_logger;
 };
 
-template <class DataSource, class ColorType>
-jpg_decoder<DataSource, ColorType>::jpg_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+template <class DataSource>
+jpg_decoder<DataSource>::jpg_decoder(DataSource* src, HDC hdc)
+:	img_decoder<DataSource>(src, hdc), 
 	m_dbuffer(0), m_dbuffer_height(1),
 	m_cur_output_row(0),
 	m_logger(lib::logger::get_logger()) {
 }
 
-template <class DataSource, class ColorType>
-jpg_decoder<DataSource, ColorType>::~jpg_decoder() {
+template <class DataSource>
+jpg_decoder<DataSource>::~jpg_decoder() {
 	if(m_dbuffer != 0) free_buffer();
 }
 
-template <class DataSource, class ColorType>
-void jpg_decoder<DataSource, ColorType>::create_buffer(int row_width) {
+template <class DataSource>
+void jpg_decoder<DataSource>::create_buffer(int row_width) {
 	if(m_dbuffer != 0) free_buffer();
 	m_dbuffer = new JSAMPROW[m_dbuffer_height];
 	for(JDIMENSION i=0;i<m_dbuffer_height;i++)
 		m_dbuffer[i] = new JSAMPLE[row_width];
 }
 
-template <class DataSource, class ColorType>
-void jpg_decoder<DataSource, ColorType>::free_buffer() {
+template <class DataSource>
+void jpg_decoder<DataSource>::free_buffer() {
 	if(m_dbuffer != 0) {
 		for(JDIMENSION i=0;i<m_dbuffer_height;i++)
 			delete[] m_dbuffer[i];
@@ -133,17 +133,17 @@ void jpg_decoder<DataSource, ColorType>::free_buffer() {
 	}
 }
 
-template <class DataSource, class ColorType>
-bool jpg_decoder<DataSource, ColorType>::can_decode() {
+template <class DataSource>
+bool jpg_decoder<DataSource>::can_decode() {
 	m_src->seekg(0);
     uchar_t b1 = m_src->get();
     uchar_t b2 = m_src->get();
     return ((b1 == 0xFF) && (b2 == 0xD8))?true:false;
 }
 
-template <class DataSource, class ColorType>
-dib_surface<ColorType>* 
-jpg_decoder<DataSource, ColorType>::decode() {
+template <class DataSource>
+dib_surface<surf_color_t>* 
+jpg_decoder<DataSource>::decode() {
 	jpeg_decompress_struct cinfo;
 	jpeg_error_mgr jerr;
 	
@@ -174,17 +174,17 @@ jpg_decoder<DataSource, ColorType>::decode() {
 	int height = cinfo.output_height;
 
 	// create a bmp surface
-	ColorType *pBits = NULL;
-	BITMAPINFO *pbmpi = get_bmp_info(width, height, ColorType::get_bits_size());
-	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	surf_color_t *pBits = NULL;
+	BITMAPINFO *pbmpi = get_bmp_info(width, height, surf_color_t::get_bits_size());
+	HBITMAP bmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
 		jpeg_destroy_decompress(&cinfo);
 		return NULL;
 	}
 	
-	surface<ColorType> *psurf = 
-		new surface<ColorType>(width, height, ColorType::get_bits_size(), pBits);
+	surface<surf_color_t> *psurf = 
+		new surface<surf_color_t>(width, height, surf_color_t::get_bits_size(), pBits);
 
 	// Process data
 	m_cur_output_row = 0;
@@ -198,19 +198,18 @@ jpg_decoder<DataSource, ColorType>::decode() {
 	jpeg_finish_decompress(&cinfo);
 	jpeg_destroy_decompress(&cinfo);
 
-	return new dib_surface<ColorType>(bmp, psurf);
+	return new dib_surface<surf_color_t>(bmp, psurf);
 }
 
-template <class DataSource, class ColorType>
-void jpg_decoder<DataSource, ColorType>::write_pixel_rows(j_decompress_ptr cinfo, 
-	surface<ColorType> *psurf) {
+template <class DataSource>
+void jpg_decoder<DataSource>::write_pixel_rows(j_decompress_ptr cinfo, 
+	surface<surf_color_t> *psurf) {
 	JSAMPROW inptr = m_dbuffer[0];
-	ColorType* outptr = psurf->get_row(m_cur_output_row);
-	for(JDIMENSION col = 0; col < cinfo->output_width; col++)  {
-		BYTE r = *inptr++;
-		BYTE g = *inptr++;
-		BYTE b = *inptr++;
-		*outptr++ = ColorType(r, g, b);
+	surf_color_t* outptr = psurf->get_row(m_cur_output_row);
+	for(JDIMENSION col = 0; col < cinfo->output_width; col++, outptr++)  {
+		outptr->r = *inptr++;
+		outptr->g = *inptr++;
+		outptr->b = *inptr++;
 	}
 	m_cur_output_row++;
 }

@@ -71,8 +71,7 @@ using namespace ambulant;
 
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_report_last_error;
-//const lib::color_t CLR_DEFAULT = RGB(255, 255, 255);
-const lib::color_t CLR_DEFAULT = RGB(0, 0, 255);
+const lib::color_t CLR_DEFAULT = RGB(255, 255, 255);
 
 gui::dg::viewport::viewport(int width, int height, HWND hwnd) 
 :	m_width(width), 
@@ -111,7 +110,9 @@ gui::dg::viewport::~viewport() {
 	if(m_hold) SelectObject(m_memdc, (HGDIOBJ) m_hold);
 	if(m_memdc) DeleteDC(m_memdc);
 	if(m_hbmp) DeleteObject((HGDIOBJ) m_hbmp);
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 	RedrawWindow(m_hwnd, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN);
+#endif
 }
 
 // Sets the background color of this viewport
@@ -205,7 +206,8 @@ void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& sr
 }
 
 // Paints the provided string
-void gui::dg::viewport::draw(const std::string& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
+void gui::dg::viewport::draw(const std::basic_string<text_char>& text, 
+	const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
 	if(!m_memdc) return;
 	SetBkMode(m_memdc, TRANSPARENT);
 	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;

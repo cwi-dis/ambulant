@@ -70,30 +70,30 @@ namespace gui {
 
 namespace dg {
 
-template <class DataSource, class ColorType>
-class bmp_decoder : public img_decoder<DataSource, ColorType> {
+template <class DataSource>
+class bmp_decoder : public img_decoder<DataSource> {
   public:
 	bmp_decoder(DataSource *src, HDC hdc);
 	virtual ~bmp_decoder();
 	virtual bool can_decode();
-	virtual dib_surface<ColorType>* decode();
+	virtual dib_surface<surf_color_t>* decode();
   private:
 	size_t get_pitch_from_bpp(size_t bpp, size_t width) { return (width*(bpp/8)+3) & ~3;}
 	lib::logger *m_logger;
 };
 
-template <class DataSource, class ColorType>
-inline bmp_decoder<DataSource, ColorType>::bmp_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+template <class DataSource>
+inline bmp_decoder<DataSource>::bmp_decoder(DataSource* src, HDC hdc)
+:	img_decoder<DataSource>(src, hdc), 
 	m_logger(lib::logger::get_logger()) {
 }
 
-template <class DataSource, class ColorType>
-inline bmp_decoder<DataSource, ColorType>::~bmp_decoder() {
+template <class DataSource>
+inline bmp_decoder<DataSource>::~bmp_decoder() {
 }
 
-template <class DataSource, class ColorType>
-inline bool bmp_decoder<DataSource, ColorType>::can_decode() {
+template <class DataSource>
+inline bool bmp_decoder<DataSource>::can_decode() {
 	m_src->seekg(0);
 	BITMAPFILEHEADER bfh;
 	if(m_src->read((BYTE*)&bfh, sizeof(bfh)) != sizeof(bfh))
@@ -104,9 +104,9 @@ inline bool bmp_decoder<DataSource, ColorType>::can_decode() {
 	return true;
 }
 
-template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
-bmp_decoder<DataSource, ColorType>::decode() {
+template <class DataSource>
+inline dib_surface<surf_color_t>* 
+bmp_decoder<DataSource>::decode() {
 	m_src->seekg(0);
 	BITMAPFILEHEADER bfh;
 	if(m_src->read((BYTE*)&bfh, sizeof(bfh)) != sizeof(bfh)) {
@@ -141,22 +141,22 @@ bmp_decoder<DataSource, ColorType>::decode() {
 	if (bmi.biSizeImage == 0) 
 		bmi.biSizeImage = (DWORD)get_pitch_from_bpp(depth, width)*height;
 
-	ColorType *pBits = NULL;
-	BITMAPINFO *pbmpi = get_bmp_info(width, height, (int) ColorType::get_bits_size());
-	HBITMAP hBmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	surf_color_t *pBits = NULL;
+	BITMAPINFO *pbmpi = get_bmp_info(width, height, surf_color_t::get_bits_size());
+	HBITMAP hBmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(hBmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
 		return NULL;
 	}
-	surface<ColorType> *psurf = 
-		new surface<ColorType>(width, height, ColorType::get_bits_size(), pBits);
+	surface<surf_color_t> *psurf = 
+		new surface<surf_color_t>(width, height, surf_color_t::get_bits_size(), pBits);
 	m_src->seekg(sizeof(bfh) + bmi.biSize);
-	if(depth == 24 && ColorType::get_bits_size() == 24) {
+	if(depth == 24 && surf_color_t::get_bits_size() == 24) {
 		memcpy(psurf->get_buffer(), m_src->data(), bmi.biSizeImage);
 	} else {
 		return 0;
 	}
-	return new dib_surface<ColorType>(hBmp, psurf);
+	return new dib_surface<surf_color_t>(hBmp, psurf);
 }
 } // namespace dg
 

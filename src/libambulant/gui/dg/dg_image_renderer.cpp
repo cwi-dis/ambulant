@@ -51,16 +51,9 @@
  */
 
 #include <objbase.h>
-#include <ddrawex.h>
 #include <windows.h>
 
 #include "ambulant/gui/dg/dg_image_renderer.h"
-
-#include "ambulant/gui/dg/jpg_decoder.h"
-#include "ambulant/gui/dg/gif_decoder.h"
-#include "ambulant/gui/dg/png_decoder.h"
-#include "ambulant/gui/dg/bmp_decoder.h"
-#include "ambulant/gui/dg/dg_viewport.h"
 
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/memfile.h"
@@ -68,42 +61,74 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
 
+//#define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+#define AM_JPG
+#define AM_PNG
+#define AM_GIF
+#define AM_BMP
+
+#ifdef AM_JPG
+#include "ambulant/gui/dg/jpg_decoder.h"
+#endif
+
+#ifdef AM_PNG
+#include "ambulant/gui/dg/png_decoder.h"
+#endif
+
+#ifdef AM_GIF
+#include "ambulant/gui/dg/gif_decoder.h"
+#endif
+
+#ifdef AM_BMP
+#include "ambulant/gui/dg/bmp_decoder.h"
+#endif
+
+#include "ambulant/gui/dg/dg_viewport.h"
+
 using namespace ambulant;
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_report_last_error;
 using ambulant::lib::logger;
 
-using lib::uint16;
-using lib::uint32;
-using lib::uchar;
-
-typedef gui::dg::img_decoder<lib::memfile, lib::color_trible> img_decoder_class;
+typedef gui::dg::img_decoder<lib::memfile> img_decoder_class;
 
 static img_decoder_class*
 create_img_decoder(lib::memfile *src, HDC hdc) {
-	typedef gui::dg::jpg_decoder<lib::memfile, lib::color_trible> jpg_decoder_class;
-	typedef gui::dg::gif_decoder<lib::memfile, lib::color_trible> gif_decoder_class;
-	typedef gui::dg::png_decoder<lib::memfile, lib::color_trible> png_decoder_class;
-	typedef gui::dg::bmp_decoder<lib::memfile, lib::color_trible> bmp_decoder_class;
-	
+
 	img_decoder_class* decoder = 0;
-	
+
+#ifdef AM_JPG
+	typedef gui::dg::jpg_decoder<lib::memfile> jpg_decoder_class;
 	decoder = new jpg_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
-	decoder = new gif_decoder_class(src, hdc);
-	if(decoder->can_decode()) return decoder;
-	delete decoder;
-	
+#endif
+
+#ifdef AM_PNG
+	typedef gui::dg::png_decoder<lib::memfile> png_decoder_class;
 	decoder = new png_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+#endif
+
+#ifdef AM_GIF
+	typedef gui::dg::gif_decoder<lib::memfile> gif_decoder_class;
+	decoder = new gif_decoder_class(src, hdc);
+	if(decoder->can_decode()) return decoder;
+	delete decoder;	
+#endif
+
+#ifdef AM_BMP
+	typedef gui::dg::bmp_decoder<lib::memfile> bmp_decoder_class;
 	decoder = new bmp_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+#endif
 	return 0;
 }
 
@@ -119,12 +144,11 @@ gui::dg::image_renderer::~image_renderer() {
 }
 
 void gui::dg::image_renderer::open(const std::string& url, viewport* v) {
-	if(!lib::memfile::exists(url)) {
-		lib::logger::get_logger()->warn("Failed to locate image file %s.", url.c_str());
+	lib::memfile mf(url);
+	if(!mf.read()) {
+		lib::logger::get_logger()->show("Failed to locate image file %s.", url.c_str());
 		return;
 	}
-	lib::memfile mf(url);
-	mf.read();
 	
 	// Decode the image
 	HDC hdc = ::GetDC(NULL);
@@ -137,7 +161,7 @@ void gui::dg::image_renderer::open(const std::string& url, viewport* v) {
 	
 	m_dibsurf = decoder->decode();
 	if(!m_dibsurf) {
-		lib::logger::get_logger()->warn("Failed to decode image %s", url.c_str());
+		lib::logger::get_logger()->show("Failed to decode image %s", url.c_str());
 		delete decoder;
 		return;
 	}

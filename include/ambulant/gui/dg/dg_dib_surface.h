@@ -62,7 +62,6 @@
 #include "ambulant/gui/dg/dg_surface.h"
 #include "ambulant/lib/basic_types.h"
 
-using ambulant::lib::uchar;
 
 namespace ambulant {
 
