@@ -53,7 +53,7 @@
 
 namespace ambulant {
 
-#define AMBULANT_VERSION "0.4"
+#define AMBULANT_VERSION "0.3"
 
 const char *get_version(void);
 
