@@ -18,7 +18,7 @@ expat-unix:
 	Ditto, but built from source. Download the expat source via 
 	<http://expat.sourceforge.net> and extract into
 	expat-1.95.7 in this directory (.../ambulant/third_party_packages).
-	The do the following:
+	Then do the following:
 		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
 		$ cd expat-1.95.7
 		$ ./configure --prefix=$tppdir/expat-unix

@@ -63,7 +63,8 @@ Supported media types
   - Windows CE does not support video in this release.
   - MacOSX supports video through QuickTime.
   - Linux supports video through FFMPEG, but audio tracks in
-    video files are not supported in this release.
+    video files are not supported in this release. Also, the
+    number of codecs is limited.
 
 Networking support
 ------------------
@@ -108,6 +109,12 @@ platforms.
 The DemoPresentation document is a slightly more elaborate example with
 some variations to show off various features of SMIL, a readme
 file is included.
+
+Known problems
+--------------
+
+A current list of known problems can be found in the ambulant
+sourceforge bug database, accessible via <http://www.ambulantplayer.org>.
 
 Building from source
 ====================
