@@ -106,7 +106,7 @@ gui::none::none_playable_factory::new_playable(
 	lib::event_processor *evp)
 {
 	lib::xml_string tag = node->get_qname().second;
-	if(tag == "area")
+	if(tag == "area" || tag == "a")
 		return new none_area_renderer(context, cookie, node, evp);
 	return new none_playable(context, cookie, node, evp);
 }
