@@ -1,6 +1,6 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 01-Aug-03
+Jack Jansen, 05-Aug-03
 ----------------------
 
 This document contains some general thoughts on the Ambulant design. Accompanying
@@ -86,7 +86,12 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
   
 	I think we should use the guards only in the files themselves. There
 	are some places now that also check for the guards before doing the
-	#include, btu this seems like overkill, and moreover makes the code less readable.
+	#include, but this seems like overkill, and moreover makes the code less readable.
+	
+- Header files are all in an "ambulant" directory, and are included by full
+  path, as in::
+  
+  	#include "ambulant/net/url.h"
 	
 - We need to define which preprocessor defines we are going to
   switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in

@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-04-jul-03">
-<h1><a name="jack-jansen-04-jul-03">Jack Jansen, 04-Jul-03</a></h1>
+<div class="section" id="jack-jansen-05-aug-03">
+<h1><a name="jack-jansen-05-aug-03">Jack Jansen, 05-Aug-03</a></h1>
 <p>This document contains some general thoughts on the Ambulant design. Accompanying
 it we have the following documents:</p>
 <ul class="simple">
@@ -69,20 +69,53 @@ render things, etc).</p>
 <h1><a name="source-code-conventions">Source code conventions</a></h1>
 <p>Here's a somewhat random list of source code conventions that we have decided
 to use (at least: Jack thinks this has been decided, please fix if you disagree):</p>
+<ul>
+<li><p class="first">Indent 4 spaces, with the following exceptions:</p>
 <ul class="simple">
-<li>Indent 4 spaces, with the following exceptions:<ul>
 <li>namespace doesn't indent at all</li>
 <li>public:, private: and such indent two spaces</li>
 </ul>
 </li>
-<li>no camelCase, CamelCase or Capitalization in class or variable names</li>
-<li>Underscores to delimit words</li>
-<li>attribute names start with &quot;m_&quot;</li>
-<li>we have a toplevel namespace ambulant, with a second level of namespaces
-under that</li>
-<li>semi-private classes go into into a namespace named &quot;detail&quot;.</li>
-<li>Template type parameters start with an upper case letter
-(as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</li>
+<li><p class="first">no camelCase, CamelCase or Capitalization in class or variable names</p>
+</li>
+<li><p class="first">Underscores to delimit words</p>
+</li>
+<li><p class="first">attribute names start with &quot;m_&quot;</p>
+</li>
+<li><p class="first">we have a toplevel namespace ambulant, with a second level of namespaces
+under that</p>
+</li>
+<li><p class="first">semi-private classes go into into a namespace named &quot;detail&quot;.</p>
+</li>
+<li><p class="first">Template type parameters start with an upper case letter
+(as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</p>
+</li>
+<li><p class="first">Header files need to include any header files on which they depend, and
+they guard against multiple inclusion with a preprocessor construct.</p>
+<blockquote>
+<p>I think we should use the guards only in the files themselves. There
+are some places now that also check for the guards before doing the
+#include, but this seems like overkill, and moreover makes the code less readable.</p>
+</blockquote>
+</li>
+<li><p class="first">Header files are all in an &quot;ambulant&quot; directory, and are included by full
+path, as in:</p>
+<pre class="literal-block">
+#include &quot;ambulant/net/url.h&quot;
+</pre>
+</li>
+<li><p class="first">We need to define which preprocessor defines we are going to
+switch on for platform-dependent code, so we don't get <cite>#ifdef _WIN32</cite> in
+one place and something completely different in another place.
+Suggestion:</p>
+<ul class="simple">
+<li><cite>#ifdef _WIN32</cite> to test for Windows</li>
+<li>something to test for Linux</li>
+<li><cite>#ifdef __APPLE__</cite> to test for MacOSX</li>
+<li>something to test for 386 or other architectures?</li>
+<li>something to test for Visual Studio versus gcc?</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="global-structure">
