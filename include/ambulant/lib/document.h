@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 
 #include <string>
+#include <map>
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/nscontext.h"
@@ -131,14 +132,31 @@ class document : public node_context {
 	
 	// node_context interface
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
+	
 	const char* get_namespace_prefix(const xml_string& uri) const;
+	
 	std::string resolve_url(const node *n, const std::string& rurl) const;
+	
+	// Returns the node with the provided id or null on none
+	const node* get_node(const std::string& id) const {
+		if(id.empty()) return 0;
+		std::map<std::string, const node*>::const_iterator it
+			= m_id2node.find(id);
+		return (it != m_id2node.end())?(*it).second:0;
+	}
 	
   protected:
 	document(node *root = 0);
 	document(node *root, const std::string& src_url);
 	
+	void set_root(node* n);
+	void set_src_url(ambulant::net::url u) { m_src_url = u;}
+	void set_src_base(ambulant::net::url u) { m_src_base = u;}
+	
   private:
+	// builds id to node map
+	void build_id2node_map();
+	
 	// the root of this document
 	node *m_root;
 	
@@ -153,102 +171,10 @@ class document : public node_context {
 	// document namespaces registry
 	nscontext m_namespaces;
 	
+	// map of id to nodes
+	std::map<std::string, const node*> m_id2node;
+	
 };
-
-
-/////////////////////////////////
-// Inline implementation
-
-inline 
-document::document(node *root) 
-:	m_root(root)
-{
-}
-
-inline
-document::document(node *root, const std::string& src_url) 
-:	m_root(root),
-	m_src_url(src_url)
-{
-}
-
-inline
-document::~document() {
-	delete m_root;
-}
-
-inline node* 
-document::get_root(bool detach) {
-	if(!detach)
-		return m_root;
-	node* tmp = m_root;
-	m_root = 0;
-	return tmp;
-}
-
-inline const node* 
-document::get_root() const {
-	return m_root;
-}
-
-//static 
-inline document* 
-document::create_from_file(const std::string& filename) {
-	document *d = new document();
-	tree_builder builder(d);
-	if(!builder.build_tree_from_file(filename.c_str())) {
-		logger::get_logger()->error(
-			"Could not build tree for file: %s", filename.c_str());
-		return 0;
-	}
-	d->m_root = builder.detach();
-	d->m_src_url = ambulant::net::url(filename);
-	
-	std::string base = filesys::get_base(filename, file_separator.c_str());
-	d->m_src_base = ambulant::net::url(base);
-	
-	return d;
-}
-
-//static 
-inline document* 
-document::create_from_string(const std::string& smil_src) {
-	document *d = new document();
-	tree_builder builder(d);
-	if(!builder.build_tree_from_str(smil_src)) {
-		logger::get_logger()->error(
-			"Could not build tree for the provided string");
-		return 0;
-	}
-	d->m_root = builder.detach();
-	return d;
-}
-
-inline void 
-document::set_prefix_mapping(const std::string& prefix, const std::string& uri) {
-	m_namespaces.set_prefix_mapping(prefix, uri);
-}
-
-inline const char* 
-document::get_namespace_prefix(const xml_string& uri) const {
-	return m_namespaces.get_namespace_prefix(uri);
-}
-
-inline std::string 
-document::resolve_url(const node *n, const std::string& rurl) const {
-	// locate node context xml:base
-	// const char *p = n->get_container_attribute("base");
-	// ...
-	// if none is found use source.
-	
-	if(m_src_base.get_protocol() == "file") {
-		std::string base_path = m_src_base.get_path();
-		return filesys::join(base_path, rurl, file_separator.c_str());
-	}
-		
-	return filesys::join(m_src_base.get_path(), rurl); 
-}
-
 
 } // namespace lib
  
