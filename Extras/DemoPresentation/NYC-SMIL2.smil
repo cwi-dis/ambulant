@@ -20,7 +20,7 @@
   </head>
   <body>
     <par id="AdvancedPPCSlideshow">
-      <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemBitrate="56000"/>
+      <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
       <seq id="ImagesAndAudioSequence">
         <par id="ImageTextAudio" dur="8s">
           <img id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
