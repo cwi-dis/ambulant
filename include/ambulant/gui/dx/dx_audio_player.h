@@ -98,7 +98,7 @@ class audio_player : public common::playable {
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}
 	const cookie_type& get_cookie() const { return m_cookie;}
-	
+
 	bool can_play();
 	bool is_playing();
 	double get_position();

@@ -125,6 +125,22 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	// Activate this renderer.
 	m_activated = true;
 		
+	// And set volume(s)
+	if (m_dest) {
+		const common::region_info *info = m_dest->get_info();
+		double level = info->get_soundlevel();
+		if (level != 1)
+			m_player->set_volume((long)(level*100));
+#ifdef USE_SMIL21
+		common::sound_alignment align = info->get_soundalign();
+		if (align == common::sa_left) {
+			m_player->set_balance(-100);
+		} else if (align == common::sa_right) {
+			m_player->set_balance(100);
+		}
+#endif
+	}
+
 	// Start the underlying player
 	m_player->start(t);
 		
