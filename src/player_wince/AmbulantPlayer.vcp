@@ -61,7 +61,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /out:"..\..\bin\wince\AmbulantPlayer.exe" /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
@@ -178,6 +178,13 @@ SOURCE=.\AmbulantPlayer.cpp
 
 # PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
 	"..\..\include\ambulant\lib\textptr.h"\
 	"..\..\include\ambulant\version.h"\
 	".\AmbulantPlayer.h"\
@@ -306,22 +313,28 @@ SOURCE=.\AmbulantPlayerView.cpp
 
 # PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
+	"..\..\include\ambulant\common\embedder.h"\
+	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
 	"..\..\include\ambulant\config\select_compiler_config.h"\
 	"..\..\include\ambulant\config\select_platform_config.h"\
 	"..\..\include\ambulant\config\select_stdlib_config.h"\
 	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_playable.h"\
 	"..\..\include\ambulant\gui\dg\dg_player.h"\
 	"..\..\include\ambulant\gui\dg\dg_wmuser.h"\
 	"..\..\include\ambulant\lib\abstract_mtsync.h"\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\delta_timer.h"\
 	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\event.h"\
@@ -332,7 +345,9 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\lib\node.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\system.h"\
@@ -342,6 +357,9 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\databuffer.h"\
+	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	".\AmbulantPlayer.h"\
