@@ -52,6 +52,8 @@
 
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/schema.h"
+#include "ambulant/smil2/animate_n.h"
+#include "ambulant/smil2/animate_e.h"
 #include <cmath>
 #include <stack>
 #include <set>
@@ -84,6 +86,7 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_attrs(n),
 	m_type(type),
 	m_discrete(discrete),
+	m_timer(0),
 	m_state(0),
 	m_interval(interval_type::unresolved),
 	m_picounter(0),
@@ -114,7 +117,10 @@ time_node::time_node(context_type *ctx, const node *n,
 	
 time_node::~time_node() {
 	node_counter--;
-		
+	
+	// Delete the timer of this node
+	delete m_timer;
+	
 	// Delete begin and end list rules
 	rule_list::iterator it;
 	for(it=m_begin_list.begin();it!=m_begin_list.end();it++)
@@ -190,6 +196,10 @@ void time_node::stop() {
 
 // DOM TimeElement::pauseElement()
 void time_node::pause() {
+}
+
+bool time_node::is_animation() const {
+	return common::schema::get_instance()->is_animation(m_node->get_qname());
 }
 
 // Adds a sync_rule to the begin list of this node.
@@ -877,6 +887,8 @@ void time_node::activate(qtime_type timestamp) {
 	// Required by the set-of-implicit-dur-on-eom mechanism
 	m_activation_time = timestamp.second; 
 	
+	m_timer->set_time(sd_offset());
+	
 	AM_DBG tnlogger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
@@ -890,22 +902,33 @@ void time_node::activate(qtime_type timestamp) {
 		} else {
 			m_media_offset = sd_offset;
 		}
+		m_timer->set_time(m_media_offset());
 		if(paused()) {
 			m_pause_time = m_media_offset;
 			schedule_next_timer_event(timestamp);
 			return;
 		}
-		common::playable *np = m_context->create_playable(m_node);
-		if(np && !paused()) {
-			np->wantclicks(m_want_activate_events);
-			np->start(time_type_to_secs(m_media_offset()));
-			AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
-				m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
-				timestamp.second(),
-				timestamp.as_doc_time_value());
+		if(is_animation()) {
+			animation_engine *ae = m_context->get_animation_engine();
+			animate_node *an = (animate_node*)this;
+			an->prepare_interval();
+			ae->started(an);
+		} else {
+			common::playable *np = m_context->create_playable(m_node);
+			if(np) {
+				np->wantclicks(m_want_activate_events);
+				np->start(time_type_to_secs(m_media_offset()));
+				AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+					m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
+					timestamp.second(),
+					timestamp.as_doc_time_value());
+				
+			}
 		}
 	} 
 	if(paused()) m_pause_time = sd_offset;
+	else if(is_animation() || !is_cmedia()) m_timer->resume();
+	// else wait bom from playable
 	
 	// Schedule a check for the next S-transition e.g. repeat or end.
 	// Requires: m_interval, m_last_cdur, m_rad_offset  
@@ -1015,6 +1038,7 @@ void time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
 	sync_update_cb *cb = new sync_update_cb(this, &time_node::sync_update, timestamp);
 	m_context->schedule_event(cb, dt());
 }
+
 
 // Scheduled transition callback
 void time_node::state_transition_callback(const transition_event *e) {
@@ -1227,7 +1251,8 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		} 
-		if(!is_time_container()) {
+		m_timer->pause();
+		if(!is_time_container() && !is_animation()) {
 			m_context->pause_playable(m_node);
 		}
 	} else {
@@ -1257,7 +1282,10 @@ void time_node::remove(qtime_type timestamp) {
 		for(it = children.begin(); it != children.end(); it++)
 			(*it)->remove(qt);
 	} 
-	if(!is_time_container()) {
+	if(is_animation()) {
+		animation_engine *ae = m_context->get_animation_engine();
+		ae->stopped((animate_node*)this);
+	} else if(!is_time_container()) {
 		m_context->stop_playable(m_node);
 	}
 	m_needs_remove = false;
@@ -1485,6 +1513,12 @@ void time_node::raise_end_event_async(qtime_type timestamp, time_node *oproot) {
 	m_context->schedule_event(cb, 0);
 }
 
+void time_node::activate_async(qtime_type timestamp) {
+	typedef scalar_arg_callback_event<time_node, qtime_type> cb_t;
+	cb_t *cb = new cb_t(this, &time_node::activate, timestamp);
+	m_context->schedule_event(cb, 0);
+}
+
 ///////////////////////////////
 // Global operations
 
@@ -1582,6 +1616,17 @@ void time_node::on_bom(qtime_type timestamp) {
 			pt.second(),
 			timestamp.second()); 
 	}
+	m_timer->resume();
+}
+
+// Notification from the playable that has paused for fetching bits
+void time_node::on_pom(qtime_type timestamp) {
+	m_timer->pause();
+}
+
+// Notification from the playable that has resumed playback
+void time_node::on_rom(qtime_type timestamp) {
+	m_timer->resume();
 }
 
 // End of nedia notification

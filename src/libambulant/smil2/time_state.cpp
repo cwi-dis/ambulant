@@ -266,13 +266,21 @@ void active_state::enter(qtime_type timestamp) {
 	// Children should convert it to their parent
 	m_self->reset_children(timestamp, m_self);
 	
-	m_self->activate(timestamp);
+	// Use can slip sync behavior
+	// To avoid flashing use async activation
+	// for audio and video only.
+	// XXX: check that discrete media are local 
+	if(m_self->is_cmedia())
+		m_self->activate_async(timestamp);
+	else
+		m_self->activate(timestamp);
 	
 	// The timestamp in parent simple time
 	// Children should convert it to their parent
 	m_self->startup_children(timestamp);
 	
 	// raise_begin_event async
+	// XXX: Check excl pause
 	m_self->raise_begin_event(timestamp);
 }
 

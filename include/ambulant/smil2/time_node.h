@@ -88,6 +88,8 @@ namespace ambulant {
 
 namespace smil2 {
 
+class animation_engine;
+
 // Time nodes context requirements
 class time_node_context : public lib::event_scheduler<time_traits::value_type> {
   public:
@@ -95,6 +97,7 @@ class time_node_context : public lib::event_scheduler<time_traits::value_type> {
 	virtual time_traits::value_type elapsed() const = 0;
 	virtual timer* get_timer() = 0;
 	virtual void show_link(const lib::node *n, const std::string& href) = 0;
+	virtual animation_engine* get_animation_engine() = 0;
 	
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) = 0;
@@ -135,6 +138,12 @@ class time_node : public time_traits {
 	virtual void stop();
 	virtual void pause();
 	
+	// Sets the timer for this node
+	// This node becomes the owner of the timer e.g. should delete it on exit
+	// The timegraph builder has already established the clocks network
+	virtual void set_timer(lib::timer *tmr) { m_timer = tmr;}
+	virtual lib::timer *get_timer() { return m_timer;}
+	
 	void set_want_activate_event(bool want) { m_want_activate_events = want;}
 	bool wants_activate_event() const { return m_want_activate_events;}
 	void want_accesskey(bool want) { m_want_accesskey = want;}
@@ -163,6 +172,12 @@ class time_node : public time_traits {
 	// End of media update
 	void on_eom(qtime_type timestamp);
 	
+	// Pause of media update
+	void on_pom(qtime_type timestamp);
+	
+	// Resume of media update
+	void on_rom(qtime_type timestamp);
+	
 	// End of simple duration update
 	void on_eosd(qtime_type timestamp);
 	
@@ -174,6 +189,7 @@ class time_node : public time_traits {
 	void raise_begin_event_async(qtime_type timestamp);
 	void raise_repeat_event_async(qtime_type timestamp);
 	void raise_end_event_async(qtime_type timestamp, time_node *oproot);
+	void activate_async(qtime_type timestamp);
 	
 	void schedule_interval(qtime_type timestamp, const interval_type& i);
 	void cancel_interval(qtime_type timestamp);
@@ -247,6 +263,7 @@ class time_node : public time_traits {
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
 	bool is_area() const {return m_attrs.get_tag() == "area";}
+	bool is_animation() const;
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
 	bool needs_implicit_dur() const;
 	
@@ -388,6 +405,7 @@ class time_node : public time_traits {
 	// Mimimize or eliminate usage after timegraph construction 
 	const node *m_node;
 	
+	
 	// Attributes parser
 	time_attrs m_attrs;
 	
@@ -398,6 +416,9 @@ class time_node : public time_traits {
 	// Always false for time containers
 	bool m_discrete;
 			
+	// The timer assigned to this node by the timegraph builder
+	lib::timer *m_timer;
+	
 	// The lifetime state of this node.
 	// Summarizes the state variables below.
 	// For each state the analytic state variables below 
