@@ -128,9 +128,6 @@ ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, datasou
 	m_fmt(audio_format(0, 0, 0)),
 	m_event_processor(NULL),
 	m_src(src),
-	m_inbuf(NULL),
-	m_outbuf(NULL),
-//	m_buffer
 	m_blocked_full(false),
 	m_client_callback(NULL)
 {
@@ -198,22 +195,16 @@ ffmpeg_audio_datasource::readdone(int len)
 void 
 ffmpeg_audio_datasource::data_avail()
 {
-	int sz;
-	int outsize;
-	int decoded;
-//	const int max_block = INBUF_SIZE +  FF_INPUT_BUFFER_PADDING_SIZE;
-	
-
 	m_lock.enter();
+	int sz = m_src->size();
 	if (m_con) {
-	    sz = m_src->size();
-		m_inbuf = (uint8_t*) m_src->get_read_ptr();
+		uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail: %d bytes available", sz);
 		if(!m_buffer.buffer_full()){
-			outsize = 20*sz;
-			m_outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
-			if (m_outbuf) {
-				decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, sz);
+			int outsize = 20*sz;
+			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+			if (outbuf) {
+				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, sz);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 				m_buffer.pushdata(outsize);
@@ -331,8 +322,6 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 :	m_src(src),
 	m_context_set(false),
 	m_resample_context(NULL),
-	m_inbuf(NULL),
-	m_outbuf(NULL),
 	m_blocked_full(false),
 	m_event_processor(NULL),
 	m_client_callback(NULL),
@@ -354,8 +343,6 @@ ffmpeg_resample_datasource::~ffmpeg_resample_datasource()
 void
 ffmpeg_resample_datasource::data_avail()
 {
-	int resampled;
-	int sz;
 	m_lock.enter();
 	// We now have enough information to determine the resample parameters
 	if (!m_context_set) {
@@ -366,23 +353,21 @@ ffmpeg_resample_datasource::data_avail()
 		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
 		m_context_set = true;
 	}
+	int sz = m_src->size();
 	if (m_resample_context) {
 		// Convert all the input data we have available. We make an educated guess at the number of bytes
 		// this will produce on output.
-		sz = m_src->size();
 		int outsz = sz + 4;
 		if (m_in_fmt.channels && m_in_fmt.samplerate) 
 			outsz = (sz + 4) * (m_out_fmt.channels*m_out_fmt.samplerate) / (m_in_fmt.channels*m_in_fmt.samplerate);
 		// DBG
 		outsz = 20 * sz;
-		if (!sz && !m_src->end_of_file())
-			lib::logger::get_logger()->trace("HELLUP!!!!");
 		assert( sz || m_src->end_of_file());
 		if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
-		m_inbuf = (short int*) m_src->get_read_ptr();
-		m_outbuf = (short int*) m_buffer.get_write_ptr(outsz);
-		if (m_inbuf && m_outbuf) {
-			resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, sz / 2);
+		short int *inbuf = (short int*) m_src->get_read_ptr();
+		short int *outbuf = (short int*) m_buffer.get_write_ptr(outsz);
+		if (inbuf && outbuf) {
+			int resampled = audio_resample(m_resample_context, outbuf, inbuf, sz / 2);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", resampled, sz/2);
 			m_buffer.pushdata(resampled*2);
 			//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?

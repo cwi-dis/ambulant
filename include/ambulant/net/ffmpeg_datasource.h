@@ -129,8 +129,6 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
     lib::event_processor *m_event_processor;
   	datasource* m_src;
 
-	uint8_t* m_inbuf;
-	uint8_t* m_outbuf;
 	databuffer m_buffer;
 	bool m_blocked_full;
 		
@@ -170,8 +168,6 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     bool m_context_set;
     ReSampleContext *m_resample_context;
   
-    short int* m_inbuf;
-    short int* m_outbuf;
     databuffer m_buffer;
   	
     bool m_blocked_full;	

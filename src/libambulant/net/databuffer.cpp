@@ -89,8 +89,6 @@ databuffer::databuffer()
 bool
 databuffer::buffer_full()
 {
-	if (m_buffer_full) lib::logger::get_logger()->trace("databuffer::buffer_full(0x%x): true, max=%d size=%d", 
-		(void*)this, m_max_size, m_used);
 	return m_buffer_full;
 }
 
@@ -231,7 +229,5 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
-	/*AM_DBG*/lib::logger::get_logger()->trace("databuffer::readdone(0x%x, %d): now buffull=%d, max=%d used=%d",
-		(void *)this, sz, (int)m_buffer_full, m_max_size, m_used);
 	m_lock.leave();
 }
