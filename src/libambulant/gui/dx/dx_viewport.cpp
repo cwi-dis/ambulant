@@ -518,8 +518,8 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 	// We should compute the visible part of the area
 	// This requires traversing the hierachy of clipping rects.
 	const lib::screen_rect<int>& rc = r->get_rc();
-	RECT dst_rc = {rc.m_left, rc.m_top, rc.m_right, rc.m_bottom};
 	RECT src_rc = {0, 0, rc.width(), rc.height()};
+	RECT dst_rc = {rc.m_left, rc.m_top, rc.m_right, rc.m_bottom};
 	DWORD flags = DDBLT_WAIT;
 	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc, flags, NULL);
 	if (FAILED(hr)) {
@@ -566,12 +566,13 @@ void gui::dx::region::set_text(const char *p, int size) {
 	SetBkMode(hdc, TRANSPARENT);
 	COLORREF crTextColor = ::GetSysColor(COLOR_WINDOWTEXT);
 	::SetTextColor(hdc, crTextColor);
-	RECT dst_rc = {4, 4, m_rc.width(), m_rc.height()};
+	RECT dst_rc = {1, 1,  m_rc.width()-1,  m_rc.height()-1};
 	UINT uFormat = DT_CENTER;
 	int res = ::DrawText(hdc, p, size, &dst_rc, uFormat); 
 	if(res == 0)
 		win_report_last_error("DrawText()");
 	m_surface->ReleaseDC(hdc);
+
 }
 
 void gui::dx::region::set_text(const std::string& what) {

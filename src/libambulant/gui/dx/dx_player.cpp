@@ -195,6 +195,7 @@ gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
 }
 
 gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
+	m_logger->trace("dx_smil_player_impl::create_viewport(%d, %d)", w, h);
 	if(m_create_viewport_fn)
 		return (*m_create_viewport_fn)(w, h);
 	if(!m_viewport)

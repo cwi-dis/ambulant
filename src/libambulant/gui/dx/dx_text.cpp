@@ -82,10 +82,10 @@ void gui::dx::dx_text_renderer::start(double t) {
 	if(!m_node || !m_src) abort();
 	// Create a dx-region
 	viewport *v = get_viewport();
-	const lib::screen_rect<int>& rc = m_dest->get_rect();
-	lib::screen_rect<int> rcv(rc);
-	rcv.translate(m_dest->get_global_topleft());
-	m_region = v->create_region(rcv, rc);
+	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::point pt = m_dest->get_global_topleft();
+	rc.translate(pt);
+	m_region = v->create_region(rc, v->get_rc());
 	
 	// Prepare dx-region's pixel map
 	m_region->set_background("teal");
@@ -108,7 +108,6 @@ void gui::dx::dx_text_renderer::readdone() {
 	// Prepare dx-region's pixel map
 	net::databuffer& db = m_src->get_databuffer();
 	m_region->set_text((const char*) db.data(), int(db.size()));
-	
 	m_dest->need_redraw();
 	stopped_callback();
 }
