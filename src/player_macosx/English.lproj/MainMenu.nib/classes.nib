@@ -8,11 +8,11 @@
         }, 
         {
             ACTIONS = {
+                applyPreferences = id; 
                 loadFilter = id; 
                 playWelcome = id; 
                 showHomepage = id; 
                 showLogWindow = id; 
-                showPreferences = id; 
             }; 
             CLASS = MyAppDelegate; 
             LANGUAGE = ObjC; 

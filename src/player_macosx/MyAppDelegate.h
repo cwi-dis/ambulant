@@ -59,9 +59,7 @@
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;
 - (IBAction)showLogWindow:(id)sender;
-//- (IBAction)showPreferences:(id)sender;
-//- (void)preferencesChanged:(NSNotification*)notification;
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+- (void)applyPreferences:(id)sender;
 - (void)showMessage:(NSString *)message;
 - (void)setLogLevel: (int)level;
 @end

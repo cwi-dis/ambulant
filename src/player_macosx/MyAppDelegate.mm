@@ -142,6 +142,7 @@ initialize_logger()
 	}
 	// Ask for notification when preferences change.
 #if 0
+	// This doesn't work;-(
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self
 		selector:@selector(preferencesChanged:)
@@ -201,23 +202,19 @@ initialize_logger()
 	if (log) [log showWindow: sender];
 }
 
-#if 0
-- (IBAction)showPreferences:(id)sender
+- (IBAction)applyPreferences:(id)sender
 {
-	NSLog(@"Show Preferences Window");
+	NSLog(@"Apply Preferences Window");
+	ambulant::common::preferences::get_preferences()->load_preferences();
+	// Set log level
+	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+	ambulant::lib::logger::get_logger()->trace("Log level set to %s",
+		ambulant::lib::logger::get_level_name(level));
+	ambulant::lib::logger::get_logger()->set_level(level);
+	// And reflect in UI
+	LogController *log = [LogController sharedLogController];
+	if (log) [log setLogLevelUI: level];	
 }
-
-- (void)preferencesChanged:(NSNotification*)anObject
-{
-	NSLog(@"Preferences changed notification");
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
-	change:(NSDictionary *)change context:(void *)context
-{
-	NSLog(@"observeValueForKeyPath %@", keyPath);
-}
-#endif
 
 - (void)showMessage:(NSString *)message
 {
