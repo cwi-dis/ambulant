@@ -535,12 +535,14 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 		clear(rc, clr, m_surface);
 		return;
 	} else if(is_empty_region(hrgn)) {
-		// nothiing to paint
+		// nothing to paint
 		return;
 	}
 	IDirectDrawSurface* s1 = create_surface();
 	clear(rc, clr, s1);
+	OffsetRgn(hrgn, rc.left(), rc.top());
 	draw_to_bgd(s1, rc, hrgn);
+	release_surface(s1);
 	DeleteObject((HGDIOBJ)hrgn);
 }
 
@@ -677,12 +679,17 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
 		return;
 	} else if(is_empty_region(hrgn)) {
-		// nothiing to paint
+		// nothing to paint
+		viewport_logger->warn("%s: Region is empty for transition", 
+			tr->get_type_str().c_str());
+		DeleteObject((HGDIOBJ)hrgn);
 		return;
 	}
+	
 	IDirectDrawSurface* surf = create_surface();
-	copy_bgd_to(surf, dst_rc);
+	if(!tr->is_outtrans()) copy_bgd_to(surf, dst_rc);
 	draw(src, src_rc, dst_rc, keysrc, surf);
+	OffsetRgn(hrgn, dst_rc.left(), dst_rc.top());
 	draw_to_bgd(surf, dst_rc, hrgn);
 	release_surface(surf);
 	DeleteObject((HGDIOBJ)hrgn);
