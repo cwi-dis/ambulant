@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=Ambulant Player 1.0
+  Value=Ambulant\Ambulant Player 1.0
   Flags=10000000
 end
 item: Remark
@@ -1950,7 +1950,8 @@ item: Edit Registry
   end
   item: Key
     Key=smildoc\shell\open\command
-    New Value="%MAINDIR%\AmbulantPlayer.exe"  "%1" 
+    New Value="%MAINDIR%\AmbulantPlayer.exe"  "%%1" 
+    New Value=
   end
 end
 item: Wizard Block
