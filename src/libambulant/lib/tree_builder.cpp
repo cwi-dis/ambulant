@@ -53,6 +53,7 @@
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/memfile.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>
@@ -87,35 +88,46 @@ lib::tree_builder::detach() {
 bool 
 lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!m_xmlparser) return false;
-
 	if(!filename || !*filename) return false;
 
-#ifndef AMBULANT_NO_IOSTREAMS
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
-
 	const size_t buf_size = 1024;
 	char *buf = new char[buf_size];
 	m_well_formed = true;
-	while(!ifs.eof() && ifs.good())
-		{
+	while(!ifs.eof() && ifs.good()) {
 		ifs.read(buf, buf_size);
-		if(!m_xmlparser->parse(buf, ifs.gcount(), ifs.eof()))
-			{
+		if(!m_xmlparser->parse(buf, ifs.gcount(), ifs.eof())){
 			m_well_formed = false;
 			break;
-			}
 		}
+	}
 	delete[] buf;
 	ifs.close();
-#endif
-
 	return m_well_formed;
+#elif defined(AMBULANT_PLATFORM_WIN32)
+	memfile mf(filename);
+	if(!mf.read()) {
+		lib::logger::get_logger()->show("Failed to read file: %s", filename);
+		return false;
+	}
+	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);
+	return m_well_formed;
+#else
+	return false;
+#endif
 }
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
+	return m_well_formed;
+}
+
+bool 
+lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
+	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 	return m_well_formed;
 }
 
