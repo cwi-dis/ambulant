@@ -54,11 +54,10 @@
 #include "ambulant/gui/SDL/sdl_audio.h"
 #include <stdlib.h>
 
-namespace ambulant {
+using namespace ambulant;
+using namespace gui::sdl;
 
-using namespace lib;
-
-typedef no_arg_callback<gui::sdl::sdl_active_audio_renderer> readdone_callback;
+typedef lib::no_arg_callback<sdl_active_audio_renderer> readdone_callback;
 	
 extern "C" {
 struct channel {
@@ -192,8 +191,8 @@ int free_channel()
 
 void channel_done(int channel)
 {
-        gui::sdl::sdl_active_audio_renderer* object;
-        object = (gui::sdl::sdl_active_audio_renderer*) get_ptr(channel);
+        sdl_active_audio_renderer* object;
+        object = (sdl_active_audio_renderer*) get_ptr(channel);
 		if (object == NULL) {
 			lib::logger::get_logger()->error("sdl_audio:channel_done(%d): get_ptr returned NULL, no object!", channel);
 			return;
@@ -204,19 +203,19 @@ void channel_done(int channel)
 
 } //end extern "C"
 	
-bool gui::sdl::sdl_active_audio_renderer::m_sdl_init = false;
-int	 gui::sdl::sdl_active_audio_renderer::m_mixed_channels = 0;
+bool sdl_active_audio_renderer::m_sdl_init = false;
+int	 sdl_active_audio_renderer::m_mixed_channels = 0;
 
 
 
 	
-gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
-	active_playable_events *context,
-	active_playable_events::cookie_type cookie,
-	const node *node,
-	event_processor *const evp,
+sdl_active_audio_renderer::sdl_active_audio_renderer(
+	common::active_playable_events *context,
+	common::active_playable_events::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *const evp,
 	net::passive_datasource *src)
-:	active_renderer(context, cookie, node, evp, src, NULL),
+:	common::active_renderer(context, cookie, node, evp, src, NULL),
     m_rate(44100),
     m_bits(16),
     m_channels(1),
@@ -245,13 +244,13 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	}
 }
 
-gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
+sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
 	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::~sdl_active_audio_renderer() this=(x%x)",  this);		
 }
 
 int
-gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
+sdl_active_audio_renderer::init(int rate, int bits, int channels)
 {
     int err = 0;
 	if (m_sdl_init) return 0; // XXX try by Jack
@@ -283,7 +282,7 @@ gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
 }
 
 int
-gui::sdl::sdl_active_audio_renderer::inc_channels()
+sdl_active_audio_renderer::inc_channels()
 {
 	m_mixed_channels += 16;
 	int err;
@@ -296,7 +295,7 @@ gui::sdl::sdl_active_audio_renderer::inc_channels()
 
 
 void
-gui::sdl::sdl_active_audio_renderer::playdone()
+sdl_active_audio_renderer::playdone()
 {
 	m_audio_src->readdone(m_audio_chunck.alen);
 	assert(m_channel_used >= 0);
@@ -306,7 +305,7 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
 		stopped_callback();
 	} else {
-		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	}
@@ -315,7 +314,7 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 
 
 void
-gui::sdl::sdl_active_audio_renderer::readdone()
+sdl_active_audio_renderer::readdone()
 {
 	int result;
 	assert(m_audio_src);
@@ -386,7 +385,7 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_paused()
+sdl_active_audio_renderer::is_paused()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_paused(): channel not in use");
@@ -400,7 +399,7 @@ gui::sdl::sdl_active_audio_renderer::is_paused()
 }
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_stopped()
+sdl_active_audio_renderer::is_stopped()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_stopped(): channel not in use");
@@ -414,7 +413,7 @@ gui::sdl::sdl_active_audio_renderer::is_stopped()
 }
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_playing()
+sdl_active_audio_renderer::is_playing()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_playing(): channel not in use");
@@ -429,7 +428,7 @@ gui::sdl::sdl_active_audio_renderer::is_playing()
 
 
 void
-gui::sdl::sdl_active_audio_renderer::stop()
+sdl_active_audio_renderer::stop()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop(): channel not in use");
@@ -439,7 +438,7 @@ gui::sdl::sdl_active_audio_renderer::stop()
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::pause()
+sdl_active_audio_renderer::pause()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::pause(): channel not in use");
@@ -449,7 +448,7 @@ gui::sdl::sdl_active_audio_renderer::pause()
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::resume()
+sdl_active_audio_renderer::resume()
 {
 	if (m_channel_used < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer::resume(): channel not in use");
@@ -460,7 +459,7 @@ gui::sdl::sdl_active_audio_renderer::resume()
 
 
 void
-gui::sdl::sdl_active_audio_renderer::start(double where)
+sdl_active_audio_renderer::start(double where)
 {
 
     if (!m_node) abort();
@@ -471,7 +470,7 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
 		init(m_rate, m_bits, m_channels);
-		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	} else {
@@ -479,6 +478,3 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		stopped_callback();
 	}
 }
-
-
-} // end namespace ambulant

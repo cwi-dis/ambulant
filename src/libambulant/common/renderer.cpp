@@ -59,13 +59,14 @@
 #endif
 
 using namespace ambulant;
+using namespace common;
 
-typedef lib::no_arg_callback<lib::active_renderer> readdone_callback;
+typedef lib::no_arg_callback<active_renderer> readdone_callback;
 
-lib::active_renderer::active_renderer(
+active_renderer::active_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
-	const node *node,
+	const lib::node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
@@ -76,7 +77,7 @@ lib::active_renderer::active_renderer(
 }
 
 void
-lib::active_renderer::start(double t)
+active_renderer::start(double t)
 {
 #ifndef AMBULANT_NO_ABORT
 	if (!m_node) abort();
@@ -89,7 +90,7 @@ lib::active_renderer::start(double t)
 #endif
 	m_dest->show(this);
 	if (m_src) {
-		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &active_renderer::readdone);
 		m_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
@@ -98,7 +99,7 @@ lib::active_renderer::start(double t)
 }
 
 void
-lib::active_renderer::readdone()
+active_renderer::readdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_dest->need_redraw();
@@ -106,7 +107,7 @@ lib::active_renderer::readdone()
 }
 
 void
-lib::active_renderer::stop()
+active_renderer::stop()
 {
 	// XXXX Need to handle case that no data (or not all data) has come in yet
 	m_dest->renderer_done();
@@ -114,18 +115,18 @@ lib::active_renderer::stop()
 }
 
 void
-lib::active_renderer::wantclicks(bool want)
+active_renderer::wantclicks(bool want)
 {
 	m_dest->need_events(want);
 }
 
-lib::active_final_renderer::~active_final_renderer()
+active_final_renderer::~active_final_renderer()
 {
 	if (m_data) free(m_data);
 }
 
 void
-lib::active_final_renderer::readdone()
+active_final_renderer::readdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_data_size = m_src->size();
@@ -140,12 +141,12 @@ lib::active_final_renderer::readdone()
 	stopped_callback();
 }
 
-lib::global_renderer_factory::global_renderer_factory()
+global_renderer_factory::global_renderer_factory()
 :   m_default_factory(new gui::none::none_renderer_factory())
 {
 }
 
-lib::global_renderer_factory::~global_renderer_factory()
+global_renderer_factory::~global_renderer_factory()
 {
     // XXXX Should I delete the factories in m_factories? I think
     // so, but I'm not sure...
@@ -153,22 +154,22 @@ lib::global_renderer_factory::~global_renderer_factory()
 }
     
 void
-lib::global_renderer_factory::add_factory(renderer_factory *rf)
+global_renderer_factory::add_factory(renderer_factory *rf)
 {
     m_factories.push_back(rf);
 }
     
-lib::active_basic_renderer *
-lib::global_renderer_factory::new_renderer(
+active_basic_renderer *
+global_renderer_factory::new_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
-	const node *node,
+	const lib::node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
 {
     std::vector<renderer_factory *>::iterator i;
-    lib::active_basic_renderer *rv;
+    active_basic_renderer *rv;
     
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
         rv = (*i)->new_renderer(context, cookie, node, evp, src, dest);

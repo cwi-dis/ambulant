@@ -68,18 +68,15 @@ namespace ambulant {
 
 namespace mms {
 
-using namespace lib;
-using namespace common;
+class lib::document;
 
-class document;
-
-class mms_player : public abstract_player, public ref_counted_obj {
+class mms_player : public common::abstract_player, public lib::ref_counted_obj {
   public:
-	mms_player(document *doc, window_factory *wf, renderer_factory *rf);
+	mms_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf);
 	~mms_player();
 	
-	virtual timer* get_timer() { return m_event_processor->get_timer(); }
-	virtual event_processor* get_evp() { return m_event_processor; }
+	virtual lib::timer* get_timer() { return m_event_processor->get_timer(); }
+	virtual lib::event_processor* get_evp() { return m_event_processor; }
 	void start();
 	void stop();
 	void set_speed(double speed);
@@ -96,16 +93,16 @@ class mms_player : public abstract_player, public ref_counted_obj {
 	
   	passive_timeline *build_timeline();
 	
-	document *m_doc;
-	node *m_tree;
-	timer *m_timer;
+	lib::document *m_doc;
+	lib::node *m_tree;
+	lib::timer *m_timer;
   	double m_pause_speed;
-	event_processor *m_event_processor;
+	lib::event_processor *m_event_processor;
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
-	window_factory *m_window_factory;
-	renderer_factory *m_renderer_factory;
+	common::window_factory *m_window_factory;
+	common::renderer_factory *m_renderer_factory;
 };
 
 } // namespace mms

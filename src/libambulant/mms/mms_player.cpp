@@ -61,29 +61,30 @@
 #endif
 
 using namespace ambulant;
+using namespace mms;
 
-lib::mms_player::mms_player(lib::document *doc, window_factory *wf, renderer_factory *rf)
+mms_player::mms_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf)
 :	m_doc(doc),
 	m_tree(doc->get_root()),
-	m_timer(new timer(realtime_timer_factory(), 0.0)),
-	m_event_processor(event_processor_factory(m_timer)),
+	m_timer(new lib::timer(lib::realtime_timer_factory(), 0.0)),
+	m_event_processor(lib::event_processor_factory(m_timer)),
 	m_window_factory(wf),
 	m_renderer_factory(rf)
 {
 }
 
-lib::mms_player::~mms_player()
+mms_player::~mms_player()
 {
 	delete m_event_processor;
 	delete m_timer;
 }
 
 void
-lib::mms_player::start()
+mms_player::start()
 {
 	m_done = false;
 	passive_timeline *ptl = build_timeline();
-	layout_manager *layoutmgr = new mms_layout_manager(m_window_factory, m_doc);
+	common::layout_manager *layoutmgr = new mms_layout_manager(m_window_factory, m_doc);
 	if (ptl) {
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: passive_timeline:" << std::endl;
@@ -96,8 +97,8 @@ lib::mms_player::start()
 #endif
 		m_active_timelines.push_back(atl);
 	
-		typedef no_arg_callback<mms_player> callback;
-		event *ev = new callback(this, 
+		typedef lib::no_arg_callback<mms_player> callback;
+		lib::event *ev = new callback(this, 
 			&mms_player::timeline_done_callback);
 	
 		// run it
@@ -107,7 +108,7 @@ lib::mms_player::start()
 	}
 }
 void
-lib::mms_player::stop()
+mms_player::stop()
 {
 	std::vector<active_timeline *>::iterator it;
 	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++) {
@@ -117,7 +118,7 @@ lib::mms_player::stop()
 }
 
 void 
-lib::mms_player::pause() {
+mms_player::pause() {
 	if(get_speed() == 0.0) return;
 	std::vector<active_timeline *>::iterator it;
 	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++)
@@ -127,7 +128,7 @@ lib::mms_player::pause() {
 }
 
 void 
-lib::mms_player::resume() {
+mms_player::resume() {
 	if(get_speed() > 0.0) return;
 	std::vector<active_timeline *>::iterator it;
 	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++)
@@ -136,19 +137,19 @@ lib::mms_player::resume() {
 }
 
 void
-lib::mms_player::set_speed(double speed)
+mms_player::set_speed(double speed)
 {
 	m_timer->set_speed(speed);
 }
 
 double
-lib::mms_player::get_speed() const
+mms_player::get_speed() const
 {
 	return m_timer->get_realtime_speed();
 }
 
-lib::passive_timeline *
-lib::mms_player::build_timeline()
+passive_timeline *
+mms_player::build_timeline()
 {
 	lib::node *playroot = m_tree->get_first_child("body");
 	if (playroot == NULL)

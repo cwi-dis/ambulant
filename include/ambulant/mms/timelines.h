@@ -70,9 +70,6 @@ namespace ambulant {
 
 namespace mms {
 
-using namespace lib;
-using namespace common;
-
 // Forward delcarations
 
 class active_timeline;
@@ -117,7 +114,7 @@ enum timeline_event_class {
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::timeline_event_class n) {
+inline std::ostream& operator<<(std::ostream& os, const timeline_event_class n) {
 	static char *timeline_event_class_names[] = {
 		"START_PREROLL_TIMELINE",
 		"START_PLAY_TIMELINE",
@@ -186,7 +183,7 @@ class active_action {
 typedef std::vector<detail::active_action*> active_action_vector;
 
 #ifndef AMBULANT_NO_IOSTREAMS
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::detail::active_action& n) {
+inline std::ostream& operator<<(std::ostream& os, const detail::active_action& n) {
 	n.to_stream(os);
 	return os;
 }
@@ -204,7 +201,7 @@ class timeline_event {
   public:
     timeline_event(timeline_event_class what, detail::event_uid direct_object)
     :	m_what(what), m_direct_object(direct_object) {};
-    timeline_event(timeline_event_class what, const node *direct_object)
+    timeline_event(timeline_event_class what, const lib::node *direct_object)
     :	m_what(what), m_direct_object(static_cast<detail::event_uid>(direct_object)) {};
     timeline_event(timeline_event_class what, const timeline_delay *direct_object)
     :	m_what(what), m_direct_object(static_cast<detail::event_uid>(direct_object)) {};
@@ -220,7 +217,7 @@ class timeline_event {
   	}
 
 #ifndef AMBULANT_NO_IOSTREAMS
-	friend inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::detail::timeline_event& n) {
+	friend inline std::ostream& operator<<(std::ostream& os, const detail::timeline_event& n) {
 		os << n.m_what << "(" << static_cast<const void *>(n.m_direct_object) << ")";
 		return os;
 	}
@@ -237,7 +234,7 @@ class timeline_event {
 
 class timeline_rhs_event : public timeline_event {
   public:
-    timeline_rhs_event(timeline_event_class what, const node *direct_object)
+    timeline_rhs_event(timeline_event_class what, const lib::node *direct_object)
     :	timeline_event(what, direct_object),
     	m_node(direct_object),
     	m_delay(NULL) {};
@@ -251,7 +248,7 @@ class timeline_rhs_event : public timeline_event {
 		int node_index);
 
   private:
-  	const node *m_node;
+  	const lib::node *m_node;
   	const timeline_delay *m_delay;
 };
 
@@ -297,7 +294,7 @@ class active_dependency {
   		m_last(last) {}
 
 #ifndef AMBULANT_NO_IOSTREAMS
-	friend inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::detail::active_dependency& n) {
+	friend inline std::ostream& operator<<(std::ostream& os, const detail::active_dependency& n) {
 		os << "active_dependency(count=" << n.m_depcount << 
 			", first=" << n.m_first <<
 			", last=" << n.m_last << ")";
@@ -324,11 +321,11 @@ class timeline_node_transition {
 	
 	// Methods for building the transitions
 	void add_lhs(timeline_event_class what);
-	void add_lhs(timeline_event_class what, const node *direct_object);
+	void add_lhs(timeline_event_class what, const lib::node *direct_object);
 	void add_lhs(timeline_event_class what, const timeline_delay *direct_object);
 	
 	void add_rhs(timeline_event_class what);
-	void add_rhs(timeline_event_class what, const node *direct_object);
+	void add_rhs(timeline_event_class what, const lib::node *direct_object);
 	void add_rhs(timeline_event_class what, const timeline_delay *direct_object);
 
 	void build_index(detail::dependency_index_generator& indexer);
@@ -349,7 +346,7 @@ class timeline_node_transition {
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS	
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::timeline_node_transition& n) {
+inline std::ostream& operator<<(std::ostream& os, const timeline_node_transition& n) {
 	os << "timeline_node_transition(" << (const void *)&n << ")";
 	return os;
 }
@@ -364,10 +361,10 @@ class timeline_node {
   	friend class active_timeline;
 
   	// XXXX Note: I think node, datasource and region need to be refcounted.
-	timeline_node(const node *the_node)
+	timeline_node(const lib::node *the_node)
 	:	m_node(the_node),
 		m_datasource(NULL) {};
-	timeline_node(const node *the_node, net::passive_datasource *the_datasource)
+	timeline_node(const lib::node *the_node, net::passive_datasource *the_datasource)
 	:	m_node(the_node),
 		m_datasource(the_datasource) {};
 
@@ -385,13 +382,13 @@ class timeline_node {
 	void dump(std::ostream& os);
 #endif
   private:
-  	const node *m_node;
+  	const lib::node *m_node;
   	net::passive_datasource *m_datasource;
   	std::vector<timeline_node_transition*> m_transitions;
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS	
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::timeline_node& n) {
+inline std::ostream& operator<<(std::ostream& os, const timeline_node& n) {
 	os << "timeline_node(" << (const void *)&n << ")";
 	return os;
 }
@@ -409,25 +406,25 @@ class passive_timeline : public lib::ref_counted_obj {
   	friend class active_timeline;
   	
   	// Methods for initialization and teardown
-	passive_timeline(node *rootnode);
+	passive_timeline(lib::node *rootnode);
 	~passive_timeline();
 
 	// Methods used while building the passive timeline
-	timeline_node *add_node(const node *the_node);
-	timeline_node *add_node(const node *the_node, net::passive_datasource *the_datasource);
+	timeline_node *add_node(const lib::node *the_node);
+	timeline_node *add_node(const lib::node *the_node, net::passive_datasource *the_datasource);
 	timeline_delay *add_delay(int timeout);
 	
 	void build();
 	inline bool is_built() { return m_is_built; }
 	
-	active_timeline *activate(event_processor *const evp, renderer_factory *rf, layout_manager *lm);
+	active_timeline *activate(lib::event_processor *const evp, common::renderer_factory *rf, common::layout_manager *lm);
 
 #ifndef AMBULANT_NO_IOSTREAMS	
 	void dump(std::ostream& os);
 #endif
 	
   private:
-  	node *m_rootnode;
+  	lib::node *m_rootnode;
     bool m_is_built;
     detail::timeline_node_vector m_timeline_nodes;
     detail::delay_vector m_delays;
@@ -438,7 +435,7 @@ class passive_timeline : public lib::ref_counted_obj {
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS	
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::passive_timeline& n) {
+inline std::ostream& operator<<(std::ostream& os, const passive_timeline& n) {
 	os << "passive_timeline(" << (const void *)&n << ")";
 	return os;
 }
@@ -448,7 +445,7 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::passive_t
 // all of its immutable data with the corresponding passive_timeline,
 // so creating an active_timeline should be relatively cheap.
 
-class active_timeline : public active_playable_events, public ref_counted_obj {
+class active_timeline : public common::active_playable_events, public lib::ref_counted_obj {
   public:
 	friend class detail::active_ext_action;
 	friend class detail::active_int_action;
@@ -456,20 +453,20 @@ class active_timeline : public active_playable_events, public ref_counted_obj {
 	friend class detail::active_startplay_action;
 	friend class detail::active_stopplay_action;
   	
-	active_timeline(event_processor *const evp,
+	active_timeline(lib::event_processor *const evp,
 		passive_timeline *const source, 
 		const detail::active_dependency_vector& dependencies,
 		const detail::active_action_vector& actions,
 		int nregion,
-		renderer_factory *rf,
-		layout_manager *lm);
+		common::renderer_factory *rf,
+		common::layout_manager *lm);
 	
 	~active_timeline() {
 		m_source->release();
 	}
 	
 	void preroll();
-	void start(event *playdone);
+	void start(lib::event *playdone);
 	void stop();
 	void pause();
 	void resume();
@@ -491,18 +488,18 @@ class active_timeline : public active_playable_events, public ref_counted_obj {
   	void ext_play(int node_index);
   	void ext_stop(int node_index);
   	
-  	event_processor * const m_event_processor;
-  	renderer_factory *m_renderer_factory;
+  	lib::event_processor * const m_event_processor;
+  	common::renderer_factory *m_renderer_factory;
     passive_timeline * const m_source;
-	layout_manager *m_layout_manager;
+	common::layout_manager *m_layout_manager;
 	detail::active_dependency_vector m_dependencies;
 	const detail::active_action_vector& m_actions;
-	std::vector<active_basic_renderer *> m_renderers;
-	event *m_playdone;
+	std::vector<common::active_basic_renderer *> m_renderers;
+	lib::event *m_playdone;
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::active_timeline& n) {
+inline std::ostream& operator<<(std::ostream& os, const active_timeline& n) {
 	os << "active_timeline(" << (const void *)&n << ")";
 	return os;
 }

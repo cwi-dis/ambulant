@@ -64,36 +64,33 @@ namespace ambulant {
 
 namespace mms {
 
-using namespace lib;
-using namespace common;
-
 class document;
 
-class mms_layout_manager : public layout_manager {
+class mms_layout_manager : public common::layout_manager {
   public:
-	mms_layout_manager(window_factory *wf, const document *doc);
+	mms_layout_manager(common::window_factory *wf, const lib::document *doc);
 	~mms_layout_manager();
 	
-	abstract_rendering_surface *get_rendering_surface(const node *node);
+	common::abstract_rendering_surface *get_rendering_surface(const lib::node *node);
   private:
-  	passive_region *m_audio_rgn, *m_text_rgn, *m_image_rgn;
+  	common::passive_region *m_audio_rgn, *m_text_rgn, *m_image_rgn;
 };
 
 class timeline_builder {
   public:
 
-	timeline_builder(window_factory *wf, node& root);
+	timeline_builder(common::window_factory *wf, lib::node& root);
 	~timeline_builder();
 	
 	passive_timeline *build();
 	
   private:
-  	void build_node(const node& n);
-  	void build_leaf(const node& n);
-  	void build_seq(const node& n);
-  	void build_par(const node& n);
+  	void build_node(const lib::node& n);
+  	void build_leaf(const lib::node& n);
+  	void build_seq(const lib::node& n);
+  	void build_par(const lib::node& n);
   	
-  	node& m_root;
+  	lib::node& m_root;
   	passive_timeline *m_timeline;
 };
 

@@ -65,19 +65,16 @@
 
  
 namespace ambulant {
-using namespace lib;
-    namespace gui {
-        namespace sdl {
+namespace gui {
+namespace sdl {	  
 
-	  
-
-class sdl_active_audio_renderer : public active_renderer, public timer_events {
+class sdl_active_audio_renderer : public common::active_renderer, public lib::timer_events {
   public:
     sdl_active_audio_renderer(
-    active_playable_events *context,
-    active_playable_events::cookie_type cookie,
-    const node *node,
-    event_processor *const evp,
+    common::active_playable_events *context,
+    common::active_playable_events::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *const evp,
     net::passive_datasource *src);
 
   	~sdl_active_audio_renderer();
@@ -95,9 +92,9 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
 	void freeze() {};
     void speed_changed() {};
     void readdone();
-    void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
+    void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
 	void wantclicks(bool want) {};
-    void user_event(const point &where) {};
+    void user_event(const lib::point &where) {};
 	void playdone();
 		  
   private:

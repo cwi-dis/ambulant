@@ -55,14 +55,12 @@
 
 #include <string>
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 
 namespace common {
 
-using namespace lib;
-
-class node;
 class abstract_smil_region_info;
 class abstract_rendering_source; // forward
 class abstract_rendering_surface; // forward
@@ -79,13 +77,13 @@ class abstract_mouse_region {
 	
         virtual void clear() = 0;
 	virtual bool is_empty() const = 0;
-	virtual bool contains(const point &p) const = 0;
-	virtual abstract_mouse_region& operator =(const screen_rect<int> &rect) = 0;    /* assignment */
+	virtual bool contains(const lib::point &p) const = 0;
+	virtual abstract_mouse_region& operator =(const lib::screen_rect<int> &rect) = 0;    /* assignment */
 	virtual abstract_mouse_region& operator &=(const abstract_mouse_region &r) = 0; /* intersection */
-	virtual abstract_mouse_region& operator &=(const screen_rect<int> &rect) = 0;
+	virtual abstract_mouse_region& operator &=(const lib::screen_rect<int> &rect) = 0;
 	virtual abstract_mouse_region& operator |=(const abstract_mouse_region &r) = 0; /* union */
 	virtual abstract_mouse_region& operator -=(const abstract_mouse_region &r) = 0; /* difference */
-	virtual abstract_mouse_region& operator +=(const point &tr) = 0; /* translation */
+	virtual abstract_mouse_region& operator +=(const lib::point &tr) = 0; /* translation */
         
 	virtual abstract_mouse_region* operator &(const abstract_mouse_region &r) const {
             abstract_mouse_region *rv = this->clone();
@@ -113,7 +111,7 @@ class abstract_window {
 	:   m_region(region) {};
   public:
 	virtual ~abstract_window() { m_region = NULL; }
-	virtual void need_redraw(const screen_rect<int> &r) = 0;
+	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void mouse_region_changed() = 0;
   protected:
 	abstract_rendering_source *m_region;
@@ -126,7 +124,7 @@ class abstract_bg_rendering_source {
   public:
 	virtual ~abstract_bg_rendering_source() {};
 	
-	virtual void drawbackground(const abstract_smil_region_info *src, const screen_rect<int> &dirty, 
+	virtual void drawbackground(const abstract_smil_region_info *src, const lib::screen_rect<int> &dirty, 
 		abstract_rendering_surface *dst, abstract_window *window) = 0;
 };
 
@@ -136,7 +134,7 @@ class abstract_bg_rendering_source {
 class window_factory {
   public:
 	virtual ~window_factory() {}
-	virtual abstract_window *new_window(const std::string &name, size bounds, abstract_rendering_source *region) = 0;
+	virtual abstract_window *new_window(const std::string &name, lib::size bounds, abstract_rendering_source *region) = 0;
 	virtual abstract_mouse_region *new_mouse_region() = 0;
 	virtual abstract_bg_rendering_source *new_background_renderer() = 0;
 };
@@ -150,8 +148,8 @@ class abstract_rendering_source {
   public:
 	virtual ~abstract_rendering_source() {};
 	
-	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const point &where) = 0;
+	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
+	virtual void user_event(const lib::point &where) = 0;
 	// XXXX This is a hack.
 	virtual const abstract_mouse_region& get_mouse_region() const { abort(); };
 };
@@ -166,16 +164,16 @@ class abstract_rendering_surface {
 	virtual void show(abstract_rendering_source *renderer) = 0;
 	virtual void renderer_done() = 0;
 
-	virtual void need_redraw(const screen_rect<int> &r) = 0;
+	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void need_redraw() = 0;
 	virtual void need_events(bool want) = 0;
 
-	virtual const screen_rect<int>& get_rect() const = 0;
-	virtual const point &get_global_topleft() const = 0;
+	virtual const lib::screen_rect<int>& get_rect() const = 0;
+	virtual const lib::point &get_global_topleft() const = 0;
 	
 	// For a given image size, return portion of source image to display, and where
 	// to display it. The renderer must do the scaling.
-	virtual screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const = 0;
+	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const = 0;
 	
 	// Get object holding SMIL region parameters for querying
 	virtual const abstract_smil_region_info *get_info() const = 0;
@@ -185,7 +183,7 @@ class layout_manager {
   public:
 	virtual ~layout_manager() {};
 	
-	virtual abstract_rendering_surface *get_rendering_surface(const node *node) = 0;
+	virtual abstract_rendering_surface *get_rendering_surface(const lib::node *node) = 0;
 };
 	
 } // namespace common
