@@ -202,13 +202,13 @@ cocoa_transition_blitclass_rectlist::update()
 
 // Helper function: convert a point list to an NSBezierPath
 static NSBezierPath *
-polygon2path(std::vector<lib::point> polygon)
+polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 {
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	std::vector<lib::point>::iterator newpoint;
 	bool first = true;
 	for( newpoint=polygon.begin(); newpoint != polygon.end(); newpoint++) {
-		lib::point p = *newpoint;
+		lib::point p = *newpoint + origin;
 		AM_DBG lib::logger::get_logger()->debug("polygon2path: point=%d, %d", p.x, p.y);
 		NSPoint pc = NSMakePoint(p.x, p.y);
 		if (first) {
@@ -272,11 +272,12 @@ cocoa_transition_blitclass_poly::update()
 
 	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
-	NSBezierPath *path = polygon2path(m_newpolygon);
+	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
+	NSBezierPath *path = polygon2path(dst_global_topleft, m_newpolygon);
 
 	// Then we composite it onto the screen
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
+	dstrect_whole.translate(dst_global_topleft);
 	composite_path(view, dstrect_whole, path, m_outtrans);
 }
 
@@ -288,10 +289,11 @@ cocoa_transition_blitclass_polylist::update()
 
 	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
+	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
 	NSBezierPath *path = NULL;
 	std::vector< std::vector<lib::point> >::iterator partpolygon;
 	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-		NSBezierPath *part_path = polygon2path(*partpolygon);
+		NSBezierPath *part_path = polygon2path(dst_global_topleft, *partpolygon);
 		if (path == NULL)
 			path = part_path;
 		else
@@ -300,7 +302,7 @@ cocoa_transition_blitclass_polylist::update()
 
 	// Then we composite it onto the screen
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
+	dstrect_whole.translate(dst_global_topleft);
 	composite_path(view, dstrect_whole, path, m_outtrans);
 }
 
