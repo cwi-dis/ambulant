@@ -153,17 +153,19 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 136, 55
+IDD_ABOUTBOX DIALOGEX 0, 0, 136, 71
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE 0x80000000L
 CAPTION "About AmbulantPlayer"
 FONT 8, "System"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    LTEXT           "Ambulant version 0.5",IDC_AM_VERSION,37,17,78,8,
+    LTEXT           "Ambulant Player v.1.0",IDC_AM_VERSION,31,17,78,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,7,34,117,
+    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,7,47,115,
                     8
+    CTEXT           "www.ambulantPlayer.org",IDC_STATIC,30,28,82,8
+    LTEXT           "License: modified GPL",IDC_STATIC,7,56,70,8
 END
 
 IDD_SELECT DIALOG DISCARDABLE  0, 0, 142, 154
@@ -236,7 +238,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 128
         TOPMARGIN, 7
-        BOTTOMMARGIN, 48
+        BOTTOMMARGIN, 64
     END
 
     IDD_SELECT, DIALOG
