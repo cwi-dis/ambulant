@@ -125,7 +125,7 @@ AC_ARG_WITH(arts,
        *)   AC_MSG_ERROR(--with-arts takes no argument - it uses artsc-config)
                 ;;
      esac],[
-     if artsc-config; then
+     if artsc-config > /dev/null  2>&1; then
      	arts=true
      else
      	arts=false
