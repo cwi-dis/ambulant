@@ -108,13 +108,20 @@ bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
 	}
 #endif
 #ifdef WITH_WINDOWS_PLUGINS
-	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
+	lib::logger::get_logger()->trace("plugin_engine: using Windows plugin loader");
 #endif
 	if (use_plugins) {
+		int count = 0;
 		std::vector< std::string >::iterator i;
-    	for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
-        	load_plugins(*i);
-    	}
+		for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
+			load_plugins(*i);
+			count++;
+		}
+		if (count == 0) {
+			lib::logger::get_logger()->trace("plugin_engine: no plugin directories configured");
+		}
+	} else {
+		lib::logger::get_logger()->trace("plugin_engine: plugins disabled by user preference");
 	}
 #else
 	lib::logger::get_logger()->trace("plugin_engine: no plugin loader configured");
