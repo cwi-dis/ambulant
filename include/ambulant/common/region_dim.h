@@ -239,10 +239,30 @@ class region_dim {
 		return *this;
 	}
 	
+	region_dim& operator*=(int n) {
+		if(absolute())
+			m_holder.int_val *= n;
+		else if(relative())
+ 			m_holder.dbl_val *= n;
+		return *this;
+	}
+	
+	region_dim& operator/=(int n) {
+		if(absolute())
+			m_holder.int_val /= n;
+		else if(relative())
+ 			m_holder.dbl_val /= n;
+		return *this;
+	}
+	
 	region_dim operator+(const region_dim& rhs) const { region_dim t(*this); t+=rhs; return t;}
 	
 	region_dim operator-(const region_dim& rhs) const { region_dim t(*this); t-=rhs; return t;}
 		
+	region_dim operator*(int n) const { region_dim t(*this); t*=n; return t;}
+	
+	region_dim operator/(int n) const { region_dim t(*this); t/=n; return t;}
+	
 	// define comparisons
 	bool operator<(const region_dim& rhs) const {
 		if(isauto()) return true;
@@ -360,7 +380,14 @@ struct regpoint_spec {
  
 } // namespace ambulant
 
-
+inline std::string repr(const ambulant::common::region_dim& rd) {
+	char sz[16] = "<auto>";
+	if(rd.relative())
+		sprintf(sz, "%d%c", int(floor(0.5+rd.get_as_dbl() * 100.0)), '%');
+	else if(rd.absolute())
+		sprintf(sz, "%d", rd.get_as_int());
+	return sz;
+}
 
 ///////////////////////////////
 #ifndef AMBULANT_NO_IOSTREAMS_HEADERS
