@@ -1072,6 +1072,11 @@ void
 ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
+	if (m_src == NULL) {
+		m_lock.leave();
+		AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::stop(0x%x): m_src already NULL", (void*)this);
+		return;
+	}
 	int sz = m_src->size();
 
 	if (m_con) {
