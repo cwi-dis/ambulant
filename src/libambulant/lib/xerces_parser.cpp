@@ -167,7 +167,6 @@ xerces_sax_parser::startElement(const XMLCh* const name,
 	m_content_handler->start_element(qname, qattrs);
 	XMLString::release(&cname);
 }
-   
 
 void
 xerces_sax_parser::endElement(const XMLCh* const name) {
@@ -178,6 +177,32 @@ xerces_sax_parser::endElement(const XMLCh* const name) {
 	XMLString::release(&cname);
 }
 
+void 
+xerces_sax_parser::warning(const SAXParseException& exception) {
+	m_logger->warn("*** Warning ");
+	throw exception;
+}
+
+void 
+xerces_sax_parser::error(const SAXParseException& exception) {
+        m_logger->error("*** Error ");
+	throw exception;
+}
+
+void
+xerces_sax_parser::fatalError(const SAXParseException& exception)  {
+	m_logger->error("***** Fatal error ");
+	throw exception;
+}
+	
+void
+xerces_sax_parser::endElement(const XMLCh* const name) {
+	char *cname = XMLString::transcode(name);
+	AM_DBG m_logger->trace("*** endElement %s", cname);
+	q_name_pair qname = to_q_name_pair(name);
+	m_content_handler->end_element(qname);
+	XMLString::release(&cname);
+}
 
 void
 xerces_sax_parser::to_qattrs(AttributeList& attrs, 
