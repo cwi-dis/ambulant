@@ -58,6 +58,10 @@ class active_player : public ref_counted_obj {
 		m_done = true;
 	}
 	
+	void start() { start(NULL, NULL);}
+	bool is_done() const {return m_done;}
+	double get_speed() const;
+	
   private:
   	passive_timeline *build_timeline();
 	
