@@ -281,9 +281,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 		
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
-    // These are here just for debug purposes.
-	long int m_in_total;  	
-	long int m_out_total;
  
 };
 
@@ -327,9 +324,6 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     lib::critical_section m_lock;
   	audio_format m_in_fmt;
   	audio_format m_out_fmt;
-  	// These are here just for debug purposes.
-	long int m_in_total;  	
-	long int m_out_total;
  
 };
 
