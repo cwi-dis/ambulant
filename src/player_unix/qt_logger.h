@@ -55,7 +55,7 @@
 
 #include <stdarg.h>
 #include <string.h>
-#include <qtextview.h>
+#include <qtextedit.h>
 
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
@@ -68,12 +68,12 @@ class qt_logger {
  public:
 	static qt_logger* get_qt_logger();
 	static void show_message(const char *format,...);
-	QTextView* get_logger_window();
+	QTextEdit* get_logger_window();
  protected:
 	qt_logger();
  private:
 	static qt_logger* s_qt_logger;  // singleton
-	QTextView* logger_window;
+	QTextEdit* logger_window;
 };
 
 class qt_logger_ostream : public ambulant::lib::ostream {

@@ -215,8 +215,8 @@ qt_gui::slot_about() {
 
 void
 qt_gui::slot_logger_window() {
-	printf("slot_logger_window()\n");
-	QTextView* logger_window =
+	AM_DBG printf("slot_logger_window()\n");
+	QTextEdit* logger_window =
 		qt_logger::get_qt_logger()->get_logger_window();
 	if (logger_window->isHidden())
 		logger_window->show();
@@ -478,7 +478,7 @@ main (int argc, char*argv[]) {
 				      : "AmbulantPlayer");
 
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-	mywidget->setGeometry(750, 50, 320, 240);
+	mywidget->setGeometry(240, 320, 320, 240);
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);

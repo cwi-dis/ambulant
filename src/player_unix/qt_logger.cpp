@@ -84,23 +84,18 @@ qt_logger_ostream::write(const char *cstr)
 			break;
 		}
 	}
-	if (found) {
-		// optimization for complete lines
-		if (buf_idx == 0) {
-			qt_logger::get_qt_logger()->
-				get_logger_window()->append(cstr);
-			return 1;
-		}
-	}
 	line_len = i;
-	strncpy(&buf[buf_idx], cstr, line_len);
-	buf_idx += line_len;
+	if (line_len > 0) {
+		strncpy(&buf[buf_idx], cstr, line_len);
+		buf_idx += line_len;
+	}
 	if (found) {
 		buf[buf_idx] = '\0';
 		qt_logger::get_qt_logger()->
 			get_logger_window()->append(buf);
 		buf_idx = 0;
-		write(&cstr[line_len]);
+		if (cstr_len > line_len+1)
+			write(&cstr[line_len+1]);
 	}
 	return 1;
 }
@@ -142,9 +137,11 @@ qt_logger::qt_logger()
 	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	logger->set_level(level);
-	logger_window = new QTextView();
-	logger_window->setCaption("Ambulant`Logger");
+	logger_window = new QTextEdit();
+	logger_window->setReadOnly(true);
+	logger_window->setCaption("Ambulant-Logger");
 	logger_window->setTextFormat(Qt::PlainText);
+	logger_window->setGeometry(50, 50, 560, 240);
 }
 
 qt_logger*
@@ -160,7 +157,7 @@ qt_logger::show_message(const char *format,...)
 {
 }
 
-QTextView*
+QTextEdit*
 qt_logger::get_logger_window()
 {
 	return logger_window;
