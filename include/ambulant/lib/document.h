@@ -105,6 +105,10 @@ class document : public node_context {
 
   public:
 	// A document factory function.
+	// Creates documents from a url.
+	static document* create_from_url(const net::url& u);
+  
+	// A document factory function.
 	// Creates documents from local files.
 	static document* create_from_file(const std::string& filename);
 	
