@@ -59,6 +59,7 @@
 #include <qhgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qlineedit.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
@@ -108,6 +109,11 @@ class qt_settings
 	QHBox*		m_finish_hb;
 	QPushButton*	m_ok_pb;	// OK
 	QPushButton*	m_cancel_pb;	// Cancel
+	
+	// plugin options
+	QVGroupBox* m_plugin_vg;
+	QCheckBox*  m_use_plugin_cb;
+	QLineEdit*	m_plugin_dir_le;
 
 	int index_in_string_array(const char* s, const char* sa[]);
 };

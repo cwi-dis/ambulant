@@ -144,6 +144,12 @@ qt_settings::settings_select() {
 	bool full_chk = m_preferences->m_validation_schema_full_checking;
 	m_full_check_cb->setChecked(full_chk);
 
+	m_plugin_vg = new QVGroupBox("Plugin options:", m_settings_vg);
+	m_use_plugin_cb = new QCheckBox("Use plugins",m_plugin_vg);
+	m_use_plugin_cb->setChecked(m_preferences->m_use_plugins);
+	m_plugin_dir_le = new QLineEdit( m_settings_vg );
+	m_plugin_dir_le->setText(m_preferences->m_plugin_dir.c_str());
+	
 //printf("qt_settings::settings_select m_settings_vg=0x%x\n", m_settings_vg);
 	return m_settings_vg;
 }
@@ -178,7 +184,12 @@ qt_settings::settings_ok() {
 	if (m_schema_rb)
 		 m_preferences->m_do_schema	=
 		 	m_schema_rb->isChecked();
-
+	
+	if (m_use_plugin_cb)
+		 m_preferences->m_use_plugins = m_use_plugin_cb->isChecked();
+	
+	m_preferences->m_plugin_dir = std::string((const char*) m_plugin_dir_le->text());
+	
 	m_preferences->save_preferences();
 }
 
