@@ -1,0 +1,37 @@
+Instructions for build Ambulant from CVS
+========================================
+
+These instructions are currently for unix only, Windows instructions will
+follow later.
+
+1. Check out the CVS tree (which you have presumably done already).
+
+2. Create a symlink ltmain.sh. On most platforms the original will
+   be in /usr/share/libtool/ltmain.sh::
+   
+   	% ln -s /usr/share/libtool/ltmain.sh .
+   
+   (If anyone knows why this symlink isn't created by automake: please
+   let us know!)
+
+3. Create the missing automake files and Makefile.in files::
+
+	% automake -a
+	
+4. Install a patched version of expat, the details are in 
+   third_party_packages/readme.txt. If you have a version of expat
+   *newer* than 1.95.6 installed you can alternatively give the option
+   ``--with-expat=``*prefix_to_expat* to ``./configure`` in step 6.
+   
+5. Create configure from configure.in::
+
+	% autoconf
+	
+6. Create the Makefiles::
+
+	% ./configure
+	
+7. Build::
+
+	% make
+	
