@@ -134,11 +134,9 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug
-	  ("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
-	   (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+	AM_DBG logger::get_logger()->debug("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,aqw->ambulant_pixmap());
+
 	QPixmap *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		delete m_trans_engine;
@@ -176,11 +174,9 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		  (this, &qt_renderer::transition_step);
 		transition_info::time_type delay
 		  = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG logger::get_logger()->debug
-		  ("qt_renderer.redraw: now=%d, schedule step for %d",
-		   m_event_processor->get_timer()->elapsed(), 
-		   m_event_processor->get_timer()->elapsed()+delay);
+//		if (delay < 33) delay = 33; // XXX band-aid
+//		delay = 500;
+		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
 	m_lock.leave();

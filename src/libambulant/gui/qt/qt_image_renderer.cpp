@@ -56,7 +56,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -90,69 +90,52 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 		m_image_loaded = m_image.loadFromData
 		  ((const uchar*)m_data, m_data_size);
 	}
+	if ( ! m_image_loaded)
+		// Initially the image may not yet be loaded
+        	return;
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
 	AM_DBG logger::get_logger()->debug(
 		"qt_active_image_renderer.redraw_body: info=0x%x",
 		info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
+
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
-
-	if (m_image_loaded) {
-		QSize qsize = m_image.size();
-		size srcsize = size(qsize.width(), qsize.height());
-		rect srcrect = rect(size(0,0));
-		screen_rect<int> dstrect =
-		  m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-		dstrect.translate(m_dest->get_global_topleft());
-		// O_ for original image coordintates
-		// S_ for source image coordinates
-		// N_ for new (scaled) image coordinates
-		// D_ for destination coordinates
-		int O_W = srcsize.w,
-		    O_H = srcsize.h;
-		int S_L = srcrect.left(), 
-		    S_T = srcrect.top(),
-		    S_W = srcrect.width(),
-		    S_H = srcrect.height();
-		int D_L = dstrect.left(), 
-		    D_T = dstrect.top(),
-		    D_W = dstrect.width(),
-		    D_H = dstrect.height();
-		AM_DBG lib::logger::get_logger()->debug(
-			"qt_active_image_renderer.redraw_body(0x%x):"
-			" drawImage at (L=%d,T=%d,W=%d,H=%d)"
-			" from (L=%d,T=%d,W=%d,H=%d)",
-			(void *)this,D_L,D_T,D_W,D_H,
-			S_L, S_T, S_W, S_H);
-		float fact_W = (float)D_W/(float)S_W,
-		      fact_H = (float)D_H/(float)S_H;
-		int N_L = (int)(S_L*fact_W),
-		    N_T = (int)(S_T*fact_H),
-		    N_W = (int)(O_W*fact_W),
-		    N_H = (int)(O_H*fact_H);
-		AM_DBG lib::logger::get_logger()->debug(
-			"qt_active_image_renderer.redraw_body(0x%x):"
-			"orig=(%d, %d) scalex=%f, scaley=%f"
-			" intermediate (L=%d,T=%d,W=%d,H=%d)",
-			(void *)this, O_W, O_H, fact_W, fact_H,
-			N_L, N_T, N_W, N_H);
+	QSize qsize = m_image.size();
+	size srcsize = size(qsize.width(), qsize.height());
+	rect srcrect = rect(size(0,0));
+	screen_rect<int> dstrect =
+	  m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+	dstrect.translate(m_dest->get_global_topleft());
+	// O_ for original image coordinates
+	// S_ for source image coordinates
+	// N_ for new (scaled) image coordinates
+	// D_ for destination coordinates
+	int	O_W = srcsize.w,
+		O_H = srcsize.h;
+	int	S_L = srcrect.left(), 
+		S_T = srcrect.top(),
+		S_W = srcrect.width(),
+		S_H = srcrect.height();
+	int	D_L = dstrect.left(), 
+		D_T = dstrect.top(),
+		D_W = dstrect.width(),
+		D_H = dstrect.height();
+	AM_DBG lib::logger::get_logger()->debug("qt_active_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+	float	fact_W = (float)D_W/(float)S_W,
+		fact_H = (float)D_H/(float)S_H;
+	int	N_L = (int)(S_L*fact_W),
+		N_T = (int)(S_T*fact_H),
+		N_W = (int)(O_W*fact_W),
+		N_H = (int)(O_H*fact_H);
+	AM_DBG lib::logger::get_logger()->debug("qt_active_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
-		QImage scaledimage = m_image.smoothScale(N_W, N_H,
-							 QImage::ScaleFree);
+	QImage scaledimage = m_image.smoothScale(N_W, N_H, QImage::ScaleFree);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-		QImage scaledimage = m_image.smoothScale(N_W, N_H);
+	QImage scaledimage = m_image.smoothScale(N_W, N_H);
 #endif/*QT_NO_FILEDIALOG*/
-		paint.drawImage(D_L,D_T,scaledimage,N_L, N_T, D_W,D_H);
-	}
-	else {
-		AM_DBG lib::logger::get_logger()->error(
-			"qt_active_image_renderer.redraw_body(0x%x):"
-			" no m_image",
-			(void *)this
-		);
-	}
+	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W,D_H);
 	paint.flush();
 	paint.end();
 }

@@ -129,7 +129,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug
-	  ("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
+	  ("qt_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
 	   (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
@@ -146,13 +146,15 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);
+			/*
 		// Copy the background pixels
 		screen_rect<int> dstrect = r;
 		dstrect.translate(m_dest->get_global_topleft());
 		bitBlt(surf, dstrect.left(), dstrect.top(),
 		       qpm,  dstrect.left(), dstrect.top(), 
 		             dstrect.width(), dstrect.height());
-		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
+			*/
+		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: drawing to transition surface");
 		}
 	}
 
@@ -163,7 +165,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 	}
 	if (m_trans_engine && surf) {
 		AM_DBG logger::get_logger()->debug
-		  ("qt_renderer.redraw: drawing to view");
+		  ("qt_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step
 		  (m_event_processor->get_timer()->elapsed());
 		typedef no_arg_callback<qt_fill_renderer>transition_callback;
@@ -172,11 +174,12 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		transition_info::time_type delay
 		  = m_trans_engine->next_step_delay();
 //		if (delay < 33) delay = 33; // XXX band-aid
+//		delay = 500;
 		AM_DBG logger::get_logger()->debug
-		  ("qt_renderer.redraw: now=%d, schedule step for %d",
+		  ("qt_fill_renderer.redraw: now=%d, schedule step for %d",
 		   m_event_processor->get_timer()->elapsed(), 
 		   m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, event_processor::low);
+		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
 	m_lock.leave();
 }
