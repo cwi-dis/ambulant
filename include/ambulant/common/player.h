@@ -67,6 +67,8 @@ namespace common {
 class window_factory;
 class playable_factory;
 
+enum play_state {ps_idle, ps_playing, ps_pausing, ps_done};
+
 class abstract_player {
   public:
 	virtual ~abstract_player() {};
@@ -78,7 +80,11 @@ class abstract_player {
 	virtual void stop() = 0;
 	virtual void pause() = 0;
 	virtual void resume() = 0;
-	virtual bool is_done() const = 0;
+	
+	virtual bool is_playing() const { return false;}
+	virtual bool is_pausing() const { return false;}
+	virtual bool is_done() const { return false;}
+		
 //	void set_speed(double speed);
 //	double get_speed() const;
 };
@@ -86,74 +92,6 @@ class abstract_player {
 // Factory functions - should these be here?
 abstract_player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
 abstract_player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf);
-
-
-// XXX: The following interface is incomplete.
-// a) should handle multiple windows
-// b) other events
-// c) partial redraws
-// ...
-
-// A player_control interface is implemented by a toolkit
-// providing a player implementation.
-// The GUI uses this interface to wrap and interact with the
-// player provided by the toolkit.
-
-class player_control {
-  public:
-	// Instruct the compiler to destroy objects 
-	// implementing this using the virtual table.
-	virtual ~player_control() {}
-	
-	// A gui call to set the document to play.
-	// Opens and parses the document.
-	// Creates the underlying player.
-	// Probably shows the layout.
-	virtual void set_document(const char *url) = 0;
-	
-	// A gui call to set the preferences for this player
-	virtual void set_preferences(const char *url) = 0;
-	
-	// A gui call requesting from this player to start playing.
-	virtual void start() = 0;
-	
-	// A gui call requesting from this player to stop playing.
-	virtual void stop() = 0;
-	
-	// A gui call requesting from this player to pause playing.
-	virtual void pause() = 0;
-	
-	// Tells if this is in state that can start. 
-	// Depending on the answer the GUI should
-	// enable or disable the start button. 
-	virtual bool can_start() = 0;
-	
-	// Tells if this is in state that can stop. 
-	// Depending on the answer the GUI should
-	// enable or disable the stop button. 
-	virtual bool can_stop() = 0;
-	
-	// Tells if this is in state that can pause. 
-	// Depending on the answer the GUI should
-	// enable or disable the pause button. 
-	virtual bool can_pause() = 0;
-	
-	// A gui call requesting a redraw of the current scene.
-	virtual void redraw() = 0;
-	
-	// A gui originating notification for a click event at x, y
-	// x, y is in pixels in viewport 'screen' coordinates
-	virtual void on_click(int x, int y) = 0;
-	
-	// A gui originating notification for a char event. 
-	virtual void on_char(int ch) = 0;
-	
-	// Tells what cursor the gui should use when 
-	// the mouse is at point x, y. 
-	// x, y is in pixels in viewport 'screen' coordinates
-	// Returns 0 for the default.
-	virtual int get_cursor(int x, int y) = 0;
-};
 
 } // namespace common
  
