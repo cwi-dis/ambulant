@@ -53,7 +53,7 @@ class passive_player {
   	char *m_url;
 };
 
-class active_player : public ref_counted {
+class active_player : public ref_counted_obj {
   public:
 	active_player(passive_player *const source, node *tree);
 	~active_player();
@@ -65,21 +65,6 @@ class active_player : public ref_counted {
 		m_done = true;
 	}
 	
-	////////////////////////
-	// lib::ref_counted interface implementation
-	
-	long add_ref() {return ++m_refcount;}
-
-	long release() {
-		if(--m_refcount == 0){
-			delete this;
-			return 0;
-		}
-		return m_refcount;
-	}
-
-	long get_ref_count() const {return m_refcount;}
-
   private:
   	passive_timeline *build_timeline();
   	event_processor *const m_event_processor;
@@ -88,8 +73,6 @@ class active_player : public ref_counted {
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
-
-	basic_atomic_count<critical_section> m_refcount;
 };
 
 } // namespace lib
