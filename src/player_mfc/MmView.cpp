@@ -214,7 +214,7 @@ MmView::MmView()
 #endif // WITHOUT_LOG_WINDOW
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
-#if USE_NLS
+#if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
 #ifdef AMBULANT_USE_DLL
