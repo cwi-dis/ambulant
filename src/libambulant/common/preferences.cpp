@@ -69,7 +69,6 @@ preferences::preferences()
 	m_validation_scheme("auto"),
 	m_do_namespaces(false),
 	m_do_schema(false),
-	m_do_validation(false),
 	m_validation_schema_full_checking(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");

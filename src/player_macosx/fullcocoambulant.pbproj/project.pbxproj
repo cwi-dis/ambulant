@@ -35,12 +35,12 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "WITH_SDL= WITH_FFMPEG= WITH_EXPAT= WITH_FFMPEG_AVFORMAT=";
+				GCC_PREPROCESSOR_DEFINITIONS = "WITH_LTDL_PLUGINS=1 WITH_SDL=1 WITH_FFMPEG=1 WITH_EXPAT=1 WITH_FFMPEG_AVFORMAT=1";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant/include /Users/jack/src/ambulant/third_party_packages/expat-unix/include /usr/local/include/SDL /Users/jack/src/ambulant/third_party_packages/ffmpeg-0.4.8/libavcodec /Users/jack/src/ambulant/third_party_packages/ffmpeg-0.4.8/libavformat";
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/src/player_macosx/Info copy.plist";
+				INFOPLIST_FILE = /Users/jack/src/ambulant/src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-0.4.8/libavformat ../../third_party_packages/ffmpeg-0.4.8/libavcodec";
 				LIBRARY_STYLE = Static;
@@ -1639,14 +1639,6 @@
 			path = cocoambulant.app;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		04161469072078C500A8B0B6 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.xml;
-			name = "Info copy.plist";
-			path = "/Users/jack/src/ambulant/src/player_macosx/Info copy.plist";
-			refType = 0;
-			sourceTree = "<absolute>";
 		};
 		041614840720836C00A8B0B6 = {
 			fileEncoding = 30;
@@ -5366,7 +5358,6 @@
 				04532DAA06DCDBFB00B7FC96,
 				8D15AC360486D014006FF6A4,
 				089C165FFE840EACC02AAC07,
-				04161469072078C500A8B0B6,
 			);
 			isa = PBXGroup;
 			name = Resources;

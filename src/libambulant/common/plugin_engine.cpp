@@ -127,7 +127,7 @@ plugin_engine::collect_plugin_directories()
 	// First dir to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
 	if(plugin_dir != "")
-		m_plugindirs.push_back(plugin_dir.c_str());
+		m_plugindirs.push_back(plugin_dir);
 	
 	// XXXX Need to add per-user plugin dir!
 	
@@ -138,7 +138,7 @@ plugin_engine::collect_plugin_directories()
 		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(main_bundle);
 		char plugin_pathname[1024];
 		if (plugin_url &&
-				CFURLGetFileSystemRepresentation(plugin_url, true, plugin_pathname, sizeof(plugin_pathname))) {
+				CFURLGetFileSystemRepresentation(plugin_url, true, (UInt8 *)plugin_pathname, sizeof(plugin_pathname))) {
 			m_plugindirs.push_back(plugin_pathname);
 		}
 		if (plugin_url) CFRelease(plugin_url);
@@ -176,7 +176,7 @@ plugin_engine::load_plugins(std::string dirname)
 	
     int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
     if (nr_of_files < 0) {
-        lib::logger::get_logger()->error("Error reading plugin directory: %s", dirname.c_str());
+        lib::logger::get_logger()->trace("Error reading plugin directory: %s: %s", dirname.c_str(), strerror(errno));
         return;
     } else {
         while (nr_of_files--) {
@@ -193,6 +193,7 @@ plugin_engine::load_plugins(std::string dirname)
                 
                 // Construct the full pathname
                 strncpy(filename, dirname.c_str(), sizeof(filename));
+                strncat(filename, "/", sizeof(filename));
                 strncat(filename, pluginname, sizeof(filename));
 				
 				// Add the plugin dir to the search path

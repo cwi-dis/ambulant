@@ -119,14 +119,22 @@ initialize_logger()
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	// First get our bundle, various initializations need it.
+	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+	
 	// Install our preferences handler
 	mypreferences::install_singleton();
+	
 	// Install our logger
 	if (initialize_logger() ) {
 		// Show the logger window immedeately if log level is DEBUG
 		[self showLogWindow: self];
 	}
-	// Initialize the gettext library
+	
+	// Initialize the gettext library. We support both the MacOS System Preferences
+	// setting and the unix-style LANG variable.
+	// In addition we support an LC_MESSAGES file either in the bundle or in the
+	// standard system location.
 	CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
 	NSString *userLocaleName = (NSString *)CFLocaleGetIdentifier(userLocaleRef);
 	const char *locale = [userLocaleName cString];
@@ -138,7 +146,14 @@ initialize_logger()
 		ambulant::lib::logger::get_logger()->warn("MacOS System Preferences locale: \"%s\", Unix locale: LANG=\"%s\"", locale, unix_locale);
 	}
 #if ENABLE_NLS
-    bindtextdomain (PACKAGE, LOCALEDIR);
+	NSString *resourcePath = [thisBundle resourcePath];
+	char bundleLocaleDir[1024];
+	snprintf(bundleLocaleDir, sizeof(bundleLocaleDir), "%s/locale", [resourcePath cString]);
+	if (access(bundleLocaleDir, 0) >= 0) {
+		bindtextdomain (PACKAGE, bundleLocaleDir);
+	} else {
+		bindtextdomain (PACKAGE, LOCALEDIR);
+	}
     textdomain (PACKAGE);
 #endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
@@ -148,7 +163,6 @@ initialize_logger()
 #endif
 
 	// Initialize the default system test settings
-	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
 	if (systemTestSettingsPath) {
 		std::string path([systemTestSettingsPath cString]);

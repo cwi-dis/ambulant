@@ -109,9 +109,6 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	m_saxparser->setDoSchema(prefs->m_do_schema);
 
 	// True to turn on full schema constraint checking
-	m_saxparser->setDoValidation(prefs->m_do_validation);
-	
-	// True to turn on full schema constraint checking
 	m_saxparser->setValidationSchemaFullChecking
 		(prefs->m_validation_schema_full_checking);
 	

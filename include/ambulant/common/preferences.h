@@ -88,7 +88,7 @@ class AMBULANTAPI preferences {
 	/// Determines the preferred XML parser.
 	std::string m_parser_id;
 
-	/// XXXX
+	/// "never"/"auto"/"always": should we do validation?
 	std::string m_validation_scheme;
 
 	/// For an XML parser that supports it, determines namespace support.
@@ -97,10 +97,7 @@ class AMBULANTAPI preferences {
 	/// When set, prefer validation with Schema over DTD.
 	bool m_do_schema;
 	
-	/// When set, do XML validation, if the parser supports it.
-	bool m_do_validation;
-
-	/// XXXX
+	/// Also do checking on the schema itself
 	bool m_validation_schema_full_checking;
 	
 	// Use plugins or not

@@ -82,58 +82,68 @@ cocoambulant_executable_SOURCES= \
 	MyAppDelegate.m 
 	
 APPNAME="Ambulant Player"
+BUILDAPPNAME = "AmbulantPlayer"
+
 cocoambulant_bundle: cocoambulant_executable
-	mkdir -p $(APPNAME).app/Contents/MacOS
-	mkdir -p $(APPNAME).app/Contents/Resources
-	echo -n "APPLAmbl" > $(APPNAME).app/Contents/PkgInfo
-	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
-	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/play.png $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/pause.png $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/playactive.png $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/stop.png $(APPNAME).app/Contents/Resources
+	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
+	echo -n "APPLAmbl" > $(BUILDAPPNAME).app/Contents/PkgInfo
+	$(INSTALL_DATA) $(srcdir)/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
+	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/play.png $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/pause.png $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/playactive.png $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/stop.png $(BUILDAPPNAME).app/Contents/Resources
 
-    # Install plugins
-	if test -d ../plugins/.libs; then cp -R ../plugins/.libs $(APPNAME).app/Contents/PlugIns; fi
+#	Install plugins
+#	if test -d ../plugins/.libs; then cp -R ../plugins/.libs $(BUILDAPPNAME).app/Contents/PlugIns; fi
+	pkglibdir=`pwd`/$(BUILDAPPNAME).app/Contents/PlugIns; \
+	cd ../plugins; \
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
+
+#	Install gettext localizations
+	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
+	cd ../../po ; \
+	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
     
-    # Install localizations
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/English.lproj
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
+#	Install Cocoa localizations
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/English.lproj
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Log.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Log.nib
 
-	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/Dutch.lproj
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/Dutch.lproj
-	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
-#	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
-#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
-#	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
-#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
+#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
+#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
+#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
+#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
 
-	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/Japanese.lproj
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/Japanese.lproj
-	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
-#	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
-#	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
+#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
+#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
 
-#	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
-	mkdir -p $(APPNAME).app/Contents/Resources/data
-	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(APPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(APPNAME).app/Contents/Resources/data
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(APPNAME).app/Contents/MacOS/cocoambulant
-	strip -X `pwd`/$(APPNAME).app/Contents/MacOS/cocoambulant
+#	$(INSTALL_DATA) $(srcdir)/*.png $(BUILDAPPNAME).app/Contents/Resources
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/data
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(BUILDAPPNAME).app/Contents/Resources/data
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	strip -X `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_sdl_LDADD) \
@@ -157,8 +167,7 @@ dist-hook:
 	
 install-exec-hook: cocoambulant_bundle
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
-	mkdir -p $(DESTDIR)/Applications/$(APPNAME).app
-	cp -r $(APPNAME).app $(DESTDIR)/Applications
+	cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app
 
 uninstall-hook:
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app

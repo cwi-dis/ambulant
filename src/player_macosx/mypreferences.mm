@@ -68,12 +68,10 @@ mypreferences::load_preferences()
 		m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] cString];
 	m_do_namespaces = [prefs boolForKey: @"do_namespaces"];
 	m_do_schema = [prefs boolForKey: @"do_schema"];
-	m_do_validation = [prefs boolForKey: @"do_validation"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = [prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
-	if ([prefs stringForKey: @"plugin_dir"])
-		m_plugin_dir = [prefs stringForKey: @"plugin_dir"];
+	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
 	return true;
 }
 
@@ -86,7 +84,6 @@ mypreferences::save_preferences()
 	[prefs setObject: [NSString stringWithCString: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
 	[prefs setBool: m_do_namespaces forKey: @"do_namespaces"];
 	[prefs setBool: m_do_schema forKey: @"do_schema"];
-	[prefs setBool: m_do_validation forKey: @"do_validation"];
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
