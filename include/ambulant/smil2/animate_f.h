@@ -54,8 +54,10 @@
 #define AMBULANT_SMIL2_ANIMATE_F_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/common/region_dim.h"
 #include <cmath>
 #include <map>
+#include <vector>
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
@@ -100,7 +102,7 @@ class linear_map_f {
 		time_type dd = (*eit).first - (*bit).first;
 		value_type v1 = (*bit).second;
 		value_type v2 = (*eit).second;
-		return v1 + (dt*(v2-v1))/dd;
+		return v1 + ((v2-v1)*dt)/dd;
 	}
 	
 	time_type dur() const {
@@ -205,10 +207,10 @@ class animate_f {
 	
 	value_type at(time_type t) const {
 		time_type d = m_f.dur();
-		if(t<=m_ad) return m_sum?((t/d)*m_f.at(d) + m_f.at(t%d)):m_f.at(t%d);
+		if(t<=m_ad) return m_sum?(m_f.at(d)*(t/d) + m_f.at(t%d)):m_f.at(t%d);
 		if((m_ad%d) != 0) return this->at(m_ad);
 		assert((m_ad%d) == 0);
-		return m_sum?(m_ad/d)*m_f.at(d):m_f.at(d);
+		return m_sum?m_f.at(d)*(m_ad/d):m_f.at(d);
 	}
 	
 	bool set_cumulative(bool c) { m_sum = c;}
@@ -231,12 +233,29 @@ void init_map_f(long dur, T from, T to, linear_map_f<T>& mf) {
 }
 
 template<class T>
+void init_map_f(long dur, T from, T to, discrete_map_f<T>& mf) {
+	typedef typename linear_map_f<T>::map_type map_type;
+	map_type& ktv = mf.get_time_values_map();
+	ktv.clear();
+	ktv[0]=from;
+	ktv[dur/2] = to;
+}
+
+template<class T>
 void init_map_f(long dur, T val, linear_map_f<T>& mf) {
 	typedef typename linear_map_f<T>::map_type map_type;
 	map_type& ktv = mf.get_time_values_map();
 	ktv.clear();
 	ktv[0]=val;
 	ktv[dur]=val;
+}
+
+template<class T>
+void init_map_f(long dur, T val, discrete_map_f<T>& mf) {
+	typedef typename linear_map_f<T>::map_type map_type;
+	map_type& ktv = mf.get_time_values_map();
+	ktv.clear();
+	ktv[0]=val;
 }
 
 template<class T>
@@ -251,7 +270,45 @@ void init_map_f(long dur, T *vals, int n, linear_map_f<T>& mf) {
 		map_type& ktv = mf.get_time_values_map();
 		ktv.clear();
 		time_type to = 0;
-		for(int i=0;i<n;i++, to+=d)
+		for(int i=0;i<n;i++, to+=dur)
+			ktv[to/(n-1)] = vals[i];
+	}
+}
+
+template<class T>
+void init_map_f(long dur, const std::vector<T>& vals, linear_map_f<T>& mf) {
+	assert(!vals.empty());
+	int n = int(vals.size());
+	if(n==1) {
+		init_map_f(dur, vals[0], mf);
+	} else if(n==2) {
+		init_map_f(dur, vals[0], vals[1], mf);
+	} else { 
+		typedef typename linear_map_f<T>::map_type map_type;
+		typedef typename linear_map_f<T>::time_type time_type;
+		map_type& ktv = mf.get_time_values_map();
+		ktv.clear();
+		time_type to = 0;
+		for(int i=0;i<n;i++, to+=dur)
+			ktv[to/(n-1)] = vals[i];
+	}
+}
+
+template<class T>
+void init_map_f(long dur, const std::vector<T>& vals, discrete_map_f<T>& mf) {
+	assert(!vals.empty());
+	int n = int(vals.size());
+	if(n==1) {
+		init_map_f(dur, vals[0], mf);
+	} else if(n==2) {
+		init_map_f(dur, vals[0], vals[1], mf);
+	} else { 
+		typedef typename linear_map_f<T>::map_type map_type;
+		typedef typename linear_map_f<T>::time_type time_type;
+		map_type& ktv = mf.get_time_values_map();
+		ktv.clear();
+		time_type to = 0;
+		for(int i=0;i<n;i++, to+=dur)
 			ktv[to/(n-1)] = vals[i];
 	}
 }
@@ -267,6 +324,7 @@ void init_map_f_paced(long dur, T *vals, int n, linear_map_f<T>& mf) {
 		init_map_f(dur, vals[0], vals[1], mf);
 	} else { 
 		typedef typename linear_map_f<T>::map_type map_type;
+		typedef typename linear_map_f<T>::time_type time_type;
 		map_type& ktv = mf.get_time_values_map();
 		ktv.clear();
 		double length = 0.0;
@@ -279,6 +337,38 @@ void init_map_f_paced(long dur, T *vals, int n, linear_map_f<T>& mf) {
 			ktv[t] = vals[i];
 		}		
 	}
+}
+
+// Type T should define
+// double dist(const T& v1, const T& v2)
+template<class T>
+void init_map_f_paced(long dur, const std::vector<T>& vals, linear_map_f<T>& mf) {
+	assert(!vals.empty());
+	int n = int(vals.size());
+	if(n==1) {
+		init_map_f(dur, vals[0], mf);
+	} else if(n==2) {
+		init_map_f(dur, vals[0], vals[1], mf);
+	} else { 
+		typedef typename linear_map_f<T>::map_type map_type;
+		typedef typename linear_map_f<T>::time_type time_type;
+		map_type& ktv = mf.get_time_values_map();
+		ktv.clear();
+		double length = 0.0;
+		for(int i=1;i<n;i++) length += dist(vals[i-1], vals[i]);
+		double dl = 0;
+		ktv[0] = vals[0];
+		for(int i=1;i<n;i++) {
+			dl += dist(vals[i-1], vals[i]);
+			time_type t = time_type(::floor(0.5+dur*dl/length));
+			ktv[t] = vals[i];
+		}		
+	}
+}
+
+template<class T>
+void init_map_f_paced(long dur, const std::vector<T>& vals, discrete_map_f<T>& mf) {
+	assert(false);
 }
 
 void create_bezier_map(double *e, std::map<double, double>& gr) {
@@ -302,6 +392,16 @@ template <class T>
 double dist(const T& v1, const T& v2) {
 	return std::max(v1, v2) - std::min(v1, v2); 
 }
+
+template <>
+inline double dist(const ambulant::common::region_dim& rd1, const ambulant::common::region_dim& rd2) {
+	if(rd1.relative())
+		return std::max(rd1.get_as_dbl(), rd2.get_as_dbl()) - std::min(rd1.get_as_dbl(), rd2.get_as_dbl());
+	else if(rd1.absolute())
+		return std::max(rd1.get_as_int(), rd2.get_as_int()) - std::min(rd1.get_as_int(), rd2.get_as_int());
+	return 0;
+}
+
 
 } // namespace smil2
  
