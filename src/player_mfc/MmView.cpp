@@ -61,6 +61,7 @@
 #include ".\mmview.h"
 
 #include "ambulant/common/preferences.h"
+#include "ambulant/lib/test_attrs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -95,6 +96,9 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_LOG, OnUpdateViewLog)
 	ON_COMMAND(ID_VIEW_LOG, OnViewLog)
 	ON_MESSAGE(WM_SET_CLIENT_RECT, OnSetClientRect)
+	ON_COMMAND(ID_VIEW_TESTS, OnViewTests)
+	ON_COMMAND(ID_VIEW_FILTER, OnViewFilter)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
 END_MESSAGE_MAP()
 
 
@@ -288,4 +292,35 @@ LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 	UINT flags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE;
 	mainWnd->SetWindowPos(&wndTop, 0, 0, size.cx, size.cy, flags);
 	return 0;
+}
+
+void MmView::OnViewTests() {
+	BOOL bOpenFileDialog = TRUE;
+	char lpszDefExt[] = "*.xml";
+	LPCTSTR lpszFileName = NULL; // no initial fn
+	DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+	char lpszFilter[] = "Filter Files (*.xml)|*.xml|All Files (*.*)|*.*||";
+	CWnd* pParentWnd = this;
+	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
+	dlg.m_ofn.lpstrTitle = "Select SMIL tests filter file";
+	if(dlg.DoModal()==IDOK) {
+		CString str = dlg.GetPathName();
+		if(!ambulant::lib::test_attrs::load_test_attrs(LPCTSTR(str))) {
+			AfxMessageBox(CString("Failed to load filter file: ") + str);
+			m_curFilter = "";
+		} else
+			m_curFilter = str;
+	}	
+}
+
+void MmView::OnViewFilter()
+{
+	if(!m_curFilter.IsEmpty()) {
+		WinExec(CString("Notepad.exe ") + m_curFilter, SW_SHOW);
+	}
+}
+
+void MmView::OnUpdateViewFilter(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!m_curFilter.IsEmpty());
 }

@@ -68,6 +68,7 @@ public:
 public:
 	void SetMMDocument(LPCTSTR lpszPathName);
 	CString m_curPathName;
+	CString m_curFilter;
 	
 // Overrides
 	public:
@@ -106,6 +107,9 @@ public:
 	afx_msg void OnUpdateViewLog(CCmdUI *pCmdUI);
 	afx_msg void OnViewLog();
 	afx_msg LRESULT OnSetClientRect(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnViewTests();
+	afx_msg void OnViewFilter();
+	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp
