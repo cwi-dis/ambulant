@@ -159,27 +159,15 @@ if (size <= m_used) {
 
 
 
-net::passive_datasource::passive_datasource(const char *url)
-{
-	int m_len;
-	m_len = strlen(url);
-	m_url = new char[m_len+1];
-	if(m_url) {
-		std::memcpy(m_url, url, m_len+1);
-	} else {
- 	 lib::logger::get_logger()->fatal("passive_datasource(%s): out of memory", url);
-	}
-}
-
 net::active_datasource* net::passive_datasource::activate()
 {
 	int in;
 	
-	in = open(m_url, O_RDONLY);
+	in = open(m_url.c_str(), O_RDONLY);
 	if (in >= 0) {
 		return new active_datasource(this, in);
 	} else {
-		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s",  m_url, strerror(errno));
+		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s",  m_url.c_str(), strerror(errno));
 	}
 	return NULL;
 		
@@ -187,10 +175,6 @@ net::active_datasource* net::passive_datasource::activate()
 
 net::passive_datasource::~passive_datasource()
 {
-	if(m_url) {
-		delete[] m_url;
-        m_url=NULL;
-	}
 }
 
 // *********************** active_datasource ***********************************************

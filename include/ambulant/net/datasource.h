@@ -90,13 +90,15 @@ class passive_datasource : public ambulant::lib::ref_counted_obj
 public:
 	
 	// constructor 
-	passive_datasource(const char *url);
+	passive_datasource(const std::string& url)
+	:   m_url(url) {}
 	
 	// copy constructor
 	//	passive_datasource(passive_datasource& ds);
 
 	~passive_datasource();
 	
+	const std::string& get_url() const { return m_url; }
 	active_datasource *activate();
 	
 	friend inline std::ostream& operator<<(std::ostream& os, const passive_datasource& n) {
@@ -105,7 +107,7 @@ public:
 	}
 	
 private:
-	char *m_url;
+	const std::string m_url;
 };
 
 	
