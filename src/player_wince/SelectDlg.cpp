@@ -73,10 +73,12 @@ BOOL CSelectDlg::OnInitDialog()
 
 	FillList(TEXT("*.*"));
 	CListBox *pList = (CListBox*) GetDlgItem(IDC_FILE_LIST);
-	if(pList->GetCount()>0)
+	if(pList->GetCount()>0) {
 		pList->SetCurSel(0);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
+		OnSelchangeList1();
+	}
+	pList->SetFocus();
+	return FALSE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 

@@ -178,19 +178,19 @@ SOURCE=.\AmbulantPlayer.cpp
 
 # PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\version.h"\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
 	".\AmbulantPlayerView.h"\
 	".\MainFrm.h"\
 	".\StdAfx.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\version.h"\
 	
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
@@ -312,49 +312,49 @@ SOURCE=.\AmbulantPlayerView.cpp
 
 # PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
+	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_player.h"\
+	"..\..\include\ambulant\gui\dg\dg_wmuser.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\system.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\test_attrs.h"\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
 	".\AmbulantPlayerView.h"\
 	".\SelectDlg.h"\
 	".\StdAfx.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\player.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\gui\dg\dg_player.h"\
-	{$(INCLUDE)}"ambulant\gui\dg\dg_wmuser.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\amstream.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\document.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\node.h"\
-	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
-	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\system.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_fstream.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
-	{$(INCLUDE)}"ambulant\net\url.h"\
-	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
