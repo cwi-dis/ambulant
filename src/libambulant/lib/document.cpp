@@ -54,7 +54,10 @@
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/filesys.h"
+#include "ambulant/lib/string_util.h"
 #include "ambulant/lib/asb.h"
+
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -205,8 +208,9 @@ void lib::document::read_custom_attributes() {
 		if(tag != "customTest") continue;
 		const char *p = n->get_attribute("id");
 		if(start_element && p) {
+			std::string id = to_c_lower(p);
 			custom_test t;
-			t.id = p;
+			t.id = id;
 			p = n->get_attribute("defaultState");
 			std::string s = p?p:"";
 			t.state = (s == "true")?true:false;
@@ -217,7 +221,8 @@ void lib::document::read_custom_attributes() {
 			t.override = (s=="visible")?true:false;
 			p = n->get_attribute("uid");
 			t.uid = p?p:""; 
-			m_custom_tests[t.id] = t;
+			m_custom_tests[id] = t;
+			AM_DBG logger::get_logger()->trace("Custom test: %s", ::repr(t).c_str());
 		}
 	}
 }
