@@ -11,6 +11,8 @@ set WCE_ARM_LIB=%AMB_HOME%\lib\wince-arm
 REM Create required directories
 if not exist %AMB_HOME%\lib md %AMB_HOME%\lib
 if not exist %AMB_HOME%\lib\wince-arm md %AMB_HOME%\lib\wince-arm
+if not exist %AMB_HOME%\bin md %AMB_HOME%\bin
+if not exist %AMB_HOME%\bin\wince-arm md %AMB_HOME%\bin\wince-arm
 
 REM Expat static library
 copy %TPP_HOME%\expat\lib\ARMRel\libexpat.lib %WCE_ARM_LIB%\libexpat.lib

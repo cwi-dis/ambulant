@@ -9,6 +9,8 @@ set TPP_HOME=.
 REM Create required directories
 if not exist %AMB_HOME%\lib md %AMB_HOME%\lib
 if not exist %AMB_HOME%\lib\win32 md %AMB_HOME%\lib\win32
+if not exist %AMB_HOME%\bin md %AMB_HOME%\bin
+if not exist %AMB_HOME%\bin\win32 md %AMB_HOME%\bin\win32
 
 REM Expat DLL
 copy %TPP_HOME%\expat\lib\Release\libexpat.dll %AMB_HOME%\bin\win32\libexpat.dll
