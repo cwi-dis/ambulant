@@ -983,7 +983,9 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_fmt(audio_format(0, 0, 0)),
 	m_event_processor(NULL),
 	m_src(src),
-	m_client_callback(NULL)
+	m_client_callback(NULL),
+	m_in_total(0),
+	m_out_total(0)
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
@@ -997,7 +999,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource(0x%x)", (void*)this);
+	lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource(0x%x): in %d , out %d ", (void*)this, m_in_total, m_out_total);
 	stop();
 }
 
@@ -1074,6 +1076,7 @@ ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
 	int sz = m_src->size();
+	m_in_total +=sz;
 	if (m_con) {
 		uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
@@ -1086,6 +1089,7 @@ ffmpeg_decoder_datasource::data_avail()
 			if (outbuf) {
 				AM_DBG lib::logger::get_logger()->trace("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, sz);
+				m_out_total += outsize;
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 				m_buffer.pushdata(outsize);
@@ -1324,7 +1328,7 @@ ffmpeg_resample_datasource::data_avail()
 		long outsz = tmp + 8;
 		
 		if (!sz && !m_src->end_of_file()) {
-			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
+			AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
 			m_lock.leave();			
 			return;
 		}
