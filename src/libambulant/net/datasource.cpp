@@ -200,6 +200,7 @@ active_datasource *passive_datasource::activate()
 	{
 		std::cout << "Failed to open file in passive_datasource::activate" << std::endl;
 	}
+	return NULL;
 		
 }
 
@@ -207,6 +208,7 @@ passive_datasource::~passive_datasource()
 {
 	if(m_url) {
 		delete[] m_url;
+        m_url=NULL;
 	}
 }
 
@@ -227,6 +229,7 @@ active_datasource::active_datasource(passive_datasource *const source,std::ifstr
 			std::cout << " Memory allocation error in active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file) " << std::endl;
 		}
 		m_source->add_ref();
+		buffer->show(false);
 }
 
 active_datasource::~active_datasource()
@@ -236,7 +239,7 @@ active_datasource::~active_datasource()
 	buffer=NULL;
 	}
 	m_source->release();
-
+	m_stream.close();
 }
 
 
@@ -261,14 +264,22 @@ void active_datasource::filesize(std::ifstream &file)
 
   void active_datasource::read_file(std::ifstream &file)
   {
+  	std::cout << " ------> in function read_file" << std::endl;
   	char ch;
   	 if(file)
 		{
+			std::cout << " ------> file is open and ready" << std::endl;
 			while(file)
 			{
+				std::cout << "R";
 				file.get(ch);
-				if(file) buffer->put_data(&ch,1);
+				if(file) 
+				{
+					std::cout << "P";
+					buffer->put_data(&ch,1);
+				}
 			}
+			std::cout << " ------> read done" << std::endl;
 		}
 		else
 		{
@@ -279,7 +290,9 @@ void active_datasource::filesize(std::ifstream &file)
   
 void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
+ 	 std::cout<< " READING FILE" << std::endl;
  	read_file(m_stream);
+ 	std::cout<< " READING FILE DONE" << std::endl;
  	buffer->show(false);
 	if (evp && readdone) {
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
