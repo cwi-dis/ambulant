@@ -154,6 +154,7 @@
 				042AF8DE053C2EBD0010C447,
 				042AF8DF053C2EBD0010C447,
 				042AF8E0053C2EBD0010C447,
+				04A70D5705B4463E00EE7D2C,
 				042AF8E1053C2EBD0010C447,
 				042AF8E2053C2EBD0010C447,
 				042AF8E3053C2EBD0010C447,
@@ -1151,6 +1152,20 @@
 		};
 		0498476A058DE47100D855A9 = {
 			fileRef = 04984769058DE47100D855A9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04A70D5705B4463E00EE7D2C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = region_info.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04A70D5805B4463E00EE7D2C = {
+			fileRef = 04A70D5705B4463E00EE7D2C;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2342,6 +2357,7 @@
 				044C06DA05986C1900592A78,
 				044C07A405987A2300592A78,
 				04C641B205AAFB2600250A48,
+				04A70D5805B4463E00EE7D2C,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

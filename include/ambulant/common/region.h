@@ -59,6 +59,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/layout.h"
+#include "ambulant/common/region_info.h"
 
 namespace ambulant {
 
@@ -83,7 +84,8 @@ class passive_region : public abstract_rendering_source {
 		m_window_topleft(point(0, 0)),
 		m_parent(NULL),
 		m_cur_active_region(NULL),
-                m_mouse_region(NULL) {}
+		m_mouse_region(NULL),
+		m_info(NULL) {}
 	passive_region(const std::string &name)
 	:	m_name(name),
 		m_inner_bounds(screen_rect<int>()),
@@ -91,7 +93,8 @@ class passive_region : public abstract_rendering_source {
 		m_window_topleft(point(0, 0)),
 		m_parent(NULL),
 		m_cur_active_region(NULL),
-                m_mouse_region(NULL){}
+		m_mouse_region(NULL),
+		m_info(NULL) {}
 	virtual ~passive_region() {}
 	
 	virtual void show(active_region *cur);
@@ -100,6 +103,7 @@ class passive_region : public abstract_rendering_source {
 	virtual void mouse_region_changed();
         
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
+	virtual passive_region *subregion(const abstract_smil_region_info *info);
 	active_region *activate(const node *node);
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
@@ -107,19 +111,20 @@ class passive_region : public abstract_rendering_source {
 	const point &get_global_topleft() const { return m_window_topleft; }
 	const passive_region* get_parent() const { return m_parent; }
 	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+	const abstract_smil_region_info *get_info() const { return m_info; }	
 		
 	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const;
-	
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		point window_topleft)
+		point window_topleft, const abstract_smil_region_info *info)
 	:	m_name(name),
 		m_inner_bounds(bounds.innercoordinates(bounds)),
 		m_outer_bounds(bounds),
 		m_window_topleft(window_topleft),
 		m_parent(parent),
 		m_cur_active_region(NULL),
-                m_mouse_region(NULL)
+		m_mouse_region(NULL),
+		m_info(info)
         {
 			if (parent && parent->m_mouse_region) {
 				m_mouse_region = parent->m_mouse_region->clone();
@@ -129,19 +134,21 @@ class passive_region : public abstract_rendering_source {
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(abstract_mouse_region *rgn);
 
-  	std::string m_name;					// for debugging
-  	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based
-  	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space
-	point m_window_topleft;				// region top-left in window coordinate space
+  	std::string m_name;					// for debugging XXXX do lazy
+  	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based XXXX do lazy
+  	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
+	point m_window_topleft;				// region top-left in window coordinate space XXXX do lazy
   	passive_region *m_parent;			// parent region
   	active_region *m_cur_active_region; // active region currently responsible for redraws
-  	std::vector<passive_region *>m_children;	// all subregions
-        abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
+  	std::vector<passive_region *>m_children;	// all subregions XXXX z-order
+	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
+	const abstract_smil_region_info *m_info;	// Information such as z-order, etc.
 };
 
 class passive_root_layout : public passive_region {
   public:
 	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
+	passive_root_layout(const abstract_smil_region_info *info, size bounds, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
 	void mouse_region_changed();
@@ -185,6 +192,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
 	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+	const abstract_smil_region_info *get_info() const { return m_source->m_info; }	
 	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const
 	{
 		return m_source->get_fit_rect(src_size, out_src_rect);

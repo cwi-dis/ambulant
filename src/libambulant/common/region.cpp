@@ -64,7 +64,17 @@ lib::passive_region *
 lib::passive_region::subregion(const std::string &name, screen_rect<int> bounds)
 {
 	point topleft = m_window_topleft + bounds.left_top();
-	passive_region *rv = new passive_region(name, this, bounds, topleft);
+	passive_region *rv = new passive_region(name, this, bounds, topleft, NULL);
+	m_children.push_back(rv);
+	return rv;
+}
+
+lib::passive_region *
+lib::passive_region::subregion(const abstract_smil_region_info *info)
+{
+	screen_rect<int> bounds = info->get_screen_rect();
+	point topleft = m_window_topleft + bounds.left_top();
+	passive_region *rv = new passive_region(info->get_name(), this, bounds, topleft, info);
 	m_children.push_back(rv);
 	return rv;
 }
@@ -194,10 +204,18 @@ lib::passive_region::mouse_region_changed()
 }
 
 lib::passive_root_layout::passive_root_layout(const std::string &name, size bounds, window_factory *wf)
-:   passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0))
+:   passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0), NULL)
 {
 	m_mouse_region = wf->new_mouse_region();
 	m_gui_window = wf->new_window(name, bounds, this);
+	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region);
+}
+		
+lib::passive_root_layout::passive_root_layout(const abstract_smil_region_info *info, size bounds, window_factory *wf)
+:   passive_region(info->get_name(), NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0), info)
+{
+	m_mouse_region = wf->new_mouse_region();
+	m_gui_window = wf->new_window(info->get_name(), bounds, this);
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region);
 }
 		
