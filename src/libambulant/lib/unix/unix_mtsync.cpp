@@ -10,6 +10,7 @@
  */
 
 #include "ambulant/lib/unix/unix_mtsync.h"
+#include "ambulant/lib/logger.h"
 #include <stdlib.h>
 
 using namespace ambulant;
@@ -49,7 +50,8 @@ unix::counting_semaphore::counting_semaphore()
 	m_wait(critical_section()),
 	m_count(0)
 {
-	m_wait.leave();
+	// The semaphore is initialized empty, so lock the wait mutex
+	m_wait.enter();
 }
 
 unix::counting_semaphore::~counting_semaphore()
@@ -75,6 +77,14 @@ void unix::counting_semaphore::up()
 	m_count++;
 	if (m_count <= 0) {
 		m_wait.leave();
-	}
+	} 
 	m_lock.leave();
+}
+
+int unix::counting_semaphore::count()
+{
+	m_lock.enter();
+	int rv = m_count;
+	m_lock.leave();
+	return rv;
 }

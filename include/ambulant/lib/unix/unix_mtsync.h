@@ -41,6 +41,7 @@ class counting_semaphore {
 	
 	void down();
 	void up();
+	int count();
   private:
     critical_section m_lock;
     critical_section m_wait;
