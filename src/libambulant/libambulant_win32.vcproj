@@ -64,7 +64,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="TRUE"
@@ -310,6 +310,15 @@
 			<Filter
 				Name="smil2"
 				Filter="">
+				<File
+					RelativePath=".\smil2\animate_a.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\animate_e.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\animate_n.cpp">
+				</File>
 				<File
 					RelativePath=".\smil2\region_node.cpp">
 				</File>
@@ -615,6 +624,9 @@
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
 					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\xerces_parser.h">
+					</File>
 					<Filter
 						Name="win32"
 						Filter="">
@@ -851,6 +863,18 @@
 				<Filter
 					Name="smil2"
 					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\smil2\animate_a.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\animate_e.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\animate_f.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\animate_n.h">
+					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\region_node.h">
 					</File>
