@@ -1,2 +1,3 @@
 On unix - type "./configure", then "make".
-On Windows - to be supplied.
+On Windows - Open src\Ambulant-win32.sln in Visual Studio 7.1 and build.
+On Windows CE - Open src\Ambulant-wince.vcw in Embedded VC++ 4.0 and build.
