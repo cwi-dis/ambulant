@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = AmbulantView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
