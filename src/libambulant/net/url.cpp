@@ -88,11 +88,23 @@ void net::url::init_statics() {
 	static handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1a);
  	
+	static handler_pair h1b = {"n://dn:d/", &url::set_from_numhost_port_uri};
+ 	s_handlers.push_back(&h1b);
+ 	
+	static handler_pair h1c = {"n://dn:d", &url::set_from_numhost_port_uri};
+ 	s_handlers.push_back(&h1c);
+ 	
 	static handler_pair h2 = {"n://n/", &url::set_from_host_uri};
  	s_handlers.push_back(&h2);
  	
 	static handler_pair h2a = {"n://n", &url::set_from_host_uri};
  	s_handlers.push_back(&h2a);
+ 	
+	static handler_pair h2b= {"n://dn/", &url::set_from_numhost_uri};
+ 	s_handlers.push_back(&h2b);
+ 	
+	static handler_pair h2c = {"n://dn", &url::set_from_numhost_uri};
+ 	s_handlers.push_back(&h2c);
  	
 	static handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h3);
@@ -213,11 +225,32 @@ void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) 
 	set_parts(sc, pat);
 }
 	
+// pat: "n://dn:d/"
+void net::url::set_from_numhost_port_uri(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
+	m_protocol = sc.val_at(0);
+	m_host = sc.join(4, 6);
+	m_port = short_type(atoi(sc.val_at(7).c_str()));
+	set_parts(sc, pat);
+}
+	
 // pat: "n://n/"
 void net::url::set_from_host_uri(lib::scanner& sc, const std::string& pat) {
 	m_absolute = true;
 	m_protocol = sc.val_at(0);
 	m_host = sc.val_at(4);
+	set_parts(sc, pat);
+	if(m_protocol == "http")
+		m_port = 80;
+	else if(m_protocol == "ftp")
+		m_port = 21;
+}
+
+// pat: "n://dn/"
+void net::url::set_from_numhost_uri(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
+	m_protocol = sc.val_at(0);
+	m_host = sc.join(4, 6);
 	set_parts(sc, pat);
 	if(m_protocol == "http")
 		m_port = 80;

@@ -179,11 +179,17 @@ class url {
 	// split url string representation
  	void set_from_spec(const string& spec);
  
-	// pat: "n://n:n/"
+	// pat: "n://n:d/"
 	void set_from_host_port_uri(ambulant::lib::scanner& sc, const std::string& pat); 
+	
+	// pat: "n://dn:d/"
+	void set_from_numhost_port_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "n://n/"
 	void set_from_host_uri(ambulant::lib::scanner& sc, const std::string& pat); 
+	
+	// pat: "n://dn/"
+	void set_from_numhost_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "n:///"
 	void set_from_localhost_file_uri(ambulant::lib::scanner& sc, const std::string& pat); 
