@@ -113,7 +113,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: matches!");
 		return ds;
 	}
-	audio_datasource *dds = new ffmpeg_decoder_datasource(url, ds);
+	audio_datasource *dds = new ffmpeg_decoder_datasource(ds);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
 		ds->release();
@@ -203,7 +203,7 @@ detail::ffmpeg_parser_thread::run()
 ffmpeg_parser_datasource::ffmpeg_parser_datasource(const std::string& url, AVFormatContext *context)
 :	m_url(url),
 	m_con(context),
-	m_fmt(audio_format(0, 0, 0)),
+	m_fmt(audio_format("ffmpeg")),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(NULL),
@@ -218,6 +218,8 @@ ffmpeg_parser_datasource::ffmpeg_parser_datasource(const std::string& url, AVFor
 		lib::logger::get_logger()->error("ffmpeg_parser_datasource::ffmpeg_parser_datasource: cannot start thread");
 		m_src_end_of_file = true;
 	}
+	assert(context->streams[0]);
+	m_fmt.parameters = (void *)&context->streams[0]->codec;
 }
 
 ffmpeg_parser_datasource::~ffmpeg_parser_datasource()
@@ -385,8 +387,7 @@ ffmpeg_parser_datasource::supported(const std::string& url)
 // **************************** ffpmeg_decoder_datasource *****************************
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const std::string& url, datasource *const src)
-:	m_url(url),
-	m_con(NULL),
+:	m_con(NULL),
 	m_fmt(audio_format(0, 0, 0)),
 	m_event_processor(NULL),
 	m_src(src),
@@ -394,10 +395,25 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const std::string& url, dat
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x", (void*)this);
 	ffmpeg_init();
-	const char *ext = getext(m_url);
+	const char *ext = getext(url);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: Selecting \"%s\" decoder", ext);
 	if (!select_decoder(ext))
 		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select \"%s\" decoder", ext);
+}
+
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src)
+:	m_con(NULL),
+	m_fmt(audio_format(0, 0, 0)),
+	m_event_processor(NULL),
+	m_src(src),
+	m_client_callback(NULL)
+{
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x", (void*)this);
+	ffmpeg_init();
+	audio_format fmt = src->get_audio_format();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
+	if (!select_decoder(fmt))
+		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 }
 
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
@@ -556,6 +572,32 @@ ffmpeg_decoder_datasource::select_decoder(const char* file_ext)
 			return false;
 	}
 	return true;
+}
+
+bool 
+ffmpeg_decoder_datasource::select_decoder(audio_format &fmt)
+{
+	if (fmt.name == "ffmpeg") {
+		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		if (enc == NULL) {
+				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+				return false;
+		}
+		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
+		if (codec == NULL) {
+				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+				return false;
+		}
+		m_con = avcodec_alloc_context();
+		
+		if(avcodec_open(m_con,codec) < 0) {
+				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+				return false;
+		}
+		return true;
+	}
+	// Could add support here for raw mp3, etc.
+	return false;
 }
 
 audio_format&

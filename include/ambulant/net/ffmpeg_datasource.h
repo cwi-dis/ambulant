@@ -164,6 +164,7 @@ class ffmpeg_parser_datasource: virtual public audio_datasource, virtual public 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
 	 ffmpeg_decoder_datasource(const std::string& url, datasource *src);
+	 ffmpeg_decoder_datasource(audio_datasource *src);
     ~ffmpeg_decoder_datasource();
      
 		  
@@ -180,6 +181,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
  
 	audio_format& get_audio_format();
 	bool select_decoder(const char* file_ext);
+	bool select_decoder(audio_format &fmt);
 	
 	static bool supported(const std::string& url);
   protected:
@@ -187,7 +189,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	  
   private:
     bool _end_of_file();
-	const std::string m_url;
     AVCodecContext *m_con;
 	audio_format m_fmt;
     lib::event_processor *m_event_processor;

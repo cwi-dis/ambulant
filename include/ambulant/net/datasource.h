@@ -95,6 +95,12 @@ struct audio_format {
 		samplerate(0),
 		channels(0),
 		bits(0) {};
+	audio_format(const char *n, void *p=(void *)0)
+	:   name(n),
+		parameters(p),
+		samplerate(0),
+		channels(0),
+		bits(0) {};
 };
 
 #ifdef __OBJC__
