@@ -287,15 +287,20 @@ detail::ffmpeg_demux::remove_datasink(int stream_index)
 unsigned long
 detail::ffmpeg_demux::run()
 {
+	 int pkt_nr;
+	pkt_nr = 0;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: started");
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;
 		
 		pkt->pts = 0;
 		// Read a packet
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: av_read_packet started");
 		int ret = av_read_packet(m_con, pkt);
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: av_read_packet returned %d", ret);
 		if (ret < 0) break;
+		pkt_nr++;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		detail::datasink *sink = m_sinks[pkt->stream_index];
@@ -306,12 +311,13 @@ detail::ffmpeg_demux::run()
 			// Wait until there is room in the buffer
 			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink->buffer_full()) {
-				lib::logger::get_logger()->trace("ffmpeg_parser::run: waiting for buffer space");
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: waiting for buffer space");
 				sleep(1);   // This is overdoing it
 			}
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
 			sink->data_avail(pkt->pts, pkt->data, pkt->size);
 		}
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
 		av_free_packet(pkt);
 	}
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: final data_avail(0, 0)");
@@ -660,7 +666,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 	int framerate;
 	int framebase;
 	double pts, pts1;
-
+    unsigned char* ptr;
 	double frame_delay;
 	got_pic = 0;
 	
@@ -670,10 +676,11 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 			
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:start decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
 		assert(&m_con->streams[m_stream_index]->codec != NULL);
+		ptr = inbuf;
 		while (sz > 0) {
 
-				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);	
-					
+				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, ptr, sz);	
+				ptr +=len;	
 				sz -= len;
 				if (got_pic) {
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
@@ -701,8 +708,8 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					pts = 0;
 					
 					if (ipts != AV_NOPTS_VALUE)
-						pts = (double) ipts * num/den;
-					
+						pts = (double) ipts * ((double) num)/den;
+					AM_DBG lib::logger::get_logger()->trace("pts seems to be : %f",pts);
 					pts1= pts;
 					
 					if (m_con->streams[m_stream_index]->codec.has_b_frames && frame.pict_type != FF_B_TYPE) {
@@ -733,16 +740,16 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					if(1) {
 						switch(frame.pict_type) {
 							case FF_B_TYPE:
-								AM_DBG lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %d", pts); 
+								lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %f", pts); 
 								break;
 							case FF_P_TYPE:
-								AM_DBG lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %d", pts); 
+								lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %f", pts); 
 								break;
 							case FF_I_TYPE:
-								AM_DBG lib::logger::get_logger()->trace("IIIII ffmpeg_video_datasource.data_avail: I-frame, timestamp = %d", pts); 
+								lib::logger::get_logger()->trace("IIIII ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
 								break;
 							default:
-								AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: I-frame, timestamp = %d", pts); 
+								lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
 						}
 					}
 					// And store the data.

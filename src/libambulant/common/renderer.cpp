@@ -343,13 +343,13 @@ active_video_renderer::data_avail()
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
-	/*AM_DBG*/lib::logger::get_logger()->trace("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
+	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
 	buf = m_src->get_frame(&ts, &size);
 	displayed = false;
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
 		if (ts <= now()) {
-			lib::logger::get_logger()->trace("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
+			AM_DBG lib::logger::get_logger()->trace("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			displayed = true;
