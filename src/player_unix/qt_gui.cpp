@@ -536,11 +536,24 @@ qt_gui::unsetCursor() { //XXXX Hack
 
 int
 main (int argc, char*argv[]) {
-#define USE_GETTEXT
-#ifdef	USE_GETTEXT
-	bindtextdomain (PACKAGE, LOCALEDIR);
+
+#ifdef	ENABLE_NLS
+	// Load localisation database
+	bool private_locale = false;
+	char *home = getenv("HOME");
+	if (home) {
+		std::string localedir = std::string(home) + "/.ambulant/locale";
+		if (access(localedir.c_str(), 0) >= 0) {
+			private_locale = true;
+			bindtextdomain(PACKAGE, localedir.c_str());
+		}
+	}
+	if (!private_locale)
+		bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-#endif/*USE_GETTEXT*/
+#endif /*ENABLE_NLS*/
+
+	// Load preferences, initialize app and logger
 	unix_preferences unix_prefs;
 	unix_prefs.load_preferences();
 	FILE* DBG = stdout;
@@ -554,13 +567,12 @@ main (int argc, char*argv[]) {
 	QPEApplication myapp(argc, argv);
 #endif/*QT_NO_FILEDIALOG*/
 
-#ifdef	USE_GETTEXT
+	// Print welcome banner
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
-#if USE_NLS
+#if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
-#endif/*USE_GETTEXT*/
 
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
