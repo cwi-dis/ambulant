@@ -106,6 +106,7 @@ class qt_ambulant_widget : public QWidget {
 	ambulant_qt_window* qt_window();
 	
 	void paintEvent(QPaintEvent* e);
+	void mouseReleaseEvent(QMouseEvent* e);
 
   private:
 	ambulant_qt_window* m_qt_window;

@@ -189,6 +189,23 @@ qt_ambulant_widget::paintEvent(QPaintEvent* e) {
 	m_qt_window->redraw(r);
 }
 
+void
+qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace(
+		"qt_ambulant_widget::mouseReleaseEvent"
+		"(0x%x) e=0x%x, position=(%d, %d))",
+		(void*) this, (void*) e, e->x(), e->y());
+	if (m_qt_window == NULL) {
+		lib::logger::get_logger()->trace(
+			"qt_ambulant_widget::mouseReleaseEvent"
+			"(0x%x) e=0x%x  position=(%d, %d) m_qt_window==NULL",
+			(void*) this, (void*) e, e->x(), e->y());
+		return;
+	}
+	lib::point amwhere = lib::point(e->x(), e->y());
+	m_qt_window->user_event(amwhere);
+}
+
 void 
 qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw) {
 	m_qt_window = aqw;
