@@ -65,7 +65,9 @@ namespace ambulant {
 using namespace lib;
     namespace gui {
         namespace arts {
-        
+
+//bool m_arts_init = false;
+
 class arts_active_audio_renderer : public active_renderer, public timer_events {
   public:
       arts_active_audio_renderer(
@@ -77,6 +79,7 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
 
       ~arts_active_audio_renderer();
 
+      int init();
       void start(double where);
       void stop() {};
       void pause() {};
@@ -86,15 +89,15 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
       void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
   private:
 
-    int arts_setup(int rate, int bits, int channels, char *name);
-    int arts_play(char *data, int size);
-
-    arts_stream_t m_stream;
-    int m_rate;
-    int m_channels;
-    int m_bits;
-    char *m_name;
-    event *m_playdone;
+      static bool m_arts_init;
+      int arts_setup(int rate, int bits, int channels, char *name);
+      int arts_play(char *data, int size);
+      arts_stream_t m_stream;
+      int m_rate;
+      int m_channels;
+      int m_bits;
+      char *m_name;
+      event *m_playdone;
 
 
 };
