@@ -76,14 +76,33 @@ cocoa_text_renderer::cocoa_text_renderer(
 		event_processor *evp,
 		common::factories *factory)
 :	cocoa_renderer(context, cookie, node, evp, factory),
-	m_text_storage(NULL)
+	m_text_storage(NULL),
+	m_text_color(NULL),
+	m_text_font(NULL)
 {
+	// XXX These parameter names are tentative
 	smil2::params *params = smil2::params::for_node(node);
-	color_t *text_color = lib::to_color(0, 0, 0);
+	color_t text_color = lib::to_color(0, 0, 0);
 	if (params) {
+		const char *fontname = params->get_str("fontName");
+		float fontsize = 0.0;
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		text_color = params->get_color("fontColor", text_color);
-		NSLog(@"params found, fontColor=(%d, %d, %d)", redc(text_color), greenc(text_color), bluec(text_color));
+		fontsize = params->get_float("fontSize", 0.0);
+		AM_DBG NSLog(@"params found, fontColor=(%d, %d, %d), fontName=%s, fontSize=%g", 
+			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
+		if (fontname) {
+			NSString *nsfontname = [NSString stringWithCString: fontname];
+			m_text_font = [NSFont fontWithName: nsfontname size: fontsize];
+			if (m_text_font == NULL)
+				lib::logger::get_logger()->trace("param: fontName \"%s\" unknown", fontname);
+		} else if (fontsize) {
+			m_text_font = [NSFont userFontOfSize: fontsize];
+			if (m_text_font == NULL)
+				lib::logger::get_logger()->trace("param: fontSize \"%g\" unknown", fontsize);
+		}
 		delete params;
+		[pool release];
 	}
 	m_text_color = [NSColor colorWithCalibratedRed:redf(text_color)
 					green:greenf(text_color)
@@ -109,7 +128,10 @@ cocoa_text_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *wind
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
-		[m_text_storage setForegroundColor: m_text_color];
+		if (m_text_color)
+			[m_text_storage setForegroundColor: m_text_color];
+		if (m_text_font)
+			[m_text_storage setFont: m_text_font];
 		m_layout_manager = [[NSLayoutManager alloc] init];
 		m_text_container = [[NSTextContainer alloc] init];
 		[m_layout_manager addTextContainer:m_text_container];

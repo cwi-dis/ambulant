@@ -123,9 +123,24 @@ params::get_color(const char *paramname, lib::color_t dft)
 lib::color_t
 params::get_color(const std::string &paramname, lib::color_t dft)
 {
-	char *s_color = get_str(paramname);
+	const char *s_color = get_str(paramname);
 	if (s_color == NULL) return dft;
 	return lib::to_color(s_color);
+}
+
+float
+params::get_float(const char *paramname, float dft)
+{
+	std::string pname(paramname);
+	return get_float(pname, dft);
+}
+
+float
+params::get_float(const std::string &paramname, float dft)
+{
+	const char *s_float = get_str(paramname);
+	if (s_float == NULL) return dft;
+	return atof(s_float);
 }
 
 

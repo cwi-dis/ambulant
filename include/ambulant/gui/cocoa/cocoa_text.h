@@ -82,6 +82,7 @@ class cocoa_text_renderer : public cocoa_renderer {
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
 	NSColor *m_text_color;
+	NSFont *m_text_font;
 	critical_section m_lock;
 };
 

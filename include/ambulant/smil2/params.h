@@ -71,6 +71,8 @@ class params {
 	const char *get_str(const std::string &paramname);
 	lib::color_t get_color(const char *paramname, lib::color_t dft);
 	lib::color_t get_color(const std::string &paramname, lib::color_t dft);
+	float get_float(const char *paramname, float dft);
+	float get_float(const std::string &paramname, float dft);
   private:
 	params(const lib::node *n);
 	
