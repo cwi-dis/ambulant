@@ -447,6 +447,16 @@ lib::node::xmlrepr() const {
 	return s;
 }
 
+unsigned int 
+lib::node::size() const {
+	const_iterator it;
+	const_iterator e = end();
+	unsigned int count = 0;
+	for(it = begin(); it != e; it++)
+		if((*it).first) count++;
+	return count;
+}
+
 /*
 #ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
@@ -467,13 +477,7 @@ lib::node::to_trimmed_string() const {
 	return os.str();
 }
 #endif
-unsigned int 
-lib::node::size() const {
-	unsigned int count = 0;
-	count_visitor<node> visitor(count);
-	std::for_each(begin(), end(), visitor);
-	return count;
-}
+
 
 void lib::node::create_idmap(std::map<std::string, node*>& m) const {
 	attr_collector<node> visitor(m);
