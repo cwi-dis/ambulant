@@ -13,7 +13,6 @@
 #include "ambulant/lib/node.h"
 
 #include "jpeglib.h"
-#pragma comment (lib,"libjpeg.lib")
 
 using namespace ambulant;
 
