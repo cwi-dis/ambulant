@@ -145,7 +145,7 @@ net::ffmpeg_audio_datasource::callback()
 	}
 	
 	decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", size, outsize);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
 	m_buffer.pushdata(outsize);
 	m_src->readdone(decoded);
 	

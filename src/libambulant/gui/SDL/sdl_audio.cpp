@@ -181,6 +181,7 @@ void channel_done(int channel)
 {
         gui::sdl::sdl_active_audio_renderer* dummy;
         dummy = (gui::sdl::sdl_active_audio_renderer*) get_ptr(channel);
+		// XXX playdone is the wrong call : more data may be coming.
         dummy->playdone();
 }
 
@@ -200,6 +201,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	net::passive_datasource *src)
 :	active_renderer(context, cookie, node, evp, src, NULL)
 {
+	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
     m_rate = 44100;
     m_channels = 1;
     m_bits=16;
@@ -211,12 +213,17 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 #endif	
 }
 
+gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
+{
+	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::~sdl_active_audio_renderer() this=(x%x)",  this);		
+}
+
 int
 gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
 {
     int err = 0;
     if (!m_sdl_init) {	
-  		err = SDL_Init(SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE*/);
+  		err = SDL_Init(SDL_INIT_AUDIO /* | SDL_INIT_NOPARACHUTE */ );
 		if (err < 0) {
         	lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL init failed", (void *)this);
        		return err;
@@ -253,17 +260,17 @@ gui::sdl::sdl_active_audio_renderer::inc_channels()
 }
 
 
-gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
-{
-	
-	
-}
+
 
 void
 gui::sdl::sdl_active_audio_renderer::playdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
 	unlock_channel(m_channel_used);
+	if ((m_src->size() == 0) && (m_src->end_of_file())) {
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stopped_callback() this = (x%x)",this);
+	stopped_callback();
+	}
 }
 
 
@@ -283,6 +290,7 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	m_audio_chunck.abuf = (Uint8*) m_audio_src->read_ptr();
 #else
 	m_audio_chunck.abuf = (Uint8*) m_src->read_ptr();
+	AM_DBG lib::logger::get_logger()->trace("read_ptr = x%x",m_audio_chunck.abuf);
 #endif
 	
 #ifdef WITH_FFMPEG	
@@ -314,8 +322,13 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 			m_channel_used = free_channel();
 		}	
 		lock_channel((void*) this, m_channel_used);	
-		AM_DBG lib::logger::get_logger()->trace("New Channel : %d, %d", m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("New Channel : %d", m_channel_used);
 		result = Mix_PlayChannel(m_channel_used,&m_audio_chunck, 0);
+#ifdef WITH_FFMPEG
+		m_audio_src->readdone(m_audio_chunck.alen);
+#else
+		m_src->readdone(m_audio_chunck.alen);
+#endif
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("PLAYING USING CHANNEL : %d", m_channel_used);	
 	
@@ -332,16 +345,20 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	}
 	
 #ifdef WITH_FFMPEG
-    if ((m_audio_src->size() > 0) || (!m_audio_src->end_of_file())) {
-		m_audio_src->start(m_event_processor, m_readdone);
-#else
-	if ((m_src->size() > 0) || (!m_src->end_of_file())) {
+ if (((m_src->size() > 0) ) || (!m_src->end_of_file()) ) {
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::%d bytes still in buffer, EOF : %d",m_src->size(), m_src->end_of_file());
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::m_src->start(..) this = (x%x)",this);
 		m_src->start(m_event_processor, m_readdone);
-#endif
-	} else {
-		stopped_callback();
 	}
-}
+#else
+	if (((m_src->size() > 0) ) || (!m_src->end_of_file()) ) {
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::%d bytes still in buffer, EOF : %d",m_src->size(), m_src->end_of_file());
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::m_src->start(..) this = (x%x)",this);
+		m_src->start(m_event_processor, m_readdone);
+	}
+#endif
+
+}	
 
 
 

@@ -73,7 +73,7 @@ net::databuffer::databuffer()
     m_size = 0;
     m_rear = 0;
     m_max_size = DEFAULT_MAX_BUF_SIZE;
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
+	//AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
 	m_buffer = NULL;
     m_buffer_full = false;
 }
@@ -108,7 +108,7 @@ net::databuffer::databuffer(int max_size)
     } else {
         m_max_size = DEFAULT_MAX_BUF_SIZE;
     }
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(%d): [size = %d, max size = %d]",max_size, m_size, m_max_size);
+	//AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(%d): [size = %d, max size = %d]",max_size, m_size, m_max_size);
     m_buffer_full = false;
 }
 
@@ -149,15 +149,15 @@ void net::databuffer::dump(std::ostream& os, bool verbose) const
 char *
 net::databuffer::prepare()
 {
-	AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: start BUFSIZ = %d", BUFSIZ);
+	//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: start BUFSIZ = %d", BUFSIZ);
 	
     if(!m_buffer_full) {
         m_buffer = (char*) realloc(m_buffer, m_size + BUFSIZ);
-		AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: buffer realloc done (%x)",m_buffer);
+		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: buffer realloc done (%x)",m_buffer);
         if (!m_buffer) {
             lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
         }
-		AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: returning m_front (%x)",m_buffer + m_size);
+		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: returning m_front (%x)",m_buffer + m_size);
 		return (m_buffer + m_size);
     } else {
         lib::logger::get_logger()->warn("databuffer::databuffer::prepare : buffer full but still trying to fill it ");
@@ -170,14 +170,14 @@ void net::databuffer::pushdata(int size)
 {
     if(!m_buffer_full) {
         m_size += size;
-		AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",size);
+		//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",size);
         m_used = m_size - m_rear;
         m_buffer = (char*) realloc(m_buffer, m_size);
          if (!m_buffer) {
              lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
          }
         if(m_size > m_max_size) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
+			//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
             m_buffer_full = true;
         }
     } else {
@@ -242,7 +242,7 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
  			lib::logger::get_logger()->fatal("active_datasource(): out of memory");
 		}
 		m_source->add_ref();
-		AM_DBG m_buffer->dump(std::cout, false);
+		//AM_DBG m_buffer->dump(std::cout, false);
 	}
 }
 
@@ -311,16 +311,16 @@ net::active_datasource::read_file()
 {
   	char *buf;
   	int n; 	
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading file ");
+	//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: getting buffer pointer");
+		//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: getting buffer pointer");
             buf = m_buffer->prepare();
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: buffer ptr : %x", buf);
+			//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: buffer ptr : %x", buf);
 			if (buf) {
-				AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading %d bytes", BUFSIZ);
+				//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading %d bytes", BUFSIZ);
 				n = ::read(m_stream, buf, BUFSIZ);
-				AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: done reading %d bytes", n);
+				//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: done reading %d bytes", n);
 				if (n > 0) m_buffer->pushdata(n); 
 			}
 		
@@ -343,11 +343,12 @@ net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
  {
  	if (! end_of_file() ) read_file();
 	
-
-    if (evp && callback) {
-		AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
-		evp->add_event(callback, 0, ambulant::lib::event_processor::high);
-    }
+	if (m_buffer->used() > 0 ) {
+    	if (evp && callback) {
+			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback (x%x)", callback);
+			evp->add_event(callback, 0, ambulant::lib::event_processor::high);
+    	}
+	}
 }
  
 void
