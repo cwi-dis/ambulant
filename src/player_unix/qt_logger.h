@@ -67,7 +67,7 @@
 class qt_logger {
  public:
 	static qt_logger* get_qt_logger();
-	static void show_message(const char *format,...);
+	static void show_message(const char *format);
 	QTextEdit* get_logger_window();
  protected:
 	qt_logger();

@@ -165,7 +165,7 @@ qt_logger::get_qt_logger() {
 }
 
 void
-qt_logger::show_message(const char *format,...)
+qt_logger::show_message(const char *format)
 {
 }
 
