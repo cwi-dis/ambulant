@@ -89,7 +89,7 @@ class time_node : public schedulable {
 	
 	virtual ~time_node();
   	
-	// TimeElement interface
+	// TimeElement DOM interface
 	// Currently support only startElement for the root.
 	virtual void start();
 	virtual void stop();
@@ -108,6 +108,7 @@ class time_node : public schedulable {
 	virtual void set_timer(lib::timer *tmr) { m_timer = tmr;}
 	virtual lib::timer *get_timer() { return m_timer;}
 	
+	// Timegarph configuration
 	void set_want_activate_event(bool want) { m_want_activate_events = want;}
 	bool wants_activate_event() const { return m_want_activate_events;}
 	void want_accesskey(bool want) { m_want_accesskey = want;}
@@ -152,13 +153,15 @@ class time_node : public schedulable {
 	// End of simple duration update
 	void on_eosd(qtime_type timestamp);
 	
+	// Raising events
 	virtual void raise_begin_event(qtime_type timestamp);
 	virtual void raise_repeat_event(qtime_type timestamp);
 	virtual void raise_end_event(qtime_type timestamp, time_node *oproot);
 	virtual void raise_activate_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
 	virtual void raise_update_event(qtime_type timestamp);
-		
+	
+	// Interval manipulators	
 	void set_interval(qtime_type timestamp, const interval_type& i);
 	void cancel_interval(qtime_type timestamp);
 	void update_interval(qtime_type timestamp, const interval_type& i);
@@ -169,6 +172,7 @@ class time_node : public schedulable {
 	// excl
 	void defer_interval(qtime_type timestamp);
 	
+	// Node activities
 	void activate(qtime_type timestamp);
 	void repeat(qtime_type timestamp);
 	void remove(qtime_type timestamp);
@@ -178,7 +182,7 @@ class time_node : public schedulable {
 	void check_repeat(qtime_type timestamp);
 	
 	// Playable commands
-	void create_playable();
+	common::playable *create_playable();
 	void start_playable(time_type offset = 0);
 	void seek_playable(time_type offset);
 	void pause_playable();
@@ -190,7 +194,7 @@ class time_node : public schedulable {
 	void start_animation(time_type offset);
 	void stop_animation();
 	
-	// Std xml tree interface
+	// Std xml tree navigation interface
 	const time_node *down() const { return m_child;}
 	const time_node *up() const { return m_parent;}
 	const time_node *next() const { return m_next;}
@@ -213,6 +217,9 @@ class time_node : public schedulable {
 	const time_node* get_root() const {return const_nnhelper::get_root(this);}
 	
 	bool is_descendent_of(time_node *tn) const {return const_nnhelper::is_descendent(this, tn);}
+	
+	void get_path(std::list<time_node*>& path) { return nnhelper::get_path(this, path);}
+	void get_path(std::list<const time_node*>& path) { return const_nnhelper::get_path(this, path);}
 	
 	// tree iterators
 	typedef tree_iterator<time_node> iterator;
@@ -237,7 +244,7 @@ class time_node : public schedulable {
 	value_type get_simple_time() const;
 	value_type get_rad() const { return m_rad;}
 
-	// Time type queries
+	// Time type queries and classification
 	time_container_type get_type() const { return m_type;}
 	const char* get_type_as_str() const { return time_container_type_as_str(m_type);}
 	bool is_time_container() const { return m_type != tc_none;}
@@ -498,8 +505,16 @@ class time_node : public schedulable {
 	// Last calc_dur() result
 	time_type m_last_cdur;
 	
-	// S-transitions scheduling
+	// Provide access to the states
+	friend class time_state;
+	friend class reset_state;
+	friend class proactive_state;
 	friend class active_state;
+	friend class postactive_state;
+	friend class dead_state;
+	
+	// logger
+	lib::logger *m_logger;
 	
   private:
 	// Time states

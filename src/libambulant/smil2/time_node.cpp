@@ -60,7 +60,7 @@
 
 #include "ambulant/lib/logger.h"
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -73,9 +73,7 @@
 using namespace ambulant;
 using namespace smil2;
 
-static lib::logger *tnlogger = 0;
-
-// static
+// static (mem verifier)
 int time_node::node_counter = 0;
 
 time_node::time_node(context_type *ctx, const node *n, 
@@ -105,10 +103,11 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_mediadur(time_type::unresolved),
 	m_impldur(time_type::unresolved),
 	m_last_cdur(time_type::unresolved),
+	m_logger(0),
 	m_parent(0), m_next(0), m_child(0) {
 	assert(type <= tc_none);
 	node_counter++;
-	if(!tnlogger) tnlogger = lib::logger::get_logger();
+	m_logger = lib::logger::get_logger();
 	m_time_calc = new time_calc(this);
 	create_time_states();
 	m_state = m_time_states[ts_reset];
@@ -258,7 +257,7 @@ std::string time_node::to_string() const {
 
 // Returns the implicit duration of this node. 
 // This is an implementation for a leaf-node.
-// e.g. queries playable for the implicit dur.
+// e.g. it queries playable for the implicit dur.
 // The last definite implicit duration returned by the 
 // playable is stored in the variable m_impldur.
 // This function is called if and only if the implicit
@@ -280,19 +279,19 @@ time_node::get_implicit_dur() {
 	if(m_impldur != time_type::unresolved)
 		return m_impldur;	
 	
-	// Can the associated playable provide us the implicit duration? 
+	// Can the associated playable provide the implicit duration? 
 	// If yes, store it a "m_mediadur" in internal timing units (ms).
 	if(m_mediadur == time_type::unresolved) {
 		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
 		if(dur_pair.first && dur_pair.second>0) {
 			m_impldur = m_mediadur = secs_to_time_type(dur_pair.second)();
-			AM_DBG tnlogger->trace("%s[%s].media_dur(): %ld", m_attrs.get_tag().c_str(), 
+			AM_DBG m_logger->trace("%s[%s].media_dur(): %ld", m_attrs.get_tag().c_str(), 
 				m_attrs.get_id().c_str(), m_mediadur());
 		}
 	}
 	
-	// No, the playable cannot provide its implicit duration
-	AM_DBG tnlogger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
+	// Trace the return value of this function
+	AM_DBG m_logger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
 		
 	return m_impldur;
@@ -303,14 +302,14 @@ time_node::get_implicit_dur() {
 // The last calculated simple duration is stored in the variable m_last_cdur.
 // This function will call the function "get_implicit_dur()" if and only if 
 // the implicit duration of a node is required by the timing model.
+// Delegates the actual work to the associated time_calc instance.
 time_node::time_type 
 time_node::calc_dur() {
 	return (m_last_cdur = m_time_calc->calc_dur(), m_last_cdur);
 }
 
-// Returns true for continous media leaf nodes for which
-// the implicit duration is required by the model for
-// timing calculations.
+// Returns true when the implicit duration is 
+// required by the model for timing calculations
 bool time_node::needs_implicit_dur() const {
 	if(is_time_container() || is_discrete())
 		return false;
@@ -325,6 +324,7 @@ bool time_node::needs_implicit_dur() const {
 
 // Calculates and returns the current inteval end.
 // This uses calc_ad() function.
+// Delegates the actual work to the associated time_calc instance.
 time_node::time_type 
 time_node::calc_current_interval_end()  {
 	time_mset end_list;
@@ -333,6 +333,9 @@ time_node::calc_current_interval_end()  {
 }
 
 // Calculates the first valid interval for this node. 
+// Delegates the actual work to the associated time_calc instance.
+// Calcs are done within the context of a parent simple dur
+// A valid interval has to overlap with parent's simple duration
 time_node::interval_type 
 time_node::calc_first_interval() {
 
@@ -355,6 +358,11 @@ time_node::calc_first_interval() {
 }
 
 // Calculates the next acceptable interval for this node.
+// Delegates the actual work to the associated time_calc instance.
+// Calcs are done within the context of a parent simple dur
+// An valid interval has to overlap with parent's simple duration
+// An interval should begin after the previous end
+// A zero-dur previous interval affects calcs  
 time_node::interval_type 
 time_node::calc_next_interval(interval_type previous) {
 	if(previous == interval_type::unresolved) {
@@ -386,6 +394,7 @@ time_node::calc_next_interval(interval_type previous) {
 
 // Sets the state of this node.
 // timestamp: "scheduled now" in parent simple time
+// This is the state change hook for this node.
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
 	if(m_state->ident() == state) return;
 	m_state->exit(timestamp, oproot);
@@ -393,9 +402,28 @@ void time_node::set_state(time_state_type state, qtime_type timestamp, time_node
 	m_state->enter(timestamp);
 }
 
-// Cancels the current interval.
+// Calls set_state() after checking for excl
+void time_node::set_state_ex(time_state_type tst, qtime_type timestamp) {
+	// this should be true
+	assert(timestamp.first == sync_node());
+	
+	if(sync_node()->is_excl()) {
+		excl *p = static_cast<excl*>(sync_node());
+		if(tst == ts_active) {
+			p->interrupt(this, timestamp);
+		} else if(tst == ts_postactive) {
+			set_state(tst, timestamp, this);
+			p->on_child_normal_end(this, timestamp);
+		}
+		return;
+	}
+	set_state(tst, timestamp, this);
+}
+
+
+// Cancels the current interval notifyings dependents.
 void time_node::cancel_interval(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
 	assert(m_interval.is_valid());
 	
@@ -406,13 +434,11 @@ void time_node::cancel_interval(qtime_type timestamp) {
 	
 	on_cancel_instance(timestamp, tn_begin, i.begin);
 	on_cancel_instance(timestamp, tn_end, i.end);
-
-	//cancel_schedule();
 }
 
-// Updates the current interval with the one provided.
+// Updates the current interval with the one provided notifyings dependents.
 void time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
-	AM_DBG tnlogger->trace("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());	
 	assert(m_interval.is_valid());
 	assert(timestamp.first == sync_node());
@@ -426,7 +452,6 @@ void time_node::update_interval(qtime_type timestamp, const interval_type& new_i
 		time_type dt = m_interval.begin - timestamp.second;
 		qtime_type qt(sync_node(), m_interval.begin);
 		on_update_instance(timestamp, tn_begin, m_interval.begin, old.begin);
-		//schedule_state_transition(ts_active, qt, dt);
 		raise_update_event(timestamp);
 	} 
 	if(m_interval.end != old.end) {
@@ -439,9 +464,9 @@ void time_node::update_interval(qtime_type timestamp, const interval_type& new_i
 	}
 }
 
-// Updates the current interval end with the value provided.
+// Updates the current interval end with the value provided notifyings dependents.
 void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
-	AM_DBG tnlogger->trace("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld", 
+	AM_DBG m_logger->trace("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
 		::repr(m_interval.end).c_str(), 
 		::repr(new_end).c_str(), 
@@ -471,7 +496,7 @@ void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 // when the node is activated.
 // param timestamp: "now" in parent simple time
 void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
-	AM_DBG tnlogger->trace("%s[%s].set_current_interval(): %s (DT=%ld)", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].set_current_interval(): %s (DT=%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 	
 	// verify the assumptions made in the following code
@@ -526,7 +551,7 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	else set_state_ex(ts_active, timestamp);
 }
 
-// Add to history and invalidate current interval
+// Add to history and invalidate the current interval
 void time_node::played_interval(qtime_type timestamp) {
 	m_history.push_back(m_interval);
 	q_smil_time b(sync_node(), m_interval.begin);
@@ -535,6 +560,8 @@ void time_node::played_interval(qtime_type timestamp) {
 	m_interval = interval_type::unresolved;
 }
 
+// Returns the first interval played by this node.
+// Returns an invalid interval when this node has not played.
 const time_node::interval_type& time_node::get_first_interval(bool asdoc /* = false*/) const {
 	if(asdoc) {
 		if(!m_doc_history.empty())
@@ -546,7 +573,7 @@ const time_node::interval_type& time_node::get_first_interval(bool asdoc /* = fa
 	return m_interval;
 }
 
-// Returns the last interval associated with this (maybe invalid)
+// Returns the last interval associated with this (can be invalid)
 const time_node::interval_type& time_node::get_last_interval() const {
 	if(m_interval.is_valid())
 		return m_interval;
@@ -604,7 +631,7 @@ void time_node::activate(qtime_type timestamp) {
 		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
 	}
 	
-	AM_DBG tnlogger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -626,7 +653,7 @@ void time_node::activate(qtime_type timestamp) {
 // Starts an animation
 void time_node::start_animation(time_type offset) {
 	qtime_type timestamp(this, offset);
-	AM_DBG tnlogger->trace("%s[%s].start_animation(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].start_animation(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	animation_engine *ae = m_context->get_animation_engine();
 	animate_node *an = (animate_node*)this;
@@ -656,10 +683,10 @@ bool time_node::is_animation() const {
 void time_node::start_playable(time_type offset) {
 	if(!is_playable()) return;
 	qtime_type timestamp(this, offset);
-	AM_DBG tnlogger->trace("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
-	common::playable *np = m_context->create_playable(m_node);
+	common::playable *np = create_playable();
 	const lib::node *trans_in = m_attrs.get_trans_in();
 	if(np) {
 		np->wantclicks(m_want_activate_events);
@@ -673,21 +700,21 @@ void time_node::start_playable(time_type offset) {
 
 void time_node::seek_playable(time_type offset) {
 	if(!is_playable()) return;
-	tnlogger->trace("%s[%s].seek(%ld)", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].seek(%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset());
 	m_context->seek_playable(m_node, time_type_to_secs(offset()));
 }
 
 void time_node::pause_playable() {
 	if(!is_playable()) return;
-	tnlogger->trace("%s[%s].pause()", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].pause()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->pause_playable(m_node);
 }
 
 void time_node::resume_playable() {
 	if(!is_playable()) return;
-	tnlogger->trace("%s[%s].resume()", m_attrs.get_tag().c_str(), 
+	m_logger->trace("%s[%s].resume()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->resume_playable(m_node);
 }
@@ -696,23 +723,23 @@ void time_node::stop_playable() {
 	if(!is_playable()) return;
 	if(!m_needs_remove) return;
 	m_eom_flag = true;
-	tnlogger->trace("%s[%s].stop()", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].stop()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->stop_playable(m_node);
 }
 
 void time_node::repeat_playable() {
 	if(!is_playable()) return;
-	tnlogger->trace("%s[%s].repeat()", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].repeat()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->start_playable(m_node, 0);
 }
 
-void time_node::create_playable() {
-	if(is_playable()) return;
-	tnlogger->trace("%s[%s].create()", m_attrs.get_tag().c_str(), 
+common::playable *time_node::create_playable() {
+	assert(is_playable());
+	AM_DBG m_logger->trace("%s[%s].create()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
-	m_context->create_playable(m_node);
+	return m_context->create_playable(m_node);
 }
 
 // Prepare children playables without recursion
@@ -721,12 +748,12 @@ void time_node::prepare_playables() {
 	get_children(children);
 	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++) {
-		if(!(*it)->is_time_container() && !(*it)->is_animation())
-			(*it)->create_playable();
+		if((*it)->is_playable()) (*it)->create_playable();
 	}
 }
 
-/////////////
+//////////////////////////
+// Driver schell
 
 void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& events) {
 	if(!is_alive()) return;
@@ -735,7 +762,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			events[timestamp.to_doc()].push_back(this);
 		} else if(m_interval.end.is_definite()) {
-			// XXX: check for repeat
+			// XXX: check for repeat (or leave it to sampling)
 			qtime_type timestamp(sync_node(), m_interval.end);
 			events[timestamp.to_doc()].push_back(this);
 			
@@ -803,9 +830,9 @@ void time_node::exec(qtime_type timestamp) {
 	}
 }
 
-// Returns true when the end conditions evaluate to true
+// Returns true when the end conditions of this node evaluate to true
 // e.g. the node should be deactivated
-// Assums the node is active
+// Assumes the node is active
 bool time_node::end_cond(qtime_type timestamp) {
 	assert(timestamp.first == sync_node());
 	assert(is_active());
@@ -813,7 +840,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 	bool tc = !end_sync_cond_applicable() && timestamp.second >= m_interval.end;
 	
 	if(is_time_container() && (ec || tc)) {
-		AM_DBG tnlogger->trace("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(), (ec?"end_sync_cond":"interval_end"));
 	}
 	
@@ -827,7 +854,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 	if(is_cmedia() && !is_animation() && tc) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
 			tc = false;
-			AM_DBG tnlogger->trace("%s[%s].end_cond() waiting media end", 
+			AM_DBG m_logger->trace("%s[%s].end_cond() waiting media end", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
 		}
 	}
@@ -835,36 +862,28 @@ bool time_node::end_cond(qtime_type timestamp) {
 	return ec || tc;
 }
 
-// Returns true when the begin conditions evaluate to true
-// e.g. the node can be activated
+// Returns true when the begin conditions of this node evaluate to true
+// e.g. the node should be activated
 bool time_node::begin_cond(qtime_type timestamp) {
 	return m_interval.is_valid() && m_interval.contains(timestamp.second);
 }
 
-// Calls set_state() after checking for excl
-void time_node::set_state_ex(time_state_type tst, qtime_type timestamp) {
-	// this should be true
-	assert(timestamp.first == sync_node());
-	
-	//if(!is_root() && !is_alive())
-	//	return; // not an S transition
-	
-	if(sync_node()->is_excl()) {
-		excl *p = static_cast<excl*>(sync_node());
-		if(tst == ts_active) {
-			p->interrupt(this, timestamp);
-		} else if(tst == ts_postactive) {
-			set_state(tst, timestamp, this);
-			p->on_child_normal_end(this, timestamp);
-		}
-		return;
+//////////////////////////
+// Notifications
+
+// The clock used bu the argument timestamp can be any
+// Convert it if possible to this sync_node clock time
+void time_node::sync_update(qtime_type timestamp) {
+	time_type pt = timestamp.as_node_time(sync_node());
+	if(pt.is_resolved()) {
+		timestamp = qtime_type(sync_node(), pt);
+		m_state->sync_update(timestamp);
 	}
-	set_state(tst, timestamp, this);
 }
 
 // Called on the end of simple duration event
 void time_node::on_eosd(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("*** %s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("*** %s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -896,10 +915,50 @@ void time_node::on_eosd(qtime_type timestamp) {
 	}
 }
 
+// Begin of media notification
+// Currently this notification is not used.
+// Could be used to define to slip sync offset.
+void time_node::on_bom(qtime_type timestamp) {
+	m_eom_flag = false;
+	if(!is_discrete()) {
+		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
+		qtime_type st = pt.as_qtime_down_to(this);
+		AM_DBG m_logger->trace("%s[%s].on_bom() ST:%ld, PT:%ld, DT:%ld", 
+			m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), 
+			st.second(),
+			pt.second(),
+			timestamp.second()); 
+	}
+	if(m_timer) m_timer->resume();
+}
+
+// Notification from the playable that has paused for fetching bits
+void time_node::on_pom(qtime_type timestamp) {
+	if(m_timer) m_timer->pause();
+}
+
+// Notification from the playable that has resumed playback
+void time_node::on_rom(qtime_type timestamp) {
+	if(m_timer) m_timer->resume();
+}
+
+// End of nedia notification
+// This notification is taken into account when this node is still active
+// and the implicit duration is involved in timing calculations.
+void time_node::on_eom(qtime_type timestamp) {
+	m_eom_flag = true;
+	if(is_playable() && !is_discrete()) 
+		raise_update_event(timestamp);
+}
+
+//////////////////////////
+// Node activities (see also activate())
+
 // The following function is called when the node should repeat.
 // It is responsible to execute the repeat actions for this node. 
 void time_node::repeat(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -909,6 +968,8 @@ void time_node::repeat(qtime_type timestamp) {
 	raise_repeat_event(timestamp);
 			
 	if(down()) {
+		// The reset_children op ends all active children
+		// In consequence for excl emties its pause queue
 		reset_children(timestamp, this);
 		startup_children(timestamp);
 	} 
@@ -940,7 +1001,7 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	m_time_calc->set_paused_mode(true);
 	sync_update(timestamp);
 	interval_type i2 = m_interval;
-	AM_DBG tnlogger->trace("%s[%s].pause(): %s -> %s at %ld", 
+	AM_DBG m_logger->trace("%s[%s].pause(): %s -> %s at %ld", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
 		::repr(i1).c_str(), ::repr(i2).c_str(), self_simple_time());
 }
@@ -950,14 +1011,14 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 void time_node::resume(qtime_type timestamp) {
 	if(!is_active()) {
 		// gone inactive while paused
-		AM_DBG tnlogger->trace("%s[%s].resume(): gone inactive while paused", 
+		AM_DBG m_logger->trace("%s[%s].resume(): gone inactive while paused", 
 			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
 		return; 
 	}
 	
 	m_time_calc->set_paused_mode(false);
 	set_paused(false);
-	AM_DBG tnlogger->trace("%s[%s].resume()", 
+	AM_DBG m_logger->trace("%s[%s].resume()", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
 	
 	if(is_playable()) resume_playable();
@@ -1048,7 +1109,7 @@ void time_node::fill(qtime_type timestamp) {
 	
 	if(keep) {
 		// this node should be freezed
-		AM_DBG tnlogger->trace("*** %s[%s].pause() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		AM_DBG m_logger->trace("*** %s[%s].pause() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(),  
 			timestamp.as_time_value_down_to(this), timestamp.second(), 
 			timestamp.as_doc_time_value());
@@ -1078,7 +1139,7 @@ void time_node::fill(qtime_type timestamp) {
 // or when the next is activated.
 void time_node::remove(qtime_type timestamp) {
 	if(!m_needs_remove) return;
-	AM_DBG tnlogger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
@@ -1205,7 +1266,8 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 }
 
 ////////////////////
-// beginEvent, repeat event, endEvent for leaf nodes
+// Raising events: 
+// beginEvent, repeat event, endEvent
 
 // Called when this node transitions to active.
 // (active_state::enter() activity)
@@ -1213,7 +1275,7 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 // and notify dependents.
 // Leaf nodes have to notify dependents and start their peer playable.
 void time_node::raise_begin_event(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].raise_begin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].raise_begin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -1235,7 +1297,7 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 // Leaf nodes have to notify dependents and start their peer playable at 0.
 // timestamp is parent's simple time when this event occurs.
 void time_node::raise_repeat_event(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].raise_repeat_event(%d) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].raise_repeat_event(%d) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), m_precounter,
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -1249,7 +1311,7 @@ void time_node::raise_repeat_event(qtime_type timestamp) {
 // and notify dependents.
 // Leaf nodes have to notify dependents and pause playable
 void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
-	AM_DBG tnlogger->trace("%s[%s].raise_end_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].raise_end_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -1287,7 +1349,7 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 
 void time_node::raise_activate_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG tnlogger->trace("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -1304,7 +1366,7 @@ void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 	qtime_type timestamp = accesskey.first;
 	int ch = accesskey.second;
 	timestamp.to_descendent(sync_node());
-	AM_DBG tnlogger->trace("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -1337,12 +1399,11 @@ void time_node::reset(qtime_type timestamp, time_node *oproot) {
 		(*it)->reset(qt, oproot);
 	
 	// 2. Reset state variables and enter the reset state
-	// nodes that exit active will raise an endEvent 
-	// This should should not update dependents within this branch
+	// The following call in effect calls:
+	// any_state::reset() => any_state::exit() + reset_state::enter()
+	// Deactivated nodes will raise an endEvent 
+	// This should should not update dependents within this branch (use oproot to impl this)
 	m_state->reset(timestamp, oproot);	
-	m_rad = 0;
-	m_precounter = 0;	
-	m_rad_offset = 0;
 	if(m_timer) m_timer->stop();
 	
 	// 3. Reset this instance times with resepect to oproot.
@@ -1353,6 +1414,7 @@ void time_node::reset(qtime_type timestamp, time_node *oproot) {
 		(*it2)->reset(oproot);
 }
 
+// Called when a node repeats or when its deactivated (restart or nomal end)
 void time_node::reset_children(qtime_type timestamp, time_node *oproot) {
 	std::list<time_node*> children;
 	get_children(children);
@@ -1372,12 +1434,8 @@ void time_node::startup_children(qtime_type timestamp) {
 }
 
 void time_node::kill(qtime_type timestamp, time_node *oproot) {
-	std::list<time_node*> children;
-	get_children(children);
-	std::list<time_node*>::iterator it;
-	qtime_type qt = timestamp.as_qtime_down_to(this);
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->kill(qt, oproot);
+	// The following will deactivate this
+	// the active::exit() will propagate this opation to the children  
 	m_state->kill(timestamp, oproot);	
 }
 
@@ -1395,7 +1453,7 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 }
 
 // Meta model reset
-// Brings the timegraph to its initial state without propagating events
+// Brings this node to its initial state without propagating events
 // The function resets all the state variables of this class
 // To simplify verfication all variables defined by the class def are copied here.
 void time_node::reset() {
@@ -1581,55 +1639,9 @@ void time_node::reset() {
 	// time_node *m_child;	
 }
 
-// The timestamp clock can be any
-// Convert it if possible to this sync_node clock time
-void time_node::sync_update(qtime_type timestamp) {
-	time_type pt = timestamp.as_node_time(sync_node());
-	if(pt.is_resolved()) {
-		timestamp = qtime_type(sync_node(), pt);
-		m_state->sync_update(timestamp);
-	}
-}
-
-// Begin of media notification
-// Currently this notification is not used.
-// Could be used to define to slip sync offset.
-void time_node::on_bom(qtime_type timestamp) {
-	m_eom_flag = false;
-	if(!is_discrete()) {
-		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
-		qtime_type st = pt.as_qtime_down_to(this);
-		AM_DBG tnlogger->trace("%s[%s].on_bom() ST:%ld, PT:%ld, DT:%ld", 
-			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str(), 
-			st.second(),
-			pt.second(),
-			timestamp.second()); 
-	}
-	if(m_timer) m_timer->resume();
-}
-
-// Notification from the playable that has paused for fetching bits
-void time_node::on_pom(qtime_type timestamp) {
-	if(m_timer) m_timer->pause();
-}
-
-// Notification from the playable that has resumed playback
-void time_node::on_rom(qtime_type timestamp) {
-	if(m_timer) m_timer->resume();
-}
-
-// End of nedia notification
-// This notification is taken into account when this node is still active
-// and the implicit duration is involved in timing calculations.
-void time_node::on_eom(qtime_type timestamp) {
-	m_eom_flag = true;
-	if(is_playable() && !is_discrete()) 
-		raise_update_event(timestamp);
-}
-
 ///////////////////////////////
 // Timing operations
+// XXX: Revisit and elaborate on these
 
 // Returns the simple time of this sync node (parent).
 time_node::value_type time_node::get_sync_simple_time() const {
@@ -1643,9 +1655,6 @@ time_node::value_type time_node::get_simple_time() const {
 
 /////////////////////////////////////////////////////
 // time_container overrides
-
-///////////////////////////////
-// time_container implicit_dur
 
 // The implicit duration of a par is controlled by endsync. 
 // By default, the implicit duration of a par is defined by 
@@ -1691,7 +1700,7 @@ time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl)
 		if(i.is_valid())
 			idur = std::min(idur, i.end);
 	}
-	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_first(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_first(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
 	return idur;	
 }
@@ -1711,7 +1720,7 @@ time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 			break;
 		}
 	}
-	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_id(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_id(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
 	return idur;	
 }
@@ -1736,7 +1745,7 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 			idur = std::max(idur, i.end);
 		}
 	}
-	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_last(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_last(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
 	return (idur == time_type::minus_infinity)?0:idur;	
 }
@@ -1757,7 +1766,7 @@ time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 			break;
 		}
 	}
-	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_all(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_all(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
 	return (idur == time_type::minus_infinity)?time_type::unresolved:idur;	
 }
@@ -1820,9 +1829,8 @@ bool time_container::end_sync_cond() const {
 	return false;
 
 }
-///////////////////////////////
-// seq implicit_dur
 
+// seq implicit_dur
 // The implicit duration of a seq ends with the active end 
 // of the last child of the seq.  
 // If any child of a seq has an indefinite active duration, 
@@ -1834,7 +1842,7 @@ seq::get_implicit_dur() {
 	const interval_type& i = tn->get_last_interval();
 	time_type idur =  time_type::unresolved;
 	if(i.is_valid()) idur = i.end;
-	AM_DBG tnlogger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());	
 	return idur;
 }
@@ -1849,6 +1857,7 @@ bool seq::end_sync_cond() const {
 ///////////////////////////////
 // excl implementation
 
+// Creates an excl node
 excl::excl(context_type *ctx, const lib::node *n) 
 :	time_container(ctx, n, tc_excl), 
 	m_queue(new excl_queue()), 
@@ -1856,6 +1865,7 @@ excl::excl(context_type *ctx, const lib::node *n)
 	m_priority_attrs(0) {
 }
 
+// Destructs an excl node
 excl::~excl() {
 	delete m_queue;
 	for(int i=0;i<m_num_classes;i++)
@@ -1867,7 +1877,7 @@ excl::~excl() {
 // for each excl element to build the required 
 // priorityClass related structures.
 void excl::built_priorities() {
-	AM_DBG tnlogger->trace("%s[%s].built_priorities()", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].built_priorities()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 		
 	const node *n = m_node->down();
@@ -1892,7 +1902,7 @@ void excl::built_priorities() {
 	
 	// keep number of priorityClass
 	m_num_classes = int(prio_classes.size());
-	AM_DBG tnlogger->trace("%s[%s].built_priorities() %d classes", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].built_priorities() %d classes", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), prio_classes.size());
 	
 	// the number to be assigned to the higher priority 
@@ -1924,7 +1934,7 @@ void excl::built_priorities() {
 				// this prio applies and to all its children
 				
 				const time_attrs* pa = tn->get_time_attrs();
-				AM_DBG tnlogger->trace("%s[%s] priority: %d", 
+				AM_DBG m_logger->trace("%s[%s] priority: %d", 
 					pa->get_tag().c_str(), 
 					pa->get_id().c_str(), prio);
 			}
@@ -1935,6 +1945,8 @@ void excl::built_priorities() {
 	}
 }
 
+// Utility: 
+// Returns the first active child
 time_node*
 excl::get_active_child() {
 	std::list<time_node*> cl;
@@ -1945,6 +1957,7 @@ excl::get_active_child() {
 	return it!=cl.end()?(*it):0;
 }
 
+// Implements the excl element behavior
 void excl::interrupt(time_node *c, qtime_type timestamp) {
 	time_node *interrupting_node = c;
 	time_node *active_node = get_active_child();
@@ -1964,15 +1977,15 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	// Set interrupt attrs based on whether the interrupting node is peer, higher or lower
 	interrupt_type what;
 	if(interrupting_node->priority() == active_node->priority()) {
-		AM_DBG tnlogger->trace("%s[%s] int by peer %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int by peer %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 		what = pa->peers;
 	} else if(interrupting_node->priority() > active_node->priority()) {
-		AM_DBG tnlogger->trace("%s[%s] int by higher %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int by higher %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 		what = pa->higher;
 	} else {
-		AM_DBG tnlogger->trace("%s[%s] int by lower %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int by lower %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 		what = pa->lower;
 	}
@@ -1984,7 +1997,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		if(ta->get_fill() == fill_freeze)
 			active_node->remove(timestamp);
 			
-		AM_DBG tnlogger->trace("%s[%s] int_stop by %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int_stop by %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 				
 		// start interrupting_node
@@ -2000,14 +2013,14 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		active_node->pause(timestamp, pi->display);
 		m_queue->push_pause(active_node);
 		
-		AM_DBG tnlogger->trace("%s[%s] int_pause by %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int_pause by %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());	
 		
 		// start interrupting_node
 		interrupting_node->set_state(ts_active, timestamp, c);
 		
 	} else if(what == int_defer) {
-		AM_DBG tnlogger->trace("%s[%s] continue int_defer: %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] continue int_defer: %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());	
 		// do not touch active_node
 		// defer the interrupting_node
@@ -2019,7 +2032,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// what == int_never
 		// do not touch active_node
 		// ignore interrupting_node
-		AM_DBG tnlogger->trace("%s[%s] int_never ignore: %s[%s]", ta->get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s] int_never ignore: %s[%s]", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 		
 		// assert that the interval is canceled
@@ -2029,12 +2042,13 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	}
 }
 
+// Notification for a child normal end.
 void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 	if(!m_queue || m_queue->empty()) return;
 	time_node *next = m_queue->pop();
 	
 	const time_attrs* ta = next->get_time_attrs();	
-	AM_DBG tnlogger->trace("%s[%s].dequeue %s", ta->get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].dequeue %s", ta->get_tag().c_str(), 
 			ta->get_id().c_str(), (next->is_active()?"active":"deferred"));	
 	
 	// if its active resume else start
@@ -2047,14 +2061,17 @@ void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 		assert(false);
 	}
 }
+
+// Service: removes a node from the queue of this excl
 void excl::remove(time_node *tn) {
 	if(!m_queue || m_queue->empty()) return;
 	m_queue->remove(tn);
 }
 
 ///////////////////////
-// excl_queue
+// excl_queue implementation
 
+// Pushes the provided paused node to the queue.
 void excl_queue::push_pause(time_node *tn) {
 	// an element may not appear in the queue more than once
 	m_cont.remove(tn);
@@ -2067,6 +2084,7 @@ void excl_queue::push_pause(time_node *tn) {
 	m_cont.insert(it, tn);
 }
 
+// Pushes the provided defered node to the queue.
 void excl_queue::push_defer(time_node *tn) {
 	// an element may not appear in the queue more than once
 	m_cont.remove(tn);
@@ -2079,6 +2097,8 @@ void excl_queue::push_defer(time_node *tn) {
 	m_cont.insert(it, tn);
 }
 
+// Asserts queue invariants
+// See spec
 void excl_queue::assert_invariants() const {
 	std::set<time_node*> s;
 	cont::size_type count = 0;

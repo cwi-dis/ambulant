@@ -84,7 +84,7 @@ time_state::time_state(time_node *tn)
 	m_rad(tn->m_rad),
 	m_precounter(tn->m_precounter),
 	m_impldur(tn->m_impldur),
-	m_attrs(tn->m_attrs){
+	m_attrs(tn->m_attrs) {
 }
 
 void time_state::sync_update(qtime_type timestamp) {
@@ -267,6 +267,9 @@ void active_state::enter(qtime_type timestamp) {
 	// Children should convert it to their parent
 	m_self->reset_children(timestamp, m_self);
 	
+	// Prepare children playables without recursion
+	m_self->prepare_playables();
+	
 	// Use can slip sync behavior
 	// To avoid flashing use async activation
 	// for audio and video only.
@@ -274,7 +277,7 @@ void active_state::enter(qtime_type timestamp) {
 	//if(m_self->is_cmedia())
 	//	m_self->activate_async(timestamp);
 	//else
-		m_self->activate(timestamp);
+	m_self->activate(timestamp);
 	
 	// The timestamp in parent simple time
 	// Children should convert it to their parent
@@ -301,7 +304,7 @@ void active_state::sync_update(qtime_type timestamp) {
 	}
 	
 	restart_behavior rb = m_attrs.get_restart();
-	if(rb == restart_always) {
+	if(rb == restart_always && !m_self->sync_node()->is_seq()) {
 		interval_type candidate(m_interval.begin, timestamp.second); 
 		interval_type i = m_self->calc_next_interval(candidate);
 		if(i.is_valid()) {
@@ -336,17 +339,9 @@ void active_state::reset(qtime_type timestamp, time_node *oproot) {
 
 void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
-	
-	//m_self->cancel_schedule();
-	m_self->fill(timestamp);
+	m_self->fill(timestamp); // pause or stop
 	m_self->kill_children(timestamp, oproot);
 	m_self->raise_end_event(timestamp, oproot);
-	if(m_self->sync_node()->is_excl() && (m_self->paused() || m_self->deferred())) {
-		excl* p = qualify<excl*>(m_self->sync_node());
-		p->remove(m_self);
-		m_self->set_paused(false);
-		m_self->set_deferred(false);
-	}
 	m_self->played_interval(timestamp);
 	
 	// next is postactive if its interval was not cut short (normal)
@@ -373,6 +368,11 @@ void postactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	// m_interval = unchanged (last played interval that is now in the past);
 	// m_needs_remove = SET true or false depending on the fill attribute;
+	
+	if(m_self->sync_node()->is_seq()) {
+		m_self->set_state(ts_dead, timestamp, m_self->sync_node());
+		return;
+	}
 	
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_never) return;
