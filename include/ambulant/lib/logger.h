@@ -64,7 +64,6 @@
 #include <ostream.h>
 #endif
 
-
 #include <string>
 #include <stdarg.h>
 #include <stdio.h>
@@ -141,8 +140,8 @@ inline T& CDECL endl(T& l) {
 class logger {
   public:
 	// known log levels
-	enum log_level { LEVEL_DEBUG, LEVEL_TRACE, 
-		LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL };
+	enum log_level { LEVEL_DEBUG, LEVEL_TRACE, LEVEL_SHOW,
+		LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL};
 		
 	logger(const std::string& name);
 	
@@ -156,6 +155,7 @@ class logger {
 	// logging functions at various levels
  	void debug(const char *format, ...);
  	void trace(const char *format, ...);
+  	void show(const char *format, ...);
   	void warn(const char *format, ...);
   	void error(const char *format, ...);
   	void fatal(const char *format, ...);
@@ -182,13 +182,20 @@ class logger {
  	void fatal(const T& obj) { 
  		log_obj(LEVEL_FATAL, obj);
  	}
- 	
+  	template <class T>
+ 	void show(const T& obj) { 
+ 		log_obj(LEVEL_SHOW, obj);
+ 	}
+	
  	// specialization for strings
  	void debug(const std::string& s) {
  		log_cstr(LEVEL_DEBUG, s.c_str());
   	} 
    	void trace(const std::string& s) {
  		log_cstr(LEVEL_TRACE, s.c_str());
+  	} 
+   	void show(const std::string& s) {
+ 		log_cstr(LEVEL_SHOW, s.c_str());
   	} 
    	void warn(const std::string& s) {
  		log_cstr(LEVEL_WARN, s.c_str());
