@@ -89,12 +89,17 @@ class smil_handler :
   
 	///////////////
 	// element handlers helpers
-	typedef void (smil_handler::*START_ELEMENT_HANDLER)(const q_name_pair& qn, const q_attributes_list& qattrs);
-	typedef void (smil_handler::*END_ELEMENT_HANDLER)(const q_name_pair& qn);
-	typedef std::pair<START_ELEMENT_HANDLER, END_ELEMENT_HANDLER> element_handler;
-	std::map<q_name_pair, element_handler> m_handlers;
-	void register_handler(const q_name_pair& qn, START_ELEMENT_HANDLER se, END_ELEMENT_HANDLER ee){ 
-		m_handlers[qn] = element_handler(se, ee);
+	typedef void (smil_handler::*START_HANDLER)(const q_name_pair& qn, const q_attributes_list& qattrs);
+	typedef void (smil_handler::*END_HANDLER)(const q_name_pair& qn);
+	struct handler_pair {
+		handler_pair(START_HANDLER se = 0, END_HANDLER ee = 0)
+		:	first(se), second(ee) {}
+		START_HANDLER first;
+		END_HANDLER second;
+	};
+	std::map<q_name_pair, handler_pair> m_handlers;
+	void register_handler(const q_name_pair& qn, START_HANDLER se, END_HANDLER ee){
+		m_handlers[qn] = handler_pair(se, ee);
 	} 
 	
 	///////////////
@@ -170,9 +175,9 @@ inline  void smil_handler::end_document() {
 }
 
 inline void smil_handler::start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
-	std::map<q_name_pair, element_handler>::iterator it = m_handlers.find(qn);
+	std::map<q_name_pair, handler_pair>::iterator it = m_handlers.find(qn);
 	if(it != m_handlers.end()) {
-		START_ELEMENT_HANDLER se = (*it).second.first;
+		START_HANDLER se = (*it).second.first;
 		(this->*se)(qn, qattrs);
 	} else 
 		unknown_start_element(qn, qattrs);
@@ -180,9 +185,9 @@ inline void smil_handler::start_element(const q_name_pair& qn, const q_attribute
 
 inline void smil_handler::end_element(const q_name_pair& qn) {
 	// XXX: create a new 
-	std::map<q_name_pair, element_handler>::iterator it = m_handlers.find(qn);
+	std::map<q_name_pair, handler_pair>::iterator it = m_handlers.find(qn);
 	if(it != m_handlers.end()) {
-		END_ELEMENT_HANDLER ee = (*it).second.second;
+		END_HANDLER ee = (*it).second.second;
 		(this->*ee)(qn);
 	} else 
 		unknown_end_element(qn);
