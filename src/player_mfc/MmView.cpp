@@ -55,11 +55,10 @@
 #include "MmDoc.h"
 #include "MmView.h"
 
-#include "MmViewPlayer.h"
-#include "wmuser.h"
-
 #include ".\mmview.h"
 
+#include "ambulant/gui/dx/dx_player_control.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/smil2/test_attrs.h"
 
@@ -67,11 +66,24 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace ambulant;
 
-static MmViewPlayer *player = 0;
+// The player_control this view creates and interacts with
+static common::player_control *player = 0;
 
-//static 
-MmViewPlayer* MmViewPlayer::get_instance() {
+// player_control factory
+static ambulant::common::player_control* 
+create_player_control_instance(const std::string& which, HWND hwnd) {
+	if(which == "dx") 
+		return new ambulant::gui::dx::dx_player_control(hwnd);
+	return 0;
+}
+
+// Global function providing access to the player_control 
+// instance created by the GUI toolkit.
+// This function should be implemented by the GUI toolkit.
+ambulant::common::player_control* 
+get_player_control_instance() {
 	return player;
 }
 
@@ -165,8 +177,9 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  Add your specialized creation code here
-	player = new MmViewPlayer(m_hWnd);
+	player = create_player_control_instance("dx", m_hWnd);
+	
+	// We currently don't need a timer
 	//m_timer_id = SetTimer(1, 500, 0);
 
 	return 0;
@@ -176,16 +189,18 @@ void MmView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	SendMessage(WM_SET_CLIENT_RECT, 
-		ambulant::common::default_layout_width, ambulant::common::default_layout_height);
+		common::default_layout_width, ambulant::common::default_layout_height);
 	if(player) player->redraw();
 
 }
 
 void MmView::OnDestroy()
 {
-	player->stop();
-	delete player;
-	player = 0;
+	if(player) {
+		player->stop();
+		delete player;
+		player = 0;
+	}
 	if(m_timer_id) KillTimer(m_timer_id);
 	CView::OnDestroy();
 	// TODO: Add your message handler code here
@@ -202,7 +217,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 
 void MmView::OnFilePlay()
 {
-	player->start();
+	if(player) player->start();
 }
 
 void MmView::OnUpdateFilePlay(CCmdUI *pCmdUI)
@@ -213,7 +228,7 @@ void MmView::OnUpdateFilePlay(CCmdUI *pCmdUI)
 
 void MmView::OnFilePause()
 {
-	player->pause();
+	if(player) player->pause();
 }
 
 void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
@@ -223,7 +238,7 @@ void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 
 void MmView::OnFileStop()
 {
-	player->stop();
+	if(player) player->stop();
 }
 
 void MmView::OnUpdateFileStop(CCmdUI *pCmdUI)
@@ -233,8 +248,7 @@ void MmView::OnUpdateFileStop(CCmdUI *pCmdUI)
 
 void MmView::OnTimer(UINT nIDEvent)
 {
-	if(player)
-		player->update_status();
+	//if(player)player->update_status();
 	CView::OnTimer(nIDEvent);
 }
 
@@ -305,7 +319,7 @@ void MmView::OnViewTests() {
 	dlg.m_ofn.lpstrTitle = "Select SMIL tests filter file";
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
-		player->load_tests_filter(LPCTSTR(str));
+		player->set_preferences(LPCTSTR(str));
 		m_curFilter = str;
 	}	
 }
