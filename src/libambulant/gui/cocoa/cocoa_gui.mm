@@ -261,7 +261,7 @@ cocoa_window_factory::new_background_renderer()
 
 - (void)ambulantWindowClosed
 {
-	NSLog(@"ambulantWindowClosed called");
+    AM_DBG NSLog(@"ambulantWindowClosed called");
     ambulant_window = NULL;
 	// XXXX Should we close the window too? Based on preference?
 }

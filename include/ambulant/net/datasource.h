@@ -111,7 +111,7 @@ class databuffer
     bool buffer_not_empty();
 	// client call to tell the databuffer it is ready to with size bytes of data
 	void readdone(int size); 
-	char* get_write_ptr();
+	char* get_write_ptr(int size);
 	void  pushdata(int size);
     char* get_read_ptr();
 	

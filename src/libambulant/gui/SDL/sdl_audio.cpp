@@ -217,12 +217,12 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	event_processor *const evp,
 	net::passive_datasource *src)
 :	active_renderer(context, cookie, node, evp, src, NULL),
-    m_rate(22050),
+    m_rate(44100),
     m_bits(16),
     m_channels(1),
 	m_buffer_size(4096),
 	m_channel_used(-1),
-	m_audio_format(AUDIO_S16)
+	m_audio_format(AUDIO_S16SYS)
 {
 	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
 	if (m_src) {

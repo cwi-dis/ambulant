@@ -68,6 +68,10 @@
 #include "ambulant/common/smil_player.h"
 #endif
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 void
 usage()
 {
@@ -89,7 +93,7 @@ mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 	m_rf = new lib::global_renderer_factory();
 	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
 #ifdef WITH_SDL
-    logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
+    AM_DBG logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
 	m_rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
 #endif
 	m_doc = lib::document::create_from_file(filename);
@@ -120,7 +124,7 @@ void
 mainloop::run()
 {
 	m_player->start();
-	/*AM_DBG*/ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
+	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }
 
 void
