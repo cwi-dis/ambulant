@@ -73,12 +73,15 @@ net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(abstract_active_datasource
 	m_blocked_full(false),
 	m_client_callback(NULL)
 {
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
 	m_readdone = new readdone_callback(this, &net::ffmpeg_audio_datasource::callback);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() m_readdone = 0x%x", (void*)m_readdone);
 	init();
 }
 
 net::ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
 {
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource(0x%x)", (void*)this);
 	// XXXX free m_con?
 	// XXXX free m_codec?
 }	
@@ -92,34 +95,39 @@ net::ffmpeg_audio_datasource::decode(uint8_t* in, int size, uint8_t* out, int &o
 void 
 net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
-	if (!m_src->buffer_full() && !m_src->end_of_file() ) {
-		m_src->start(m_event_processor,  m_readdone);
-	} else {
-		m_blocked_full = true;
-	}
+	m_lock.enter();
 	
 	if (m_client_callback != NULL)
 		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
-	if (m_src->size() > 0 ) {
+	if (m_buffer.not_empty() || m_src->end_of_file() ) {
+		// We have data (or EOF) available. Don't bother starting up our source again, in stead
+		// immedeately signal our client again
 		if (evp && callbackk) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start: trigger readdone callback");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): no readdone callback!");
+			AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): no client callback!");
 		}
 	} else {
-		m_client_callback= callbackk;
+		// We have no data available. Start our source, and in our data available callback we
+		// will signal the client.
+		m_client_callback = callbackk;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): calling m_src->start()");
+		m_src->start(m_event_processor,  m_readdone);
 	}
+	m_lock.leave();
 }
  
 void 
 net::ffmpeg_audio_datasource::readdone(int len)
 {
+	m_lock.enter();
 	m_buffer.readdone(len);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
-	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
-		m_src->start(m_event_processor, m_readdone);
-	}
+//	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
+//		m_src->start(m_event_processor, m_readdone);
+//	}
+	m_lock.leave();
 }
 
 void 
@@ -134,6 +142,7 @@ net::ffmpeg_audio_datasource::callback()
 	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : I got a callback !");
 
+	m_lock.enter();
 	m_inbuf = (uint8_t*) m_src->read_ptr();
 	size = m_src->size();
 	m_outbuf = (uint8_t*) m_buffer.prepare();
@@ -165,6 +174,7 @@ net::ffmpeg_audio_datasource::callback()
 		m_src->readdone(decoded);
 	
 		if ( m_client_callback ) {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): calling client callback");
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 			m_client_callback = NULL;
 		} else {
@@ -173,20 +183,23 @@ net::ffmpeg_audio_datasource::callback()
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No decoder, flushing available data");
 		m_src->readdone(size);
+		m_lock.leave();
 		return;
 	}
 		
-	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
-		m_src->start(m_event_processor, m_readdone);
-	} else {
-		m_blocked_full = true;
-	}
+//	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
+//		m_src->start(m_event_processor, m_readdone);
+//	} else {
+//		m_blocked_full = true;
+//	}
+	m_lock.leave();
 }
 
 
 bool 
 net::ffmpeg_audio_datasource::end_of_file()
 {
+	if (m_buffer.not_empty()) return false;
 	return m_src->end_of_file();
 }
 

@@ -122,6 +122,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
 	bool m_blocked_full;
 	
 	lib::event *m_client_callback;  // This is our calllback to the client
+	lib::critical_section m_lock;
 };
 
 }	// end namespace net

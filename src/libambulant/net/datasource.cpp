@@ -262,6 +262,7 @@ net::active_datasource::callback()
 bool
 net::active_datasource::end_of_file()
 {
+	if (m_buffer->not_empty()) return false;
 	return m_end_of_file;
 }
 

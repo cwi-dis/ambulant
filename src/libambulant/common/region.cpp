@@ -54,7 +54,6 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"
 
-//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -63,7 +62,7 @@ using namespace ambulant;
 
 lib::passive_region::~passive_region()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("~passive_region(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("~passive_region(0x%x)", (void*)this);
 	m_parent = NULL;
 	if (m_cur_active_region) {
 		lib::logger::get_logger()->error("~passive_region(0x%x): m_cur_active_region = 0x%x", (void *)this, (void *)m_cur_active_region);
@@ -164,7 +163,7 @@ lib::passive_region::draw_background(const screen_rect<int> &r, abstract_window 
 {
 	// Do a quick return if we have nothing to draw
 	if (m_info == NULL) return;
-	/*AM_DBG*/ lib::logger::get_logger()->trace("draw_background %s: color=0x%x, transparent=%x, showbg=%d, renderer=0x%x",
+	AM_DBG lib::logger::get_logger()->trace("draw_background %s: color=0x%x, transparent=%x, showbg=%d, renderer=0x%x",
 		m_name.c_str(), (int)m_info->get_bgcolor(), (int)m_info->get_transparent(), (int)m_info->get_showbackground(), (int)m_bg_renderer);
 	if (m_info->get_transparent()) return;
 	if (!m_info->get_showbackground()) return;
@@ -347,7 +346,7 @@ lib::passive_root_layout::passive_root_layout(const abstract_smil_region_info *i
 		
 lib::passive_root_layout::~passive_root_layout()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("~passive_root_layout(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("~passive_root_layout(0x%x)", (void*)this);
 	if (m_bg_renderer)
 		delete m_bg_renderer;
 	m_bg_renderer = NULL;

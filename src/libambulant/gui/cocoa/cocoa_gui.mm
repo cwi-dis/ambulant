@@ -181,8 +181,8 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_
 	[view setAmbulantWindow: window];
 	NSSize cocoa_size = NSMakeSize(bounds.w, bounds.h);
 	[[view window] setContentSize: cocoa_size];
-	NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
-	NSLog(@"Calling mouse_region_changed");
+	AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
+	AM_DBG NSLog(@"Calling mouse_region_changed");
 	window->mouse_region_changed();
 	[[view window] makeKeyAndOrderFront: view];
 	return (abstract_window *)window;
@@ -287,14 +287,14 @@ cocoa_window_factory::new_background_renderer()
 		const ambulant::lib::abstract_mouse_region &mrgn = ambulant_window->get_mouse_region();
 		want_events = !mrgn.is_empty();
 	}
-	NSLog(@"resetCursorRects wantevents=%d", (int)want_events);
+	AM_DBG NSLog(@"resetCursorRects wantevents=%d", (int)want_events);
 	if (want_events) [self addCursorRect: [self visibleRect] cursor: [NSCursor pointingHandCursor]];
 }
 
 - (void)mouseDown: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
-	NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
+	AM_DBG NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }

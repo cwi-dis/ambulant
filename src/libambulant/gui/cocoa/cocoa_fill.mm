@@ -107,7 +107,7 @@ cocoa_background_renderer::drawbackground(const abstract_smil_region_info *src, 
 	abstract_rendering_surface *dst, abstract_window *window)
 {
 	const screen_rect<int> &r = dst->get_rect();
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
