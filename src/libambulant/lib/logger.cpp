@@ -239,12 +239,5 @@ void ambulant::log_trace_event(const char *format, ...) {
 	}
 }
 
-template<class T>
-void ambulant::log_trace_event(const T& obj) {
-	lib::logger *logger = lib::logger::get_logger();
-	if(!logger->suppressed(lib::logger::LEVEL_TRACE))
-		logger->log_obj(lib::logger::LEVEL_TRACE, obj);
-}
-
 
 
