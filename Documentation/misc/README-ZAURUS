@@ -1,95 +1,54 @@
-How the Ambulant implementation on Sharp SL-5600 Zaurus.was done.
-================================================================
+Ambulant on the Zaurus: Sharp SL-5600 PDA.
+------------------------------------------
 
-Starting point was a technical document by Sharp titled
-"Sharp SL-series Zaurus Qtopia Development Start-up Guide"
-available on-line at:
-"www.zaurus.com/dev/support/downloads/qte_programming-guide_v111.pdf"
+The easiest way to run AmbulantPlayer on your Zaurus is the following.
 
-Not all utilities discussed in that paper were used. The tools "qmake",
-"tmake", "qvfb" and "uic" were skipped, to minimize dependencies of
-our environment and Qt. The only utility we really need edfrom them is
-"moc" (meta-object-compiler) which glues various GUI components together.
-
-Some information in that document is out-of-date, the "qtopia 1.5.0"
-build environment is no longer available at www.trolltech.com, but at:
-"http://community.zaurus.com/projects/qtopia-sdk"
-This environment is necessary since it matches the factory installed
-software on the device. The installed RPM was:
-qtopia-free-1.5.0-1.i386.rpm
-This RPM installs in "/opt/Qtopia".
-
-For cross-compilation, the needed RPM's were taken from the Sharp
-developer website: "http://www.zaurus.com/dev/tools/other.htm".
-The following RPM's were downloaded and installed:
-gcc-cross-sa1100-2.95.2-0.i386.rpm
-glibc-arm-2.2.2-0.i386.rpm
-binutils-cross-arm-2.11.2-0.i386.rpm
-linux-headers-arm-sa1100-2.4.6-3.i386.rpm
-These packages install in "/opt/Embedix/tools"
-
-In the environment (window) in which the "configure;make" was
-to obtain a cross-compiled AmbulantPlayer, PATH was prepended:
-
-	export PATH=/opt/Qtopia/sharp/bin:/opt/Embedix/tools/bin:$PATH
-
-Next set the environment variables QTDIR and QPEDIR to /opt/Qtopia
-by: 
-	export QTDIR=/opt/Qtopia
-        export QPEDIR=/opt/Qtopia.
-    
-configure was done on a Linux-PC box as follows:
-./configure --prefix=`pwd` --build=i686-pc-linux-gnu --host=arm-linux \
---with-qt  --with-qtopia --without-arts 
-
-File transfer was done using the wireless connection.
-To make the connection active, stay close to a transmitter.
-Move "file" to be transferred to the place where your homepage
-resides, then using the Qtopia browser on the PDA "file" can
-be selected from your homepage environment and will be dumped in
-"/home/zaurus/Documents/file." with its execution bits lost.
-Type "cd /home/zaurus/Documents" followed by:
-chmod +x file.
-and start the program:
-./file.
-
-
-SDL On the Zaurus
-=================
-
-For SDL support on the zaurus you need to install the following
-development packages :
-http://www.gnurou.org/software/zaurus/SDL-dev-1.2.6cvs.tar.gz
-http://www.gnurou.org/software/zaurus/SDL_mixer-dev-1.2.5cvs.tar.gz
-and the following libraries on the zaurus :
+First, the package "SDL"  must have been installed on your Zaurus.
+SDL can be found at:
 http://www.gnurou.org/software/zaurus/feed/libSDL_1.2.6cvs-1_arm.ipk
-http://www.gnurou.org/software/zaurus/feed/libSDL-mixer_1.2.5cvs-1_arm.ipk.
+http://www.gnurou.org/software/zaurus/feed/libSDL-mixer_1.2.5cvs-1_arm.ip
+Both packages are needed.
 
-To enable SDL support, prepend the directory were the "sdl-config"
-script was installed to you PATH and run configure with --with-sdl:
+For Ambulant:
 
-	export PATH=.../SDL/bin:$PATH
-	./configure --prefix=`pwd` --build=i686-pc-linux-gnu \
-	--host=arm-linux --with-qt  --with-qtopia --without-arts --with-sdl
+A. Download the installation package "ambulantplayer_x.y_arm.ipk"
+   from the the website "www.ambulant.org" using the Opera browser
+   on your Zaurus. Assure to have at least 8Mb free disc space,
+   verify with QtMenuIcon->Settings->SystemInfo->Storage, or,
+   alternatively, use a SD or CF card with sufficient free space. 
+   The Opera browser will ask you where to store the package
+   (QtMenuIcon is the leftmost icon on the Taskbar at the bottom).
 
-ffmpeg on the Zaurus
-====================
+B. Install the ambulant package using the the Zaurus Software
+   Installer by selecting: QtMenuIcon->Settings->Add/RemoveSoftware.
+   Tap "Install packages", select "ambulantplayer", tap "Install".
+   Select where you want it to be installed and tap "OK". After
+   installation (~1 min) a "Finish install" window is displayed,
+   asking you to "Close this application to complete the installation".
+   Tap "OK" to get rid of this message and then do what the message
+   asked yuo to do: close the "Package Installer" by tapping the "X"
+   button at top-right, and close the ">Add/Remove Software" window
+   again by tapping the "X" button at right-top. Only then is the
+   installation really effectuated.
+   Close the Opera browser and start it again to make it aware
+   of the fact that "ambulantplayer" has been installed.
 
-ffmpeg-0.4.8 was downloaded from ffmpeg.sourceforge.net and configured using
-./configure --cpu=armv4l --cc=arm-linux-gcc --disable-mmx --prefix=`pwd` \
---enable-shared
-Then "make" produced the needed libraries libavcodec/libavcodec.a and
-libavformat/libavformat.a
+C. To run "AmbulantPlayer" the file selection mechanism of the
+   Opera browser is used. Tapping 
+   QtMenuIcon->Applications->OperaBrowser will start it.
+   Then, in Opera, select "Open local file" in the Main Menu 
+   (tap 2nd icon from left in Opera's "Main button bar" at the top 
+   of Opera's window). There in "Show type" select "application/smil".
+   An entry "Welcome" should become visible, since it was part of the
+   ambulantplayer installation package. Tap "Welcome", and 
+   "AmbulantPlayer" will play its Welcome tune.
+   Any other valid ".smil" files which are present in a directory
+   called "Documents" in "/home/zaurus", the SD or CF card, or
+   subdirectories thereof will be shown by Opera as well and can
+   be played by tapping the name of the document.
 
+D. Uninstall the package by first closing "AmbulantPlayer" by
+   tapping its "X" (close) button at right-top. Then use
+   same procedure as described in section B., only now tab 
+   "Uninstall packages" instead of "Install packages".
 
-Version 0.7
-Kees Blom, May.25th, 2004.
-
-Version 0.5
-Kees Blom, Apr.19th, 2004.
-
-Version 0.3
-Daniel Benden, Feb. 4th 2004
-
-Version 0.2
-Kees Blom, Dec.11th, 2003.
