@@ -53,6 +53,7 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/smil_alignment.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -126,7 +127,9 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect);
+		alignment *align = common::smil_alignment::create_for_dom_node(m_node);
+		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, align, &srcrect);
+		if (align) delete align;
 		dstrect.translate(m_dest->get_global_topleft());
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong

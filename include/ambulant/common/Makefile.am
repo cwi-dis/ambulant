@@ -10,6 +10,7 @@ library_include_HEADERS= \
 	region.h \
 	renderer.h \
 	schema.h \
+	smil_alignment.h \
 	smil_handler.h \
 	trace_playable.h
 	

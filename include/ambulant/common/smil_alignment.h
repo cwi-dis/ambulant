@@ -50,64 +50,34 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#ifndef AMBULANT_COMMON_ALIGNMENT_H
+#define AMBULANT_COMMON_ALIGNMENT_H
 
-#include "ambulant/common/renderer.h"
-#include "ambulant/lib/mtsync.h"
-#include <Cocoa/Cocoa.h>
+#include "ambulant/lib/node.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/region_dim.h"
 
 namespace ambulant {
 
-using namespace lib;
-using namespace common;
+namespace common {
 
-namespace gui {
-
-namespace cocoa {
-
-class cocoa_active_fill_renderer : public active_basic_renderer {
+class smil_alignment : public alignment {
   public:
-	cocoa_active_fill_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	active_basic_renderer(context, cookie, node, evp),
-		m_dest(NULL),
-		m_playing(false) {};
-	~cocoa_active_fill_renderer();
-
-	void start(double where) {m_playing = 1; } // XXXX
-	void freeze() {}
-	void stop() { m_playing = 0; }
-	void pause() {}
-	void resume() {}
-	void wantclicks(bool want) { /* XXXX */ }
-
-	virtual void set_surface(surface *dest) { m_dest = dest; }
-	virtual surface *get_surface() { return m_dest;}
-	void user_event(const point &where) { clicked_callback(); }
-    void redraw(const screen_rect<int> &dirty, abstract_window *window);
-  private:
-	surface *m_dest;
-	bool m_playing;
-	critical_section m_lock;
-};
-
-class cocoa_background_renderer : public background_renderer {
-  public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src) {}
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
-  private:
+    static alignment *create_for_dom_node(const lib::node *n);
+	smil_alignment(const lib::node *n,
+		const char *regPoint, const char *regAlign);
+	~smil_alignment() {}
 	
+	lib::point get_image_fixpoint(lib::size image_size) const;
+	lib::point get_surface_fixpoint(lib::size surface_size) const;
+  private:
+	regpoint_spec m_image_fixpoint;
+	regpoint_spec m_surface_fixpoint;
 };
 
-} // namespace cocoa
-
-} // namespace gui
+	
+} // namespace common
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+#endif // AMBULANT_COMMON_ALIGNMENT_H

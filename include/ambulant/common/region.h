@@ -101,6 +101,7 @@ class passive_region : public surface_template, public renderer {
 	const region_info *get_info() const { return m_info; }	
 		
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
+	screen_rect<int> get_fit_rect(const size& src_size, const alignment *align, rect* out_src_rect) const;
   protected:
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(gui_region *rgn);
@@ -183,6 +184,11 @@ class active_region : public surface, public renderer {
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const
 	{
 		return m_source->get_fit_rect(src_size, out_src_rect);
+	}
+	screen_rect<int> get_fit_rect(const size& src_size, const alignment *align, 
+		rect* out_src_rect) const
+	{
+		return m_source->get_fit_rect(src_size, align, out_src_rect);
 	}
 	
 	// And some renderer interface we don't support:

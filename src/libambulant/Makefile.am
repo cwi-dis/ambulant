@@ -96,6 +96,7 @@ libambulant_la_SOURCES = \
 	common/region.cpp \
 	common/renderer.cpp \
 	common/schema.cpp \
+	common/smil_alignment.cpp \
 	common/smil_handler.cpp \
 	\
 	smil2/region_node.cpp \

@@ -50,64 +50,59 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#include "ambulant/lib/logger.h"
+#include "ambulant/common/smil_alignment.h"
 
-#include "ambulant/common/renderer.h"
-#include "ambulant/lib/mtsync.h"
-#include <Cocoa/Cocoa.h>
-
-namespace ambulant {
-
-using namespace lib;
+using namespace ambulant;
 using namespace common;
 
-namespace gui {
+// Helper function: decode pre-defined repoint names
+bool
+decode_regpoint(regpoint_spec &pt, const char *name)
+{
+	if (strcmp(name, "topLeft") == 0) pt = regpoint_spec(0.0, 0.0);
+	else if (strcmp(name, "topMid") == 0) pt = regpoint_spec(0.5, 0.0);
+	else if (strcmp(name, "topRight") == 0) pt = regpoint_spec(1.0, 0.0);
+	else if (strcmp(name, "midLeft") == 0) pt = regpoint_spec(0.0, 0.5);
+	else if (strcmp(name, "center") == 0) pt = regpoint_spec(0.5, 0.5);
+	else if (strcmp(name, "midRight") == 0) pt = regpoint_spec(1.0, 0.5);
+	else if (strcmp(name, "bottomLeft") == 0) pt = regpoint_spec(0.0, 1.0);
+	else if (strcmp(name, "bottomMid") == 0) pt = regpoint_spec(0.5, 1.0);
+	else if (strcmp(name, "bottomRight") == 0) pt = regpoint_spec(1.0, 1.0);
+	else
+		return false;
+	return true;
+}
 
-namespace cocoa {
+alignment *
+smil_alignment::create_for_dom_node(const lib::node *n)
+{
+	const char *regPoint = n->get_attribute("regPoint");
+	const char *regAlign = n->get_attribute("regAlign");
+	if (regPoint == NULL && regAlign == NULL) return NULL;
+	return new smil_alignment(n, regPoint, regAlign);
+}
 
-class cocoa_active_fill_renderer : public active_basic_renderer {
-  public:
-	cocoa_active_fill_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	active_basic_renderer(context, cookie, node, evp),
-		m_dest(NULL),
-		m_playing(false) {};
-	~cocoa_active_fill_renderer();
+smil_alignment::smil_alignment(const lib::node *n, const char *regPoint, const char *regAlign)
+{
+	if (!decode_regpoint(m_image_fixpoint, regAlign))
+		lib::logger::get_logger()->error("smil_alignment: unknown regAlign value: %s", regAlign);
+	if (!decode_regpoint(m_surface_fixpoint, regPoint))
+		lib::logger::get_logger()->error("smil_alignment: only standard regPoint values implemented", regAlign);
+}
 
-	void start(double where) {m_playing = 1; } // XXXX
-	void freeze() {}
-	void stop() { m_playing = 0; }
-	void pause() {}
-	void resume() {}
-	void wantclicks(bool want) { /* XXXX */ }
+lib::point
+smil_alignment::get_image_fixpoint(lib::size image_size) const
+{
+	int x = m_image_fixpoint.left.get(image_size.w);
+	int y = m_image_fixpoint.top.get(image_size.h);
+	return lib::point(x, y);
+}
 
-	virtual void set_surface(surface *dest) { m_dest = dest; }
-	virtual surface *get_surface() { return m_dest;}
-	void user_event(const point &where) { clicked_callback(); }
-    void redraw(const screen_rect<int> &dirty, abstract_window *window);
-  private:
-	surface *m_dest;
-	bool m_playing;
-	critical_section m_lock;
-};
-
-class cocoa_background_renderer : public background_renderer {
-  public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src) {}
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
-  private:
-	
-};
-
-} // namespace cocoa
-
-} // namespace gui
- 
-} // namespace ambulant
-
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+lib::point
+smil_alignment::get_surface_fixpoint(lib::size surface_size) const
+{
+	int x = m_image_fixpoint.left.get(surface_size.w);
+	int y = m_image_fixpoint.top.get(surface_size.h);
+	return lib::point(x, y);
+}

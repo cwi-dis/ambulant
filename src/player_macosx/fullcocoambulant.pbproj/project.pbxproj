@@ -67,6 +67,7 @@
 				042AF8FA053C2F020010C447,
 				042AF8FB053C2F020010C447,
 				04EA7C5605D7C4B700487047,
+				04DB4D3105E646C400F508A6,
 			);
 			isa = PBXGroup;
 			path = common;
@@ -140,6 +141,7 @@
 				04382AC705D7AEE600CFA029,
 				04382AC905D7AEE600CFA029,
 				04382ACA05D7AEE600CFA029,
+				04DB4D3305E646E900F508A6,
 				04382ACB05D7AEE600CFA029,
 			);
 			isa = PBXGroup;
@@ -2165,6 +2167,34 @@
 			settings = {
 			};
 		};
+		04DB4D3105E646C400F508A6 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = smil_alignment.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04DB4D3205E646C400F508A6 = {
+			fileRef = 04DB4D3105E646C400F508A6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04DB4D3305E646E900F508A6 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = smil_alignment.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04DB4D3405E646E900F508A6 = {
+			fileRef = 04DB4D3305E646E900F508A6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04EA7C3A05D7C48600487047 = {
 			children = (
 				04EA7C3B05D7C48600487047,
@@ -2873,6 +2903,7 @@
 				04542B0B05E246B900D812FB,
 				04AE676F05E55CC300023FEA,
 				04AE677005E55CC400023FEA,
+				04DB4D3405E646E900F508A6,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2973,6 +3004,7 @@
 				04542B0D05E246FF00D812FB,
 				04AE677305E55CEC00023FEA,
 				04AE677405E55CEC00023FEA,
+				04DB4D3205E646C400F508A6,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

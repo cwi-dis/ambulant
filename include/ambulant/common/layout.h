@@ -138,6 +138,16 @@ class renderer {
 
 };
 
+// class alignment is a pure virtual baseclass used for aligning an
+// image in a region
+class alignment {
+  public:
+	virtual ~alignment() {};
+	
+	virtual lib::point get_image_fixpoint(lib::size image_size) const = 0;
+	virtual lib::point get_surface_fixpoint(lib::size surface_size) const = 0;
+};
+
 // surface is a pure virtual baseclass for a region of screenspace.
 // It is the only interface that renderers use when talking to regions, and regions
 // use when talking to their parent regions.
@@ -158,6 +168,7 @@ class surface {
 	// For a given image size, return portion of source image to display, and where
 	// to display it. The renderer must do the scaling.
 	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const = 0;
+	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, const alignment *align, lib::rect* out_src_rect) const = 0;
 	
 	// Get object holding SMIL region parameters for querying
 	virtual const region_info *get_info() const = 0;

@@ -211,11 +211,32 @@ struct region_dim_spec {
 	region_dim left, width, right;
 	region_dim top, height, bottom;
 	bool operator== (region_dim_spec& other) const {
-		return left==other.left && width==other.width && right==other.height
+		return left==other.left && width==other.width && right==other.right
 		    && top == other.top && height==other.height && bottom==other.bottom;
 	}
 	
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
+};
+
+// A structure holding attributes of a regPoint or regAlign
+// A region node may hold along its other attributes this data structure.
+struct regpoint_spec {
+	region_dim left;
+	region_dim top;
+	
+	// Default constructor initializes everything to auto
+	regpoint_spec() {}
+	
+	// Specific constructor to give percentage values
+	regpoint_spec(double hor, double vert)
+	:   left(hor),
+		top(vert) {}
+	
+	bool operator== (regpoint_spec& other) const {
+		return left==other.left  && top == other.top;
+	}
+	
+	bool operator!= (regpoint_spec& other) const { return !(*this == other); }
 };
 
 } // namespace common

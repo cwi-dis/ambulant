@@ -52,7 +52,6 @@
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region.h"
-//#include "ambulant/common/renderer.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -339,6 +338,14 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect)
 	int proposed_height = std::min((int)(scale*(image_height+0.5)), region_height);
 	*out_src_rect = lib::rect(lib::point(0, 0), lib::size((int)(proposed_width/scale), (int)(proposed_height/scale)));
 	return screen_rect<int>(lib::point(0, 0), lib::point(proposed_width, proposed_height));
+}
+
+lib::screen_rect<int> 
+passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, lib::rect* out_src_rect) const
+{
+	if (align != NULL)
+		lib::logger::get_logger()->error("passive_region::get_fit_rect: alignment not implemented yet");
+	return get_fit_rect(src_size, out_src_rect);
 }
 
 void
