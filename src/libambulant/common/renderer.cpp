@@ -23,10 +23,9 @@ lib::active_renderer::active_renderer(event_processor *const evp,
 	net::passive_datasource *src,
 	passive_region *const dest,
 	const node *node)
-:	m_event_processor(evp),
+:	active_basic_renderer(evp, node),
 	m_src(src?src->activate():NULL),
 	m_dest(dest->activate(evp, node)),
-	m_node(node),
 	m_readdone(NULL),
 	m_playdone(NULL)
 {

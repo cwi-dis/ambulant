@@ -25,20 +25,44 @@ namespace ambulant {
 
 namespace lib {
 
-class active_renderer : public ref_counted_obj {
+class active_basic_renderer : public ref_counted_obj {
+  public:
+  	active_basic_renderer()
+  	:	m_event_processor(NULL),
+  		m_node(NULL),
+  		m_playdone(NULL) {}
+//  	active_basic_renderer(const ambulant::lib::active_basic_renderer& src)
+//  	:	m_event_processor(src.m_event_processor),
+//  		m_node(src.m_node),
+//  		m_playdone(src.m_playdone) {}
+	active_basic_renderer(event_processor *const evp,
+		const node *node)
+	:	m_event_processor(evp),
+		m_node(node),
+		m_playdone(NULL) {};
+		
+	~active_basic_renderer() {}
+	
+	virtual void start(event *playdone) = 0;
+	virtual void stop() = 0;
+	
+  protected:
+  	event_processor *const m_event_processor;
+	const node *m_node;
+	lib::event *m_playdone;
+};
+
+class active_renderer : public active_basic_renderer {
   public:
   	active_renderer()
-  	:	m_event_processor(NULL),
+  	:	active_basic_renderer(NULL, NULL),
   		m_src(NULL),
   		m_dest(0),
-  		m_node(NULL),
   		m_readdone(NULL),
   		m_playdone(NULL) {}
   	active_renderer(const ambulant::lib::active_renderer& src)
-  	:	m_event_processor(src.m_event_processor),
-  		m_src(src.m_src),
+  	:	active_basic_renderer(src.m_event_processor, src.m_node),
   		m_dest(0),
-  		m_node(src.m_node),
   		m_readdone(src.m_readdone),
   		m_playdone(src.m_playdone) {}
 	active_renderer(event_processor *const evp,
@@ -55,10 +79,8 @@ class active_renderer : public ref_counted_obj {
   protected:
 	virtual void readdone();
 
-  	event_processor *const m_event_processor;
   	net::active_datasource *m_src;
 	active_region *const m_dest;
-	const node *m_node;
 	lib::event *m_readdone;
 	lib::event *m_playdone;
 };
