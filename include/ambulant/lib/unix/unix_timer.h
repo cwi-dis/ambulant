@@ -25,15 +25,15 @@ namespace lib {
 
 namespace unix {
 
-// simple win32 os timer
-class os_timer : public ambulant::lib::timer  {
+// simple unix os timer
+class os_timer : public ambulant::lib::timer<unsigned long>  {
   public:
 	os_timer() : m_start_time(time(NULL)) {}
-	virtual time_t elapsed() const { return time(NULL)-m_start_time;}
+	virtual self_time_type elapsed() const { return time(NULL)-m_start_time;}
 	virtual void restart() { m_start_time = time(NULL);}
 	
   private:
-	ambulant::lib::timer::time_t m_start_time;
+	self_time_type m_start_time;
 };
 
 

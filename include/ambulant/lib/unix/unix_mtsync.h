@@ -32,6 +32,43 @@ class critical_section {
 	pthread_mutex_t m_cs;
 };
 
+class counting_semaphore {
+  public:
+	counting_semaphore()
+	:	m_lock(critical_section()),
+		m_wait(critical_section()),
+		m_count(0) {
+		m_wait.leave();
+	}
+	
+	~counting_semaphore() {
+	}
+	
+	void down() {
+		m_lock.enter();
+		m_count--;
+		if (m_count < 0) {
+			m_lock.leave();
+			m_wait.enter();
+		} else {
+			m_lock.leave();
+		}
+	}
+	
+	void up() {
+		m_lock.enter();
+		m_count++;
+		if (m_count <= 0) {
+			m_wait.leave();
+		}
+		m_lock.leave();
+	}
+  private:
+    critical_section m_lock;
+    critical_section m_wait;
+    int m_count;
+};
+
 } // namespace unix
 
 } // namespace lib
