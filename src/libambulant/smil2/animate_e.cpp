@@ -55,6 +55,7 @@
 #include "ambulant/smil2/smil_layout.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/region_info.h"
 
