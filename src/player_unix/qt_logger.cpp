@@ -126,7 +126,7 @@ qt_logger::qt_logger()
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	// Connect logger to our message displayer and output processor
-	//logger->set_show_message(show_message);
+	logger->set_show_message(show_message);
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
