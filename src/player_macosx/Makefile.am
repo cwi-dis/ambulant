@@ -47,6 +47,21 @@ extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=
 endif
 
+if WITH_EXPAT
+extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include
+extra_expat_LDADD=$(EXPAT_PREFIX)/lib/libexpat.a
+else
+extra_expat_DEFINES=
+extra_expat_LDADD=
+endif
+
+if WITH_XERCES
+extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include
+extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
+else
+extra_xerces_DEFINES=
+extra_xerces_LDADD=
+endif
 
 # Building a MacOSX .app bundle is a bit tricky.
 noinst_PROGRAMS = cocoambulant_executable
@@ -80,11 +95,15 @@ cocoambulant_bundle: cocoambulant_executable
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_sdl_LDADD) \
 	$(extra_ffmpeg_LDADD) \
+	$(extra_expat_LDADD) \
+	$(extra_xerces_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
-	$(EXPAT_PREFIX)/lib/libexpat.a -lstdc++
+    -lstdc++
 AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(EXPAT_PREFIX)/include \
+INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
+    $(extra_expat_DEFINES) \
+    $(extra_xerces_DEFINES) \
 	$(extra_sdl_DEFINES) \
 	$(extra_ffmpeg_DEFINES)
 

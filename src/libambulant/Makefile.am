@@ -1,4 +1,16 @@
 # See which toolkit-dependent libraries we want to make
+if WITH_EXPAT
+expat_parser_source = lib/expat_parser.cpp
+else
+expat_parser_source = 
+endif
+
+if WITH_XERCES
+xerces_parser_source = lib/xerces_parser.cpp
+else
+xerces_parser_source = 
+endif
+
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
 libambulant_cocoa_la_SOURCES = \
@@ -14,6 +26,7 @@ libambulant_cocoa_la_SOURCES = \
 else
 toolkit_cocoa_libraries =
 endif
+
 if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
 qtincludes = -I$(QT_PREFIX)/include
@@ -31,6 +44,7 @@ else
 qtincludes=
 toolkit_qt_libraries =
 endif
+
 if WITH_ARTS
 toolkit_arts_libraries = libambulant_arts.la
 
@@ -92,10 +106,12 @@ $(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_sdl_libraries) $(too
 libambulant_la_SOURCES = \
 	get_version.cpp \
 	\
+	$(expat_parser_source) \
+	$(xerces_parser_source) \
+	\
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
 	lib/document.cpp \
-	lib/expat_parser.cpp \
 	lib/gpaths.cpp \
 	lib/logger.cpp \
 	lib/nfa.cpp \
@@ -105,7 +121,6 @@ libambulant_la_SOURCES = \
 	lib/timer.cpp \
 	lib/transition_info.cpp \
 	lib/tree_builder.cpp \
-	lib/xerces_parser.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
 	lib/unix/unix_mtsync.cpp \
