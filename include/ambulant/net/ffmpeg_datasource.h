@@ -188,7 +188,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   private:
     bool _end_of_file();
 	const std::string m_url;
-  	AVCodec  *m_codec;
     AVCodecContext *m_con;
 	audio_format m_fmt;
     lib::event_processor *m_event_processor;
