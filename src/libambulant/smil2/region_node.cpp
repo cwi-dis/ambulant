@@ -142,7 +142,7 @@ region_node::fix_from_dom_node()
 	bool changed = false;
 	
 	// For every node in the layout section we fill in the dimensions
-	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
+	AM_DBG lib::logger::get_logger()->trace("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
 	common::region_dim_spec rdspec;
 	rdspec.left = get_regiondim_attr(m_node, "left");
 	rdspec.width = get_regiondim_attr(m_node, "width");
