@@ -102,7 +102,7 @@ class event_processor :
 	void wakeup(); 
 
 	HANDLE m_wait_event;
-	enum { RESOLUTION = 100};
+	enum { RESOLUTION = 50};
 };
 
 
