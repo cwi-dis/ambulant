@@ -6,7 +6,14 @@ Before creating the distribution :
 
 - make sure your CVS tree is uptodate and that there are no uncommited files
 - change the version number in configure.in and in include/ambulant/version.h 
-- check the files README, README-ZAURUS, Extras/bindist-readme.txt and third_party_packages/readme.txt, if they need to be updated.
+- check the files README, README-ZAURUS, Extras/bindist-readme.txt
+  and third_party_packages/readme.txt, if they need to be updated.
+- You must update NEWS, give a high-level overview of what has changed.
+- You must update Changelog. There is a tool cvs2cl that does this
+  more-or-less automatically, something like the following command line should
+  do the trick:
+  
+  % cvs log -b -d '>'2004-07-01 | cvs2cl.pl --stdout --stdin
 
 
 To create the linux source distribution :
