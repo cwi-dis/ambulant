@@ -76,14 +76,11 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window, 
-	lib::event_processor* worker)
-:   common::renderer_playable(context, cookie, node, evp), 
+	common::gui_window *window,
+	dx_playables_context *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
 	m_player(0), 
-	m_update_event(0), 
-	m_window(window),
-	m_worker(worker) {
-	
+	m_update_event(0) {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
@@ -157,9 +154,9 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 void gui::dx::dx_video_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("stop: %s", m_node->get_path_display_desc().c_str()); 
 	if(!m_player) return;
+	m_update_event = 0;
 	video_player *p = m_player;
 	m_player = 0;
-	m_update_event = 0;
 	p->stop();
 	delete p;
 	m_dest->renderer_done(this);
@@ -221,11 +218,12 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 		// this renderer has no pixels for the dirty rect
 		return;
 	}	
-	
+		
 	// Find the part of the image that is mapped to img_reg_rc_dirty
 	lib::screen_rect<int> vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty, 
 		&vid_rect, &vid_reg_rc);
 		
+	
 	// Translate vid_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();
 	vid_reg_rc_dirty.translate(pt);
@@ -233,10 +231,16 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	// keep debug message area
 	m_msg_rect |= vid_reg_rc_dirty;
 	
+	dx_transition *tr = 0;
+	if(m_transitioning) {
+		tr = m_dxplayer->get_transition(this);
+		m_transitioning = tr?true:false;
+	}
+	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	//AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
-	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty);
-	
+	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
+		
 	AM_DBG 	{
 		std::basic_string<text_char> msg = m_node->get_path_display_desc();
 		v->draw(msg, vid_reg_rc_dirty, lib::to_color("orange"));
@@ -261,5 +265,5 @@ void gui::dx::dx_video_renderer::update_callback() {
 void gui::dx::dx_video_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_video_renderer>(this, 
 		&dx_video_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 100);
+	m_event_processor->add_event(m_update_event, 50);
 }

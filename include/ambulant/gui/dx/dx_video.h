@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/gui/dx/dx_playable.h"
 #include "ambulant/lib/mtsync.h"
 
 namespace ambulant {
@@ -66,7 +67,7 @@ namespace dx {
 
 class video_player;
 
-class dx_video_renderer : public common::renderer_playable {
+class dx_video_renderer : public dx_renderer_playable {
   public:
 	dx_video_renderer(
 		common::playable_notification *context,
@@ -74,7 +75,7 @@ class dx_video_renderer : public common::renderer_playable {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::gui_window *window,
-		lib::event_processor* worker);
+		dx_playables_context *dxplayer);
 	~dx_video_renderer();
 	void start(double t);
 	void stop();
@@ -89,11 +90,9 @@ class dx_video_renderer : public common::renderer_playable {
 	void schedule_update();
  	video_player *m_player;
 	lib::event *m_update_event;
-	lib::event_processor* m_worker;
 	lib::critical_section m_cs;
 	
 	// for debugging
-	common::gui_window *m_window;
 	lib::screen_rect<int> m_msg_rect;
 	
 };

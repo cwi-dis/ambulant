@@ -69,6 +69,7 @@
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/gui/dx/dx_playable.h"
 
 // Global functions provided by the hosting application.
 extern HWND new_os_window();
@@ -81,6 +82,8 @@ namespace ambulant {
 namespace lib {
 	class event_processor;
 	class logger;
+	class transition_info;
+	class event;
 }
 
 namespace mms {
@@ -97,11 +100,13 @@ namespace dx {
 
 class viewport;
 class dx_window;
+class dx_transition;
 
 class dx_player : 
 	public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
+	public dx_playables_context,
 	public lib::system {
 	
   public:
@@ -165,6 +170,19 @@ class dx_player :
 	void redraw(HWND hwnd, HDC hdc);
 	void on_done();
 	
+	///////////////////
+	// Timeslices services and transitions
+	void update_callback();
+	void schedule_update();
+	void update_transitions();
+	bool has_transitions() const;
+	void stopped(common::playable *p);
+	void paused(common::playable *p);
+	void resumed(common::playable *p);
+	void set_intransition(common::playable *p, lib::transition_info *info);
+	void start_outtransition(common::playable *p, lib::transition_info *info);
+	dx_transition *get_transition(common::playable *p);
+	
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
@@ -178,6 +196,10 @@ class dx_player :
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	
 	wininfo* get_wininfo(HWND hwnd);
+	
+	lib::event *m_update_event;
+	typedef std::map<common::playable *, dx_transition*> trmap_t;
+	trmap_t m_trmap;
 	
 	lib::logger *m_logger;
 };

@@ -80,6 +80,7 @@ namespace dx {
 using lib::uint16;
 using lib::uint32;
 using lib::uchar;
+class dx_transition;
 
 // A viewport is a top-level DD surface.
 
@@ -118,11 +119,28 @@ class viewport {
 	
 	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
 	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc = false);
+		const lib::screen_rect<int>& dst_rc, bool keysrc = false, dx_transition *tr = 0);
+	
+	// Draw the src_rc of the DD surface to the dstview buffer and destination rectangle
+	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+		const lib::screen_rect<int>& dst_rc, bool keysrc, IDirectDrawSurface* dstview);
 	
 
 	// Draw the text to the back buffer within destination rectangle
 	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	
+	// Blits (src, src_rc) to (dst, dst_rc)
+	void blit(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+		IDirectDrawSurface* dst, const lib::screen_rect<int>& dst_rc);
+
+	// Copies to the DD surface the bits of the back buffer within the from rect
+	void rdraw(IDirectDrawSurface* dst, const lib::screen_rect<int>& from_rc);
+	
+	// Creates a copy of the provided rect 
+	void trcopy(const lib::screen_rect<int>& rc);
+	
+	// Draw the copy using the clipping region
+	void trdraw(const lib::screen_rect<int>& rc, HRGN hrgn);
 	
 	// Paints the provided rect
 	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
@@ -152,6 +170,7 @@ class viewport {
 	IDirectDraw* m_direct_draw;
 	IDirectDrawSurface* m_primary_surface;
 	IDirectDrawSurface* m_surface;
+	IDirectDrawSurface* m_trsurface;
 	
 	int m_width, m_height;
 	lib::color_t m_bgd;

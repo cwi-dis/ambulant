@@ -69,6 +69,7 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/win32/win32_error.h"
+#include "ambulant/gui/dx/dx_transition.h"
 
 #include <algorithm>
 #include <cassert>
@@ -345,6 +346,19 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	
 	// clear the back buffer
 	clear();
+	
+	// create shared transition surface
+	memset(&sd, 0, sizeof(DDSURFACEDESC));
+	sd.dwSize = sizeof(DDSURFACEDESC);
+	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+	hr = m_direct_draw->CreateSurface(&sd, &m_trsurface, NULL);
+	if (FAILED(hr)){
+		seterror("DirectDraw::CreateSurface()", hr);
+		return;
+	}
 }
 
 gui::dx::viewport::~viewport() {
@@ -497,8 +511,40 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
 void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-	const lib::screen_rect<int>& dst_rc, bool keysrc) {
-	if(!m_surface || !src) return;
+	const lib::screen_rect<int>& dst_rc, bool keysrc, dx_transition *tr) {
+	if(!m_surface || !src || !m_trsurface) return;
+	
+	if(!tr) {
+		draw(src, src_rc, dst_rc, keysrc, m_surface);
+		return;
+	}
+	
+	smil2::blitter_type bt = tr->get_blitter_type();
+	if(bt != smil2::bt_rect && bt != smil2::bt_rectlist) {
+		// Not handled yet, draw normally
+		draw(src, src_rc, dst_rc, keysrc, m_surface);
+		return;
+	}
+	
+	HRGN hrgn = 0;
+	if(bt == smil2::bt_rect)
+		hrgn = create_rect_region(tr); 
+	else if(bt == smil2::bt_rectlist)
+		hrgn = create_rectlist_region(tr); 
+		
+	if(!hrgn) {
+		draw(src, src_rc, dst_rc, keysrc, m_surface);
+		return;
+	}
+	trcopy(dst_rc);
+	draw(src, src_rc, dst_rc, keysrc, m_trsurface);
+	trdraw(dst_rc, hrgn);
+	DeleteObject((HGDIOBJ)hrgn);
+}
+
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+	const lib::screen_rect<int>& dst_rc, bool keysrc, IDirectDrawSurface* dstview) {
+	if(!dstview || !src) return;
 	
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
@@ -517,7 +563,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	
 	DWORD flags = DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
-	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
+	HRESULT hr = dstview->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
@@ -572,6 +618,101 @@ lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
 	HRESULT hr = p->GetSurfaceDesc(&desc);
 	assert(SUCCEEDED(hr));
 	return lib::size(desc.dwWidth, desc.dwHeight);
+}
+
+// Draw the src_rc of the DD surface to the back buffer and destination rectangle
+void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+	IDirectDrawSurface* dst, const lib::screen_rect<int>& dst_rc) {
+	
+	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
+	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
+	
+	// Verify:
+	// 1. Src within surf
+	RECT srcSurfRC;
+	set_rect(src, &srcSurfRC);
+	if(!IntersectRect(&srcRC, &srcRC, &srcSurfRC) || IsRectEmpty(&srcRC))
+		return;
+		
+	// 2. Dst within surf
+	RECT dstSurfRC;
+	set_rect(dst, &dstSurfRC);
+	if(!IntersectRect(&dstRC, &dstRC, &dstSurfRC) || IsRectEmpty(&dstRC))
+		return;
+			
+	DWORD flags = DDBLT_WAIT;
+	HRESULT hr = dst->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::blit/DirectDrawSurface::Blt()", hr);
+		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
+	}
+}
+
+// Copies to the DD surface the back buffer within the from rect
+void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::screen_rect<int>& from_rc) {
+	if(!m_surface || !dst) return;
+	DWORD flags = DDBLT_WAIT;
+	
+	// Set srcRC to surf rect
+	RECT surfRC;
+	set_rect(dst, &surfRC);
+	
+	RECT fromRC = {from_rc.left(), from_rc.top(), from_rc.right(), from_rc.bottom()};
+	
+	// Verify:
+	// Dest within viewport
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&fromRC, &fromRC, &vrc) || IsRectEmpty(&fromRC))
+		return;
+	
+	HRESULT hr = dst->Blt(&surfRC, m_surface, &fromRC, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::rdraw/DirectDrawSurface::Blt()", hr);
+	}
+}
+
+void gui::dx::viewport::trcopy(const lib::screen_rect<int>& rc) {
+	if(!m_surface || !m_trsurface) return;
+	DWORD flags = DDBLT_WAIT;
+	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
+	HRESULT hr = m_trsurface->Blt(&RC, m_surface, &RC, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::copy/DirectDrawSurface::Blt()", hr);
+	}
+}
+
+void gui::dx::viewport::trdraw(const lib::screen_rect<int>& rc, HRGN hrgn) {
+	if(!m_surface || !m_trsurface) return;
+	DWORD flags = DDBLT_WAIT;
+	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
+	
+	HDC hdc;
+	HRESULT hr = m_surface->GetDC(&hdc);
+	if (FAILED(hr)) {
+		seterror("DirectDrawSurface::GetDC()", hr);
+		return;
+	}
+	HDC htrdc;
+	hr = m_trsurface->GetDC(&htrdc);
+	if(FAILED(hr)) {
+		m_surface->ReleaseDC(hdc);
+		seterror("DirectDrawSurface::GetDC()", hr);
+		return;
+	}
+
+	SelectClipRgn(hdc, hrgn);
+	
+	int w = RC.right - RC.left;
+	int h = RC.bottom - RC.top;
+	BOOL res = BitBlt(hdc, RC.left, RC.top, w, h, htrdc, RC.left, RC.top, SRCCOPY);
+	if(!res) win_report_last_error("BitBlt");
+	
+	m_surface->ReleaseDC(hdc);
+	m_trsurface->ReleaseDC(htrdc);
 }
 
 ////////////////////////

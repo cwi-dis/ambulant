@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/gui/dx/dx_playable.h"
 
 namespace ambulant {
 
@@ -64,14 +65,15 @@ namespace dx {
 
 class image_renderer;
 
-class dx_img_renderer : public common::renderer_playable {
+class dx_img_renderer : public dx_renderer_playable {
   public:
 	dx_img_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::gui_window *window);
+		common::gui_window *window, 
+		dx_playables_context *dxplayer);
 	~dx_img_renderer();
 	void start(double t);
 	void stop();
@@ -79,9 +81,6 @@ class dx_img_renderer : public common::renderer_playable {
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
   private:
 	image_renderer *m_image;
-	
-	// for debugging
-	common::gui_window *m_window;
 	lib::screen_rect<int> m_msg_rect;
 };
 

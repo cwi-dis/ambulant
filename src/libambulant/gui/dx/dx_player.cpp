@@ -55,6 +55,7 @@
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
 #include "ambulant/gui/dx/dx_rgn.h"
+#include "ambulant/gui/dx/dx_transition.h"
 
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/event_processor.h"
@@ -62,6 +63,9 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/transition_info.h"
+
+#include "ambulant/smil2/transition.h"
 
 // Players
 #include "ambulant/smil2/smil_player.h"
@@ -100,7 +104,8 @@ gui::dx::dx_player::dx_player(const std::string& url)
 :	m_url(url),
 	m_player(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
-	m_worker_processor(0),	
+	m_worker_processor(0),
+	m_update_event(0),	
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -148,6 +153,7 @@ void gui::dx::dx_player::stop() {
 	if(m_player) {
 		m_player->stop();
 		m_timer->pause();
+		m_update_event = 0;
 	}
 }
 
@@ -239,7 +245,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 	lib::size bounds, common::gui_events *src) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
-		name.c_str(), repr(bounds).c_str());
+		name.c_str(), ::repr(bounds).c_str());
 	
 	// wininfo struct that will hold the associated objects
 	wininfo *winfo = new wininfo;
@@ -324,7 +330,6 @@ gui::dx::dx_player::new_playable(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp) {
-	
 	common::gui_window *window = get_window(node);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
@@ -332,11 +337,11 @@ gui::dx::dx_player::new_playable(
 	if(tag == "text") {
 		p = new dx_text_renderer(context, cookie, node, evp, window);
 	} else if(tag == "img") {
-		p = new dx_img_renderer(context, cookie, node, evp, window);
+		p = new dx_img_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "audio") {
 		p = new dx_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
-		p = new dx_video_renderer(context, cookie, node, evp, window, m_worker_processor);
+		p = new dx_video_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "area") {
 		p = new dx_area(context, cookie, node, evp, window);
 	} else if(tag == "brush") {
@@ -345,6 +350,82 @@ gui::dx::dx_player::new_playable(
 		p = new dx_area(context, cookie, node, evp, window);
 	}
 	return p;
+}
+
+void gui::dx::dx_player::set_intransition(common::playable *p, lib::transition_info *info) { 
+	lib::logger::get_logger()->trace("set_intransition : %s", repr(info->m_type).c_str());
+	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	dx_transition *tr = make_transition(info->m_type, p, timer);
+	m_trmap[p] = tr;
+	tr->init(p->get_renderer()->get_surface(), false, info);
+	tr->first_step();
+	if(!m_update_event) schedule_update();
+}
+
+void gui::dx::dx_player::start_outtransition(common::playable *p, lib::transition_info *info) {  
+	lib::logger::get_logger()->trace("start_outtransition : %s", repr(info->m_type).c_str());
+	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	dx_transition *tr = make_transition(info->m_type, p, timer);
+	m_trmap[p] = tr;
+	tr->init(p->get_renderer()->get_surface(), true, info);
+	tr->first_step();
+	if(!m_update_event) schedule_update();
+}
+
+bool gui::dx::dx_player::has_transitions() const {
+	return !m_trmap.empty();
+}
+
+void gui::dx::dx_player::update_transitions() {
+	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
+		if(!(*it).second->next_step()) {
+			delete (*it).second;
+			it = m_trmap.erase(it);
+		}
+	}
+}
+
+gui::dx::dx_transition *gui::dx::dx_player::get_transition(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	return (it != m_trmap.end())?(*it).second:0;
+}
+
+void gui::dx::dx_player::stopped(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		delete (*it).second;
+		m_trmap.erase(it);
+	}
+}
+
+void gui::dx::dx_player::paused(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		(*it).second->pause();
+	}
+}
+
+void gui::dx::dx_player::resumed(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		(*it).second->resume();
+	}
+}
+
+void gui::dx::dx_player::update_callback() {
+	if(!m_update_event) return;
+	if(has_transitions()) {
+		update_transitions();
+		schedule_update();
+	} else {
+		m_update_event = 0;
+	}
+}
+
+void gui::dx::dx_player::schedule_update() {
+	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
+		&dx_player::update_callback);
+	m_worker_processor->add_event(m_update_event, 50);
 }
 
 ////////////////////////

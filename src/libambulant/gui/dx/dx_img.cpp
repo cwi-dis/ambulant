@@ -76,9 +76,10 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window)
-:   common::renderer_playable(context, cookie, node, evp),
-	m_image(0), m_window(window) {
+	common::gui_window *window,
+	dx_playables_context *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
+	m_image(0) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::ctr(0x%x)", this);
 	std::string url = m_node->get_url("src");
@@ -211,7 +212,13 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").c_str());
-	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
+	
+	dx_transition *tr = 0;
+	if(m_transitioning) {
+		tr = m_dxplayer->get_transition(this);
+		m_transitioning = tr?true:false;
+	}
+	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 }
 
 
