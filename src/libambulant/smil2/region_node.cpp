@@ -71,6 +71,7 @@ static char *subregionattrs[] = {
 	"backgroundColor", "background-color",
 	"transparent",
 	"fit",
+	"shape", "coords",
 	NULL
 };
 
@@ -149,11 +150,11 @@ region_node::fix_from_dom_node()
 	rdspec.bottom = get_regiondim_attr(m_node, "bottom");
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	AM_DBG {
-		lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
+		//lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
 		// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
-		os << "region_node::fix_from_dom_node: result=(" 
-			<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
-			<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
+		//os << "region_node::fix_from_dom_node: result=(" 
+		//	<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
+		//	<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
 	}
 #endif
 	if (rdspec != m_rds) {
