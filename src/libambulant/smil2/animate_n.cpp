@@ -249,7 +249,7 @@ void underlying_to_animation<T>::prepare_interval() {
 template <class F>
 class regdim_animation : public linear_values_animation<F, common::region_dim> {
   public:
-	regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	  regdim_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
@@ -324,7 +324,7 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
 template <class F>
 class color_animation : public linear_values_animation<F, lib::color_t> {
   public:
-	color_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	color_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, lib::color_t>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
@@ -391,7 +391,7 @@ class underlying_to_color_animation : public underlying_to_animation<lib::color_
 template <class F>
 class zindex_animation : public linear_values_animation<F, common::zindex_t> {
   public:
-	zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	zindex_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::zindex_t>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
@@ -463,7 +463,7 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
 template <class F>
 class values_motion_animation : public linear_values_animation<F, lib::point> {
   public:
-	values_motion_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	values_motion_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, lib::point>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {

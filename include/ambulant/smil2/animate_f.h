@@ -243,13 +243,13 @@ class linear_map_f : public simple_animation_f {
 		} else { 
 			m_ktv.clear();
 			double length = 0.0;
-			for(int i=1;i<n;i++) length += dist(vals[i-1], vals[i]);
+			for(int i1=1;i1<n;i1++) length += dist(vals[i1-1], vals[i1]);
 			double dl = 0;
 			m_ktv[0] = vals[0];
-			for(int i=1;i<n;i++) {
-				dl += dist(vals[i-1], vals[i]);
+			for(int i2=1;i2<n;i2++) {
+				dl += dist(vals[i2-1], vals[i2]);
 				time_type t = time_type(::floor(0.5+dur*dl/length));
-				m_ktv[t] = vals[i];
+				m_ktv[t] = vals[i2];
 			}		
 		}
 	}

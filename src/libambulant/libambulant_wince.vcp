@@ -158,6 +158,7 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\common\region.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -187,6 +188,7 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -323,8 +325,10 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\lib\abstract_mtsync.h"\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
 	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\delta_timer.h"\
 	"..\..\include\ambulant\lib\event.h"\
 	"..\..\include\ambulant\lib\event_processor.h"\
@@ -337,6 +341,7 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
@@ -345,6 +350,7 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\net\posix_datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\stdio_datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -733,9 +739,11 @@ DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -875,6 +883,7 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1031,6 +1040,7 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
@@ -1474,6 +1484,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
@@ -1512,6 +1523,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1659,6 +1671,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
@@ -1697,6 +1710,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2037,6 +2051,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
@@ -2343,6 +2358,7 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\common\region.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\common\schema.h"\
@@ -2405,6 +2421,7 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -2652,6 +2669,7 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
@@ -2975,6 +2993,7 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\common\region.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3008,6 +3027,7 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4276,6 +4296,113 @@ NODEP_CPP_EXPAT=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\lib\gpaths.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_GPATH=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_GPATH=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_GPATH=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_GPATH=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\lib\logger.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
@@ -4887,6 +5014,125 @@ NODEP_CPP_TIMER=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\lib\transition_info.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_TRANS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TRANS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_TRANS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_TRANS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\lib\tree_builder.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
@@ -5220,6 +5466,7 @@ SOURCE=.\mms\timeline_builder.cpp
 DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -5438,6 +5685,7 @@ DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5565,7 +5813,17 @@ DEP_CPP_URL_C=\
 	"..\..\include\ambulant\config\select_platform_config.h"\
 	"..\..\include\ambulant\config\select_stdlib_config.h"\
 	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\filesys.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -5617,6 +5875,575 @@ DEP_CPP_URL_C=\
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\smil2\animate_a.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_ANIMA=\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_ANIMA=\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_ANIMA=\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_ANIMA=\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gpaths.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\smil2\animate_e.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_ANIMAT=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_layout.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_ANIMAT=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_layout.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_ANIMAT=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_layout.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_ANIMAT=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_layout.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\smil2\animate_n.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_ANIMATE=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_f.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_ANIMATE=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_f.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_ANIMATE=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_f.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_ANIMATE=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\document.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_f.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\smil2\region_node.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
@@ -5652,6 +6479,7 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
@@ -5977,8 +6805,10 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\lib\abstract_mtsync.h"\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
 	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\delta_timer.h"\
 	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\event.h"\
@@ -5995,17 +6825,21 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\system.h"\
 	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_sched.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ambulant\smil2\timegraph.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -6203,8 +7037,6 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\event.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
@@ -6212,13 +7044,16 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -6362,8 +7197,6 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\event.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
@@ -6371,13 +7204,16 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -6667,14 +7503,14 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -6683,9 +7519,11 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -6813,6 +7651,145 @@ NODEP_CPP_TIME_=\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\smil2\time_calc.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_TIME_C=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_calc.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TIME_C=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_calc.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_TIME_C=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_calc.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_TIME_C=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_calc.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
 	
 
 !ENDIF 
@@ -6826,6 +7803,8 @@ SOURCE=.\smil2\time_node.cpp
 
 DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -6837,9 +7816,10 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\lib\abstract_mtsync.h"\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
@@ -6847,13 +7827,20 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_e.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_calc.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
@@ -6979,7 +7966,7 @@ NODEP_CPP_TIME_N=\
 # End Source File
 # Begin Source File
 
-SOURCE=.\smil2\time_state.cpp
+SOURCE=.\smil2\time_sched.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
@@ -6997,8 +7984,6 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\event.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
@@ -7006,14 +7991,18 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_sched.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
@@ -7022,6 +8011,172 @@ DEP_CPP_TIME_S=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_TIME_S=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_sched.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_TIME_S=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_sched.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_TIME_S=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_sched.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\smil2\time_state.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_TIME_ST=\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\schema.h"\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\smil_time.h"\
+	"..\..\include\ambulant\smil2\sync_rule.h"\
+	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
+	"..\..\include\ambulant\smil2\time_node.h"\
+	"..\..\include\ambulant\smil2\time_state.h"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
@@ -7034,7 +8189,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	
-NODEP_CPP_TIME_S=\
+NODEP_CPP_TIME_ST=\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
 	".\mbulant\config\posix_features.h"\
@@ -7059,7 +8214,7 @@ NODEP_CPP_TIME_S=\
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
-DEP_CPP_TIME_S=\
+DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
@@ -7072,7 +8227,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	
-NODEP_CPP_TIME_S=\
+NODEP_CPP_TIME_ST=\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
 	".\mbulant\config\posix_features.h"\
@@ -7097,7 +8252,7 @@ NODEP_CPP_TIME_S=\
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
-DEP_CPP_TIME_S=\
+DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
@@ -7110,7 +8265,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	
-NODEP_CPP_TIME_S=\
+NODEP_CPP_TIME_ST=\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
 	".\mbulant\config\posix_features.h"\
@@ -7144,6 +8299,8 @@ SOURCE=.\smil2\timegraph.cpp
 
 DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -7155,10 +8312,11 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\lib\abstract_mtsync.h"\
 	"..\..\include\ambulant\lib\amstream.h"\
 	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
-	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
@@ -7173,10 +8331,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\animate_a.h"\
+	"..\..\include\ambulant\smil2\animate_n.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
+	"..\..\include\ambulant\smil2\time_nctx.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ambulant\smil2\timegraph.h"\
@@ -7329,6 +8490,137 @@ NODEP_CPP_TIMEG=\
 	".\mbulant\lib\win32\win32_mtsync.h"\
 	".\mbulant\net\url.h"\
 	".\mbulant\smil2\test_attrs.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\smil2\transition.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_TRANSI=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\transition.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TRANSI=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\transition.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_TRANSI=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\transition.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_TRANSI=\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\transition.h"\
 	
 
 !ENDIF 
@@ -7607,6 +8899,10 @@ SOURCE=..\..\include\ambulant\lib\filesys.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\ambulant\lib\gpaths.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\ambulant\lib\gtypes.h
 # End Source File
 # Begin Source File
@@ -7679,6 +8975,10 @@ SOURCE=..\..\include\ambulant\lib\timer.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\ambulant\lib\transition_info.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\ambulant\lib\tree_builder.h
 # End Source File
 # End Group
@@ -7743,6 +9043,22 @@ SOURCE=..\..\include\ambulant\net\url.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\include\ambulant\smil2\animate_a.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\animate_e.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\animate_f.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\animate_n.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\ambulant\smil2\region_node.h
 # End Source File
 # Begin Source File
@@ -7771,7 +9087,19 @@ SOURCE=..\..\include\ambulant\smil2\time_attrs.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\ambulant\smil2\time_calc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\time_nctx.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\ambulant\smil2\time_node.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\time_sched.h
 # End Source File
 # Begin Source File
 
@@ -7780,6 +9108,10 @@ SOURCE=..\..\include\ambulant\smil2\time_state.h
 # Begin Source File
 
 SOURCE=..\..\include\ambulant\smil2\timegraph.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\smil2\transition.h
 # End Source File
 # End Group
 # Begin Group "config"
