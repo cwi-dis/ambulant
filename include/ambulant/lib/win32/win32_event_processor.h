@@ -20,11 +20,11 @@
 #endif
 
 #ifndef AMBULANT_LIB_LOGGER_H
-#include "lib/logger.h"
+#include "ambulant/lib/logger.h"
 #endif
 
 #ifndef AMBULANT_LIB_DELTA_TIMER_H
-#include "lib/delta_timer.h"
+#include "ambulant/lib/delta_timer.h"
 #endif
 
 #ifndef AMBULANT_LIB_WIN32_THREAD_H
