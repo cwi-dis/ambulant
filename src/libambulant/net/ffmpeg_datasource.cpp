@@ -312,12 +312,15 @@ detail::ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger ()->trace ("ffmpeg_parser::run sending data to datasink");
 			// Wait until there is room in the buffer
 			//while (sink->buffer_full() && !exit_requested()) {
-			while (sink->buffer_full()) {
+			while (sink && sink->buffer_full() && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: waiting for buffer space");
 				sleep(1);   // This is overdoing it
+				sink = m_sinks[pkt->stream_index];
 			}
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
-			sink->data_avail(pkt->pts, pkt->data, pkt->size);
+			if (sink && !exit_requested()) {
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
+				sink->data_avail(pkt->pts, pkt->data, pkt->size);
+			}
 		}
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
 		av_free_packet(pkt);
@@ -408,8 +411,11 @@ ffmpeg_audio_datasource::stop()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
-		m_thread->remove_datasink(m_stream_index);
+		detail::ffmpeg_demux *tmpthread = m_thread;
 		m_thread = NULL;
+		m_lock.leave();
+		tmpthread->remove_datasink(m_stream_index);
+		m_lock.enter();
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::stop: thread stopped");
@@ -624,10 +630,12 @@ ffmpeg_video_datasource::stop()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
-		m_thread->remove_datasink(m_stream_index);
+		detail::ffmpeg_demux *tmpthread = m_thread;
 		m_thread = NULL;
+		m_lock.leave();
+		tmpthread->remove_datasink(m_stream_index);
+		m_lock.enter();
 	}
-	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::stop: thread stopped");
 	//if (m_con) delete m_con;
 	m_con = NULL; // owned by the thread
