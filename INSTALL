@@ -119,8 +119,8 @@ copied to bin\win32 in the toplevel directory.
 NOTE: if this step fails please inspect the script and do the
 needed copies by hand.
 
-After these steps you are ready to build AmbulantPlayer itself: open
-src\Ambulant-win32.sln in Visual Studio, select the Release configuration
+After these steps you are ready to build AmbulantPlayer itself:to build it 
+with xerces support open src\Ambulant-win32.sln in Visual Studio, select the Release configuration
 and do Build->Build Solution. Alternatively, if you don't want xerces support,
 there is an Ambulant-win32-noxerces.sln solution too.
 
