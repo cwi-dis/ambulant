@@ -236,7 +236,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 		} else {
 			data = NULL;
 		}
-//	/*AM_DBG*/ lib::logger::get_logger()->debug("qt_active_video_renderer.redraw, m_data=0x%x (this=0x%x)",(void*) data, (void *)this);
+
 		if (data ) {
 			int width = m_size.w;
 			int height = m_size.h;
@@ -255,7 +255,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 		    	T = dstrect.top(),
 		    	W = dstrect.width(),
 		    	H = dstrect.height();
-			/*AM_DBG*/ lib::logger::get_logger()->debug(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
+			AM_DBG lib::logger::get_logger()->debug(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
 			paint.drawImage(L,T,*image,0,0,W,H);
 		} else {
 	//		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
