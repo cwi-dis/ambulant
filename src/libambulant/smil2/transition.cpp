@@ -613,23 +613,45 @@ transition_engine_snakewipe::compute()
 	int vindex = index / MATRIX_HSTEPS;
 	int vindexpos = (dstrect.m_top + vindex*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
 	int vindex2pos = (dstrect.m_top + (vindex+1)*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
-	int hindexpos = (dstrect.m_left + hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
 	clear();
 	if (vindex)
 		m_newrectlist.push_back(lib::screen_rect<int>(
 			lib::point(dstrect.m_left, dstrect.m_top),
 			lib::point(dstrect.m_right, vindexpos)));
-	if (hindex)
-		m_newrectlist.push_back(lib::screen_rect<int>(
-			lib::point(dstrect.m_left, vindexpos),
-			lib::point(hindexpos, vindex2pos)));
+	if (hindex) {
+		if (vindex & 1) {
+			int hindexpos = (dstrect.m_right - hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
+			m_newrectlist.push_back(lib::screen_rect<int>(
+				lib::point(hindexpos, vindexpos),
+				lib::point(dstrect.m_right, vindex2pos)));
+		} else {
+			int hindex2pos = (dstrect.m_left + hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
+			m_newrectlist.push_back(lib::screen_rect<int>(
+				lib::point(dstrect.m_left, vindexpos),
+				lib::point(hindex2pos, vindex2pos)));
+		}
+	}
 }
 
 void
 transition_engine_waterfallwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype waterfallWipe not yet implemented");
+	int index = (int)(m_progress*MATRIX_HSTEPS*MATRIX_VSTEPS);
+	int hindex = index / MATRIX_HSTEPS;
+	int vindex = index % MATRIX_HSTEPS;
+	int hindexpos = (dstrect.m_left + hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
+	int hindex2pos = (dstrect.m_top + (hindex+1)*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
+	int vindexpos = (dstrect.m_top + vindex*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
+	clear();
+	if (hindex)
+		m_newrectlist.push_back(lib::screen_rect<int>(
+			lib::point(dstrect.m_left, dstrect.m_top),
+			lib::point(hindexpos, dstrect.m_bottom)));
+	if (vindex)
+		m_newrectlist.push_back(lib::screen_rect<int>(
+			lib::point(hindexpos, dstrect.m_top),
+			lib::point(hindex2pos, vindexpos)));
 }
 
 void
