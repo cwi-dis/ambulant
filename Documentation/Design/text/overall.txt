@@ -1,0 +1,73 @@
+Ambulant design, overall
+========================
+Jack Jansen, 28-Apr-03
+----------------------
+
+Here are some general (unstructured) thoughts on the Ambulant design.
+
+It would be nice if we could make the design language-independent, and
+do it so that cross-language implementations are possible. This would not
+only benefit people extending it in the long run, but could also jump-start
+the initial implementation by re-using the existing GRiNS scheduler.
+
+Boost.python may be a way to achieve C++/Python interoperability, this needs
+to be investigated. Maybe Kleanthis knows more.
+
+The architecture is going to be fairly tightly coupled. The original idea
+of allowing the high-level scheduler to live on a different machine, precomputing
+schedules and ending these to a low level scheduler, isn't going to work
+for SMIL without putting almost all SMIL complexity in the low-level scheduler.
+
+The basic architecture is going to be event-driven. The alternative
+is to use multiple threads all over, but it seems event-driven is the better
+choice. An object that wants to use multiple threads can do so more easily
+on an event infrastructure than the other way around. Moreover, multiple
+threads are always going to incur a performance penalty.
+
+Also, although it seems at first glance that some objects, such as a renderer,
+would benefit from a threaded architecture it turns out this isn't really so.
+The naive threaded implementation
+    while data = read_data():
+    	render_data(data)
+will not work, because many other things can also happen, such as a user-initiated
+event, or the timeline for the renderer being torn down. So, the naive loop
+sketched here will become hairy anyway, and look like
+	while event = wait_for_some_interesting_event():
+		switch event:
+			case DATA: render_data(data)
+			case STOP: close_resources_and_exit()
+			...
+so we might as will split this out in the architecture.
+
+The event handler architecture needs an elaborate priority scheme, that is expressive
+enough that the best execution order of things that happen "at the same time"
+is automatic.
+
+We need to be able to re-use existing (Explorer, Netscape) plugins, when applicable.
+
+We need to be able to use existing toolkits that take work out of our hands.
+Think of QuickTime and DirectX, where you basically pass a URL and say "play" and
+have nothing to worry about anymore. Also, existing URL access libraries (such
+as the caching infrastructure on windows) and a third party RTSP library need
+to be used. This also means we don't have to handle firewalls and what more.
+
+The scheduler is going to be split in two. There is a high-level language
+dependent scheduler and a low-level independent one. We will write a SMIL
+high level scheduler, other people should be able to replace that with, say,
+a QuickTime or MPEG-4 scheduler while re-using the low-level scheduler.
+
+The Low-level scheduler is going to be based on fixed timelines. The HL
+scheduler identifies a portion of the SMIL document that it can fit on a fixed
+timeline (at least: a fully ordered linear timeline), it creates a schedule for this
+and pushes it down. These low-level schedules look somewhat like a petri-net,
+but they probably need "or" in addition to "and". The LL schedule will contain
+events that trigger the HL scheduler when needed (such as when the user clicks
+a link, or when the schedule finishes). These timelines are what I referred to
+in the past as "multimedia basic blocks".
+
+The elements in the timeline need enough information to be able to get back at
+a HL object from them, so we do the annotation thing.
+
+Timeline schedules are completely independent, at their level. If one timeline
+kills or pauses another one this happens because it sends an event to the
+HL scheduler which does the killing or pausing.

@@ -1,8 +1,10 @@
-Ambulant design, random thoughts 
-================================
+Ambulant design, objects 
+========================
 Jack Jansen, 28-Apr-03.
 -----------------------
 Objects we need::
+- Event processor. This is the mainloop plus the event/callback mechanism.
+TBD.
 - Data Source. Think of these as "media items", they may refer to a URL
 or part of a multiplexed stream or so, and provide data to renderers and
 to the parser.
@@ -13,6 +15,7 @@ the user sees".
 or push audio through.
 - Clocks. These advance a virtual time.
 - Document Scheduler. This reads a document and runs it.
+- Timeline Scheduler. This executes single timelines.
 
 Objects we may need::
 - Resource. Control access to scarce resources (bandwidth, number of
@@ -21,6 +24,19 @@ open files).
 Data sources come in two flavors: active and dormant. These can be used
 interchangeably (active is probably a subclass of dormant). Dormant has
 URL, clip-begin/clip-end and such. Active also has methods for I/O.
+Data sources are always (really always?) push-based: the client asks
+for data, this call returns immedeately, and when the data is available
+an event is fired. There is probably also a call that says "don't
+send me the event until you have all the data that is there".
+
+Some data sources will be able to handle some of the extra parameters
+(clip-begin/end, ignore-repeat) itself, the rest will be passed to 
+the renderer to handle.
+
+XXX We need a "semi-active" data source, for the SMIL prefetch
+element. This probably means we also need factory object for data sources,
+which re-uses a semi-active data source when applicable. This lookup
+happens when a data source goes from dormant to active.
 
 A data sink is where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
@@ -71,4 +87,15 @@ it is (and updates its dependent slave clock). The scheduler assigns a
 master clock for the SMIL syncMaster attribute.
 
 The SMIL Document Scheduler opens the document (through a data source)
-and parses it into a tree. 
+and parses it into a tree. It then waits for the "play document" event.
+Upon receipt it will create the timeline schedule for the root plus anything
+that is on the same timeline. It creates the data sources and renderers,
+pushes the whole timeline down and fires the event that sets the thing running.
+The timeline schedule also contains preloads for the various media items.
+Then it waits for more events (probably from the LL scheduler) and does
+what is needed for them.
+
+The timeline schedules can also be pushed down early, in which case they
+will start preloading. This can be used to do "jump optimization" on
+user interaction: if the scheduler can guess where the user is going to
+go it can push the schedule down early thereby giving better responsiveness.
