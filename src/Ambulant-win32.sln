@@ -3,11 +3,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant_win32", "libamb
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "player_wincon", "player_wincon\player_wincon.vcproj", "{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DemoPlayer", "player_mfc\DemoPlayer.vcproj", "{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
@@ -23,10 +18,6 @@ Global
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.Build.0 = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = Release|Win32
-		{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}.Debug.ActiveCfg = Debug|Win32
-		{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}.Debug.Build.0 = Debug|Win32
-		{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}.Release.ActiveCfg = Release|Win32
-		{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}.Release.Build.0 = Release|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.ActiveCfg = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.Build.0 = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.ActiveCfg = Release|Win32
