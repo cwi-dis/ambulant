@@ -298,12 +298,17 @@ gui::sdl::sdl_active_audio_renderer::inc_channels()
 void
 gui::sdl::sdl_active_audio_renderer::playdone()
 {
-	AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
+	m_audio_src->readdone(m_audio_chunck.alen);
 	assert(m_channel_used >= 0);
 	if (m_audio_src->end_of_file()) {
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stopped_callback() this = (x%x)",this);
+		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
 		unlock_channel(m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
 		stopped_callback();
+	} else {
+		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
+		m_audio_src->start(m_event_processor, e);
 	}
 }
 
@@ -313,11 +318,6 @@ void
 gui::sdl::sdl_active_audio_renderer::readdone()
 {
 	int result;
-#ifdef WITH_FFMPEG
-	AM_DBG lib::logger::get_logger()->trace("Using ffmpeg MP3 support");
-#else
-	AM_DBG lib::logger::get_logger()->trace("Not using ffmpeg MP3 support, only raw audio !");
-#endif
 	assert(m_audio_src);
 	m_audio_chunck.allocated = 0;
 	m_audio_chunck.volume = 128;
@@ -325,10 +325,14 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	
 	m_audio_chunck.alen = m_audio_src->size();
 	
-	AM_DBG lib::logger::get_logger()->trace("STARTING TO PLAY");	
 
 	if (!m_sdl_init)
 		{
+#ifdef WITH_FFMPEG
+		AM_DBG lib::logger::get_logger()->trace("Using ffmpeg MP3 support");
+#else
+		AM_DBG lib::logger::get_logger()->trace("Not using ffmpeg MP3 support, only raw audio !");
+#endif
 		m_rate = m_audio_src->get_samplerate();
 		m_bits = m_audio_src->get_nbits();
 		m_channels = m_audio_src->get_nchannels();
@@ -336,7 +340,8 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 		}
 	if (m_channel_used < 0) {
 		m_channel_used = free_channel();
-		AM_DBG lib::logger::get_logger()->trace("free_channel() returned  : %d", m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: STARTING TO PLAY");	
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: free_channel() returned  : %d", m_channel_used);
 		if (m_channel_used < 0) {
 			result = inc_channels();
 			if( result < 0) 
@@ -347,30 +352,33 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 			assert(m_channel_used >= 0);
 		}	
 		lock_channel((void*) this, m_channel_used);	
-		AM_DBG lib::logger::get_logger()->trace("New Channel : %d", m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: New Channel : %d", m_channel_used);
 		result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
-		m_audio_src->readdone(m_audio_chunck.alen);
+//		m_audio_src->readdone(m_audio_chunck.alen);
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("PLAYING USING CHANNEL : %d", m_channel_used);	
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: PLAYING USING CHANNEL : %d", m_channel_used);	
 	
 		result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
+//		m_audio_src->readdone(m_audio_chunck.alen);
 	}
 
 	if (result < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): Failed to play sound", (void *)this);	
 		AM_DBG printf("Mix_PlayChannel: %s\n",Mix_GetError());
-	} else {
-		if(m_channel_used < 0) {
-			m_channel_used = result;
-		}
+//	} else {
+//		if(m_channel_used < 0) {
+//			m_channel_used = result;
+//		}
 	}
 	
+#if 0
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone(): %d bytes still in buffer, EOF : %d",m_audio_src->size(), m_audio_src->end_of_file());
 	if ( !m_audio_src->end_of_file() ) {
 		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	}
+#endif
 
 }	
 

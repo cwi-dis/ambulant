@@ -58,7 +58,8 @@
 #define AM_DBG if(0)
 #endif
 
-#define DEFAULT_MAX_BUF_SIZE 4096
+//#define DEFAULT_MAX_BUF_SIZE 4096
+#define DEFAULT_MAX_BUF_SIZE 1000000
 
 // ***********************************  C++  CODE  ***********************************
 
@@ -177,7 +178,7 @@ void net::databuffer::pushdata(int size)
              lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
          }
         if(m_size > m_max_size) {
-			//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
+			AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
             m_buffer_full = true;
         }
     } else {

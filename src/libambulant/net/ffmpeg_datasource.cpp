@@ -139,12 +139,8 @@ net::ffmpeg_audio_datasource::callback()
 	int blocksize;
 	const int max_block = INBUF_SIZE +  FF_INPUT_BUFFER_PADDING_SIZE;
 	
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : I got a callback !");
 
 	m_lock.enter();
-	m_inbuf = (uint8_t*) m_src->read_ptr();
-	size = m_src->size();
-	m_outbuf = (uint8_t*) m_buffer.prepare();
 	if(!m_codec) {
 		select_decoder("mp3"); // XXX should get from m_src
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selected the MP3 decoder");
@@ -161,16 +157,24 @@ net::ffmpeg_audio_datasource::callback()
 	}
 	if (m_con) {
 		
-		if (max_block < size) {
-			blocksize = max_block;
-		} else {
-			blocksize = size;
+		size = m_src->size();
+		while (size > 0 && !m_buffer.is_full()) {
+			m_inbuf = (uint8_t*) m_src->read_ptr();
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", size);
+			m_outbuf = (uint8_t*) m_buffer.prepare();
+
+			if (max_block < size) {
+				blocksize = max_block;
+			} else {
+				blocksize = size;
+			}
+			
+			decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
+			m_buffer.pushdata(outsize);
+			m_src->readdone(decoded);
+			size = m_src->size();
 		}
-		
-		decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
-		m_buffer.pushdata(outsize);
-		m_src->readdone(decoded);
 	
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): calling client callback");
