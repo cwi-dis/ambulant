@@ -80,19 +80,6 @@
 // std::runtime_error
 #include <stdexcept>
 
-///////////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
-// std::ostream for debug output
-#ifndef AMBULANT_NO_OSTREAM
-#include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-///////////////////////////////
-
 // floor
 #include <math.h>
 
@@ -318,8 +305,7 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 		top = y-r;
 		width = r+r;
 		height = width;
-	}
-	else if((shape && strcmp(shape, "poly")==0) && list.size() >= 6 && (list.size() % 2) == 0) {
+	} else if((shape && strcmp(shape, "poly")==0) && list.size() >= 6 && (list.size() % 2) == 0) {
 		region_dim l, t, r, b;
 		while(it!=list.end()) {
 			region_dim x(*it++);
@@ -374,6 +360,20 @@ struct regpoint_spec {
  
 } // namespace ambulant
 
+
+
+///////////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
+// std::ostream for debug output
+#ifndef AMBULANT_NO_OSTREAM
+#include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
+
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+///////////////////////////////
 
 #ifndef AMBULANT_NO_OSTREAM
 
