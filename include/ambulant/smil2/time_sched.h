@@ -75,7 +75,7 @@ class scheduler {
 	
 	time_type exec();
 	time_type exec(time_type now);
-	void reset();
+	void reset_document();
 	void start(time_node *tn);
 	
 	static void reset(time_node *tn);
@@ -85,7 +85,15 @@ class scheduler {
 	
   private:
 	void get_pending_events();
+	void goto_next(time_node *tn);
+	void goto_previous(time_node *tn);
 	void restart(time_node *tn);
+	void activate_node(time_node *tn);
+	void activate_seq_child(time_node *parent, time_node *child);
+	void activate_par_child(time_node *parent, time_node *child);
+	void activate_excl_child(time_node *parent, time_node *child);
+	void activate_media_child(time_node *parent, time_node *child);
+	void set_ffwd_mode(time_node *tn, bool b);
 	
 	time_node *m_root;
 	lib::timer *m_timer;

@@ -78,10 +78,10 @@ scheduler::~scheduler() {
 	// m_timer is a borrowed ref
 }
 
+// Starts a hyperlink target node
 void scheduler::start(time_node *tn) {
 	lock();
 	m_timer->pause();
-	
 	if(!m_root->is_active()) {
 		m_horizon = 0;
 		m_timer->set_time(m_horizon);
@@ -92,44 +92,112 @@ void scheduler::start(time_node *tn) {
 			return;
 		}
 	}
-	
-	if(tn->is_active()) {
-		restart(tn);
-		m_timer->resume();
-		unlock();
-		return;
-	}
-	
-	const time_node::interval_type& i = tn->get_first_interval(true);
-	if(i.is_valid()) {
-		AM_DBG lib::logger::get_logger()->show("Seek back to %ld.%ld sec", 
-			i.begin()/1000, i.begin()%1000);
-		time_node::iterator it;
-		time_node::iterator end = m_root->end();
-		for(it=m_root->begin(); it != end; it++) {
-			if(!(*it).first) (*it).second->reset();
-		}
-		m_horizon = 0;
-		m_timer->set_time(m_horizon);
-		m_root->start();
-	}
-	
-	// seek forward until the node is activated
-	// assumes a scheduled begin
 	time_node_context *ctx = m_root->get_context();
 	bool oldflag = ctx->wait_for_eom();
 	ctx->set_wait_for_eom(false);
+	
+	const time_node::interval_type& i = tn->get_first_interval(true);
+	if(i.is_valid()) goto_previous(tn);
+	else goto_next(tn);
+	
+	ctx->set_wait_for_eom(oldflag);
+	m_timer->resume();
+	unlock();
+}
+
+// Activates a node that has a valid scheduled 
+// interval after the current time. 
+void scheduler::activate_node(time_node *tn) {
 	timer::time_type next = m_timer->elapsed();
 	while(m_root->is_active() && !tn->is_active()) {
 		next = exec(next);
 		if(next == infinity) break;
 	}
-	ctx->set_wait_for_eom(oldflag);
-
-	m_timer->resume();
-	unlock();
 }
 
+// Starts a hyperlink target that has not played yet. 
+void scheduler::goto_next(time_node *tn) {
+	// get the path to the time node we want to activate
+	// the first in the list is the root and the last is the target
+	std::list<time_node*> tnpath;
+	tn->get_path(tnpath);
+	std::list<time_node*>::iterator it, cit;
+	for(it = tnpath.begin(); it != tnpath.end();it++) {
+		time_node *parent = *it; cit = it;
+		time_node *child = *++cit;
+		if(parent->is_seq()) activate_seq_child(parent, child);
+		else if(parent->is_par()) activate_par_child(parent, child);
+		else if(parent->is_excl()) activate_excl_child(parent, child);
+		else activate_media_child(parent, child);
+		if(child == tnpath.back()) break;
+	}
+}
+
+// Starts a hyperlink target that has played. 
+void scheduler::goto_previous(time_node *tn) {
+	// restart root
+	reset_document();
+	m_root->start();
+	if(tn == m_root) return;
+	
+	// get the path to the time node we want to activate
+	// the first in the list is the root and the last is the target
+	std::list<time_node*> tnpath;
+	tn->get_path(tnpath);
+	std::list<time_node*>::iterator it, cit;
+	for(it = tnpath.begin(); it != tnpath.end();it++) {
+		time_node *parent = *it; cit = it;
+		time_node *child = *++cit;
+		if(parent->is_seq()) activate_seq_child(parent, child);
+		else if(parent->is_par()) activate_par_child(parent, child);
+		else if(parent->is_excl()) activate_excl_child(parent, child);
+		else activate_media_child(parent, child);
+		if(child == tnpath.back()) break;
+	}
+}
+
+// Activate the desinated child starting from the current time
+void scheduler::activate_seq_child(time_node *parent, time_node *child) {
+	if(child->is_active()) return;
+	std::list<time_node*> children;
+	parent->get_children(children);
+	std::list<time_node*>::iterator it, beginit;
+	
+	// locate first active
+	for(it = children.begin(); it != children.end() && !(*it)->is_active(); it++);
+	beginit = it;
+	
+	for(it = beginit; it != children.end(); it++) {
+		if(*it != child) set_ffwd_mode(*it, true);
+		else break;
+	}
+	for(it = beginit; it != children.end(); it++) {
+		activate_node(*it);
+		if(*it == child) break;
+	}
+	for(it = beginit; it != children.end(); it++) {
+		if(*it != child) set_ffwd_mode(*it, false);
+		else break;
+	}
+}
+
+// Activate the desinated child starting from the current time
+void scheduler::activate_par_child(time_node *parent, time_node *child) {
+	activate_node(child);
+}
+
+// Activate the desinated child starting from the current time
+void scheduler::activate_excl_child(time_node *parent, time_node *child) {
+	if(child->is_active()) return;
+	child->start();
+}
+
+// Activate the desinated child starting from the current time
+void scheduler::activate_media_child(time_node *parent, time_node *child) {
+	activate_node(child);
+}
+
+// Restarts the node
 void scheduler::restart(time_node *tn) {
 	if(!tn->is_active()) {
 		lib::logger::get_logger()->show("Restart while not active");
@@ -143,6 +211,8 @@ void scheduler::restart(time_node *tn) {
 	tn->get_timer()->set_time(0);
 }
 
+// Executes all the current events
+// Returns the time of the next event or the sampling resolution 
 scheduler::time_type scheduler::exec() {
 	if(locked()) return idle_resolution;
 	time_type now = m_timer->elapsed();
@@ -152,6 +222,8 @@ scheduler::time_type scheduler::exec() {
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
 
+// Executes some of the current events
+// Returns the time of the next event or infinity 
 scheduler::time_type scheduler::exec(time_type now) {
 	time_type next = infinity;
 	m_events.clear();
@@ -180,6 +252,7 @@ scheduler::time_type scheduler::exec(time_type now) {
 	return next;
 }
 
+// Iterates and retreives all the pending events from the timegraph
 void scheduler::get_pending_events() {
 	time_node::iterator it;
 	time_node::iterator end = m_root->end();
@@ -188,13 +261,24 @@ void scheduler::get_pending_events() {
 	}
 }
 
-void scheduler::reset() {
-	if(m_timer) {
-		m_timer->pause();
-		m_timer->set_time(0);
+// Sets the fast forward flag of the time node branch 
+void scheduler::set_ffwd_mode(time_node *tn, bool b) {
+	time_node::iterator it;
+	time_node::iterator end = tn->end();
+	for(it=tn->begin(); it!=end; it++) {
+		if((*it).first) (*it).second->set_ffwd_mode(b);
 	}
-	m_root->stop();
+}
+
+// Resets the document
+void scheduler::reset_document() {
+	time_node::iterator nit;
+	time_node::iterator end = m_root->end();
+	for(nit=m_root->begin(); nit != end; nit++) {
+		if(!(*nit).first) (*nit).second->reset();
+	}
 	m_horizon = 0;
+	m_timer->set_time(m_horizon);
 }
 
 // static

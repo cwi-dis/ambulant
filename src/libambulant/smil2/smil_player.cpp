@@ -182,9 +182,8 @@ void smil_player::start() {
 void smil_player::stop() {
 	if(m_state != common::ps_pausing && m_state != common::ps_playing)
 		return;
-	if(m_state == common::ps_pausing) 
-		m_timer->resume();
-	m_root->stop();
+	m_scheduler->reset_document();
+	done_playback();
 }
 
 // Command to pause playback
@@ -308,15 +307,17 @@ void smil_player::resume_playable(const lib::node *n) {
 // Query the node's playable for its duration.
 std::pair<bool, double> 
 smil_player::get_dur(const lib::node *n) {
+	const std::pair<bool, double> not_available(false, 0.0);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np) {
-		return np->get_dur();
+		std::pair<bool, double> idur = np->get_dur();
+		if(idur.first) m_playables_dur[n] = idur.second;
+		return idur;
 	}
-	np = new_playable(n);
-	m_playables[n] = np;
-	return np->get_dur();
+	std::map<const node*, double>::iterator it2 = m_playables_dur.find(n);
+	return (it2 != m_playables_dur.end())?std::pair<bool, double>(true,(*it2).second):not_available;
 }
 
 // Notify the playable that it should update this on user events (click, point).

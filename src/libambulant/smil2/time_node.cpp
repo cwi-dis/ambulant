@@ -94,13 +94,13 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_priority(0),
 	m_paused(false), 
 	m_deferred(false),
+	m_ffwd_mode(false),
 	m_update_event(false, qtime_type(0, 0)),
 	m_begin_event_inst(time_type::unresolved),
 	m_domcall_rule(0),
 	m_locked(false),
 	m_want_activate_events(false),
 	m_want_accesskey(false),
-	m_mediadur(time_type::unresolved),
 	m_impldur(time_type::unresolved),
 	m_last_cdur(time_type::unresolved),
 	m_logger(0),
@@ -280,16 +280,11 @@ time_node::get_implicit_dur() {
 		return m_impldur;	
 	
 	// Can the associated playable provide the implicit duration? 
-	// If yes, store it a "m_mediadur" in internal timing units (ms).
-	if(m_mediadur == time_type::unresolved) {
-		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
-		if(dur_pair.first && dur_pair.second>0) {
-			m_impldur = m_mediadur = secs_to_time_type(dur_pair.second)();
-			AM_DBG m_logger->trace("%s[%s].media_dur(): %ld", m_attrs.get_tag().c_str(), 
-				m_attrs.get_id().c_str(), m_mediadur());
-		}
-	}
+	m_impldur = get_playable_dur();
 	
+	if(m_ffwd_mode && m_impldur == time_type::unresolved) 
+		return 1000;
+		
 	// Trace the return value of this function
 	AM_DBG m_logger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
@@ -681,15 +676,15 @@ bool time_node::is_animation() const {
 // Playables schell
 
 void time_node::start_playable(time_type offset) {
-	if(!is_playable()) return;
+	if(!is_playable() || m_ffwd_mode) return;
 	qtime_type timestamp(this, offset);
 	AM_DBG m_logger->trace("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
 	common::playable *np = create_playable();
+	if(np) np->wantclicks(m_want_activate_events);
 	const lib::node *trans_in = m_attrs.get_trans_in();
 	if(np) {
-		np->wantclicks(m_want_activate_events);
 		if(trans_in) {
 			m_context->start_playable(m_node, time_type_to_secs(offset()), trans_in);
 		} else {
@@ -699,28 +694,28 @@ void time_node::start_playable(time_type offset) {
 }
 
 void time_node::seek_playable(time_type offset) {
-	if(!is_playable()) return;
+	if(!is_playable() || m_ffwd_mode) return;
 	AM_DBG m_logger->trace("%s[%s].seek(%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset());
 	m_context->seek_playable(m_node, time_type_to_secs(offset()));
 }
 
 void time_node::pause_playable() {
-	if(!is_playable()) return;
+	if(!is_playable() || m_ffwd_mode) return;
 	AM_DBG m_logger->trace("%s[%s].pause()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->pause_playable(m_node);
 }
 
 void time_node::resume_playable() {
-	if(!is_playable()) return;
+	if(!is_playable() || m_ffwd_mode) return;
 	m_logger->trace("%s[%s].resume()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->resume_playable(m_node);
 }
 
 void time_node::stop_playable() {
-	if(!is_playable()) return;
+	if(!is_playable() ) return;
 	if(!m_needs_remove) return;
 	m_eom_flag = true;
 	AM_DBG m_logger->trace("%s[%s].stop()", m_attrs.get_tag().c_str(), 
@@ -729,7 +724,7 @@ void time_node::stop_playable() {
 }
 
 void time_node::repeat_playable() {
-	if(!is_playable()) return;
+	if(!is_playable() || m_ffwd_mode) return;
 	AM_DBG m_logger->trace("%s[%s].repeat()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->start_playable(m_node, 0);
@@ -737,13 +732,22 @@ void time_node::repeat_playable() {
 
 common::playable *time_node::create_playable() {
 	assert(is_playable());
+	if(m_ffwd_mode) return 0;
 	AM_DBG m_logger->trace("%s[%s].create()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	return m_context->create_playable(m_node);
 }
 
+time_node::time_type time_node::get_playable_dur() {
+	std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
+	if(dur_pair.first && dur_pair.second>0)
+		return secs_to_time_type(dur_pair.second)();
+	return time_type::unresolved;
+}
+
 // Prepare children playables without recursion
 void time_node::prepare_playables() {
+	if(m_ffwd_mode) return;
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -1613,15 +1617,8 @@ void time_node::reset() {
 	// when set the associated UI should notify for accesskey events
 	// Structure var
 	// bool m_want_accesskey;
-	
-	// Cashed continous media node duration (audio, video).
-	// A value != time_type::unresolved comes from the playable
-	// It is set by querying the playable.  
-	// time_type m_mediadur;
-	m_mediadur = time_type::unresolved;
-	
+		
 	// Cashed implicit duration of a continous media node (audio, video).
-	// It is set to m_mediadur when an EOM event is raised by the playing media node.
 	// time_type m_impldur;
 	m_impldur = time_type::unresolved;
 	

@@ -96,7 +96,6 @@ class time_node : public schedulable {
 	virtual void pause();
 	virtual void resume();
 	virtual void reset();
-	virtual void prepare_playables();
 	
 	// driver interface
 	virtual void exec(qtime_type timestamp);
@@ -189,6 +188,8 @@ class time_node : public schedulable {
 	void resume_playable();
 	void repeat_playable();
 	void stop_playable();
+	time_type get_playable_dur();
+	void prepare_playables();
 	
 	// Animations are special internal playables
 	void start_animation(time_type offset);
@@ -347,6 +348,9 @@ class time_node : public schedulable {
 	bool deferred() { return m_deferred;}
 	void set_deferred(bool b) { m_deferred = b;}
 	
+	// fast forward mode
+	void set_ffwd_mode(bool b) { m_ffwd_mode = b;}
+	
 	////////////////////////
 	// Time calculations
 	
@@ -452,6 +456,9 @@ class time_node : public schedulable {
 	// Defered flag
 	bool m_deferred;
 	
+	// Fast forward mode flag
+	bool m_ffwd_mode;
+	
 	// Sync update event
 	std::pair<bool, qtime_type> m_update_event;
 	
@@ -492,11 +499,6 @@ class time_node : public schedulable {
 	
 	// when set the associated UI should notify for accesskey events
 	bool m_want_accesskey;
-	
-	// Cashed continous media node duration (audio, video).
-	// A value != time_type::unresolved comes from the playable
-	// It is set by querying the playable.  
-	time_type m_mediadur;
 	
 	// Cashed implicit duration of a continous media node (audio, video).
 	// It is set to m_mediadur when an EOM event is raised by the playing media node.

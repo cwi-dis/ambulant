@@ -206,6 +206,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	bool m_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
 	critical_section m_playables_cs;
+	std::map<const node*, double> m_playables_dur;
 	lib::logger *m_logger;
 };
 
