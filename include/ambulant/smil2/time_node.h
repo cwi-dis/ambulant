@@ -66,6 +66,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/common/playable.h"
 
 #include "ambulant/lib/logger.h"
 
@@ -96,7 +97,7 @@ class time_node_context : public lib::event_scheduler<time_traits::value_type> {
 	virtual void show_link(const lib::node *n, const std::string& href) = 0;
 	
 	// Playable commands
-	virtual void create_playable(const lib::node *n) = 0;
+	virtual common::playable *create_playable(const lib::node *n) = 0;
 	virtual void start_playable(const lib::node *n, double t) = 0;
 	virtual void stop_playable(const lib::node *n) = 0;
 	virtual void pause_playable(const lib::node *n, pause_display d = display_show) = 0;

@@ -59,7 +59,7 @@
 
 #include "ambulant/lib/logger.h"
 
-//#define AM_DBG
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -738,7 +738,7 @@ void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 		::repr(new_end).c_str(), 
 		timestamp.second(),
 		timestamp.as_doc_time_value());	
-	assert(m_interval.is_valid());
+	if(!m_interval.is_valid()) return;
 	
 	time_type old_end = m_interval.end;
 	
@@ -818,7 +818,7 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	
 	// Else, the interval should be activated now
 	assert(m_interval.contains(timestamp.second));
-	schedule_state_transition(ts_active, timestamp, 0);
+	set_state(ts_active, timestamp, this);
 }
 
 // Activates the interval of this node.
@@ -873,7 +873,7 @@ void time_node::activate(qtime_type timestamp) {
 	// Required by the set-of-implicit-dur-on-eom mechanism
 	m_activation_time = timestamp.second; 
 	
-	AM_DBG tnlogger->trace("*** %s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG tnlogger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -886,9 +886,15 @@ void time_node::activate(qtime_type timestamp) {
 		} else {
 			m_media_offset = sd_offset;
 		}
-		m_context->create_playable(m_node);
-		m_context->wantclicks_playable(m_node, m_want_activate_events);
-		m_context->start_playable(m_node, time_type_to_secs(m_media_offset()));
+		common::playable *np = m_context->create_playable(m_node);
+		if(np) {
+			np->wantclicks(m_want_activate_events);
+			np->start(time_type_to_secs(m_media_offset()));
+			AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+				m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
+				timestamp.second(),
+				timestamp.as_doc_time_value());
+		}
 	}
 	
 	// Schedule a check for the next S-transition e.g. repeat or end.
@@ -1414,7 +1420,8 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
 	if(is_area()) {
 		const char *href = m_node->get_attribute("href");
-		if(href) m_context->show_link(m_node, href);
+		if(href && strcmp(href, "nohref") != 0)
+			m_context->show_link(m_node, href);
 	}
 }
 
@@ -1572,9 +1579,9 @@ void time_node::on_eom(qtime_type timestamp) {
 		pt.second(),
 		timestamp.second()); 
 	
-	
-	
 	// The new knowledge we have just acquired.
+	if(m_mediadur == time_type::unresolved)
+		m_mediadur =  pt.second - m_activation_time;
 	m_impldur = m_mediadur;
 		
 	// Knowing the above calc current interval

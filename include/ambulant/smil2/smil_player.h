@@ -108,7 +108,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	//////////////////////
 	// Time node context: Playable commands
 	
-	virtual void create_playable(const lib::node *n);
+	virtual common::playable *create_playable(const lib::node *n);
 	virtual void start_playable(const lib::node *n, double t);
 	virtual void stop_playable(const lib::node *n);
 	virtual void pause_playable(const lib::node *n, pause_display d = display_show);
