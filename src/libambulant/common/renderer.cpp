@@ -334,3 +334,9 @@ active_video_renderer::data_avail()
 	}
 	m_lock.leave();
 }
+
+void 
+active_video_renderer::set_surface(common::surface *dest) { m_dest = dest;}
+
+surface*
+active_video_renderer::get_surface() { return m_dest;}
