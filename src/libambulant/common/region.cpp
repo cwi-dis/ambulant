@@ -301,7 +301,6 @@ passive_region::get_global_topleft() const
 lib::screen_rect<int> 
 passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const
 {
-	// XXXX For now we implement fit=fill only
 	const_cast<passive_region*>(this)->need_bounds();
 	const int image_width = src_size.w;
 	const int image_height = src_size.h;
@@ -343,8 +342,79 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect)
 lib::screen_rect<int> 
 passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, lib::rect* out_src_rect) const
 {
-	if (align != NULL)
-		lib::logger::get_logger()->error("passive_region::get_fit_rect: alignment not implemented yet");
+	if (align == NULL)
+		return get_fit_rect(src_size, out_src_rect);
+		
+	const_cast<passive_region*>(this)->need_bounds();
+	const int image_width = src_size.w;
+	const int image_height = src_size.h;
+	const int region_width = m_inner_bounds.width();
+	const int region_height = m_inner_bounds.height();
+	lib::size region_size = lib::size(region_width, region_height);
+	
+	lib::point xy_image = align->get_image_fixpoint(src_size);
+	lib::point xy_region = align->get_surface_fixpoint(region_size);
+	
+	const int x_image_left = xy_image.x;
+	const int x_image_right = image_width - xy_image.x;
+	const int y_image_top = xy_image.y;
+	const int y_image_bottom = image_height - xy_image.y;
+	const int x_region_left = xy_region.x;
+	const int x_region_right = region_width - xy_region.x;
+	const int y_region_top = xy_region.y;
+	const int y_region_bottom = region_height - xy_region.y;
+	
+	double scale_min_horizontal, scale_max_horizontal, scale_min_vertical, scale_max_vertical;
+	
+	if (x_image_left == 0) {
+		scale_min_horizontal = scale_max_horizontal = (double)x_region_right / (double)x_image_right;
+	} else {
+		scale_min_horizontal = scale_max_horizontal = (double)x_region_left / (double)x_image_left;
+		if (x_image_right != 0) {
+			double scale_right = (double)x_region_right / (double)x_image_right;
+			scale_min_horizontal = std::min(scale_min_horizontal, scale_right);
+			scale_max_horizontal = std::max(scale_max_horizontal, scale_right);
+		}
+	}
+	if (y_image_top == 0) {
+		scale_min_vertical = scale_max_vertical = (double)y_region_bottom / (double)y_image_bottom;
+	} else {
+		scale_min_vertical = scale_max_vertical = (double)y_region_top / (double)y_image_top;
+		if (y_image_bottom != 0) {
+			double scale_bottom = (double)y_region_bottom / (double)y_image_bottom;
+			scale_min_vertical = std::min(scale_min_vertical, scale_bottom);
+			scale_max_vertical = std::max(scale_max_vertical, scale_bottom);
+		}
+	}
+	double scale_horizontal, scale_vertical;
+	
+	const fit_t fit = (m_info == NULL?fit_hidden : m_info->get_fit());
+	switch (fit) {
+	  case fit_fill:
+		// Fill the area with the image, ignore aspect ration
+		// XXX I don't think this is correct
+		scale_horizontal = scale_min_horizontal;
+		scale_vertical = scale_min_vertical;
+		break;
+	  case fit_scroll:
+	  case fit_hidden:
+		// Don't scale at all
+		// XXXX incorrect
+		scale_horizontal = scale_vertical = 1.0;
+		break;
+	  case fit_meet:
+		// Scale to make smallest edge fit (showing some background color)
+		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
+		break;
+	  case fit_slice:
+		// Scale to make largest edge fit (not showing the full source image)
+		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
+		break;
+	}
+	// XXX There's more to be done here...
+	// Just so we don't crash we call the non-regpoint routine
+	/*AM_DBG*/lib::logger::get_logger()->trace("get_fit_rect: scale_h=%f, scale_v=%f", scale_horizontal, scale_vertical);
+	lib::logger::get_logger()->error("regPoint/regAlign not implemented yet");
 	return get_fit_rect(src_size, out_src_rect);
 }
 
