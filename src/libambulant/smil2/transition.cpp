@@ -216,7 +216,13 @@ void
 transition_engine_diagonalwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype diagonalWipe not yet implemented");
+	int xmin = dstrect.left() - 2*dstrect.width();
+	int xcur = xmin + (int)(m_progress*2*dstrect.width());
+	
+	m_newpolygon.push_back(lib::point(xcur, dstrect.top()));
+	m_newpolygon.push_back(lib::point(xcur+2*dstrect.width(), dstrect.top()));
+	m_newpolygon.push_back(lib::point(xcur+dstrect.width(), dstrect.bottom()));
+	m_newpolygon.push_back(lib::point(xcur, dstrect.bottom()));
 }
 
 void
