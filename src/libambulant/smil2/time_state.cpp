@@ -50,9 +50,9 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/logger.h"
 #include "ambulant/smil2/time_state.h"
 #include "ambulant/smil2/time_node.h"
+#include "ambulant/lib/logger.h"
 
 //#define AM_DBG if(1)
 
@@ -78,7 +78,6 @@ using namespace smil2;
 time_state::time_state(time_node *tn) 
 :	m_self(tn),
 	m_interval(tn->m_interval),
-	m_picounter(tn->m_picounter),
 	m_active(tn->m_active),
 	m_needs_remove(tn->m_needs_remove),
 	m_last_cdur(tn->m_last_cdur),
@@ -133,13 +132,13 @@ void time_state::report_state() {
 
 void reset_state::enter(qtime_type timestamp) {
 	m_interval = interval_type::unresolved;
-	m_picounter = 0;
 	m_active = false;
 	m_needs_remove = false;
 	m_last_cdur = time_type::unresolved;
 	m_rad = 0;
 	m_precounter = 0;
 	m_impldur = time_type::unresolved;
+	m_self->clear_history();
 	// Resetting the above variables is only part of the reset process.
 	// See time_node::reset()
 	report_state();
@@ -174,7 +173,7 @@ void proactive_state::enter(qtime_type timestamp) {
 		timestamp.as_doc_time()());
 	if(i.is_valid()) {	
 		// Set the calc interval as current and update dependents
-		m_self->schedule_interval(timestamp, i);
+		m_self->set_interval(timestamp, i);
 		// The above call may result 
 		// a) to a transition to active if the interval contains timestamp
 		// b) to remain proactive waiting for the scheduled interval
@@ -196,7 +195,7 @@ void proactive_state::sync_update(qtime_type timestamp) {
 	} else if(m_interval.is_valid() && !i.is_valid()) {
 		m_self->cancel_interval(timestamp);
 	} else if(!m_interval.is_valid() && i.is_valid()) {
-		m_self->schedule_interval(timestamp, i);
+		m_self->set_interval(timestamp, i);
 	}
 }
 
@@ -263,7 +262,7 @@ void active_state::enter(qtime_type timestamp) {
 				prev->remove(timestamp);
 		 }
 	}
-	
+		
 	// The timestamp in parent simple time
 	// Children should convert it to their parent
 	m_self->reset_children(timestamp, m_self);
@@ -272,9 +271,9 @@ void active_state::enter(qtime_type timestamp) {
 	// To avoid flashing use async activation
 	// for audio and video only.
 	// XXX: check that discrete media are local 
-	if(m_self->is_cmedia())
-		m_self->activate_async(timestamp);
-	else
+	//if(m_self->is_cmedia())
+	//	m_self->activate_async(timestamp);
+	//else
 		m_self->activate(timestamp);
 	
 	// The timestamp in parent simple time
@@ -303,10 +302,8 @@ void active_state::sync_update(qtime_type timestamp) {
 	
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_always) {
-		interval_type dummy = m_interval;
-		m_interval.end = timestamp.second;
-		interval_type i = m_self->calc_next_interval();
-		m_interval = dummy;
+		interval_type candidate(m_interval.begin, timestamp.second); 
+		interval_type i = m_self->calc_next_interval(candidate);
 		if(i.is_valid()) {
 			AM_DBG logger::get_logger()->trace("%s[%s] restart interval %s",
 				m_attrs.get_tag().c_str(), 
@@ -314,7 +311,8 @@ void active_state::sync_update(qtime_type timestamp) {
 				::repr(i).c_str()); 
 			m_self->set_state(ts_postactive, timestamp, m_self);
 			m_self->set_begin_event_inst(timestamp.second);
-			m_self->schedule_sync_update(timestamp, 0);
+			m_self->raise_update_event(timestamp);
+			//m_self->sync_update(timestamp);
 		}
 	}
 }
@@ -337,8 +335,8 @@ void active_state::reset(qtime_type timestamp, time_node *oproot) {
 
 void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
-	m_picounter++;
-	m_self->cancel_schedule();
+	
+	//m_self->cancel_schedule();
 	m_self->fill(timestamp);
 	m_self->kill_children(timestamp, oproot);
 	m_self->raise_end_event(timestamp, oproot);
@@ -348,9 +346,12 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 		m_self->set_paused(false);
 		m_self->set_deferred(false);
 	}
+	m_self->played_interval(timestamp);
+	
 	// next is postactive if its interval was not cut short (normal)
 	// next is reset if the parent repeats or restarts 	(reset)
 	// next is dead if the parent ends (kill)
+	// Add to history and invalidate
 }
 
 ///////////////////////
@@ -370,18 +371,16 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 void postactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	// m_interval = unchanged (last played interval that is now in the past);
-	// m_picounter = unchanged (was incremeted by Active exit);
 	// m_needs_remove = SET true or false depending on the fill attribute;
 	
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_never) return;
 	
 	// evaluate next interval if restart != never.
-	m_played = m_interval;
 	interval_type i = m_self->calc_next_interval();
 	if(i.is_valid()) {	
 		// Set the calc interval as current and update dependents
-		m_self->schedule_interval(timestamp, i);
+		m_self->set_interval(timestamp, i);
 		// The above call may result 
 		// a) to a transition to active if the interval starts at timestamp
 		// b) to remain postactive waiting for the scheduled interval
@@ -394,20 +393,18 @@ void postactive_state::sync_update(qtime_type timestamp) {
 	if(rb == restart_never) return;
 	
 	interval_type i = m_self->calc_next_interval();
-	if(m_interval != m_played && i.is_valid() && i != m_interval) {
+	if(m_interval.is_valid() && i.is_valid() && i != m_interval) {
+		m_self->update_interval(timestamp, i);
+	} else if(m_interval.is_valid() && !i.is_valid()) {
 		m_self->cancel_interval(timestamp);
-		m_self->schedule_interval(timestamp, i);
-	} else if(m_interval != m_played && !i.is_valid()) {
-		m_self->cancel_interval(timestamp);
-		m_interval = m_played;
-	} else if(m_interval == m_played && i.is_valid()) {
-		m_self->schedule_interval(timestamp, i);
+	} else if(!m_interval.is_valid() && i.is_valid()) {
+		m_self->set_interval(timestamp, i);
 	}
 }
 
 void postactive_state::kill(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to dead
-	if(m_interval.is_valid() && m_interval != m_played)
+	if(m_interval.is_valid())
 		m_self->cancel_interval(timestamp);
 		
 	// fill remains
@@ -416,7 +413,7 @@ void postactive_state::kill(qtime_type timestamp, time_node *oproot) {
 
 void postactive_state::reset(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to reset
-	if(m_interval.is_valid() && m_interval != m_played)
+	if(m_interval.is_valid())
 		m_self->cancel_interval(timestamp);
 	
 	// fill goes
