@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<div class="section" id="jack-jansen-20-jun-03">
-<h1><a name="jack-jansen-20-jun-03">Jack Jansen, 20-Jun-03.</a></h1>
+<div class="section" id="jack-jansen-23-jun-03">
+<h1><a name="jack-jansen-23-jun-03">Jack Jansen, 23-Jun-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -39,16 +39,42 @@ open files).</li>
 <h1><a name="event-processor">Event processor</a></h1>
 <p>The event processor is the heart of the system, and it needs to be thought
 out pretty well as the efficiency of it will in a large part determine the
-snappyness of the system. Design of this is TBD, because it depends on a number
-of unknowns (such as how to represent callbacks). We may want to tack on
+snappyness of the system. We may want to tack on
 to existing OS infrastructure (such as the Windows event loop), but that may
-be too inefficient.</p>
+be too inefficient. This should be investigated.</p>
 <p><em>QUESTION</em>: is the event processor a global object? It has to be available when
 an object wants to schedule a callback, so it either has to be a global object
 or it has to be passed explicitly to constructor methods or when setting the
 callback to call. And, if the event processor is a global object, we have the
 problem that the HL scheduler also wants to use the data source, but it lives
 in a different thread. Is this a problem?</p>
+<p>The event processor object is created when the application starts, and it
+is set running its mainloop. If it is not implemented using the underlying OS
+event loop it needs either some way to interact with that mainloop or it needs
+to be in a separate thread. But that may also introduce problems, as drawing
+will be done from the event processor thread, and we need to investigate that
+this is safe on all platforms.</p>
+<p>The event processor has a number of prioritized event queues. The exact priorities
+remain TBD, here it suffices to say that things like prefetching are low priority,
+drawing objects on the screen is higher, and internal scheduler activity
+is higher still (because it may lead to more drawing operations that should happen
+&quot;at the same time&quot;: suppose at some point you fire <em>internal event 1</em> and <em>internal
+event 2</em> which should conceptually happening instantanously. <em>Internal event 1</em> fires
+<em>external event 1</em>. At this point we should execute <em>internal event 2</em> before <em>external
+event 1</em>, because it may in turn give rise to more external events that should
+all happen at the same time.</p>
+<p>The priorities also need some structuring: when a data source delivers a &quot;data ready&quot;
+event its priority depends on whether the data is just being prefetched or the
+renderer is actively waiting for it (at high priority).</p>
+<p>The event processor API is probably going to be simple: pass a callback and a priority.
+There could be one extra argument (or another method) to state that the originating
+call does not mind if control isn't returned to it immedeately. The scheduler could
+then make a shortcut and call the callback directly (if no higher priority events
+are waiting), this could be used to reduce the latency when a data source signals
+data availability to a renderer.</p>
+<p><em>QUESTION</em>: some object actually has to implement delays. Clock objects are one possibility,
+as delays are relative to a specific clock, but the event processor is another option.
+I'm not sure what the best place is, yet.</p>
 </div>
 <div class="section" id="data-source">
 <h1><a name="data-source">Data source</a></h1>

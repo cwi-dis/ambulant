@@ -187,6 +187,20 @@ but if we have the mechanism to do a restart (and do it without too much impact
 on the user experience) it can be used as a fallback mechanism, and speed up
 initial implementation.</p>
 </div>
+<div class="section" id="coupling-between-high-and-low-level">
+<h1><a name="coupling-between-high-and-low-level">Coupling between high and low level</a></h1>
+<p>This section is here because I don't know where else to put it. Something that
+struck me is that there are a couple of objects that are really one-one mappings
+of SMIL nodes at different levels. Specifically, the renderer object is the SMIL
+node at the timeline level. Also, it seems that if we decide to always create
+a subregion when playing a node there might also be a 1-1 mapping here.</p>
+<p>Could we somehow take these three objects and make them &quot;live together&quot; for
+efficiency reasons? What I would like is three distinct interfaces but all living
+in the same object. At least, optionally: if we at some point decide to do
+the decoupled player the objects will become distinct.</p>
+<p>But maybe we are good enough off initially by specifying in the UML that this
+1-1 relationship exists, and put off any optimization until later.</p>
+</div>
 <div class="section" id="missing">
 <h1><a name="missing">Missing</a></h1>
 <p>Here is a list of bits of the design that I know are missing:</p>
