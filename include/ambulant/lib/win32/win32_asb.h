@@ -68,8 +68,8 @@ namespace win32 {
 void sleep(unsigned long secs);
 void sleep_msec(unsigned long msecs);
 
-std::string getcwd();
-std::string resolve_path(const char *s);
+std::basic_string<text_char> getcwd();
+std::basic_string<text_char> resolve_path(const text_char *s);
 
 } // namespace win32
 

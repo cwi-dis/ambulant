@@ -102,7 +102,11 @@ class event_processor :
 	void wakeup(); 
 
 	HANDLE m_wait_event;
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	enum { RESOLUTION = 100};
+#else
+	enum { RESOLUTION = 250};
+#endif
 };
 
 
