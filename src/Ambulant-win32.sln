@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant", "libambulant\libambulant.vcproj", "{0DD9B2F3-A626-4F61-A973-9239C2E719DC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "player_mfc", "player_mfc\player_mfc.vcproj", "{10EEB8FD-BA01-4282-A3EC-F3E69AB91DAF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0DD9B2F3-A626-4F61-A973-9239C2E719DC} = {0DD9B2F3-A626-4F61-A973-9239C2E719DC}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0DD9B2F3-A626-4F61-A973-9239C2E719DC}.Debug.ActiveCfg = Debug|Win32
+		{0DD9B2F3-A626-4F61-A973-9239C2E719DC}.Debug.Build.0 = Debug|Win32
+		{0DD9B2F3-A626-4F61-A973-9239C2E719DC}.Release.ActiveCfg = Release|Win32
+		{0DD9B2F3-A626-4F61-A973-9239C2E719DC}.Release.Build.0 = Release|Win32
+		{10EEB8FD-BA01-4282-A3EC-F3E69AB91DAF}.Debug.ActiveCfg = Debug|Win32
+		{10EEB8FD-BA01-4282-A3EC-F3E69AB91DAF}.Debug.Build.0 = Debug|Win32
+		{10EEB8FD-BA01-4282-A3EC-F3E69AB91DAF}.Release.ActiveCfg = Release|Win32
+		{10EEB8FD-BA01-4282-A3EC-F3E69AB91DAF}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
