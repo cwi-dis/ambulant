@@ -74,6 +74,7 @@ libambulant_la_SOURCES = \
 	\
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
+	lib/document.cpp \
 	lib/expat_parser.cpp \
 	lib/logger.cpp \
 	lib/nfa.cpp \
