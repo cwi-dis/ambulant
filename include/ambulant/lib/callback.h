@@ -23,15 +23,11 @@
 #ifndef AMBULANT_LIB_CALLBACK_H
 #define AMBULANT_LIB_CALLBACK_H
 
-#include <memory>
+// callback is a kind of event
+#include "ambulant/lib/event.h"
 
-#ifndef AMBULANT_LIB_EVENT_H
-#include "event.h"
-#endif
-
-#ifndef AMBULANT_LIB_REFCOUNT_H
-#include "refcount.h"
-#endif
+// callback target is ref counted
+#include "ambulant/lib/refcount.h"
 
 namespace ambulant {
 
@@ -62,34 +58,58 @@ class callback : public event {
   	
   public:
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
-	callback(T* obj, MF mf, A* arg)
-	: m_obj(obj), m_mf(mf), m_arg(arg) {
-		if(obj != 0) obj->add_ref();
-	}
+	callback(T* obj, MF mf, A* arg);
 	
-	~callback() {
-		delete m_arg;
-		release_target();
-	}
+	// deletes arg, releases target ref	
+	~callback();
 
 	// event interface implementation
-	virtual void fire() {
-		if(m_mf != 0 && m_obj != 0)
-			(m_obj->*m_mf)(m_arg);
-		release_target();
-	}	
+	virtual void fire();
+	
   private:
-	void release_target() {
-		if(m_obj != 0) {
-			ref_counted* obj = dynamic_cast<ref_counted*>(m_obj);
-			obj->release();
-			m_obj = 0;
-		}
-	}
+	
+	// releases target ref
+	void release_target();
 	
 };
 
- 
+
+/////////////////////////
+// Inline callback implementation
+
+// 'obj' is the target object having a member 
+// function 'mf' accepting 'arg' 
+template <class T, class A>
+inline callback<T, A>::callback(T* obj, MF mf, A* arg)
+:	m_obj(obj), m_mf(mf), m_arg(arg) {
+		if(obj != 0) obj->add_ref();
+}
+	
+// deletes arg, releases target ref	
+template <class T, class A>
+inline callback<T, A>::~callback() {
+	delete m_arg;
+	release_target();
+}
+
+// event interface implementation
+template <class T, class A>
+inline void callback<T, A>::fire() {
+	if(m_mf != 0 && m_obj != 0)
+		(m_obj->*m_mf)(m_arg);
+	release_target();
+}	
+
+// releases target ref
+template <class T, class A>
+inline void callback<T, A>::release_target() {
+	if(m_obj != 0) {
+		ref_counted* obj = dynamic_cast<ref_counted*>(m_obj);
+		obj->release();
+		m_obj = 0;
+	}
+}
+
 } // namespace lib
  
 } // namespace ambulant

@@ -17,14 +17,12 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
-#include <string>
-#include <fstream>
-
 #include "sax_handler.h"
 #include "expat_parser.h"
 #include "node.h"
 #include "nscontext.h"
 
+#include <string>
 
 namespace ambulant {
 
