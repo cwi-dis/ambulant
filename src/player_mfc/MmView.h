@@ -112,6 +112,7 @@ public:
 	afx_msg void OnViewFilter();
 	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnUpdateViewTests(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

@@ -51,17 +51,22 @@
 
 #include "stdafx.h"
 #include "DemoPlayer.h"
+#include "MainFrm.h"
 
 #include "MmDoc.h"
 #include "MmView.h"
 
-#include ".\mmview.h"
-
 #include <fstream>
 #include <string>
 
+// DX Player
 #include "ambulant/gui/dx/dx_player.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
+
+// DG Player
+#include "ambulant/gui/dg/dg_player.h"
+#include "ambulant/gui/dg/dg_wmuser.h"
+
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
 
@@ -80,27 +85,36 @@ static std::string get_log_filename() {
 
 std::ofstream log_os(get_log_filename().c_str());
 
+// The handle of the single instance
 static HWND s_hwnd;
 
 HWND new_os_window() {
-	// Return the single instance for now
+	// Return the handle of the single instance for now
+	// This means paint bits of the new window
+	// to the single instance
 	return s_hwnd;
 }
 
 void destroy_os_window(HWND hwnd) {
-	// none for now
+	// none for now; keep the single instance
 }
 
 using namespace ambulant;
 
-static gui::dx::dx_player* 
-create_player_instance(std::string which, const char *url) {
-	if(which == "dx")
-		return new gui::dx::dx_player(url);
-	return 0;
+//#define AM_PLAYER_DG
+
+#ifdef AM_PLAYER_DG
+typedef gui::dg::dg_player gui_player;
+#else 
+typedef gui::dx::dx_player gui_player;
+#endif
+
+static gui_player* 
+create_player_instance(const char *url) {
+	return new gui_player(url);
 }
 
-static gui::dx::dx_player *player = 0;
+static gui_player *player = 0;
 static needs_done_redraw = false;
 
 // MmView
@@ -128,6 +142,7 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_COMMAND(ID_VIEW_FILTER, OnViewFilter)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
 	ON_WM_MOUSEMOVE()
+	ON_UPDATE_COMMAND_UI(ID_VIEW_TESTS, OnUpdateViewTests)
 END_MESSAGE_MAP()
 
 
@@ -155,7 +170,7 @@ BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
 
 // MmView drawing
 
-void MmView::OnDraw(CDC* /*pDC*/)
+void MmView::OnDraw(CDC* pDC)
 {
 	MmDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -164,7 +179,7 @@ void MmView::OnDraw(CDC* /*pDC*/)
 
 	// TODO: add draw code for native data here
 	if(player)
-		player->redraw();
+		player->redraw(m_hWnd, pDC->m_hDC);
 	
 }
 
@@ -209,7 +224,7 @@ void MmView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	SendMessage(WM_SET_CLIENT_RECT, 
 		common::default_layout_width, ambulant::common::default_layout_height);
-	if(player) player->redraw();
+	if(player) player->redraw(GetSafeHwnd(), 0);
 
 }
 
@@ -226,12 +241,12 @@ void MmView::OnDestroy()
 }
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName) {
-	if(player) {
-		delete player;
-		player = 0;
-	}
-	player = create_player_instance("dx", lpszPathName);
+	gui_player *dummy = player;
+	player = 0;
+	if(dummy) delete dummy;
+	dummy = create_player_instance(lpszPathName);
 	m_curPathName = lpszPathName;
+	player = dummy;
 }
 
 void MmView::OnFilePlay()
@@ -291,9 +306,7 @@ void MmView::OnTimer(UINT nIDEvent)
 
 void MmView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	if(player) player->on_click(point.x, point.y, GetSafeHwnd());
-
 	CView::OnLButtonDown(nFlags, point);
 }
 
@@ -320,9 +333,10 @@ void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	CView::OnChar(nChar, nRepCnt, nFlags);
 }
 
+
 void MmView::OnViewSource() {
 	//ShellExecute(GetSafeHwnd(), "open", m_curPathName, NULL, NULL, SW_SHOW);
-	WinExec(CString("Notepad.exe ") + m_curPathName, SW_SHOW);
+	WinExec(CString("Notepad.exe ") + m_curPathName, SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
@@ -377,6 +391,11 @@ void MmView::OnViewTests() {
 		m_curFilter = str;
 	}	
 }
+void MmView::OnUpdateViewTests(CCmdUI *pCmdUI)
+{
+	bool enable = !player || (player && !player->is_playing());
+	pCmdUI->Enable(enable?TRUE:FALSE);
+}
 
 void MmView::OnViewFilter()
 {
@@ -389,4 +408,3 @@ void MmView::OnUpdateViewFilter(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(!m_curFilter.IsEmpty());
 }
-
