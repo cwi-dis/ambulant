@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -500,6 +500,9 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 	m_thread(thread),
 	m_client_callback(NULL)
 {
+	AVCodec *codec;
+	AVCodecContext *codeccontext;
+	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource() -> 0x%x", (void*)this);
 	ffmpeg_init();
 	// Find the index of the audio stream
@@ -508,7 +511,13 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 			break;
 	}
 	
-	// XXX Hier moet de codec nog gezet worden !
+	codeccontext = &context->streams[m_stream_index]->codec; 
+	codec = avcodec_find_decoder(codeccontext->codec_id);
+	
+	if( !codec || avcodec_open(codeccontext,codec) < 0 ) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) Failed to open codec", (void*)this);
+	}
+	
 	
 	if (m_stream_index >= context->nb_streams) {
 		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no audio streams");
@@ -589,8 +598,8 @@ ffmpeg_video_datasource::frame_done(double timestamp)
 	m_size = 0;
 	m_lock.leave();
 }
-#undef AM_DBG
-#define AM_DBG
+//#undef AM_DBG
+//#define AM_DBG
 void 
 ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 {
@@ -612,7 +621,7 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		//if (m_frame)
 			
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:start decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
-		assert(&m_con->streams[m_stream_index]->codec == NULL);
+		assert(&m_con->streams[m_stream_index]->codec != NULL);
 		len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
 		sz -= len;
 		if (got_pic) {
@@ -635,6 +644,8 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 			m_timestamp = ((double) frame.pts * num) / den;
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_timestamp=%f",m_timestamp);
 		}
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_frame is not NULL, but it should be !");
 	}
 
 	if ( m_client_callback && (m_frame || m_src_end_of_file ) ) {
@@ -647,10 +658,10 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 	}
 	m_lock.leave();
 }
-#undef AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif 
+//#undef AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif 
 
 bool 
 ffmpeg_video_datasource::end_of_file()
