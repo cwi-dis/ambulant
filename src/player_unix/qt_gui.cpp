@@ -259,6 +259,7 @@ qt_gui::slot_open() {
 
 void 
 qt_gui::slot_open_url() {
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   	bool ok;
 	QString smilfilename =
 		QInputDialog::getText(
@@ -273,6 +274,10 @@ qt_gui::slot_open_url() {
 	    openSMILfile(smilfilename, IO_ReadOnly);
 	    slot_play();
 	}
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	QMessageBox::information (this, m_programfilename,
+		"Open URL not implemented for Embedded Qt");
+#endif/*QT_NO_FILEDIALOG*/
 }
 
 void 

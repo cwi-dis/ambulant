@@ -56,7 +56,6 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/logger.h"
 
-#define FILL_PURPLE
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -96,27 +95,6 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 	paint.drawRect(L,T,W,H);
 	paint.flush();
 	paint.end();
-}
-
-// Utility functions for transitions
-
-static QPixmap*
-getOldSource(bool outtrans, ambulant_qt_window *aqw) {
-	if (outtrans)
-		return aqw->get_ambulant_oldpixmap();
-	else
-		return aqw->ambulant_pixmap();
-}
-
-static QPixmap*
-getNewSource(bool outtrans, ambulant_qt_window *aqw, 
-	     common::surface* dst, color_t c) {
-	if (outtrans) {
-//		qt_transition_debug qttDEBUG;
-//		qttDEBUG.paint_rect(aqw, dst, c);
-		return aqw->ambulant_pixmap();
-	} else
-		return aqw->get_ambulant_surface();
 }
 
 void
@@ -185,9 +163,8 @@ qt_transition_blitclass_rect::update()
 {
 	AM_DBG logger::get_logger()->trace("qt_transition_blitclass_rect::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
-	QPixmap *qpm = getOldSource(m_outtrans, aqw);
-	QPixmap *npm = getNewSource(m_outtrans, aqw,
-				    m_dst, m_info->m_color);
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
 	screen_rect<int> newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
