@@ -12,7 +12,9 @@ library_include_HEADERS= \
 	test_attrs.h \
 	time_attrs.h \
 	time_calc.h \
+	time_nctx.h \
 	time_node.h \
+	time_sched.h \
 	time_state.h \
 	timegraph.h \
 	trace_player.h \

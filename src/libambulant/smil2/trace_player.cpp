@@ -85,7 +85,7 @@ trace_player::~trace_player() {
 	delete m_doc;
 }
 
-void trace_player::schedule_event(event *ev, time_type t, event_priority ep) {
+void trace_player::schedule_event(event *ev, lib::timer::time_type t, event_priority ep) {
 	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
 }
 

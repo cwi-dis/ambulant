@@ -131,6 +131,7 @@ libambulant_la_SOURCES = \
 	smil2/time_attrs.cpp \
 	smil2/time_calc.cpp \
 	smil2/time_node.cpp \
+	smil2/time_sched.cpp \
 	smil2/time_state.cpp \
 	smil2/timegraph.cpp \
 	smil2/trace_player.cpp \

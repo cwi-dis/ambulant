@@ -126,7 +126,7 @@ class trace_player : public time_node_context,
 	
 	// Services
 	virtual time_traits::value_type elapsed() const { return m_timer->elapsed();}
-	virtual void schedule_event(lib::event *ev, time_type t, lib::event_priority ep = ep_low);
+	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep = ep_low);
 	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
 		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority) ep);}
 	virtual void cancel_all_events() 
