@@ -50,61 +50,35 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_LIB_PLAYER_H
+#define AMBULANT_LIB_PLAYER_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
 
+#include "ambulant/lib/event_processor.h"
 
-//////////////////
-// tokens_vector
+namespace ambulant {
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+namespace lib {
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
-	}
-	return s;
-}
+class abstract_player {
+  public:
+	virtual ~abstract_player() {};
+	
+	virtual timer* get_timer() = 0;
+	virtual event_processor* get_evp() = 0;
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+	virtual void start() = 0;
+	virtual void stop() = 0;
+	virtual void pause() = 0;
+	virtual void resume() = 0;
+	virtual bool is_done() const = 0;
+//	void set_speed(double speed);
+//	double get_speed() const;
+};
 
+} // namespace lib
+ 
+} // namespace ambulant
 
-
-
+#endif // AMBULANT_LIB_PLAYER_H

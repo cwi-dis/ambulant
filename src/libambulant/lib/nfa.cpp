@@ -51,10 +51,9 @@
  */
 
 #include "ambulant/lib/nfa.h"
+#include "ambulant/lib/logger.h"
 #include <vector>
 #include <map>
-
-#include "ambulant/lib/logger.h"
 
 #define NFA_VERBOSE 0
 

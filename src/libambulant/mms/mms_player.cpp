@@ -50,91 +50,110 @@
  * @$Id$ 
  */
 
-
-// Environment for testing design classes
-
-#include <iostream>
-#include "mainloop.h"
-#include "ambulant/lib/logger.h"
-#include "ambulant/lib/timer.h"
 #include "ambulant/lib/document.h"
-#include "ambulant/gui/cocoa/cocoa_gui.h"
-#ifdef WITH_SDL
-#include "ambulant/gui/SDL/sdl_gui.h"
-#endif
-#ifdef WITH_MMS_PLAYER
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/asb.h"
+#include "ambulant/mms/timeline_builder.h"
 #include "ambulant/mms/mms_player.h"
-#else
-#include "ambulant/smil2/smil_player.h"
-#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-void
-usage()
+using namespace ambulant;
+
+lib::mms_player::mms_player(lib::document *doc, window_factory *wf, renderer_factory *rf)
+:	m_doc(doc),
+	m_tree(doc->get_root()),
+	m_timer(new timer(realtime_timer_factory(), 0.0)),
+	m_event_processor(event_processor_factory(m_timer)),
+	m_window_factory(wf),
+	m_renderer_factory(rf)
 {
-	std::cerr << "Usage: demoplayer file" << std::endl;
-	std::cerr << "Options: --version (-v) prints version info" << std::endl;
-	exit(1);
 }
 
-mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
-:   m_running(false),
-	m_speed(1.0),
-	m_doc(NULL),
-	m_player(NULL),
-	m_rf(NULL),
-	m_wf(wf)
+lib::mms_player::~mms_player()
 {
-	using namespace ambulant;
+	delete m_event_processor;
+	delete m_timer;
+}
+
+void
+lib::mms_player::start()
+{
+	m_done = false;
+	passive_timeline *ptl = build_timeline();
+	layout_manager *layoutmgr = new mms_layout_manager(m_window_factory, m_doc);
+	if (ptl) {
+#ifndef AMBULANT_NO_IOSTREAMS
+		AM_DBG std::cout << "------------ mms_player: passive_timeline:" << std::endl;
+		AM_DBG ptl->dump(std::cout);
+#endif
+		active_timeline *atl = ptl->activate(m_event_processor, m_renderer_factory, layoutmgr);
+#ifndef AMBULANT_NO_IOSTREAMS
+		AM_DBG std::cout << "------------ mms_player: active_timeline:" << std::endl;
+		AM_DBG atl->dump(std::cout);
+#endif
+		m_active_timelines.push_back(atl);
 	
-	m_rf = new lib::global_renderer_factory();
-	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
-#ifdef WITH_SDL
-    AM_DBG logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
-	m_rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
-#endif
-	m_doc = lib::document::create_from_file(filename);
-	if (!m_doc) {
-		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
-		return;
+		typedef no_arg_callback<mms_player> callback;
+		event *ev = new callback(this, 
+			&mms_player::timeline_done_callback);
+	
+		// run it
+		atl->preroll();
+		m_timer->set_speed(1.0);
+		atl->start(ev);
 	}
-#ifdef WITH_MMS_PLAYER
-	m_player = new lib::mms_player(m_doc, m_wf, m_rf);
-#else
-	m_player = new lib::smil_player(m_doc, m_wf, m_rf);
-#endif
+}
+void
+lib::mms_player::stop()
+{
+	std::vector<active_timeline *>::iterator it;
+	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++) {
+		(*it)->stop();
+	}
+	//lib::logger::get_logger()->error("mms_player::stop(): Not yet implemented");
 }
 
-mainloop::~mainloop()
-{
-//  m_doc will be cleaned up by the smil_player.
-//	if (m_doc) delete m_doc;
-//	m_doc = NULL;
-	if (m_player) delete m_player;
-	m_player = NULL;
-	if (m_rf) delete m_rf;
-	m_rf = NULL;
-	// m_wf Window factory is owned by caller
+void 
+lib::mms_player::pause() {
+	if(get_speed() == 0.0) return;
+	std::vector<active_timeline *>::iterator it;
+	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++)
+		(*it)->pause();
+	m_pause_speed = get_speed();
+	set_speed(0);
+}
+
+void 
+lib::mms_player::resume() {
+	if(get_speed() > 0.0) return;
+	std::vector<active_timeline *>::iterator it;
+	for(it = m_active_timelines.begin(); it != m_active_timelines.end(); it++)
+		(*it)->resume();
+	set_speed(m_pause_speed);
 }
 
 void
-mainloop::run()
+lib::mms_player::set_speed(double speed)
 {
-	m_player->start();
-	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
+	m_timer->set_speed(speed);
 }
 
-void
-mainloop::set_speed(double speed)
+double
+lib::mms_player::get_speed() const
 {
-	m_speed = speed;
-	if (m_player) {
-		if (speed == 0.0)
-			m_player->pause();
-		else
-			m_player->resume();
-	}
+	return m_timer->get_realtime_speed();
 }
+
+lib::passive_timeline *
+lib::mms_player::build_timeline()
+{
+	lib::node *playroot = m_tree->get_first_child("body");
+	if (playroot == NULL)
+		playroot = m_tree;
+	timeline_builder builder = timeline_builder(m_window_factory, *playroot);
+	return builder.build();
+}
+

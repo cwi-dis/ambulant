@@ -50,61 +50,78 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_TIMEGRAPH_H
+#define AMBULANT_TIMEGRAPH_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
+
+#include "ambulant/smil2/smil_time.h"
+#include "ambulant/smil2/time_node.h"
+
+#include <string>
+#include <map>
+
+#ifndef AMBULANT_NO_OSTREAM
+#include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
+
+namespace ambulant {
+
+namespace lib {
+
+class document;
+class schema;
+class node;
+template <class N>
+class node_navigator;
+
+// Builds the time tree and the time graph.
+// Wraps the time root.
+ 
+class timegraph : public time_traits {
+  public:
+ public:
+	timegraph(time_node::context_type *ctx, const document *doc, const schema *sch);
+	~timegraph();
+	
+	time_node* get_root() { return m_root;}
+	const time_node* get_root() const { return m_root;}
+	
+	time_node* detach_root();
+	std::map<int, time_node*>* detach_dom2tn();
+	
+#ifndef AMBULANT_NO_IOSTREAMS
+	void dump(std::ostream& os);
+#endif
+
+  private:
+    typedef node_navigator<const node> const_nnhelper;
+	time_node* build_time_tree(const node *root);
+	void build_time_graph();
+	time_node* create_time_node(const node *n) const;
+	time_node *get_node_with_id(const std::string& ident) const;
+	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
+	
+	// helpers for creating sync rules
+	void add_begin_sync_rules(time_node *tn);
+	void add_end_sync_rules(time_node *tn);
+	sync_rule* create_impl_syncbase_begin_rule(time_node *tn);
+	sync_rule* create_impl_syncbase_rule(time_node *tn, time_type offset);
+
+	const node* select_switch_child(const node* sn) const;
+	
+	time_node::context_type *m_context;
+	const schema *m_schema;
+	time_node* m_root;
+	std::map<std::string, time_node*> m_id2tn;
+	std::map<int, time_node*> *m_dom2tn;
+};
 
 
-//////////////////
-// tokens_vector
+} // namespace lib
+ 
+} // namespace ambulant
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
-
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
-	}
-	return s;
-}
-
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
-
-
-
-
+#endif // AMBULANT_TIMEGRAPH_H

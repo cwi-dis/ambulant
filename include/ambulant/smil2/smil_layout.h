@@ -50,61 +50,46 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_LIB_REGION_BUILDER_H
+#define AMBULANT_LIB_REGION_BUILDER_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
 
+#include "ambulant/lib/node.h"
+#include "ambulant/common/layout.h"
 
-//////////////////
-// tokens_vector
+namespace ambulant {
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+namespace lib {
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
-	}
-	return s;
-}
+class passive_region;
+class passive_root_layout;
+class schema;
+class document;
+class region_node;
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+class smil_layout_manager : public layout_manager {
+  public:
+	smil_layout_manager(window_factory *wf, document *doc);
+	~smil_layout_manager();
+	
+	abstract_rendering_surface *get_rendering_surface(const node *node);
+  private:
+	void fix_document_layout(document *doc);
+	
+	abstract_rendering_surface *get_default_rendering_surface(const node *n);
+	void build_layout_tree(window_factory *wf, const node *layout_root);
 
+	passive_root_layout *create_top_region(window_factory *wf, const region_node *rn);
+	
+	const schema *m_schema;
+	std::vector<passive_root_layout*> m_rootlayouts;
+	std::map<std::string, passive_region*> m_id2region;
+	std::multimap<std::string, passive_region*> m_name2region;
+};
 
+} // namespace lib
+ 
+} // namespace ambulant
 
-
+#endif // AMBULANT_LIB_REGION_BUILDER_H

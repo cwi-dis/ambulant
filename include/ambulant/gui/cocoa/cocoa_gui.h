@@ -53,7 +53,7 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_GUI_H
 #define AMBULANT_GUI_COCOA_COCOA_GUI_H
 
-#include "ambulant/lib/layout.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>

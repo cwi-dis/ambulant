@@ -50,61 +50,84 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
+#ifndef AMBULANT_LIB_TRACE_PLAYABLE_H
+#define AMBULANT_LIB_TRACE_PLAYABLE_H
+
+#include "ambulant/config/config.h"
+#include "ambulant/common/playable.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 
-using namespace ambulant;
+#include <string>
+#include <utility>
 
+// A non-gui playable for testing scheduler features.
 
-//////////////////
-// tokens_vector
+namespace ambulant {
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+namespace lib {
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
+class trace_playable : public playable {
+
+  public:
+  	
+	trace_playable(const node* n, cookie_type c) 
+	:	m_node(n),
+		m_cookie(c) {
+		m_logger = logger::get_logger();
+		const char *pid = m_node->get_attribute("id");
+		m_id = (pid?pid:"no-id");
+		m_tag = m_node->get_local_name();
+		trace_call("ctr");
 	}
-	return s;
-}
+	
+	~trace_playable() { trace_call("dtr");}
+	
+	
+	void start(double t)  { trace_call("start", t);}
+	
+	void stop()  { trace_call("stop");}
+	
+	void pause(){ trace_call("pause");}
+	
+	void resume() { trace_call("resume");}
+	
+	void seek(double t) { trace_call("seek", t);}
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+	void wantclicks(bool want) { trace_call("wantclicks");}
+	
+	void preroll(double when, double where, double how_much) {
+		m_logger->trace("PLAYABLE: %s[%s].preroll(%.3f, %.3f, %.3f)", m_tag.c_str(), 
+			m_id.c_str(), when, where, how_much);	
+	}
+	
+	std::pair<bool, double> get_dur() {
+		trace_call("get_dur");
+		return std::pair<bool, double>(false, 0);
+	}
 
+	const cookie_type& get_cookie() const { return m_cookie; }
 
+  private:
+	const node *m_node;
+	const cookie_type m_cookie;
+	std::string m_tag;
+	std::string m_id;
+	logger *m_logger;
+		
+	void trace_call(const char *mfn) {
+		m_logger->trace("PLAYABLE: %s[%s].%s()", m_tag.c_str(), m_id.c_str(), mfn);	
+	}
+	
+	void trace_call(const char *mfn, double v) {
+		m_logger->trace("PLAYABLE: %s[%s].%s(%.3f)", m_tag.c_str(), m_id.c_str(), mfn, v);	
+	}
+};
+
+} // namespace lib
+ 
+} // namespace ambulant
+
+#endif // AMBULANT_LIB_COUT_PLAYABLE_H
 
 

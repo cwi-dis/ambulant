@@ -50,61 +50,54 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_LIB_TIMELINE_BUILDER_H
+#define AMBULANT_LIB_TIMELINE_BUILDER_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
 
+#include "ambulant/lib/node.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/region.h"
+#include "ambulant/mms/timelines.h"
 
-//////////////////
-// tokens_vector
+namespace ambulant {
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+namespace lib {
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
-	}
-	return s;
-}
+class document;
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+class mms_layout_manager : public layout_manager {
+  public:
+	mms_layout_manager(window_factory *wf, const document *doc);
+	~mms_layout_manager();
+	
+	abstract_rendering_surface *get_rendering_surface(const node *node);
+  private:
+  	passive_region *m_audio_rgn, *m_text_rgn, *m_image_rgn;
+};
+
+class timeline_builder {
+  public:
+
+	timeline_builder(window_factory *wf, node& root);
+	~timeline_builder();
+	
+	passive_timeline *build();
+	
+  private:
+  	void build_node(const node& n);
+  	void build_leaf(const node& n);
+  	void build_seq(const node& n);
+  	void build_par(const node& n);
+  	
+  	node& m_root;
+  	passive_timeline *m_timeline;
+};
 
 
+} // namespace lib
+ 
+} // namespace ambulant
 
+#endif // AMBULANT_LIB_TIMELINE_BUILDER_H
 

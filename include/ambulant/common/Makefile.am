@@ -1,7 +1,8 @@
 library_includedir=$(includedir)/ambulant/common
 library_include_HEADERS= \
-	mms_player.h \
-	parse_attrs.h \
+	layout.h \
+	playable.h \
+	player.h \
 	preferences.h \
 	region_dim.h \
 	region_eval.h \
@@ -9,9 +10,8 @@ library_include_HEADERS= \
 	region_node.h \
 	region.h \
 	renderer.h \
-	skeleton.h \
+	schema.h \
 	smil_handler.h \
-	smil_layout.h \
-	smil_player.h \
-	timeline_builder.h \
-	timelines.h 
+	trace_playable.h \
+	trace_player.h
+	

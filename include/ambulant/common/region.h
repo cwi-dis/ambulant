@@ -58,7 +58,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/layout.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/common/region_info.h"
 
 namespace ambulant {

@@ -50,61 +50,79 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_LIB_SCHEMA_H
+#define AMBULANT_LIB_SCHEMA_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
 
+#include <set>
 
-//////////////////
-// tokens_vector
+#include "ambulant/lib/sax_types.h"
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+// A class encapsulating the XML Schema used by the application.
+// Components that want to be isolated from the exact XML Schema
+// may query an instance of this class for the properties they 
+// are interested for.
+//
+// An implementation of this class may use external resources, 
+// hard coded info, or the XML Schema file itself,
+// to build the data structures it requires. 
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
+namespace ambulant {
+
+namespace lib {
+
+// An enumeration representing the time container type
+// range of values : par | seq | excl | none  
+enum time_container_type {tc_par, tc_seq, tc_excl, tc_none};
+const char* time_container_type_as_str(time_container_type t);
+
+// An enumeration representing layout types
+enum layout_type {l_rootlayout, l_toplayout, l_region, l_none};
+const char* layout_type_as_str(layout_type t);
+
+class schema {
+  public:
+	// Returns the schema instance used.
+	static const schema* get_instance();
+	
+	// Returns a ref to the set of time elements.
+	// Currently local names.
+	const std::set<std::string>& get_time_elements() const {
+		return m_time_elements;
 	}
-	return s;
-}
+	
+	// Returns the time container type of the element with QName.
+	// A type is one of : par | seq | excl | none  
+	time_container_type get_time_type(const lib::q_name_pair& qname) const;
+	
+	bool is_discrete(const lib::q_name_pair& qname) const;
+	
+	// Returns a ref to the set of layout elements.
+	// Currently local names.
+	const std::set<std::string>& get_layout_elements() const {
+		return m_layout_elements;
+	}
+	
+	// Returns the time container type of the element with QName.
+	// A type is one of : par | seq | excl | none  
+	layout_type get_layout_type(const lib::q_name_pair& qname) const;
+	
+	// Allow schema_factory classes to create instances.
+	friend class schema_factory;
+	
+ 	schema();
+ 	~schema();
+	
+ private: 	
+	std::set<std::string> m_time_elements;
+	std::set<std::string> m_discrete;
+	std::set<std::string> m_continuous;
+	std::set<std::string> m_layout_elements;
+};
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+} // namespace lib
+ 
+} // namespace ambulant
 
-
-
-
+#endif // AMBULANT_LIB_SCHEMA_H

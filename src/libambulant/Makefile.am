@@ -79,17 +79,8 @@ libambulant_la_SOURCES = \
 	lib/nfa.cpp \
 	lib/node.cpp \
 	lib/parselets.cpp \
-	lib/schema.cpp \
 	lib/string_util.cpp \
-	lib/smil_time.cpp \
-	lib/sync_rule.cpp \
-	lib/test_attrs.cpp \
-	lib/time_attrs.cpp \
-	lib/time_node.cpp \
-	lib/time_state.cpp \
-	lib/timegraph.cpp \
 	lib/timer.cpp \
-	lib/trace_player.cpp \
 	lib/tree_builder.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
@@ -100,16 +91,26 @@ libambulant_la_SOURCES = \
 	net/datasource.cpp \
 	net/url.cpp \
 	\
-	common/mms_player.cpp \
 	common/region.cpp \
 	common/region_node.cpp \
 	common/renderer.cpp \
-	common/skeleton.cpp \
+	common/schema.cpp \
 	common/smil_handler.cpp \
-	common/smil_layout.cpp \
-	common/smil_player.cpp \
-	common/timeline_builder.cpp \
-	common/timelines.cpp \
+	common/trace_player.cpp \
+	\
+	smil2/smil_layout.cpp \
+	smil2/smil_player.cpp \
+	smil2/smil_time.cpp \
+	smil2/sync_rule.cpp \
+	smil2/test_attrs.cpp \
+	smil2/time_attrs.cpp \
+	smil2/time_node.cpp \
+	smil2/time_state.cpp \
+	smil2/timegraph.cpp \
+	\
+	mms/mms_player.cpp \
+	mms/timeline_builder.cpp \
+	mms/timelines.cpp \
 	\
 	gui/none/none_gui.cpp
 

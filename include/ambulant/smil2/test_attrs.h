@@ -50,61 +50,65 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/string_util.h"
-#include "ambulant/lib/logger.h"
+#ifndef AMBULANT_LIB_TEST_ATTRS_H
+#define AMBULANT_LIB_TEST_ATTRS_H
 
-using namespace ambulant;
+#include "ambulant/config/config.h"
 
+#include <string>
 
-//////////////////
-// tokens_vector
+namespace ambulant {
 
-lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
-	std::string s = (!entry || !entry[0])?"":entry;
+namespace lib {
+
+class node;
+class logger;
+class document;
+
+struct custom_test {
+	std::string id;
+	std::string title;
+	bool state;
+	bool override;
+	std::string uid;
+};
+
+class test_attrs {
+  public:
+	test_attrs(const node *n);
+	
+	// Returns true when the target node is selected.
+	bool selected() const;
+	
+	static bool load_test_attrs(const std::string& filename);
+	static void set_default_tests_attrs();
+	static void read_custom_attributes(const document *doc);
+	
+  private:
 	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(delims, offset);
-		if(i != std::string::npos) {
-			push_back(std::string(s.c_str() + offset, i-offset));
-			offset = i+1;
-		} else {
-			push_back(std::string(s.c_str() + offset));
-			offset = std::string::npos;
-		}
-	}	
-}			
+	bool test_on_off_attr(const std::string& attr,const char *value) const;
+	bool test_exact_str_attr(const std::string& attr,const char *value) const;
+	bool test_exact_str_list_attr(const std::string& attr,const char *value) const;
+	
+	bool test_system_language(const char *lang) const;
+	bool test_system_component(const char *value) const;
+	bool test_system_bitrate(const char *value) const;
+	bool test_system_screen_depth(const char *value) const;
+	bool test_system_screen_size(const char *value) const;
+	bool test_custom_attribute(const char *value) const;
+	
+	// the target node
+	const node *m_node;
+	
+	// tracing
+	std::string m_id;
+	std::string m_tag;
+	logger *m_logger;
+};
 
-std::string lib::tokens_vector::join(size_type i, char sep) {
-	std::string s;
-	size_type n = size();
-	if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
-	for(;i<n;i++) {
-		s += sep;
-		s += (*this)[i];
-	}
-	return s;
-}
-
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
-	std::list<std::string>& c, char ch) {
-	typedef std::string::size_type size_type;
-	size_type offset = 0;
-	while(offset != std::string::npos) {
-		size_type i = s.find_first_of(ch, offset);
-		if(i != std::string::npos) {
-			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = i+1;
-		} else {
-			std::string entry = trim(std::string(s.c_str() + offset));
-			if(!entry.empty()) c.push_back(entry);
-			offset = std::string::npos;
-		}
-	}	
-}
+} // namespace lib
+ 
+} // namespace ambulant
 
 
-
-
+#endif // AMBULANT_LIB_TEST_ATTRS_H

@@ -52,9 +52,8 @@
 
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
-#include "ambulant/common/region_node.h"
-
 #include "ambulant/lib/logger.h"
+#include "ambulant/common/region_node.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>

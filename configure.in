@@ -19,6 +19,8 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/common/Makefile
 	include/ambulant/lib/Makefile
 	include/ambulant/lib/unix/Makefile
+	include/ambulant/mms/Makefile
+	include/ambulant/smil2/Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
 	include/ambulant/gui/none/Makefile
