@@ -465,7 +465,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	[self lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
 	[self unlockFocus];
-	[rv addRepresentation: bits];
+	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "oldsrc"];
