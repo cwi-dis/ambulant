@@ -162,7 +162,7 @@ passive_region::show(renderer *cur)
 		children_map_t& subregions =  m_parent->get_subregions();
 		subregions[m_info->get_zindex()].push_back(this);
 	}
-	
+	need_redraw();
 }
 
 void
