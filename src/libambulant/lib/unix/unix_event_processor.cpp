@@ -19,24 +19,24 @@ using namespace ambulant;
 lib::unix::event_processor::event_processor() 
 :   abstract_event_processor(lib::timer_factory(), new lib::critical_section())
 {
-	AM_DBG log_trace_event("event_processor 0x%x created", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x created", (void *)this);
 	start();
 }
 
 lib::unix::event_processor::~event_processor()
 {
-	AM_DBG log_trace_event("event_processor 0x%x deleted", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x deleted", (void *)this);
 }
 
 unsigned long
 lib::unix::event_processor::run()
 {
-	AM_DBG log_trace_event("event_processor 0x%x started", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x started", (void *)this);
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
-	AM_DBG log_trace_event("event_processor 0x%x stopped", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x stopped", (void *)this);
 	return 0;
 }
 
@@ -49,7 +49,6 @@ lib::unix::event_processor::wait_event()
 void
 lib::unix::event_processor::wakeup()
 {
-	AM_DBG log_trace_event("event_processor 0x%x sema-value=%d", (void *)this, m_event_sema.count());
 	m_event_sema.up();
 }
 
