@@ -46,5 +46,6 @@ libambulant_la_SOURCES = \
 	lib/unix/unix_timer.cpp \
 	\
 	net/datasource.cpp \
+	net/url.cpp \
 	\
 	gui/none/none_gui.cpp
