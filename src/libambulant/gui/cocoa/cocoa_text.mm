@@ -116,6 +116,11 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	
 	if (m_text_storage && m_layout_manager) {
 		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
+		NSSize size = NSMakeSize(NSWidth(cocoa_dstrect), NSHeight(cocoa_dstrect));
+		if (1 /*size != [m_text_container containerSize]*/) {
+			AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw: setting size to (%f, %f)", size.width, size.height);
+			[m_text_container setContainerSize: size];
+		}
 		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
 		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
