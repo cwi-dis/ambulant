@@ -159,8 +159,10 @@ qt_gui::qt_gui(const char* title,
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
 		filemenu->insertItem("&Settings", this,
 				     SLOT(slot_settings_select()));
+#ifdef	WITH_QT_LOGGER
 		filemenu->insertItem("&Logger", this,
 				     SLOT(slot_logger_window()));
+#endif/*WITH_QT_LOGGER*/
 		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
 		m_menubar->insertItem("&File", filemenu);
 		
@@ -318,14 +320,10 @@ qt_gui::setDocument(const QString& smilfilename) {
 void
 qt_gui::slot_file_selected(const DocLnk& selected_file) {
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	FILE* DBG = fopen("/tmp/ambulant-log","a"); //KB
-	fprintf(DBG, "selected_file smilfilename=%s\n",
-		selected_file.file().ascii());
 	QString* smilfilepointer = new QString(selected_file.file());
 	QString smilfilename = *smilfilepointer;
 	delete smilfilepointer;
 	m_fileselector->hide();
-	fclose(DBG);
 	openSMILfile(smilfilename, IO_ReadOnly);
 	slot_play();
 #endif/*QT_NO_FILEDIALOG*/
@@ -334,9 +332,6 @@ void
 qt_gui::slot_close_fileselector()
 {
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	FILE* DBG = fopen("/tmp/ambulant-log","a"); //KB
-	fprintf(DBG, "slot_close_fileselector()\n");
-	fclose(DBG);
 	m_fileselector->hide();
 #endif/*QT_NO_FILEDIALOG*/
 }

@@ -56,7 +56,7 @@
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -194,7 +194,8 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 		AM_DBG lib::logger::get_logger()->debug(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
 		paint.drawImage(L,T,*m_image,0,0,W,H);
 	} else {
-		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
+//		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
+		AM_DBG lib::logger::get_logger()->warn("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
 	}
 	paint.flush();
 	paint.end();

@@ -54,17 +54,8 @@
 #include <qmessagebox.h>
 
 qt_logger_ostream::qt_logger_ostream()
- #if 0
- :		buf_len(1024),
-		buf_idx(0)
-#endif
+  :		m_qstring(NULL)
 {
-#if 0
-	buf = (char*) malloc(buf_len);
-	if (!buf) {
-	abort();	 
-	}
-#endif
 }
 
 bool 
@@ -83,40 +74,13 @@ qt_logger_ostream::write(const unsigned char *buffer, int nbytes)
 int
 qt_logger_ostream::write(const char *cstr)
 {
-//	std::string id("qt_logger_ostream::write(const char *cstr)");
-#if 0
-        int cstr_len = strlen(cstr), i, line_len;
-	bool found = false;
-	// glue strings to lines
-	for (i=0; i < cstr_len; i++) {
-		if (cstr[i] =='\n') {
-			found = true;
-			break;
-		}
-	}
-	line_len = i;
-	if (line_len > 0) {
-		strncpy(&buf[buf_idx], cstr, line_len);
-		buf_idx += line_len;
-	}
-	if (found) {
-		buf[buf_idx] = '\0';
-		qt_logger::get_qt_logger()->
-			get_logger_window()->append(buf);
-		buf_idx = 0;
-		if (cstr_len > line_len+1)
-			write(&cstr[line_len+1]);
-	}
-#else
-	qt_logger::get_qt_logger()->get_logger_window()->append(cstr);
-#endif
+	m_qstring += cstr;
 	return 1;
 }
 
 int
 qt_logger_ostream::write(std::string s)
 {
-//	std::string id("qt_logger_ostream::write(string s)");
 	return  write(s.data());
 }
 
@@ -135,6 +99,15 @@ qt_logger_ostream::close() {
 void
 qt_logger_ostream::flush() {
 	std::string id("qt_logger_ostream::flush()");
+#ifdef	QT_THREAD_SUPPORT
+	// The lock is there to prevent the X-protocol getting confused
+	qApp->lock();
+#endif/*QT_THREAD_SUPPORT*/
+	qt_logger::get_qt_logger()->qt_logger::get_logger_window()->append(m_qstring);
+#ifdef	QT_THREAD_SUPPORT
+	qApp->unlock();
+#endif/*QT_THREAD_SUPPORT*/
+	m_qstring.truncate(0);
 }
 
 qt_logger* qt_logger::s_qt_logger = 0;
@@ -146,7 +119,10 @@ qt_logger::qt_logger()
 		ambulant::lib::logger::get_logger();
 	// Connect logger to our message displayer and output processor
 	logger->set_show_message(show_message);
-	//logger->set_ostream(new qt_logger_ostream);
+	// Because QT_THREAD_SUPPORT is off by default, logging is
+	// in a terminal window on Linux.
+	// logger->set_ostream(new qt_logger_ostream);
+
 	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	logger->set_level(level);

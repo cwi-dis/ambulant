@@ -67,7 +67,7 @@
 class qt_logger {
  public:
 	static qt_logger* get_qt_logger();
-	static void show_message(const char *format);
+	static void show_message(const char *message);
 	QTextEdit* get_logger_window();
  protected:
 	qt_logger();
@@ -86,11 +86,7 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 	int  write(std::string s);
 	void write(ambulant::lib::byte_buffer& bb);
 	void flush();
-#if 0
  private:
-	int buf_len;
-	char* buf;
-	int buf_idx;
-#endif
+	QString m_qstring;
 };
 #endif/*__QT_LOGGER_H__*/
