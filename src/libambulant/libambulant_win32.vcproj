@@ -147,6 +147,9 @@
 						RelativePath=".\gui\dx\dx_text.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_text_renderer.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_video.cpp">
 					</File>
 					<File
@@ -385,6 +388,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_text.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_text_renderer.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_video.h">
