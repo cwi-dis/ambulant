@@ -164,7 +164,7 @@ endif
 
 #	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
-	strip -X `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_sdl_LDADD) \
