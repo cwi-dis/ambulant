@@ -196,7 +196,11 @@ ffmpeg_raw_datasource::stop()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
-		m_thread->cancel();
+		detail::ffmpeg_rawreader *tmpthread = m_thread;
+		m_thread = NULL;
+		m_lock.leave();
+		tmpthread->cancel();
+		m_lock.enter();
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop: thread stopped");
