@@ -79,12 +79,12 @@ class nslog_ostream : public ambulant::lib::ostream {
 int
 nslog_ostream::write(const char *cstr)
 {
-//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	LogController *log = [LogController sharedLogController];
 	NSString *nsstr = [NSString stringWithCString: cstr];
 	if (log) [log insertText: nsstr];
 //	[nsstr release];
-//	[pool release];
+	[pool release];
 }
 
 void
