@@ -641,6 +641,16 @@ ffmpeg_video_datasource::stop()
 	m_con = NULL; // owned by the thread
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
+	// And delete any frames left
+	while ( m_frames.size() > 0 ) {
+		std::pair<double, char*> element = m_frames.front();
+		free(element.second);
+		m_frames.pop();
+	}
+	if (m_old_frame.second) {
+		free(m_old_frame.second);
+		m_old_frame.second = NULL;
+	}
 	m_lock.leave();
 }	
 
