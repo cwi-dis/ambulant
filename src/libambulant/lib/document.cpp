@@ -133,7 +133,7 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_str(smil_src)) {
-		logger::get_logger()->error(gettext("Could not build DOM tree for the provided string"));
+		logger::get_logger()->trace(gettext("Could not build DOM tree for the provided string"));
 		return 0;
 	}
 	d->set_root(builder.detach());

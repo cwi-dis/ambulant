@@ -227,7 +227,7 @@ datasource_factory::new_raw_datasource(const net::url &url)
 		AM_DBG lib::logger::get_logger()->debug("new_raw_datasource: returning mem_datasource");
 		return new mem_datasource(url);
 	}
-	lib::logger::get_logger()->warn(gettext("%s: Cannot open, not supported by any datasource"), repr(url).c_str());
+	lib::logger::get_logger()->trace(gettext("%s: Cannot open, not supported by any datasource"), repr(url).c_str());
     return NULL;
 }
 

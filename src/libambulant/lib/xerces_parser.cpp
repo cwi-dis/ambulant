@@ -151,7 +151,7 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	} catch (const SAXParseException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
 		int linenumber = e.getLineNumber();
-		m_logger->error(gettext("Parse error line %d: %s: "),
+		m_logger->trace(gettext("Parse error line %d: %s: "),
 				linenumber, exceptionMessage);
 		XMLString::release(&exceptionMessage);
 	} catch (...) {

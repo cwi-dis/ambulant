@@ -132,7 +132,7 @@ qt_logger::qt_logger()
 	int level = prefs->m_log_level;
 	logger->set_level(level);
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
-	//logger->set_ostream(new qt_logger_ostream);
+	logger->set_ostream(new qt_logger_ostream);
 	logger_window = new QTextEdit();
 	logger_window->setReadOnly(true);
 	logger_window->setCaption("Ambulant-Logger");

@@ -664,8 +664,7 @@ main (int argc, char*argv[]) {
 	// take log level from preferences
 	qt_logger::set_qt_logger_gui(mywidget);
 	qt_logger* qt_logger = qt_logger::get_qt_logger();
-	lib::logger::get_logger()->debug("Ambulant Player: %s",
-					 "now logging to a window");
+	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
 	// Print welcome banner
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
@@ -708,9 +707,14 @@ main (int argc, char*argv[]) {
 	}
 	if (exec_flag)
 		myapp.exec();
-	else if (argc > 1)
-		std::cerr << "Cannot open \"" << (const char*)argv[1]
-			  << "\""<<std::endl;
+	else if (argc > 1) {
+		std::string error_message = gettext("Cannot open: ");
+		error_message = error_message + "\"" + argv[1] + "\"";
+		std::cerr << error_message << std::endl;
+		lib::logger::get_logger()->error
+		  ((const char*)error_message.c_str());
+		myapp.exec();
+	}
 	delete mywidget;
 	unix_prefs.save_preferences();
 	std::cout << "Exiting program" << std::endl;
