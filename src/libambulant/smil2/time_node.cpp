@@ -691,7 +691,7 @@ bool time_node::is_animation() const {
 
 // Returns true if the node has an <a actuate="onRequest"> parent
 bool time_node::has_a_parent() const {
-	time_node *parent = up();
+	const time_node *parent = up();
 	if (!parent) return false;
 	if (!parent->is_a()) return false;
 	return parent->get_time_attrs()->get_actuate() == actuate_onrequest;
