@@ -52,6 +52,7 @@
 
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/logger.h"
+#include <cmath>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -59,67 +60,65 @@
 
 using namespace ambulant;
 
-lib::abstract_timer_client::client_index
-lib::abstract_timer_client::add_dependent(abstract_timer_client *child)
-{
-	std::pair<client_index, bool> rv = m_dependents.insert(child);
-	if (!rv.second)
-		lib::logger::get_logger()->fatal("abstract_timer_client::add_dependent: child already added");
-	return rv.first;
-}
-
-void
-lib::abstract_timer_client::remove_dependent(client_index pos)
-{
-	m_dependents.erase(pos);
-}
-
-void
-lib::abstract_timer_client::remove_dependent(abstract_timer_client *child)
-{
-	if (!m_dependents.erase(child))
-		lib::logger::get_logger()->fatal("abstract_timer_client::remove_dependent: child not present");
-}
-
-void
-lib::abstract_timer_client::speed_changed()
-{
-	client_index i;
-	for (i=m_dependents.begin(); i != m_dependents.end(); i++)
-		(*i)->speed_changed();
-}
-
-lib::timer::timer(lib::abstract_timer* parent, double speed)
+lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool running /* = true */)
 :   m_parent(parent),
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
-	m_speed(speed)
-{
-}
-
-lib::timer::timer(lib::abstract_timer* parent)
-:   m_parent(parent),
-	m_parent_epoch(parent->elapsed()),
-	m_local_epoch(0),
-	m_speed(1.0)
-{
+	m_speed(speed),
+	m_running(running),
+	m_listeners(0)
+{	
 }
 
 lib::timer::~timer()
 {
+	// This class does not own event listeners.
+	// Therefore, deleting the container is enough
+	delete m_listeners;
 }
 
 lib::timer::time_type
 lib::timer::elapsed() const
 {
-	return (lib::timer::time_type)(m_local_epoch + m_speed*(m_parent->elapsed()-m_parent_epoch));
+	if(!m_running) return m_local_epoch;
+	return m_local_epoch + apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 }
 
+void lib::timer::start(time_type t /* = 0 */) {
+	m_parent_epoch = m_parent->elapsed();
+	m_local_epoch = t;
+	m_running = true;
+}
+
+void lib::timer::stop() {
+	m_local_epoch = 0;
+	m_running = false;
+}
+	
+void lib::timer::pause() {
+	if(m_running) {
+		m_local_epoch += apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
+		m_running = false;
+	}
+}
+	
+void lib::timer::resume() {
+	if(!m_running) {
+		m_parent_epoch = m_parent->elapsed();
+		m_running = true;
+	}
+}
+	
 void
 lib::timer::set_speed(double speed)
 {
-	re_epoch();
-	m_speed = speed;
+	if(!m_running) {
+		m_speed = speed;
+	} else {
+		pause();
+		m_speed = speed;
+		resume();
+	}
 	speed_changed();
 }
 
@@ -129,10 +128,36 @@ lib::timer::get_realtime_speed() const
 	return m_speed * m_parent->get_realtime_speed();
 }
 
-void
-lib::timer::re_epoch()
+lib::timer::time_type 
+lib::timer::apply_speed_manip(lib::timer::time_type dt) const 
 {
-	// Could be off by a little, but too lazy to do it better right now:-)
-	m_local_epoch = elapsed();
-	m_parent_epoch = m_parent->elapsed();
+	if(m_speed == 1.0) return dt;
+	else if(m_speed == 0.0) return 0;
+	return time_type(std::floor(m_speed*dt + 0.5));
+}
+
+void 
+lib::timer::add_listener(lib::timer_events *listener) 
+{
+	if(!m_listeners) m_listeners = new std::set<lib::timer_events*>();
+	typedef std::set<lib::timer_events*>::iterator iterator;
+	std::pair<iterator, bool> rv = m_listeners->insert(listener);
+	if(!rv.second)
+		lib::logger::get_logger()->warn("abstract_timer_client::add_listener: listener already added");
+}
+
+void 
+lib::timer::remove_listener(lib::timer_events *listener)
+{
+	if(!m_listeners || !m_listeners->erase(listener))
+		lib::logger::get_logger()->warn("abstract_timer_client::remove_listener: listener not present");
+}
+
+void
+lib::timer::speed_changed()
+{
+	if(!m_listeners) return;
+	std::set<lib::timer_events*>::iterator it;
+	for(it = m_listeners->begin();it!=m_listeners->end();it++)
+		(*it)->speed_changed();
 }
