@@ -56,10 +56,12 @@ class node_navigator {
 	static N* append_child(N *n, N* child);
 	static N* detach(N *n);
 	static void delete_tree(N *n);
+	static N* get_root(N *n);
 };
 
 template <class N>
 inline const N* node_navigator<N>::previous(const N *n) {
+	assert(n != 0);
 	const N *e = n->up();
 	if(!e) return 0;
 
@@ -77,6 +79,7 @@ inline const N* node_navigator<N>::previous(const N *n) {
 
 template <class N>
 inline const N* node_navigator<N>::last_child(const N *n) {
+	assert(n != 0);
 	const N *e = n->down();
 	if(!e) return 0;
 	const N *last = e;
@@ -86,6 +89,7 @@ inline const N* node_navigator<N>::last_child(const N *n) {
 
 template <class N>
 inline void node_navigator<N>::get_children(const N *n, std::list<const N*>& l) {
+	assert(n != 0);
 	const N *e = n->down();
 	if(!e) return;
 	l.push_back(e);
@@ -94,6 +98,7 @@ inline void node_navigator<N>::get_children(const N *n, std::list<const N*>& l) 
 
 template <class N>
 inline N* node_navigator<N>::append_child(N *n, N* child) {
+	assert(n != 0);
 	assert(child != 0);
 
 	// assert that does not has an owner
@@ -115,6 +120,7 @@ inline N* node_navigator<N>::append_child(N *n, N* child) {
 
 template <class N>
 inline N* node_navigator<N>::detach(N *n) {
+	assert(n != 0);
 	N *parent = n->up();
 
 	// this is the root
@@ -151,6 +157,7 @@ inline N* node_navigator<N>::detach(N *n) {
 
 template <class N>
 inline void node_navigator<N>::delete_tree(N *n) {
+	assert(n != 0);
 	// if its not the root, remove it from the tree
 	if(n->up() != 0) detach(n);
 	assert(n->up() == 0);
@@ -169,6 +176,13 @@ inline void node_navigator<N>::delete_tree(N *n) {
 		}
 	}
 }
+template <class N>
+inline N* node_navigator<N>::get_root(N *n) {
+	assert(n != 0);
+	while(n->up()) n = n->up();
+	return n;
+}
+
 
 } // namespace lib
  

@@ -129,8 +129,10 @@ class node {
 	// this section should be extented to allow for XPath selectors
 
 	node *get_first_child(const char *name);
+	node* locate_node(const char *path);
 	void find_nodes_with_name(const xml_string& name, std::list<node*>& list);
-
+	node* get_root() { return node_navigator<node>::get_root(this); }
+	
 	///////////////////////////////
 	// iterators
 
@@ -316,6 +318,15 @@ inline
 void node::create_idmap(std::map<std::string, node*>& m) const {
 	attr_collector<node> visitor(m);
 	std::for_each(begin(), end(), visitor);
+}
+
+inline 
+node* node::locate_node(const char *path) {
+	string_record r(path, "/");
+	node *n = this;
+	for(string_record::iterator it = r.begin(); it != r.end() && n != 0;it++)
+		n = n->get_first_child(*it);
+	return n;
 }
 
 ///////////////////////
