@@ -399,12 +399,24 @@ void gui::dx::viewport::redraw() {
 void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
 	if(!m_primary_surface || !m_surface)
 		return;
-	RECT src_rc = {0, 0, m_width, m_height};
-	RECT dst_rc = {0, 0, m_width, m_height};
+	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	RECT dst_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	
+	// Convert dst to screen coordinates
+	to_screen_rc_ptr(dst_rc);
+	
+	// Verify:
+	if(IsRectEmpty(&src_rc) || IsRectEmpty(&dst_rc))
+		return;
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&src_rc, &src_rc, &vrc) || IsRectEmpty(&src_rc))
+		return;
+		
+	// Blit:
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
+	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
+		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -425,12 +437,19 @@ void gui::dx::viewport::clear() {
 // Clears the specified back buffer rectangle using the provided color 
 void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr) {
 	if(!m_surface) return;
+	
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
 	bltfx.dwFillColor = convert(clr); 
-	RECT dst_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
-	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	RECT dstRC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	
+	// Verify:
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
+		return;
+		
+	HRESULT hr = m_surface->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -458,9 +477,18 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	if(!m_surface || !src) return;
 	DWORD flags = DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
+	
+	// Set srcRC to surf rect
 	RECT srcRC;
 	set_rect(src, &srcRC);
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
+	
+	// Verify:
+	// Dest within viewport
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
+		return;
+	
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
@@ -471,10 +499,24 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
 	const lib::screen_rect<int>& dst_rc, bool keysrc) {
 	if(!m_surface || !src) return;
-	DWORD flags = DDBLT_WAIT;
-	if(keysrc) flags |= DDBLT_KEYSRC;
+	
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
+	
+	// Verify:
+	// 1. Src within surf
+	RECT surfRC;
+	set_rect(src, &surfRC);
+	if(!IntersectRect(&srcRC, &srcRC, &surfRC) || IsRectEmpty(&srcRC))
+		return;
+		
+	// 2. Dest within viewport
+	RECT vrc = {0, 0, m_width, m_height};
+	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
+		return;
+	
+	DWORD flags = DDBLT_WAIT;
+	if(keysrc) flags |= DDBLT_KEYSRC;
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
