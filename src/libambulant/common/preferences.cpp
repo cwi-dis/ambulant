@@ -62,7 +62,7 @@ using namespace common;
 preferences::preferences()
   :	m_welcome_seen(false),
 	m_log_file(""),
-	m_log_level(0),
+	m_log_level(lib::logger::LEVEL_SHOW),
 	m_parser_id("any"),
 	m_validation_scheme("auto"),
 	m_do_namespaces(false),
