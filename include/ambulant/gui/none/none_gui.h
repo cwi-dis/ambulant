@@ -94,9 +94,7 @@ class none_playable : public common::active_playable {
 #else
 		common::playable_notification::cookie_type cookie,
 #endif
-		const lib::node *node)
-	:	common::active_playable(context, cookie),
-		m_node(node) {};
+		const lib::node *node);
 	
 	void start(double where);
 	void redraw(const lib::screen_rect<int> &r, common::abstract_window *window);
@@ -111,7 +109,7 @@ class none_playable : public common::active_playable {
 class none_background_renderer : public common::background_renderer {
   public:
 	none_background_renderer(common::region_info *src)
-	:   common::background_renderer(src) {}
+	:   background_renderer(src) {}
 	~none_background_renderer() {}
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
 };

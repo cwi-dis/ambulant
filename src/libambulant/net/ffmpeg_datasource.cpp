@@ -189,12 +189,12 @@ detail::ffmpeg_parser_thread::run()
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		ffmpeg_parser_datasource *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
-			/*AM_DBG*/lib::logger::get_logger()->trace("ffmpeg_parser::run: Drop data for stream %d", pkt->stream_index);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: Drop data for stream %d", pkt->stream_index);
 		} else {
 			// Wait until there is room in the buffer
 			while (sink->buffer_full() && !exit_requested())
 				sleep(1);   // This is overdoing it
-			/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(0x%x, %d)", pkt->stream_index, pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(0x%x, %d)", pkt->stream_index, pkt->data, pkt->size);
 			sink->data_avail(pkt->pts, pkt->data, pkt->size);
 		}
 		av_free_packet(pkt);
