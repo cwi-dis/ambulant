@@ -324,20 +324,20 @@ void lib::nfa_expr::move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stac
 // Matches as much as possible from the input iterator
 // Positions the iterator at the end of the parsed input and returns the length parsed.
 // Returns -1 on failure to parse anything
-std::string::iterator::difference_type 
+std::ptrdiff_t 
 lib::nfa_expr::parse(std::string::const_iterator& it, const std::string::const_iterator& end_it) const {
 	// The data struct used by this algorithm
 	std::set<nfa_node*> nodes;
 	std::stack<nfa_node*> stack;
-	
+
 	// Create startup state nodes
 	nodes.insert(start);
 	if(start->is_epsilon_trans()) stack.push(start);
 	if(!stack.empty()) nfa_expr::closure(nodes, stack);
 	assert(stack.empty());
 	
-	std::string::iterator::difference_type parsed_length = 0;
-	std::string::iterator::difference_type delta = -1;
+	std::ptrdiff_t parsed_length = 0;
+	std::ptrdiff_t delta = -1;
 	if(accepts_state(nodes)) {
 		delta = parsed_length;
 	}
