@@ -158,7 +158,7 @@ inline std::string
 document::resolve_url(const node *n, const std::string& rurl) const {
 	// locate node context xml:base
 	std::string base = m_src_base;
-	const char *p = n->get_container_attribute("base");
+	// const char *p = n->get_container_attribute("base");
 	// ...
 	
 	// if none is found use source.

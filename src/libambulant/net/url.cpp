@@ -66,7 +66,7 @@ void net::url::set_from_host_uri(lib::reg_scanner& sc, const std::string& pat) {
 void net::url::set_from_localhost_file_uri(lib::reg_scanner& sc, const std::string& pat) {
 	m_protocol = sc.val_at(0);
 	m_host = "localhost";
-	m_port = -1;
+	m_port = 0;
 	set_parts(sc, pat);
 }
 

@@ -52,11 +52,11 @@ inline std::string trim(const std::string& s) {
 	if(i1==std::string::npos) return "";
 
 	// XXXX Need a signed type here...
-	size_t i2 = s.length()-1;
-	while(i2>=0 && isspace(s[i2])) i2--;
-	if(i2==-1) return "";
+	size_t i2 = s.length();
+	while(i2>0 && isspace(s[i2-1])) i2--;
+	if(i2==0) return "";
 
-	return std::string(s.c_str()+i1,s.c_str()+i2+1);
+	return std::string(s.c_str()+i1,s.c_str()+i2);
 }
 
 inline std::string trim(const char* psz) {

@@ -44,12 +44,12 @@ class url {
 	// The path part of this url.
     string m_path;
     
-	// The ref or fragment.
-    string m_ref;
-    
 	// The query part of this url.
     string m_query;
 
+	// The ref or fragment.
+    string m_ref;
+    
   public:
   
 	url(const string& spec); 
@@ -118,7 +118,7 @@ class url {
 
 inline 
 url::url(const string& spec) 
-:	m_port(-1) {
+:	m_port(0) {
 	set_from_spec(spec);
 }
 	
@@ -127,7 +127,7 @@ url::url(const string& protocol, const string& host,
 	const string& path) 
 :	m_protocol(protocol),
 	m_host(host),
-	m_port(-1),
+	m_port(0),
 	m_path(path) {
 }
 
