@@ -1,30 +1,30 @@
 /*
- *
+ * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
- *
- * Copyright (C) 2003 Stiching CWI,
+ * 
+ * Copyright (C) 2003 Stiching CWI, 
  * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
- *
+ * 
  * Ambulant Player is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- e
+ * 
  * Ambulant Player is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
+ * 
  * In addition, as a special exception, if you link Ambulant Player with
  * other files to produce an executable, this library does not by itself
  * cause the resulting executable to be covered by the GNU General Public
  * License. This exception does not however invalidate any other reason why
  * the executable file might be covered by the GNU General Public License.
- *
+ * 
  * As a special exception, the copyright holders of Ambulant Player give
  * you permission to link Ambulant Player with independent modules that
  * communicate with Ambulant Player solely through the region and renderer
@@ -36,32 +36,118 @@
  * being distributed under the terms of the GNU General Public License plus
  * this exception.  An independent module is a module which is not derived
  * from or based on Ambulant Player.
- *
+ * 
  * Note that people who make modified versions of Ambulant Player are not
  * obligated to grant this special exception for their modified versions;
  * it is their choice whether to do so.  The GNU General Public License
  * gives permission to release a modified version without this exception;
  * this exception also makes it possible to release a modified version
- * which carries forward this exception.
- *
+ * which carries forward this exception. 
+ * 
  */
+
+#include "ambulant/common/renderer.h"
+#include "ambulant/lib/logger.h"
+#include "ambulant/lib/unix/unix_mtsync.h"
+#include "ambulant/lib/mtsync.h"
+
+#include <artsc.h>
+
 
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-#include "ambulant/gui/arts/arts_audio.h"
-
 using namespace ambulant;
-using namespace gui::arts;
 
-typedef lib::no_arg_callback<gui::arts::arts_active_audio_renderer> readdone_callback;
-net::audio_format gui::arts::arts_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
 
-bool arts_active_audio_renderer::m_arts_init = false;
+
+
+class arts_plugin_factory : public common::playable_factory {
+  public:
+
+	arts_plugin_factory(net::datasource_factory *df)
+	:   m_datasource_factory(df) {}
+	~arts_plugin_factory() {};
+		
+	common::playable *new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp);
+  private:
+	net::datasource_factory *m_datasource_factory;
+	
+};
+
+class arts_plugin : public common::playable_imp 
+{
+ public:
+	arts_plugin(
+      common::playable_notification *context,
+      common::playable_notification::cookie_type cookie,
+      const lib::node *node,
+      lib::event_processor *const evp,
+      net::datasource_factory *df);
+
+    ~arts_plugin();
+
+    int init();
+    void start(double where);
+    void stop() {};
+    void pause();
+    void resume();
+    void speed_changed() {};
+    void data_avail();
+    void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
+		
+  private:
+    int arts_setup(int rate, int bits, int channels, char *name);
+    int arts_play(char *data, int size);
+    bool restart_audio_input();
+    int m_rate;
+    int m_channels;
+    int m_bits;
+  	arts_stream_t m_stream;
+  	net::audio_datasource *m_audio_src;
+  	bool m_is_paused;
+    char *m_name;
+	static bool m_arts_init;
+    lib::event *m_playdone;
+  	static net::audio_format m_ambulant_format;
+  	lib::critical_section m_lock;
+
+};
+typedef lib::no_arg_callback<arts_plugin> readdone_callback;
+net::audio_format arts_plugin::m_ambulant_format = net::audio_format(44100, 2, 16);
+
+bool arts_plugin::m_arts_init = false;
+
+
+common::playable* 
+arts_plugin_factory::new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp)
+{
+	common::playable *rv;
+	
+	lib::xml_string tag = node->get_qname().second;
+    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	if ( tag == "audio") /*or any other tag ofcourse */ {
+		rv = new arts_plugin(context, cookie, node, evp, m_datasource_factory);
+		//rv = NULL;
+		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory : plugin does not support \"%s\"", tag.c_str());
+        return NULL;
+	}
+	return rv;
+}
+
  
-arts_active_audio_renderer::arts_active_audio_renderer(
+arts_plugin::arts_plugin(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
@@ -91,7 +177,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 }
 
 int
-arts_active_audio_renderer::init()
+arts_plugin::init()
 {
     int err;
     if (!m_arts_init) {
@@ -105,7 +191,7 @@ arts_active_audio_renderer::init()
 }
 
 int
-arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *name)
+arts_plugin::arts_setup(int rate, int bits, int channels, char *name)
 {
     int err;
     if (!m_stream) {
@@ -123,14 +209,16 @@ arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *n
     }
 }
 
-arts_active_audio_renderer::~arts_active_audio_renderer()
+arts_plugin::~arts_plugin()
 {
     arts_close_stream(m_stream);
 }
 
 
+
+
 bool
-arts_active_audio_renderer::restart_audio_input()
+arts_plugin::restart_audio_input()
 {
  	// private method - no need to lock.
 	if (!m_audio_src || m_audio_src->end_of_file()) {
@@ -139,14 +227,14 @@ arts_active_audio_renderer::restart_audio_input()
 	}
 	if (m_audio_src->size() == 0) {
 		// Start reading 
-		lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
+		lib::event *e = new readdone_callback(this, &arts_plugin::data_avail);
 		m_audio_src->start(m_event_processor, e);
 	}
 	return true;
 }
 
 int
-arts_active_audio_renderer::arts_play(char *data, int size)
+arts_plugin::arts_play(char *data, int size)
 {
     int err;
     if (m_stream) {
@@ -162,9 +250,9 @@ arts_active_audio_renderer::arts_play(char *data, int size)
 }
 
 void
-arts_active_audio_renderer::data_avail()
+arts_plugin::data_avail()
 {
-	m_lock.enter();
+	//m_lock.enter();
     char *data;
     int size;
     int played;
@@ -182,14 +270,14 @@ arts_active_audio_renderer::data_avail()
 	
 	restart_audio_input();
     //m_context->stopped(m_cookie, 0);
-	m_lock.leave();
+	//m_lock.leave();
 
 }
 
 
 
 void
-arts_active_audio_renderer::start(double where)
+arts_plugin::start(double where)
 {
 	m_lock.enter();
     if (!m_node) abort();
@@ -200,7 +288,7 @@ arts_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->debug("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
+		lib::event *e = new readdone_callback(this, &arts_plugin::data_avail);
 		m_audio_src->start(m_event_processor, e);
 
 	} else {
@@ -214,7 +302,7 @@ arts_active_audio_renderer::start(double where)
 }
 
 void
-gui::arts::arts_active_audio_renderer::pause()
+arts_plugin::pause()
 {
 	m_lock.enter();
 	m_is_paused = true;
@@ -222,9 +310,20 @@ gui::arts::arts_active_audio_renderer::pause()
 }
 
 void
-gui::arts::arts_active_audio_renderer::resume()
+arts_plugin::resume()
 {
 	m_lock.enter();
 	m_is_paused = false;
 	m_lock.leave();
+}
+
+
+
+
+
+
+extern "C" void initialize(ambulant::common::global_playable_factory* rf, ambulant::net::datasource_factory* df)
+{	
+	AM_DBG lib::logger::get_logger()->debug("arts_plugin::initialize registering factory function");
+	rf->add_factory(new arts_plugin_factory(df));
 }

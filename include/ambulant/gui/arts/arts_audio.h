@@ -59,6 +59,8 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/lib/mtsync.h"
+
 
 
 namespace ambulant {
@@ -81,8 +83,8 @@ class arts_active_audio_renderer : public common::playable_imp {
     int init();
     void start(double where);
     void stop() {};
-    void pause() {};
-    void resume() {};
+    void pause() ;
+    void resume() ;
     void speed_changed() {};
     void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
@@ -96,9 +98,11 @@ class arts_active_audio_renderer : public common::playable_imp {
     int m_bits;
   	arts_stream_t m_stream;
   	net::audio_datasource *m_audio_src;
+  	bool m_is_paused;
     char *m_name;
 	static bool m_arts_init;
     lib::event *m_playdone;
+  	lib::critical_section m_lock;
   	static net::audio_format m_ambulant_format;
 
 };
