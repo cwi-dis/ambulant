@@ -55,9 +55,16 @@
 
 #include <iostream>
 #include "mainloop.h"
+#include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#define WITH_MMS_PLAYER
+#ifdef WITH_MMS_PLAYER
+#include "ambulant/common/mms_player.h"
+#else
+#include "ambulant/common/smil_player.h"
+#endif
 
 void
 usage()
@@ -70,13 +77,8 @@ usage()
 mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 :   m_running(false),
 	m_speed(1.0),
-#ifdef WITH_MMS_PLAYER
-	m_passive_player(NULL),
-	m_active_player(NULL),
-#else
 	m_doc(NULL),
-	m_smil_player(NULL),
-#endif
+	m_player(NULL),
 	m_rf(NULL),
 	m_wf(wf)
 {
@@ -84,36 +86,25 @@ mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 	
 	m_rf = new lib::global_renderer_factory();
 	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
-#ifdef WITH_MMS_PLAYER
-	m_passive_player = new lib::passive_player(filename);
-	if (!p) return;
-
-#else
 	m_doc = lib::document::create_from_file(filename);
 	if (!m_doc) {
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
 		return;
 	}
-	m_smil_player = new lib::smil_player(m_doc, m_wf, m_rf);
+#ifdef WITH_MMS_PLAYER
+	m_player = new lib::mms_player(m_doc, m_wf, m_rf);
+#else
+	m_player = new lib::smil_player(m_doc, m_wf, m_rf);
 #endif
 }
 
 mainloop::~mainloop()
 {
-#ifdef WITH_MMS_PLAYER
-	if (m_active_player) delete m_active_player;
-	m_active_player = NULL;
-	if (m_evp) delete m_evp;
-	m_evp = NULL;
-	if (m_timer) delete m_timer;
-	m_timer = NULL;
-#else
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
-	if (m_smil_player) delete m_smil_player;
-	m_smil_player = NULL;
-#endif
+	if (m_player) delete m_player;
+	m_player = NULL;
 	if (m_rf) delete m_rf;
 	m_rf = NULL;
 	// m_wf Window factory is owned by caller
@@ -122,46 +113,18 @@ mainloop::~mainloop()
 void
 mainloop::run()
 {
-#ifdef WITH_MMS_PLAYER
-	m_active_player = m_passive_player->activate(wf, rf);
-	if (!m_active_player) return;
-	m_timer = new lib::timer(lib::realtime_timer_factory());
-	m_evp = lib::event_processor_factory(our_timer);
-
-	typedef lib::no_arg_callback<mainloop> callback;
-	lib::event *ev = new callback(this, &mainloop::player_done_callback);
-	m_running = true;
-	m_active_player->start(processor, ev);
-
-	while (m_running)
-		sleep(1);
-//	delete m_active_player;
-	delete m_active_player;
-	m_active_player = NULL;
-	delete m_evp;
-	m_evp = NULL;
-	delete m_timer;
-	m_timer = NULL;
-#else
-	m_smil_player->start();
-	while (!m_smil_player->is_done())
-		sleep(1);
-#endif
+	m_player->start();
+	/*AM_DBG*/ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }
 
 void
 mainloop::set_speed(double speed)
 {
 	m_speed = speed;
-#ifdef WITH_MMS_PLAYER
-	if (m_active_player)
-		m_active_player->set_speed(speed);
-#else
-	if (m_smil_player) {
+	if (m_player) {
 		if (speed == 0.0)
-			m_smil_player->pause();
+			m_player->pause();
 		else
-			m_smil_player->resume();
+			m_player->resume();
 	}
-#endif
 }

@@ -116,8 +116,8 @@ lib::passive_region::show(active_region *cur)
 	if (m_cur_active_region) {
 		lib::logger::get_logger()->error("passive_region(0x%x).show(0x%x) but m_cur_active_region=0x%x!", (void*)this, (void*)cur, (void*)m_cur_active_region);
 	}
-	if (m_cur_active_region)
-		delete m_cur_active_region;
+//	if (m_cur_active_region)
+//		delete m_cur_active_region;
 	m_cur_active_region = cur;
 	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)m_cur_active_region);
 }

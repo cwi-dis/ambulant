@@ -104,7 +104,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 		// XXXX Fill with background color
 		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: clearing to 0x%x", (long)bgcolor);
+		/*AM_DBG*/ lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: clearing to 0x%x", (long)bgcolor);
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)

@@ -49,11 +49,8 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
-#ifdef WITH_MMS_PLAYER
-#include "ambulant/common/player.h"
-#else
-#include "ambulant/common/smil_player.h"
-#endif
+#include "ambulant/lib/player.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 
 class mainloop : public ambulant::lib::ref_counted_obj {
@@ -74,15 +71,8 @@ class mainloop : public ambulant::lib::ref_counted_obj {
   private:
   	bool m_running;
 	double m_speed;
-#ifdef WITH_MMS_PLAYER
-	ambulant::lib::passive_player *m_passive_player;
-	ambulant::lib::active_player *m_active_player;
-	lib::timer *m_timer;
-	lib::event_processor *m_evp;
-#else
 	ambulant::lib::document *m_doc;
-	ambulant::lib::smil_player *m_smil_player;
-#endif
+	ambulant::lib::abstract_player *m_player;
 	ambulant::lib::global_renderer_factory *m_rf;
 	ambulant::lib::window_factory *m_wf;
 };

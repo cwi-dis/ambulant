@@ -86,7 +86,7 @@ libambulant_la_SOURCES = \
 	net/datasource.cpp \
 	net/url.cpp \
 	\
-	common/player.cpp \
+	common/mms_player.cpp \
 	common/region.cpp \
 	common/region_node.cpp \
 	common/renderer.cpp \

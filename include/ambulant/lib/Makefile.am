@@ -21,6 +21,7 @@ library_include_HEADERS= \
 	node_navigator.h \
 	node.h \
 	nscontext.h \
+	player.h \
 	refcount.h \
 	sax_handler.h \
 	sax_types.h \
