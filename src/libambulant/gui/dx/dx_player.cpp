@@ -92,6 +92,11 @@
 #include "ambulant/common/region.h"
 #include "ambulant/smil2/smil_layout.h"
 
+// Xerces parser
+#ifdef WITH_XERCES_BUILTIN
+#include "ambulant/lib/xerces_parser.h"
+#endif
+
 //#define AM_DBG
 
 #ifndef AM_DBG
@@ -116,6 +121,11 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u)
 	m_factory.df = NULL;
 	m_factory.wf = this->get_window_factory(); 
 	
+	// Add the xerces parser, if available
+	m_factory.pf = lib::global_parser_factory::get_parser_factory();	
+#ifdef WITH_XERCES_BUILTIN
+	m_factory.pf->add_factory(new lib::xerces_factory());
+#endif
 	// Load the plugins
 	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
 	pf->add_plugins(&m_factory);
