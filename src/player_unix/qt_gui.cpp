@@ -174,14 +174,12 @@ bool qt_gui::openSMILfile(QString smilfilename, int mode) {
 		 smilfilename = pathname;
 	} else   smilfilename = strdup(smilfilename);
 	        
-//KB	if (m_smilfilename != NULL)
-//	         delete m_smilfilename;
 	m_smilfilename = smilfilename;
-//	if (m_mainloop != NULL) {
-//	  delete m_mainloop;
-//	  m_mainloop = NULL;
-//	  m_playing = false;
-//	}
+	if (m_mainloop != NULL)
+		delete m_mainloop;
+	m_mainloop = new qt_mainloop(this);
+	m_playing = false;
+	m_pausing = false;
 	return true;
 }
 
@@ -222,10 +220,10 @@ void qt_gui::player_done() {
 
 void qt_gui::slot_play() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
-	if (m_smilfilename == NULL) {
+	if (m_smilfilename == NULL || m_mainloop == NULL) {
 		QMessageBox::information(
 			this, m_programfilename,
-			"Please first select File->Open");
+			"No file open: Please first select File->Open");
 		return;
 	}
 	if (!m_playing) {
@@ -234,13 +232,14 @@ void qt_gui::slot_play() {
 				 this, SLOT(slot_player_done()));
 		m_playmenu->setItemEnabled(m_play_id, false);
 		m_playmenu->setItemEnabled(m_pause_id, true);
+#if 1
+		m_mainloop->play();
+#else
 		pthread_t playthread;
-		if (m_mainloop != NULL)
-			delete m_mainloop;
-		m_mainloop = new qt_mainloop(this);
 		int rv = pthread_create(&playthread, NULL,
 					&qt_mainloop::run,
 					m_mainloop);
+#endif
 	}
 	if (m_pausing) {
 		m_pausing = false;
@@ -270,7 +269,8 @@ void qt_gui::slot_stop() {
 
 void qt_gui::slot_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
-	delete m_mainloop;
+	if (m_mainloop)	m_mainloop->stop();
+	m_mainloop->release();
 	m_mainloop = NULL;
 	m_busy = false;
 	qApp->quit();

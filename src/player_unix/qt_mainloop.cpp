@@ -140,6 +140,7 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	}
 
 }
+#if 0
 void*
 qt_mainloop::run(void* ml)
 {
@@ -169,13 +170,16 @@ qt_mainloop::run(void* ml)
 
 	return (void*) 1;
 }
+#endif
 
 qt_mainloop::~qt_mainloop()
 {
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
-	if (m_player) delete m_player;
+	if (m_player) {
+		delete m_player;
+	}
 	m_player = NULL;
 	if (m_rf) delete m_rf;
 	m_rf = NULL;
