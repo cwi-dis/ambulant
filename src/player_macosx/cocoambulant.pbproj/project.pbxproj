@@ -115,7 +115,7 @@
 			expectedFileType = sourcecode.cpp.objcpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = AmbulantView.mm;
+			path = MyAmbulantView.mm;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -123,7 +123,7 @@
 			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = AmbulantView.h;
+			path = MyAmbulantView.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -235,8 +235,6 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
-			buildSettings = {
-			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,

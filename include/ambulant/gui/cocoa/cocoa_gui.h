@@ -15,6 +15,9 @@
 
 #include "ambulant/lib/region.h"
 #include "ambulant/lib/renderer.h"
+#ifdef __OBJC__
+#include <Cocoa/Cocoa.h>
+#endif
 
 namespace ambulant {
 
@@ -24,20 +27,23 @@ namespace cocoa {
 
 class cocoa_passive_window : public lib::passive_window {
   public:
-  	cocoa_passive_window(const std::string &name, lib::size bounds, void *os_window)
+  	cocoa_passive_window(const std::string &name, lib::size bounds, void *view)
   	:	lib::passive_window(name, bounds),
-  		m_os_window(os_window) {}
+  		m_view(view) {}
   		
 	void need_redraw(const lib::screen_rect<int> &r);
   private:
-    void *m_os_window;
+    void *m_view;
 };
 
 class cocoa_window_factory : lib::window_factory {
   public:
-  	cocoa_window_factory() {}
+  	cocoa_window_factory(void *view)
+  	:	m_view(view) {}
   	
 	lib::passive_window *new_window(const std::string &name, lib::size bounds);
+  private:
+    void *m_view;
 };
 
 class cocoa_renderer_factory : lib::renderer_factory {
@@ -57,4 +63,14 @@ class cocoa_renderer_factory : lib::renderer_factory {
  
 } // namespace ambulant
 
+#ifdef __OBJC__
+@interface AmbulantView : NSView
+{
+    ambulant::lib::passive_window *ambulant_window;
+}
+
+- (void)setAmbulantWindow: (ambulant::lib::passive_window *)window;
+@end
+
+#endif // __OBJC__
 #endif // AMBULANT_GUI_COCOA_COCOA_GUI_H

@@ -8,6 +8,12 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = MyAmbulantView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {document = id; }; 
+            SUPERCLASS = AmbulantView; 
+        }, 
+        {
             ACTIONS = {pause = id; play = id; stop = id; }; 
             CLASS = MyDocument; 
             LANGUAGE = ObjC; 
