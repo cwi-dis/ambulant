@@ -91,6 +91,7 @@ class cocoa_video_renderer :
 	void user_event(const point &where, int what = 0) { user_event_callback(what); }
 	void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
+	void poll_playing();
 	std::string m_url;
 	surface *m_dest;
 	NSMovie *m_movie;

@@ -61,6 +61,8 @@
 #define AM_DBG if(0)
 #endif
 
+#define POLL_INTERVAL 200  /* milliseconds */
+
 namespace ambulant {
 
 using namespace lib;
@@ -68,6 +70,8 @@ using namespace lib;
 namespace gui {
 
 namespace cocoa {
+
+typedef lib::no_arg_callback<cocoa_video_renderer> poll_callback;
 
 cocoa_video_renderer::cocoa_video_renderer(
 	playable_notification *context,
@@ -118,7 +122,7 @@ cocoa_video_renderer::get_dur()
 {
 	if (!m_movie)
 		return std::pair<bool, double>(false, 0);
-	Movie mov = [m_movie QTMovie];
+	Movie mov = (Movie)[m_movie QTMovie];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer: QTMovie is 0x%x", (void *)mov);
 	return std::pair<bool, double>(true, 7);
 }
@@ -151,6 +155,28 @@ cocoa_video_renderer::stop()
 	}
 	[pool release];
 	m_lock.leave();
+	stopped_callback();
+}
+
+void
+cocoa_video_renderer::poll_playing()
+{
+	m_lock.enter();
+	if (m_movie == NULL || m_movie_view == NULL) {
+		// Movie is not running. No need to continue polling right now
+		m_lock.leave();
+		return;
+	}
+	bool is_stopped = ![m_movie_view isPlaying];
+	if (!is_stopped) {
+		// schedule another call in a while
+		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
+		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
+	}
+	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
+	m_lock.leave();
+	if (is_stopped)
+		stopped_callback();
 }
 
 void
@@ -175,6 +201,9 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, abstract_window *win
 		// Set the movie playing
 		[m_movie_view setMovie: m_movie];
 		[m_movie_view start: NULL];
+		// And start the poll task
+		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
+		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
 	}
 
 	const region_info *info = m_dest->get_info();
