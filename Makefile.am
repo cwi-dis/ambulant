@@ -1,5 +1,5 @@
-SUBDIRS = m4 po libltdl src include third_party_packages
-EXTRA_DIST = config.rpath  Documentation Extras 
+SUBDIRS = m4 po libltdl src include third_party_packages Documentation
+EXTRA_DIST = config.rpath Extras 
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:

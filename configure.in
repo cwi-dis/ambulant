@@ -46,7 +46,8 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
 	include/ambulant/gui/qsound/Makefile
-	third_party_packages/Makefile])
+	third_party_packages/Makefile
+	Documentation/Makefile])
 	
 #
 # Do we want plugin support?

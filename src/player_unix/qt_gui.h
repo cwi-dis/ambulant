@@ -161,6 +161,7 @@ class qt_gui : public QWidget {
 	void slot_about();
 	void slot_homepage();
 	void slot_welcome();
+	void slot_help();
 	void slot_log(qt_logger*, QString);
   	void slot_logger_window();
 	void slot_open();

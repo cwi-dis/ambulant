@@ -80,26 +80,40 @@ const QString about_text =
 	"License: modified GPL.";
 
 
-// Find welcome document.
-// XXX This code is incorrect, really.
-char *welcome_locations[] = {
+// Places where to look for the Welcome document
+const char *welcome_locations[] = {
 	"Welcome/Welcome.smil",
 	"../Welcome/Welcome.smil",
 	"Extras/Welcome/Welcome.smil",
 	"../Extras/Welcome/Welcome.smil",
-	"/usr/local/lib/ambulant/Welcome/Welcome.smil",
-	"/usr/share/doc/ambulant-1.0/Extras/Welcome/Welcome.smil",
+#ifdef AMBULANT_DATADIR
+	AMBULANT_DATADIR "/Welcome/Welcome.smil"
+#else
+	"/usr/local/share/ambulant/Welcome/Welcome.smil",
+#endif
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
 	"/home/zaurus/Documents/Welcome/Welcome.smil",
 #endif/*QT_NO_FILEDIALOG*/
 	NULL
 };
 
-static char * 
-find_welcome_doc()
+// Places where to look for the helpfile
+const char *helpfile_locations[] = {
+	"Documentation/user/index.html",
+	"../Documentation/user/index.html",
+#ifdef AMBULANT_DATADIR
+	AMBULANT_DATADIR "/AmbulantPlayerHelp/index.html",
+#else
+	"/usr/local/share/ambulant/AmbulantPlayerHelp/index.html",
+#endif
+	NULL
+};
+
+static const char * 
+find_datafile(const char **locations)
 {
-	char **p;
-	for(p = welcome_locations; *p; p++) {
+	const char **p;
+	for(p = locations; *p; p++) {
 		if (access(*p, 0) >= 0) return *p;
 	}
 	return NULL;
@@ -194,6 +208,8 @@ qt_gui::qt_gui(const char* title,
 		assert(helpmenu);
 		helpmenu->insertItem(gettext("&About AmbulantPlayer"), this,
 				     SLOT(slot_about()));
+		helpmenu->insertItem(gettext("AmbulantPlayer &Help"), this,
+				     SLOT(slot_help()));
 		helpmenu->insertSeparator();
 		helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this,
 				     SLOT(slot_homepage()));
@@ -241,7 +257,7 @@ qt_gui::slot_homepage() {
 
 void 
 qt_gui::slot_welcome() {
-	char *welcome_doc = find_welcome_doc();
+	const char *welcome_doc = find_datafile(welcome_locations);
 	
 	if (welcome_doc) {
 		if( openSMILfile(welcome_doc, IO_ReadOnly)) {
@@ -250,6 +266,18 @@ qt_gui::slot_welcome() {
 	} else {
 		QMessageBox::information(this, m_programfilename, 
 			gettext("Cannot find Welcome.smil document"));
+	}
+}
+
+void 
+qt_gui::slot_help() {
+	const char *help_doc = find_datafile(helpfile_locations);
+	
+	if (help_doc) {
+		open_web_browser(help_doc);
+	} else {
+		QMessageBox::information(this, m_programfilename, 
+			gettext("Cannot find Ambulant Player Help"));
 	}
 }
 
@@ -650,7 +678,7 @@ main (int argc, char*argv[]) {
 	} else {
 		preferences* prefs = preferences::get_preferences();
 		if ( ! prefs->m_welcome_seen) {
-			char *welcome_doc = find_welcome_doc();
+			const char *welcome_doc = find_datafile(welcome_locations);
 			if (welcome_doc
 			&& mywidget->openSMILfile(welcome_doc,
 						  IO_ReadOnly)) {

@@ -92,15 +92,17 @@ AM_LDFLAGS=$(extra_arts_ldflags)				\
 	   $(extra_ffmpeg_ldflags)				\
 	   -export-dynamic		 
  
-AM_CPPFLAGS = $(extra_arts_DEFINES)				\
-	      $(extra_sdl_DEFINES)				\
-	      $(extra_ffmpeg_DEFINES)				\
-	      $(extra_nls_DEFINES)				\
-	      $(extra_xerces_DEFINES)			\
-	   -I$(top_builddir)/include				\
-	   -I$(top_srcdir)/include				\
-	   -I$(top_builddir)/include/ambulant/gui/qt		\
-	   -I$(top_srcdir)/include/ambulant/gui/qt		\
+AM_CPPFLAGS = \
+		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
+		$(extra_arts_DEFINES)				\
+		$(extra_sdl_DEFINES)				\
+		$(extra_ffmpeg_DEFINES)				\
+		$(extra_nls_DEFINES)				\
+		$(extra_xerces_DEFINES)			\
+		-I$(top_builddir)/include				\
+		-I$(top_srcdir)/include				\
+		-I$(top_builddir)/include/ambulant/gui/qt		\
+		-I$(top_srcdir)/include/ambulant/gui/qt		\
 	    $(XERCES_INCLUDES) 	                                \
 	    $(qt_includes)
 	  
