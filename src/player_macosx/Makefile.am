@@ -94,6 +94,9 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/playactive.png $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/stop.png $(APPNAME).app/Contents/Resources
 
+    # Install plugins
+	if test -d ../plugins/.libs; then cp -R ../plugins/.libs $(APPNAME).app/Contents/PlugIns; fi
+    
     # Install localizations
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj

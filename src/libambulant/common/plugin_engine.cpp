@@ -62,7 +62,15 @@
 #ifdef WITH_LTDL_PLUGINS
 #include<dirent.h>
 #include <ltdl.h>
-#endif
+
+#ifdef AMBULANT_PLATFORM_MACOS
+#include <CoreFoundation/CoreFoundation.h>
+#define LIBRARY_PATH_ENVVAR "DYLD_LIBRARY_PATH"
+#else
+#define LIBRARY_PATH_ENVVAR "LD_LIBRARY_PATH"
+#endif // AMBULANT_PLATFORM_MACOS
+
+#endif // WITH_LTDL_PLUGINS
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -70,6 +78,7 @@
 #endif
 
 #define PLUGIN_PREFIX "libamplugin_"
+
 
 using namespace ambulant;
 using namespace common;
@@ -115,17 +124,33 @@ bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
 void
 plugin_engine::collect_plugin_directories()
 {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
-	setenv("LD_LIBRARY_PATH",".",1);
+	// First dir to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
-		if(plugin_dir == "") {
-    		m_plugindirs.push_back("/usr/local/lib/ambulant");
-		} else {
-			m_plugindirs.push_back(plugin_dir.c_str());
-#endif
-			m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
-		
+	if(plugin_dir != "")
+		m_plugindirs.push_back(plugin_dir.c_str());
+	
+	// XXXX Need to add per-user plugin dir!
+	
+#ifdef AMBULANT_PLATFORM_MACOS
+	// On MacOSX add the bundle's plugin dir
+	CFBundleRef main_bundle = CFBundleGetMainBundle();
+	if (main_bundle) {
+		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(main_bundle);
+		char plugin_pathname[1024];
+		if (plugin_url &&
+				CFURLGetFileSystemRepresentation(plugin_url, true, plugin_pathname, sizeof(plugin_pathname))) {
+			m_plugindirs.push_back(plugin_pathname);
+		}
+		if (plugin_url) CFRelease(plugin_url);
 	}
+#elif defined(AMBULANT_PLATFORM_UNIX)
+	// On other unix platforms add the pkglibdir
+	// XXXX Need to parameterize this!
+	m_plugindirs.push_back("/usr/local/lib/ambulant");
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+	// XXXX Need to add application directory
+#endif
 }
 
 #ifdef WITH_LTDL_PLUGINS
@@ -147,6 +172,7 @@ plugin_engine::load_plugins(std::string dirname)
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
 	char filename[1024];
 	dirent **namelist;
+	bool ldpath_added = false;
 	
     int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
     if (nr_of_files < 0) {
@@ -168,6 +194,12 @@ plugin_engine::load_plugins(std::string dirname)
                 // Construct the full pathname
                 strncpy(filename, dirname.c_str(), sizeof(filename));
                 strncat(filename, pluginname, sizeof(filename));
+				
+				// Add the plugin dir to the search path
+				if (!ldpath_added) {
+					setenv(LIBRARY_PATH_ENVVAR, dirname.c_str(), 1);
+					ldpath_added = true;
+				}
 
                 // Load the plugin
                 lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
@@ -191,6 +223,8 @@ plugin_engine::load_plugins(std::string dirname)
         free(namelist);
     }
 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+	if (ldpath_added)
+		unsetenv(LIBRARY_PATH_ENVVAR);
 }
 
 #elif WITH_WINDOWS_PLUGINS
