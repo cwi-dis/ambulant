@@ -1,4 +1,9 @@
 #include "ambulant/net/datasource.h"
+#include <unistd.h>
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 
 // ***********************************  C++  CODE  ***********************************
@@ -100,23 +105,23 @@ int net::datasource::databuffer::used()
 {
 	return(m_used);
 }
-void net::datasource::databuffer::show(bool verbose)
+void net::datasource::databuffer::dump(std::ostream& os, bool verbose)
 {
 int i;
 
-std::cout << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
-std::cout << "BYTES USED : " << m_used << " bytes" << std::endl;
+os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
+os << "BYTES USED : " << m_used << " bytes" << std::endl;
 if ((verbose))
 	{
 	if (m_buffer) 
 		{
 		for(i=0;i<m_used;i++)
 			{
-	   		std::cout << m_buffer[i];
+	   		os << m_buffer[i];
 	   		}
 	   	}
 	} 
- std::cout << std::endl;
+ os << std::endl;
 }
 
 void net::datasource::databuffer::put_data(char *data, int size)
@@ -229,7 +234,7 @@ net::datasource::active_datasource::active_datasource(passive_datasource *const 
 			std::cout << " Memory allocation error in active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file) " << std::endl;
 		}
 		m_source->add_ref();
-		buffer->show(false);
+		AM_DBG buffer->dump(std::cout, false);
 	}
 }
 
@@ -275,7 +280,7 @@ void net::datasource::active_datasource::filesize()
 			
 			do
 			{
-				result=std::read(m_stream,&ch,1);
+				result=::read(m_stream,&ch,1);
 				if (result >0 )buffer->put_data(&ch,1); 
 			} while(result > 0);
 		}
@@ -289,7 +294,7 @@ void net::datasource::active_datasource::filesize()
 void net::datasource::active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file();
- 	buffer->show(false);
+ 	AM_DBG buffer->dump(std::cout, false);
 	if (evp && readdone) {
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
 		evp->add_event(readdone, 0, ambulant::lib::unix::event_processor::low);

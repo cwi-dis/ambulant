@@ -61,7 +61,7 @@ class databuffer
 	void resize(int newsize);
 	
 	// show information about the buffer, if verbose is true the buffer is dumped to cout;
-	void dump(ofstream *out, bool verbose);		
+	void dump(std::ostream& os, bool verbose);		
 	
 	//retrieve data from buffer,  still thinking about arguments.							
 	void get_data(char *data, int size); 				
