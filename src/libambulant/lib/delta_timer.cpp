@@ -83,7 +83,14 @@ void lib::delta_timer::execute() {
 	m_last_run = now;
 	fire_delta_events(delta);
 }
-	
+
+void lib::delta_timer::clear() {
+	std::list<timeout_event>::iterator it;
+	for(it = m_events.begin(); it != m_events.end(); it++)
+		delete (*it).first;
+	m_events.clear();
+}
+
 // called periodically
 // returns the events that are ready to fire	
 void lib::delta_timer::execute(std::queue<event*>& queue) {

@@ -92,6 +92,9 @@ class delta_timer {
 	// Insert a timeout event
 	virtual void insert(event *pe, time_type t);
 
+	// Clear all events
+	void clear();
+	
 	// debug output
 	void write_trace();
 	
