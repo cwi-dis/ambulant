@@ -98,8 +98,9 @@ qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
 		paint.setPen(Qt::blue);
 		paint.eraseRect(L,T,W,H);
 // QtE		paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
-		paint.drawText(L,T,W,H, Qt::AlignLeft|Qt::AlignTop,
-			       m_text_storage);
+		paint.drawText(L,T,W,H,
+			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
+			m_text_storage);
 		paint.flush();
 		paint.end();
 	}
