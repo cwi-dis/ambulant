@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libambulant.a
+lib_LIBRARIES = libambulant.a
 expat_dir = $(top_builddir)/third_party_packages/expat-unix
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include
 
