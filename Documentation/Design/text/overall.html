@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-11-june-03">
-<h1><a name="jack-jansen-11-june-03">Jack Jansen, 11-June-03</a></h1>
+<div class="section" id="jack-jansen-16-june-03">
+<h1><a name="jack-jansen-16-june-03">Jack Jansen, 16-June-03</a></h1>
 <p>Here are some general (unstructured) thoughts on the Ambulant design.</p>
 </div>
 <div class="section" id="design-process">
@@ -32,6 +32,24 @@ the initial implementation by re-using the existing GRiNS scheduler.</p>
 <p>Boost.python was considered as a way to achieve C++/Python interoperability, but
 it turns out it is too heavyweight. SWIG is a possible alternative,
 or (for Python) a SWIG/Bgen hybrid.</p>
+</div>
+<div class="section" id="source-code-conventions">
+<h1><a name="source-code-conventions">Source code conventions</a></h1>
+<p>Here's a somewhat random list of source code conventions that we have decided
+to use:</p>
+<ul class="simple">
+<li>Indent 4 spaces, with the following exceptions:<ul>
+<li>namespace doesn't indent at all</li>
+<li>public:, private: and such indent two spaces</li>
+</ul>
+</li>
+<li>no camelCase, CamelCase or Capitalization in class or variable names</li>
+<li>Underscores to delimit words</li>
+<li>attribute names start with &quot;m_&quot;</li>
+<li>we have a toplevel namespace ambulant, with a second level of namespaces
+under that</li>
+<li>semi-private classes go into into a namespace named &quot;detail&quot;.</li>
+</ul>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
