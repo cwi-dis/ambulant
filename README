@@ -3,7 +3,9 @@ Ambulant Player README
 
 This directory contains version 0.5 of Ambulant,
 a playback engine for SMIL documents. 
-The ambulant homepage is at <http://www.ambulantplayer.org>.
+This release is known externally as AMBULANT/X.
+It is an intermediate release of the Ambulant Player Project.
+The Ambulant homepage is at <http://www.ambulantplayer.org>.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers,
@@ -28,35 +30,34 @@ The specific platforms that have been used for testing are:
 - Linux: RedHat 9 on fairly recent Intel hardware
 - MacOSX: 10.3
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
-- Windows CE: to be provided
+- Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
 - Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
 
 Supported media types
 ---------------------
 
-- Text is supported on all platforms, but on MacOSX there is
-  no word-wrap, so text can be truncated.
+- Text is supported on all platforms.
 - Images in PNG, JPEG and GIF formats are supported on all
   platforms. Other formats are supported on some platforms.
 - Audio:
   - Windows supports audio through DirectX, so all DirectX-compatible
     formats are supported.
   - Windows CE supports only MP3, and cannot mix multiple audio
-    streams.
+    streams in this release.
   - MacOSX and Linux support audio through FFMPEG and SDL,
     giving support for MP3 and many other formats, but not
     all codecs may be supported on WMA or QuickTime files.
     Some audio files may be played back at an incorrect sample rate.
 - Video:
   - Windows supports video through DirectX.
-  - Windows CE does not support video.
+  - Windows CE does not support video in this release.
   - MacOSX supports video through QuickTime.
-  - Linux does not support video.
+  - Linux does not support video in this release.
 
 Networking support
 ------------------
 
-This release has limited support for networked media. The
+This release has limited support for networked media. The SMIL
 presentation itself must be in a local file, media items can
 be retrieved via HTTP or RTP/RTSP on some platforms.
 
@@ -65,14 +66,15 @@ SMIL support
 
 This release supports full SMIL 2.0, with the following broad
 exceptions:
-- Limited support for linking
-- No transitions
-- No SMIL animation
+- Limited support for internal linking; linking to external HTML sites
+  is supported.
+- No support for transitions in this release.
+- No support for SMIL animation in this release.
 - tag names must match media type, and no support for mimetypes
 
 Furthermore, you need to have "expat 1.95.7" installed before
 building ambulant; "expat" is used for XML-paring of .smil input files
-Previous versions of "expat" will not work with ambulant.
+Previous versions of "expat" will not work with Ambulant.
 For more details read the third_party_packages/readme.txt
 
 On Linux, the aRts implementation is currently not working, use
@@ -89,9 +91,9 @@ Examples
 --------
 
 Two example SMIL 2.0 documents are included, more are available
-at <http://www.ambulantplayer.org>. In a binary distribution the
-examples are right in the toplevel distribution directory, in a
-source distribution they are in the Extras directory.
+at <http://www.ambulantplayer.org>. In the binary distributions,
+examples are placed in the toplevel distribution directory; in
+source distributions, they are in the Extras directory.
 
 The Welcome document is played automatically the very first time you
 start the Ambulant Player on MacOSX and can be played manually on other
@@ -113,10 +115,10 @@ For Linux desktop and MacOSX you need GNU gcc, at least version 3.2.
 For Windows CE you need Microsoft Embedded Visual C++ version XXXX.
 For Zuarus you need XXXX.
 
-You also need to build and install a couple of third party packages
-that Ambulant depends on. All these live in third_party_packages,
-and the readme file there contains detailed instructions on the exact
-version numbers, download instructions, etc.
+You also need to build and install several third party packages
+that Ambulant depends on. All these are supplied in the third_party_packages
+directory; see the readme file in that directory for detailed instructions 
+on the exact version numbers, download instructions, etc.
 
 These packages can be built from source, but because this may be
 difficult on some platforms (especially Windows and the PDA platforms)
@@ -128,12 +130,12 @@ details.
 Building for Linux
 ------------------
 
-The normal configure/make/make install combo should do the trick.
-
+The normal "configure"/"make"/"make install" combo should work.
+"
 Building for Mac OS X
 ---------------------
 
-The normal configure/make/make install combo should do the trick.
+The normal "configure"/"make"/"make install" combo should work.
 
 Building for Windows
 --------------------
@@ -148,5 +150,5 @@ For Zaurus, see detailed instructions in README-ZAURUS.
 Building for Windows CE
 -----------------------
 
-To be supplied.
+For Windows, see instructions in bin/wince.
 
