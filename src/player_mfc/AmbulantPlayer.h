@@ -57,6 +57,27 @@
 #include "resource.h"       // main symbols
 
 
+class CAmCommandLineInfo : public CCommandLineInfo {
+  public:
+	CAmCommandLineInfo() : m_autostart(false) {}
+
+	void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast) {
+		if (bFlag){
+			if(strcmpi(pszParam, "start") == 0)
+				m_autostart = true;
+			else
+				CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
+		} else {
+			if (m_strFileName.IsEmpty()) m_strFileName = pszParam;
+		}
+		
+		if(bLast) {
+			m_nShellCommand = m_strFileName.IsEmpty()?FileNew:FileOpen;
+		}
+	}
+   bool m_autostart;
+};
+
 // CAmbulantPlayerApp:
 // See AmbulantPlayer.cpp for the implementation of this class
 //
@@ -70,11 +91,17 @@ public:
 // Overrides
 public:
 	virtual BOOL InitInstance();
-
+	CSingleDocTemplate* m_pDocTemplate;
+	bool m_autostart;
+	CString m_recentUrl;
+	
 // Implementation
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 	virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
+	afx_msg void OnFileOpen();
+	afx_msg BOOL OnOpenRecentFile(UINT nID);
+	afx_msg void OnFileOpenurl();
 };
 
 extern CAmbulantPlayerApp theApp;

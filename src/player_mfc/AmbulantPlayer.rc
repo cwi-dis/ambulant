@@ -103,6 +103,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "Open URL...",                 ID_FILE_OPENURL
         MENUITEM SEPARATOR
         MENUITEM "&Play",                       ID_FILE_PLAY
         MENUITEM "Pa&use",                      ID_FILE_PAUSE
@@ -175,6 +176,17 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
+IDD_OPEN_URL DIALOGEX 0, 0, 252, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Open URL"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_URL,7,7,238,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Open",IDOK,139,37,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,195,37,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -229,6 +241,14 @@ BEGIN
         RIGHTMARGIN, 228
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
+    END
+
+    IDD_OPEN_URL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 51
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -361,6 +381,11 @@ BEGIN
     ID_VIEW_TESTS           "Load settings...\nSettings"
     ID_VIEW_FILTER          "View current settings\nCurrent settings"
     ID_VIEW_AUTOPLAY        "Enable/disable auto playback\nAuto playback"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_OPENURL         "Open URL\nOpen URL"
 END
 
 #endif    // English (U.S.) resources

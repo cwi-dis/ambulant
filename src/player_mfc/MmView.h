@@ -65,7 +65,7 @@ public:
 	
 // Operations
 public:
-	void SetMMDocument(LPCTSTR lpszPathName);
+	void SetMMDocument(LPCTSTR lpszPathName, bool autostart);
 	bool LocateWelcomeDoc(LPCTSTR rpath);
 	UINT_PTR m_timer_id;
 	CString m_curDocFilename;

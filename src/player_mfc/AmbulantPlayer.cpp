@@ -55,6 +55,7 @@
 
 #include "MmDoc.h"
 #include "MmView.h"
+#include "OpenUrlDlg.h"
 
 #include "ambulant/version.h"
 #include ".\ambulantplayer.h"
@@ -73,7 +74,9 @@ using namespace ambulant;
 BEGIN_MESSAGE_MAP(CAmbulantPlayerApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+	ON_COMMAND(ID_FILE_OPEN, CAmbulantPlayerApp::OnFileOpen)
+	ON_COMMAND_EX_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE1+16, OnOpenRecentFile)
+	ON_COMMAND(ID_FILE_OPENURL, OnFileOpenurl)
 END_MESSAGE_MAP()
 
 
@@ -90,6 +93,7 @@ CAmbulantPlayerApp::CAmbulantPlayerApp()
 
 CAmbulantPlayerApp theApp;
 
+//////////////////////
 // CAmbulantPlayerApp initialization
 
 BOOL CAmbulantPlayerApp::InitInstance()
@@ -115,28 +119,49 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
-	CSingleDocTemplate* pDocTemplate;
-	pDocTemplate = new CSingleDocTemplate(
+	m_pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(MmDoc),
 		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
 		RUNTIME_CLASS(MmView));
-	if (!pDocTemplate)
+	if (!m_pDocTemplate)
 		return FALSE;
-	AddDocTemplate(pDocTemplate);
+	AddDocTemplate(m_pDocTemplate);
 	// Parse command line for standard shell commands, DDE, file open
-	CCommandLineInfo cmdInfo;
+	//CCommandLineInfo cmdInfo;
+	CAmCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
+	
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
-	if (!ProcessShellCommand(cmdInfo))
-		return FALSE;
+	//if(!ProcessShellCommand(cmdInfo))
+	//	return FALSE;
+	
+	MmDoc *mmdoc = 0;
+	switch (cmdInfo.m_nShellCommand) {
+		case CCommandLineInfo::FileNew:
+			if (!AfxGetApp()->OnCmdMsg(ID_FILE_NEW, 0, NULL, NULL))
+				OnFileNew();
+			if (m_pMainWnd == NULL)
+				return FALSE;
+			break;
+		case CCommandLineInfo::FileOpen:
+			mmdoc = (MmDoc *) OpenDocumentFile(cmdInfo.m_strFileName);
+			if(!mmdoc) return FALSE;
+			break;
+	}
+
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	m_pMainWnd->DragAcceptFiles(TRUE);
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
+	
+	if(mmdoc && cmdInfo.m_autostart) {
+		mmdoc->StartPlayback();
+	}
+		
 	return TRUE;
 }
 
@@ -183,15 +208,50 @@ void CAmbulantPlayerApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
-
 // CAmbulantPlayerApp message handlers
-
-
 CDocument* CAmbulantPlayerApp::OpenDocumentFile(LPCTSTR lpszFileName)
 {
 	OnFileNew();
-	// TODO: Add your specialized code here and/or call the base class
-	ASSERT(m_pDocManager != NULL);
-	return m_pDocManager->OpenDocumentFile(lpszFileName);
-	//return CWinApp::OpenDocumentFile(lpszFileName);
+	return m_pDocTemplate->OpenDocumentFile(lpszFileName);
+}
+
+void CAmbulantPlayerApp::OnFileOpen()
+{
+	CString newName;
+	if(!DoPromptFileName(newName, AFX_IDS_OPENFILE,
+	  OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, TRUE, NULL))
+		return; // open cancelled
+	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(newName);
+	if(mmdoc) mmdoc->StartPlayback();
+}
+
+BOOL CAmbulantPlayerApp::OnOpenRecentFile(UINT nID)
+{
+	ASSERT_VALID(this);
+	ASSERT(m_pRecentFileList != NULL);
+	ASSERT(nID >= ID_FILE_MRU_FILE1);
+	ASSERT(nID < ID_FILE_MRU_FILE1 + (UINT)m_pRecentFileList->GetSize());
+	int nIndex = nID - ID_FILE_MRU_FILE1;
+	ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
+	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile((*m_pRecentFileList)[nIndex]);
+	if(!mmdoc) m_pRecentFileList->Remove(nIndex);
+	if(mmdoc) mmdoc->StartPlayback();
+	return TRUE;
+}
+
+void CAmbulantPlayerApp::OnFileOpenurl()
+{
+	COpenUrlDlg dlg;
+	dlg.m_url = m_recentUrl;
+	if(dlg.DoModal() != IDOK) return;
+	
+	// validate entered URL
+	// ...
+	if(dlg.m_url.IsEmpty())
+		return;
+			
+	// Open URL
+	m_recentUrl = dlg.m_url;
+	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(dlg.m_url);
+	if(mmdoc) mmdoc->StartPlayback();
 }

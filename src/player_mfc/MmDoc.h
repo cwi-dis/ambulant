@@ -60,14 +60,17 @@ protected: // create from serialization only
 
 // Attributes
 public:
-
+	bool m_autostart;
+	
 // Operations
 public:
-
+	void StartPlayback();
+	
 // Overrides
 	public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
+	virtual void SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU = TRUE);
 
 // Implementation
 public:

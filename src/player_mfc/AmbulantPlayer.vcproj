@@ -89,7 +89,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libpng13.lib zlib.lib"
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
@@ -146,6 +145,9 @@
 				RelativePath=".\MmView.cpp">
 			</File>
 			<File
+				RelativePath=".\OpenUrlDlg.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -176,6 +178,9 @@
 			</File>
 			<File
 				RelativePath=".\MmView.h">
+			</File>
+			<File
+				RelativePath=".\OpenUrlDlg.h">
 			</File>
 			<File
 				RelativePath=".\Resource.h">

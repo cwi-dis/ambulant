@@ -76,7 +76,7 @@ END_MESSAGE_MAP()
 MmDoc::MmDoc()
 {
 	// TODO: add one-time construction code here
-
+	m_autostart = false;
 }
 
 MmDoc::~MmDoc()
@@ -138,7 +138,27 @@ BOOL MmDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	if(pos != NULL) {
 		CView* pView = GetNextView(pos);
 		ASSERT_VALID(pView);
-		((MmView*)pView)->SetMMDocument(lpszPathName);
+		((MmView*)pView)->SetMMDocument(lpszPathName, m_autostart);
 	}
 	return TRUE;
+}
+
+void MmDoc::SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU) {
+	if(strstr(lpszPathName, "://") != 0) {
+		// seems a url
+		m_strPathName = "URL";
+		m_bEmbedded = FALSE;
+		SetTitle("URL");
+	} else {
+		CDocument::SetPathName(lpszPathName, bAddToMRU);
+	}
+}
+
+void MmDoc::StartPlayback() {
+	POSITION pos = GetFirstViewPosition();
+	if(pos != NULL) {
+		CView* pView = GetNextView(pos);
+		ASSERT_VALID(pView);
+		((MmView*)pView)->OnFilePlay();
+	}
 }

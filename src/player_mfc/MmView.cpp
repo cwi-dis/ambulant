@@ -73,6 +73,8 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/lib/win32/win32_asb.h"
+#include "ambulant/net/url.h"
+#include "ambulant/lib/string_util.h"
 
 #include ".\mmview.h"
 
@@ -277,17 +279,30 @@ void MmView::OnDestroy()
 	CView::OnDestroy();
 }
 
-void MmView::SetMMDocument(LPCTSTR lpszPathName) {
+void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	gui_player *dummy = player;
 	player = 0;
 	if(dummy) {
 		dummy->stop();
 		delete dummy;
 	}
-	dummy = create_player_instance(lib::textptr(lpszPathName));
-	m_curDocFilename = lpszPathName;
+	
+	std::string docurl = lpszPathName;
+	std::string docpath = lpszPathName;
+	if(docurl.find("://") != std::string::npos) {
+		//seems a URL
+		net::url u(docurl);
+		if(u.is_local_file()) {
+			docpath = u.get_file();
+		} else {
+			AfxMessageBox(CString("Cannot read URL: ") + lpszPathName);
+			return;
+		}
+	}
+	dummy = create_player_instance(lib::textptr(docpath.c_str()));
+	m_curDocFilename = docpath.c_str();
 	player = dummy;
-	if(m_autoplay)
+	if(autostart)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
 }
 
@@ -447,7 +462,7 @@ void MmView::OnOpenFilter() {
 		m_curFilter = str;
 		smil2::test_attrs::load_test_attrs(lib::textptr(LPCTSTR(str)).c_str());
 		if(player && !m_curDocFilename.IsEmpty()) {
-			SetMMDocument(m_curDocFilename);
+			SetMMDocument(m_curDocFilename, true);
 		}
 	}	
 }
@@ -545,7 +560,7 @@ bool MmView::LocateWelcomeDoc(LPCTSTR rpath) {
 void MmView::OnHelpWelcome()
 {
 	if(!m_welcomeDocFilename.IsEmpty())
-		SetMMDocument(m_welcomeDocFilename);
+		SetMMDocument(m_welcomeDocFilename, true);
 }
 
 void MmView::OnUpdateHelpWelcome(CCmdUI *pCmdUI)
