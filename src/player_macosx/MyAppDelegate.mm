@@ -74,7 +74,7 @@ nslog_ostream::write(const char *cstr)
 {
 	LogController *log = [LogController sharedLogController];
 	NSString *nsstr = [NSString stringWithCString: cstr];
-	[nsstr autorelease];
+//	[nsstr autorelease];
 	if (log) [log insertText: nsstr];
 }
 
@@ -125,7 +125,7 @@ initialize_logger()
 			[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
 		}
 	} else {
-		NSLog(@"No Welcome.smil in bundle");
+		ambulant::lib::logger::get_logger()->error("No Welcome.smil in application bundle");
 	}
 }
 
@@ -150,16 +150,16 @@ initialize_logger()
 		if (welcomeDoc) {
 			[welcomeDoc play: self];
 		} else {
-			NSLog(@"Could not open document Welcome.smil");
+			ambulant::lib::logger::get_logger()->error("Welcome.smil could not be opened");
 		}
 	} else {
-		NSLog(@"No Welcome.smil in bundle");
+		ambulant::lib::logger::get_logger()->error("No Welcome.smil in application bundle");
 	}
 }
 
 - (IBAction)showHomepage:(id)sender
 {
-	NSLog(@"Show Homepage");
+	AM_DBG NSLog(@"Show Homepage");
 	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
 	OSErr status;
 	
@@ -170,14 +170,14 @@ initialize_logger()
 
 - (IBAction)showLogWindow:(id)sender
 {
-	NSLog(@"Show Log Window");
+	AM_DBG NSLog(@"Show Log Window");
 	LogController *log = [LogController sharedLogController];
 	if (log) [log showWindow: sender];
 }
 
 - (IBAction)openURL:(id)sender
 {
-	NSLog(@"open URL");
+	AM_DBG NSLog(@"open URL");
 	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
 	OSErr status;
 	
