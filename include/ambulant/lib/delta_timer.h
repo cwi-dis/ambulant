@@ -92,8 +92,11 @@ class delta_timer {
 	void execute(std::queue<event*>& queue);
 	
 	// Insert a timeout event
-	virtual void insert(event *pe, time_type t);
+	void insert(event *pe, time_type t);
 
+	// Cancels a sheduled event
+	void cancel(event *pe);
+	
 	// Clear all events
 	void clear();
 	

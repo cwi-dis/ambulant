@@ -72,6 +72,7 @@ class event_processor {
 	// schedule an event to fire at time t at the provided priority
 	virtual void add_event(event *pe, time_type t, event_priority priority = low) = 0;
 	virtual void cancel_all_events() = 0;
+	virtual void cancel_event(event *pe, event_priority priority = low) = 0;
 	
 	// serves waiting events 
 	virtual void serve_events() = 0;
@@ -132,6 +133,22 @@ class abstract_event_processor : public event_processor {
 				break;
 		}
 		wakeup();
+ 		m_delta_timer_cs.leave();
+	}
+	
+	void cancel_event(event *pe, event_priority priority = low) {
+		m_delta_timer_cs.enter();
+		switch(priority) {
+			case high: 
+				m_high_delta_timer.cancel(pe);
+				break;
+			case med: 
+				m_med_delta_timer.cancel(pe);
+				break;
+			case low: 
+				m_low_delta_timer.cancel(pe);
+				break;
+		}
  		m_delta_timer_cs.leave();
 	}
 	

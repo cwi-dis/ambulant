@@ -71,10 +71,9 @@ template <class T>
 class event_scheduler {
   public:
 	typedef T time_type;
-	typedef void* key_type;
 	virtual ~event_scheduler() {}
-	virtual key_type schedule_event(event *ev, time_type t, event_priority ep = ep_low) = 0;
-	virtual void cancel_event(key_type key) = 0;
+	virtual void schedule_event(event *ev, time_type t, event_priority ep = ep_low) = 0;
+	virtual void cancel_event(event *ev, event_priority ep = ep_low) = 0;
 	virtual void cancel_all_events() = 0;
 };
 
