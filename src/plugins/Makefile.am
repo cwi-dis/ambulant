@@ -1,3 +1,4 @@
+EXTRA_DIST=plugin.cpp artsplugin.cpp xercesplugin.cpp
 # The default (no-op) plugin. Always build
 
 dummy_plugin = libamplugin_dummy.la

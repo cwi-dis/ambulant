@@ -7,7 +7,6 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
-"Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
 "POT-Creation-Date: 2004-11-15 12:58+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
@@ -15,6 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:108
 msgid "Cannot initialize SDL audio library"
@@ -465,12 +465,8 @@ msgstr "Kan http://www.ambulantplayer.org niet openen"
 msgid "Cannot open: %s"
 msgstr "Bestand kan niet geopend worden: %s"
 
-#: qt_mainloop.cpp:95
-#, c-format
-msgid "$BROWSER not set: cannot open webpage <%s>"
-msgstr "$BROWSER niet gezet: kan webpage <%s> niet openen"
+#~ msgid "$BROWSER not set: cannot open webpage <%s>"
+#~ msgstr "$BROWSER niet gezet: kan webpage <%s> niet openen"
 
-#: qt_mainloop.cpp:105
-#, c-format
-msgid "Attempt to start browser returned status %d. Command: %s"
-msgstr "Browser kan niet gestart worden, foutstatus %d. Opdracht: %s"
+#~ msgid "Attempt to start browser returned status %d. Command: %s"
+#~ msgstr "Browser kan niet gestart worden, foutstatus %d. Opdracht: %s"

@@ -10,7 +10,9 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	pause.png \
 	playactive.png \
 	stop.png \
-	systemTestSettings.xml
+	systemTestSettings.xml \
+	genappleindex.sh \
+	ui_icons.psd
 
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a

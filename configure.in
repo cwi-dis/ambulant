@@ -35,6 +35,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/lib/unix/Makefile
 	include/ambulant/lib/win32/Makefile
 	include/ambulant/mms/Makefile
+	include/ambulant/plugin/Makefile
 	include/ambulant/smil2/Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
@@ -47,7 +48,8 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/SDL/Makefile
 	include/ambulant/gui/qsound/Makefile
 	third_party_packages/Makefile
-	Documentation/Makefile])
+	Documentation/Makefile
+	Extras/Makefile])
 	
 #
 # Do we want plugin support?

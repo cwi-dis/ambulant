@@ -23,8 +23,8 @@ To create the linux source distribution :
 - If make distcheck complains about not being able to find expat, 
   you have to set the path to the expat library via the environment variable:
  
-  DISTCHECK_CONFIGURE_FLAGS="--with-expat=third_party_packages/expat-unix \
-	--with-arts"  make distcheck
+
+	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
 
 --with-arts is needed here, otherwise the last part of "make distcheck"
 will fail. It is the test whether or not the the tarball is self-contained,
