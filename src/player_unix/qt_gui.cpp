@@ -55,6 +55,7 @@
 
 #include <pthread.h>
 #include <libgen.h>
+#include <stdlib.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
@@ -138,25 +139,39 @@ bool checkFilename(QString filename, int mode) {
 bool qt_gui::openSMILfile(QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
-	if (! checkFilename(m_smilfilename, mode)) {
+	if (! checkFilename(smilfilename, mode)) {
 		char buf[1024];
 		sprintf(buf, "Cannot open file \"%s\":\n%s\n",
-			(const char*) m_smilfilename, strerror(errno));
+			(const char*) smilfilename, strerror(errno));
 		QMessageBox::information(this, m_programfilename, buf);
 		return false;
 	}
-	char* filename = strdup(m_smilfilename);
+	char* filename = strdup(smilfilename);
 	setCaption(basename(filename));
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
+	if ( ! (*smilfilename == '/')) {
+ 	         char* workdir = getcwd(NULL, 0);
+		 int workdirlen = strlen(workdir);
+		 int pathnamelen = workdirlen + strlen(smilfilename) + 2;
+		 char* pathname = (char*) malloc(pathnamelen);
+		 strcpy(pathname, workdir);
+		 strcpy(&pathname[workdirlen], "/");
+		 strcpy(&pathname[workdirlen+1], smilfilename);
+		 strcpy(&pathname[pathnamelen], "\0");
+		 smilfilename = pathname;
+	} else   smilfilename = strdup(smilfilename);
+	        
+//      if (m_smilfilename != NULL)
+//	         free(m_smilfilename);
 	m_smilfilename = smilfilename;
 	return true;
 }
 
 void qt_gui::slot_open() {
 #ifndef QT_NO_FILEDIALOG
-	m_smilfilename =
+	QString smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
 				 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)", // file types
@@ -165,7 +180,7 @@ void qt_gui::slot_open() {
 				 "Double Click a file to open"
 				 );
 #endif/*QT_NO_FILEDIALOG*/
-	openSMILfile(m_smilfilename, IO_ReadOnly);
+	openSMILfile(smilfilename, IO_ReadOnly);
 }
 
 void qt_gui::slot_player_done() {
