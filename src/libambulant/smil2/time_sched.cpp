@@ -215,10 +215,12 @@ void scheduler::restart(time_node *tn) {
 // Returns the time of the next event or the sampling resolution 
 scheduler::time_type scheduler::exec() {
 	if(locked()) return idle_resolution;
+	lock();
 	time_type now = m_timer->elapsed();
 	time_type next = exec(now);
 	while(next == now) next = exec(now);
 	time_type waitdur = next - now;
+	unlock();
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
 
@@ -298,6 +300,7 @@ std::string scheduler::get_state_sig(time_node *tn) {
 	}
 	return sig;
 }
+
 // Returns true when the document will reach its end without requiring events
 // This does not mean that has not event timing. Events may affect playback.
 // static
