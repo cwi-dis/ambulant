@@ -48,7 +48,7 @@ class thread {
 	}
 		
   protected:
-	virtual void run() = 0;
+	virtual unsigned long run() = 0;
 	
 	virtual void signal_exit_thread(){
 		abort();
@@ -58,7 +58,7 @@ class thread {
 	static void *threadproc(void *pParam) {
 		thread* p = static_cast<thread*>(pParam);
 		p->m_running = 1;
-		p->run();
+		unsigned long rv = p->run();
 		p->m_running = 0;
 		pthread_exit(NULL);
 		return NULL;

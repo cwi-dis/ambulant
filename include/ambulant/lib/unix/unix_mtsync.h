@@ -14,13 +14,15 @@
 
 #include <pthread.h>
 
+#include "ambulant/lib/mtsync.h"
+
 namespace ambulant {
 
 namespace lib {
 
 namespace unix {
 
-class critical_section {
+class critical_section : public ambulant::lib::critical_section {
   public:
 	critical_section() { if (pthread_mutex_init(&m_cs, NULL) < 0) abort();}
 	~critical_section() { if (pthread_mutex_destroy(&m_cs) < 0) abort();}

@@ -83,11 +83,28 @@ class abstract_event_processor : public event_processor {
 	}
 	
 	// serves all events of high priority (including those inserted by firing events)
-	// then med and finally low
+	// then med and finally low. Note that medium and low priority can cause new
+	// events of higher priority to be scheduled, these should be handled first
 	void serve_events() {
-		while(serve_events_for(m_high_delta_timer));
-		while(serve_events_for(m_med_delta_timer));
-		while(serve_events_for(m_low_delta_timer));
+		int another_loop = 1;
+		
+		while (another_loop) {
+			another_loop = 0;
+			// First serve all high priority events
+			while (serve_events_for(m_high_delta_timer))
+				another_loop = 1;
+			// After that, serve one medium priority event, if needed
+			// XXXX Note this is incorrect, really: we only want to serve
+			// one event but actually we serve all medium priority events
+			// that are runnable. It remains to be seen whether this is
+			// a problem. Fixing it would require keeping the queues
+			// in the object in stead of as local variables in serve_events_for().
+			if (serve_events_for(m_med_delta_timer))
+				another_loop = 1;
+			// if there were no medium prio events we serve a lo-prio event
+			else if (serve_events_for(m_low_delta_timer))
+				another_loop = 1;
+		}
 	}
 
 	bool serve_events_for(delta_timer& dt) {

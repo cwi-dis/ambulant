@@ -108,11 +108,11 @@ class sd_envelope : public ref_counted {
 	}
 
 	long get_ref_count() const {return m_refcount;}
-	
-  private:
+  protected:
 	// force client to use release
 	~sd_envelope() { delete m_value;}
 	
+  private:
 	T* m_value;
 	atomic_count m_refcount;
 };
