@@ -360,6 +360,7 @@ common::zindex_t region_node::get_region_zindex(bool fromdom) const {
 
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_dim(\"%s\")", which.c_str());
 	common::region_dim_spec& rds = m_display_rds;
 	if(which == "left") rds.left = rd;
 	else if(which == "width") rds.width = rd;
@@ -371,12 +372,14 @@ void region_node::set_region_dim(const std::string& which, const common::region_
 
 // Sets the display value of the backgroundColor or color
 void region_node::set_region_color(const std::string& which, lib::color_t clr) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_color(\"%s\")", which.c_str());
 	if(which == "backgroundColor") m_display_bgcolor = clr;
 	//else if(which == "color") set_fgcolor(clr);
 }
 
 // Sets the display value of the z-index
 void region_node::set_region_zindex(common::zindex_t z) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::set_region_zindex()");
 	m_display_zindex = z;
 }
 
