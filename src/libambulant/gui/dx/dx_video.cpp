@@ -49,19 +49,20 @@
 /* 
  * @$Id$ 
  */
+ 
+#include "ambulant/gui/dx/dx_video.h"
+#include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_window.h"
+#include "ambulant/gui/dx/dx_video_player.h"
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/memfile.h"
 
-#include "ambulant/common/region.h"
-#include "ambulant/common/layout.h"
+#include "ambulant/common/region_info.h"
 
-#include "ambulant/gui/dx/dx_video.h"
-#include "ambulant/gui/dx/dx_gui.h"
-#include "ambulant/gui/dx/dx_viewport.h"
-#include "ambulant/gui/dx/dx_video_player.h"
+//#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -87,7 +88,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	if(lib::memfile::exists(url)) {
 		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
 	} else {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
+		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			m_node->get_url("src").c_str());
 	}
 }
@@ -185,7 +186,7 @@ void gui::dx::dx_video_renderer::resume() {
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	if(!m_player) {
+	if(!m_player || !m_player->can_play()) {
 		// No bits available
 		return;
 	}

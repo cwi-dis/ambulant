@@ -58,22 +58,26 @@
 #endif
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/player.h"
 
 #include <string>
+#include <map>
 
+// The interfaces implemented by dx_player
+#include "ambulant/common/player.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/playable.h"
+
+// Global functions provided by the hosting application.
+extern HWND new_os_window();
+extern void destroy_os_window(HWND hwnd);
 
 namespace ambulant {
 
 // classes used by dx_player
+
 namespace lib {
 	class event_processor;
 	class logger;
-}
-
-namespace common {
-	class window_factory;
-	class playable_factory;
 }
 
 namespace mms {
@@ -89,19 +93,24 @@ namespace gui {
 namespace dx {
 
 class viewport;
+class dx_window;
 
-class dx_player {
+class dx_player : 
+	public common::player, 
+	public common::window_factory, 
+	public common::playable_factory {
+	
   public:
-	dx_player(const std::string& url, HWND hwnd);
+	dx_player(const std::string& url);
 	~dx_player();
+	
+	////////////////////
+	// common::player implementation
 	
 	void start();
 	void stop();
 	void pause();
 	void resume();
-	void on_click(int x, int y);
-	void on_char(int ch);
-	int get_cursor(int x, int y);
 	
 	bool is_playing() const;
 	bool is_pausing() const;
@@ -109,23 +118,55 @@ class dx_player {
 
 	void set_preferences(const std::string& url);
 	
-	// Implementation specific
-	common::window_factory *get_window_factory() { return m_wf;}
-	common::playable_factory *get_playable_factory() {return m_pf;}
-	viewport* create_viewport(int w, int h);
+	// should these be part of the player interface?
+	lib::timer* get_timer() { return 0;}
+	lib::event_processor* get_evp() { return 0;}
+	
+	
+	////////////////////
+	// common::window_factory implementation
+	
+	common::abstract_window *new_window(const std::string &name, 
+		lib::size bounds, common::renderer *region);
+		
+	common::gui_region *new_mouse_region();
+	
+	common::renderer *new_background_renderer(const common::region_info *src);
+	
+	void window_done(common::abstract_window *window);
+	
+	////////////////////
+	// common::playable_factory implementation
+	
+	common::playable *new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const ambulant::lib::node *node,
+		lib::event_processor * evp);
+
+	////////////////////
+	// Implementation specific artifacts
+	
+	void on_char(int ch);
+	void on_click(int x, int y, HWND hwnd);
+	int get_cursor(int x, int y, HWND hwnd);
+	
+	common::window_factory *get_window_factory() { return this;}
+	common::playable_factory *get_playable_factory() {return this;}
+	viewport* create_viewport(int w, int h, HWND hwnd);
 	void redraw();
 	void on_done();
 	
   private:
-	std::string m_url;
-	HWND m_hwnd;
-	viewport* m_viewport;
-	common::window_factory *m_wf;
-	common::playable_factory *m_pf;
-	smil2::smil_player *m_player;
-	lib::event_processor *m_processor;
-	lib::logger *m_logger;
+	common::abstract_window* get_window(const lib::node* n);
 	
+	std::string m_url;
+	smil2::smil_player *m_player;
+	
+	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
+	std::map<dx_window *, wininfo*> m_windows;
+	
+	lib::logger *m_logger;
 };
 
 } // namespace dx

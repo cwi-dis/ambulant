@@ -131,7 +131,7 @@ void gui::dx::image_renderer::open(const std::string& url, viewport* v) {
 	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
 	::DeleteDC(hdc);
 	if(!decoder) {
-		lib::logger::get_logger()->warn("Failed to create decoder for image %s", url.c_str());
+		lib::logger::get_logger()->show("Failed to create decoder for image %s", url.c_str());
 		return;
 	}
 	

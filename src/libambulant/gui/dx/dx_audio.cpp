@@ -51,13 +51,14 @@
  */
 
 #include "ambulant/gui/dx/dx_audio.h"
+#include "ambulant/gui/dx/dx_audio_player.h"
 
-#include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/memfile.h"
-#include "ambulant/gui/dx/dx_audio_player.h"
+
+#include "ambulant/common/region.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

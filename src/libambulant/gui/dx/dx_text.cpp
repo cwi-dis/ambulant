@@ -51,11 +51,10 @@
  */
 
 #include "ambulant/gui/dx/dx_text.h"
-#include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_window.h"
 
-#include "ambulant/common/region.h"
-#include "ambulant/common/layout.h"
+#include "ambulant/common/region_info.h"
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"

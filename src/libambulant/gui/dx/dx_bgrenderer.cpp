@@ -50,14 +50,11 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_brush.h"
-#include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_window.h"
+#include "ambulant/gui/dx/dx_viewport.h"
 
 #include "ambulant/common/region_info.h"
-
-#include "ambulant/lib/node.h"
-#include "ambulant/lib/logger.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -65,60 +62,25 @@
 
 using namespace ambulant;
 
-////////////////////////
-//
-
-gui::dx::dx_brush::dx_brush(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor* evp,
-	common::abstract_window *window)
-:   common::renderer_playable(context, cookie, node, evp) { 
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
+gui::dx::dx_bgrenderer::dx_bgrenderer(const common::region_info *src)
+:	common::background_renderer(src) {
+	AM_DBG lib::logger::get_logger()->trace("new dx_bgrenderer<0x%x>", this);
 }
-
-gui::dx::dx_brush::~dx_brush() {
-	AM_DBG lib::logger::get_logger()->trace("~dx_brush()");
-}
-
-void gui::dx::dx_brush::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
 	
-	// Has this been activated
-	if(m_activated) {
-		// repeat
-		return;	
-	}
-	
-	// Activate this renderer.
-	// Add this renderer to the display list of the region
-	m_dest->show(this);
-	m_activated = true;
-		
-	// Request a redraw
-	m_dest->need_redraw();
+gui::dx::dx_bgrenderer::~dx_bgrenderer() {
+	AM_DBG lib::logger::get_logger()->trace("~dx_bgrenderer(0x%x)", this);
 }
-
-
-void gui::dx::dx_brush::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
-	m_dest->renderer_done();
-	m_activated = false;
-}
-
-void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	// Get the top-level surface
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();
-	if(!v) return;
 	
-	// Draw the pixels of this renderer to the surface specified by m_dest.
+void gui::dx::dx_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+	AM_DBG lib::logger::get_logger()->trace("dx_bgrenderer::redraw(%s)",repr(dirty).c_str());
 	lib::screen_rect<int> rc = dirty;
-	lib::point pt = m_dest->get_global_topleft();
+	lib::point pt = m_dst->get_global_topleft();
 	rc.translate(pt);
-	const common::region_info *ri = m_dest->get_info();
-	if(ri) v->clear(rc, ri->get_bgcolor());
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();	
+	if(v && m_src && !m_src->get_transparent()) {
+		v->clear(rc, m_src->get_bgcolor());
+	}
 }
- 
+
 

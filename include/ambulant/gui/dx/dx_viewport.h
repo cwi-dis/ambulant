@@ -136,6 +136,7 @@ class viewport {
 	
 	int get_width() const { return m_width;}
 	int get_height() const { return m_height;}
+	HWND get_hwnd() { return m_hwnd;}
 	
   private:
 	

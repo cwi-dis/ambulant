@@ -51,18 +51,19 @@
  */
 
 #include "ambulant/gui/dx/dx_img.h"
-
-#include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_image_renderer.h"
 
-#include "ambulant/common/region.h"
-#include "ambulant/common/layout.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
 
+#include "ambulant/common/region_info.h"
+
 #include <math.h>
+
+//#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -80,14 +81,19 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	m_image(0), m_window(window) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::ctr(0x%x)", this);
+	std::string url = m_node->get_url("src");
+	if(!window) {
+		lib::logger::get_logger()->show("get_window() failed. [%s]",
+			url.c_str());
+		return;
+	}
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	std::string url = m_node->get_url("src");
 	if(lib::memfile::exists(url)) {
 		m_image = new image_renderer(m_node->get_url("src"), v);
 	} else {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			m_node->get_url("src").c_str());
+		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
+			url.c_str());
 	}
 }
 
@@ -155,7 +161,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
 	
-	if(!m_image) {
+	if(!m_image || !m_image->can_play()) {
 		// No bits available
 		return;
 	}

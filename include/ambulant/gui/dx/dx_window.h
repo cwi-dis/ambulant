@@ -50,75 +50,51 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_brush.h"
-#include "ambulant/gui/dx/dx_viewport.h"
-#include "ambulant/gui/dx/dx_window.h"
+#ifndef AMBULANT_GUI_DX_WINDOW_H
+#define AMBULANT_GUI_DX_WINDOW_H
 
-#include "ambulant/common/region_info.h"
+#include "ambulant/config/config.h"
 
-#include "ambulant/lib/node.h"
-#include "ambulant/lib/logger.h"
+#include <string>
 
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#include "ambulant/common/layout.h"
+#include "ambulant/lib/gtypes.h"
 
-using namespace ambulant;
+namespace ambulant {
 
-////////////////////////
-//
+namespace gui {
 
-gui::dx::dx_brush::dx_brush(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor* evp,
-	common::abstract_window *window)
-:   common::renderer_playable(context, cookie, node, evp) { 
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
-}
+namespace dx {
 
-gui::dx::dx_brush::~dx_brush() {
-	AM_DBG lib::logger::get_logger()->trace("~dx_brush()");
-}
+class viewport;
 
-void gui::dx::dx_brush::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
+class dx_window : public common::abstract_window {
+  public:
+  	dx_window(const std::string& name, 
+  		lib::size bounds,
+  		common::renderer *region,
+  		common::window_factory *wf,
+  		viewport* m_viewport);
+  	~dx_window();
+  	
+	void need_redraw(const lib::screen_rect<int>& r);
+	void redraw(const lib::screen_rect<int>& r);
+	void mouse_region_changed();
 	
-	// Has this been activated
-	if(m_activated) {
-		// repeat
-		return;	
-	}
+	viewport *get_viewport() { return m_viewport;}
 	
-	// Activate this renderer.
-	// Add this renderer to the display list of the region
-	m_dest->show(this);
-	m_activated = true;
-		
-	// Request a redraw
-	m_dest->need_redraw();
-}
-
-
-void gui::dx::dx_brush::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
-	m_dest->renderer_done();
-	m_activated = false;
-}
-
-void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	// Get the top-level surface
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();
-	if(!v) return;
+  private:
+	// abstract_window:
+	// passive_region *m_region;
 	
-	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = dirty;
-	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	const common::region_info *ri = m_dest->get_info();
-	if(ri) v->clear(rc, ri->get_bgcolor());
-}
+	common::window_factory *m_wf;
+    viewport* m_viewport;
+};
+
+} // namespace dx
+
+} // namespace gui
  
+} // namespace ambulant
 
+#endif // AMBULANT_GUI_DX_WINDOW_H
