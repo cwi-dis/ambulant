@@ -447,7 +447,7 @@ lib::node::xmlrepr() const {
 	return s;
 }
 
-
+/*
 #ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
 lib::node::to_string() const {
@@ -467,7 +467,6 @@ lib::node::to_trimmed_string() const {
 	return os.str();
 }
 #endif
-
 unsigned int 
 lib::node::size() const {
 	unsigned int count = 0;
@@ -487,6 +486,7 @@ void lib::node::dump(std::ostream& os) const {
 	std::for_each(this->begin(), this->end(), visitor);
 }
 #endif
+*/
 
 
 #ifndef AMBULANT_NO_IOSTREAMS

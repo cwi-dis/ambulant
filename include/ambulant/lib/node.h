@@ -221,18 +221,18 @@ class node {
 
 	// fills in a map with node ids
 	// the map may be used for retreiving nodes from their id
-	void create_idmap(std::map<std::string, node*>& m) const; 
+	//void create_idmap(std::map<std::string, node*>& m) const; 
 		
 	/////////////////////
 	// string repr
 	
 	xml_string xmlrepr() const;
-	xml_string to_string() const;
-	xml_string to_trimmed_string() const;
+	//xml_string to_string() const;
+	//xml_string to_trimmed_string() const;
 	
-#ifndef AMBULANT_NO_IOSTREAMS
-	void dump(std::ostream& os) const;
-#endif
+//#ifndef AMBULANT_NO_IOSTREAMS
+//	void dump(std::ostream& os) const;
+//#endif
 
 	/////////////////////
 	// node context
