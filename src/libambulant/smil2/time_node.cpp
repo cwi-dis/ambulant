@@ -318,7 +318,8 @@ time_node::get_implicit_dur() {
 // Delegates the actual work to the associated time_calc instance.
 time_node::time_type 
 time_node::calc_dur() {
-	return (m_last_cdur = m_time_calc->calc_dur(), m_last_cdur);
+	m_last_cdur = m_time_calc->calc_dur();
+	return m_last_cdur;
 }
 
 // Returns true when the implicit duration is 
@@ -690,7 +691,7 @@ bool time_node::is_animation() const {
 }
 
 //////////////////////////
-// Playables schell
+// Playables shell
 
 void time_node::start_playable(time_type offset) {
 	if(m_ffwd_mode) return;
@@ -738,7 +739,7 @@ void time_node::resume_playable() {
 }
 
 void time_node::stop_playable() {
-	if(!is_playable() ) return;
+	if(!is_playable()) return;
 	if(!m_needs_remove) return;
 	m_eom_flag = true;
 	AM_DBG m_logger->trace("%s[%s].stop()", m_attrs.get_tag().c_str(), 
@@ -789,10 +790,16 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			events[timestamp.to_doc()].push_back(this);
 		} else if(m_interval.end.is_definite()) {
-			// XXX: check for repeat (or leave it to sampling)
 			qtime_type timestamp(sync_node(), get_interval_end());
 			time_type doctime = timestamp.to_doc();
 			events[doctime].push_back(this);
+			
+			bool repeats = m_attrs.specified_rdur() || m_attrs.specified_rcount();
+			repeats = repeats && (m_last_cdur.is_definite() && m_last_cdur() != 0);
+			if(repeats) {
+				qtime_type ts(this, m_last_cdur);
+				events[ts.to_doc()].push_back(this);
+			}
 		}
 	}
 	
@@ -875,7 +882,9 @@ void time_node::exec(qtime_type timestamp) {
 	}
 	
 	// Check for the EOSD event
-	if(m_last_cdur.is_definite() && m_last_cdur != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
+	AM_DBG m_logger->trace("%s[%s] checking for end-of-sd (cdur=%ld)", m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), m_last_cdur());
+	if(m_last_cdur.is_definite() && m_last_cdur() != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
 		on_eosd(timestamp);
 }
 
@@ -900,7 +909,9 @@ bool time_node::end_cond(qtime_type timestamp) {
 	// c) m_interval.end may have assumed this vale
 	// d) the interval has not been updated yet
 	// e) due to not controled delays the video is still playing
-	if(is_cmedia() && !is_animation() && tc) {
+	
+	bool specified_dur = m_attrs.specified_dur() || m_attrs.specified_rdur();
+	if(is_cmedia() && !is_animation() && tc && !specified_dur && m_time_calc->uses_dur()) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
 			tc = false;
 			AM_DBG m_logger->trace("%s[%s].end_cond() waiting media end", 
@@ -1002,6 +1013,14 @@ void time_node::on_eom(qtime_type timestamp) {
 		}
 		raise_update_event(timestamp);
 		sync_node()->raise_update_event(timestamp);
+		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
+		qtime_type st = pt.as_qtime_down_to(this);
+		AM_DBG m_logger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
+			m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), 
+			st.second(),
+			pt.second(),
+			timestamp.second()); 
 	}
 }
 
@@ -1968,7 +1987,7 @@ seq::get_implicit_dur() {
 	const time_node* tn = last_child();
 	const interval_type& i = tn->get_last_interval();
 	time_type idur =  time_type::unresolved;
-	if(i.is_valid()) idur = i.end;
+	if(i.is_valid()) idur = tn->get_interval_end();
 	AM_DBG m_logger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());	
 	return idur;
