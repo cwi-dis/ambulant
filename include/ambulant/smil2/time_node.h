@@ -289,7 +289,9 @@ class time_node : public time_traits {
 	
 	// Sets the state of this node
 	void set_state(time_state_type state, qtime_type timestamp, time_node *oproot);
-	
+	// Calls set_state() after checking for excl
+	void set_state_ex(time_state_type tst, qtime_type timestamp);
+
 	bool is_alive() const {
 		time_state_type tst = m_state->ident(); 
 		return tst == ts_proactive || tst == ts_active || tst == ts_postactive;

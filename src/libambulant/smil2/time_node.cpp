@@ -59,7 +59,7 @@
 
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
+//#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -818,7 +818,7 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	
 	// Else, the interval should be activated now
 	assert(m_interval.contains(timestamp.second));
-	set_state(ts_active, timestamp, this);
+	set_state_ex(ts_active, timestamp);
 }
 
 // Activates the interval of this node.
@@ -1013,11 +1013,13 @@ void time_node::state_transition_callback(const transition_event *e) {
 	// ignore canceled events
 	if(m_pending_event != (lib::event*)e) return;
 	m_pending_event = 0;
-	
+	set_state_ex(e->m_state, e->m_timestamp);
+}
+
+// Calls set_state() after checking for excl
+void time_node::set_state_ex(time_state_type tst, qtime_type timestamp) {
 	// this should be true
-	assert(e->m_timestamp.first == sync_node());
-	
-	time_state_type tst = e->m_state;
+	assert(timestamp.first == sync_node());
 	
 	//if(!is_root() && !is_alive())
 	//	return; // not an S transition
@@ -1025,15 +1027,16 @@ void time_node::state_transition_callback(const transition_event *e) {
 	if(sync_node()->is_excl()) {
 		excl *p = static_cast<excl*>(sync_node());
 		if(tst == ts_active) {
-			p->interrupt(this, e->m_timestamp);
+			p->interrupt(this, timestamp);
 		} else if(tst == ts_postactive) {
-			set_state(e->m_state, e->m_timestamp, this);
-			p->on_child_normal_end(this, e->m_timestamp);
+			set_state(tst, timestamp, this);
+			p->on_child_normal_end(this, timestamp);
 		}
 		return;
 	}
-	set_state(e->m_state, e->m_timestamp, this);
+	set_state(tst, timestamp, this);
 }
+
 
 // Called on the end of simple duration event
 void time_node::on_eosd(qtime_type timestamp) {
