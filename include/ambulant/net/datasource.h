@@ -198,6 +198,9 @@ class audio_datasource : virtual public datasource {
 		  
 	/// Returns the native format of the audio data.
 	virtual audio_format& get_audio_format() = 0;
+	
+	// Return the duration of the audio data, if known.
+	virtual std::pair<bool, double> get_dur() = 0;
 };
 
 /// Interface to an object that supplies video data to a consumer.
@@ -208,6 +211,9 @@ class audio_datasource : virtual public datasource {
 class video_datasource : virtual public lib::ref_counted_obj {
   public:
   	virtual ~video_datasource() {};
+
+	// Return the duration of the audio data, if known.
+	virtual std::pair<bool, double> get_dur() = 0;
 
 	/// Returns true if the video stream contains audio data too.
 	virtual bool has_audio() = 0;

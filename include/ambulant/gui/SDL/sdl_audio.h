@@ -96,7 +96,7 @@ class sdl_active_audio_renderer : public common::playable_imp /*, public lib::ti
   	bool is_stopped();
   	bool is_playing();
   
- 
+	std::pair<bool, double> get_dur();
     void start(double where);
     void stop();
 	void seek(double t);

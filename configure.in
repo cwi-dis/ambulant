@@ -1,4 +1,4 @@
-AC_INIT(ambulant, 1.0)
+AC_INIT(ambulant, 1.1)
 AM_INIT_AUTOMAKE
 
 AC_PROG_CC
@@ -45,7 +45,6 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
-	include/ambulant/gui/qsound/Makefile
 	third_party_packages/Makefile
 	Documentation/Makefile
 	Extras/Makefile])

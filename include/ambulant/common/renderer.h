@@ -298,6 +298,7 @@ class active_video_renderer : public common::renderer_playable {
     void pause();
     void resume();
     void data_avail();
+	std::pair<bool, double> get_dur();
 //	void playdone() {};
 	
 		

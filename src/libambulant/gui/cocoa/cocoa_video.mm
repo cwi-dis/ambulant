@@ -120,11 +120,19 @@ cocoa_video_renderer::~cocoa_video_renderer()
 std::pair<bool, double> 
 cocoa_video_renderer::get_dur()
 {
-	if (!m_movie)
-		return std::pair<bool, double>(false, 0);
-	Movie mov = (Movie)[m_movie QTMovie];
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: QTMovie is 0x%x", (void *)mov);
-	return std::pair<bool, double>(true, 7);
+	std::pair<bool, double> rv(false, 0);
+	m_lock.enter();
+	if (m_movie) {
+		Movie mov = (Movie)[m_movie QTMovie];
+		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur QTMovie is 0x%x", (void *)mov);
+		TimeValue movdur = GetMovieDuration(mov);
+		TimeScale movscale = GetMovieTimeScale(mov);
+		double dur = (double)movdur / (double)movscale;
+		lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur: GetMovieDuration=%f", dur);
+		rv = std::pair<bool, double>(true, dur);
+	}
+	m_lock.leave();
+	return rv;
 }
 
 void

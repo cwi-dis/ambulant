@@ -309,3 +309,15 @@ gui::arts::arts_active_audio_renderer::resume()
 	m_is_paused = false;
 	m_lock.leave();
 }
+
+std::pair<bool, double> 
+gui::arts::arts_active_audio_renderer::get_dur()
+{
+	//DBG return std::pair<bool, double>(true, 7);
+	std::pair<bool, double> rv(false, 0.0);
+	m_lock.enter();
+	if (m_audio_src)
+		rv = m_audio_src->get_dur();
+	m_lock.leave();
+	return rv;
+}

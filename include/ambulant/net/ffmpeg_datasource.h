@@ -178,6 +178,8 @@ class ffmpeg_audio_datasource:
 	int size() const;   
 	audio_format& get_audio_format();
 
+	std::pair<bool, double> get_dur();
+
   private:
     bool _end_of_file();
 	const net::url m_url;
@@ -221,6 +223,7 @@ class ffmpeg_video_datasource:
 	
     void data_avail(int64_t ipts, uint8_t *data, int size);
 	bool buffer_full();
+	std::pair<bool, double> get_dur();
 
   private:
 	int get_audio_stream_nr();
@@ -262,7 +265,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	char* get_read_ptr();
 	int size() const;   
 	
- 
+	std::pair<bool, double> get_dur();
 	audio_format& get_audio_format();
 	bool select_decoder(const char* file_ext);
 	bool select_decoder(audio_format &fmt);
@@ -278,6 +281,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
     lib::event_processor *m_event_processor;
   	datasource* m_src;
 
+	std::pair<bool, double> m_duration;
+	
 	databuffer m_buffer;
 	bool m_blocked_full;
 		
@@ -306,6 +311,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 //    void get_input_format(audio_context &fmt);  
 //    void get_output_format(audio_context &fmt);
 	audio_format& get_audio_format() { return m_out_fmt; };
+	std::pair<bool, double> get_dur();
 		
   protected:
     int init(); 

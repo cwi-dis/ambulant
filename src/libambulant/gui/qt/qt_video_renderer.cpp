@@ -132,7 +132,7 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
-	if (data && frame && (m_frames.size() < 2)) {
+	if (data && frame) {
 		if (m_frames.size() < 2) {
 			if (memcpy(data, frame, size)) {
 				std::pair<int, char*> element(size, data);

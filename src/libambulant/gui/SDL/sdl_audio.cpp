@@ -436,6 +436,7 @@ gui::sdl::sdl_active_audio_renderer::stop()
 		m_lock.leave();
 		unregister_renderer(this);
 		// XXX Should we call stopped_callback?
+		m_context->stopped(m_cookie, 0);
 		m_lock.enter();
 	}
 	m_is_playing = false;
@@ -492,4 +493,15 @@ void
 gui::sdl::sdl_active_audio_renderer::seek(double where)
 {
 	lib::logger::get_logger()->trace("sdl_active_audio_renderer: seek(%f) not implemented", where);
+}
+
+std::pair<bool, double> 
+gui::sdl::sdl_active_audio_renderer::get_dur()
+{
+	std::pair<bool, double> rv(false, 0.0);
+	m_lock.enter();
+	if (m_audio_src)
+		rv = m_audio_src->get_dur();
+	m_lock.leave();
+	return rv;
 }
