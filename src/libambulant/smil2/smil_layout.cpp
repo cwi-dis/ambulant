@@ -110,6 +110,7 @@ smil_layout_manager::~smil_layout_manager()
 	for (i=m_rootsurfaces.begin(); i != m_rootsurfaces.end(); i++)
 		delete (*i);
 	// XXX Delete m_layout_tree tree
+	delete m_layout_tree;
 }
 
 lib::node *
