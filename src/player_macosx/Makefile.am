@@ -47,6 +47,7 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/*.png cocoambulant.app/Contents/Resources
 	mkdir -p cocoambulant.app/Contents/Resources/data
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil cocoambulant.app/Contents/Resources
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* cocoambulant.app/Contents/Resources/data

@@ -61,6 +61,8 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	if ( [defaults boolForKey: @"welcomeDocumentSeen"] ) return;
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 	if (welcomePath) {
@@ -72,6 +74,7 @@
 		MyDocument *welcomeDoc = [controller openDocumentWithContentsOfFile: welcomePath display: YES];
 		if (welcomeDoc) {
 			[welcomeDoc play: sender];
+			[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
 		}
 	} else {
 		NSLog(@"No Welcome.smil in bundle");
