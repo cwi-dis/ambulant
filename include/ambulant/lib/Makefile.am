@@ -32,5 +32,6 @@ library_include_HEADERS= \
 	thread.h \
 	textptr.h \
 	timer.h \
+	transition_info.h \
 	tree_builder.h
 

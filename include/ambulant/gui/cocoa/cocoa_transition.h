@@ -50,14 +50,11 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_GUI_H
-#define AMBULANT_GUI_COCOA_COCOA_GUI_H
+#ifndef AMBULANT_GUI_COCOA_COCOA_TRANSITION_H
+#define AMBULANT_GUI_COCOA_COCOA_TRANSITION_H
 
+#include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/playable.h"
-#ifdef __OBJC__
-#include <Cocoa/Cocoa.h>
-#endif
 
 namespace ambulant {
 
@@ -65,90 +62,39 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_window : public common::abstract_window {
-  public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::surface_source *region)
-  	:	common::abstract_window(region),
-  		m_view(_view) {};
-	~cocoa_window();
-  		
-	void need_redraw(const lib::screen_rect<int> &r);
-	void mouse_region_changed();
+class cocoa_transition_blitclass_fade : virtual public smil2::transition_blitclass_fade {
+  protected:
+	void update();
+};
+
+class cocoa_transition_blitclass_r1r2 : virtual public smil2::transition_blitclass_r1r2 {
+  protected:
+	void update();
+};
+
+class cocoa_transition_engine_fade : 
+	virtual public cocoa_transition_blitclass_fade,
+	virtual public smil2::transition_engine_fade {};
 	
-	void redraw(const lib::screen_rect<int> &r);
-	void user_event(const lib::point &where, int what = 0);
+class cocoa_transition_engine_barwipe :
+	virtual public cocoa_transition_blitclass_r1r2,
+	virtual public smil2::transition_engine_barwipe {};
 
-	void *view() { return m_view; }
-	const common::gui_region &get_mouse_region() { return m_region->get_mouse_region(); }
+class cocoa_transition_engine_boxwipe :
+	virtual public cocoa_transition_blitclass_r1r2,
+	virtual public smil2::transition_engine_boxwipe {};
+
+class cocoa_transition_engine_barndoorwipe :
+	virtual public cocoa_transition_blitclass_r1r2,
+	virtual public smil2::transition_engine_barndoorwipe {};
+
+smil2::transition_engine *cocoa_transition_engine(
+	common::surface *dst, bool is_outtrans, lib::transition_info *info);
 	
-  private:
-    void *m_view;
-};
-
-;
-class cocoa_window_factory : public common::window_factory {
-  public:
-  	cocoa_window_factory(void *view)
-  	:	m_defaultwindow_view(view) {}
-  	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::surface_source *region);
-	common::gui_region *new_mouse_region();
-	common::renderer *new_background_renderer(const common::region_info *src);
-  private:
-    void *m_defaultwindow_view;
-};
-
-class cocoa_renderer_factory : public common::playable_factory {
-  public:
-  	cocoa_renderer_factory(net::datasource_factory *df)
-	:   m_datasource_factory(df) {}
-  	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp);
-  private:
-    net::datasource_factory *m_datasource_factory;
-};
-
 } // namespace cocoa
 
 } // namespace gui
  
 } // namespace ambulant
 
-#ifdef __OBJC__
-@interface AmbulantView : NSView
-{
-    ambulant::gui::cocoa::cocoa_window *ambulant_window;
-	NSImage *transition_surface;
-	int transition_count;
-}
-
-- (id)initWithFrame:(NSRect)frameRect;
-
-- (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window;
-- (void)ambulantWindowClosed;
-- (bool)isAmbulantWindowInUse;
-- (BOOL)isFlipped;
-
-- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
-- (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
-
-- (void)mouseDown: (NSEvent *)theEvent;
-- (void)mouseMoved: (NSEvent *)theEvent;
-
-- (void)dumpToImageID: (char *)ident;
-- (void)dump: (id)image toImageID: (char *)ident;
-- (BOOL)wantsDefaultClipping;
-
-- (void) incrementTransitionCount;
-- (void) decrementTransitionCount;
-- (NSImage *)getTransitionSurface;
-- (NSImage *)getTransitionOldSource;
-- (NSImage *)getTransitionNewSource;
-@end
-
-#endif // __OBJC__
-#endif // AMBULANT_GUI_COCOA_COCOA_GUI_H
+#endif // AMBULANT_GUI_COCOA_COCOA_TRANSITION_H

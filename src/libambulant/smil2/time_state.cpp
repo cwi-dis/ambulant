@@ -253,11 +253,13 @@ void active_state::enter(qtime_type timestamp) {
 	m_needs_remove = true;
 			
 	// if this is in a seq should remove any freeze effect of previous
+	// XXX Not strictly correct for fill=transition, which now behaves identical to fill=hold
 	if(m_self->up() && m_self->up()->is_seq()) {
 		 time_node *prev = m_self->previous();
 		 if(prev) {
 			const time_attrs* ta = prev->get_time_attrs();
-			if(ta->get_fill() != fill_hold)
+			fill_behavior fb = ta->get_fill();
+			if(fb != fill_hold && fb != fill_transition)
 				prev->remove(timestamp);
 		 }
 	}

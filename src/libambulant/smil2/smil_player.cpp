@@ -55,6 +55,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/system.h"
+#include "ambulant/lib/transition_info.h"
 
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
@@ -378,6 +379,28 @@ smil_player::new_playable(const lib::node *n) {
 		if (rend) {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
+			const char *transin_id = n->get_attribute("transIn");
+			if (transin_id) {
+				lib::node *transin_node = n; /* XXXX */
+				if (n) {
+					lib::transition_info *transin = lib::transition_info::from_node(transin_node);
+					rend->set_intransition(transin);
+				} else {
+					m_logger->error("<%s id=\"%s\" transIn=\"%s\">: transition not found", 
+						tag.c_str(), (pid?pid:""), transin_id);
+				}
+			}
+			const char *transout_id = n->get_attribute("transOut");
+			if (transout_id) {
+				lib::node *transout_node = n; /* XXXX */
+				if (n) {
+					lib::transition_info *transout = lib::transition_info::from_node(transout_node);
+					rend->set_outtransition(transout);
+				} else {
+					m_logger->error("<%s id=\"%s\" transOut=\"%s\">: transition not found", 
+						tag.c_str(), (pid?pid:""), transout_id);
+				}
+			}
 		} else {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface not set becasue rend == NULL");
 		}

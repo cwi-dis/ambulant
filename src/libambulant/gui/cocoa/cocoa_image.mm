@@ -52,9 +52,11 @@
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
+#include "ambulant/gui/cocoa/cocoa_transition.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -74,9 +76,27 @@ cocoa_active_image_renderer::~cocoa_active_image_renderer()
 	if (m_image)
 		[m_image release];
 	m_image = NULL;
+	if (m_trans_engine) delete m_trans_engine;
 	m_lock.leave();
 }
 	
+void
+cocoa_active_image_renderer::start(double where)
+{
+	/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.start(0x%x)", (void *)this);
+	if (m_intransition) {
+		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
+		if (m_trans_engine)
+			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
+	}
+	if (m_outtransition) {
+		// XXX Schedule beginning of out transition
+		//lib::event *ev = new transition_callback(this, &transition_outbegin);
+		//m_event_processor->add_event(ev, XXXX);
+	}
+	common::active_final_renderer::start(where);
+}
+
 void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {
@@ -96,6 +116,23 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
+
+	// See whether we're in a transition
+	NSImage *surf = NULL;
+	if (m_trans_engine && m_trans_engine->is_done()) {
+		delete m_trans_engine;
+		m_trans_engine = NULL;
+	}
+	if (m_trans_engine) {
+		surf = [view getTransitionSurface];
+		if ([surf isValid]) {
+			[surf lockFocus];
+			/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to transition surface");
+		} else {
+			lib::logger::get_logger()->error("cocoa_active_image_renderer.redraw: cannot lockFocus for transition");
+			surf = NULL;
+		}
+	}
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const region_info *info = m_dest->get_info();
 #if 0
@@ -137,7 +174,22 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 	} else {
 	}
 	
+	if (surf) [surf unlockFocus];
+	if (m_trans_engine && surf) {
+		/*AM_DBG*/ logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to view");
+		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
+		typedef lib::no_arg_callback<cocoa_active_image_renderer> transition_callback;
+		lib::event *ev = new transition_callback(this, &cocoa_active_image_renderer::transition_step);
+		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
+	}
+
 	m_lock.leave();
+}
+
+void
+cocoa_active_image_renderer::transition_step()
+{
+	if (m_dest) m_dest->need_redraw();
 }
 
 

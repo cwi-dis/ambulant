@@ -54,6 +54,7 @@
 #define AMBULANT_GUI_COCOA_COCOA_IMAGE_H
 
 #include "ambulant/common/renderer.h"
+#include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>
 
@@ -76,13 +77,18 @@ class cocoa_active_image_renderer : public active_final_renderer {
 		net::datasource_factory *df)
 	:	active_final_renderer(context, cookie, node, evp, df),
 		m_image(NULL),
-		m_nsdata(NULL) {};
+		m_nsdata(NULL),
+		m_trans_engine(NULL) {};
 	~cocoa_active_image_renderer();
 
+	void start(double where);
     void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
+	void transition_step();
+	
   	NSImage *m_image;
   	NSData *m_nsdata;
+	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };
 

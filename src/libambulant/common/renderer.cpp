@@ -51,6 +51,7 @@
  */
 
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/transition_info.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 #ifdef AMBULANT_PLATFORM_UNIX
@@ -81,11 +82,20 @@ active_renderer::active_renderer(
 	net::datasource_factory *df)
 :	active_basic_renderer(context, cookie, node, evp),
 	m_src(NULL),
-	m_dest(NULL)
+	m_dest(NULL),
+	m_intransition(NULL),
+	m_outtransition(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	std::string url = node->get_url("src");
 	m_src = df->new_raw_datasource(url);	
+}
+
+active_renderer::~active_renderer()
+{
+	AM_DBG lib::logger::get_logger()->trace("~active_renderer(0x%x)", (void *)this);
+	if (m_intransition) delete m_intransition;
+	if (m_outtransition) delete m_outtransition;
 }
 
 void

@@ -61,9 +61,16 @@
 
 #include <Cocoa/Cocoa.h>
 
+// Defines for image dump debugging
+#define DUMP_IMAGES_FORMAT @"/tmp/amdump/ambulant_dump_%03d_%s.tiff"
+//#define DUMP_REDRAW
+//#define DUMP_TRANSITION
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+
+static ambulant::lib::critical_section redraw_lock;
 
 namespace ambulant {
 
@@ -92,7 +99,9 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
+	redraw_lock.enter();
 	[my_view setNeedsDisplayInRect: my_rect];
+	redraw_lock.leave();
 	//[my_view setNeedsDisplay: YES];
 }
 
@@ -236,6 +245,15 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #ifdef __OBJC__
 @implementation AmbulantView
 
+- (id)initWithFrame:(NSRect)frameRect
+{
+	[super initWithFrame: frameRect];
+	ambulant_window = NULL;
+	transition_surface = NULL;
+	transition_count = 0;
+	return self;
+}
+
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
 {
 #ifdef USE_COCOA_BOTLEFT
@@ -264,13 +282,21 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (void)drawRect:(NSRect)rect
 {
-    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x", self);
-    if (!ambulant_window) {
+    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(rect), NSMinY(rect), NSMaxX(rect), NSMaxY(rect));
+    redraw_lock.enter();
+	if (!ambulant_window) {
         AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
     } else {
+		// If we have seen transitions we always redraw the whole view
+		if (transition_count) rect = [self bounds];
         ambulant::lib::screen_rect<int> arect = [self ambulantRectForNSRect: &rect];
         ambulant_window->redraw(arect);
+#ifdef DUMP_REDRAW
+		// Debug code: dump the contents of the view into an image
+		[self dumpToImageID: "redraw"];
+#endif
     }
+	redraw_lock.leave();
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window
@@ -342,6 +368,88 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	// XXX Set correct cursor
 	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
 }
+
+- (void) dumpToImageID: (char *)ident
+{
+	[self lockFocus];
+	NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
+	[self unlockFocus];
+	[self dump: image toImageID: ident];
+}
+
+- (void) dump: (id)image toImageID: (char *)ident
+{
+	static int seqnum = 0;
+	NSString *filename = [NSString stringWithFormat: DUMP_IMAGES_FORMAT, seqnum++, ident];
+	NSData *tiffrep = [image TIFFRepresentation];
+	[tiffrep writeToFile: filename atomically: NO];
+	/*AM_DBG*/ NSLog(@"dump:toImageFile: created %@", filename);
+}
+
+- (BOOL)wantsDefaultClipping
+{
+#ifdef DUMP_IMAGES_FORMAT
+	return NO;
+#else
+	return (transition_count == 0);
+#endif
+}
+
+- (void) incrementTransitionCount
+{
+	transition_count++;
+	/*AM_DBG*/ NSLog(@"incrementTransitionCount: count=%d", transition_count);
+}
+
+- (void) decrementTransitionCount
+{
+	assert(transition_count > 0);
+	transition_count--;
+	/*AM_DBG*/ NSLog(@"decrementTransitionCount: count=%d", transition_count);
+	// XXXX Should we delete transition_surface?
+}
+
+- (NSImage *)getTransitionSurface
+{
+	if (!transition_surface) {
+		// It does not exist yet. Create it.
+		transition_surface = [self getTransitionOldSource];
+	}
+	return transition_surface;
+}
+
+- (NSImage *)getTransitionOldSource
+{
+	NSRect bounds = [self bounds];
+	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
+	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	[rv setFlipped: YES];
+	[self lockFocus];
+	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
+	[self unlockFocus];
+	[rv addRepresentation: bits];
+#ifdef DUMP_TRANSITION
+	[self dump: rv toImageID: "oldsrc"];
+#endif
+	return rv;
+}
+
+- (NSImage *)getTransitionNewSource
+{
+	NSRect bounds = [self bounds];
+	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
+	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	[rv setFlipped: YES];
+	[transition_surface lockFocus];
+	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
+	[transition_surface unlockFocus];
+	[rv addRepresentation: bits];
+#ifdef DUMP_TRANSITION
+	[self dump: rv toImageID: "newsrc"];
+#endif
+	return rv;
+}
+
 @end
 #endif // __OBJC__
 

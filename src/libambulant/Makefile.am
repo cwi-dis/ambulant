@@ -98,6 +98,7 @@ libambulant_la_SOURCES = \
 	lib/parselets.cpp \
 	lib/string_util.cpp \
 	lib/timer.cpp \
+	lib/transition_info.cpp \
 	lib/tree_builder.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
@@ -132,6 +133,7 @@ libambulant_la_SOURCES = \
 	smil2/time_state.cpp \
 	smil2/timegraph.cpp \
 	smil2/trace_player.cpp \
+	smil2/transition.cpp \
 	\
 	mms/mms_player.cpp \
 	mms/timeline_builder.cpp \

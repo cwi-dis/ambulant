@@ -100,6 +100,7 @@ class passive_region : public surface_template, public surface_source {
 	const passive_region* get_parent() const { return m_parent; }
 	const gui_region& get_mouse_region() const { return *m_mouse_region; }
 	const region_info *get_info() const { return m_info; }	
+	virtual abstract_window *get_abstract_window() { return m_parent->get_abstract_window(); }
 		
   protected:
 	virtual void need_redraw(const screen_rect<int> &r);
@@ -146,6 +147,7 @@ class passive_root_layout : public passive_region {
 	void need_redraw(const screen_rect<int> &r);
 	void mouse_region_changed();
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
+	abstract_window *get_abstract_window() { return m_gui_window; }
   private:
 	abstract_window *m_gui_window;
 };
@@ -189,6 +191,7 @@ class active_region : public surface, public surface_source {
 	void set_alignment(const alignment *align) { m_alignment = align; }
 	const alignment *get_alignment() const { return m_alignment; }
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
+	abstract_window *get_abstract_window() { return m_source->get_abstract_window(); }
 	// And some renderer interface we don't support:
 	void set_surface(surface *dest) {abort(); }
 	surface *get_surface() {abort(); return 0;}

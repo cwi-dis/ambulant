@@ -62,6 +62,7 @@ namespace ambulant {
 namespace lib {
 class node;
 class document;
+class transition_info;
 } // namespace lib
 
 namespace common {
@@ -131,6 +132,8 @@ class renderer {
 	virtual ~renderer() {};
 	
 	virtual void set_surface(surface *destination) = 0;
+	virtual void set_intransition(lib::transition_info *info) = 0;
+	virtual void set_outtransition(lib::transition_info *info) = 0;
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	// XXXX This is a hack.
@@ -142,9 +145,12 @@ class renderer {
 // themselves. It is used to commmunicate redraw requests and mouse ckicks
 // and such from the GUI window all the way down to
 // the renderer.
+// XXX This class should go!
 class surface_source : public renderer {
   public:
 	virtual const gui_region& get_mouse_region() const = 0;
+	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
+	void set_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
 };
 
 // class alignment is a pure virtual baseclass used for aligning an
@@ -189,6 +195,9 @@ class surface {
 	
 	// Get object holding SMIL region parameters for querying
 	virtual const region_info *get_info() const = 0;
+	
+	// Get the OS window for this surface
+	virtual abstract_window *get_abstract_window() = 0;
 };
 
 // window_factory is subclassed by the various GUI implementations.

@@ -101,6 +101,8 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 
 	void set_surface(common::surface *dest) { abort(); }
 	common::surface *get_surface() { abort(); }
+	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
+	void set_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
 		  
 	static void sdl_callback(Uint8 *stream, int len);
   private:

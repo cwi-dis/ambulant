@@ -14,5 +14,6 @@ library_include_HEADERS= \
 	time_node.h \
 	time_state.h \
 	timegraph.h \
-	trace_player.h
+	trace_player.h \
+	transition.h
 	
