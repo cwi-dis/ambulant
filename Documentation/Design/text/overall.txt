@@ -92,6 +92,13 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
   path, as in::
   
   	#include "ambulant/net/url.h"
+  	
+- Everything goes into namespace "ambulant", with sub-namespaces "lib",
+  "net", etc. Machine-dependent code goes into it's own "unix", "win32", etc
+  subnamespace of those.
+- Source files have "using namespace ambulant;" at the top, with fully
+  qualified declarations. Within bodies you use "using namespace lib::unix"
+  whenever needed.
 	
 - We need to define which preprocessor defines we are going to
   switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in
