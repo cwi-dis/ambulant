@@ -1,7 +1,7 @@
 Ambulant design, main objects 
 =============================
-Jack Jansen, 01-Aug-03.
------------------------
+30-Sep-03
+---------
 
 Objects we need:
 
@@ -21,6 +21,7 @@ Objects we need:
 - Document Parser. The parser for a document.
 - Document Scheduler. This reads a document and runs it.
 - Timeline. This executes a single timeline.
+- Player. This is the toplevel object.
 
 Objects we may need:
 
@@ -38,15 +39,24 @@ multiple object classes: the `refcounting protocol` and the `active/passive
 protocol`.
 
 The `refcounting protocol` is contained in the file ``lib/refcount.h``. It needs to
-be implemented only by objects that is truly shared, i.e. any object whose
+be implemented only by objects that are truly shared, i.e. any object whose
 lifetime is not predetermined by some other object. New instances of refcounted
 objects are created using the operator new. Any object that needs to share
 a particular instance calls add_ref against this instance. The creator
 of the refcounted object and any sharer are responsible to call the release
 function of the object when they don't need the object any more. 
 
-The `active/passive protocol` is contained in the ``lib/skeleton.h``
-header. JJ will need to explain this protocol.
+The `active/passive protocol` is more a pattern than a protocol. The pattern
+is used often in Ambulant for objects that go through two stages during
+their lifetime: a building stage and an active (running) stage. The passive
+object is the object that corresponds to the building stage and the built
+stage that follows it. The passive object *appears* to be immutable.
+Once the object actually needs to do work we activate it, giving a new instance
+of an active object that does the actual work. The passive object remains
+in existence, and can be re-used.
+
+Note that I say "appears immutable": passive objects could internally cache
+information, or keep one or more active instances ready for quick disposal.
 
 Event processor
 ---------------
@@ -111,57 +121,55 @@ source which actually fetches data and pushes it to the consumer.
 The passive data source has a call ``preroll()`` which creates the active counterpart
 behind the scenes, so that a later call to ``activate()`` will return quickly.
 
-Data sources are push-based: the client asks
-for data, this call returns immedeately, and when the data is available
-an event is fired. There is probably also a call that says "don't
-send me the event until you have all the data that is there".
+Data sources are push-based: the client calls ``start()`` to ask
+for data, this call returns immediately, and when the data is available
+an event is fired. In the future we probably also want a variant of ``start()``
+that does not fire the event as soon as *any* data is available, but only when
+*all* data has been read.
 
-*QUESTION* in addition we could have a call read_all() which does away
-with all the event processing (or at least hides it) and just dumps all data into a
-buffer. Do we need this?
+The callback does not contain the data, it is only a signal of its availability.
+The ``read()`` methods allows the caller to read the actual data. At the moment
+there is a lot of unnecessary copying going on, this will need change in the
+future.
 
-*QUESTION* what sort of push-based API do we want? We could have one where the
-producer callback simply signals data availability, and the consumer would then read()
-this data (thereby signalling to the producer that it could go get more data).
-Alternatively, the producer callback could contain a reference to the data/length.
-In that case, if there is more data than the consumer can handle presently, who is
-responsible for keeping it? I.e. can the consumer push it back to the producer, or
-will it have to do buffering?
-
-Some data sources will be able to handle some of the extra parameters
+Some data sources may be able to handle some of the extra parameters
 (clip-begin/end, ignore-repeat) itself, the rest will be passed to 
-the renderer to handle. 
+the renderer to handle. At the moment there is no provision for passing
+this information to the data source.
 
-*QUESTION* is this actually feasible? Is
-there a way we could do this? Maybe there is: you pass all
-such extra paremeter (lets call them "filtering parameters") to the
-passive data source creation method. The active data source will handle
-some of these itself, and those that it can't handle it keeps for future
-reference. Then when you start actually reading from the active data source
-you first ask for any unhandled filtering parameters and are given this list.
-you are then responsible for implementing them.
+	*OPEN ISSUE*
+	Is this actually feasible? Is
+	there a way we could do this? Maybe there is: you pass all
+	such extra pareaeter (lets call them "filtering parameters") to the
+	passive data source creation method. The active data source will handle
+	some of these itself, and those that it can't handle it keeps for future
+	reference. Then when you start actually reading from the active data source
+	you first ask for any unhandled filtering parameters and are given this list.
+	you are then responsible for implementing them.
+	
+	*OPEN ISSUE*
+	We need to think about how to handle multiplexed data streams such as RTSP.
+	It could be that this is simply someone elses problem (the RTSP library),
+	but maybe we need multiplexed data streams too.
 
-*QUESTION*
-We need to think about how to handle multiplexed data streams such as RTSP.
-It could be that this is simply someone elses problem (the RTSP library),
-but maybe we need multiplexed data streams too.
+	*OPEN ISSUE* we could have a subclass timed_active_datasource, for data sources
+	which refer to timed media. Do we need this, i.e. do we ever want to seek a
+	datastream? And, if we do want to seek, do we want a subclass or
+	simply have this funcitonality on all active datasources (to be ignored
+	on non-timed media)?
 
-A decoder object gets data from a data source, does something to it (such
+A decoder data source object gets data from a data source, does something to it (such
 as decoding JPEG data) and passes it on.
 
-	I keep flipping back-and-forth about where to do decoding: at the
-	source end (as stated in the previous paragraph), in the Renderer
-	object or at the sink. Comments?
+	*OPEN ISSUE*
+	 I keep flipping back-and-forth about where to do decoding: at the
+	source end (as stated in the previous paragraph) or in the Renderer
+	object. Current GUI toolkits can do a lot of things like decoding JPEGs...
 	
-*QUESTION* buffer management isn't touched on. Do we need a buffer type?
-Or does simply malloced memory, along with strict rules for who is
-responsible for freeing it at what time, suffice?
-
-*QUESTION* we could have a subclass timed_active_datasource, for data sources
-which refer to timed media. Do we need this, i.e. do we ever want to seek a
-datastream? And, if we do want to seek, do we want a subclass or
-simply have this funcitonality on all active datasources (to be ignored
-on non-timed media)?
+Active data sources have a ``databuffer`` auxiliary object that stores the
+data. The current implementation of this is a placeholder, it should be replaced
+by something that is more efficient. The API will probably also change for
+this.
 
 Region
 ------
@@ -170,44 +178,73 @@ A region is more-or-less a SMIL region, it has XYWH parameters, a parent
 region (unless it is a toplevel window) and parameters such as background
 color, transparency, etc. Rendering is not done directly to a region, but
 the region is activated to return a active region object to which rendering is
-done.
-
-SMIL animation on region parameters is a tricky issue. Initially I thought
-the best way to solve this was again by some activate() scheme which would
-return an animated_region, but SMIL animation is a truly global effect:
-while the animation is active the results are seen by everything. For
-this reason I now think it's best to have the region object store
-two sets of parameters (XYWH, color, etc): the default set and the animated
-set. An "animation is active" bit will decide which set to use.
-
-Whenever any of the parameters is animated the region will have to
-communicate this to its data sinks, which may in turn need to communicate it
-to its renderer or transition.
-
-Subregion position, and especially animation thereof, creates more
-issues. It may be a good idea to simply state that every node renders
-to a subregion, but with that subragion being simply a transparent
-(0, 0, 100%, 100%) subregion for most nodes. 
+done. When an ``active_region`` is ready to be displayed it tells this to its
+``passive_region``, which remembers it as its current active region.
 
 
-Active region
--------------
+``Passive_window`` is a subclass of ``passive_region`` used for toplevel
+windows (``root_layout`` in SMIL terms). Passive_window objects are created
+by calling the ``newwindow()`` method of a ``window_factory`` object.
 
-A active region is a data sink, where data is sent. It is invoked with a SMIL region as
-parameter, but multiple sinks can share a region, in which case
-double-buffering for transitions and such happens there. It has no API
-for graphics or such, this is handled by the renderers using the local
-graphics APIs. A active region can send a callback to the renderer for
-"redraw" and "reinit". The latter is redraw on steroids: the underlying
-OS window may have changed (end of transition, resize). Probably user
-interaction (clicking the mouse) also needs to follow this paradigm.
+These latter two objects are again subclassed for each GUI toolkit that needs
+to be supported. Usually, the ``window_factory`` will contain some sort of
+pointer to the underlying GUI window, and this pointer is passed along to
+each ``passive_window`` created.
 
-	An active region used to be called a data sink. The name active region is
-	more in line with the other active/passive class names.
+Each region has its own private coordinate system, with ``(0, 0)`` at the
+top-left corner. Each region also stores its visible area in the coordinate
+system of its parent region, and conversion between coordinate systems is
+done on each upcall and downcall. In addition each region currently caches
+its ``(0, 0)`` location in its root ``passive_window`` coordinate system
+for quick access, but this could be changed.
+
+Passive regions have one upcall and one downcall: ``need_redraw()`` is an
+upcall signalling that an area needs to be redrawn. It is initially generated
+by a renderer (usually), passed to the ``active_region``, passed up the
+``passive_region`` chain to the ``passive_window``, which passes it to the
+GUI toolkit. The corresponding downcall is ``redraw()``, which is generated
+by the ``passive_window`` in response to a GUI toolkit event. Each ``passive_region``
+passes it to its active current region (if there is one), and then passes it
+down to all its child regions that overlap the region needing redraw. The active
+regions pass it on to the corresponding renderers.
+
+The ``passive_window`` is passed along to the ``redraw()`` calls, this is
+how the (toolkit-dependent) renderers eventually get at a pointer to the window
+to render in.
+
+	*OPEN ISSUE*
+	SMIL animation on region parameters is a tricky issue. Initially I thought
+	the best way to solve this was again by some activate() scheme which would
+	return an animated_region, but SMIL animation is a truly global effect:
+	while the animation is active the results are seen by everything. For
+	this reason I now think it's best to have the region object store
+	two sets of parameters (XYWH, color, etc): the default set and the animated
+	set. An "animation is active" bit will decide which set to use.
+
+	Whenever any of the parameters is animated the region will have to
+	communicate this to its data sinks, which may in turn need to communicate it
+	to its renderer or transition.
 	
+	Subregion position, and especially animation thereof, creates more
+	issues. It may be a good idea to simply state that every node renders
+	to a subregion, but with that subregion being simply a transparent
+	(0, 0, 100%, 100%) subregion for most nodes. 
+
+At the moment we only have an implementation for regions that correspond
+to actual screen regions, but SMIL also specifies audio regions. These
+will probably be implemented with superclasses of the current classes, with
+the functionality common to both visible and invisible regions moving to
+the superclasses.
+
+An active region is a data sink, where data is sent. It has no API
+for graphics or such, this is handled by the renderers using the local
+graphics APIs. At the moment ``redraw()`` is the only call an active region
+makes to its corresponding active renderer, but this may need to change 
+in the future to distinguish between simple redraws and resizes.
+
 In case of `fill=hold` or `fill=transition` someone has to be responsible
 for holding on to the active region and its contents. I think the best solution
-is to give this responsibility to the region, i.e. in these cases
+is to give this responsibility to the passive region, i.e. in these cases
 ownership of the active region is passed back to the region (in stead of
 the active region simply being discarded). The region will need a call
 that returns this "old active region" so transitions can do their thing.
@@ -216,46 +253,36 @@ if there isn't a fill=transition in effect, to simplify the transition
 code (it will always transition between two data sinks, or maybe even
 with two data sinks as sources and a third, new, one as destination).
 
-	*QUESTION*: when does something finally get shown on the screen?
-	The answer to this is important for the design of what preloading
-	a timeline does. If instantiating the active region makes it appear
-	on the screen then preloading the timeline cannot activate the region.
-	It may be better to have a `show()` method on the active renderer and
-	active region objects, so we can create all the objects while preloading
-	a timeline. Ideally, then, by the time the timeline object is starting
-	playback it sends `show()` to the active renderers, which send `show()`
-	to their active regions, which have already loaded the relevant data into
-	offscreen bitmaps and need only push them on-screen. 
-
+	*OPEN ISSUE*
+	At the moment nothing happens if there is no current active region
+	and a passive region gets a redraw. It may be a good idea to have
+	a specialized active region that shows the default background color,
+	etc.
+	
 Renderers
 ---------
 
-*NOTE*: in the current implementation renderers do not yet exist, and
-active regions fullfill their role too.
+A renderer is called with a data source, active region and event processor.
+It only exists in the active flavor currently, but the ``active_action``
+sub-object of the ``active_timeline`` could be seen as its passive
+counterpart.
 
-A renderer is called with a data source, region and a few other
-parameters (such as "ignore implicit repeat in media item"). It returns
-a renderer object. The renderer is the representation in a timeline
-object of the node in the SMIL document.
+Renderers are created through the ``new_renderer()`` method of a
+``renderer_factory`` object, passing the node we want to render.
+This object is subclassed for each GUI toolkit
+we want to support. In addition, for each toolkit we also subclass
+``active_renderer`` for each media type we support. So, to give
+an example, for Cocoa we have ``cocoa_renderer_factory`` which returns
+(depending on the node type) an object of any of the classes
+``cocoa_active_text_renderer``, ``cocoa_active_image_renderer``, etc.
 
-When the renderer is activated it activates the data source and region,
-and starts rendering.
+When the renderer is activated it activates the data source and starts it.
+It then waits for either data to become available, in which case it sends
+a ``need_redraw()`` to its region, or ``redraw()`` calls from its region,
+in which case it renders what it can (the full data if available, else
+maybe parital data, else a background).
 
-*QUESTION*: at some point someone has to decide which (active) renderer
-class to use to handle the media. Its could either be done dynamically,
-when the active renderer has opened the data source, or statically, at the
-time the static renderer object is created. The advantage of dynamic is
-that at that point we have a data source open, so we can presumably get
-MIME type and such at low cost. On the other hand doing it statically means
-we don't have to do it all again when we play the same media again later.
-Maybe a caching scheme is in order again here? Then the question also
-arises where to cache: at the data source is probably a good candidate.
-
-The renderer activates the region to a active region, it cannot be called
-with a active region as parameter (as it was in earlier versions of this document)
-because renderer objects are stateless.
-
-The renderer object interface should allow for at least three different
+In future, he renderer object interface should allow for at least three different
 implementations:
 
 1. The normal one, where the renderer depends on the data source for
@@ -264,13 +291,6 @@ implementations:
    data source and sink and passes it to a third party engine (think
    QuickTime or Direct X).
 3. A mix of the above.
-
-We need the dormant renderer object, which only holds the information
-needed to allow later activation (on demand?). Otherwise resources may
-become scarce: think of a seq with 1000 slides: we don't want to open
-all images beforehand or we will run out of file descriptors. But
-sometimes the document scheduler must open the data source, if the media
-item is part of a switch, for instance.
 
 Clocks
 ------
@@ -331,13 +351,6 @@ and user interaction, this will not be the case any more, and the player
 object will become more complex. It will have to listen for
 callbacks from timeline objects (timeline finished, user interaction)
 and react by creating new timelines and starting them.
-
-*QUESTION*: who is responsible for creating regions? The HL scheduler
-seems the best candidate, but that would interfere with any decoupling
-of HL and LL scheduler. Also, if we want to handle subregion positioning
-by inserting a temporary region into the region tree the timeline scheduler
-should also be able to create regions. Animating subregion positioning
-complicates matters even more.
 
 Timelines
 ---------
