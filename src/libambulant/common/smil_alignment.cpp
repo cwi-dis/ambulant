@@ -51,11 +51,36 @@
  */
 
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/common/smil_alignment.h"
 
 using namespace ambulant;
 using namespace common;
 
+// Helper function: get region_dim value from an attribute
+static common::region_dim
+get_regiondim_attr(const lib::node *rn, char *attrname)
+{
+	const char *attrvalue = rn->get_attribute(attrname);
+	common::region_dim rd;
+	if (attrvalue == NULL || *attrvalue == '\0') {
+		// pass: region_dim are initialized as auto
+	} else {
+		int ivalue;
+		char *endptr;
+		ivalue = strtol(attrvalue, &endptr, 10);
+		if (*endptr == '\0' || strcmp(endptr, "px") == 0) {
+			rd = ivalue;
+		} else if (*endptr == '%') {
+			double fvalue;
+			fvalue = ivalue / 100.0;
+			rd = fvalue;
+		} else {
+			lib::logger::get_logger()->error("region_node: cannot parse %s=\"%s\"", attrname, attrvalue);
+		}
+	}
+	return rd;
+}
 // Helper function: decode pre-defined repoint names
 bool
 decode_regpoint(regpoint_spec &pt, const char *name)
@@ -90,7 +115,17 @@ smil_alignment::smil_alignment(const lib::node *n, const char *regPoint, const c
 	lib::node *regpoint_node = NULL;
 	if (!decode_regpoint(m_surface_fixpoint, regPoint) && regPoint != NULL) {
 		// Non-standard regpoint. Look it up.
-		lib::logger::get_logger()->error("smil_alignment: only standard regPoint values implemented", regAlign);
+		const lib::node_context *ctx = n->get_context();
+		regpoint_node = ctx->get_node_by_id(regPoint);
+		if (regpoint_node == NULL) {
+			lib::logger::get_logger()->error("smil_alignment: unknown regPoint: %s", regPoint);
+		} else {
+			if (regpoint_node->get_local_name() != "regPoint")
+				lib::logger::get_logger()->error("smil_alignment: node with id \"%s\" is not a regPoint", regPoint);
+			// XXX Just for now:-)
+			m_surface_fixpoint.left = get_regiondim_attr(regpoint_node, "left");
+			m_surface_fixpoint.top = get_regiondim_attr(regpoint_node, "top");
+		}
 	}
 	if (!decode_regpoint(m_image_fixpoint, regAlign)) {
 		// See if we can get one from the regPoint node, if there is one
