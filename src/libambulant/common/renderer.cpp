@@ -262,9 +262,13 @@ void
 active_video_renderer::stop()
 { 
 	m_lock.enter();
-	m_is_playing = false; 
+	m_is_playing = false;
+	if (m_dest)
+	  m_dest->renderer_done(this);
+	m_dest = NULL;
 	if (m_audio_renderer) 
 		m_audio_renderer->stop();
+	m_audio_renderer = NULL;
 	m_lock.leave();
 }
 
