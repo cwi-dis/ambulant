@@ -82,7 +82,7 @@ namespace ambulant {
 
 namespace lib {
 
-typedef void (*show_message_type)(char *format, ...);
+typedef void (*show_message_type)(const char *format, ...);
 
 class logger {
   public:
