@@ -46,7 +46,7 @@
  *
  */
 
- #define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -163,13 +163,59 @@ gui::sdl::sdl_active_audio_renderer::callback(void *userdata, Uint8 *stream, int
 			m_src->readdone(len);
 		} else {
 			in_ptr = (Uint8*) m_src->read_ptr();
-			memcpy(stream, in_ptr, size);
+		memcpy(stream, in_ptr, size);
 			m_src->readdone(size);
 		}	
+	} 
+}
+
+bool
+gui::sdl::sdl_active_audio_renderer::is_paused()
+{
+	if( SDL_audiostatus() == SDL_AUDIO_PAUSED ) {
+		return true;
 	} else {
-		
+		return false;
 	}
-	
+}
+
+bool
+gui::sdl::sdl_active_audio_renderer::is_stopped()
+{
+	if( SDL_audiostatus() == SDL_AUDIO_STOPPED ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool
+gui::sdl::sdl_active_audio_renderer::is_playing()
+{
+	if( SDL_audiostatus() == SDL_AUDIO_PLAYING ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+void
+gui::sdl::sdl_active_audio_renderer::stop()
+{
+	SDL_PauseAudio(1);
+}
+
+void
+gui::sdl::sdl_active_audio_renderer::pause()
+{
+	SDL_PauseAudio(1);
+}
+
+void
+gui::sdl::sdl_active_audio_renderer::resume()
+{
+	SDL_PauseAudio(0);
 }
 
 

@@ -79,6 +79,11 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
       ~sdl_active_audio_renderer();
 
       
+  	  bool is_paused();
+  	  bool is_stopped();
+  	  bool is_playing();
+  
+ 
       void start(double where);
       void stop() {};
       void pause() {};
@@ -92,7 +97,7 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
   	  void callback(void *userdata, Uint8 *stream, int len);
 		  
 	private:
-		
+	
       static bool m_sdl_init;
   	  int init(int rate, int bits, int channels);
       SDL_AudioSpec *m_audiospec;
