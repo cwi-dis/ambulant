@@ -48,6 +48,7 @@
 
 #import "MyAppDelegate.h"
 #import "MyDocument.h"
+#import "LogController.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -161,6 +162,8 @@ initialize_logger()
 - (IBAction)showLogWindow:(id)sender
 {
 	NSLog(@"Show Log Window");
+	LogController *log = [LogController sharedLogController];
+	if (log) [log showWindow: sender];
 }
 
 - (IBAction)openURL:(id)sender
