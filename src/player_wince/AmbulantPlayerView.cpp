@@ -66,8 +66,12 @@ create_player_instance(const net::url& u) {
 	return new gui_player(s_player_callbacks, u);
 }
 
-void lib::win32::show_message(const char *message) {
-	MessageBox(s_hwnd, textptr(message), text_str("AmbulantPlayer"), MB_OK);
+void lib::win32::show_message(int level, const char *message) {
+	unsigned int type = MB_OK;
+	if (level == lib::logger::LEVEL_WARN) type |= MB_ICONWARNING;
+	if (level == lib::logger::LEVEL_ERROR) type |= MB_ICONERROR;
+	if (level == lib::logger::LEVEL_FATAL) type |= MB_ICONERROR;
+	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), type);
 }
 
 static  gui_player *player = 0;
