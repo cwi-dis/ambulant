@@ -298,11 +298,23 @@ inline bool logger::suppressed(int level) {
 }
 
 
+#ifdef AMBULANT_PLATFORM_WIN32
+
+// A machine-dependent function to show a popup message
+void show_message(const char *format, ...);
+
+#else 
+
+// dummy for rest of platforms
+inline void show_message(const char *format, ...) {}
+
+#endif
 
 } // namespace lib
 
 } // namespace ambulant
 
 #define LOGGER_ASSERT(exp) if(!(exp)) ambulant::lib::logger::assert_expr(exp, #exp)
+
 
 #endif // 
