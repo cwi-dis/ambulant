@@ -140,12 +140,28 @@ active_datasource::callback()
 bool
 active_datasource::end_of_file()
 {
-	if (m_buffer->buffer_not_empty()) return false;
-	return m_end_of_file;
+	bool rv;
+	m_lock.enter();
+	rv = _end_of_file();
+	m_lock.leave();
+	return rv;
+}
+
+bool
+active_datasource::_end_of_file()
+{
+	bool rv;
+	// private method - no need to lock
+	if (m_buffer->buffer_not_empty()) 
+		rv = false;
+	else
+		rv = m_end_of_file;
+	return rv;
 }
 
 active_datasource::~active_datasource()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("active_datasource::~active_datasource(0x%x)", (void*)this);
 	if (m_buffer) {
 		delete m_buffer;
@@ -154,17 +170,20 @@ active_datasource::~active_datasource()
 	if (m_source) m_source->release();
 	m_source = NULL;
 	close(m_stream);
+	m_lock.leave();
 }
 
 int
 active_datasource::size() const
 {
-	return m_buffer->size();
+	// const method - cannot use the lock.
+	int rv = m_buffer->size();
 }
 
 void
 active_datasource::filesize()
 {
+	// private method - no need to lock
  	using namespace std;
 	int dummy;
 	if (m_stream >= 0) {
@@ -181,17 +200,20 @@ active_datasource::filesize()
 void
 active_datasource::read(char *data, int sz)
 {
+	m_lock.enter();
     char* in_ptr;
     if (sz <= m_buffer->size()) {
     	in_ptr = m_buffer->get_read_ptr();
         memcpy(data,in_ptr,sz);
         m_buffer->readdone(sz);
     }
+	m_lock.leave();
 }
 
 void
 active_datasource::read_file()
 {
+	// private method - no need to lock
   	char *buf;
   	int n; 	
 	//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading file ");
@@ -218,13 +240,17 @@ active_datasource::read_file()
 char* 
 active_datasource::get_read_ptr()
 {
-	return m_buffer->get_read_ptr();
+	m_lock.enter();
+	char *rv = m_buffer->get_read_ptr();
+	m_lock.leave();
+	return rv;
 }
   
 void
 active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
- 	if (! end_of_file() ) read_file();
+	m_lock.enter();
+ 	if (! _end_of_file() ) read_file();
 	
 	if (m_buffer->size() > 0 ) {
     	if (evp && cbevent) {
@@ -232,10 +258,13 @@ active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::eve
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}
+	m_lock.leave();
 }
  
 void
 active_datasource::readdone(int sz)
 {
+	m_lock.enter();
 	m_buffer->readdone(sz);
+	m_lock.leave();
 }

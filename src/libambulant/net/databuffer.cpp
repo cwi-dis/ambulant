@@ -117,6 +117,7 @@ databuffer::databuffer(int max_size)
 void
 databuffer::set_max_size(int max_size)
 {
+	m_lock.enter();
 	// Zero means: no limit, <0 means: default
     if (max_size >= 0) {
         m_max_size = max_size;
@@ -124,10 +125,12 @@ databuffer::set_max_size(int max_size)
         m_max_size = DEFAULT_MAX_BUF_SIZE;
     }
     m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	m_lock.leave();
 }
 
 databuffer::~databuffer()
 {
+	m_lock.enter();
 	if (m_buffer) {
 		free(m_buffer);
 		m_used = 0;
@@ -135,6 +138,7 @@ databuffer::~databuffer()
         m_rear = 0;
         m_buffer = NULL;
 	}
+	m_lock.leave();
 }
 
 int databuffer::size() const
@@ -144,6 +148,7 @@ int databuffer::size() const
 
 void databuffer::dump(std::ostream& os, bool verbose) const
 {
+	m_lock.enter();
 	unsigned long int i;
 
 	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
@@ -157,11 +162,14 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 		}
 	} 
  	os << std::endl;
+	m_lock.leave();
 }
 
 char *
 databuffer::get_write_ptr(int sz)
 {
+	m_lock.enter();
+	char *rv = NULL;
 	//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: start BUFSIZ = %d", BUFSIZ);
 	
     if(!m_buffer_full) {
@@ -171,16 +179,18 @@ databuffer::get_write_ptr(int sz)
             lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
         }
 		//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
-		return (m_buffer + m_size);
+		rv = m_buffer + m_size;
     } else {
         lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
-		return NULL;
+		rv = NULL;
     }
-    
+    m_lock.leave();
+	return rv;
 }
 
 void databuffer::pushdata(int sz)
 {
+	m_lock.enter();
 	if (m_buffer_full) {
         lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
@@ -195,21 +205,27 @@ void databuffer::pushdata(int sz)
 		AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
 		m_buffer_full = true;
 	}
+	m_lock.leave();
 }
 
 
 char *
 databuffer::get_read_ptr()
 {
-	return (m_buffer + m_rear);
+	m_lock.enter();
+	char *rv = (m_buffer + m_rear);
+	m_lock.leave();
+	return rv;
 }
 
 void
 databuffer::readdone(int sz)
 {
+	m_lock.enter();
     if ((unsigned long int)sz <= m_used) {
         m_rear += sz;
         m_used = m_size - m_rear;
     }
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	m_lock.leave();
 }

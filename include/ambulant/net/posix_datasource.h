@@ -144,6 +144,7 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
 		return os;
 	}
   private: 
+    bool _end_of_file();
 	void filesize();
     void read_file();
 	databuffer *m_buffer;
@@ -151,6 +152,7 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
 	int m_filesize;
 	int m_stream;
 	bool m_end_of_file;
+	lib::critical_section m_lock;
 };
 
 } // end namespace net

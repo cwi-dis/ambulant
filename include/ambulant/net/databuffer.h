@@ -50,6 +50,7 @@
 #ifndef AMBULANT_NET_DATABUFFER_H
 #define AMBULANT_NET_DATABUFFER_H
 
+#include "ambulant/lib/mtsync.h"
 #include <iostream>
 #ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
@@ -100,8 +101,7 @@ class databuffer
  	unsigned long int m_max_size; 														 
 	unsigned long int m_used;							
 	bool m_buffer_full;
-
-	
+	lib::critical_section m_lock;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {

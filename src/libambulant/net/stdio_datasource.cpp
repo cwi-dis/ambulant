@@ -112,28 +112,42 @@ stdio_datasource::callback()
 bool
 stdio_datasource::end_of_file()
 {
+	m_lock.enter();
+	bool rv = _end_of_file();
+	m_lock.leave();
+	return rv;
+}
+
+bool
+stdio_datasource::_end_of_file()
+{
+	// private method - no need to lock
 	if (m_buffer->buffer_not_empty()) return false;
 	return m_end_of_file;
 }
 
 stdio_datasource::~stdio_datasource()
 {
+	m_lock.enter();
 	if (m_buffer) {
 		delete m_buffer;
 		m_buffer = NULL;
 	}
 	fclose(m_stream);
+	m_lock.leave();
 }
 
 int
 stdio_datasource::size() const
 {
+	// const method - cannot lock
 	return m_buffer->size();
 }
 
 void
 stdio_datasource::filesize()
 {
+	// private method - no need to lock
  	using namespace std;
 	if (m_stream >= 0) {
 		// Seek to the end of the file, and get the filesize
@@ -150,17 +164,20 @@ stdio_datasource::filesize()
 void
 stdio_datasource::read(char *data, int sz)
 {
+	m_lock.enter();
     char* in_ptr;
     if (sz <= m_buffer->size()) {
     	in_ptr = m_buffer->get_read_ptr();
         memcpy(data,in_ptr,sz);
         m_buffer->readdone(sz);
     }
+	m_lock.leave();
 }
 
 void
 stdio_datasource::read_file()
 {
+	// private method - no need to lock
   	char *buf;
   	size_t n; 	
 	//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: start reading file ");
@@ -187,13 +204,17 @@ stdio_datasource::read_file()
 char* 
 stdio_datasource::get_read_ptr()
 {
-	return m_buffer->get_read_ptr();
+	m_lock.enter();
+	char * rv = m_buffer->get_read_ptr();
+	m_lock.leave();
+	return rv;
 }
   
 void
 stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
- 	if (! end_of_file() ) read_file();
+	m_lock.enter();
+ 	if (! _end_of_file() ) read_file();
 	
 	if (m_buffer->size() > 0 ) {
     	if (evp && cbevent) {
@@ -201,10 +222,13 @@ stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}
+	m_lock.leave();
 }
  
 void
 stdio_datasource::readdone(int sz)
 {
+	m_lock.enter();
 	m_buffer->readdone(sz);
+	m_lock.leave();
 }

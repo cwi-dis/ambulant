@@ -60,6 +60,9 @@ using namespace ambulant;
 typedef lib::no_arg_callback<gui::sdl::sdl_active_audio_renderer> readdone_callback;
 	
 extern "C" {
+
+// XXXX Need to lock the channel list with a mutex, probably...
+
 struct channel {
 	int m_channel_nr;
 	bool m_free;
@@ -208,12 +211,17 @@ int	 gui::sdl::sdl_active_audio_renderer::m_mixed_channels = 0;
 Uint16 gui::sdl::sdl_active_audio_renderer::m_sdl_format = AUDIO_S16SYS;
 net::audio_format gui::sdl::sdl_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
 int gui::sdl::sdl_active_audio_renderer::m_buffer_size = 4096;    
+lib::critical_section gui::sdl::sdl_active_audio_renderer::m_static_lock;    
 
 int
 gui::sdl::sdl_active_audio_renderer::init()
 {
+	m_static_lock.enter();
+	if (m_sdl_init) {
+		m_static_lock.leave();
+		return 0;
+	}
     int err = 0;
-	if (m_sdl_init) return 0;
 	
 	// XXXX Should check that m_ambulant_format and m_sdl_format match!
 	
@@ -221,6 +229,7 @@ gui::sdl::sdl_active_audio_renderer::init()
 	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
 	if (err < 0) {
 		lib::logger::get_logger()->error("sdl_active_audio_renderer.init: SDL_Init failed: error %d", err);
+		m_static_lock.leave();
 		return err;
 	}
 	
@@ -235,11 +244,13 @@ gui::sdl::sdl_active_audio_renderer::init()
 	err = Mix_OpenAudio(m_ambulant_format.samplerate, m_sdl_format, m_ambulant_format.channels, m_buffer_size);
 	if (err < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init: Mix_OpenAudio failed: error %d", err);
+		m_static_lock.leave();
     	return err;
 	}
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.init: SDL init succes");			
 	m_sdl_init = true;
+	m_static_lock.leave();
 	return err;
 }
 
@@ -274,10 +285,12 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 int
 gui::sdl::sdl_active_audio_renderer::inc_channels()
 {
+	m_static_lock.enter();
 	m_mixed_channels += 16;
 	int err;
 	err = Mix_AllocateChannels(m_mixed_channels);
-	err = resize_channel_list(m_mixed_channels);
+	err = resize_channel_list(m_mixed_channels); // XXXX Jack thinks the treatment of err is suspect
+	m_static_lock.leave();
 	return err;
 }
 
@@ -285,6 +298,10 @@ gui::sdl::sdl_active_audio_renderer::inc_channels()
 void
 gui::sdl::sdl_active_audio_renderer::playdone()
 {
+	// XXXX Jack is not sure about this m_lock.enter(): playdone() is called by the SDL layer, is there
+	// a chance that this happens synchronously from an SDL call that we are making while
+	// already holding the lock?
+	m_lock.enter();
 	// Acknowledge that we are ready with the data provided to us
 	// at the previous callback time
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: m_src->readdone(%d)", m_audio_chunk.alen);
@@ -293,10 +310,14 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 	if (m_audio_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
 		// XXX Need to delete reference on this created when we did lock_channel().
+		m_static_lock.enter();
 		unlock_channel(m_channel_used);
-		release();
+		m_static_lock.leave();
+		release(); // XXXX Jack thinks this is suspect here...
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
+		m_lock.leave();
 		stopped_callback();
+		return;
 	} else {
 #if 0
 		// At the moment the next comment is not true, because we've disabled start()ing in
@@ -309,11 +330,13 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	}
+	m_lock.leave();
 }
 
 void
 gui::sdl::sdl_active_audio_renderer::data_avail()
 {
+	m_lock.enter();
 	int result;
 	assert(m_audio_src);
 	m_audio_chunk.allocated = 0;
@@ -323,7 +346,9 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: got %d bytes", m_audio_chunk.alen);
 	
 	if (m_channel_used < 0) {
+		m_static_lock.enter();
 		new_channel();
+		m_static_lock.leave();
 	}
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: STARTING TO PLAY");
@@ -335,6 +360,7 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 
 	if (m_audio_src->end_of_file()) {
 		// No more data. Wait for the playdone callback before we call stopped_callback
+		m_lock.leave();
 		return;
 	}
 #if 0
@@ -349,11 +375,13 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 		m_audio_src->start(m_event_processor, e);
 	}
 #endif
+	m_lock.leave();
 }	
 
 void
 gui::sdl::sdl_active_audio_renderer::new_channel()
 {
+	// private method - no need to lock. But do make sure you hold m_static_lock too!
 	int result;
 	m_channel_used = free_channel();
 			
@@ -376,81 +404,96 @@ gui::sdl::sdl_active_audio_renderer::new_channel()
 bool
 gui::sdl::sdl_active_audio_renderer::is_paused()
 {
+	m_lock.enter();
+	bool rv;
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_paused(): channel not in use");
-		return false;
-	}
-	if( Mix_Paused(m_channel_used) == 1) {
-		return true;
+		rv = false;
+	} else if( Mix_Paused(m_channel_used) == 1) {
+		rv = true;
 	} else {
-		return false;
+		rv = false;
 	}
+	m_lock.leave();
+	return rv;
 }
 
 bool
 gui::sdl::sdl_active_audio_renderer::is_stopped()
 {
+	m_lock.enter();
+	bool rv;
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_stopped(): channel not in use");
-		return true;
-	}
-	if( Mix_Playing(m_channel_used) == 0 ) {
-		return true;
+		rv = true;
+	} else if( Mix_Playing(m_channel_used) == 0 ) {
+		rv = true;
 	} else {
-		return false;
+		rv = false;
 	}
+	m_lock.leave();
+	return rv;
 }
 
 bool
 gui::sdl::sdl_active_audio_renderer::is_playing()
 {
+	m_lock.enter();
+	bool rv;
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_playing(): channel not in use");
-		return false;
-	}
-	if( Mix_Playing(m_channel_used) == 1 ) {
-		return true;
+		rv = false;
+	} else if( Mix_Playing(m_channel_used) == 1 ) {
+		rv = true;
 	} else {
-		return false;
+		rv = false;
 	}
+	m_lock.leave();
+	return rv;
 }
 
 
 void
 gui::sdl::sdl_active_audio_renderer::stop()
 {
+	m_lock.enter();
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop(): channel not in use");
 		return;
 	}
 	Mix_HaltChannel(m_channel_used);
+	m_lock.leave();
 }
 
 void
 gui::sdl::sdl_active_audio_renderer::pause()
 {
+	m_lock.enter();
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::pause(): channel not in use");
 		return;
 	}
 	Mix_Pause(m_channel_used);
+	m_lock.leave();
 }
 
 void
 gui::sdl::sdl_active_audio_renderer::resume()
 {
+	m_lock.enter();
 	if (m_channel_used < 0) {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::resume(): channel not in use");
 		return;
 	}
 	Mix_Resume(m_channel_used);
+	m_lock.leave();
 }
 
 
 void
 gui::sdl::sdl_active_audio_renderer::start(double where)
 {
-
+	m_lock.enter();
     if (!m_node) abort();
 	
 	std::ostringstream os;
@@ -461,8 +504,10 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
+		m_lock.leave();
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start: no datasource");
+		m_lock.leave();
 		stopped_callback();
 	}
 }

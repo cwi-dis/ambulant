@@ -115,6 +115,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 		return os;
 	}
   private: 
+    bool _end_of_file();
 	void filesize();
     void read_file();
 	const std::string m_url;
@@ -122,6 +123,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 	int m_filesize;
 	FILE *m_stream;
 	bool m_end_of_file;
+	lib::critical_section m_lock;
 };
 
 } // end namespace net

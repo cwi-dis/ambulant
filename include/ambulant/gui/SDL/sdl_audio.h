@@ -52,6 +52,7 @@
 #include <SDL_mixer.h>
 #include <iostream>
 
+#include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
@@ -108,7 +109,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 		  
   private:
 	void new_channel();  
- 	int inc_channels();
+ 	static int inc_channels();
 	
 	net::audio_datasource *m_audio_src;
     Mix_Chunk m_audio_chunk;
@@ -119,7 +120,9 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
     static int m_mixed_channels;
 	static Uint16 m_sdl_format;
 	static net::audio_format m_ambulant_format;
-    static int m_buffer_size;    
+    static int m_buffer_size;
+	lib::critical_section m_lock;
+	static lib::critical_section m_static_lock;
 };
 
 } // end namespace sdl
