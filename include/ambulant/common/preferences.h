@@ -102,6 +102,12 @@ class preferences {
 
 	/// XXXX
 	bool m_validation_schema_full_checking;
+	
+	// Use plugins or not
+	bool m_use_plugins;
+	
+	// Where to find the plugins 
+	std::string m_plugin_dir;
 
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();
@@ -111,6 +117,7 @@ class preferences {
 
 	/// Save preferences.
 	virtual bool save_preferences();
+	
 
   private:
 	static preferences* s_preferences; // singleton
@@ -122,4 +129,3 @@ class preferences {
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_PREFERENCES_H
-
