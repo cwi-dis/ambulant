@@ -48,6 +48,9 @@
 
 #include "ambulant/lib/logger.h"
 #include "unix_preferences.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
  
 // #define AM_DBG

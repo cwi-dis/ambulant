@@ -58,12 +58,12 @@
 #include <iostream>
 
 
-#include "ambulant/common/factory.h"
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/common/factory.h"
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"

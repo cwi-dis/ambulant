@@ -55,6 +55,7 @@
 #include "ambulant/common/preferences.h"
 #include <vector>
 #include <stdlib.h>
+#include <stdio.h>
 
 static std::string m_home = "";
 static std::string m_ambulant_home = ".ambulant";

@@ -87,6 +87,9 @@ char *welcome_locations[] = {
 	"../Extras/Welcome/Welcome.smil",
 	"/usr/local/lib/ambulant/Welcome/Welcome.smil",
 	"/usr/share/doc/ambulant-1.0/Extras/Welcome/Welcome.smil",
+#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
+	"/home/zaurus/Documents/Welcome/Welcome.smil",
+#endif/*QT_NO_FILEDIALOG*/
 	NULL
 };
 
@@ -109,6 +112,7 @@ qt_gui::qt_gui(const char* title,
 	m_cursor_shape(Qt::ArrowCursor),
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	//m_cursor_shape(arrowCursor);
+	m_fileselector(NULL),
 #endif/*QT_NO_FILEDIALOG*/
 	m_mainloop(NULL),
 	m_o_x(0),	 
@@ -141,9 +145,15 @@ qt_gui::qt_gui(const char* title,
 		/* File */
 		QPopupMenu* filemenu = new QPopupMenu (this);
 		assert(filemenu);
-		filemenu->insertItem("&Open", this, SLOT(slot_open()));
-		filemenu->insertItem("Open &URL", this,
-				     SLOT(slot_open_url()));
+		int open_id = filemenu->insertItem("&Open", this, 
+						   SLOT(slot_open()));
+		int url_id = filemenu->insertItem("Open &URL", this, 
+						  SLOT(slot_open_url()));
+#ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
+		// Disable unavailable menu entries
+		filemenu->setItemEnabled(open_id, true);
+		filemenu->setItemEnabled(url_id, false);
+#endif/*QT_NO_FILEDIALOG*/
 		filemenu->insertItem("&Full Screen", this,
 				     SLOT(showFullScreen()));
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
@@ -151,7 +161,6 @@ qt_gui::qt_gui(const char* title,
 				     SLOT(slot_settings_select()));
 		filemenu->insertItem("&Logger", this,
 				     SLOT(slot_logger_window()));
-  //		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
 		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
 		m_menubar->insertItem("&File", filemenu);
 		
@@ -170,7 +179,8 @@ qt_gui::qt_gui(const char* title,
 		/* Help */
 		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
 		assert(helpmenu);
-		helpmenu->insertItem("&About AmbulantPlayer", this, SLOT(slot_about()));
+		helpmenu->insertItem("&About AmbulantPlayer", this,
+				     SLOT(slot_about()));
 		m_menubar->insertItem("&Help", helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
@@ -265,8 +275,8 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 
 void 
 qt_gui::slot_open() {
-	QString smilfilename =
 #ifndef QT_NO_FILEDIALOG
+	QString smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
 				 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)", // file types
@@ -274,11 +284,60 @@ qt_gui::slot_open() {
 				 "open file dialog",
 				 "Double Click a file to open"
 				 );
-#else	/*QT_NO_FILEDIALOG*/	
-		m_smilfilename;
-#endif	/*QT_NO_FILEDIALOG*/
 	openSMILfile(smilfilename, IO_ReadOnly);
 	slot_play();
+#else	/*QT_NO_FILEDIALOG*/	
+	if (m_fileselector == NULL) {
+	  QString mimeTypes("application/smil;");
+	  m_fileselector = new FileSelector(mimeTypes, NULL,
+					    "slot_open", false);
+	  m_fileselector->resize(240, 280);
+	  QObject::connect(m_fileselector, 
+			   SIGNAL(fileSelected(const DocLnk&)),
+			   this, 
+			   SLOT(slot_file_selected(const DocLnk&)));
+	  QObject::connect(m_fileselector, SIGNAL(closeMe()), 
+			   this, SLOT(slot_close_fileselector()));
+	} else {
+	  m_fileselector->reread();
+	}
+	m_fileselector->show();
+#endif	/*QT_NO_FILEDIALOG*/
+}
+
+
+void
+qt_gui::setDocument(const QString& smilfilename) {
+#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
+  openSMILfile(smilfilename, IO_ReadOnly);
+  slot_play();
+#endif/*QT_NO_FILEDIALOG*/
+}
+
+void
+qt_gui::slot_file_selected(const DocLnk& selected_file) {
+#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
+	FILE* DBG = fopen("/tmp/ambulant-log","a"); //KB
+	fprintf(DBG, "selected_file smilfilename=%s\n",
+		selected_file.file().ascii());
+	QString* smilfilepointer = new QString(selected_file.file());
+	QString smilfilename = *smilfilepointer;
+	delete smilfilepointer;
+	m_fileselector->hide();
+	fclose(DBG);
+	openSMILfile(smilfilename, IO_ReadOnly);
+	slot_play();
+#endif/*QT_NO_FILEDIALOG*/
+}
+void
+qt_gui::slot_close_fileselector()
+{
+#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
+	FILE* DBG = fopen("/tmp/ambulant-log","a"); //KB
+	fprintf(DBG, "slot_close_fileselector()\n");
+	fclose(DBG);
+	m_fileselector->hide();
+#endif/*QT_NO_FILEDIALOG*/
 }
 
 void 
@@ -372,7 +431,6 @@ qt_gui::slot_pause() {
 
 void 
 qt_gui::slot_settings_select() {
-	printf("slot_settings\n");
 	m_settings = new qt_settings();
 	QWidget* settings_widget = m_settings->settings_select();
 	m_finish_hb = new QHBox(settings_widget);
@@ -388,14 +446,12 @@ qt_gui::slot_settings_select() {
 
 void
 qt_gui::slot_settings_ok() {
-	printf("slot_settings_ok\n");
 	m_settings->settings_ok();
 	slot_settings_cancel();
 }
 
 void
 qt_gui::slot_settings_cancel() {
-	printf("slot_settings_cancel()\n");
 	m_settings->settings_finish();
 	delete m_settings;
 	m_settings = NULL;
@@ -484,11 +540,16 @@ main (int argc, char*argv[]) {
 	myapp.setMainWidget(mywidget);
 
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
-	myapp.showMainWidget(mywidget);
+	if (argc > 1 && strcmp(argv[1], "-qcop") != 0)
+	  myapp.showMainWidget(mywidget);
+	else
+	  myapp.showMainDocumentWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
 	
 	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
+	AM_DBG for (int i=1;i<argc;i++){fprintf(DBG,"%s\n", argv[i]);
+	}
 
 	bool exec_flag = false;
 
