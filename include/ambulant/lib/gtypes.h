@@ -115,6 +115,13 @@ class basic_point {
 	}
 };
 
+template <class T>
+double dist(const basic_point<T>& p1, const basic_point<T>& p2) {
+	double dx = double(p2.x - p1.x);
+	double dy = double(p2.y - p1.y);
+	return ::sqrt(dx*dx + dy*dy); 
+}
+
 template <class S>
 class basic_size {
   public:
