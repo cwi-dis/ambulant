@@ -238,19 +238,28 @@ void smil_player::clicked(int n, double t) {
 	}
 }
 
-void smil_player::stopped(int n, double t) {
-	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
+void smil_player::started(int n, double t) {
+	typedef scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end()) {
+	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
-		eom_event_cb *cb = new eom_event_cb((*it).second, 
-			&time_node::eom_update, timestamp);
+		bom_event_cb *cb = new bom_event_cb((*it).second, 
+			&time_node::on_bom, timestamp);
 		schedule_event(cb, 0);
 	}
 }
 
-void smil_player::started(int n, double t) {
+void smil_player::stopped(int n, double t) {
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
+	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
+		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		eom_event_cb *cb = new eom_event_cb((*it).second, 
+			&time_node::on_eom, timestamp);
+		schedule_event(cb, 0);
+	}
 }
+
 
 void smil_player::on_click(int x, int y) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;

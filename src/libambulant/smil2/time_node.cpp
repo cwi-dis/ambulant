@@ -50,14 +50,16 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/logger.h"
-#include "ambulant/common/schema.h"
 #include "ambulant/smil2/time_node.h"
+#include "ambulant/common/schema.h"
 #include <cmath>
 #include <stack>
 #include <set>
 #include <list>
 
+#include "ambulant/lib/logger.h"
+
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -101,6 +103,7 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_want_activate_events(false),
 	m_want_accesskey(false),
 	m_impldur(time_type::unresolved),
+	m_playable_timer(0),
 	m_parent(0), m_next(0), m_child(0) {
 	assert(type <= tc_none);
 	node_counter++;
@@ -128,6 +131,8 @@ time_node::~time_node() {
 	// delete this time states
 	for(int i=0;i<=ts_dead;i++)
 		delete m_time_states[i];
+	
+	delete m_playable_timer;
 	
 	// Delete recursively this branch	
 	node_navigator<time_node>::delete_tree(this); 
@@ -276,13 +281,13 @@ void time_node::dump_dependents(std::ostream& os, sync_event ev) {
 time_node::time_type 
 time_node::calc_implicit_dur() {
 	assert(!is_time_container());
-	
 	if(is_discrete()) return time_type(0);
 	if(m_impldur != time_type::unresolved)
 		return m_impldur;	
 	std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
 	if(dur_pair.first && dur_pair.second>0) {
-		m_impldur = secs_to_time_type(dur_pair.second)();
+		double offset_factor = 1.25;
+		m_impldur = secs_to_time_type(offset_factor*dur_pair.second)();
 		AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur(): %ld", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(), m_impldur());
 		return m_impldur;
@@ -320,6 +325,19 @@ time_node::calc_dur() {
 	return cdur;
 }
 
+bool time_node::uses_media_timer() const {
+	bool media_timer = false;
+	if(is_time_container() || is_discrete())
+		return media_timer;
+	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
+		return media_timer;
+	}
+	dur_type dt = m_attrs.get_dur_type();
+	if(dt == dt_unspecified || dt == dt_media)
+		media_timer = true;
+	return media_timer;
+}
+ 
 // See spec: "Intermediate Active Duration Computation" 
 // This function calculates the "intermediate active duration" of this node.
 // This quantity is used by the active duration calculation.
@@ -725,10 +743,11 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 void time_node::schedule_transition(time_state_type tst, qtime_type timestamp, time_type dt) {
 	assert(dt.is_definite());
 	transition_event *trevent = new transition_event(this, tst, timestamp);
-	if(tst == ts_active)
+	if(tst == ts_active) {
 		m_begin_trevent = trevent;
-	else if(tst == ts_postactive)
+	} else if(tst == ts_postactive) {
 		m_end_trevent = trevent;
+	}
 	m_context->schedule_event(trevent, dt());
 }
 
@@ -783,6 +802,10 @@ void time_node::repeat_callback(const repeat_event *e) {
 	assert(timestamp.first == sync_node());
 	m_revent = 0;
 	
+	check_repeat(timestamp);
+}
+
+void time_node::check_repeat(qtime_type timestamp) {
 	// update repeat indicators
 	m_last_dur = timestamp.second - (m_interval.begin + m_rad), 
 	m_rad += m_last_dur();
@@ -802,7 +825,16 @@ void time_node::repeat_callback(const repeat_event *e) {
 			return;
 		}
 	}
+	if(timestamp.second > m_interval.end) {
+		schedule_transition(ts_postactive, timestamp, 0);
+	} else if(m_interval.end.is_definite()) {
+		time_type dt = m_interval.end - timestamp.second;
+		qtime_type qt(sync_node(), m_interval.end);
+		schedule_transition(ts_postactive, qt, dt);
+	} else
+		schedule_sync_update(timestamp, 0);
 }
+
 
 // Cancels the current interval.
 void time_node::cancel_interval(qtime_type timestamp) {
@@ -940,6 +972,9 @@ void time_node::activate(qtime_type timestamp) {
 		timestamp.as_doc_time_value());
 		
 	if(!is_time_container()) {
+		if(!m_playable_timer) 
+			m_playable_timer = new timer(m_context->get_timer(), 1.0, false);
+		m_playable_timer->start(dt());
 		m_context->start_playable(m_node, time_type_to_secs(dt()));
 		m_context->wantclicks_playable(m_node, want_activate_event());
 	}
@@ -949,6 +984,8 @@ void time_node::activate(qtime_type timestamp) {
 		// shedule a dur-end notification (repeat check)
 		time_type pstime = m_interval.begin + m_rad + cdur;
 		qtime_type qt(sync_node(), pstime);
+		
+		// schedule or add a code capsule to be executed on EOM
 		schedule_repeat(qt, cdur - dt);
 	}
 }
@@ -971,6 +1008,8 @@ void time_node::repeat(qtime_type timestamp) {
 	} 
 	
 	if(!is_time_container()) {
+		if(m_playable_timer)
+			m_playable_timer->start(0);
 		m_context->start_playable(m_node, 0);
 	}
 	
@@ -1088,7 +1127,7 @@ void time_node::fill(qtime_type timestamp) {
 	if(!m_needs_remove) return;
 	
 	fill_behavior fb = m_attrs.get_fill();
-	bool keep = (fb != fill_remove);// && 
+	bool keep = (fb != fill_remove);
 		//(fb != fill_transition); // no transitions for now
 	
 	if(keep) {
@@ -1154,7 +1193,7 @@ void time_node::on_cancel_instance(qtime_type timestamp, sync_event ev, time_typ
 	}
 }
 
-void time_node::on_add_instance(qtime_type timestamp, sync_event ev, 
+void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev, 
 	time_node::time_type instance, int data, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
 	if(dit != m_dependents.end() && (*dit).second != 0) {
@@ -1355,13 +1394,37 @@ void time_node::sync_update(qtime_type timestamp) {
 	}
 }
 
-// End of nedia update
-void time_node::eom_update(qtime_type timestamp) {
-	timestamp.to_descendent(sync_node());
-	if(timestamp.second.is_resolved()) {
-		if(is_active())
-			m_impldur = timestamp.second - m_interval.begin;
-		m_state->sync_update(timestamp);
+// Begin of media notification
+void time_node::on_bom(qtime_type timestamp) {
+	if(!is_discrete()) {
+		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
+		qtime_type st = pt.as_qtime_down_to(this);
+		AM_DBG tnlogger->trace("%s[%s].on_bom() ST:%ld, PT:%ld, DT:%ld", 
+			m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), 
+			st.second(),
+			pt.second(),
+			timestamp.second()); 
+	}
+}
+
+// End of nedia notification
+void time_node::on_eom(qtime_type timestamp) {
+	if(!is_discrete() && is_active()) {
+		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
+		qtime_type st = pt.as_qtime_down_to(this);
+		AM_DBG tnlogger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
+			m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), 
+			st.second(),
+			pt.second(),
+			timestamp.second()); 
+		if(m_playable_timer) {
+			m_impldur = m_playable_timer->elapsed();
+			m_playable_timer->pause();
+			cancel_schedule();
+			check_repeat(pt);
+		}
 	}
 }
 
