@@ -96,6 +96,7 @@ class time_node : public schedulable {
 	virtual void pause();
 	virtual void resume();
 	virtual void reset();
+	virtual void prepare_playables();
 	
 	// driver interface
 	virtual void exec(qtime_type timestamp);
@@ -176,6 +177,19 @@ class time_node : public schedulable {
 	void resume(qtime_type timestamp);
 	void check_repeat(qtime_type timestamp);
 	
+	// Playable commands
+	void create_playable();
+	void start_playable(time_type offset = 0);
+	void seek_playable(time_type offset);
+	void pause_playable();
+	void resume_playable();
+	void repeat_playable();
+	void stop_playable();
+	
+	// Animations are special internal playables
+	void start_animation(time_type offset);
+	void stop_animation();
+	
 	// Std xml tree interface
 	const time_node *down() const { return m_child;}
 	const time_node *up() const { return m_parent;}
@@ -235,6 +249,8 @@ class time_node : public schedulable {
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
 	bool is_area() const {return m_attrs.get_tag() == "area";}
 	bool is_animation() const;
+	bool is_playable() const;
+
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
 	bool needs_implicit_dur() const;
 	
@@ -416,10 +432,7 @@ class time_node : public schedulable {
 	// e.g. the current zero-based repeat index
 	long m_precounter;
 	
-	// Registers for storing activation params
-	// Required by the set-of-implicit-dur-on-eom mechanism
-	time_type m_activation_time;
-	time_type m_media_offset;
+	// End Of Media (EOM) flag
 	bool m_eom_flag;
 	
 	// The priority of this node
@@ -428,7 +441,6 @@ class time_node : public schedulable {
 	
 	// Paused flag
 	bool m_paused;
-	time_type m_pause_time;
 	
 	// Defered flag
 	bool m_deferred;

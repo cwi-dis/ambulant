@@ -63,7 +63,8 @@ lib::logger* time_calc::clogger = 0;
 
 time_calc::time_calc(schedulable *tn)
 :	m_tn(tn), 
-	m_attrs(*tn->get_time_attrs()) {
+	m_attrs(*tn->get_time_attrs()),
+	m_paused(false) {
 	if(!clogger) clogger = lib::logger::get_logger();
 }
 
@@ -80,6 +81,7 @@ time_calc::calc_dur() {
 	}
 	dur_type dt = m_attrs.get_dur_type();
 	time_type cdur = time_type::unresolved;
+	if(m_paused) dt = dt_indefinite; // do the calcs as if indefinite
 	if(dt == dt_definite) {
 		cdur = time_manipulated(m_attrs.get_dur());
 	} else if(dt == dt_indefinite) {

@@ -86,6 +86,11 @@ void scheduler::start(time_node *tn) {
 		m_horizon = 0;
 		m_timer->set_time(m_horizon);
 		m_root->start();
+		if(tn == m_root) {
+			m_timer->resume();
+			unlock();
+			return;
+		}
 	}
 	
 	if(tn->is_active()) {
@@ -120,7 +125,7 @@ void scheduler::start(time_node *tn) {
 		if(next == infinity) break;
 	}
 	ctx->set_wait_for_eom(oldflag);
-		
+
 	m_timer->resume();
 	unlock();
 }

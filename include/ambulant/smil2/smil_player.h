@@ -119,6 +119,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual void stop_playable(const lib::node *n);
 	virtual void pause_playable(const lib::node *n, pause_display d = display_show);
 	virtual void resume_playable(const lib::node *n);
+	virtual void seek_playable(const lib::node *n, double t);
 	virtual void wantclicks_playable(const lib::node *n, bool want);
 	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in);
 	//////////////////////

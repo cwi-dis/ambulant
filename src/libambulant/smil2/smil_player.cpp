@@ -235,15 +235,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 // Request to start the playable of the node.
 // When trans is not null the playable should transition in 
 void smil_player::start_playable(const lib::node *n, double t, const lib::node *trans) {
-	std::map<const lib::node*, common::playable *>::iterator it = 
-		m_playables.find(n);
-	common::playable *np = (it != m_playables.end())?(*it).second:0;
-	if(!np) {
-		np = new_playable(n);
-		m_playables_cs.enter();
-		m_playables[n] = np;
-		m_playables_cs.leave();
-	}
+	common::playable *np = create_playable(n);
 	if (trans) {
 		common::renderer *rend = np->get_renderer();
 		if (!rend) {
@@ -255,6 +247,12 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::node *
 		}
 	}
 	np->start(t);
+}
+
+// Request to seek the playable of the node.
+void smil_player::seek_playable(const lib::node *n, double t) {
+	common::playable *np = create_playable(n);
+	np->seek(t);
 }
 
 // Request to start a transition of the playable of the node.

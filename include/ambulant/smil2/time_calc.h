@@ -93,9 +93,12 @@ class time_calc : public time_traits {
 	// This uses calc_ad() function.
 	time_type calc_interval_end(interval_type& i, time_mset& end_list);
 	
+	void set_paused_mode(bool b) { m_paused = b;}
+	
   private:
 	schedulable *m_tn;
 	const time_attrs& m_attrs;
+	bool m_paused;
 	static lib::logger *clogger;
 };
 

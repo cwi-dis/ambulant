@@ -282,7 +282,6 @@ time_node::get_implicit_dur() {
 	
 	// Can the associated playable provide us the implicit duration? 
 	// If yes, store it a "m_mediadur" in internal timing units (ms).
-	//
 	if(m_mediadur == time_type::unresolved) {
 		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
 		if(dur_pair.first && dur_pair.second>0) {
@@ -434,7 +433,7 @@ void time_node::update_interval(qtime_type timestamp, const interval_type& new_i
 		time_type dt = m_interval.end - timestamp.second;
 		if(dt.is_definite()) {
 			// Sync node is probably interested for this event.
-			if(up()) up()->raise_update_event(timestamp);
+			sync_node()->raise_update_event(timestamp);
 		}
 		on_update_instance(timestamp, tn_end, m_interval.end, old.end);
 	}
@@ -518,10 +517,6 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	if(m_interval.after(timestamp.second)) {
 		// Schedule activation: 
 		// activate at m_interval.begin - timestamp
-		// remain in the proactive state waiting interval to begin
-		//time_type dt = m_interval.begin - timestamp.second;
-		//qtime_type qt(sync_node(), m_interval.begin);
-		//schedule_state_transition(ts_active, qt, dt);
 		return; 
 	}
 	
@@ -586,7 +581,7 @@ void time_node::activate(qtime_type timestamp) {
 	
 	// Calculate the offset within the simple duration
 	// that this node should start playing.
-	time_type sd_offset;
+	time_type sd_offset = 0;
 	if(ad_offset == 0) {
 		sd_offset = 0;
 	} else if(!cdur.is_definite()) {
@@ -608,62 +603,130 @@ void time_node::activate(qtime_type timestamp) {
 		// The accumulated repeat interval as a parent simple time instance
 		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
 	}
-		
-	// Store the the activation time
-	// Required by the set-of-implicit-dur-on-eom mechanism
-	m_activation_time = timestamp.second; 
-	
-	if(m_timer) m_timer->set_time(sd_offset());
 	
 	AM_DBG tnlogger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
-	
-	// If this is a leaf node start playable at 'sd_offset' within media
-	if(!is_time_container()) {
-		if(!is_discrete() && needs_implicit_dur() && m_mediadur != time_type::unresolved) {
-			// we need this due to the set-of-implicit-dur-on-eom mechanism
-			m_media_offset = sd_offset.rem(m_mediadur);
-		} else {
-			m_media_offset = sd_offset;
-		}
-		if(m_timer) m_timer->set_time(m_media_offset());
-		m_eom_flag = false;
-		if(paused()) {
-			m_pause_time = m_media_offset;
-			//schedule_next_timer_event(timestamp);
-			return;
-		}
-		if(is_animation()) {
-			animation_engine *ae = m_context->get_animation_engine();
-			animate_node *an = (animate_node*)this;
-			an->prepare_interval();
-			ae->started(an);
-		} else {
-			common::playable *np = m_context->create_playable(m_node);
-			if(np) {
-				np->wantclicks(m_want_activate_events);
-				const lib::node *trans_in = m_attrs.get_trans_in();
-				if(trans_in) {
-					m_context->start_playable(m_node, time_type_to_secs(m_media_offset()), trans_in);
-				} else
-					np->start(time_type_to_secs(m_media_offset()));
-				AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
-					m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
-					timestamp.second(),
-					timestamp.as_doc_time_value());
-				
-			}
-		}
-	} 
-	if(paused()) m_pause_time = sd_offset;
-	else if(is_animation() || !is_cmedia() && m_timer) {
+		
+	// Adjust timer
+	if(m_timer) {
+		m_timer->set_time(sd_offset());
 		m_timer->set_speed(m_attrs.get_speed());
-		m_timer->resume();
 	}
-	// else wait bom from playable
+	
+	// Start node
+	if(!paused()) {
+		if(m_timer) m_timer->resume();
+		if(is_animation()) start_animation(sd_offset);
+		else if(is_playable()) start_playable(sd_offset);
+	}
 }
+
+// Starts an animation
+void time_node::start_animation(time_type offset) {
+	qtime_type timestamp(this, offset);
+	AM_DBG tnlogger->trace("%s[%s].start_animation(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	animation_engine *ae = m_context->get_animation_engine();
+	animate_node *an = (animate_node*)this;
+	an->prepare_interval();
+	ae->started(an);
+}
+
+// Stops an animation
+void time_node::stop_animation() {
+	animation_engine *ae = m_context->get_animation_engine();
+	ae->stopped((animate_node*)this);
+}
+
+// Returns true when this node is associated with a playable
+bool time_node::is_playable() const {
+	return !is_time_container() && !is_animation();
+}
+
+// Returns true when this node is an animation
+bool time_node::is_animation() const {
+	return common::schema::get_instance()->is_animation(m_node->get_qname());
+}
+
+//////////////////////////
+// Playables schell
+
+void time_node::start_playable(time_type offset) {
+	if(!is_playable()) return;
+	qtime_type timestamp(this, offset);
+	AM_DBG tnlogger->trace("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	m_eom_flag = false;
+	common::playable *np = m_context->create_playable(m_node);
+	const lib::node *trans_in = m_attrs.get_trans_in();
+	if(np) {
+		np->wantclicks(m_want_activate_events);
+		if(trans_in) {
+			m_context->start_playable(m_node, time_type_to_secs(offset()), trans_in);
+		} else {
+			np->start(time_type_to_secs(offset()));
+		} 
+	}
+}
+
+void time_node::seek_playable(time_type offset) {
+	if(!is_playable()) return;
+	tnlogger->trace("%s[%s].seek(%ld)", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), offset());
+	m_context->seek_playable(m_node, time_type_to_secs(offset()));
+}
+
+void time_node::pause_playable() {
+	if(!is_playable()) return;
+	tnlogger->trace("%s[%s].pause()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+	m_context->pause_playable(m_node);
+}
+
+void time_node::resume_playable() {
+	if(!is_playable()) return;
+	tnlogger->trace("%s[%s].resume()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+	m_context->resume_playable(m_node);
+}
+
+void time_node::stop_playable() {
+	if(!is_playable()) return;
+	if(!m_needs_remove) return;
+	m_eom_flag = true;
+	tnlogger->trace("%s[%s].stop()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+	m_context->stop_playable(m_node);
+}
+
+void time_node::repeat_playable() {
+	if(!is_playable()) return;
+	tnlogger->trace("%s[%s].repeat()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+	m_context->start_playable(m_node, 0);
+}
+
+void time_node::create_playable() {
+	if(is_playable()) return;
+	tnlogger->trace("%s[%s].create()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+	m_context->create_playable(m_node);
+}
+
+// Prepare children playables without recursion
+void time_node::prepare_playables() {
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	for(it = children.begin(); it != children.end(); it++) {
+		if(!(*it)->is_time_container() && !(*it)->is_animation())
+			(*it)->create_playable();
+	}
+}
+
+/////////////
 
 void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& events) {
 	if(!is_alive()) return;
@@ -718,7 +781,6 @@ void time_node::exec(qtime_type timestamp) {
 		return;
 	}
 	
-	
 	// The AD offset of this node
 	time_type ad_offset = timestamp.second - m_interval.begin;
 	
@@ -749,6 +811,11 @@ bool time_node::end_cond(qtime_type timestamp) {
 	assert(is_active());
 	bool ec = end_sync_cond_applicable() && end_sync_cond();
 	bool tc = !end_sync_cond_applicable() && timestamp.second >= m_interval.end;
+	
+	if(is_time_container() && (ec || tc)) {
+		AM_DBG tnlogger->trace("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), (ec?"end_sync_cond":"interval_end"));
+	}
 	
 	// The "tc" condition is not sufficient when needs_implicit_dur()is true
 	// for example: 
@@ -795,7 +862,6 @@ void time_node::set_state_ex(time_state_type tst, qtime_type timestamp) {
 	set_state(tst, timestamp, this);
 }
 
-
 // Called on the end of simple duration event
 void time_node::on_eosd(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("*** %s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
@@ -833,7 +899,7 @@ void time_node::on_eosd(qtime_type timestamp) {
 // The following function is called when the node should repeat.
 // It is responsible to execute the repeat actions for this node. 
 void time_node::repeat(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("*** %s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG tnlogger->trace("%s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -848,13 +914,14 @@ void time_node::repeat(qtime_type timestamp) {
 	} 
 	
 	if(!is_time_container()) {
-		m_context->start_playable(m_node, 0);
+		repeat_playable();
 	}
 }
 
 // Pauses this node.
 // Excl element handling.
 void time_node::pause(qtime_type timestamp, pause_display d) {
+	if(!is_active()) return;
 	std::list<time_node*> children;
 	get_children(children);
 	time_type self_simple_time = timestamp.as_time_down_to(this);
@@ -862,20 +929,40 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->pause(qt, d);
-	if(!is_time_container() && is_active()) {
-		m_pause_time = self_simple_time;
-		m_context->stop_playable(m_node);
-	}
-	set_paused(true);
+		
+	if(is_playable()) pause_playable();
+	if(m_timer) m_timer->pause();
+	
+	// could deduce this from the fact that the node 
+	// is active and the timer is nor running
+	interval_type i1 = m_interval;
+	set_paused(true); 
+	m_time_calc->set_paused_mode(true);
+	sync_update(timestamp);
+	interval_type i2 = m_interval;
+	AM_DBG tnlogger->trace("%s[%s].pause(): %s -> %s at %ld", 
+		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
+		::repr(i1).c_str(), ::repr(i2).c_str(), self_simple_time());
 }
 
 // Resumes this node.
 // Excl element handling.
 void time_node::resume(qtime_type timestamp) {
-	set_paused(false);
-	if(!is_time_container() && is_active()) {
-		m_context->start_playable(m_node, time_type_to_secs(m_pause_time()));
+	if(!is_active()) {
+		// gone inactive while paused
+		AM_DBG tnlogger->trace("%s[%s].resume(): gone inactive while paused", 
+			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+		return; 
 	}
+	
+	m_time_calc->set_paused_mode(false);
+	set_paused(false);
+	AM_DBG tnlogger->trace("%s[%s].resume()", 
+		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+	
+	if(is_playable()) resume_playable();
+	if(m_timer) m_timer->resume();
+	
 	std::list<time_node*> children;
 	get_children(children);
 	time_type self_simple_time = timestamp.as_time_down_to(this);
@@ -883,6 +970,8 @@ void time_node::resume(qtime_type timestamp) {
 	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->resume(qt);
+	
+	// re-establish sync
 	sync_update(timestamp);
 }
 
@@ -972,9 +1061,10 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		} 
-		if(m_timer) m_timer->pause();
-		if(!is_time_container() && !is_animation()) {
-			m_context->pause_playable(m_node);
+		if(is_playable()) pause_playable();
+		if(m_timer) {
+			m_timer->pause();
+			m_timer->set_time(m_interval.end());
 		}
 	} else {
 		// this node should be removed
@@ -1003,17 +1093,10 @@ void time_node::remove(qtime_type timestamp) {
 		for(it = children.begin(); it != children.end(); it++)
 			(*it)->remove(qt);
 	} 
-	if(is_animation()) {
-		animation_engine *ae = m_context->get_animation_engine();
-		ae->stopped((animate_node*)this);
-	} else if(!is_time_container()) {
-		m_context->stop_playable(m_node);
-	}
+	if(is_animation()) stop_animation();
+	else if(is_playable()) stop_playable();
+	if(m_timer) m_timer->stop();
 	m_needs_remove = false;
-}
-
-bool time_node::is_animation() const {
-	return common::schema::get_instance()->is_animation(m_node->get_qname());
 }
 
 ///////////////////////////////
@@ -1180,6 +1263,14 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	}
 	on_add_instance(timestamp, tn_end_event, timestamp.second, 0, oproot);
 	
+	if(sync_node()->is_excl() && (paused() || deferred())) {
+		excl* p = qualify<excl*>(sync_node());
+		p->remove(this);
+		set_paused(false);
+		set_deferred(false);
+		m_time_calc->set_paused_mode(false);
+	}
+	
 	// Check parent end_sync conditions
 	// call schedule_sync_update(timestamp) if needed
 	time_node *p = up();
@@ -1305,18 +1396,14 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 
 // Meta model reset
 // Brings the timegraph to its initial state without propagating events
+// The function resets all the state variables of this class
+// To simplify verfication all variables defined by the class def are copied here.
 void time_node::reset() {
 	///////////////////////////
 	// 1. Reset visuals
 	
-	if(m_needs_remove) {
-		if(is_animation()) {
-			animation_engine *ae = m_context->get_animation_engine();
-			ae->stopped((animate_node*)this);
-		} else if(!is_time_container()) {
-			m_context->stop_playable(m_node);
-		}
-	}
+	if(m_needs_remove)
+		stop_playable();
 
 	///////////////////////////
 	// 2. Reset state variables
@@ -1405,12 +1492,7 @@ void time_node::reset() {
 	// long m_precounter;
 	m_precounter = 0;
 	
-	// Registers for storing activation params
-	// Required by the set-of-implicit-dur-on-eom mechanism
-	// time_type m_activation_time;
-	m_activation_time = 0;
-	// time_type m_media_offset;
-	m_media_offset = 0;
+	// EOM flag
 	// bool m_eom_flag;
 	m_eom_flag = false;
 	
@@ -1422,8 +1504,6 @@ void time_node::reset() {
 	// Paused flag
 	// bool m_paused;
 	m_paused = false;
-	// time_type m_pause_time;
-	m_pause_time = 0;
 	
 	// Defered flag
 	// bool m_deferred;
@@ -1544,53 +1624,8 @@ void time_node::on_rom(qtime_type timestamp) {
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
 	m_eom_flag = true;
-	if(is_discrete() || !is_active() || !needs_implicit_dur())
-		return;
-		
-	//if(m_impldur != time_type::unresolved)
-		//return;
-	
-	// 	
-	qtime_type pt = timestamp.as_qtime_down_to(sync_node());
-	qtime_type st = pt.as_qtime_down_to(this);
-	AM_DBG tnlogger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
-		m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(), 
-		st.second(),
-		pt.second(),
-		timestamp.second()); 
-	
-	// The new knowledge we have just acquired.
-	if(m_mediadur == time_type::unresolved)
-		m_mediadur =  pt.second - m_activation_time;
-	m_impldur = m_mediadur;
-		
-	// Knowing the above calc current interval
-	time_type end = calc_current_interval_end();
-			
-	// Do deferred calculation of activation registers
-	time_type ad_offset = m_activation_time - m_interval.begin;
-	time_type cdur = m_last_cdur;
-	if(ad_offset != 0 && cdur.is_definite() && cdur != 0) {
-		// The current repeat index
-		m_precounter = ad_offset.mod(cdur);
-		
-		// The accumulated repeat interval.
-		m_rad = m_precounter*cdur();
-		
-		// The accumulated repeat interval as a parent simple time instance
-		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
-	}
-	
-	// Update interval end	
-	if(end != m_interval.end) {		
-		// The model instance of EOM
-		time_type model_time = m_activation_time + (m_mediadur - m_media_offset);
-						
-		// Update interval refering the model instance.
-		update_interval_end(qtime_type(sync_node(), model_time), end);
-	}
-	
+	if(is_playable() && !is_discrete()) 
+		raise_update_event(timestamp);
 }
 
 ///////////////////////////////

@@ -89,6 +89,7 @@ class time_node_context {
 	virtual void stop_playable(const lib::node *n) = 0;
 	virtual void pause_playable(const lib::node *n, common::pause_display d = common::display_show) = 0;
 	virtual void resume_playable(const lib::node *n) = 0;
+	virtual void seek_playable(const lib::node *n, double t) = 0;
 	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
 	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in) = 0;
 	
@@ -132,6 +133,7 @@ class dummy_time_node_context : public time_node_context {
 	virtual void stop_playable(const lib::node *n) {}
 	virtual void pause_playable(const lib::node *n, common::pause_display d = common::display_show) {}
 	virtual void resume_playable(const lib::node *n) {}
+	virtual void seek_playable(const lib::node *n, double t) {}
 	virtual void wantclicks_playable(const lib::node *n, bool want) {}
 	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in) {}
 	
