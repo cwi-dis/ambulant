@@ -24,7 +24,7 @@ passive_region::activate(event_processor *const evp, node *node)
 void
 active_region::start(event *playdone)
 {
-	std::cout << "active_region.start(" << m_source->m_name << ")" << std::endl;
+	std::cout << "active_region.start(" << m_source->m_name << ", playdone=" << (void *)playdone << ")" << std::endl;
 	if (playdone)
 		m_event_processor->add_event(playdone, 0, event_processor::low);
 }
