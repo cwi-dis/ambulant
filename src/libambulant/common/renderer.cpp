@@ -220,17 +220,16 @@ global_playable_factory::new_playable(
     return m_default_factory->new_playable(context, cookie, node, evp);
 }
 
-active_video_renderer::active_video_renderer (common::playable_notification *
-					  context,
-					  common::playable_notification::
-					  cookie_type cookie,
-					  const lib::node * node,
-					  lib::event_processor * evp,
-					  net::datasource_factory * df):
-common::active_basic_renderer (context, cookie, node, evp),
-m_evp (evp),
-m_is_playing(false),
-m_is_paused(false)
+active_video_renderer::active_video_renderer(
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node * node,
+	lib::event_processor * evp,
+	net::datasource_factory * df)
+:	common::active_basic_renderer (context, cookie, node, evp),
+	m_evp (evp),
+	m_is_playing(false),
+	m_is_paused(false)
 {
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!

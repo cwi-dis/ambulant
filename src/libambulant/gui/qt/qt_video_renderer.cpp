@@ -61,6 +61,10 @@
 using namespace ambulant;
 using namespace gui::qt;
 
+qt_active_video_renderer::~qt_active_video_renderer()
+{
+}
+
 void 
 qt_active_video_renderer::show_frame(char* frame, int size)
 {

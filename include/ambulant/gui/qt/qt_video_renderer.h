@@ -80,7 +80,7 @@ class qt_active_video_renderer : public common::active_video_renderer {
 	m_image_loaded(false) {};
 		
 	~qt_active_video_renderer();
-    void show_frame(char* frame, int m_data_size);
+    void show_frame(char* frame, int size);
 	void redraw(const lib::screen_rect<int> &r, common::abstract_window* w);
  private:
 	QImage m_image;
