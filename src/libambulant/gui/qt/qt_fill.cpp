@@ -54,7 +54,7 @@
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -204,30 +204,34 @@ qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
-	// background drawing
-//XXXX	if (info && !info->get_transparent()) {
-	// First find our whole area to be cleared to background color
-		lib::screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(m_dest->get_global_topleft());
-		int L = dstrect_whole.left(), 
-		    T = dstrect_whole.top(),
-		    W = dstrect_whole.width(), 
-		    H = dstrect_whole.height();
-		// XXXX Fill with background color
-		lib::color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug(
-			"qt_active_fill_renderer.redraw_body:"
-			" clearing to 0x%x", (long)bgcolor);
-		QColor bgc = QColor(lib::redc(bgcolor),
-				    lib::greenc(bgcolor),
-				    lib::bluec(bgcolor));
-		AM_DBG lib::logger::get_logger()->debug(
-			"qt_active_fill_renderer.redraw_body(0x%x,"
-			" local_ltrb=(%d,%d,%d,%d)",
-			(void *)this, L,T,W,H);
-		paint.setBrush(bgc);
-		paint.drawRect(L,T,W,H);
-//XXXX	}
+	// <brush> drawing
+	// First find our whole area to be cleared to <brush> color
+	lib::screen_rect<int> dstrect_whole = r;
+	dstrect_whole.translate(m_dest->get_global_topleft());
+	int	L = dstrect_whole.left(), 
+		T = dstrect_whole.top(),
+		W = dstrect_whole.width(), 
+		H = dstrect_whole.height();
+	// Fill with  color
+	const char *color_attr = m_node->get_attribute("color");
+	if (!color_attr) {
+		lib::logger::get_logger()->trace("<brush> element without color attribute");
+		return;
+	}
+	// Fill with <brush> color
+	color_t color = lib::to_color(color_attr);
+	//	lib::color_t bgcolor = info->get_bgcolor();
+	AM_DBG lib::logger::get_logger()->debug
+		("qt_fill_renderer.redraw_body: clearing to 0x%x", 
+		 (long)color);
+	QColor bgc = QColor(lib::redc(color),
+			    lib::greenc(color),
+			    lib::bluec(color));
+	AM_DBG lib::logger::get_logger()->debug
+	  ("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",
+	   (void *)this, L,T,W,H);
+	paint.setBrush(bgc);
+	paint.drawRect(L,T,W,H);
 	paint.flush();
 	paint.end();
 }
