@@ -22,6 +22,60 @@ namespace ambulant {
 
 namespace lib {
 
+template<class T>
+class ostringstream_wrapper {
+  public:	
+	ostringstream_wrapper(T* logger, void (T::*logf)(const std::string& s)) 
+	:	m_logger(logger),
+		m_logf(logf),
+		m_pos(new std::ostringstream()) {
+	}
+	
+	~ostringstream_wrapper() {
+		delete m_pos;
+	}
+	
+	template<class V>
+	ostringstream_wrapper& operator<<(const V& v) {
+		*m_pos << v;
+		return *this;
+	}
+	ostringstream_wrapper& operator<<(const char *s) {
+		*m_pos << s;
+		return *this;
+	}
+	
+	ostringstream_wrapper& operator<<(ostringstream_wrapper& (*f)(ostringstream_wrapper&) ) {
+		return f(*this);
+	}
+	
+	void endl() {
+		if(m_logger && m_logf)
+			(m_logger->*m_logf)(m_pos->str());
+		m_pos->str("");
+	}
+	
+  private:
+	std::ostringstream *const m_pos;
+	T *const m_logger;
+	void (T::*m_logf)(const std::string& s);
+};
+
+#ifdef WIN32
+#ifndef CDECL
+#define CDECL __cdecl
+#endif
+#else
+#define CDECL
+#endif
+
+template<class T>
+inline T& CDECL endl(T& l) {
+	l.endl();
+	return l;
+}
+
+
 class logger {
   public:
 	// known log levels
@@ -100,25 +154,21 @@ class logger {
 	void set_level(int level); 
 	void set_ostream(std::ostream* pos); 
 	
-	// Allow ostream operations for loggers.
-	// Currently operator<< outputs at trace level.
-	// We could provide a manipulator for selecting the level.
-	template<class T>
-	logger& operator<<(const T& v) {
-		m_tr_oss << v;
-		return *this;
-	}
-	logger& operator<<(const char *s) {
-		m_tr_oss << s;
-		return *this;
-	}
-	logger& operator<<(logger& (*f)(logger&) ) {
-		return f(*this);
-	}
-	void trace_oss_endl() { 
-		trace(m_tr_oss.str());
-		m_tr_oss.str("");
-	}
+	// The following functions return an ostream like object. 
+	// The output operator<< may be used as for an ostream.
+	// Usage example:
+	// lib::logger::ostream os = logger->trace_stream();
+	// os << "message1: " << object1 << lib::endl;
+	// os << "message2: " << object2 << lib::endl;
+	// The lib::endl() injects the message at
+	// the appropriate log level. The above
+	// example would output 2 tracing messages.
+	typedef ostringstream_wrapper<logger> ostream;
+	ostream debug_stream() { return ostream(this, &logger::debug);} 
+	ostream trace_stream() { return ostream(this, &logger::trace);} 
+	ostream warn_stream() { return ostream(this, &logger::warn);} 
+	ostream error_stream() { return ostream(this, &logger::error);} 
+	ostream fatal_stream() { return ostream(this, &logger::fatal);} 
 	
   private:
 	static const char* get_level_name(int level);
@@ -128,7 +178,6 @@ class logger {
 	std::string m_name;	
 	std::ostream* m_pos;
 	int m_level;
-	std::ostringstream m_tr_oss;
 	
 	// configuration and output format
 	static int default_level;
@@ -170,15 +219,6 @@ inline bool logger::suppressed(int level) {
 	return level < m_level;
 }
 
-#ifdef WIN32
-#define CDECL __cdecl
-#else
-#define CDECL
-#endif
-inline logger& CDECL endl(logger& l) {
-	l.trace_oss_endl();
-	return l;
-}	
 
 
 } // namespace lib
