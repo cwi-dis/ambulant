@@ -150,6 +150,97 @@ BSC32=bscmake.exe
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\common\preferences.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_PREFE=\
+	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_PREFE=\
+	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_PREFE=\
+	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_PREFE=\
+	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\common\region.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
@@ -4238,6 +4329,7 @@ SOURCE=.\lib\document.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_DOCUM=\
+	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
 	"..\..\include\ambulant\config\select_compiler_config.h"\
@@ -4263,8 +4355,15 @@ DEP_CPP_DOCUM=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\lib\xerces_parser.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	
+NODEP_CPP_DOCUM=\
+	"..\..\include\ambulant\lib\xercesc\parsers\SAXParser.hpp"\
+	"..\..\include\ambulant\lib\xercesc\sax\HandlerBase.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\PlatformUtils.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\XMLString.hpp"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5284,6 +5383,7 @@ SOURCE=.\lib\tree_builder.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TREE_=\
+	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
 	"..\..\include\ambulant\config\select_compiler_config.h"\
@@ -5310,8 +5410,15 @@ DEP_CPP_TREE_=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\lib\xerces_parser.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	
+NODEP_CPP_TREE_=\
+	"..\..\include\ambulant\lib\xercesc\parsers\SAXParser.hpp"\
+	"..\..\include\ambulant\lib\xercesc\sax\HandlerBase.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\PlatformUtils.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\XMLString.hpp"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -7491,6 +7598,7 @@ SOURCE=.\smil2\test_attrs.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TEST_=\
+	"..\..\include\ambulant\common\preferences.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
 	"..\..\include\ambulant\config\select_compiler_config.h"\
@@ -7517,9 +7625,16 @@ DEP_CPP_TEST_=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\lib\xerces_parser.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	
+NODEP_CPP_TEST_=\
+	"..\..\include\ambulant\lib\xercesc\parsers\SAXParser.hpp"\
+	"..\..\include\ambulant\lib\xercesc\sax\HandlerBase.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\PlatformUtils.hpp"\
+	"..\..\include\ambulant\lib\xercesc\util\XMLString.hpp"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
