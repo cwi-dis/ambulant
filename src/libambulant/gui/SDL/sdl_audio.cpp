@@ -46,7 +46,7 @@
  *
  */
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -198,7 +198,6 @@ void channel_done(int channel)
 			lib::logger::get_logger()->error("sdl_audio:channel_done(%d): get_ptr returned NULL, no object!", channel);
 			return;
 		}
-		// XXX playdone is the wrong call : more data may be coming.
         object->playdone();
 }
 
@@ -297,21 +296,30 @@ sdl_active_audio_renderer::inc_channels()
 void
 sdl_active_audio_renderer::playdone()
 {
+	// Acknowledge that we are ready with the data provided to us
+	// at the previous callback time
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: m_src->readdone(%d)", m_audio_chunck.alen);
 	m_audio_src->readdone(m_audio_chunck.alen);
 	assert(m_channel_used >= 0);
 	if (m_audio_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
+		// XXX Need to delete reference on this created when we did lock_channel().
 		unlock_channel(m_channel_used);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
 		stopped_callback();
 	} else {
-		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
+#if 0
+		// At the moment the next comment is not true, because we've disabled start()ing in
+		// readdone.
+		// This "shouldn't happen": readdone() should continue calling start() to read
+		// more data until end of file is true
+		lib::logger::get_logger("sdl_active_audio_renderer::playdone: not at end-of-file! Calling m_audio_src->start()");
+#endif
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	}
 }
-
-
 
 void
 sdl_active_audio_renderer::readdone()
@@ -321,15 +329,15 @@ sdl_active_audio_renderer::readdone()
 	m_audio_chunck.allocated = 0;
 	m_audio_chunck.volume = 128;
 	m_audio_chunck.abuf = (Uint8*) m_audio_src->get_read_ptr();
-	
 	m_audio_chunck.alen = m_audio_src->size();
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: got %d bytes", m_audio_chunck.alen);
+	
 	m_rate = m_audio_src->get_samplerate();
-		m_bits = m_audio_src->get_nbits();
-		m_channels = m_audio_src->get_nchannels();
-		AM_DBG lib::logger::get_logger()->trace("sr=%d, bits=%d, channels=%d ", m_rate, m_bits, m_channels);
+	m_bits = m_audio_src->get_nbits();
+	m_channels = m_audio_src->get_nchannels();
+	AM_DBG lib::logger::get_logger()->trace("sr=%d, bits=%d, channels=%d ", m_rate, m_bits, m_channels);
 
-	if (!m_sdl_init)
-		{
+	if (!m_sdl_init) {
 #ifdef WITH_FFMPEG
 		AM_DBG lib::logger::get_logger()->trace("Using ffmpeg MP3 support");
 #else
@@ -337,23 +345,34 @@ sdl_active_audio_renderer::readdone()
 #endif
 		
 		init(m_rate, m_bits, m_channels);	
-		}
+	}
 	if (m_channel_used < 0) {
 		new_channel();
 	}
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: STARTING TO PLAY");
-		result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
-	if (m_audio_chunck.alen < SDL_BUFFER_MIN_BYTES ) {
-			
-	} else {
-		
-		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
-		m_audio_src->start(m_event_processor, e);
-	}
+	
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: STARTING TO PLAY");
+	result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
 	if (result < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): Failed to play sound", (void *)this);	
 		AM_DBG printf("Mix_PlayChannel: %s\n",Mix_GetError());
 	}
+
+	if (m_audio_src->end_of_file()) {
+		// No more data. Wait for the playdone callback before we call stopped_callback
+		return;
+	}
+#if 0
+	// XXX Logic error, needs to use another chunk
+	if (m_audio_chunck.alen > SDL_BUFFER_MAX_BYTES ) {
+		// XXXX Schedule a callback so we start reading later
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		m_audio_src->start(m_event_processor, e);
+	} else {
+		// Start reading immedeately
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		m_audio_src->start(m_event_processor, e);
+	}
+#endif
 }	
 
 void
@@ -362,7 +381,7 @@ sdl_active_audio_renderer::new_channel()
 	int result;
 	m_channel_used = free_channel();
 			
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: free_channel() returned  : %d", m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer:: free_channel() returned  : %d", m_channel_used);
 		if (m_channel_used < 0) {
 			result = inc_channels();
 			if( result < 0) 
@@ -371,9 +390,10 @@ sdl_active_audio_renderer::new_channel()
 			}
 			m_channel_used = free_channel();
 			assert(m_channel_used >= 0);
-		}	
+		}
+		// XXX Need to addref() this!!
 		lock_channel((void*) this, m_channel_used);	
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: New Channel : %d", m_channel_used);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer:: New Channel : %d", m_channel_used);
 }
 
 bool
@@ -462,7 +482,7 @@ sdl_active_audio_renderer::start(double where)
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
 		init(m_rate, m_bits, m_channels);
-		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	} else {

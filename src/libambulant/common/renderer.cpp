@@ -105,6 +105,7 @@ active_renderer::start(double t)
 	}
 }
 
+#if 0
 void
 active_renderer::readdone()
 {
@@ -113,6 +114,7 @@ active_renderer::readdone()
 		m_dest->need_redraw();
 	stopped_callback();
 }
+#endif
 
 void
 active_renderer::stop()
@@ -138,21 +140,38 @@ active_final_renderer::~active_final_renderer()
 void
 active_final_renderer::readdone()
 {
-	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	m_data_size = m_src->size();
-	//if ((m_data = malloc(m_data_size)) == NULL) {
-	//	lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", m_data_size);
-//#ifndef AMBULANT_NO_ABORT
-	//	abort();
-//#endif
-	//}
-	m_data = m_src->get_read_ptr();
-	//m_src->read((char *)m_data, m_data_size);
-	if (m_dest)
-		m_dest->need_redraw();
-	stopped_callback();
+	unsigned cur_size = m_src->size();
+	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, cur_size);
+	
+	if (!m_data)
+		m_data = malloc(cur_size);
+	else
+		m_data = realloc(m_data, m_data_size + cur_size);
+	
+	if (m_data == NULL) {
+		lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", cur_size);
+		// What else can we do...
+		stopped_callback();
+	}
+	
+	char *cur_data = m_src->get_read_ptr();
+	memcpy((char *)m_data + m_data_size, cur_data, cur_size);
+	m_data_size += cur_size;
 	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
-	m_src->readdone(m_data_size);
+	m_src->readdone(cur_size);
+	
+	if (m_src->end_of_file()) {
+		// All done
+		AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
+		if (m_dest)
+			m_dest->need_redraw();
+		stopped_callback();
+	} else {
+		// Continue reading
+		AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x):  more to come, calling m_src->start()", (void *)this);
+		lib::event *e = new readdone_callback(this, &active_renderer::readdone);
+		m_src->start(m_event_processor, e);
+	}
 	
 }
 

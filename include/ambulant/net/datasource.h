@@ -144,7 +144,6 @@ class global_datasource_factory : public datasource_factory  {
   	datasource_factory *m_default_factory;
 };
 
-
 class global_raw_datasource_factory  :public datasource_factory {
   public:
 	global_raw_datasource_factory() 

@@ -203,7 +203,7 @@ net::ffmpeg_audio_datasource::callback()
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 			m_client_callback = NULL;
 		} else {
-			lib::logger::get_logger()->error("ffmpeg_audio_datasource::callback(): No client callback!");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No client callback!");
 		}
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No decoder, flushing available data");

@@ -139,7 +139,7 @@ class active_renderer : public active_basic_renderer {
 	virtual renderer *get_renderer() { return this; }
 	
   protected:
-	virtual void readdone();
+	virtual void readdone() = 0;
 
   	net::datasource *m_src;
 	surface *m_dest;

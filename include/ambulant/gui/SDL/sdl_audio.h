@@ -64,8 +64,8 @@
 #include "ambulant/lib/asb.h"
 
 
-#define SDL_BUFFER_MAX_BYTES 8192
-#define SDL_BUFFER_MIN_BYTES 2048
+#define SDL_BUFFER_MAX_BYTES 819200
+#define SDL_BUFFER_MIN_BYTES 20480
 
 
  
