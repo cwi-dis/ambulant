@@ -7,6 +7,7 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/lib/renderer.h"
+#include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -36,6 +37,7 @@ class cocoa_active_text_renderer : public active_final_renderer {
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
+	critical_section m_lock;
 };
 
 class cocoa_active_image_renderer : public active_final_renderer {
@@ -53,16 +55,14 @@ class cocoa_active_image_renderer : public active_final_renderer {
   private:
   	NSImage *m_image;
   	NSData *m_nsdata;
+	critical_section m_lock;
 };
 
 class cocoa_active_audio_renderer : public active_basic_renderer {
   public:
 	cocoa_active_audio_renderer(event_processor *const evp,
 		net::passive_datasource *src,
-		const node *node)
-	:	active_basic_renderer(evp, node),
-		m_url(src->get_url()),
-		m_sound(NULL) {};
+		const node *node);
 	~cocoa_active_audio_renderer();
 
 	void start(event *playdone);
@@ -71,6 +71,7 @@ class cocoa_active_audio_renderer : public active_basic_renderer {
   private:
 	std::string m_url;
   	NSSound *m_sound;
+	critical_section m_lock;
 };
 
 void
@@ -89,12 +90,16 @@ cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 
 cocoa_active_text_renderer::~cocoa_active_text_renderer()
 {
+	m_lock.enter();
 	[m_text_storage release];
+	m_text_storage = NULL;
+	m_lock.leave();
 }
 
 void
 cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
 {
+	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
 
@@ -127,21 +132,23 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 		[[NSColor grayColor] set];
 		NSRectFill(dstrect);
 	}
-            
+	m_lock.leave();
 }
 
 cocoa_active_image_renderer::~cocoa_active_image_renderer()
 {
+	m_lock.enter();
 	AM_DBG logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
 	if (m_image)
 		[m_image release];
-	//if (m_nsdata)
-	//	[m_nsdata release];
+	m_image = NULL;
+	m_lock.leave();
 }
 	
 void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
 {
+	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), window_topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
 	
@@ -169,39 +176,57 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_windo
 		[[NSColor blueColor] set];
 		NSRectFill(dstrect);
 	}
+	m_lock.leave();
+}
+
+cocoa_active_audio_renderer::cocoa_active_audio_renderer(event_processor *const evp,
+	net::passive_datasource *src,
+	const node *node)
+:	active_basic_renderer(evp, node),
+	m_url(src->get_url()),
+	m_sound(NULL)
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (!m_node) abort();
+	NSString *filename = [NSString stringWithCString: m_url.c_str()];
+	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
+	if (!m_sound)
+		lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot open soundfile: %s", m_url.c_str());
+	[pool release];
 }
 
 cocoa_active_audio_renderer::~cocoa_active_audio_renderer()
 {
+	m_lock.enter();
 	AM_DBG logger::get_logger()->trace("~cocoa_active_audio_renderer(0x%x)", (void *)this);
 	if (m_sound)
 		[m_sound release];
+	m_sound = NULL;
+	m_lock.leave();
 }
 	
 void
 cocoa_active_audio_renderer::start(event *playdone)
 {
-	if (!m_node) abort();
-	m_playdone = playdone;
+	m_lock.enter();
 	std::ostringstream os;
 	os << *m_node;
 	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	NSString *filename = [NSString stringWithCString: m_url.c_str()];
-	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: NO];
-	if (!m_sound)
-		lib::logger::get_logger()->error("cocoa_active_audio_renderer.start: cannot open soundfile: %s", m_url.c_str());
 	if (m_sound)
 		[m_sound play];
 	if (m_playdone)
 		m_event_processor->add_event(m_playdone, 0, event_processor::low);
+	m_lock.leave();
 }
 
 void
 cocoa_active_audio_renderer::stop()
 {
+	m_lock.enter();
 	if (!m_sound)
 		return;
 	[m_sound stop];
+	m_lock.leave();
 }
 
 active_renderer *
