@@ -96,22 +96,24 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 	paint.flush();
 	paint.end();
 }
-
 void
 qt_transition_blitclass_fade::update()
 {
-//	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
+        AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
-	QImage img1 = qpm->convertToImage();
-	QImage img2 = npm->convertToImage();
-	QImage res = img1.copy();
+	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) qpm(%d,%d),npm(%d,%d)", m_progress, qpm->width(),  qpm->height(), npm->width(), npm->height());
+	QImage m_old_image;
+	QImage m_new_image;
+	m_old_image = qpm->convertToImage();
+	m_new_image = npm->convertToImage();
+	QImage res(m_old_image.size(),m_old_image.depth());
 	int i, j, iw = res.width(), ih = res.height();
-//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x.  res=0x%x, iw=%d, ih=%d", qpm, npm, &res, iw, ih);
 	// Following code From: Qt-interest Archive, July 2002
 	// blending of qpixmaps, Sebastian Loebbert 
-#define	OPTIM
+//#define	OPTIM
 #ifndef	OPTIM
 	double fac1 = 1.0 - m_progress;
 	double fac2 = 1.0 - fac1;
@@ -121,8 +123,8 @@ qt_transition_blitclass_fade::update()
 #endif/*OPTIM*/
 	for(int i = 0;i < iw;i++){
 		for(int j = 0; j < ih;j++){
-	    		QRgb p1 = img1.pixel(i,j);
-	    		QRgb p2 = img2.pixel(i,j);
+	    		QRgb p1 = m_old_image.pixel(i,j);
+	    		QRgb p2 = m_new_image.pixel(i,j);
 	    		res.setPixel(i,j,
 #ifndef	OPTIM
 				     qRgb ( (int)( qRed(p1)*fac1 + 
@@ -147,14 +149,19 @@ qt_transition_blitclass_fade::update()
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
-	QPainter paint;
-	paint.begin(qpm);
 	AM_DBG lib::logger::get_logger()->trace(
 				  "qt_transition_blitclass_fade::update(): "
 				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
-	paint.drawImage(L,T,res,0,0,W,H);
+/*
+	QPainter paint;
+	paint.begin(qpm);
+	paint.drawImage(0,0,res,0,0,W,H);
 	paint.flush();
 	paint.end();
+*/
+	QPixmap rpm(res);
+//	rpm.convertFromImage(res);
+	bitBlt(qpm, L, T, &rpm, L, T, W, H);	
 }
 
 void

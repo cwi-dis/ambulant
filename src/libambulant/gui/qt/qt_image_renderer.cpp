@@ -124,7 +124,6 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);	
-//			[surf lockFocus];
 		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to transition surface");
 		}
 	}
