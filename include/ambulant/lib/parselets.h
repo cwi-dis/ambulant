@@ -266,7 +266,7 @@ class cat_pair_p  : public parselet {
 	typedef SecondType second_type;
 	typedef typename FirstType::result_type first_result_type;
 	typedef typename SecondType::result_type second_result_type;
-	typedef typename cat_pair_p<FirstType, SecondType> self_type;
+	//typedef typename cat_pair_p<FirstType, SecondType> self_type;
 	typedef std::pair<typename FirstType::result_type,
 		typename SecondType::result_type> result_type;
 
