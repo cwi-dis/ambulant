@@ -80,7 +80,7 @@ struct audio_context {
 enum nrchannels { mono=1, stereo }; 
 
 
-class datasource : virtual public ambulant::lib::ref_counted {  	
+class datasource : public ambulant::lib::ref_counted_obj {  	
   public:
 	~datasource() {}
 
@@ -95,7 +95,7 @@ class datasource : virtual public ambulant::lib::ref_counted {
 
 
 
-class audio_datasource : virtual public datasource {
+class audio_datasource : public datasource {
   public:
 	~audio_datasource() {};
 		  
