@@ -4,18 +4,21 @@ Ambulant Design Documentation
 Currently the design documentation consists of the following
 bits and pieces:
 
-- `Overall`_ has a description of the design documentation, the source
-  code organisation, source code conventions and some high-level
+- `Overall`_ has a description of the design process and some high-level
   design decisions.
-- `Objects`_ has descriptions of the various classes used in Ambulant.
+- `Walkthrough`_ is a quick walkthrough of the Ambulant Player playing
+  a SMIL document. 
+- `Objects`_ has descriptions of the main interfaces and classes used in Ambulant.
   Accompanying UML graphics can be found in the `models`_ subdirectory.
+- `Organisation`_ explains the source code organisation and coding conventions.
+- `API`_ is the developers documentation for all interfaces considered
+  public. It may need to be regenerated with doxygen, see the README file
+  in the `documentation directory`_ for details.
 
+.. _Walkthrough: text/walkthrough.html
 .. _Overall: text/overall.html
 .. _Objects: text/objects.html
+.. _Organisation: text/organisation.html
 .. _models: models
-
-Two older documents that have not been integrated yet, and that may not be
-up-to-date are `remarks.txt`_ and `sdd-schema.txt`_.
-
-.. _remarks.txt: text/remarks.txt
-.. _sdd-schema.txt: text/sdd-schema.txt
+.. _API: ../API/html/index.html
+.. _documentation directory: ..

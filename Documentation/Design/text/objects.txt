@@ -10,63 +10,48 @@ so it is probably a good idea to first read the `Overall design`_ and
 some of the choices made, the second one is a brief walkthrough of how the
 player loads, parses and plays a SMIL document.
 
+The nitty-gritty details of these objects, on a level interesting to
+developers, are available too, in the `API documentation`_. This document
+may need to be regenerated, see the README file in the `documentation
+directory`_ if it doesn't seem to exist.
+
 .. _Overall design: overall.html
 .. _walkthrough: walkthrough.html
+.. _API documentation: ../../API/html/index.html
+.. _documentation directory: ../..
 
 AmbulantPlayer interfaces
 -------------------------
 
+- `Refcounting protocol`_. A lowlevel interface shared by many objects.
 - `Player Interface`_. This is the toplevel object.
 - `Parser Interface`_. Describes the interfaces to the XML parser.
-- `Data source`_. Think of these as "media items", they may refer to a URL
-  or part of a multiplexed stream or so, and provide data to renderers and
-  to the parser.
-- `Playable`_. This interface, together with the ``renderer`` interface described
-  in the same document, makes
-  media items appear on the screen. The first one is the interface as the scheduler
-  uses it to start and stop playback. The second interface is specific to
-  media items that appear on-screen, and handles things like reacting to
-  redraw requests.
-- `Layout`_. This document describes the interfaces that are responsible
-  for determining where and how the media items are displayed.
-
-.. _Document: document.html
-.. _Data source: datasource.html
-.. _Playable: playable.html
-.. _Layout: layout.html
-
+- `Datasource interface`_. The interface used to get external data into the program.
+- `Playable interface`_. This interface makes media items appear on the screen.
+- `Layout interface`_. This interface is used to determine where those media
+  items show up.
+- `GUI window interface`_. This interface is used to create new windows.
+- `Animation interface`_. The interface used for SMIL animation.
 
 AmbulantPlayer Objects
 ----------------------
 
+- `Clocks`_. These advance a virtual time.
 - `Event processor`_. This is the mainloop plus the event/callback mechanism.
 - `Document`_. The representation of a SMIL document.
 - `Node`_. The representation of the DOM tree.
-- `Region`_. This is an area of screen space, it is part of an implementation
-  of the Layout objects sketched above.
-- `Clocks`_. These advance a virtual time.
+- `Transitions`_. Classes to do visual transitions.
 - `Timeline`_. This is a description of another scheduler: the MMS scheduler.
   This scheduler has a much simpler structure than the SMIL 2.0 scheduler.
 
-.. _Event processor: event_processor.html
-.. _Region: region.html
-.. _Renderer: renderer.html
 .. _Timeline: timeline.html
-
-For each of these we have an accompanying PDF document with UML graphics
-showing how the object relates to other objects. These can be found
-in the `models`_ directory.
-
-.. _models: ../models
-
   
-In addition we have various auxiliary objects that are explained in
-`auxobjects.txt`_.
-
-.. _auxobjects.txt: auxobjects.html
-
 You may notice that the core of the player, the SMIL 2.0 scheduler, is not
 mentioned here. Unfortunately it is not documented yet.
+
+There are also additional low-level objects like ``thread`` and ``critical_section``
+that are not described here. See the `API documentation`_ for details.
+
 
 Refcounting protocol
 --------------------
@@ -75,29 +60,9 @@ The `refcounting protocol` is contained in the file ``lib/refcount.h``. It needs
 be implemented only by objects that are truly shared, i.e. any object whose
 lifetime is not predetermined by some other object. New instances of refcounted
 objects are created using the operator new. Any object that needs to share
-a particular instance calls add_ref against this instance. The creator
-of the refcounted object and any sharer are responsible to call the release
-function of the object when they don't need the object any more. 
-
-Clocks
-------
-
-All clocks adhere to the ``abstract_timer`` interface. This interface
-allows you to get the current time and set the speed of the clock.
-
-There is a companion interface ``abstract_timer_client`` (which is actually
-a base class of ``abstract_timer``) that allows objects to get notification
-of changes in timer speed.
-
-Currently there are two implementations of the ``abstract_timer`` interface:
-the operating-system specific realtime clock (of which you cannot set the
-speed) and ``timer``, which implements a new zero-based clock
-based on another ``abstract_timer``. Its speed is settable
-with ``set_speed``, but it is tightly synchronized with its parent clock.
-
-Eventually there may be other implementations of ``timer``,
-such as clocks that are allowed to slip synchronization and other such
-semantics as required by SMIL.
+a particular instance calls ``add_ref()`` against this instance. The creator
+of the refcounted object and any sharer are responsible to call the ``release()``
+method of the object when they don't need the object any more. 
 
 Player Interface
 ----------------
@@ -122,6 +87,198 @@ A concise walkthrough of how the ``smil_player`` operates is given in the `walkt
 document.
 
 .. _walkthrough: walkthrough.html
+
+
+Parser interface
+----------------
+
+The XML parser roughly follows a SAX interface. To use it you provide it with objects
+having the ``sax_content_handler`` and ``sax_error_handler`` interfaces. You then
+feed your document to the parser and it will call back through those interfaces.
+
+There is a `UML diagram for parser`_ showing how these classes relates to each other.
+
+.. _UML diagram for parser: ../models/parser.pdf
+
+Parser implementations
+----------------------
+
+There are currently two parser implementations, ``expat_parser`` uses James Clark's
+`expat` parser, which is a fast and lean no-frills parser. ``xerces_parser`` uses
+the Apache `Xerces` library, which is at the other extreme of the spectrum: it can do
+document validation with both DTDs and Schemas and lots of other wonderful things. But
+this comes at the price of a rather hefty memory footprint.
+
+Datasource interface
+--------------------
+
+There are actually a couple of these interfaces, but they are similar. Their function
+is to implement URL retrieval schemes or file I/O and get external data to media
+handlers and other modules requiring data access.
+
+The general interface is that a datasource is acquired through a ``datasource_factory``
+interface, which passes the URL to the various implementations until one is found that
+can handle it and returns a ``datasource`` object. The client then calls the ``start``
+method on this object, passing a callback routine, and the datasource will arrange for the
+callback to be called as soon as data is available. No new callbacks will be done
+until a new call to ``start()`` is made, and the datasource has a buffer that can be limited,
+so this design allows for flow control over the net, if required.
+
+There are specialised datasource interfaces for audio and video, that can handle extra things
+like converting audio from mp3 format to linear samples, or demultiplexing an audio/video
+stream.
+
+There is a `UML diagram for datasource`_ showing how these classes relates to each other.
+
+.. _UML diagram for datasource: ../models/datasource.pdf
+
+There is also a `UML state diagram for datasource`_ showing the state machine that a
+datasource should adhere to.
+
+.. _UML state diagram for datasource: ../models/datasource_state.pdf
+
+Playable interface
+------------------
+
+The ``playable`` interface is implemented by what are usually called a media handlers
+or media renderers: it is this interface the scheduler uses to make things appear
+on the screen (or sound out of the speakers, or otherwise do their thing).
+
+Playables are created through ``global_playable_factory``, which has references to
+all playable implementations and asks them in order whether they can handle playback
+of this specific DOM node, until one matches.
+
+When the playable is started it is provided with a ``playable_notification`` object
+(implemented by the scheduler), which is where it can send its status messages (such
+as ``stopped()`` when the media is finished, or ``clicked()`` when the user clicks the mouse
+over the media item).
+
+Most playables have an accompanying interface, ``renderer``, which controls where the
+media item is rendered (non-rendering items such as SMIL animations are the exception
+to this rule). 
+
+There is a `UML diagram for playable`_ showing how these classes relates to each other.
+
+.. _UML diagram for playable: ../models/playable.pdf
+
+There is also a `UML state diagram for playable`_ showing the state machine that a
+playable should adhere to.
+
+.. _UML state diagram for playable: ../models/playable_state.pdf
+
+Playable implementations
+------------------------
+
+While some media handlers implement the playable from scratch (an example is the
+aforementioned SMIL animation handler) there are a number of convenience classes
+that implement functionality shared by many media handlers. These are:
+
+- ``playable_imp`` which handles some bookkeeping having to do with the ``playable_notification``
+  and ``event_processor``.
+- ``renderer_playable`` which augments that with a ``renderer`` interface and the
+  bookkeeping required for that.
+- ``renderer_playable_ds`` which adds ``datasource`` creation and bookkeeping to that.
+- ``renderer_playable_dsall`` which builds on that again and collects all data before
+  requiring further action.
+  
+There is a `UML diagram for renderer_playable`_ showing how these classes relates to each other.
+
+.. _UML diagram for renderer_playable: ../models/renderer.pdf
+
+Layout interface
+----------------
+
+The layout manager determines where media items appear, and also governs things like
+z-ordering, background colors for regions and such.
+
+The central interface is the ``surface``, which is the object passed to a ``renderer``.
+Whenever a renderer has something new to show it calls ``need_redraw()`` on this
+interface. Whenever it is time to actually redraw something the ``surface`` calls
+``redraw()`` on the ``renderer``.
+
+The ``layout_manager`` interface maps DOM nodes to the ``surface`` objects on which they
+should play back.
+
+There are two more auxiliary interfaces that are not strictly necessary but used
+by the layout implementation for historical reasons: ``surface_template`` 
+and ``surface_factory``. These interfaces are used to create subregions and toplevel
+windows, respectively.
+
+There is a `UML diagram for layout`_ showing how these classes relates to each other.
+
+.. _UML diagram for layout: ../models/layout.pdf
+
+Layout implementation
+---------------------
+
+The SMIL 2.0 implementation of ``surface``, ``surface_template`` and ``surface_factory``
+are the classes ``passive_region`` and ``passive_root_layout``.
+
+There is a `UML diagram for region`_ showing how these classes relates to each other.
+
+.. _UML diagram for region: ../models/region.pdf
+
+GUI window interface
+--------------------
+
+This is the abstract interface used to create new windows and tie them to the
+layout implementation. The implementation is machine-dependent, obviously, and usually
+supplied by the hosting application.
+
+In addition there is the ``gui_events`` interface which goes the other way:
+it is exposed by the layout implementation, and used by the machine dependent
+window implementation to communicate things like redraw requests.
+
+There is a `UML diagram for window`_ showing how these classes relates to each other.
+
+.. _UML diagram for window: ../models/window.pdf
+
+
+Animation interface
+-------------------
+
+The animation interfaces are ``animation_destination`` and ``animation_notification``.
+The SMIL 2.0 playable uses these interfaces to change parameters and send notification
+of those changes, respectively.
+
+There is a `UML diagram for animation`_ showing how these classes relates to each other.
+
+.. _UML diagram for animation: ../models/animation.pdf
+
+Clocks
+------
+
+All clocks adhere to the ``abstract_timer`` interface. This interface
+allows you to get the current time and set the speed of the clock.
+
+There is a companion interface ``abstract_timer_client`` (which is actually
+a base class of ``abstract_timer``) that allows objects to get notification
+of changes in timer speed.
+
+Currently there are two implementations of the ``abstract_timer`` interface:
+the operating-system specific realtime clock (of which you cannot set the
+speed) and ``timer``, which implements a new zero-based clock
+based on another ``abstract_timer``. Its speed is settable
+with ``set_speed``, but it is tightly synchronized with its parent clock.
+
+Eventually there may be other implementations of ``timer``,
+such as clocks that are allowed to slip synchronization and other such
+semantics as required by SMIL.
+
+There is a `UML diagram for clocks`_ showing how these classes relates to each other.
+
+.. _UML diagram for clocks: ../models/clocks.pdf
+
+Event processor
+---------------
+
+The ``event_processor`` is the low-level scheduler of the system. It is a
+priority runqueue with methods to add callbacks, with an optional delay until
+the callback becomes elegible. 
+
+There is a `UML diagram for event processor`_ showing how these classes relates to each other.
+
+.. _UML diagram for event processor: ../models/event_processor.pdf
 
 
 Document
@@ -157,23 +314,27 @@ There is a `UML diagram for node`_ showing how these classes relates to each oth
 
 .. _UML diagram for node: ../models/node.pdf
 
-Parser interface
-----------------
+Transitions
+-----------
 
-The XML parser roughly follows a SAX interface. To use it you provide it with objects
-having the ``sax_content_handler`` and ``sax_error_handler`` interfaces. You then
-feed your document to the parser and it will call back through those interfaces.
+The implementation of SMIL transitions is fairly complex, because there are very
+many transition types and they also need to be implemented efficiently on
+multiple platforms. The current implementation is fully based on inheritance,
+a model with delegation would probably result in a cleaner design.
 
-There is a `UML diagram for parser`_ showing how these classes relates to each other.
+The central object is the ``transition_engine``, which also supplies to interface
+used by clients. It has ``begin()``, ``end()``, ``step()`` and ``next_step_delay()``
+methods, which the client (usually a media renderer) uses to control the transition.
+``next_step_delay()`` needs an explanation: it returns the delay until the engine
+would like to get the next call to ``step()`` from the renderer.
 
-.. _UML diagram for node: ../models/parser.pdf
+On top of this central object there is a multiple inheritance graph where one leg
+is machine dependent, and does the actual bitblit operation to combine two images.
+The other leg is machine independent, but dependent on the actual transition type,
+and computes the parameters for the bitblit. These two then come together in a stub
+class that has all the functionality for a specific transition type on a specific
+platform.
 
-Parser implementations
-----------------------
+There is a `UML diagram for transitions`_ showing how these classes relates to each other.
 
-There are currently two parser implementations, ``expat_parser`` uses James Clark's
-`expat` parser, which is a fast and lean no-frills parser. ``xerces_parser`` uses
-the Apache `Xerces` library, which is at the other extreme of the spectrum: it can do
-document validation with both DTDs and Schemas and lots of other wonderful things. But
-this comes at the price of a rather hefty memory footprint.
-
+.. _UML diagram for transitions: ../models/transitions.pdf

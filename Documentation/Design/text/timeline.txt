@@ -1,6 +1,9 @@
 Timelines
 =========
 
+*Warning*: this document does not describe the SMIL 2.0 scheduler. It describes
+the MMS scheduler, which handles a subset of SMIL 1 (as used by MMS documents).
+
 This document gives an overview of what is in a timeline object. It is
 loosely based on what the old CMIF scheduler looked like. There are some
 simplifications, because I think that some of the extra states and transitions

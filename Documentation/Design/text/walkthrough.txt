@@ -6,6 +6,12 @@ Last updated for Ambulant version 1.1.
 This section attempts to explain the basic structure of the Ambulant Player by
 loosely explaining what happens when you run it and play a document.
 
+There is an informal `overall structure diagram`_ that tries to put the whole
+design in one pretty picture and may be worthwhile to keep handy while reading
+this document.
+
+.. _overall structure diagram: ../models/overall.pdf
+
 The main program is platform dependent and GUI-toolkit dependent. The details
 of this main program are skipped here (and they can actually vary quite a bit
 for the platforms we support), but at some point after the program has started
