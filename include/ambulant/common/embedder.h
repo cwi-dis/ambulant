@@ -67,14 +67,18 @@ class player;
 /// in the "real world" happen: opening and closing windows, etc.
 class embedder : public lib::system {
   public:
+  
   	/// Close the window corresponding to player p and free that player.
 	virtual void close(player *p) = 0;
-	/// Open a new player window.
+	
+	/// Called to open a new player window.
 	/// The start argument specifies whether the new player starts playing
 	/// or waits for user interaction. If old is specified that player
 	/// is closed, and if possible the new player will re-use its window.
+	
 	virtual void open(net::url newdoc, bool start, player *old=NULL) = 0;
-	/// Signals that player p has stopped.
+	
+	/// Called when player p has stopped.
 	/// The embedding application could communicate this fact to the end user
 	/// through the GUI.
 	virtual void done(player *p) {} 

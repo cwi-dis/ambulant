@@ -71,6 +71,11 @@ namespace net {
 
 typedef char bytes; 
 
+/// Class to hold data bytes.
+/// Data can be pushed in (at the back) and pulled out (at the
+/// front), and it is possible to set the maximum size of the
+/// buffer. In addition you can control when to free the unused space
+/// in the buffer.
 class databuffer  
 {							
   public:
@@ -82,30 +87,49 @@ class databuffer
 	~databuffer();
 
 	
-	// show information about the buffer, if verbose is true the buffer is dumped to cout;
 #ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+	// show information about the buffer, if verbose is true the buffer contents are dumped to cout.
 	void dump(std::ostream& os, bool verbose) const;		
 #endif // AMBULANT_NO_IOSTREAMS_HEADERS
 	
-								
-	//void get_data(char *data, int size); 				
 
-	// this one puts data alway at the end.															
-	//void put_data(char *data , int size);			 							 
-	
-	// returns the amount of bytes that are used.
+	/// Returns the numbner of bytes in the buffer.
 	int  size() const;
+	
+	/// Return true if the buffer is full.
  	bool buffer_full();
+	/// Return true if the buffer is non-empty.
     bool buffer_not_empty();
-	// client call to tell the databuffer it is ready to with size bytes of data
-	void readdone(int size); 
+	
+	/// Prepare to write size bytes of data.
+	/// Returns a pointer at which the bytes can be written.
 	char* get_write_ptr(int size);
+	
+	/// Finish writing data.
+	/// Size must be less or equal to the size passed to the get_write_ptr call.
 	void  pushdata(int size);
+
+	/// Prepare to read data.
+	/// Returns a pointer from which at most size() bytes can be read.
     char* get_read_ptr();
+	
+	/// Finish reading data.
+	void readdone(int size);
+	
+	/// Set the maximum size for the buffer.
+	/// When the buffer becomes this full buffer_full() will start returning true.
+	/// Pass zero to set the size to unlimited.
 	void set_max_size(int max_size);
+	
+	/// Set the maximum unused size of the buffer.
+	/// As soon as this many unused bytes are occupied by the buffer
+	/// we reallocate and copy the data to free the unused space.
 	void set_max_unused_size(int max_unused_size);
 
+	/// Class method to set default value for max_size.
 	static void default_max_size(int max_size);
+	
+	/// Class method to set default for max_unused_size.
 	static void default_max_unused_size(int max_unused_size);
   private:
     char* m_buffer;

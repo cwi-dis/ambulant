@@ -50,26 +50,6 @@
  * @$Id$ 
  */
 
-/////////////////////////////
-// region_dim
-//
-// A representation for a region dimension.
-//
-// The respresentation implemented is capable to
-// represent auto, absolute or relative coordinates.
-//
-// Objects of this class may be used to permanently hold
-// the dimensions of a region (as they are specified in the 
-// original document or by the animated one).
-// Conversions to absolute coordinates should be done
-// only dynamically and as late as possible.
-// An entity having access to the whole layout tree
-// (animated or not) should be responsible for all 
-// on the fly conversions.
-//
-// For simplicity we assume that all absolute coordinates
-// have been converted to uniform units.
-/////////////////////////////
 
 #ifndef AMBULANT_COMMON_REGION_DIM_H
 #define AMBULANT_COMMON_REGION_DIM_H
@@ -89,8 +69,25 @@ namespace common {
 
 using namespace lib;
 
+/// A representation for a region dimension.
+///
+/// The respresentation implemented is capable of
+/// representing auto, absolute or relative coordinates.
+///
+/// Objects of this class may be used to permanently hold
+/// the dimensions of a region (as they are specified in the 
+/// original document or by the animated one).
+/// Conversions to absolute coordinates should be done
+/// only dynamically, and as late as possible.
+/// An entity having access to the whole layout tree
+/// (animated or not) should be responsible for all 
+/// on the fly conversions.
+///
+/// For simplicity we assume that all absolute coordinates
+/// have been converted to uniform units.
 class region_dim {
   
+	/// A type holding either an int (for absolute values) or double (for relative values).
 	union dim_value_holder_t {
 		int int_val;
 		double dbl_val;
@@ -100,20 +97,20 @@ class region_dim {
 	//////////////////////
 	// region_dim constructors
 	
-	// default constructor
-	// constructs an auto dim
+	/// Default constructor,
+	// constructs an auto region_dim.
 	region_dim()
 	:	m_type(rdt_auto) { m_holder.dbl_val = 0;}
     
-	// constructs an absolute dim (assumed in pixels)
+	/// Constructs an absolute dim (assumed in pixels).
     region_dim(int value)
     :	m_type(rdt_absolute) { m_holder.int_val = value;}
 	
-	// constructs a relative dim (proportion or percent)
+	/// Constructs a relative dim (proportion or percent).
     region_dim(double value)
     :	m_type(rdt_relative) { m_holder.dbl_val = value;}
 	
-	// constructs a region dim from an other dim
+	// Constructs a region_dim from another region_dim.
     region_dim(const region_dim& other)
     :	m_type(other.m_type) {
 		if(other.absolute())
@@ -122,7 +119,8 @@ class region_dim {
  			m_holder.dbl_val = other.get_as_dbl();
    } 
      
-	// constructs a region dim from the provided str
+	/// constructs a region_dim from the provided string.
+	/// Does very little error checking.
 	region_dim(const std::string& s) 
 	:	m_type(rdt_auto) {
 		m_holder.dbl_val = 0;
@@ -146,7 +144,7 @@ class region_dim {
 	//////////////////////
 	// region_dim assignments (construct from existing)
 	
-	// sets this to other
+	/// Sets this to other.
     const region_dim& operator=(const region_dim& other) { 
 		if(&other != this) {
 			m_type = other.m_type;
@@ -155,14 +153,14 @@ class region_dim {
 		return *this;
     }
     
-	// sets this to the absolute value provided
+	/// Sets this to the absolute value provided.
     const region_dim& operator=(int value) { 
 		m_type = rdt_absolute;
 		m_holder.int_val = value;
 		return *this;
     }
     
-	// sets this to the relative value provided
+	/// Sets this to the relative value provided.
     const region_dim& operator=(double value) { 
 		m_type = rdt_relative;
 		m_holder.dbl_val = value;
@@ -172,12 +170,19 @@ class region_dim {
 	//////////////////////
 	// type queries
 	
+	/// Return true if this region_dim is relative.
 	bool relative() const { return m_type == rdt_relative;}
+	
+	/// Return true if this region_dim is absolute.
 	bool absolute() const { return m_type == rdt_absolute;}
+	
+	/// Return true if this region_dim is not auto.
 	bool defined() const { return m_type != rdt_auto;}
+	
+	/// Return true if this region_dim is auto.
 	bool isauto() const { return m_type == rdt_auto;}
 	
-	// Value getter function
+	/// Get value as absolute integer (or abort).
 	int get_as_int() const { 
 		if(absolute()) return m_holder.int_val; 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
@@ -188,6 +193,7 @@ class region_dim {
 		return 0;
 	}
 	
+	/// Get value as relative double (or abort).
 	double get_as_dbl() const { 
 		if(relative()) return m_holder.dbl_val;
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
@@ -197,7 +203,10 @@ class region_dim {
 #endif
 		return 0;
 	}
-		
+	
+	/// Get value as absolute int.
+	/// Relative values are interpreted with respect to ref,
+	/// auto values will abort.
 	int get(int ref) const {
 		switch(m_type) {
 			case rdt_absolute: return get_as_int();
@@ -212,6 +221,7 @@ class region_dim {
 #endif
 	}
 	
+	/// Return true if two region_dim objects are identical.
 	bool operator== (const region_dim& other) const {
 		if (m_type != other.m_type) return false;
 		if (m_type == rdt_absolute) return m_holder.int_val == other.m_holder.int_val;
@@ -290,18 +300,27 @@ class region_dim {
 	dim_value_holder_t m_holder;
 };
 
-// A structure holding all layout attributes of a region
-// A region node may hold along its other attributes this data structure.
+/// A structure holding all layout attributes of a SMIL region.
 struct region_dim_spec {
-	region_dim left, width, right;
-	region_dim top, height, bottom;
+	/// The 6 possible layout attributes.
+	region_dim left, width, right, top, height, bottom;
+	
+	/// Default constructor, sets all values to auto.
 	region_dim_spec() {}
+	
+	/// Constructor using SMIL anchor coords string.
+	/// For non-rectangular coords values this will set the region_dim_spec
+	/// to the bounding box for the shape.
 	region_dim_spec(const std::string& coords, const char *shape = 0);
+	
 	bool operator== (region_dim_spec& other) const {
 		return left==other.left && width==other.width && right==other.right
 		    && top == other.top && height==other.height && bottom==other.bottom;
 	}
+
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
+	
+	/// Convert all relative parameters to absolute.
 	void convert(const lib::screen_rect<int>& rc);
 };
 
@@ -355,16 +374,17 @@ inline void region_dim_spec::convert(const lib::screen_rect<int>& rc) {
 	if(!height.isauto()) height = height.get(h);
 }
 
-// A structure holding attributes of a regPoint or regAlign
-// A region node may hold along its other attributes this data structure.
+/// A structure holding attributes of a SMIL regPoint or regAlign.
+/// A region node may hold along its other attributes this data structure.
 struct regpoint_spec {
-	region_dim left;
-	region_dim top;
+
+	/// The two coordinates.
+	region_dim left, top;
 	
-	// Default constructor initializes everything to auto
+	/// Default constructor initializes everything to auto.
 	regpoint_spec() {}
 	
-	// Specific constructor to give percentage values
+	/// Specific constructor giving percentage values.
 	regpoint_spec(double hor, double vert)
 	:   left(hor),
 		top(vert) {}

@@ -49,30 +49,7 @@
 /* 
  * @$Id$ 
  */
-/////////////////////////////
-// node_navigator
-//
-// A utility template class for tree nodes.
-// The actual type of the node is passed in as a template argument.
-//
-// This template requires from tree nodes to implement the following interface:
-// class N {
-//  public:
-// 	virtual ~N() {}
-//	
-//	const N *down() const = 0;
-//	const N *up() const = 0;
-//	const N *next() const = 0;
-//
-//	N *down() = 0;
-//	N *up() = 0;
-//	N *next() = 0;
-//
-//	void down(N *n) = 0;
-//	void up(N *n) = 0;
-//	void next(N *n) = 0;
-//};
-//
+
 
 #ifndef AMBULANT_LIB_NODE_NAVIGATOR_H
 #define AMBULANT_LIB_NODE_NAVIGATOR_H
@@ -92,20 +69,69 @@ namespace ambulant {
 
 namespace lib {
 
+/// Navigate a DOM tree.
+///
+/// A utility template class for tree nodes, providing more compex
+/// navigation implemented using only the up/down/next methods of the
+/// underlying node class.
+/// The actual type of the node is passed in as a template argument.
+///
+/// This template requires from tree nodes to implement the following interface:
+/// class N {
+///  public:
+/// 	virtual ~N() {}
+///	
+///	const N *down() const = 0;
+///	const N *up() const = 0;
+///	const N *next() const = 0;
+///
+///	N *down() = 0;
+///	N *up() = 0;
+///	N *next() = 0;
+///
+///	void down(N *n) = 0;
+///	void up(N *n) = 0;
+///	void next(N *n) = 0;
+///};
+///
 template <class N>
 class node_navigator {
   public:
+  
+	/// Return previous sibling.
 	static N* previous(N *n);
+	
+	/// Return last child.
 	static N* last_child(N *n);
+	
+	/// Return a list of all children.
 	static void get_children(N *n, std::list<N*>& l);
+	
+	/// Append a new child at the end of the existing children.
 	static N* append_child(N *n, N* child);
+	
+	/// Detach a node from its tree.
 	static N* detach(N *n);
+	
+	/// Delete a subtree.
 	static void delete_tree(N *n);
+	
+	/// Return the root of a tree.
 	static N* get_root(N *n);
+	
+	/// Return the depth of this node in its tree.
 	static int get_depth(N *n);
+	
+	/// Return the path from the root to this node.
 	static void get_path(N *n, std::list<N*>& path);
+	
+	/// Return true if n is a descendant of a.
 	static bool is_descendent(N *n, N *a);
+	
+	/// Return true if n is an ancestor of a.
 	static bool is_ancestor(N *n, N *d);
+	
+	/// Return the nearest common ancestor of two nodes.
 	static  N* get_common_ancestor(N *n1, N *n2);
 };
 

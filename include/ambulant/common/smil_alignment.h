@@ -61,6 +61,7 @@ namespace ambulant {
 
 namespace common {
 
+/// Implementation of the alignment interface for SMIL 2.0.
 class smil_alignment : public alignment {
   public:
 	smil_alignment(regpoint_spec& image_fixpoint, regpoint_spec& surface_fixpoint)

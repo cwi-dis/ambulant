@@ -62,27 +62,26 @@ namespace ambulant {
 
 namespace lib {
 
-////////////////////////
-// Tree Input Iterator
-
-// Traverses an XML tree
-
-// root designates the container to be traversed and remains const
-// each node is visited twice: once in the 'down' direction and once in the 'up-next'
-
-// the first element is: (root, down) 
-// the last element is: (root, next_or_up) 
-// incrementing last element results to the universal 'end' element (0, *)
-
-// (*it).first is true or false depending on the direction
-// (*it).second is a pointer to the node
-
+/// Node tree iterator.
+///
+/// Traverses a constant XML tree.
+///
+/// Root designates the container to be traversed and remains const.
+/// Each node is visited twice: once in the 'down' direction and once in the 'up-next'.
+///
+/// the first element is: (true, root) 
+/// the last element is: (false, root) 
+/// incrementing last element results to the universal 'end' element (0, *).
+///
+/// (*it).first is true or false depending on the direction
+/// (*it).second is a pointer to the node.
 template <class Node>
 class const_tree_iterator  {
 
   //////////////
   public:
 
+	/// The type of the values returned by this iterator.
 	typedef std::pair<bool, const Node*> const_deref_type;
 
 	const_tree_iterator()
@@ -105,10 +104,16 @@ class const_tree_iterator  {
 	// it->m_cur is the node, it->m_move is true if 'down'
     const_deref_type* operator->() {return (&**this); }
 
+	/// True if iterator is exhausted.
 	bool is_end() { return m_cur == 0;}
 
+	/// Returns the current node.
 	const Node *get_cur() const { return m_cur;}
+	
+	/// Returns the root of this iterator.
  	const Node *get_root() const { return m_root;}
+	
+	/// Returns true if the two iterators move in the same direction.
   	bool same_move(const const_tree_iterator& o) const 
   		{ return m_move == o.m_move;}
   	
@@ -129,9 +134,24 @@ class const_tree_iterator  {
 ////////////////////////
 // tree_iterator
 
+/// Node tree iterator.
+///
+/// Traverses an XML tree.
+///
+/// Root designates the container to be traversed and remains const.
+/// Each node is visited twice: once in the 'down' direction and once in the 'up-next'.
+///
+/// the first element is: (true, root) 
+/// the last element is: (false, root) 
+/// incrementing last element results to the universal 'end' element (0, *).
+///
+/// (*it).first is true or false depending on the direction
+/// (*it).second is a pointer to the node.
 template <class Node>
 class tree_iterator : public const_tree_iterator<Node> {
   public:
+
+	/// The type of the values returned by this iterator.
 	typedef std::pair<bool, Node*> deref_type;
 
 	tree_iterator() : const_tree_iterator<Node>(){}
@@ -190,6 +210,7 @@ inline void const_tree_iterator<Node>::up() {
  
 } // namespace ambulant
 
+/// Returns true if two iterators are in exactly the same state on the same tree.
 template <class Node>
 bool operator==(const ambulant::lib::const_tree_iterator<Node>& lhs, 
 	const ambulant::lib::const_tree_iterator<Node>& rhs) {
@@ -206,6 +227,7 @@ bool operator!=(const ambulant::lib::const_tree_iterator<Node>& lhs,
 	const ambulant::lib::const_tree_iterator<Node>& rhs)
 	{ return !(lhs == rhs);}
 	
+/// Returns true if two iterators are in exactly the same state on the same tree.
 template <class Node>
 bool operator==(const ambulant::lib::tree_iterator<Node>& lhs, 
 	const ambulant::lib::tree_iterator<Node>& rhs) {

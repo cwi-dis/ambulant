@@ -82,6 +82,7 @@ namespace lib {
 
 class node_context;
 
+/// Build a DOM tree from a document.
 class tree_builder : 
 	public sax_content_handler, 
 	public sax_error_handler {
@@ -92,38 +93,52 @@ class tree_builder :
 	
 	~tree_builder();
 
-	// build tree functions
+	/// build DOM tree from a local file.
 	bool build_tree_from_file(const char *filename);
+
+	/// build DOM tree from std::string data.
 	bool build_tree_from_str(const std::string& str);
+
+	/// build DOM tree from a memory buffer.
 	bool build_tree_from_str(const char *begin, const char *end);
+
+	/// build DOM tree from a file anywhere on the net.
 	bool build_tree_from_url(const net::url& u);
 	
-	// check result of build tree functions
+	/// Return true if the document was parsed correctly.
 	bool was_well_formed() const {return m_well_formed;}
 	
-	// get a pointer to the root node
-	// use detach() to become owner
+	/// Get a pointer to the root node.
+	/// Use detach() to become owner.
 	node* get_tree() { return m_root;}
+
+	/// Get a pointer to the root node.
 	const node* get_tree() const { return m_root;}
 	
-	// call this function to get the tree and become owner
+	/// Get a pointer to the root node and become the owner of it.
 	node* detach();
 
-	// set ready to build next xml tree
+	/// Set ready to build next xml tree.
 	void reset();
 	
 	///////////////
-	// sax_content_handler interface	
+	/// sax_content_handler interface method.
 	virtual void start_document();
+	/// sax_content_handler interface method.
 	virtual void end_document();
+	/// sax_content_handler interface method.
 	virtual void start_element(const q_name_pair& qn, const q_attributes_list& qattrs);
+	/// sax_content_handler interface method.
 	virtual void end_element(const q_name_pair& qn);
+	/// sax_content_handler interface method.
 	virtual void start_prefix_mapping(const xml_string& prefix, const xml_string& uri);
+	/// sax_content_handler interface method.
 	virtual void end_prefix_mapping(const xml_string& prefix);
+	/// sax_content_handler interface method.
 	virtual void characters(const char *buf, size_t len);
 	
 	///////////////
-	// sax_error_handler interface	
+	/// sax_error_handler interface method.
 	virtual void error(const sax_error& error);
 	
   ///////////////

@@ -63,35 +63,79 @@ namespace ambulant {
 
 namespace common {
 
-	using namespace ambulant::lib;
+using namespace ambulant::lib;
 
+/// Type that represents the allowable SMIL 2.0 fit values.
 enum fit_t {fit_default, fit_hidden, fit_fill, fit_meet, fit_scroll, fit_slice };
+
+/// Type that represents a SMIL 2.0 z-index value.
 typedef int zindex_t;
 
-// This interface allows access to all information 
+/// Interface to a class that holds all SMIL 2.0 layout information for a region.
+/// This is the read-only interface, used to construct windows and such.
 class region_info {
   public:
+	
+	/// Return the name of the region.
 	virtual std::string get_name() const = 0;
+	
+	/// Return the rectangle of the region.
 	virtual basic_rect<int> get_rect() const = 0;
+	
+	/// Return the rectangle of the region.
 	virtual screen_rect<int> get_screen_rect() const = 0;
+	
+	/// Return the fit attribute for the region.
 	virtual fit_t get_fit() const = 0;
+	
+	/// Return the background color for the region.
 	virtual color_t get_bgcolor() const = 0;
+	
+	/// Return true if the region is transparent.
 	virtual bool get_transparent() const = 0;
+	
+	/// Return the zindex for the region.
 	virtual zindex_t get_zindex() const = 0;
+	
+	/// Return true if showbackground=always.
 	virtual bool get_showbackground() const = 0;
+	
+	/// Return true if this object represents subregion positioning on a body node.
 	virtual bool is_subregion() const = 0;
 };
 
+/// Interface to animate region information.
+/// This is the read/write interface used by animator objects to fiddle the
+/// parameters of the region (or node).
 class animation_destination : public region_info {
   public:
-	// The following functions get the dom or display values of the region attributes
+  
+	/// Get one of the six dimensions of a region.
+	/// If fromdom is true get the original DOM value, otherwise get the current
+	/// value (as animated by previous set_ calls). The name which is the
+	/// SMIL attribute name.
 	virtual region_dim get_region_dim(const std::string& which, bool fromdom = false) const = 0;
+  
+	/// Get one of the region colors.
+	/// If fromdom is true get the original DOM value, otherwise get the current
+	/// value (as animated by previous set_ calls). The name which is the
+	/// SMIL attribute name.
 	virtual color_t get_region_color(const std::string& which, bool fromdom = false) const = 0;
+  
+	/// Get the z-index of a region.
+	/// If fromdom is true get the original DOM value, otherwise get the current
+	/// value (as animated by previous set_ calls).
 	virtual zindex_t get_region_zindex(bool fromdom = false) const = 0;
   
-	// The following functions set the display values for the region attributes
+	/// Set one of the six dimensions of a region to a new value.
+	/// The name which is the SMIL attribute name.
 	virtual void set_region_dim(const std::string& which, const region_dim& rd) = 0;
+	
+	/// Set one of the region colors to a new value.
+	/// The name which is the SMIL attribute name.
 	virtual void set_region_color(const std::string& which, lib::color_t clr) = 0;
+	
+	/// Set the region z-index to a new value.
 	virtual void set_region_zindex(common::zindex_t z) = 0;
 };
 

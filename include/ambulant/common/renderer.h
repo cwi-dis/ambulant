@@ -70,9 +70,15 @@ namespace ambulant {
 
 namespace common {
 
-	class global_playable_factory;
+class global_playable_factory;
 		
-// A helper class implementing some of the common code for playables
+/// A convenience class implementing some of the common code for playables.
+/// Most of the methods in this class store parameters that are common
+/// to most playables in protected instance variables.
+/// Other methods do nothing, whenever that is
+/// acceptable behavior. For example, pausing an image does not do
+/// anything spectacular.
+/// Use this class as a baseclass for your renderer/playable.
 class playable_imp : public playable {
   public:
 	playable_imp(
@@ -86,7 +92,7 @@ class playable_imp : public playable {
 		m_event_processor(evp) {
 	}
 
-	// common::playable interface
+	// common::playable methods
 	void pause() {}
 	void resume() {}
 	void seek(double where) {}
@@ -95,14 +101,17 @@ class playable_imp : public playable {
 	std::pair<bool, double> get_dur() { return std::pair<bool, double>(true, 0);}
 	const cookie_type& get_cookie() const { return m_cookie;}
   protected:
-    playable_notification *m_context;
-    cookie_type m_cookie;
-	const lib::node	*m_node;
-	lib::event_processor *m_event_processor;
-	bool m_wantclicks;
+    playable_notification *m_context;	///< Status feedback object.
+    cookie_type m_cookie;				///< Parameter for status feedback object.
+	const lib::node	*m_node;			///< The DOM node this playable corresponds to.
+	lib::event_processor *m_event_processor;	///< The event_processor we can use.
+	bool m_wantclicks;					///< True if we should send gui events to m_context.
 };
 
-// An alt inline direct base for renderer playables.
+/// A convenience class implementing some of the common code for playables that
+/// are also renderers.
+/// In addition to the functionality provided by playable_imp this class
+/// also provides default implementations of the renderer interface.
 class renderer_playable : public playable_imp, public renderer {
   public:
 	renderer_playable(
@@ -127,12 +136,19 @@ class renderer_playable : public playable_imp, public renderer {
 	void transition_freeze_end(lib::screen_rect<int> r) { m_context->transitioned(m_cookie); }
 	
   protected:
-	surface *m_dest;
-	alignment *m_alignment;
-	bool m_activated;
+	surface *m_dest;		///< The surface we should render to.
+	alignment *m_alignment;	///< The image alignment to use when rendering.
+	bool m_activated;		///< True when playing (deprecated??).
 };
 
 
+/// A convenience class implementing some of the common code for playables that
+/// are also renderers and that receive data from a datasource.
+/// In addition to the functionality provided by renderer_playable this class
+/// creates a raw datasource for the url specified in the node "src"
+/// attribute. On start() the datasource is started too. A subclass must
+/// define a readdone method which is called whenever data becomes available.
+/// User event handling is also taken care of.
 class renderer_playable_ds : public renderer_playable {
   public:
 	renderer_playable_ds(
@@ -158,16 +174,23 @@ class renderer_playable_ds : public renderer_playable {
 		else assert(0);
 	}
 	
+	/// Called whenever data is available.
 	virtual void readdone() = 0;
   protected:
 
-  	net::datasource *m_src;
+  	net::datasource *m_src;	///< The datasource.
 };
 
-// renderer_playable_dsall is a handy subclass of renderer_playable_ds:
-// it waits until all data is available, reads it, and then calls
-// need_redraw on the region. If you subclass this you only
-// need to add a redraw method.
+/// A convenience class implementing some of the common code for playables that
+/// are also renderers, that receive data from a datasource and that cannot
+/// start rendering until all data is available.
+/// In addition to the functionality provided by renderer_playable_ds this class
+/// creates a raw datasource for the url specified in the node "src"
+/// attribute. On start() the datasource is started too, and renderer_playable_dsall
+/// provides a readdone() method that simply collects all data. When all data
+/// has been received it schedules a redraw.
+///
+/// Hence, when you subclass this class you only need to provide a redraw() method.
 class renderer_playable_dsall : public renderer_playable_ds {
   public:
 	renderer_playable_dsall(
@@ -183,17 +206,24 @@ class renderer_playable_dsall : public renderer_playable_ds {
 	
   protected:
 	void readdone();
-	void *m_data;
-	unsigned m_data_size;
+	void *m_data;			///< The data to be rendered.
+	unsigned m_data_size;	///< The size of m_data.
 };
 
+/// Implementation of playable_factory.
+/// Playable implementations register themselves with this object
+/// through add_factory(). Then, when the client code wants to allocate
+/// a new playable all factories are tried in order until one is
+/// able to create a playable.
 class global_playable_factory : public playable_factory {
   public:
     global_playable_factory();
     ~global_playable_factory();
     
+	/// Add a factory.
     void add_factory(playable_factory *rf);
     
+	/// Create a new playable.
     playable *new_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -204,6 +234,7 @@ class global_playable_factory : public playable_factory {
     playable_factory *m_default_factory;
 };
 
+/// Convience class: a playable_notification that does nothing.
 class empty_playable_notification : public playable_notification {
 	public:
 	// Playables nodifications 
@@ -216,6 +247,17 @@ class empty_playable_notification : public playable_notification {
 	  void transitioned(cookie_type n, double t = 0) {};
 };
 
+/// Convenience class for video renderer_playables.
+/// If your video renderer displays frame-by-frame this is the
+/// baseclass to use. It handles reading the video file (through
+/// a video_datasource object), calls show_frame for every frame,
+/// and splitting out the optional audio track and handing it to
+/// an audio playable. active_video_renderer will also control
+/// the audio playable, forwarding play/stop/pause calls that it
+/// receives to the audio_playable too.
+///
+/// So, the only thing you need to provide are a show_frame
+/// and a redraw function.
 class active_video_renderer : public common::renderer_playable {
   public:
 	active_video_renderer(
@@ -227,11 +269,16 @@ class active_video_renderer : public common::renderer_playable {
 
   	virtual ~active_video_renderer() {};
 	
-      
+	/// Return true if video is paused.
   	bool is_paused() { return m_is_paused; };
+	
+	/// Return true if video is not playing.
   	bool is_stopped() { return !m_is_playing;};
+	
+	/// Return true if video is playing.
   	bool is_playing() { return m_is_playing; };  
 	
+	/// Display video data.
 	virtual void show_frame(char* frame, int size) {};
     virtual void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	
@@ -244,10 +291,10 @@ class active_video_renderer : public common::renderer_playable {
 	
 		
   protected:
-	lib::size m_size;
-  	net::video_datasource* m_src; 
-  	net::audio_datasource *m_audio_ds;
-  	common::playable *m_audio_renderer;
+	lib::size m_size;		///< (width, height) of the video data.
+  	net::video_datasource* m_src;	///< video datasource.
+  	net::audio_datasource *m_audio_ds;	///< audio datasource.
+  	common::playable *m_audio_renderer;	///< the audio playable.
   	empty_playable_notification m_playable_notification;
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
@@ -261,8 +308,10 @@ class active_video_renderer : public common::renderer_playable {
 
 
 
-// background_renderer is a convenience class: it implements some of the
-// methods for a renderer that are applicable to background renderers
+/// Convenience class for background renderers.
+/// It implements some of the methods for a renderer that are applicable 
+/// to background renderers. Subclasses only need to implement
+/// the redraw method.
 class background_renderer : public bgrenderer {
   public:
 	background_renderer(const region_info *src)
@@ -273,8 +322,8 @@ class background_renderer : public bgrenderer {
 	void user_event(const lib::point &where, int what = 0) {};
 	void transition_freeze_end(lib::screen_rect<int> area) {};
   protected:
-	const region_info *m_src;
-	surface *m_dst;
+	const region_info *m_src;	///< Where we get our parameters (such as color) from.
+	surface *m_dst;				///< Where we should render to.
 };
 
 

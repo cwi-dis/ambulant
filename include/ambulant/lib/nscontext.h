@@ -64,24 +64,37 @@ namespace ambulant {
 
 namespace lib {
 
+/// XML namespace information.
+/// This class holds information on XML namespaces.
 class nscontext {
   public:
+	/// Signals that short name prefix matches long name uri.
 	void set_prefix_mapping(const xml_string& prefix, const xml_string& uri);
 	
+	/// Return true if short name prefix is known.
 	bool is_known_prefix(const xml_string& prefix) const;
+	
+	// Return true if long name uri is known.
 	bool is_known_namespace(const xml_string& uri) const;
-	 
+	
+	/// Return the uri for a given short name prefix (or NULL).
 	const char* get_namespace(const xml_string& prefix) const;
+	
+	/// Return the uri for the default name space.
 	const char* get_default_namespace() const;
 	 
+	/// Return the short name for a given uri.
 	const char* get_namespace_prefix(const xml_string& uri) const;
-	 
+	
+	/// Convenience function version of get_namespace_prefix method.
 	static const char* 
 	get_namespace_prefix(const nscontext *p, const xml_string& uri);
-	 
+	
+	/// Return map of short names to long names.
 	const std::map<xml_string, xml_string>&
 	get_pre2uri() const { return m_pre2uri;}
 	
+	/// Return map of long names to short names.
 	const std::map<xml_string, xml_string>&
 	get_uri2pre() const { return m_uri2pre;}
 	

@@ -61,92 +61,108 @@ namespace ambulant {
 
 namespace lib {
 
-// Notification interface for timer events such as speed change. 
+/// Notification interface for timer events such as speed change.
 class timer_events {
   public:
 	virtual ~timer_events() {}
+	
+	/// Called when a timer has changed speed.
 	virtual void speed_changed() = 0;
 };
 
 
+/// Interface to timer objects.
 class abstract_timer {
   public:
-	// The underline time type used by this timer 
-	// (assumed an integral type)
+	/// The underline time type used by this timer. 
+	/// Assumed to be an integral type.
 	typedef unsigned long time_type;
 	
 	// Allows subclasses to be deleted using base pointers
 	virtual ~abstract_timer() {}
 		
-	// Returns the time elapsed
+	/// Returns the time elapsed.
 	virtual time_type elapsed() const = 0;
 	
-	// Gets the realtime speed of this timer as modulated by its parent
+	/// Gets the realtime speed of this timer as modulated by its parent.
 	virtual double get_realtime_speed() const = 0;
 };
 
 
-// A timer class able to fulfill SMIL 2.0 timing requirements.
+/// A timer class able to fulfill SMIL 2.0 timing requirements.
+/// The timer can be 
 class timer : public abstract_timer, public timer_events {
   public:	
-	// Creates a timer with the provided parent, 
-	// ticking at the speed specified and
-	// initially running or paused as specified. 
+	/// Creates a timer with the provided parent, 
+	/// ticking at the speed specified and
+	/// initially running or paused as specified. 
 	timer(abstract_timer *parent, double speed = 1.0, bool running = true);
 	
 	~timer();
 	
-	// Returns the zero-based time elapsed.
+	/// Returns the zero-based elapsed time.
+	/// Does not take periodicity into account.
 	time_type elapsed() const;
 	
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
 	time_type elapsed(time_type pt) const;
 	
-	// Starts ticking at t (t>=0).
+	/// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
 	
-	// Pauses ticking and rewinds to zero.
+	/// Stop ticking and reset elapsed time to zero.
 	void stop();
 	
-	// Pauses ticking at elapsed().
-	// While paused this timer's elapsed() returns the same value. 
-	// Speed remains unchanged and when resumed
-	// will be ticking at that speed.
+	/// Stop ticking but do not reset the elapsed time.
+	/// While paused this timer's elapsed() returns the same value. 
+	/// Speed remains unchanged and when resumed
+	/// will be ticking at that speed.
 	void pause();
 	
-	// Resumes ticking from elapsed().
+	/// Resumes ticking.
 	void resume();
 	
-	// Sets the speed of this timer.
-	// At any state, paused or running, set_speed() 
-	// may be called to change speed.
-	// When paused, the new speed will be
-	// used when the timer is resumed else
-	// the new speed is applied immediately. 
+	/// Sets the speed of this timer.
+	/// At any state, paused or running, set_speed() 
+	/// may be called to change speed.
+	/// When paused, the new speed will be
+	/// used when the timer is resumed else
+	/// the new speed is applied immediately.
+	/// The current elapsed time is not affected. 
 	void set_speed(double speed);
 	
+	/// Set the current elapsed time.
 	void set_time(time_type t);
 	
+	/// Return the current elapsed time. 
+	/// If this is a periodic timer this returns the
+	/// elapsed time within the current period.
 	time_type get_time() const;
+	
+	/// Return the period number.
+	/// If this is a non-periodic timer it returns 0.
 	time_type get_repeat() const;
 	
+	/// Set timer to periodic mode, and period duration.
 	void set_period(time_type t) { m_period = t;}
 	
 	// Returns the speed of this timer.
 	double get_speed() const { return m_speed;}
 	
-	// Returns true when this timer is running.
+	/// Returns true when this timer is running.
 	bool running() const { return m_running;}
 	
-	// Returns the realtime speed of this timer 
-	// as modulated by its parent.
+	/// Returns the realtime speed of this timer 
+	/// as modulated by its parent.
 	double get_realtime_speed() const;
 	
-	// Receives timer_events notifications.
+	/// Receives timer_events notifications.
 	void speed_changed();
 	
-	// Add/remove timer_events listeners.
+	/// Add timer_events listener.
 	void add_listener(timer_events *listener);
+	
+	/// Remove timer_events listener.
 	void remove_listener(timer_events *listener);
 	
   private:

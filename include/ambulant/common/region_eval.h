@@ -77,124 +77,155 @@ namespace common {
 using namespace lib;
 
 namespace detail {
-// const representing auto
+/// const representing auto internally.
 const int auto_int = std::numeric_limits<int>::min();
 }
 
-// A simple utility for evaluating regions positioning attributes.
-// This utility may be used as a helper while building the layout tree. 
-// This utility is just a calculator and its not appropriate for holding region pos attrs.  
+/// A simple utility for evaluating regions positioning attributes.
+/// This utility may be used as a helper while building the layout tree. 
+/// This utility is just a calculator and its not appropriate for holding region pos attrs.  
 
 class region_evaluator {
 
   public:
-	// argument w and h are the width and height of the parent region in pixels
-	// e.g parent.get_width(), parent.get_height()
+	/// Constructor.
+	/// argument w and h are the width and height of the parent region in pixels
+	/// e.g parent.get_width(), parent.get_height().
 	region_evaluator(int w, int h) : m_refw(w), m_refh(h) {
 		reset();
 	}
 	
-	// copy constructor
+	/// Copy constructor.
 	region_evaluator(const region_evaluator& re) 
 	:	m_refw(re.get_ref_width()), m_refh(re.get_ref_height()) {
 		reset();
 	}
 	
+	/// Reset all parameters to auto.
 	void reset() {
 		m_horz[0] = m_horz[1] = m_horz[2] = detail::auto_int;
 		m_vert[0] = m_vert[1] = m_vert[2] = detail::auto_int;
 		m_eval = false;
 	}
 	
-	// set defined attributes from region dimensions spec
+	/// Set all parameters from a region_dim_spec.
 	void set(const region_dim_spec& rds) {
 		set_left(rds.left);set_width(rds.width);set_right(rds.right);
 		set_top(rds.top);set_height(rds.height);set_bottom(rds.bottom);
 	}
 	
-	// set defined attributes from region dimensions array
+	/// Set all parameters from a region_dim array.
 	void set(const region_dim *prd) {
 		set_horz(prd[0], 0); set_horz(prd[1], 1); set_horz(prd[2], 2);
 		set_vert(prd[3], 0); set_vert(prd[4], 1); set_vert(prd[5], 2);
 	}
 	
-	// set defined attributes from region dimensions
+	/// Sets one parameter.
 	void set_left(const region_dim& rd) { set_horz(rd, 0);}
+	/// Sets one parameter.
 	void set_width(const region_dim& rd) { set_horz(rd, 1);}
+	/// Sets one parameter.
 	void set_right(const region_dim& rd) { set_horz(rd, 2);}
 	
+	/// Sets one parameter.
 	void set_top(const region_dim& rd) { set_vert(rd, 0);}
+	/// Sets one parameter.
 	void set_height(const region_dim& rd) { set_vert(rd, 1);}
+	/// Sets one parameter.
 	void set_bottom(const region_dim& rd) { set_vert(rd, 2);}
 	
-	// set defined attributes in pixels
+	/// Sets one parameter.
 	void set_left(int v) { m_horz[0] = v;}
+	/// Sets one parameter.
 	void set_width(int v) { m_horz[1] = v;}
+	/// Sets one parameter.
 	void set_right(int v) { m_horz[2] = v;}
 	
+	/// Sets one parameter.
 	void set_top(int v) { m_vert[0] = v;}
+	/// Sets one parameter.
 	void set_height(int v) { m_vert[1] = v;}
+	/// Sets one parameter.
 	void set_bottom(int v) { m_vert[2] = v;}
 	
-	// set defined attributes in proportions (%)
+	/// Sets one parameter.
 	void set_left(double p) { set_horz(p, 0);}
+	/// Sets one parameter.
 	void set_width(double p) { set_horz(p, 1);}
+	/// Sets one parameter.
 	void set_right(double p) { set_horz(p, 2);}
 	
+	/// Sets one parameter.
 	void set_top(double p) { set_vert(p, 0);}
+	/// Sets one parameter.
 	void set_height(double p) { set_vert(p, 1);}
+	/// Sets one parameter.
 	void set_bottom(double p) { set_vert(p, 2);}
 		
-	// get evaluated attributes in pixels
+	/// Evaluate (if needed) and return left parameter.
 	int get_left() { 
 		if(!m_eval) evaluate();
 		return m_horz[0];
 	}
+		
+	/// Evaluate (if needed) and return width parameter.
 	int get_width() { 
 		if(!m_eval) evaluate();
 		return m_horz[1];
 	}
+		
+	/// Evaluate (if needed) and return right parameter.
 	int get_right() { 
 		if(!m_eval) evaluate();
 		return  m_horz[2];
 	}
-	
+		
+	/// Evaluate (if needed) and return top parameter.
 	int get_top() { 
 		if(!m_eval) evaluate();
 		return m_vert[0];
 	}
+		
+	/// Evaluate (if needed) and return height parameter.
 	int get_height() { 
 		if(!m_eval) evaluate();
 		return m_vert[1];
 	}
+		
+	/// Evaluate (if needed) and return bottom parameter.
 	int get_bottom() { 
 		if(!m_eval) evaluate();
 		return m_vert[2];
 	}
 	
+	/// Return parent width.
 	int get_ref_width() const { 
 		return m_refw;
 	}
 	
+	/// Return parent height.
 	int get_ref_height() const { 
 		return m_refh;
 	}
 	
-	
+	/// Evaluate (if needed) and return rectangle.
 	basic_rect<int> get_rect() {
 		return basic_rect<int>(basic_point<int>(get_left(), get_top()),
 			basic_size<int>(get_width(), get_height()));
 	}
 	
+	/// Evaluate (if needed) and return rectangle.
 	screen_rect<int> get_screen_rect() {
 		return screen_rect<int>(basic_point<int>(get_left(), get_top()),
 			basic_point<int>(get_left()+get_width(), get_top()+get_height()));
 	}
 	
+	/// Evaluate (if needed) and return (left, top) point.
 	basic_point<int> get_origin() {
 		return basic_point<int>(get_left(), get_top());
 	}
 	
+	/// Evaluate (if needed) and return (width, height) size.
 	basic_size<int> get_size() {
 		return basic_size<int>(get_width(), get_height());
 	}

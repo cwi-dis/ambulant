@@ -59,33 +59,38 @@ namespace ambulant {
 
 namespace lib {
 
+/// Interface to the threading system.
+/// Part of this interface is implemented by a system-dependent
+/// implementation (the details of starting threads and such),
+/// part by the code implementing the thread functionality.
 class thread {
   public: 
 	// use the virtual table to invoke the destructor 
 	virtual ~thread() {}
 	
-	// starts the thread
+	/// Starts the thread.
 	virtual bool start() = 0;
 	
-	// sets the stop conditions and waits until the thread exits normally
-	// this must be called by a thread other than this
+	/// Request the thread to stop.
+	/// Sets the stop conditions and waits until the thread exits normally.
+	/// Cannot be called by the thread itself.
 	virtual void stop() = 0;
 	
-	// forced stop or abnormal termination
+	// Forced stop or abnormal termination.
 	// To be used only under exceptional conditions.
 	virtual bool terminate() = 0; 
 	
-	// returns true if this thread is running
+	/// Returns true if this thread is running.
 	virtual bool is_running() const = 0;
 		
   protected:
-	// the code to be executed by this thread
+	/// The code to be executed by this thread.
 	virtual unsigned long run() = 0;
 	
-	// called by this thread on exit
+	/// Not fully implemented...
 	virtual void signal_exit_thread() = 0;
 	
-	// are the stop conditions set?
+	/// Returns true if the client has called stop().
 	virtual bool exit_requested() const = 0;
 };
 

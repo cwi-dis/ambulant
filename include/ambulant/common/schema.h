@@ -59,58 +59,62 @@
 
 #include "ambulant/lib/sax_types.h"
 
-// A class encapsulating the XML Schema used by the application.
-// Components that want to be isolated from the exact XML Schema
-// may query an instance of this class for the properties they 
-// are interested for.
-//
-// An implementation of this class may use external resources, 
-// hard coded info, or the XML Schema file itself,
-// to build the data structures it requires. 
-
 namespace ambulant {
 
 namespace common {
 
-// An enumeration representing the time container type
-// range of values : par | seq | excl | none  
+/// An enumeration representing the time container type.
+/// range of values : par | seq | excl | none  
 enum time_container_type {tc_par, tc_seq, tc_excl, tc_none};
+
+/// Return the string representing a type_container_type.
 const char* time_container_type_as_str(time_container_type t);
 
-// An enumeration representing layout types
+/// An enumeration representing layout node types.
 enum layout_type {l_layout, l_rootlayout, l_toplayout, l_region, l_regpoint, l_media, l_none};
+
+/// Return the string representing a layout_type.
 const char* layout_type_as_str(layout_type t);
 
+/// A class encapsulating the XML Schema used by the application.
+/// Components that want to be isolated from the exact XML Schema
+/// may query an instance of this class for the properties they 
+/// are interested for.
+///
+/// An implementation of this class may use external resources, 
+/// hard coded info, or the XML Schema file itself,
+/// to build the data structures it requires. 
+///
+/// The current implementation is rather half-hearted and hardcoded.
 class schema {
   public:
-	// Returns the schema instance used.
+	/// Returns the schema instance used.
 	static const schema* get_instance();
 	
-	// Returns a ref to the set of time elements.
-	// Currently local names.
+	/// Returns a ref to the set of time elements.
+	/// Currently local names.
 	const std::set<std::string>& get_time_elements() const {
 		return m_time_elements;
 	}
 	
-	// Returns the time container type of the element with QName.
-	// A type is one of : par | seq | excl | none  
+	/// Returns the time_container_type of the element with tag qname.
 	time_container_type get_time_type(const lib::q_name_pair& qname) const;
 	
 	bool is_discrete(const lib::q_name_pair& qname) const;
 	
-	// Returns a ref to the set of layout elements.
-	// Currently local names.
+	/// Returns a ref to the set of layout elements.
+	/// Currently local names.
 	const std::set<std::string>& get_layout_elements() const {
 		return m_layout_elements;
 	}
 	
-	// Returns the time container type of the element with QName.
-	// A type is one of : par | seq | excl | none  
+	// Returns the layout_type of the element with tag qname.
 	layout_type get_layout_type(const lib::q_name_pair& qname) const;
 	
-	// Allow schema_factory classes to create instances.
+	/// Allow schema_factory classes to create instances.
 	friend class schema_factory;
 	
+	/// Return true if an element with tag qname is an animation.
 	bool is_animation(const lib::q_name_pair& qname) const;
 	
  	schema();
