@@ -79,4 +79,9 @@ Here are some random remarks about testing the distributions.
 - For each platform, try and get someone knowledgable with the platform but
   not the Ambulant Player to build the distribution.
   
+- On the platforms that support it (Linux, Mac) test localisation. We
+  should have at least English and Dutch working.
+  
+- On each platform, check that the version numbers are correct in things
+  like the about dialog, Get Info (Properties) in the Finder (Explorer), etc.
   
