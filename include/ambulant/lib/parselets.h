@@ -62,6 +62,8 @@
 // used by and_p and options_p
 #include <list>
 
+#include <math.h>
+
 // This module defines a set of simple parsers.
 // All the parsers offer a common minimal interface 
 // in order to simplify composition.
@@ -156,6 +158,52 @@ class int_p : public parselet {
 	}
 };
 
+class dec_p : public parselet {
+   public:
+	typedef dec_p self_type;
+	typedef double result_type;
+	result_type m_result;
+	
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		const_iterator tit = it;
+		std::ptrdiff_t d;
+		std::ptrdiff_t sd = 0;
+		int_p i;
+		d = i.parse(tit, end);
+		if(d == -1) return -1;
+		sd += d;
+		
+		d = literal_p<'.'>().parse(tit, end);
+		if(d == -1) return (m_result = i.m_result, it = tit, sd);
+		sd += d;
+		
+		// get fraction, do not allow empty after dot
+		int_p f;
+		d = f.parse(tit, end);
+		if(d == -1) return -1;
+		m_result = i.m_result + double(f.m_result)/::pow(10.0, int(d));
+		it = tit;
+		return sd;
+	}
+};
+
+template <typename CharType, typename IsNameStartCh, typename IsNameCh >
+class name_p :  public basic_parselet<CharType> {
+  public:
+	typedef name_p<CharType, IsNameStartCh, IsNameCh> self_type;
+	typedef string_type result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		if(it == end || !IsNameStartCh()(*it)) return -1;
+		m_result += *it;
+		std::ptrdiff_t d = 1;
+		const_iterator test_it = ++it;
+		while(test_it != end && IsNameCh()(*test_it)) 
+			{ m_result += *test_it++; d++;}
+		return (it = test_it, d);
+	}
+};
+
 class epsilon_p : public parselet {
   public:
 	typedef epsilon_p self_type;
@@ -176,7 +224,7 @@ class nfa_p : public parselet {
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		const_iterator it_test = it;
 		std::ptrdiff_t d = m_expr.parse(it_test, end);
-		if(d>=0) {
+		if(d != -1) {
 			m_result = std::string(it, it_test);
 			it = it_test;
 		}
@@ -267,12 +315,12 @@ class or_pair_p : public parselet {
 		const_iterator sit = it;
 		std::ptrdiff_t sd = m_second.parse(sit, end);
 		
-		if( (fd < 0 && sd >= 0) || (fd >= 0 && sd >= 0 && fd<sd)) {
+		if( (fd == -1 && sd != -1) || (fd != -1 && sd != -1 && fd<sd)) {
 			it = sit;
 			m_result.first = std::make_pair(false, m_first.m_result);
 			m_result.second = std::make_pair(true, m_second.m_result);
 			return sd;
-		} else if( (fd >= 0 && sd < 0) || (fd >= 0 && sd >= 0 && fd>=sd)) {
+		} else if( (fd != -1 && sd == -1) || (fd != -1 && sd != -1 && fd>=sd)) {
 			it = fit;
 			m_result.first = std::make_pair(true, m_first.m_result);
 			m_result.second = std::make_pair(false, m_second.m_result);
@@ -323,12 +371,12 @@ class plus_p : public parselet {
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		const_iterator test_it = it;
 		std::ptrdiff_t rd = m_p.parse(test_it, end);
-		if(rd<0) return -1;
+		if(rd == -1) return -1;
 		it = test_it;
 		m_result.push_back(m_p.m_result);
 		while(test_it != end) {
 			std::ptrdiff_t d = m_p.parse(test_it, end);
-			if(d<0) break;
+			if(d == -1) break;
 			rd += d;
 			it = test_it;
 			m_result.push_back(m_p.m_result);		
@@ -342,16 +390,124 @@ plus_p<P> make_plus(const P& p) {
 	return plus_p<P>(p);
 }
 
+// Parses: P*
+template<typename P>
+class star_p : public parselet {
+  public:
+	typedef star_p<P> self_type;
+	typedef typename P::result_type atom_result_type;
+	typedef std::list<atom_result_type> result_type;
+	result_type m_result;
+	P m_p;
+	star_p(const P& p) : m_p(p) {}
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		const_iterator test_it = it;
+		std::ptrdiff_t rd = m_p.parse(test_it, end);
+		if(rd == -1) return 0;
+		it = test_it;
+		m_result.push_back(m_p.m_result);
+		while(test_it != end) {
+			std::ptrdiff_t d = m_p.parse(test_it, end);
+			if(d == -1) break;
+			rd += d;
+			it = test_it;
+			m_result.push_back(m_p.m_result);		
+		}
+		return rd;
+	}
+};
+
+template<typename P>
+star_p<P> make_star(const P& p) {
+	return star_p<P>(p);
+}
+
+// Parses: FirstType | SecondType | ThirdType
+template<typename FirstType, typename SecondType, typename ThirdType>
+class or_trio_p : public parselet {
+  public:
+	typedef FirstType first_type;
+	typedef SecondType second_type;
+	typedef ThirdType third_type;
+	typedef or_trio_p<FirstType, SecondType, ThirdType> self_type;
+	typedef typename FirstType::result_type first_result_type;
+	typedef typename SecondType::result_type second_result_type;
+	typedef typename ThirdType::result_type third_result_type;
+	typedef struct  {
+		std::pair<bool, first_result_type> first; 
+		std::pair<bool, second_result_type> second;
+		std::pair<bool, third_result_type> third;
+	} result_type;
+	result_type m_result; 
+	
+	first_type m_first;
+	second_type m_second;	
+	third_type m_third;	
+	or_trio_p(const first_type& first, const second_type& second, const third_type& third) 
+	:	m_first(first), m_second(second), m_third(third) {}
+	
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		const_iterator ita[3] = {it, it, it};
+		std::ptrdiff_t d[3] = {
+			m_first.parse(ita[0], end), 
+			m_second.parse(ita[1], end),
+			m_third.parse(ita[2], end)};
+		std::ptrdiff_t dmax = -1;
+		for(int i=0;i<3;i++) {
+			std::cout << "d[" << i << "]=" << int(d[i]) << std::endl;
+			if(d[i] != -1 && (dmax == -1 || d[i] > dmax)) {
+				dmax = d[i];
+			}
+		}
+		std::cout << "dmax=" << int(dmax) << std::endl;
+		if(dmax == -1) return -1;
+		if(d[0] == dmax) {
+			it = ita[0];
+			m_result.first = std::make_pair(true, m_first.m_result);
+			m_result.second = std::make_pair(false, m_second.m_result);
+			m_result.third = std::make_pair(false, m_third.m_result);
+		} else if(d[1] == dmax) {
+			it = ita[1];
+			m_result.first = std::make_pair(false, m_first.m_result);
+			m_result.second = std::make_pair(true, m_second.m_result);
+			m_result.third = std::make_pair(false, m_third.m_result);
+		} else if(d[2] == dmax) {
+			it = ita[2];
+			m_result.first = std::make_pair(false, m_first.m_result);
+			m_result.second = std::make_pair(false, m_second.m_result);
+			m_result.third = std::make_pair(true, m_third.m_result);
+		} else {
+			m_result.first = std::make_pair(false, m_first.m_result);
+			m_result.second = std::make_pair(false, m_second.m_result);
+			m_result.third = std::make_pair(false, m_third.m_result);
+		}
+		return dmax;
+	}
+	bool matched_first() const { return m_result.first.first;}
+	bool matched_second() const { return m_result.second.first;}
+	bool matched_third() const { return m_result.third.first;}
+	first_result_type get_first_result() const { return m_result.first.second;}
+	second_result_type get_second_result() const { return m_result.second.second;}
+	third_result_type get_third_result() const { return m_result.third.second;}
+};
+
+// let the compiler deduce the type from the args
+template<typename T1, typename T2, typename T3>
+or_trio_p<T1, T2, T3> make_or_trio_p(const T1& t1, const T2& t2, const T3& t3) {
+	return or_trio_p<T1, T2, T3>(t1, t2, t3);
+}
+
 ////////////////////////////////
 // Composite parselets
 // More as a pattern than for real use
 
-class and_p : public parselet {	
+class list_p : public parselet {	
   public:
-	typedef and_p self_type;
-	std::list<parselet*> m_rules;
-	~and_p();
-	void push_back(parselet* p) { m_rules.push_back(p);}
+	typedef list_p self_type;
+	typedef std::list<parselet*> result_type;	
+	result_type m_result;
+	~list_p();
+	void push_back(parselet* p) { m_result.push_back(p);}
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 };
 
@@ -367,6 +523,52 @@ class options_p : public parselet {
 
 ////////////////////////////////
 // Domain parselets
+
+// the following teplates must be extended 
+// to use std::isalpha and std::isdigit
+
+// NameStartChar ::= (Letter | '_' | ':') 
+template <typename CharType>
+struct xml_name_start_ch {
+	bool operator()(CharType ch) {
+		return ::isalpha(ch) || ch == '_' || ch == ':';
+	}
+};
+
+template <typename CharType>
+struct xml_ncname_start_ch {
+	bool operator()(CharType ch) {
+		return xml_name_start_ch<CharType>()(ch) && ch != ':';
+	}
+};
+
+// NameChar ::= Letter | Digit | '.' | '-' | '_' | ':'
+template <typename CharType>
+struct xml_name_ch {
+	bool operator()(CharType ch) {
+		return ::isalpha(ch) || ::isdigit(ch) || 
+			ch == '.' || ch == '-' || ch == '_' || ch == ':';
+	}
+};
+
+template <typename CharType>
+struct xml_ncname_ch {
+	bool operator()(char ch) {
+		return xml_name_ch<CharType>()(ch) && ch != ':';
+	}
+};
+
+// Space ::= #x20 | #x9 | #xD | #xA
+template <typename CharType>
+struct xml_space_ch {
+	bool operator()(CharType ch) {
+		return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+	}
+};
+
+typedef name_p< char, xml_name_start_ch<char>,  xml_name_ch<char> > xml_name_p;
+typedef name_p< char, xml_ncname_start_ch<char>,  xml_ncname_ch<char> > xml_ncname_p;
+typedef name_p< char, xml_name_ch<char>,  xml_name_ch<char> > xml_nmtoken_p;
 
 // time_unit ::= "h" | "min" | "s" | "ms"
 class time_unit_p : public parselet {
@@ -389,6 +591,76 @@ class full_clock_value_p : public parselet {
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 };
+
+class partial_clock_value_p : public parselet {
+  public:
+	typedef partial_clock_value_p self_type;
+	typedef struct {
+		int minutes;
+		int seconds;
+		int fraction;
+	}  result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+};
+
+class timecount_value_p : public parselet {
+  public:
+	typedef full_clock_value_p self_type;
+	typedef struct {
+		dec_p::result_type value;
+		time_unit_p::result_type unit;
+	}  result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+};
+
+typedef  or_trio_p<full_clock_value_p, partial_clock_value_p, timecount_value_p>
+	clock_value_sel_p;
+	
+const int S_MS = 1000;
+const int MIN_MS = 60*S_MS;
+const int H_MS = 60*MIN_MS;
+
+// Though clock_value_sel_p does the job of parsing a clock value
+// implement a handy class that will convert any matching clock alt to ms.
+class clock_value_p : public parselet {
+  public:
+	typedef clock_value_p self_type;
+	typedef long result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	
+	// This will return a valid value when the previous call
+	// to parse returned a value != -1.
+	result_type get_value() const { return m_result;}
+};
+
+// offset-value   ::= (( S? "+" | "-" S? )? ( Clock-value )
+class offset_value_p : public parselet {
+  public:
+	typedef clock_value_p self_type;
+	typedef long result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	result_type get_value() const { return m_result;}
+};
+
+// parse: (nmtoken? offset) | (nmtoken offset?)
+class nmtoken_offset_p : public parselet {
+  public:
+	typedef clock_value_p self_type;
+	enum time_symbol {ts_begin, ts_end };
+	typedef struct {
+		string_type nmtoken;
+		long offset;
+	} result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	string_type get_nmtoken() const { return m_result.nmtoken;}
+	long get_offset() const { return m_result.offset;}
+};
+
 
 } // namespace lib
  
