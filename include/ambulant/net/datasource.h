@@ -46,12 +46,40 @@ class databuffer
 	// destructor
 	~databuffer();
 	
-	
+	void resize(int newsize);
 	void show(bool verbose);									// show information about the buffer, if verbose is true the buffer is dumped to cout;
 	void get_data(bytes *data, int size); 				//retrieve data from buffer,  still thinking about arguments.
 																				//there should be something to pass on error messages.
 	void put_data(bytes *data , int size);			 	// this one puts data alway at the end.						 
 	
+};
+
+class passive_datasource
+{
+private:
+	url where;
+	
+public:
+	passive_datasource();
+	passive_datasource(url location);
+	passive_datasource(passive_datasource& ds);
+	
+	~passive_datasource();
+	
+	void activate();
+};
+
+
+class active_datasource
+{
+private:
+	databuffer buffer();
+	
+public:
+
+void start_read_all(url loc);
+
+
 };
 
 } //end namespace datasource
