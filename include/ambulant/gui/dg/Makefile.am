@@ -11,10 +11,12 @@ library_include_HEADERS= \
 	dg_image_renderer.h \
 	dg_img.h \
 	dg_mp3_decoder.h \
+	dg_playable.h \
 	dg_player.h \
 	dg_rgn.h \
 	dg_surface.h \
 	dg_text.h \
+	dg_transition.h \
 	dg_viewport.h \
 	dg_window.h \
 	dg_wmuser.h \
