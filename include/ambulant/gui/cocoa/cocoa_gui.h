@@ -126,6 +126,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 }
 
 - (id)initWithFrame:(NSRect)frameRect;
+- (void)dealloc;
 
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window;
 - (void)ambulantWindowClosed;

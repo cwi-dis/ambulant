@@ -253,7 +253,14 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	return self;
 }
 
-- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
+- (void)dealloc {
+	if (transition_surface) [transition_surface release];
+	transition_surface = NULL;
+	if (transition_tmpsurface) [transition_tmpsurface release];
+	transition_tmpsurface = NULL;
+    [super dealloc];
+
+}- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
 {
 #ifdef USE_COCOA_BOTLEFT
 	float bot_delta = NSMaxY([self bounds]) - arect->bottom();
@@ -414,6 +421,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
 		transition_surface = [self getTransitionOldSource];
+		[transition_surface retain];
 	}
 	return transition_surface;
 }
@@ -423,6 +431,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
 		transition_tmpsurface = [self getTransitionOldSource];
+		[transition_tmpsurface retain];
 		[transition_tmpsurface setFlipped: NO];
 	}
 	return transition_tmpsurface;
@@ -441,6 +450,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "oldsrc"];
 #endif
+	rv = [rv autorelease];
 	return rv;
 }
 
@@ -453,10 +463,11 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	[transition_surface lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
 	[transition_surface unlockFocus];
-	[rv addRepresentation: bits];
+	[rv addRepresentation: [bits autorelease]];
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "newsrc"];
 #endif
+	rv = [rv autorelease];
 	return rv;
 }
 

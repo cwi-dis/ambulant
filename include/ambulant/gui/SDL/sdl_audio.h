@@ -116,6 +116,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 	
 	bool m_is_playing;
 	bool m_is_paused;
+	bool m_audio_started;
   // class methods and attributes:
 	static int init();
  	static void register_renderer(sdl_active_audio_renderer *rnd);

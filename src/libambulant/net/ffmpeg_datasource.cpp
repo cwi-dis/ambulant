@@ -155,7 +155,8 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 	audio_datasource *dds = new ffmpeg_decoder_datasource(ds);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
-		ds->release();
+		int rem = ds->release();
+		assert(rem == 0);
 		return NULL;
 	}
 	if (fmts.contains(dds->get_audio_format())) {
@@ -165,7 +166,8 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 	audio_datasource *rds = new ffmpeg_resample_datasource(dds, fmts);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
-		dds->release();
+		int rem = dds->release();
+		assert(rem == 0);
 		return NULL;
 	}
 	if (fmts.contains(rds->get_audio_format())) {
@@ -173,7 +175,8 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 		return rds;
 	}
 	lib::logger::get_logger()->error("ffmpeg_audio_datasource_factory::new_audio_datasource: unable to create resampler");
-	rds->release();
+	int rem = rds->release();
+	assert(rem == 0);
 #endif // WITH_FFMPEG_AVFORMAT
 	return NULL;	
 }
@@ -423,16 +426,20 @@ ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::li
 {
 	m_lock.enter();
 	
-	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
+	if (m_client_callback != NULL) {
+		delete m_client_callback;
+		m_client_callback = NULL;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): m_client_callback already set!");
+	}
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
-		if (evp && callbackk) {
+		if (callbackk) {
+			assert(evp);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): no client callback!");
+			lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
@@ -471,6 +478,7 @@ ffmpeg_audio_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);
+		assert(m_event_processor);
 		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 		m_client_callback = NULL;
 		//m_event_processor = NULL;
@@ -674,16 +682,20 @@ ffmpeg_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::start_frame: (this = 0x%x)", (void*) this);
 
-	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): m_client_callback already set!");
+	if (m_client_callback != NULL) {
+		delete m_client_callback;
+		m_client_callback = NULL;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::start(): m_client_callback already set!");
+	}
 	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
-		if (evp && callbackk) {
+		if (callbackk) {
+			assert(evp);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): no client callback!");
+			lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
@@ -854,6 +866,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 	if ( m_frames.size() || m_src_end_of_file  ) {
 	  if ( m_client_callback ) {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::data_avail(): calling client callback (eof=%d)", m_src_end_of_file);
+		assert(m_event_processor);
 		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 		m_client_callback = NULL;
 		//m_event_processor = NULL;
@@ -983,7 +996,8 @@ ffmpeg_decoder_datasource::stop()
 	m_con = NULL;
 	if (m_src) {
 		m_src->stop();
-		m_src->release();
+		int rem = m_src->release();
+		if (rem) lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem); 
 	}
 	m_src = NULL;
 	if (m_client_callback) delete m_client_callback;
@@ -1002,16 +1016,20 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 {
 	m_lock.enter();
 	
-	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_decoder_datasource::start(): m_client_callback already set!");
+	if (m_client_callback != NULL) {
+		delete m_client_callback;
+		m_client_callback = NULL;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::start(): m_client_callback already set!");
+	}
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
-		if (evp && callbackk) {
+		if (callbackk) {
+			assert(evp);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_decoder_datasource::start(): no client callback!");
+			lib::logger::get_logger()->error("ffmpeg_decoder_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
@@ -1069,6 +1087,7 @@ ffmpeg_decoder_datasource::data_avail()
 	
 		if ( m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file()) ) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
+			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 			m_client_callback = NULL;
 			//m_event_processor = NULL;
@@ -1234,16 +1253,22 @@ void
 ffmpeg_resample_datasource::stop() 
 {
 	m_lock.enter();
+	int oldrefcount = get_ref_count();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::stop(0x%x)", (void*)this);
 	if (m_src) {
 		m_src->stop();
-		m_src->release();
+		int rem = m_src->release();
+		if (rem) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem); 
+		m_src = NULL;
+	} else {
+		AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::stop(0x%x): m_src already NULL", (void*)this);
 	}
 	m_src = NULL;
 	if (m_resample_context) audio_resample_close(m_resample_context);
 	m_resample_context = NULL;
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::stop(0x%x) refcount was %d is %d", (void*)this, oldrefcount, get_ref_count());
 	m_lock.leave();
 }
 
@@ -1251,6 +1276,7 @@ void
 ffmpeg_resample_datasource::data_avail()
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
 		lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
 		m_lock.leave();			
@@ -1298,8 +1324,8 @@ ffmpeg_resample_datasource::data_avail()
 		}
 		// Restart reading if we still have room to accomodate more data
 		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling m_src->start() again");
 			lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling m_src->start(), refcount=%d", get_ref_count());
 			m_src->start(m_event_processor, e);
 #ifdef RESAMPLE_READ_ALL
 			// workaround for sdl bug: if RESAMPLE_READ_ALL is defined we continue
@@ -1314,8 +1340,10 @@ ffmpeg_resample_datasource::data_avail()
 		// If the client is currently interested tell them about data being available
 		if (m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file())) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
-			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
+			assert(m_event_processor);
+			lib::event *clientcallback = m_client_callback;
 			m_client_callback = NULL;
+			m_event_processor->add_event(clientcallback, 0, ambulant::lib::event_processor::high);
 			//m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No client callback!");
@@ -1391,17 +1419,21 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start(): start(0x%x) called", this);
-	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_resample_datasource::start(): m_client_callback already set!");
+	if (m_client_callback != NULL) {
+		delete m_client_callback;
+		m_client_callback = NULL;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start(): m_client_callback already set!");
+	}
 	
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
-		if (evp && callbackk) {
+		if (callbackk) {
+			assert(evp);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_resample_datasource::start(): no client callback!");
+			lib::logger::get_logger()->error("ffmpeg_resample_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we

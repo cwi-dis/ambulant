@@ -212,8 +212,11 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 {
 	m_lock.enter();
 	
-	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_raw_datasource::start(): m_client_callback already set!");
+	if (m_client_callback != NULL) {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::start(): m_client_callback already set!");
+		delete m_client_callback;
+		m_client_callback = NULL;
+	}
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again

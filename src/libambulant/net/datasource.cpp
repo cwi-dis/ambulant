@@ -220,7 +220,8 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 		if (src) break;
 	}
 	if (src == NULL) {
-		rawsrc->release();
+		int rem = rawsrc->release();
+		assert(rem == 0);
 		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", url.c_str());
 		return NULL;
 	}
@@ -238,7 +239,8 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 	}
 	
 	// Failed to find a filter. Clean up.
-	src->release(); // This will also release rawsrc
+	int rem = src->release(); // This will also release rawsrc
+	assert(rem == 0);
 	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
     return NULL;
 }

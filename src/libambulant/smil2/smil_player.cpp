@@ -126,8 +126,10 @@ smil_player::~smil_player() {
 	cancel_all_events();		
 	m_scheduler->reset_document();
 	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++)
-		(*it).second->release();
+	for(it = m_playables.begin();it!=m_playables.end();it++) {
+		int rem = (*it).second->release();
+		if (rem) m_logger->warn("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
+	}
 		
 	delete m_event_processor;
 	delete m_timer;
@@ -462,7 +464,8 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	AM_DBG m_logger->trace("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 #endif
 	np->stop();
-	np->release();
+	int rem = np->release();
+	if (rem) m_logger->warn("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
 void smil_player::show_link(const lib::node *n, const std::string& href) {
