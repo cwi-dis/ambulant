@@ -207,7 +207,7 @@ void gui::dx::dx_player::on_done() {
 
 common::abstract_window *
 gui::dx::dx_player::new_window(const std::string &name, 
-	lib::size bounds, common::renderer *renderer) {
+	lib::size bounds, common::surface_source *src) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
 		name.c_str(), repr(bounds).c_str());
@@ -221,8 +221,8 @@ gui::dx::dx_player::new_window(const std::string &name,
 	// Create the associated dx viewport
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
 	
-	// XXX: Wrong arg in new_window() interface!
-	region *rgn = (region *) renderer;
+	// Region?
+	region *rgn = (region *) src;
 	
 	// Clear the viewport
 	const common::region_info *ri = rgn->get_info();
@@ -312,11 +312,11 @@ gui::dx::dx_player::new_playable(
 	} else if(tag == "video") {
 		p = new dx_video_renderer(context, cookie, node, evp, window);
 	} else if(tag == "area") {
-		p = new dx_area_renderer(context, cookie, node, evp, window);
+		p = new dx_area(context, cookie, node, evp, window);
 	} else if(tag == "brush") {
 		p = new dx_brush(context, cookie, node, evp, window);
 	} else {
-		p = new dx_area_renderer(context, cookie, node, evp, window);
+		p = new dx_area(context, cookie, node, evp, window);
 	}
 	return p;
 }

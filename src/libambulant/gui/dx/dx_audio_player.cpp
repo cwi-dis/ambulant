@@ -139,7 +139,7 @@ bool gui::dx::audio_player::can_play() {
 
 bool gui::dx::audio_player::is_playing() {
 	if(m_media_event == 0) return false;
-	long msTimeout = 50;
+	long msTimeout = 0;
 	long evCode = 0;
 	HRESULT hr = m_media_event->WaitForCompletion(msTimeout, &evCode);
 	if(hr == E_ABORT) return true;
