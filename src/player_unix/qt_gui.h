@@ -106,8 +106,8 @@ class qt_gui : public QWidget {
 		return m_o_y;
 	}
 
-	const char*  filename() { 
-		return m_smilfilename;
+	const char* filename() { 
+		return m_smilfilename.ascii();
 	}
 
 	bool openSMILfile(const QString smilfilename, int mode);
@@ -124,11 +124,13 @@ class qt_gui : public QWidget {
    private:
 	bool	     m_busy;
 	QPushButton* m_cancel_pb; // for Settings window
+	QPopupMenu*  m_filemenu;
 	QHBox* 	     m_finish_hb; // for Settings window
+	QPopupMenu*  m_helpmenu;
 	QMenuBar*    m_menubar;
-	QPushButton* m_ok_pb;	 // for Settings window
-	int	     m_o_x;	 // x coord of origin play window
-	int	     m_o_y;	 // y coord of origin play window
+	QPushButton* m_ok_pb;	  // for Settings window
+	int	     m_o_x;	  // x coord of origin play window
+	int	     m_o_y;	  // y coord of origin play window
 	int          m_pause_id;
 	bool         m_pausing;
 	int          m_play_id;
@@ -137,6 +139,8 @@ class qt_gui : public QWidget {
 	const char*  m_programfilename;
 	qt_settings* m_settings; // the Settings window
 	QString      m_smilfilename;
+	QPopupMenu*  m_viewmenu;
+
 #define	TRY_LOCKING
 #ifdef	TRY_LOCKING
 	pthread_cond_t	  m_cond_message;

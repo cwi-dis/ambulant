@@ -85,12 +85,13 @@ class qt_logger {
 #endif/*QT_NO_FILEDIALOG*/
 	static void set_qt_logger_gui(qt_gui*);
 	void log(QString logstring);
+	~qt_logger();
  protected:
 	qt_logger();
  private:
 	static qt_logger* s_qt_logger;  // singleton
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
-	QTextEdit* logger_window;
+	QTextEdit* m_logger_window;
 #endif/*QT_NO_FILEDIALOG*/
 	qt_gui* m_gui;
 	FILE* m_log_FILE;

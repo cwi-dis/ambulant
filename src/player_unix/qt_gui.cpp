@@ -65,7 +65,7 @@
 #include "ambulant/version.h"
 #endif
 
-// #define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -166,68 +166,55 @@ qt_gui::qt_gui(const char* title,
 	{
 		int id;
 		/* File */
-		QPopupMenu* filemenu = new QPopupMenu (this);
-		assert(filemenu);
-		int open_id = filemenu->insertItem(gettext("&Open..."), this, 
-						   SLOT(slot_open()));
-		int url_id = filemenu->insertItem(gettext("Open &URL..."), this, 
-						  SLOT(slot_open_url()));
-		int reload_id = filemenu->insertItem(gettext("&Reload..."), this, 
-						     SLOT(slot_reload()));
+		m_filemenu = new QPopupMenu (this);
+		assert(m_filemenu);
+		int open_id = m_filemenu->insertItem(gettext("&Open..."), this, SLOT(slot_open()));
+		int url_id = m_filemenu->insertItem(gettext("Open &URL..."), this, SLOT(slot_open_url()));
+		int reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
 #ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
 		// Disable unavailable menu entries
-		filemenu->setItemEnabled(open_id, true);
-		filemenu->setItemEnabled(url_id, false);
+		m_filemenu->setItemEnabled(open_id, true);
+		m_filemenu->setItemEnabled(url_id, false);
 #endif/*QT_NO_FILEDIALOG*/
-		filemenu->insertSeparator();
+		m_filemenu->insertSeparator();
 		
-		filemenu->insertItem(gettext("&Settings"), this,
-				     SLOT(slot_settings_select()));
-		filemenu->insertSeparator();
+		m_filemenu->insertItem(gettext("&Settings"), this, SLOT(slot_settings_select()));
+		m_filemenu->insertSeparator();
 		
-		filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
-		m_menubar->insertItem(gettext("&File"), filemenu);
+		m_filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
+		m_menubar->insertItem(gettext("&File"), m_filemenu);
 		
 		/* Play */
 		m_playmenu = new QPopupMenu (this, "PlayA");
 		assert(m_playmenu);
-		m_play_id = m_playmenu->insertItem(gettext("Pla&y"), this,
-						   SLOT(slot_play()));
+		m_play_id = m_playmenu->insertItem(gettext("Pla&y"), this, SLOT(slot_play()));
 		m_playmenu->setItemEnabled(m_play_id, false);
-		m_pause_id = m_playmenu->insertItem(gettext("&Pause"), this,
-						    SLOT(slot_pause()));
+		m_pause_id = m_playmenu->insertItem(gettext("&Pause"), this, SLOT(slot_pause()));
 		m_playmenu->setItemEnabled(m_pause_id, false);
-		m_playmenu->insertItem(gettext("&Stop"),	this, SLOT(slot_stop()));
+		m_playmenu->insertItem(gettext("&Stop"), this, SLOT(slot_stop()));
 		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
 		
 		/* View */
-		QPopupMenu* viewmenu = new QPopupMenu(this, "View");
-		viewmenu->insertItem(gettext("&Full Screen"), this,
-				     SLOT(showFullScreen()));
-		viewmenu->insertItem(gettext("&Window"), this,SLOT(showNormal()));
-		viewmenu->insertSeparator();
-		viewmenu->insertItem(gettext("&Load settings..."), this,
-				     SLOT(slot_load_settings()));
+		m_viewmenu = new QPopupMenu(this, "View");
+		m_viewmenu->insertItem(gettext("&Full Screen"), this, SLOT(showFullScreen()));
+		m_viewmenu->insertItem(gettext("&Window"), this, SLOT(showNormal()));
+		m_viewmenu->insertSeparator();
+		m_viewmenu->insertItem(gettext("&Load settings..."), this, SLOT(slot_load_settings()));
 #ifdef	WITH_QT_LOGGER
-		viewmenu->insertSeparator();
-		viewmenu->insertItem(gettext("&Log Window..."), this,
-				     SLOT(slot_logger_window()));
+		m_viewmenu->insertSeparator();
+		m_viewmenu->insertItem(gettext("&Log Window..."), this, SLOT(slot_logger_window()));
 #endif/*WITH_QT_LOGGER*/
-		m_menubar->insertItem(gettext("&View"), viewmenu);
+		m_menubar->insertItem(gettext("&View"), m_viewmenu);
 		
 		/* Help */
-		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
-		assert(helpmenu);
-		helpmenu->insertItem(gettext("&About AmbulantPlayer"), this,
-				     SLOT(slot_about()));
-		helpmenu->insertItem(gettext("AmbulantPlayer &Help"), this,
-				     SLOT(slot_help()));
-		helpmenu->insertSeparator();
-		helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this,
-				     SLOT(slot_homepage()));
-		helpmenu->insertItem(gettext("&Play Welcome Document"), this,
-				     SLOT(slot_welcome()));
-		m_menubar->insertItem(gettext("&Help"), helpmenu);
+		m_helpmenu = new QPopupMenu (this, "HelpA");
+		assert(m_helpmenu);
+		m_helpmenu->insertItem(gettext("&About AmbulantPlayer"), this, SLOT(slot_about()));
+		m_helpmenu->insertItem(gettext("AmbulantPlayer &Help"), this, SLOT(slot_help()));
+		m_helpmenu->insertSeparator();
+		m_helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this, SLOT(slot_homepage()));
+		m_helpmenu->insertItem(gettext("&Play Welcome Document"), this, SLOT(slot_welcome()));
+		m_menubar->insertItem(gettext("&Help"), m_helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
@@ -241,30 +228,20 @@ qt_gui::qt_gui(const char* title,
 }
 
 qt_gui::~qt_gui() {
+#define DELETE(X) if (X) { delete X; X = NULL; }
 	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
 #ifdef  QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	if (m_fileselector != NULL) {
-		delete m_fileselector;
-		m_fileselector = NULL;
-	}
-	if (m_settings_selector != NULL) {
-		delete m_settings_selector;
-		m_settings_selector = NULL;
-	}
+	DELETE(m_fileselector)
+	DELETE(m_settings_selector)
 #endif/*QT_NO_FILEDIALOG*/
-	if (m_mainloop != NULL) {
-		delete m_mainloop;
-		m_mainloop = NULL;
-	}
-	if (m_menubar != NULL) {
-		delete m_menubar;
-		m_menubar = NULL;
-	}
-	if ( ! m_smilfilename.isNull()) {
-		delete m_smilfilename;
-		m_smilfilename = (char*) NULL;
-	}
+	DELETE(m_mainloop) 
+	DELETE(m_filemenu)
+	DELETE(m_helpmenu)
+	DELETE(m_playmenu)
+	DELETE(m_viewmenu)
+	DELETE(m_menubar)
+	m_smilfilename = (char*) NULL;
 }
 
 void 
@@ -347,10 +324,10 @@ qt_gui::openSMILfile(const QString smilfilename, int mode) {
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
-	m_smilfilename = strdup(smilfilename);
+	m_smilfilename = smilfilename;
 	if (m_mainloop != NULL)
-		delete m_mainloop;
-	m_mainloop = new qt_mainloop(this);
+		m_mainloop->release();
+ 	m_mainloop = new qt_mainloop(this);
 	m_playing = false;
 	m_pausing = false;
 	return m_mainloop->is_open();
@@ -605,9 +582,10 @@ void
 qt_gui::slot_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
 	if (m_mainloop)	{
-	  m_mainloop->stop();
-	  m_mainloop->release();
-	  m_mainloop = NULL;
+		m_mainloop->stop();
+//		m_mainloop->release();
+		delete m_mainloop;
+		m_mainloop = NULL;
 	}
 	m_busy = false;
 	qApp->quit();
@@ -800,6 +778,7 @@ main (int argc, char*argv[]) {
 	}
 	delete mywidget;
 	unix_prefs.save_preferences();
+	delete qt_logger::get_qt_logger();
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

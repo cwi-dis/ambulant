@@ -113,6 +113,7 @@ qt_logger* qt_logger::s_qt_logger = 0;
 
 qt_logger::qt_logger() 
   : 	m_log_FILE(NULL),
+	m_logger_window( NULL),
 	m_gui(NULL) 
 {
 	common::preferences* prefs = 
@@ -135,11 +136,20 @@ qt_logger::qt_logger()
 	logger->set_level(level);
 	logger->set_ostream(new qt_logger_ostream);
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
-	logger_window = new QTextEdit();
-	logger_window->setReadOnly(true);
-	logger_window->setCaption("Ambulant-Logger");
-	logger_window->setTextFormat(Qt::PlainText);
-	logger_window->setGeometry(50, 50, 560, 240);
+	m_logger_window = new QTextEdit();
+	m_logger_window->setReadOnly(true);
+	m_logger_window->setCaption("Ambulant-Logger");
+	m_logger_window->setTextFormat(Qt::PlainText);
+	m_logger_window->setGeometry(50, 50, 560, 240);
+#endif/*QT_NO_FILEDIALOG*/
+}
+
+qt_logger::~qt_logger() {
+	if(m_log_FILE) fclose (m_log_FILE);
+	m_log_FILE = NULL;
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
+	if(m_logger_window) delete m_logger_window;
+	m_logger_window = NULL;
 #endif/*QT_NO_FILEDIALOG*/
 }
 
@@ -179,7 +189,7 @@ qt_logger::show_message(int level, const char *msg) {
 QTextEdit*
 qt_logger::get_logger_window()
 {
-	return logger_window;
+	return m_logger_window;
 }
 #endif/*QT_NO_FILEDIALOG*/
 

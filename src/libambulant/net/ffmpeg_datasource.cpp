@@ -246,7 +246,7 @@ detail::ffmpeg_demux::supported(const net::url& url)
 	probe_data.buf_size = 0;
 	fmt = av_probe_input_format(&probe_data, 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): av_probe_input_format: 0x%x", repr(url).c_str(), (void*)fmt);
-	AVFormatContext *ic;
+	AVFormatContext *ic = NULL;
 	int err = av_open_input_file(&ic, url.get_url().c_str(), fmt, 0, 0);
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);

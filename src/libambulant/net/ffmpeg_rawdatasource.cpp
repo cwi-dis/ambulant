@@ -100,12 +100,13 @@ detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con)
 :   m_con(con),
 	m_sink(NULL)
 {
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::ffmpeg_rawreader() m_con=0x%x", con);
 }
 
 detail::ffmpeg_rawreader::~ffmpeg_rawreader()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::~ffmpeg_rawreader()");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::~ffmpeg_rawreader() m_con=0x%x", m_con);
 	if (m_con) url_close(m_con);
 	m_con = NULL;
 	m_lock.leave();
