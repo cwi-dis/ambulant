@@ -119,6 +119,28 @@
 						RelativePath=".\gui\none\none_gui.cpp">
 					</File>
 				</Filter>
+				<Filter
+					Name="dx"
+					Filter="">
+					<File
+						RelativePath=".\gui\dx\dx_audio.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_gui.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_img.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_player.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_text.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_viewport.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="lib"
@@ -311,6 +333,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\gtypes.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\layout.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\logger.h">
