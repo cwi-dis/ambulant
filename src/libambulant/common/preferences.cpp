@@ -64,12 +64,15 @@ using namespace common;
 
 preferences::preferences()
   :	m_welcome_seen(false),
+	m_log_file(""),
 	m_log_level(0),
 	m_parser_id("any"),
 	m_validation_scheme("auto"),
 	m_do_namespaces(false),
 	m_do_schema(false),
-	m_validation_schema_full_checking(false)
+	m_validation_schema_full_checking(false),
+	m_use_plugins(false),
+	m_plugin_dir("")
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
 	load_preferences();

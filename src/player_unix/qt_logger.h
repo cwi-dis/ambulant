@@ -66,16 +66,22 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 
+class qt_gui;	// forward declaration
+
 class qt_logger {
  public:
 	static qt_logger* get_qt_logger();
 	static void show_message(int level, const char *message);
 	QTextEdit* get_logger_window();
+	static void set_qt_logger_gui(qt_gui*);
+	void log(QString logstring);
  protected:
 	qt_logger();
  private:
 	static qt_logger* s_qt_logger;  // singleton
 	QTextEdit* logger_window;
+	qt_gui* m_gui;
+	FILE* m_log_FILE;
 };
 
 class qt_logger_ostream : public ambulant::lib::ostream {

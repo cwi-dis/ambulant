@@ -50,10 +50,13 @@
  * @$Id$ 
  */
 
+#include "qt_gui.h"
 #include "qt_logger.h"
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qmessagebox.h>
 #include "ambulant/lib/logger.h"
+
+using namespace ambulant;
 
 qt_logger_ostream::qt_logger_ostream()
   :		m_qstring(NULL)
@@ -87,9 +90,9 @@ qt_logger_ostream::write(std::string s)
 }
 
 void
-qt_logger_ostream::write(ambulant::lib::byte_buffer& bb)
+qt_logger_ostream::write(lib::byte_buffer& bb)
 {
-	std::string id("qt_logger_ostream::write(ambulant::lib::byte_buffer& bb)");
+	std::string id("qt_logger_ostream::write(lib::byte_buffer& bb)");
 	write(id+" not implemented for Qt");
 }
 
@@ -101,33 +104,37 @@ qt_logger_ostream::close() {
 void
 qt_logger_ostream::flush() {
 	std::string id("qt_logger_ostream::flush()");
-#ifdef	QT_THREAD_SUPPORT
-	// The lock is there to prevent the X-protocol getting confused
-	qApp->lock();
-#endif/*QT_THREAD_SUPPORT*/
-	qt_logger::get_qt_logger()->qt_logger::get_logger_window()->append(m_qstring);
-#ifdef	QT_THREAD_SUPPORT
-	qApp->unlock();
-#endif/*QT_THREAD_SUPPORT*/
+	qt_logger::get_qt_logger()->log(m_qstring);
+//	logger->qt_logger::get_logger_window()->append(m_qstring);
 	m_qstring.truncate(0);
 }
 
 qt_logger* qt_logger::s_qt_logger = 0;
 
-qt_logger::
-qt_logger::qt_logger()
+qt_logger::qt_logger() 
+  :	m_log_FILE(NULL),
+	m_gui(NULL) 
 {
-	ambulant::lib::logger* logger =
-		ambulant::lib::logger::get_logger();
+	common::preferences* prefs = 
+	  common::preferences::get_preferences();
+	lib::logger* logger = lib::logger::get_logger();
+	if (prefs->m_log_file != NULL) {
+		m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
+		if (m_log_FILE == NULL) {
+			logger->warn("qt_logger(): %s \"%s\" %s",
+				     "cannot open logfile", 
+				     prefs->m_log_file, "for writing");
+		}
+	}
 	// Connect logger to our message displayer and output processor
 	//int loglevel = common::preferences::get_preferences()->m_log_level;
 	logger->set_show_message(show_message);
 	// Because QT_THREAD_SUPPORT is off by default, logging is
 	// in a terminal window on Linux.
-	// logger->set_ostream(new qt_logger_ostream);
+	logger->set_ostream(new qt_logger_ostream);
 
 	// Tell the logger about the output level preference
-	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+	int level = prefs->m_log_level;
 	logger->set_level(level);
 	logger_window = new QTextEdit();
 	logger_window->setReadOnly(true);
@@ -145,16 +152,31 @@ qt_logger::get_qt_logger() {
 }
 
 void
-qt_logger::show_message(int level, const char *msg)
-{
-	if (level == ambulant::lib::logger::LEVEL_FATAL)
-		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
-	else if (level == ambulant::lib::logger::LEVEL_ERROR)
-		QMessageBox::warning(NULL, "AmbulantPlayer", msg);
-	else if (level == ambulant::lib::logger::LEVEL_WARN)
-		QMessageBox::information(NULL, "AmbulantPlayer", msg);
-	else
-		QMessageBox::information(NULL, "AmbulantPlayer", msg);
+qt_logger::set_qt_logger_gui(qt_gui* gui) {
+	if (s_qt_logger != NULL && s_qt_logger->m_gui == NULL) {
+		s_qt_logger->m_gui = gui;
+	}
+}
+
+
+void
+qt_logger::log(QString logstring) {
+ 	if (m_log_FILE != NULL) {
+		fprintf(m_log_FILE, "%s", (const char*)logstring);
+	}
+	if (m_gui == NULL) {
+		// Initially the gui window is not there yet, but then
+		// w're single threaded, so the detour over the gui to
+		// avoid async reply errors from X11 is not needed
+		logger_window->append(logstring);
+	} else {
+		m_gui->log(s_qt_logger, logstring);
+	}
+}
+
+void
+qt_logger::show_message(int level, const char *msg) {
+	s_qt_logger->m_gui->show_message(level, msg);
 }
 
 QTextEdit*

@@ -92,7 +92,7 @@ static std::string valid_bools[] = {"false", "true", ""};
 unix_preferences::unix_preferences() {
 	set_preferences_singleton(this);
 	std::string id = "unix_preferences::unix_preferences";
-	AM_DBG logger::get_logger()->debug("%s", id.c_str());
+//NO LOGGER YET!	AM_DBG logger::get_logger()->debug("%s", id.c_str());
 	s_preference_table = new std::vector<preference_entry*>();
 
 	ADD_PREF("AMBULANT_WELCOME_SEEN", BOOL,
@@ -115,6 +115,8 @@ unix_preferences::unix_preferences() {
 		 &m_use_plugins,valid_bools);
 	ADD_PREF("AMBULANT_PLUGIN_DIR",STRING,
 		 &m_plugin_dir,NULL);
+	ADD_PREF("AMBULANT_LOGFILE",STRING,
+		 &m_log_file,NULL);
 	
 }
 
@@ -143,17 +145,14 @@ unix_preferences::load_preference(std::string name, std::string value) {
 	lib::logger* log =lib::logger::get_logger();
 	std::string id = "unix_preferences::load_preference";
 	bool found = false;
-	AM_DBG log->debug("%s(%s=%s)", id.c_str(), 
-			  name.c_str(), value.c_str());
+	AM_DBG log->debug("%s(%s=%s)", id.c_str(), name.c_str(), value.c_str());
 	
 	if (name == "")
 		return false;
 	for (preference_iterator pritr = s_preference_table->begin();
 	     pritr != s_preference_table->end(); pritr++) {
 		preference_entry* pe = *pritr;
-		AM_DBG logger::get_logger()->debug("%s pe=%s", 
-						   id.c_str(), 
-						   pe->pref_name.c_str());
+		AM_DBG logger::get_logger()->debug("%s pe=%s", id.c_str(), pe->pref_name.c_str());
 		if (name == pe->pref_name) {
 			found = true;
 			// optionally check value given

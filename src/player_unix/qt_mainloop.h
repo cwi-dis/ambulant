@@ -56,6 +56,9 @@
 // Environment for testing design classes
 
 #include <iostream>
+#include <string>
+#include <map>
+#include <stack>
 
 
 #include "ambulant/version.h"
@@ -67,6 +70,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"
+#include "ambulant/smil2/smil_player.h"
 #include "qt_gui.h"
 
 using namespace ambulant;
@@ -101,6 +105,7 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
+	void done(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL);
 	
 	static void* run(void* qt_mainloop);
@@ -129,10 +134,20 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 		  m_player->set_cursor(cursor); 
 	}	
  private: 
+	// from dx_player
+	// The frames stack
+	struct frame {
+		qt_gui* windows; 
+	  	ambulant::common::player* player;
+	};
+	std::stack<frame*> m_frames;
+
 	ambulant::lib::document *create_document(const char *filename);
+	ambulant::common::player* create_player(const char* filename);
 	// sorted alphabetically on member name
  	common::factories* m_factory;
 	document*				m_doc;
+	lib::logger*				m_logger;
 	qt_gui*					m_parent;
 	player*					m_player;
 	basic_atomic_count<critical_section>	m_refcount;

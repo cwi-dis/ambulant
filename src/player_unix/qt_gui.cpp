@@ -72,6 +72,8 @@
 #define AM_DBG if(0)
 #endif
 
+#define	WITH_QT_LOGGER
+
 const QString about_text = 
 	"Ambulant SMIL 2.0 player.\n"
 	"Copyright Stichting CWI, 2004.\n\n"
@@ -188,6 +190,10 @@ qt_gui::qt_gui(const char* title,
 		m_o_x = 0;
 		m_o_y = 27;
 	}
+	QObject::connect(this, SIGNAL(signal_show_message(int, const char*)),
+			 this, SLOT(slot_show_message(int, const char*)));
+	QObject::connect(this, SIGNAL(signal_log(qt_logger*, QString)),
+			 this, SLOT(slot_log(qt_logger*, QString)));
 }
 
 qt_gui::~qt_gui() {
@@ -314,8 +320,8 @@ qt_gui::slot_open() {
 void
 qt_gui::setDocument(const QString& smilfilename) {
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-  openSMILfile(smilfilename, IO_ReadOnly);
-  slot_play();
+	openSMILfile(smilfilename, IO_ReadOnly);
+	slot_play();
 #endif/*QT_NO_FILEDIALOG*/
 }
 
@@ -374,7 +380,8 @@ qt_gui::slot_player_done() {
 void 
 qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
-	(void *)this,r);
+	(void *)this,r?r:0);
+	emit signal_need_redraw(r,w,pt);
 }
 
 void 
@@ -428,6 +435,15 @@ qt_gui::slot_pause() {
 }
 
 void 
+qt_gui::slot_stop() {
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
+	m_mainloop->stop();
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
+	m_playing = false;
+}
+
+void 
 qt_gui::slot_settings_select() {
 	m_settings = new qt_settings();
 	QWidget* settings_widget = m_settings->settings_select();
@@ -455,13 +471,32 @@ qt_gui::slot_settings_cancel() {
 	m_settings = NULL;
 }
 
-void 
-qt_gui::slot_stop() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
-	m_mainloop->stop();
-	m_playmenu->setItemEnabled(m_pause_id, false);
-	m_playmenu->setItemEnabled(m_play_id, true);
-	m_playing = false;
+void
+qt_gui::slot_show_message(int level, const char* msg) {
+	if (level == ambulant::lib::logger::LEVEL_FATAL)
+		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
+	else if (level == ambulant::lib::logger::LEVEL_ERROR)
+		QMessageBox::warning(NULL, "AmbulantPlayer", msg);
+	else if (level == ambulant::lib::logger::LEVEL_WARN)
+		QMessageBox::information(NULL, "AmbulantPlayer", msg);
+	else
+		QMessageBox::information(NULL, "AmbulantPlayer", msg);
+}
+
+void
+qt_gui::show_message(int level, const char* message) {
+	emit signal_show_message(level, message);
+}
+
+void
+qt_gui::slot_log(qt_logger* logger, QString logstring) {
+	logger->get_logger_window()->append(logstring);
+//	QMessageBox::information(NULL, "AmbulantPlayer", msg);
+}
+
+void
+qt_gui::log(qt_logger* logger, QString logstring) {
+	emit signal_log(logger, logstring);
 }
 
 void
@@ -530,7 +565,7 @@ main (int argc, char*argv[]) {
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
 				      : "AmbulantPlayer");
-
+	qt_logger::set_qt_logger_gui(mywidget);
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(240, 320, 320, 240);
 	QCursor qcursor(Qt::ArrowCursor);

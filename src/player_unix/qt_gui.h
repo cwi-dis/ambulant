@@ -83,6 +83,7 @@
 #include <qtooltip.h>
 #include <qwidget.h>
 
+#include "qt_logger.h"
 #include "qt_settings.h"
 
 class qt_mainloop;
@@ -94,8 +95,6 @@ class qt_gui : public QWidget {
    public:
   	qt_gui(const char* title, const char* initfile);
 	~qt_gui();
-	void need_redraw(const void*, void*, const void*);
-	void player_done();
 	bool is_busy() { return m_busy; }
 
 	int  get_o_x() {
@@ -111,6 +110,12 @@ class qt_gui : public QWidget {
 	}
 
 	bool openSMILfile(QString smilfilename, int mode);
+
+	// signal interfaces
+	void log(qt_logger*, QString);
+	void need_redraw(const void*, void*, const void*);
+	void player_done();
+	void show_message(int level, const char* message);
 
    private:
 	bool	     m_busy;
@@ -153,6 +158,7 @@ class qt_gui : public QWidget {
 
   private slots:
 	void slot_about();
+	void slot_log(qt_logger*, QString);
   	void slot_logger_window();
 	void slot_open();
 	void slot_open_url();
@@ -162,11 +168,14 @@ class qt_gui : public QWidget {
 	void slot_settings_cancel();
 	void slot_settings_ok();
 	void slot_settings_select();
+	void slot_show_message(int, const char*);
 	void slot_stop();
 
   signals:
+	void signal_log(qt_logger*, QString);
 	void signal_player_done();
 	void signal_need_redraw(const void*, void*, const void*);
+	void signal_show_message(int, const char*);
 
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   protected:
