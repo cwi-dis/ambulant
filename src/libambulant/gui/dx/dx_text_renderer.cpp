@@ -50,45 +50,85 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_TEXT_H
-#define AMBULANT_GUI_DX_TEXT_H
+#include <objbase.h>
+#include <ddrawex.h>
+#include <windows.h>
 
-#include "ambulant/config/config.h"
-#include <string>
+#include "ambulant/gui/dx/dx_text_renderer.h"
+#include "ambulant/gui/dx/dx_viewport.h"
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/lib/colors.h"
+#include "ambulant/lib/memfile.h"
 
-namespace ambulant {
+#include "ambulant/lib/logger.h"
+#include "ambulant/lib/win32/win32_error.h"
 
-namespace gui {
+using namespace ambulant;
+using ambulant::lib::win32::win_report_error;
+using ambulant::lib::win32::win_report_last_error;
+using ambulant::lib::logger;
 
-namespace dx {
+// XXX: We need to pass the color as read from the text param.
 
-class text_renderer;
+gui::dx::text_renderer::text_renderer(const std::string& url, const lib::size& bounds, viewport* v)
+:	m_size(bounds),
+	m_ddsurf(0){
+	open(url, v);
+}
 
-class dx_text_renderer : public common::renderer_playable {
-  public:
-	dx_text_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor* evp,
-		common::abstract_window *window);
-	~dx_text_renderer();
-	void set_surface(common::surface *dest);
-	void start(double t);
-	void stop();
-	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
-  private:
-	common::abstract_window *m_window;
-	text_renderer *m_text;
-};
+gui::dx::text_renderer::~text_renderer() {
+	if(m_ddsurf) m_ddsurf->Release();
+}
 
-} // namespace dx
-
-} // namespace gui
+void gui::dx::text_renderer::open(const std::string& url, viewport* v) {
+	if(!lib::memfile::exists(url)) {
+		lib::logger::get_logger()->warn("Failed to locate text file %s.", url.c_str());
+		return;
+	}
+	lib::memfile mf(url);
+	mf.read();
+	lib::databuffer& db = mf.get_databuffer();
+	std::string text;
+	text.assign(db.begin(), db.end());
+		
+	m_ddsurf = v->create_surface(m_size);
+	if(!m_ddsurf) {
+		return;
+	}
+	v->clear_surface(m_ddsurf, RGB(255,255,255));
+	
+	//////////////
+	// Draw text 
+	
+	HDC hdc;
+	HRESULT hr = m_ddsurf->GetDC(&hdc);
+	if (FAILED(hr)) {
+		win_report_error("DirectDrawSurface::GetDC()", hr);
+		return;
+	}
+	lib::color_t clr = GetSysColor(COLOR_WINDOWTEXT); // should be passed in from text param
+	SetBkMode(hdc, TRANSPARENT);
+	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
+	::SetTextColor(hdc, crTextColor);	
+	RECT dstRC = {0, 0, m_size.w, m_size.h};
+	UINT uFormat = DT_CENTER | DT_WORDBREAK;
+	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
+	if(res == 0)
+		win_report_last_error("DrawText()");
+	m_ddsurf->ReleaseDC(hdc);
+		
+	//////////////
+	// Text is always transparent; set the color
+	
+	DWORD ddTranspColor = v->convert(RGB(255,255,255));
+	DWORD dwFlags = DDCKEY_SRCBLT;
+	DDCOLORKEY ck;
+	ck.dwColorSpaceLowValue = ddTranspColor;
+	ck.dwColorSpaceHighValue = ddTranspColor;
+	hr = m_ddsurf->SetColorKey(dwFlags, &ck);
+	if (FAILED(hr)) {
+		win_report_error("SetColorKey()", hr);
+	}
+}
  
-} // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_TEXT_H

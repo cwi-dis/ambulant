@@ -50,13 +50,19 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_TEXT_H
-#define AMBULANT_GUI_DX_TEXT_H
+#ifndef AMBULANT_GUI_DX_TEXT_RENDERER_H
+#define AMBULANT_GUI_DX_TEXT_RENDERER_H
+
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#endif
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
+
 #include <string>
 
-#include "ambulant/common/renderer.h"
+struct IDirectDrawSurface;
 
 namespace ambulant {
 
@@ -64,31 +70,28 @@ namespace gui {
 
 namespace dx {
 
-class text_renderer;
+class viewport;
 
-class dx_text_renderer : public common::renderer_playable {
+class text_renderer {
   public:
-	dx_text_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor* evp,
-		common::abstract_window *window);
-	~dx_text_renderer();
-	void set_surface(common::surface *dest);
-	void start(double t);
-	void stop();
-	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	text_renderer(const std::string& url, const lib::size& bounds, viewport* v);
+	~text_renderer();
+	bool can_play() const { return m_ddsurf != 0;}
+	bool is_transparent() const { return true;}
+	const lib::size& get_size() const { return m_size;}
+	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
+	
   private:
-	common::abstract_window *m_window;
-	text_renderer *m_text;
+	void open(const std::string& url, viewport* v);
+	lib::size m_size;
+	IDirectDrawSurface *m_ddsurf;
 };
 
 } // namespace dx
 
 } // namespace gui
- 
-} // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_TEXT_H
+} // namespace ambulant 
+
+#endif // AMBULANT_GUI_DX_TEXT_RENDERER_H
+

@@ -53,6 +53,7 @@
 #include "ambulant/gui/dx/dx_text.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
+#include "ambulant/gui/dx/dx_text_renderer.h"
 
 #include "ambulant/common/region_info.h"
 
@@ -71,21 +72,27 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::renderer_playable(context, cookie, node, evp) { 
-	
+:   common::renderer_playable(context, cookie, node, evp), 
+	m_window(window), 
+	m_text(0) { 
 	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();	
+}
+
+void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
+	m_dest = dest;
+	
+	lib::screen_rect<int> rc = dest->get_rect();
+	lib::size bounds(rc.width(), rc.height());
 	std::string url = m_node->get_url("src");
-	if(!lib::memfile::exists(url)) {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			m_node->get_url("src").c_str());
-		return;
+	dx_window *dxwindow = static_cast<dx_window*>(m_window);
+	viewport *v = dxwindow->get_viewport();
+	if(lib::memfile::exists(url)) {
+		m_text = new text_renderer(url, bounds, v);
+	} else {
+		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
+			url.c_str());
 	}
-	lib::memfile mf(url);
-	mf.read();
-	lib::databuffer& db = mf.get_databuffer();
-	m_text.assign(db.begin(), db.end());
+	
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
@@ -94,6 +101,12 @@ gui::dx::dx_text_renderer::~dx_text_renderer() {
 
 void gui::dx::dx_text_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::start(0x%x)", this);
+		
+	if(!m_text) {
+		// Notify scheduler
+		m_context->stopped(m_cookie);
+		return;
+	}
 		
 	// Has this been activated
 	if(m_activated) {
@@ -105,15 +118,18 @@ void gui::dx::dx_text_renderer::start(double t) {
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
+	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 		
 	// Request a redraw
-	m_dest->need_redraw();
+	// Currently already done by show()
+	// m_dest->need_redraw();
 }
 
 void gui::dx::dx_text_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
-	m_text = "";
+	delete m_text;
+	m_text = 0;
 	m_dest->renderer_done();
 	m_activated = false;
 }
@@ -126,18 +142,26 @@ void gui::dx::dx_text_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
 	
-	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = dirty;
+	if(!m_text || !m_text->can_play()) {
+		// No bits available
+		return;
+	}
+	
+	lib::screen_rect<int> text_rc = dirty;
+	lib::screen_rect<int> reg_rc = dirty;
+	
+	// Translate img_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	//const common::region_info *ri = m_dest->get_info();
-	if(!m_text.empty()) v->draw(m_text, rc);
+	reg_rc.translate(pt);
+		
+	// Finally blit img_rect_dirty to img_reg_rc_dirty
+	v->draw(m_text->get_ddsurf(), text_rc, reg_rc, true);
 }
 
  
