@@ -5,6 +5,26 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.m main.m \
 	Info.plist version.plist \
 	cocoambulant.pbproj fullcocoambulant.pbproj
 
+if WITH_SDL
+extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
+extra_sdl_DEFINES=-DWITH_SDL
+extra_sdl_ldflags= `sdl-config --libs` -lSDL_mixer
+else
+extra_sdl_ldflags=
+extra_sdl_DEFINES=
+endif
+
+if WITH_FFMPEG
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a -L$(FFMPEG_LIB)  -lavcodec
+extra_ffmpeg_ldflags=
+extra_ffmpeg_DEFINES=-I$(FFMPEG_INCLUDE) -DWITH_FFMPEG
+else
+extra_ffmpeg_LDADD=
+extra_ffmpeg_ldflags=
+extra_ffmpeg_DEFINES=
+endif
+
+
 # Building a MacOSX .app bundle is a bit tricky.
 noinst_PROGRAMS = cocoambulant_executable
 cocoambulant_executable_SOURCES= \
@@ -18,23 +38,27 @@ cocoambulant_bundle: cocoambulant_executable
 	mkdir -p cocoambulant.app/Contents/MacOS
 	mkdir -p cocoambulant.app/Contents/Resources
 	echo "APPL????" > cocoambulant.app/Contents/PkgInfo
-	$(INSTALL_DATA) Info.plist cocoambulant.app/Contents/Info.plist
+	$(INSTALL_DATA) $(srcdir)/Info.plist cocoambulant.app/Contents/Info.plist
 	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
 	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
-	$(INSTALL_DATA) cocoambulant.icns cocoambulant.app/Contents/Resources
-	$(INSTALL_DATA) English.lproj/Credits.rtf cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) English.lproj/InfoPlist.strings cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) English.lproj/MainMenu.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
-	$(INSTALL_DATA) English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns cocoambulant.app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf cocoambulant.app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings cocoambulant.app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/cocoambulant.app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(extra_sdl_LDADD) \
+	$(extra_ffmpeg_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a -lstdc++
-AM_LDFLAGS=-framework Cocoa
+AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(EXPAT_PREFIX)/include 
+INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(EXPAT_PREFIX)/include \
+	$(extra_sdl_DEFINES) \
+	$(extra_ffmpeg_DEFINES)
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`

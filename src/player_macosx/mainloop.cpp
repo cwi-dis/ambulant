@@ -59,6 +59,9 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#ifdef WITH_SDL
+#include "ambulant/gui/SDL/sdl_gui.h"
+#endif
 #ifdef WITH_MMS_PLAYER
 #include "ambulant/common/mms_player.h"
 #else
@@ -85,6 +88,10 @@ mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 	
 	m_rf = new lib::global_renderer_factory();
 	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
+#ifdef WITH_SDL
+    logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
+	m_rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
+#endif
 	m_doc = lib::document::create_from_file(filename);
 	if (!m_doc) {
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);

@@ -51,8 +51,8 @@ endif
 
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
-libambulant_ffmpeg_la_LDFLAGS =  -L/usr/lib -lavcodec
-ffmpegincludes = -I/usr/include/ffmpeg -DWITH_FFMPEG
+libambulant_ffmpeg_la_LDFLAGS =  -L$(FFMPEG_LIB) -lavcodec
+ffmpegincludes = -I/$(FFMPEG_INCLUDE) -DWITH_FFMPEG
 
 libambulant_ffmpeg_la_SOURCES = 	\
 		net/ffmpeg_datasource.cpp

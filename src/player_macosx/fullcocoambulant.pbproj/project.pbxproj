@@ -434,6 +434,7 @@
 		};
 		0444D323051F2EEF0010C447 = {
 			children = (
+				048A7E1D05CDB420003C92BF,
 				0444D324051F2EEF0010C447,
 				0444D326051F2EEF0010C447,
 			);
@@ -602,6 +603,7 @@
 		};
 		0444D34D051F2EF00010C447 = {
 			children = (
+				047FC13505CEA111003C9A89,
 				0444D34E051F2EF00010C447,
 				0444D34F051F2EF00010C447,
 			);
@@ -1103,6 +1105,152 @@
 			settings = {
 			};
 		};
+		047FC13505CEA111003C9A89 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = ffmpeg_datasource.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		047FC13605CEA111003C9A89 = {
+			fileRef = 047FC13505CEA111003C9A89;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		047FC13705CEA128003C9A89 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ffmpeg_datasource.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		047FC13805CEA128003C9A89 = {
+			fileRef = 047FC13705CEA128003C9A89;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		047FC13905CEA19A003C9A89 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libavcodec.a;
+			path = "/Users/jack/packages/ffmpeg-0.4.8/libavcodec/libavcodec.a";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		047FC13A05CEA19A003C9A89 = {
+			fileRef = 047FC13905CEA19A003C9A89;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E0105CDB3F7003C92BF = {
+			children = (
+				048A7E7105CDB8CF003C92BF,
+				048A7E0605CDB3F7003C92BF,
+			);
+			isa = PBXGroup;
+			path = SDL;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E0605CDB3F7003C92BF = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = sdl_audio.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E0B05CDB3F7003C92BF = {
+			fileRef = 048A7E0605CDB3F7003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E1D05CDB420003C92BF = {
+			children = (
+				048A7E1E05CDB420003C92BF,
+				048A7E1F05CDB420003C92BF,
+			);
+			isa = PBXGroup;
+			path = SDL;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E1E05CDB420003C92BF = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = sdl.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E1F05CDB420003C92BF = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = sdl_audio.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E2005CDB420003C92BF = {
+			fileRef = 048A7E1E05CDB420003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E2105CDB420003C92BF = {
+			fileRef = 048A7E1F05CDB420003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E2F05CDB4BA003C92BF = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libSDL_mixer.a;
+			path = /usr/local/lib/libSDL_mixer.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		048A7E3005CDB4BA003C92BF = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libSDL.a;
+			path = /usr/local/lib/libSDL.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		048A7E3105CDB4BA003C92BF = {
+			fileRef = 048A7E2F05CDB4BA003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E3205CDB4BA003C92BF = {
+			fileRef = 048A7E3005CDB4BA003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		048A7E7105CDB8CF003C92BF = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = sdl_gui.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		048A7E7205CDB8CF003C92BF = {
+			fileRef = 048A7E7105CDB8CF003C92BF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		048DEE940511DB2F0010C447 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1296,6 +1444,7 @@
 		};
 		04AF0AD905205DB00010C447 = {
 			children = (
+				048A7E0105CDB3F7003C92BF,
 				04AF0ADB05205DB00010C447,
 				04AF0AE405205DB10010C447,
 			);
@@ -1629,6 +1778,7 @@
 		};
 		04AF0B2705205DB10010C447 = {
 			children = (
+				047FC13705CEA128003C9A89,
 				04AF0B2905205DB10010C447,
 				04AF0B2A05205DB10010C447,
 				04AF0B2E05205DB10010C447,
@@ -2212,7 +2362,10 @@
 		2A37F4C3FDCFA73011CA2CEA = {
 			children = (
 				04508B630507E68200F0FD74,
+				048A7E2F05CDB4BA003C92BF,
+				048A7E3005CDB4BA003C92BF,
 				04508B3B0507E27700F0FD74,
+				047FC13905CEA19A003C9A89,
 				1058C7A6FEA54F5311CA2CBB,
 				1058C7A8FEA54F5311CA2CBB,
 				0444D2DD051F2EEF0010C447,
@@ -2335,14 +2488,14 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL=";
+				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL= WITH_SDL= WITH_FFMPEG=";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant/include /Users/jack/src/ambulant/third_party_packages/expat-unix/include";
+				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant/include /Users/jack/src/ambulant/third_party_packages/expat-unix/include /usr/local/include/SDL /Users/jack/packages/ffmpeg-0.4.8/libavcodec";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant/.libs /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant/.libs /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant /Users/jack/packages/ffmpeg-0.4.8/libavcodec";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2437,6 +2590,9 @@
 				04FF562A05C55C05004DA07E,
 				04FF562C05C55C13004DA07E,
 				045B5DDF05C9BB25007061C1,
+				048A7E0B05CDB3F7003C92BF,
+				048A7E7205CDB8CF003C92BF,
+				047FC13805CEA128003C9A89,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2533,6 +2689,9 @@
 				0491CB7805B5ABAF007105A3,
 				04FF562805C55BE2004DA07E,
 				045B5DF105C9BB53007061C1,
+				048A7E2005CDB420003C92BF,
+				048A7E2105CDB420003C92BF,
+				047FC13605CEA111003C9A89,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2551,6 +2710,9 @@
 				8D15AC340486D014006FF6A4,
 				04508B3C0507E27700F0FD74,
 				04508B640507E68200F0FD74,
+				048A7E3105CDB4BA003C92BF,
+				048A7E3205CDB4BA003C92BF,
+				047FC13A05CEA19A003C9A89,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

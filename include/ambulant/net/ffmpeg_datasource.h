@@ -113,18 +113,15 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
   	AVCodec  *m_codec;
     AVCodecContext *m_con;  
     lib::event_processor *const m_event_processor;
-    lib::event *m_readdone;
+    lib::event *m_readdone;		// This is the callback our source makes to us
   	abstract_active_datasource* m_src;
 
-  	bool m_ffmpeg_init;
 	uint8_t* m_inbuf;
 	uint8_t* m_outbuf;
 	databuffer m_buffer;
 	bool m_blocked_full;
-	bool m_client_waiting;
-    static bool m_codec_selected;
-  	static bool m_avcodec_open;
-  
+	
+	lib::event *m_client_callback;  // This is our calllback to the client
 };
 
 }	// end namespace net

@@ -50,7 +50,7 @@
 #define AM_DBG if(0)
 #endif
  
-#include "ambulant/gui/SDL/sdl.h"
+#include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
 
 

@@ -204,25 +204,44 @@ AC_MSG_RESULT($arts)
 #
 # Test for ffmpeg
 #
+# XXXX FFmpeg installation is quirky. When you build 0.4.8 from source
+# and do "make install" the header files don't get installed.
+# On a RedHat 9 system it is pre-installed, but in a funny way:
+# the includes are in /usr/include/ffmpeg, the library in /usr/lib.
+#
+# The only workaround I can think of is:
+# a) use "--with-ffpmpeg" only on RH9
+# b) for self-installed ffpmeg pass the path to ffmpeg-0.4.8/libavcodec
+#    to configure
 AC_MSG_CHECKING(for --with-ffmpeg)
+FFMPEG_INCLUDE=
+FFMPEG_LIB=
 AC_ARG_WITH(ffmpeg,
 	[  --with-ffmpeg Turn on ffmpeg audio decoders],
 	[case "${withval}" in
 	  yes) ffmpeg=true
-	  	FFMPEG_PREFIX=/usr/include/ffmpeg
+	  	FFMPEG_INCLUDE=/usr/include/ffmpeg
+	  	FFMPEG_LIB=/usr/lib
 	  	;;
 	  no)  ffmpeg=false
 	  	;;
 	  *) ffmpeg=true
-	     FFMPEG_PREFIX=${withval}
+	     FFMPEG_INCLUDE=${withval}
+	     FFMPEG_LIB=${withval}
 	     ;;
 	 esac],[
 	 ffmpeg=false
 	 ])
+if test $ffmpeg = true; then
+	# Test for consistency
+	if test ! -f $FFMPEG_INCLUDE/avcodec.h -o ! -f $FFMPEG_LIB/libavcodec.a; then
+		AC_MSG_ERROR("--with-ffmpeg value incorrect. Read configure.in for details")
+	fi
+fi
 AM_CONDITIONAL(WITH_FFMPEG, test x$ffmpeg = xtrue)
+AC_SUBST(FFMPEG_INCLUDE)
+AC_SUBST(FFMPEG_LIB)
 AC_MSG_RESULT($ffmpeg)
-
-
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
