@@ -78,27 +78,25 @@ class arts_active_audio_renderer : public active_basic_renderer, public timer_ev
 	arts_active_audio_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		const node *node);
+
 	~arts_active_audio_renderer();
 
-	void start(double t);
+	void start(double where);
 	void stop();
+    void pause();
+    void resume();
 	void speed_changed();
   private:
     int arts_setup(int rate, int bits, int channels, char *name);
     int arts_play(char *data, int size);
-
+  
     arts_stream_t m_stream;
     int m_rate;
     int m_channels;
     int m_bits;
     char *m_name;
     event *m_playdone;
-    net::active_datasource *m_ads;
-    event_processor const *m_evp;
-    net::passive_datasource *m_src;
-    lib::node const *m_node;
-	std::string m_url;
-  	
+    std::string m_url;
 };
 
 
