@@ -205,6 +205,48 @@ class background_renderer : public renderer {
 	surface *m_dst;
 };
 
+// An alt inline direct base for renderer playables.
+class renderer_playable : public playable, public renderer {
+  public:
+	common::renderer_playable(
+		playable_notification *context,
+		cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp) 
+	:	m_context(context), 
+		m_cookie(cookie),
+		m_node(node),
+		m_event_processor(evp),
+		m_dest(0),
+		m_activated(false), 
+		m_wantclicks(false) {
+	}
+	
+	// common::playable interface
+	void pause() {}
+	void resume() {}
+	void seek(double where) {}
+	void wantclicks(bool want) { m_wantclicks = want;}
+	void preroll(double when, double where, double how_much) {}
+	std::pair<bool, double> get_dur() { return std::pair<bool, double>(true, 0);}
+	const cookie_type& get_cookie() const { return m_cookie;}
+	
+	// common::renderer interface
+	void set_surface(common::surface *dest) { m_dest = dest;}
+	surface *get_surface() { return m_dest;}
+	void user_event(const lib::point &where) {}
+	renderer *get_renderer() { return this; }
+	
+  protected:
+    playable_notification *m_context;
+    cookie_type m_cookie;
+	const lib::node	*m_node;
+	lib::event_processor *m_event_processor;
+	surface *m_dest;
+	bool m_activated;
+	bool m_wantclicks;
+};
+
 } // namespace common
  
 } // namespace ambulant
