@@ -76,13 +76,15 @@ class cocoa_video_renderer :
 		event_processor *evp);
 	~cocoa_video_renderer();
 
-	void start(double where) { if (m_dest) m_dest->show(this); }
+	void start(double where);
 	void freeze() {}
-	void stop() { if (m_dest) m_dest->renderer_done(); }
+	void stop();
 	void pause() {}
 	void resume() {}
 	void wantclicks(bool want) { if (m_dest) m_dest->need_events(want); }
 
+	std::pair<bool, double> get_dur();
+	
 	renderer *get_renderer() { return this; }
 	void set_surface(surface *dest) { m_dest = dest; }
 	surface *get_surface() { return m_dest;}
@@ -91,9 +93,8 @@ class cocoa_video_renderer :
   private:
 	std::string m_url;
 	surface *m_dest;
-    NSTextStorage *m_text_storage;
-	NSLayoutManager *m_layout_manager;
-	NSTextContainer *m_text_container;
+	NSMovie *m_movie;
+	NSMovieView *m_movie_view;
 	critical_section m_lock;
 };
 

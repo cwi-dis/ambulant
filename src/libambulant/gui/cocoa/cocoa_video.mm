@@ -55,6 +55,7 @@
 #include "ambulant/common/region_info.h"
 
 #include <Cocoa/Cocoa.h>
+#include <QuickTime/QuickTime.h>
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -76,17 +77,81 @@ cocoa_video_renderer::cocoa_video_renderer(
 	event_processor *evp)
 :	active_basic_renderer(context, cookie, node, evp),
 	m_url(node->get_url("src")),
-	m_dest(NULL)
+	m_dest(NULL),
+	m_movie(NULL),
+	m_movie_view(NULL)
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.c_str()]];
+	NSURL *nsurl = [NSURL fileURLWithPath: [NSString stringWithCString: m_url.c_str()]];
+	if (!nsurl) {
+		lib::logger::get_logger()->error("cocoa_video_renderer: cannot convert to URL: %s", m_url.c_str());
+		return;
+	}
+	m_movie = [[NSMovie alloc] initWithURL: nsurl byReference: YES];
+	if (!m_movie) {
+		lib::logger::get_logger()->error("cocoa_video_renderer: cannot open movie: %s", [[nsurl absoluteString] cString]);
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer: m_movie=0x%x", m_movie);
+	[pool release];
 }
 
 cocoa_video_renderer::~cocoa_video_renderer()
 {
 	m_lock.enter();
-	[m_text_storage release];
-	m_text_storage = NULL;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (m_movie) {
+		[m_movie release];
+		m_movie = NULL;
+	}
+	if (m_movie_view) {
+		[m_movie_view removeFromSuperview];
+		m_movie_view = NULL;
+	}
+	[pool release];
 	m_lock.leave();
 
+}
+
+std::pair<bool, double> 
+cocoa_video_renderer::get_dur()
+{
+	if (!m_movie)
+		return std::pair<bool, double>(false, 0);
+	Movie mov = [m_movie QTMovie];
+	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer: QTMovie is 0x%x", (void *)mov);
+	return std::pair<bool, double>(true, 7);
+}
+
+void
+cocoa_video_renderer::start(double where)
+{
+	if (!m_dest) return;
+	m_lock.enter();
+	m_dest->show(this); // XXX Do we need this?
+	m_lock.leave();
+}
+
+void
+cocoa_video_renderer::stop()
+{
+	m_lock.enter();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (m_dest) m_dest->renderer_done();
+	if (m_movie_view) {
+		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
+		[m_movie_view stop: NULL];
+		[m_movie_view removeFromSuperview];
+		m_movie_view = NULL;
+	}
+	if (m_movie) {
+		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
+		[m_movie release];
+		m_movie = NULL;
+	}
+	[pool release];
+	m_lock.leave();
 }
 
 void
@@ -94,26 +159,27 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, abstract_window *win
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
+	screen_rect<int> dstrect = r;
+	dstrect.translate(m_dest->get_global_topleft());
 	AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-
-	if (!m_text_storage) {
-		NSString *the_string = [NSString stringWithCString: m_url.c_str()];
-		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
-		m_layout_manager = [[NSLayoutManager alloc] init];
-		m_text_container = [[NSTextContainer alloc] init];
-		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release];	// The layoutManager will retain the textContainer
-		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release];	// The textStorage will retain the layoutManager
-	}
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	// XXXX WRONG! This is the info for the region, not for the node!
+
+	if (m_movie && !m_movie_view) {
+		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw: creating movie view");
+		// Create the movie view and link it in
+		NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
+		m_movie_view = [[NSMovieView alloc] initWithFrame: frameRect];
+		[m_movie_view showController: NO adjustingSize: NO];
+		[view addSubview: m_movie_view];
+		// Set the movie playing
+		[m_movie_view setMovie: m_movie];
+		[m_movie_view start: NULL];
+	}
+
 	const region_info *info = m_dest->get_info();
 	// First find our whole area
-	screen_rect<int> dstrect = r;
-	dstrect.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 	if (info && !info->get_transparent()) {
 		// XXXX Fill with background color
@@ -127,13 +193,6 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, abstract_window *win
 		NSRectFill(cocoa_dstrect);
 	}
 	
-	if (m_text_storage && m_layout_manager) {
-		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
-		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
-		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
-		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
-		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
-	}
 	m_lock.leave();
 }
 
