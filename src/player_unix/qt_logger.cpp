@@ -53,6 +53,7 @@
 #include "qt_logger.h"
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qmessagebox.h>
+#include "ambulant/lib/logger.h"
 
 qt_logger_ostream::qt_logger_ostream()
   :		m_qstring(NULL)
@@ -144,9 +145,16 @@ qt_logger::get_qt_logger() {
 }
 
 void
-qt_logger::show_message(int level,const char *msg)
+qt_logger::show_message(int level, const char *msg)
 {
-	QMessageBox::information(NULL, "AmbulantPlayer", msg);
+	if (level == ambulant::lib::logger::LEVEL_FATAL)
+		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
+	else if (level == ambulant::lib::logger::LEVEL_ERROR)
+		QMessageBox::warning(NULL, "AmbulantPlayer", msg);
+	else if (level == ambulant::lib::logger::LEVEL_WARN)
+		QMessageBox::information(NULL, "AmbulantPlayer", msg);
+	else
+		QMessageBox::information(NULL, "AmbulantPlayer", msg);
 }
 
 QTextEdit*
