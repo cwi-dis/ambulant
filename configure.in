@@ -85,14 +85,31 @@ fi
 
 
 AC_MSG_CHECKING(for --with-qt)
+QT_PREFIX=
 AC_ARG_WITH(qt,
      [  --with-qt    Turn on Qt support],
      [case "${withval}" in
-       yes) qt=true ;;
-       no)  qt=false ;;
-       *) AC_MSG_ERROR(bad value ${withval} for --with-qt) ;;
-     esac],[qt=false])
+       yes) qt=true
+       		QT_PREFIX=$QTDIR
+       		;;
+       no)  qt=false
+       		;;
+       *) 	qt=true
+       		QT_PREFIX=${withval}
+       		;;
+     esac],[
+     case x$QTDIR in
+     x)	qt=false
+     	;;
+     *) qt=true
+     	QT_PREFIX=$QTDIR
+     	;;
+     esac])
 AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
+if test x$qt = xtrue -a x$QT_PREFIX = x; then
+	AC_MSG_ERROR(--with-qt without valid QT_PREFIX directory)
+fi
+AC_SUBST(QT_PREFIX)
 AC_MSG_RESULT($qt)
 
 #

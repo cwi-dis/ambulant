@@ -14,7 +14,7 @@ toolkit_cocoa_libraries =
 endif
 if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
-qtincludes = -I$(QTDIR)/include
+qtincludes = -I$(QT_PREFIX)/include
 
 libambulant_qt_la_SOURCES = 		\
 	gui/qt/qt_renderer.cpp		\
