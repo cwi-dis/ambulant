@@ -51,6 +51,7 @@ libambulant_la_SOURCES = \
 	lib/expat_parser.cpp \
 	lib/logger.cpp \
 	lib/node.cpp \
+	lib/string_util.cpp \
 	lib/timer.cpp \
 	lib/tree_builder.cpp \
 	\
