@@ -54,9 +54,18 @@
 #define AMBULANT_SMIL2_REGION_BUILDER_H
 
 #include "ambulant/config/config.h"
-
-#include "ambulant/lib/node.h"
 #include "ambulant/common/layout.h"
+
+namespace ambulant {
+namespace common {
+class schema;
+}}
+
+namespace ambulant {
+namespace lib {
+class node;
+class document;
+}}
 
 namespace ambulant {
 
@@ -70,6 +79,8 @@ class smil_layout_manager : public common::layout_manager {
 	~smil_layout_manager();
 	
 	common::surface *get_surface(const lib::node *node);
+	common::surface_template *get_region(const lib::node *n);
+	
   private:
 	lib::node *get_document_layout(lib::document *doc);
 	void build_layout_tree(lib::node *layout_root);

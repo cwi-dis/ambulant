@@ -444,6 +444,12 @@ smil_layout_manager::get_surface(const lib::node *n) {
 	return surf;
 }
 
+common::surface_template *
+smil_layout_manager::get_region(const lib::node *n) {
+	region_node *rn = get_region_node_for(n, true);
+	return rn?rn->get_surface_template():NULL;
+}
+
 // Helper function: decode pre-defined repoint names
 static bool
 decode_regpoint(common::regpoint_spec &pt, const char *name)
