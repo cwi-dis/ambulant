@@ -350,6 +350,9 @@
 					RelativePath=".\smil2\time_node.cpp">
 				</File>
 				<File
+					RelativePath=".\smil2\time_sched.cpp">
+				</File>
+				<File
 					RelativePath=".\smil2\time_state.cpp">
 				</File>
 				<File
@@ -913,6 +916,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\time_node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\time_sched.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\time_state.h">
