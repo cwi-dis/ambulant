@@ -53,15 +53,36 @@ class logger {
  	void trace(const T& obj) { 
  		log_obj(LEVEL_TRACE, obj);
  	}
+ 	template <class T>
+ 	void warn(const T& obj) { 
+ 		log_obj(LEVEL_WARN, obj);
+ 	}
+ 	template <class T>
+ 	void error(const T& obj) { 
+ 		log_obj(LEVEL_ERROR, obj);
+ 	}
+ 	template <class T>
+ 	void fatal(const T& obj) { 
+ 		log_obj(LEVEL_FATAL, obj);
+ 	}
  	
  	// specialization for strings
  	void debug(const std::string& s) {
  		log_cstr(LEVEL_DEBUG, s.c_str());
   	} 
-  	void trace(const std::string& s) {
+   	void trace(const std::string& s) {
  		log_cstr(LEVEL_TRACE, s.c_str());
   	} 
- 	
+   	void warn(const std::string& s) {
+ 		log_cstr(LEVEL_WARN, s.c_str());
+  	} 
+   	void error(const std::string& s) {
+ 		log_cstr(LEVEL_ERROR, s.c_str());
+  	} 
+   	void fatal(const std::string& s) {
+ 		log_cstr(LEVEL_FATAL, s.c_str());
+  	} 
+	
 	// core logging function
 	void log_cstr(int level, const char *buf);
 	
