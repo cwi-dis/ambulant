@@ -138,16 +138,15 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *w
 			surf = NULL;
 		}
 	}
+#if 0
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const region_info *info = m_dest->get_info();
-#if 0
 	if (!info) {
 		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer draw_background: no info");
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer draw_background: color=0x%x, transparent=%x, showbg=%d",
 			(int)info->get_bgcolor(), (int)info->get_transparent(), (int)info->get_showbackground());
 	}
-#endif
 	if (info && !info->get_transparent()) {
 		// First find our whole area (which we have to clear to background color)
 		screen_rect<int> dstrect_whole = r;
@@ -163,6 +162,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *w
 		[cocoa_bgcolor set];
 		NSRectFill(cocoa_dstrect_whole);
 	}
+#endif
 
 	if (m_image) {
 		// Now find both source and destination area for the bitblit.

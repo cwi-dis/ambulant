@@ -205,7 +205,7 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
 	}
-
+#if 0
 	const region_info *info = m_dest->get_info();
 	// First find our whole area
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
@@ -220,6 +220,7 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		[cocoa_bgcolor set];
 		NSRectFill(cocoa_dstrect);
 	}
+#endif
 	
 	m_lock.leave();
 }

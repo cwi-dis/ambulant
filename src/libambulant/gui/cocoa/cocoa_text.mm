@@ -96,12 +96,13 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	// XXXX WRONG! This is the info for the region, not for the node!
-	const region_info *info = m_dest->get_info();
-	// First find our whole area
 	screen_rect<int> dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
+#if 0
+	// XXXX WRONG! This is the info for the region, not for the node!
+	const region_info *info = m_dest->get_info();
+	// First find our whole area
 	if (info && !info->get_transparent()) {
 		// XXXX Fill with background color
 		color_t bgcolor = info->get_bgcolor();
@@ -113,7 +114,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 		[cocoa_bgcolor set];
 		NSRectFill(cocoa_dstrect);
 	}
-	
+#endif
 	if (m_text_storage && m_layout_manager) {
 		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
 		NSSize size = NSMakeSize(NSWidth(cocoa_dstrect), NSHeight(cocoa_dstrect));
