@@ -45,7 +45,7 @@ class active_basic_renderer : public ref_counted_obj {
 	
 	virtual void start(event *playdone) = 0;
 	virtual void stop() = 0;
-	
+		
   protected:
   	event_processor *const m_event_processor;
 	const node *m_node;
@@ -111,6 +111,7 @@ class active_final_renderer : public active_renderer {
 // Foctory class for renderers.
 class renderer_factory {
   public:
+	virtual ~renderer_factory() {}
 	virtual active_renderer *new_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		passive_region *const dest,
