@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2004-12-10 13:43+0100\n"
+"POT-Creation-Date: 2004-12-20 12:38+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -424,6 +424,55 @@ msgstr ""
 
 #: src/player_unix/qt_gui.cpp:709
 msgid "Cannot open: "
+msgstr ""
+
+#: src/player_unix/qt_logger.cpp:124
+#, c-format
+msgid "Cannot open logfile: %s"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:102
+msgid "Log level:"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:112
+msgid "XML parser:"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:120
+msgid "Xerces options:"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:123
+msgid "Enable XML namespace support"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:128
+msgid "Enable XML validation:"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:138
+msgid "Using Schema"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:141
+msgid "Using DTD"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:146
+msgid "Validation Schema full checking"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:152
+msgid "Plugin options:"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:153
+msgid "Use plugins"
+msgstr ""
+
+#: src/player_unix/qt_settings.cpp:156
+msgid "Plugin directory:\n"
 msgstr ""
 
 #: src/libambulant/gui/cocoa/cocoa_gui.mm:208

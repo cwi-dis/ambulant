@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2004-12-10 13:43+0100\n"
+"POT-Creation-Date: 2004-12-20 12:38+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: Dutch <Jack.Jansen@cwi.nl>\n"
@@ -427,6 +427,55 @@ msgstr "Ambulant Player: met taalondersteuning (nederlands)"
 #: src/player_unix/qt_gui.cpp:709
 msgid "Cannot open: "
 msgstr "Bestand kan niet geopend worden: "
+
+#: src/player_unix/qt_logger.cpp:124
+#, c-format
+msgid "Cannot open logfile: %s"
+msgstr "Logboekbestand kan niet geopend worden: %s"
+
+#: src/player_unix/qt_settings.cpp:102
+msgid "Log level:"
+msgstr "Logboek detail:"
+
+#: src/player_unix/qt_settings.cpp:112
+msgid "XML parser:"
+msgstr "XML parser:"
+
+#: src/player_unix/qt_settings.cpp:120
+msgid "Xerces options:"
+msgstr "Xerces opties:"
+
+#: src/player_unix/qt_settings.cpp:123
+msgid "Enable XML namespace support"
+msgstr "Gebruik XML namespace ondersteuning"
+
+#: src/player_unix/qt_settings.cpp:128
+msgid "Enable XML validation:"
+msgstr "Gebruik XML validering"
+
+#: src/player_unix/qt_settings.cpp:138
+msgid "Using Schema"
+msgstr "Met Schema"
+
+#: src/player_unix/qt_settings.cpp:141
+msgid "Using DTD"
+msgstr "Met DTD"
+
+#: src/player_unix/qt_settings.cpp:146
+msgid "Validation Schema full checking"
+msgstr "Volledige controle Schema"
+
+#: src/player_unix/qt_settings.cpp:152
+msgid "Plugin options:"
+msgstr "Opties voor insteekmodules:"
+
+#: src/player_unix/qt_settings.cpp:153
+msgid "Use plugins"
+msgstr "Gebruik insteekmodules"
+
+#: src/player_unix/qt_settings.cpp:156
+msgid "Plugin directory:\n"
+msgstr "Map voor insteekmodules:\n"
 
 #: src/libambulant/gui/cocoa/cocoa_gui.mm:208
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
