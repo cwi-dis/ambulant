@@ -126,14 +126,14 @@ class dx_player :
 	////////////////////
 	// common::window_factory implementation
 	
-	common::abstract_window *new_window(const std::string &name, 
+	common::abstract_window *new_window(const std::string& name, 
 		lib::size bounds, common::renderer *region);
 		
 	common::gui_region *new_mouse_region();
 	
 	common::renderer *new_background_renderer(const common::region_info *src);
 	
-	void window_done(common::abstract_window *window);
+	void window_done(const std::string& name);
 	
 	////////////////////
 	// common::playable_factory implementation
@@ -154,17 +154,19 @@ class dx_player :
 	common::window_factory *get_window_factory() { return this;}
 	common::playable_factory *get_playable_factory() {return this;}
 	viewport* create_viewport(int w, int h, HWND hwnd);
-	void redraw();
+	void redraw(HWND hwnd, HDC hdc);
 	void on_done();
 	
   private:
 	common::abstract_window* get_window(const lib::node* n);
-	
+	common::abstract_window* get_window(HWND hwnd);
+
 	std::string m_url;
 	smil2::smil_player *m_player;
 	
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
-	std::map<dx_window *, wininfo*> m_windows;
+	std::map<std::string, wininfo*> m_windows;	
+	wininfo* get_wininfo(HWND hwnd);
 	
 	lib::logger *m_logger;
 };

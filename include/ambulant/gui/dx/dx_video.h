@@ -78,6 +78,7 @@ class dx_video_renderer : public common::renderer_playable {
 	void stop();
 	void pause();
 	void resume();
+	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
 	std::pair<bool, double> get_dur();
 	

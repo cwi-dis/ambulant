@@ -61,6 +61,13 @@
 #include "ambulant/lib/gtypes.h"
 
 namespace ambulant {
+namespace common {
+class passive_region;
+}}
+
+typedef ambulant::common::passive_region region;
+
+namespace ambulant {
 
 namespace gui {
 
@@ -72,7 +79,7 @@ class dx_window : public common::abstract_window {
   public:
   	dx_window(const std::string& name, 
   		lib::size bounds,
-  		common::renderer *region,
+  		region *rgn,
   		common::window_factory *wf,
   		viewport* m_viewport);
   	~dx_window();
@@ -81,12 +88,15 @@ class dx_window : public common::abstract_window {
 	void redraw(const lib::screen_rect<int>& r);
 	void mouse_region_changed();
 	
-	viewport *get_viewport() { return m_viewport;}
+	const std::string& get_name() const { return m_name;}
+	region *get_region() { return m_rgn;}
 	
+	viewport *get_viewport() { return m_viewport;}
   private:
 	// abstract_window:
 	// passive_region *m_region;
-	
+	region *m_rgn;
+	std::string m_name; // for easy access
 	common::window_factory *m_wf;
     viewport* m_viewport;
 };

@@ -66,6 +66,11 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/basic_types.h"
 
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using ambulant::lib::uchar;
 
 namespace ambulant {
@@ -91,7 +96,7 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 		if(m_transparent>=0) {
 			color_quad& t = m_palette[m_transparent];
 			rgb[0] = t.r; rgb[1] = t.g; rgb[2] = t.b;
-			m_logger->trace("Gif transparent color (%d, %d, %d)", int(t.r), int(t.g), int(t.b));
+			AM_DBG m_logger->trace("Gif transparent color (%d, %d, %d)", int(t.r), int(t.g), int(t.b));
 		} else {
 			rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
 		}
@@ -174,7 +179,7 @@ gif_decoder<DataSource, ColorType>::decode() {
 		m_palette = NULL;
 	}
     if((uch & 0x80) == 0x80) {
-		m_logger->trace("Gif palette entries = %d", int(m_scr_colors));
+		AM_DBG m_logger->trace("Gif palette entries = %d", int(m_scr_colors));
 		m_palette = new color_quad[m_scr_colors];
 		memset(m_palette, 0, m_scr_colors*sizeof(color_quad));
 		for(int i=0; i<m_scr_colors;i++) {
@@ -196,34 +201,34 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 	while(true) {
 		uchar_t blockType = m_src->get();
 		if(blockType == 0x2c) { 
-			//m_logger->trace("Image Descriptor");
+			AM_DBG m_logger->trace("Image Descriptor");
 			return parse_image();
 		} else if (blockType == 0x21) {
-			//m_logger->trace("Extension block");
+			AM_DBG m_logger->trace("Extension block");
 			uchar_t label = m_src->get();
 			if(label == 0xf9) { 
-				//m_logger->trace("Graphics Control Extension");
+				AM_DBG m_logger->trace("Graphics Control Extension");
 				if(get_data_block(ext_buf)>0) {
 					m_disposal= (ext_buf[0]>>2)	& 0x7;
 					m_inputFlag	= (ext_buf[0]>>1) & 0x1;
 					m_delayTime	= to_uint(ext_buf[1], ext_buf[2]);
 					if((ext_buf[0] & 0x1) != 0) {
 						m_transparent = ext_buf[3];
-						m_logger->trace("Gif transparent index = %d", int(m_transparent));
+						AM_DBG m_logger->trace("Gif transparent index = %d", int(m_transparent));
 					}
 				}
 				skip_block();
 			} else if (label == 0x1) { 
-				//m_logger->trace("Plain text extension");
+				AM_DBG m_logger->trace("Plain text extension");
 				skip_block();
 			} else if (label == 0xfe) { 
-				//m_logger->trace("Comment extension");
+				AM_DBG m_logger->trace("Comment extension");
 				skip_block();
 			} else if (label == 0xff) { 
-				//m_logger->trace("Application extension");
+				AM_DBG m_logger->trace("Application extension");
 				skip_block();
 			} else { 
-				//m_logger->trace("Unknown extension");
+				AM_DBG m_logger->trace("Unknown extension");
 				skip_block();
 			}
 		}
@@ -269,7 +274,7 @@ gif_decoder<DataSource, ColorType>::parse_image() {
 		m_src->skip(numLCTEntries*3);
 	}
 	//else cout << "uses global color table" << endl;
-	//cout << "ImageDescription: " << imageWidth << "x" << imageHeight << endl;
+	AM_DBG  m_logger->trace("ImageDescription: %d x %d",  int(imageWidth), int(imageHeight));
 
 	/////////////
 	// create a bmp surface

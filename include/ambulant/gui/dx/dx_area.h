@@ -73,10 +73,30 @@ class dx_area_renderer : public common::renderer_playable {
 	: common::renderer_playable(context, cookie, node, evp) {
 	}
 	~dx_area_renderer() {}
-	void start(double t) {}
-	void stop() {}
+	void start(double t);
+	void stop();
+	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
 };
+
+inline void gui::dx::dx_area_renderer::start(double t) {		
+	if(m_activated) return;	
+	m_dest->show(this);
+	m_activated = true;
+}
+
+inline void gui::dx::dx_area_renderer::stop() {
+	m_dest->renderer_done();
+	m_activated = false;
+}
+
+inline void gui::dx::dx_area_renderer::user_event(const lib::point& pt, int what) {
+	if(what == common::user_event_click)
+		m_context->clicked(m_cookie);
+	else if(what == common::user_event_mouse_over) {
+		m_context->pointed(m_cookie);
+	}
+}
 
 } // namespace dx
 

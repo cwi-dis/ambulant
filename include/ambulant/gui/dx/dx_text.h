@@ -75,6 +75,7 @@ class dx_text_renderer : public common::renderer_playable {
 	~dx_text_renderer();
 	void start(double t);
 	void stop();
+	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
 	std::string m_text;
