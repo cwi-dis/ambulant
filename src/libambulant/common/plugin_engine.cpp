@@ -45,7 +45,8 @@
  * which carries forward this exception.
  *
  */
- 
+
+
 #include"ambulant/common/plugin_engine.h"
 #include "ambulant/lib/logger.h"
 
@@ -53,7 +54,10 @@
 #include<stdlib.h>
 #include<dirent.h>
 #include<string.h>
+
+#ifdef	WITH_PLUGINS
 #include <ltdl.h>
+#endif/*WITH_PLUGINS*/
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -70,11 +74,14 @@ plugin_engine *ambulant::common::plugin_engine::s_singleton = NULL;
 plugin_engine *
 plugin_engine::get_plugin_engine()
 {
+#ifdef	WITH_PLUGINS
     if (s_singleton == NULL)
         s_singleton = new plugin_engine;
+#endif/*WITH_PLUGINS*/
     return s_singleton;
 }
 
+#ifdef	WITH_PLUGINS
 plugin_engine::plugin_engine()
 {
     collect_plugin_directories();
@@ -231,3 +238,4 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 	}
 }
 #endif
+#endif/*WITH_PLUGINS*/
