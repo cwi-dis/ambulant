@@ -55,6 +55,18 @@
 
 using namespace ambulant;
 
+
+
+lib::::expat_parser*
+lib::expat_factory::new_parser(
+		sax_content_handler* content_handler, 
+		sax_error_handler* error_handler) 
+{
+return new lib::expat_parser(content_handler, error_handler);
+}
+
+
+
 lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler, 
 	lib::sax_error_handler *error_handler)
 :	m_content_handler(content_handler),

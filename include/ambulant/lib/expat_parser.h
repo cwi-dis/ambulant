@@ -67,9 +67,24 @@
 namespace ambulant {
 
 namespace lib {
+	
+class expat_factory : public common::parser_factory {
+  public:
+
+	expat_factory(
+  		sax_content_handler* content_handler, 
+  		sax_error_handler* error_handler) {};
+	~expat_factory() {};
+		
+	common::expat_parser *new_parser(
+		sax_content_handler* content_handler, 
+		sax_error_handler* error_handler);
+};
+
 
 ///////////////////////////
 // Adapter for expat parser
+
 
 class expat_parser : public xml_parser {
   public:
