@@ -106,6 +106,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	
 	void set_cursor(int cursorid) { m_cursorid = cursorid;}
 	int get_cursor() const { return m_cursorid;}
+	std::string get_pointed_node_str() const;
 		
 	//////////////////////
 	// Time node context: Playable commands
@@ -176,7 +177,6 @@ class smil_player : public common::player, public time_node_context, public comm
 	}
 	
 	lib::document *m_doc;
-	std::map<std::string, custom_test> m_custom_tests;
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
 	lib::system *m_system;
@@ -187,6 +187,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	lib::event_processor *m_event_processor;	
 	common::play_state m_state;
 	int m_cursorid;
+	const time_node *m_pointed_node;
 	std::map<const lib::node*, common::playable *> m_playables;
 	critical_section m_playables_cs;
 	lib::logger *m_logger;

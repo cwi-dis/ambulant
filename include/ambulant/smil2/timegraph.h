@@ -97,8 +97,7 @@ class timegraph : public time_traits {
  public:
 	timegraph(time_node::context_type *ctx, 
 		const lib::document *doc, 
-		const common::schema *sch, 
-		const std::map<std::string, custom_test> *custom_tests = 0);
+		const common::schema *sch);
 	~timegraph();
 	
 	time_node* get_root() { return m_root;}

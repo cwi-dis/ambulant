@@ -60,26 +60,7 @@
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/nscontext.h"
-
-// XXX: temp, will go to document.cpp
-#include "ambulant/lib/tree_builder.h"
-#include "ambulant/lib/logger.h"
-#include "ambulant/lib/filesys.h"
-#include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
-
-////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
-#ifndef AMBULANT_NO_OSTREAM
-#include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-
-#endif //AMBULANT_NO_IOSTREAMS_HEADERS
-////////////////////////
 
 // A class respresenting an XML document.
 //
@@ -90,6 +71,14 @@
 namespace ambulant {
 
 namespace lib {
+
+struct custom_test {
+	std::string id;
+	std::string title;
+	bool state;
+	bool override;
+	std::string uid;
+};
 
 // Interface accesible to nodes.
 class node_context {
@@ -103,6 +92,9 @@ class node_context {
 	
 	virtual std::string 
 	resolve_url(const node *n, const std::string& rurl) const = 0;
+	
+	virtual const std::map<std::string, custom_test>* 
+	get_custom_tests() const = 0;
 };
 
 
@@ -152,6 +144,9 @@ class document : public node_context {
 		return (it != m_id2node.end())?(*it).second:0;
 	}
 	
+	const std::map<std::string, custom_test>* get_custom_tests() const
+		{ return &m_custom_tests;}
+	
   protected:
 	document(node *root = 0);
 	document(node *root, const std::string& src_url);
@@ -163,6 +158,9 @@ class document : public node_context {
   private:
 	// builds id to node map
 	void build_id2node_map();
+	
+	// reads document custom tests attributes
+	void read_custom_attributes();
 	
 	// the root of this document
 	node *m_root;
@@ -178,14 +176,32 @@ class document : public node_context {
 	// document namespaces registry
 	nscontext m_namespaces;
 	
+	// document custom tests
+	std::map<std::string, custom_test> m_custom_tests;
+	
 	// map of id to nodes
 	std::map<std::string, const node*> m_id2node;
+
 	
 };
 
 } // namespace lib
  
 } // namespace ambulant
+
+
+////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
+#ifndef AMBULANT_NO_OSTREAM
+#include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
+
+
+#endif //AMBULANT_NO_IOSTREAMS_HEADERS
+////////////////////////
 
 #ifndef AMBULANT_NO_IOSTREAMS
 inline 

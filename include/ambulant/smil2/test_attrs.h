@@ -54,6 +54,7 @@
 #define AMBULANT_SMIL2_TEST_ATTRS_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/document.h"
 
 #include <string>
 #include <map>
@@ -68,17 +69,11 @@ class document;
 
 namespace smil2 {
 
-struct custom_test {
-	std::string id;
-	std::string title;
-	bool state;
-	bool override;
-	std::string uid;
-};
+using lib::custom_test;
 
 class test_attrs {
   public:
-	test_attrs(const lib::node *n, const std::map<std::string, custom_test>* custom_tests = 0);
+	test_attrs(const lib::node *n);
 	
 	// Returns true when the target node is selected.
 	bool selected() const;
