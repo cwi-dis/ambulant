@@ -112,8 +112,10 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = qaw;
-	QSize size = qaw->frameSize();
-	m_pixmap = new QPixmap(size.width(), size.height());
+	if (qaw != NULL) {
+		QSize size = qaw->frameSize();
+		m_pixmap = new QPixmap(size.width(), size.height());
+	}
 }
 
 QPixmap*

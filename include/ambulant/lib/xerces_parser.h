@@ -96,55 +96,31 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
        
 	void set_error_handler(sax_error_handler *h);
 
-	void startElement(const XMLCh* const name,
-			  AttributeList& attrs) {
-		char *cname = XMLString::transcode(name);
-		AM_DBG m_logger->trace("*** startElement %s", cname);
-		q_name_pair qname = to_q_name_pair(name);
-		q_attributes_list qattrs;
-		to_qattrs(attrs, qattrs);
-		m_content_handler->start_element(qname, qattrs);
-		XMLString::release(&cname);
-	}
-   
-	void endElement(const XMLCh* const name) {
-		char *cname = XMLString::transcode(name);
-		AM_DBG m_logger->trace("*** endElement %s", cname);
-		q_name_pair qname = to_q_name_pair(name);
-		m_content_handler->end_element(qname);
-		XMLString::release(&cname);
-	}
-    
+	void startElement(const XMLCh* const name, AttributeList& attrs);
+
+ 	void endElement(const XMLCh* const name);   
+
 	void characters(const XMLCh* const chars, const unsigned int length) {}
         
-	void ignorableWhitespace(const XMLCh* const chars, const unsigned int length) {}
+	void ignorableWhitespace(const XMLCh* const chars,
+				 const unsigned int length) {}
     
 	void resetDocument() {}
 
-	void warning(const SAXParseException& exception) {
-		m_logger->warn("*** Warning ");
-		throw exception;
-	}
+	void warning(const SAXParseException& exception);
 
-	void error(const SAXParseException& exception) {
-	        m_logger->error("*** Error ");
-        	throw exception;
-	}
+	void error(const SAXParseException& exception);
 
-	void fatalError(const SAXParseException& exception)  {
-		m_logger->error("***** Fatal error ");
-		throw exception;
-	}
+	void fatalError(const SAXParseException& exception);
 	
 	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
 	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
-	static q_name_pair to_q_name_pair(const XMLCh*);
-	static void to_qattrs(AttributeList&, q_attributes_list&);
-	// ...
 	
   private:
+	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
+	static q_name_pair to_q_name_pair(const XMLCh* name);
+
 	SAXParser *m_saxparser;  
-//XXXX	XML_Parser m_saxParser;
 	lib::logger *m_logger;
 	sax_content_handler *m_content_handler;
 	sax_error_handler *m_error_handler;
@@ -153,74 +129,6 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	size_t m_size;
 	const char* m_id;
 };
-
-inline xerces_sax_parser::xerces_sax_parser(sax_content_handler *content_handler,
-					    sax_error_handler *error_handler) 
-:	m_content_handler(content_handler),
-	m_error_handler(error_handler),
-	m_parsing(false),
-	m_saxparser(0), m_logger(0), m_buf((char*)malloc(1)), m_size(0),
-	m_id("AmbulantXercesParser") {
-	m_logger = lib::logger::get_logger();
-        AM_DBG m_logger->trace("***  :xerces_sax_parser()");
-	XMLPlatformUtils::Initialize();
-	m_saxparser = new SAXParser();
-	
-	// Val_Never, Val_Always, Val_Auto
-	m_saxparser->setValidationScheme(SAXParser::Val_Auto);
-	
-	// If set to true, namespace processing must also be turned on
-	m_saxparser->setDoSchema(true);
-	
-	// True to turn on full schema constraint checking
-	m_saxparser->setDoValidation(true);
-	
-	// True to turn on full schema constraint checking
-	m_saxparser->setValidationSchemaFullChecking(true);
-	
-	// true: understand namespaces; false: otherwise
-	m_saxparser->setDoNamespaces(true);
-	
-	m_saxparser->setDocumentHandler(this);
-	m_saxparser->setErrorHandler(this);
-}
-
-inline xerces_sax_parser::~xerces_sax_parser() {
-	delete m_saxparser;
-	free (m_buf);
-}
-
-//static
-inline void
-xerces_sax_parser::to_qattrs(AttributeList& attrs, 
-			     q_attributes_list& list) {
-	if(attrs.getLength() == 0) return;
-	for (int i = 0; i < attrs.getLength(); i++) {
-		xml_string value = 
-		  XMLString::transcode(attrs.getValue(i));
-		q_attribute_pair qap (to_q_name_pair(attrs.getName(i)),
-				      value);
-		list.push_back(q_attribute_pair(qap));
-	}
-}
-//static
-inline q_name_pair 
-xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
-	char *cname = XMLString::transcode(name);
-	const char *p = cname;
-	const char ns_sep = char(NS_SEP);
-	while(*p != 0 && *p != ns_sep) p++;
-	q_name_pair qn;
-	if(*p == ns_sep) { 
-		qn.first = std::string(cname, int(p-cname));
-		qn.second = std::string(p+1);
-	} else {
-		qn.first = "";
-		qn.second = cname;
-	}
-	XMLString::release(&cname);
-	return  qn;
-}
 
 } // namespace lib
  

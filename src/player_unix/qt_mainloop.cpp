@@ -220,6 +220,7 @@ qt_mainloop::~qt_mainloop()
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
+	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::~qt_mainloop() m_player=0x%x", m_player);
 	if (m_player) {
 		delete m_player;
 	}

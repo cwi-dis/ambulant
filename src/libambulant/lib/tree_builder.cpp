@@ -47,7 +47,11 @@
  */
 
 /* 
+<<<<<<< tree_builder.cpp
  * @$Id$ 
+=======
+ * @$Id$ 
+>>>>>>> 1.17.2.2
  */
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
@@ -69,7 +73,6 @@ lib::tree_builder::tree_builder(node_context *context)
 	m_context(context) {
 #ifdef	WITH_XERCES
     // XXXX Do this only if the xerces parser is selected in the preferences
-	XMLPlatformUtils::Initialize();
 	m_xmlparser = new xerces_sax_parser(this, this);
 #endif/*WITH_XERCES*/
 #ifdef WITH_EXPAT
@@ -83,6 +86,7 @@ lib::tree_builder::tree_builder(node_context *context)
 
 lib::tree_builder::~tree_builder()
 	{
+//TMP	printf(":tree_builder::~tree_builder() m_xmlparser=0x%x\n", m_xmlparser);
 	if(m_xmlparser != 0)
 		delete m_xmlparser;
 	if(m_root != 0)

@@ -167,11 +167,15 @@ qt_gui::qt_gui(const char* title,
 }
 
 qt_gui::~qt_gui() {
-	AM_DBG printf("%s-%s\n", "~qt_gui()",(const char*)m_menubar->text(0));
+	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
 	if (m_menubar != NULL) {
 		delete m_menubar;
 		m_menubar = NULL;
+	}
+	if (m_mainloop != NULL) {
+		delete m_mainloop;
+		m_mainloop = NULL;
 	}
 }
 
