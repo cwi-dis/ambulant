@@ -74,11 +74,6 @@ gui::dx::dx_text_renderer::~dx_text_renderer() {
 void gui::dx::dx_text_renderer::start(lib::event *playdone) {
 	if(!m_node || !m_src) abort();
 	m_playdone = playdone;
-	if(!m_src->exists()) {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
-		m_event_processor->add_event(playdone, 0, lib::event_processor::low);
-		return;
-	}
 	// Create a dx-region
 	viewport *v = get_viewport();
 	m_region = v->create_region(m_dest->get_rect_outer(), m_dest->get_parent()->get_rect_outer());
@@ -88,6 +83,12 @@ void gui::dx::dx_text_renderer::start(lib::event *playdone) {
 	m_region->clear();
 	
 	m_dest->show(this);
+	
+	if(!m_src->exists()) {
+		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
+		m_event_processor->add_event(playdone, 0, lib::event_processor::low);
+		return;
+	}
 	m_src->start(m_event_processor, m_readdone);
 }
 
