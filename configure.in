@@ -69,9 +69,11 @@ AC_ARG_WITH(cocoa,
        yes) cocoa=true ;;
        no)  cocoa=false ;;
        *) AC_MSG_ERROR(bad value ${withval} for --with-cocoa) ;;
-     esac],[
+     esac
+     gui_toolkit_found=true],[
      if test -d /System/Library/Frameworks/AppKit.framework; then
        cocoa=true
+       gui_toolkit_found=true
      else
        cocoa=false
      fi
@@ -106,11 +108,13 @@ AC_ARG_WITH(qt,
        *) 	qt=true
        		QT_PREFIX=${withval}
        		;;
-     esac],[
+     esac
+     gui_toolkit_found=true],[
      case x$QTDIR in
      x)	qt=false
      	;;
      *) qt=true
+     	gui_toolkit_found=true
      	QT_PREFIX=$QTDIR
      	;;
      esac])
@@ -257,6 +261,8 @@ AC_ARG_WITH(ffmpeg,
 		else
 			withvalabs=false
 			ffmpeg=false
+			AC_MSG_ERROR("ffmpeg not found. To build without ffmpeg (and thus have no network support) use explicit --without-ffmpeg")
+			
 		fi
 	 ])
 if test x$ffmpeg = xtrue; then
@@ -467,3 +473,8 @@ AC_LANG_RESTORE
 ACX_PTHREAD
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 AC_OUTPUT
+
+# Finally we check that the configuration makes sense
+if test "x$gui_toolkit_found" != xtrue; then
+	AC_MSG_ERROR([No GUI toolkit found so cannot build player. Use explicit --without-qt or similar to suppress this error.])
+fi
