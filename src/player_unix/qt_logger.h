@@ -52,6 +52,8 @@
 
 #ifndef __QT_LOGGER_H__
 #define __QT_LOGGER_H__
+#include <qfeatures.h>
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 
 #include <stdarg.h>
 #include <string.h>
@@ -89,4 +91,5 @@ class qt_logger_ostream : public ambulant::lib::ostream {
  private:
 	QString m_qstring;
 };
+#endif/*QT_NO_FILEDIALOG*/
 #endif/*__QT_LOGGER_H__*/

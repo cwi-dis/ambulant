@@ -56,10 +56,9 @@
 #include "unix_preferences.h"
 
 #include <qfeatures.h>
-#ifndef QT_NO_FILEDIALOG
-  /* Assume plain Qt */
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 # include <qapplication.h>
-#else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 #include <qpe/qpeapplication.h>
 #include <qpe/applnk.h>
 #include <fileselector.h>

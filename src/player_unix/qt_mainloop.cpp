@@ -69,7 +69,7 @@
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/parser_factory.h"
 #include "ambulant/lib/xerces_parser.h"
-#include "ambulant/lib/expat_parser.h"
+//#include "ambulant/lib/expat_parser.h"
 
 
 //#include "ambulant/lib/tree_builder.h"
@@ -118,13 +118,10 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	// First create the parser factory and populate it;
 	
 	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
-	m_factory->pf->add_factory(new lib::expat_factory());
-if(0) {
+//	m_factory->pf->add_factory(new lib::expat_factory());
 #ifdef WITH_XERCES
 	m_factory->pf->add_factory(new lib::xerces_factory());
 #endif
-}
-
 	// First create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
 	

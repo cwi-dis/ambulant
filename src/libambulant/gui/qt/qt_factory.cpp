@@ -327,12 +327,17 @@ qt_renderer_factory::new_playable(
 	common::playable* rv;
 	if (tag == "img") {
  		rv = new qt_active_image_renderer(context, cookie, node,
-			 evp, m_factory);
+						  evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_image_renderer 0x%x", 
+			(void*) node, (void*) rv);
+	} else if (tag == "brush") {
+ 		rv = new qt_fill_renderer(context, cookie, node,
+					  evp, m_factory);
+		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_fill_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
 		rv = new qt_active_text_renderer(context, cookie, node,
-			evp, m_factory);
+						 evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_text_renderer 0x%x",
 			(void*) node, (void*) rv);
 	} else {

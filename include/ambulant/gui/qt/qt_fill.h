@@ -77,29 +77,40 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_fill_renderer : public qt_renderer {
+class qt_fill_renderer : public  renderer_playable {
   public:
-	qt_active_fill_renderer(
+	qt_fill_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp)
-  :     qt_renderer(context, cookie, node, evp, NULL),
-	m_playing(false) {
-};
-	~qt_active_fill_renderer();
+		lib::event_processor *const evp,
+		common::factories *factory)
+ 	:	renderer_playable(context, cookie, node, evp),
+	  	m_is_showing(false),
+		m_intransition(NULL),
+		m_outtransition(NULL),
+		m_trans_engine(NULL) {};
 
- 	void start(double where) {  // XXXX
-		m_playing = 1;
-	}
-	void stop() {
-		m_playing = 0;
-	}
-	void redraw(const lib::screen_rect<int> &dirty, 
-		    common::gui_window *window);
+	~qt_fill_renderer();
+
+ //	void freeze() {}
+	void start(double where);
+	void stop();
+	void seek(double t) {}
+
+	void set_intransition(lib::transition_info *info) { m_intransition = info; }
+	void start_outtransition(lib::transition_info *info);
+	void user_event(const point &where, int what = 0);
+	void redraw(const screen_rect<int> &dirty, gui_window *window);
+	void redraw_body(const lib::screen_rect<int> &dirty, 
+			 common::gui_window *window);
   private:
-	bool m_playing;
-	lib::critical_section m_lock;
+	void transition_step();
+	
+	bool m_is_showing;
+	lib::transition_info *m_intransition, *m_outtransition;
+	smil2::transition_engine *m_trans_engine;
+	critical_section m_lock;
 };
 
 class qt_background_renderer : public common::background_renderer {

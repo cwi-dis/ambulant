@@ -51,6 +51,7 @@
  */
 
 #include "qt_logger.h"
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qmessagebox.h>
 
 qt_logger_ostream::qt_logger_ostream()
@@ -152,3 +153,4 @@ qt_logger::get_logger_window()
 {
 	return logger_window;
 }
+#endif/*QT_NO_FILEDIALOG*/

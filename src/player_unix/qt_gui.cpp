@@ -229,12 +229,14 @@ qt_gui::slot_about() {
 void
 qt_gui::slot_logger_window() {
 	AM_DBG printf("slot_logger_window()\n");
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* logger_window =
 		qt_logger::get_qt_logger()->get_logger_window();
 	if (logger_window->isHidden())
 		logger_window->show();
 	else
 		logger_window->hide();
+#endif/*QT_NO_FILEDIALOG*/
 }
 
 bool 
