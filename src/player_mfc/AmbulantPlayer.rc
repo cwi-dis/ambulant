@@ -162,18 +162,21 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 78
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "About AmbulantPlayer"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
     LTEXT           "Ambulant Player version 1.0",IDC_VERSION,40,10,132,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,40,25,128,
+    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,40,23,128,
                     8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+    LTEXT           "Ambulant Player is Open Source (modified GPL), please check License.txt for details.",
+                    IDC_STATIC,7,55,221,16
+    LTEXT           "www.ambulantplayer.org",IDC_STATIC,39,36,128,8
 END
 
 IDD_OPEN_URL DIALOGEX 0, 0, 299, 63
@@ -243,7 +246,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 228
         TOPMARGIN, 7
-        BOTTOMMARGIN, 48
+        BOTTOMMARGIN, 71
     END
 
     IDD_OPEN_URL, DIALOG

@@ -1814,7 +1814,7 @@ end
 item: Create Shortcut
   Source=%MAINDIR%\AmbulantPlayer.exe
   Destination=%CGROUPDIR%\%CGROUP_SAVE%\Ambulant Player.lnk
-  Icon Number=1
+  Icon Number=0
 end
 item: End Block
 end
@@ -1827,7 +1827,7 @@ item: Create Shortcut
   Source=%MAINDIR%\AmbulantPlayer.exe
   Destination=%CGROUPDIR%\%CGROUP_SAVE%\NYC SMIL Demo.lnk
   Command Options="%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2.smil"
-  Icon Number=2
+  Icon Number=1
 end
 item: End Block
 end
@@ -1890,7 +1890,6 @@ item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=Ambulant Player
   Command Line=%MAINDIR%\AmbulantPlayer.exe
-  Icon Number=1
 end
 item: End Block
 end
@@ -1903,7 +1902,7 @@ item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=NYC SMIL Demo
   Command Line=%MAINDIR%\AmbulantPlayer.exe "%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2.smil"
-  Icon Number=2
+  Icon Number=1
 end
 item: End Block
 end
