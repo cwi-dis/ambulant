@@ -81,6 +81,10 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>Ambl</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>Ambulant Player Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>Ambulant Player Help</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

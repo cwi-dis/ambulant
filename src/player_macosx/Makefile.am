@@ -139,9 +139,18 @@ cocoambulant_bundle: cocoambulant_executable
 #	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
 
 #	$(INSTALL_DATA) $(srcdir)/*.png $(BUILDAPPNAME).app/Contents/Resources
+
+#	Install documentation
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+	$(INSTALL_DATA) $(srcdir)/../../Documentation/user/*.* $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+	sh $(srcdir)/genappleindex.sh $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+
+#	Install welcome document
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/data
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(BUILDAPPNAME).app/Contents/Resources/data
+
+#	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	strip -X `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	
