@@ -79,22 +79,34 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 	}
 	
 
-	if (m_data && frame) { 
+	if (m_data && frame) {
+		// XXXX THIS IS DANGEROUS!
+		if (memcmp(m_data, frame, size) == 0)
+			lib::logger::get_logger()->trace("IT IS THE SAME!!! IT IS THE SAME!!!! AND THEY CALL THAT VIDEO!!!!!");
 		memcpy(m_data, frame, size);
-		m_data_size = size;
-		if (m_dest) {
-			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
-			// XXX Not sure about this, but i gues it is the right place to set m_image_loaded false.
-			m_image_loaded = false; 
-			m_dest->need_redraw();	
-			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: need_redraw called");
-		} else {
-			lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_dest is NULL !");
-		}
 	} else {
-		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_data is NULL !");
+		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_data is NULL or frame is NULL!");
 	}
 
+	if (m_image)
+		delete m_image;
+
+	if (m_data ) {
+		int width = 176;
+		int height = 128;
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
+
+		m_image = new QImage((uchar*) m_data, width, height, 32, NULL, 0, QImage::IgnoreEndian);
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer, m_data=0x%x (this=0x%x)",(void*) m_data, (void *)this);
+	}
+	if (m_dest) {
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
+		m_dest->need_redraw();	
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: need_redraw called");
+	} else {
+		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_dest is NULL !");
+	}
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame done");
 	m_lock.leave();
 }
@@ -108,22 +120,6 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): ltrb=(%d,%d,%d,%d), p=(%d,%d)",(void *)this,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
-	if (m_data && !m_image_loaded) {
-		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
-		if (!m_image_loaded) {
-			int width = std::abs(r.right() - r.left());
-			int height = std::abs(r.top() - r.bottom());
-			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): width = %d, height = %d",(void *)this, width, height);
-
-			QImage  tmp_img((uchar*) m_data, width, height, 32, NULL, 32767, QImage::IgnoreEndian);
-			m_image = tmp_img.copy();
-			m_image_loaded = true;
-		}
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_image_loaded=%d (this=0x%x)",m_image_loaded, (void *)this);
-	} else {
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_inodemage_loaded=%d, m_data=0x%x (this=0x%x)",m_image_loaded,(void*) m_data, (void *)this);
-	}
 
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
@@ -153,7 +149,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		paint.setBrush(*bgc);
 		paint.drawRect(L,T,W,H);
 	}
-	if (m_image_loaded) {
+	if (m_image) {
 		QSize qsize = aqw->ambulant_pixmap()->size();
 		lib::size srcsize = lib::size(qsize.width(), qsize.height());
 		lib::rect srcrect = lib::rect(lib::size(0,0));
@@ -165,7 +161,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    W = dstrect.width(),
 		    H = dstrect.height();
 		AM_DBG lib::logger::get_logger()->trace(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
-		paint.drawImage(L,T,m_image,0,0,W,H);
+		paint.drawImage(L,T,*m_image,0,0,W,H);
 	} else {
 		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
 	}

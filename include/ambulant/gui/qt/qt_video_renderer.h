@@ -75,19 +75,15 @@ class qt_active_video_renderer : public common::active_video_renderer {
     	net::datasource_factory *df)
 :	 common::active_video_renderer(context, cookie, node, evp, df),
  	m_image(NULL),
-  	m_data(NULL),
-  	m_data_size(0),
-	m_image_loaded(false) {};
+  	m_data(NULL) {};
 		
 	~qt_active_video_renderer();
     void show_frame(char* frame, int size);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
  private:
-	QImage m_image;
+	QImage *m_image;
  	
  	char* m_data;
- 	int m_data_size;
-	bool m_image_loaded;
  
 	lib::critical_section m_lock;
 };

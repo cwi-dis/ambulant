@@ -659,7 +659,7 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 				width = m_con->streams[m_stream_index]->codec.width;
 				height = m_con->streams[m_stream_index]->codec.height;
 				m_size = width * height * 4;
-				m_frame = (char*) malloc(m_size);	
+				m_frame = (char*) malloc(m_size);
 				assert(m_frame != NULL);
 				dst_pic_fmt = PIX_FMT_RGBA32;
 				dummy2 = avpicture_fill(&picture, (uint8_t*) m_frame, dst_pic_fmt, width, height);
