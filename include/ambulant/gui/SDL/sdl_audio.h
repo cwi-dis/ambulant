@@ -49,7 +49,6 @@
 #define __SDL_AUDIO__
 
 #include <SDL.h>
-#include <SDL_mixer.h>
 #include <iostream>
 
 #include "ambulant/lib/mtsync.h"
@@ -103,26 +102,27 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 	void set_surface(common::surface *dest) { abort(); }
 	common::surface *get_surface() { abort(); }
 		  
+	static void sdl_callback(Uint8 *stream, int len);
   private:
-	void new_channel();  
-	bool restart_audio_output();
 	bool restart_audio_input();
+	int get_data(int bytes_wanted, Uint8 **ptr);
+	void get_data_done(int size);
 	
 	net::audio_datasource *m_audio_src;
-    Mix_Chunk m_audio_chunk;
-	bool m_audio_chunk_busy;
-	int m_channel_used;
 	lib::critical_section m_lock;
 	
+	bool m_is_playing;
+	bool m_is_paused;
   // class methods and attributes:
 	static int init();
- 	static int inc_channels();
+ 	static void register_renderer(sdl_active_audio_renderer *rnd);
+ 	static void unregister_renderer(sdl_active_audio_renderer *rnd);
     static bool m_sdl_init;
-    static int m_mixed_channels;
 	static Uint16 m_sdl_format;
 	static net::audio_format m_ambulant_format;
     static int m_buffer_size;
 	static lib::critical_section m_static_lock;
+	static std::list<sdl_active_audio_renderer *>m_renderers;
 };
 
 } // end namespace sdl

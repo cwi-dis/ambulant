@@ -40,7 +40,7 @@ endif
 
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  ` sdl-config --libs` -lSDL_mixer
+libambulant_sdl_la_LDFLAGS =  ` sdl-config --libs`
 sdlincludes = `sdl-config --cflags`
 libambulant_sdl_la_SOURCES =             \
         gui/SDL/sdl.cpp \

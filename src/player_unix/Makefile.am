@@ -8,7 +8,7 @@ qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h qt_gui.h
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags= `sdl-config --libs` -lSDL_mixer
+extra_sdl_ldflags= `sdl-config --libs`
 else
 extra_sdl_ldflags=
 extra_sdl_DEFINES=

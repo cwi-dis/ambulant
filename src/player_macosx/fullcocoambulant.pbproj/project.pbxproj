@@ -2058,14 +2058,6 @@
 			settings = {
 			};
 		};
-		048A7E2F05CDB4BA003C92BF = {
-			isa = PBXFileReference;
-			lastKnownFileType = archive.ar;
-			name = libSDL_mixer.a;
-			path = /usr/local/lib/libSDL_mixer.a;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
 		048A7E3005CDB4BA003C92BF = {
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
@@ -2073,12 +2065,6 @@
 			path = /usr/local/lib/libSDL.a;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		048A7E3105CDB4BA003C92BF = {
-			fileRef = 048A7E2F05CDB4BA003C92BF;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		048A7E3205CDB4BA003C92BF = {
 			fileRef = 048A7E3005CDB4BA003C92BF;
@@ -2874,7 +2860,6 @@
 		2A37F4C3FDCFA73011CA2CEA = {
 			children = (
 				04508B630507E68200F0FD74,
-				048A7E2F05CDB4BA003C92BF,
 				048A7E3005CDB4BA003C92BF,
 				04508B3B0507E27700F0FD74,
 				047FC13905CEA19A003C9A89,
@@ -3250,7 +3235,6 @@
 				8D15AC340486D014006FF6A4,
 				04508B3C0507E27700F0FD74,
 				04508B640507E68200F0FD74,
-				048A7E3105CDB4BA003C92BF,
 				048A7E3205CDB4BA003C92BF,
 				047FC13A05CEA19A003C9A89,
 				040565AD06139A8600C9C7B2,

@@ -8,7 +8,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.mm main.m 
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags= `sdl-config --libs` -lSDL_mixer
+extra_sdl_ldflags= `sdl-config --libs`
 else
 extra_sdl_ldflags=
 extra_sdl_DEFINES=
