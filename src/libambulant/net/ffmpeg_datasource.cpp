@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -138,7 +138,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 		return NULL;
 	}
 	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
-	audio_datasource *ds = new ffmpeg_audio_datasource(url, context, thread);
+	audio_datasource *ds = ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(url, context, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
@@ -332,37 +332,66 @@ detail::ffmpeg_demux::run()
 		
 // **************************** ffmpeg_audio_datasource *****************************
 
+ffmpeg_audio_datasource *
+ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(
+  		const std::string& url, 
+  		AVFormatContext *context,
+		detail::ffmpeg_demux *thread)
+{
+	AVCodec *codec;
+	AVCodecContext *codeccontext;
+	int stream_index;
+	
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource()");
+	ffmpeg_init();
+	// Find the index of the audio stream
+	for (stream_index=0; stream_index < context->nb_streams; stream_index++) {
+		if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
+			break;
+	}
+	
+	
+	if (stream_index >= context->nb_streams) {
+		lib::logger::get_logger()->error("ffmpeg_audio_datasource::ffmpeg_audio_datasource(): no audio streams");
+		return NULL;
+	} 
+
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource() looking for the right codec");
+	codeccontext = &context->streams[stream_index]->codec; 
+	codec = avcodec_find_decoder(codeccontext->codec_id);
+	
+	if( !codec) {
+		lib::logger::get_logger()->error("new_ffmpeg_audio_datasource: %s: Codec %d not found", url.c_str(), codeccontext->codec_id);
+		return NULL;
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(): codec found !");
+	}
+
+	
+	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
+		lib::logger::get_logger()->error("new_ffmpeg_audio_datasource: %s: Codec %d: cannot open", url.c_str(), codeccontext->codec_id);
+		return NULL;
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(): succesfully opened codec");
+	}
+	
+	return new ffmpeg_audio_datasource(url, context, thread, stream_index);
+}
+
 ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
-	detail::ffmpeg_demux *thread)
+	detail::ffmpeg_demux *thread, int stream_index)
 :	m_url(url),
 	m_con(context),
-	m_stream_index(-1),
+	m_stream_index(stream_index),
 	m_fmt(audio_format("ffmpeg")),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_client_callback(NULL)
-{
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
-	ffmpeg_init();
-	// Find the index of the audio stream
-	for (m_stream_index=0; m_stream_index < context->nb_streams; m_stream_index++) {
-		if (context->streams[m_stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
-			break;
-	}
-	if (m_stream_index >= context->nb_streams) {
-		lib::logger::get_logger()->error("ffmpeg_audio_datasource::ffmpeg_audio_datasource(): no audio streams");
-		m_src_end_of_file = true;
-		return;
-	} else {
-		m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
-	}
-	if (!m_thread) {
-		lib::logger::get_logger()->error("ffmpeg_audio_datasource::ffmpeg_audio_datasource: cannot start thread");
-		m_src_end_of_file = true;
-	}
+{	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
-	m_thread->add_datasink(this, m_stream_index);
+	m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
+	m_thread->add_datasink(this, stream_index);
 }
 
 ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
@@ -501,9 +530,11 @@ ffmpeg_audio_datasource::get_audio_format()
 
 // **************************** ffmpeg_video_datasource *****************************
 
+
+
+
 ffmpeg_video_datasource *
-ffmpeg_video_datasource::new_ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
-	detail::ffmpeg_demux *thread)
+ffmpeg_video_datasource::new_ffmpeg_video_datasource(const std::string& url, AVFormatContext *context, detail::ffmpeg_demux *thread)
 {
 	AVCodec *codec;
 	AVCodecContext *codeccontext;
@@ -559,6 +590,7 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 {	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x)", (void*)this);
 	m_thread->add_datasink(this, m_stream_index);
+	
 }
 
 ffmpeg_video_datasource::~ffmpeg_video_datasource()

@@ -151,8 +151,17 @@ class ffmpeg_audio_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	 ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
+	 static ffmpeg_audio_datasource *new_ffmpeg_audio_datasource(
+  		const std::string& url, 
+  		AVFormatContext *context,
 		detail::ffmpeg_demux *thread);
+  	
+  	ffmpeg_audio_datasource(
+  		const std::string& url, 
+  		AVFormatContext *context,
+		detail::ffmpeg_demux *thread, 
+  		int stream_index);
+  
     ~ffmpeg_audio_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  

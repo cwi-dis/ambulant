@@ -77,12 +77,7 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 		m_data = (char*) realloc (m_data, size);
 		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: reallocated m_data=0x%x, size=%d", m_data, size);
 	}
-	
-
 	if (m_data && frame) {
-		// XXXX THIS IS DANGEROUS!
-		if (memcmp(m_data, frame, size) == 0)
-			lib::logger::get_logger()->trace("IT IS THE SAME!!! IT IS THE SAME!!!! AND THEY CALL THAT VIDEO!!!!!");
 		memcpy(m_data, frame, size);
 	} else {
 		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_data is NULL or frame is NULL!");
