@@ -208,7 +208,7 @@ databuffer::get_write_ptr(int sz)
 			rv = m_buffer + m_size;
 		
     } else {
-        lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
+        lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
 		rv = NULL;
     }
     m_lock.leave();
@@ -220,7 +220,7 @@ void databuffer::pushdata(int sz)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::pushdata(%d) m_size=%d", (void*)this, sz, m_size);
 	if (m_buffer_full) {
-        lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
+        lib::logger::get_logger()->trace("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
 	
 	if (sz < 0 || m_size < 0) { // cannot realloc XXXX Is this OK ?
@@ -264,7 +264,8 @@ databuffer::readdone(int sz)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
     if ((unsigned long int)sz > m_used) {
-		lib::logger::get_logger()->error("Internal error: databuffer::readdone(%d), but m_used=%d", sz, m_used);
+		lib::logger::get_logger()->trace("Internal error: databuffer::readdone(%d), but m_used=%d", sz, m_used);
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
 		sz = m_used;
 	}
 #ifdef RANDOM_BYTES

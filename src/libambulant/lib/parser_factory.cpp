@@ -127,7 +127,7 @@ global_parser_factory::new_parser(
 	if (m_default_factory) {
 		if (!m_warned && parser_id != "any") {
 			m_warned = true;
-			lib::logger::get_logger()->warn("Parser \"%s\" not available, using \"%s\"",
+			lib::logger::get_logger()->warn(gettext("Parser \"%s\" not available, using \"%s\""),
 				parser_id.c_str(), m_default_factory->get_parser_name().c_str());
 		}
    		return m_default_factory->new_parser(content_handler, error_handler);

@@ -234,7 +234,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 			
 			AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
 			if (!(*it2)->get_info()->is_subregion()) {
-				AM_DBG lib::logger::get_logger()->warn("passive_region.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
+				AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
 			}
 			(*it2)->redraw(our_rect, window);
 		}
@@ -645,8 +645,8 @@ passive_root_layout::need_redraw(const lib::screen_rect<int> &r)
 	if (m_gui_window)
 		m_gui_window->need_redraw(r);
 	else {
-		lib::logger::get_logger()->trace("passive_root_layout::need_redraw: m_gui_window == NULL");
-		lib::logger::get_logger()->error("Internal error: requesting redraw without a window");
+		lib::logger::get_logger()->debug("passive_root_layout::need_redraw: m_gui_window == NULL");
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
 	}
 }
 
@@ -657,6 +657,6 @@ passive_root_layout::need_events(bool want)
 		m_gui_window->need_events(want);
 	else {
 		lib::logger::get_logger()->trace("passive_root_layout::need_events: m_gui_window == NULL");
-		lib::logger::get_logger()->error("Internal error: requesting user events without a window");
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
 	}
 }

@@ -98,7 +98,7 @@ transition_engine::init(common::surface *dst, bool outtrans, lib::transition_inf
 	m_progress = m_info->m_startProgress;
 	lib::transition_info::time_type dur = m_info->m_dur;
 	if (dur <= 0) {
-		lib::logger::get_logger()->error("transition: duration %f, should be greater than zero", float(dur));
+		lib::logger::get_logger()->trace("transition: duration %f, should be greater than zero", float(dur));
 		dur = 1;
 	}
 	m_time2progress = (m_info->m_endProgress - m_info->m_startProgress) / dur;
@@ -241,42 +241,42 @@ void
 transition_engine_miscdiagonalwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype miscDiagonalWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype miscDiagonalWipe not yet implemented");
 }
 
 void
 transition_engine_veewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype veeWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype veeWipe not yet implemented");
 }
 
 void
 transition_engine_barnveewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype barnVeeWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype barnVeeWipe not yet implemented");
 }
 
 void
 transition_engine_zigzagwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype zigZagWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype zigZagWipe not yet implemented");
 }
 
 void
 transition_engine_barnzigzagwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype barnZigZagWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype barnZigZagWipe not yet implemented");
 }
 
 void
 transition_engine_bowtiewipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype bowTieWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype bowTieWipe not yet implemented");
 }
 
 // series 2: iris wipes
@@ -534,7 +534,7 @@ detail::angle_computer::angle2edge(double angle, lib::point &edgepoint)
 		edge = edge_topleft;
 		AM_DBG lib::logger::get_logger()->debug("angle_computer::angle2edge: topleft");
 	} else
-		lib::logger::get_logger()->error("transition_engine: impossible angle %f", angle);
+		lib::logger::get_logger()->trace("transition_engine: impossible angle %f", angle);
 	// Next compute the intersection point
 	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
 	if (edge == edge_topleft || edge == edge_topright)
@@ -565,49 +565,49 @@ void
 transition_engine_singlesweepwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype singleSweepWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype singleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_doublesweepwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype doubleSweepWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype doubleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_saloondoorwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype saloonDoorWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype saloonDoorWipe not yet implemented");
 }
 
 void
 transition_engine_windshieldwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype windshieldWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype windshieldWipe not yet implemented");
 }
 
 void
 transition_engine_fanwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype fanWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype fanWipe not yet implemented");
 }
 
 void
 transition_engine_doublefanwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype doubleFanWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype doubleFanWipe not yet implemented");
 }
 
 void
 transition_engine_pinwheelwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype pinWheelWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype pinWheelWipe not yet implemented");
 }
 
 // series 4: matrix wipe types
@@ -668,21 +668,21 @@ void
 transition_engine_spiralwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype spiralWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype spiralWipe not yet implemented");
 }
 
 void
 transition_engine_parallelsnakeswipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype parallelSnakesWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype parallelSnakesWipe not yet implemented");
 }
 
 void
 transition_engine_boxsnakeswipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->warn("transitiontype boxSnakesWipe not yet implemented");
+	lib::logger::get_logger()->trace("transitiontype boxSnakesWipe not yet implemented");
 }
 
 // series 5: SMIL-specific types

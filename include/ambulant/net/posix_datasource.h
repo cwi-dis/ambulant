@@ -112,7 +112,6 @@ public:
 		return os;
 	}
 	
-private:
 	const std::string m_filename;
 };
 

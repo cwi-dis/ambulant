@@ -181,7 +181,7 @@ void lib::document::build_id2node_map() {
 			const char *pid = n->get_attribute("id");
 			if(pid) {
 				const node *o = get_node(pid);
-				if(o) logger::get_logger()->warn("Duplicate id: %s", pid);
+				if(o) logger::get_logger()->trace("Duplicate id: %s", pid);
 				else m_id2node[pid] = n;
 			}
 		}

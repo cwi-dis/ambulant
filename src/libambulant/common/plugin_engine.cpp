@@ -103,7 +103,8 @@ bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
 	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
 	int errors = lt_dlinit();
 	if (errors) {
-		lib::logger::get_logger()->error("LTDL plugin loader: Cannot initialize: %d error(s)", errors);
+		lib::logger::get_logger()->trace("LTDL plugin loader: Cannot initialize: %d error(s)", errors);
+		lib::logger::get_logger()->warn(gettext("Plugin loader encountered problem: plugins disabled"));
 	    return;
 	}
 #endif
@@ -217,13 +218,14 @@ plugin_engine::load_plugins(std::string dirname)
                     AM_DBG lib::logger::get_logger()->debug("Registering  plugin's factory");
                     initfuncptr init = (initfuncptr) lt_dlsym(handle,"initialize");
                     if (!init) {
-                        lib::logger::get_logger()->error("plugin_engine: no initialize routine");
+                        lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
+                        lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pluginname);
                     } else {
                         m_initfuncs.push_back(init);
                     }
                 } else {
-                    lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
-                    lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
+                    lib::logger::get_logger()->trace("plugin_engine: lt_dlopen(%s) failed: %s",filename, lt_dlerror());
+					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pluginname);
                 }
             }
             free(namelist[nr_of_files]);
@@ -250,7 +252,7 @@ plugin_engine::load_plugins(std::string dirname)
 	WIN32_FIND_DATA dirData;
 	HANDLE *dirHandle = FindFirstFile(filepattern, *dirData);
     if (dirHandle == NULL) {
-        lib::logger::get_logger()->error("Error reading plugin directory: %s", filepattern);
+        lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s"), filepattern);
         return;
     } else {
 		do {
@@ -268,13 +270,13 @@ plugin_engine::load_plugins(std::string dirname)
                 AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
                 initfuncptr init = (initfuncptr) GetProcAddress(handle,"initialize");
                 if (!init) {
-                    lib::logger::get_logger()->error("plugin_engine: no initialize routine");
+                    lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
+					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), dirData.cFileName);
                 } else {
                     m_initfuncs.push_back(init);
                 }
             } else {
-                lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
-                lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
+				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), dirData.cFileName);
             }
 
 		} while(FindNextFile(dirHandle, &dirData);

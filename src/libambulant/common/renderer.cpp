@@ -286,15 +286,15 @@ active_video_renderer::active_video_renderer(
 	
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!
 	net::url url = node->get_url("src");
 	m_src = factory->df->new_video_datasource(url);
 	if (m_src == NULL) {
-		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
+		lib::logger::get_logger()->warn(gettext("Cannot open video: %s"), url.get_url().c_str());
 	}
 
-	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 	m_lock.leave();
 }
 

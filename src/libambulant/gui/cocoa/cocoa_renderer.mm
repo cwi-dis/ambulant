@@ -142,7 +142,7 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 			[surf lockFocus];
 			AM_DBG logger::get_logger()->debug("cocoa_renderer.redraw: drawing to transition surface");
 		} else {
-			lib::logger::get_logger()->error("cocoa_renderer.redraw: cannot lockFocus for transition");
+			lib::logger::get_logger()->trace("cocoa_renderer.redraw: cannot lockFocus for transition");
 			surf = NULL;
 		}
 	}

@@ -227,7 +227,8 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("Internal error: ffmpeg_raw_datasource::start(): no client callback!");
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_raw_datasource::start(): no client callback!");
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered"));
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we

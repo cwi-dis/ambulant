@@ -94,8 +94,9 @@ void animate_attrs::locate_target_element() {
 	if(p) {
 		m_target = m_node->get_context()->get_node(p);
 		if(!m_target) {
-			m_logger->error("%s[%s] failed to locate node with id --> %s", 
-				m_tag.c_str(), m_id.c_str(), p); 
+			m_logger->trace("<%s id=\"%s\" targetElement=\"%s\">: target not found", 
+				m_tag.c_str(), m_id.c_str(), p);
+			m_logger->warn(gettext("Error in SMIL animation"));
 			return;
 		}
 	} else {
@@ -107,8 +108,9 @@ void animate_attrs::locate_target_element() {
 		else if(ttag == "area") m_target_type = "area";
 		else m_target_type = "subregion";
 	} else {
-		m_logger->error("%s[%s] failed to locate target node", 
+		m_logger->trace("<%s id=\"%s\">: failed to locate target node", 
 			m_tag.c_str(), m_id.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
 	}
 }
 
@@ -122,8 +124,9 @@ void animate_attrs::locate_target_attr() {
 	}
 	const char *p = m_node->get_attribute("attributeName");
 	if(!p) {
-		m_logger->error("%s[%s] attributeName is missing", 
+		m_logger->trace("<%s id=\"%s\">: attributeName is missing", 
 			m_tag.c_str(), m_id.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
 		return;
 	}
 	m_attrname = p;
@@ -148,8 +151,9 @@ void animate_attrs::locate_target_attr() {
 	} else if(m_attrname == "color") {
 		m_attrtype = "color";
 	} else {
-		m_logger->error("%s[%s] seen not animateable attribute --> %s", 
+		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
 			m_tag.c_str(), m_id.c_str(), m_attrname.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
 	}
 }
 
@@ -179,8 +183,9 @@ const char* animate_attrs::find_anim_type() {
 		if(pto) return "to";
 		else if(pby) return "by";
 	}
-	m_logger->error("%s[%s] the animation values are invalid", 
+	m_logger->error("<%s id=\"%s\">: the animation values are invalid", 
 		m_tag.c_str(), m_id.c_str());
+			m_logger->warn(gettext("Error in SMIL animation"));
 	return "invalid";
 }
 
@@ -235,8 +240,9 @@ void animate_attrs::get_key_times(std::vector<double>& v) {
 		if(parser.matches(*it))
 			v.push_back(parser.get_result());
 		else {
-			m_logger->error("%s[%s] invalid attr keyTimes --> %s", 
+			m_logger->error("<%s id=\"%s\" keyTimes=\"%s\">: invalid keyTime", 
 				m_tag.c_str(), m_id.c_str(), p);
+			m_logger->warn(gettext("Error in SMIL animation"));
 		}
 	}
 }
@@ -251,8 +257,9 @@ void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
 		std::list<std::string> sc;
 		lib::split_trim_list(*it, sc, ' ');
 		if(sc.size() != 4) {
-			m_logger->error("%s[%s] invalid attr keySplines --> %s", 
-				m_tag.c_str(), m_id.c_str(), p); 
+			m_logger->error("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines", 
+				m_tag.c_str(), m_id.c_str(), p);
+			m_logger->warn(gettext("Error in SMIL animation"));
 		}
 		qtuple qt;
 		double *p = qt.v;
@@ -261,8 +268,9 @@ void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
 			if(parser.matches(*it))
 				*p++ = parser.get_result();
 			else {
-				m_logger->error("%s[%s] invalid attr keySplines --> %s", 
+				m_logger->error("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines", 
 					m_tag.c_str(), m_id.c_str(), p);
+				m_logger->warn(gettext("Error in SMIL animation"));
 				succeeded = false;
 				break;
 			}
@@ -380,8 +388,9 @@ common::region_dim animate_attrs::to_region_dim(const std::string& s) {
 	std::string::const_iterator e = s.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->error("%s[%s] invalid region dim --> %s", 
+		m_logger->trace("<%s id=\"%s\">: invalid region dim \"%s\"", 
 			m_tag.c_str(), m_id.c_str(), s.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
 		return common::region_dim();
 	}
 	if(parser.is_relative())
@@ -462,8 +471,9 @@ lib::point animate_attrs::to_point(const std::string& s) {
 	std::string::const_iterator e = s.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->error("%s[%s] invalid point --> %s", 
+		m_logger->error("<%s id=\"%s\">: invalid point \"%s\"", 
 			m_tag.c_str(), m_id.c_str(), s.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
 		return lib::point();
 	}
 	return lib::point(parser.get_x(), parser.get_y());

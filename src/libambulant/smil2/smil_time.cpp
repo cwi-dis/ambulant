@@ -67,7 +67,7 @@ using namespace smil2;
 q_smil_time::time_type q_smil_time::to_ancestor(const time_node *a) {
 	while(first != a && first->up()) up();
 	if(first != a) 
-		logger::get_logger()->error("q_smil_time::convert_to_ancestor(%s) failed", 
+		logger::get_logger()->trace("q_smil_time::convert_to_ancestor(%s) failed", 
 			a->to_string().c_str());
 	return second;
 }
@@ -80,7 +80,7 @@ q_smil_time::time_type q_smil_time::to_descendent(const time_node *d) {
 	std::list<const time_node*>::iterator it = 
 		std::find(path.begin(), path.end(), a);
 	if(it == path.end()) {
-		logger::get_logger()->error("q_smil_time::convert_to_descendent(%s) failed", 
+		logger::get_logger()->trace("q_smil_time::convert_to_descendent(%s) failed", 
 			d->to_string().c_str());
 		return second;
 	}

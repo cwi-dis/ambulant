@@ -144,8 +144,9 @@ void time_attrs::parse_dur() {
 	std::string::const_iterator e = sdur.end();
 	std::ptrdiff_t d = pl.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("invalid dur attr [%s] for %s[%s]", 
-			sdur.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->trace("<%s id=\"%s\" dur=\"%s\">: invalid dur attr", 
+			m_tag.c_str(), m_id.c_str(), sdur.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_dur.type = dt_definite;
@@ -169,8 +170,9 @@ void time_attrs::parse_rcount() {
 	std::string::const_iterator e = rcount_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("invalid repeatCount attr [%s] for %s[%s]", 
-			rcount_str.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->trace("<%s id=\"%s\" repeatCount=\"%s\">: invalid repeatCount attr", 
+			m_tag.c_str(), m_id.c_str(), rcount_str.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_rcount = parser.m_result;
@@ -193,8 +195,9 @@ void time_attrs::parse_rdur() {
 	std::string::const_iterator e = rdur_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("invalid repeatDur attr [%s] for %s[%s]", 
-			rdur_str.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->trace("<%s id=\"%s\" repeatDur=\"%s\">: invalid repeatDur attr", 
+			m_tag.c_str(), m_id.c_str(), rdur_str.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_rdur = parser.m_result;
@@ -218,8 +221,9 @@ void time_attrs::parse_min() {
 	std::string::const_iterator e = min_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("invalid min attr [%s] for %s[%s]", 
-			min_str.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->trace("<%s id=\"%s\" min=\"%s\">: invalid min attr", 
+			m_tag.c_str(), m_id.c_str(), min_str.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_min.value = parser.m_result;
@@ -246,8 +250,9 @@ void time_attrs::parse_max() {
 	std::string::const_iterator e = max_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("invalid max attr [%s] for %s[%s]", 
-			max_str.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->trace("<%s id=\"%s\" max=\"%s\">: invalid max attr", 
+			m_tag.c_str(), m_id.c_str(), max_str.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_max.value = parser.m_result;
@@ -301,8 +306,9 @@ void time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs
 	svs.type = sv_offset;
 	offset_value_p parser;
 	if(!parser.matches(s)) {
-		m_logger->warn("%s[%s].%s invalid offset [%s]", 
+		m_logger->trace("<%s id=\"%s\">.%s invalid offset [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;	
 	}
 	svs.offset = parser.m_result;
@@ -313,7 +319,7 @@ void time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs
 
 void time_attrs::parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl) {
 	svs.type = sv_wallclock;
-	m_logger->warn("ignoring wallclock");
+	m_logger->warn(gettext("Ignoring wallclock in document"));
 	//sl.push_back(svs);	
 }
 
@@ -322,16 +328,18 @@ void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, s
 	svs.type = sv_accesskey;
 	size_type open_par_ix = s.find('(');
 	if(open_par_ix == std::string::npos) {
-		m_logger->warn("invalid accesskey spec [%s] for %s[%s]", 
+		m_logger->trace("Invalid accesskey spec [%s] for <%s id=\"%s\">", 
 			s.c_str(), m_tag.c_str(), m_id.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
 		return;
 	}
 	svs.iparam = int(s[open_par_ix+1]);
 	
 	size_type close_par_ix = s.find(')', open_par_ix);
 	if(close_par_ix == std::string::npos) {
-		m_logger->warn("%s[%s].%s invalid accesskey spec [%s]", 
+		m_logger->trace("%s[%s].%s invalid accesskey spec [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
 		return;
 	}
 	std::string rest = trim(s.substr(close_par_ix+1));
@@ -344,8 +352,9 @@ void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, s
 	
 	offset_value_p parser;
 	if(!parser.matches(s)) {
-		m_logger->warn("%s[%s].%s invalid accesskey offset [%s]", 
+		m_logger->trace("%s[%s].%s invalid accesskey offset [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
 		return;	
 	}
 	svs.offset = parser.m_result;
@@ -377,8 +386,9 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 	b = s1.begin(); e = s1.end();
 	d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->warn("%s[%s].%s invalid attr [%s]", 
+		m_logger->trace("%s[%s].%s invalid attr [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	std::string nmtoken = parser.m_result;
@@ -426,8 +436,9 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 			succeeded = true;
 		}
 		if(!succeeded) {
-			m_logger->warn("%s[%s].%s invalid marker [%s]", 
+			m_logger->trace("%s[%s].%s invalid marker [%s]", 
 				m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+			m_logger->warn(gettext("Error in SMIL timing info in document"));
 			return;
 		}	
 	} else if(ends_with(nmtoken, ".repeat")) {
@@ -447,8 +458,9 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 			}
 		}
 		if(!succeeded) {
-			m_logger->warn("%s[%s].%s invalid repeat [%s]", 
+			m_logger->trace("%s[%s].%s invalid repeat [%s]", 
 				m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+			m_logger->warn(gettext("Error in SMIL timing info in document"));
 			return;
 		}	
 	} else {
@@ -459,8 +471,9 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 	}
 	
 	if(events.find(event) == events.end()) {
-		m_logger->warn("%s[%s].%s invalid event [%s]", 
+		m_logger->trace("%s[%s].%s invalid event [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
 	} else {
 		svs.event = event;
 		AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
@@ -488,8 +501,9 @@ void time_attrs::parse_endsync() {
 		m_endsync.rule = esr_id;
 		xml_nmtoken_p parser;
 		if(!parser.matches(endsync_str)) {
-			m_logger->warn("invalid endsync attr [%s] for %s[%s]", 
+			m_logger->trace("invalid endsync attr [%s] for %s[%s]", 
 				endsync_str.c_str(), m_tag.c_str(), m_id.c_str());
+			m_logger->warn(gettext("Error in SMIL timing info in document"));
 		} else {
 			m_endsync.ident = endsync_str;
 		}
@@ -606,13 +620,15 @@ void time_attrs::parse_transitions() {
 	if(p) {
 		m_trans_in = nctx->get_node(p);
 		if(!m_trans_in) {
-			m_logger->warn("%s[%s] failed to locate transIn element: [%s]", 
+			m_logger->trace("%s[%s] failed to locate transIn element: [%s]", 
 				m_tag.c_str(), m_id.c_str(), p);		
+			m_logger->warn(gettext("Error in SMIL transition info in document"));
 		} else {
 			if(get_trans_in_dur()() == 0) {
-				m_logger->warn("%s[%s] the specified transIn element has invalid dur", 
+				m_logger->trace("%s[%s] the specified transIn element has invalid dur", 
 					m_tag.c_str(), m_id.c_str());
 				m_trans_in	= 0;	
+				m_logger->warn(gettext("Error in SMIL transition info in document"));
 			}
 		}
 	}
@@ -621,12 +637,14 @@ void time_attrs::parse_transitions() {
 	if(p) {
 		m_trans_out = nctx->get_node(p);
 		if(!m_trans_out) {
-			m_logger->warn("%s[%s] failed to locate transOut element: [%s]", 
+			m_logger->trace("%s[%s] failed to locate transOut element: [%s]", 
 				m_tag.c_str(), m_id.c_str(), p);		
+			m_logger->warn(gettext("Error in SMIL transition info in document"));
 		} else {
 			if(get_trans_out_dur()() == 0) {
-				m_logger->warn("%s[%s] the specified transOut element has invalid dur", 
+				m_logger->trace("%s[%s] the specified transOut element has invalid dur", 
 					m_tag.c_str(), m_id.c_str());
+				m_logger->warn(gettext("Error in SMIL transition info in document"));
 				m_trans_out	= 0;	
 			}
 		}

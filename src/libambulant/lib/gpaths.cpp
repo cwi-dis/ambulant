@@ -104,7 +104,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 			size_t nc = parser.size()/numbers_expected;
 			size_t nr = parser.size()%numbers_expected;
 			if(!matches || nr != 0 || nc == 0) {
-				lib::logger::get_logger()->warn("Illegal path segment %c %s", cmd, args.c_str());
+				lib::logger::get_logger()->trace("Illegal path segment %c %s", cmd, args.c_str());
 				for(size_t i=0;i<numbers_expected;i++)
 					m_args.push_back(0);
 				m_errors++;
@@ -129,7 +129,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 		} else {
 			// The cmd does not require any arguments
 			if(!args.empty()) {
-				lib::logger::get_logger()->warn("Illegal path segment %c %s", cmd, args.c_str());
+				lib::logger::get_logger()->trace("Illegal path segment %c %s", cmd, args.c_str());
 				m_errors++;
 			}
 		}
@@ -180,7 +180,7 @@ lib::gpath *lib::gpath_builder::build_path(const lib::gpath_descr* pd) {
 			path_seg_handler_t handler = path_seg_hanlders[ix/2];
 			if(handler) (this->*handler)((ix%2==0), curr_arg_it);
 		} else {
-			plogger->error("Failed to find command '%c'", *curr_cmd_it);
+			plogger->trace("gpath_builder: Failed to find command '%c'", *curr_cmd_it);
 		}
 		curr_cmd_it++;
 		size_t nargs = lib::gpath_seg_cmds_size[ix];

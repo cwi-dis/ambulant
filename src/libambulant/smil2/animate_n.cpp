@@ -174,7 +174,7 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 	for(size_t i=1;i<keyTimes.size() && keyTimesValid ;i++) 	
 		keyTimesValid = (keyTimes[i]>keyTimes[i-1]);
 	if(!keyTimesValid)
-		m_logger->warn("%s[%s] invalid key times", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+		m_logger->trace("<%s id=\"%s\">: invalid key times", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
 	AM_DBG {
 		if(!keyTimes.empty() && keyTimesValid) {
 			std::string str;

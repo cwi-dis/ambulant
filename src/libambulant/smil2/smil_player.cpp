@@ -126,7 +126,7 @@ smil_player::~smil_player() {
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
 		int rem = (*it).second->release();
-		if (rem) m_logger->warn("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
+		if (rem) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
 	}
 		
 	delete m_event_processor;
@@ -247,7 +247,7 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::node *
 		common::renderer *rend = np->get_renderer();
 		if (!rend) {
 			const char *pid = n->get_attribute("id");
-			m_logger->warn("smil_player::start_playable: node %s has transition but is not visual", pid?pid:"no-id");
+			m_logger->trace("smil_player::start_playable: node %s has transition but is not visual", pid?pid:"no-id");
 		} else {
 			lib::transition_info *transinfo = lib::transition_info::from_node(trans);
 			rend->set_intransition(transinfo);
@@ -271,18 +271,18 @@ void smil_player::start_transition(const lib::node *n, const lib::node *trans, b
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(!np) {
 		const char *pid = n->get_attribute("id");
-		m_logger->warn("smil_player::start_transition: node %s has no playable", pid?pid:"no-id");
+		m_logger->debug("smil_player::start_transition: node %s has no playable", pid?pid:"no-id");
 		return;
 	}
 	common::renderer *rend = np->get_renderer();
 	if (!rend) {
 		const char *pid = n->get_attribute("id");
-		m_logger->warn("smil_player::start_transition: node %s has transition but is not visual", pid?pid:"no-id");
+		m_logger->trace("smil_player::start_transition: node %s has transition but is not visual", pid?pid:"no-id");
 	} else {
 		lib::transition_info *transinfo = lib::transition_info::from_node(trans);
 		if (in) {
 			// XXX Jack thinks there's no reason for this...
-			m_logger->warn("smil_player::start_transition: called for in-transition");
+			m_logger->debug("smil_player::start_transition: called for in-transition");
 			rend->set_intransition(transinfo);
 		} else {
 			rend->start_outtransition(transinfo);

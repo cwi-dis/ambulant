@@ -427,7 +427,7 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 		rv = new cocoa_transition_engine_fade();
 		break;
 	default:
-		lib::logger::get_logger()->warn("cocoa_transition_engine: transition type %s not yet implemented",
+		lib::logger::get_logger()->trace("cocoa_transition_engine: transition type %s not yet implemented",
 			repr(info->m_type).c_str());
 		rv = NULL;
 	}

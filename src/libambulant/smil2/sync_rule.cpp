@@ -165,8 +165,9 @@ void model_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
-		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
+		logger::get_logger()->debug("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
 			instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
 		return;	
 	}
@@ -174,9 +175,11 @@ void model_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), ref_instance);
 	if(it != m_instances.end())
 		m_instances.erase(it);
-	else 
+	else {
 		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)", 
-			instance(), to_string().c_str());	
+			instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
+	}
 	m_target->sync_update(timestamp);
 	unlock();
 }
@@ -187,6 +190,7 @@ void model_rule::update_instance(qtime_type timestamp, time_type instance, time_
 	if(m_instances.empty()) {
 		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)", 
 			instance(), old_instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
 		return;	
 	}
@@ -194,9 +198,11 @@ void model_rule::update_instance(qtime_type timestamp, time_type instance, time_
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), old_ref_instance);
 	if(it != m_instances.end())
 		(*it) = to_ref(instance);
-	else 
+	else {
 		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)", 
-			instance(), old_instance(), to_string().c_str());	
+			instance(), old_instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
+	}
 	m_target->sync_update(timestamp);
 	unlock();
 }
@@ -264,6 +270,7 @@ void transout_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	if(m_instances.empty()) {
 		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
 			instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
 		return;	
 	}
@@ -271,9 +278,11 @@ void transout_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), ref_instance);
 	if(it != m_instances.end())
 		m_instances.erase(it);
-	else 
+	else {
 		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)", 
-			instance(), to_string().c_str());	
+			instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
+	}
 	unlock();
 }
 
@@ -283,6 +292,7 @@ void transout_rule::update_instance(qtime_type timestamp, time_type instance, ti
 	if(m_instances.empty()) {
 		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)", 
 			instance(), old_instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
 		return;	
 	}
@@ -290,9 +300,11 @@ void transout_rule::update_instance(qtime_type timestamp, time_type instance, ti
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), old_ref_instance);
 	if(it != m_instances.end())
 		(*it) = to_ref(instance);
-	else 
+	else {
 		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)", 
-			instance(), old_instance(), to_string().c_str());	
+			instance(), old_instance(), to_string().c_str());
+		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
+	}
 	unlock();
 }
 

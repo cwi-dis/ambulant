@@ -155,7 +155,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
 	if (!color_attr) {
-		lib::logger::get_logger()->warn("<brush> element without color attribute");
+		lib::logger::get_logger()->trace("<brush> element without color attribute");
 		if (surf) {
 			AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to view");
 			[surf unlockFocus];

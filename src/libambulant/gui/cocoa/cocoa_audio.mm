@@ -103,7 +103,7 @@ cocoa_audio_playable::start(double where)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.get_url().c_str(), where);
 	if (where != 0.0)
-		lib::logger::get_logger()->warn("cocoa_audio_playable: ignoring start time %f, starting at 0", where);
+		lib::logger::get_logger()->warn(gettext("Audio item: ignoring start time %f, starting at 0"), where);
 	if (m_sound)
 		if (![m_sound play]) {
 			lib::logger::get_logger()->error("Cannot start audio playback");

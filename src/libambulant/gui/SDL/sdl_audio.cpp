@@ -331,7 +331,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 		if (m_context) {
 			m_context->stopped(m_cookie, 0);
 		} else {
-			AM_DBG lib::logger::get_logger()->warn("sdl_active_audio_renderer(0x%x): m_context is  NULL", (void*)this);
+			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer(0x%x): m_context is  NULL", (void*)this);
 		}
 		return;
 	}
@@ -360,7 +360,7 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 	m_lock.enter();
 	//assert(m_audio_src);
 	if (!m_audio_src) {				
-		AM_DBG lib::logger::get_logger()->warn("sdl_active_audio_renderer::data_avail:m_audio_src does not exist");
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail:m_audio_src does not exist");
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail: %d bytes available", m_audio_src->size());

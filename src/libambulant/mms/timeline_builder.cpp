@@ -108,7 +108,7 @@ get_node_type(const lib::node& n)
 	lib::q_name_pair qname = n.get_qname();
 	
 	if (qname.first != "") {
-		lib::logger::get_logger()->warn("MMS player: ignoring XML namespace");
+		lib::logger::get_logger()->warn(gettext("MMS player: ignoring XML namespace"));
 	}
 	if (qname.second == "par")
 		return PAR;

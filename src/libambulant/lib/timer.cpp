@@ -181,14 +181,14 @@ lib::timer::add_listener(lib::timer_events *listener)
 	typedef std::set<lib::timer_events*>::iterator iterator;
 	std::pair<iterator, bool> rv = m_listeners->insert(listener);
 	if(!rv.second)
-		lib::logger::get_logger()->warn("abstract_timer_client::add_listener: listener already added");
+		lib::logger::get_logger()->debug("abstract_timer_client::add_listener: listener already added");
 }
 
 void 
 lib::timer::remove_listener(lib::timer_events *listener)
 {
 	if(!m_listeners || !m_listeners->erase(listener))
-		lib::logger::get_logger()->warn("abstract_timer_client::remove_listener: listener not present");
+		lib::logger::get_logger()->debug("abstract_timer_client::remove_listener: listener not present");
 }
 
 void

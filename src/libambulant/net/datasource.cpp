@@ -227,7 +227,7 @@ datasource_factory::new_raw_datasource(const net::url &url)
 		AM_DBG lib::logger::get_logger()->debug("new_raw_datasource: returning mem_datasource");
 		return new mem_datasource(url);
 	}
-	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for \"%s\"\n", repr(url).c_str());
+	lib::logger::get_logger()->warn(gettext("%s: Cannot open, not supported by any datasource"), repr(url).c_str());
     return NULL;
 }
 
@@ -256,7 +256,7 @@ datasource_factory::new_audio_datasource(const net::url &url, audio_format_choic
 	if (src == NULL) {
 		int rem = rawsrc->release();
 		assert(rem == 0);
-		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", repr(url).c_str());
+		lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible parser"), repr(url).c_str());
 		return NULL;
 	}
 	// Check whether the format happens to match already.
@@ -275,7 +275,7 @@ datasource_factory::new_audio_datasource(const net::url &url, audio_format_choic
 	// Failed to find a filter. Clean up.
 	int rem = src->release(); // This will also release rawsrc
 	assert(rem == 0);
-	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", repr(url).c_str());
+	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
     return NULL;
 }
 
@@ -300,7 +300,7 @@ datasource_factory::new_filter_datasource(const net::url& url, audio_format_choi
 	}
 	
 	// Failed to find a filter. Clean up.
-	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", repr(url).c_str());
+	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
     return NULL;
 }
 
@@ -315,7 +315,7 @@ datasource_factory::new_video_datasource(const net::url &url)
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
-	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", repr(url).c_str());
+	lib::logger::get_logger()->warn(gettext("%s: Cannot open, not supported by any video datasource"), repr(url).c_str());
     return NULL;
 }
 

@@ -90,7 +90,8 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 	NSSize nssize = NSMakeSize(m_size.w, m_size.h);
 	m_image = [[NSImage alloc] initWithSize: nssize];
 	if (!m_image) {
-		logger::get_logger()->error("cocoa_dsvideo_renderer::show_frame: cannot allocate NSImage");
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::show_frame: cannot allocate NSImage");
+		logger::get_logger()->error(gettext("Out of memory while showing video"));
 		m_lock.leave();
 		return;
 	}
@@ -106,7 +107,8 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 		bytesPerRow: m_size.w * 4
 		bitsPerPixel: 32];
 	if (!bitmaprep) {
-		logger::get_logger()->error("cocoa_dsvideo_renderer::show_frame: cannot allocate NSBitmapImageRep");
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::show_frame: cannot allocate NSBitmapImageRep");
+		logger::get_logger()->error(gettext("Out of memory while showing video"));
 		m_lock.leave();
 		return;
 	}
@@ -136,7 +138,7 @@ cocoa_dsvideo_renderer::redraw(const screen_rect<int> &dirty, gui_window *window
 			[surf lockFocus];
 			AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw: drawing to transition surface");
 		} else {
-			lib::logger::get_logger()->error("cocoa_dsvideo_renderer.redraw: cannot lockFocus for transition");
+			lib::logger::get_logger()->trace("cocoa_dsvideo_renderer.redraw: cannot lockFocus for transition");
 			surf = NULL;
 		}
 	}

@@ -202,7 +202,8 @@ stdio_datasource::read_file()
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
-			lib::logger::get_logger()->error("stdio_datasource.read_file(): %s", strerror(errno));
+			lib::logger::get_logger()->trace("%s: %s", m_url.c_str(), strerror(errno));
+			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.c_str());
 		} 		
 	}
 }

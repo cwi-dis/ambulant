@@ -95,7 +95,8 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 			fvalue = ivalue / 100.0;
 			rd = fvalue;
 		} else {
-			lib::logger::get_logger()->error("%s: cannot parse %s=\"%s\"", rn->get_sig().c_str(), attrname, attrvalue);
+			lib::logger::get_logger()->trace("%s: cannot parse %s=\"%s\"", rn->get_sig().c_str(), attrname, attrvalue);
+			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 		}
 	}
 	return rd;
@@ -174,8 +175,10 @@ region_node::fix_from_dom_node()
 	bool transparent = true, inherit = false;
 	if (strcmp(bgcolor_attr, "transparent") == 0) transparent = true;
 	else if (strcmp(bgcolor_attr, "inherit") == 0) inherit = true;
-	else if (!lib::is_color(bgcolor_attr)) lib::logger::get_logger()->error("%s: Invalid color: %s", m_node->get_sig().c_str(), bgcolor_attr);
-	else {
+	else if (!lib::is_color(bgcolor_attr)) {
+		lib::logger::get_logger()->trace("%s: Invalid color: %s", m_node->get_sig().c_str(), bgcolor_attr);
+		lib::logger::get_logger()->warn(gettext("Ignoring invalid color in document"));
+	} else {
 		bgcolor = lib::to_color(bgcolor_attr);
 		transparent = false;
 	}
@@ -191,7 +194,10 @@ region_node::fix_from_dom_node()
 	if (sbg_attr) {
 		if (strcmp(sbg_attr, "whenActive") == 0) sbg = false;
 		else if (strcmp(sbg_attr, "always") == 0) sbg = true;
-		else lib::logger::get_logger()->error("%s: Invalid showBackground value: %s", m_node->get_sig().c_str(), sbg_attr);
+		else {
+			lib::logger::get_logger()->error("%s: Invalid showBackground value: %s", m_node->get_sig().c_str(), sbg_attr);
+			lib::logger::get_logger()->warn(gettext("Ignoring invalid background in document"));
+		}
 	}
 	if (sbg != m_showbackground) {
 		changed = true;
@@ -207,7 +213,10 @@ region_node::fix_from_dom_node()
 		else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
 		else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
 		else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
-		else lib::logger::get_logger()->error("%s: Invalid fit value: %s", m_node->get_sig().c_str(), fit_attr);
+		else {
+			lib::logger::get_logger()->trace("%s: Invalid fit value: %s", m_node->get_sig().c_str(), fit_attr);
+			lib::logger::get_logger()->warn(gettext("Ignoring invalid fit value in document"));
+		}
 	}
 	if (fit != m_fit) {
 		changed = true;

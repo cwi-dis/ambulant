@@ -122,7 +122,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 	lib::node *doc_root = doc->get_root();
 	lib::node *head = doc_root->get_first_child("head");
 	if (!head) {
-		lib::logger::get_logger()->warn("smil_layout_manager: no <head> section");
+		lib::logger::get_logger()->trace("smil_layout_manager: no <head> section");
 		return NULL;
 	}
 	lib::node *layout_root = head->get_first_child("layout");
@@ -130,7 +130,8 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 		// Check that the type is supported
 		const char *layout_type = layout_root->get_attribute("type");
 		if (layout_type && strcmp(layout_type, "text/smil-basic-layout") != 0 ) {
-			lib::logger::get_logger()->error("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
+			lib::logger::get_logger()->trace("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
+			lib::logger::get_logger()->warn(gettext("No supported layout information in document"));
 			return NULL;
 		}
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: returning node 0x%x", layout_root);
@@ -145,13 +146,14 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining node 0x%x", layout_root);
 			// Check that it is indeed a <layout> node
 			if (m_schema->get_layout_type((layout_root)->get_qname()) != common::l_layout) {
-				lib::logger::get_logger()->error("smil_layout_manager: <switch> in <head> should contain only <layout>s");
+				lib::logger::get_logger()->trace("smil_layout_manager: <switch> in <head> should contain only <layout>s");
+				lib::logger::get_logger()->warn(gettext("Document layout section is invalid"));
 				continue;
 			}
 			// Check that the type is supported
 			const char *layout_type = layout_root->get_attribute("type");
 			if (layout_type && strcmp(layout_type, "text/smil-basic-layout") != 0 ) {
-				lib::logger::get_logger()->warn("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
+				lib::logger::get_logger()->trace("smil_layout_manager: <layout type=\"%s\"> not supported, skipping", layout_type);
 				continue;
 			}
 			test_attrs *tester = new test_attrs(layout_root);
@@ -165,7 +167,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			layout_root = layout_root->next();
 		}
 	}
-	lib::logger::get_logger()->warn("smil_layout_manager: no supported <layout> section");
+	lib::logger::get_logger()->warn(gettext("No supported layout information in document"));
 	return NULL;
 }
 
@@ -195,7 +197,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 					std::string id = pid;
 					m_id2regpoint[id] = n;
 				} else {
-					lib::logger::get_logger()->warn("smil_layout_manager: regPoint node without id attribute");
+					lib::logger::get_logger()->trace("smil_layout_manager: regPoint node without id attribute");
 				}
 				continue;
 			}
@@ -258,7 +260,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 	lib::node *doc_root = doc->get_root();
 	lib::node *body = doc_root->get_first_child("body");
 	if (!body) {
-		lib::logger::get_logger()->error("smil_layout_manager: no <body> section");
+		lib::logger::get_logger()->error(gettext("Document has no <body> section"));
 		return;
 	}
 	lib::node::const_iterator it;
@@ -326,7 +328,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			if (tag == common::l_none ) {
 				// XXXX Will need to handle switch here too
 				// Assume subregion positioning.
-				AM_DBG lib::logger::get_logger()->warn("smil_layout_manager: skipping <%s> in layout", n->get_qname().second.c_str());
+				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping <%s> in layout", n->get_qname().second.c_str());
 				continue;
 			}
 			if (tag == common::l_media) {
@@ -345,7 +347,8 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 				// Test that rootlayouts are correctly nested.
 				if (!stack.empty()) {
 					if (tag != common::l_region) {
-						lib::logger::get_logger()->error("%s: topLayout element inside other element", n->get_sig().c_str());
+						lib::logger::get_logger()->trace("%s: topLayout element inside other element", n->get_sig().c_str());
+						lib::logger::get_logger()->error(gettext("Layout error in document"));
 						tag = common::l_region;
 					}
 				}
@@ -432,7 +435,7 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 	std::map<std::string, region_node*>::size_type namecount = (rit == m_name2region.end())?0:(*rit).second.size();
 
 	if (namecount > 1)
-		lib::logger::get_logger()->warn("smil_layout_manager::get_surface(): Using first region %s only", prname);
+		lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): Using first region %s only", prname);
 	if (namecount > 0) {
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_surface(): matched %s by regionName", prname);
 		return (*m_name2region.find(rname)).second.front();
@@ -455,7 +458,8 @@ smil_layout_manager::get_surface(const lib::node *n) {
 	}
 	common::surface_template *stemp = rn->get_surface_template();
 	if (stemp == NULL) {
-		lib::logger::get_logger()->error("Internal error: get_surface: region found, but no surface, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
+		lib::logger::get_logger()->debug("Internal error: get_surface: region found, but no surface, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
+		lib::logger::get_logger()->error(gettext("Programmer error encountered, attempting to continue"));
 		return get_default_rendering_surface(n);
 	}
 	common::surface *surf = stemp->activate();
@@ -517,7 +521,8 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 			fvalue = ivalue / 100.0;
 			rd = fvalue;
 		} else {
-			lib::logger::get_logger()->error("%s: cannot parse %s=\"%s\"", rn->get_sig().c_str(), attrname, attrvalue);
+			lib::logger::get_logger()->trace("%s: cannot parse %s=\"%s\"", rn->get_sig().c_str(), attrname, attrvalue);
+			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 		}
 	}
 	return rd;
@@ -538,7 +543,8 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		// Non-standard regpoint. Look it up.
 		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
 		if (it == m_id2regpoint.end()) {
-			lib::logger::get_logger()->error("%s: unknown regPoint: %s", n->get_sig().c_str(), regPoint);
+			lib::logger::get_logger()->trace("%s: unknown regPoint: %s", n->get_sig().c_str(), regPoint);
+			lib::logger::get_logger()->warn(gettext("Syntax error in regPoint"));
 		} else {
 			regpoint_node = (*it).second;
 			// XXX Just for now:-)
@@ -554,8 +560,10 @@ smil_layout_manager::get_alignment(const lib::node *n)
 			if (decode_regpoint(image_fixpoint, regPointAlign))
 				found = true;
 		}
-		if (!found && regAlign != NULL)
-			lib::logger::get_logger()->error("%s: unknown regAlign value: %s", n->get_sig().c_str(), regAlign);
+		if (!found && regAlign != NULL) {
+			lib::logger::get_logger()->trace("%s: unknown regAlign value: %s", n->get_sig().c_str(), regAlign);
+			lib::logger::get_logger()->warn(gettext("Syntax error in regAlign"));
+		}
 	}
 	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
 }
@@ -563,7 +571,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 common::surface *
 smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	const char *nid = n->get_attribute("id");
-	lib::logger::get_logger()->warn("Returning default rendering surface for node %s", (nid?nid:""));
+	lib::logger::get_logger()->trace("Returning default rendering surface for node %s", (nid?nid:""));
 	return m_rootsurfaces[0]->activate();
 }
 

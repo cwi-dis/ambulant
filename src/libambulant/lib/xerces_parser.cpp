@@ -145,17 +145,17 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 		m_saxparser->parse(membuf);
 		succeeded = true;
 	} catch (const XMLException& e) {
-	  char *exceptionMessage = XMLString::transcode(e.getMessage());
-	  m_logger->error("During parsing: %s \n Exception message is: %s \n",
-			  m_id, exceptionMessage);
-	  XMLString::release(&exceptionMessage);
+		char *exceptionMessage = XMLString::transcode(e.getMessage());
+		m_logger->trace("Parsing %s: XMLException: %s", m_id, exceptionMessage);
+		m_logger->error(gettext("%s: Error parsing document"), m_id);
+		XMLString::release(&exceptionMessage);
 	} catch (const SAXParseException& e) {
-	  char *exceptionMessage = XMLString::transcode(e.getMessage());
-	  m_logger->error("During parsing: %s \n Exception message is: %s \n",
-			  m_id, exceptionMessage);
-	  XMLString::release(&exceptionMessage);
+		char *exceptionMessage = XMLString::transcode(e.getMessage());
+		m_logger->trace("Parsing %s: SAXParseException: %s", m_id, exceptionMessage);
+		m_logger->error(gettext("%s: Error parsing document"), m_id);
+		XMLString::release(&exceptionMessage);
 	} catch (...) {
-	  m_logger->error("Unexpected exception during parsing");
+		m_logger->error(gettext("%s: Unexpected exception during parsing"), m_id);
 	}
 	
 	return succeeded;
@@ -194,19 +194,16 @@ xerces_sax_parser::endElement(const XMLCh* const name) {
 
 void 
 xerces_sax_parser::warning(const SAXParseException& exception) {
-	m_logger->warn("*** Warning ");
 	throw exception;
 }
 
 void 
 xerces_sax_parser::error(const SAXParseException& exception) {
-        m_logger->error("*** Error ");
 	throw exception;
 }
 
 void
 xerces_sax_parser::fatalError(const SAXParseException& exception)  {
-	m_logger->error("***** Fatal error ");
 	throw exception;
 }
 	
