@@ -1,0 +1,38 @@
+How does the AmbulantPlayer play a SMIL document?
+=================================================
+
+This section attempts to explain the basic structure of the Ambulant Player by
+loosely explaining what happens when you run it and play a document.
+
+The main program is platform dependent and GUI-toolkit dependent. The details
+of this main program are skipped here (and they can actually vary quite a bit
+for the platforms we support), but at some point after the program has started
+the GUI is put on the screen, with the usual set of menus for Open, Play, etc.
+
+When the user selects Open (or Open URL, or double-clicks or drags a document)
+we need to get the data, parse the document into a DOM tree and create a
+player to play that DOM tree. In addition, we need to tell the player how
+it can obtain media data, create windows, and more.
+
+Most player implementations (the Windows player is an exception) have a
+class with a name like ``mainloop'' to handle this. Such a mainloop is created
+per SMIL document. This mainloop object will first create the various factories
+and populate them::
+
+- A window_factory is usually implemented by the main program itself. The
+player will call this when it needs a window. Usually the first request to
+create a window will actually return the document window (after resizing to
+the appropriate size).
+
+- A global_playable_factory is created. This is the object the player will
+use to create renderers for the various media types. The global factory
+is filled with the various renderers this ambulant player supports.
+
+- A datasource_factory is created and filled with the factory functions that
+will create datasources for audio, video or other, raw, data such as text.
+The factory functions that are added to the datasource_factory partially
+determine how data is retrieved over the net, which protocols and formats
+are supported and such. Partially, because some media items (audio and video,
+notably) may be rendered by simply passing the URL to some underlying media
+infrastructure such as DirectX or QuickTime.
+
