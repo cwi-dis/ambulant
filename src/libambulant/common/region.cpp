@@ -303,11 +303,11 @@ lib::passive_region::clear_cache()
 void
 lib::passive_region::mouse_region_changed()
 {
-//	// Check that we have a mouse region and a parent
-//	if (!m_mouse_region || !m_parent) {
-//		lib::logger::get_logger()->warn("mouse_region_changed: region %s is not a visual region", m_name.c_str());
-//		return;
-//	}
+    // Check that we have a mouse region and a parent
+    if (!m_mouse_region || !m_parent) {
+	      lib::logger::get_logger()->warn("mouse_region_changed: region %s is not a visual region", m_name.c_str());
+	      return;
+    }
     // Clear the mouse region
     m_mouse_region->clear();
     // Fill with the union of the regions of all our children

@@ -165,7 +165,7 @@ namespace qt_renderer {
 	    ("qt_window_factory::new_background_renderer(0x%x): TBD",
 	     (void*) this);
 //TBD	   return new qt_background_renderer();
-	   return NULL;
+	   return new none::none_background_renderer();
 	}
   private:
     QWidget* m_parent_widget;
