@@ -269,9 +269,11 @@ void qt_gui::slot_stop() {
 
 void qt_gui::slot_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
-	if (m_mainloop)	m_mainloop->stop();
-	m_mainloop->release();
-	m_mainloop = NULL;
+	if (m_mainloop)	{
+	  m_mainloop->stop();
+	  m_mainloop->release();
+	  m_mainloop = NULL;
+	}
 	m_busy = false;
 	qApp->quit();
 }
