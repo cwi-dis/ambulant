@@ -2193,7 +2193,7 @@ void time_node::follow_link(qtime_type timestamp) {
 		// An anchor with nohref="nohref" does nothing.
 		return;
 	}
-	const char *href = m_node->get_attribute("href");
+	net::url href = m_node->get_url("href");
 	const char *sourceplaystate = m_node->get_attribute("sourcePlaystate");
 	const char *destinationplaystate = m_node->get_attribute("destinationPlaystate");
 	const char *show = m_node->get_attribute("show");
@@ -2217,7 +2217,7 @@ void time_node::follow_link(qtime_type timestamp) {
 		destination_state = dst_pause;
 	}
 	
-	if (show && strcmp("show", "new") == 0) {
+	if (show && strcmp(show, "new") == 0) {
 		source_state = src_play;
 	} else if (show && strcmp(show, "pause") == 0) {
 		source_state = src_pause;
@@ -2228,18 +2228,7 @@ void time_node::follow_link(qtime_type timestamp) {
 	if (external && strcmp(external, "true") == 0) {
 		destination_state = dst_external;
 	}
-#if 0
-	// Is this the right thing to do??!?
-	if (!href.empty() && href[0] != '#') {
-		// Convert to absolute URL
-		net::url url(href);
-		url = url.join_to_base(xxxx);
-		href = url.get_url();
-	}
-#endif
 	
-	if(href) {
-		m_context->show_link(m_node, href, source_state, destination_state);
-	}
+	m_context->show_link(m_node, href, source_state, destination_state);
 }
 

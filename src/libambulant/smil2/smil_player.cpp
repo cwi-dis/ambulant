@@ -468,24 +468,32 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	if (rem) m_logger->warn("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
-void smil_player::show_link(const lib::node *n, const std::string& href, src_playstate srcstate, dst_playstate dststate) {
-	if(srcstate == src_replace && !href.empty() && href[0] == '#') {
+void smil_player::show_link(const lib::node *n, const net::url& href, src_playstate srcstate, dst_playstate dststate) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
+		href.get_url().c_str(), (int)srcstate, (int)dststate);
+	net::url our_url(m_doc->get_src_url()); 
+	if(srcstate == src_replace && href.same_document(our_url)) {
 		// This is an internal hyperjump
-		const lib::node *target = m_doc->get_node(href.c_str()+1);
+		std::string anchor = href.get_ref();
+		const lib::node *target = m_doc->get_node(anchor);
 		if(target) {
 			std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
 			if(it != m_dom2tn->end()) {
 				m_scheduler->start((*it).second);
 			}
+		} else {
+			m_logger->error("Link destination not found: %s", href.get_url().c_str());
 		}
 		return;
 	}
 	
 	if (srcstate == src_pause) {
+		/*AM_DBG*/ lib::logger::get_logger()->trace("show_link: pausing source document");
 		pause();
 	}
 	if (srcstate == src_replace) {
 		// XXX Not good enough: should close document too.
+		/*AM_DBG*/ lib::logger::get_logger()->trace("show_link: stopping source document");
 		stop();
 	}
 	if ( dststate == dst_play || dststate == dst_pause ) {
@@ -494,7 +502,7 @@ void smil_player::show_link(const lib::node *n, const std::string& href, src_pla
 	if(m_system) {
 		m_system->show_file(href);
 	} else {
-		lib::logger::get_logger()->error("This implementation cannot open <%s> in a browser", href.c_str());
+		lib::logger::get_logger()->error("This implementation cannot open <%s> in a browser", href.get_url().c_str());
 	}
 }
 

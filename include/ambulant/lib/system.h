@@ -54,6 +54,7 @@
 #define AMBULANT_LIB_SYSTEM_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/net/url.h"
 #include <string>
 
 namespace ambulant {
@@ -63,7 +64,7 @@ namespace lib {
 class system {
   public:
 	virtual ~system() {}
-	virtual void show_file(const std::string& href) = 0;
+	virtual void show_file(const net::url& href) = 0;
 };
 
 

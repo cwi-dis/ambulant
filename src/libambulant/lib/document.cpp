@@ -110,8 +110,8 @@ lib::document::create_from_file(const std::string& filename) {
 	d->set_root(builder.detach());
 	d->set_src_url(ambulant::net::url(filename));
 	
-	std::string base = filesys::get_base(filename, file_separator.c_str());
-	d->set_src_base(ambulant::net::url(base));
+//	std::string base = filesys::get_base(filename, file_separator.c_str());
+//	d->set_src_base(ambulant::net::url(base));
 	
 	return d;
 }
@@ -150,25 +150,9 @@ lib::document::resolve_url(const node *n, const net::url& rurl) const {
 		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", repr(rurl).c_str());
 		return rurl;
 	}
-#if 0
-	if(m_src_base.get_protocol() == "file") {
-		std::string base_path = m_src_base.get_path();
-		
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		// convert slash to backslash
-		std::list<std::string> c;
-		filesys::split(rurl, c, "/");
-		std::string nrurl = filesys::join(c, "\\");
-		return filesys::join(base_path, nrurl, file_separator.c_str());
-#else		
-		return filesys::join(base_path, rurl, file_separator.c_str());
-#endif
-	}
-		
-	return filesys::join(m_src_base.get_path(), rurl);
-#else
-	return rurl.join_to_base(m_src_base);
-#endif
+	net::url rv(rurl.join_to_base(m_src_url));
+	AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): %s\n", repr(rurl).c_str(), repr(rv).c_str());
+	return rv;
 }
 
 void lib::document::set_root(node* n) {

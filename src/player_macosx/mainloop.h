@@ -75,7 +75,7 @@ class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted
 	int get_cursor() const {return m_player?m_player->get_cursor():0; };
 	void set_cursor(int cursor) { if (m_player) m_player->set_cursor(cursor); }
 	
-	void show_file(const std::string& href);
+	void show_file(const ambulant::net::url& href);
 	
 	static void set_preferences(std::string &path);
   private:

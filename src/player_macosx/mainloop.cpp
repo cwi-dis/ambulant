@@ -234,13 +234,13 @@ mainloop::set_preferences(std::string &url)
 }
 
 void
-mainloop::show_file(const std::string& href)
+mainloop::show_file(const ambulant::net::url& href)
 {
-	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.c_str(), kCFStringEncodingUTF8);
+	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.get_url().c_str(), kCFStringEncodingUTF8);
 	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
 	OSErr status;
 	
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open URL <%s>: LSOpenCFURLRef error %d", href.c_str(), status);
+		ambulant::lib::logger::get_logger()->error("Cannot open URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str(), status);
 	}
 }

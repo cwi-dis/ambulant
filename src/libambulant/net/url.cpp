@@ -85,8 +85,14 @@ void net::url::init_statics() {
 	static handler_pair h1 = {"n://n:n/", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1);
  	
+	static handler_pair h1a = {"n://n:n", &url::set_from_host_port_uri};
+ 	s_handlers.push_back(&h1a);
+ 	
 	static handler_pair h2 = {"n://n/", &url::set_from_host_uri};
  	s_handlers.push_back(&h2);
+ 	
+	static handler_pair h2a = {"n://n", &url::set_from_host_uri};
+ 	s_handlers.push_back(&h2a);
  	
 	static handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h3);
@@ -122,6 +128,59 @@ void net::url::init_statics() {
   	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
   	*/
  }
+ 
+net::url::url() 
+:	m_absolute(true),
+	m_port(0)
+{
+}
+ 
+net::url::url(const string& spec) 
+:	m_port(0)
+{
+	set_from_spec(spec);
+}
+	 
+net::url::url(const string& protocol, const string& host, 
+	const string& path) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(0),
+	m_path(path)
+{
+	m_absolute = (m_protocol != "");
+}
+
+net::url::url(const string& protocol, const string& host, int port, 
+	const string& path) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(short_type(port)),
+	m_path(path)
+{
+	m_absolute = (m_protocol != "");
+}
+
+net::url::url(const string& protocol, const string& host, int port, 
+	const string& path, const string& query, const string& ref) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(short_type(port)),
+	m_path(path), 
+	m_query(query), 
+	m_ref(ref)
+{
+	m_absolute = (m_protocol != "");
+}
+ 
+net::url::string net::url::get_file() const {
+	std::string file = get_path();
+	if(!m_query.empty()) {
+		file += '?';
+		file += m_query;
+	}
+	return file;
+}
 
 void net::url::set_from_spec(const string& spec) {
 	lib::scanner sc(spec, url_delim);
@@ -256,10 +315,13 @@ net::url net::url::join_to_base(const net::url &base) const
 	if (m_absolute) return *this;
 	std::string basepath = base.get_file();
 	std::string newpath = get_file();
-	if (newpath[0] != '/') {
+	if (newpath == "") {
+		// New path is, for instance, only #anchor.
+		newpath = basepath; 
+	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
-		// newpath = lib::filesys::join(lib::filesys::get_base(basepath, "/"), newpath, "/");
-		newpath = lib::filesys::join(basepath, newpath, "/");
+		newpath = lib::filesys::join(lib::filesys::get_base(basepath, "/"), newpath, "/");
+		//newpath = lib::filesys::join(basepath, newpath, "/");
 	}
 	AM_DBG lib::logger::get_logger()->trace("url::join_to_base: old \"%s\" base \"%s\" newpath \"%s\"",
 		repr(*this).c_str(), repr(base).c_str(), newpath.c_str());
@@ -271,7 +333,16 @@ net::url net::url::join_to_base(const net::url &base) const
 		m_query,
 		m_ref);
 }
-	
+
+bool net::url::same_document(const net::url &base) const
+{
+	return (m_protocol == base.m_protocol &&
+		m_host == base.m_host &&
+		m_port == base.m_port &&
+		m_path == base.m_path &&
+		m_query == base.m_query);
+}
+
 
 ///////////////
 // module private static initializer

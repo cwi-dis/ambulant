@@ -153,6 +153,8 @@ class url {
 	operator string() const { return get_url(); }
 	
 	url join_to_base(const url &base) const;
+	
+	bool same_document(const url &base) const;
 		
  	static void init_statics();
  	
@@ -200,64 +202,6 @@ class url {
 	
 };
 
-/////////////////////////
-// inline implementation
-inline 
-url::url() 
-:	m_port(0) {
-}
-
-inline 
-url::url(const string& spec) 
-:	m_port(0) {
-	set_from_spec(spec);
-}
-	
-inline 
-url::url(const string& protocol, const string& host, 
-	const string& path) 
-:	m_protocol(protocol),
-	m_host(host),
-	m_port(0),
-	m_path(path)
-{
-	m_absolute = (m_protocol != "");
-}
-
-inline		
-url::url(const string& protocol, const string& host, int port, 
-	const string& path) 
-:	m_protocol(protocol),
-	m_host(host),
-	m_port(short_type(port)),
-	m_path(path)
-{
-	m_absolute = (m_protocol != "");
-}
-
-inline
-url::url(const string& protocol, const string& host, int port, 
-	const string& path, const string& query, const string& ref) 
-:	m_protocol(protocol),
-	m_host(host),
-	m_port(short_type(port)),
-	m_path(path), 
-	m_query(query), 
-	m_ref(ref)
-{
-	m_absolute = (m_protocol != "");
-}
-
-inline 
-url::string url::get_file() const {
-	std::string file = get_path();
-	if(!m_query.empty()) {
-		file += '?';
-		file += m_query;
-	}
-	return file;
-}
-
 } // namespace net
  
 } // namespace ambulant
@@ -266,14 +210,17 @@ url::string url::get_file() const {
 #if !defined(AMBULANT_PLATFORM_WIN32_WCE)
 inline std::string repr(const ambulant::net::url& u) {
 	std::string os;
-	if(u.get_protocol() == "file") {
-		os << u.get_protocol() << "://" << 
-			((u.get_host()=="localhost")?"":u.get_host()) << "/" << u.get_path();
-	} else if (u.get_protocol() == "data") {
-		os << "data:," << u.get_path();
-	} else {
-		os << u.get_protocol() << "://" << u.get_host() << "/" << u.get_path();
+	if (u.is_absolute()) {
+		if(u.get_protocol() == "file") {
+			os << u.get_protocol() << "://" << 
+				((u.get_host()=="localhost")?"":u.get_host()) << "/";
+		} else if (u.get_protocol() == "data") {
+			os << "data:," << u.get_path();
+		} else {
+			os << u.get_protocol() << "://" << u.get_host() << "/";
+		}
 	}
+	os << u.get_path();
 	if(!u.get_ref().empty()) 
 		os << "#" << u.get_ref();
 	if(!u.get_query().empty()) 
@@ -283,7 +230,10 @@ inline std::string repr(const ambulant::net::url& u) {
 #else 
 inline std::string repr(const ambulant::net::url& u) {
 	std::string os;
-	os += u.get_protocol() + "//" + u.get_host() + "/" + u.get_path();
+	if (u.is_absolute())
+		os += u.get_protocol() + "//" + u.get_host() + "/" + u.get_path();
+	else
+		os += u.get_path();
 	return os;
 }
 #endif

@@ -156,7 +156,7 @@ class document : public node_context {
 	
 	void set_root(node* n);
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
-	void set_src_base(ambulant::net::url u) { m_src_base = u;}
+//	void set_src_base(ambulant::net::url u) { m_src_base = u;}
 	
   private:
 	// builds id to node map
@@ -172,7 +172,7 @@ class document : public node_context {
 	ambulant::net::url m_src_url;
 	
 	// this base url
-	ambulant::net::url m_src_base;
+//	ambulant::net::url m_src_base;
 	
 	bool m_is_file;
 	
