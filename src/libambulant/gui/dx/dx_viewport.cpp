@@ -493,7 +493,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 }
 
 // Paints the provided string
-void gui::dx::viewport::draw(const std::string text, const lib::screen_rect<int>& dst_rc) {
+void gui::dx::viewport::draw(const std::string& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
 	if(!m_surface || text.empty()) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -502,7 +502,7 @@ void gui::dx::viewport::draw(const std::string text, const lib::screen_rect<int>
 		return;
 	}
 	SetBkMode(hdc, TRANSPARENT);
-	COLORREF crTextColor = ::GetSysColor(COLOR_WINDOWTEXT);
+	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
 	::SetTextColor(hdc, crTextColor);	
 	RECT dstRC;
 	set_rect(dst_rc, &dstRC);
