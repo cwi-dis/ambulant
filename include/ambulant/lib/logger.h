@@ -63,7 +63,6 @@
 #endif
 
 
-
 #include <string>
 #include <stdarg.h>
 
@@ -73,6 +72,7 @@ namespace ambulant {
 
 namespace lib {
 
+// exclude the following stuff when no streams or when g++ 2.95 and othet old compilers
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 template<class T>
 class ostringstream_wrapper {
@@ -125,7 +125,7 @@ class ostringstream_wrapper {
 #endif
 #else
 #define CDECL
-#endif
+#endif // AMBULANT_PLATFORM_WIN32
 
 template<class T>
 inline T& CDECL endl(T& l) {
@@ -212,9 +212,14 @@ class logger {
 	
 	// config
 	void set_level(int level); 
-	
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
+
+// exclude the following stuff when no streams
+#ifndef AMBULANT_NO_IOSTREAMS
 	void set_ostream(std::ostream* pos); 
+#endif
+
+// exclude the following stuff when no streams or when g++ 2.95 and othet old compilers
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	// The following functions return an ostream like object. 
 	// The output operator<< may be used as for an ostream.
 	// Usage example:
@@ -230,7 +235,7 @@ class logger {
 	ostream warn_stream() { return ostream(this, &logger::warn);} 
 	ostream error_stream() { return ostream(this, &logger::error);} 
 	ostream fatal_stream() { return ostream(this, &logger::fatal);} 
-#endif // AMBULANT_NO_IOSTREAMS
+#endif // AMBULANT_NO_IOSTREAMS && AMBULANT_NO_OPERATORS_IN_NAMESPACE
 	
   private:
 	static const char* get_level_name(int level);
