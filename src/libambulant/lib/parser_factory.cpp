@@ -77,7 +77,8 @@ global_parser_factory::get_parser_factory()
 
 
 
-global_parser_factory::global_parser_factory()
+global_parser_factory::global_parser_factory() 
+:	m_parser_pref("")
 {
 	
 	m_default_factory = new lib::expat_factory();
@@ -88,6 +89,7 @@ global_parser_factory::~global_parser_factory()
     // XXXX Should I delete the factories in m_factories? I think
     // so, but I'm not sure...
     delete m_default_factory;
+	m_default_factory = NULL;
 }
     
 void
@@ -102,16 +104,31 @@ global_parser_factory::new_parser(
 	sax_content_handler* content_handler,
 	sax_error_handler* error_handler)
 {
-	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called");
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called (pref = %s)",m_parser_pref.c_str());
 
     std::vector<parser_factory*>::iterator i;
     xml_parser *pv;
+	pv = NULL;
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        pv = (*i)->new_parser(content_handler, error_handler);
+		if (( (*i)->get_parser_name() == m_parser_pref ) || ( m_parser_pref == "any" )) {
+        	pv = (*i)->new_parser(content_handler, error_handler);
+		} else {
+			pv = NULL;
+		}
         if (pv){
 			AM_DBG lib::logger::get_logger()->debug("lobal_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
 			return pv;
 		}
     }
-    return m_default_factory->new_parser(content_handler, error_handler);
+	if (m_default_factory) {
+    	return m_default_factory->new_parser(content_handler, error_handler);
+	} else {
+		return NULL;
+	}
+}
+
+void
+global_parser_factory::set_preference(std::string pref)
+{
+	m_parser_pref = pref;
 }

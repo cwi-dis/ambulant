@@ -175,10 +175,12 @@ lib::tree_builder::reset() {
 	}
 	m_well_formed = false;
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
+	pf->set_preference(parser_id);
 	lib::logger::get_logger()->debug("tree_builder::reset(): Using parser %s", parser_id.c_str());
 	lib::logger::get_logger()->debug("tree_builder::reset():  pf = 0x%x, this = 0x%x", (void*) pf, (void*) this);
-	
-	m_xmlparser = pf->new_parser(this, this);
+	if (m_xmlparser == NULL) {
+		m_xmlparser = pf->new_parser(this, this);
+	}
 	
 #if 0
 #ifdef	WITH_XERCES

@@ -50,6 +50,7 @@
 #define AMBULANT_COMMON_PARSER_FACTORY_H
 
 #include <vector>
+#include <string>
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/logger.h"
 
@@ -62,9 +63,11 @@ class parser_factory {
   public:
 	  
 	virtual ~parser_factory() {};
+	virtual void set_preference(std::string pref) {};
 	virtual xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler) = 0;
+	virtual std::string get_parser_name() { return "none"; };
 };
 
 
@@ -75,16 +78,17 @@ class global_parser_factory : public parser_factory {
     ~global_parser_factory();
     
     void add_factory(parser_factory *pf);
-    
+    void set_preference(std::string pref);
     xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler);
-	
+
   private:
-	 global_parser_factory();
+	global_parser_factory();
     std::vector<parser_factory *> m_factories;
     parser_factory *m_default_factory;
   	static global_parser_factory* s_singleton;
+  	std::string m_parser_pref;
 };
 
 }

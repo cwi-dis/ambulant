@@ -78,6 +78,8 @@ class expat_factory : public lib::parser_factory {
 	lib::xml_parser* new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler);
+	
+	std::string get_parser_name();
 };
 
 

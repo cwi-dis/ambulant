@@ -52,6 +52,12 @@
 
 #include "ambulant/lib/expat_parser.h"
 #include "ambulant/lib/textptr.h"
+#include "ambulant/lib/logger.h"
+
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DB if(0)
+#endif
 
 using namespace ambulant;
 
@@ -62,10 +68,15 @@ lib::expat_factory::new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler) 
 {
+	AM_DBG lib::logger::get_logger()->debug("expat_factory::new_parser(): expat parser returned");
 	return new lib::expat_parser(content_handler, error_handler);
 }
 
-
+std::string 
+lib::expat_factory::get_parser_name()
+{
+	return "expat";
+}
 
 lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler, 
 	lib::sax_error_handler *error_handler)

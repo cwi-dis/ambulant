@@ -52,9 +52,16 @@
 
 #include "ambulant/lib/xerces_parser.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/lib/logger.h"
 
 #ifdef	WITH_XERCES
 #include <xercesc/framework/MemBufInputSource.hpp>
+
+
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DB if(0)
+#endif
 
 using namespace ambulant;
 
@@ -67,9 +74,17 @@ lib::xerces_factory::new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler) 
 {
-	return new lib::xerces_parser(content_handler, error_handler);
+	AM_DBG lib::logger::get_logger()->debug("xerces_factory::new_parser(): xerces parser returned");
+	return new lib::xerces_sax_parser(content_handler, error_handler);
 }
 
+
+std::string 
+lib::xerces_factory::get_parser_name()
+{
+	AM_DBG lib::logger::get_logger()->debug("xerces_factory::get_parser_name(): xerces parser");
+	return "xerces";
+}
 
 
 
