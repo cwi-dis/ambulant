@@ -39,21 +39,18 @@ namespace lib {
 // A is the callback argument class.
 template <class T, class A>
 struct callback_struct {
-	// Callback member function signature
-	typedef void (T::*MF)(A *a);
-	
 	// The target object.
 	T *m_obj;
 	
 	// The taget member function.
-	MF m_mf;
+	void (T::*m_mf)(A *a);
 	
 	// The argument to be passed to the member function.
 	// This object is the owner of the argument object.
 	A *m_arg;
 	
 	// struct constructor
-	callback_struct(T* obj, MF mf, A* arg) 
+	callback_struct(T* obj, void (T::*mf)(A *a), A* arg) 
 	:	m_obj(obj), m_mf(mf), m_arg(arg) {}
 };
 
@@ -74,7 +71,7 @@ class callback_event : public event,
 	private callback_struct<T, A> {
   public:
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
-	callback_event(T* obj, MF mf, A* arg);
+	callback_event(T* obj, void (T::*mf)(A *a), A* arg);
 	
 	// deletes arg	
 	~callback_event();
@@ -99,7 +96,7 @@ class callback : public event,
 	private callback_struct<T, A> {
   public:
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
-	callback(T* obj, MF mf, A* arg);
+	callback(T* obj, void (T::*mf)(A *a), A* arg);
 	
 	// deletes arg, releases target tref
 	~callback();
@@ -115,7 +112,7 @@ class callback : public event,
 // 'obj' is the target object having a member 
 // function 'mf' accepting 'arg' 
 template <class T, class A>
-inline callback_event<T, A>::callback_event(T* obj, MF mf, A* arg)
+inline callback_event<T, A>::callback_event(T* obj, void (T::*mf)(A *a), A* arg)
 :	callback_struct<T, A>(obj, mf, arg) {
 }
 	
@@ -136,7 +133,7 @@ inline void callback_event<T, A>::fire() {
 // Inline callback implementation
 
 template <class T, class A>
-inline callback<T, A>::callback(T* obj, MF mf, A* arg)
+inline callback<T, A>::callback(T* obj, void (T::*mf)(A *a), A* arg)
 :	callback_struct<T, A>(obj, mf, arg) {
 	if(obj) obj->add_ref();
 }
