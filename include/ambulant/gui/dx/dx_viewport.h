@@ -109,8 +109,12 @@ class viewport {
 	void clear();
 
 	// Clears the specified back buffer rectangle using the provided color 
-	void clear(const lib::screen_rect<int>& rc, lib::color_t clr);
-
+	// and taking into account any transition
+	void clear(const lib::screen_rect<int>& rc, lib::color_t clr, dx_transition *tr = 0);
+	
+	// Clears the specified buffer rectangle using the provided color 
+	void clear(const lib::screen_rect<int>& rc, lib::color_t clr, IDirectDrawSurface* dstview);
+	
 	// Clears a DD surface with the provided color.
 	void clear_surface(IDirectDrawSurface* p, lib::color_t clr);
 

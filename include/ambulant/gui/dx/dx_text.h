@@ -57,6 +57,7 @@
 #include <string>
 
 #include "ambulant/common/renderer.h"
+#include "ambulant/gui/dx/dx_playable.h"
 
 namespace ambulant {
 
@@ -66,22 +67,22 @@ namespace dx {
 
 class text_renderer;
 
-class dx_text_renderer : public common::renderer_playable {
+class dx_text_renderer : public dx_renderer_playable {
   public:
 	dx_text_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::gui_window *window);
+		common::gui_window *window, 
+		dx_playables_context *dxplayer);
 	~dx_text_renderer();
-	void set_surface(common::surface *dest);
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void set_surface(common::surface *dest);
   private:
-	common::gui_window *m_window;
 	text_renderer *m_text;
 };
 

@@ -335,7 +335,7 @@ gui::dx::dx_player::new_playable(
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG m_logger->trace("dx_player::new_playable: %s", tag.c_str());
 	if(tag == "text") {
-		p = new dx_text_renderer(context, cookie, node, evp, window);
+		p = new dx_text_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "img") {
 		p = new dx_img_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "audio") {
@@ -345,7 +345,7 @@ gui::dx::dx_player::new_playable(
 	} else if(tag == "area") {
 		p = new dx_area(context, cookie, node, evp, window);
 	} else if(tag == "brush") {
-		p = new dx_brush(context, cookie, node, evp, window);
+		p = new dx_brush(context, cookie, node, evp, window, this);
 	} else {
 		p = new dx_area(context, cookie, node, evp, window);
 	}

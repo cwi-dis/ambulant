@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/colors.h"
+#include "ambulant/gui/dx/dx_playable.h"
 
 namespace ambulant {
 
@@ -63,14 +64,15 @@ namespace gui {
 
 namespace dx {
 
-class dx_brush : public common::renderer_playable {
+class dx_brush : public dx_renderer_playable {
   public:
-	dx_brush (
+	dx_brush(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::gui_window *window);
+		common::gui_window *window, 
+		dx_playables_context *dxplayer);
 	~dx_brush();
 	void start(double t);
 	void stop();

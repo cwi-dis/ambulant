@@ -161,6 +161,7 @@ void gui::dx::dx_video_renderer::stop() {
 	delete p;
 	m_dest->renderer_done(this);
 	m_activated = false;
+	m_dxplayer->stopped(this);
 }
 
 void gui::dx::dx_video_renderer::pause() {

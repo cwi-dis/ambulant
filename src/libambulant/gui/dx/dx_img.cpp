@@ -143,7 +143,7 @@ void gui::dx::dx_img_renderer::stop() {
 	m_image = 0;
 	m_dest->renderer_done(this);
 	m_activated = false;
-	
+	m_dxplayer->stopped(this);
 	// show debug message 'stopped'
 	AM_DBG {
 		dx_window *dxwindow = static_cast<dx_window*>(m_window);

@@ -73,10 +73,10 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window)
-:   common::renderer_playable(context, cookie, node, evp), 
-	m_window(window), 
-	m_text(0) { 
+	common::gui_window *window,
+	dx_playables_context *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
+	m_text(0) {
 	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
 }
 
@@ -134,6 +134,7 @@ void gui::dx::dx_text_renderer::stop() {
 	m_text = 0;
 	m_dest->renderer_done(this);
 	m_activated = false;
+	m_dxplayer->stopped(this);
 }
 
 void gui::dx::dx_text_renderer::user_event(const lib::point& pt, int what) {
@@ -163,8 +164,14 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, commo
 	lib::point pt = m_dest->get_global_topleft();
 	reg_rc.translate(pt);
 		
+	dx_transition *tr = 0;
+	if(m_transitioning) {
+		tr = m_dxplayer->get_transition(this);
+		m_transitioning = tr?true:false;
+	}
+		
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	v->draw(m_text->get_ddsurf(), text_rc, reg_rc, true);
+	v->draw(m_text->get_ddsurf(), text_rc, reg_rc, true, tr);
 }
 
  

@@ -448,9 +448,73 @@ void gui::dx::viewport::clear() {
 	}
 }
 
-// Clears the specified back buffer rectangle using the provided color 
-void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr) {
+// Clears the specified back buffer rectangle using the provided color and taking into account any transition
+void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr, dx_transition *tr) {
 	if(!m_surface) return;
+	
+	if(!tr) {
+		clear(rc, clr, m_surface);
+		return;
+	}
+	
+	smil2::blitter_type bt = tr->get_blitter_type();
+	
+	if(bt == smil2::bt_r1r2r3r4) {
+		lib::screen_rect<int> rc_v = rc;
+		clipto_r1r2r3r4(tr, rc_v, rc_v);
+		clear(rc_v, clr, m_surface);
+		return;
+	} else if(bt == smil2::bt_fade) {
+		trcopy(rc);
+		clear(rc, clr, m_trsurface);
+		HRESULT hr = S_OK;
+		if(bits_size == 32)
+			hr = blt_blend32(rc, tr->get_progress());
+		else if(bits_size == 24)
+			hr = blt_blend24(rc, tr->get_progress());
+		else if(bits_size == 16)
+			hr = blt_blend16(rc, tr->get_progress());
+		else {
+			trdraw(rc, 0);
+		}
+		if (FAILED(hr)) {
+			seterror("blt_blendXX()", hr);
+		}
+		return;
+	}
+	
+	HRGN hrgn = 0;
+	switch(bt) {
+		case smil2::bt_rect: 
+			hrgn = create_rect_region(tr); 
+			break;
+		case smil2::bt_rectlist: 
+			hrgn = create_rectlist_region(tr); 
+			break;
+		case smil2::bt_poly: 
+			hrgn = create_poly_region(tr); 
+			break;
+		case smil2::bt_polylist: 
+			hrgn = create_polylist_region(tr); 
+			break;
+	}
+		
+	if(!hrgn) {
+		clear(rc, clr, m_surface);
+		return;
+	} else if(is_empty_region(hrgn)) {
+		// nothiing to paint
+		return;
+	}
+	trcopy(rc);
+	clear(rc, clr, m_trsurface);
+	trdraw(rc, hrgn);
+	DeleteObject((HGDIOBJ)hrgn);
+}
+
+// Clears the specified surface rectangle using the provided color
+void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr, IDirectDrawSurface* dstview) {
+	if(!dstview) return;
 	
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
@@ -463,7 +527,7 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr)
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
 		
-	HRESULT hr = m_surface->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	HRESULT hr = dstview->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
