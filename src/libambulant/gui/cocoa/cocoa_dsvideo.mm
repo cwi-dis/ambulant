@@ -52,11 +52,10 @@
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
-//#include "ambulant/gui/cocoa/cocoa_transition.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

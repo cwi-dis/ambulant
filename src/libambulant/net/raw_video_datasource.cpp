@@ -120,8 +120,9 @@ raw_video_datasource::get_frame(double *timestamp, int *size)
 }
 
 void
-raw_video_datasource::frame_done(double timestamp)
+raw_video_datasource::frame_done(double timestamp, bool keepdata)
 {
+	assert(!keepdata);
 	m_lock.enter();
 	if (timestamp > (double) m_filenr/FRAME_RATE) {
 		m_filenr = (int)round(timestamp*FRAME_RATE);

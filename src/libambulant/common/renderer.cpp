@@ -353,7 +353,7 @@ active_video_renderer::data_avail()
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			displayed = true;
-			m_src->frame_done(ts);
+			m_src->frame_done(ts, true);
 			if (!m_src->end_of_file()) {
 				lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 				m_src->start_frame (m_evp, e, ts);

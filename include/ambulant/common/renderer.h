@@ -248,11 +248,11 @@ class active_video_renderer : public common::active_basic_renderer {
 	  double now();
 	  lib::event_processor* m_evp;
   	  net::video_datasource* m_src; 
-  	  unsigned long int m_epoch;
+ 	  unsigned long int m_epoch;
 	  bool m_is_playing;
 	  bool m_is_paused;
 	  unsigned long int m_paused_epoch;
-	  lib::critical_section m_lock;  
+	  lib::critical_section m_lock;
 };
 
 // background_renderer is a convenience class: it implements some of the

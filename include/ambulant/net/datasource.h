@@ -184,7 +184,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
   	virtual bool end_of_file() = 0;
   	
   	virtual char* get_frame(double *timestamp, int *size) = 0; 
-  	virtual void frame_done(double timestamp) = 0;
+  	virtual void frame_done(double timestamp, bool keepdata) = 0;
 };
 
 // This class is the client API used to create a datasource for

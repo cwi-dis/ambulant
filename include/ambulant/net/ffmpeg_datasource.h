@@ -199,7 +199,7 @@ class ffmpeg_video_datasource:
 
     bool end_of_file();
 	char* get_frame(double *timestamp, int *size);
-	void frame_done(double timestamp);
+	void frame_done(double timestamp, bool keepdata);
 	
     void data_avail(int64_t pts, uint8_t *data, int size);
 	bool buffer_full();
@@ -211,11 +211,9 @@ class ffmpeg_video_datasource:
 	int m_stream_index;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
-
-	char *m_frame;
-	double m_timestamp;
-	int m_size;
-
+	std::queue<std::pair<double, char*> > m_frames;
+	std::pair<double, char*> m_old_frame;
+	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client

@@ -52,11 +52,13 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
 
+// How many video frames we would like to buffer at most
+#define MAX_VIDEO_FRAMES 25
 
 // Bug workaround: define RESAMPLE_READ_ALL to let the resampler
 // collect all data before calling the client callback
@@ -500,9 +502,6 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 	m_stream_index(-1),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
-	m_frame(NULL),
-	m_timestamp(0.0),
-	m_size(0),
 	m_thread(thread),
 	m_client_callback(NULL),
     m_thread_started(false)
@@ -574,7 +573,7 @@ ffmpeg_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 
 	if (m_client_callback != NULL)
 		AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): m_client_callback already set!");
-	if (m_frame /* XXXX Check timestamp! */ || _end_of_file() ) {
+	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (evp && callbackk) {
@@ -597,17 +596,30 @@ ffmpeg_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 }
  
 void 
-ffmpeg_video_datasource::frame_done(double timestamp)
+ffmpeg_video_datasource::frame_done(double timestamp, bool keepdata)
 {
 	m_lock.enter();
-	if (!m_frame) {
-		lib::logger::get_logger()->error("ffmpeg_video_datasource.readdone: frame_done() called with no current frame");
+	if (m_frames.size() == 0) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource.readdone: frame_done() called with no current frames");
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.frame_done() : done with %d bytes", m_size);
-	free(m_frame);
-	m_frame = NULL;
-	m_size = 0;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.frame_done(%f)", timestamp);
+	while( m_frames.size() > 0 ) {
+		std::pair<double, char*> element = m_frames.front();
+		if (element.first > timestamp)
+			break;
+		if (m_old_frame.second) {
+			free(m_old_frame.second);
+			m_old_frame.second = NULL;
+		}
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::frame_done(%f): removing frame with ts=%f", timestamp, element.first);
+		m_old_frame = element;
+		m_frames.pop();
+		if (!keepdata) {
+			free(m_old_frame.second);
+			m_old_frame.second = NULL;
+		}
+	}
 	m_lock.leave();
 }
 
@@ -629,7 +641,6 @@ ffmpeg_video_datasource::height()
 void 
 ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 {
-	// XXX timestamp is ignored, for now
 	m_lock.enter();
 	int got_pic;
 	AVFrame frame;
@@ -645,8 +656,6 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 	m_src_end_of_file = (sz == 0);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: %d bytes available", sz);
 	if(sz) {
-	  if (!m_frame) {
-		//if (m_frame)
 			
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:start decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
 		assert(&m_con->streams[m_stream_index]->codec != NULL);
@@ -654,37 +663,36 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 			len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
 			sz -= len;
 			if (got_pic) {
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decode returned %d (bytes ??)", m_size);
-				pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+				// Setup the AVPicture for the format we want, plus the data pointer
 				width = m_con->streams[m_stream_index]->codec.width;
 				height = m_con->streams[m_stream_index]->codec.height;
 				m_size = width * height * 4;
-				m_frame = (char*) malloc(m_size);
-				assert(m_frame != NULL);
+				char *framedata = (char*) malloc(m_size);
+				assert(framedata != NULL);
 				dst_pic_fmt = PIX_FMT_RGBA32;
-				dummy2 = avpicture_fill(&picture, (uint8_t*) m_frame, dst_pic_fmt, width, height);
-				dst_pic_fmt = PIX_FMT_RGBA32;
+				dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, width, height);
+				// The format we have is already in frame. Convert.
+				pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
 				img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: avpicture_fill returned %d (bytes ??)", m_size);
-				//memcpy(m_frame, frame.base, sz);
-				//m_size = sz;
+				// And convert the timestamp.
 				num = m_con->pts_num;
 				den = m_con->pts_den;
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
-				m_timestamp = ((double) frame.pts * num) / den;
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_timestamp=%f",m_timestamp);
-				break;
+				double timestamp = ((double) pts * num) / den;
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%f",timestamp);
+				// And store the data.
+				std::pair<double, char*> element(timestamp, framedata);
+				m_frames.push(element);
 		  	} else {
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: Incomplete picture, continue");
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 			}
 		}
-	  } else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_frame is not NULL, but it should be !");
-	  }
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:done decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
   	}
-	if ( m_frame || m_src_end_of_file  ) {
+	if ( m_frames.size() || m_src_end_of_file  ) {
 	  if ( m_client_callback ) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::data_avail(): calling client callback (%d, %d)", m_size, m_src_end_of_file);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::data_avail(): calling client callback (eof=%d)", m_src_end_of_file);
 		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 		m_client_callback = NULL;
 		//m_event_processor = NULL;
@@ -712,7 +720,7 @@ bool
 ffmpeg_video_datasource::_end_of_file()
 {
 	// private method - no need to lock
-	if (m_frame) return false;
+	if (m_frames.size() > 0) return false;
 	return m_src_end_of_file;
 }
 
@@ -720,8 +728,8 @@ bool
 ffmpeg_video_datasource::buffer_full()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::buffer_full() (this=0x%x) m_frame=0x%x", (void*) this, (void*) m_frame);
-	bool rv = (m_frame != NULL);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::buffer_full() (this=0x%x, count=%d)", (void*) this, m_frames.size());
+	bool rv = (m_frames.size() > MAX_VIDEO_FRAMES);
 	m_lock.leave();
 	return rv;
 }	
@@ -730,8 +738,10 @@ char*
 ffmpeg_video_datasource::get_frame(double *timestamp, int *size)
 {
 	m_lock.enter();
-	char *rv = m_frame;
-	*timestamp = m_timestamp;
+	assert(m_frames.size() > 0);
+	std::pair<double, char*> element = m_frames.front();
+	char *rv = element.second;
+	*timestamp = element.first;
 	*size = m_size;
 	m_lock.leave();
 	return rv;

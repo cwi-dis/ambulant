@@ -52,7 +52,7 @@
 
 
 //#define WITH_NONE_VIDEO
-//#define WITH_FFMPEG_VIDEO
+#define WITH_FFMPEG_VIDEO
 
 #include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
