@@ -91,16 +91,6 @@ class const_tree_iterator  {
 	const_tree_iterator(const Node *p)
 	:	m_root(p), m_cur(p), m_move(&const_tree_iterator::down) {}
 
-	friend bool operator==(const const_tree_iterator& lhs, const const_tree_iterator& rhs) {
-		if((lhs.m_cur == 0 && rhs.m_cur != 0) || 
-			(lhs.m_cur != 0 && rhs.m_cur == 0)) return false;
-		if(lhs.m_cur == 0 && rhs.m_cur == 0) return true;
-		return lhs.m_root == rhs.m_root && lhs.m_cur == rhs.m_cur && lhs.m_move == rhs.m_move;
-	}
-
-	friend bool operator!=(const const_tree_iterator& lhs, const const_tree_iterator& rhs)
-		{ return !(lhs == rhs);}
-
 	// pre-increment
 	const_tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}
 	
@@ -117,7 +107,12 @@ class const_tree_iterator  {
 
 	bool is_end() { return m_cur == 0;}
 
-  ///////////////
+	const Node *get_cur() const { return m_cur;}
+ 	const Node *get_root() const { return m_root;}
+  	bool same_move(const const_tree_iterator& o) const 
+  		{ return m_move == o.m_move;}
+  	
+///////////////
   protected:
 	void down();
 	void next();
@@ -141,16 +136,6 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	tree_iterator() : const_tree_iterator<Node>(){}
 	tree_iterator(Node *p) : const_tree_iterator<Node>(p){}
-
-	friend bool operator==(const tree_iterator& lhs, const tree_iterator& rhs) {
-		if((lhs.m_cur == 0 && rhs.m_cur != 0) || 
-			(lhs.m_cur != 0 && rhs.m_cur == 0)) return false;
-		if(lhs.m_cur == 0 && rhs.m_cur == 0) return true;
-		return lhs.m_root == rhs.m_root && lhs.m_cur == rhs.m_cur && lhs.m_move == rhs.m_move;
-	}
-
-	friend bool operator!=(const tree_iterator& lhs, const tree_iterator& rhs)
-		{ return !(lhs == rhs);}
 
 	// pre-increment
 	tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}
@@ -204,5 +189,38 @@ inline void const_tree_iterator<Node>::up() {
 } // namespace lib
  
 } // namespace ambulant
+
+template <class Node>
+bool operator==(const ambulant::lib::const_tree_iterator<Node>& lhs, 
+	const ambulant::lib::const_tree_iterator<Node>& rhs) {
+		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) || 
+			(lhs.get_cur() != 0 && rhs.get_cur() == 0)) return false;
+		if(lhs.get_cur() == 0 && rhs.get_cur() == 0) return true;
+		return lhs.get_root() == rhs.get_root() && 
+			lhs.get_cur() == rhs.get_cur() && 
+			lhs.same_move(rhs);
+	}
+
+template <class Node>
+bool operator!=(const ambulant::lib::const_tree_iterator<Node>& lhs, 
+	const ambulant::lib::const_tree_iterator<Node>& rhs)
+	{ return !(lhs == rhs);}
+	
+template <class Node>
+bool operator==(const ambulant::lib::tree_iterator<Node>& lhs, 
+	const ambulant::lib::tree_iterator<Node>& rhs) {
+		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) || 
+			(lhs.get_cur() != 0 && rhs.get_cur() == 0)) return false;
+		if(lhs.get_cur() == 0 && rhs.get_cur() == 0) return true;
+		return lhs.get_root() == rhs.get_root() && 
+			lhs.get_cur() == rhs.get_cur() && 
+			lhs.same_move(rhs);
+	}
+
+template <class Node>
+bool operator!=(const ambulant::lib::tree_iterator<Node>& lhs, 
+	const ambulant::lib::tree_iterator<Node>& rhs)
+	{ return !(lhs == rhs);}
+
 
 #endif // AMBULANT_LIB_TREE_NODE_ITERATOR_H
