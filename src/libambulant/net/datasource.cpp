@@ -34,7 +34,7 @@ void net::databuffer::resize(int newsize)
 			m_dummy = m_size;
 		}
 	
-		memcpy(m_newbuf,m_buffer,newsize);
+		memcpy(m_newbuf, m_buffer, newsize);
 	
 		// delete the old buffer		
 		if (m_buffer) {
@@ -56,7 +56,7 @@ if (!m_buffer) {
 	} else {
 	m_size = size;
 	m_used = 0;
-	memset(m_buffer,0,size);
+	memset(m_buffer, 0, size);
 	}
 }
 
@@ -118,7 +118,7 @@ int dummy;
 dummy = m_used + size;
 
 if (dummy <= m_size) {
-	memcpy((m_buffer+m_used),data,size);
+	memcpy((m_buffer+m_used), data, size);
         m_used = m_used +size;
 	} else {
 	lib::logger::get_logger()->error("databuffer::put_data(size=%d): no room", size);
@@ -128,14 +128,16 @@ if (dummy <= m_size) {
 
 void net::databuffer::shift_down(int pos)
 {
-// XXX This does too much work for pos==m_used, and fails silently for pos>m_used
-if (pos <=  m_used) {
-	memmove(m_buffer,(m_buffer+pos), m_used-pos);
+
+if (pos <  m_used) {
+	memmove(m_buffer, (m_buffer+pos),  m_used-pos);
 	m_used =m_used-pos;
-    memset((m_buffer+m_used),0,m_size-m_used);
-    } else {
+    memset((m_buffer+m_used), 0, m_size-m_used);
+    } else if (pos == m_used) {
     m_used=0;
-    memset(m_buffer,0,m_size);
+    memset(m_buffer, 0, m_size);
+    } else {
+	lib::logger::get_logger()->error("databuffer::shift_down(int pos=%d): pos larger then m_used(%d)", pos);
     }
 }
 
@@ -164,7 +166,7 @@ net::passive_datasource::passive_datasource(const char *url)
 	m_len = strlen(url);
 	m_url = new char[m_len+1];
 	if(m_url) {
-		std::memcpy(m_url,url,m_len+1);
+		std::memcpy(m_url, url, m_len+1);
 	} else {
  	 lib::logger::get_logger()->fatal("passive_datasource(%s): out of memory", url);
 	}
@@ -174,11 +176,11 @@ net::active_datasource* net::passive_datasource::activate()
 {
 	int in;
 	
-	in = open(m_url,O_RDONLY);
+	in = open(m_url, O_RDONLY);
 	if (in >= 0) {
-		return new active_datasource(this,in);
+		return new active_datasource(this, in);
 	} else {
-		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s", m_url, strerror(errno));
+		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s",  m_url, strerror(errno));
 	}
 	return NULL;
 		
@@ -195,8 +197,8 @@ net::passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-net::active_datasource::active_datasource(passive_datasource *const source,int file)
-:	m_source(source),
+net::active_datasource::active_datasource(passive_datasource *const source, int file)
+:	m_source(source), 
 	m_refcount(1)
 {
 	if (file) {
@@ -237,8 +239,8 @@ net::active_datasource::filesize()
 		
 		if (m_stream) {
 			// Seek to the end of the file, and get the filesize
-			m_filesize=lseek(m_stream,0,SEEK_END); 		
-	 		dummy=lseek(m_stream,0,SEEK_SET);						
+			m_filesize=lseek(m_stream, 0, SEEK_END); 		
+	 		dummy=lseek(m_stream, 0, SEEK_SET);						
 			} else {
  			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file open");
 			m_filesize = 0;
@@ -280,6 +282,6 @@ net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 void
 net::active_datasource::read(char *data, int size)
 {
-	m_buffer->get_data(data,size);
+	m_buffer->get_data(data, size);
 }
 
