@@ -221,9 +221,9 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	m_playables_cs.leave();
 	return np;
 }
-
 // Request to start the playable of the node.
-void smil_player::start_playable(const lib::node *n, double t) {
+// When trans is not null the playable should transition in 
+void smil_player::start_playable(const lib::node *n, double t, const lib::node *trans) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
@@ -236,6 +236,10 @@ void smil_player::start_playable(const lib::node *n, double t) {
 	m_playables[n] = np;
 	m_playables_cs.leave();
 	np->start(t);	
+}
+
+// Request to start a transition of the playable of the node.
+void smil_player::start_transition(const lib::node *n, const lib::node *trans, bool in) {
 }
 
 // Request to stop the playable of the node.
@@ -327,6 +331,20 @@ void smil_player::stopped(int n, double t) {
 			&time_node::on_eom, timestamp);
 		schedule_event(cb, 0);
 	}
+}
+
+// Playable notification for a transition stop event.
+void smil_player::transitioned(int n, double t) {
+	// remove fill effect for nodes specifing fill="transition" 
+	// and overlap with n
+}
+
+// Playable notification for a stall event.
+void smil_player::stalled(int n, double t) {
+}
+
+// Playable notification for an unstall event.
+void smil_player::unstalled(int n, double t) {
 }
 
 // UI notification for a char event.

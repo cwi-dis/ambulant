@@ -113,12 +113,12 @@ class smil_player : public common::player, public time_node_context, public comm
 	// Time node context: Playable commands
 	
 	virtual common::playable *create_playable(const lib::node *n);
-	virtual void start_playable(const lib::node *n, double t);
+	virtual void start_playable(const lib::node *n, double t, const lib::node *trans = 0);
 	virtual void stop_playable(const lib::node *n);
 	virtual void pause_playable(const lib::node *n, pause_display d = display_show);
 	virtual void resume_playable(const lib::node *n);
 	virtual void wantclicks_playable(const lib::node *n, bool want);
-	
+	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in);
 	//////////////////////
 	// raw notifications from the UI
 	
@@ -131,8 +131,9 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual void stopped(int n, double t);
 	virtual void clicked(int n, double t);	
 	virtual void pointed(int n, double t);	
-	virtual void paused(int n, double t) {}
-	virtual void resumed(int n, double t) {}
+	virtual void stalled(int n, double t);
+	virtual void unstalled(int n, double t);
+	virtual void transitioned(int n, double t);
 	
 	//////////////////////
 	// Time node context: Playable queries
