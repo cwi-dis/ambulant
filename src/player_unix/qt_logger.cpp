@@ -118,12 +118,13 @@ qt_logger::qt_logger()
 	common::preferences* prefs = 
 	  common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
-	if (prefs->m_log_file != NULL) {
+	if (prefs != NULL && prefs->m_log_file != "") {
 		m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
 		if (m_log_FILE == NULL) {
 			logger->warn("qt_logger(): %s \"%s\" %s",
 				     "cannot open logfile", 
-				     prefs->m_log_file, "for writing");
+				     prefs->m_log_file.c_str(),
+				     "for writing");
 		}
 	}
 	// Connect logger to our message displayer and output processor
