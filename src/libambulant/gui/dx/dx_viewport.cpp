@@ -309,20 +309,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
-	
-	// fill primary surface with black
-	/*
-	DDBLTFX bltfx;
-	memset(&bltfx, 0, sizeof(DDBLTFX));
-	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = 0;
-	RECT rc = {0, 0, m_width, m_height};
-	hr = m_primary_surface->Blt(&rc, NULL, NULL, DDBLT_COLORFILL, &bltfx);
-	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::Blt()", hr);
-		return;
-	}
-	*/
 	get_pixel_format();
 	
 	// create drawing surface

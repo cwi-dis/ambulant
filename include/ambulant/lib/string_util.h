@@ -69,8 +69,15 @@ class tokens_vector : public std::vector<std::string> {
 	std::string join(size_type i, char sep);
 };
 
+const std::string space_chars = " \r\n\t\v";
+const std::string dec_digits = "0123456789";
+
+//const std::wstring wspace_chars = L" \r\n\t\v";
+//const std::wstring wdec_digits = L"0123456789";
+
+
 inline std::string trim(const std::string& s) {
-	size_t i1 = s.find_first_not_of(" \r\n\t\v");
+	size_t i1 = s.find_first_not_of(space_chars);
 	if(i1==std::string::npos) return "";
 
 	// XXXX Need a signed type here...
@@ -169,11 +176,11 @@ class basic_scanner {
 			pos++;
 		} else {
 			if(isdigit(src[pos]))
-				scan_set_as("0123456789", NUMBER);
+				scan_set_as(dec_digits, NUMBER);
 			else if(isspace(src[pos])) 
-				scan_set_as(" \t\r\n", SPACE);
+				scan_set_as(space_chars, SPACE);
 			else {
-				std::string exdelims = delims + " \t\r\n";
+				std::string exdelims = delims + space_chars;
 				scan_not_in_set_as(exdelims.c_str(), NAME);
 			}
 		}
@@ -226,10 +233,10 @@ class basic_scanner {
 	
   protected:
   
-	// Scans chars in the set 'cstr' as token 't'.
-	void scan_set_as(const char *cstr, char t) {
+	// Scans chars in the set 's' as token 't'.
+	void scan_set_as(const string_type& s, char t) {
 		tok = t; 
-		size_type ni = src.find_first_not_of(cstr, pos);
+		size_type ni = src.find_first_not_of(s, pos);
 		if(vpos(ni)) {
 			tokval = string_type(src.c_str() + pos, ni-pos);
 			pos = ni;
@@ -239,10 +246,10 @@ class basic_scanner {
 		}
 	}
 	
-	// Scans chars not in the set 'cstr' as token 't'.
-	void scan_not_in_set_as(const char *cstr, char t) {
+	// Scans chars not in the set 's' as token 't'.
+	void scan_not_in_set_as(const string_type& s, char t) {
 		tok = t; 
-		size_type ni = src.find_first_of(cstr, pos);
+		size_type ni = src.find_first_of(s, pos);
 		if(vpos(ni)) {
 			tokval = string_type(src.c_str() + pos, ni-pos);
 			pos = ni;
@@ -252,15 +259,15 @@ class basic_scanner {
 		}
 	}
 	
-	// Skips chars in set 'cstr'.
-	void skip_set(const char *cstr) {
-		size_type ni = src.find_first_not_of(pszset, pos);
-		if(ni != std::basic_string<char_type>::npos) pos = ni;
+	// Skips chars in set 's'.
+	void skip_set(const string_type& s) {
+		size_type ni = src.find_first_not_of(s, pos);
+		if(vpos(ni)) pos = ni;
 		else pos = end;
 	}
 	
 	// Skips space chars.
-	void skip_space() { skip_set(" \t\r\n");}
+	void skip_space() { skip_set(space_chars);}
 	
 	// Resets this scanner; erases its memory
 	void reset() {

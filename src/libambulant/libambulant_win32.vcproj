@@ -158,10 +158,16 @@
 					RelativePath=".\lib\logger.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\nfa.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\node.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\schema.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\string_util.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\sync_rule.cpp">
@@ -231,6 +237,9 @@
 				</File>
 				<File
 					RelativePath=".\common\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath=".\common\smil_player.cpp">
 				</File>
 				<File
 					RelativePath=".\common\timeline_builder.cpp">
@@ -342,6 +351,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\mtsync.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\nfa.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\node.h">
@@ -471,6 +483,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\smil_player.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\timeline_builder.h">

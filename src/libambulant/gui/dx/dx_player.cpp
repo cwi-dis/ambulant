@@ -58,6 +58,9 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/document.h"
+
+#include "ambulant/common/smil_player.h"
 
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -146,13 +149,96 @@ void gui::dx::dx_player_impl::resume() {
 
 // static 
 gui::dx::dx_player* gui::dx::dx_player::create_player(const std::string& url) {
-	return new dx_player_impl(url, 0);
+	//return new dx_player_impl(url, 0);
+	return new dx_smil_player_impl(url, 0);
 }
 
 // static 
 gui::dx::dx_player* gui::dx::dx_player::create_player(const std::string& url, VCF f) {
-	return new dx_player_impl(url, f);
+	//return new dx_player_impl(url, f);
+	return new dx_smil_player_impl(url, f);
 }
 
- 
+////////////////////////////////////////
+
+//////////////////////////////////////////////
+//
+// EXPERIMENTAL TEST IMPLEMENTATION
+// 
+//////////////////////////////////////////////
+
+void show(const char *format, ...) {
+	va_list	args;
+	va_start(args, format);
+	char buf[2048] = "";
+	vsprintf(buf, format, args);
+	va_end(args);
+	MessageBox(NULL, buf, "dx_smil_player", MB_OK);
+}
+
+gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f) 
+:	m_url(url),
+	m_create_viewport_fn(f),
+	m_viewport(0),
+	m_wf(0), 
+	m_rf(0),
+	m_smil_player(0),
+	m_logger(lib::logger::get_logger()) {
+}
+
+gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
+	delete m_smil_player;
+	delete m_rf;
+	delete m_wf;
+	delete m_viewport;
+}
+
+gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
+	if(m_create_viewport_fn)
+		return (*m_create_viewport_fn)(w, h);
+	if(!m_viewport)
+		m_viewport = new viewport(w, h, 0);
+	return m_viewport;
+}
+
+bool gui::dx::dx_smil_player_impl::is_done() const { 
+	//return m_aplayer && m_aplayer->is_done();
+	if(!m_smil_player) return true;
+	return m_smil_player->is_done();
+}
+
+bool gui::dx::dx_smil_player_impl::start() {
+	m_logger->trace("Attempting to play: %s", m_url.c_str());
+	
+	lib::document *doc = lib::document::create_from_file(m_url);
+	if(!doc) {
+		show("Failed to parse document %s", m_url.c_str());
+		return false;
+	}
+	
+	// Create GUI window_factory and renderer_factory
+	m_wf = new gui::dx::dx_window_factory(this);
+	m_rf = new gui::dx::dx_renderer_factory(this);
+	
+	m_smil_player = new lib::smil_player(doc, m_wf, m_rf);	
+	m_smil_player->start();
+	m_logger->trace("Started playing");
+	return  true;
+}
+
+void gui::dx::dx_smil_player_impl::stop() {
+	m_logger->trace("Attempting to stop: %s", m_url.c_str());
+	if(m_smil_player) m_smil_player->stop();
+	if(m_viewport) m_viewport->redraw();
+}
+
+void gui::dx::dx_smil_player_impl::pause() {
+	m_logger->trace("Attempting to pause: %s", m_url.c_str());
+	if(m_smil_player) m_smil_player->pause();
+}
+
+void gui::dx::dx_smil_player_impl::resume() {
+	m_logger->trace("Attempting to resume: %s", m_url.c_str());
+	if(m_smil_player) m_smil_player->resume();
+}
 

@@ -51,26 +51,51 @@
  */
 
 #include "ambulant/lib/nfa.h"
+#include <vector>
+#include <map>
 
 #include "ambulant/lib/logger.h"
+
+#define NFA_VERBOSE 1
 
 using namespace ambulant;
 
 // static
 int lib::nfa_node::nfa_nodes_counter = 0;
 
-lib::nfa_node *lib::nfa_node::clone(std::set<nfa_node*>& clones) {
-	std::set<nfa_node*>::iterator it = clones.find((nfa_node*)this);
-	if(it != clones.end()) return myclone;
-	myclone = new nfa_node(edge);
-	myclone->anchor = anchor;
-	clones.insert((nfa_node*)this);
-	myclone->next1 = next1?next1->clone(clones):0; 
-	myclone->next2 = next2?next2->clone(clones):0; 
-	return myclone;
+// Returns a clone of this nfa_node.
+// The clone maybe a new instance or an already created instance.
+// If a clone already exists in clones returns that instance else creates a new.
+lib::nfa_node *lib::nfa_node::clone(std::map<nfa_node*, nfa_node*>& clones) {
+	std::map<nfa_node*, nfa_node*>::iterator it = clones.find(this);
+	if(it != clones.end()) return (*it).second;
+	nfa_node* c = new nfa_node(edge);
+	c->anchor = anchor;
+	clones[this] = c;
+	c->next1 = next1?next1->clone(clones):0; 
+	c->next2 = next2?next2->clone(clones):0; 
+	return c;
 }
 
-// Free the NFA nodes reachable by this
+// Returns the set of nodes associated with this expr.
+std::set<lib::nfa_node*>& 
+lib::nfa_expr::get_expr_nodes(std::set<nfa_node*>& nodes) const {
+	nodes.clear();
+	if(!start) return nodes;
+	std::stack<nfa_node*> stack;
+	stack.push(start);
+	while(!stack.empty()) {
+		nfa_node *t = stack.top();
+		stack.pop();
+		if(nodes.find(t) == nodes.end()) {
+			if(t->next1) stack.push(t->next1);
+			if(t->next2) stack.push(t->next2);
+			nodes.insert(t);
+		}
+	}
+	return nodes;
+}
+// Frees the set of nodes associated with this expr.
 void lib::nfa_expr::free() {
 	if(!start) return;
 	std::set<nfa_node*> nodes;
@@ -80,17 +105,20 @@ void lib::nfa_expr::free() {
 	start = accept = 0;
 }
 
+// Creates and returns a clone of the expr.
+// This indirecly creates a clone of the graph associated with this expr
 lib::nfa_expr* lib::nfa_expr::clone() const {
 	nfa_expr *eptr = new nfa_expr();
 	if(!empty()) {
-		std::set<nfa_node*> cloned;
-		eptr->accept = accept->clone(cloned);
-		eptr->start = start->clone(cloned);
+		std::map<nfa_node*, nfa_node*> clones;
+		eptr->accept = accept->clone(clones);
+		eptr->start = start->clone(clones);
 	}
 	return eptr;
 }
 
-// This consumes e which becomes null
+// Cats to this and consumes the provided expression.
+// The provided expression becomes null.
 const lib::nfa_expr& lib::nfa_expr::cat_expr_abs(nfa_expr *eptr) {
 	if(eptr->empty()) return *this;
 	assert(this != eptr);
@@ -107,6 +135,7 @@ const lib::nfa_expr& lib::nfa_expr::cat_expr_abs(nfa_expr *eptr) {
 	return *this;
 }
 
+// Cats to this the provided expression
 const lib::nfa_expr& lib::nfa_expr::cat_expr(const nfa_expr& expr) {
 	if(expr.empty()) return *this;
 	nfa_expr *eptr = expr.clone();
@@ -116,7 +145,8 @@ const lib::nfa_expr& lib::nfa_expr::cat_expr(const nfa_expr& expr) {
 	return *this;
 }
 
-// This consumes e which becomes null
+// Ors to this and consumes the provided expression. 
+// The provided expression becomes null.
 const lib::nfa_expr& lib::nfa_expr::or_expr_abs(nfa_expr *eptr) {
 	if(eptr->empty()) return *this;
 	assert(this != eptr);
@@ -135,6 +165,7 @@ const lib::nfa_expr& lib::nfa_expr::or_expr_abs(nfa_expr *eptr) {
 	return *this;
 }
 
+// Ors to this the provided expression. 
 const lib::nfa_expr& lib::nfa_expr::or_expr(const nfa_expr& expr) {
 	if(expr.empty()) return *this;
 	nfa_expr *eptr = expr.clone();
@@ -222,23 +253,6 @@ const lib::nfa_expr& lib::nfa_expr::set_to_char_class(const std::string& s) {
 	return *this;
 }
 
-std::set<lib::nfa_node*>& 
-lib::nfa_expr::get_expr_nodes(std::set<nfa_node*>& nodes) const {
-	nodes.clear();
-	if(!start) return nodes;
-	std::stack<nfa_node*> sstack;
-	sstack.push(start);
-	while(!sstack.empty()) {
-		nfa_node *t = sstack.top();sstack.pop();
-		if(nodes.find(t) == nodes.end()) {
-			if(t->next1) sstack.push(t->next1);
-			if(t->next2) sstack.push(t->next2);
-			nodes.insert(t);
-		}
-	}
-	return nodes;
-}
-
 // invariants checks
 void lib::nfa_expr::verify1() const {
 	std::set<nfa_node*> nodes;
@@ -246,97 +260,112 @@ void lib::nfa_expr::verify1() const {
 	int count = 0;
 	for(std::set<nfa_node*>::iterator i = nodes.begin(); i!=nodes.end(); i++)
 		if((*i)->next1 == 0 && (*i)->next2 == 0) count++;
-#ifndef AMBULANT_NO_IOSTREAMS
-	if(count != 1) std::cout << "invariant 1 violation" << std::endl;
-#endif
+	assert(empty() || count == 1);
 }
 
-// Called after move
+void lib::nfa_expr::mark_expr(int anchor) {
+	std::set<nfa_node*> nodes;
+	std::stack<nfa_node*> ststack;
+	nodes.insert(start);
+	if(start->is_epsilon_trans()) ststack.push(start);
+	if(!ststack.empty()) closure(nodes, ststack);
+	for(std::set<lib::nfa_node*>::const_iterator it = nodes.begin(); it!=nodes.end(); it++) {
+		if((*it)->is_important_trans()) (*it)->anchor = anchor;
+	}
+}
+
+// Adds to the set of nodes all epsilon-reachable-nodes from the nodes on the stack.
 // The stack contains the unchecked nodes
 // On exit the stack is empty  
-void lib::nfa_expr::closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes) {
-	while(!ststack.empty()) {
-		nfa_node *t = ststack.top();ststack.pop();
+// param: nodes [in, out]
+// param stack [in]
+void lib::nfa_expr::closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack) {
+	while(!stack.empty()) {
+		nfa_node *t = stack.top();
+		stack.pop();
 		if(t->is_epsilon_trans()) {
 			if(t->next1 && nodes.find(t->next1)==nodes.end()) {
 				// transition: t --EPSILON--> next1
 				nodes.insert(t->next1);
-				if(t->next1->is_epsilon_trans()) ststack.push(t->next1);
+				if(t->next1->is_epsilon_trans()) stack.push(t->next1);
 			}
 			if(t->next2 && nodes.find(t->next2)==nodes.end()) {
 				// transition: t --EPSILON--> next2
 				nodes.insert(t->next2);
-				if(t->next2->is_epsilon_trans()) ststack.push(t->next2);
+				if(t->next2->is_epsilon_trans()) stack.push(t->next2);
 			}
 		}
 	}
 }
 
-// Move nodes 
-void lib::nfa_expr::move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack) {
-	while(!ststack.empty()) ststack.pop();
-	std::set<nfa_node*> movestates;
-	for(std::set<nfa_node*>::const_iterator i = nodes.begin(); i!=nodes.end(); i++) {
-		if((*i)->edge == edge) {
-			movestates.insert((*i)->next1);
-			if((*i)->next1->is_epsilon_trans()) 
-				ststack.push((*i)->next1);
+// param: nodes [in, out] : on entry nodes contains the previous nodes and on exit the nodes due to transitions on edge 
+// param: stack [out] : contains the epsilon-unchecked nodes
+// param: edge [in] : the transition symbol
+void lib::nfa_expr::move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge) {
+	assert(stack.empty());
+	std::set<nfa_node*> from = nodes;
+	nodes.clear();
+	for(std::set<nfa_node*>::iterator it=from.begin(); it!=from.end(); it++) {
+		if((*it)->edge == edge) {
+			nodes.insert((*it)->next1);
+			if((*it)->next1->is_epsilon_trans()) 
+				stack.push((*it)->next1);
 		}
 	}
-	nodes = movestates;
 }
 
 bool lib::nfa_expr::match(const std::string& str) {
-	const nfa_expr& expr = *this;
 	std::set<nfa_node*> nodes;
-	std::stack<nfa_node*> ststack;
-	
-	// Move to start
-	nodes.insert(expr.start);
-	if(expr.start->is_epsilon_trans()) ststack.push(expr.start);
-	closure(ststack, nodes);
-
-	// Move driven by string
+	std::stack<nfa_node*> stack;
+	// Start scanning from this expr start.
+	nodes.insert(start);
+	if(start->is_epsilon_trans()) stack.push(start);
+	if(!stack.empty()) closure(nodes, stack);
+	assert(stack.empty());
+#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+	std::cout << " expecting: " << nodes << std::endl;;
+#endif
+	// Transitions driven by string
 	for(size_type i=0;i<str.length();i++) {
-		move(nodes, uchar_t(str[i]), ststack);
-		if(!ststack.empty()) closure(ststack, nodes);
+		move(nodes, stack, uchar_t(str[i]));
+		if(!stack.empty()) closure(nodes, stack);
+		assert(stack.empty());
+#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+		std::cout << str.substr(0, i+1) << " expecting: " << nodes << std::endl;
+#endif
 		if(nodes.empty()) {
-#ifndef AMBULANT_NO_IOSTREAMS		
+#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+			// point out mismatch		
 			std::cout << "F>> " << str.substr(0, i) << '^' << str[i] << '^' << std::endl;
 #endif
 			break;
 		}
 	}
-	return nodes.find(expr.accept) != nodes.end();
+	return nodes.find(accept) != nodes.end();
 }
 
-bool lib::nfa_expr::match(const std::string& str, bool anchors) {
-	const nfa_expr& expr = *this;
-	std::set<nfa_node*> nodes;
-	std::stack<nfa_node*> ststack;
-	
-	// Move to start
-	nodes.insert(expr.start);
-	if(expr.start->is_epsilon_trans()) ststack.push(expr.start);
-	closure(ststack, nodes);
-
-	std::vector<size_type> ixv;
-	
-	// Move driven by string
-	for(size_type i=0;i<str.length();i++) {
-		move(nodes, (uchar_t)str.at(i), ststack);
-		if(!ststack.empty()) closure(ststack, nodes);
-#ifndef AMBULANT_NO_IOSTREAMS		
-		std::cout << int(i) << ": ";
-		for(std::set<nfa_node*>::const_iterator it = nodes.begin(); it!=nodes.end(); it++) {
-			if((*it)->anchor & GROUP_BEGIN) std::cout << "begin, ";
-			if((*it)->anchor & GROUP_END) std::cout << "end, ";
+#ifndef AMBULANT_NO_IOSTREAMS
+std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes) {
+	int count = 0;
+	std::set<char> next_chars;
+	int accept_counter = 0;
+	int epsilon_counter = 0;
+	for(std::set<lib::nfa_node*>::const_iterator it = nodes.begin(); it!=nodes.end(); it++) {
+		if((*it)->is_important_trans()) {
+			if((*it)->is_accept_node()) 
+				accept_counter++;
+			else
+				next_chars.insert((*it)->get_edge_repr());
+		} else {
+			next_chars.insert((*it)->get_edge_repr());
 		}
-		std::cout << std::endl;
-#endif
 	}
-	return nodes.find(expr.accept) != nodes.end();
+	for(std::set<char>::iterator it2 = next_chars.begin(); it2!=next_chars.end(); it2++)
+		os << (*it2);
+	while((accept_counter--)>0) os << '$';
+	return os;
 }
+#endif
 
 
 

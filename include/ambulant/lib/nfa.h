@@ -56,9 +56,9 @@
 #include "ambulant/config/config.h"
 
 #include <string>
-#include <vector>
 #include <ctype.h>
 #include <set>
+#include <map>
 #include <stack>
 #include <cassert>
 
@@ -77,14 +77,12 @@ namespace lib {
 // a) shring the string to be matched into tokens using the scanner
 // b) use the matcher against the short string of the tokens.
 // This way for example a decimal becomes the literals: d | d.d
-// instead of [0-9] | [0-9].[0-9] resulting to an improvement 
+// instead of [0-9]+ | [0-9]+.[0-9]+ resulting to an improvement 
 // nore than an order of magnitude (~20 times).
 
 const int EPSILON = -1;
 const int ACCEPT  = -9;
 const int REPEAT_LIMIT  = 1024;
-const int GROUP_BEGIN = 1;
-const int GROUP_END = 2;
 
 // An nfa node represents a node in a
 // nonderministic finite automaton (NFA)
@@ -93,6 +91,11 @@ const int GROUP_END = 2;
 //
 // NFA nodes could be linearized in a
 // continous memory buffer for efficiency.
+//
+// nfa node flavors:
+// edge: {int, nfa_node*, 0, 0}
+// accept: {-9, 0, 0, 0}
+// epsilon: {-1, nfa_node*, nfa_node*, 0}
 
 struct nfa_node {
 	typedef unsigned char uchar_t;
@@ -107,18 +110,19 @@ struct nfa_node {
 	void set_transition(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
 		{ edge = e; next1 = n1; next2 = n2;}
 
-	bool is_epsilon_trans() { return edge == EPSILON;}
-	bool is_important_trans() { return edge != EPSILON;}
+	bool is_epsilon_trans() const { return edge == EPSILON;}
+	bool is_important_trans() const { return edge != EPSILON;}
 	bool is_accept_node() { return edge == ACCEPT;}
+	int get_anchor() const { return anchor;}
+	char get_edge_repr() const { return (edge == EPSILON)?'!':((edge == ACCEPT)?'$':char(edge));}
 
 	// Used for expr construction
-	nfa_node *clone(std::set<nfa_node*>& clones);
+	nfa_node *clone(std::map<nfa_node*, nfa_node*>& clones);
 	
 	int edge;
 	nfa_node *next1;
 	nfa_node *next2;
 	int anchor;
-	nfa_node *myclone;
 	
 	// verifier
 	static int nfa_nodes_counter;
@@ -153,9 +157,9 @@ class nfa_expr {
 	// Assignment constructor.
 	nfa_expr(const nfa_expr& other) 
 	:	accept(0), start(0) {
-		std::set<nfa_node*> cloned;
-		accept = other.accept->clone(cloned);
-		start = other.start->clone(cloned);
+		std::map<nfa_node*, nfa_node*> clones;
+		accept = other.accept->clone(clones);
+		start = other.start->clone(clones);
 	}
 	
 	// Copy constructor
@@ -235,13 +239,15 @@ class nfa_expr {
 		return int(size()*sizeof(nfa_node)) + int(sizeof(nfa_expr));
 	}
 
+	void mark_expr(int gn);
+	
 	//////////////////////////
 	// Match
 	
-	// Matches string against the regex that this nfa_expr represents. 
+	// Matches the argument string against the regex 
+	// that this nfa_expr represents. 
 	bool match(const std::string& str);
-	bool match(const std::string& str, bool anchors);
-	
+	bool match(const std::string& str, std::map<int, int>& anchors);
 	
 	//////////////////////////
 	// Regex operations
@@ -324,8 +330,6 @@ class nfa_expr {
 	// Returns the nodes of this expression
 	std::set<nfa_node*>& get_expr_nodes(std::set<nfa_node*>& nodes) const;
 	
-  private:
-	
 	// expr expr
 	// This consumes expr which becomes null
 	const nfa_expr& cat_expr_abs(nfa_expr *eptr);
@@ -334,9 +338,10 @@ class nfa_expr {
 	// This consumes expr which becomes null
 	const nfa_expr& or_expr_abs(nfa_expr *eptr);
 	
+  private:
 	// NFA search algorithm helpers
-	void move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack);
-	void closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes);
+	void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge);
+	void closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack);
 	
 	// invariants checks
 	void verify1() const;
@@ -349,5 +354,12 @@ class nfa_expr {
  
 } // namespace ambulant
 
+#ifndef AMBULANT_NO_IOSTREAMS
+#include <ostream>
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::nfa_node& n) {
+	return os << n.get_edge_repr();
+}
+std::ostream& operator<<(std::ostream& os, const std::set<ambulant::lib::nfa_node*>& nodes);
+#endif
 
 #endif // AMBULANT_LIB_NFA_H
