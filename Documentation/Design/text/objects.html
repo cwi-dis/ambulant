@@ -46,8 +46,11 @@ multiple object classes: the <cite>refcounting protocol</cite> and the <cite>act
 protocol</cite>.</p>
 <p>The <cite>refcounting protocol</cite> is contained in the file <tt class="literal"><span class="pre">lib/refcount.h</span></tt>. It needs to
 be implemented only by objects that is truly shared, i.e. any object whose
-lifetime is not predetermined by some other object. KK will need to
-explain the protocol.</p>
+lifetime is not predetermined by some other object. New instances of refcounted
+objects are created using the operator new. Any object that needs to share
+a particular instance calls add_ref against this instance. The creator
+of the refcounted object and any sharer are responsible to call the release
+function of the object when they don't need the object any more.</p>
 <p>The <cite>active/passive protocol</cite> is contained in the <tt class="literal"><span class="pre">lib/skeleton.h</span></tt>
 header. JJ will need to explain this protocol.</p>
 </div>
