@@ -221,6 +221,8 @@ scheduler::time_type scheduler::exec() {
 	while(next == now) next = exec(now);
 	time_type waitdur = next - now;
 	unlock();
+	lib::logger::get_logger()->debug("scheduler::exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
+	if (waitdur < 0) waitdur = 0;
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
 
