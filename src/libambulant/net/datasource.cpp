@@ -160,7 +160,6 @@ if (size <= m_used) {
 
 
 net::passive_datasource::passive_datasource(const char *url)
-: m_refcount(1)
 {
 	int m_len;
 	m_len = strlen(url);
@@ -198,8 +197,7 @@ net::passive_datasource::~passive_datasource()
 
 
 net::active_datasource::active_datasource(passive_datasource *const source, int file)
-:	m_source(source), 
-	m_refcount(1)
+:	m_source(source)
 {
 	if (file >= 0) {
 		m_stream = file;

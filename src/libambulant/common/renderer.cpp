@@ -13,7 +13,7 @@
 
 using namespace ambulant;
 
-typedef lib::callback<lib::active_renderer,lib::detail::readdone_callback_arg> readdone_callback;
+typedef lib::no_arg_callback<lib::active_renderer> readdone_callback;
 
 lib::active_renderer::active_renderer(event_processor *const evp,
 	net::passive_datasource *src,
@@ -24,11 +24,9 @@ lib::active_renderer::active_renderer(event_processor *const evp,
 	m_dest(dest->activate(evp, node)),
 	m_node(node),
 	m_readdone(NULL),
-	m_playdone(NULL),
-	m_refcount(1)
+	m_playdone(NULL)
 {
-	m_readdone = new readdone_callback(this, &lib::active_renderer::readdone, 
-					new lib::detail::readdone_callback_arg());
+	m_readdone = new readdone_callback(this, &lib::active_renderer::readdone);
 }
 
 void
@@ -50,7 +48,7 @@ lib::active_renderer::start(lib::event *playdone)
 }
 
 void
-lib::active_renderer::readdone(lib::detail::readdone_callback_arg *dummy)
+lib::active_renderer::readdone()
 {
 	lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_dest->need_redraw();
@@ -72,7 +70,7 @@ lib::active_final_renderer::~active_final_renderer()
 }
 
 void
-lib::active_final_renderer::readdone(lib::detail::readdone_callback_arg *dummy)
+lib::active_final_renderer::readdone()
 {
 	lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_data_size = m_src->size();

@@ -32,10 +32,8 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 	
 	lib::event_processor *processor = lib::event_processor_factory();
 
-	typedef lib::callback<mainloop,mainloop_callback_arg> callback;
-	lib::event *ev = new callback(this, 
-		&mainloop::player_done_callback, 
-		new mainloop_callback_arg());
+	typedef lib::no_arg_callback<mainloop> callback;
+	lib::event *ev = new callback(this, &mainloop::player_done_callback);
 
 	a->start(processor, ev);
 

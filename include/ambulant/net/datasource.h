@@ -85,7 +85,7 @@ class active_datasource;
 
 
 
-class passive_datasource : public ambulant::lib::ref_counted 
+class passive_datasource : public ambulant::lib::ref_counted_obj
 {
 public:
 	
@@ -103,29 +103,14 @@ public:
 		os << "passive_datasource(" << (void *)&n << ", url=\"" << n.m_url << "\")";
 		return os;
 	}
-	////////////////////////
-	// lib::ref_counted interface implementation
-   long add_ref() {return ++m_refcount;}
-
-	long release() {
-		std::cout << "active_datasource.release, count=" << m_refcount << std::endl;
-		if(--m_refcount == 0){
-			delete this;
-			return 0;
-		}
-		return m_refcount;
-	}
-
-	long get_ref_count() const {return m_refcount;}
 	
 private:
 	char *m_url;
-	ambulant::lib::basic_atomic_count<ambulant::lib::critical_section> m_refcount;
 };
 
 	
  
-class active_datasource : public ambulant::lib::ref_counted {  	
+class active_datasource : public ambulant::lib::ref_counted_obj {  	
 public:
 	// constructors 
 	active_datasource();
@@ -147,25 +132,10 @@ public:
 		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
 		return os;
 	}
-	////////////////////////
-	// lib::ref_counted interface implementation
-   long add_ref() {return ++m_refcount;}
-
-	long release() {
-		std::cout << "active_datasource.release, count=" << m_refcount << std::endl;
-		if(--m_refcount == 0){
-			delete this;
-			return 0;
-		}
-		return m_refcount;
-	}
-
-	long get_ref_count() const {return m_refcount;}
 
 private:
     databuffer *m_buffer;
     passive_datasource *m_source;
-    ambulant::lib::basic_atomic_count<ambulant::lib::critical_section> m_refcount;
 	int m_filesize;
 	int m_stream;
 	void filesize();

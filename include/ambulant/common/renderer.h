@@ -25,14 +25,7 @@ namespace ambulant {
 
 namespace lib {
 
-namespace detail {
-
-class readdone_callback_arg {
-};
-
-}; // namespace detail
-
-class active_renderer : public ref_counted {
+class active_renderer : public ref_counted_obj {
   public:
   	active_renderer()
   	:	m_event_processor(NULL),
@@ -40,14 +33,14 @@ class active_renderer : public ref_counted {
   		m_node(NULL),
   		m_readdone(NULL),
   		m_playdone(NULL),
-  		m_refcount(1), m_dest(0) {}
+  		m_dest(0) {}
   	active_renderer(const ambulant::lib::active_renderer& src)
   	:	m_event_processor(src.m_event_processor),
   		m_src(src.m_src),
   		m_node(src.m_node),
   		m_readdone(src.m_readdone),
   		m_playdone(src.m_playdone),
-  		m_refcount(1), m_dest(0) {}
+  		m_dest(0) {}
 	active_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		passive_region *const dest,
@@ -59,23 +52,8 @@ class active_renderer : public ref_counted {
 	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
 	virtual void stop();
 	
-	////////////////////////
-	// lib::ref_counted interface implementation
-	
-	long add_ref() {return ++m_refcount;}
-
-	long release() {
-		if(--m_refcount == 0){
-			delete this;
-			return 0;
-		}
-		return m_refcount;
-	}
-
-	long get_ref_count() const {return m_refcount;}
-
   protected:
-	virtual void readdone(detail::readdone_callback_arg *dummy);
+	virtual void readdone();
 
   	event_processor *const m_event_processor;
   	net::active_datasource *m_src;
@@ -83,7 +61,6 @@ class active_renderer : public ref_counted {
 	const node *m_node;
 	lib::event *m_readdone;
 	lib::event *m_playdone;
-	basic_atomic_count<critical_section> m_refcount;
 };
 
 // active_final_renderer is a handy subclass of active_renderer:
@@ -102,7 +79,7 @@ class active_final_renderer : public active_renderer {
 	virtual ~active_final_renderer();
 	
   protected:
-	void readdone(detail::readdone_callback_arg *dummy);
+	void readdone();
 	void *m_data;
 	unsigned m_data_size;
 };
