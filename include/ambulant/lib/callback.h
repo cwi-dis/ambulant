@@ -144,6 +144,22 @@ class scalar_arg_callback_event : public event {
 	}
 };
 
+template <class T, class A, class B>
+class scalar_arg2_callback_event : public event {
+	T *m_obj;
+	void (T::*m_mf)(A a, B b);
+	A m_a;
+	B m_b;
+	
+  public:
+	scalar_arg2_callback_event(T* obj, void (T::*mf)(A, B), A a, B b) 
+	:	m_obj(obj), m_mf(mf), m_a(a), m_b(b) {}
+	
+	virtual void fire() { 
+		if(m_obj && m_mf)
+			(m_obj->*m_mf)(m_a, m_b);
+	}
+};
 
 template <class T>
 class no_arg_callback_event : public event {
