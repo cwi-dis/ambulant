@@ -9,6 +9,7 @@
  */
 
 #include "ambulant/lib/tree_builder.h"
+#include "ambulant/lib/document.h"
 
 #include "ambulant/lib/logger.h"
 
@@ -16,11 +17,12 @@
 
 using namespace ambulant;
 
-lib::tree_builder::tree_builder()
+lib::tree_builder::tree_builder(node_context *context)
 :	m_xmlparser(0),
 	m_root(0),
 	m_current(0),
-	m_well_formed(false) {
+	m_well_formed(false),
+	m_context(context) {
 	m_xmlparser = new expat_parser(this, this);
 }
 
@@ -97,9 +99,9 @@ lib::tree_builder::end_document() {
 void 
 lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
-		m_root = m_current = new node(qn, qattrs);
+		m_root = m_current = new node(qn, qattrs, m_context);
 	} else if(m_current != 0) {
-		node *p = new node(qn, qattrs);
+		node *p = new node(qn, qattrs, m_context);
 		m_current->append_child(p);
 		m_current = p;
 	} else
@@ -125,7 +127,9 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 
 void 
 lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::string& uri) {
-	m_nscontext.set_prefix_mapping(prefix, uri);
+	lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
+	if(m_context)
+		m_context->set_prefix_mapping(prefix, uri);
 }
 
 void 

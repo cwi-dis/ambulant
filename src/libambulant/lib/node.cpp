@@ -26,6 +26,9 @@
 // tree helper iterators and visitors
 #include "ambulant/lib/node_navigator.h" 
 
+// node context
+#include "ambulant/lib/document.h" 
+
 
 using namespace ambulant;
 
@@ -90,6 +93,7 @@ class count_visitor {
 	const count_visitor& operator=(const count_visitor& o);	
 };
 
+
 ////////////////////////
 // private attr_collector
 // Scans the tree and creates a map attr to nodes.
@@ -123,25 +127,32 @@ class attr_collector {
 // Note: attrs are as per expat parser
 // e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 
-lib::node::node(const char *local_name, const char **attrs)
-:	m_parent(0), m_next(0), m_child(0), m_qname("",(local_name?local_name:"error")) {
+lib::node::node(const char *local_name, const char **attrs, const node_context *ctx)
+:	m_parent(0), m_next(0), m_child(0), 
+	m_qname("",(local_name?local_name:"error")),
+	m_context(0) {
 	set_attributes(attrs);
 }
 
-lib::node::node(const xml_string& local_name, const char **attrs)
-	:	m_parent(0), m_next(0), m_child(0), m_qname("", local_name) {
-		set_attributes(attrs);
+lib::node::node(const xml_string& local_name, const char **attrs, const node_context *ctx)
+:	m_parent(0), m_next(0), m_child(0), 
+	m_qname("", local_name),
+	m_context(ctx) {
+	set_attributes(attrs);
+}
+
+lib::node::node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
+:	m_parent(0), m_next(0), m_child(0), 
+	m_qname(qn), m_qattrs(qattrs), m_context(ctx) {
 }
 
 // shallow copy from other
 lib::node::node(const node* other)
-	:	m_parent(0), m_next(0), m_child(0), 
-		m_qname(other->get_qname()),
-		m_data(other->get_data()),
-		m_qattrs(other->get_attrs()) {}
-
-lib::node::node(const q_name_pair& qn, const q_attributes_list& qattrs)
-	:	m_parent(0), m_next(0), m_child(0), m_qname(qn), m_qattrs(qattrs) {
+:	m_parent(0), m_next(0), m_child(0), 
+	m_qname(other->get_qname()),
+	m_data(other->get_data()),
+	m_qattrs(other->get_attrs()),
+	m_context(other->get_context()) {
 }
 
 //////////////////////
@@ -320,6 +331,14 @@ lib::node::get_attribute(const std::string& name) const {
 	return get_attribute(name.c_str());
 }
 
+// returns the resolved url of an attribute
+std::string 
+lib::node::get_url(const char *attrname) const {
+	const char *rurl = get_attribute(attrname);
+	if(!rurl) return "";
+	return m_context?m_context->resolve_url(this, rurl):rurl;
+}
+
 /////////////////////
 // string repr
 
@@ -361,8 +380,6 @@ lib::node::size() const {
 	std::for_each(begin(), end(), visitor);
 	return count;
 }
-
-
 
 void lib::node::create_idmap(std::map<std::string, node*>& m) const {
 	attr_collector<node> visitor(m);

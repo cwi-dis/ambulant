@@ -20,7 +20,6 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/expat_parser.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/lib/nscontext.h"
 
 #include <string>
 
@@ -28,6 +27,7 @@ namespace ambulant {
 
 namespace lib {
 
+class node_context;
 
 class tree_builder : 
 	public sax_content_handler, 
@@ -35,8 +35,7 @@ class tree_builder :
 
   ///////////////
   public:
-
-	tree_builder();
+	tree_builder(node_context *context = 0);
 	
 	~tree_builder();
 
@@ -55,10 +54,6 @@ class tree_builder :
 	// call this function to get the tree and become owner
 	node* detach();
 
-	const nscontext& get_namespace_context() const {
-		return m_nscontext;
-	}
-	
 	// set ready to build next xml tree
 	void reset();
 	
@@ -82,7 +77,7 @@ class tree_builder :
 	node *m_root;
 	node *m_current;
 	bool m_well_formed;
-	nscontext m_nscontext;
+	node_context *m_context;
 };
 
 

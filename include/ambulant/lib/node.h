@@ -36,6 +36,7 @@ namespace ambulant {
 
 namespace lib {
 
+class node_context;
 
 // Simple tree node with tag, data and attrs
 // The parent of each node is also its owner and container
@@ -54,14 +55,14 @@ class node {
 	
 	// Note: attrs are as per expat parser
 	// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-	node(const char *local_name, const char **attrs = 0);
+	node(const char *local_name, const char **attrs = 0, const node_context *ctx = 0);
 
-	node(const xml_string& local_name, const char **attrs = 0);
+	node(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0);
 
+	node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0);
+	
 	// shallow copy from other
 	node(const node* other);
-
-	node(const q_name_pair& qn, const q_attributes_list& qattrs);
 	
 	///////////////////////////////
 	// Destruct this node and its contents
@@ -152,9 +153,15 @@ class node {
 	xml_string get_trimmed_data() const;
 
 	bool has_graph_data() const;
+	
 	const char *get_attribute(const char *name) const;
 	const char *get_attribute(const std::string& name) const;
+	
+	// returns the resolved url of an attribute
+	std::string get_url(const char *attrname) const;
+	
 	const q_attributes_list& get_attrs() const { return m_qattrs;}
+	
 
 	// return the number of nodes of the xml (sub-)tree starting at this node
 	unsigned int size() const;
@@ -172,13 +179,28 @@ class node {
 	
 	void dump(std::ostream& os) const;
 
+	/////////////////////
+	// node context
+	
+	const node_context* get_context() const { return m_context;}
+	void set_context(node_context *c) { m_context = c;}
+	
   /////////////
   protected:
 	// node data 
 	// sufficient for a generic xml element
+	
+	// the qualified name of this element as std::pair
 	q_name_pair m_qname;
+	
+	// the qualified name of this element as std::pair
 	q_attributes_list m_qattrs;
+	
+	// the text data of this node
 	xml_string m_data;
+	
+	// the context of this node
+	const node_context *m_context;
 	
 	const node& operator =(const node& o);
 	

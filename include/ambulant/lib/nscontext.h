@@ -24,16 +24,25 @@ namespace lib {
 
 class nscontext {
   public:
-	 void set_prefix_mapping(const xml_string& prefix, const xml_string& uri);
+	void set_prefix_mapping(const xml_string& prefix, const xml_string& uri);
+	
+	bool is_known_prefix(const xml_string& prefix) const;
+	bool is_known_namespace(const xml_string& uri) const;
 	 
-	 bool is_known_prefix(const xml_string& prefix) const;
-	 bool is_known_namespace(const xml_string& uri) const;
+	const char* get_namespace(const xml_string& prefix) const;
+	const char* get_default_namespace() const;
 	 
-	 const char* get_namespace(const xml_string& prefix) const;
-	 const char* get_default_namespace() const;
+	const char* get_namespace_prefix(const xml_string& uri) const;
 	 
-	 const char* get_namespace_prefix(const xml_string& uri) const;
+	static const char* 
+	get_namespace_prefix(const nscontext *p, const xml_string& uri);
 	 
+	const std::map<xml_string, xml_string>&
+	get_pre2uri() const { return m_pre2uri;}
+	
+	const std::map<xml_string, xml_string>&
+	get_uri2pre() const { return m_uri2pre;}
+	
   private:
 	std::map<xml_string, xml_string> m_pre2uri;
 	std::map<xml_string, xml_string> m_uri2pre;  
@@ -70,6 +79,11 @@ inline const char* nscontext::get_namespace_prefix(const xml_string& uri) const 
 	return (it == m_uri2pre.end())?0:(*it).second.c_str();
 }
 
+// static
+inline const char* 
+nscontext::get_namespace_prefix(const nscontext *p, const xml_string& uri) {
+	return p?p->get_namespace_prefix(uri):0;
+}
 
 } // namespace lib
  
