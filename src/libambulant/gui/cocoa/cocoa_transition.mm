@@ -331,7 +331,7 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 		break;
 	// series 3: clock-type wipes
 	case lib::clockWipe:
-		rv = new cocoa_transition_engine_singlesweepwipe();
+		rv = new cocoa_transition_engine_clockwipe();
 		break;
 	case lib::singleSweepWipe:
 		rv = new cocoa_transition_engine_singlesweepwipe();

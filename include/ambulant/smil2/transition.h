@@ -260,9 +260,43 @@ class transition_engine_miscshapewipe : virtual public transition_engine__iris {
 
 // series 3: clock-type wipes
 
+namespace detail {
+// Helper class - compute edges and points for angles
+enum edgetype {
+	edge_topright,
+	edge_right,
+	edge_bottom,
+	edge_left,
+	edge_topleft
+};
+
+class angle_computer {
+  public:
+	angle_computer()
+	:   m_initialized(false) {}
+	angle_computer(lib::screen_rect<int> rect);
+	~angle_computer() {}
+	
+	bool matches(lib::screen_rect<int> rect);
+	
+	void angle2poly(std::vector<lib::point> &outpoly, double angle, bool clockwise);
+  private:
+	void recompute_angles();
+	edgetype angle2edge(double angle, lib::point &edgepoint);
+	bool m_initialized;
+	lib::screen_rect<int> m_rect;
+	// more...
+	int m_xmid, m_ymid;
+	double m_angle_topleft, m_angle_topright, m_angle_botleft, m_angle_botright;
+	double m_xdist, m_ydist;
+};
+}; // namespace detail
+
 class transition_engine_clockwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
+  private:
+	detail::angle_computer m_angle_computer;
 };
 
 class transition_engine_singlesweepwipe : virtual public transition_blitclass_poly {

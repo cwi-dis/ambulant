@@ -54,6 +54,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/smil2/transition.h"
+#include <math.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -433,11 +434,118 @@ transition_engine_miscshapewipe::get_template(int *size)
 
 // series 3: clock-type wipes
 
+detail::angle_computer::angle_computer(lib::screen_rect<int> rect)
+:   m_initialized(true),
+	m_rect(rect)
+{
+	recompute_angles();
+}
+
+bool
+detail::angle_computer::matches(lib::screen_rect<int> rect)
+{
+	if (!m_initialized) return false;
+	return rect == m_rect;
+}
+
+void
+detail::angle_computer::recompute_angles()
+{
+	AM_DBG lib::logger::get_logger()->trace("angle_computer::recompute_angles()");
+	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
+	m_xmid = (l+r)/2;
+	m_ymid = (t+b)/2;
+	m_xdist = (r-l)/2;
+	m_ydist = (b-t)/2;
+	m_angle_topleft = atan2(m_ydist, -m_xdist);
+	m_angle_topright = atan2(m_ydist, m_xdist);
+	m_angle_botleft = atan2(-m_ydist, -m_xdist);
+	m_angle_botright = atan2(-m_ydist, m_xdist);
+	AM_DBG lib::logger::get_logger()->trace("angle_computer::recompute_angles: tl=%d, tr=%d, bl=%d, br=%d",
+		(int)(m_angle_topleft * 180 / M_PI),
+		(int)(m_angle_topright * 180 / M_PI),
+		(int)(m_angle_botleft * 180 / M_PI),
+		(int)(m_angle_botright * 180 / M_PI));
+}
+
+void
+detail::angle_computer::angle2poly(std::vector<lib::point> &outpolygon, double angle, bool clockwise)
+{
+	AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2poly()");
+	assert(clockwise);
+	// Compute where a line with this angle intersects our rectangle
+	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
+	lib::point edgepoint;
+	detail::edgetype edge = angle2edge(angle, edgepoint);
+
+	// We always have the hitpoint, the center and the top edge.
+	// Then we progress over all cornerpoints that are part of the figure.
+	outpolygon.push_back(edgepoint);
+	outpolygon.push_back(lib::point(m_xmid, m_ymid));
+	outpolygon.push_back(lib::point(m_xmid, t));
+	if (edge == edge_topright) return;
+	outpolygon.push_back(lib::point(r, t));
+	if (edge == edge_right) return;
+	outpolygon.push_back(lib::point(r, b));
+	if (edge == edge_bottom) return;
+	outpolygon.push_back(lib::point(l, b));
+	if (edge == edge_left) return;
+	outpolygon.push_back(lib::point(l, t));
+	assert(edge == edge_topleft);
+	return;
+}
+
+detail::edgetype
+detail::angle_computer::angle2edge(double angle, lib::point &edgepoint)
+{
+	AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge(%f) %d degrees", angle, (int)(angle*180/M_PI));
+	// Normalize angle to [-pi, pi) range
+	while (angle < -M_PI)
+		angle = angle + 2*M_PI;
+	while (angle >= M_PI)
+		angle = angle -2*M_PI;
+	// Now find between which cornerpoint angles we are
+	detail::edgetype edge;
+	if (angle >= m_angle_topright && angle <= M_PI/2) {
+		edge = edge_topright;
+		AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge: topright");
+	} else if (angle >= m_angle_botright && angle <= m_angle_topright) {
+		edge = edge_right;
+		AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge: right");
+	} else if (angle >= m_angle_botleft && angle <= m_angle_botright) {
+		edge = edge_bottom;
+		AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge: bottom");
+	} else if (angle >= m_angle_topleft || angle <= m_angle_botleft) {
+		edge = edge_left;
+		AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge: left");
+	} else if (angle >= M_PI/2 && angle <= m_angle_topleft) {
+		edge = edge_topleft;
+		AM_DBG lib::logger::get_logger()->trace("angle_computer::angle2edge: topleft");
+	} else
+		lib::logger::get_logger()->error("anglecomputer: impossible angle %f", angle);
+	// Next compute the intersection point
+	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
+	if (edge == edge_topleft || edge == edge_topright)
+		edgepoint = lib::point((int)(m_xmid + m_xdist/tan(angle) + 0.5), t);
+	else if (edge == edge_right)
+		edgepoint = lib::point(r, (int)(m_ymid - m_ydist*tan(angle) + 0.5));
+	else if (edge == edge_bottom)
+		edgepoint = lib::point((int)(m_xmid - m_xdist/tan(angle) + 0.5), b);
+	else
+		edgepoint = lib::point(l, (int)(m_ymid + m_ydist*tan(angle) + 0.5));
+	return edge;
+}
+
 void
 transition_engine_clockwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype clockWipe not yet implemented");
+	if (!m_angle_computer.matches(dstrect))
+		m_angle_computer = detail::angle_computer(dstrect);
+	clear();
+	double angle = M_PI/2 - (m_progress*2*M_PI);
+	AM_DBG lib::logger::get_logger()->trace("transition_engine_clockwipe::compute: progress %f angle %f (%d)", m_progress, angle, (int)(angle*180/M_PI));
+	m_angle_computer.angle2poly(m_newpolygon, angle, true);
 }
 
 void
