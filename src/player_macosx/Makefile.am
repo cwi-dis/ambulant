@@ -104,6 +104,16 @@ cocoambulant_bundle: cocoambulant_executable
 	cd ../plugins; \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
 
+#	The next bit is gross. Xerces only builds as a dynamic library. This means
+#	we must copy that library into the .app bundle (in the Frameworks dir) and
+#	change the plugin to refer to that copy of the xerces library in stead of
+#	the one it was linked to.
+if WITH_XERCES_PLUGIN
+	mkdir -p $(BUILDAPPNAME).app/Contents/Frameworks
+	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.25.dylib $(BUILDAPPNAME).app/Contents/Frameworks
+	install_name_tool -change libxerces-c.25.dylib @executable_path/../Frameworks/libxerces-c.25.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces.so
+endif
+	
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
