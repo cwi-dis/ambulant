@@ -60,7 +60,12 @@
 #undef min
 #endif
 
+#include "ambulant/config/config.h"
+#   if __GNUC__ == 2 && __GNUC_MINOR__ <= 97
+#include "ambulant/compat/limits"
+#else
 #include <limits>
+#endif
 #include <cassert>
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/common/region_dim.h"

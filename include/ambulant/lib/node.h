@@ -248,6 +248,10 @@ class node {
 	void set_context(node_context *c) { m_context = c;}
 	
 	static int get_node_counter() {return node_counter;}
+	
+	/////////////////////
+	// region nodes
+	virtual bool is_region_node() const { return false; }
 
   /////////////
   protected:
