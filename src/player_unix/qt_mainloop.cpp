@@ -64,7 +64,7 @@
 #include "ambulant/net/ffmpeg_datasource.h"
 #endif
 #include "ambulant/gui/none/none_factory.h"
-
+#include "ambulant/gui/qt/qt_factory.h"
 qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df(NULL),
 	m_doc(NULL),
@@ -111,6 +111,8 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	m_rf->add_factory(new qt_renderer_factory(m_df));
 	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_video_factory");
  	m_rf->add_factory(new none::none_video_factory(m_df));
+	
+ 	m_rf->add_factory(new qt::qt_video_factory(m_df));
 
 	m_wf = new qt_window_factory(parent, 
 				     parent->get_o_x(),
@@ -217,5 +219,3 @@ qt_mainloop::show_file(const std::string &href)
 {
 	lib::logger::get_logger()->error("This implementation cannot open <%s> in a webbrowser yet", href.c_str());
 }
-
-	

@@ -67,7 +67,7 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 	m_lock.enter();
 	memcpy(m_data, frame, size);
 	m_data_size = size;
-	// Have to fire an event here !
+	m_dest->need_redraw();
 	m_lock.leave();
 }
 
