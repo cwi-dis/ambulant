@@ -102,6 +102,7 @@ class audio_datasource : virtual public datasource {
 	virtual int get_nchannels() = 0;
   	virtual int get_nbits() = 0;
 	virtual int get_samplerate() = 0;
+		
 };
 
 

@@ -215,7 +215,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 :	common::active_renderer(context, cookie, node, evp),
     m_rate(44100),
     m_bits(16),
-    m_channels(1),
+    m_channels(2),
 	m_buffer_size(4096),
 	m_channel_used(-1),
 	m_audio_format(AUDIO_S16SYS)
@@ -234,23 +234,19 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 			m_audio_src = new net::ffmpeg_audio_datasource(m_src, evp);
 		} else {
 			src = new net::raw_audio_datasource(m_src);
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using resample_datasource");
-			m_audio_src = new net::ffmpeg_resample_datasource(src, evp);  
-			infmt.sample_rate = m_audio_src ->get_samplerate();
-			infmt.channels = m_audio_src->get_nchannels();
-			infmt.bits = m_audio_src->get_nbits();
-			
 			outfmt.sample_rate = m_rate;
 			outfmt.channels = m_channels;
 			outfmt.bits = m_bits;
-			//m_audio_src->set_format(infmt, outfmt);
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: created a resample_datasource");
+			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using resample_datasource");
+			m_audio_src = new net::ffmpeg_resample_datasource(src, evp,outfmt); 
+			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: created a resample_datasource x%x", m_audio_src);
 		}
-#endif
+#else
 			m_audio_src = new net::raw_audio_datasource(m_src);
 			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using raw_audio_datasource");
+#endif		
 	} else {
-		lib::logger::get_logger()->error("sdl_active_audio_renderer: m_src=NULLL, datasource not created");
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: m_src=NULL, datasource not created");
 		m_audio_src = NULL;
 	}
 }
@@ -493,9 +489,9 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		init(44100, 16, 2);
+		init(m_rate, m_bits, m_channels);
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");

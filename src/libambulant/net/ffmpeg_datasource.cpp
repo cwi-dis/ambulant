@@ -270,7 +270,7 @@ net::ffmpeg_audio_datasource::init()
 }
 
 
-net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp) 
+net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp, net::audio_context out_fmt) 
 :	m_src(src),
 	m_context_set(false),
 	m_resample_context(NULL),
@@ -281,13 +281,18 @@ net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(net::audio_datasourc
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : constructor");
-	m_in_fmt.sample_rate = 0;
-	m_in_fmt.channels = 0;
-	m_in_fmt.bits = 0;
+	m_in_fmt.sample_rate = m_src->get_samplerate();
+	m_in_fmt.channels = m_src->get_nchannels();
+	m_in_fmt.bits = m_src->get_nbits();
 	
-	m_out_fmt.sample_rate = 0;
-	m_out_fmt.channels = 0;
-	m_out_fmt.bits = 0;
+	m_out_fmt.sample_rate = out_fmt.sample_rate;
+	m_out_fmt.channels = out_fmt.channels;
+	m_out_fmt.bits = out_fmt.bits;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : IN : %d, %d", m_in_fmt.sample_rate,  m_in_fmt.channels);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : OUT : %d, %d", m_out_fmt.sample_rate,  m_out_fmt.channels);
+	m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.sample_rate,m_in_fmt.sample_rate);
+	m_context_set = true;
+	
 }
 
 net::ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
@@ -296,12 +301,7 @@ net::ffmpeg_resample_datasource::~ffmpeg_resample_datasource()
 }
 
 
-void
-net::ffmpeg_resample_datasource::set_format(net::audio_context in_fmt, net::audio_context out_fmt)
-{
-    m_resample_context = audio_resample_init(out_fmt.channels, in_fmt.channels, out_fmt.sample_rate, in_fmt.sample_rate);
-    m_context_set = true;
-}
+
 
 
 
@@ -315,15 +315,14 @@ net::ffmpeg_resample_datasource::data_avail()
   if (m_context_set) {
 	size = m_src->size();
 	m_inbuf = (short int*) m_src->get_read_ptr();
-	m_outbuf = (short int*) m_buffer.get_write_ptr(20*size);
-	// XXXX : daniel is not sure aboutr the 2 at the and of audio_resample. What does this mean ? should this be the number of bytes in a sample ?
-	//XXXX : daniel does not know what audio_resample returns ! I guess it's the amount of bytes writen in m_outbuf
-	resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf,2);
-    m_buffer.pushdata(resampled);
+	m_outbuf = (short int*) m_buffer.get_write_ptr(20*size);	
+	resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, size / 2);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples", resampled);
+    m_buffer.pushdata(resampled*2);
 	//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
 	m_src->readdone(size);
 	if (m_client_callback) {
-	   AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): calling client callback");
+	   AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling client callback");
 	   m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 	   m_client_callback = NULL;
    	} else {
@@ -411,9 +410,9 @@ void
 net::ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): start(0x%x) called", this);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start(): start(0x%x) called", this);
 	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
+		AM_DBG lib::logger::get_logger()->error("ffmpeg_resample_datasource::start(): m_client_callback already set!");
 	
 	if (m_buffer.buffer_not_empty() || m_src->end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead

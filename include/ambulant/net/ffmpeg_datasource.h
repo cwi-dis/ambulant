@@ -139,9 +139,9 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-     ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp);
+     ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp, net::audio_context out_fmt);
     ~ffmpeg_resample_datasource();
-   
+    
     void start(lib::event_processor *evp, lib::event *callback);  
 
     void readdone(int len);
@@ -152,8 +152,6 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 		
     char* get_read_ptr();
     int size() const;   
-	
-    void set_format(net::audio_context in_fmt, net::audio_context out_fmt); 
    
     void get_input_format(net::audio_context &fmt);  
     void get_output_format(net::audio_context &fmt);
@@ -167,7 +165,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
   	
 	  
   private:
-    datasource* m_src;
+    audio_datasource* m_src;
 
     bool m_context_set;
 
