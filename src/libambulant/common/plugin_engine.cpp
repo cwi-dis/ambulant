@@ -48,7 +48,6 @@
  
 #include"ambulant/common/plugin_engine.h"
 #include "ambulant/lib/logger.h"
-#include"ambulant/common/plugin_init.h"
 
 //#include<dlfcn.h>
 #include<stdlib.h>
@@ -66,7 +65,7 @@
 using namespace ambulant;
 
 
-int filter(const struct dirent* filen)
+int filter(struct dirent* filen)
 {
 	int len;
 	len = strlen(filen->d_name);
