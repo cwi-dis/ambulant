@@ -129,7 +129,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #endif
 }
 
-#if 0
 bool 
 lib::tree_builder::build_tree_from_url(const net::url& u) {
 	if(!m_xmlparser) return false;
@@ -149,7 +148,6 @@ lib::tree_builder::build_tree_from_url(const net::url& u) {
 	return false;
 #endif
 }
-#endif/*0*/
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {

@@ -107,7 +107,6 @@ class node_context {
 class document : public node_context {
 
   public:
-#if 0
 	/// A document factory function.
 	/// Creates documents from a url.
 	static document* create_from_url(common::factories* factory, const net::url& u);
@@ -115,7 +114,6 @@ class document : public node_context {
 	/// A document factory function.
 	/// Creates documents from local files.
 	static document* create_from_file(common::factories* factory, const std::string& filename);
-#endif/*0*/
 	
 	/// A document factory function.
 	/// Creates documents from source strings.

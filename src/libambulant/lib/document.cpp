@@ -97,7 +97,6 @@ lib::document::get_root() const {
 	return m_root;
 }
 
-#if 0
 //static 
 lib::document* 
 lib::document::create_from_file(common::factories* factory, const std::string& filename) {
@@ -127,7 +126,6 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	d->set_src_url(u);
 	return d;
 }
-#endif/*0*/
 
 //static 
 lib::document* 
