@@ -28,6 +28,9 @@ void net::url::init_statics() {
  	s_handlers.push_back(pair("n://n:n/",&url::set_from_host_port_uri));
   	s_handlers.push_back(pair("n://n/",&url::set_from_host_uri));
   	s_handlers.push_back(pair("n:///",&url::set_from_localhost_file_uri));
+   	s_handlers.push_back(pair("/n",&url::set_from_unix_path));
+ 	s_handlers.push_back(pair("n:n",&url::set_from_windows_path));
+  	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
  }
 
 void net::url::set_from_spec(const string& spec) {
@@ -70,6 +73,22 @@ void net::url::set_from_localhost_file_uri(lib::reg_scanner& sc, const std::stri
 	set_parts(sc, pat);
 }
 
+// pat: "/n"
+void net::url::set_from_unix_path(lib::reg_scanner& sc, const std::string& pat) {
+	m_protocol = "file";
+	m_host = "localhost";
+	m_port = 0;
+	m_path = sc.join(1);
+}
+
+// pat: "n:n" or "n:/n"
+void net::url::set_from_windows_path(lib::reg_scanner& sc, const std::string& pat) {
+	m_protocol = "file";
+	m_host = "localhost";
+	m_port = 0;
+	m_path = sc.get_str();
+}
+
 void net::url::set_parts(lib::reg_scanner& sc, const std::string& pat) {
 	const std::string& toks = sc.get_toks();
 	size_type n = toks.length();
@@ -86,12 +105,16 @@ void net::url::set_parts(lib::reg_scanner& sc, const std::string& pat) {
 
 std::string net::url::repr() const {
 	std::ostringstream os;
-	os << "Protocol: " << get_protocol() << std::endl;
-	os << "Host: " << get_host() << std::endl;
-	os << "Port: " << get_port() << std::endl;
-	os << "Path: " << get_path() << std::endl;
-	os << "Query: " << get_query() << std::endl;
-	os << "Ref: " << get_ref() << std::endl;
+	if(m_protocol == "file") {
+		os << m_protocol << "://" << 
+			((m_host=="localhost")?"":m_host) << "/" << m_path;
+	} else {
+		os << m_protocol << "://" << m_host << "/" << m_path;
+	}
+	if(!m_ref.empty()) 
+		os << "#" << m_ref;
+	if(!m_query.empty()) 
+		os << "?" << m_query;
 	return os.str();
 }
 
