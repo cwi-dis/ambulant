@@ -50,6 +50,7 @@
 #include "ambulant/net/ffmpeg_datasource.h" 
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/net/url.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -63,6 +64,24 @@ typedef lib::no_arg_callback<net::ffmpeg_audio_datasource> readdone_callback;
 
 #define INBUF_SIZE 4096
 
+
+net::datasource* 
+net::ffmpeg_datasource_factory::new_datasource(const std::string& url, audio_context fmt, datasource *src,lib::event_processor *const evp)
+{
+	net::url   loc(url);
+	
+	datasource *ds = NULL;
+	if (src) {
+			// XXXX Here we have to check for the mime type.
+			ds = new ffmpeg_audio_datasource(src, evp);
+			// XXX Here we have to check if ext & fmt are supported by ffmpeg
+			if (ds) return ds;			
+		}
+	return NULL;	
+}
+
+
+		
 net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(datasource *const src, lib::event_processor *const evp)
 :	m_codec(NULL),
 	m_con(NULL),
@@ -157,7 +176,6 @@ net::ffmpeg_audio_datasource::callback()
 		}
 	}
 	if (m_con) {
-		
 		size = m_src->size();
 		while (size > 0 && !m_buffer.buffer_full()) {
 			m_inbuf = (uint8_t*) m_src->get_read_ptr();
@@ -251,6 +269,11 @@ net::ffmpeg_audio_datasource::select_decoder(char* file_ext)
 	if (m_codec == NULL) {
 			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder : Failed to open codec");
 	}
+	m_con = avcodec_alloc_context();
+	
+	if(avcodec_open(m_con,m_codec) < 0) {
+			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder : Failed to open avcodec");
+	}	
 }
 
 int 

@@ -92,7 +92,10 @@ class url {
 
 	// The ref or fragment.
     string m_ref;
-    
+	
+    // The mime type
+    string m_mime;
+	
   public:
  	url(); 
  
@@ -127,6 +130,10 @@ class url {
 	
 	const string& get_path() const {
 		return m_path;
+	}
+	
+	const string& get_mime() const {
+		return m_mime;
 	}
 	
 	string get_file() const;

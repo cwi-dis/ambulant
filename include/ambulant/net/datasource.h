@@ -61,6 +61,24 @@
 namespace ambulant {
 
 namespace net {
+	
+
+struct audio_formats {
+	std::vector<int> samplerate;
+	std::vector<int> channels;
+	std::vector<int> bits;
+};	
+	
+struct audio_context {
+	std::string format;
+	int sample_rate;
+	int channels;
+	int bits;	
+};
+
+
+enum nrchannels { mono=1, stereo }; 
+
 
 class datasource : virtual public ambulant::lib::ref_counted {  	
   public:
@@ -86,12 +104,29 @@ class audio_datasource : virtual public datasource {
 	virtual int get_samplerate() = 0;
 };
 
+
+
+
 class datasource_factory {
   public: 
 
-    virtual ~datasource_factory() {}; 
-  
+    virtual ~datasource_factory() {}; 	
   	virtual datasource* new_datasource(const std::string& url) = 0;
+};
+
+class audio_datasource_factory  {
+  public: 
+
+    virtual ~audio_datasource_factory() {}; 	
+  	virtual datasource* new_datasource(const std::string& url, audio_context fmt) = 0;
+};
+
+
+class audio_filter_datasource_factory  {
+  public: 
+
+    virtual ~audio_filter_datasource_factory() {}; 	
+  	virtual datasource* new_datasource(const std::string& url, audio_context fmt, datasource *src,lib::event_processor *const evp) = 0;
 };
 
 
@@ -102,12 +137,50 @@ class global_datasource_factory : public datasource_factory  {
   	~global_datasource_factory() {};
   
   	void add_factory(datasource_factory *df);
-	datasource* new_datasource(const std::string& url);
+	datasource* new_datasource(const std::string &url, audio_context fmt);
 		
   private:
 	std::vector<datasource_factory*> m_factories;
   	datasource_factory *m_default_factory;
 };
+
+
+class global_raw_datasource_factory  :public datasource_factory {
+  public:
+	global_raw_datasource_factory() 
+  	: m_default_factory(NULL) {}; 
+  	~global_raw_datasource_factory() {};
+	
+	void add_factory(datasource_factory *df);
+		
+  private:
+	  std::vector<datasource_factory*> m_factories;
+  	  datasource_factory *m_default_factory;
+};
+
+
+
+class global_audio_datasource_factory  {
+  public:
+	global_audio_datasource_factory(global_raw_datasource_factory *df) 
+  	: m_raw_datasource_factory(df)  {};
+		  
+  	~global_audio_datasource_factory() {};
+	void add_factory(audio_datasource_factory *df);
+	void add_decoder_factory(audio_filter_datasource_factory *df);
+	void add_resample_factory(audio_filter_datasource_factory *df);
+	datasource* new_datasource(const std::string &url, audio_context fmt, lib::event_processor *const evp);
+  
+  private:
+	std::vector<audio_datasource_factory*> m_factories;
+  	std::vector<audio_filter_datasource_factory*> m_decoder_factories;
+    std::vector<audio_filter_datasource_factory*> m_resample_factories;
+    global_raw_datasource_factory *m_raw_datasource_factory;
+};
+		
+
+
+
 
 } // end namespace net
 
