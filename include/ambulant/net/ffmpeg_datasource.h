@@ -219,6 +219,7 @@ class ffmpeg_video_datasource:
 	bool buffer_full();
 
   private:
+	int get_audio_stream_nr();
     bool _end_of_file();
 	const std::string m_url;
 	AVFormatContext *m_con;
