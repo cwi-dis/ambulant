@@ -66,6 +66,7 @@
 #endif
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/common/plugin_engine.h"
 
 //#include "ambulant/lib/tree_builder.h"
 
@@ -141,11 +142,16 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *m_rf =
 		new common::global_playable_factory(); 
+		
+	lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: Starting the plugin engine");
+	plugin::plugin_engine *m_pf = new plugin::plugin_engine(m_rf,m_df);
+	
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->trace("add factory for SDL");
 	m_rf->add_factory( new sdl::sdl_renderer_factory(m_df) );
 AM_DBG logger::get_logger()->trace("add factory for SDL done");
 #endif
+
 #ifdef WITH_ARTS
 	m_rf->add_factory(new arts::arts_renderer_factory(m_df));
 #endif 

@@ -839,7 +839,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 #else /*WITH_FFMPEG_0_4_9*/
 						num = m_con->pts_num;
 						den = m_con->pts_den;
-					
+					framebase/framerate;
 #endif/*WITH_FFMPEG_0_4_9*/
 						framerate = m_con->streams[m_stream_index]->codec.frame_rate;
 						framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
@@ -887,7 +887,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 								case FF_B_TYPE:
 									lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %f", pts); 
 									break;
-								case FF_P_TYPE:
+								case FF_P_TYPE:framebase/framerate;
 									lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %f", pts); 
 									break;
 								case FF_I_TYPE:
@@ -1029,6 +1029,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 }
 
+  
 
 
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()

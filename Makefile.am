@@ -1,6 +1,7 @@
 SUBDIRS = src include third_party_packages
 EXTRA_DIST = Documentation Extras 
 
+AM_CPPFLAGS=-rdynamic
 dist-hook:
 	rm -rf `find $(distdir) -name CVS -o -name '.#*' -o -name '*~' -o -name '*~.*'`
 
