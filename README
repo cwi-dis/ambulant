@@ -1,9 +1,9 @@
 Ambulant Player README
 ======================
 
-This directory contains version 0.5 of Ambulant,
+This directory contains version 0.7 of Ambulant,
 a playback engine for SMIL documents. 
-This release is known externally as AMBULANT/X.
+This release is known externally as AMBULANT/O
 It is an intermediate release of the Ambulant Player Project.
 The Ambulant homepage is at <http://www.ambulantplayer.org>.
 
@@ -79,7 +79,6 @@ This release supports full SMIL 2.0, with the following broad
 exceptions:
 - Limited support for internal linking; linking to external HTML sites
   is supported.
-- No support for transitions in this release.
 - No support for SMIL animation in this release.
 - tag names must match media type, and no support for mimetypes
 

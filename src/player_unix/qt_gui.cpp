@@ -307,10 +307,8 @@ main (int argc, char*argv[]) {
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);
-	mywidget->setBackgroundMode(Qt::NoBackground);
 	myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
-//	mywidget->setBackgroundMode(QWidget::NoBackground);
 	myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
