@@ -229,7 +229,7 @@ void animate_attrs::get_key_times(std::vector<double>& v) {
 	if(!p) return;
 	std::list<std::string> c;
 	lib::split_trim_list(p, c, ';');
-	lib::dec_p parser;
+	lib::number_p parser;
 	for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++) {
 		if(parser.matches(*it))
 			v.push_back(parser.get_result());
@@ -245,7 +245,7 @@ void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
 	if(!p) return;
 	std::list<std::string> c;
 	lib::split_trim_list(p, c, ';');
-	lib::dec_p parser;
+	lib::number_p parser;
 	for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++) {
 		std::list<std::string> sc;
 		lib::split_trim_list(*it, sc, ' ');

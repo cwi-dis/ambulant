@@ -163,7 +163,7 @@ void time_attrs::parse_rcount() {
 		AM_DBG m_logger->trace("%s[%s].repeatCount=indefinite", m_tag.c_str(), m_id.c_str());	
 		return;
 	}
-	dec_p parser;
+	number_p parser;
 	std::string::const_iterator b = rcount_str.begin();
 	std::string::const_iterator e = rcount_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
