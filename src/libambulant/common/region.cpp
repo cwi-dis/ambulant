@@ -272,12 +272,12 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 	
 	// Finally the children regions of this
 	// XXXX Should go per z-order value
-	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
-		children_list_t& cl = (*it1).second;
-		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
+		children_list_t& cl = (*it2).second;
+		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++)
 			//AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) -> child 0x%x, z=%d", (void *)this, (void *)(*i).second, (*i).first);
-			if(!(*it2)->get_info()->is_subregion())
-				(*it2)->redraw(our_rect, window);
+			if(!(*it3)->get_info()->is_subregion())
+				(*it3)->redraw(our_rect, window);
 	}
 }
 
