@@ -59,6 +59,7 @@
 
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/memfile.h"
+#include "ambulant/lib/string_util.h"
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
@@ -81,15 +82,20 @@ gui::dx::text_renderer::~text_renderer() {
 }
 
 void gui::dx::text_renderer::open(const std::string& url, viewport* v) {
-	if(!lib::memfile::exists(url)) {
-		lib::logger::get_logger()->warn("Failed to locate text file %s.", url.c_str());
-		return;
-	}
-	lib::memfile mf(url);
-	mf.read();
-	lib::databuffer& db = mf.get_databuffer();
 	std::basic_string<text_char> text;
-	text.assign(db.begin(), db.end());
+	if(!lib::starts_with(url, "data:")) {
+		if(!lib::memfile::exists(url)) {
+			lib::logger::get_logger()->warn("Failed to locate text file %s.", url.c_str());
+			return;
+		}
+		lib::memfile mf(url);
+		mf.read();
+		lib::databuffer& db = mf.get_databuffer();
+		std::basic_string<text_char> text;
+		text.assign(db.begin(), db.end());
+	} else {
+		text.assign(url.begin()+6, url.end());
+	}
 		
 	m_ddsurf = v->create_surface(m_size);
 	if(!m_ddsurf) {

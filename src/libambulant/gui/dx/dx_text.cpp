@@ -59,6 +59,7 @@
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
+#include "ambulant/lib/string_util.h"
 
 //#define AM_DBG
 
@@ -88,7 +89,7 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	std::string url = m_node->get_url("src");
 	dx_window *dxwindow = static_cast<dx_window*>(m_window);
 	viewport *v = dxwindow->get_viewport();
-	if(lib::memfile::exists(url)) {
+	if(lib::starts_with(url, "data:") || lib::memfile::exists(url)) {
 		m_text = new text_renderer(url, bounds, v);
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
