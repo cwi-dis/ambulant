@@ -140,25 +140,25 @@ region_node::fix_from_dom_node()
 	
 	// For every node in the layout section we fill in the dimensions
 	AM_DBG lib::logger::get_logger()->trace("region_node::fix_from_dom_node: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
-	common::region_dim_spec rds;
-	rds.left = get_regiondim_attr(m_node, "left");
-	rds.width = get_regiondim_attr(m_node, "width");
-	rds.right = get_regiondim_attr(m_node, "right");
-	rds.top = get_regiondim_attr(m_node, "top");
-	rds.height = get_regiondim_attr(m_node, "height");
-	rds.bottom = get_regiondim_attr(m_node, "bottom");
+	common::region_dim_spec rdspec;
+	rdspec.left = get_regiondim_attr(m_node, "left");
+	rdspec.width = get_regiondim_attr(m_node, "width");
+	rdspec.right = get_regiondim_attr(m_node, "right");
+	rdspec.top = get_regiondim_attr(m_node, "top");
+	rdspec.height = get_regiondim_attr(m_node, "height");
+	rdspec.bottom = get_regiondim_attr(m_node, "bottom");
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	AM_DBG {
 		lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
-		// XXXX Why the &^%$#%& can't we use os << rds << lib::endl ??!??
+		// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
 		os << "region_node::fix_from_dom_node: result=(" 
-			<< rds.left << ", " << rds.width << ", " << rds.right << ", "
-			<< rds.top << ", " << rds.height << ", " << rds.bottom << ")" << lib::endl;
+			<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
+			<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
 	}
 #endif
-	if (rds != m_rds) {
+	if (rdspec != m_rds) {
 		changed = true;
-		m_rds = rds;
+		m_rds = rdspec;
 	}
 	
 	// Next we set background color

@@ -261,7 +261,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 	lib::node::const_iterator end = root->end();
 	for(it = root->begin(); it != end; it++) {
 		std::pair<bool, const lib::node*> pair = *it;
-		bool start_element = pair.first;
+//		bool start_element = pair.first;
 		const lib::node *n = pair.second;
 		const std::string& tag = n->get_local_name();
 		if(tag == "systemTest" || tag == "property") {

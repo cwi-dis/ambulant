@@ -287,6 +287,7 @@ ambulant::smil2::sync_event_str(sync_event ev) {
 		case tn_marker_event: return "marker";
 		case accesskey_event: return "accesskey";
 		case tn_dom_call: return "beginElement()";
+		case tn_unknown_event: break;
 	}
 	return "unknownEvent";
 }

@@ -153,7 +153,7 @@ class nfa_expr {
 	}
 	
 	nfa_expr(const char *s)
-	:	start(0), accept(0) {
+	:	accept(0), start(0) {
 		cat_expr(s);
 	}
 	

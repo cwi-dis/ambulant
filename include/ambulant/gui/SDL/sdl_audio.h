@@ -108,20 +108,18 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 		  
   private:
 	void new_channel();  
+ 	int inc_channels();
 	
 	net::audio_datasource *m_audio_src;
- 	int inc_channels();
-	int init(int rate, int bits, int channels);
+    Mix_Chunk m_audio_chunck;
+	int m_channel_used;
+
+	static int init();
     static bool m_sdl_init;
     static int m_mixed_channels;
-    
-    Mix_Chunk m_audio_chunck;
-//    int m_rate;
-//	int m_bits;
-//    int m_channels;
-    int m_buffer_size;
-	int m_channel_used;
-	Uint16 m_audio_format;
+	static Uint16 m_sdl_format;
+	static net::audio_format m_ambulant_format;
+    static int m_buffer_size;    
 };
 
 } // end namespace sdl

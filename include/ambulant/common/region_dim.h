@@ -183,6 +183,7 @@ class region_dim {
 		switch(m_type) {
 			case rdt_absolute: return get_as_int();
 			case rdt_relative: return int(floor(ref*get_as_dbl() + 0.5));
+			case rdt_auto: break;
 		}
 		throw std::runtime_error("Illegal call. Region dim is undefined");
 	}

@@ -125,15 +125,13 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	const std::string m_url;
   	AVCodec  *m_codec;
     AVCodecContext *m_con;
-    lib::event_processor *m_event_processor;
 	audio_format m_fmt;
-//    lib::event *m_readdone;		// This is the callback our source makes to us
+    lib::event_processor *m_event_processor;
   	datasource* m_src;
 
 	uint8_t* m_inbuf;
 	uint8_t* m_outbuf;
 	databuffer m_buffer;
-  	//databuffer m_dummy_buffer;
 	bool m_blocked_full;
 		
 	lib::event *m_client_callback;  // This is our calllback to the client

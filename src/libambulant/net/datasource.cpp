@@ -56,6 +56,53 @@
 using namespace ambulant;
 using namespace net;
 
+// *********************** audio_format_choices ***********************************************
+audio_format_choices::audio_format_choices(audio_format &fmt)
+:   m_best(fmt)
+{
+	add_samplerate(fmt.samplerate);
+	add_channels(fmt.channels);
+	add_bits(fmt.bits);
+}
+audio_format_choices::audio_format_choices(int samplerate, int channels, int bits)
+:   m_best(audio_format(samplerate, channels, bits))
+{
+	add_samplerate(samplerate);
+	add_channels(channels);
+	add_bits(bits);
+};
+
+const audio_format& 
+audio_format_choices::best() const
+{
+	return m_best;
+}
+
+void
+audio_format_choices::add_samplerate(int samplerate){
+	m_samplerate.insert(samplerate);
+}
+
+void
+audio_format_choices::add_channels(int channels)
+{
+	m_channels.insert(channels);
+}
+
+void
+audio_format_choices::add_bits(int bits)
+{
+	m_bits.insert(bits);
+}
+
+bool audio_format_choices::contains(audio_format& fmt) const
+{
+	return (
+		m_samplerate.count(fmt.samplerate) &&
+		m_channels.count(fmt.channels) &&
+		m_bits.count(fmt.bits));
+}
+
 // *********************** datasource_factory ***********************************************
   
 datasource_factory::~datasource_factory()

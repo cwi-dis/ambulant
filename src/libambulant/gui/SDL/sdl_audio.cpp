@@ -176,7 +176,6 @@ void* get_ptr(int channel_nr)
 int free_channel()
 {
 	int i;
-	int err;
 	for(i=0;i < m_channel_list.m_channels_open; i++) {
 		if(m_channel_list.m_list[i].m_free == true) {
 			AM_DBG lib::logger::get_logger()->trace("sdl_audio:free_channel(): returning %d", m_channel_list.m_list[i].m_channel_nr);
@@ -202,10 +201,49 @@ void channel_done(int channel)
 
 } //end extern "C"
 	
+// ************************************************************
+
 bool gui::sdl::sdl_active_audio_renderer::m_sdl_init = false;
 int	 gui::sdl::sdl_active_audio_renderer::m_mixed_channels = 0;
+Uint16 gui::sdl::sdl_active_audio_renderer::m_sdl_format = AUDIO_S16SYS;
+net::audio_format gui::sdl::sdl_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
+int gui::sdl::sdl_active_audio_renderer::m_buffer_size = 4096;    
 
+int
+gui::sdl::sdl_active_audio_renderer::init()
+{
+    int err = 0;
+	if (m_sdl_init) return 0;
+	
+	// XXXX Should check that m_ambulant_format and m_sdl_format match!
+	
+	// Step one - initialize the SDL library
+	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
+	if (err < 0) {
+		lib::logger::get_logger()->error("sdl_active_audio_renderer.init: SDL_Init failed: error %d", err);
+		return err;
+	}
+	
+	// Step two - initialize the SDL Mixer library and our datastructures to
+	// interface to it
+	m_mixed_channels=16;
+	err = Mix_AllocateChannels(m_mixed_channels);
+	Mix_ChannelFinished(channel_done);
+	init_channel_list(m_mixed_channels);
 
+	// Step three - open the mixer
+	err = Mix_OpenAudio(m_ambulant_format.samplerate, m_sdl_format, m_ambulant_format.channels, m_buffer_size);
+	if (err < 0) {
+		lib::logger::get_logger()->error("sdl_active_renderer.init: Mix_OpenAudio failed: error %d", err);
+    	return err;
+	}
+	
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.init: SDL init succes");			
+	m_sdl_init = true;
+	return err;
+}
+
+// ************************************************************
 
 gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::playable_notification *context,
@@ -214,16 +252,14 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	lib::event_processor *evp,
 	net::datasource_factory *df)
 :	common::active_basic_renderer(context, cookie, node, evp),
-//    m_rate(44100),
-//    m_bits(16),
-//    m_channels(2),
-	m_buffer_size(4096),
-	m_channel_used(-1),
-	m_audio_format(AUDIO_S16SYS)
+	m_audio_src(NULL),
+	m_channel_used(-1)
 {
-	net::audio_format_choices supported = net::audio_format_choices(44100, 2, 16);
-	
-	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
+	if (init() != 0)
+		return;
+		
+	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	std::string url = node->get_url("src");
 	m_audio_src = df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
@@ -232,40 +268,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 
 gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
-	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::~sdl_active_audio_renderer() this=(x%x)",  this);		
-}
-
-int
-gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
-{
-    int err = 0;
-	if (m_sdl_init) return 0; // XXX try by Jack
-    if (!m_sdl_init) {	
-  		err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
-		if (err < 0) {
-        	lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL init failed", (void *)this);
-       		return err;
-    		} 
-		m_sdl_init = true;
-		m_mixed_channels=16;
-		err = Mix_AllocateChannels(m_mixed_channels);
-		Mix_ChannelFinished(channel_done);
-		init_channel_list(m_mixed_channels);
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_renderer.init(0x%x): SDL init succes", (void *)this);			
-    } else {
-        err = 0;
-    }
-//	m_rate = rate;
-//    m_channels = channels;
-//    m_bits = bits;
-	assert(bits == 16); // XXX Is this correct?
-	err = Mix_OpenAudio(rate, m_audio_format, channels, m_buffer_size);
-	if (err < 0) {
-		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL open failed", (void *)this);
-    	return err;
-	}
-		
-   return err;
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::~sdl_active_audio_renderer() this=(x%x)",  this);		
 }
 
 int
@@ -319,20 +322,6 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	m_audio_chunck.alen = m_audio_src->size();
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: got %d bytes", m_audio_chunck.alen);
 	
-//	m_rate = m_audio_src->get_samplerate();
-//	m_bits = m_audio_src->get_nbits();
-//	m_channels = m_audio_src->get_nchannels();
-//	AM_DBG lib::logger::get_logger()->trace("sr=%d, bits=%d, channels=%d ", m_rate, m_bits, m_channels);
-
-	if (!m_sdl_init) {
-#ifdef WITH_FFMPEG
-		AM_DBG lib::logger::get_logger()->trace("Using ffmpeg MP3 support");
-#else
-		AM_DBG lib::logger::get_logger()->trace("Not using ffmpeg MP3 support, only raw audio !");
-#endif
-		net::audio_format& fmt = m_audio_src->get_audio_format();
-		init(fmt.samplerate, fmt.bits, fmt.channels);	
-	}
 	if (m_channel_used < 0) {
 		new_channel();
 	}
@@ -469,8 +458,6 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		net::audio_format& fmt = m_audio_src->get_audio_format();
-		init(fmt.samplerate, fmt.bits, fmt.channels);
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);

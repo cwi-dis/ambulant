@@ -360,12 +360,12 @@ smil_player::create_playable(const lib::node *n) {
 
 void smil_player::destroy_playable(common::playable *r, const lib::node *n) {
 	r->stop();
-	long rc = r->get_ref_count();
+//	long rc = r->get_ref_count();
 	r->release();
-	if(rc > 1) {
-		const char *pid = n->get_attribute("id");
-		std::string tag = n->get_local_name();
-		//lib::show_message("%s[%s].destroy(): [ref_count=%ld]", tag.c_str(), (pid?pid:"no-id"), (rc-1));
-	}
+//	if(rc > 1) {
+//		const char *pid = n->get_attribute("id");
+//		std::string tag = n->get_local_name();
+//		//lib::show_message("%s[%s].destroy(): [ref_count=%ld]", tag.c_str(), (pid?pid:"no-id"), (rc-1));
+//	}
 }
 

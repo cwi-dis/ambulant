@@ -85,8 +85,8 @@ stdio_datasource_factory::new_raw_datasource(const std::string& url)
 
 
 stdio_datasource::stdio_datasource(const std::string& url, FILE* file)
-:	m_buffer(NULL),
-	m_url(url),
+:	m_url(url),
+	m_buffer(NULL),
 	m_filesize(0),
 	m_stream(file),
 	m_end_of_file(false)
@@ -148,13 +148,13 @@ stdio_datasource::filesize()
 
 
 void
-stdio_datasource::read(char *data, int size)
+stdio_datasource::read(char *data, int sz)
 {
     char* in_ptr;
-    if (size <= m_buffer->size()) {
+    if (sz <= m_buffer->size()) {
     	in_ptr = m_buffer->get_read_ptr();
-        memcpy(data,in_ptr,size);
-        m_buffer->readdone(size);
+        memcpy(data,in_ptr,sz);
+        m_buffer->readdone(sz);
     }
 }
 
@@ -191,20 +191,20 @@ stdio_datasource::get_read_ptr()
 }
   
 void
-stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
+stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
  	if (! end_of_file() ) read_file();
 	
 	if (m_buffer->size() > 0 ) {
-    	if (evp && callback) {
-			AM_DBG lib::logger::get_logger()->trace("stdio_datasource.start: trigger readdone callback (x%x)", callback);
-			evp->add_event(callback, 0, ambulant::lib::event_processor::high);
+    	if (evp && cbevent) {
+			AM_DBG lib::logger::get_logger()->trace("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
+			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}
 }
  
 void
-stdio_datasource::readdone(int size)
+stdio_datasource::readdone(int sz)
 {
-	m_buffer->readdone(size);
+	m_buffer->readdone(sz);
 }

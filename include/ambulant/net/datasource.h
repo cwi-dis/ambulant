@@ -84,26 +84,17 @@ struct audio_format {
 class audio_format_choices {
   public:
 	// Must always have at least one supported format
-	audio_format_choices(int samplerate, int channels, int bits)
-	:   m_best(audio_format(samplerate, channels, bits))
-	{
-		add_samplerate(samplerate);
-		add_channels(channels);
-		add_bits(bits);
-	};
+	audio_format_choices(audio_format &fmt);
+	audio_format_choices(int samplerate, int channels, int bits);
 	
-	const audio_format& best() const { return m_best; }
+	const audio_format& best() const;
 	
-	void add_samplerate(int samplerate) { m_samplerate.insert(samplerate); }
-	void add_channels(int channels) { m_channels.insert(channels); }
-	void add_bits(int bits) { m_bits.insert(bits); }
+	void add_samplerate(int samplerate);
+	void add_channels(int channels);
+	void add_bits(int bits);
 	
-	bool contains(audio_format& fmt) const {
-		return (
-			m_samplerate.count(fmt.samplerate) &&
-			m_channels.count(fmt.channels) &&
-			m_bits.count(fmt.bits));
-	};
+	bool contains(audio_format& fmt) const;
+	
   private:
 	const audio_format m_best;
 	std::set<int> m_samplerate;

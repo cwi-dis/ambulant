@@ -468,10 +468,10 @@ void lib::nfa_matcher::dump_groups(std::ostream& os) {
 
 #ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes) {
-	int count = 0;
+//	int count = 0;
 	std::set<char> next_chars;
 	int accept_counter = 0;
-	int epsilon_counter = 0;
+//	int epsilon_counter = 0;
 	for(std::set<lib::nfa_node*>::const_iterator it = nodes.begin(); it!=nodes.end(); it++) {
 		if((*it)->is_important_trans()) {
 			if((*it)->is_accept_node()) 

@@ -139,7 +139,7 @@ int databuffer::size() const
 
 void databuffer::dump(std::ostream& os, bool verbose) const
 {
-	int i;
+	unsigned long int i;
 
 	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
 	os << "BYTES USED : " << m_used << " bytes" << std::endl;
@@ -155,12 +155,12 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 }
 
 char *
-databuffer::get_write_ptr(int size)
+databuffer::get_write_ptr(int sz)
 {
 	//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: start BUFSIZ = %d", BUFSIZ);
 	
     if(!m_buffer_full) {
-        m_buffer = (char*) realloc(m_buffer, m_size + size);
+        m_buffer = (char*) realloc(m_buffer, m_size + sz);
 		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: buffer realloc done (%x)",m_buffer);
         if (!m_buffer) {
             lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
@@ -174,11 +174,11 @@ databuffer::get_write_ptr(int size)
     
 }
 
-void databuffer::pushdata(int size)
+void databuffer::pushdata(int sz)
 {
     if(!m_buffer_full) {
-        m_size += size;
-		//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",size);
+        m_size += sz;
+		//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",sz);
         m_used = m_size - m_rear;
         m_buffer = (char*) realloc(m_buffer, m_size);
          if (!m_buffer) {
@@ -201,10 +201,10 @@ databuffer::get_read_ptr()
 }
 
 void
-databuffer::readdone(int size)
+databuffer::readdone(int sz)
 {
-    if (size <= m_used) {
-        m_rear += size;
+    if ((unsigned long int)sz <= m_used) {
+        m_rear += sz;
         m_used = m_size - m_rear;
     }
 }
