@@ -113,7 +113,7 @@ audio_format_choices::add_named_format(std::string &name)
 bool audio_format_choices::contains(audio_format& fmt) const
 {
 	if (fmt.name != "")
-		return m_named_formats.count(fmt.name);
+		return m_named_formats.count(fmt.name) != 0;
 	else
 		return (
 			m_samplerate.count(fmt.samplerate) &&
