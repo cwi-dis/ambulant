@@ -72,10 +72,24 @@
 
 
 //#define DEFAULT_MAX_BUF_SIZE 4096
-#define DEFAULT_MAX_BUF_SIZE 1000000
+long int ambulant::net::databuffer::s_default_max_size = 1000000;
+long int ambulant::net::databuffer::s_default_max_unused_size = 1000000;
 
 using namespace ambulant;
 using namespace net;
+
+// Static methods:
+void
+databuffer::default_max_size(int max_size)
+{
+	s_default_max_size = max_size;
+}
+
+void
+databuffer::default_max_unused_size(int max_unused_size)
+{
+	s_default_max_unused_size = max_unused_size;
+}
 
 databuffer::databuffer()
 {
@@ -83,7 +97,8 @@ databuffer::databuffer()
 	m_size = 0;
     m_used = 0;
     m_rear = 0;
-    m_max_size = DEFAULT_MAX_BUF_SIZE;
+    m_max_size = s_default_max_size;
+	m_max_unused_size = s_default_max_unused_size;
 	//AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
 	m_buffer = NULL;
     m_buffer_full = false;
@@ -126,7 +141,7 @@ databuffer::set_max_size(int max_size)
     if (max_size >= 0) {
         m_max_size = max_size;
     } else {
-        m_max_size = DEFAULT_MAX_BUF_SIZE;
+        m_max_size = s_default_max_size;
     }
     m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
 	if (m_buffer_full) lib::logger::get_logger()->trace("databuffer::set_max_size(0x%x, %d): buffer now full (used=%d)",
@@ -245,5 +260,15 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	if (m_max_unused_size > 0 && m_rear > m_max_unused_size) {
+		 // Free the unused space in the buffer
+		 memcpy(m_buffer, m_buffer+m_rear, m_used);
+		 m_buffer = (char *)realloc(m_buffer, m_used);
+		 m_size = m_used;
+		 m_rear = 0;
+		 if (!m_buffer) {
+			 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
+		 }
+	}
 	m_lock.leave();
 }

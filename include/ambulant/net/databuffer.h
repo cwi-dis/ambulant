@@ -103,14 +103,22 @@ class databuffer
 	void  pushdata(int size);
     char* get_read_ptr();
 	void set_max_size(int max_size);
-  private: 
-    char* m_buffer; 			
+	void set_max_unused_size(int max_unused_size);
+
+	static void default_max_size(int max_size);
+	static void default_max_unused_size(int max_unused_size);
+  private:
+    char* m_buffer;
 	unsigned long int m_rear;
-	unsigned long int m_size;  			
- 	unsigned long int m_max_size; 														 
-	unsigned long int m_used;							
+	unsigned long int m_size;
+ 	unsigned long int m_max_size;
+	unsigned long int m_max_unused_size;
+	unsigned long int m_used;
 	bool m_buffer_full;
 	lib::critical_section m_lock;
+	
+	static long int s_default_max_size;
+	static long int s_default_max_unused_size;
 };
 
 #ifndef AMBULANT_NO_IOSTREAMS_HEADERS
