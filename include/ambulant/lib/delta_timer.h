@@ -95,8 +95,9 @@ class delta_timer {
 	void insert(event *pe, time_type t);
 
 	// Cancels a sheduled event
-	void cancel(event *pe);
-	
+	// Returns true on sucess
+	bool cancel(event *pe);
+		
 	// Clear all events
 	void clear();
 	

@@ -125,12 +125,13 @@ void lib::delta_timer::insert(event *pe, time_type t) {
 	AM_DBG write_trace();
 }
 
-void lib::delta_timer::cancel(event *pe) {
-	if(m_events.size() == 0) return;
+// Cancels an event
+bool lib::delta_timer::cancel(event *pe) {
+	if(m_events.size() == 0) return false;
 	std::list<timeout_event>::iterator it;
 	for(it = m_events.begin();it!=m_events.end();it++) 
 		if((*it).first == pe) break;
-	if(it == m_events.end()) return;
+	if(it == m_events.end()) return false;
 	
 	// the iterator is positioned at the event we want to cancel
 	time_type dt = (*it).second;
@@ -140,6 +141,7 @@ void lib::delta_timer::cancel(event *pe) {
 	// the iterator is positioned at the next event
 	if(it != m_events.end())
 		(*it).second += dt;
+	return true;
 }
 
 void lib::delta_timer::fire_delta_events(time_type delta) {
