@@ -1,4 +1,8 @@
 libtool
 config.log
 config.status
+configure
 Makefile
+aclocal.m4
+Makefile.in
+autom4te.cache
