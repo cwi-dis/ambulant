@@ -77,7 +77,8 @@ time_calc::time_type
 time_calc::calc_dur() {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
 		AM_DBG clogger->trace("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str(), "indefinite");	
+			m_attrs.get_id().c_str(), "indefinite");
+		return time_type::indefinite;
 	}
 	dur_type dt = m_attrs.get_dur_type();
 	time_type cdur = time_type::unresolved;
