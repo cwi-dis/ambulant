@@ -584,7 +584,7 @@ restart_behavior time_attrs::get_default_restart() {
 ///////////////////////
 // Tracing
 
-std::string repr(sync_value_type sv) {
+std::string smil2::repr(sync_value_type sv) {
 	switch(sv) {
 		case sv_offset: return "offset";
 		case sv_syncbase: return "syncbase";
@@ -599,7 +599,7 @@ std::string repr(sync_value_type sv) {
 	return "";
 }
 
-std::string repr(const sync_value_struct& svs) {
+std::string smil2::repr(const sync_value_struct& svs) {
 	std::string os;
 	if(svs.type == sv_offset) {
 		os << svs.offset;
@@ -622,7 +622,7 @@ std::string repr(const sync_value_struct& svs) {
 	return os;
 }
 
-std::string repr(fill_behavior f) {
+std::string smil2::repr(fill_behavior f) {
 	switch(f) {
 		case fill_remove: return "remove";
 		case fill_freeze: return "freeze";
@@ -637,7 +637,7 @@ std::string repr(fill_behavior f) {
 
 }
 
-std::string repr(restart_behavior f) {
+std::string smil2::repr(restart_behavior f) {
 	switch(f) {
 		case restart_always: return "always";
 		case restart_when_not_active: return "whenNotActive";

@@ -407,7 +407,7 @@ void dead_state::exit(qtime_type timestamp, time_node *oproot) {
 //////////////////////////
 // tracing helper
 
-const char* time_state_str(time_state_type state) {
+const char* smil2::time_state_str(time_state_type state) {
 	switch(state) {
 		case ts_reset: return "reset";
 		case ts_proactive: return "proactive";
