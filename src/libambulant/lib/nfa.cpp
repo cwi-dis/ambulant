@@ -81,7 +81,6 @@ void lib::nfa_expr::free() {
 }
 
 lib::nfa_expr* lib::nfa_expr::clone() const {
-	std::cout << "nfa_expr::clone()" << std::endl;
 	nfa_expr *eptr = new nfa_expr();
 	if(!empty()) {
 		std::set<nfa_node*> cloned;
@@ -334,8 +333,8 @@ bool lib::nfa_expr::match(const std::string& str, bool anchors) {
 			if((*it)->anchor & GROUP_END) std::cout << "end, ";
 		}
 		std::cout << std::endl;
-	}
 #endif
+	}
 	return nodes.find(expr.accept) != nodes.end();
 }
 
