@@ -64,10 +64,19 @@ class nslog_ostream : public ambulant::lib::ostream {
 	bool is_open() const {return true;}
 	void close() {}
 	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa");}
-	int write(const char *cstr) {NSLog(@"%s", cstr);}
+	int write(const char *cstr);
 	void write(ambulant::lib::byte_buffer& bb) {NSLog(@"ostream use of byte_buffer not implemented for Cocoa");}
 	void flush() {}
 };
+
+int
+nslog_ostream::write(const char *cstr)
+{
+	LogController *log = [LogController sharedLogController];
+	NSString *nsstr = [NSString stringWithCString: cstr];
+	[nsstr autorelease];
+	if (log) [log insertText: nsstr];
+}
 
 void
 show_message(const char *format, va_list args)
@@ -82,7 +91,7 @@ void
 initialize_logger()
 {
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
-//	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
 }
 
 @implementation MyAppDelegate

@@ -57,7 +57,6 @@
     if (!_LogController) {
         _LogController = [[LogController allocWithZone:[self zone]] init];
     }
-	[_LogController insertText: @"Another line added\n"];
     return _LogController;
 }
 
