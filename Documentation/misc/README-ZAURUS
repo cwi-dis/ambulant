@@ -1,6 +1,10 @@
 Ambulant on the Zaurus: Sharp SL-5600 PDA.
 ------------------------------------------
 
+NOTE: this file only contains Zaurus-specific notes for installing
+Ambulant Player 1.2. For the general release notes see the
+toplevel README file.
+
 The easiest way to run AmbulantPlayer on your Zaurus is the following.
 
 First, the package "SDL"  must have been installed on your Zaurus.
@@ -30,24 +34,16 @@ B. Install the ambulant package using the the Zaurus Software
    button at top-right, and close the ">Add/Remove Software" window
    again by tapping the "X" button at right-top. Only then is the
    installation really effectuated.
-   Close the Opera browser and start it again to make it aware
-   of the fact that "ambulantplayer" has been installed.
 
-C. To run "AmbulantPlayer" the file selection mechanism of the
-   Opera browser is used. Tapping 
-   QtMenuIcon->Applications->OperaBrowser will start it.
-   Then, in Opera, select "Open local file" in the Main Menu 
-   (tap 2nd icon from left in Opera's "Main button bar" at the top 
-   of Opera's window). There in "Show type" select "application/smil".
-   An entry "Welcome" should become visible, since it was part of the
-   ambulantplayer installation package. Tap "Welcome", and 
-   "AmbulantPlayer" will play its Welcome tune.
-   Any other valid ".smil" files which are present in a directory
-   called "Documents" in "/home/zaurus", the SD or CF card, or
-   subdirectories thereof will be shown by Opera as well and can
-   be played by tapping the name of the document.
+   AmbulantPlayer on the Zaurus has its own icon and file selection
+   mechanism. To run "AmbulantPlayer" from the Opera browser, 
+   selecting its "Preferences->File Types" a form "Filetype
+   preferences" appears were you can add a new mimetype
+   "application.smil" with "File extensions: smi,sml,smil" and
+   "Action: Open with other application" where "Application: 
+   AmbulantPlayer"
 
-D. Uninstall the package by first closing "AmbulantPlayer" by
+C. Uninstall the package by first closing "AmbulantPlayer" by
    tapping its "X" (close) button at right-top. Then use
    same procedure as described in section B., only now tab 
    "Uninstall packages" instead of "Install packages".

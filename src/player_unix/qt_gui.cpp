@@ -90,7 +90,7 @@ const char *welcome_locations[] = {
 	"/usr/local/share/ambulant/Welcome/Welcome.smil",
 #endif
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	"/home/zaurus/Documents/Welcome/Welcome.smil",
+	"/home/zaurus/Documents/Ambulant/Extras/Welcome/Welcome.smil",
 #endif/*QT_NO_FILEDIALOG*/
 	NULL
 };

@@ -147,7 +147,7 @@ Now you can use "configure --host=.... --build=..." and "make" to create
 the executable, which ends up in src/player_unix.
 
 More details on the exact packages to install, where to find them and how
-to build them can be found in the "README-ZAURUS" file.
+to build them can be found in the "README-ZAURUS" file (in Documentation/misc).
 
 Building for Windows CE
 -----------------------
