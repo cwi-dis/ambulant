@@ -105,6 +105,7 @@ libambulant_la_SOURCES = \
 	lib/timer.cpp \
 	lib/transition_info.cpp \
 	lib/tree_builder.cpp \
+	lib/xerces_parser.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
 	lib/unix/unix_mtsync.cpp \

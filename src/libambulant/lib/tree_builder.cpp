@@ -95,31 +95,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!m_xmlparser) return false;
 	if(!filename || !*filename) return false;
 
-#ifdef	WITH_XERCES
-	m_well_formed = true;
-	try {
-//		lib::logger::get_logger()->trace
-//		  ("build_tree_from_file@parse(%s)\n", filename);
-		m_xmlparser->parse(filename);
-	} catch (const XMLException& e) {
-		char* msg = XMLString::transcode(e.getMessage());
-		lib::logger::get_logger()->trace
-		  ("build_tree_from_file@XMLerror: %s\n", msg);
-		XMLString::release(&msg);
-		m_well_formed = false;
-	} catch (const SAXParseException& e) {
-		char* msg = XMLString::transcode(e.getMessage());
-		lib::logger::get_logger()->trace
-		  ("build_tree_from_file@SAXerror: %s\n", msg);
-		XMLString::release(&msg);
-		m_well_formed = false;
-	} catch (const std::exception& e) {
-		lib::logger::get_logger()->trace
-		  ("build_tree_from_file@error: %s\n", e.what());
-		m_well_formed = false;
-	}
-	return m_well_formed;
-#else /*WITH_XERCES*/
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
@@ -148,7 +123,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #else
 	return false;
 #endif
-#endif/*WITH_XERCES*/
 }
 
 bool lib::tree_builder::build_tree_from_url(const net::url& u) {

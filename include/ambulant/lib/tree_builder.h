@@ -126,11 +126,7 @@ class tree_builder :
 	
   ///////////////
   private:
-#ifdef	WITH_XERCES
-	xerces_sax_parser*  m_xmlparser;
-#else /*WITH_XERCES*/
-	expat_parser *m_xmlparser;
-#endif/*WITH_XERCES*/
+	xml_parser *m_xmlparser;
 	node *m_root;
 	node *m_current;
 	bool m_well_formed;

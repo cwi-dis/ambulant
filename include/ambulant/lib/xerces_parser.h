@@ -81,7 +81,7 @@ namespace lib {
 
 using namespace xercesc;
 
-class xerces_sax_parser : public HandlerBase {
+class xerces_sax_parser : public HandlerBase, public xml_parser {
   public:
 	enum {NS_SEP = '|'};
 
@@ -90,6 +90,12 @@ class xerces_sax_parser : public HandlerBase {
 	
 	bool parse(const char *filename);
 	
+	bool parse(const char *buf, size_t len, bool final);
+
+	void set_content_handler(sax_content_handler *h);
+       
+	void set_error_handler(sax_error_handler *h);
+
 	void startElement(const XMLCh* const name,
 			  AttributeList& attrs) {
 		char *cname = XMLString::transcode(name);
@@ -143,6 +149,9 @@ class xerces_sax_parser : public HandlerBase {
 	sax_content_handler *m_content_handler;
 	sax_error_handler *m_error_handler;
 	bool m_parsing;
+	char* m_buf;
+	size_t m_size;
+	const char* m_id;
 };
 
 inline xerces_sax_parser::xerces_sax_parser(sax_content_handler *content_handler,
@@ -150,57 +159,37 @@ inline xerces_sax_parser::xerces_sax_parser(sax_content_handler *content_handler
 :	m_content_handler(content_handler),
 	m_error_handler(error_handler),
 	m_parsing(false),
-	m_saxparser(0), m_logger(0) {
-
+	m_saxparser(0), m_logger(0), m_buf((char*)malloc(1)), m_size(0),
+	m_id("AmbulantXercesParser") {
 	m_logger = lib::logger::get_logger();
         AM_DBG m_logger->trace("***  :xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 	
 	// Val_Never, Val_Always, Val_Auto
-	m_saxparser->setValidationScheme(SAXParser::Val_Never);
+	m_saxparser->setValidationScheme(SAXParser::Val_Auto);
 	
 	// If set to true, namespace processing must also be turned on
-	m_saxparser->setDoSchema(false);
+	m_saxparser->setDoSchema(true);
 	
 	// True to turn on full schema constraint checking
-	m_saxparser->setDoValidation(false);
+	m_saxparser->setDoValidation(true);
 	
 	// True to turn on full schema constraint checking
-	m_saxparser->setValidationSchemaFullChecking(false);
+	m_saxparser->setValidationSchemaFullChecking(true);
 	
 	// true: understand namespaces; false: otherwise
-	m_saxparser->setDoNamespaces(false);
+	m_saxparser->setDoNamespaces(true);
 	
 	m_saxparser->setDocumentHandler(this);
 	m_saxparser->setErrorHandler(this);
-
 }
 
 inline xerces_sax_parser::~xerces_sax_parser() {
 	delete m_saxparser;
+	free (m_buf);
 }
 
-inline bool xerces_sax_parser::parse(const char *filename) {
-	bool succeeded = false;
-	try {
-		m_saxparser->parse(filename);
-		succeeded = true;
-	} catch (const XMLException& e) {
-        char *exceptionMessage = XMLString::transcode(e.getMessage());
-        m_logger->error("During parsing: %s \n Exception message is: %s \n",
-            filename, exceptionMessage);
-        XMLString::release(&exceptionMessage);
-    } catch (const SAXParseException& e) {
-        char *exceptionMessage = XMLString::transcode(e.getMessage());
-        m_logger->error("During parsing: %s \n Exception message is: %s \n",
-			filename, exceptionMessage);
-        XMLString::release(&exceptionMessage);
-    } catch (...) {
-         m_logger->error("Unexpected exception during parsing");
-    }
-	return succeeded;
-}
 //static
 inline void
 xerces_sax_parser::to_qattrs(AttributeList& attrs, 
