@@ -260,7 +260,12 @@ class transition_engine_miscshapewipe : virtual public transition_engine__iris {
 
 // series 3: clock-type wipes
 
-class transition_engine_singlesweepwipe : virtual public transition_blitclass_polylist {
+class transition_engine_clockwipe : virtual public transition_blitclass_poly {
+  protected:
+    void compute();
+};
+
+class transition_engine_singlesweepwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };

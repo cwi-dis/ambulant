@@ -182,8 +182,12 @@ class cocoa_transition_engine_miscshapewipe :
 
 // series 3: clock-type wipes
 
+class cocoa_transition_engine_clockwipe :
+	virtual public cocoa_transition_blitclass_poly,
+	virtual public smil2::transition_engine_clockwipe {};
+
 class cocoa_transition_engine_singlesweepwipe :
-	virtual public cocoa_transition_blitclass_polylist,
+	virtual public cocoa_transition_blitclass_poly,
 	virtual public smil2::transition_engine_singlesweepwipe {};
 
 class cocoa_transition_engine_doublesweepwipe :

@@ -162,23 +162,16 @@ cocoa_transition_blitclass_rectlist::update()
 	}
 }
 
-void
-cocoa_transition_blitclass_poly::update()
+// Helper function: convert a point list to an NSBezierPath
+static NSBezierPath *
+polygon2path(std::vector<lib::point> polygon)
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *newsrc = [view getTransitionNewSource];
-	NSImage *tmpsrc = [view getTransitionTmpSurface];
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: not yet implemented");
-	// First we create the path
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	std::vector<lib::point>::iterator newpoint;
 	bool first = true;
-	for( newpoint=m_newpolygon.begin(); newpoint != m_newpolygon.end(); newpoint++) {
+	for( newpoint=polygon.begin(); newpoint != polygon.end(); newpoint++) {
 		lib::point p = *newpoint;
-		/*AM_DBG*/ lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: point=%d, %d", p.x, p.y);
+		AM_DBG lib::logger::get_logger()->trace("polygon2path: point=%d, %d", p.x, p.y);
 		NSPoint pc = NSMakePoint(p.x, p.y);
 		if (first) {
 			[path moveToPoint: pc];
@@ -188,22 +181,34 @@ cocoa_transition_blitclass_poly::update()
 		}
 	}
 	[path closePath];
-	// Next, we fill the temporary bitmap with transparent white
-	[tmpsrc lockFocus];
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
+	return path;
+}
+
+// Helper function: compositing newsrc onto screen with respect
+// to a path
+static void
+composite_path(AmbulantView *view, lib::screen_rect<int> dstrect_whole, NSBezierPath *path)
+{
+	NSImage *newsrc = [view getTransitionNewSource];
+	NSImage *tmpsrc = [view getTransitionTmpSurface];
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+
+	// First, we fill the temporary bitmap with transparent white
+	[tmpsrc lockFocus];
 	[[NSColor colorWithDeviceWhite: 1.0 alpha: 0.0] set];
 	NSRectFill(cocoa_dstrect_whole);
+
 	// Now we fill draw the path on the temp bitmap, with opaque white
 	[[NSColor colorWithDeviceWhite: 1.0 alpha: 1.0] set];
 	[path fill];
+
 	// Next we composit the source image onto the temp bitmap, but only where
 	// the temp bitmap is opaque (the path we just painted there)
 	[newsrc drawInRect: cocoa_dstrect_whole 
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceIn
 		fraction: 1.0];
+
 	// Finally we put the opaque bits of the temp image onto the destination
 	// image
 	[tmpsrc unlockFocus];
@@ -211,7 +216,22 @@ cocoa_transition_blitclass_poly::update()
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
 		fraction: 1.0];
-	
+}
+
+void
+cocoa_transition_blitclass_poly::update()
+{
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
+	// First we create the path
+	NSBezierPath *path = polygon2path(m_newpolygon);
+
+	// Then we composite it onto the screen
+	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	composite_path(view, dstrect_whole, path);
 }
 
 void
@@ -220,17 +240,22 @@ cocoa_transition_blitclass_polylist::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	NSImage *newsrc = [view getTransitionNewSource];
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylist::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylist: not yet implemented");
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
+	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
+	// First we create the path
+	NSBezierPath *path = NULL;
+	std::vector< std::vector<lib::point> >::iterator partpolygon;
+	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
+		NSBezierPath *part_path = polygon2path(*partpolygon);
+		if (path == NULL)
+			path = part_path;
+		else
+			[path appendBezierPath: part_path];
+	}
+
+	// Then we composite it onto the screen
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(cocoa_dstrect_whole);
-#endif
+	composite_path(view, dstrect_whole, path);
 }
 
 smil2::transition_engine *
@@ -305,6 +330,9 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_
 		rv = new cocoa_transition_engine_miscshapewipe();
 		break;
 	// series 3: clock-type wipes
+	case lib::clockWipe:
+		rv = new cocoa_transition_engine_singlesweepwipe();
+		break;
 	case lib::singleSweepWipe:
 		rv = new cocoa_transition_engine_singlesweepwipe();
 		break;
