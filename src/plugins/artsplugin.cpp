@@ -94,7 +94,7 @@ class arts_plugin : public common::playable_imp
 
     int init();
     void start(double where);
-    void stop() {};
+    void stop();
     void pause();
     void resume();
     void speed_changed() {};
@@ -111,6 +111,7 @@ class arts_plugin : public common::playable_imp
   	arts_stream_t m_stream;
   	net::audio_datasource *m_audio_src;
   	bool m_is_paused;
+  	bool m_is_playing;
     char *m_name;
 	static bool m_arts_init;
     lib::event *m_playdone;
@@ -158,7 +159,10 @@ arts_plugin::arts_plugin(
 	m_channels(1),
 	m_bits(16),
 	m_stream(NULL),
-	m_audio_src(NULL)
+	m_audio_src(NULL),
+	m_is_paused(false),
+	m_is_playing(false)
+
 {
 	m_lock.enter();
 	//init();
@@ -240,10 +244,12 @@ arts_plugin::arts_play(char *data, int size)
     if (m_stream) {
         err = arts_write(m_stream, data, size);
         if (err < 0) {
-            AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): %s", (void *)this, arts_error_text(err));
+            AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): %s", (void *)this, arts_error_text(err));
+			return 0;
             }
         } else {
-        AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): No aRts stream opened", (void *)this);        
+        AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): No aRts stream opened", (void *)this);        
+		return 0;	
         }
         
     return err;
@@ -252,7 +258,7 @@ arts_plugin::arts_play(char *data, int size)
 void
 arts_plugin::data_avail()
 {
-	//m_lock.enter();
+	m_lock.enter();
     char *data;
     int size;
     int played;
@@ -262,15 +268,15 @@ arts_plugin::data_avail()
     data = m_audio_src->get_read_ptr();
 	size = m_audio_src->size();
     AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
-    //arts_setup(44100,16,1,"arts_audio");
-    played=arts_play(data,size);
-	AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
-    m_audio_src->readdone(played);
 	
-	
+	if (!m_is_paused || m_audio_src) {
+		played=arts_play(data,size);
+		AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
+    	m_audio_src->readdone(played);
+	}
 	restart_audio_input();
-    //m_context->stopped(m_cookie, 0);
-	//m_lock.leave();
+    m_context->stopped(m_cookie, 0);
+	m_lock.leave();
 
 }
 
@@ -318,6 +324,21 @@ arts_plugin::resume()
 }
 
 
+void
+arts_plugin::stop()
+{
+	m_lock.enter();
+	m_is_playing=false;
+	if(m_audio_src) {
+		m_audio_src->stop();
+		m_audio_src->release();
+		m_audio_src=NULL;
+	}
+	if (m_context) 
+		m_context->stopped(m_cookie, 0);
+	
+	m_lock.leave();
+}
 
 
 

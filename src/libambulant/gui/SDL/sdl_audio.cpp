@@ -273,8 +273,12 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 		unregister_renderer(this);
 		m_lock.enter();
 	}
-	if (m_audio_src) m_audio_src->release();
-	m_audio_src = NULL;
+	
+	if (m_audio_src) {
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
+	
 	m_is_playing = false;
 	m_lock.leave();
 }

@@ -87,7 +87,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
-	m_lock.enter();
+	m_lock.leave();
 }
 
 int
@@ -181,7 +181,7 @@ arts_active_audio_renderer::data_avail()
 	
 	
 	restart_audio_input();
-    //m_context->stopped(m_cookie, 0);
+    m_context->stopped(m_cookie, 0);
 	m_lock.leave();
 
 }
