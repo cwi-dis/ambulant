@@ -51,14 +51,14 @@ CPP=clarm.exe
 # ADD CPP /nologo /W3 /I "..\..\third_party_packages\mp3lib" /I "..\..\include\ce3\stl" /I "..\..\include" /I "..\..\include\ambulant\compat" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\lib-src\jpeg" /I "..\..\third_party_packages\lpng125" /I "..\..\third_party_packages\zlib" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /D "COMPILED_FROM_DSP" /D "XML_STATIC" /YX /Oxs /M$(CECrtMT) /c
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\lib\wince\libambulant_wince.lib"
+# ADD LIB32 /nologo /out:"..\..\lib\wince-arm\libambulant_wince.lib"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 # Begin Custom Build
-TargetPath=\ufs\ambulant\lib\wince\libambulant_wince.lib
+TargetPath=\ufs\ambulant\lib\wince-arm\libambulant_wince.lib
 TargetName=libambulant_wince
-InputPath=\ufs\ambulant\lib\wince\libambulant_wince.lib
+InputPath=\ufs\ambulant\lib\wince-arm\libambulant_wince.lib
 SOURCE="$(InputPath)"
 
 "$(TargetPath)" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -113,7 +113,7 @@ CPP=cl.exe
 # ADD CPP /nologo /W3 /I "..\..\include\ce3\stl" /I "..\..\include" /I "..\..\include\ambulant\compat" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\lib-src\jpeg" /I "..\..\third_party_packages\lpng125" /I "..\..\third_party_packages\zlib" /I "..\..\third_party_packages\mp3lib" /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "i486" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Oxs /Gz /c
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"..\..\lib\wince-emu\libambulant_wince.lib"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -177,24 +177,26 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\timer.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_REGIO=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -332,24 +334,26 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\posix_datasource.h"\
 	"..\..\include\ambulant\net\stdio_datasource.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_RENDE=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -481,19 +485,21 @@ SOURCE=.\common\schema.cpp
 DEP_CPP_SCHEM=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SCHEM=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -585,22 +591,24 @@ DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SMIL_=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -727,19 +735,21 @@ DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SMIL_H=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -868,28 +878,28 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 NODEP_CPP_DG_AU=\
 	"..\..\include\ambulant\gui\dg\mp3lib.h"\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -927,25 +937,27 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_AU=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -983,25 +995,27 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_AU=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
@@ -1039,25 +1053,225 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_AU=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\gui\dg\dg_audio_player.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_DG_AUD=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DG_AUD=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_DG_AUD=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_DG_AUD=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\gui\dg\dg_audio_renderer.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_DG_AUDI=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DG_AUDI=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_DG_AUDI=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_DG_AUDI=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -1088,25 +1302,27 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_BG=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1269,25 +1485,27 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_BR=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1459,24 +1677,26 @@ DEP_CPP_DG_IM=\
 	"..\..\third_party_packages\lpng125\pngconf.h"\
 	"..\..\third_party_packages\zlib\zconf.h"\
 	"..\..\third_party_packages\zlib\zlib.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_IM=\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_error.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1653,26 +1873,28 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_IMG=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1824,6 +2046,101 @@ NODEP_CPP_DG_IMG=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\gui\dg\dg_mp3_decoder.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_DG_MP=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\third_party_packages\mp3lib\mp3lib.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DG_MP=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\third_party_packages\mp3lib\mp3lib.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_DG_MP=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\third_party_packages\mp3lib\mp3lib.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_DG_MP=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\gui\dg\dg_mp3_decoder.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\third_party_packages\mp3lib\mp3lib.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\gui\dg\dg_player.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
@@ -1877,28 +2194,30 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\player.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\gui\dg\dg_player.h"\
-	{$(INCLUDE)}"ambulant\gui\dg\dg_wmuser.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_PL=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\player.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\gui\dg\dg_player.h"\
+	".\mbulant\gui\dg\dg_wmuser.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2167,26 +2486,28 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_TE=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2345,23 +2666,25 @@ DEP_CPP_DG_VI=\
 	"..\..\include\ambulant\gui\dg\dg_viewport.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_VI=\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_error.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2477,24 +2800,26 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\timer.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DG_WI=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2638,77 +2963,85 @@ SOURCE=.\lib\win32\win32_asb.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_WIN32=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_WIN32=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_WIN32=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_WIN32=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -2721,77 +3054,85 @@ SOURCE=.\lib\win32\win32_error.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_WIN32_=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_WIN32_=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_WIN32_=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_WIN32_=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_error.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -2811,21 +3152,23 @@ DEP_CPP_WIN32_E=\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_thread.h"\
+	
+NODEP_CPP_WIN32_E=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_error.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
+	".\mbulant\lib\win32\win32_thread.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2931,21 +3274,23 @@ DEP_CPP_WIN32_F=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_thread.h"\
+	
+NODEP_CPP_WIN32_F=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_error.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
+	".\mbulant\lib\win32\win32_thread.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3037,20 +3382,184 @@ NODEP_CPP_WIN32_F=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\lib\win32\win32_fstream.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_WIN32_FS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_WIN32_FS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_WIN32_FS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_WIN32_FS=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib\win32\win32_memfile.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_WIN32_M=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_WIN32_M=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_WIN32_M=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_WIN32_M=\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\lib\win32\win32_thread.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_WIN32_T=\
 	"..\..\include\ambulant\lib\thread.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_thread.h"\
+	
+NODEP_CPP_WIN32_T=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\win32\win32_error.h"\
+	".\mbulant\lib\win32\win32_thread.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3113,19 +3622,21 @@ SOURCE=.\lib\win32\win32_timer.cpp
 DEP_CPP_WIN32_TI=\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_WIN32_TI=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3207,12 +3718,14 @@ SOURCE=.\lib\colors.cpp
 DEP_CPP_COLOR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	
+NODEP_CPP_COLOR=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3273,19 +3786,21 @@ DEP_CPP_DELTA=\
 	"..\..\include\ambulant\lib\delta_timer.h"\
 	"..\..\include\ambulant\lib\event.h"\
 	"..\..\include\ambulant\lib\timer.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DELTA=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3378,20 +3893,22 @@ DEP_CPP_DOCUM=\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_DOCUM=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3504,13 +4021,15 @@ DEP_CPP_EXPAT=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
+	
+NODEP_CPP_EXPAT=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\textptr.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3574,73 +4093,81 @@ SOURCE=.\lib\logger.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_LOGGE=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_LOGGE=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_LOGGE=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_LOGGE=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -3654,19 +4181,21 @@ SOURCE=.\lib\nfa.cpp
 
 DEP_CPP_NFA_C=\
 	"..\..\include\ambulant\lib\nfa.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_NFA_C=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3754,20 +4283,22 @@ DEP_CPP_NODE_=\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_NODE_=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3881,20 +4412,22 @@ SOURCE=.\lib\parselets.cpp
 DEP_CPP_PARSE=\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_PARSE=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -3976,77 +4509,85 @@ SOURCE=.\lib\string_util.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_STRIN=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_STRIN=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_STRIN=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_STRIN=\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -4060,19 +4601,21 @@ SOURCE=.\lib\timer.cpp
 
 DEP_CPP_TIMER=\
 	"..\..\include\ambulant\lib\timer.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIMER=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4161,21 +4704,23 @@ DEP_CPP_TREE_=\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\textptr.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TREE_=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4308,25 +4853,27 @@ DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\player.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_MMS_P=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\player.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4499,24 +5046,26 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIMEL=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4680,24 +5229,26 @@ DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIMELI=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4820,13 +5371,15 @@ SOURCE=.\net\url.cpp
 
 DEP_CPP_URL_C=\
 	"..\..\include\ambulant\net\url.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
+	
+NODEP_CPP_URL_C=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\string_util.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -4902,23 +5455,25 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_REGION=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5066,23 +5621,25 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\preferences.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SMIL_L=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\preferences.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5260,25 +5817,27 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\layout.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\common\player.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SMIL_P=\
+	".\mbulant\common\layout.h"\
+	".\mbulant\common\playable.h"\
+	".\mbulant\common\player.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\gtypes.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5475,21 +6034,23 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SMIL_T=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5632,21 +6193,23 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_SYNC_=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5787,20 +6350,22 @@ DEP_CPP_TEST_=\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TEST_=\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5936,22 +6501,24 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIME_=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -6103,21 +6670,23 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIME_N=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -6260,21 +6829,23 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIME_S=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -6427,22 +6998,24 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\common\playable.h"\
-	{$(INCLUDE)}"ambulant\config\config.h"\
-	{$(INCLUDE)}"ambulant\config\posix_features.h"\
-	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
-	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
-	{$(INCLUDE)}"ambulant\config\suffix.h"\
-	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\asb.h"\
-	{$(INCLUDE)}"ambulant\lib\logger.h"\
-	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\refcount.h"\
-	{$(INCLUDE)}"ambulant\lib\string_util.h"\
-	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
-	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	
+NODEP_CPP_TIMEG=\
+	".\mbulant\common\playable.h"\
+	".\mbulant\config\config.h"\
+	".\mbulant\config\posix_features.h"\
+	".\mbulant\config\select_compiler_config.h"\
+	".\mbulant\config\select_platform_config.h"\
+	".\mbulant\config\select_stdlib_config.h"\
+	".\mbulant\config\suffix.h"\
+	".\mbulant\lib\abstract_mtsync.h"\
+	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\logger.h"\
+	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\unix\unix_mtsync.h"\
+	".\mbulant\lib\win32\win32_asb.h"\
+	".\mbulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
