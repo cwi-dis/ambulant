@@ -58,7 +58,7 @@
 
 using namespace ambulant;
 
-lib::unix::event_processor::event_processor(abstract_timer *t) 
+lib::unix::event_processor::event_processor(timer *t) 
 :   abstract_event_processor(t)
 {
   	pthread_mutex_init(&m_queue_mutex, NULL);
@@ -122,7 +122,7 @@ lib::unix::event_processor::wakeup()
 }
 
 lib::event_processor *
-lib::event_processor_factory(abstract_timer *t)
+lib::event_processor_factory(timer *t)
 {
 	return new unix::event_processor(t);
 }

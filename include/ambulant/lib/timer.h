@@ -79,9 +79,6 @@ class abstract_timer {
 	// Returns the time elapsed
 	virtual time_type elapsed() const = 0;
 	
-	// Sets the speed of this timer
-	virtual void set_speed(double speed) = 0;
-	
 	// Gets the realtime speed of this timer as modulated by its parent
 	virtual double get_realtime_speed() const = 0;
 };

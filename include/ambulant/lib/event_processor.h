@@ -74,7 +74,7 @@ class event_processor {
 	virtual void serve_events() = 0;
 
 	// Get the underlying timer
-	virtual abstract_timer *get_timer() const = 0;
+	virtual timer *get_timer() const = 0;
 };
 
 } // namespace lib
@@ -102,7 +102,7 @@ namespace lib {
 
 class abstract_event_processor : public event_processor {
   public:
-	abstract_event_processor(abstract_timer *t) 
+	abstract_event_processor(timer *t) 
 	:	m_timer(t),
 		m_high_delta_timer(t), 
 		m_med_delta_timer(t), 
@@ -113,7 +113,7 @@ class abstract_event_processor : public event_processor {
 		// the timer is not owned by this
 	}
 	
-	abstract_timer *get_timer() const { return m_timer; }
+	timer *get_timer() const { return m_timer; }
 	
 	void add_event(event *pe, time_type t, event_priority priority = low) {
 		m_delta_timer_cs.enter();
@@ -181,7 +181,7 @@ class abstract_event_processor : public event_processor {
 	virtual void wait_event() = 0;
 	
 	// the timer for this processor
-	abstract_timer *m_timer;
+	timer *m_timer;
 	
 	// high priority delta timer
 	delta_timer m_high_delta_timer;
@@ -197,7 +197,7 @@ class abstract_event_processor : public event_processor {
 };
 
 // Machine-dependent factory function
-event_processor *event_processor_factory(abstract_timer *t);
+event_processor *event_processor_factory(timer *t);
 
 } // namespace lib
 

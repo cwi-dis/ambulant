@@ -74,7 +74,7 @@ class event_processor :
   public ambulant::lib::unix::thread {
 
   public:
-	event_processor(abstract_timer *t);
+	event_processor(timer *t);
 	~event_processor();
   
   protected:

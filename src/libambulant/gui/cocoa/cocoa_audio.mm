@@ -77,7 +77,7 @@ cocoa_active_audio_renderer::cocoa_active_audio_renderer(event_processor *const 
 	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
 	if (!m_sound)
 		lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot open soundfile: %s", m_url.c_str());
-	m_timer_index = m_event_processor->get_timer()->add_dependent(this);
+	m_event_processor->get_timer()->add_listener(this);
 	[pool release];
 }
 
@@ -89,7 +89,7 @@ cocoa_active_audio_renderer::~cocoa_active_audio_renderer()
 	if (m_sound)
 		[m_sound release];
 	m_sound = NULL;
-	m_event_processor->get_timer()->remove_dependent(this);
+	m_event_processor->get_timer()->remove_listener(this);
 	m_lock.leave();
 	[pool release];
 }

@@ -65,7 +65,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_audio_renderer : public active_basic_renderer, public abstract_timer_client {
+class cocoa_active_audio_renderer : public active_basic_renderer, public timer_events {
   public:
 	cocoa_active_audio_renderer(event_processor *const evp,
 		net::passive_datasource *src,
@@ -79,7 +79,6 @@ class cocoa_active_audio_renderer : public active_basic_renderer, public abstrac
   private:
 	std::string m_url;
   	NSSound *m_sound;
-	abstract_timer_client::client_index m_timer_index;
 	critical_section m_lock;
 };
 

@@ -78,8 +78,8 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 		wf,
 		(lib::renderer_factory *)new ambulant::gui::cocoa::cocoa_renderer_factory());
 	if (!m_active_player) return;
-	
-	lib::event_processor *processor = lib::event_processor_factory(lib::realtime_timer_factory());
+	lib::timer *our_timer = new lib::timer(lib::realtime_timer_factory());
+	lib::event_processor *processor = lib::event_processor_factory(our_timer);
 
 	typedef lib::no_arg_callback<mainloop> callback;
 	lib::event *ev = new callback(this, &mainloop::player_done_callback);
