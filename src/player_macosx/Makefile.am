@@ -3,7 +3,13 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.mm main.m 
 	cocoambulant_Prefix.pch \
 	English.lproj \
 	Info.plist version.plist \
-	cocoambulant.pbproj fullcocoambulant.pbproj
+	cocoambulant.pbproj fullcocoambulant.pbproj \
+	cocoambulant.icns \
+	play.png \
+	pause.png \
+	playactive.png \
+	stop.png \
+	systemTestSettings.xml
 
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a

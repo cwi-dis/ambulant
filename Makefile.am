@@ -1,8 +1,8 @@
 SUBDIRS = src include third_party_packages
-EXTRA_DIST = Documentation Extras
+EXTRA_DIST = Documentation Extras README-ZAURUS
 
 dist-hook:
-	rm -rf `find $(distdir)/Documentation -name CVS`
+	rm -rf `find $(distdir) -name CVS`
 
 # Special rule for building MacOSX binary installer.
 # Will only work on OSX 10.3 or later

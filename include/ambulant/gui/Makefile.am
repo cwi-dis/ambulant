@@ -1,1 +1,1 @@
-SUBDIRS= arts none cocoa qt SDL
+SUBDIRS= arts none cocoa qt SDL dx dg qsound

@@ -17,17 +17,22 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/config/platform/Makefile
 	include/ambulant/config/stdlib/Makefile
 	include/ambulant/common/Makefile
+	include/ambulant/compat/Makefile
 	include/ambulant/lib/Makefile
 	include/ambulant/lib/unix/Makefile
+	include/ambulant/lib/win32/Makefile
 	include/ambulant/mms/Makefile
 	include/ambulant/smil2/Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
+	include/ambulant/gui/dg/Makefile
+	include/ambulant/gui/dx/Makefile
 	include/ambulant/gui/none/Makefile
 	include/ambulant/gui/cocoa/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
+	include/ambulant/gui/qsound/Makefile
 	third_party_packages/Makefile])
 #
 # Find expat

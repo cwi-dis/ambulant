@@ -98,6 +98,7 @@ libambulant_la_SOURCES = \
 	lib/unix/unix_timer.cpp \
 	\
 	net/posix_datasource.cpp \
+	net/stdio_datasource.cpp \
 	net/raw_video_datasource.cpp \
 	net/datasource.cpp \
 	net/databuffer.cpp \
@@ -130,11 +131,23 @@ libambulant_la_SOURCES = \
 	gui/none/none_video_renderer.cpp \
 	gui/none/none_factory.cpp
 
+## EXTRA_DIST= \
+## 	gui/cocoa/cocoa_fill.m gui/cocoa/cocoa_fill.mm \
+## 	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \
+## 	gui/cocoa/cocoa_image.m gui/cocoa/cocoa_image.mm \
+## 	gui/cocoa/cocoa_mouse.m gui/cocoa/cocoa_mouse.mm \
+## 	gui/cocoa/cocoa_text.m gui/cocoa/cocoa_text.mm \
+## 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_audio.mm \
+## 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_video.mm
 EXTRA_DIST= \
-	gui/cocoa/cocoa_fill.m gui/cocoa/cocoa_fill.mm \
-	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \
-	gui/cocoa/cocoa_image.m gui/cocoa/cocoa_image.mm \
-	gui/cocoa/cocoa_mouse.m gui/cocoa/cocoa_mouse.mm \
-	gui/cocoa/cocoa_text.m gui/cocoa/cocoa_text.mm \
-	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_audio.mm \
-	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_video.mm
+	libambulant_win32.dsp \
+	libambulant_win32.vcproj \
+	libambulant_wince.vcp \
+	gui/arts \
+	gui/cocoa \
+	gui/dg \
+	gui/dx \
+	gui/qsound \
+	gui/qt \
+	lib/win32
+	

@@ -1,4 +1,4 @@
-SUBDIRS=unix
+SUBDIRS=unix win32
 library_includedir=$(includedir)/ambulant/lib
 library_include_HEADERS= \
 	abstract_mtsync.h \
@@ -28,6 +28,7 @@ library_include_HEADERS= \
 	sax_handler.h \
 	sax_types.h \
 	string_util.h \
+	system.h \
 	thread.h \
 	textptr.h \
 	timer.h \
