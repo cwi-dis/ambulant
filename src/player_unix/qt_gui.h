@@ -102,6 +102,9 @@ class qt_gui : public QWidget {
 	const char*  filename() { 
 		return m_smilfilename;
 	}
+
+	bool openSMILfile(QString smilfilename, int mode);
+
  private:
 	const char*  m_programfilename;
 	QString      m_smilfilename;
@@ -113,11 +116,14 @@ class qt_gui : public QWidget {
 	int	       m_o_x;	 // x coord of origin play window
 	int	       m_o_y;	 // y coord of origin play window
 
+public slots:
+	void slot_play();
+
 private slots:
 	void slot_about();
 	void slot_open();
-	void slot_play();
 	void slot_pause();
+	void slot_quit();
 	void slot_stop();
 	void slot_player_done();
 

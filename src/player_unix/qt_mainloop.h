@@ -65,10 +65,10 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "qt_gui.h"
 
-#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+//#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 class qt_mainloop_callback_arg {
 };

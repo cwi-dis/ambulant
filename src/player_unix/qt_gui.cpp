@@ -73,9 +73,11 @@ qt_gui::qt_gui(const char* title,
 	m_programfilename = title;
 	if (initfile != NULL && initfile != "")
 		m_smilfilename = initfile;
+#ifdef  QT_NO_FILEDIALOG
 	else
 		m_smilfilename = QString(
 			"/home/zaurus/Documents/example.smil");
+#endif/*QT_NO_FILEDIALOG*/
 	m_playing = false;
 	m_pausing = false;
 	setCaption(initfile);
@@ -91,7 +93,8 @@ qt_gui::qt_gui(const char* title,
 		filemenu->insertItem("&Full Screen", this,
 				     SLOT(showFullScreen()));
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
-		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
+//		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
+		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
 		menubar->insertItem("&File", filemenu);
 		
 		/* Play */
@@ -126,10 +129,31 @@ void qt_gui::slot_about() {
 				 QMessageBox::Ok | QMessageBox::Default
 				 );
 }
+
 bool checkFilename(QString filename, int mode) {
 	QFile* file = new QFile(filename);
 	return file->open(mode);
 }
+
+bool qt_gui::openSMILfile(QString smilfilename, int mode) {
+	if (smilfilename.isNull())
+		return false;
+	if (! checkFilename(m_smilfilename, mode)) {
+		char buf[1024];
+		sprintf(buf, "Cannot open file \"%s\":\n%s\n",
+			(const char*) m_smilfilename, strerror(errno));
+		QMessageBox::information(this, m_programfilename, buf);
+		return false;
+	}
+	char* filename = strdup(m_smilfilename);
+	setCaption(basename(filename));
+	free(filename);
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
+	m_smilfilename = smilfilename;
+	return true;
+}
+
 void qt_gui::slot_open() {
 #ifndef QT_NO_FILEDIALOG
 	m_smilfilename =
@@ -141,21 +165,9 @@ void qt_gui::slot_open() {
 				 "Double Click a file to open"
 				 );
 #endif/*QT_NO_FILEDIALOG*/
-	if (m_smilfilename.isNull())
-		return;
-	if (! checkFilename(m_smilfilename, IO_ReadOnly)) {
-		char buf[1024];
-		sprintf(buf, "Cannot open file \"%s\":\n%s\n",
-			(const char*) m_smilfilename, strerror(errno));
-		QMessageBox::information(this, m_programfilename, buf);
-		return;
-	}
-	char* filename = strdup(m_smilfilename);
-	setCaption(basename(filename));
-	free(filename);
-	m_playmenu->setItemEnabled(m_pause_id, false);
-	m_playmenu->setItemEnabled(m_play_id, true);
+	openSMILfile(m_smilfilename, IO_ReadOnly);
 }
+
 void qt_gui::slot_player_done() {
 	printf("%s-%s\n", m_programfilename, "slot_player_done");
 	m_playmenu->setItemEnabled(m_pause_id, false);
@@ -163,15 +175,18 @@ void qt_gui::slot_player_done() {
 	m_playing = false;
 	QObject::disconnect(this, SIGNAL(signal_player_done()),
 			    this, SLOT(slot_player_done()));
- }
+}
+
 void qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 	printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
 	(void *)this,r);
 }
+
 void qt_gui::player_done() {
 	printf("%s-%s\n", m_programfilename, "player_done");
 	emit signal_player_done();
 }
+
 void qt_gui::slot_play() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
 	if (m_smilfilename == NULL) {
@@ -197,16 +212,23 @@ void qt_gui::slot_play() {
 		m_pausing = false;
 	}
 }
+
 void qt_gui::slot_pause() {
 	printf("%s-%s\n", m_programfilename, "slot_pause");
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
 }
+
 void qt_gui::slot_stop() {
 	printf("%s-%s\n", m_programfilename, "slot_stop");
 	QMessageBox::information(this, m_programfilename,
 				 "This will be \"Stop\"\n"
 				 );
+}
+
+void qt_gui::slot_quit() {
+	printf("%s-%s\n", m_programfilename, "slot_quit");
+	exit(0);
 }
 
 int main (int argc, char*argv[]) {
@@ -226,7 +248,14 @@ int main (int argc, char*argv[]) {
 	myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
-	myapp.exec();
+	myapp.processEvents();
+	if (argc > 1) {
+	    mywidget->openSMILfile(argv[1], IO_ReadOnly);
+	    mywidget->slot_play();
+	}
+//	myapp.processEvents();
+//	myapp.exec();
+	while(1) myapp.processEvents();
 	std::cout << "Exiting program" << std::endl;
 	return 0;
 }
