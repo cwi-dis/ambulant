@@ -18,31 +18,16 @@
 
 #include <string>
 
-// Some of the following directives may go later to a config.h
-
 #ifndef _WIN32
 #include "expat.h"
 #else
-// third_party_packages directory
-#define THIRD_PARTY_PACKAGES_DIR "D:/ufs/third_party_packages"
-
-// The following include directive assumes that
-// THIRD_PARTY_PACKAGES_DIR has been specified 
-// as a project include directory.
 #include "expat/lib/expat.h"
-
-// libexpat path
-#define LIBEXPAT_LIB THIRD_PARTY_PACKAGES_DIR "/expat/lib/Release/libexpat.lib"
+#endif
 
 // To execute samples depending on libexpat.dll assert 
 // that the dll is reachable at runtime 
 // (e.g. its in the path).
 
-// For win32 we use the following MS extension to link with the import lib:
-#ifdef _WIN32
-#pragma comment (lib, LIBEXPAT_LIB)
-#endif
-#endif
 
 namespace ambulant {
 
