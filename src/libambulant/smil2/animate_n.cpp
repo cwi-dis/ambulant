@@ -562,10 +562,10 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 	if(aattrs->get_animate_type() == "invalid")
 		return new animate_node(ctx, n, aattrs);
 	
-	// Implemeted animations
+	// Implemented animations
 	if(aattrs->get_target_attr_type() == "reg_dim") {
 		return new_regdim_animation(ctx, n, aattrs);
-	} else if(aattrs->get_target_attr() == "backgroundColor") {
+	} else if(aattrs->get_target_attr_type() == "color") {
 		return new_color_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "z-index") {
 		return new_zindex_animation(ctx, n, aattrs);
