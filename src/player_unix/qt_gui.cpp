@@ -621,6 +621,7 @@ qt_gui::internal_message(int level, char* msg) {
 int
 main (int argc, char*argv[]) {
 
+#undef	ENABLE_NLS
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;

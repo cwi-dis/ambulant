@@ -91,8 +91,8 @@ class qt_renderer : public renderer_playable_dsall {
 	void start_outtransition(const lib::transition_info *info);
 
   protected:
-	lib::transition_info *m_intransition;
-	lib::transition_info *m_outtransition;
+	const lib::transition_info *m_intransition;
+	const lib::transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
   private:

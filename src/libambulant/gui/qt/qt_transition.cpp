@@ -77,7 +77,7 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 {
 	screen_rect<int> dstrect_whole = dst->get_rect();
 	QPainter paint;
-	paint.begin(aqw->ambulant_pixmap());
+	paint.begin(aqw->get_ambulant_pixmap());
 	dstrect_whole.translate(dst->get_global_topleft());
 	int L = dstrect_whole.left(),
 	T = dstrect_whole.top(),
@@ -111,7 +111,7 @@ setup_transition(bool outtrans, ambulant_qt_window *aqw, QPixmap** oldpxmp, QPix
 		*oldpxmp = aqw->get_ambulant_surface();
 		*newpxmp = aqw->m_tmppixmap;
 	} else {
-		*oldpxmp = aqw->ambulant_pixmap();
+		*oldpxmp = aqw->get_ambulant_pixmap();
 		*newpxmp = aqw->get_ambulant_surface();
 	}
 }
@@ -120,7 +120,7 @@ finalize_transition(bool outtrans, ambulant_qt_window *aqw,  common::surface *de
 {
 	if (outtrans) {
 		// copy the pixels in m_tmppixmap to the on-screen pixmap
-		QPixmap* dest_pixmap = aqw->ambulant_pixmap();
+		QPixmap* dest_pixmap = aqw->get_ambulant_pixmap();
 		QPixmap* temp_pixmap = aqw->get_ambulant_surface();
 		const lib::screen_rect<int> &cr=  dest->get_rect();
 		lib::screen_rect<int> r=cr;
@@ -363,7 +363,7 @@ qt_transition_blitclass_polylist::update()
 }
 
 smil2::transition_engine *
-qt_transition_engine(common::surface *dst, bool is_outtrans, transition_info *info)
+qt_transition_engine(common::surface *dst, bool is_outtrans, const transition_info *info)
 {
 	smil2::transition_engine *rv;
 	AM_DBG logger::get_logger()->debug("qt_transition_engine: info=0x%x info->m_type=%d", info, info->m_type);

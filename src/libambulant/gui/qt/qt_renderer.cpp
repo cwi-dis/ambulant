@@ -86,9 +86,7 @@ void
 qt_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug
-	  ("qt_renderer.start(0x%x, \"%s\")", (void *)this, 
-	   m_node->get_url("src").get_url().c_str());
+	AM_DBG logger::get_logger()->debug("qt_renderer.start(0x%x, \"%s\")", (void *)this, m_node->get_url("src").get_url().c_str());
 	if (m_intransition) {
 		m_trans_engine = qt_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
@@ -102,13 +100,9 @@ void
 qt_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug
-	  ("qt_renderer.start_outtransition(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("qt_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
-	if (m_outtransition == NULL) {
-		m_outtransition = new transition_info();
-	}
-	*m_outtransition = *info;
+	m_outtransition = info;
 	m_trans_engine = qt_transition_engine(m_dest, true, m_outtransition);
 	if (m_trans_engine)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
@@ -131,7 +125,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
-	AM_DBG logger::get_logger()->debug("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,aqw->ambulant_pixmap());
+	AM_DBG logger::get_logger()->debug("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,aqw->get_ambulant_pixmap());
 
 	QPixmap *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
@@ -140,7 +134,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	}
 	// See whether we're in a transition
 	if (m_trans_engine) {
-		QPixmap *qpm = aqw->ambulant_pixmap();
+		QPixmap *qpm = aqw->get_ambulant_pixmap();
 		surf = aqw->get_ambulant_surface();
 		if (surf == NULL)
 			surf = aqw->new_ambulant_surface();
@@ -167,9 +161,8 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		typedef no_arg_callback<qt_renderer>transition_callback;
 		event *ev = new transition_callback (this, &qt_renderer::transition_step);
 		transition_info::time_type delay = m_trans_engine->next_step_delay();
-//		if (delay < 40) delay = 40; // smooth ransition
-//		if (delay < 33) delay = 33; // XXX band-aid
-		delay = 50;
+		if (delay < 33) delay = 33; // XXX band-aid
+//		delay = 500;
 		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, event_processor::med);
 	}

@@ -260,7 +260,7 @@ class qt_transition_engine_fade :
 	virtual public smil2::transition_engine_fade {};
 
 smil2::transition_engine *qt_transition_engine(
-	common::surface *dst, bool is_outtrans, lib::transition_info *info);
+	common::surface *dst, bool is_outtrans, const lib::transition_info *info);
 	
 } // namespace qt
 

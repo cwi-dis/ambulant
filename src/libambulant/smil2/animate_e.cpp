@@ -177,7 +177,7 @@ void animation_engine::update_callback() {
 void animation_engine::schedule_update() {
 	m_update_event = new lib::no_arg_callback_event<animation_engine>(this, 
 		&animation_engine::update_callback);
-	m_event_processor->add_event(m_update_event, 100, event_processor::med);
+	m_event_processor->add_event(m_update_event, 50, event_processor::med);
 }
 
 

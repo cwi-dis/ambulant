@@ -120,7 +120,7 @@ qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
 		    H = r.height();
 		ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 		QPainter paint;
-		paint.begin(aqw->ambulant_pixmap());
+		paint.begin(aqw->get_ambulant_pixmap());
 
 		// Set <param> parameters
 		QColor qt_color(redc(m_text_color), greenc(m_text_color), bluec(m_text_color));

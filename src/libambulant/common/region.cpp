@@ -146,7 +146,7 @@ passive_region::activate()
 void
 passive_region::animated()
 {
-	 lib::logger::get_logger()->debug("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
 	clear_cache();
 // XXX: Temporary: What should be redrawn is the union of the area before and after
 #ifndef AMBULANT_PLATFORM_WIN32
@@ -353,7 +353,7 @@ passive_region::need_bounds()
 	if (m_bounds_inited) return;
 	 lib::logger::get_logger()->debug("passive_region::need_bounds(%s, 0x%x)", m_name.c_str(), (void*)this);
 	if (m_info) m_outer_bounds = m_info->get_screen_rect();
-	 lib::logger::get_logger()->debug("passive_region::need_bounds: %d %d %d %d", 
+	AM_DBG lib::logger::get_logger()->debug("passive_region::need_bounds: %d %d %d %d", 
 		m_outer_bounds.m_left, m_outer_bounds.m_top, m_outer_bounds.m_right, m_outer_bounds.m_bottom);
 	m_inner_bounds = m_outer_bounds.innercoordinates(m_outer_bounds);
 	m_window_topleft = m_outer_bounds.left_top();

@@ -139,7 +139,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 	}
 	// See whether we're in a transition
 	if (m_trans_engine) {
-		QPixmap *qpm = aqw->ambulant_pixmap();
+		QPixmap *qpm = aqw->get_ambulant_pixmap();
 		surf = aqw->get_ambulant_surface();
 		if (surf == NULL)
 			surf = aqw->new_ambulant_surface();
@@ -169,9 +169,8 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		typedef no_arg_callback<qt_fill_renderer>transition_callback;
 		event *ev = new transition_callback(this, &qt_fill_renderer::transition_step);
 		transition_info::time_type delay = m_trans_engine->next_step_delay();
-//		if (delay < 40) delay = 40; // smooth ransition
-//		if (delay < 33) delay = 33; // XXX band-aid
-		delay = 50;
+		if (delay < 33) delay = 33; // XXX band-aid
+//		delay = 500;
 		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
@@ -200,7 +199,7 @@ qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPainter paint;
-	paint.begin(aqw->ambulant_pixmap());
+	paint.begin(aqw->get_ambulant_pixmap());
 	// <brush> drawing
 	// First find our whole area to be cleared to <brush> color
 	lib::screen_rect<int> dstrect_whole = r;
@@ -239,7 +238,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
-		paint.begin(aqw->ambulant_pixmap());
+		paint.begin(aqw->get_ambulant_pixmap());
 		lib::screen_rect<int> dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
