@@ -268,18 +268,126 @@ transition_engine__iris::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype _irisWipe not yet implemented");
+	int pointcount;
+	lib::dpoint *pointp = get_template(&pointcount);
+	clear();
+	while (pointcount--) {
+		lib::dpoint rel_point(pointp->x * m_progress, pointp->y * m_progress);
+		lib::point abs_point(
+			(int)(rel_point.x * dstrect.width() + (dstrect.left() + dstrect.right())/2.0 ),
+			(int)(rel_point.y * dstrect.height() + (dstrect.top() + dstrect.bottom())/2.0 ));
+		m_newpolygon.push_back(abs_point);
+		pointp++;
+	}
 }
 
-std::list<lib::dpoint> ambulant::smil2::transition_engine_iriswipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_pentagonwipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_arrowheadwipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_trianglewipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_hexagonwipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_eyewipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_roundrectwipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_ellipsewipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_starwipe::m_template;
-std::list<lib::dpoint> ambulant::smil2::transition_engine_miscshapewipe::m_template;
+lib::dpoint ambulant::smil2::transition_engine_iriswipe::m_template[] = {
+	lib::dpoint(-0.5, -0.5),
+	lib::dpoint(1, -1),
+	lib::dpoint(1, 1),
+	lib::dpoint(-1, 1)
+};
+
+lib::dpoint *
+transition_engine_iriswipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_pentagonwipe::m_template[] = {
+	lib::dpoint(-0.5, -0.5),
+	lib::dpoint(0.5, -0.5),
+	lib::dpoint(0.5, 0.5),
+	lib::dpoint(-0.5, 0.5)
+};
+
+lib::dpoint *
+transition_engine_pentagonwipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_arrowheadwipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_arrowheadwipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_trianglewipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_trianglewipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_hexagonwipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_hexagonwipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_eyewipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_eyewipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_roundrectwipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_roundrectwipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_ellipsewipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_ellipsewipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_starwipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_starwipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
+
+lib::dpoint ambulant::smil2::transition_engine_miscshapewipe::m_template[] = {
+};
+
+lib::dpoint *
+transition_engine_miscshapewipe::get_template(int *size)
+{
+	*size = sizeof(m_template) / sizeof(m_template[0]);
+	return m_template;
+}
 
 // series 3: clock-type wipes
 

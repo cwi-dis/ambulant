@@ -133,6 +133,7 @@ class basic_point {
 	basic_point<T> operator/(int n) const { 
 		basic_point<T> t(*this); t/=n; return t;
 	}
+	
 };
 
 

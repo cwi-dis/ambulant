@@ -194,68 +194,68 @@ class transition_engine_bowtiewipe : virtual public transition_blitclass_polylis
 
 class transition_engine__iris : virtual public transition_blitclass_poly {
   protected:
-	virtual std::list<lib::dpoint> &get_template() = 0;
+	virtual lib::dpoint *get_template(int *size) = 0;
     void compute();
 };
 
 class transition_engine_iriswipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_pentagonwipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_arrowheadwipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_trianglewipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_hexagonwipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_eyewipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_roundrectwipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_ellipsewipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_starwipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 class transition_engine_miscshapewipe : virtual public transition_engine__iris {
   protected:
-    std::list<lib::dpoint> &get_template() { return m_template;};
-	static std::list<lib::dpoint> m_template;
+    lib::dpoint *get_template(int *size);
+	static lib::dpoint m_template[];
 };
 
 // series 3: clock-type wipes

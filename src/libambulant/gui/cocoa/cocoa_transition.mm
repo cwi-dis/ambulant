@@ -171,6 +171,11 @@ cocoa_transition_blitclass_poly::update()
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: not yet implemented");
+	std::vector<lib::point>::iterator newpoint;
+	for( newpoint=m_newpolygon.begin(); newpoint != m_newpolygon.end(); newpoint++) {
+		lib::point p = *newpoint;
+		/*AM_DBG*/ lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: point=%d, %d", p.x, p.y);
+	}
 #ifdef FILL_PURPLE
 	// Debug: fill with purple
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
