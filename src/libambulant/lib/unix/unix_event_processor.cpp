@@ -59,11 +59,10 @@ lib::unix::event_processor::wait_event()
 	int rv;
 	struct timespec ts;
 	
-	// XXXX Could use pthread_cond_timedwait() but we would have to use absolute
-	// times, and absolute time as a timespec is difficult to obtain.
-	ts.tv_sec = 1;
+	// XXXX This is wrong.
+	ts.tv_sec = time(NULL);
 	ts.tv_nsec = 10000000; /* 10ms */
-	rv = pthread_cond_timedwait_relative_np(&m_queue_condition, &m_queue_mutex, &ts);
+	rv = pthread_cond_timedwait(&m_queue_condition, &m_queue_mutex, &ts);
 	if ( rv < 0 && errno != ETIMEDOUT) {
 		lib::logger::get_logger()->fatal("unix_event_processor.wait_event: pthread_cond_wait failed: %s", strerror(errno));
 	}
