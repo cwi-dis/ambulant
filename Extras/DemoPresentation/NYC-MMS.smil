@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2001/SMIL20/SMIL20.dtd">
+<smil xmlns="http://www.w3.org/2001/SMIL20/Language">
+  <head>
+    <meta name="title" content="MMS presentation for small device"/>
+    <meta name="generator" content="GRiNS Pro for SMIL 2.0, v2.2 Mobile win32 build 151"/>
+    <meta name="author" content="Dick Bulterman"/>
+    <layout>
+      <root-layout id="MMS_Slideshow" backgroundColor="gray" width="160" height="220"/>
+      <region id="audio_1" left="0" width="160" top="1" height="220"/>
+      <region id="Images" width="160" height="130" z-index="1"/>
+      <region id="Captions" left="1" width="158" top="132" height="84" z-index="2"/>
+    </layout>
+  </head>
+  <body id="MMSslideshow">
+    <par id="ImageTextAudio" dur="8s">
+      <img id="TitleA" region="Images" dur="8s" src="NYCdata/TitleA-s.gif"/>
+      <audio id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome-l.mp3"/>
+      <text id="CapA0" region="Captions" dur="5s" src="NYCdata/CapA0.txt"/>
+    </par>
+    <par id="ImageTextAudio-0" begin="0">
+      <img id="TitleA1" region="Images" begin="0" dur="7s" src="NYCdata/TitleA1-s.gif"/>
+      <text id="CapA1" region="Captions" dur="5s" src="NYCdata/CapA1.txt"/>
+    </par>
+    <par id="ImageTextAudio-1">
+      <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB-s.gif"/>
+      <audio id="SIF-Intro" region="audio_1" begin="0" src="NYCdata/SIF-Intro-l.mp3"/>
+      <text id="CapF0" region="Captions" dur="5s" src="NYCdata/CapF0.txt"/>
+    </par>
+    <par id="ImageTextAudio-2">
+      <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1-s.gif"/>
+      <text id="CapF1" region="Captions" dur="5s" src="NYCdata/CapF1.txt"/>
+      <audio id="SIF" region="audio_1" src="NYCdata/SIF-1-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-3">
+      <img id="Ferry2" region="Images" dur="5s" src="NYCdata/Ferry2-s.gif"/>
+      <text id="CapF2" region="Captions" dur="5s" src="NYCdata/CapF2.txt"/>
+      <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-4">
+      <img id="Ferry3" region="Images" dur="5s" src="NYCdata/Ferry3-s.gif"/>
+      <text id="CapF3" region="Captions" dur="5s" src="NYCdata/CapF3.txt"/>
+      <audio id="SIF-1" region="audio_1" src="NYCdata/SIF-3-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-5">
+      <img id="Ferry4" region="Images" dur="5s" src="NYCdata/Ferry4-s.gif"/>
+      <text id="CapF4" region="Captions" dur="5s" src="NYCdata/CapF4.txt"/>
+      <audio id="SIF-2" region="audio_1" src="NYCdata/SIF-4-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-6">
+      <img id="TitleC" region="Images" dur="5s" src="NYCdata/TitleC-s.gif"/>
+      <audio id="NY" region="audio_1" src="NYCdata/NY-0-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-7">
+      <img id="NY1" region="Images" dur="5s" src="NYCdata/NY1-s.gif"/>
+      <text id="CapN1" region="Captions" dur="5s" src="NYCdata/CapN1.txt"/>
+    </par>
+    <par id="ImageTextAudio-8">
+      <img id="NY2" region="Images" dur="5s" src="NYCdata/NY2-s.gif"/>
+      <text id="CapN2" region="Captions" dur="5s" src="NYCdata/CapN2.txt"/>
+      <audio id="NY-0" region="audio_1" src="NYCdata/NY-2-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-9">
+      <img id="TitleD" region="Images" dur="5s" src="NYCdata/TitleD-s.gif"/>
+      <audio id="Train" region="audio_1" src="NYCdata/Train-0-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-10">
+      <img id="Train1" region="Images" dur="5s" src="NYCdata/Train1-s.gif"/>
+      <text id="CapT1" region="Captions" dur="5s" src="NYCdata/CapT1.txt"/>
+      <audio id="Train-0" region="audio_1" src="NYCdata/Train-1-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-11">
+      <img id="Train2" region="Images" dur="5s" src="NYCdata/Train2-s.gif"/>
+      <text id="CapT2" region="Captions" dur="5s" src="NYCdata/CapT2.txt"/>
+      <audio id="Train-1" region="audio_1" src="NYCdata/Train-2-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-12">
+      <img id="Train3" region="Images" dur="5s" src="NYCdata/Train3-s.gif"/>
+      <text id="CapT3" region="Captions" dur="5s" src="NYCdata/CapT3.txt"/>
+      <audio id="Train-2" region="audio_1" src="NYCdata/Train-3-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-13">
+      <img id="Train4" region="Images" dur="5s" src="NYCdata/Train4-s.gif"/>
+      <text id="CapT4" region="Captions" dur="5s" src="NYCdata/CapT4.txt"/>
+      <audio id="Train-3" region="audio_1" src="NYCdata/Train-4-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-14">
+      <img id="TitleE" region="Images" dur="5s" src="NYCdata/TitleE-s.gif"/>
+      <audio id="JH" region="audio_1" src="NYCdata/JH-0-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-15">
+      <img id="JH1" region="Images" dur="5s" src="NYCdata/JH1-s.gif"/>
+      <text id="CapJ1" region="Captions" dur="5s" src="NYCdata/CapJ1.txt"/>
+      <audio id="JH-0" region="audio_1" src="NYCdata/JH-1-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-16">
+      <img id="JH2" region="Images" dur="5s" src="NYCdata/JH2-s.gif"/>
+      <text id="CapJ2" region="Captions" dur="5s" src="NYCdata/CapJ2.txt"/>
+      <audio id="JH-1" region="audio_1" src="NYCdata/JH-2-l.mp3"/>
+    </par>
+    <par id="ImageTextAudio-17">
+      <img id="TitleF" region="Images" dur="5s" src="NYCdata/TitleF-s.gif"/>
+      <audio id="End" region="audio_1" src="NYCdata/End-l.mp3"/>
+    </par>
+  </body>
+</smil>
