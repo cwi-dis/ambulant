@@ -219,6 +219,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_49FA1BAC53454FD1BCA1A1173F6ECD09"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4AD16137874A499F85897C18EE18D421"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -339,12 +345,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6D43792343DC448699E0087E0D3165B6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6D75A928003F412EAEB8BDD748AF07D6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -460,6 +460,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9FAC4B276C534ABE9582DBB01D941862"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0468549D81A41D2B7C535949D2FF962"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -790,6 +796,13 @@
         {
             "LaunchCondition"
             {
+                "{2522A265-4974-4402-83C5-3B575A2E935A}:_D24E23074D234D99ACA575E1184D0900"
+                {
+                "Name" = "8:.NET Framework"
+                "Message" = "8:[VSDNETMSG]"
+                "SupportedRuntimes" = "8:1.1.4322"
+                "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
+                }
             }
         }
         "Feature"
@@ -1877,26 +1890,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_6D43792343DC448699E0087E0D3165B6"
-            {
-            "SourcePath" = "8:..\\..\\README"
-            "TargetName" = "8:README"
-            "Tag" = "8:"
-            "Folder" = "8:_3001F92873C24B5C8F2FF5DE76AD96F8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_6D75A928003F412EAEB8BDD748AF07D6"
             {
             "SourcePath" = "8:..\\..\\Extras\\DemoPresentation\\NYCdata\\NY-2-l.mp3"
@@ -2283,6 +2276,26 @@
             "TargetName" = "8:TitleC-s.gif"
             "Tag" = "8:"
             "Folder" = "8:_2F3CD7587B804EF9ACE4DEA26EBDA1C9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_A0468549D81A41D2B7C535949D2FF962"
+            {
+            "SourcePath" = "8:..\\..\\readme.txt"
+            "TargetName" = "8:readme.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_3001F92873C24B5C8F2FF5DE76AD96F8"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3299,6 +3312,17 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                    "{F27BD5C5-A65D-4608-96D4-7C5DA1F76302}:_746AF7A9CC5149E8A06ED276C16595E0"
+                    {
+                    "Name" = "8:Ambulant"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_3133047827854EAFBF9E804F8E643228"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{78BAF5CE-F2E5-45BE-83BC-DB6AF387E941}:_DF1E485CDDAF438FB777CF9415F9C75A"
@@ -3328,7 +3352,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:AmbulantPlayer"
         "ProductCode" = "8:{853EAE48-7428-481F-81E7-F04EE6C8D909}"
-        "PackageCode" = "8:{660FE8EC-AFB2-4E8F-9338-4CF0288685B3}"
+        "PackageCode" = "8:{185A7350-AE5C-40C9-A39D-90460B616985}"
         "UpgradeCode" = "8:{1070F94B-188B-4B47-B3AE-EFD7E2BB1A8B}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -3442,6 +3466,34 @@
         }
         "Shortcut"
         {
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_7F6A655F12DF48E8B08B9C1A013FA5F9"
+            {
+            "Name" = "8:NYC SMIL Demo"
+            "Arguments" = "8:.\\Extras\\DemoPresentation\\NYC-SMIL2.smil"
+            "Description" = "8:SMIL Demo"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:129"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_06526E00B3CE4F57AF742DABB6BE96DD"
+            "Folder" = "8:_746AF7A9CC5149E8A06ED276C16595E0"
+            "WorkingFolder" = "8:_3001F92873C24B5C8F2FF5DE76AD96F8"
+            "Icon" = "8:_06526E00B3CE4F57AF742DABB6BE96DD"
+            "Feature" = "8:"
+            }
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_C23EAA2A508C4824AB374C322F87366A"
+            {
+            "Name" = "8:Readme"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_A0468549D81A41D2B7C535949D2FF962"
+            "Folder" = "8:_746AF7A9CC5149E8A06ED276C16595E0"
+            "WorkingFolder" = "8:_3001F92873C24B5C8F2FF5DE76AD96F8"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_CFB6A142D90E47A086EF7C5AB6DD66EC"
             {
             "Name" = "8:AmbulantPlayer"
@@ -3451,7 +3503,7 @@
             "IconIndex" = "3:128"
             "Transitive" = "11:FALSE"
             "Target" = "8:_06526E00B3CE4F57AF742DABB6BE96DD"
-            "Folder" = "8:_C4F03F34033B42BD82E55A506BD09D61"
+            "Folder" = "8:_746AF7A9CC5149E8A06ED276C16595E0"
             "WorkingFolder" = "8:_3001F92873C24B5C8F2FF5DE76AD96F8"
             "Icon" = "8:_06526E00B3CE4F57AF742DABB6BE96DD"
             "Feature" = "8:"
@@ -3839,6 +3891,20 @@
         }
         "MergeModule"
         {
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_49FA1BAC53454FD1BCA1A1173F6ECD09"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:c:\\program files\\microsoft visual studio .net 2003\\common7\\tools\\deployment\\vspkgs\\..\\dotnetfxredist_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:1033"
+            "Exclude" = "11:TRUE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
