@@ -206,6 +206,21 @@ class global_playable_factory : public playable_factory {
     playable_factory *m_default_factory;
 };
 
+// background_renderer is a convenience class: it implements some of the
+// methods for a renderer that are applicable to background renderers
+class background_renderer : public renderer {
+  public:
+	background_renderer(const region_info *src)
+	:   m_src(src),
+		m_dst(NULL) {}
+	virtual ~background_renderer() {}
+	virtual void set_surface(surface *destination) { m_dst = destination; }
+	virtual void user_event(const lib::point &where) { /* Ignore, for now */ }
+	virtual surface *get_surface() { return m_dst; }
+  protected:
+	const region_info *m_src;
+	surface *m_dst;
+};
 
 } // namespace common
  

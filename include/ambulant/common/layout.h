@@ -118,28 +118,6 @@ class abstract_window {
 	renderer *m_region;
 };
 
-// abstract_bg_rendering_source is a pure virtual class used by regions to render their 
-// background, and in the future it may also
-// be used to do the bitblitting for transitions, etc.
-class abstract_bg_rendering_source {
-  public:
-	virtual ~abstract_bg_rendering_source() {};
-	
-	virtual void drawbackground(const region_info *src, const lib::screen_rect<int> &dirty, 
-		surface *dst, abstract_window *window) = 0;
-};
-
-// window_factory is subclassed by the various GUI implementations.
-// It should create a GUI window, and set up for that GUI window to forward
-// its redraw requests to the given region.
-class window_factory {
-  public:
-	virtual ~window_factory() {}
-	virtual abstract_window *new_window(const std::string &name, lib::size bounds, renderer *region) = 0;
-	virtual gui_region *new_mouse_region() = 0;
-	virtual abstract_bg_rendering_source *new_background_renderer() = 0;
-};
-
 // renderer is an pure virtual baseclass for renderers that
 // render to a region (as opposed to audio renderers, etc) and for subregions
 // themselves. It is used to commmunicate redraw requests (and, eventually,
@@ -191,6 +169,29 @@ class layout_manager {
 	virtual surface *get_surface(const lib::node *node) = 0;
 };
 	
+// window_factory is subclassed by the various GUI implementations.
+// It should create a GUI window, and set up for that GUI window to forward
+// its redraw requests to the given region.
+class window_factory {
+  public:
+	virtual ~window_factory() {}
+	virtual abstract_window *new_window(const std::string &name, lib::size bounds, renderer *region) = 0;
+	virtual gui_region *new_mouse_region() = 0;
+	virtual renderer *new_background_renderer(region_info *src) = 0;
+};
+
+#if 0
+// abstract_bg_rendering_source is a pure virtual class used by regions to render their 
+// background, and in the future it may also
+// be used to do the bitblitting for transitions, etc.
+class abstract_bg_rendering_source {
+  public:
+	virtual ~abstract_bg_rendering_source() {};
+	
+	virtual void drawbackground(const region_info *src, const lib::screen_rect<int> &dirty, 
+		surface *dst, abstract_window *window) = 0;
+};
+#endif
 } // namespace common
  
 } // namespace ambulant

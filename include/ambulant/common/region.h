@@ -110,7 +110,7 @@ class passive_region : public surface, public renderer {
 	virtual void mouse_region_changed();
         
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
-	virtual passive_region *subregion(const region_info *info);
+	virtual passive_region *subregion(const region_info *info, renderer *bgrenderer);
 	active_region *activate(const node *node);
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
@@ -123,7 +123,7 @@ class passive_region : public surface, public renderer {
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		const region_info *info)
+		const region_info *info, renderer *bgrenderer)
 	:	m_name(name),
 		m_name_str(name.c_str()),
 		m_bounds_inited(true),
@@ -134,13 +134,15 @@ class passive_region : public surface, public renderer {
 		m_cur_active_region(NULL),
 		m_mouse_region(NULL),
 		m_info(info),
-		m_bg_renderer(NULL)
+		m_bg_renderer(bgrenderer)
         {
 			if (parent) m_window_topleft += parent->get_global_topleft();
 			if (parent && parent->m_mouse_region) {
 				m_mouse_region = parent->m_mouse_region->clone();
 				m_mouse_region->clear();
 			}
+			if (m_bg_renderer)
+				m_bg_renderer->set_surface(this);
         }
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(gui_region *rgn);
@@ -157,7 +159,6 @@ class passive_region : public surface, public renderer {
 
 	void need_bounds();
 	void draw_background(const screen_rect<int> &r, abstract_window *window);
-	abstract_bg_rendering_source *get_bg_renderer();
   protected:
   	std::string m_name;					// for debugging
 	const char *m_name_str;					// ditto
@@ -170,13 +171,13 @@ class passive_region : public surface, public renderer {
   	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
-	abstract_bg_rendering_source *m_bg_renderer;  // Background renderer
+	renderer *m_bg_renderer;  // Background renderer
 };
 
 class passive_root_layout : public passive_region {
   public:
 	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
-	passive_root_layout(const region_info *info, size bounds, window_factory *wf);
+	passive_root_layout(const region_info *info, size bounds, renderer *bgrenderer, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
 	void mouse_region_changed();

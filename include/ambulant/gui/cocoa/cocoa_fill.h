@@ -95,10 +95,13 @@ class cocoa_active_fill_renderer : public active_basic_renderer {
 	critical_section m_lock;
 };
 
-class cocoa_background_renderer : public abstract_bg_rendering_source {
+class cocoa_background_renderer : public background_renderer {
   public:
-	void drawbackground(const region_info *src, const screen_rect<int> &dirty, 
-		surface *dst, abstract_window *window);
+    cocoa_background_renderer(common::region_info *src)
+	:   background_renderer(src) {}
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+  private:
+	
 };
 
 } // namespace cocoa

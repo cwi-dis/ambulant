@@ -69,13 +69,15 @@ common::passive_region::~passive_region()
 		delete m_cur_active_region;
 	}
 	m_cur_active_region = NULL;
+	if (m_bg_renderer)
+		delete m_bg_renderer;
+	m_bg_renderer = NULL;
 //	if (m_mouse_region)
 //		delete m_mouse_region;
 	m_mouse_region = NULL;
 //	if (m_info)
 //		delete m_info;
 	m_info = NULL;
-	// Don't touch m_bg_renderer: it is shared and destroyed by the root window
 	std::multimap<zindex_t,passive_region *>::iterator i;
 	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
 		delete (*i).second;
@@ -86,18 +88,18 @@ common::passive_region *
 common::passive_region::subregion(const std::string &name, lib::screen_rect<int> bounds)
 {
 	AM_DBG lib::logger::get_logger()->trace("subbregion NO-INFO: ltrb=(%d, %d, %d, %d)", bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
-	passive_region *rv = new passive_region(name, this, bounds, NULL);
+	passive_region *rv = new passive_region(name, this, bounds, NULL, NULL);
 	m_active_children.insert(std::make_pair(zindex_t(0), rv));
 	return rv;
 }
 
 common::passive_region *
-common::passive_region::subregion(const region_info *info)
+common::passive_region::subregion(const region_info *info, renderer *bgrenderer)
 {
 	screen_rect<int> bounds = info->get_screen_rect();
 	zindex_t z = info->get_zindex();
 	AM_DBG lib::logger::get_logger()->trace("subbregion %s: ltrb=(%d, %d, %d, %d), z=%d", info->get_name().c_str(), bounds.left(), bounds.top(), bounds.right(), bounds.bottom(), z);
-	passive_region *rv = new passive_region(info->get_name(), this, bounds, info);
+	passive_region *rv = new passive_region(info->get_name(), this, bounds, info, bgrenderer);
 	
 	m_active_children.insert(std::make_pair(zindex_t(z), rv));
 	return rv;
@@ -168,17 +170,8 @@ common::passive_region::draw_background(const lib::screen_rect<int> &r, abstract
 	if (m_info->get_transparent()) return;
 	if (!m_info->get_showbackground()) return;
 	// Now we should make sure we have a background renderer
-	get_bg_renderer();
 	if (m_bg_renderer)
-		m_bg_renderer->drawbackground(m_info, r, this, window);
-}
-
-common::abstract_bg_rendering_source *
-common::passive_region::get_bg_renderer()
-{
-	if (!m_bg_renderer && m_parent)
-		m_bg_renderer = m_parent->get_bg_renderer();
-	return m_bg_renderer;
+		m_bg_renderer->redraw(r, window);
 }
 
 void
@@ -327,20 +320,18 @@ common::passive_region::mouse_region_changed()
 }
 
 common::passive_root_layout::passive_root_layout(const std::string &name, lib::size bounds, window_factory *wf)
-:   passive_region(name, NULL, screen_rect<int>(point(0, 0), bounds), NULL)
+:   passive_region(name, NULL, screen_rect<int>(point(0, 0), bounds), NULL, NULL)
 {
 	m_mouse_region = wf->new_mouse_region();
 	m_gui_window = wf->new_window(name, bounds, this);
-	m_bg_renderer = wf->new_background_renderer();
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x, bgrenderer=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region, (void *)m_bg_renderer);
 }
 		
-common::passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, window_factory *wf)
-:   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info)
+common::passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, renderer *bgrenderer, window_factory *wf)
+:   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info, bgrenderer)
 {
 	m_mouse_region = wf->new_mouse_region();
 	m_gui_window = wf->new_window(m_name, bounds, this);
-	m_bg_renderer = wf->new_background_renderer();
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region);
 }
 		

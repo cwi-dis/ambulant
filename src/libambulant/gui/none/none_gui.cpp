@@ -78,12 +78,9 @@ gui::none::none_playable::stop()
 }
 
 void
-gui::none::none_background_renderer::drawbackground(
-	const region_info *src, 
-	const screen_rect<int> &dirty, 
-	surface *dst, abstract_window *window)
+gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {
-	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)src, (void*)dst);
+	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_src, (void*)m_dst);
 }
 
 playable *
@@ -96,10 +93,10 @@ gui::none::none_playable_factory::new_playable(
 	return new none_playable(context, cookie, node);
 }
 
-abstract_bg_rendering_source *
-gui::none::none_window_factory::new_background_renderer()
+renderer *
+gui::none::none_window_factory::new_background_renderer(region_info *src)
 {
-	return new none_background_renderer();
+	return new none_background_renderer(src);
 }
 
 abstract_window *

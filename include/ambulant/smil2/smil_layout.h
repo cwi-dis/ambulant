@@ -82,7 +82,8 @@ class smil_layout_manager : public common::layout_manager {
 	common::surface *get_default_rendering_surface(const lib::node *n);
 	void build_layout_tree(common::window_factory *wf, const lib::node *layout_root);
 
-	common::passive_root_layout *create_top_region(common::window_factory *wf, const common::region_node *rn);
+	common::passive_root_layout *create_top_region(common::window_factory *wf, 
+		const common::region_node *rn, common::renderer *bgrenderer);
 	
 	const common::schema *m_schema;
 	std::vector<common::passive_root_layout*> m_rootlayouts;

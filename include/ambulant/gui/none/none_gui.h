@@ -79,7 +79,7 @@ class none_window_factory : public common::window_factory {
   	
 	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::renderer *region);
 	common::gui_region *new_mouse_region() { return NULL; }
-	common::abstract_bg_rendering_source *new_background_renderer();
+	common::renderer *new_background_renderer(common::region_info *src);
 };
 
 class none_playable : public common::active_playable {
@@ -108,12 +108,12 @@ class none_playable : public common::active_playable {
 	const lib::node *m_node;
 };
 
-class none_background_renderer : public common::abstract_bg_rendering_source {
+class none_background_renderer : public common::background_renderer {
   public:
-	void drawbackground(const common::region_info *src, 
-		const lib::screen_rect<int> &dirty, 
-		common::surface *dst, 
-		common::abstract_window *window);
+	none_background_renderer(common::region_info *src)
+	:   common::background_renderer(src) {}
+	~none_background_renderer() {}
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
 };
 
 class common::region_info;

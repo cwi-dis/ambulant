@@ -109,7 +109,7 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 	// to use this as the default region. XXXX Should be auto-show eventually.
 	if (m_rootlayouts.empty()) {
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: no rootLayouts, creating one");
-		create_top_region(wf, NULL);
+		create_top_region(wf, NULL, NULL);
 	}
 }
 
@@ -252,8 +252,9 @@ smil_layout_manager::build_layout_tree(common::window_factory *wf, const lib::no
 	if (rlnode) {
 		assert(rlnode->is_region_node());
 		const common::region_node *rrlnode = static_cast<const common::region_node *>(rlnode);
+		common::renderer *bgrenderer = wf->new_background_renderer(rrlnode);
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create root_layout");
-		root_layout = create_top_region(wf, rrlnode);
+		root_layout = create_top_region(wf, rrlnode, bgrenderer);
 	}
 		
 	// Loop over all the layout elements, create the regions and root_layouts,
@@ -272,6 +273,7 @@ smil_layout_manager::build_layout_tree(common::window_factory *wf, const lib::no
 			// them
 			assert(n->is_region_node());
 			const common::region_node *rn = static_cast<const common::region_node *>(n);
+			common::renderer *bgrenderer = wf->new_background_renderer(rn);
 			common::passive_region *rgn;
 			const char *pid = n->get_attribute("id");
 			std::string ident = "<unnamed>";
@@ -288,18 +290,18 @@ smil_layout_manager::build_layout_tree(common::window_factory *wf, const lib::no
 			// Create the region or the root-layout
 			if (tag == common::l_toplayout) {	
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create topLayout");
-				common::passive_root_layout *rootrgn = create_top_region(wf, rn);
+				common::passive_root_layout *rootrgn = create_top_region(wf, rn, bgrenderer);
 				rgn = rootrgn;
 			} else if (tag == common::l_region && !stack.empty()) {
 				common::passive_region *parent = stack.top();
-				rgn = parent->subregion(rn);
+				rgn = parent->subregion(rn, bgrenderer);
 			} else if (tag == common::l_region && stack.empty()) {
 				// Create root-layout if it doesn't exist yet
 				if (root_layout == NULL) {
 					AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create default root-layout");
-					root_layout = create_top_region(wf, NULL);
+					root_layout = create_top_region(wf, NULL, NULL);
 				}
-				rgn = root_layout->subregion(rn);
+				rgn = root_layout->subregion(rn, bgrenderer);
 			} else {
 				assert(0);
 			}
@@ -328,16 +330,18 @@ smil_layout_manager::build_layout_tree(common::window_factory *wf, const lib::no
 }
 
 common::passive_root_layout *
-smil_layout_manager::create_top_region(common::window_factory *wf, const common::region_node *rn)
+smil_layout_manager::create_top_region(common::window_factory *wf, const common::region_node *rn, common::renderer *bgrenderer)
 {
 	lib::size size = lib::size(common::default_layout_width, common::default_layout_height);
 	if (rn) {
 		lib::screen_rect<int> bounds = rn->get_screen_rect();
 		size = lib::size(bounds.right(), bounds.bottom());
+		common::renderer *bgrenderer = NULL;
+		bgrenderer = wf->new_background_renderer(rn);
 	}
 	AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::create_top_region: size=(%d, %d)", size.w, size.h);
 	common::passive_root_layout *rootrgn;
-	rootrgn = new common::passive_root_layout(rn, size, wf);
+	rootrgn = new common::passive_root_layout(rn, size, bgrenderer, wf);
 	m_rootlayouts.push_back(rootrgn);
 	return rootrgn;
 }

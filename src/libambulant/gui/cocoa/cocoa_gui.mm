@@ -192,10 +192,10 @@ cocoa_window_factory::new_mouse_region()
 	return new cocoa_mouse_region();
 };
 
-abstract_bg_rendering_source *
-cocoa_window_factory::new_background_renderer()
+common::renderer *
+cocoa_window_factory::new_background_renderer(common::region_info *src)
 {
-	return new cocoa_background_renderer();
+	return new cocoa_background_renderer(src);
 }
 
 } // namespace cocoa
