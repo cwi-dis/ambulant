@@ -99,20 +99,25 @@ class ref_counted_obj : public ref_counted {
 	atomic_count m_refcount;
 };
 
-
-// This class is useful by itself as an envelope 
-// controlling the lifetime of its content,
-// but can serve also as a sample for ref_counted classes.
-// This is the self-destroying version of ref counted objects.
+// A ref_counted wrapper around a normal objects.
+// Converts normal objects to a ref_counted objects.
+// The cost is that you have to get the wrapped object
+// using get_ptr().
+// As all ref_counted objects and this one
+// is created with the operator new.
 template<class T>
-class sd_envelope : public ref_counted_obj {
+class auto_ref : public ref_counted_obj {
   public:
-	sd_envelope(T* value) : m_value(value) {}
-	~sd_envelope() { delete m_value;}
-	T* get_value() { return m_value;}
+	auto_ref(T* ptr = 0) : m_ptr(ptr) {}
+	~auto_ref() { delete m_ptr;}
+	
+    T* get_ptr() { return m_ptr;}
+	void set_ptr(T* ptr = 0) {
+		if(ptr != m_ptr) delete m_ptr;
+		m_ptr = ptr;
+	}
   private:
-	T* m_value;
-	atomic_count m_refcount;
+	T* m_ptr;
 };
 
 // Save release idiom: 
