@@ -78,10 +78,12 @@ class cocoa_audio_playable :
 
 	void start(double where);
 	void stop();
+	void seek(double where);
 	void pause();
 	void resume();
 //	void speed_changed();
   private:
+	void cocoa_audio_playable::check_still_playing();
 	net::url m_url;
   	NSSound *m_sound;
 	critical_section m_lock;

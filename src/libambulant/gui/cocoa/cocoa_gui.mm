@@ -50,6 +50,7 @@
 
 // Define this to prefer QuickTime-based video over datasource-based video
 #define AM_PREFER_QUICKTIME
+#undef WITH_COCOA_AUDIO
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_audio.h"
@@ -171,7 +172,7 @@ cocoa_renderer_factory::new_playable(
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_fill_renderer 0x%x", (void *)node, (void *)rv);
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
-		rv = new cocoa_audio_renderer(context, cookie, node);
+		rv = new cocoa_audio_playable(context, cookie, node, evp);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else if ( tag == "video") {
