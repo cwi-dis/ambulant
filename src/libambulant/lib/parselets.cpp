@@ -113,6 +113,89 @@ lib::options_p::~options_p() {
 		delete *rit;
 }
 
+//////////////////////
+// number_p
+// Parses any decimal number not using scientific notation
+// Includes: (+|-)?d+(.d*)? | .d+
+
+std::ptrdiff_t 
+lib::number_p::parse(const_iterator& it, const const_iterator& end) {
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	std::ptrdiff_t sd = 0;
+	bool needs_fraction = false;
+	
+	delimiter_p space(" \t\r\n");
+	star_p<delimiter_p> opt_space_inst = make_star(space);
+
+	// Pass over any optional space
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// Parse optional sign
+	delimiter_p sign_inst("+-");
+	d = sign_inst.parse(tit, end);
+	int sign = (d == -1)?1:( (sign_inst.m_result == '+')?1:-1);
+	sd += (d == -1)?0:d;
+	
+	// Pass over any optional space following sign
+	if(d != -1) {
+		d = opt_space_inst.parse(tit, end);
+		sd += (d == -1)?0:d;
+	}
+		
+	int_p i;
+	if(*tit != '.') {
+		// the number does not start with '.'
+		d = i.parse(tit, end);
+		if(d == -1) return -1;
+		sd += d;
+		d = literal_p<'.'>().parse(tit, end);
+		if(d == -1) return (m_result = sign*i.m_result, it = tit, sd);
+		sd += d;
+	} else {
+		// the number starts with '.'
+		i.m_result = 0;
+		tit++; sd += 1;
+		needs_fraction = true;
+	}
+		
+	// get the fractional part if it exists 
+	// (may be mandatory if the num starts with '.')
+	int_p f;
+	d = f.parse(tit, end);
+	if(d == -1) {
+		 if(needs_fraction) return -1;
+		 else f.m_result = 0;
+	}
+	sd += (d == -1)?0:d;
+	m_result = sign*(i.m_result + double(f.m_result)/::pow(10.0, int(d)));
+	return (it = tit, sd);
+}
+
+//////////////////////
+// number_list_p
+// Parses a list of numbers
+// The list is sepatated with white space
+// The parser stops to the first not number sequence or at end
+
+std::ptrdiff_t 
+lib::number_list_p::parse(const_iterator& it, const const_iterator& end) {
+	m_result.clear();
+	const_iterator tit = it;
+	std::ptrdiff_t sd = 0;
+	std::ptrdiff_t d = 0;
+	number_p nparser;
+	while(d != -1) {
+		d = nparser.parse(tit, end);
+		if(d != -1) {
+			sd += d;
+			m_result.push_back(nparser.m_result);
+		}
+	}
+	if(m_result.empty()) return -1;
+	return (it = tit, sd);
+}
 
 //////////////////////
 // time_unit_p
@@ -266,7 +349,7 @@ lib::timecount_value_p::parse(const_iterator& it, const const_iterator& end) {
 	std::ptrdiff_t sd = 0;
 	
 	// parse value
-	dec_p p1;
+	number_p p1;
 	d = p1.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.value = p1.m_result;
@@ -370,7 +453,7 @@ lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 		
 	// parse value
-	dec_p p1;
+	number_p p1;
 	d = p1.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.value = p1.m_result;
@@ -405,7 +488,7 @@ lib::region_dim_p::parse(const_iterator& it, const const_iterator& end) {
 	sd += (d == -1)?0:d;
 	
 	// int | double
-	dec_p val_p;
+	number_p val_p;
 	d = val_p.parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;

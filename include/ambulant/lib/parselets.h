@@ -62,6 +62,9 @@
 // used by and_p and options_p
 #include <list>
 
+// used by number_list_p
+#include <vector>
+
 #include <math.h>
 
 // This module defines a set of simple parsers.
@@ -141,6 +144,28 @@ class literal_cstr_p : public parselet {
 	}
 };
 
+class delimiter_p : public parselet {
+   public:
+	typedef delimiter_p self_type;
+	typedef char_type result_type;
+	result_type m_result;
+	string_type m_delims;
+	
+	delimiter_p(const string_type& delims)
+	:	m_delims(delims) {}
+	
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
+		if(it == end) return -1;
+		size_type ix = m_delims.find_first_of(*it);
+		if(ix != string_type::npos) {
+			m_result = *it;
+			it++;
+			return 1;
+		}
+		return -1;
+	}
+};
+
 class int_p : public parselet {
    public:
 	typedef int_p self_type;
@@ -157,47 +182,6 @@ class int_p : public parselet {
 		} while(it != end && *it >= '0' && *it <= '9');
 		return len;
 	}
-};
-
-// accepts: d+(.d*)? | .d+
-class dec_p : public parselet {
-   public:
-	typedef dec_p self_type;
-	typedef double result_type;
-	result_type m_result;
-	
-	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
-		const_iterator tit = it;
-		std::ptrdiff_t d;
-		std::ptrdiff_t sd = 0;
-		bool needs_fraction = false;
-		int_p i;
-		if(*tit != '.') {
-			d = i.parse(tit, end);
-			if(d == -1) return -1;
-			sd += d;
-			d = literal_p<'.'>().parse(tit, end);
-			if(d == -1) return (m_result = i.m_result, it = tit, sd);
-			sd += d;
-		} else {
-			i.m_result = 0;
-			tit++;
-			needs_fraction = true;
-		}
-		
-		// get fraction
-		int_p f;
-		d = f.parse(tit, end);
-		if(d == -1) {
-			 if(needs_fraction) return -1;
-			 else f.m_result = 0;
-		}
-		sd += (d == -1)?0:d;
-		m_result = i.m_result + double(f.m_result)/::pow(10.0, int(d));
-		return (it = tit, sd);
-	}
-	
-	result_type get_result() const { return m_result;}
 };
 
 template <class CharType, class IsNameStartCh, class IsNameCh >
@@ -247,27 +231,6 @@ class nfa_p : public parselet {
 	const lib::nfa_expr& m_expr;
 };
 
-class delimiter_p : public parselet {
-   public:
-	typedef delimiter_p self_type;
-	typedef char_type result_type;
-	result_type m_result;
-	string_type m_delims;
-	
-	delimiter_p(const string_type& delims)
-	:	m_delims(delims) {}
-	
-	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
-		if(it == end) return -1;
-		size_type ix = m_delims.find_first_of(*it);
-		if(ix != string_type::npos) {
-			m_result = *it;
-			it++;
-			return 1;
-		}
-		return -1;
-	}
-};
 
 // Parses: FirstType SecondType
 template<class FirstType, class SecondType>
@@ -533,6 +496,39 @@ class options_p : public parselet {
 };
 
 ////////////////////////////////
+// Number parser
+
+// Parses any decimal number not using scientific notation
+// includes: (+|-)?d+(.d*)? | .d+
+class number_p : public parselet {
+   public:
+	typedef number_p self_type;
+	typedef double result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	result_type get_result() const { return m_result;}
+};
+
+// Parses a list of numbers
+// The list is sepatated with white space
+// The parser stops to the first not number sequence or at end
+class number_list_p : public parselet {
+   public:
+	typedef number_list_p self_type;
+	typedef std::vector<double> result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	
+	// result related helpers
+	const result_type& get_result() const { return m_result;}
+	size_t size() const {return m_result.size();}
+	result_type::iterator begin() {return m_result.begin();}
+	result_type::iterator end() {return m_result.end();}
+	result_type::const_iterator begin() const {return m_result.begin();}
+	result_type::const_iterator end() const {return m_result.end();}
+};
+
+////////////////////////////////
 // Domain parselets
 
 // the following teplates must be extended 
@@ -628,7 +624,7 @@ class timecount_value_p : public parselet {
   public:
 	typedef full_clock_value_p self_type;
 	typedef struct {
-		dec_p::result_type value;
+		number_p::result_type value;
 		time_unit_p::result_type unit;
 	}  result_type;
 	result_type m_result;
@@ -670,7 +666,7 @@ class coord_p : public parselet {
   public:
 	typedef coord_p self_type;
 	typedef struct {
-		dec_p::result_type value;
+		number_p::result_type value;
 		length_unit_p::result_type unit;
 	}  result_type;
 	result_type m_result;
