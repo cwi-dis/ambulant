@@ -126,6 +126,9 @@
 						RelativePath=".\gui\dx\dx_audio.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_audio_player.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_gui.cpp">
 					</File>
 					<File
@@ -136,6 +139,12 @@
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_text.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_video.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_video_player.cpp">
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_viewport.cpp">
@@ -170,6 +179,9 @@
 					RelativePath=".\lib\schema.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\smil_time.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\string_util.cpp">
 				</File>
 				<File
@@ -189,9 +201,6 @@
 				</File>
 				<File
 					RelativePath=".\lib\timer.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\trace_player.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\tree_builder.cpp">
@@ -298,6 +307,12 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_text.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_video.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_video_player.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_viewport.h">
@@ -417,12 +432,6 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\trace_playable.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\trace_player.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
