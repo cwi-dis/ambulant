@@ -22,7 +22,7 @@ libambulant_qt_la_SOURCES = 		\
 	gui/qt/qt_image_renderer.cpp	\
 	gui/qt/qt_text_renderer.cpp 	\
 	gui/qt/qt_video_renderer.cpp	\
-	gui/qt/qt_factory.h
+	gui/qt/qt_factory.cpp
 
 else
 qtincludes=
@@ -150,4 +150,3 @@ EXTRA_DIST= \
 	gui/qsound \
 	gui/qt \
 	lib/win32
-	
