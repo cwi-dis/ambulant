@@ -472,6 +472,15 @@ lib::node::xmlrepr() const {
 	return s;
 }
 
+std::string lib::node::get_sig() const {
+	std::string s = m_qname.second;
+	s += '[';
+	const char *pid = get_attribute("id");
+	s += (pid?pid:"no-id");
+	s += ']';
+	return s;
+}
+
 unsigned int 
 lib::node::size() const {
 	const_iterator it;

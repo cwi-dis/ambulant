@@ -234,6 +234,8 @@ class node {
 	// returns a "friendly" path desription of this node
 	std::string get_path_display_desc() const;
 	
+	std::string get_sig() const;
+	
 	/////////////////////
 	// string repr
 	
