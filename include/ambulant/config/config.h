@@ -63,6 +63,12 @@
 // Also here, include gettext.h (for optional internationalization)
 #include "ambulant/config/gettext.h"
 
+// Set the default for the macro that flags our
+// API to empty. (This macro will have been set to the dllexport
+// mumbo-jumbo for Windows).
+#ifndef AMBULANTAPI
+#define AMBULANTAPI
+#endif
 #endif  // AMBULANT_CONFIG_H
 
 

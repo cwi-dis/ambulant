@@ -65,14 +65,14 @@ namespace lib {
 
 namespace win32 {
 
-void sleep(unsigned long secs);
-void sleep_msec(unsigned long msecs);
+AMBULANTAPI void sleep(unsigned long secs);
+AMBULANTAPI void sleep_msec(unsigned long msecs);
 
-std::basic_string<text_char> getcwd();
-std::basic_string<text_char> resolve_path(const text_char *s);
-bool file_exists(const std::string& fn);
-std::basic_string<text_char> get_module_filename();
-void show_message(const char *message);
+AMBULANTAPI std::basic_string<text_char> getcwd();
+AMBULANTAPI std::basic_string<text_char> resolve_path(const text_char *s);
+AMBULANTAPI bool file_exists(const std::string& fn);
+AMBULANTAPI std::basic_string<text_char> get_module_filename();
+AMBULANTAPI void show_message(const char *message);
 } // namespace win32
 
 } // namespace lib

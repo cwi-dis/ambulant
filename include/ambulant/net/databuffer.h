@@ -49,6 +49,7 @@
  
 #ifndef AMBULANT_NET_DATABUFFER_H
 #define AMBULANT_NET_DATABUFFER_H
+#include "ambulant/config/config.h"
 
 #include "ambulant/lib/mtsync.h"
 

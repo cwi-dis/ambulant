@@ -76,58 +76,58 @@ const std::string url_delim = ":/?#\\,";
 // static 
 //std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
 // workaround for g++ 2.95
-std::list< net::url::handler_pair* > net::url::s_handlers;
+std::list< net::url_handler_pair* > s_handlers;
 
 // static
 void net::url::init_statics() {
 
 	// workaround for g++ 2.95
-	static handler_pair h1 = {"n://n:d/", &url::set_from_host_port_uri};
+	static url_handler_pair h1 = {"n://n:d/", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1);
  	
-	static handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
+	static url_handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1a);
  	
-	static handler_pair h1b = {"n://dn:d/", &url::set_from_numhost_port_uri};
+	static url_handler_pair h1b = {"n://dn:d/", &url::set_from_numhost_port_uri};
  	s_handlers.push_back(&h1b);
  	
-	static handler_pair h1c = {"n://dn:d", &url::set_from_numhost_port_uri};
+	static url_handler_pair h1c = {"n://dn:d", &url::set_from_numhost_port_uri};
  	s_handlers.push_back(&h1c);
  	
-	static handler_pair h2 = {"n://n/", &url::set_from_host_uri};
+	static url_handler_pair h2 = {"n://n/", &url::set_from_host_uri};
  	s_handlers.push_back(&h2);
  	
-	static handler_pair h2a = {"n://n", &url::set_from_host_uri};
+	static url_handler_pair h2a = {"n://n", &url::set_from_host_uri};
  	s_handlers.push_back(&h2a);
  	
-	static handler_pair h2b= {"n://dn/", &url::set_from_numhost_uri};
+	static url_handler_pair h2b= {"n://dn/", &url::set_from_numhost_uri};
  	s_handlers.push_back(&h2b);
  	
-	static handler_pair h2c = {"n://dn", &url::set_from_numhost_uri};
+	static url_handler_pair h2c = {"n://dn", &url::set_from_numhost_uri};
  	s_handlers.push_back(&h2c);
  	
-	static handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
+	static url_handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h3);
  	
-	static handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
+	static url_handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h4);
 
-	static handler_pair h4a = { "n:,", &url::set_from_data_uri};
+	static url_handler_pair h4a = { "n:,", &url::set_from_data_uri};
  	s_handlers.push_back(&h4a);
 
-	static handler_pair h5 = {"/n", &url::set_from_unix_path};
+	static url_handler_pair h5 = {"/n", &url::set_from_unix_path};
  	s_handlers.push_back(&h5);
 
-	static handler_pair h6 = {"n:n", &url::set_from_windows_path};
+	static url_handler_pair h6 = {"n:n", &url::set_from_windows_path};
  	s_handlers.push_back(&h6);
  	
-	static handler_pair h7 = {"n:/n", &url::set_from_windows_path};
+	static url_handler_pair h7 = {"n:/n", &url::set_from_windows_path};
  	s_handlers.push_back(&h7);
  	
-	static handler_pair h8 = {"\\n", &url::set_from_wince_path};
+	static url_handler_pair h8 = {"\\n", &url::set_from_wince_path};
  	s_handlers.push_back(&h8);
 	
-	static handler_pair h9 = {"", &url::set_from_relative_path};
+	static url_handler_pair h9 = {"", &url::set_from_relative_path};
  	s_handlers.push_back(&h9);
 	
 	/*
@@ -204,9 +204,9 @@ void net::url::set_from_spec(const string& spec) {
 	sc.tokenize();
 	std::string sig = sc.get_tokens();
 	//std::list< std::pair<std::string, HANDLER> >::iterator it;
-	std::list<handler_pair*>::iterator it;
+	std::list<url_handler_pair*>::iterator it;
 	for(it=s_handlers.begin();it!=s_handlers.end();it++) {
-		handler_pair *ph = (*it);
+		url_handler_pair *ph = (*it);
 		if(*(ph->first) == '\0' || lib::starts_with(sig, ph->first)) {
 			//HANDLER h = (*it).second;
 			(this->*(ph->second))(sc, ph->first);

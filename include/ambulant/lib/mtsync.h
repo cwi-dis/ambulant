@@ -80,10 +80,10 @@ namespace lib {
 /// and then CS 2 and other paths through the code where first
 /// CS 2 is entered and then CS 1).
 #ifdef AMBULANT_PLATFORM_WIN32
-class critical_section : public win32::critical_section {
+class AMBULANTAPI critical_section : public win32::critical_section {
 };
 #else
-class critical_section : public unix::critical_section {
+class AMBULANTAPI critical_section : public unix::critical_section {
 };
 #endif
 

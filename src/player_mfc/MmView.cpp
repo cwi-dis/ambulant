@@ -111,39 +111,51 @@ std::ofstream
 log_os(get_log_filename().c_str());
 #endif
 
-// The handle of the single instance
+using namespace ambulant;
+//#define AM_PLAYER_DG
+
+#ifdef AM_PLAYER_DG
+typedef gui::dg::dg_player gui_player;
+typedef gui::dg::dg_player_callbacks gui_callbacks;
+#pragma comment (lib,"mp3lib.lib")
+#pragma comment (lib,"libpng13.lib")
+#else 
+typedef gui::dx::dx_player gui_player;
+typedef gui::dx::dx_player_callbacks gui_callbacks;
+#endif
+
+// The handle of the single window instance
 static HWND s_hwnd;
 
-HWND new_os_window() {
+// A class with callbacks, also instantiated once
+class my_player_callbacks : public gui_callbacks {
+  public:
+	HWND new_os_window();
+	void destroy_os_window(HWND hwnd);
+	HWND get_main_window();
+};
+
+my_player_callbacks s_player_callbacks;
+
+HWND my_player_callbacks::new_os_window() {
 	// Return the handle of the single instance for now
 	// This means paint bits of the new window
 	// to the single instance
 	return s_hwnd;
 }
 
-void destroy_os_window(HWND hwnd) {
+void my_player_callbacks::destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
 }
 
-HWND get_main_window() {
+HWND my_player_callbacks::get_main_window() {
 	return AfxGetMainWnd()->GetSafeHwnd();
 }
 
-using namespace ambulant;
-
-//#define AM_PLAYER_DG
-
-#ifdef AM_PLAYER_DG
-typedef gui::dg::dg_player gui_player;
-#pragma comment (lib,"mp3lib.lib")
-#pragma comment (lib,"libpng13.lib")
-#else 
-typedef gui::dx::dx_player gui_player;
-#endif
 
 static gui_player* 
 create_player_instance(const net::url& u) {
-	return new gui_player(u);
+	return new gui_player(s_player_callbacks, u);
 }
 
 static gui_player *player = 0;
@@ -203,6 +215,9 @@ MmView::MmView()
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
 #if USE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+#endif
+#ifdef AMBULANT_USE_DLL
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: using AmbulantPlayer in DLL"));
 #endif
 #ifdef AM_PLAYER_DG
 	lib::logger::get_logger()->debug("Ambulant Player: using DG Player");

@@ -35,6 +35,18 @@
 
 #endif
 
+//
+// DLL cruft section.
+// Define AMBULANT_BUILD_DLL when creating the DLL,
+// Define AMBULANT_USE_DLL when using the DLL.
+//
+#ifdef AMBULANT_BUILD_DLL
+#define AMBULANTAPI __declspec(dllexport)
+#endif
+#ifdef AMBULANT_USE_DLL
+#define AMBULANTAPI __declspec(dllimport)
+#endif
+
 /////////////////////////////
 // BEGIN WIN32 WINCE SECTION
 #ifdef _WIN32_WCE

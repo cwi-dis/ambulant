@@ -65,6 +65,8 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/transition_info.h"
 
+#include "ambulant/common/plugin_engine.h"
+
 #include "ambulant/smil2/transition.h"
 
 // Players
@@ -100,8 +102,9 @@ using namespace ambulant;
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
-gui::dx::dx_player::dx_player(const net::url& u) 
-:	m_url(u),
+gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u) 
+:	m_hoster(hoster),
+	m_url(u),
 	m_player(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
@@ -111,9 +114,12 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	// Fill the factory object
 	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
 	m_factory.df = NULL;
-	
 	m_factory.wf = this->get_window_factory(); 
 	
+	// Load the plugins
+	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
+	pf->add_plugins(&m_factory);
+
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
 	lib::document *doc = lib::document::create_from_url(&m_factory, u);
@@ -308,7 +314,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 	wininfo *winfo = new wininfo;
 	
 	// Create an os window
-	winfo->h = ::new_os_window();
+	winfo->h = m_hoster.new_os_window();
 	
 	// Create the associated dx viewport
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
@@ -343,7 +349,7 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	wi->v->clear();
 	wi->v->redraw();
 	delete wi->v;
-	destroy_os_window(wi->h);
+	m_hoster.destroy_os_window(wi->h);
 	delete wi;
 	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 }
@@ -572,14 +578,14 @@ void gui::dx::dx_player::done(player *p) {
 }
 
 void gui::dx::dx_player::close(player *p) {
-	PostMessage(get_main_window(), WM_CLOSE, 0, 0);
+	PostMessage(m_hoster.get_main_window(), WM_CLOSE, 0, 0);
 }
 
 void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
 	std::string urlstr = newdoc.get_url();
 	if(old) {
 		// Replace the current document
-		PostMessage(get_main_window(), WM_REPLACE_DOC, 
+		PostMessage(m_hoster.get_main_window(), WM_REPLACE_DOC, 
 			startnewdoc?1:0, LPARAM(new std::string(urlstr))); 
 		return;
 	}

@@ -99,6 +99,54 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="ReleaseShlib|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;AMBULANT_BUILD_DLL"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="..\..\bin\win32\libambulant_shwin32.dll"
+				AdditionalLibraryDirectories="..\..\lib\win32"
+				IgnoreDefaultLibraryNames="LIBC.lib"
+				OptimizeReferences="1"
+				ImportLibrary="..\..\lib\win32\libambulant_shwin32.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\lib\win32"
+				ExcludedFromBuild="TRUE"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -117,7 +165,16 @@
 					Name="none"
 					Filter="">
 					<File
+						RelativePath=".\gui\none\none_area.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\none\none_factory.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\none\none_gui.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\none\none_video_renderer.cpp">
 					</File>
 				</Filter>
 				<Filter
@@ -174,42 +231,120 @@
 					Filter="">
 					<File
 						RelativePath=".\gui\dg\dg_area.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_audio.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_audio_player.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_audio_renderer.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_bgrenderer.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_brush.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_image_renderer.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_img.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_mp3_decoder.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_player.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_text.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_viewport.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_window.cpp">
+						<FileConfiguration
+							Name="ReleaseShlib|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
 					</File>
 				</Filter>
 			</Filter>
@@ -291,6 +426,9 @@
 				Name="net"
 				Filter="">
 				<File
+					RelativePath=".\net\databuffer.cpp">
+				</File>
+				<File
 					RelativePath=".\net\datasource.cpp">
 				</File>
 				<File
@@ -303,6 +441,9 @@
 			<Filter
 				Name="common"
 				Filter="">
+				<File
+					RelativePath=".\common\plugin_engine.cpp">
+				</File>
 				<File
 					RelativePath=".\common\preferences.cpp">
 				</File>
@@ -393,9 +534,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\..\include\ambulant\common\factory.h">
-			</File>
-			<File
 				RelativePath="..\..\include\ambulant\version.h">
 			</File>
 			<Filter
@@ -409,6 +547,11 @@
 						Filter="">
 						<File
 							RelativePath="..\..\include\ambulant\gui\none\none_gui.h">
+							<FileConfiguration
+								Name="ReleaseShlib|Win32">
+								<Tool
+									Name="VCCustomBuildTool"/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
@@ -702,6 +845,9 @@
 						RelativePath="..\..\include\ambulant\net\connection.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\net\databuffer.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\net\datasource.h">
 					</File>
 					<File
@@ -721,6 +867,9 @@
 						RelativePath="..\..\include\ambulant\common\embedder.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\common\factory.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\common\layout.h">
 					</File>
 					<File
@@ -728,6 +877,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\plugin_engine.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\preferences.h">

@@ -94,7 +94,7 @@ typedef void (*show_message_type)(const char *message);
 /// An embedding application can choose where log output goes by calling
 /// set_std_ostream() to send messages to a std::stream, or set_ostream()
 /// to send them to an object implementing the lib::ostream protocol.
-class logger {
+class AMBULANTAPI logger {
   public:
 	/// Log levels, least important first.
 	enum log_level { 

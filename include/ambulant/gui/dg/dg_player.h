@@ -75,11 +75,6 @@
 #include "ambulant/gui/dg/dg_playable.h"
 
 
-// Global functions provided by the hosting application.
-extern HWND new_os_window();
-extern void destroy_os_window(HWND hwnd);
-extern HWND get_main_window();
-
 namespace ambulant {
 
 // classes used by dg_player
@@ -104,6 +99,14 @@ namespace gui {
 
 namespace dg {
 
+// Global functions provided by the hosting application.
+class dg_player_callbacks {
+  public:
+	virtual HWND new_os_window() = 0;
+	virtual void destroy_os_window(HWND hwnd) = 0;
+	virtual HWND get_main_window() = 0;
+};
+
 class viewport;
 class dg_window;
 class dg_transition;
@@ -116,7 +119,7 @@ class dg_player :
 	public common::embedder {
 	
   public:
-	dg_player(const net::url& u);
+	dg_player(dg_player_callbacks &hoster, const net::url& u);
 	~dg_player();
 	
 	////////////////////
@@ -197,6 +200,9 @@ class dg_player :
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 
+	// Callbacks to the hosting program
+  	dg_player_callbacks &m_hoster;
+  	
 	// The current document URL
 	net::url m_url;
 	

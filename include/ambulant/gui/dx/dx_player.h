@@ -74,11 +74,6 @@
 #include "ambulant/net/url.h"
 #include "ambulant/gui/dx/dx_playable.h"
 
-// Global functions provided by the hosting application.
-extern HWND new_os_window();
-extern void destroy_os_window(HWND hwnd);
-extern HWND get_main_window();
-
 namespace ambulant {
 
 // classes used by dx_player
@@ -106,7 +101,14 @@ class viewport;
 class dx_window;
 class dx_transition;
 
-class dx_player : 
+class dx_player_callbacks {
+  public:
+	virtual HWND new_os_window() = 0;
+	virtual void destroy_os_window(HWND hwnd) = 0;
+	virtual HWND get_main_window() = 0;
+};
+
+class AMBULANTAPI dx_player : 
 	public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
@@ -114,7 +116,7 @@ class dx_player :
 	public common::embedder {
 	
   public:
-	dx_player(const net::url& u);
+	dx_player(dx_player_callbacks &hoster, const net::url& u);
 	~dx_player();
 	
 	////////////////////
@@ -199,6 +201,8 @@ class dx_player :
 	void lock_redraw();
 	void unlock_redraw();
 	
+	// The hosting application
+	dx_player_callbacks &m_hoster;
 	// The current document URL
 	net::url m_url;
 	

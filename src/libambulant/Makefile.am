@@ -95,15 +95,27 @@ ffmpegincludes=
 toolkit_ffmpeg_libraries=
 endif
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	  $(EXPAT_INCLUDES) $(XERCES_INCLUDES) $(qtincludes) $(artsincludes)\
-	  $(sdlincludes) $(ffmpegincludes)
+INCLUDES = \
+	-I$(top_builddir)/include \
+	-I$(top_srcdir)/include \
+	$(EXPAT_INCLUDES) \
+	$(XERCES_INCLUDES) \
+	$(qtincludes) \
+	$(artsincludes) \
+	$(sdlincludes) \
+	$(ffmpegincludes) \
+	$(LTDLINCL)
 
-lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)\
-$(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_sdl_libraries) $(toolkit_ffmpeg_libraries)
+lib_LTLIBRARIES = \
+	libambulant.la \
+	$(toolkit_cocoa_libraries) \
+	$(toolkit_qt_libraries) \
+	$(toolkit_arts_libraries) \
+	$(toolkit_sdl_libraries) \
+	$(toolkit_ffmpeg_libraries)
 
 # AM_CPPFLAGS=-rdynamic
-AM_LDFLAGS=-lltdl -export-dynamic
+AM_LDFLAGS=-export-dynamic $(LIBLTDL)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \

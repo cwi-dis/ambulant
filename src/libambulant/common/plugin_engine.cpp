@@ -52,13 +52,14 @@
 
 //#include<dlfcn.h>
 #include<stdlib.h>
-#include<dirent.h>
 #include<string.h>
 
-// Undefine for Zaurus, etc.
-#define WITH_PLUGINS
+#if defined(WITH_LTDL_PLUGINS) || defined(WITH_WINDOWS_PLUGINS)
+#define WITH_PLUGINS 1
+#endif
 
-#ifdef WITH_PLUGINS
+#ifdef WITH_LTDL_PLUGINS
+#include<dirent.h>
 #include <ltdl.h>
 #endif
 
@@ -84,28 +85,40 @@ plugin_engine::get_plugin_engine()
 
 plugin_engine::plugin_engine()
 {
-#ifdef	WITH_PLUGINS
+#ifdef WITH_PLUGINS
     collect_plugin_directories();
+#ifdef WITH_LTDL_PLUGINS
+	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
 	int errors = lt_dlinit();
 	if (errors) {
-	    lib::logger::get_logger()->error("Cannot initialize plugin loader: %d error(s)", errors);
+		lib::logger::get_logger()->error("LTDL plugin loader: Cannot initialize: %d error(s)", errors);
 	    return;
 	}
-    std::vector< std::string >::iterator i;
+#endif
+#ifdef WITH_WINDOWS_PLUGINS
+	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
+#endif
+	std::vector< std::string >::iterator i;
     for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
         load_plugins(*i);
     }
-#endif // WITH_PLUGINS
+#else
+	lib::logger::get_logger()->trace("plugin_engine: no plugin loader configured");
+#endif
 }
 
 void
 plugin_engine::collect_plugin_directories()
 {
-  //	m_plugindirs.push_back("/usr/local/lib/ambulant/");
-  //	m_plugindirs.push_back("/ufs/dbenden/Ambulant/ambulant/src/plugins/.libs/");
-  //   m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+	char *plugindir = getenv("AMBULANT_PLUGIN_DIR");
+	if (plugindir)
+		m_plugindirs.push_back(plugindir);
+#endif
+    m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
 }
 
+#ifdef WITH_LTDL_PLUGINS
 static int filter(const struct dirent* filen)
 {
 	int len;
@@ -121,7 +134,6 @@ static int filter(const struct dirent* filen)
 void
 plugin_engine::load_plugins(std::string dirname)
 {
-#ifdef WITH_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
 	char filename[1024];
 	dirent **namelist;
@@ -169,18 +181,69 @@ plugin_engine::load_plugins(std::string dirname)
         free(namelist);
     }
 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
-#endif // WITH_PLUGINS
 }
+
+#elif WITH_WINDOWS_PLUGINS
+void
+plugin_engine::load_plugins(std::string dirname)
+{
+	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
+	char filepattern[1024];
+
+	strncpy(filepattern, dirname.c_str(), sizeof(filepattern));
+	strncpy(filepattern, "\\", sizeof(filepattern));
+	strncpy(filepattern, PLUGIN_PREFIX, sizeof(filepattern));
+	strncpy(filepattern, "_*.dll", sizeof(filepattern));
+
+	WIN32_FIND_DATA dirData;
+	HANDLE *dirHandle = FindFirstFile(filepattern, *dirData);
+    if (dirHandle == NULL) {
+        lib::logger::get_logger()->error("Error reading plugin directory: %s", filepattern);
+        return;
+    } else {
+		do {
+            // Construct the full pathname
+		   	char filename[1024];
+			strncpy(filename, dirname.c_str(), sizeof(filename));
+ 			strncpy(filename, "\\", sizeof(filename));
+            strncat(filename, dirData.cFileName, sizeof(filename));
+
+            // Load the plugin
+            lib::logger::get_logger()->trace("plugin_engine: loading %s", filename);
+ 	        HMODULE handle = LoadLibrary(filename);
+            if (handle) {
+                AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
+                AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
+                initfuncptr init = (initfuncptr) GetProcAddress(handle,"initialize");
+                if (!init) {
+                    lib::logger::get_logger()->error("plugin_engine: no initialize routine");
+                } else {
+                    m_initfuncs.push_back(init);
+                }
+            } else {
+                lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
+                lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
+            }
+
+		} while(FindNextFile(dirHandle, &dirData);
+	}
+ 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+}
+
+#else
+void
+plugin_engine::load_plugins(std::string dirname)
+{
+}
+#endif // WITH_XXXX_PLUGINS
 
 void
 plugin_engine::add_plugins(common::factories* factory)
 {
-#ifdef WITH_PLUGINS
     std::vector< initfuncptr >::iterator i;
     for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
         initfuncptr init;
         init = *i;
         (init)(factory);
     }
-#endif
 }

@@ -76,7 +76,7 @@ namespace lib {
 
 namespace win32 {
 
-class critical_section : public ambulant::lib::abstract_critical_section {
+class AMBULANTAPI critical_section : public ambulant::lib::abstract_critical_section {
   public:
 	critical_section() { InitializeCriticalSection(&m_cs);}
 	~critical_section() { DeleteCriticalSection(&m_cs);}

@@ -50,12 +50,13 @@
 #define AMBULANT_H
 
 #include <string.h>
+#include "ambulant/config/config.h"
 
 namespace ambulant {
 
 #define AMBULANT_VERSION "1.0.3"
 
-const char *get_version(void);
+AMBULANTAPI const char *get_version(void);
 
 inline bool check_version()
 {

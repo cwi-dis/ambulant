@@ -77,12 +77,12 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
 	$(EXPAT_PREFIX)/lib/libexpat.a				\
 	$(XERCES_LIBS)						\
-	$(qt_libs)
+	$(qt_libs)							\
+	$(LIBLTDL)
 
 AM_LDFLAGS=$(extra_arts_ldflags)				\
 	   $(extra_sdl_ldflags)					\
 	   $(extra_ffmpeg_ldflags)				\
-	   -lltdl						\
 	   -export-dynamic		 
  
 AM_CPPFLAGS = $(extra_arts_DEFINES)				\

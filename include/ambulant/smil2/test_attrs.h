@@ -71,7 +71,7 @@ namespace smil2 {
 
 using lib::custom_test;
 
-class test_attrs {
+class AMBULANTAPI test_attrs {
   public:
 	test_attrs(const lib::node *n);
 	

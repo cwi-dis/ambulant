@@ -48,9 +48,9 @@
 
 #ifndef AMBULANT_COMMON_PREFERENCES_H
 #define AMBULANT_COMMON_PREFERENCES_H
-#include <string>
 
 #include <string>
+#include "ambulant/config/config.h"
 
 namespace ambulant {
 
@@ -68,7 +68,7 @@ const unsigned int default_layout_height = 480;
 /// design pattern to the letter. It has a method whereby a subclass
 /// can set the singleton. Usually the subclass is an OS-dependent
 /// implementation that is responsible for saving and loading preferences.
-class preferences {
+class AMBULANTAPI preferences {
 
   protected:	
 	preferences();

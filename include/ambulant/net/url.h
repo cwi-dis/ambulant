@@ -65,7 +65,7 @@ namespace ambulant {
 namespace net {
 
 /// Class representing a URL.
-class url {
+class AMBULANTAPI url {
 
 	// String type used by this impplementation
 	typedef std::basic_string<char> string;
@@ -189,15 +189,6 @@ class url {
 	// protocols to ports map
  	// static std::map<string, short_type > s_ports;
  
-	// workaround for g++ 2.95
-	struct handler_pair { 
-		const char *first; 
-		void (url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
-	};
-	
-  	//typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
-	static std::list<handler_pair*> s_handlers;
-	
 	void set_parts(ambulant::lib::scanner& sc, const std::string& pat);
 	
 	// split url string representation
@@ -234,6 +225,16 @@ class url {
 	void set_from_data_uri(ambulant::lib::scanner& sc, const std::string& pat);
 	
 };
+
+// workaround for g++ 2.95
+struct url_handler_pair { 
+	const char *first; 
+	void (url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
+};
+
+//typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
+static std::list<url_handler_pair*> s_handlers;
+	
 
 } // namespace net
  

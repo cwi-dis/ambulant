@@ -12,16 +12,21 @@ Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release
+		ReleaseShlib = ReleaseShlib
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.ActiveCfg = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.Build.0 = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = Release|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.Build.0 = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.ActiveCfg = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.Build.0 = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.ActiveCfg = Release|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.Build.0 = Release|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib.Build.0 = ReleaseShlib|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

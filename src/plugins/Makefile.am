@@ -33,7 +33,7 @@ endif
 # XXXX Need to set install directory
 
 pkglib_LTLIBRARIES = $(dummy_plugin) $(arts_plugin) $(xerces_plugin)
-AM_CPPFLAGS=-shared -DWITH_XERCES
+AM_CPPFLAGS=-DWITH_XERCES
 #LDADD=$(top_builddir)/src/libambulant/.libs/libambulant.a
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	 $(arts_includes) $(xerces_includes)

@@ -1,10 +1,20 @@
 AC_INIT(ambulant, 1.0)
 AM_INIT_AUTOMAKE
+
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
-AM_PROG_LIBTOOL
+
+#
+# Allow either included or standard ltdl
+#
+AC_WITH_LTDL
+AC_LIBLTDL_CONVENIENCE
+AC_LIBTOOL_DLOPEN
+AC_LIB_LTDL
+AC_PROG_LIBTOOL
+
 AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	m4/Makefile
@@ -37,6 +47,8 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/SDL/Makefile
 	include/ambulant/gui/qsound/Makefile
 	third_party_packages/Makefile])
+	
+
 #
 # Find expat
 #
