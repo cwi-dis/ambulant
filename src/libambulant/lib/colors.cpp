@@ -70,7 +70,7 @@ bool is_color(const char *name) {
 		return (*endp == '\0');
 	}
 	colors_map::const_iterator it = html4_colors_map.find(name);
-	return it != html4_colors_map.end();
+	return !(it == html4_colors_map.end());
 }
 
 
