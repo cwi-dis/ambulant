@@ -622,6 +622,7 @@ int
 main (int argc, char*argv[]) {
 
 #undef	ENABLE_NLS
+#define ENABLE_NLS
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;

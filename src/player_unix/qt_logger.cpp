@@ -126,13 +126,15 @@ qt_logger::qt_logger()
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	// Connect logger to our message displayer and output processor
-	logger->set_show_message(show_message);
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
+	//logger->set_show_message(show_message);
+#endif/*QT_NO_FILEDIALOG*/
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
 	logger->set_level(level);
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	logger->set_ostream(new qt_logger_ostream);
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	logger_window = new QTextEdit();
 	logger_window->setReadOnly(true);
 	logger_window->setCaption("Ambulant-Logger");
