@@ -142,6 +142,11 @@ class viewport {
 	// Draw the copy using the clipping region
 	void trdraw(const lib::screen_rect<int>& rc, HRGN hrgn);
 	
+	// Fading support
+	HRESULT blt_blend32(const lib::screen_rect<int>& rc, double progress);
+	HRESULT blt_blend24(const lib::screen_rect<int>& rc, double progress);
+	HRESULT blt_blend16(const lib::screen_rect<int>& rc, double progress);
+	
 	// Paints the provided rect
 	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
 	

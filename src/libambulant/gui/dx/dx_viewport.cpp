@@ -528,6 +528,23 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
 		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
 		return;
+	} else if(bt == smil2::bt_fade) {
+		trcopy(dst_rc);
+		draw(src, src_rc, dst_rc, keysrc, m_trsurface);
+		HRESULT hr = S_OK;
+		if(bits_size == 32)
+			hr = blt_blend32(dst_rc, tr->get_progress());
+		else if(bits_size == 24)
+			hr = blt_blend24(dst_rc, tr->get_progress());
+		else if(bits_size == 16)
+			hr = blt_blend16(dst_rc, tr->get_progress());
+		else {
+			trdraw(dst_rc, 0);
+		}
+		if (FAILED(hr)) {
+			seterror("blt_blendXX()", hr);
+		}
+		return;
 	}
 	
 	HRGN hrgn = 0;
@@ -720,8 +737,9 @@ void gui::dx::viewport::trdraw(const lib::screen_rect<int>& rc, HRGN hrgn) {
 		seterror("DirectDrawSurface::GetDC()", hr);
 		return;
 	}
-
-	SelectClipRgn(hdc, hrgn);
+	
+	if(hrgn)
+		SelectClipRgn(hdc, hrgn);
 	
 	int w = RC.right - RC.left;
 	int h = RC.bottom - RC.top;
@@ -768,6 +786,7 @@ void gui::dx::viewport::get_pixel_format() {
 		return;
 	}	
 	bits_size = format.dwRGBBitCount;
+	//viewport_logger->trace("bits_size: %u", bits_size);
 	lo_red_bit = low_bit_pos( format.dwRBitMask );
 	uint16 hi_red_bit = high_bit_pos( format.dwRBitMask );
 	red_bits = (uint16)(hi_red_bit-lo_red_bit+1);
@@ -817,5 +836,166 @@ RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 	return &r;
 }
 
+__forceinline int blend(int w, int c1, int c2) {return (c1==c2)?c1:(c1 + w*(c2-c1)/256); }
 
+HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double progress) {
+	IDirectDrawSurface *surf1 = m_trsurface;
+	IDirectDrawSurface *surf2 = m_surface;
+	
+	DDSURFACEDESC desc1, desc2;
+	ZeroMemory(&desc1, sizeof(desc1));
+	desc1.dwSize = sizeof(desc1);
+	ZeroMemory(&desc2, sizeof(desc2));
+	desc2.dwSize = sizeof(desc2);
+	
+	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+	if(hr!=DD_OK) return hr;
+	
+	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	if(hr != DD_OK) {	
+		surf1->Unlock(0);
+		return hr;
+	}
+	
+	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
+	lib::screen_rect<int> rcc = rc;
+	rcc &= rcv;
+	int begin_row = rcc.bottom();
+	int end_row = rcc.top();
+	int begin_col = rcc.left();
+	int end_col = rcc.right();
+	
+	int weight = int(progress*256);	
+	for(int row = begin_row-1;row>=end_row;row--) {
+		RGBQUAD* px1 = (RGBQUAD*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
+		RGBQUAD* px2 = (RGBQUAD*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
+		px1 +=  begin_col;
+		px2 +=  begin_col;
+		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
+			px2->rgbRed = (BYTE)blend(weight, px2->rgbRed, px1->rgbRed);
+			px2->rgbGreen = (BYTE)blend(weight, px2->rgbGreen, px1->rgbGreen);
+			px2->rgbBlue = (BYTE)blend(weight, px2->rgbBlue, px1->rgbBlue);
+		}
+	}
+	surf1->Unlock(0);
+	surf2->Unlock(0);
+	return hr;
+}
+
+
+HRESULT gui::dx::viewport::blt_blend24(const lib::screen_rect<int>& rc, double progress) {
+	IDirectDrawSurface *surf1 = m_trsurface;
+	IDirectDrawSurface *surf2 = m_surface;
+	
+	DDSURFACEDESC desc1, desc2;
+	ZeroMemory(&desc1, sizeof(desc1));
+	desc1.dwSize = sizeof(desc1);
+	ZeroMemory(&desc2, sizeof(desc2));
+	desc2.dwSize = sizeof(desc2);
+	
+	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+	if(hr!=DD_OK) return hr;
+	
+	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	if(hr != DD_OK) {	
+		surf1->Unlock(0);
+		return hr;
+	}
+	
+	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
+	lib::screen_rect<int> rcc = rc;
+	rcc &= rcv;
+	int begin_row = rcc.bottom();
+	int end_row = rcc.top();
+	int begin_col = rcc.left();
+	int end_col = rcc.right();
+	
+	int weight = int(progress*256);	
+	for(int row = begin_row-1;row>=end_row;row--) {
+		RGBTRIPLE* px1 = (RGBTRIPLE*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
+		RGBTRIPLE* px2 = (RGBTRIPLE*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
+		px1 +=  begin_col;
+		px2 +=  begin_col;
+		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
+			px2->rgbtRed = (BYTE)blend(weight, px2->rgbtRed, px1->rgbtRed);
+			px2->rgbtGreen = (BYTE)blend(weight, px2->rgbtGreen, px1->rgbtGreen);
+			px2->rgbtBlue = (BYTE)blend(weight, px2->rgbtBlue, px1->rgbtBlue);
+		}
+	}
+	surf1->Unlock(0);
+	surf2->Unlock(0);
+	return hr;
+}
+
+struct trible565 {
+	uint16 v;
+	trible565() : v(0) {}
+	trible565(int _r, int _g, int _b)  {
+		lib::color_t rgb = (_b << 16) | (_g << 8) | _r ;
+        v = (uint16)((rgb & 0xf80000)>> 8); 
+        v |= (uint16)(rgb & 0xfc00) >> 5; 
+        v |= (uint16)(rgb & 0xf8) >> 3;  
+	}
+	trible565(uchar _r, uchar _g, uchar _b) {
+		lib::color_t rgb = (_b << 16) | (_g << 8) | _r ;
+        v = (uint16)((rgb & 0xf80000)>> 8); // red
+        v |= (uint16)(rgb & 0xfc00) >> 5; // green
+        v |= (uint16)(rgb & 0xf8) >> 3; // blue 
+	}
+	
+	trible565(lib::color_t rgb) {
+        v = (uint16)((rgb & 0xf80000) >> 8); 
+        v |= (uint16)(rgb & 0xfc00) >> 5; 
+        v |= (uint16)(rgb & 0xf8) >> 3;  
+	}
+	
+	BYTE blue() { return (v & 0xf800) >> 8;}
+	BYTE green() { return (v & 0x7e0) >> 2;}
+	BYTE red() { return (v & 0x1f) << 3;}
+};
+
+HRESULT gui::dx::viewport::blt_blend16(const lib::screen_rect<int>& rc, double progress) {
+	IDirectDrawSurface *surf1 = m_trsurface;
+	IDirectDrawSurface *surf2 = m_surface;
+	
+	DDSURFACEDESC desc1, desc2;
+	ZeroMemory(&desc1, sizeof(desc1));
+	desc1.dwSize = sizeof(desc1);
+	ZeroMemory(&desc2, sizeof(desc2));
+	desc2.dwSize = sizeof(desc2);
+	
+	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+	if(hr!=DD_OK) return hr;
+	
+	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	if(hr != DD_OK) {	
+		surf1->Unlock(0);
+		return hr;
+	}
+	
+	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
+	lib::screen_rect<int> rcc = rc;
+	rcc &= rcv;
+	int begin_row = rcc.bottom();
+	int end_row = rcc.top();
+	int begin_col = rcc.left();
+	int end_col = rcc.right();
+	
+	int weight = int(progress*256);	
+	for(int row = begin_row-1;row>=end_row;row--) {
+		trible565* px1 = (trible565*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
+		trible565* px2 = (trible565*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
+		px1 +=  begin_col;
+		px2 +=  begin_col;
+		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
+			BYTE r  = (BYTE)blend(weight, px2->red(), px1->red());
+			BYTE g = (BYTE)blend(weight, px2->green(), px1->green());
+			BYTE b = (BYTE)blend(weight, px2->blue(), px1->blue());
+			*px2 = trible565(r, g, b);
+		}
+	}
+	surf1->Unlock(0);
+	surf2->Unlock(0);
+	return hr;
+}
 
