@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2004-12-09 14:52+0100\n"
+"POT-Creation-Date: 2004-12-10 13:43+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -408,7 +408,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:667 src/player_macosx/MyAppDelegate.mm:160
+#: src/player_unix/qt_gui.cpp:667 src/player_macosx/MyAppDelegate.mm:161
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
@@ -440,26 +440,26 @@ msgstr ""
 msgid "%s: cannot open movie"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:161
+#: src/player_macosx/MyAppDelegate.mm:162
 #, c-format
 msgid "Ambulant Player: built on %s for Macintosh/Cocoa"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:163
+#: src/player_macosx/MyAppDelegate.mm:164
 #, c-format
 msgid "Ambulant Player: localization enabled (english; user requested %s)"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:196
-#: src/player_macosx/MyAppDelegate.mm:237
+#: src/player_macosx/MyAppDelegate.mm:197
+#: src/player_macosx/MyAppDelegate.mm:238
 msgid "No Welcome.smil in application bundle"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:234
+#: src/player_macosx/MyAppDelegate.mm:235
 msgid "Welcome.smil could not be opened"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:249
+#: src/player_macosx/MyAppDelegate.mm:250
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 

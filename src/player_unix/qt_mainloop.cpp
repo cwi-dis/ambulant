@@ -87,6 +87,7 @@ using namespace gui::qt;
 #define AM_DBG if(0)
 #endif
 
+
 void
 open_web_browser(const std::string &href)
 {
@@ -94,10 +95,8 @@ open_web_browser(const std::string &href)
 	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
 	char *browserlist = getenv("BROWSER");
 	if (browserlist == NULL) {
-	//	lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
-	// return;
-		// currently common available browsers on Linux
-		browserlist = "firefox:mozilla:opera:netscape";
+		lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
+		return;
 	}
 	char *colon = index(browserlist, ':');
 	if (colon) *colon = 0; // Brrrr...
