@@ -150,12 +150,21 @@ namespace qt_renderer {
 	= new ambulant_qt_window(name, r, region);
       qt_ambulant_widget * qaw
 	= new qt_ambulant_widget(name, r, m_parent_widget);
-      qApp->mainWidget()->resize(bounds.w+m_p.x, bounds.h+m_p.y);
+#ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
+//    qApp->mainWidget()->resize(bounds.w+m_p.x, bounds.h+m_p.y);
+      if (qApp == NULL || qApp->mainWidget() == NULL) {
+	logger::get_logger()->error
+	  ("qt_window_factory::new_window (0x%x) %s", (void*) this,
+	   "qApp == NULL || qApp->mainWidget() == NULL");
+      }
+      qApp->mainWidget()->setGeometry(m_p.x, m_p.y, bounds.w, bounds.h);
+#endif/*QT_NO_FILEDIALOG*/
       aqw->set_ambulant_widget(qaw);
       qaw->set_qt_window(aqw);
       AM_DBG logger::get_logger()->trace
 	("qt_window_factory::new_window(0x%x) ambulant_widget=0x%x qt_window=0x%x",
 	 (void*) this, (void*) qaw, (void*) aqw);
+      qaw->show();
       return aqw;
   }
   abstract_mouse_region *

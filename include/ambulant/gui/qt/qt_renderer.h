@@ -128,7 +128,6 @@ namespace qt_renderer {
 	 bounds->right(),bounds->bottom());
      setGeometry(bounds->left(), bounds->top(),
 		 bounds->right(),bounds->bottom());
-     this->show();
     }
     void paintEvent(QPaintEvent* e) {
       AM_DBG logger::get_logger()->trace
@@ -141,11 +140,15 @@ namespace qt_renderer {
 	logger::get_logger()->trace
 	("qt_ambulant_widget::paintEvent(0x%x) e=0x%x m_qt_window==NULL",
 	 (void*) this, (void*) e);
+	return;
       }
       m_qt_window->redraw(r);
     }
     void set_qt_window( ambulant_qt_window* aqw) {
       m_qt_window = aqw;
+      AM_DBG logger::get_logger()->trace
+	("qt_ambulant_widget::set_qt_window((0x%x) m_qt_window==0x%x)",
+	 (void*) this, (void*) m_qt_window);
     }
     ambulant_qt_window* qt_window() {
       return m_qt_window;

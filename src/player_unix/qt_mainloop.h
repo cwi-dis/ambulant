@@ -58,7 +58,7 @@
 #include <iostream>
 #include <ambulant/version.h>
 #include <ambulant/lib/logger.h>
-//#define WITH_MMS_PLAYER
+#define WITH_MMS_PLAYER
 #ifdef WITH_MMS_PLAYER
 #include <ambulant/common/mms_player.h>
 #else
