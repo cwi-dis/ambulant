@@ -52,12 +52,14 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-
+// Bug workaround: define RESAMPLE_READ_ALL to let the resampler
+// collect all data before calling the client callback
+#define RESAMPLE_READ_ALL
 using namespace ambulant;
 using namespace net;
 
@@ -65,6 +67,17 @@ typedef lib::no_arg_callback<ffmpeg_audio_datasource> readdone_callback;
 typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
+
+// Static initializer function shared among ffmpeg classes
+static void 
+ffmpeg_init()
+{
+	static bool is_inited = false;
+	if (is_inited) return;
+	avcodec_init();
+	avcodec_register_all();
+	is_inited = true;
+}
 
 // Hack, hack. Get extension of a URL.
 static const char *
@@ -100,7 +113,10 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 {
 	audio_format& fmt = src->get_audio_format();
 	// First check that we understand the source format
-	if (fmt.bits != 16) return NULL;
+	if (fmt.bits != 16) {
+		lib::logger::get_logger()->warn("ffmpeg_audio_filter_finder: no support for %d-bit audio, only 16", fmt.bits);
+		return NULL;
+	}
 	// XXXX Check that there is at least one destination format we understand too
 	return new ffmpeg_resample_datasource(src, fmts);
 }
@@ -119,7 +135,11 @@ ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, datasou
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
-	init();
+	ffmpeg_init();
+	const char *ext = getext(m_url);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource: Selecting \"%s\" decoder", ext);
+	if (!select_decoder(ext))
+		lib::logger::get_logger()->error("ffmpeg_audio_datasource: could not select \"%s\" decoder", ext);
 }
 
 ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
@@ -185,13 +205,6 @@ ffmpeg_audio_datasource::callback()
 	
 
 	m_lock.enter();
-	if(!m_codec) {
-		const char *ext = getext(m_url);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selecting %s decoder", ext);
-		if (!select_decoder(ext))
-			lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback: could not select %s decoder", ext);
-	}
-
 	if (m_con) {
 	    sz = m_src->size();
 		//while (size > 0 && !m_buffer.buffer_full()) {
@@ -270,26 +283,30 @@ ffmpeg_audio_datasource::select_decoder(const char* file_ext)
 			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 			return false;
 	}
-	m_fmt.samplerate = m_con->sample_rate;
-	m_fmt.bits = 16; // XXXX
-	m_fmt.channels = m_con->channels;
 	return true;
+}
+
+audio_format&
+ffmpeg_audio_datasource::get_audio_format()
+{
+	if (m_con) {
+		// Refresh info on audio format
+		m_fmt.samplerate = m_con->sample_rate;
+		m_fmt.bits = 16; // XXXX
+		m_fmt.channels = m_con->channels;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::select_decoder: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
+	}
+	return m_fmt;
 }
 
 bool
 ffmpeg_audio_datasource::supported(const std::string& url)
 {
+	ffmpeg_init();
 	const char *file_ext = getext(url);
 	AVCodec  *codec = avcodec_find_decoder_by_name(file_ext);
+	if (codec == NULL) lib::logger::get_logger()->warn("ffmpeg_audio_datasource: no such decoder: \"%s\"", file_ext);
 	return codec != NULL;
-}
-
-int 
-ffmpeg_audio_datasource::init()
-{
-		avcodec_init();
-		avcodec_register_all();
-		return true;
 }
 
 ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, audio_format_choices fmts) 
@@ -304,13 +321,9 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 	m_in_fmt(src->get_audio_format()),
 	m_out_fmt(fmts.best())
 {
+	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : constructor");
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : IN : %d, %d", m_in_fmt.samplerate,  m_in_fmt.channels);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : OUT : %d, %d", m_out_fmt.samplerate,  m_out_fmt.channels);
-	assert(m_in_fmt.bits == 16);
-	assert(m_out_fmt.bits == 16);
-	m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
-	m_context_set = true;
+//	m_context_set = true;
 	
 }
 
@@ -322,31 +335,49 @@ ffmpeg_resample_datasource::~ffmpeg_resample_datasource()
 void
 ffmpeg_resample_datasource::data_avail()
 {
-  int resampled;
-  int sz;
+	int resampled;
+	int sz;
 
-  if (m_context_set) {
-	sz = m_src->size();
-	m_inbuf = (short int*) m_src->get_read_ptr();
-	m_outbuf = (short int*) m_buffer.get_write_ptr(20*sz);	
-	resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, sz / 2);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples", resampled);
-    m_buffer.pushdata(resampled*2);
-	//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
-	m_src->readdone(sz);
-	if (m_client_callback) {
-	   AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling client callback");
-	   m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
-	   m_client_callback = NULL;
-	   m_event_processor = NULL;
-   	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): No client callback!");
+	// We now have enough information to determine the resample parameters
+	if (!m_context_set) {
+		m_in_fmt = m_src->get_audio_format();
+		assert(m_in_fmt.bits == 16);
+		assert(m_out_fmt.bits == 16);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,  m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
+		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
+		m_context_set = true;
 	}
-
-  } else {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No resample context flusshing data");
-	m_src->readdone(sz);
-  }
+	if (m_resample_context) {
+		sz = m_src->size();
+		m_inbuf = (short int*) m_src->get_read_ptr();
+		m_outbuf = (short int*) m_buffer.get_write_ptr(20*sz);	
+		resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, sz / 2);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples", resampled);
+		m_buffer.pushdata(resampled*2);
+		//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
+		m_src->readdone(sz);
+#ifdef RESAMPLE_READ_ALL
+		// workaround for sdl bug: if RESAMPLE_READ_ALL is defined we continue
+		// reading until we have all data
+		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling m_src->start() again");
+			lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
+			m_src->start(m_event_processor, e);
+			return;
+		}
+#endif /* RESAMPLE_READ_ALL */
+		if (m_client_callback) {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): calling client callback");
+			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
+			m_client_callback = NULL;
+			m_event_processor = NULL;
+		} else {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): No client callback!");
+		}
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No resample context flusshing data");
+		m_src->readdone(sz);
+	}
 }
 
 

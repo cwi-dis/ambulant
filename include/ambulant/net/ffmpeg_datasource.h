@@ -113,12 +113,11 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	int size() const;   
 	
  
-	audio_format& get_audio_format() {return m_fmt; }
+	audio_format& get_audio_format();
 	bool select_decoder(const char* file_ext);
 	
 	static bool supported(const std::string& url);
   protected:
-	int init(); 
   	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
 	  
   private:
