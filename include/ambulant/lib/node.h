@@ -170,6 +170,8 @@ class node {
 	xml_string to_string() const;
 	xml_string to_trimmed_string() const;
 	
+	void dump(std::ostream& os) const;
+
   /////////////
   protected:
 	// node data 

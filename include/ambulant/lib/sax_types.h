@@ -41,4 +41,9 @@ typedef std::list<q_attribute_pair> q_attributes_list;
  
 } // namespace ambulant
 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::q_name_pair& n) {
+	os << n.second;
+	return os;
+}
+
 #endif // AMBULANT_LIB_SAX_TYPES_H

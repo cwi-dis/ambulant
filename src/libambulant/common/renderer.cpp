@@ -17,7 +17,9 @@ using namespace ambulant;
 void
 lib::active_renderer::start(lib::event *playdone)
 {
-	lib::logger::get_logger()->trace("active_renderer.start(0x%x, playdone=0x%x)", (void *)this, (void *)playdone);
+	std::ostringstream os;
+	os << *m_node;
+	lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
 	m_dest->show();
 	if (playdone)
 		m_event_processor->add_event(playdone, 0, event_processor::low);
