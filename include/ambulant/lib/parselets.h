@@ -159,6 +159,7 @@ class int_p : public parselet {
 	}
 };
 
+// accepts: d+(.d*)? | .d+
 class dec_p : public parselet {
    public:
 	typedef dec_p self_type;
@@ -169,24 +170,34 @@ class dec_p : public parselet {
 		const_iterator tit = it;
 		std::ptrdiff_t d;
 		std::ptrdiff_t sd = 0;
+		bool needs_fraction = false;
 		int_p i;
-		d = i.parse(tit, end);
-		if(d == -1) return -1;
-		sd += d;
+		if(*tit != '.') {
+			d = i.parse(tit, end);
+			if(d == -1) return -1;
+			sd += d;
+			d = literal_p<'.'>().parse(tit, end);
+			if(d == -1) return (m_result = i.m_result, it = tit, sd);
+			sd += d;
+		} else {
+			i.m_result = 0;
+			tit++;
+			needs_fraction = true;
+		}
 		
-		d = literal_p<'.'>().parse(tit, end);
-		if(d == -1) return (m_result = i.m_result, it = tit, sd);
-		sd += d;
-		
-		// get fraction, do not allow empty after dot
+		// get fraction
 		int_p f;
 		d = f.parse(tit, end);
-		if(d == -1) return -1;
-		sd += d;
+		if(d == -1) {
+			 if(needs_fraction) return -1;
+			 else f.m_result = 0;
+		}
+		sd += (d == -1)?0:d;
 		m_result = i.m_result + double(f.m_result)/::pow(10.0, int(d));
-		it = tit;
-		return sd;
+		return (it = tit, sd);
 	}
+	
+	result_type get_result() const { return m_result;}
 };
 
 template <class CharType, class IsNameStartCh, class IsNameCh >
@@ -671,6 +682,35 @@ class coord_p : public parselet {
 	}
 };
 
+// region_dim ::= S? (int|dec) ((px)? | %)
+class region_dim_p : public parselet {
+  public:
+	typedef coord_p self_type;
+	typedef struct {
+		int int_val;
+		double dbl_val;
+		bool relative;
+	}  result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	int get_px_val() const { return m_result.int_val;}
+	double get_relative_val() const { return m_result.dbl_val;}
+	bool is_relative() const { return m_result.relative;}
+};
+
+// point_p ::= S? (? d+ S? , S? d+  S? )?
+class point_p : public parselet {
+  public:
+	typedef coord_p self_type;
+	typedef struct {
+		int_p::result_type x;
+		int_p::result_type y;
+	}  result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	int get_x() const { return m_result.x;}
+	int get_y() const { return m_result.y;}
+};
 
 } // namespace lib
  

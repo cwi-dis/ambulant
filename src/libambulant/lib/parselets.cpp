@@ -368,7 +368,7 @@ lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
 	// we need this if we want to allow optional space between value and units
 	delimiter_p space(" \t\r\n");
 	star_p<delimiter_p> opt_space_inst = make_star(space);
-	
+		
 	// parse value
 	dec_p p1;
 	d = p1.parse(tit, end);
@@ -388,4 +388,108 @@ lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
 	return (m_result.unit = p2.m_result, it = tit, sd);
 }
 
+//////////////////////
+// region_dim_p
+
+std::ptrdiff_t 
+lib::region_dim_p::parse(const_iterator& it, const const_iterator& end) {
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	std::ptrdiff_t sd = 0;
+	
+	delimiter_p space(" \t\r\n");
+	star_p<delimiter_p> opt_space_inst = make_star(space);
+		
+	// S?
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// int | double
+	dec_p val_p;
+	d = val_p.parse(tit, end);
+	if(d == -1) return -1;
+	sd += d;
+	m_result.dbl_val = val_p.m_result;
+	
+	// S?
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// (px)? | %
+	literal_cstr_p px_cstr_p("px");
+	literal_cstr_p pc_cstr_p("%");
+	or_pair_p<literal_cstr_p, literal_cstr_p> type_p(px_cstr_p, pc_cstr_p);
+	d = type_p.parse(tit, end);
+	if(d == -1 || type_p.matched_first()) {
+		// interpret as int
+		m_result.relative = false;
+		m_result.int_val = int(floor(0.5+m_result.dbl_val));
+	} else /*if(type_p.matched_second())*/ {
+		m_result.relative = true;
+		m_result.dbl_val *= 0.01;
+	}
+	sd += (d == -1)?0:d;
+	return (it = tit, sd);
+}
+
+//////////////////////
+// point_p
+
+// S? (? d+ S? , S? d+  S? )?
+std::ptrdiff_t 
+lib::point_p::parse(const_iterator& it, const const_iterator& end) {
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	std::ptrdiff_t sd = 0;
+	
+	delimiter_p space(" \t\r\n");
+	star_p<delimiter_p> opt_space_inst = make_star(space);
+	
+	// S?
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// (?
+	d = literal_p<'('>().parse(tit, end);
+	sd += (d == -1)?0:d;
+	bool expectRP = (d == -1)?false:true;
+	
+	// x value
+	int_p ip;
+	d = ip.parse(tit, end);
+	if(d == -1) return -1;
+	m_result.x = ip.m_result;
+	sd += d;
+	
+	// S?
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// value sep
+	d = literal_p<','>().parse(tit, end);
+	if(d == -1) return -1;
+	sd += d;
+
+	// S?
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// y value
+	d = ip.parse(tit, end);
+	if(d == -1) return -1;
+	m_result.y = ip.m_result;
+	sd += d;
+	
+	if(expectRP) {
+		// S?
+		d = opt_space_inst.parse(tit, end);
+		sd += (d == -1)?0:d;
+		
+		// )
+		d = literal_p<')'>().parse(tit, end);
+		if(d == -1) return -1;
+		sd += d;
+	}
+	return (it = tit, sd);
+}
 
