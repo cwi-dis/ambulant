@@ -171,9 +171,9 @@ arts_plugin::arts_plugin(
 	net::url url = node->get_url("src");
 	m_audio_src = df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
-		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
+		lib::logger::get_logger()->error("arts_plugin::arts_plugin cannot open %s", repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
-		lib::logger::get_logger()->error("arts_active_audio_renderer: %s: unsupported format", repr(url).c_str());
+		lib::logger::get_logger()->error("arts_plugin::arts_plugin %s: unsupported format", repr(url).c_str());
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
@@ -187,7 +187,7 @@ arts_plugin::init()
     if (!m_arts_init) {
         err  = arts_init();
         m_arts_init  = true;
-        AM_DBG lib::logger::get_logger()->debug("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
+        AM_DBG lib::logger::get_logger()->debug("arts_plugin::init(0x%x): initialising aRts", (void *)this);
     } else {
         err = 0;
     }
@@ -202,13 +202,15 @@ arts_plugin::arts_setup(int rate, int bits, int channels, char *name)
         //err = arts_init();
         err = init();
     	if (err < 0) {
-        	AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
+        	AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
         	return err;
     	}
     	m_stream = arts_play_stream(rate, bits, channels, name);
+		
 		if (!m_stream) {
-			AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): m_stream == NULL");
+			AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_setup(0x%x): m_stream == NULL");
 		}
+		int tmp = arts_stream_set (m_stream, ARTS_P_BLOCKING,0);
     	return 0;
     }
 }
@@ -264,18 +266,18 @@ arts_plugin::data_avail()
     int played;
     int err;
     
-    AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)", (void *)this);
+    AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): (this=0x%x)", (void *)this);
     data = m_audio_src->get_read_ptr();
 	size = m_audio_src->size();
-    AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
+    AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): (this=0x%x) strarting to play %d bytes", (void *)this, size);
 	
 	if (!m_is_paused || m_audio_src) {
 		played=arts_play(data,size);
-		AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
+		AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail():(this=0x%x)  played %d bytes", (void *)this, played);
     	m_audio_src->readdone(played);
 	}
 	restart_audio_input();
-    m_context->stopped(m_cookie, 0);
+    //m_context->stopped(m_cookie, 0);
 	m_lock.leave();
 
 }
@@ -292,13 +294,14 @@ arts_plugin::start(double where)
 	os << *m_node;
 
 	
-	AM_DBG lib::logger::get_logger()->debug("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+	AM_DBG lib::logger::get_logger()->debug("arts_plugin::start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
+		m_is_playing = true;
 		lib::event *e = new readdone_callback(this, &arts_plugin::data_avail);
 		m_audio_src->start(m_event_processor, e);
 
 	} else {
-		lib::logger::get_logger()->error("active_renderer.start: no datasource");
+		lib::logger::get_logger()->error("arts_plugin::start(0x%x): no datasource", (void *)this);
 		if (m_playdone) {
 			m_context->stopped(m_cookie, 0);
             //stopped_callback();
