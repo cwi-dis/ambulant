@@ -63,7 +63,7 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
+	using namespace ambulant::lib;
 
 enum fit_t { fit_fill, fit_hidden, fit_meet, fit_scroll, fit_slice };
 typedef int zindex_t;

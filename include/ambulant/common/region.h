@@ -65,7 +65,7 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
+	using namespace ambulant::lib;
 
 class passive_region : public surface_template, public surface, public gui_events {
   // The only constructor is protected: 

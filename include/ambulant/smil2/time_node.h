@@ -222,8 +222,8 @@ class time_node : public schedulable {
 	
 	bool is_descendent_of(time_node *tn) const {return const_nnhelper::is_descendent(this, tn);}
 	
-	void get_path(std::list<time_node*>& path) { return nnhelper::get_path(this, path);}
-	void get_path(std::list<const time_node*>& path) { return const_nnhelper::get_path(this, path);}
+	void get_path(std::list<time_node*>& path) { nnhelper::get_path(this, path);}
+	void get_path(std::list<const time_node*>& path) { const_nnhelper::get_path(this, path);}
 	
 	// tree iterators
 	typedef tree_iterator<time_node> iterator;

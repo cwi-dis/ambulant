@@ -61,6 +61,7 @@
 
 using namespace ambulant;
 using namespace common;
+using namespace lib;
 
 // Factories
 common::surface_factory *
