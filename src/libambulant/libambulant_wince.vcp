@@ -170,9 +170,6 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\preferences.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
@@ -191,7 +188,10 @@ DEP_CPP_REGIO=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -207,13 +207,9 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGIO=\
 	".\mbulant\common\layout.h"\
@@ -226,11 +222,15 @@ NODEP_CPP_REGIO=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -244,13 +244,9 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGIO=\
 	".\mbulant\common\layout.h"\
@@ -263,11 +259,15 @@ NODEP_CPP_REGIO=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -281,13 +281,9 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGIO=\
 	".\mbulant\common\layout.h"\
@@ -300,11 +296,15 @@ NODEP_CPP_REGIO=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -323,9 +323,6 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\posix_datasource.h"\
@@ -349,7 +346,10 @@ DEP_CPP_RENDE=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -363,17 +363,13 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\posix_datasource.h"\
 	"..\..\include\ambulant\net\stdio_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_RENDE=\
 	".\mbulant\common\layout.h"\
@@ -386,11 +382,15 @@ NODEP_CPP_RENDE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -402,17 +402,13 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\posix_datasource.h"\
 	"..\..\include\ambulant\net\stdio_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_RENDE=\
 	".\mbulant\common\layout.h"\
@@ -425,11 +421,15 @@ NODEP_CPP_RENDE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -441,17 +441,13 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\posix_datasource.h"\
 	"..\..\include\ambulant\net\stdio_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_RENDE=\
 	".\mbulant\common\layout.h"\
@@ -464,11 +460,15 @@ NODEP_CPP_RENDE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -485,7 +485,6 @@ SOURCE=.\common\schema.cpp
 
 DEP_CPP_SCHEM=\
 	"..\..\include\ambulant\common\schema.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
 	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
@@ -498,6 +497,7 @@ DEP_CPP_SCHEM=\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
@@ -507,7 +507,7 @@ DEP_CPP_SCHEM=\
 
 DEP_CPP_SCHEM=\
 	"..\..\include\ambulant\common\schema.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SCHEM=\
 	".\mbulant\config\config.h"\
@@ -529,7 +529,7 @@ NODEP_CPP_SCHEM=\
 
 DEP_CPP_SCHEM=\
 	"..\..\include\ambulant\common\schema.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SCHEM=\
 	".\mbulant\config\config.h"\
@@ -551,7 +551,7 @@ NODEP_CPP_SCHEM=\
 
 DEP_CPP_SCHEM=\
 	"..\..\include\ambulant\common\schema.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SCHEM=\
 	".\mbulant\config\config.h"\
@@ -581,17 +581,6 @@ SOURCE=.\common\smil_alignment.cpp
 DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\smil_alignment.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -603,13 +592,19 @@ DEP_CPP_SMIL_=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -617,17 +612,17 @@ DEP_CPP_SMIL_=\
 DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\smil_alignment.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_SMIL_=\
 	".\mbulant\common\layout.h"\
@@ -653,17 +648,17 @@ NODEP_CPP_SMIL_=\
 DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\smil_alignment.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_SMIL_=\
 	".\mbulant\common\layout.h"\
@@ -689,17 +684,17 @@ NODEP_CPP_SMIL_=\
 DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\smil_alignment.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_SMIL_=\
 	".\mbulant\common\layout.h"\
@@ -731,11 +726,7 @@ SOURCE=.\common\smil_handler.cpp
 
 DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\common\smil_handler.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
 	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
@@ -748,6 +739,10 @@ DEP_CPP_SMIL_H=\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
@@ -757,11 +752,11 @@ DEP_CPP_SMIL_H=\
 
 DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\common\smil_handler.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_H=\
 	".\mbulant\config\config.h"\
@@ -783,11 +778,11 @@ NODEP_CPP_SMIL_H=\
 
 DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\common\smil_handler.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_H=\
 	".\mbulant\config\config.h"\
@@ -809,11 +804,11 @@ NODEP_CPP_SMIL_H=\
 
 DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\common\smil_handler.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_H=\
 	".\mbulant\config\config.h"\
@@ -859,9 +854,6 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
@@ -884,7 +876,10 @@ DEP_CPP_DG_AR=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -904,16 +899,12 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_AR=\
 	".\mbulant\common\layout.h"\
@@ -929,11 +920,15 @@ NODEP_CPP_DG_AR=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -951,16 +946,12 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_AR=\
 	".\mbulant\common\layout.h"\
@@ -976,11 +967,15 @@ NODEP_CPP_DG_AR=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -998,16 +993,12 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_AR=\
 	".\mbulant\common\layout.h"\
@@ -1023,11 +1014,15 @@ NODEP_CPP_DG_AR=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1053,22 +1048,11 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
@@ -1082,18 +1066,24 @@ DEP_CPP_DG_AU=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_fstream.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -1109,25 +1099,21 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DG_AU=\
 	".\mbulant\common\layout.h"\
@@ -1142,12 +1128,16 @@ NODEP_CPP_DG_AU=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_fstream.h"\
@@ -1167,25 +1157,21 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DG_AU=\
 	".\mbulant\common\layout.h"\
@@ -1200,12 +1186,16 @@ NODEP_CPP_DG_AU=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_fstream.h"\
@@ -1225,25 +1215,21 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DG_AU=\
 	".\mbulant\common\layout.h"\
@@ -1258,12 +1244,16 @@ NODEP_CPP_DG_AU=\
 	".\mbulant\lib\amstream.h"\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\byte_buffer.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_fstream.h"\
@@ -1501,9 +1491,6 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
@@ -1526,7 +1513,10 @@ DEP_CPP_DG_BG=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -1547,14 +1537,10 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BG=\
 	".\mbulant\common\layout.h"\
@@ -1568,11 +1554,15 @@ NODEP_CPP_DG_BG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1591,14 +1581,10 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BG=\
 	".\mbulant\common\layout.h"\
@@ -1612,11 +1598,15 @@ NODEP_CPP_DG_BG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1635,14 +1625,10 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BG=\
 	".\mbulant\common\layout.h"\
@@ -1656,11 +1642,15 @@ NODEP_CPP_DG_BG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1686,9 +1676,6 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
@@ -1711,7 +1698,10 @@ DEP_CPP_DG_BR=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -1732,14 +1722,10 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BR=\
 	".\mbulant\common\layout.h"\
@@ -1753,11 +1739,15 @@ NODEP_CPP_DG_BR=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1776,14 +1766,10 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BR=\
 	".\mbulant\common\layout.h"\
@@ -1797,11 +1783,15 @@ NODEP_CPP_DG_BR=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1820,14 +1810,10 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_BR=\
 	".\mbulant\common\layout.h"\
@@ -1841,11 +1827,15 @@ NODEP_CPP_DG_BR=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -1879,6 +1869,11 @@ DEP_CPP_DG_IM=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\stl_threads.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
+	"..\..\third_party_packages\jpeg\jconfig.h"\
+	"..\..\third_party_packages\jpeg\jerror.h"\
+	"..\..\third_party_packages\jpeg\jmorecfg.h"\
+	"..\..\third_party_packages\jpeg\jpegint.h"\
+	"..\..\third_party_packages\jpeg\jpeglib.h"\
 	"..\..\third_party_packages\lpng125\png.h"\
 	"..\..\third_party_packages\lpng125\pngconf.h"\
 	"..\..\third_party_packages\zlib\zconf.h"\
@@ -1902,9 +1897,6 @@ DEP_CPP_DG_IM=\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_error.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
-	
-NODEP_CPP_DG_IM=\
-	"..\..\include\ambulant\gui\dg\jpeglib.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2063,22 +2055,11 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\common\preferences.h"\
@@ -2093,17 +2074,23 @@ DEP_CPP_DG_IMG=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2121,15 +2108,11 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_IMG=\
 	".\mbulant\common\layout.h"\
@@ -2143,12 +2126,16 @@ NODEP_CPP_DG_IMG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2169,15 +2156,11 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_IMG=\
 	".\mbulant\common\layout.h"\
@@ -2191,12 +2174,16 @@ NODEP_CPP_DG_IMG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2217,15 +2204,11 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_IMG=\
 	".\mbulant\common\layout.h"\
@@ -2239,12 +2222,16 @@ NODEP_CPP_DG_IMG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2380,33 +2367,21 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\common\player.h"\
@@ -2424,12 +2399,17 @@ DEP_CPP_DG_PL=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\system.h"\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
@@ -2437,6 +2417,8 @@ DEP_CPP_DG_PL=\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2460,35 +2442,31 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_DG_PL=\
 	".\mbulant\common\layout.h"\
@@ -2505,11 +2483,15 @@ NODEP_CPP_DG_PL=\
 	".\mbulant\gui\dg\dg_wmuser.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2536,35 +2518,31 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_DG_PL=\
 	".\mbulant\common\layout.h"\
@@ -2581,11 +2559,15 @@ NODEP_CPP_DG_PL=\
 	".\mbulant\gui\dg\dg_wmuser.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2612,35 +2594,31 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_DG_PL=\
 	".\mbulant\common\layout.h"\
@@ -2657,11 +2635,15 @@ NODEP_CPP_DG_PL=\
 	".\mbulant\gui\dg\dg_wmuser.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2687,22 +2669,11 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\common\preferences.h"\
@@ -2717,18 +2688,24 @@ DEP_CPP_DG_TE=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2745,15 +2722,11 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_TE=\
 	".\mbulant\common\layout.h"\
@@ -2767,12 +2740,16 @@ NODEP_CPP_DG_TE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2792,15 +2769,11 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_TE=\
 	".\mbulant\common\layout.h"\
@@ -2814,12 +2787,16 @@ NODEP_CPP_DG_TE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -2839,15 +2816,11 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_TE=\
 	".\mbulant\common\layout.h"\
@@ -2861,12 +2834,16 @@ NODEP_CPP_DG_TE=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
 	".\mbulant\lib\textptr.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3014,9 +2991,6 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\preferences.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
@@ -3035,7 +3009,10 @@ DEP_CPP_DG_WI=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -3055,13 +3032,9 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_WI=\
 	".\mbulant\common\layout.h"\
@@ -3074,11 +3047,15 @@ NODEP_CPP_DG_WI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3096,13 +3073,9 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_WI=\
 	".\mbulant\common\layout.h"\
@@ -3115,11 +3088,15 @@ NODEP_CPP_DG_WI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3137,13 +3114,9 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_DG_WI=\
 	".\mbulant\common\layout.h"\
@@ -3156,11 +3129,15 @@ NODEP_CPP_DG_WI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3398,10 +3375,6 @@ DEP_CPP_WIN32_E=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_E=\
 	".\mbulant\config\config.h"\
@@ -3412,8 +3385,12 @@ NODEP_CPP_WIN32_E=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3427,10 +3404,6 @@ DEP_CPP_WIN32_E=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_E=\
 	".\mbulant\config\config.h"\
@@ -3441,8 +3414,12 @@ NODEP_CPP_WIN32_E=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3456,10 +3433,6 @@ DEP_CPP_WIN32_E=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_E=\
 	".\mbulant\config\config.h"\
@@ -3470,8 +3443,12 @@ NODEP_CPP_WIN32_E=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3519,10 +3496,6 @@ DEP_CPP_WIN32_F=\
 DEP_CPP_WIN32_F=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_F=\
 	".\mbulant\config\config.h"\
@@ -3533,8 +3506,12 @@ NODEP_CPP_WIN32_F=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3547,10 +3524,6 @@ NODEP_CPP_WIN32_F=\
 DEP_CPP_WIN32_F=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_F=\
 	".\mbulant\config\config.h"\
@@ -3561,8 +3534,12 @@ NODEP_CPP_WIN32_F=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3575,10 +3552,6 @@ NODEP_CPP_WIN32_F=\
 DEP_CPP_WIN32_F=\
 	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_F=\
 	".\mbulant\config\config.h"\
@@ -3589,8 +3562,12 @@ NODEP_CPP_WIN32_F=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_error.h"\
@@ -3868,7 +3845,6 @@ DEP_CPP_WIN32_TI=\
 
 DEP_CPP_WIN32_TI=\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_TI=\
 	".\mbulant\config\config.h"\
@@ -3881,6 +3857,7 @@ NODEP_CPP_WIN32_TI=\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3890,7 +3867,6 @@ NODEP_CPP_WIN32_TI=\
 
 DEP_CPP_WIN32_TI=\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_TI=\
 	".\mbulant\config\config.h"\
@@ -3903,6 +3879,7 @@ NODEP_CPP_WIN32_TI=\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -3912,7 +3889,6 @@ NODEP_CPP_WIN32_TI=\
 
 DEP_CPP_WIN32_TI=\
 	"..\..\include\ambulant\lib\win32\win32_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	
 NODEP_CPP_WIN32_TI=\
 	".\mbulant\config\config.h"\
@@ -3925,6 +3901,7 @@ NODEP_CPP_WIN32_TI=\
 	".\mbulant\lib\asb.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -4029,70 +4006,70 @@ DEP_CPP_DELTA=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_DELTA=\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_DELTA=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_DELTA=\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_DELTA=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_DELTA=\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_DELTA=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -4105,16 +4082,10 @@ SOURCE=.\lib\document.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_DOCUM=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -4126,28 +4097,34 @@ DEP_CPP_DOCUM=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_DOCUM=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DOCUM=\
 	".\mbulant\config\config.h"\
@@ -4169,17 +4146,17 @@ NODEP_CPP_DOCUM=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_DOCUM=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DOCUM=\
 	".\mbulant\config\config.h"\
@@ -4201,17 +4178,17 @@ NODEP_CPP_DOCUM=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_DOCUM=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_DOCUM=\
 	".\mbulant\config\config.h"\
@@ -4242,7 +4219,6 @@ SOURCE=.\lib\expat_parser.cpp
 DEP_CPP_EXPAT=\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -4250,6 +4226,7 @@ DEP_CPP_EXPAT=\
 	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
 	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
 	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
 	
 
@@ -4258,8 +4235,8 @@ DEP_CPP_EXPAT=\
 DEP_CPP_EXPAT=\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_EXPAT=\
 	".\mbulant\config\config.h"\
@@ -4275,8 +4252,8 @@ NODEP_CPP_EXPAT=\
 DEP_CPP_EXPAT=\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_EXPAT=\
 	".\mbulant\config\config.h"\
@@ -4292,8 +4269,8 @@ NODEP_CPP_EXPAT=\
 DEP_CPP_EXPAT=\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_EXPAT=\
 	".\mbulant\config\config.h"\
@@ -4492,18 +4469,7 @@ SOURCE=.\lib\node.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_NODE_=\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
 	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
@@ -4514,29 +4480,35 @@ DEP_CPP_NODE_=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_NODE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_NODE_=\
 	".\mbulant\config\config.h"\
@@ -4558,18 +4530,18 @@ NODEP_CPP_NODE_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_NODE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_NODE_=\
 	".\mbulant\config\config.h"\
@@ -4591,18 +4563,18 @@ NODEP_CPP_NODE_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_NODE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_NODE_=\
 	".\mbulant\config\config.h"\
@@ -4821,6 +4793,9 @@ SOURCE=.\lib\timer.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TIMER=\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
 	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
@@ -4842,64 +4817,73 @@ DEP_CPP_TIMER=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_TIMER=\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_TIMER=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_TIMER=\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_TIMER=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_TIMER=\
+	"..\..\include\ambulant\compat\limits"\
+	"..\..\include\ce3\stl\stl_config.h"\
+	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
+	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\logger.h"\
+	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
-	
-NODEP_CPP_TIMER=\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ENDIF 
@@ -4912,18 +4896,11 @@ SOURCE=.\lib\tree_builder.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TREE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\memfile.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -4935,28 +4912,34 @@ DEP_CPP_TREE_=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_TREE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TREE_=\
 	".\mbulant\config\config.h"\
@@ -4978,17 +4961,17 @@ NODEP_CPP_TREE_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_TREE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TREE_=\
 	".\mbulant\config\config.h"\
@@ -5010,17 +4993,17 @@ NODEP_CPP_TREE_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_TREE_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TREE_=\
 	".\mbulant\config\config.h"\
@@ -5054,21 +5037,10 @@ SOURCE=.\mms\mms_player.cpp
 
 DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\common\player.h"\
@@ -5083,42 +5055,44 @@ DEP_CPP_MMS_P=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_MMS_P=\
 	".\mbulant\common\layout.h"\
@@ -5132,11 +5106,15 @@ NODEP_CPP_MMS_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5146,25 +5124,21 @@ NODEP_CPP_MMS_P=\
 
 DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_MMS_P=\
 	".\mbulant\common\layout.h"\
@@ -5178,11 +5152,15 @@ NODEP_CPP_MMS_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5192,25 +5170,21 @@ NODEP_CPP_MMS_P=\
 
 DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_MMS_P=\
 	".\mbulant\common\layout.h"\
@@ -5224,11 +5198,15 @@ NODEP_CPP_MMS_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5248,20 +5226,9 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
@@ -5275,17 +5242,23 @@ DEP_CPP_TIMEL=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5295,24 +5268,20 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TIMEL=\
 	".\mbulant\common\layout.h"\
@@ -5325,11 +5294,15 @@ NODEP_CPP_TIMEL=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5342,24 +5315,20 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TIMEL=\
 	".\mbulant\common\layout.h"\
@@ -5372,11 +5341,15 @@ NODEP_CPP_TIMEL=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5389,24 +5362,20 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_TIMEL=\
 	".\mbulant\common\layout.h"\
@@ -5419,11 +5388,15 @@ NODEP_CPP_TIMEL=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5440,9 +5413,6 @@ SOURCE=.\mms\timelines.cpp
 
 DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
@@ -5463,7 +5433,10 @@ DEP_CPP_TIMELI=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -5475,15 +5448,11 @@ DEP_CPP_TIMELI=\
 
 DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIMELI=\
 	".\mbulant\common\layout.h"\
@@ -5496,11 +5465,15 @@ NODEP_CPP_TIMELI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5510,15 +5483,11 @@ NODEP_CPP_TIMELI=\
 
 DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIMELI=\
 	".\mbulant\common\layout.h"\
@@ -5531,11 +5500,15 @@ NODEP_CPP_TIMELI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5545,15 +5518,11 @@ NODEP_CPP_TIMELI=\
 
 DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIMELI=\
 	".\mbulant\common\layout.h"\
@@ -5566,11 +5535,15 @@ NODEP_CPP_TIMELI=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -5590,7 +5563,6 @@ SOURCE=.\net\url.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_URL_C=\
-	"..\..\include\ambulant\net\url.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
 	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
@@ -5598,12 +5570,13 @@ DEP_CPP_URL_C=\
 	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
 	{$(INCLUDE)}"ambulant\config\suffix.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_URL_C=\
-	"..\..\include\ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_URL_C=\
 	".\mbulant\config\config.h"\
@@ -5618,7 +5591,7 @@ NODEP_CPP_URL_C=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_URL_C=\
-	"..\..\include\ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_URL_C=\
 	".\mbulant\config\config.h"\
@@ -5633,7 +5606,7 @@ NODEP_CPP_URL_C=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_URL_C=\
-	"..\..\include\ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
 	
 NODEP_CPP_URL_C=\
 	".\mbulant\config\config.h"\
@@ -5666,10 +5639,7 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
@@ -5688,6 +5658,9 @@ DEP_CPP_REGION=\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -5704,13 +5677,13 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGION=\
 	".\mbulant\common\layout.h"\
@@ -5742,13 +5715,13 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGION=\
 	".\mbulant\common\layout.h"\
@@ -5780,13 +5753,13 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_REGION=\
 	".\mbulant\common\layout.h"\
@@ -5824,21 +5797,9 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\common\smil_alignment.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\preferences.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
@@ -5851,13 +5812,20 @@ DEP_CPP_SMIL_L=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -5869,21 +5837,21 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\common\smil_alignment.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_L=\
 	".\mbulant\common\layout.h"\
@@ -5914,21 +5882,21 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\common\smil_alignment.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_L=\
 	".\mbulant\common\layout.h"\
@@ -5959,21 +5927,21 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\common\smil_alignment.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\colors.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\region_node.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_L=\
 	".\mbulant\common\layout.h"\
@@ -6008,29 +5976,17 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ambulant\smil2\timegraph.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\common\player.h"\
@@ -6045,18 +6001,25 @@ DEP_CPP_SMIL_P=\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\system.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -6065,22 +6028,15 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -6088,10 +6044,13 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_P=\
 	".\mbulant\common\layout.h"\
@@ -6105,11 +6064,15 @@ NODEP_CPP_SMIL_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6121,22 +6084,15 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -6144,10 +6100,13 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_P=\
 	".\mbulant\common\layout.h"\
@@ -6161,11 +6120,15 @@ NODEP_CPP_SMIL_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6177,22 +6140,15 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -6200,10 +6156,13 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_SMIL_P=\
 	".\mbulant\common\layout.h"\
@@ -6217,11 +6176,15 @@ NODEP_CPP_SMIL_P=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\delta_timer.h"\
+	".\mbulant\lib\event.h"\
+	".\mbulant\lib\event_processor.h"\
 	".\mbulant\lib\gtypes.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6240,10 +6203,7 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6265,7 +6225,10 @@ DEP_CPP_SMIL_T=\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -6278,10 +6241,7 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6289,8 +6249,9 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_T=\
 	".\mbulant\common\playable.h"\
@@ -6302,9 +6263,11 @@ NODEP_CPP_SMIL_T=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6316,10 +6279,7 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6327,8 +6287,9 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_T=\
 	".\mbulant\common\playable.h"\
@@ -6340,9 +6301,11 @@ NODEP_CPP_SMIL_T=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6354,10 +6317,7 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6365,8 +6325,9 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SMIL_T=\
 	".\mbulant\common\playable.h"\
@@ -6378,9 +6339,11 @@ NODEP_CPP_SMIL_T=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6399,10 +6362,7 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6424,7 +6384,10 @@ DEP_CPP_SYNC_=\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -6437,10 +6400,7 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6448,8 +6408,9 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SYNC_=\
 	".\mbulant\common\playable.h"\
@@ -6461,9 +6422,11 @@ NODEP_CPP_SYNC_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6475,10 +6438,7 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6486,8 +6446,9 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SYNC_=\
 	".\mbulant\common\playable.h"\
@@ -6499,9 +6460,11 @@ NODEP_CPP_SYNC_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6513,10 +6476,7 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6524,8 +6484,9 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_SYNC_=\
 	".\mbulant\common\playable.h"\
@@ -6537,9 +6498,11 @@ NODEP_CPP_SYNC_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6555,19 +6518,11 @@ SOURCE=.\smil2\test_attrs.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TEST_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -6579,31 +6534,38 @@ DEP_CPP_TEST_=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_TEST_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TEST_=\
 	".\mbulant\config\config.h"\
@@ -6625,20 +6587,20 @@ NODEP_CPP_TEST_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_TEST_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TEST_=\
 	".\mbulant\config\config.h"\
@@ -6660,20 +6622,20 @@ NODEP_CPP_TEST_=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_TEST_=\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TEST_=\
 	".\mbulant\config\config.h"\
@@ -6706,11 +6668,8 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6732,7 +6691,10 @@ DEP_CPP_TIME_=\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
@@ -6747,11 +6709,8 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6759,8 +6718,9 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_=\
 	".\mbulant\common\playable.h"\
@@ -6772,10 +6732,12 @@ NODEP_CPP_TIME_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6788,11 +6750,8 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6800,8 +6759,9 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_=\
 	".\mbulant\common\playable.h"\
@@ -6813,10 +6773,12 @@ NODEP_CPP_TIME_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6829,11 +6791,8 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6841,8 +6800,9 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_=\
 	".\mbulant\common\playable.h"\
@@ -6854,10 +6814,12 @@ NODEP_CPP_TIME_=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6876,10 +6838,7 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6901,7 +6860,10 @@ DEP_CPP_TIME_N=\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -6914,10 +6876,7 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6925,8 +6884,9 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_N=\
 	".\mbulant\common\playable.h"\
@@ -6938,9 +6898,11 @@ NODEP_CPP_TIME_N=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6952,10 +6914,7 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -6963,8 +6922,9 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_N=\
 	".\mbulant\common\playable.h"\
@@ -6976,9 +6936,11 @@ NODEP_CPP_TIME_N=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -6990,10 +6952,7 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -7001,8 +6960,9 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_N=\
 	".\mbulant\common\playable.h"\
@@ -7014,9 +6974,11 @@ NODEP_CPP_TIME_N=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7035,10 +6997,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -7060,7 +7019,10 @@ DEP_CPP_TIME_S=\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -7073,10 +7035,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -7084,8 +7043,9 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_S=\
 	".\mbulant\common\playable.h"\
@@ -7097,9 +7057,11 @@ NODEP_CPP_TIME_S=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7111,10 +7073,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -7122,8 +7081,9 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_S=\
 	".\mbulant\common\playable.h"\
@@ -7135,9 +7095,11 @@ NODEP_CPP_TIME_S=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7149,10 +7111,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
@@ -7160,8 +7119,9 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	
 NODEP_CPP_TIME_S=\
 	".\mbulant\common\playable.h"\
@@ -7173,9 +7133,11 @@ NODEP_CPP_TIME_S=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7194,27 +7156,15 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
-	"..\..\include\ambulant\lib\expat_parser.h"\
-	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
-	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
-	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
 	"..\..\include\ambulant\smil2\timegraph.h"\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
-	"..\..\third_party_packages\expat\lib\expat.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
 	{$(INCLUDE)}"ambulant\config\config.h"\
 	{$(INCLUDE)}"ambulant\config\posix_features.h"\
@@ -7226,15 +7176,22 @@ DEP_CPP_TIMEG=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
 	{$(INCLUDE)}"ambulant\lib\event.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -7243,20 +7200,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -7264,8 +7214,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TIMEG=\
 	".\mbulant\common\playable.h"\
@@ -7277,10 +7232,12 @@ NODEP_CPP_TIMEG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7292,20 +7249,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -7313,8 +7263,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TIMEG=\
 	".\mbulant\common\playable.h"\
@@ -7326,10 +7281,12 @@ NODEP_CPP_TIMEG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7341,20 +7298,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\lib\document.h"\
 	"..\..\include\ambulant\lib\expat_parser.h"\
 	"..\..\include\ambulant\lib\filesys.h"\
-	"..\..\include\ambulant\lib\node.h"\
-	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
-	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
-	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
-	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
-	"..\..\include\ambulant\smil2\test_attrs.h"\
 	"..\..\include\ambulant\smil2\time_attrs.h"\
 	"..\..\include\ambulant\smil2\time_node.h"\
 	"..\..\include\ambulant\smil2\time_state.h"\
@@ -7362,8 +7312,13 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ce3\stl\stl_config.h"\
 	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\expat\lib\expat.h"\
-	{$(INCLUDE)}"ambulant\lib\event.h"\
-	{$(INCLUDE)}"ambulant\lib\timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 NODEP_CPP_TIMEG=\
 	".\mbulant\common\playable.h"\
@@ -7375,10 +7330,12 @@ NODEP_CPP_TIMEG=\
 	".\mbulant\config\suffix.h"\
 	".\mbulant\lib\abstract_mtsync.h"\
 	".\mbulant\lib\asb.h"\
+	".\mbulant\lib\event.h"\
 	".\mbulant\lib\logger.h"\
 	".\mbulant\lib\mtsync.h"\
 	".\mbulant\lib\refcount.h"\
 	".\mbulant\lib\string_util.h"\
+	".\mbulant\lib\timer.h"\
 	".\mbulant\lib\unix\unix_mtsync.h"\
 	".\mbulant\lib\win32\win32_asb.h"\
 	".\mbulant\lib\win32\win32_mtsync.h"\
@@ -7388,6 +7345,37 @@ NODEP_CPP_TIMEG=\
 
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\get_version.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_GET_V=\
+	{$(INCLUDE)}"ambulant\version.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_GET_V=\
+	{$(INCLUDE)}"ambulant\version.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_GET_V=\
+	{$(INCLUDE)}"ambulant\version.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_GET_V=\
+	{$(INCLUDE)}"ambulant\version.h"\
+	
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -7832,6 +7820,10 @@ SOURCE=..\..\include\ambulant\config\suffix.h
 SOURCE=..\..\include\ambulant\config\user.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\version.h
+# End Source File
 # End Group
 # End Target
 # End Project
