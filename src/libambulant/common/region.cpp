@@ -319,8 +319,8 @@ void
 passive_region::mouse_region_changed()
 {
     // Check that we have a mouse region and a parent
-    if (!m_mouse_region || !m_parent) {
-	      lib::logger::get_logger()->warn("mouse_region_changed: region %s is not a visual region", m_name.c_str());
+    if (!m_mouse_region ) {
+	      lib::logger::get_logger()->warn("mouse_region_changed(0x%x): region %s is not a visual region", (void*)this, m_name.c_str());
 	      return;
     }
     // Clear the mouse region
@@ -335,7 +335,7 @@ passive_region::mouse_region_changed()
     // Convert to our parent coordinate space
     *m_mouse_region += m_outer_bounds.left_top();
     // Tell our parent, if we have one
-	AM_DBG lib::logger::get_logger()->trace("mouse_region_changed(0x%x): is_empty()=%d", (void*)this, (int)m_mouse_region->is_empty());
+	/*AM_DBG */lib::logger::get_logger()->trace("mouse_region_changed(0x%x): is_empty()=%d", (void*)this, (int)m_mouse_region->is_empty());
     if (m_parent) m_parent->mouse_region_changed();
 }
 
@@ -371,10 +371,12 @@ void
 passive_root_layout::mouse_region_changed()
 {
 	passive_region::mouse_region_changed();
-	if (m_gui_window)
+	if (m_gui_window) {
+		AM_DBG lib::logger::get_logger()->trace("passive_root_layout::mouse_region_changed: forward to m_gui_window");
 		m_gui_window->mouse_region_changed();
-	else
+	} else {
 		lib::logger::get_logger()->error("passive_root_layout::mouse_region_changed: m_gui_window == NULL");
+	}
 }
 
 active_region::~active_region()
@@ -418,7 +420,7 @@ active_region::user_event(const lib::point &where)
 	} else {
 		// At this point we should have a renderer that draws the default background
 		// When that is implemented this trace message should turn into an error (or fatal).
-		AM_DBG lib::logger::get_logger()->error("active_region.user_event(0x%x) no renderer", (void *)this);
+		AM_DBG lib::logger::get_logger()->warn("active_region.user_event(0x%x) no renderer", (void *)this);
 	}
 }
 

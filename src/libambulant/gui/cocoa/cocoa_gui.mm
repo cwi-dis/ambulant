@@ -292,6 +292,10 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 - (void)mouseDown: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
+#ifndef USE_COCOA_BOTLEFT
+	// Mouse clicks are not flipped, even if the view is
+	where.x = NSMaxY([self bounds]) - where.x;
+#endif
 	AM_DBG NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);

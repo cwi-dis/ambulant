@@ -790,7 +790,7 @@ active_timeline::stopped(int n, double t)
 void 
 active_timeline::clicked(int n, double t)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("active_timeline::clicked(%d)", n);
+	AM_DBG lib::logger::get_logger()->trace("active_timeline::clicked(%d)", n);
 }
 
 } // namespace mms
