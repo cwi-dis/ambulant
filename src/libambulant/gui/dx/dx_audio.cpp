@@ -59,6 +59,10 @@
 #include "ambulant/lib/memfile.h"
 #include "ambulant/gui/dx/dx_audio_player.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 gui::dx::dx_audio_renderer::dx_audio_renderer(
@@ -71,7 +75,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	m_player(0), 
 	m_update_event(0) {
 	
-	lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	std::string url = m_node->get_url("src");
 	if(lib::memfile::exists(url))
 		m_player = new gui::dx::audio_player(url);
@@ -82,12 +86,12 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 }
 
 gui::dx::dx_audio_renderer::~dx_audio_renderer() {
-	lib::logger::get_logger()->trace("~dx_audio_renderer()");
+	AM_DBG lib::logger::get_logger()->trace("~dx_audio_renderer()");
 	if(m_player) stop();
 }
 
 void gui::dx::dx_audio_renderer::start(double t) {
-	lib::logger::get_logger()->trace("dx_audio_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer::start(0x%x)", this);
 	
 	if(!m_player) {
 		// Not created or stopped (gone)
@@ -130,7 +134,7 @@ std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
 }
 
 void gui::dx::dx_audio_renderer::stop() {
-	lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
 	if(!m_player) return;
 	m_update_event = 0;
 	m_player->stop();
@@ -140,7 +144,7 @@ void gui::dx::dx_audio_renderer::stop() {
 }
 
 void gui::dx::dx_audio_renderer::pause() {
-	lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
 }
 

@@ -64,7 +64,10 @@
 
 #include <math.h>
 
-#include "jpeglib.h"
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 
@@ -78,7 +81,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 :   common::renderer_playable(context, cookie, node, evp),
 	m_image(0) {
 	
-	lib::logger::get_logger()->trace("dx_img_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::ctr(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	std::string url = m_node->get_url("src");
@@ -91,12 +94,12 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 }
 
 gui::dx::dx_img_renderer::~dx_img_renderer() {
-	lib::logger::get_logger()->trace("~dx_img_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::dtr(0x%x)", this);
 	delete m_image;
 }
 
 void gui::dx::dx_img_renderer::start(double t) {
-	lib::logger::get_logger()->trace("dx_img_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::start(0x%x)", this);
 	if(!m_image) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
@@ -127,7 +130,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 }
 
 void gui::dx::dx_img_renderer::stop() {
-	lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
 	m_dest->renderer_done();

@@ -63,6 +63,10 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_video_player.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 gui::dx::dx_video_renderer::dx_video_renderer(
@@ -75,7 +79,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	m_player(0), 
 	m_update_event(0) {
 	
-	lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	std::string url = m_node->get_url("src");
@@ -88,12 +92,12 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 }
 
 gui::dx::dx_video_renderer::~dx_video_renderer() {
-	lib::logger::get_logger()->trace("~dx_video_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("~dx_video_renderer(0x%x)", this);
 	if(m_player) stop();
 }
 
 void gui::dx::dx_video_renderer::start(double t) {
-	lib::logger::get_logger()->trace("dx_video_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer::start(0x%x)", this);
 	
 	if(!m_player) {
 		// Not created or stopped (gone)
@@ -114,6 +118,9 @@ void gui::dx::dx_video_renderer::start(double t) {
 	if(m_activated) {
 		// repeat
 		m_player->start(t);
+		m_player->update();
+		m_dest->need_redraw();
+		schedule_update();
 		return;	
 	}
 	
@@ -142,7 +149,7 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 }
 
 void gui::dx::dx_video_renderer::stop() {
-	lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
 	if(!m_player) return;
 	m_update_event = 0;
 	m_player->stop();
@@ -153,13 +160,13 @@ void gui::dx::dx_video_renderer::stop() {
 }
 
 void gui::dx::dx_video_renderer::pause() {
-	lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
 	if(m_player) 
 		m_player->pause();
 }
 
 void gui::dx::dx_video_renderer::resume() {
-	lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
 	if(m_player)
 		m_player->resume();
 }

@@ -61,7 +61,9 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 
-#include "jpeglib.h"
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 
@@ -75,15 +77,15 @@ gui::dx::dx_brush::dx_brush(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::renderer_playable(context, cookie, node, evp) { 
-	lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
 }
 
 gui::dx::dx_brush::~dx_brush() {
-	lib::logger::get_logger()->trace("~dx_brush()");
+	AM_DBG lib::logger::get_logger()->trace("~dx_brush()");
 }
 
 void gui::dx::dx_brush::start(double t) {
-	lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
 	
 	// Has this been activated
 	if(m_activated) {
@@ -102,7 +104,7 @@ void gui::dx::dx_brush::start(double t) {
 
 
 void gui::dx::dx_brush::stop() {
-	lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
 	m_dest->renderer_done();
 	m_activated = false;
 }

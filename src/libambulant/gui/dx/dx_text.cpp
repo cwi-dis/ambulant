@@ -60,6 +60,10 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 gui::dx::dx_text_renderer::dx_text_renderer(
@@ -70,7 +74,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	common::abstract_window *window)
 :   common::renderer_playable(context, cookie, node, evp) { 
 	
-	lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	std::string url = m_node->get_url("src");
@@ -86,11 +90,11 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
-	lib::logger::get_logger()->trace("~dx_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("~dx_text_renderer(0x%x)", this);
 }
 
 void gui::dx::dx_text_renderer::start(double t) {
-	lib::logger::get_logger()->trace("dx_text_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::start(0x%x)", this);
 		
 	// Has this been activated
 	if(m_activated) {
@@ -108,10 +112,10 @@ void gui::dx::dx_text_renderer::start(double t) {
 }
 
 void gui::dx::dx_text_renderer::stop() {
-	lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
+	m_text = "";
 	m_dest->renderer_done();
 	m_activated = false;
-	m_text = "";
 }
 
 void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
