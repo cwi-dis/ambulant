@@ -99,15 +99,8 @@ std::basic_string<text_char> lib::win32::get_module_filename() {
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 // WINCE should provide its own version
-void lib::show_message(const char *format, ...) {
-	va_list	args;
-	va_start(args, format);
-	int size = _vscprintf(format, args) + 1;
-	char *buf = new char[size];
-	vsprintf(buf, format, args);
-	va_end(args);
-	MessageBox(NULL, textptr(buf), text_str("AmbulantPlayer"), MB_OK);
-	delete[] buf;
+void lib::win32::show_message(const char *message) {
+	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), MB_OK);
 }
 #endif
 

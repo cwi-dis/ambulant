@@ -55,7 +55,7 @@
 
 #include "MmDoc.h"
 #include "MmView.h"
-
+#include "LogWindow.h"
 
 #include <fstream>
 #include <string>
@@ -83,6 +83,7 @@
 #define new DEBUG_NEW
 #endif
 
+#ifdef WITHOUT_LOG_WINDOW
 const TCHAR log_name[] = "amlog.txt";
 
 static std::string get_log_filename() {
@@ -94,7 +95,7 @@ static std::string get_log_filename() {
 	text_strcat(buf, log_name);
 	return std::string(ambulant::lib::textptr(buf).str());
 }
-
+#endif // WITHOUT_LOG_WINDOW
 
 static TCHAR *get_directory(const TCHAR *fn) {
 	static TCHAR buf[_MAX_PATH];
@@ -105,8 +106,10 @@ static TCHAR *get_directory(const TCHAR *fn) {
 	return buf;
 }
 
+#ifdef WITHOUT_LOG_WINDOW
 std::ofstream 
 log_os(get_log_filename().c_str());
+#endif
 
 // The handle of the single instance
 static HWND s_hwnd;
@@ -190,11 +193,21 @@ MmView::MmView()
 	m_timer_id = 0;
 	m_cursor_id = 0;
 	m_autoplay = true;
+	lib::logger::get_logger()->set_show_message(lib::win32::show_message);
+#ifdef WITHOUT_LOG_WINDOW
 	lib::logger::get_logger()->set_std_ostream(log_os);
-#ifdef AM_PLAYER_DG
-	lib::logger::get_logger()->trace("Ambulant: using DG Player");
 #else
-	lib::logger::get_logger()->trace("Ambulant: using DX Player");
+	lib::logger::get_logger()->set_ostream(new logwindow_ostream());
+#endif // WITHOUT_LOG_WINDOW
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
+#if USE_NLS
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+#endif
+#ifdef AM_PLAYER_DG
+	lib::logger::get_logger()->debug("Ambulant Player: using DG Player");
+#else
+	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
 #endif
 }
 
@@ -417,6 +430,8 @@ void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
 }
 
 void MmView::OnViewLog() {
+#ifdef WITHOUT_LOG_WINDOW
+	// Logging to file: open the file in notepad.
 	TCHAR buf[_MAX_PATH];
 	GetModuleFileName(NULL, buf, _MAX_PATH);
 	TCHAR *p1 = text_strrchr(buf,TCHAR('\\'));
@@ -426,6 +441,13 @@ void MmView::OnViewLog() {
 	CString cmd = TEXT("Notepad.exe ");
 	cmd += buf;
 	WinExec(cmd, SW_SHOW);
+#else
+	// Logging to a window: show the window.
+	if (m_logwindow == NULL) {
+		m_logwindow = CLogWindow::GetLogWindowSingleton();
+	}
+	m_logwindow->ShowWindow(SW_SHOW);
+#endif
 }
 
 void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {

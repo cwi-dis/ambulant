@@ -80,7 +80,7 @@ namespace ambulant {
 
 namespace lib {
 
-typedef void (*show_message_type)(const char *format, ...);
+typedef void (*show_message_type)(const char *message);
 
 /// Logging message handler.
 /// Normal use if this class is through logger::get_logger()->show()
@@ -258,18 +258,6 @@ inline void logger::set_level(int level) {
 inline bool logger::suppressed(int level) {
 	return level < m_level;
 }
-
-#ifdef AMBULANT_PLATFORM_WIN32
-
-// A machine-dependent function to show a popup message
-extern void show_message(const char *format, ...);
-
-#else 
-
-// dummy for rest of platforms
-inline void show_message(const char *format, ...) {}
-
-#endif
 
 } // namespace lib
 

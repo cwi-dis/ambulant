@@ -13,3 +13,4 @@ all: $(ALL) text-recursive
 
 text-recursive:
 	(cd text ; $(MAKE))
+	

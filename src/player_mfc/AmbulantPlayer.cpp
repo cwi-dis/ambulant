@@ -57,6 +57,7 @@
 #include "MmView.h"
 #include "OpenUrlDlg.h"
 #include "PreferencesDlg.h"
+#include "LogWindow.h"
 
 #include "ambulant/version.h"
 #include ".\ambulantplayer.h"
@@ -111,6 +112,9 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	}
 	AfxEnableControlContainer();
 	
+	// Enable RichEdit control
+	AfxInitRichEdit2();
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	// of your final executable, you should remove from the following

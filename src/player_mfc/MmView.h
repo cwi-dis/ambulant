@@ -52,6 +52,7 @@
 
 #pragma once
 
+class CLogWindow;
 
 class MmView : public CView
 {
@@ -73,7 +74,9 @@ public:
 	UINT m_cursor_id;
 	bool m_autoplay;
 	CString m_welcomeDocFilename;
-	
+#ifndef WITHOUT_LOG_WINDOW
+	CLogWindow *m_logwindow;
+#endif
 // Overrides
 	public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view

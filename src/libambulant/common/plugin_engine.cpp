@@ -55,9 +55,12 @@
 #include<dirent.h>
 #include<string.h>
 
-#ifdef	WITH_PLUGINS
+// Undefine for Zaurus, etc.
+#define WITH_PLUGINS
+
+#ifdef WITH_PLUGINS
 #include <ltdl.h>
-#endif/*WITH_PLUGINS*/
+#endif
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -74,16 +77,14 @@ plugin_engine *ambulant::common::plugin_engine::s_singleton = NULL;
 plugin_engine *
 plugin_engine::get_plugin_engine()
 {
-#ifdef	WITH_PLUGINS
     if (s_singleton == NULL)
         s_singleton = new plugin_engine;
-#endif/*WITH_PLUGINS*/
     return s_singleton;
 }
 
-#ifdef	WITH_PLUGINS
 plugin_engine::plugin_engine()
 {
+#ifdef	WITH_PLUGINS
     collect_plugin_directories();
 	int errors = lt_dlinit();
 	if (errors) {
@@ -94,6 +95,7 @@ plugin_engine::plugin_engine()
     for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
         load_plugins(*i);
     }
+#endif // WITH_PLUGINS
 }
 
 void
@@ -106,7 +108,7 @@ static int filter(const struct dirent* filen)
 {
 	int len;
 	len = strlen(filen->d_name);
-	if (!strncmp(filen->d_name+(len-3),".so",3) ) {
+	if (!strncmp(filen->d_name+(len-3),".la",3) ) {
 		return 1;
 	} else {
 		return 0;
@@ -117,8 +119,8 @@ static int filter(const struct dirent* filen)
 void
 plugin_engine::load_plugins(std::string dirname)
 {
+#ifdef WITH_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
-	int errors;
 	char filename[1024];
 	dirent **namelist;
 	
@@ -165,77 +167,18 @@ plugin_engine::load_plugins(std::string dirname)
         free(namelist);
     }
 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+#endif // WITH_PLUGINS
 }
 
 void
 plugin_engine::add_plugins(common::factories* factory)
 {
+#ifdef WITH_PLUGINS
     std::vector< initfuncptr >::iterator i;
     for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
         initfuncptr init;
         init = *i;
         (init)(factory);
     }
-}
-
-#if 0
-plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::datasource_factory* df)
-{
-	int nr_of_files;
-	int errors;
-	char filename[1024];
-	lt_dlhandle handle;
-	
-	initfuncptr init;
-
-	dirent **namelist;
-//	m_plugindir = getenv("AMB_PLUGIN_DIR");
-	m_plugindir = "/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/";
-	
-	// Init libltdl
-	errors = lt_dlinit ();
-	
-	
-	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", m_plugindir);
-
-	if (m_plugindir != NULL) {
-		nr_of_files = scandir(m_plugindir, &namelist, &filter , NULL);
-		if (nr_of_files < 0) {
-			lib::logger::get_logger()->error("plugin_engine: Error reading plugin directory");
-		} else {
-			while (nr_of_files--)
-   			{
-      			//only normal files, not dots (. and ..)
-      			if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
-	          		strcmp(namelist[nr_of_files]->d_name, "..")) { 
-					strcpy(filename,m_plugindir);
-					char *pluginname = namelist[nr_of_files]->d_name;
-					strcat(filename, pluginname);
-					if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
-						lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
-						continue;
-					}
-					lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
-					handle = lt_dlopen(filename);
-				  	if (handle) {
-  						AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
-						AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
-						init = (initfuncptr) lt_dlsym(handle,"initialize");
-						if (!init) {
-							lib::logger::get_logger()->error("plugin_engine: no initialize routine");
-						} else {
-							(*init)(factory);
-						}
-		  			} else {
-						lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
-						lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
-					}
-			}
-			free(namelist[nr_of_files]);
-			}
-		free(namelist);
-		}
-	}
-}
 #endif
-#endif/*WITH_PLUGINS*/
+}

@@ -9,6 +9,7 @@
 #define IDC_CURSOR_HAND                 130
 #define IDD_OPEN_URL                    131
 #define IDD_PREFERENCES                 132
+#define IDD_LOG_WINDOW                  136
 #define IDC_VERSION                     1000
 #define IDC_EDIT_URL                    1001
 #define IDC_BUTTON1                     1002
@@ -21,6 +22,7 @@
 #define IDC_DO_DTD                      1008
 #define IDC_CHECK3                      1009
 #define IDC_VALIDATION_SCHEMA_FULL_CHECKING 1009
+#define IDC_RICHEDIT21                  1010
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773
@@ -37,9 +39,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32787
-#define _APS_NEXT_CONTROL_VALUE         1008
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

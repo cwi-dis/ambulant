@@ -136,6 +136,9 @@
 				RelativePath=".\AmbulantPlayer.cpp">
 			</File>
 			<File
+				RelativePath=".\LogWindow.cpp">
+			</File>
+			<File
 				RelativePath=".\MainFrm.cpp">
 			</File>
 			<File
@@ -175,6 +178,9 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath=".\AmbulantPlayer.h">
+			</File>
+			<File
+				RelativePath=".\LogWindow.h">
 			</File>
 			<File
 				RelativePath=".\MainFrm.h">

@@ -144,8 +144,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 
-	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
-	pf->add_plugins(m_factory);
+//	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
+//	pf->add_plugins(m_factory);
 
 
 	m_doc = create_document(filename);

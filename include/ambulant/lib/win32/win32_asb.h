@@ -72,7 +72,7 @@ std::basic_string<text_char> getcwd();
 std::basic_string<text_char> resolve_path(const text_char *s);
 bool file_exists(const std::string& fn);
 std::basic_string<text_char> get_module_filename();
-
+void show_message(const char *message);
 } // namespace win32
 
 } // namespace lib

@@ -60,7 +60,11 @@ AC_ARG_WITH([expat],[
 	    #error Need at least expat 1.95.7
 	    #endif],
 	    [expat=true
-	    EXPAT_PREFIX=/usr],
+	    if test -f /usr/local/include/expat.h; then
+	        EXPAT_PREFIX=/usr/local
+	    else
+	        EXPAT_PREFIX=/usr
+	    fi],
 	    [expat=true
 	    EXPAT_PREFIX=third_party_packages/expat-unix])
 	])
