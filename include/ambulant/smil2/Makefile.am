@@ -8,5 +8,6 @@ library_include_HEADERS= \
 	time_attrs.h \
 	time_node.h \
 	time_state.h \
-	timegraph.h
+	timegraph.h \
+	trace_player.h
 	

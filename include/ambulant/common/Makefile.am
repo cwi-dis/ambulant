@@ -12,6 +12,5 @@ library_include_HEADERS= \
 	renderer.h \
 	schema.h \
 	smil_handler.h \
-	trace_playable.h \
-	trace_player.h
+	trace_playable.h
 	

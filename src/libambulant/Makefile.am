@@ -96,7 +96,6 @@ libambulant_la_SOURCES = \
 	common/renderer.cpp \
 	common/schema.cpp \
 	common/smil_handler.cpp \
-	common/trace_player.cpp \
 	\
 	smil2/smil_layout.cpp \
 	smil2/smil_player.cpp \
@@ -107,6 +106,7 @@ libambulant_la_SOURCES = \
 	smil2/time_node.cpp \
 	smil2/time_state.cpp \
 	smil2/timegraph.cpp \
+	smil2/trace_player.cpp \
 	\
 	mms/mms_player.cpp \
 	mms/timeline_builder.cpp \
