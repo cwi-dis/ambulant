@@ -239,6 +239,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 // Request to start the playable of the node.
 // When trans is not null the playable should transition in 
 void smil_player::start_playable(const lib::node *n, double t, const lib::node *trans) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::start_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
 	if (trans) {
 		common::renderer *rend = np->get_renderer();
@@ -255,12 +256,14 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::node *
 
 // Request to seek the playable of the node.
 void smil_player::seek_playable(const lib::node *n, double t) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::seek_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
 	np->seek(t);
 }
 
 // Request to start a transition of the playable of the node.
 void smil_player::start_transition(const lib::node *n, const lib::node *trans, bool in) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::start_transition(0x%x, -x%x, in=%d)", (void*)n, trans, in);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
@@ -287,6 +290,7 @@ void smil_player::start_transition(const lib::node *n, const lib::node *trans, b
 
 // Request to stop the playable of the node.
 void smil_player::stop_playable(const lib::node *n) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::stop_playable(0x%x)", (void*)n);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
@@ -299,12 +303,14 @@ void smil_player::stop_playable(const lib::node *n) {
 
 // Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::pause_playable(0x%x)", (void*)n);
 	common::playable *np = get_playable(n);
 	if(np) np->pause();
 }
 
 // Request to resume the playable of the node.
 void smil_player::resume_playable(const lib::node *n) {
+	AM_DBG lib::logger::get_logger()->trace("smil_player::resume_playable(0x%xf)", (void*)n);
 	common::playable *np = get_playable(n);
 	if(np) np->resume();
 }
@@ -319,10 +325,13 @@ smil_player::get_dur(const lib::node *n) {
 	if(np) {
 		std::pair<bool, double> idur = np->get_dur();
 		if(idur.first) m_playables_dur[n] = idur.second;
+		AM_DBG lib::logger::get_logger()->trace("smil_player::get_dur(0x%x): <%s, %f>", n, idur.first?"true":"false", idur.second);
 		return idur;
 	}
 	std::map<const node*, double>::iterator it2 = m_playables_dur.find(n);
-	return (it2 != m_playables_dur.end())?std::pair<bool, double>(true,(*it2).second):not_available;
+	std::pair<bool, double> rv = (it2 != m_playables_dur.end())?std::pair<bool, double>(true,(*it2).second):not_available;
+	AM_DBG lib::logger::get_logger()->trace("smil_player::get_dur(0x%x): <%s, %f>", n, rv.first?"true":"false", rv.second);
+	return rv;
 }
 
 // Notify the playable that it should update this on user events (click, point).
@@ -333,6 +342,7 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 
 // Playable notification for a click event.
 void smil_player::clicked(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::clicked(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
@@ -346,6 +356,7 @@ void smil_player::clicked(int n, double t) {
 
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::pointed(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
@@ -357,6 +368,7 @@ void smil_player::pointed(int n, double t) {
 
 // Playable notification for a start event.
 void smil_player::started(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::started(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
@@ -369,6 +381,7 @@ void smil_player::started(int n, double t) {
 
 // Playable notification for a stop event.
 void smil_player::stopped(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::stopped(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
@@ -383,15 +396,17 @@ void smil_player::stopped(int n, double t) {
 void smil_player::transitioned(int n, double t) {
 	// remove fill effect for nodes specifing fill="transition" 
 	// and overlap with n
-	/*AM_DBG*/ m_logger->trace("smil_player::transitioned(%d, %f)", n, t);
+	AM_DBG m_logger->trace("smil_player::transitioned(%d, %f)", n, t);
 }
 
 // Playable notification for a stall event.
 void smil_player::stalled(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::stalled(%d, %f)", n, t);
 }
 
 // Playable notification for an unstall event.
 void smil_player::unstalled(int n, double t) {
+	AM_DBG m_logger->trace("smil_player::unstalled(%d, %f)", n, t);
 }
 
 // UI notification for a char event.
@@ -414,7 +429,8 @@ smil_player::new_playable(const lib::node *n) {
 	const char *pid = n->get_attribute("id");
 	
 	surface *surf = m_layout_manager->get_surface(n);
-	AM_DBG m_logger->trace("%s[%s].new_playable  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+	AM_DBG m_logger->trace("%s[%s].new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+		(void*)n, nid,
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
 		
@@ -439,7 +455,7 @@ smil_player::new_playable(const lib::node *n) {
 
 // Destroys the playable of the node (checkpoint).
 void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
-#if 0
+#if 1
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
 	
