@@ -16,46 +16,6 @@
 	<key>GraphicsList</key>
 	<array>
 		<dict>
-			<key>Bounds</key>
-			<string>{{388, 100.125}, {117, 14}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>FitText</key>
-			<string>YES</string>
-			<key>ID</key>
-			<integer>32</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Style</key>
-			<dict>
-				<key>fill</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>shadow</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-				<key>stroke</key>
-				<dict>
-					<key>Draws</key>
-					<string>NO</string>
-				</dict>
-			</dict>
-			<key>Text</key>
-			<dict>
-				<key>Text</key>
-				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;\red180\green41\blue0;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\b\fs24 \cf2 Warning: outdated}</string>
-			</dict>
-		</dict>
-		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>Head</key>
@@ -73,7 +33,7 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>110.52557373046875</real>
+					<real>120.1358642578125</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -84,7 +44,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferNotEmpty]}</string>
+\f0\fs24 \cf0 [not buffer_empty()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -148,7 +108,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 readDone}</string>
+\f0\fs24 \cf0 readdone()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -201,25 +161,26 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>70</real>
+					<real>115</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [notEOF] / startRead}</string>
+\f0\fs24 \cf0 [not end_of_file()] / 
+\f1\i startRead}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
 					<real>-24.375</real>
 					<key>Position</key>
-					<real>0.1640625</real>
+					<real>0.26742225885391235</real>
 				</dict>
 			</array>
 			<key>Points</key>
@@ -273,7 +234,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferEmpty]}</string>
+\f0\fs24 \cf0 [buffer_empty()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -388,7 +349,7 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>55.813507080078125</real>
+					<real>77.586196899414062</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -399,7 +360,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 start / callback}</string>
+\f0\fs24 \cf0 start() / callback()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -462,7 +423,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [EOF]}</string>
+\f0\fs24 \cf0 [end_of_file()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -562,7 +523,7 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>87</real>
+					<real>106.24099731445312</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -573,7 +534,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferNotFull]}</string>
+\f0\fs24 \cf0 [not buffer_full()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -631,7 +592,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferFull]}</string>
+\f0\fs24 \cf0 [buffer_full()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -708,11 +669,12 @@
 						<integer>0</integer>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Oblique;\f1\fswiss\fcharset77 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 dataAvail / callback}</string>
+\f0\i\fs24 \cf0 dataAvail
+\f1\i0  / callback()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -724,7 +686,7 @@
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{405.759, 367.339}</string>
+				<string>{420.759, 367.339}</string>
 				<string>{279.897, 388.768}</string>
 			</array>
 			<key>Style</key>
@@ -763,7 +725,7 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>106.240966796875</real>
+					<real>119.260009765625</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -774,7 +736,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferNotEmpty] / callback}</string>
+\f0\fs24 \cf0 [not buffer_empty()] / callback()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -786,7 +748,7 @@
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{413.723, 253.592}</string>
+				<string>{428.723, 253.592}</string>
 				<string>{342, 255.506}</string>
 			</array>
 			<key>Style</key>
@@ -827,7 +789,7 @@
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>35</real>
+					<real>44.6104736328125</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -838,7 +800,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 start}</string>
+\f0\fs24 \cf0 start()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -852,7 +814,7 @@
 			<array>
 				<string>{342, 197.686}</string>
 				<string>{402, 179}</string>
-				<string>{458.723, 226.592}</string>
+				<string>{473.723, 226.592}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -899,7 +861,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 [bufferEmpty]}</string>
+\f0\fs24 \cf0 [buffer_empty()]}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -911,8 +873,8 @@
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{458.723, 280.592}</string>
-				<string>{458.88, 326.839}</string>
+				<string>{473.723, 280.592}</string>
+				<string>{473.88, 326.839}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -934,7 +896,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{413.723, 226.592}, {90, 54}}</string>
+			<string>{{428.723, 226.592}, {90, 54}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -982,13 +944,16 @@
 			<dict>
 				<key>Text</key>
 				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Oblique;\f1\fswiss\fcharset77 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs24 \cf0 startRead and dataAvail are call and return for this data source requesting more input.\
-start and callback are call and return for the client requesting more data.\
-readDone is the client call to signal it has consumed data.}</string>
+\f0\i\fs24 \cf0 startRead
+\f1\i0  and 
+\f0\i dataAvail
+\f1\i0  are call and return for this data source requesting more input.\
+start() and callback() are call and return for the client requesting more data.\
+readdone() is the client call to signal it has consumed data.}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -1049,7 +1014,7 @@ readDone is the client call to signal it has consumed data.}</string>
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>64</real>
+					<real>71.9085693359375</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -1060,7 +1025,7 @@ readDone is the client call to signal it has consumed data.}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 readDone}</string>
+\f0\fs24 \cf0 readdone()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -1116,18 +1081,19 @@ readDone is the client call to signal it has consumed data.}</string>
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>71.981315612792969</real>
+					<real>77.608901977539062</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 readDone / startRead}</string>
+\f0\fs24 \cf0 readdone() / 
+\f1\i startRead}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -1179,7 +1145,7 @@ readDone is the client call to signal it has consumed data.}</string>
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>55.813507080078125</real>
+					<real>67.774734497070312</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
@@ -1190,14 +1156,14 @@ readDone is the client call to signal it has consumed data.}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 start / callback}</string>
+\f0\fs24 \cf0 start() / callback()}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
 					<real>28.125</real>
 					<key>Position</key>
-					<real>0.2109375</real>
+					<real>0.23109570145606995</real>
 				</dict>
 			</array>
 			<key>Points</key>
@@ -1230,7 +1196,7 @@ readDone is the client call to signal it has consumed data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{405.759, 326.839}, {106.241, 81}}</string>
+			<string>{{420.759, 326.839}, {106.241, 81}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1282,11 +1248,11 @@ readDone is the client call to signal it has consumed data.}</string>
 						<integer>0</integer>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 dataAvail}</string>
+\f0\i\fs24 \cf0 dataAvail}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -1366,18 +1332,19 @@ readDone is the client call to signal it has consumed data.}</string>
 					<key>Filled</key>
 					<string>NO</string>
 					<key>FixedWidth</key>
-					<real>75.789459228515625</real>
+					<real>70</real>
 					<key>Label</key>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 / startRead}</string>
+\f0\fs24 \cf0 / 
+\f1\i startRead}</string>
 					</dict>
 					<key>LabelVisible</key>
 					<string>YES</string>
@@ -1599,7 +1566,7 @@ readDone is the client call to signal it has consumed data.}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxNDoxMToyNVo8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxNToxMTo0M1o8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -1613,7 +1580,7 @@ readDone is the client call to signal it has consumed data.}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDQtMDEtMjdUMTQ6MTE6MjVaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDQtMDEtMjdUMTU6MTE6NDNaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1707,7 +1674,7 @@ readDone is the client call to signal it has consumed data.}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{389, 193}, {574, 698}}</string>
+		<string>{{135, 201}, {574, 698}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>
