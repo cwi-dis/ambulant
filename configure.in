@@ -122,9 +122,15 @@ AC_ARG_WITH(arts,
                 ;;
        no)  arts=false
                 ;;
-       *)   arts=true
+       *)   AC_MSG_ERROR(--with-arts takes no argument - it uses artsc-config)
                 ;;
-     esac])
+     esac],[
+     if artsc-config; then
+     	arts=true
+     else
+     	arts=false
+     fi
+     ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
 #

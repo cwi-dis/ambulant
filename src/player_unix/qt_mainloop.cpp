@@ -47,7 +47,6 @@
  */
 
 #include "qt_mainloop.h"
-#define WITH_ARTS
 #ifdef WITH_ARTS
 #include <ambulant/gui/arts/arts.h>
 #endif

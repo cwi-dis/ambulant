@@ -3,16 +3,26 @@ qt_gui-moc.cpp: $(top_builddir)/include/ambulant/gui/qt/qt_gui.h
 
 bin_PROGRAMS = qt_player
 qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h
-#LDADD = -L$(top_builddir)/src/libambulant -lambulant -lambulant_qt	\
-#	-L$(EXPAT_PREFIX)/lib -lexpat				\
-#	-L$(QT_PREFIX)/lib -lqt-mt
+
+# Conditionals for ARTS audio support
+if WITH_ARTS
+extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
+extra_arts_ldflags=`artsc-config --libs`
+extra_arts_DEFINES=-DWITH_ARTS
+else
+extra_arts_LDADD=
+extra_arts_ldflags=
+extra_arts_DEFINES=
+endif
+
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
+	$(extra_arts_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
-        $(top_builddir)/src/libambulant/.libs/libambulant_arts.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	-L$(QT_PREFIX)/lib -lqt-mt
- AM_LDFLAGS=`artsc-config --libs`
-
+AM_LDFLAGS=$(extra_arts_ldflags)
+ 
+DEFINES=$(extra_arts_DEFINES)
 INCLUDES = -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\
