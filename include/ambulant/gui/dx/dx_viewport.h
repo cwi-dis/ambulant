@@ -81,6 +81,7 @@ using lib::uint32;
 using lib::uchar;
 
 class region;
+class video_player;
 
 class viewport {
   public:
@@ -188,7 +189,7 @@ class region {
 	void set_text(const char *p, int size);
 	void set_text(const std::string& what);
 	void set_bmp(HBITMAP hbmp);
-	void set_video(IDirectDrawSurface* vidsurf, RECT *vidrc);
+	void set_video(video_player *player);
 	
   private:
 	// The viewport of this region.
@@ -210,8 +211,7 @@ class region {
 	lib::color_t m_bgd;	
 	
 	// xxx: temp
-	IDirectDrawSurface* m_vidsurf;
-	RECT* m_vidrc;
+	video_player *m_video_p;
 	
 };
 
