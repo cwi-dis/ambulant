@@ -34,12 +34,14 @@ class cocoa_active_image_renderer : active_final_renderer {
 		passive_region *const dest,
 		const node *node)
 	:	active_final_renderer(evp, src, dest, node),
-		m_image(NULL) {};
+		m_image(NULL),
+		m_nsdata(NULL) {};
 	~cocoa_active_image_renderer();
 
     void redraw(const screen_rect<int> &r);
   private:
   	NSImage *m_image;
+  	NSData *m_nsdata;
 };
 
 void
@@ -65,8 +67,11 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
 
 cocoa_active_image_renderer::~cocoa_active_image_renderer()
 {
+	logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
 	if (m_image)
-		[m_image dealloc];
+		[m_image release];
+	//if (m_nsdata)
+	//	[m_nsdata release];
 }
 	
 void
@@ -75,14 +80,22 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &r)
 	logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left, r.top, r.right, r.bottom);
 	if (m_data && !m_image) {
 		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
-		NSData *data = [NSData dataWithBytesNoCopy: m_data length: m_data_size];
-		m_image = [[NSImage alloc] initWithData: data];
+		/*DBG*/char buf[100]; static int i=1; sprintf(buf, "/tmp/xyzzy%d.jpg", i++); int fd = creat(buf, 0666); write(fd, m_data, m_data_size); close(fd);
+		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
+		m_image = [[NSImage alloc] initWithData: m_nsdata];
+		//m_image = [[NSImage alloc] initWithContentsOfFile: @"/Users/jack/src/ambulant/Test/designtests/mmsdoc/firstimage.jpg"];
+		if (!m_image)
+			logger::get_logger()->error("cocoa_active_image_renderer.redraw: could not create image");
 		// XXXX Could free data and m_data again here...
 	}
 	[[NSColor blueColor] set];
-	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
+	NSRect dstrect = NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top);
+	NSRectFill(dstrect);
 	if (m_image) {
-		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image");
+		NSSize srcsize = [m_image size];
+		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
+		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f", srcsize.width, srcsize.height);
+                [m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
 	}
 }
 
@@ -92,16 +105,20 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	passive_region *const dest,
 	const node *node)
 {
+	active_renderer *rv;
+	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer", (void *)node);
-		return (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
+		rv = (active_renderer *)new cocoa_active_image_renderer(evp, src, dest, node);
+		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer", (void *)node);
-		return (active_renderer *)new cocoa_active_image_renderer(evp, src, dest, node);
+		rv = (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
+		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
+	} else {
+		rv = new active_renderer(evp, src, dest, node);
+		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning active_renderer 0x%x", (void *)node, (void *)rv);
 	}
-	logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning active_renderer", (void *)node);
-	return new active_renderer(evp, src, dest, node);
+	return rv;
 }
 
 passive_window *
