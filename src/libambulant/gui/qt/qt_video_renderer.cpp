@@ -52,6 +52,9 @@
 #include "ambulant/gui/qt/qt_video_renderer.h"
 #include "ambulant/common/region_info.h"
 #include <stdlib.h>
+// XXXX This is very ugly !!!
+#include "ambulant/gui/SDL/sdl_audio.h"
+#include "ambulant/common/playable.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -61,6 +64,29 @@
 using namespace ambulant;
 using namespace gui::qt;
 
+qt_active_video_renderer::qt_active_video_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+    	net::datasource_factory *df)
+:	 common::active_video_renderer(context, cookie, node, evp, df),
+ 	m_image(NULL),
+  	m_data(NULL)
+{
+if (m_src->has_audio()) {
+		m_audio_ds = m_src->get_audio_datasource();
+		//XXXX This is wrong
+		if (m_audio_ds) {
+			m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, df, m_audio_ds);
+			//lib::logger::get_logger()->trace("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
+		} else {
+			m_audio_renderer = NULL;
+		}
+		
+		//lib::logger::get_logger()->trace("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
+	}
+}
 qt_active_video_renderer::~qt_active_video_renderer()
 {
 }

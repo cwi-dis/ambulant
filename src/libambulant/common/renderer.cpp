@@ -54,10 +54,6 @@
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
-#ifdef WITH_SDL
-// XXXX This is very ugly !!!
-#include "ambulant/gui/SDL/sdl_audio.h"
-#endif
 
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/net/posix_datasource.h"
@@ -69,6 +65,8 @@ inline double round(double v) {return floor(v+0.5);}
 #define round(v) ((int)(v+0.5))
 #endif
 
+
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -254,20 +252,7 @@ active_video_renderer::active_video_renderer(
 	if (m_src == NULL) {
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}
-#ifdef WITH_SDL
-	if (m_src->has_audio()) {
-		m_audio_ds = m_src->get_audio_datasource();
-		//XXXX This is wrong
-		if (m_audio_ds) {
-			m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, df, m_audio_ds);
-			lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
-		} else {
-			m_audio_renderer = NULL;
-		}
-		
-		lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
-	}
-#endif
+
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 }
 

@@ -72,11 +72,8 @@ class qt_active_video_renderer : public common::active_video_renderer {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-    	net::datasource_factory *df)
-:	 common::active_video_renderer(context, cookie, node, evp, df),
- 	m_image(NULL),
-  	m_data(NULL) {};
-		
+    	net::datasource_factory *df);
+	
 	~qt_active_video_renderer();
     void show_frame(char* frame, int size);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);

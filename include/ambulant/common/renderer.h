@@ -232,13 +232,12 @@ class active_video_renderer : public common::renderer_playable {
 		
   protected:
 	lib::size m_size;
-  
+  	net::video_datasource* m_src; 
+  	net::audio_datasource *m_audio_ds;
+  	common::playable *m_audio_renderer;
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
 	  double now();
-  	  net::video_datasource* m_src; 
-  	  net::audio_datasource *m_audio_ds;
-  	  common::playable *m_audio_renderer;
  	  unsigned long int m_epoch;
 	  bool m_is_playing;
 	  bool m_is_paused;
