@@ -361,6 +361,9 @@
 					RelativePath=".\lib\document.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\event_processor.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\expat_parser.cpp">
 				</File>
 				<File

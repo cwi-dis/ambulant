@@ -144,19 +144,19 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	} catch (const XMLException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
 		int linenumber = e.getSrcLine();
-		sax_error e(exceptionMessage, linenumber, -1);
+		sax_error err(exceptionMessage, linenumber, -1);
 		if(m_error_handler != 0)
-			m_error_handler->error(e);
+			m_error_handler->error(err);
 		else
-			throw e;
+			throw;
 		XMLString::release(&exceptionMessage);
 	} catch (const SAXParseException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
 		int linenumber = e.getLineNumber();
 		int column = e.getColumnNumber();
-		sax_error e(exceptionMessage, linenumber, column);
+		sax_error err(exceptionMessage, linenumber, column);
 		if(m_error_handler != 0)
-			m_error_handler->error(e);
+			m_error_handler->error(err);
 		else
 			throw e;
 		XMLString::release(&exceptionMessage);
