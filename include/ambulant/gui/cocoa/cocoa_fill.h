@@ -69,8 +69,8 @@ namespace cocoa {
 class cocoa_active_fill_renderer : public active_basic_renderer {
   public:
 	cocoa_active_fill_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,

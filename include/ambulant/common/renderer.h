@@ -68,10 +68,32 @@ namespace ambulant {
 
 namespace common {
 
-	class active_basic_renderer : public active_playable, public abstract_rendering_source, public lib::ref_counted_obj {
+
+class active_playable : virtual public playable, virtual public lib::ref_counted_obj {
+  public:
+    active_playable(playable_notification *context, const cookie_type cookie)
+    :   m_context(context),
+        m_cookie(cookie) {};
+    virtual ~active_playable() {};
+
+	virtual void seek(double t) {};
+	virtual void preroll(double when, double where, double how_much) {};
+	virtual std::pair<bool, double> get_dur() { return std::pair<bool, double>(false, 0); };
+	const cookie_type& get_cookie() const { return m_cookie;}
+	
+  protected:
+    void started_callback() const { m_context->started(m_cookie, 0); };
+    void stopped_callback() const { m_context->stopped(m_cookie, 0); };
+    void clicked_callback() const { m_context->clicked(m_cookie, 0); };
+    
+    playable_notification *const m_context;
+    cookie_type m_cookie;
+};
+
+class active_basic_renderer : public active_playable, public abstract_rendering_source {
   public:
   	active_basic_renderer()
-  	:	active_playable((active_playable_events *)NULL, 0),
+  	:	active_playable((playable_notification *)NULL, 0),
 		m_node(NULL),
 		m_event_processor(NULL) {};
 //  	active_basic_renderer(const ambulant::lib::active_basic_renderer& src)
@@ -79,8 +101,8 @@ namespace common {
 //  		m_node(src.m_node),
 //  		m_playdone(src.m_playdone) {}
 	active_basic_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp)
 	:   active_playable(context, cookie),
@@ -117,8 +139,8 @@ class active_renderer : public active_basic_renderer {
   	:	active_basic_renderer(src.m_context, src.m_cookie, src.m_node, src.m_event_processor),
   		m_dest(0) {}
 	active_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
@@ -152,8 +174,8 @@ class active_renderer : public active_basic_renderer {
 class active_final_renderer : public active_renderer {
   public:
 	active_final_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
@@ -178,8 +200,8 @@ class renderer_factory {
   public:
 	virtual ~renderer_factory() {};
 	virtual active_basic_renderer *new_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
@@ -194,8 +216,8 @@ class global_renderer_factory : public renderer_factory {
     void add_factory(renderer_factory *rf);
     
     active_basic_renderer *new_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,

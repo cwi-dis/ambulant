@@ -445,7 +445,7 @@ inline std::ostream& operator<<(std::ostream& os, const passive_timeline& n) {
 // all of its immutable data with the corresponding passive_timeline,
 // so creating an active_timeline should be relatively cheap.
 
-class active_timeline : public common::active_playable_events, public lib::ref_counted_obj {
+class active_timeline : public common::playable_notification, public lib::ref_counted_obj {
   public:
 	friend class detail::active_ext_action;
 	friend class detail::active_int_action;
@@ -475,7 +475,7 @@ class active_timeline : public common::active_playable_events, public lib::ref_c
 	void dump(std::ostream& os);
 #endif
 
-	// playable_events interface:
+	// playable_notification interface:
 	void started(int n, double t);
 	void stopped(int n, double t);
 	void clicked(int n, double t);

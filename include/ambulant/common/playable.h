@@ -54,10 +54,13 @@
 #define AMBULANT_COMMON_PLAYABLE_H
 
 #include <utility>
+#include "ambulant/lib/refcount.h"
 
 namespace ambulant {
 
 namespace common {
+
+class renderer;
 
 // Display mode when the playable is paused.
 enum pause_display {display_disable, display_hide, display_show};
@@ -94,7 +97,7 @@ enum pause_display {display_disable, display_hide, display_show};
 // The playable interface specifies time as double.
 // This may change in future versions of the interface.
 
-class playable {
+class playable : virtual public lib::ref_counted {
 
   public:
   
@@ -154,11 +157,13 @@ class playable {
 	// Returns the cookie identifying this playable to the client code.
 	// The cookie was provided to this playable when it was constructed.
 	virtual const cookie_type& get_cookie() const = 0;
+	
+	virtual renderer *get_renderer() const { return (renderer *)NULL; }
 };
 
 
 //
-// The playable_events interface is (probably) implemented by the scheduler
+// The playable_notification interface is (probably) implemented by the scheduler
 // itself, and passed to the playable constructor so it can do callbacks. The
 // node argument that is passed to the constructor is also passed when doing
 // the callback.
@@ -167,42 +172,18 @@ class playable {
 // callback (and the associated GUI feedback) only when wantclicks(true)
 // has been called on the playable.
 
-class playable_events {
+class playable_notification {
   public:
 	typedef playable::cookie_type cookie_type;
 	
 	// Allows subclasses to be deleted using base pointers
-	virtual ~playable_events() {}
+	virtual ~playable_notification() {}
 	
 	// Playables nodifications 
 	virtual void started(cookie_type n, double t) = 0;
 	virtual void stopped(cookie_type n, double t) = 0;
 	virtual void clicked(cookie_type n, double t) = 0;
 };
-
-class abstract_playable : public playable {
-  public:
-    abstract_playable(playable_events *context, const cookie_type cookie)
-    :   m_context(context),
-        m_cookie(cookie) {};
-    virtual ~abstract_playable() {};
-
-	virtual void seek(double t) {};
-	virtual void preroll(double when, double where, double how_much) {};
-	virtual std::pair<bool, double> get_dur() { return std::pair<bool, double>(false, 0); };
-	const cookie_type& get_cookie() const { return m_cookie;}
-	
-  protected:
-    void started_callback() const { m_context->started(m_cookie, 0); };
-    void stopped_callback() const { m_context->stopped(m_cookie, 0); };
-    void clicked_callback() const { m_context->clicked(m_cookie, 0); };
-    
-    playable_events *const m_context;
-    cookie_type m_cookie;
-};
-
-typedef abstract_playable active_playable;
-typedef playable_events active_playable_events;
 
 } // namespace common
  

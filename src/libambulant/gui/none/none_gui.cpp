@@ -95,8 +95,8 @@ gui::none::none_background_renderer::drawbackground(
 
 active_basic_renderer *
 gui::none::none_renderer_factory::new_renderer(
-	active_playable_events *context,
-	active_playable_events::cookie_type cookie,
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::passive_datasource *src,

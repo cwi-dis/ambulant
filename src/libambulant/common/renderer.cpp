@@ -64,8 +64,8 @@ using namespace common;
 typedef lib::no_arg_callback<active_renderer> readdone_callback;
 
 active_renderer::active_renderer(
-	active_playable_events *context,
-	active_playable_events::cookie_type cookie,
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::passive_datasource *src,
@@ -161,8 +161,8 @@ global_renderer_factory::add_factory(renderer_factory *rf)
     
 active_basic_renderer *
 global_renderer_factory::new_renderer(
-	active_playable_events *context,
-	active_playable_events::cookie_type cookie,
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::passive_datasource *src,

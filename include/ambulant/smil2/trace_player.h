@@ -102,7 +102,7 @@ class lib::document;
 class lib::node;
 
 class trace_player : public time_node_context, 
-	public common::active_playable_events {
+	public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -145,7 +145,7 @@ class trace_player : public time_node_context,
 	// none
 	
 	///////////////////
-	// active_playable_events interface
+	// playable_notification interface
 	
 	virtual void started(int, double t){}
 	virtual void stopped(int, double t) {}

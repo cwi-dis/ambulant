@@ -67,7 +67,7 @@ namespace ambulant {
 
 namespace common {
 
-class trace_playable : public playable {
+class trace_playable : virtual public playable, virtual public lib::ref_counted_obj {
 
   public:
   	

@@ -82,7 +82,7 @@ class common::renderer_factory;
 class common::active_basic_renderer;
 class common::layout_manager;
 
-class smil_player : public common::abstract_player, public time_node_context, public common::playable_events {
+class smil_player : public common::abstract_player, public time_node_context, public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -139,7 +139,7 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	virtual void done_playback();
 
 	///////////////////
-	// playable_events interface
+	// playable_notification interface
 	
 	virtual void started(int n, double t);
 	virtual void stopped(int n, double t);
