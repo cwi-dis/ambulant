@@ -57,6 +57,7 @@
 
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/colors.h"
+#include "ambulant/common/region_dim.h"
 
 namespace ambulant {
 
@@ -83,9 +84,15 @@ class region_info {
 
 class animation_destination : public region_info {
   public:
-	virtual void reset() = 0;
-	virtual void set_bgcolor(lib::color_t c) = 0;
-	virtual void set_zindex(common::zindex_t z) = 0;
+	// The following functions get the dom or display values of the region attributes
+	virtual region_dim get_region_dim(const std::string& which, bool fromdom = false) const = 0;
+	virtual color_t get_region_color(const std::string& which, bool fromdom = false) const = 0;
+	virtual zindex_t get_region_zindex(bool fromdom = false) const = 0;
+  
+	// The following functions set the display values for the region attributes
+	virtual void set_region_dim(const std::string& which, const region_dim& rd) = 0;
+	virtual void set_region_color(const std::string& which, lib::color_t clr) = 0;
+	virtual void set_region_zindex(common::zindex_t z) = 0;
 };
 
 } // namespace common

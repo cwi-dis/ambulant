@@ -163,6 +163,7 @@ region_node::fix_from_dom_node()
 		changed = true;
 		m_rds = rdspec;
 	}
+	m_display_rds = m_rds;
 	
 	// Next we set background color
 	const char *bgcolor_attr = m_node->get_attribute("backgroundColor");
@@ -278,7 +279,8 @@ region_node::get_bgcolor() const
 		if (parent_node)
 			return parent_node->get_bgcolor();
 	}
-	return m_bgcolor;
+	return m_display_bgcolor;
+	//return m_bgcolor;
 }
 
 bool
@@ -295,7 +297,7 @@ region_node::get_showbackground() const
 
 void
 region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) { 
-	m_bgcolor = c;
+	m_display_bgcolor = m_bgcolor = c;
 	m_transparent = transparent;
 	m_inherit_bgcolor = inherit;
 }
@@ -329,4 +331,52 @@ region_node::get_first_child(const char *name) const {
 	return 0;
 }
 
+/////////////////////////
+// animation_destination interface
+// XXX: The implementations below are almost dummy
+
+common::region_dim region_node::get_region_dim(const std::string& which, bool fromdom) const {
+	const common::region_dim_spec& rds = fromdom?m_rds:m_display_rds;
+	if(which == "left") return rds.left;
+	else if(which == "width") return rds.width;
+	else if(which == "right") return rds.right;
+	else if(which == "top") return rds.top;
+	else if(which == "height") return rds.height;
+	else if(which == "bottom") return rds.bottom;
+	assert(false);
+	return common::region_dim();
+}
+
+lib::color_t region_node::get_region_color(const std::string& which, bool fromdom) const {
+	if(which == "backgroundColor") {
+		return fromdom?m_bgcolor:m_display_bgcolor;
+	}
+	return 0;
+}
+
+common::zindex_t region_node::get_region_zindex(bool fromdom) const {
+	return fromdom?m_zindex:m_display_zindex;
+}
+
+// Sets the display value of a region dimension
+void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
+	common::region_dim_spec& rds = m_display_rds;
+	if(which == "left") rds.left = rd;
+	else if(which == "width") rds.width = rd;
+	else if(which == "right") rds.right = rd;
+	else if(which == "top") rds.top = rd;
+	else if(which == "height") rds.height = rd;
+	else if(which == "bottom") rds.bottom = rd;
+}
+
+// Sets the display value of the backgroundColor or color
+void region_node::set_region_color(const std::string& which, lib::color_t clr) {
+	if(which == "backgroundColor") m_display_bgcolor = clr;
+	//else if(which == "color") set_fgcolor(clr);
+}
+
+// Sets the display value of the z-index
+void region_node::set_region_zindex(common::zindex_t z) {
+	m_display_zindex = z;
+}
 

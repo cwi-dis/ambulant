@@ -130,6 +130,7 @@ class region_node : public common::animation_destination {
 	bool get_showbackground() const;
 	common::zindex_t get_zindex() const { return m_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
+	
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
 	void set_fit(common::fit_t f) { m_fit = f; }
@@ -138,6 +139,15 @@ class region_node : public common::animation_destination {
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; }
 	void set_as_subregion(bool b) { m_is_subregion = b; }
+	
+	// animation_destination interface
+	common::region_dim get_region_dim(const std::string& which, bool fromdom = false) const;
+	lib::color_t get_region_color(const std::string& which, bool fromdom = false) const;
+	common::zindex_t get_region_zindex(bool fromdom = false) const;
+	
+	void set_region_dim(const std::string& which, const common::region_dim& rd);
+	void set_region_color(const std::string& which, lib::color_t clr);
+	void set_region_zindex(common::zindex_t z);
 	
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
@@ -201,6 +211,14 @@ class region_node : public common::animation_destination {
 	bool m_inherit_bgcolor;
 	common::surface_template *m_surface_template;
 	bool m_is_subregion;
+	
+	// display attributes for the animation_destination interface
+	common::region_dim_spec m_display_rds;
+	common::zindex_t m_display_zindex;
+	lib::color_t m_display_bgcolor;
+	lib::color_t m_display_color;
+	
+	// verifier
 	static int node_counter;
 	
 	// XML tree glue
