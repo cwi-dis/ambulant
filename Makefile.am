@@ -1,5 +1,5 @@
 SUBDIRS = src include third_party_packages
-EXTRA_DIST = Documentation Extras README-ZAURUS
+EXTRA_DIST = Documentation Extras 
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS -o -name '.#*' -o -name '*~' -o -name '*~.*'`

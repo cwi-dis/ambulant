@@ -12,5 +12,6 @@ library_include_HEADERS= \
 	schema.h \
 	smil_alignment.h \
 	smil_handler.h \
+	embedder.h \
 	trace_playable.h
 	
