@@ -91,6 +91,9 @@ std::string lib::tokens_vector::join(size_type i, char sep) {
 //////////////////
 // nfa_expr
 
+// static
+int lib::nfa_node::nfa_nodes_counter = 0;
+
 lib::nfa_node *lib::nfa_node::clone(std::set<nfa_node*>& clones) {
 	std::set<nfa_node*>::iterator it = clones.find((nfa_node*)this);
 	if(it != clones.end()) return myclone;
@@ -102,22 +105,14 @@ lib::nfa_node *lib::nfa_node::clone(std::set<nfa_node*>& clones) {
 	return myclone;
 }
 
-const lib::nfa_expr& lib::nfa_expr::set_to(nfa_expr& e) {
-	assert(start==0);
-	start=e.start; 
-	accept=e.accept;
-	e.release();
-	return *this;
-}
-
 // Free the NFA nodes reachable by this
 void lib::nfa_expr::free() {
-	if(start == NULL) return;
+	if(!start) return;
 	std::set<nfa_node*> nodes;
-	get_nodes(nodes);
+	get_expr_nodes(nodes);
 	for(std::set<nfa_node*>::iterator i = nodes.begin(); i!=nodes.end(); i++)
 		delete (*i);
-	start = accept = NULL;
+	start = accept = 0;
 }
 
 lib::nfa_expr lib::nfa_expr::clone() const {
@@ -130,9 +125,10 @@ lib::nfa_expr lib::nfa_expr::clone() const {
 	return expr;
 }
 
-// This becomes the owner of e
-const lib::nfa_expr& lib::nfa_expr::cat(nfa_expr& e) {
+// This consumes e which becomes null
+const lib::nfa_expr& lib::nfa_expr::cat_expr(nfa_expr& e) {
 	if(e.empty()) return *this;
+	assert(this != &e);
 	if(this->empty()) {
 		start = e.start;
 		accept = e.accept;
@@ -142,13 +138,22 @@ const lib::nfa_expr& lib::nfa_expr::cat(nfa_expr& e) {
 		accept = e.accept;
 		delete e.start;
 	}
-	e.release();
+	e.clear();
 	return *this;
 }
 
-// This becomes the owner of e
-const lib::nfa_expr& lib::nfa_expr::or(nfa_expr& e) {
+const lib::nfa_expr& lib::nfa_expr::cat_expr_clone(const nfa_expr& expr) {
+	if(expr.empty()) return *this;
+	nfa_expr e = expr.clone();
+	cat_expr(e);
+	assert(e.empty());
+	return *this;
+}
+
+// This consumes e which becomes null
+const lib::nfa_expr& lib::nfa_expr::or_expr(nfa_expr& e) {
 	if(e.empty()) return *this;
+	assert(this != &e);
 	if(empty()) {
 		start = e.start;
 		accept = e.accept;
@@ -160,7 +165,15 @@ const lib::nfa_expr& lib::nfa_expr::or(nfa_expr& e) {
 		start = nstart;
 		accept = nfinal;
 	}
-	e.release();
+	e.clear();
+	return *this;
+}
+
+const lib::nfa_expr& lib::nfa_expr::or_expr_clone(const nfa_expr& expr) {
+	if(expr.empty()) return *this;
+	nfa_expr e = expr.clone();
+	or_expr(e);
+	assert(e.empty());
 	return *this;
 }
 
@@ -174,7 +187,7 @@ const lib::nfa_expr& lib::nfa_expr::star() {
 	return *this;
 }
 
-const lib::nfa_expr& lib::nfa_expr::cat(const char *psz)  {
+const lib::nfa_expr& lib::nfa_expr::cat_expr(const char *psz)  {
 	nfa_expr expr;
 	if(!psz || !psz[0]) {
 		expr.accept = new nfa_node(ACCEPT);
@@ -188,7 +201,9 @@ const lib::nfa_expr& lib::nfa_expr::cat(const char *psz)  {
 			expr.accept = next;
 		}
 	}
-	return cat(expr);
+	cat_expr(expr);
+	assert(expr.empty());
+	return *this;
 }
 
 const lib::nfa_expr& lib::nfa_expr::power(int n) {
@@ -201,8 +216,9 @@ const lib::nfa_expr& lib::nfa_expr::power(int n) {
 	} else if(n>1) {
 		n = std::min(n, REPEAT_LIMIT);
 		nfa_expr org(clone());
-		for(int i=1;i<n-1;i++) cat(org.clone());
-		cat(org);
+		for(int i=1;i<n-1;i++) cat_expr(org.clone());
+		cat_expr(org);
+		assert(org.empty());
 	}
 	return *this;
 }
@@ -219,15 +235,16 @@ const lib::nfa_expr& lib::nfa_expr::repeat(int n, int m) {
 		power(n);
 		e.optional();
 		e.power(m-n);
-		cat(e);
+		cat_expr(e);
+		assert(e.empty());
 	}
 	return *this;
 }
 
 std::set<lib::nfa_node*>& 
-lib::nfa_expr::get_nodes(std::set<nfa_node*>& nodes) const {
+lib::nfa_expr::get_expr_nodes(std::set<nfa_node*>& nodes) const {
 	nodes.clear();
-	if(start == NULL) return nodes;
+	if(!start) return nodes;
 	std::stack<nfa_node*> sstack;
 	sstack.push(start);
 	while(!sstack.empty()) {
@@ -241,10 +258,10 @@ lib::nfa_expr::get_nodes(std::set<nfa_node*>& nodes) const {
 	return nodes;
 }
 
-	// invariants checks
+// invariants checks
 void lib::nfa_expr::verify1() const {
 	std::set<nfa_node*> nodes;
-	get_nodes(nodes);
+	get_expr_nodes(nodes);
 	int count = 0;
 	for(std::set<nfa_node*>::iterator i = nodes.begin(); i!=nodes.end(); i++)
 		if((*i)->next1 == 0 && (*i)->next2 == 0) count++;
@@ -253,19 +270,17 @@ void lib::nfa_expr::verify1() const {
 #endif
 }
 
-// when one or both operants is const
+// Alt cat
 lib::nfa_expr operator+(const lib::nfa_expr& e1, const lib::nfa_expr& e2) {
 	lib::nfa_expr expr(e1.clone());
-	expr.cat(e2.clone());
+	expr.cat_expr(e2.clone());
 	return expr;
 }
 
-// when none of the operants is const
-lib::nfa_expr operator+(lib::nfa_expr& e1, lib::nfa_expr& e2) {
-	lib::nfa_expr expr(e1); 
-	e1.release();
-	expr.cat(e2); 
-	e2.release();
+// Alt or
+lib::nfa_expr operator*(const lib::nfa_expr& e1, const lib::nfa_expr& e2) {
+	lib::nfa_expr expr(e1.clone());
+	expr.or_expr(e2.clone());
 	return expr;
 }
 
@@ -348,3 +363,16 @@ bool lib::nfa_expr::match(const std::string& str, bool anchors) {
 #endif
 	return nodes.find(expr.accept) != nodes.end();
 }
+
+
+//static 
+lib::nfa_expr lib::nfa_expr::create_char_class_expr(const std::string& s) {
+	lib::nfa_expr e;
+	for(std::string::const_iterator it=s.begin();it!=s.end();it++)
+		e.or_expr(*it);
+	return e;
+}
+
+
+
+

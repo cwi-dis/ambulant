@@ -307,6 +307,13 @@ typedef basic_scanner<wchar_t> wscanner;
 //
 // May be used to match short strings created by 
 // the scanner against hand made (coded) regex. 
+//
+// The intented usage is:
+// a) shring the string to be matched into tokens using the scanner above
+// b) use the matcher against the short string of the tokens.
+// This way for example a decimal becomes the literals: d | d.d
+// instead of [0-9] | [0-9].[0-9] resulting to an improvement 
+// nore than an order of magnitude (~20 times).
 
 #include <set>
 #include <stack>
@@ -335,9 +342,10 @@ struct nfa_node {
 	typedef std::string::size_type size_type;
 	
 	nfa_node(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
-	:	edge(e), next1(n1), next2(n2), anchor(0) { 
+	:	edge(e), next1(n1), next2(n2), anchor(0) {
+		++nfa_nodes_counter; 
 	}
-	~nfa_node() {}
+	~nfa_node() { --nfa_nodes_counter;}
 
 	void set_transition(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
 		{ edge = e; next1 = n1; next2 = n2;}
@@ -354,38 +362,71 @@ struct nfa_node {
 	nfa_node *next2;
 	int anchor;
 	nfa_node *myclone;
+	
+	// verifier
+	static int nfa_nodes_counter;
 };
 
-// An nfa_expr is a directed graph of nfa nodes and represents a NFA.
-// An nfa_expr object keeps a reference to the start and the accept nfa node.
+// An nfa_expr is a directed graph of nfa nodes that represent a NFA.
+// An nfa_expr object keeps a reference to the start and the accept NFA nodes.
+// An nfa_expr object is the owner of the NFA nodes and on destruction must delete them.
+// To avoid unecessary creation and destruction of nfa nodes most operations
+// absorb their arguments or their rhs. 
+// This has a cost; makes this class more difficult to use.
 class nfa_expr {
   public:
   	typedef unsigned char uchar_t;
 	typedef std::string::size_type size_type;
 
-	nfa_expr() : start(0), accept(0) {}
+	nfa_expr() : accept(0), start(0) {}
 	
-	explicit nfa_expr(int edge) {
+	explicit nfa_expr(int edge) : accept(0), start(0) {
 		accept = new nfa_node(ACCEPT);
 		start = new nfa_node(edge, accept);
 	}
 	
+	explicit nfa_expr(char edge) : accept(0), start(0) {
+		accept = new nfa_node(ACCEPT);
+		start = new nfa_node(uchar_t(edge), accept);
+	}
+	
 	nfa_expr(const char *psz)
 	:	start(0), accept(0) {
-		cat(psz);
+		cat_expr(psz);
 	}
+	
+	~nfa_expr() { free(); }
 
-	// assignment constructor
-	nfa_expr(const nfa_expr& other) : start(other.start), accept(other.accept) {}
-
-	// explicit set instead of implicit =
-	const nfa_expr& set_to(nfa_expr& e);
+	// Assignment constructor.
+	// Warning: this is a shallow copy and consumes 'other' 
+	// which becomes null.
+	// It is implemented this way in order to be 
+	// inexpensive to return an expr by value from a function.
+	// Use other.clone() as argument to preserve 'other'.
+	// Note that due to this the expr "nfa_expr a = b" makes 'a' 
+	// the owner of the NFA and nullifies b
+	nfa_expr(nfa_expr& other) 
+	:	start(other.start), 
+		accept(other.accept) {
+		other.clear();
+	}
+	
+	// Copy constructor (deep copy: expr remains const)
+	const nfa_expr& operator=(const nfa_expr& expr) {
+		if(this == &expr) return *this;
+		free();
+		nfa_expr e = expr.clone(); 
+		start = e.start; 
+		accept = e.accept;
+		e.clear(); 
+		return *this;
+	}
 	
 	// Free the NFA nodes reachable by this
 	void free();
 	
 	// nullify this without deleting nodes
-	void release() { start = accept = 0;}
+	void clear() { start = accept = 0;}
 
 	// deep copy
 	nfa_expr clone() const;
@@ -394,31 +435,45 @@ class nfa_expr {
 	
 	size_type size() const { 
 		std::set<nfa_node*> nodes; 
-		return get_nodes(nodes).size();
+		return get_expr_nodes(nodes).size();
+	}
+	
+	size_type memsize() const { 
+		return size()*sizeof(nfa_node);
 	}
 
+	//////////////////////////
+	// Match
+	
+	// Matches string against the regex that this nfa_expr represents. 
 	bool match(const std::string& str);
 	bool match(const std::string& str, bool anchors);
-	void move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack);
-	void closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes);
+	
+	
+	//////////////////////////
+	// Regex operations
 	
 	// expr expr
-	// This becomes the owner of e
-	const nfa_expr& cat(nfa_expr& e);
+	// This consumes expr which becomes null
+	const nfa_expr& cat_expr(nfa_expr& expr);
+	
+	// expr expr
+	const nfa_expr& cat_expr_clone(const nfa_expr& expr);
 
 	// expr | expr
-	// This becomes the owner of e
-	const nfa_expr& or(nfa_expr& e);
+	// This consumes expr which becomes null
+	const nfa_expr& or_expr(nfa_expr& expr);
 	
 	// expr | expr
-	const nfa_expr& or(const char *psz) {
-		nfa_expr e(psz);
-		or(e);
-		return *this;
-	}
-
+	const nfa_expr& or_expr_clone(const nfa_expr& expr);
+	
 	// expr?
-	const nfa_expr& optional(){ return or(nfa_expr(EPSILON));}
+	const nfa_expr& optional() { 
+		nfa_expr e(EPSILON);
+		or_expr(e);
+		assert(e.empty());
+		return *this;
+		}
 
 	// expr*
 	const nfa_expr& star();
@@ -427,12 +482,10 @@ class nfa_expr {
 	const nfa_expr& plus() {
 		nfa_expr e(clone());
 		e.star();
-		return cat(e);
+		cat_expr(e);
+		assert(e.empty());
+		return *this;
 	}
-
-	const nfa_expr& cat(char ch){ return cat(nfa_expr(uchar_t(ch)));}
-
-	const nfa_expr& cat(const char *psz);
 
 	// expr{n}
 	const nfa_expr& power(int n);
@@ -440,32 +493,107 @@ class nfa_expr {
 	// expr{n, m}
 	const nfa_expr& repeat(int n, int m);
 
-	const nfa_expr& operator+=(nfa_expr& e) {return cat(e);}
-
-	const nfa_expr& operator+=(char ch) {return cat(ch);}
-
-	const nfa_expr& operator+=(const char *psz) {return cat(psz);}
-
-	friend nfa_expr  operator+(nfa_expr& e1, nfa_expr& e2);
-
-	std::set<nfa_node*>& get_nodes(std::set<nfa_node*>& nodes) const;
-
-	// invariants checks
-	void verify1() const;
 	
-  private:
-	const nfa_expr& operator=(const nfa_expr& e) {
-		if(this != &e) free(); 
-		start = e.start; 
-		accept = e.accept; 
+	//////////////////
+	// Regex operations shortcuts 
+		
+	const nfa_expr& cat_expr(char ch)	{ 
+		nfa_expr e(ch);
+		cat_expr(e);
+		assert(e.empty());
 		return *this;
 	}
-	nfa_node *start;
+
+	const nfa_expr& cat_expr(const char *psz);
+
+
+	const nfa_expr& or_expr(char ch) {
+		nfa_expr e(ch);
+		or_expr(e);
+		assert(e.empty());
+		return *this;
+	}
+	
+	const nfa_expr& or_expr(const char *psz) {
+		nfa_expr e(psz);
+		or_expr(e);
+		assert(e.empty());
+		return *this;
+	}
+	
+	// (*this) | e and nullifies e
+	const nfa_expr& operator+=(nfa_expr& e) {
+		if(this == &e) cat_expr(e.clone());
+		else cat_expr(e);
+		return *this;
+	}
+
+	// Alt cat_expr
+	const nfa_expr& operator+=(char ch) { return cat_expr(ch);}
+	const nfa_expr& operator+=(const char *psz) { return cat_expr(psz);}
+	
+	// Alt or_expr
+	const nfa_expr& operator*=(char ch) { return or_expr(ch);}
+	const nfa_expr& operator*=(const char *psz) { return or_expr(psz);}
+
+	// Returns the nodes of this expression
+	std::set<nfa_node*>& get_expr_nodes(std::set<nfa_node*>& nodes) const;
+
+	////////////////////
+	// Services
+	
+	static nfa_expr create_char_class_expr(const std::string& s);
+	static nfa_expr create_ws_expr();
+	static nfa_expr create_time_units_expr();
+	static nfa_expr create_sign_expr();
+	
+  private:
+	
+	// NFA search algorithm helpers
+	void move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack);
+	void closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes);
+	
+	// invariants checks
+	void verify1() const;
+  	
 	nfa_node *accept;
+	nfa_node *start;
 };
+
+//////////////////////////
+// Some handy expressions for testing
+// The matcher will not be used this way for real cases.  
+// The string to match will be the tokens of the scanner.  
+
+// static
+inline nfa_expr nfa_expr::create_ws_expr() {
+	return nfa_expr::create_char_class_expr(" \t\r\n");
+}
+
+// static
+inline nfa_expr nfa_expr::create_time_units_expr() {
+	nfa_expr e('s');
+	e.or_expr("ms");
+	e.or_expr('h');
+	e.or_expr("min");
+	return e;
+}
+
+// static
+inline nfa_expr nfa_expr::create_sign_expr() {
+	return create_char_class_expr("+-");
+}
 
 } // namespace lib
  
 } // namespace ambulant
+
+// alt for cat_expr
+ambulant::lib::nfa_expr  
+operator+(const ambulant::lib::nfa_expr& e1, const ambulant::lib::nfa_expr& e2);
+
+// alt for or_expr
+ambulant::lib::nfa_expr  
+operator*(const ambulant::lib::nfa_expr& e1, const ambulant::lib::nfa_expr& e2);
 
 #endif // AMBULANT_LIB_STRING_UTIL_H
