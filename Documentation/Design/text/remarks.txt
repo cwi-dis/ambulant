@@ -109,6 +109,11 @@ been examined further:
    The RTP library used is actually the UCL Common Media Library implementation.
    I have seen no mention of RTSP here, nor on the UCL site, so we would need to check
    that it actually has it.
+4. Open MASH - A framework for creating multimedia apps. Unix/Windows, BSD license.
+   Looks like it may be too tied to Tcl (they do lowlevel stuff in C/C++ and glue
+   everything together in Tcl).
+   
+A much longer list of implementations can be found at http://dmoz.org/Computers/Internet/Protocols/RTSP/Implementations/ .
    
 Question: is there RTP/RTSP support builtin on win32/wince?
 

@@ -10,7 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<h2 class="subtitle" id="jack-jansen-20-may-03">Jack Jansen, 20-May-03.</h2>
+<div class="section" id="jack-jansen-11-jun-03">
+<h1><a name="jack-jansen-11-jun-03">Jack Jansen, 11-Jun-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -33,12 +34,18 @@ or push audio through.</li>
 <li>Resource. Control access to scarce resources (bandwidth, number of
 open files).</li>
 </ul>
+</div>
+<div class="section" id="event-processor">
+<h1><a name="event-processor">Event processor</a></h1>
 <p>The event processor is the heart of the system, and it needs to be thought
 out pretty well as the efficiency of it will in a large part determine the
 snappyness of the system. Design of this is TBD, because it depends on a number
 of unknowns (such as how to represent callbacks). We may want to tack on
 to existing OS infrastructure (such as the Windows event loop), but that may
 be too inefficient.</p>
+</div>
+<div class="section" id="data-source">
+<h1><a name="data-source">Data source</a></h1>
 <p>A data source is the thing that gives you data. You instantiate it
 in dormant state, where it only stores information on where the media resides
 and which bits we are interested in:
@@ -73,6 +80,9 @@ as decoding JPEG data) and passes it on.</p>
 I keep flipping back-and-forth about where to do decoding: at the
 source end (as stated in the previous paragraph), in the Renderer
 object or at the sink. Comments?</blockquote>
+</div>
+<div class="section" id="data-sink">
+<h1><a name="data-sink">Data sink</a></h1>
 <p>A data sink is where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
@@ -81,6 +91,9 @@ graphics APIs. A data sink can send a callback to the renderer for
 &quot;redraw&quot; and &quot;reinit&quot;. The latter is redraw on steriods: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.</p>
+</div>
+<div class="section" id="renderers">
+<h1><a name="renderers">Renderers</a></h1>
 <p>RendererFactory is called with a data source, data sink and a few other
 parameters (such as &quot;ignore implicit repeat in media item&quot;). It returns
 a renderer object. The factory can either return a dormant renderer,
@@ -104,6 +117,9 @@ become scarce: think of a seq with 1000 slides: we don't want to open
 all images beforehand or we will run out of file descriptors. But
 sometimes the document scheduler must open the data source, if the media
 item is part of a switch, for instance.</p>
+</div>
+<div class="section" id="clocks">
+<h1><a name="clocks">Clocks</a></h1>
 <p>Clocks come in two flavors. The normal flavor is a free-running clock, a
 renderer that is subscribed to it can access it in two modes (depending
 on what programming model it prefers): callback or polling. In callback
@@ -118,6 +134,9 @@ API as a normal clock, from the renderer point of view, but it does not
 give callbacks and it <em>does</em> listen when the renderer tells it what time
 it is (and updates its dependent slave clock). The scheduler assigns a
 master clock for the SMIL syncMaster attribute.</p>
+</div>
+<div class="section" id="smil-document-tree">
+<h1><a name="smil-document-tree">SMIL Document tree</a></h1>
 <p>The SMIL Document Scheduler opens the document (through a data source)
 and parses it into a tree. It then waits for the &quot;play document&quot; event.
 Upon receipt it will create the timeline schedule for the root plus anything
@@ -126,6 +145,9 @@ pushes the whole timeline down and fires the event that sets the thing running.
 The timeline schedule also contains preloads for the various media items.
 Then it waits for more events (probably from the LL scheduler) and does
 what is needed for them.</p>
+</div>
+<div class="section" id="timelines">
+<h1><a name="timelines">Timelines</a></h1>
 <p>The timelines can also be pushed down early, in which case they
 will start preloading. This can be used to do &quot;jump optimization&quot; on
 user interaction: if the scheduler can guess where the user is going to
@@ -148,6 +170,7 @@ do things in the right order.</p>
 <li>the clock (or master and slave clock),</li>
 <li>probably more.</li>
 </ul>
+</div>
 </div>
 </body>
 </html>

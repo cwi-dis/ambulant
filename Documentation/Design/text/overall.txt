@@ -1,40 +1,43 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 21-May-03
-----------------------
+Jack Jansen, 11-June-03
+-----------------------
 
 Here are some general (unstructured) thoughts on the Ambulant design.
 
-First and foremost, we need to decide what we are going to use to describe the
-design. On the one hand I'm pretty fond of informal methods, such as this
-document, which is then augmented with C++ header files or other ways to
-specify the interface. At some point we will need more formal descriptions,
-but the question is at which stage of the project we should introduce these.
-I think KK has experience with more design specs, let's see what he has to say. 
+Design process
+--------------
 
-It would be nice if we could make the design language-independent, and
-do it so that cross-language implementations are possible. This would not
+The design is going to consist of a mixed bag of technologies:
+
+- Text files such as this one for informal descriptions.
+- C++ header files for class definitions and such.
+- Image files for UML pictures.
+- XXXX (Kleanthis: please check this sentence) more formal text documents
+  as explained in sdd-schema.txt.
+  
+The design is going to be done in C++, but we will try to keep it compatible
+with Java or Python, and if possible keep cross-language implementations
+possible.  This would not
 only benefit people extending it in the long run, but could also jump-start
 the initial implementation by re-using the existing GRiNS scheduler.
 
-Boost.python may be a way to achieve C++/Python interoperability, this needs
-to be investigated. Maybe Kleanthis knows more.
-	
-	XXXX Turns out this is not a good idea, Boost.python is big and doesn't
-	really do what we want. So we just have to define the APIs clearly.
+Boost.python was considered as a way to achieve C++/Python interoperability, but
+it turns out it is too heavyweight. SWIG is a possible alternative,
+or (for Python) a SWIG/Bgen hybrid.
+
+run-time system
+---------------
 
 A point of concern is garbage collection. Because we want to do a C++ implementation
-we cannot rely on refcounting or garbage collection (I think? Maybe there
-is a C++ library or template or whatever that can handle this for us?)
-so we have to be careful of object ownership and cleanup.
+we cannot rely on refcounting or garbage collection in the underlying runtime.
+lib/refcount.h has a simple refcounting implementation that we could use for
+garbage collection.
 
-	It seems that a variation on the STL autoptr is possible. We need to ask
-	KK for details on this (or other insight he has), and we also need to check
-	that this doesn't impact performance on handhelds overmuch.
+	XXXX This implementation doesn't seem to have weak references. Do we need
+	them? Are they easy to add?
 	
-	XXXX Turns out this is indeed feasible.
-	
-The cross-language and garbage collection paragraphs may bite each other.
+	XXXX The refcounting implementation may interfere with any cross-language plans.
 
 The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
@@ -50,16 +53,19 @@ for SMIL without putting almost all SMIL complexity in the low-level scheduler.
 	to use the Data Source objects from the scheduler, and/or whether special
 	measures are needed for that.
 
+main loop
+---------
+
 The basic architecture is going to be event-driven. The alternative
 is to use multiple threads all over, but it seems event-driven is the better
 choice. An object that wants to use multiple threads can do so more easily
 on an event infrastructure than the other way around, but these threads are
 "somebody else's problem", as they are hidden from the rest of the architecture.
 
-	XXXX We do want to allow the option (probably compile time) to allow multiple worker
-	threads to handle the events. This should be a compile time option, so we don't
-	incur the overhead of locking the event mgr data structures if there's only a
-	single worker thread.
+We do want to allow the option (probably compile time) to allow multiple worker
+threads to handle the events. This should be a compile time option, so we don't
+incur the overhead of locking the event mgr data structures if there's only a
+single worker thread.
 
 Also, although it seems at first glance that some objects, such as a renderer,
 would benefit from a threaded architecture it turns out this isn't really so.
@@ -84,17 +90,15 @@ The event handler architecture needs an elaborate priority scheme, that is expre
 enough that the best execution order of things that happen "at the same time"
 is automatic.
 
-	A problem with the event handler is how to represent an event callback.
-	Ideally (in Python) it would be a tuple (anobject, amethod, arguments) and
-	it would call "anobject->amethod(arguments)", but this is impossible in C++.
-	The equivalent (aboundmethod, arguments) also doesn't work, as C++ apparently
-	cannot represent a bound method. There may be a solution in using a common
-	base class CallbackHandler that declares virtual methods for all callback
-	types.
-	
-	XXXX Turns out this is doable, KK sent me sample code that I still need to investigave.
+A problem with the event handler is how to represent an event callback.
+lib/callback.h has a solution for this.
 
-We need to be able to re-use existing (Explorer, Netscape) plugins, when applicable.
+If possible we should design the data structures and API such that a shortcut can be
+taken (if A schedules a callback for B and nothing of higher priority is runnable then
+we call B directly in stead of going through the callback main loop).
+
+integrating third-party tools
+-----------------------------
 
 We need to be able to use existing toolkits that take work out of our hands.
 Think of QuickTime and DirectX, where you basically pass a URL and say "play" and
@@ -104,16 +108,18 @@ to be used. This also means we don't have to handle firewalls and what more.
 Investigating toolkits we can use needs to be done early, as it may influence
 some of the other design issues (GC, event model).
 
+remarks.txt lists options we have for XML parsers, SAX/DOM, regex and RTP/RTSP toolkits.
+
+We need to be able to re-use existing (Explorer, Netscape) plugins, when applicable.
+
+scheduler
+---------
+
 The scheduler is going to be split in two. There is a high-level language
 dependent scheduler and a low-level independent one. We will write a SMIL
 high level scheduler, other people should be able to replace that with, say,
 a QuickTime or MPEG-4 scheduler while re-using the low-level scheduler.
 
-	XXXX The description of the LL-scheduler needs much more work, there is a
-	lot of implicit knowledge Sjoerd and Jack have that isn't in here. To be done
-	shortly. The wording also needs to be changed to be more object-oriented,
-	i.e. refer to "timeline objects" in stead of "the low level scheduler".
-	
 The Low-level scheduler is going to be based on fixed timelines. The HL
 scheduler identifies a portion of the SMIL document that it can fit on a fixed
 timeline (at least: a fully ordered linear timeline), it creates a schedule for this
@@ -121,7 +127,8 @@ and pushes it down. These low-level schedules look somewhat like a petri-net,
 but they probably need "or" in addition to "and". The LL schedule will contain
 events that trigger the HL scheduler when needed (such as when the user clicks
 a link, or when the schedule finishes). These timelines are what I referred to
-in the past as "multimedia basic blocks".
+in the past as "multimedia basic blocks". A description of what these timelines
+look like is in the file timelines.txt.
 
 The elements in the timeline need enough information to be able to get back at
 a HL object from them, so we do the annotation thing. Also, we need to be able
@@ -149,8 +156,6 @@ Missing
 
 Here is a list of bits of the design that I know are missing:
 
-- What an event looks like. In a dynamic language we could use a bound method
-  plus an optional argument, but this won't work in C++ (I think?).
 - What events are accepted by what objects, and what the arguments are.
 - How we handle anchors. Maybe treat as nodes? 
 - How we handle transitions. Maybe also treat as nodes? We probably shouldn't
