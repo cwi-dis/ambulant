@@ -30,6 +30,7 @@ namespace filesys {
 
 const std::string url_path_sep("/");
 
+inline
 std::string join(const std::string& str1, const std::string& str2,
 	const char *ossep = 0) {
 	char ch1 = *str1.rbegin();
@@ -48,6 +49,7 @@ std::string join(const std::string& str1, const std::string& str2,
 	return str;
 }
 
+inline
 std::string join(const char *psz1, const char *psz2, 
 	const char *ossep = 0) {
 	if(!psz1 && !psz2) return "";
@@ -56,12 +58,14 @@ std::string join(const char *psz1, const char *psz2,
 	return join(std::string(psz1), std::string(psz2), ossep);
 }
 
+inline
 std::string join(const std::string& str1, const char *psz2,
 	const char *ossep = 0) {
 	if(!psz2 || !psz2[0]) return str1;
 	return join(str1, std::string(psz2), ossep);
 }
 
+inline
 void split(const std::string& s, std::list<std::string>& c, 
 	const char *ossep = 0) {
 	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
@@ -79,6 +83,7 @@ void split(const std::string& s, std::list<std::string>& c,
 	}	
 }
 
+inline
 std::string join(const std::list<std::string>& c, 
 	const char *ossep = 0) {
 	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
@@ -91,6 +96,17 @@ std::string join(const std::list<std::string>& c,
 		it++;
 	}
 	return s;
+}
+
+inline 
+std::string get_base(const std::string& s,
+	const char *ossep = 0) {
+	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
+	typedef std::string::size_type size_type;
+	size_type i = s.find_last_of(sep);
+	if(i == std::string::npos)
+		return std::string();
+	return s.substr(0, i);
 }
 
 } // namespace filesys

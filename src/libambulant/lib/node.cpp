@@ -29,6 +29,7 @@
 // node context
 #include "ambulant/lib/document.h" 
 
+#include "ambulant/lib/logger.h" 
 
 using namespace ambulant;
 
@@ -206,10 +207,25 @@ lib::node::get_first_child(const char *name) {
 
 lib::node* 
 lib::node::locate_node(const char *path) {
-	string_record r(path, "/");
-	node *n = this;
-	for(string_record::iterator it = r.begin(); it != r.end() && n != 0;it++)
-		n = n->get_first_child(*it);
+	if(!path || !path[0]) {
+		return this;
+	}
+	tokens_vector v(path, "/");
+	node *n = 0;
+	tokens_vector::iterator it = v.begin();
+	if(path[0] == '/') { // or v.at(0) is empty
+		// absolute
+		it++; // skip empty
+		n = get_root();
+		if(it == v.end())
+			return n; 
+		if(n->get_local_name() != (*it))
+			return 0;
+		it++; // skip root
+	} else n = this;
+	for(; it != v.end() && n != 0;it++) {
+		n = n->get_first_child((*it).c_str());
+	}
 	return n;
 }
 

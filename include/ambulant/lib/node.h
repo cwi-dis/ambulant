@@ -100,8 +100,8 @@ class node {
 	// search operations 
 	// this section should be extented to allow for XPath selectors
 
-	node *get_first_child(const char *name);
 	node* locate_node(const char *path);
+	node *get_first_child(const char *name);
 	void find_nodes_with_name(const xml_string& name, std::list<node*>& list);
 	node* get_root();
 	

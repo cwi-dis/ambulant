@@ -20,6 +20,7 @@
 // XXX: temp, will go to document.cpp
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/filesys.h"
 #include <ostream>
 
 // A class respresenting an XML document.
@@ -61,6 +62,11 @@ class document : public node_context {
 	// Returns the root node of this document
 	node* get_root();
 	
+	// Locate a node with path
+	node* locate_node(const char *path) {
+		return m_root?m_root->locate_node(path):0;
+	}
+	
 	// Returns the source url of this docuemnt
 	const std::string& get_src_url() const { return m_src_url;}
 	
@@ -79,6 +85,9 @@ class document : public node_context {
 	
 	// the external source url
 	std::string m_src_url;
+	
+	// this base url
+	std::string m_src_base;
 	
 	// document namespaces registry
 	nscontext m_namespaces;
@@ -119,7 +128,8 @@ document::create_from_file(const std::string& str) {
 		return 0;
 	}
 	d->m_root = builder.detach();
-	d->m_src_url = str; // XXX: wrong
+	d->m_src_url = str;
+	d->m_src_base = filesys::get_base(str);
 	return d;
 }
 
@@ -137,8 +147,7 @@ inline std::string
 document::resolve_url(const node *n, const std::string& rurl) const {
 	// locate node context xml:base
 	// if none is found use source.
-	// return join(base, rurl)
-	return m_src_url + "/" + rurl; // XXX: WRONG, just return somethig for now.
+	return filesys::join(m_src_base, rurl); // XXX: WRONG, just return something for now.
 }
 
 } // namespace lib
