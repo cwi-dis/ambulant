@@ -1,14 +1,15 @@
 Ambulant design, objects 
 ========================
-Jack Jansen, 29-Apr-03.
+Jack Jansen, 20-May-03.
 -----------------------
 Objects we need:
 
 - Event processor. This is the mainloop plus the event/callback mechanism.
-  TBD.
 - Data Source. Think of these as "media items", they may refer to a URL
   or part of a multiplexed stream or so, and provide data to renderers and
   to the parser.
+- Decoders. It may be a good idea to have a decoder class that has the
+  same interface as a data source and is stacked on a real data source.
 - Region. This is an area of screen space (or a speaker). It is "what
   the user sees".
 - Data sink. This is where renderers send their data.
@@ -23,9 +24,20 @@ Objects we may need:
 - Resource. Control access to scarce resources (bandwidth, number of
   open files).
 
-Data sources come in two flavors: active and dormant. These can be used
-interchangeably (active is probably a subclass of dormant). Dormant has
-URL, clip-begin/clip-end and such. Active also has methods for I/O.
+The event processor is the heart of the system, and it needs to be thought
+out pretty well as the efficiency of it will in a large part determine the
+snappyness of the system. Design of this is TBD, because it depends on a number
+of unknowns (such as how to represent callbacks). We may want to tack on
+to existing OS infrastructure (such as the Windows event loop), but that may
+be too inefficient.
+
+A data source is the thing that gives you data. You instantiate it
+in dormant state, where it only stores information on where the media resides
+and which bits we are interested in:
+URL, clip-begin/clip-end and such. From dormant it can go to prerolling,
+at which point it starts retrieving data, probably up to some limit
+given when starting the preroll. From preroll it goes to active,
+at which time you can start to do I/O.
 Data sources are always (really always?) push-based: the client asks
 for data, this call returns immedeately, and when the data is available
 an event is fired. There is probably also a call that says "don't
@@ -35,10 +47,29 @@ Some data sources will be able to handle some of the extra parameters
 (clip-begin/end, ignore-repeat) itself, the rest will be passed to 
 the renderer to handle.
 
-XXX We need a "semi-active" data source, for the SMIL prefetch
-element. This probably means we also need factory object for data sources,
-which re-uses a semi-active data source when applicable. This lookup
-happens when a data source goes from dormant to active.
+All three transitions between the states are possible. Data sources in
+dormant/preroll state are in a common pool, active data sources are owned by
+a renderer. We need the pool for the prerolling data sources because of
+the  SMIL prefetch
+element. Also, the dormant data source could keep interesting information
+for reuse (it could for instance keep information on locally cached images,
+so you don't get the same image over the net twice).
+
+Maybe there really are two data source objects, one storing the information
+(URL, etc, plus chached information) and one to do the transfer (which would
+start out as a child of the dormant datasource, when that source goes to
+preroll, and would then be passed to the renderer when it goes active).
+
+We need to think about how to handle multiplexed data streams such as RTSP.
+It could be that this is simply someone elses problem (the RTSP library),
+but maybe we need multiplexed data streams too.
+
+A decoder object gets data from a data source, does something to it (such
+as decoding JPEG data) and passes it on.
+
+	I keep flipping back-and-forth about where to do decoding: at the
+	source end (as stated in the previous paragraph), in the Renderer
+	object or at the sink. Comments?
 
 A data sink is where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
@@ -46,7 +77,8 @@ double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
 graphics APIs. A data sink can send a callback to the renderer for
 "redraw" and "reinit". The latter is redraw on steriods: the underlying
-OS window may have changed (end of transition, resize).
+OS window may have changed (end of transition, resize). Probably user
+interaction (clicking the mouse) also needs to follow this paradigm.
 
 RendererFactory is called with a data source, data sink and a few other
 parameters (such as "ignore implicit repeat in media item"). It returns

@@ -1,9 +1,16 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 29-Apr-03
+Jack Jansen, 20-May-03
 ----------------------
 
 Here are some general (unstructured) thoughts on the Ambulant design.
+
+First and foremost, we need to decide what we are going to use to describe the
+design. On the one hand I'm pretty fond of informal methods, such as this
+document, which is then augmented with C++ header files or other ways to
+specify the interface. At some point we will need more formal descriptions,
+but the question is at which stage of the project we should introduce these.
+I think KK has experience with more design specs, let's see what he has to say. 
 
 It would be nice if we could make the design language-independent, and
 do it so that cross-language implementations are possible. This would not
@@ -21,6 +28,8 @@ so we have to be careful of object ownership and cleanup.
 	It seems that a variation on the STL autoptr is possible. We need to ask
 	KK for details on this (or other insight he has), and we also need to check
 	that this doesn't impact performance on handhelds overmuch.
+	
+The cross-language and garbage collection paragraphs may bite each other.
 
 The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
@@ -71,6 +80,8 @@ Think of QuickTime and DirectX, where you basically pass a URL and say "play" an
 have nothing to worry about anymore. Also, existing URL access libraries (such
 as the caching infrastructure on windows) and a third party RTSP library need
 to be used. This also means we don't have to handle firewalls and what more.
+Investigating toolkits we can use needs to be done early, as it may influence
+some of the other design issues (GC, event model).
 
 The scheduler is going to be split in two. There is a high-level language
 dependent scheduler and a low-level independent one. We will write a SMIL
@@ -87,11 +98,25 @@ a link, or when the schedule finishes). These timelines are what I referred to
 in the past as "multimedia basic blocks".
 
 The elements in the timeline need enough information to be able to get back at
-a HL object from them, so we do the annotation thing.
+a HL object from them, so we do the annotation thing. Also, we need to be able
+to get from the HL object tree to the timeline objects too, so that hyperjumps
+can clear out the relevant timelines. 
 
 Timeline schedules are completely independent, at their level. If one timeline
 kills or pauses another one this happens because it sends an event to the
-HL scheduler which does the killing or pausing.
+HL scheduler which does the killing or pausing. It may be that timelines can
+share a clock (or, probably better, that the clock in a timeline can be slaved
+to the clock in another timeline).
+
+I think there are always going to be situations where we want to "restart the world",
+i.e. stop everything, tell the highlevel scheduler where we are and let it re-create
+the lowlevel schedules to put us back where we were before the restart (but respecting
+the new situation that caused the restart). Situations that come to mind are a resize
+of the playback window, UI changes like turing on subtitles or other system-test
+attributes, etc. We could probably solve each of these cases without restarting,
+but if we have the mechanism to do a restart (and do it without too much impact
+on the user experience) it can be used as a fallback mechanism, and speed up
+initial implementation.
 
 Missing
 -------
@@ -101,5 +126,9 @@ Here is a list of bits of the design that I know are missing:
 - What an event looks like. In a dynamic language we could use a bound method
   plus an optional argument, but this won't work in C++ (I think?).
 - What events are accepted by what objects, and what the arguments are.
-- How we handle anchors.
-- How we handle transitions.
+- How we handle anchors. Maybe treat as nodes? 
+- How we handle transitions. Maybe also treat as nodes? We probably shouldn't
+  follow the SMIL model too closely, as its transitions are a bit funny.
+- How we handle subregions. Maybe the same as normal regions, but created dynamically?
+  Or are they simply a part of the renderer objects?
+  Does this influence anchors too? Do regions belong to a timeline?
