@@ -108,9 +108,17 @@ global_parser_factory::new_parser(
 {
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called (pref = %s)",parser_id.c_str());
-
-    std::vector<parser_factory*>::iterator i;
     xml_parser *pv;
+
+	if ( parser_id == "any" && m_default_factory) {
+
+   		pv = m_default_factory->new_parser(content_handler, error_handler);
+		if (pv) {
+			AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser(\"any\") returning parser (0x%x)", (void*) pv);
+			return pv;
+		}
+	}
+    std::vector<parser_factory*>::iterator i;
 	pv = NULL;
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
 		if (( (*i)->get_parser_name() == parser_id ) || ( parser_id == "any" )) {
@@ -127,7 +135,7 @@ global_parser_factory::new_parser(
       
     }
 	if (m_default_factory) {
-		if (!m_warned && parser_id != "any" && parser_id != m_default_factory->get_parser_name()) {
+		if (!m_warned && parser_id != m_default_factory->get_parser_name()) {
 			m_warned = true;
 			lib::logger::get_logger()->warn(gettext("Parser \"%s\" not available, using \"%s\""),
 				parser_id.c_str(), m_default_factory->get_parser_name().c_str());
