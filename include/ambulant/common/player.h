@@ -61,8 +61,7 @@ class active_player : public ref_counted {
 	void start(event_processor *evp, event *playdone);
 	void stop();
 	
-	void timeline_done_callback(detail::timeline_done_arg *p) {
-		std::cout << "active_player.timeline_done_callback()" << std::endl;
+	inline void timeline_done_callback(detail::timeline_done_arg *p) {
 		m_done = true;
 	}
 	
@@ -72,7 +71,6 @@ class active_player : public ref_counted {
 	long add_ref() {return ++m_refcount;}
 
 	long release() {
-		std::cout << "active_player.release, count=" << m_refcount << std::endl;
 		if(--m_refcount == 0){
 			delete this;
 			return 0;
