@@ -62,27 +62,65 @@ namespace ambulant {
 
 namespace net {
 	
-
-struct audio_formats {
-	std::vector<int> samplerate;
-	std::vector<int> channels;
-	std::vector<int> bits;
-};	
-	
-struct audio_context {
-	std::string format;
-	int sample_rate;
+// This struct completely describes an audio format.
+struct audio_format {
+//	std::string format;
+	int samplerate;
 	int channels;
-	int bits;	
+	int bits;
+	// XXXX Endian-ness should be in here too. And
+	// maybe signed/excess/uLaw too?
+	
+	audio_format(int s, int c, int b)
+	:   samplerate(s),
+		channels(c),
+		bits(b) {};
 };
 
+// This class describes the range of audio formats supported by a consumer.
+// It always contains at least one supported format.
+// The design assumes that support for various sample rates, channels and
+// bits are independent variables.
+class audio_format_choices {
+  public:
+	// Must always have at least one supported format
+	audio_format_choices(int samplerate, int channels, int bits)
+	:   m_best(audio_format(samplerate, channels, bits))
+	{
+		add_samplerate(samplerate);
+		add_channels(channels);
+		add_bits(bits);
+	};
+	
+	const audio_format& best() const { return m_best; }
+	
+	void add_samplerate(int samplerate) { m_samplerate.insert(samplerate); }
+	void add_channels(int channels) { m_channels.insert(channels); }
+	void add_bits(int bits) { m_bits.insert(bits); }
+	
+	bool contains(audio_format& fmt) const {
+		return (
+			m_samplerate.count(fmt.samplerate) &&
+			m_channels.count(fmt.channels) &&
+			m_bits.count(fmt.bits));
+	};
+  private:
+	const audio_format m_best;
+	std::set<int> m_samplerate;
+	std::set<int> m_channels;
+	std::set<int> m_bits;
+};
 
-enum nrchannels { mono=1, stereo }; 
-
-
+// A datasource is the interface to an object that supplies data
+// to a consumer. The consumer calls start() whenever it wants
+// data. This call returns immedeately and later the datasource arranges
+// that the callback is done, when data is available. The consumer then
+// calls size(), get_read_ptr() and end_of_file() to get available data size,
+// pointer and status. Whenever the consumer has consumed some bytes it calls
+// read_done().
 class datasource : virtual public ambulant::lib::ref_counted {  	
   public:
-	~datasource() {}
+	virtual ~datasource() {};
 
 	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
     virtual void readdone(int len) = 0;
@@ -92,95 +130,85 @@ class datasource : virtual public ambulant::lib::ref_counted {
 	virtual int size() const = 0;		
 };
 
-
-
-
+// audio_datasource extends the datasource protocl with methods to obtain
+// information on the way the audio data is encoded. 
 class audio_datasource : virtual public datasource {
   public:
-	~audio_datasource() {};
+	virtual ~audio_datasource() {};
 		  
-	virtual int get_nchannels() = 0;
-  	virtual int get_nbits() = 0;
-	virtual int get_samplerate() = 0;
-		
+	virtual audio_format& get_audio_format() = 0;
 };
 
-
-
-
+// This class is the client API used to create a datasource for
+// a given URL.
 class datasource_factory {
   public: 
-
     virtual ~datasource_factory() {}; 	
   	virtual datasource* new_datasource(const std::string& url) = 0;
 };
 
+// This class is the client API used to create an audio_datasource for
+// a given URL, with an extra parameter specifying which audio encodings
+// the client is able to handle.
 class audio_datasource_factory  {
   public: 
-
     virtual ~audio_datasource_factory() {}; 	
-  	virtual datasource* new_datasource(const std::string& url, audio_context fmt) = 0;
+  	virtual audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt) = 0;
 };
 
-
-class audio_filter_datasource_factory  {
-  public: 
-
-    virtual ~audio_filter_datasource_factory() {}; 	
-  	virtual datasource* new_datasource(const std::string& url, audio_context fmt, datasource *src,lib::event_processor *const evp) = 0;
+// This is the finder interface corresponding to datasource_factory, it is
+// implemented by any module that implements datasource objects.
+class datasource_finder : public datasource_factory {
 };
 
-
-class global_datasource_factory : public datasource_factory  {
+// Finder corresponding to audio_datasource_factory, where the audio_datasource
+// handles everything (getting raw data, parsing it, converting it) itself. The
+// returned audio_datasource (if non-NULL) is guaranteed to deliver data in a
+// format compatible with fmts.
+class audio_datasource_finder {
   public:
-	global_datasource_factory() 
-  	: m_default_factory(NULL) {};
-  	~global_datasource_factory() {};
+	virtual ~audio_datasource_finder() {};
+	virtual audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmts) = 0;
+};
+
+// Finder for implementations where the audio_datasource
+// does only parsing, using a datasource to obtain raw data. The audio_format_choices
+// is only a hint, it may be the case that the audio_datasource returns
+// incompatible data.
+class audio_parser_finder {
+  public:
+	virtual ~audio_parser_finder() {};
+	virtual audio_datasource* new_audio_parser(const std::string& url, audio_format_choices hint, datasource *src) = 0;
+};
+
+// Finder for implementations where the audio_datasource
+// does only conversion of the audio data provided by the source to the format
+// wanted by the client.
+class audio_filter_finder  {
+  public:
+    virtual ~audio_filter_finder() {}; 	
+  	virtual audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts) = 0;
+};
+
+class global_datasource_factory : public datasource_factory, public audio_datasource_factory  {
+  public:
+	global_datasource_factory();
+  	~global_datasource_factory();
   
-  	void add_factory(datasource_factory *df);
-	datasource* new_datasource(const std::string &url, audio_context fmt);
-		
-  private:
-	std::vector<datasource_factory*> m_factories;
-  	datasource_factory *m_default_factory;
-};
-
-class global_raw_datasource_factory  :public datasource_factory {
-  public:
-	global_raw_datasource_factory() 
-  	: m_default_factory(NULL) {}; 
-  	~global_raw_datasource_factory() {};
+  	datasource* new_datasource(const std::string& url);
+	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt);
 	
-	void add_factory(datasource_factory *df);
+  	void add_finder(datasource_finder *df);
+	void add_audio_finder(audio_datasource_finder *df);
+	void add_audio_parser_finder(audio_parser_finder *df);
+	void add_audio_filter_finder(audio_filter_finder *df);
 		
   private:
-	  std::vector<datasource_factory*> m_factories;
-  	  datasource_factory *m_default_factory;
+	std::vector<datasource_finder*> m_finders;
+	std::vector<audio_datasource_finder*> m_audio_finders;
+	std::vector<audio_parser_finder*> m_audio_parser_finders;
+	std::vector<audio_filter_finder*> m_audio_filter_finders;
 };
-
-
-
-class global_audio_datasource_factory  {
-  public:
-	global_audio_datasource_factory(global_raw_datasource_factory *df) 
-  	: m_raw_datasource_factory(df)  {};
-		  
-  	~global_audio_datasource_factory() {};
-	void add_factory(audio_datasource_factory *df);
-	void add_decoder_factory(audio_filter_datasource_factory *df);
-	void add_resample_factory(audio_filter_datasource_factory *df);
-	datasource* new_datasource(const std::string &url, audio_context fmt, lib::event_processor *const evp);
-  
-  private:
-	std::vector<audio_datasource_factory*> m_factories;
-  	std::vector<audio_filter_datasource_factory*> m_decoder_factories;
-    std::vector<audio_filter_datasource_factory*> m_resample_factories;
-    global_raw_datasource_factory *m_raw_datasource_factory;
-};
-		
-
-
-
 
 } // end namespace net
 

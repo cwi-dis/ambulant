@@ -53,85 +53,86 @@
 
 
 using namespace ambulant;
-
-
-
+using namespace net;
 
 // *********************** datasource_factory ***********************************************
   
 
 void
-net::global_datasource_factory::add_factory(datasource_factory *df)
+global_datasource_factory::add_finder(datasource_finder *df)
 {
-	m_factories.push_back(df);
+	m_finders.push_back(df);
+}
+
+void
+global_datasource_factory::add_audio_finder(audio_datasource_finder *df)
+{
+	m_audio_finders.push_back(df);
+}
+
+void
+global_datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
+{
+	m_audio_parser_finders.push_back(df);
+}
+
+void
+global_datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
+{
+	m_audio_filter_finders.push_back(df);
 }
 
 
-net::datasource*
-net::global_datasource_factory::new_datasource(const std::string &url, audio_context fmt)
+datasource*
+global_datasource_factory::new_datasource(const std::string &url)
 {
-    std::vector<datasource_factory *>::iterator i;
-    net::datasource *src;
+    std::vector<datasource_finder *>::iterator i;
+    datasource *src;
     
-    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+    for(i=m_finders.begin(); i != m_finders.end(); i++) {
         src = (*i)->new_datasource(url);
         if (src) return src;
     }
-	//XXXX Maybe the "raw" datasource should be the default or one that always has state end_of_file ?
     return NULL;
 }
 
-//void 
-//net::global_audio_datasource_factory::add_raw_factory(datasource_factory *df)
-//{
-//	m_raw_factories.push_back(df);
-//}
-
-void
-net::global_audio_datasource_factory::add_decoder_factory(audio_filter_datasource_factory *df)
+audio_datasource*
+global_datasource_factory::new_audio_datasource(const std::string &url, audio_format_choices fmts)
 {
-	m_decoder_factories.push_back(df);
-}
+    audio_datasource *src = NULL;
 
-void
-net::global_audio_datasource_factory::add_resample_factory(audio_filter_datasource_factory *df)
-{
-	m_resample_factories.push_back(df);
-}
+	// First try to see if anything supports the whole chain
+    std::vector<audio_datasource_finder *>::iterator i;
+    for(i=m_audio_finders.begin(); i != m_audio_finders.end(); i++) {
+        src = (*i)->new_audio_datasource(url, fmts);
+        if (src) return src;
+    }
 
-net::datasource* 
-net::global_audio_datasource_factory::new_datasource(const std::string& url, audio_context fmt, lib::event_processor *const evp)
-{
-	std::vector<audio_datasource_factory *>::iterator i;
-	std::vector<audio_filter_datasource_factory *>::iterator j;
-    net::datasource *raw_src;
-    net::datasource *dec_src;
-	net::datasource *res_src;
+	// If that didn't work we try to first create a raw datasource, and
+	// then stack a parser and possibly a filter
+	datasource *rawsrc = new_datasource(url);
+	if (rawsrc == NULL) return NULL;
 	
-	// this should take care of rtp/rtsp datasources
-
-	// this should take care of realy raw datasources who don't care about the audio format.
-	if (!raw_src) {
-    	for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        	raw_src = (*i)->new_datasource(url,fmt);
-        	if (raw_src) break;
-    	}
+	std::vector<audio_parser_finder*>::iterator ip;
+	for(ip=m_audio_parser_finders.begin(); ip != m_audio_parser_finders.end(); ip++) {
+		src = (*ip)->new_audio_parser(url, fmts, rawsrc);
+		if (src) break;
+	}
+	if (src == NULL) {
+		rawsrc->release();
+		return NULL;
 	}
 	
-	if (!raw_src) return NULL;
-	
-	for(j=m_decoder_factories.begin(); j != m_decoder_factories.end(); j++) {
-        dec_src = (*j)->new_datasource(url, fmt, raw_src, evp);
-        if (dec_src) break;
+	// Now stack a filter. Note that the first filter finder is the identity
+	// filter.
+	std::vector<audio_filter_finder*>::iterator ic;
+	audio_datasource *convsrc = NULL;
+	for(ic=m_audio_filter_finders.begin(); ic != m_audio_filter_finders.end(); ic++) {
+		convsrc = (*ic)->new_audio_filter(src, fmts);
+		if (convsrc) return convsrc;
 	}
-	//XXX should we return the default here ?
-	if (!dec_src) return raw_src; 
-	// if we do it like this we don't need to supply the fmt to the decoder !
-//	if (!dec_src->suport(fmt)) {
-		for(j=m_resample_factories.begin(); j != m_resample_factories.end(); j++) {
-        	res_src = (*j)->new_datasource(url, fmt, dec_src, evp);
-        	if (res_src) break;
-    	}
-	//}
+	
+	// Failed to find a filter. Clean up.
+	src->release(); // This will also release rawsrc
+    return NULL;
 }
-

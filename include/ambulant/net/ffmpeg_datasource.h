@@ -84,15 +84,21 @@ namespace ambulant
 namespace net
 {
 	
-class ffmpeg_datasource_factory : public audio_filter_datasource_factory {
+class ffmpeg_audio_parser_finder : public audio_parser_finder {
   public:
-	~ffmpeg_datasource_factory() {};
-	datasource* new_datasource(const std::string& url, audio_context fmt, datasource *src,lib::event_processor *const evp);
+	~ffmpeg_audio_parser_finder() {};
+	audio_datasource* new_audio_parser(const std::string& url, audio_format_choices hint, datasource *src);
+};
+
+class ffmpeg_audio_filter_finder : public audio_filter_finder {
+  public:
+	~ffmpeg_audio_filter_finder() {};
+	audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts);
 };
 
 class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(net::datasource *src, lib::event_processor *evp);
+	 ffmpeg_audio_datasource(net::datasource *src);
     ~ffmpeg_audio_datasource();
      
 		  
@@ -107,9 +113,7 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	int size() const;   
 	
  
-	int get_nchannels();
-  	int get_nbits ();
-	int get_samplerate ();
+	audio_format& get_audio_format() {return m_fmt; }
 	int select_decoder(char* file_ext);
   	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
 	long add_ref() {};
@@ -123,7 +127,8 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 
   	AVCodec  *m_codec;
     AVCodecContext *m_con;
-    lib::event_processor *const m_event_processor;
+    lib::event_processor *m_event_processor;
+	audio_format m_fmt;
 //    lib::event *m_readdone;		// This is the callback our source makes to us
   	datasource* m_src;
 
@@ -132,14 +137,14 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	databuffer m_buffer;
   	//databuffer m_dummy_buffer;
 	bool m_blocked_full;
-	
+		
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
 };
 
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-     ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp, net::audio_context out_fmt);
+     ffmpeg_resample_datasource(net::audio_datasource *src, audio_format_choices fmts);
     ~ffmpeg_resample_datasource();
     
     void start(lib::event_processor *evp, lib::event *callback);  
@@ -153,12 +158,9 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     char* get_read_ptr();
     int size() const;   
    
-    void get_input_format(net::audio_context &fmt);  
-    void get_output_format(net::audio_context &fmt);
- 	int get_nchannels();
-  	int get_nbits();
-	int get_samplerate();
-  	
+//    void get_input_format(net::audio_context &fmt);  
+//    void get_output_format(net::audio_context &fmt);
+	audio_format& get_audio_format() { return m_out_fmt; };
 		
   protected:
     int init(); 
@@ -176,12 +178,12 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     databuffer m_buffer;
   	
     bool m_blocked_full;	
-    lib::event_processor *const m_event_processor;
+    lib::event_processor *m_event_processor;
 //    lib::event *m_readdone;		// This is the callback our source makes to us
     lib::event *m_client_callback;  // This is our calllback to the client
     lib::critical_section m_lock;
-  	audio_context m_in_fmt;
-  	audio_context m_out_fmt;
+  	audio_format m_in_fmt;
+  	audio_format m_out_fmt;
 };
 
 }	// end namespace net

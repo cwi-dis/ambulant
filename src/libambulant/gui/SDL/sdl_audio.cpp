@@ -213,15 +213,15 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	const lib::node *node,
 	lib::event_processor *evp)
 :	common::active_renderer(context, cookie, node, evp),
-    m_rate(44100),
-    m_bits(16),
-    m_channels(2),
+//    m_rate(44100),
+//    m_bits(16),
+//    m_channels(2),
 	m_buffer_size(4096),
 	m_channel_used(-1),
 	m_audio_format(AUDIO_S16SYS)
 {
 	net::audio_datasource *src;
-	net::audio_context infmt,outfmt;
+	net::audio_format_choices supported = net::audio_format_choices(44100, 2, 16);
 	
 	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
 	if (m_src) {
@@ -231,14 +231,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: url.rfind(\".mp3\") %d, url.size()-4 %d", url.rfind(".mp3"),  url.size()-4);
 		if (url.rfind(".mp3") == url.size()-4 ) {
 			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using ffmpeg audio reader");
-			m_audio_src = new net::ffmpeg_audio_datasource(m_src, evp);
+			m_audio_src = new net::ffmpeg_audio_datasource(m_src);
 		} else {
 			src = new net::raw_audio_datasource(m_src);
-			outfmt.sample_rate = m_rate;
-			outfmt.channels = m_channels;
-			outfmt.bits = m_bits;
 			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using resample_datasource");
-			m_audio_src = new net::ffmpeg_resample_datasource(src, evp,outfmt); 
+			m_audio_src = new net::ffmpeg_resample_datasource(src, supported); 
 			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: created a resample_datasource x%x", m_audio_src);
 		}
 #else
@@ -276,10 +273,11 @@ gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
     } else {
         err = 0;
     }
-	m_rate = rate;
-    m_channels = channels;
-    m_bits = bits;
-	err = Mix_OpenAudio(m_rate, m_audio_format, m_channels, m_buffer_size);
+//	m_rate = rate;
+//    m_channels = channels;
+//    m_bits = bits;
+	assert(bits == 16); // XXX Is this correct?
+	err = Mix_OpenAudio(rate, m_audio_format, channels, m_buffer_size);
 	if (err < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL open failed", (void *)this);
     	return err;
@@ -339,10 +337,10 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	m_audio_chunck.alen = m_audio_src->size();
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: got %d bytes", m_audio_chunck.alen);
 	
-	m_rate = m_audio_src->get_samplerate();
-	m_bits = m_audio_src->get_nbits();
-	m_channels = m_audio_src->get_nchannels();
-	AM_DBG lib::logger::get_logger()->trace("sr=%d, bits=%d, channels=%d ", m_rate, m_bits, m_channels);
+//	m_rate = m_audio_src->get_samplerate();
+//	m_bits = m_audio_src->get_nbits();
+//	m_channels = m_audio_src->get_nchannels();
+//	AM_DBG lib::logger::get_logger()->trace("sr=%d, bits=%d, channels=%d ", m_rate, m_bits, m_channels);
 
 	if (!m_sdl_init) {
 #ifdef WITH_FFMPEG
@@ -350,8 +348,8 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 #else
 		AM_DBG lib::logger::get_logger()->trace("Not using ffmpeg MP3 support, only raw audio !");
 #endif
-		
-		init(m_rate, m_bits, m_channels);	
+		net::audio_format& fmt = m_audio_src->get_audio_format();
+		init(fmt.samplerate, fmt.bits, fmt.channels);	
 	}
 	if (m_channel_used < 0) {
 		new_channel();
@@ -489,7 +487,8 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		init(m_rate, m_bits, m_channels);
+		net::audio_format& fmt = m_audio_src->get_audio_format();
+		init(fmt.samplerate, fmt.bits, fmt.channels);
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);

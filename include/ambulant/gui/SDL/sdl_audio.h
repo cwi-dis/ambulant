@@ -112,9 +112,9 @@ class sdl_active_audio_renderer : public common::active_renderer, public lib::ti
     static int m_mixed_channels;
     
     Mix_Chunk m_audio_chunck;
-    int m_rate;
-	int m_bits;
-    int m_channels;
+//    int m_rate;
+//	int m_bits;
+//    int m_channels;
     int m_buffer_size;
 	int m_channel_used;
 	Uint16 m_audio_format;
