@@ -72,6 +72,9 @@ static char *subregionattrs[] = {
 	"transparent",
 	"fit",
 	"soundLevel",
+#ifdef USE_SMIL21
+	"soundAlign",
+#endif
 	NULL
 };
 
@@ -124,6 +127,10 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_fit(common::fit_default),
 	m_zindex(0),
 	m_bgcolor(lib::to_color(0,0,0)),
+	m_soundlevel(1.0),
+#ifdef USE_SMIL21
+	m_soundalign(common::sa_both),
+#endif
 	m_transparent(true),
 	m_showbackground(true),
 	m_inherit_bgcolor(false),
@@ -186,8 +193,8 @@ region_node::fix_from_dom_node()
 	AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
 	if (bgcolor != m_bgcolor || transparent != m_transparent || inherit != m_inherit_bgcolor) {
 		changed = true;
-		set_bgcolor(bgcolor, transparent, inherit);
 	}
+	set_bgcolor(bgcolor, transparent, inherit);
 	
 	// showBackground
 	const char *sbg_attr = m_node->get_attribute("showBackground");
@@ -202,8 +209,8 @@ region_node::fix_from_dom_node()
 	}
 	if (sbg != m_showbackground) {
 		changed = true;
-		set_showbackground(sbg);
 	}
+	set_showbackground(sbg);
 	
 	// And fit
 	const char *fit_attr = m_node->get_attribute("fit");
@@ -224,8 +231,8 @@ region_node::fix_from_dom_node()
 	}
 	if (fit != m_fit) {
 		changed = true;
-		set_fit(fit);
 	}
+	set_fit(fit);
 	
 	// And z-index.
 	// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
@@ -254,6 +261,28 @@ region_node::fix_from_dom_node()
 		changed = true;
 	}
 	set_soundlevel(sl);
+	
+#ifdef USE_SMIL21
+	// soundAlign
+	const char *soundalign_attr = m_node->get_attribute("soundAlign");
+	common::sound_alignment sa = common::sa_both;
+	
+	if (soundalign_attr == NULL || strcmp(soundalign_attr, "both") == 0)
+		sa = common::sa_both;
+	else if (strcmp(soundalign_attr, "left") == 0)
+		sa = common::sa_left;
+	else if (strcmp(soundalign_attr, "right") == 0)
+		sa = common::sa_right;
+	else {
+		lib::logger::get_logger()->trace("%s: Invalid soundAlign value: %s", m_node->get_sig().c_str(), soundalign_attr);
+		lib::logger::get_logger()->warn(gettext("Ignoring invalid soundAlign value in document"));
+	}
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundAlign=%d", (int)sa);
+	if (sa != m_soundalign) {
+		changed = true;
+		set_soundalign(sa);
+	}
+#endif // USE_SMIL21
 	return changed;
 }
 

@@ -327,7 +327,13 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 			const common::region_info *info = m_dest->get_info();
 			leftlevel = rightlevel = info->get_soundlevel();
 #ifdef USE_SMIL21
-			// TBD
+			common::sound_alignment align = info->get_soundalign();
+			if (align == common::sa_left) {
+				rightlevel = 0.0;
+			}
+			if (align == common::sa_right) {
+				leftlevel = 0.0;
+			}
 #endif
 			if (leftlevel == 1.0 && rightlevel == 1.0)
 				m_volcount = 0;

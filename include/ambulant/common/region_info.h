@@ -75,6 +75,13 @@ enum fit_t {fit_default, fit_hidden, fit_fill, fit_meet,
 /// Type that represents a SMIL 2.0 z-index value.
 typedef int zindex_t;
 
+
+#ifdef USE_SMIL21
+// Type that represents where audio is panned
+enum sound_alignment {sa_default, sa_both, sa_left, sa_right};
+#endif // USE_SMIL21
+
+
 /// Interface to a class that holds all SMIL 2.0 layout information for a region.
 /// This is the read-only interface, used to construct windows and such.
 class region_info {
@@ -109,6 +116,11 @@ class region_info {
 	
 	/// Return audio volume
 	virtual double get_soundlevel() const = 0;
+	
+#ifdef USE_SMIL21
+	/// Return audio placement
+	virtual sound_alignment get_soundalign() const = 0;
+#endif
 };
 
 /// Interface to animate region information.

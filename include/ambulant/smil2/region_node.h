@@ -79,7 +79,6 @@ namespace ambulant {
 namespace smil2 {
 
 enum dimension_inheritance { di_none, di_parent, di_rootlayout };
-	
 
 class region_node : public common::animation_destination {
   public:
@@ -131,7 +130,10 @@ class region_node : public common::animation_destination {
 	common::zindex_t get_zindex() const { return m_display_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
 	double get_soundlevel() const { return m_display_soundlevel; }
-	
+#ifdef USE_SMIL21
+	common::sound_alignment get_soundalign() const { return m_soundalign; }
+#endif
+
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
 	void set_fit(common::fit_t f) { m_fit = f; }
@@ -140,6 +142,9 @@ class region_node : public common::animation_destination {
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
+#ifdef USE_SMIL21
+	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; }
+#endif
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
 	// animation_destination interface
@@ -211,6 +216,9 @@ class region_node : public common::animation_destination {
 	common::zindex_t m_zindex;
 	lib::color_t m_bgcolor;
 	double m_soundlevel;
+#ifdef USE_SMIL21
+	common::sound_alignment m_soundalign;
+#endif // USE_SMIL21
 	bool m_transparent;
 	bool m_showbackground;
 	bool m_inherit_bgcolor;
