@@ -250,19 +250,20 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
 	
+	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Welcome.smil")))
+		PostMessage(WM_COMMAND, ID_HELP_WELCOME);
+	else
+		PostMessage(WM_SET_CLIENT_RECT, 
+			common::default_layout_width, ambulant::common::default_layout_height);
+
 	return 0;
 }
 
 void MmView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
-		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
-		LocateWelcomeDoc(TEXT("Welcome.smil")))
-		PostMessage(WM_COMMAND, ID_HELP_WELCOME);
-	else 
-		SendMessage(WM_SET_CLIENT_RECT, 
-			common::default_layout_width, ambulant::common::default_layout_height);
 }
 
 void MmView::OnDestroy()
