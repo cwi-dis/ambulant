@@ -462,14 +462,7 @@ qt_gui::slot_play() {
 		m_playing = true;
 		m_playmenu->setItemEnabled(m_play_id, false);
 		m_playmenu->setItemEnabled(m_pause_id, true);
-#if 1
 		m_mainloop->play();
-#else
-		pthread_t playthread;
-		int rv = pthread_create(&playthread, NULL,
-					&qt_mainloop::run,
-					m_mainloop);
-#endif
 	}
 	if (m_pausing) {
 		m_pausing = false;

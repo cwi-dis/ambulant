@@ -144,13 +144,15 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 		succeeded = true;
 	} catch (const XMLException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
-		m_logger->trace("Parsing %s: XMLException: %s", m_id, exceptionMessage);
-		m_logger->error(gettext("%s: Error parsing document"), m_id);
+		int linenumber = e.getSrcLine();
+		m_logger->error(gettext("Parse error line %d: %s: "),
+				linenumber, exceptionMessage);
 		XMLString::release(&exceptionMessage);
 	} catch (const SAXParseException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
-		m_logger->trace("Parsing %s: SAXParseException: %s", m_id, exceptionMessage);
-		m_logger->error(gettext("%s: Error parsing document"), m_id);
+		int linenumber = e.getLineNumber();
+		m_logger->error(gettext("Parse error line %d: %s: "),
+				linenumber, exceptionMessage);
 		XMLString::release(&exceptionMessage);
 	} catch (...) {
 		m_logger->error(gettext("%s: Unexpected exception during parsing"), m_id);

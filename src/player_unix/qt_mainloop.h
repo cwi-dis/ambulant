@@ -110,8 +110,6 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	bool player_done();
 	void player_start(QString document_name, bool start, bool old);
 	
-	static void* run(void* qt_mainloop);
-
 	long add_ref() {
 		return ++m_refcount;
 	}
