@@ -131,7 +131,7 @@ class attr_collector {
 lib::node::node(const char *local_name, const char **attrs, const node_context *ctx)
 :	m_parent(0), m_next(0), m_child(0), 
 	m_qname("",(local_name?local_name:"error")),
-	m_context(0) {
+	m_context(ctx) {
 	set_attributes(attrs);
 }
 
