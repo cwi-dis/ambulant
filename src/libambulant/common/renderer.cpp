@@ -69,7 +69,6 @@ inline double round(double v) {return floor(v+0.5);}
 #define round(v) ((int)(v+0.5))
 #endif
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

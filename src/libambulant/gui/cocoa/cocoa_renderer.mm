@@ -86,7 +86,7 @@ void
 cocoa_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("cocoa_renderer.start(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_renderer.start(0x%x, \"%s\")", (void *)this, m_node->get_url("src").get_url().c_str());
 	if (m_intransition) {
 		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
@@ -107,6 +107,7 @@ cocoa_renderer::start_outtransition(lib::transition_info *info)
 	if (m_trans_engine)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	m_lock.leave();
+	if (m_dest) m_dest->need_redraw();
 }
 
 void

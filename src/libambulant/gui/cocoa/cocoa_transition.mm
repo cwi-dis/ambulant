@@ -66,12 +66,45 @@ namespace gui {
 
 namespace cocoa {
 
+// Helper functions to setup and finalize transitions
+static NSImage *
+setup_transition_bitblit(bool outtrans, AmbulantView *view)
+{
+	if (outtrans) {
+		NSImage *rv = [view getTransitionOldSource];
+		[[view getTransitionSurface] lockFocus];
+		return rv;
+	} else {
+		return [view getTransitionNewSource];
+	}
+}
+
+static void
+finalize_transition_bitblit(bool outtrans, common::surface *dst)
+{
+	if (outtrans) {
+		cocoa_window *window = (cocoa_window *)dst->get_gui_window();
+		AmbulantView *view = (AmbulantView *)window->view();
+		[[view getTransitionSurface] unlockFocus];
+		
+		const lib::screen_rect<int> &r =  dst->get_rect();
+		lib::screen_rect<int> dstrect_whole = r;
+		dstrect_whole.translate(dst->get_global_topleft());
+		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+		[[view getTransitionNewSource] drawInRect: cocoa_dstrect_whole 
+			fromRect: cocoa_dstrect_whole
+			operation: NSCompositeSourceOver
+			fraction: 1.0];
+	}
+}
+
+
 void
 cocoa_transition_blitclass_fade::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-	NSImage *newsrc = [view getTransitionNewSource];
+	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_fade::update(%f)", m_progress);
 	const lib::screen_rect<int> &r =  m_dst->get_rect();
 	lib::screen_rect<int> dstrect_whole = r;
@@ -81,6 +114,7 @@ cocoa_transition_blitclass_fade::update()
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
 		fraction: m_progress];
+	finalize_transition_bitblit(m_outtrans, m_dst);
 }
 
 void
@@ -88,8 +122,7 @@ cocoa_transition_blitclass_rect::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *newsrc = [view getTransitionNewSource];
+	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rect::update(%f)", m_progress);
 	lib::screen_rect<int> newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
@@ -99,6 +132,7 @@ cocoa_transition_blitclass_rect::update()
 		fromRect: cocoa_newrect_whole
 		operation: NSCompositeSourceOver
 		fraction: 1.0];
+	finalize_transition_bitblit(m_outtrans, m_dst);
 }
 
 void
@@ -122,23 +156,27 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 	NSRect cocoa_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
 	NSRect cocoa_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
 	NSRect cocoa_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(cocoa_dstrect_whole);
-#endif
-	[oldsrc drawInRect: cocoa_olddstrect_whole 
-		fromRect: cocoa_oldsrcrect_whole
-		operation: NSCompositeCopy
-		fraction: 1.0];
+	if (m_outtrans) {
+		[newsrc drawInRect: cocoa_olddstrect_whole 
+			fromRect: cocoa_oldsrcrect_whole
+			operation: NSCompositeCopy
+			fraction: 1.0];
 
-	[newsrc drawInRect: cocoa_newdstrect_whole 
-		fromRect: cocoa_newsrcrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0];
+		[oldsrc drawInRect: cocoa_newdstrect_whole 
+			fromRect: cocoa_newsrcrect_whole
+			operation: NSCompositeSourceOver
+			fraction: 1.0];
+	} else {
+		[oldsrc drawInRect: cocoa_olddstrect_whole 
+			fromRect: cocoa_oldsrcrect_whole
+			operation: NSCompositeCopy
+			fraction: 1.0];
+
+		[newsrc drawInRect: cocoa_newdstrect_whole 
+			fromRect: cocoa_newsrcrect_whole
+			operation: NSCompositeSourceOver
+			fraction: 1.0];
+	}
 }
 
 void
@@ -146,8 +184,7 @@ cocoa_transition_blitclass_rectlist::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *newsrc = [view getTransitionNewSource];
+	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rectlist::update(%f)", m_progress);
 	std::vector< lib::screen_rect<int> >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
@@ -160,6 +197,7 @@ cocoa_transition_blitclass_rectlist::update()
 			operation: NSCompositeSourceOver
 			fraction: 1.0];
 	}
+	finalize_transition_bitblit(m_outtrans, m_dst);
 }
 
 // Helper function: convert a point list to an NSBezierPath
@@ -187,19 +225,27 @@ polygon2path(std::vector<lib::point> polygon)
 // Helper function: compositing newsrc onto screen with respect
 // to a path
 static void
-composite_path(AmbulantView *view, lib::screen_rect<int> dstrect_whole, NSBezierPath *path)
+composite_path(AmbulantView *view, lib::screen_rect<int> dstrect_whole, NSBezierPath *path, bool outtrans)
 {
 	NSImage *newsrc = [view getTransitionNewSource];
 	NSImage *tmpsrc = [view getTransitionTmpSurface];
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 
 	// First, we fill the temporary bitmap with transparent white
+	float oldalpha, newalpha;
+	if (outtrans) {
+		oldalpha = 1.0;
+		newalpha = 0.0;
+	} else {
+		oldalpha = 0.0;
+		newalpha = 1.0;
+	}
 	[tmpsrc lockFocus];
-	[[NSColor colorWithDeviceWhite: 1.0 alpha: 0.0] set];
+	[[NSColor colorWithDeviceWhite: 1.0 alpha: oldalpha] set];
 	NSRectFill(cocoa_dstrect_whole);
 
 	// Now we fill draw the path on the temp bitmap, with opaque white
-	[[NSColor colorWithDeviceWhite: 1.0 alpha: 1.0] set];
+	[[NSColor colorWithDeviceWhite: 1.0 alpha: newalpha] set];
 	[path fill];
 
 	// Next we composit the source image onto the temp bitmap, but only where
@@ -231,7 +277,7 @@ cocoa_transition_blitclass_poly::update()
 	// Then we composite it onto the screen
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	composite_path(view, dstrect_whole, path);
+	composite_path(view, dstrect_whole, path, m_outtrans);
 }
 
 void
@@ -255,7 +301,7 @@ cocoa_transition_blitclass_polylist::update()
 	// Then we composite it onto the screen
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	composite_path(view, dstrect_whole, path);
+	composite_path(view, dstrect_whole, path, m_outtrans);
 }
 
 smil2::transition_engine *
