@@ -28,7 +28,7 @@ namespace lib {
 ///////////////////////////
 // Adapter for expat parser
 
-class expat_parser {
+class expat_parser : public xml_parser {
   public:
 	enum {NS_SEP = '|'};
 	
@@ -38,6 +38,12 @@ class expat_parser {
 	// parses a chunk of data using expat parser
 	// throws a sax_error if the error handler is null
 	virtual bool parse(const char *buf, size_t len, bool final);
+	virtual void set_content_handler(sax_content_handler *h) {
+		m_content_handler = h;
+	}
+	virtual void set_error_handler(sax_error_handler *h) {
+		m_error_handler = h;
+	}	
 	
   private:
 	static void start_element(void *usrptr, const char *name, const char **attrs); 

@@ -64,6 +64,14 @@ class sax_error_handler {
 	virtual void error(const sax_error& error) = 0;
 };
 
+class xml_parser {
+  public:
+	virtual ~xml_parser(){}
+	virtual bool parse(const char *buf, size_t len, bool final) = 0;
+	virtual void set_content_handler(sax_content_handler *h) = 0;
+	virtual void set_error_handler(sax_error_handler *h) = 0;	
+};
+
 } // namespace lib
  
 } // namespace ambulant
