@@ -12,6 +12,8 @@
 
 #include "ambulant/lib/logger.h"
 
+#include <fstream>
+
 using namespace ambulant;
 
 lib::tree_builder::tree_builder()
