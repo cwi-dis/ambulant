@@ -175,8 +175,23 @@ class basic_rect {
 		return basic_size<S>(w, h);
 	}
 	
+	S width() const {
+		return w;
+	}
+
+	S height() const {
+		return h;
+	}
+
 	void translate(const basic_point<T>& p) {
 		x += p.x; y += p.y;
+	}
+	
+	basic_rect<T, S> inset(const basic_rect<T, S>& p) {
+		basic_rect<T, S> rv = p;
+		rv.translate(top_left());
+		rv &= this;
+		return rv;
 	}
 	
 	void operator+=(basic_point<T> p) {
@@ -332,11 +347,26 @@ class screen_rect {
 		return basic_size<T>(lmax(0,m_right-m_left), lmax(0,m_bottom-m_top));
 	}
 
+	T width() const {
+		return lmax(0,m_right-m_left);
+	}
+
+	T height() const {
+		return lmax(0,m_bottom-m_top);
+	}
+
 	void translate(const basic_point<T>& p) {
 		m_left += p.x; m_right += p.x;
 		m_top += p.y; m_bottom += p.y;
 	}
-	
+
+	screen_rect<T> inset(const screen_rect<T>& p) {
+		screen_rect<T> rv = p;
+		rv.translate(top_left());
+		rv &= this;
+		return rv;
+	}
+		
 	void fix() {
 		set_coord(lmin(m_left, m_right), lmin(m_top, m_bottom), lmax(m_left, m_right), lmax(m_top, m_bottom));
 	}
