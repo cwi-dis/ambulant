@@ -166,7 +166,13 @@ AC_ARG_WITH(qt,
      esac
      gui_toolkit_found=true],[
      case x$QTDIR in
-     x)	qt=false
+     x)	if test -f /usr/include/qt.h; then
+            # Debian: no QTDIR but Qt installed in /usr
+            QT_PREFIX=/ufs
+            qt=true
+        else
+            qt=false
+        fi
      	;;
      *) qt=true
      	gui_toolkit_found=true
