@@ -141,6 +141,10 @@ Here are some random remarks about testing the distributions.
   
 - On each platform, check that the version numbers are correct in things
   like the about dialog, Get Info (Properties) in the Finder (Explorer), etc.
+
+- We can use vin.cst.cwi.nl to test it on newer distributions then our desktop.
+  (at this moment fedora core 3)
+
   
 Uploading the distributions
 ===========================
@@ -148,7 +152,7 @@ Uploading the distributions
 
 Adding a new file release package.
 ----------------------------------
-A release package is a collection of the ambulant player (binary or source) 
+A release package is a collection of file releases (binary aswel as source) 
 for different platforms but the with same version number.
 To add a SF release package choose in the admin menu File Releases. At the bottom 
 of the page you will find a field where you can add the name of a new release 
@@ -196,6 +200,8 @@ To be supplied. Here are some random thoughts:
 - The design and API docs need to be uploaded
 - The SMIL documents need to be uploaded (if changed)
 
+
+
 Advertising the distributions
 =============================
 
@@ -212,3 +218,8 @@ To be supplied. Some ideas:
 -   adcnews@apple.com?
 -   news@macnn.com
 -   http://www.macupdate.com
+
+linux:
+- www.freshmeat.net
+- 
+
