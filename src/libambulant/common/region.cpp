@@ -177,6 +177,7 @@ lib::passive_region::get_bg_renderer()
 {
 	if (!m_bg_renderer && m_parent)
 		m_bg_renderer = m_parent->get_bg_renderer();
+	return m_bg_renderer;
 }
 
 void
