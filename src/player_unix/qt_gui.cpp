@@ -203,11 +203,12 @@ qt_gui::~qt_gui() {
 
 void 
 qt_gui::slot_about() {
-	int but = QMessageBox::information(this, "About AmbulantPlayer", about_text,
-		"Homepage...",
-		"Welcome doc",
-		"OK",
-		2);
+	int but = QMessageBox::information(this, "About AmbulantPlayer",
+					   about_text,
+					   "Homepage...",
+					   "Welcome doc",
+					   "OK",
+					   2);
 	if (but == 0) {
 		// Show homepage
 		open_web_browser("http://www.ambulantplayer.org");

@@ -51,6 +51,7 @@
  */
 
 #include "qt_logger.h"
+#include <qmessagebox.h>
 
 qt_logger_ostream::qt_logger_ostream()
  #if 0
@@ -165,8 +166,9 @@ qt_logger::get_qt_logger() {
 }
 
 void
-qt_logger::show_message(const char *format)
+qt_logger::show_message(const char *msg)
 {
+	QMessageBox::information(NULL, "AmbulantPlayer", msg);
 }
 
 QTextEdit*
