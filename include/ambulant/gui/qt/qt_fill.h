@@ -70,11 +70,6 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
-
 namespace ambulant {
 
 namespace gui {

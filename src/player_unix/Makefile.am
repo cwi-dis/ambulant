@@ -25,9 +25,12 @@ extra_arts_DEFINES=
 endif
 
 if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a -L$(FFMPEG_LIB)  -lavcodec
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
+	-L$(FFMPEG_FORMAT_LIB) -lavformat \
+	-L$(FFMPEG_CODEC_LIB)  -lavcodec
 extra_ffmpeg_ldflags=
-extra_ffmpeg_DEFINES=-I$(FFMPEG_INCLUDE) -DWITH_FFMPEG
+extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
+	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_FORMAT
 else
 extra_ffmpeg_LDADD=
 extra_ffmpeg_ldflags=

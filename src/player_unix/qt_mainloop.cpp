@@ -102,6 +102,8 @@ qt_mainloop::run(void* view) {
 	df->add_raw_factory(new net::posix_datasource_factory());
 	
 #ifdef WITH_FFMPEG
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+	df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");
 	df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");

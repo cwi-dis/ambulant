@@ -222,27 +222,34 @@ AC_ARG_WITH(ffmpeg,
 	[  --with-ffmpeg Turn on ffmpeg audio decoders],
 	[case "${withval}" in
 	  yes) ffmpeg=true
-	  	FFMPEG_INCLUDE=/usr/include/ffmpeg
-	  	FFMPEG_LIB=/usr/lib
+	  	FFMPEG_CODEC_INCLUDE=/usr/include/ffmpeg
+	  	FFMPEG_FORMAT_INCLUDE=/usr/include/ffmpeg
+	  	FFMPEG_CODEC_LIB=/usr/lib
+	  	FFMPEG_FORMAT_LIB=/usr/lib
 	  	;;
 	  no)  ffmpeg=false
 	  	;;
 	  *) ffmpeg=true
-	     FFMPEG_INCLUDE=${withval}
-	     FFMPEG_LIB=${withval}
+	     FFMPEG_CODEC_INCLUDE=${withval}
+	     FFMPEG_FORMAT_INCLUDE=`cd ${withval}/../libavformat; pwd`	     
+	     FFMPEG_CODEC_LIB=${withval}
+	     FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
 	     ;;
 	 esac],[
 	 ffmpeg=false
 	 ])
 if test $ffmpeg = true; then
 	# Test for consistency
-	if test ! -f $FFMPEG_INCLUDE/avcodec.h -o ! -f $FFMPEG_LIB/libavcodec.a; then
+	if test ! -f $FFMPEG_CODEC_INCLUDE/avcodec.h -o ! -f $FFMPEG_CODEC_LIB/libavcodec.a \
+		 -o ! -f $FFMPEG_FORMAT_INCLUDE/avformat.h -o ! -f $FFMPEG_FORMAT_LIB/libavformat.a; then
 		AC_MSG_ERROR("--with-ffmpeg value incorrect. Read configure.in for details")
 	fi
 fi
 AM_CONDITIONAL(WITH_FFMPEG, test x$ffmpeg = xtrue)
-AC_SUBST(FFMPEG_INCLUDE)
-AC_SUBST(FFMPEG_LIB)
+AC_SUBST(FFMPEG_CODEC_INCLUDE)
+AC_SUBST(FFMPEG_CODEC_LIB)
+AC_SUBST(FFMPEG_FORMAT_INCLUDE)
+AC_SUBST(FFMPEG_FORMAT_LIB)
 AC_MSG_RESULT($ffmpeg)
 
 #
