@@ -89,6 +89,10 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
 	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/play.png $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/pause.png $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/playactive.png $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/stop.png $(APPNAME).app/Contents/Resources
 
     # Install localizations
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj
