@@ -179,6 +179,7 @@ class ffmpeg_audio_datasource:
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
+  	
 };
 
 class ffmpeg_video_datasource:
@@ -201,7 +202,7 @@ class ffmpeg_video_datasource:
 	char* get_frame(double *timestamp, int *size);
 	void frame_done(double timestamp, bool keepdata);
 	
-    void data_avail(int64_t pts, uint8_t *data, int size);
+    void data_avail(int64_t ipts, uint8_t *data, int size);
 	bool buffer_full();
 
   private:
@@ -218,6 +219,8 @@ class ffmpeg_video_datasource:
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	bool m_thread_started;
+  	double m_pts_last_frame;
+  	double m_last_p_pts;
     lib::critical_section m_lock;
 };
 

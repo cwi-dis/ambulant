@@ -504,7 +504,9 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_client_callback(NULL),
-    m_thread_started(false)
+    m_thread_started(false),
+	m_pts_last_frame(0.0),
+	m_last_p_pts(0.0)
 {
 	AVCodec *codec;
 	AVCodecContext *codeccontext;
@@ -520,10 +522,16 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 	codeccontext = &context->streams[m_stream_index]->codec; 
 	codec = avcodec_find_decoder(codeccontext->codec_id);
 	
-	if( !codec || avcodec_open(codeccontext,codec) < 0 ) {
-		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) Failed to open codec", (void*)this);
+	if( !codec) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) No Codec found", (void*)this);
+		codec = avcodec_find_decoder(CODEC_ID_NONE);
+		AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) codec = 0x%x", (void*)this, codec);
 	}
 	
+	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
+			lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) Failed to open codec", (void*)this);
+	}
+
 	
 	if (m_stream_index >= context->nb_streams) {
 		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no audio streams");
@@ -639,18 +647,21 @@ ffmpeg_video_datasource::height()
 //#undef AM_DBG
 //#define AM_DBG
 void 
-ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
+ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 {
 	m_lock.enter();
 	int got_pic;
 	AVFrame frame;
 	AVPicture picture;
-//	AVCodecContext *context;
-//	AVCodec codec;
 	int len, dummy2;
 	int pic_fmt, dst_pic_fmt;
 	int width,height;
 	int num, den;
+	int framerate;
+	int framebase;
+	double pts, pts1;
+
+	double frame_delay;
 	got_pic = 0;
 	
 	m_src_end_of_file = (sz == 0);
@@ -660,35 +671,75 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:start decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
 		assert(&m_con->streams[m_stream_index]->codec != NULL);
 		while (sz > 0) {
-			len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
-			sz -= len;
-			if (got_pic) {
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
-				// Setup the AVPicture for the format we want, plus the data pointer
-				width = m_con->streams[m_stream_index]->codec.width;
-				height = m_con->streams[m_stream_index]->codec.height;
-				m_size = width * height * 4;
-				char *framedata = (char*) malloc(m_size);
-				assert(framedata != NULL);
-				dst_pic_fmt = PIX_FMT_RGBA32;
-				dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, width, height);
-				// The format we have is already in frame. Convert.
-				pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
-				img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
-				// And convert the timestamp.
-				num = m_con->pts_num;
-				den = m_con->pts_den;
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
-				double timestamp = ((double) pts * num) / den;
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%f",timestamp);
-				// And store the data.
-				std::pair<double, char*> element(timestamp, framedata);
-				m_frames.push(element);
-		  	} else {
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
-			}
+
+				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);	
+					
+				sz -= len;
+				if (got_pic) {
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+					// Setup the AVPicture for the format we want, plus the data pointer
+					width = m_con->streams[m_stream_index]->codec.width;
+					height = m_con->streams[m_stream_index]->codec.height;
+					m_size = width * height * 4;
+					char *framedata = (char*) malloc(m_size);
+					assert(framedata != NULL);
+					dst_pic_fmt = PIX_FMT_RGBA32;
+					dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, width, height);
+					// The format we have is already in frame. Convert.
+					pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
+					img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
+					
+					
+					// And convert the timestamp
+					num = m_con->pts_num;
+					den = m_con->pts_den;
+					
+					framerate = m_con->streams[m_stream_index]->codec.frame_rate;
+					framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
+					
+					
+					pts = 0;
+					
+					if (ipts != AV_NOPTS_VALUE)
+						pts = (double) ipts * num/den;
+					
+					pts1= pts;
+					
+					if (m_con->streams[m_stream_index]->codec.has_b_frames && frame.pict_type != FF_B_TYPE) {
+						pts = m_last_p_pts;
+						m_last_p_pts = pts1;
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:frame has B frames but this frame is no B frame  (this=0x%x) ", this);
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
+					}
+					
+					if (pts != 0 ) {
+						m_pts_last_frame = pts;
+					} else {
+						if (framerate != 0) {
+							frame_delay = (double) framebase/framerate;
+						} else {
+							frame_delay = 0;
+						}
+						pts = m_pts_last_frame + frame_delay;
+						m_pts_last_frame = pts;			
+						//~ if( frame.repeat_pict) {
+							//~ pts += frame.repeat_pict * (frame_delay * 0.5);
+						//~ }
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts was 0, set to %f", pts);
+					}
+					
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
+
+
+					// And store the data.
+					std::pair<double, char*> element(pts, framedata);
+					m_frames.push(element);
+		  		} else {
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
+				}
 		}
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:done decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
+
   	}
 	if ( m_frames.size() || m_src_end_of_file  ) {
 	  if ( m_client_callback ) {
