@@ -72,9 +72,9 @@ inline uchar redc(color_t rgb) {return uchar(rgb & 0xFF);}
 inline uchar greenc(color_t rgb) {return uchar((rgb >> 8) & 0xFF);}
 inline uchar bluec(color_t rgb) {return uchar((rgb >> 16) & 0xFF);}
 
-inline float redf(color_t rgb) { return redc(rgb) / 255.0; }
-inline float greenf(color_t rgb) { return greenc(rgb) / 255.0; }
-inline float bluef(color_t rgb) { return bluec(rgb) / 255.0; }
+inline float redf(color_t rgb) { return float(redc(rgb) / 255.0); }
+inline float greenf(color_t rgb) { return float(greenc(rgb) / 255.0); }
+inline float bluef(color_t rgb) { return float(bluec(rgb) / 255.0); }
 
 template <typename T>
 inline color_t to_color(T r, T g, T b)
