@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="libambulant_win32"
 	ProjectGUID="{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
+	RootNamespace="libambulant_win32"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -24,6 +25,7 @@
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="FALSE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -37,7 +39,8 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="copy $(TargetPath) ..\..\lib\win32"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -64,6 +67,7 @@
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT"
 				RuntimeLibrary="0"
+				RuntimeTypeInfo="FALSE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -77,7 +81,8 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="copy $(TargetPath) ..\..\lib\win32"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -114,28 +119,6 @@
 						RelativePath=".\gui\none\none_gui.cpp">
 					</File>
 				</Filter>
-				<Filter
-					Name="dx"
-					Filter="">
-					<File
-						RelativePath=".\gui\dx\dx_audio.cpp">
-					</File>
-					<File
-						RelativePath=".\gui\dx\dx_gui.cpp">
-					</File>
-					<File
-						RelativePath=".\gui\dx\dx_img.cpp">
-					</File>
-					<File
-						RelativePath=".\gui\dx\dx_player.cpp">
-					</File>
-					<File
-						RelativePath=".\gui\dx\dx_text.cpp">
-					</File>
-					<File
-						RelativePath=".\gui\dx\dx_viewport.cpp">
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="lib"
@@ -154,6 +137,24 @@
 				</File>
 				<File
 					RelativePath=".\lib\node.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\schema.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\sync_rule.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\time_attrs.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\time_node.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\time_state.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\timegraph.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\timer.cpp">
@@ -330,6 +331,9 @@
 						RelativePath="..\..\include\ambulant\lib\nscontext.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\playable.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\refcount.h">
 					</File>
 					<File
@@ -339,19 +343,37 @@
 						RelativePath="..\..\include\ambulant\lib\sax_types.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\schema.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\smil_time.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\string_util.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\sync_rule.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\thread.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\time_attrs.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\time_node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\time_state.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\timegraph.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\vnode.h">
 					</File>
 					<Filter
 						Name="win32"
@@ -431,6 +453,148 @@
 					<File
 						RelativePath="..\..\include\ambulant\common\timelines.h">
 					</File>
+				</Filter>
+				<Filter
+					Name="config"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\config\config.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\posix_features.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\select_compiler_config.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\select_platform_config.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\select_stdlib_config.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\suffix.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\config\user.h">
+					</File>
+					<Filter
+						Name="compiler"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\borland.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\comeau.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\common_edg.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\compaq_cxx.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\gcc.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\greenhills.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\hp_acc.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\intel.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\kai.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\metrowerks.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\mpw.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\sgi_mipspro.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\sunpro_cc.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\vacpp.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\compiler\visualc.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="platform"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\aix.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\amigaos.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\beos.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\bsd.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\cygwin.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\hpux.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\irix.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\linux.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\macos.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\solaris.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\platform\win32.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="stdlib"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\dinkumware.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\libcomo.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\libstdcpp3.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\modena.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\msl.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\roguewave.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\sgi.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\stlport.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\config\stdlib\vacpp.h">
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 		</Filter>
