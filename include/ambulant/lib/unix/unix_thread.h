@@ -13,6 +13,7 @@
 
 #include "ambulant/lib/thread.h"
 #include <pthread.h>
+#undef unix
 
 namespace ambulant {
 
