@@ -50,10 +50,10 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_area.h"
-#include "ambulant/gui/dx/dx_viewport.h"
-#include "ambulant/gui/dx/dx_window.h"
-#include "ambulant/gui/dx/dx_rgn.h"
+#include "ambulant/gui/dg/dg_area.h"
+#include "ambulant/gui/dg/dg_viewport.h"
+#include "ambulant/gui/dg/dg_window.h"
+#include "ambulant/gui/dg/dg_rgn.h"
 #include "ambulant/common/region_dim.h"
 
 //#define AM_DBG
@@ -64,31 +64,31 @@
 
 using namespace ambulant;
 
-gui::dx::dx_area::dx_area(
+gui::dg::dg_area::dg_area(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window) 
-:	common::renderer_playable(context, cookie, node, evp), 
+:	common::renderer_playable(context, cookie, node, evp),
 	m_rgn(0) {
-	AM_DBG lib::logger::get_logger()->trace("dx_area::ctr(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->trace("dg_area::ctr(0x%x)", this);	
 }
 
-gui::dx::dx_area::~dx_area() {
+gui::dg::dg_area::~dg_area() {
 	delete m_rgn;
 }
 
-void gui::dx::dx_area::start(double t) {		
+void gui::dg::dg_area::start(double t) {		
 	if(m_activated) return;	
 	lib::screen_rect<int> rrc = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace("dx_area::start(%s)", 
+	AM_DBG lib::logger::get_logger()->trace("dg_area::start(%s)", 
 		repr(rrc).c_str());
 	
 	const char *coords = m_node->get_attribute("coords");
 	const char *shape = m_node->get_attribute("shape");
 	if(!coords || !coords[0]) {
-		m_rgn = new dx_gui_region(m_dest->get_rect());
+		m_rgn = new dg_gui_region(m_dest->get_rect());
 	} else {
 		common::region_dim_spec rds(coords, shape);
 		rds.convert(rrc);
@@ -98,28 +98,28 @@ void gui::dx::dx_area::start(double t) {
 		int h = rds.height.absolute()?rds.height.get_as_int():rrc.height();
 		lib::screen_rect<int> rc;
 		rc.set_coord(l, t, l+w, t+h);
-		m_rgn = new dx_gui_region(rc);
+		m_rgn = new dg_gui_region(rc);
 	}
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 }
 
-void gui::dx::dx_area::stop() {
+void gui::dg::dg_area::stop() {
 	m_dest->renderer_done();
 	m_activated = false;
 	if(m_rgn) {
 		delete m_rgn;
 		m_rgn = 0;
-	}
+	}	
 }
 
-void gui::dx::dx_area::redraw(const lib::screen_rect<int> &dirty, 
+void gui::dg::dg_area::redraw(const lib::screen_rect<int> &dirty, 
 	common::abstract_window *window) {
-	if(!m_rgn) return;
+	if(!m_rgn) return;	
 	AM_DBG {
-		dx_window *dxwindow = static_cast<dx_window*>(window);
-		viewport *v = dxwindow->get_viewport();
+		dg_window *dgwindow = static_cast<dg_window*>(window);
+		viewport *v = dgwindow->get_viewport();
 		if(!v) return;
 		
 		lib::screen_rect<int> reg_rc = m_rgn->get_bounding_box();
@@ -130,7 +130,7 @@ void gui::dx::dx_area::redraw(const lib::screen_rect<int> &dirty,
 	}
 }
 
-void gui::dx::dx_area::user_event(const lib::point& pt, int what) {
+void gui::dg::dg_area::user_event(const lib::point& pt, int what) {
 	if(!m_rgn) return;
 	if(m_rgn->contains(pt)) {
 		if(what == common::user_event_click)
