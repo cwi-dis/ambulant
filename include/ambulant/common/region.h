@@ -87,7 +87,7 @@ class passive_region : public surface_template, public renderer {
 	virtual void show(active_region *cur);
 	virtual void active_region_done(active_region *cur);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
-	virtual void user_event(const point &where);
+	virtual void user_event(const point &where, int what = 0);
 	virtual void mouse_region_changed();
         
 	virtual common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
@@ -168,7 +168,7 @@ class active_region : public surface, public renderer {
 	
 	virtual void show(renderer *rend);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
-	virtual void user_event(const point &where);
+	virtual void user_event(const point &where, int what = 0);
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_redraw();
 	virtual void need_events(bool want);
