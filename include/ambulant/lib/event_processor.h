@@ -97,7 +97,10 @@ class event_processor {
 
 
 #include <queue>
+
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
+#endif
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/delta_timer.h"
@@ -114,7 +117,7 @@ class abstract_event_processor : public event_processor {
 		m_high_delta_timer(t), 
 		m_med_delta_timer(t), 
 		m_low_delta_timer(t)
-		{ assert(t); }
+		{ assert(t != 0); }
 	
 	~abstract_event_processor() {
 		// the timer is not owned by this
