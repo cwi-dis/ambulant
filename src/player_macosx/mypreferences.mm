@@ -60,25 +60,33 @@ mypreferences::install_singleton()
 bool
 mypreferences::load_preferences()
 {
-	NSLog(@"Loading preferences");
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	if ([prefs stringForKey: @"parser_id"])
-		m_parser_id = [[prefs stringForKey: @"parser_id"] cString];
-	if ([prefs stringForKey: @"validation_scheme"])
-		m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] cString];
+	NSDictionary *defaultDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+		@"any", @"parser_id",
+		@"auto", @"validation_scheme",
+		[NSNumber numberWithBool: true], @"do_namespaces",
+		[NSNumber numberWithBool: false], @"do_schema",
+		[NSNumber numberWithBool: false], @"validation_schema_full_checking",
+		[NSNumber numberWithInt: 2], @"log_level",
+		[NSNumber numberWithBool: true], @"use_plugins",
+		@"", @"plugin_dir",
+		nil];
+	[prefs registerDefaults: defaultDefaults];
+	m_parser_id = [[prefs stringForKey: @"parser_id"] cString];
+	m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] cString];
 	m_do_namespaces = [prefs boolForKey: @"do_namespaces"];
 	m_do_schema = [prefs boolForKey: @"do_schema"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = [prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
+	save_preferences();
 	return true;
 }
 
 bool
 mypreferences::save_preferences()
 {
-	NSLog(@"Saving preferences");
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[prefs setObject: [NSString stringWithCString: m_parser_id.c_str()] forKey: @"parser_id"];
 	[prefs setObject: [NSString stringWithCString: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
