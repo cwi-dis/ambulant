@@ -126,7 +126,8 @@ unix_preferences::load_preferences() {
 	AM_DBG logger::get_logger()->debug("%s", id.c_str());
 
 	return load_preferences_from_file ()
-	       || load_preferences_from_environment();
+//	       || load_preferences_from_environment()
+	  ;
 }
 
 bool
@@ -250,6 +251,7 @@ unix_preferences::load_preferences_from_file() {
 		std::string s_value = value;
 		rv &= load_preference(s_name, s_value);
 	}
+	fclose (preferences_filep);
 	return rv;
 }
 	
@@ -288,6 +290,7 @@ unix_preferences::save_preferences() {
 			break;
 		}
 	}
+	fclose (preferences_filep);
 	return true;
 }
  

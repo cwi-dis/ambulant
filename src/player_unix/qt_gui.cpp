@@ -100,7 +100,9 @@ find_welcome_doc()
 }
 
 qt_gui::qt_gui(const char* title,
-	       const char* initfile) :
+	       const char* initfile)
+ :
+	QWidget(),  
         m_busy(true),
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	m_cursor_shape(Qt::ArrowCursor),
@@ -139,11 +141,14 @@ qt_gui::qt_gui(const char* title,
 		QPopupMenu* filemenu = new QPopupMenu (this);
 		assert(filemenu);
 		filemenu->insertItem("&Open", this, SLOT(slot_open()));
-		filemenu->insertItem("Open &URL", this, SLOT(slot_open_url()));
+		filemenu->insertItem("Open &URL", this,
+				     SLOT(slot_open_url()));
 		filemenu->insertItem("&Full Screen", this,
 				     SLOT(showFullScreen()));
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
-//		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
+		filemenu->insertItem("&Settings", this,
+				     SLOT(slot_settings_select()));
+  //		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
 		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
 		m_menubar->insertItem("&File", filemenu);
 		
@@ -358,6 +363,37 @@ qt_gui::slot_stop() {
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
 	m_playing = false;
+}
+
+void 
+qt_gui::slot_settings_select() {
+	printf("slot_settings\n");
+	m_settings = new qt_settings();
+	QWidget* settings_widget = m_settings->settings_select();
+	m_finish_hb = new QHBox(settings_widget);
+	m_ok_pb	= new QPushButton("OK", m_finish_hb);
+	m_finish_hb->setSpacing(50);
+	QPushButton* m_cancel_pb= new QPushButton("Cancel", m_finish_hb);
+	QObject::connect(m_ok_pb, SIGNAL(released()),
+			 this, SLOT(slot_settings_ok()));
+	QObject::connect(m_cancel_pb, SIGNAL(released()),
+			 this, SLOT(slot_settings_cancel()));
+	settings_widget->show();
+}
+
+void
+qt_gui::slot_settings_ok() {
+	printf("slot_settings_ok\n");
+	m_settings->settings_ok();
+	slot_settings_cancel();
+}
+
+void
+qt_gui::slot_settings_cancel() {
+	printf("slot_settings_cancel()\n");
+	m_settings->settings_finish();
+	delete m_settings;
+	m_settings = NULL;
 }
 
 void

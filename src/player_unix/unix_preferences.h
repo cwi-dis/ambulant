@@ -74,7 +74,7 @@ class preference_entry {
 	void* pref_store;
 };
 
-class unix_preferences : ambulant::common::preferences {
+class unix_preferences : public ambulant::common::preferences {
 
  public:
 	unix_preferences();

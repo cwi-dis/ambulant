@@ -67,6 +67,7 @@
 #endif/*QT_NO_FILEDIALOG*/
 #include <qcursor.h>
 #include <qdial.h>
+#include <qhbox.h>
 #include <qfiledialog.h>
 #include <qimage.h>
 #include <qinputdialog.h>
@@ -83,6 +84,8 @@
 #include <qtextstream.h>
 #include <qtooltip.h>
 #include <qwidget.h>
+
+#include "qt_settings.h"
 
 class qt_mainloop;
 
@@ -113,17 +116,21 @@ class qt_gui : public QWidget {
 
    private:
 	bool	     m_busy;
+	QPushButton* m_cancel_pb; // for Settings window
+	QHBox* 	     m_finish_hb; // for Settings window
+	qt_mainloop* m_mainloop;
+	QMenuBar*    m_menubar;
+	QPushButton* m_ok_pb;	 // for Settings window
 	int	     m_o_x;	 // x coord of origin play window
 	int	     m_o_y;	 // y coord of origin play window
-	qt_mainloop* m_mainloop;
 	int          m_pause_id;
 	bool         m_pausing;
 	int          m_play_id;
 	bool         m_playing;
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
+	qt_settings* m_settings; // the Settings window
 	QString      m_smilfilename;
-	QMenuBar*    m_menubar;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
@@ -141,6 +148,9 @@ class qt_gui : public QWidget {
 	void slot_pause();
 	void slot_player_done();
 	void slot_quit();
+	void slot_settings_cancel();
+	void slot_settings_ok();
+	void slot_settings_select();
 	void slot_stop();
 
   signals:
