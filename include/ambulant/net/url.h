@@ -90,6 +90,9 @@ class url {
 
 	// The path part of this url.
     string m_path;
+
+	// The path separator characters in m_path
+	char *m_pathsep;
     
 	// The query part of this url.
     string m_query;

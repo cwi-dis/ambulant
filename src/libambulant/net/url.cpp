@@ -131,12 +131,14 @@ void net::url::init_statics() {
  
 net::url::url() 
 :	m_absolute(true),
-	m_port(0)
+	m_port(0),
+	m_pathsep("/")
 {
 }
  
 net::url::url(const string& spec) 
-:	m_port(0)
+:	m_port(0),
+	m_pathsep("/")
 {
 	set_from_spec(spec);
 }
@@ -146,7 +148,8 @@ net::url::url(const string& protocol, const string& host,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(0),
-	m_path(path)
+	m_path(path),
+	m_pathsep("/")
 {
 	m_absolute = (m_protocol != "");
 }
@@ -156,7 +159,8 @@ net::url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path)
+	m_path(path),
+	m_pathsep("/")
 {
 	m_absolute = (m_protocol != "");
 }
@@ -166,7 +170,8 @@ net::url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path), 
+	m_path(path),
+	m_pathsep("/"), 
 	m_query(query), 
 	m_ref(ref)
 {
@@ -245,6 +250,7 @@ void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
 	m_host = "localhost";
 	m_port = 0;
 	m_path = sc.get_src();
+	m_pathsep = "/\\";
 }
 
 // pat: "\\n"
@@ -254,6 +260,7 @@ void net::url::set_from_wince_path(lib::scanner& sc, const std::string& pat) {
 	m_host = "localhost";
 	m_port = 0;
 	m_path = sc.get_src();
+	m_pathsep = "/\\";
 }
 
 void net::url::set_from_relative_path(lib::scanner& sc, const std::string& pat) {
@@ -320,7 +327,7 @@ net::url net::url::join_to_base(const net::url &base) const
 		newpath = basepath; 
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
-		newpath = lib::filesys::join(lib::filesys::get_base(basepath, "/"), newpath, "/");
+		newpath = lib::filesys::join(lib::filesys::get_base(basepath, base.m_pathsep), newpath, m_pathsep);
 		//newpath = lib::filesys::join(basepath, newpath, "/");
 	}
 	AM_DBG lib::logger::get_logger()->trace("url::join_to_base: old \"%s\" base \"%s\" newpath \"%s\"",
