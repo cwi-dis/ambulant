@@ -78,6 +78,10 @@ class dx_img_renderer : public common::renderer_playable {
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
 	image_renderer *m_image;
+	
+	// for debugging
+	common::abstract_window *m_window;
+	lib::screen_rect<int> m_msg_rect;
 };
 
 } // namespace dx
