@@ -122,6 +122,9 @@ smil_player::~smil_player() {
 	// sync destruction
 	m_timer->pause();
 	cancel_all_events();
+	m_timer->pause();
+	cancel_all_events();		
+	m_scheduler->reset_document();
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++)
 		(*it).second->release();
