@@ -16,7 +16,8 @@
 // temporary debug messages
 #include <iostream>
 #include <ostream>
-#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <iomanip>
 #include <cstring>
 
@@ -101,7 +102,7 @@ class active_datasource : public ambulant::lib::ref_counted {
 public:
 	// constructors 
 	active_datasource();
-	active_datasource(passive_datasource *const source,std::ifstream &file);
+	active_datasource(passive_datasource *const source,std::FILE *file);
 	 // destructor
 	~active_datasource();
 
@@ -135,9 +136,9 @@ private:
     passive_datasource *m_source;
     ambulant::lib::basic_atomic_count<ambulant::lib::unix::critical_section> m_refcount;
 	int m_filesize;
-	std::ifstream m_stream;
-	void filesize(std::ifstream &file);
-    void read_file(std::ifstream &file);
+	FILE *m_stream;
+	void filesize();
+    void read_file();
 
 };
 
