@@ -129,7 +129,7 @@ class dx_player :
 	// common::window_factory implementation
 	
 	common::abstract_window *new_window(const std::string& name, 
-		lib::size bounds, common::renderer *region);
+		lib::size bounds, common::surface_source *src);
 		
 	common::gui_region *new_mouse_region();
 	
