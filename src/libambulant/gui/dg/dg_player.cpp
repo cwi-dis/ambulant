@@ -106,18 +106,18 @@ gui::dg::dg_player::dg_player(const net::url& u)
 	m_update_event(0),	
 	m_logger(lib::logger::get_logger()) {
 	
+	// Fill the factory object
+	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
+	m_factory.df = NULL;
+	m_factory.wf = this->get_window_factory(); 
+
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
-	lib::document *doc = lib::document::create_from_url(u);
+	lib::document *doc = lib::document::create_from_url(&m_factory, u);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", u.get_url().c_str());
 		return;
 	}
-
-	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
-	m_factory.df = NULL;
-	
-	m_factory.wf = this->get_window_factory(); 
 
 	
 	// Create a player instance
@@ -535,7 +535,7 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	}
 	
 	// Parse the provided URL. 
-	lib::document *doc = lib::document::create_from_url(newdoc);
+	lib::document *doc = lib::document::create_from_url(&m_factory, newdoc);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
 		return;

@@ -108,14 +108,15 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	m_update_event(0),	
 	m_logger(lib::logger::get_logger()) {
 	
-	// Parse the provided URL. 
-	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
-	lib::document *doc = lib::document::create_from_url(u);
-	
+	// Fill the factory object
 	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
 	m_factory.df = NULL;
 	
 	m_factory.wf = this->get_window_factory(); 
+	
+	// Parse the provided URL. 
+	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
+	lib::document *doc = lib::document::create_from_url(&m_factory, u);
 	
 	if(!doc) {
 		// message already logged
@@ -207,7 +208,7 @@ void gui::dx::dx_player::restart() {
 		delete m_player;
 	}
 	m_player = 0;	
-	lib::document *doc = lib::document::create_from_url(m_url);
+	lib::document *doc = lib::document::create_from_url(&m_factory, m_url);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", m_url.get_url().c_str());
 		return;
@@ -589,7 +590,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
 	}
 	
 	// Parse the provided URL. 
-	lib::document *doc = lib::document::create_from_url(newdoc);
+	lib::document *doc = lib::document::create_from_url(&m_factory, newdoc);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
 		return;
