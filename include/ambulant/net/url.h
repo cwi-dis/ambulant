@@ -64,6 +64,7 @@ namespace ambulant {
 
 namespace net {
 
+/// Class representing a URL.
 class url {
 
 	// String type used by this impplementation
@@ -104,59 +105,82 @@ class url {
     string m_mime;
 	
   public:
+  
+	/// Default constructor: create an empty URL.
  	url(); 
  
+	/// Create a URL from a given string.
 	url(const string& spec); 
+	
+	/// Create a URL from protocol, host and path.
 	url(const string& protocol, const string& host, const string& path); 
 		
+	/// Create a URL from protocol, host, port and path.
 	url(const string& protocol, const string& host, int port, 
 		const string& path); 
 	
+	/// Create a URL from protocol, host, port, path, query and fragment.
 	url(const string& protocol, const string& host, int port, 
 		const string& path, const string& query, const string& ref); 
 		
+	/// Return the protocol of this URL.
 	const string& get_protocol() const {
 		return m_protocol;
 	}
 	
+	/// Return the host of this URL.
 	const string& get_host() const {
 		return m_host;
 	}
 	
+	/// Return the port of this URL.
 	short_type get_port() const {
 		return m_port;
 	}
 	
+	/// Return the fragment of this URL.
 	const string& get_ref() const {
 		return m_ref;
 	}
 	
+	/// Return the query of this URL.
 	const string& get_query() const {
 		return m_query;
 	}
 	
+	/// Return the path of this URL.
 	const string& get_path() const {
 		return m_path;
 	}
 	
+	/// Return the mimetype of this URL (not implemented).
 	const string& get_mime() const {
 		return m_mime;
 	}
 	
+	/// Return true if the URL is absolute.
 	bool is_absolute() const {
 		return m_absolute;
 	}
 	
+	/// Return true if the URL refers to a local file.
 	bool is_local_file() const;
 	
+	/// If the URL refers to a local file: return the filename.
 	string get_file() const;
 	
+	/// Return the whole URL as a string.
 	string get_url() const;
 
+	/// Return the whole URL as a string.
 	operator string() const { return get_url(); }
 	
+	/// Join a relative URL to a base URL.
+	/// An absolute URL is returned as-is.
 	url join_to_base(const url &base) const;
 	
+	/// Return true if two URLs refer to the same document.
+	/// In other words, if they only differ in fragment.
 	bool same_document(const url &base) const;
 		
  	static void init_statics();

@@ -289,7 +289,7 @@ class node {
 	std::string get_path_display_desc() const;
 	
 	/// Return a friendly string describing this node.
-	/// The string will be of a form similar to <tag id="...">
+	/// The string will be of a form similar to \<tag id="...">
 	std::string get_sig() const;
 	
 	/////////////////////
