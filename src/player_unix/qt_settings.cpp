@@ -115,11 +115,12 @@ qt_settings::settings_select() {
 	
 	m_xerces_vg	= new QVGroupBox("Xerces options:",
 					 m_settings_vg);
+	
 	m_namespace_cb	= new QCheckBox("Enable XML namespace support",
 					m_xerces_vg);
 	m_namespace_cb->setChecked(m_preferences->m_do_namespaces);
 	// do validation or not
-	m_validation_hb = new QHBox(m_settings_vg);
+	m_validation_hb = new QHBox(m_xerces_vg);
 	m_validation_lb = new QLabel("Enable XML validation:", m_validation_hb);
 	m_validation_co = new QComboBox("QComboBox3", m_validation_hb);
 	m_validation_co->insertStrList(val_schemes);
