@@ -174,7 +174,7 @@ mainloop::create_document(const char *filename)
 		ambulant::net::url cwd_url(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
-		/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
+		AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
