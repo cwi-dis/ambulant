@@ -165,35 +165,38 @@ net::ffmpeg_audio_datasource::callback()
 		select_decoder("mp3"); // XXX should get from m_src
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selected the MP3 decoder");
 	}
-	if(m_con == NULL && m_codec) {
-		m_con = avcodec_alloc_context();
-		result = avcodec_open(m_con, m_codec);
-    	if ( result < 0) {
-			lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback : Failed to open avcodec");
-			m_con = NULL; // XXX Should we free?
-		} else {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : open avcodec succes !");
-		}
-	}
+	// XXX This is done in  select_decoder now !
+	
+	//~ if(m_con == NULL && m_codec) {
+		//~ m_con = avcodec_alloc_context();
+		//~ result = avcodec_open(m_con, m_codec);
+    	//~ if ( result < 0) {
+			//~ lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback : Failed to open avcodec");
+			//~ m_con = NULL; // XXX Should we free?
+		//~ } else {
+			//~ AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : open avcodec succes !");
+		//~ }
+	//~ }
 	if (m_con) {
 		size = m_src->size();
-		while (size > 0 && !m_buffer.buffer_full()) {
+		//while (size > 0 && !m_buffer.buffer_full()) {
 			m_inbuf = (uint8_t*) m_src->get_read_ptr();
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", size);
+			if(!m_buffer.buffer_full()){
 			m_outbuf = (uint8_t*) m_buffer.get_write_ptr(20*size);
 
-			if (max_block < size) {
-				blocksize = max_block;
-			} else {
-				blocksize = size;
-			}
-			decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
-			lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
+			//~ if (max_block < size) {
+				//~ blocksize = max_block;
+			//~ } else {
+				//~ blocksize = size;
+			//~ }
+			decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, size);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
 			m_buffer.pushdata(outsize);
 			m_src->readdone(decoded);
-			size = m_src->size();
-		}
+			}
+		//}
 	
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): calling client callback");

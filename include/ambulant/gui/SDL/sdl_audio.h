@@ -63,6 +63,11 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 
+
+#define SDL_BUFFER_MAX_BYTES 8192
+#define SDL_BUFFER_MIN_BYTES 2048
+
+
  
 namespace ambulant {
 namespace gui {
@@ -97,10 +102,11 @@ class sdl_active_audio_renderer : public common::active_renderer, public lib::ti
 	void playdone();
 		  
   private:
+	void new_channel();  
+	
 	net::audio_datasource *m_audio_src;
  	int inc_channels();
 	int init(int rate, int bits, int channels);
-	
     static bool m_sdl_init;
     static int m_mixed_channels;
     
