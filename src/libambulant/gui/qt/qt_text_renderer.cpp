@@ -95,9 +95,9 @@ qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
 		ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 		QPainter paint;
 		paint.begin(aqw->ambulant_pixmap());
-		paint.setPen(Qt::blue);
-		paint.eraseRect(L,T,W,H);
+//		paint.eraseRect(L,T,W,H);
 // QtE		paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
+		paint.setPen(Qt::black);
 		paint.drawText(L,T,W,H,
 			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
 			m_text_storage);

@@ -88,14 +88,13 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 				  " %s0x%x,%s(%d,%d,%d,%d)",
 				  " clearing to ", (long)color, 
 				  " local_ltwh=",L,T,W,H);
-	QColor* bgc = new QColor(lib::redc(color),
-				 lib::greenc(color),
-				 lib::bluec(color));
-	paint.setBrush(*bgc);
+	QColor bgc = QColor(lib::redc(color),
+			    lib::greenc(color),
+			    lib::bluec(color));
+	paint.setBrush(bgc);
 	paint.drawRect(L,T,W,H);
 	paint.flush();
 	paint.end();
-	delete bgc;
 }
 
 void

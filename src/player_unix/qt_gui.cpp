@@ -220,6 +220,7 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 		 strcpy(&pathname[workdirlen], "/");
 		 strcpy(&pathname[workdirlen+1], smilfilename);
 		 smilfilename = pathname;
+		 free(workdir);
 	} else   smilfilename = strdup(smilfilename);
 	        
 	m_smilfilename = smilfilename;

@@ -83,14 +83,14 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_active_fill_renderer.redraw:"
 			" clearing to 0x%x", (long)bgcolor);
-		QColor* bgc = new QColor(lib::redc(bgcolor),
-					 lib::greenc(bgcolor),
-					 lib::bluec(bgcolor));
+		QColor bgc = QColor(lib::redc(bgcolor),
+				    lib::greenc(bgcolor),
+				    lib::bluec(bgcolor));
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_active_fill_renderer.redraw(0x%x,"
 			" local_ltrb=(%d,%d,%d,%d)",
 			(void *)this, L,T,W,H);
-		paint.setBrush(*bgc);
+		paint.setBrush(bgc);
 		paint.drawRect(L,T,W,H);
 	}
 	paint.flush();
@@ -123,10 +123,10 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 			 " %s0x%x,%s(%d,%d,%d,%d)",
 			" clearing to ", (long)bgcolor, 
 			" local_ltwh=",L,T,W,H);
-		QColor* bgc = new QColor(lib::redc(bgcolor),
-					 lib::greenc(bgcolor),
-					 lib::bluec(bgcolor));
-		paint.setBrush(*bgc);
+		QColor bgc = QColor(lib::redc(bgcolor),
+				    lib::greenc(bgcolor),
+				    lib::bluec(bgcolor));
+		paint.setBrush(bgc);
 		paint.drawRect(L,T,W,H);
 		paint.flush();
 		paint.end();
