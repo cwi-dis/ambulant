@@ -52,6 +52,7 @@
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region.h"
+#include "ambulant/common/preferences.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -73,7 +74,7 @@ smil_surface_factory::new_topsurface(
 	common::renderer *bgrend,
 	common::window_factory *wf)
 {
-	lib::size bounds = lib::size(200, 200);
+	lib::size bounds = lib::size(common::default_layout_width, common::default_layout_height);
 	if (info) {
 		lib::basic_rect<int, int> rect = info->get_rect();
 		bounds = lib::size(rect.width(), rect.height());

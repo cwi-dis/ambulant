@@ -53,6 +53,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/schema.h"
 #include "ambulant/common/region_eval.h"
+#include "ambulant/common/preferences.h"
 #include "ambulant/smil2/region_node.h"
 
 #ifndef AM_DBG
@@ -236,7 +237,7 @@ region_node::get_rect() const {
 	}
 	lib::basic_rect<int> rc;
 	if(inherit_region == NULL) {
-		rc = lib::basic_rect<int, int>(lib::basic_size<int>(200, 200)); 
+		rc = lib::basic_rect<int, int>(lib::basic_size<int>(common::default_layout_width, common::default_layout_height)); 
 	} else {
 		rc = inherit_region->get_rect();
 	}

@@ -57,8 +57,8 @@ namespace ambulant {
 
 namespace common {
 
-const unsigned int default_layout_width = 200;
-const unsigned int default_layout_height = 200;
+const unsigned int default_layout_width = 640;
+const unsigned int default_layout_height = 480;
 
 
 } // namespace common
