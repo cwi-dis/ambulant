@@ -134,13 +134,13 @@ void gui::dx::image_renderer::open(const net::url& u, viewport* v) {
 	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
 	::DeleteDC(hdc);
 	if(!decoder) {
-		lib::logger::get_logger()->show("Failed to create decoder for image %s", ::repr(u).c_str());
+		lib::logger::get_logger()->show("Failed to create decoder for image %s", u.get_url().c_str());
 		return;
 	}
 	
 	dib_surface<lib::color_trible>* dibsurf = decoder->decode();
 	if(!dibsurf) {
-		lib::logger::get_logger()->warn("Failed to decode image %s", ::repr(u).c_str());
+		lib::logger::get_logger()->warn("Failed to decode image %s", u.get_url().c_str());
 		delete decoder;
 		return;
 	}

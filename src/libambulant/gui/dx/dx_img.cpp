@@ -94,6 +94,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());
+		return;
 	}
 	m_image = new image_renderer(url, v);
 }

@@ -247,7 +247,9 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
 		
 	AM_DBG 	{
-		std::basic_string<text_char> msg = m_node->get_path_display_desc();
+		std::string s = m_node->get_path_display_desc();
+		textptr tp(s.c_str());
+		std::basic_string<text_char> msg = (text_char*) tp;
 		v->draw(msg, vid_reg_rc_dirty, lib::to_color("orange"));
 	}
 }
