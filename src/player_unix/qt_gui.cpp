@@ -56,6 +56,7 @@
 #include <pthread.h>
 #include <libgen.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
@@ -65,8 +66,32 @@
 #define AM_DBG if(0)
 #endif
 
-const QString about_text = "This is the Qt GUI for Ambulant.\n"
-			   "Work in  progress by Kees Blom (C) 2004";
+const QString about_text = 
+	"Ambulant SMIL 2.0 player.\n"
+	"Copyright Stichting CWI, 2004.\n\n"
+	"License: modified GPL.";
+
+
+// Find welcome document.
+// XXX This code is incorrect, really.
+char *welcome_locations[] = {
+	"Welcome/Welcome.smil",
+	"../Welcome/Welcome.smil",
+	"Extras/Welcome/Welcome.smil",
+	"../Extras/Welcome/Welcome.smil",
+	"/usr/local/lib/ambulant/Welcome/Welcome.smil",
+	NULL
+};
+
+static char * 
+find_welcome_doc()
+{
+	char **p;
+	for(p = welcome_locations; *p; p++) {
+		if (access(*p, 0) >= 0) return *p;
+	}
+	return NULL;
+}
 
 qt_gui::qt_gui(const char* title,
 	       const char* initfile) :
@@ -125,7 +150,7 @@ qt_gui::qt_gui(const char* title,
 		/* Help */
 		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
 		assert(helpmenu);
-		helpmenu->insertItem("&About", this, SLOT(slot_about()));
+		helpmenu->insertItem("&About AmbulantPlayer", this, SLOT(slot_about()));
 		menubar->insertItem("&Help", helpmenu);
 		menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
@@ -139,9 +164,24 @@ qt_gui::~qt_gui() {
 
 void 
 qt_gui::slot_about() {
-	QMessageBox::information(this, m_programfilename, about_text,
-				 QMessageBox::Ok | QMessageBox::Default
-				 );
+	int but = QMessageBox::information(this, "About AmbulantPlayer", about_text,
+		"Homepage...",
+		"Welcome doc",
+		"OK",
+		2);
+	if (but == 0) {
+		// Show homepage
+		open_web_browser("http://www.ambulantplayer.org");
+	} else if (but == 1) {
+		// Play welcome document
+		char *welcome_doc = find_welcome_doc();
+		if (welcome_doc) {
+			openSMILfile(welcome_doc, IO_ReadOnly);
+			slot_play();
+		}
+	} else if (but == 2) {
+		// Do nothing
+	}
 }
 
 bool 
@@ -326,7 +366,19 @@ main (int argc, char*argv[]) {
 	    mywidget->openSMILfile(argv[argc-1], IO_ReadOnly);
 	    mywidget->slot_play();
 	  }
+	} else {
+	  char fnbuf[1024];
+	  snprintf(fnbuf, 1024, "%s/.ambulant_welcomeSeen", getenv("HOME"));
+	  if (access(fnbuf, 0) < 0) {
+	  	close(creat(fnbuf, 0666));
+		char *welcome_doc = find_welcome_doc();
+		if (welcome_doc) {
+			mywidget->openSMILfile(welcome_doc, IO_ReadOnly);
+			mywidget->slot_play();
+		}
+	  }
 	}
+	  	
 	myapp.exec();
 	std::cout << "Exiting program" << std::endl;
 	return 0;

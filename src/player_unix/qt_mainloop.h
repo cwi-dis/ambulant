@@ -72,6 +72,7 @@ using namespace lib;
 using namespace gui;
 using namespace qt;
 
+void open_web_browser(const std::string &href);
 
 class qt_mainloop_callback_arg {
 };
