@@ -56,6 +56,7 @@
 
 #include <time.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 using namespace ambulant;
 
