@@ -1,0 +1,21 @@
+About vslgrind, kcachegrind and calltree.
+
+valgrind is a system to find memory access errors and memory leaks.
+In addition it can be used to find "hot spots" in program code
+and the call trees of the functions leading to these hot spots.
+
+Packages downloaded:
+valgrind-2.1.1
+calltree-0.9.7
+kcachegrind-0.4.5
+graphviz-1.12
+
+In addition kde-devel must be installed
+(only available via RPM, I used daniel's machine)
+
+For "ntpl" kernels, use
+export LD_ASSUME_KERNEL=2.4.19
+until valgrind handles "ntpl" properly.
+
+Use "valgrind.supp" to get rid of some
+useless messages.
