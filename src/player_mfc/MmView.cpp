@@ -305,11 +305,8 @@ void MmView::OnViewTests() {
 	dlg.m_ofn.lpstrTitle = "Select SMIL tests filter file";
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
-		if(!ambulant::lib::test_attrs::load_test_attrs(LPCTSTR(str))) {
-			AfxMessageBox(CString("Failed to load filter file: ") + str);
-			m_curFilter = "";
-		} else
-			m_curFilter = str;
+		player->load_tests_filter(LPCTSTR(str));
+		m_curFilter = str;
 	}	
 }
 
