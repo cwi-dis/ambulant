@@ -152,6 +152,8 @@ schema::get_layout_type(const lib::q_name_pair& qname) const {
 	if(qname.second == "root-layout" ) type = l_rootlayout;
 	else if(qname.second == "topLayout") type = l_toplayout;
 	else if(qname.second == "region") type = l_region;
+	else if(m_discrete.find(qname.second) != m_discrete.end()) type = l_media;
+	else if(m_continuous.find(qname.second) != m_continuous.end()) type = l_media;
 	return type;
 }
 

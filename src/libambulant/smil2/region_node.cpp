@@ -62,6 +62,17 @@
 using namespace ambulant;
 using namespace smil2;
 
+// Attribute names that cause needs_region_node() to return true
+// for a given body node
+// XXXX Not checked with SMIL2 standard yet!
+static char *subregionattrs[] = {
+	"left", "width", "right", "top", "height", "bottom",
+	"backgroundColor", "background-color",
+	"transparent",
+	"fit",
+	NULL
+};
+
 // Helper function: get region_dim value from an attribute
 static common::region_dim
 get_regiondim_attr(const lib::node *rn, char *attrname)
@@ -87,6 +98,17 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 	return rd;
 }
 
+bool 
+region_node::needs_region_node(const lib::node *n) {
+	char **attrnamep = subregionattrs;
+	while (*attrnamep) {
+		if (n->get_attribute(*attrnamep))
+			return true;
+		attrnamep++;
+	}
+	return false;
+}
+
 region_node::region_node(const lib::node *n, dimension_inheritance di)
 :	m_node(n),
 	m_dim_inherit(di),
@@ -96,6 +118,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_transparent(true),
 	m_showbackground(true),
 	m_inherit_bgcolor(false),
+	m_surface_template(NULL),
 	m_parent(NULL),
 	m_child(NULL),
 	m_next(NULL) {}
@@ -199,9 +222,6 @@ region_node::get_rect() const {
 	  case di_parent:
 		if (parent_node)
 			inherit_region = parent_node;
-		break;
-	  case di_region_attribute:
-	    inherit_region = NULL; // XXXX
 		break;
 	  case di_rootlayout:
 		{

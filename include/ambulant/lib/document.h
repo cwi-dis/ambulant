@@ -125,12 +125,7 @@ class document : public node_context {
 	const node* locate_node(const char *path) const {
 		return m_root?m_root->locate_node(path):0;
 	}
-	
-	// Get (and set) the layout section of the document
-	node *get_layout() { return m_layout; }
-	const node *get_layout() const { return m_layout; }
-	void set_layout(node *layout) { m_layout = layout; }
-	
+		
 	// Returns the source url of this document
 	const ambulant::net::url& get_src_url() const { return m_src_url;}
 	
@@ -146,9 +141,6 @@ class document : public node_context {
   private:
 	// the root of this document
 	node *m_root;
-	
-	// the layout section of this document
-	node *m_layout;
 	
 	// the external source url
 	ambulant::net::url m_src_url;
@@ -169,15 +161,13 @@ class document : public node_context {
 
 inline 
 document::document(node *root) 
-:	m_root(root),
-	m_layout(NULL)
+:	m_root(root)
 {
 }
 
 inline
 document::document(node *root, const std::string& src_url) 
 :	m_root(root),
-	m_layout(NULL),
 	m_src_url(src_url)
 {
 }

@@ -73,9 +73,11 @@ class smil_layout_manager : public common::layout_manager {
   private:
 	void get_document_layout(lib::document *doc);
 	
+	region_node *get_region_node_for(const lib::node *n, bool nodeoverride);
 	common::surface *get_default_rendering_surface(const lib::node *n);
+	
 	void build_surfaces(common::window_factory *wf);
-
+	void build_body_regions(lib::document *doc);
 	common::surface_template *create_top_surface(common::window_factory *wf, 
 		const region_node *rn, common::renderer *bgrenderer);
 	
@@ -85,8 +87,9 @@ class smil_layout_manager : public common::layout_manager {
 	region_node *m_layout_tree;
 	
 	std::vector<common::surface_template*> m_rootsurfaces;
-	std::map<std::string, common::surface_template*> m_id2surface;
-	std::multimap<std::string, common::surface_template*> m_name2surface;
+	std::map<std::string, region_node*> m_id2region;
+	std::multimap<std::string, region_node*> m_name2region;
+	std::map<const lib::node*, region_node*> m_node2region;
 };
 
 } // namespace smil2

@@ -78,7 +78,7 @@ enum time_container_type {tc_par, tc_seq, tc_excl, tc_none};
 const char* time_container_type_as_str(time_container_type t);
 
 // An enumeration representing layout types
-enum layout_type {l_rootlayout, l_toplayout, l_region, l_none};
+enum layout_type {l_rootlayout, l_toplayout, l_region, l_media, l_none};
 const char* layout_type_as_str(layout_type t);
 
 class schema {

@@ -72,12 +72,13 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/layout.h"
 
 namespace ambulant {
 
 namespace smil2 {
 
-enum dimension_inheritance { di_none, di_parent, di_rootlayout, di_region_attribute };
+enum dimension_inheritance { di_none, di_parent, di_rootlayout };
 	
 
 class region_node : public common::region_info {
@@ -90,13 +91,22 @@ class region_node : public common::region_info {
 	typedef lib::tree_iterator<region_node> iterator;
 	typedef lib::const_tree_iterator<region_node> const_iterator;
 	
+	// static method which tests whether a body node needs
+	// a region counterpart (because it uses subregion positioning
+	// or some such)
+	static bool needs_region_node(const lib::node *n);
+	
 	// constructs a region node with local name and attrs
 	region_node(const lib::node *n, dimension_inheritance di);
 	virtual ~region_node() {}
 	
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();
-		
+	
+	// Tie together region and surface_template trees
+	void set_surface_template(common::surface_template *surf) { m_surface_template = surf; }
+	common::surface_template *get_surface_template() { return m_surface_template; }
+	
 	// query for this region's rectangle
 	// the rectangle is evaluaded on the fly
 	// the evaluation takes into account relative coordinates
@@ -181,6 +191,7 @@ class region_node : public common::region_info {
 	bool m_transparent;
 	bool m_showbackground;
 	bool m_inherit_bgcolor;
+	common::surface_template *m_surface_template;
 	
 	// XML tree glue
 	region_node *m_parent;
