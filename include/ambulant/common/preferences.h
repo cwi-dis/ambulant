@@ -49,6 +49,8 @@
 #ifndef AMBULANT_COMMON_PREFERENCES_H
 #define AMBULANT_COMMON_PREFERENCES_H
 
+#include <string>
+
 namespace ambulant {
 
 namespace common {
