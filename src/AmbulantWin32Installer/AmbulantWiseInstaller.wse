@@ -1156,11 +1156,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\DemoPresentation\NYC-SMIL2-http.smil
-  Destination=%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2-http.smil
-  Flags=0000000010000010
-end
-item: Install File
   Source=..\..\Extras\DemoPresentation\NYC-SMIL2.smil
   Destination=%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2.smil
   Flags=0000000010000010

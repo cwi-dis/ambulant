@@ -28,8 +28,8 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=0.5
-  Version Description=Ambulant/X Player for Handheld
+  Version File=0.7
+  Version Description=Ambulant/O Player for Handheld
   Version Copyright=Copyright © 2004 Stichting CWI
   Version Company=CWI
   Crystal Format=10111100101100000010001001001001
@@ -42,7 +42,7 @@ item: Global
   Variable Default2=C:\WINDOWS
   Variable Flags2=00001000
   Variable Name3=_WISE_
-  Variable Default3=C:\Program Files\Wise Installation System
+  Variable Default3=E:\PROGRA~1\WISEIN~1
   Variable Flags3=00001000
   Variable Name4=_ALIASNAME_
   Variable Flags4=00001000
@@ -1159,7 +1159,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=Ambulant\X
+  Value=Ambulant-O
   Flags=10000000
 end
 item: Remark
@@ -2233,7 +2233,7 @@ item: Edit Registry
   Total Keys=4
   item: Key
     Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-    New Value=0.5
+    New Value=0.7
     Value Name=DisplayVersion
     Root=2
   end
@@ -2251,7 +2251,7 @@ item: Edit Registry
   end
   item: Key
     Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-    New Value=Ambulant/X Player for Handheld
+    New Value=Ambulant/O Player for Handheld
     Value Name=Comments
     Root=2
   end
