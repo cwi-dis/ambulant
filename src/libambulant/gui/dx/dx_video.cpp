@@ -168,12 +168,15 @@ void gui::dx::dx_video_renderer::stop() {
 
 void gui::dx::dx_video_renderer::pause() {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
+	m_update_event = 0;
 	if(m_player) m_player->pause();
 }
 
 void gui::dx::dx_video_renderer::resume() {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
 	if(m_player) m_player->resume();
+	if(!m_update_event) schedule_update();
+	m_dest->need_redraw();
 }
 
 void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
@@ -196,7 +199,6 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	if(!v) return;
 	
 	// Update our bits.
-	//m_player->update();
 	if(!m_player->update()) {
 		// next time please...
 		return;
@@ -239,7 +241,6 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 		std::basic_string<text_char> msg = m_node->get_path_display_desc();
 		v->draw(msg, vid_reg_rc_dirty, lib::to_color("orange"));
 	}
-	
 }
 
 void gui::dx::dx_video_renderer::update_callback() {
