@@ -46,7 +46,7 @@
  * 
  */
 
-/* 
+
 
  
 #include "ambulant/lib/document.h"
