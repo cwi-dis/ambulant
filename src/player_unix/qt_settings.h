@@ -114,6 +114,7 @@ class qt_settings
 	QVGroupBox* m_plugin_vg;
 	QCheckBox*  m_use_plugin_cb;
 	QLineEdit*	m_plugin_dir_le;
+	QLabel*		m_plugin_dir_lb;
 
 	int index_in_string_array(const char* s, const char* sa[]);
 };
