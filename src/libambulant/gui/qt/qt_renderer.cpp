@@ -78,23 +78,26 @@ namespace qt_renderer {
 		    true);
   }
     active_renderer *
-  qt_renderer_factory::new_renderer(event_processor *const evp,
+  qt_renderer_factory::new_renderer(
+					lib::active_playable_events *context,
+					lib::active_playable_events::cookie_type cookie,
+					const lib::node *node,
+  					event_processor *const evp,
 				    net::passive_datasource *src,
-				    passive_region *const dest,
-				    const node *node)
+				    passive_region *const dest)
   {
     xml_string tag = node->get_qname().second;
     active_renderer* rv;
     if (tag == "img") {
       rv = (active_renderer*) 
-	new qt_active_image_renderer(evp, src, dest, node);
+	new qt_active_image_renderer(context, cookie, node, evp, src, dest);
       AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning qt_active_image_renderer 0x%x", 
 	 (void*) node, (void*) rv);
     } else if ( tag == "text") {
       rv = (active_renderer*)
-	new qt_active_text_renderer(evp, src, dest, node);
+	new qt_active_text_renderer(context, cookie, node, evp, src, dest);
       AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning qt_active_text_renderer 0x%x",
@@ -103,7 +106,7 @@ namespace qt_renderer {
       AM_DBG logger::get_logger()->error("qt_renderer_factory: "
 				  "no Qt renderer for tag \"%s\"",
 				  tag.c_str());
-      rv = new gui::none::none_active_renderer(evp, src, dest, node);
+      rv = new gui::none::none_active_renderer(context, cookie, node, evp, src, dest);
       AM_DBG logger::get_logger()->trace
 	("qt_renderer_factory: node 0x%x: "
 	 "returning none_active_renderer 0x%x",

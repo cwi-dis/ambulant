@@ -62,34 +62,34 @@ using namespace ambulant;
 
 typedef lib::no_arg_callback<lib::active_renderer> readdone_callback;
 
-lib::active_renderer::active_renderer(event_processor *const evp,
+lib::active_renderer::active_renderer(
+	active_playable_events *context,
+	active_playable_events::cookie_type cookie,
+	const node *node,
+	event_processor *const evp,
 	net::passive_datasource *src,
-	passive_region *const dest,
-	const node *node)
-:	active_basic_renderer(evp, node),
+	passive_region *const dest)
+:	active_basic_renderer(context, cookie, node, evp),
 	m_src(src?src->activate():NULL),
 	m_dest(dest->activate(evp, node)),
-	m_readdone(NULL),
-	m_playdone(NULL)
+	m_readdone(NULL)
 {
 	m_readdone = new readdone_callback(this, &lib::active_renderer::readdone);
 }
 
 void
-lib::active_renderer::start(lib::event *playdone)
+lib::active_renderer::start(double t)
 {
 	if (!m_node) abort();
-	m_playdone = playdone;
 	std::ostringstream os;
 	os << *m_node;
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
+	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	m_dest->show(this);
 	if (m_src) {
 		m_src->start(m_event_processor, m_readdone);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
-		if (m_playdone)
-			m_event_processor->add_event(m_playdone, 0, event_processor::low);
+		stopped_callback();
 	}
 }
 
@@ -98,8 +98,7 @@ lib::active_renderer::readdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	m_dest->need_redraw();
-	if (m_playdone)
-		m_event_processor->add_event(m_playdone, 0, event_processor::low);
+	stopped_callback();
 }
 
 void
@@ -126,8 +125,7 @@ lib::active_final_renderer::readdone()
 	}
 	m_src->read((char *)m_data, m_data_size);
 	m_dest->need_redraw();
-	if (m_playdone)
-		m_event_processor->add_event(m_playdone, 0, event_processor::low);
+	stopped_callback();
 }
 
 lib::global_renderer_factory::global_renderer_factory()
@@ -149,17 +147,20 @@ lib::global_renderer_factory::add_factory(renderer_factory *rf)
 }
     
 lib::active_renderer *
-lib::global_renderer_factory::new_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node)
+lib::global_renderer_factory::new_renderer(
+	active_playable_events *context,
+	active_playable_events::cookie_type cookie,
+	const node *node,
+	event_processor *const evp,
+	net::passive_datasource *src,
+	passive_region *const dest)
 {
     std::vector<renderer_factory *>::iterator i;
     lib::active_renderer *rv;
     
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        rv = (*i)->new_renderer(evp, src, dest, node);
+        rv = (*i)->new_renderer(context, cookie, node, evp, src, dest);
         if (rv) return rv;
     }
-    return m_default_factory->new_renderer(evp, src, dest, node);
+    return m_default_factory->new_renderer(context, cookie, node, evp, src, dest);
 }

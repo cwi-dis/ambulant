@@ -60,63 +60,68 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/region.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/lib/playable.h"
 
 namespace ambulant {
 
 namespace lib {
 
-class active_basic_renderer : public ref_counted_obj {
+class active_basic_renderer : public active_playable {
   public:
   	active_basic_renderer()
-  	:	m_event_processor(NULL),
-  		m_node(NULL),
-  		m_playdone(NULL) {}
+  	:	active_playable((active_playable_events *)NULL, 0),
+		m_node(NULL),
+		m_event_processor(NULL) {};
 //  	active_basic_renderer(const ambulant::lib::active_basic_renderer& src)
 //  	:	m_event_processor(src.m_event_processor),
 //  		m_node(src.m_node),
 //  		m_playdone(src.m_playdone) {}
-	active_basic_renderer(event_processor *const evp,
-		const node *node)
-	:	m_event_processor(evp),
+	active_basic_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp)
+	:   active_playable(context, cookie),
 		m_node(node),
-		m_playdone(NULL) {};
+		m_event_processor(evp) {};
 		
-	~active_basic_renderer() {}
+	~active_basic_renderer() {};
 	
-	virtual void start(event *playdone) = 0;
-	virtual void stop() = 0;
-		
   protected:
-  	event_processor *const m_event_processor;
 	const node *m_node;
-	lib::event *m_playdone;
+  	event_processor *const m_event_processor;
 };
 
-class active_renderer : public active_basic_renderer {
+;
+
+class active_renderer : public active_basic_renderer, public ref_counted_obj {
   public:
   	active_renderer()
-  	:	active_basic_renderer(NULL, NULL),
+  	:	active_basic_renderer(NULL, 0, NULL, NULL),
   		m_src(NULL),
   		m_dest(0),
-  		m_readdone(NULL),
-  		m_playdone(NULL) {}
+  		m_readdone(NULL) {}
   	active_renderer(const ambulant::lib::active_renderer& src)
-  	:	active_basic_renderer(src.m_event_processor, src.m_node),
+  	:	active_basic_renderer(src.m_context, src.m_cookie, src.m_node, src.m_event_processor),
   		m_dest(0),
-  		m_readdone(src.m_readdone),
-  		m_playdone(src.m_playdone) {}
-	active_renderer(event_processor *const evp,
+  		m_readdone(src.m_readdone) {}
+	active_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node);
+		passive_region *const dest);
 		
 	~active_renderer() {}
 	
-	virtual void start(event *playdone);
-	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
+	virtual void start(double where);
+	virtual void freeze() {}
 	virtual void stop();
 	virtual void pause() {}
 	virtual void resume() {}
+
+	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
 	
   protected:
 	virtual void readdone();
@@ -124,7 +129,6 @@ class active_renderer : public active_basic_renderer {
   	net::active_datasource *m_src;
 	active_region *const m_dest;
 	lib::event *m_readdone;
-	lib::event *m_playdone;
 };
 
 // active_final_renderer is a handy subclass of active_renderer:
@@ -133,11 +137,14 @@ class active_renderer : public active_basic_renderer {
 // need to add a redraw method.
 class active_final_renderer : public active_renderer {
   public:
-	active_final_renderer(event_processor *const evp,
+	active_final_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node)
-	:	active_renderer(evp, src, dest, node),
+		passive_region *const dest)
+	:	active_renderer(context, cookie, node, evp, src, dest),
 		m_data(NULL),
 		m_data_size(0) {};
 	virtual ~active_final_renderer();
@@ -154,10 +161,13 @@ class active_final_renderer : public active_renderer {
 class renderer_factory {
   public:
 	virtual ~renderer_factory() {}
-	virtual active_renderer *new_renderer(event_processor *const evp,
+	virtual active_renderer *new_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node) = 0;
+		passive_region *const dest) = 0;
 };
 
 class global_renderer_factory : public renderer_factory {
@@ -167,10 +177,13 @@ class global_renderer_factory : public renderer_factory {
     
     void add_factory(renderer_factory *rf);
     
-    active_renderer *new_renderer(event_processor *const evp,
+    active_renderer *new_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node);
+		passive_region *const dest);
   private:
     std::vector<renderer_factory *> m_factories;
     renderer_factory *m_default_factory;

@@ -78,11 +78,14 @@ namespace qt_renderer {
   class qt_active_text_renderer : active_final_renderer {
 
   public:
-    qt_active_text_renderer(event_processor *const evp,
+    qt_active_text_renderer(
+				active_playable_events *context,
+				active_playable_events::cookie_type cookie,
+				const node *node,
+    			event_processor *const evp,
 			    net::passive_datasource *src,
-			    passive_region *const dest,
-			    const node *node)
-      : active_final_renderer(evp, src, dest, node),
+			    passive_region *const dest)
+      : active_final_renderer(context, cookie, node, evp, src, dest),
       m_text_storage(NULL){}
     ~qt_active_text_renderer();
 

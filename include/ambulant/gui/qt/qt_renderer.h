@@ -113,10 +113,13 @@ namespace qt_renderer {
       AM_DBG logger::get_logger()->trace
 	("qt_renderer factory (0x%x)", (void*) this);
     }
-    active_renderer *new_renderer( event_processor *const evp,
+    active_renderer *new_renderer(
+				  lib::active_playable_events *context,
+				  lib::active_playable_events::cookie_type cookie,
+				  const lib::node *node,
+    			  event_processor *const evp,
 				  net::passive_datasource *src,
-				  passive_region *const dest,
-				  const node *node);
+				  passive_region *const dest);
   };
 
 } // namespace qt_renderer
