@@ -65,7 +65,7 @@ inline std::string trim(const char* psz) {
 
 inline std::string xml_quote(const char *p) {
 	std::string qs;
-	if(p != NULL) {
+	if(p) {
 		while(*p) {
 			if(*p=='<') qs += "&lt;";
 			else if(*p=='>') qs += "&gt;";
@@ -80,9 +80,38 @@ inline std::string xml_quote(const char *p) {
 inline std::string xml_quote(const std::string& s)
 	{ return xml_quote(s.c_str());}
 
+inline bool starts_with(const std::string& s, int offset, const char *p) {
+	if(!p) return true;
+	for(std::string::size_type i=offset;i<s.length() && *p;i++,p++) {
+		if(*p != s[i]) break;
+	}
+	return *p == 0;
+}
+
+inline bool starts_with(const std::string& s, const char *p) {
+	return starts_with(s, 0, p);
+}
+
+inline bool starts_with(const std::string& s, const std::string& b) {
+	return starts_with(s, b.c_str());
+}
+
+inline bool ends_with(const std::string& s, const char *p) {
+	if(!p) return true;
+	const char *rend = p - 1;
+	p += strlen(p) - 1;
+	for(std::string::size_type i = s.length()-1;i>=0 && p != rend;i++,p++) {
+		if(*p != s[i]) break;
+	}
+	return p == rend;
+}
+inline bool ends_with(const std::string& s, const std::string& e) {
+	return ends_with(s, e.c_str());
+}
+
 ///////////////////////////
 // A generic string scanner/tokenizer
-// May be used to tokenize URLs when we pass ":/?" as delimiters.
+// May be used to tokenize URLs when we pass ":/?#" as delimiters.
 
 class scanner {
   private:
@@ -95,15 +124,20 @@ class scanner {
 	std::string delims;
 	
   public:
+	scanner(const std::string& sa, const char *d)
+	:	s(sa), i(0),end(sa.length()),tok(0), 
+		delims(d?d:"") {}
+		
 	scanner(const std::string& sa, const std::string& d)
-	:	s(sa), i(0),end(sa.length()),tok(0), delims(d) {}
+	:	s(sa), i(0),end(sa.length()),tok(0), 
+		delims(d) {}
 	
 	char next() {
 		tokval.clear();
 		if(i == end) return 0;
 		size_type ix = delims.find_first_of(s[i]);
 		if(ix != std::string::npos) {
-			tok = delims[ix];
+			tokval = tok = delims[ix];
 			i++;
 		} else {
 			tok = 'n'; 
@@ -127,6 +161,53 @@ class scanner {
 	char get_tok() const { return tok;}
 	const std::string& get_tokval() const { return tokval;}
 	const std::string& get_sig() const { return sig;}
+};
+
+class reg_scanner {
+  public:
+	typedef std::vector<std::string>::size_type size_type;
+	std::vector<std::string> vals;
+	std::string toks;
+	
+	reg_scanner(const std::string& sa, const char *d) {
+		scanner sc(sa, d);
+		reg(sc);
+	}
+	
+	reg_scanner(const std::string& sa, const std::string& d) {
+		scanner sc(sa, d);
+		reg(sc);
+	}
+	
+	const std::vector<std::string>& get_vals() const {
+		return vals;
+	}
+	
+	const std::string& get_toks() const {
+		return toks;
+	}
+	
+	std::string val_at(size_type i) const {
+		return (i<vals.size())?vals.at(i):"";
+	}
+	
+	std::string join(size_type b, size_type e) const {
+		std::string s;
+		for(size_type i = b; i<e && i< vals.size();i++)
+			s += vals.at(i);
+		return s;
+	}
+	std::string join(size_type b) const {
+		return join(b, vals.size());
+	}
+	
+  private:
+	void reg(scanner& sc) {
+		while(sc.next()) {
+			vals.push_back(sc.get_tokval());
+			toks += sc.get_tok();
+		}
+	}
 };
 
 } // namespace lib
