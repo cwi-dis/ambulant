@@ -495,13 +495,19 @@ typedef basic_rect<long, unsigned long> lrect;
 
 #include "ambulant/lib/string_util.h"
 
-inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
-	std::string s;
-	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
-}
 inline std::string repr(const ambulant::lib::basic_point<int>& p) {
 	std::string s;
 	return s << '(' << p.x << ", " << p.y << ')';
+}
+
+inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) {
+	std::string s;
+	return s << '(' << z.w << ", " << z.h << ')';
+}
+
+inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
+	std::string s;
+	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
 
 
