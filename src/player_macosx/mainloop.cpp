@@ -80,7 +80,7 @@ usage()
 	exit(1);
 }
 
-mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
+mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf)
 :   m_running(false),
 	m_speed(1.0),
 	m_doc(NULL),
@@ -90,10 +90,10 @@ mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 {
 	using namespace ambulant;
 	
-	m_rf = new lib::global_renderer_factory();
+	m_rf = new common::global_renderer_factory();
 	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
 #ifdef WITH_SDL
-    AM_DBG logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
 	m_rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
 #endif
 	m_doc = lib::document::create_from_file(filename);
@@ -102,9 +102,9 @@ mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
 		return;
 	}
 #ifdef WITH_MMS_PLAYER
-	m_player = new lib::mms_player(m_doc, m_wf, m_rf);
+	m_player = new mms::mms_player(m_doc, m_wf, m_rf);
 #else
-	m_player = new lib::smil_player(m_doc, m_wf, m_rf);
+	m_player = new smil2::smil_player(m_doc, m_wf, m_rf);
 #endif
 }
 

@@ -69,21 +69,24 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
 
-class document;
-class window_factory;
-class renderer_factory;
-class node;
-class active_basic_renderer;
-class layout_manager;
-class logger;
+using namespace lib;
+using namespace common;
+
+class lib::document;
+class lib::node;
+class lib::logger;
+class common::window_factory;
+class common::renderer_factory;
+class common::active_basic_renderer;
+class common::layout_manager;
 
 class smil_player : public abstract_player, public time_node_context, public playable_events {
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(document *doc, window_factory *wf, renderer_factory *rf);
+	smil_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf);
 	~smil_player();
 		
 	timer* get_timer() { return m_timer;}
@@ -120,15 +123,15 @@ class smil_player : public abstract_player, public time_node_context, public pla
 	//////////////////////
 	// Time node context: Playable commands
 	
-	virtual void start_playable(const node *n, double t);
-	virtual void stop_playable(const node *n);
-	virtual void pause_playable(const node *n, pause_display d = display_show);
-	virtual void resume_playable(const node *n);
-	virtual void wantclicks_playable(const node *n, bool want);
+	virtual void start_playable(const lib::node *n, double t);
+	virtual void stop_playable(const lib::node *n);
+	virtual void pause_playable(const lib::node *n, pause_display d = display_show);
+	virtual void resume_playable(const lib::node *n);
+	virtual void wantclicks_playable(const lib::node *n, bool want);
 	
 	//////////////////////
 	// Time node context: Playable queries
-	virtual std::pair<bool, double> get_dur(const node *n);
+	virtual std::pair<bool, double> get_dur(const lib::node *n);
 	
 	//////////////////
 	// Time node context: Notifications
@@ -147,9 +150,9 @@ class smil_player : public abstract_player, public time_node_context, public pla
 	virtual void on_char(int ch);
 	
   private:
-	active_basic_renderer *create_renderer(const node *n); 
-	void destroy_renderer(active_basic_renderer *r, const node *n); 
-	active_basic_renderer *get_renderer(const node *n);
+	active_basic_renderer *create_renderer(const lib::node *n); 
+	void destroy_renderer(active_basic_renderer *r, const lib::node *n); 
+	active_basic_renderer *get_renderer(const lib::node *n);
 	document *m_doc;
 	window_factory *m_wf;
 	renderer_factory *m_rf;
@@ -158,11 +161,11 @@ class smil_player : public abstract_player, public time_node_context, public pla
 	layout_manager *m_layout_manager;
 	timer *m_timer;
 	event_processor *m_event_processor;	
-	std::map<const node*, active_basic_renderer *> m_renderers;
+	std::map<const lib::node*, active_basic_renderer *> m_renderers;
 	logger *m_logger;
 };
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

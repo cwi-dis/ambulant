@@ -62,7 +62,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 enum dur_type {dt_unspecified, dt_definite, dt_indefinite, dt_media};
 
@@ -104,12 +107,12 @@ enum restart_behavior { restart_always, restart_when_not_active, restart_never,
 	restart_default, restart_inherit};
 std::string repr(restart_behavior f);
 
-class node;
-class logger;
+class lib::node;
+class lib::logger;
 
 class time_attrs : public time_traits {
   public:
-	time_attrs(const node *n);
+	time_attrs(const lib::node *n);
 	
 	bool specified_dur() const { return (m_spflags & SP_DUR) == SP_DUR;}
 	bool specified_begin() const { return (m_spflags & SP_BEGIN) == SP_BEGIN;}
@@ -211,7 +214,7 @@ class time_attrs : public time_traits {
 	void parse_sync_list(const std::list<std::string>& strlist, sync_list& svslist);
 
 	// keep for now a ref / should be removed
-	const node *m_node;
+	const lib::node *m_node;
 	std::string m_id;
 	std::string m_tag;
 	typedef std::string::size_type size_type;
@@ -225,7 +228,7 @@ class time_attrs : public time_traits {
 	
 	const char *time_spec_id(const sync_list& sl) { return (&sl==&m_blist)?"begin":"end";}
 	
-	logger *m_logger;
+	lib::logger *m_logger;
 };
 
 enum interrupt_type {int_stop, int_pause, int_defer, int_never};
@@ -234,15 +237,15 @@ struct priority_attrs {
 	interrupt_type higher;
 	interrupt_type peers;
 	interrupt_type lower;
-	pause_display display;
+	common::pause_display display;
 	
-	priority_attrs() : higher(int_pause), peers(int_stop), lower(int_defer), display(display_show) {}
-	static priority_attrs* create_instance(const node *n);
+	priority_attrs() : higher(int_pause), peers(int_stop), lower(int_defer), display(common::display_show) {}
+	static priority_attrs* create_instance(const lib::node *n);
 	static interrupt_type interrupt_from_str(const std::string& spec);
-	static pause_display display_from_str(const std::string& spec);
+	static common::pause_display display_from_str(const std::string& spec);
 };
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

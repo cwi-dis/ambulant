@@ -61,23 +61,22 @@
 
 
 namespace ambulant {
-using namespace lib;
-    namespace gui {
-        namespace sdl {
-        
-class sdl_renderer_factory : public lib::renderer_factory {
+namespace gui {
+namespace sdl {
+
+class sdl_renderer_factory : public common::renderer_factory {
   public:
 
 	sdl_renderer_factory();
 	~sdl_renderer_factory();
 		
-	active_renderer *new_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
-		const node *node,
-		event_processor *const evp,
+	common::active_renderer *new_renderer(
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest);
+		common::abstract_rendering_surface *const dest);
 	
 };
 

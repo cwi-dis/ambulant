@@ -91,8 +91,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
 
+using namespace lib;
 
 class region_dim {
   
@@ -202,7 +203,7 @@ struct region_dim_spec {
 	region_dim top, height, bottom;
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 
@@ -210,7 +211,7 @@ struct region_dim_spec {
 #ifndef AMBULANT_NO_OSTREAM
 
 // debug region_dim print out
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_dim& rd) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim& rd) { 
 	if(rd.relative())
 		return os << rd.get_as_dbl() * 100.0 << '%' ;
 	else if(rd.absolute())
@@ -219,7 +220,7 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_di
 }
 
 // debug region_dim_spec printout
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_dim_spec& rds) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim_spec& rds) { 
 	os << '('  << rds.left << ", " << rds.width  << ", "  << rds.right;
 	os << ", " << rds.top  << ", " << rds.height << ", "  << rds.bottom;
 	return os << ')';

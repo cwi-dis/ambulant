@@ -59,6 +59,7 @@
 namespace ambulant {
 
 using namespace lib;
+using namespace common;
 
 namespace gui {
 
@@ -67,7 +68,7 @@ namespace cocoa {
 cocoa_active_audio_renderer::cocoa_active_audio_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
-	const node *node,
+	const lib::node *node,
 	event_processor *const evp,
 	net::passive_datasource *src)
 :	active_basic_renderer(context, cookie, node, evp),

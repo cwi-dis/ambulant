@@ -151,7 +151,7 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 	} else if(m_current != 0) {
 		node *p;
 		if (m_parsing_layout)
-			p = new region_node(qn, qattrs, m_context);
+			p = new common::region_node(qn, qattrs, m_context);
 		else
 			p = new node(qn, qattrs, m_context);
 		// XXXX This should use schema:

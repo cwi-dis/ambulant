@@ -60,7 +60,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 enum fit_t { fit_fill, fit_hidden, fit_meet, fit_scroll, fit_slice };
 typedef int zindex_t;
@@ -78,7 +80,7 @@ class abstract_smil_region_info {
 	virtual bool get_showbackground() const = 0;
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

@@ -60,7 +60,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 enum time_state_type { 
 	ts_reset,
@@ -70,7 +73,7 @@ enum time_state_type {
 	ts_dead
 };
 
-const char* time_state_str(lib::time_state_type state);
+const char* time_state_str(time_state_type state);
 
 class time_node;
 
@@ -168,7 +171,7 @@ class dead_state : public time_state {
 	virtual const char* name() const { return "dead";}
 };
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

@@ -899,7 +899,6 @@
 		};
 		04382B8605D7AEE600CFA029 = {
 			children = (
-				04382B8805D7AEE600CFA029,
 				04382B8905D7AEE600CFA029,
 				04382B8A05D7AEE600CFA029,
 				04382B8B05D7AEE600CFA029,
@@ -912,14 +911,6 @@
 			);
 			isa = PBXGroup;
 			path = smil2;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		04382B8805D7AEE600CFA029 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = smil_handler.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1425,12 +1416,6 @@
 		};
 		04382C4C05D7AEE700CFA029 = {
 			fileRef = 04382B8505D7AEE600CFA029;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		04382C4E05D7AEE700CFA029 = {
-			fileRef = 04382B8805D7AEE600CFA029;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2816,7 +2801,6 @@
 				04382C4805D7AEE700CFA029,
 				04382C4B05D7AEE700CFA029,
 				04382C4C05D7AEE700CFA029,
-				04382C4E05D7AEE700CFA029,
 				04382C4F05D7AEE700CFA029,
 				04382C5005D7AEE700CFA029,
 				04382C5105D7AEE700CFA029,

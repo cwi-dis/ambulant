@@ -64,7 +64,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 // Time node and global "happenings" that may be used for synchronization.
 enum sync_event {
@@ -96,7 +99,7 @@ enum sync_event {
 
 sync_event sync_event_from_str(const std::string& s);
 
-const char* sync_event_str(lib::sync_event ev);
+const char* sync_event_str(sync_event ev);
 
 // A sync rule is a condition associated with a timing node
 // that specifies directly or indirectly within the context 
@@ -130,7 +133,7 @@ class time_node;
 
 // Rule types
 enum rule_type { rt_begin, rt_end};
-const char* rule_type_str(lib::rule_type rt);
+const char* rule_type_str(rule_type rt);
 
 class sync_rule : public time_traits {
   public:
@@ -308,7 +311,7 @@ class sync_rule_context : public time_traits {
 };
 
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

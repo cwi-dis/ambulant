@@ -58,7 +58,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 class node;
 class abstract_smil_region_info;
@@ -186,7 +188,7 @@ class layout_manager {
 	virtual abstract_rendering_surface *get_rendering_surface(const node *node) = 0;
 };
 	
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

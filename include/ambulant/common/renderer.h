@@ -66,7 +66,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 class active_basic_renderer : public active_playable, public abstract_rendering_source, public ref_counted_obj {
   public:
@@ -81,7 +83,7 @@ class active_basic_renderer : public active_playable, public abstract_rendering_
 	active_basic_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *const evp)
 	:   active_playable(context, cookie),
 		m_node(node),
@@ -90,7 +92,7 @@ class active_basic_renderer : public active_playable, public abstract_rendering_
 	~active_basic_renderer() {};
 	
   protected:
-	const node *m_node;
+	const lib::node *m_node;
   	event_processor *const m_event_processor;
 };
 
@@ -113,13 +115,13 @@ class active_renderer : public active_basic_renderer {
   	:	active_basic_renderer(NULL, 0, NULL, NULL),
   		m_src(NULL),
   		m_dest(0) {}
-  	active_renderer(const ambulant::lib::active_renderer& src)
+  	active_renderer(const active_renderer& src)
   	:	active_basic_renderer(src.m_context, src.m_cookie, src.m_node, src.m_event_processor),
   		m_dest(0) {}
 	active_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest);
@@ -154,7 +156,7 @@ class active_final_renderer : public active_renderer {
 	active_final_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest)
@@ -180,7 +182,7 @@ class renderer_factory {
 	virtual active_basic_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest) = 0;
@@ -196,7 +198,7 @@ class global_renderer_factory : public renderer_factory {
     active_basic_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest);
@@ -206,7 +208,7 @@ class global_renderer_factory : public renderer_factory {
 };
 
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

@@ -59,7 +59,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 class abstract_player {
   public:
@@ -77,7 +79,7 @@ class abstract_player {
 //	double get_speed() const;
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

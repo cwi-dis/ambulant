@@ -72,7 +72,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 namespace detail {
 // const representing auto
@@ -281,7 +283,7 @@ inline void region_evaluator::eval_linear_dim(int dim[], int w) {
 	}
 }
  
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

@@ -55,7 +55,7 @@
 
 class mainloop : public ambulant::lib::ref_counted_obj {
   public:
-	mainloop(const char *filename, ambulant::lib::window_factory *wf);
+	mainloop(const char *filename, ambulant::common::window_factory *wf);
 	~mainloop();
 	
 	// The callback member function.
@@ -72,7 +72,7 @@ class mainloop : public ambulant::lib::ref_counted_obj {
   	bool m_running;
 	double m_speed;
 	ambulant::lib::document *m_doc;
-	ambulant::lib::abstract_player *m_player;
-	ambulant::lib::global_renderer_factory *m_rf;
-	ambulant::lib::window_factory *m_wf;
+	ambulant::common::abstract_player *m_player;
+	ambulant::common::global_renderer_factory *m_rf;
+	ambulant::common::window_factory *m_wf;
 };

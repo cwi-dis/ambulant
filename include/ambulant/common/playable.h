@@ -57,7 +57,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 // Display mode when the playable is paused.
 enum pause_display {display_disable, display_hide, display_show};
@@ -204,7 +206,7 @@ class abstract_playable : public playable {
 typedef abstract_playable active_playable;
 typedef playable_events active_playable_events;
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

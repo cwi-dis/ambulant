@@ -80,7 +80,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 // Time nodes context requirements
 class time_node_context : public event_scheduler<time_traits::value_type> {
@@ -89,14 +92,14 @@ class time_node_context : public event_scheduler<time_traits::value_type> {
 	virtual time_traits::value_type elapsed() const = 0;
 	
 	// Playable commands
-	virtual void start_playable(const node *n, double t) = 0;
-	virtual void stop_playable(const node *n) = 0;
-	virtual void pause_playable(const node *n, pause_display d = display_show) = 0;
-	virtual void resume_playable(const node *n) = 0;
-	virtual void wantclicks_playable(const node *n, bool want) = 0;
+	virtual void start_playable(const lib::node *n, double t) = 0;
+	virtual void stop_playable(const lib::node *n) = 0;
+	virtual void pause_playable(const lib::node *n, common::pause_display d = display_show) = 0;
+	virtual void resume_playable(const lib::node *n) = 0;
+	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const node *n) = 0;
+	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
 	
 	// Notifications
 	virtual void done_playback() = 0;
@@ -114,7 +117,7 @@ class time_node : public time_traits {
 	typedef node_navigator<time_node> nnhelper;
 	typedef node_navigator<const time_node> const_nnhelper;
 	
-	time_node(context_type *ctx, const node *n, time_container_type type = tc_none, bool discrete = false); 
+	time_node(context_type *ctx, const lib::node *n, time_container_type type = tc_none, bool discrete = false); 
 	
 	virtual ~time_node();
   	
@@ -168,7 +171,7 @@ class time_node : public time_traits {
 	void repeat(qtime_type timestamp);
 	void remove(qtime_type timestamp);
 	void fill(qtime_type timestamp);
-	void pause(qtime_type timestamp, pause_display d);
+	void pause(qtime_type timestamp, common::pause_display d);
 	void resume(qtime_type timestamp);
 		
 	// Std xml tree interface
@@ -206,7 +209,7 @@ class time_node : public time_traits {
     const_iterator end() const { return const_iterator(0);}
 	
 	// Returns the underlying DOM node associated with this
-	const node* dom_node() const { return m_node;}
+	const lib::node* dom_node() const { return m_node;}
 	
 	// Timing reference node for this.
 	// This node uses the clock of the sync node for time notifications.
@@ -357,7 +360,7 @@ class time_node : public time_traits {
 	
 	// The underlying DOM node
 	// Mimimize or eliminate usage after timegraph construction 
-	const node *m_node;
+	const lib::node *m_node;
 	
 	// Attributes parser
 	time_attrs m_attrs;
@@ -569,7 +572,7 @@ class transition_event : public event_callback<time_node, const transition_event
 	:	evcb(tn, &time_node::transition_callback),
 		m_state(state), 
 		m_timestamp(timestamp) {}
-	lib::time_state_type m_state;
+	time_state_type m_state;
 	time_traits::qtime_type m_timestamp;
 };
 
@@ -590,14 +593,14 @@ T qualify(time_node *n) {
 	return static_cast<T>(n);
 }
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 
 
 #ifndef AMBULANT_NO_IOSTREAMS
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::time_node& tn) {
-	if(tn.get_type() == ambulant::lib::tc_none)
+inline std::ostream& operator<<(std::ostream& os, const ambulant::smil2::time_node& tn) {
+	if(tn.get_type() == ambulant::smil2::tc_none)
 		os << (tn.dom_node())->get_local_name();
 	else 
 		os << tn.get_type_as_str();

@@ -55,13 +55,13 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
 
 const unsigned int default_layout_width = 200;
 const unsigned int default_layout_height = 200;
 
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

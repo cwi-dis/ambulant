@@ -101,7 +101,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 template<class T>
 class smil_time {
@@ -486,7 +489,7 @@ template<class T>
 smil_interval<T> smil_interval<T>::superinterval = 
 	smil_interval<T>(smil_time<T>(0), smil_time<T>::unresolved);
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 
@@ -494,8 +497,8 @@ smil_interval<T> smil_interval<T>::superinterval =
 #include <string>
 #include <stdio.h>
 
-inline std::string repr(const ambulant::lib::smil_time<long>& t) {
-	if(t ==  ambulant::lib::smil_time<long>::minus_infinity) 
+inline std::string repr(const ambulant::smil2::smil_time<long>& t) {
+	if(t ==  ambulant::smil2::smil_time<long>::minus_infinity) 
 		return "minus_infinity";
 	if(t.is_definite()) {
 		char buf[16];
@@ -505,7 +508,7 @@ inline std::string repr(const ambulant::lib::smil_time<long>& t) {
 	return t.is_unresolved()?"unresolved":"indefinite";
 }
 
-inline std::string repr(const ambulant::lib::smil_interval<long>& interval) {
+inline std::string repr(const ambulant::smil2::smil_interval<long>& interval) {
 	char buf[64];
 	sprintf(buf, "[%s, %s]", repr(interval.begin).c_str(), repr(interval.end).c_str());
 	return buf;

@@ -69,7 +69,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 class document;
 class schema;
@@ -120,7 +123,7 @@ class timegraph : public time_traits {
 };
 
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

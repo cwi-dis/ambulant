@@ -137,7 +137,7 @@ active_basic_renderer *
 cocoa_renderer_factory::new_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
-	const node *node,
+	const lib::node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
@@ -284,7 +284,7 @@ cocoa_window_factory::new_background_renderer()
 {
 	bool want_events = false;
 	if ( ambulant_window ) {
-		const ambulant::lib::abstract_mouse_region &mrgn = ambulant_window->get_mouse_region();
+		const ambulant::common::abstract_mouse_region &mrgn = ambulant_window->get_mouse_region();
 		want_events = !mrgn.is_empty();
 	}
 	AM_DBG NSLog(@"resetCursorRects wantevents=%d", (int)want_events);

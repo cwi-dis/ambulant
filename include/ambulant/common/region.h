@@ -63,7 +63,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 // Forward
 class active_region;
@@ -229,7 +231,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

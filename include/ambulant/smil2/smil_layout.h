@@ -60,7 +60,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 class passive_region;
 class passive_root_layout;
@@ -88,7 +91,7 @@ class smil_layout_manager : public layout_manager {
 	std::multimap<std::string, passive_region*> m_name2region;
 };
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

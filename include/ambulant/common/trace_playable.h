@@ -65,7 +65,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 class trace_playable : public playable {
 
@@ -124,7 +126,7 @@ class trace_playable : public playable {
 	}
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

@@ -65,10 +65,10 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_window : public lib::abstract_window {
+class cocoa_window : public common::abstract_window {
   public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, lib::abstract_rendering_source *region)
-  	:	lib::abstract_window(region),
+  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::abstract_rendering_source *region)
+  	:	common::abstract_window(region),
   		m_view(_view) {};
 	~cocoa_window();
   		
@@ -79,35 +79,35 @@ class cocoa_window : public lib::abstract_window {
 	void user_event(const lib::point &where);
 
 	void *view() { return m_view; }
-	const lib::abstract_mouse_region &get_mouse_region() { return m_region->get_mouse_region(); }
+	const common::abstract_mouse_region &get_mouse_region() { return m_region->get_mouse_region(); }
   private:
     void *m_view;
 };
 
 ;
-class cocoa_window_factory : public lib::window_factory {
+class cocoa_window_factory : public common::window_factory {
   public:
   	cocoa_window_factory(void *view)
   	:	m_defaultwindow_view(view) {}
   	
-	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
-	lib::abstract_mouse_region *new_mouse_region();
-	lib::abstract_bg_rendering_source *new_background_renderer();
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region);
+	common::abstract_mouse_region *new_mouse_region();
+	common::abstract_bg_rendering_source *new_background_renderer();
   private:
     void *m_defaultwindow_view;
 };
 
-class cocoa_renderer_factory : public lib::renderer_factory {
+class cocoa_renderer_factory : public common::renderer_factory {
   public:
   	cocoa_renderer_factory() {}
   	
-	lib::active_basic_renderer *new_renderer(
-		lib::active_playable_events *context,
-		lib::active_playable_events::cookie_type cookie,
+	common::active_basic_renderer *new_renderer(
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest);
+		common::abstract_rendering_surface *const dest);
 };
 
 } // namespace cocoa

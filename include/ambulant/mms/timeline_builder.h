@@ -62,7 +62,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace mms {
+
+using namespace lib;
+using namespace common;
 
 class document;
 
@@ -95,7 +98,7 @@ class timeline_builder {
 };
 
 
-} // namespace lib
+} // namespace mms
  
 } // namespace ambulant
 

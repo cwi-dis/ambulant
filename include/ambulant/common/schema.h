@@ -70,7 +70,9 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace common {
+
+using namespace lib;
 
 // An enumeration representing the time container type
 // range of values : par | seq | excl | none  
@@ -121,7 +123,7 @@ class schema {
 	std::set<std::string> m_layout_elements;
 };
 
-} // namespace lib
+} // namespace common
  
 } // namespace ambulant
 

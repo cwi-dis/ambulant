@@ -59,7 +59,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace smil2 {
+
+using namespace lib;
+using namespace common;
 
 class node;
 class logger;
@@ -106,7 +109,7 @@ class test_attrs {
 	logger *m_logger;
 };
 
-} // namespace lib
+} // namespace smil2
  
 } // namespace ambulant
 

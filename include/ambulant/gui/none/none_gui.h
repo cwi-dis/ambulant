@@ -63,69 +63,69 @@ namespace gui {
 
 namespace none {
 
-class none_window : public lib::abstract_window {
+class none_window : public common::abstract_window {
   public:
-  	none_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region)
-  	:	lib::abstract_window(region) {};
+  	none_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region)
+  	:	common::abstract_window(region) {};
   		
 	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
 //	void need_events(lib::abstract_mouse_region *rgn) {};
 	void mouse_region_changed() {};
 };
 
-class none_window_factory : public lib::window_factory {
+class none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
   	
-	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
-	lib::abstract_mouse_region *new_mouse_region() { return NULL; }
-	lib::abstract_bg_rendering_source *new_background_renderer();
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region);
+	common::abstract_mouse_region *new_mouse_region() { return NULL; }
+	common::abstract_bg_rendering_source *new_background_renderer();
 };
 
-class none_active_renderer : public lib::active_renderer {
+class none_active_renderer : public common::active_renderer {
   public:
 	none_active_renderer(
-		lib::active_playable_events *context,
+		common::active_playable_events *context,
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 		// Workaround for bug in emVC 4.0: it gets confused
 		// when getting a subtype from a class within a function
 		// signature, or something like that
 		int cookie,
 #else
-		lib::active_playable_events::cookie_type cookie,
+		common::active_playable_events::cookie_type cookie,
 #endif
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest)
-	:	lib::active_renderer(context, cookie, node, evp, src, dest) {};
+		common::abstract_rendering_surface *const dest)
+	:	common::active_renderer(context, cookie, node, evp, src, dest) {};
 	
 	void start(double where);
-	void redraw(const lib::screen_rect<int> &r, lib::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &r, common::abstract_window *window);
 	void stop();
 };
 
-class none_background_renderer : public lib::abstract_bg_rendering_source {
+class none_background_renderer : public common::abstract_bg_rendering_source {
   public:
-	void drawbackground(const lib::abstract_smil_region_info *src, 
+	void drawbackground(const common::abstract_smil_region_info *src, 
 		const lib::screen_rect<int> &dirty, 
-		lib::abstract_rendering_surface *dst, 
-		lib::abstract_window *window);
+		common::abstract_rendering_surface *dst, 
+		common::abstract_window *window);
 };
 
-class lib::abstract_smil_region_info;
+class common::abstract_smil_region_info;
 
-class none_renderer_factory : public lib::renderer_factory {
+class none_renderer_factory : public common::renderer_factory {
   public:
   	none_renderer_factory() {}
   	
-	lib::active_basic_renderer *new_renderer(
-		lib::active_playable_events *context,
-		lib::active_playable_events::cookie_type cookie,
+	common::active_basic_renderer *new_renderer(
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest);
+		common::abstract_rendering_surface *const dest);
 };
 
 } // namespace none

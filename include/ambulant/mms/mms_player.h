@@ -66,7 +66,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace mms {
+
+using namespace lib;
+using namespace common;
 
 class document;
 
@@ -105,7 +108,7 @@ class mms_player : public abstract_player, public ref_counted_obj {
 	renderer_factory *m_renderer_factory;
 };
 
-} // namespace lib
+} // namespace mms
  
 } // namespace ambulant
 

@@ -57,6 +57,7 @@
 
 using namespace ambulant;
 using namespace lib;
+using namespace common;
 
 void
 gui::none::none_active_renderer::start(double where)
@@ -94,24 +95,24 @@ gui::none::none_background_renderer::drawbackground(
 
 active_basic_renderer *
 gui::none::none_renderer_factory::new_renderer(
-	lib::active_playable_events *context,
+	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::passive_datasource *src,
-	lib::abstract_rendering_surface *const dest)
+	abstract_rendering_surface *const dest)
 {
 	return new none_active_renderer(context, cookie, node, evp, src, dest);
 }
 
-lib::abstract_bg_rendering_source *
+abstract_bg_rendering_source *
 gui::none::none_window_factory::new_background_renderer()
 {
 	return new none_background_renderer();
 }
 
 abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, lib::abstract_rendering_source *region)
+gui::none::none_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
 {
 	return new none_window(name, bounds, region);
 }

@@ -68,7 +68,10 @@
 
 namespace ambulant {
 
-namespace lib {
+namespace mms {
+
+using namespace lib;
+using namespace common;
 
 // Forward delcarations
 
@@ -505,7 +508,7 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::active_ti
 }
 #endif
 
-} // namespace lib
+} // namespace mms
  
 } // namespace ambulant
 
