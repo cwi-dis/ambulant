@@ -296,6 +296,7 @@ void MmView::OnFilePlay()
 	if(player) {
 		player->start();
 		needs_done_redraw = true;
+		InvalidateRect(NULL);
 	}
 }
 
