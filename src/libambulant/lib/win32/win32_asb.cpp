@@ -20,3 +20,7 @@ using namespace ambulant;
 void lib::win32::sleep(unsigned long secs) {
 	Sleep(1000*secs);
 }
+
+void lib::win32::sleep_msec(unsigned long msecs) {
+	Sleep(msecs);
+}

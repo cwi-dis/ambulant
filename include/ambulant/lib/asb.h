@@ -33,6 +33,7 @@ namespace lib {
 #ifdef WIN32
 
 using ambulant::lib::win32::sleep;
+using ambulant::lib::win32::sleep_msec;
 
 #else
 

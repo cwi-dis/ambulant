@@ -21,6 +21,7 @@ namespace lib {
 namespace win32 {
 
 void sleep(unsigned long secs);
+void sleep_msec(unsigned long msecs);
 
 } // namespace win32
 
