@@ -41,6 +41,11 @@ in the toplevel directory to create the player, see further down
 in this document for details if you are not familiar with
 this scheme.
 
+The resulting binary is called AmbulantPlayer and usually deposited in
+/usr/local/bin (depending on any --prefix options to
+configure). Libraries and include files are also installed under
+/usr/local.
+
 Building for Mac OS X
 ---------------------
 
