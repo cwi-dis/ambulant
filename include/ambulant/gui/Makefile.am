@@ -1,1 +1,1 @@
-SUBDIRS=none cocoa qt
+SUBDIRS= arts none cocoa qt
