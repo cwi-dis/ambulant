@@ -39,7 +39,7 @@ Currently we have support for:
 
 The specific platforms that have been used for testing are:
 - Linux: RedHat 9 on fairly recent Intel hardware
-- MacOSX: 10.3
+- MacOSX: 10.3. 10.2 or earlier will not work.
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
 - Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
 - Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
@@ -58,35 +58,40 @@ Supported media types
   - MacOSX and Linux support audio through FFMPEG and SDL,
     giving support for MP3 and many other formats, but not
     all codecs may be supported on WMA or QuickTime files.
-    Some audio files may be played back at an incorrect sample rate.
 - Video:
   - Windows supports video through DirectX.
   - Windows CE does not support video in this release.
   - MacOSX supports video through QuickTime.
-  - Linux does not support video in this release.
+  - Linux supports video through FFMPEG, but audio tracks in
+    video files are not supported in this release.
 
 Networking support
 ------------------
 
 This release has limited support for networked media. The SMIL
-presentation itself must be in a local file, media items can
-be retrieved via HTTP or RTP/RTSP on some platforms.
+presentation itself must be in a local file, streaming media items can
+be retrieved via HTTP or RTP/RTSP on most platforms, static media
+items can be retrieved via HTTP or RTP/RTSP on Linux and Macintosh.
 
 SMIL support
 ------------
 
 This release supports full SMIL 2.0, with the following broad
 exceptions:
-- Limited support for internal linking; linking to external HTML sites
+- Incomplete support for internal linking; linking to external HTML sites
   is supported.
-- No support for SMIL animation in this release.
-- tag names must match media type, and no support for mimetypes
+- Only in-transitions are supported.
+- tag names must match media type, and no support for mimetypes.
+- URL handling is not complete, things like data: urls are not supported.
 
 Documentation
 -------------
 
 Documentation of the overall design and the class relationships
 can be found in: Documentation/Design in a source distribution.
+For this release that documentation can lag behind the actual code,
+but the various documents should state the release for which they were
+last updated.
 
 Examples
 --------
@@ -112,7 +117,8 @@ Prerequisites
 
 Obviously you will need a compiler/linker/development environment.
 For Windows you need Microsoft Visual Studio .NET version 7.1.
-For Linux desktop and MacOSX you need GNU gcc, at least version 3.2.
+For Linux desktop you need GNU gcc, at least version 3.2.
+For MacOSX you need the Apple Developer tools (gcc 3.3-based).
 For Windows CE you need Microsoft Embedded Visual C++ version 3.0.
 For Zaurus you need qtopia 1.5 with gcc 2.95.2.
 
