@@ -1,35 +1,41 @@
 Ambulant design, main objects 
 =============================
-30-Sep-03
----------
 
-Objects we need:
+Objects we have:
 
-- Event processor. This is the mainloop plus the event/callback mechanism.
-- Data Source. Think of these as "media items", they may refer to a URL
+- `Event processor`_. This is the mainloop plus the event/callback mechanism.
+- `Data source`_. Think of these as "media items", they may refer to a URL
   or part of a multiplexed stream or so, and provide data to renderers and
   to the parser.
-- Decoders. It may be a good idea to have a decoder class that has the
-  same interface as a data source and is stacked on a real data source.
-- Passive Region. This is an area of screen space (or a speaker). It is "what
+- `Region`_. This is an area of screen space (or a speaker). It is "what
   the user sees".
-- Active region. This is where renderers send their data.
-- Renderers. These decode data streams, handle timing and do bitblitting
+- `Renderer`_. These decode data streams, handle timing and do bitblitting
   or push audio through.
-- Clocks. These advance a virtual time.
-- Document. The representation of a SMIL document.
-- Document Parser. The parser for a document.
-- Document Scheduler. This reads a document and runs it.
-- Timeline. This executes a single timeline.
-- Player. This is the toplevel object.
+- `Clocks`_. These advance a virtual time.
+- `Document`_. The representation of a SMIL document.
+- `Document parser`_. The parser for a document.
+- `Timeline`_. This executes a single timeline.
+- `Player`_. This is the toplevel object.
 
-Objects we may need:
+.. _Event processor: event_processor.html
+.. _Data source: datasource.html
+.. _Region: region.html
+.. _Renderer: renderer.html
+.. _Document: document.html
+.. _Timeline: timeline.html
+.. _Player: player.html
 
-- Resource. Control access to scarce resources (bandwidth, number of
-  open files).
+For each of these we have an accompanying PDF document with UML graphics
+showing how the object relates to other objects. These can be found
+in the `models`_ directory.
+
+.. _models: ../models
+
   
 In addition we have various auxiliary objects that are explained in
-``auxobjects.txt``.
+`auxobjects.txt`_.
+
+.. _auxobjects.txt: auxobjects.html
 
 Common protocols
 ----------------
@@ -88,45 +94,10 @@ master clock for the SMIL syncMaster attribute.
 	master, either another clock, a renderer or the "realtime master clock"
 	object.
 
-SMIL Document parser
---------------------
+Document parser
+---------------
 
 To be supplied by KK. Interface is in (I guess) ``lib/expat_parser.h``,
 ``lib/nscontext.h`` (correct?), ``lib/parse_attrs.h``, ``lib/region_eval.h``,
 ``lib/sax_handler.h``, ``lib/sax_types.h`` (correct?), ``lib/smil_handler.h``.
 
-Timelines
----------
-
-Timeline objects again come in active and passive flavors. The passive
-flavor is what is created by the SMIL document scheduler, which is then
-activated when pushed down, at which point the active timeline starts
-running.
-
-Timeline design is elaborated upon in the document ``timelines.txt``,
-and the API is in ``lib/timelines.h``. 
-
-The timelines can also be pushed down early, in which case they
-will start preloading. This can be used to do "jump optimization" on
-user interaction: if the scheduler can guess where the user is going to
-go it can push the schedule down early thereby giving better responsiveness.
-
-The main data structure in a timeline is the the list of (prerequisites, action)
-tuples. This is almost a petri-net: when all of the prerequisites have happend
-then all action are triggered. There is a difference with a real petri-net in
-that some of these tuples are "or" in stead of "and": as soon as any of the
-prerequisites has fired the actions fire. We need a name for these tuples (and
-node and event are already taken), "place" seems to be the petri-net standard
-but I don't like it... 
-
-Actions can either trigger another prerequisite, cause an event to be
-sent to a renderer (play, stop, etc), trigger a clock callback later or
-do an upcall to the document scheduler. These should probably all be
-done through the event processor, so we can use it's priority scheme to
-do things in the right order.
-
-The timeline has a number of auxiliary objects: 
-
-- the renderers used (with their data sources attached), 
-- the clock (or master and slave clock), 
-- probably more.

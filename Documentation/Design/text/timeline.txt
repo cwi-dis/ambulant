@@ -1,13 +1,11 @@
 Timelines
 =========
-Jack Jansen, 01-Sep-03
-----------------------
 
 This document gives an overview of what is in a timeline object. It is
 loosely based on what the old CMIF scheduler looked like. There are some
 simplifications, because I think that some of the extra states and transitions
 that the CMIF scheduler had are no longer needed because a timeline is only
-supposed to schedule self-contained pieces. Sjoerd: could you comment on this?
+supposed to schedule self-contained pieces.
 
 Conceptual design
 -----------------
@@ -129,43 +127,64 @@ picks up the clock to use from the node), but I think they probably need to be
 explicit. This would mean that the ``DELAY`` and all the ``xxx_RENDERER`` state transitions 
 get a clock parameter.
 
-Implementation notes
---------------------
+Objects
+-------
 
-Timelines could be optimized pretty aggressively: for any state transition in the RHS
-of a rule that occurs alone in the LHS of another rule we can simply replace
-it's occurrence in the RHS with its own expansion. This does not happen yet in the current implementation.
+The three main objects are ``timeline_builder``, ``passive_timeline`` 
+and ``active_timeline``.
 
-Note that the timeline objects come in passive and active flavors, like many other
-objects. The passive flavor is created by the document scheduler, which could then hang
-if off the SMIL node object. It will then activate it and start it running when needed.
-Since activation is in the critical performance path it needs to be fast.
-The passive object goes through two stages during its lifetime: a *creation* stage followed by a
-*built* stage.
+``timeline_builder`` is a temporary object you use to build a ``passive_timeline``
+from part of a SMIL tree. The current implementation is very simple-minded, and
+handles only documents that adhere to the 3GPP MMS 2.0 specification. This basically
+means fixed layout with one text and one image region, and a fixed structure
+of a sequence of ``<par>`` nodes containing each at most one ``<text>``, one ``<image>``
+and one ``<audio>``.  
 
-During creation the datastructures more-or-less follow the layout
-shown in the example above: a list of ``timeline_node`` objects that stores
-all ``timeline_node_event`` objects for a single node; ``timeline_node_event`` objects
-storing the information on a single event as a list of ``timeline_lhs_event`` and
-``timeline_rhs_event`` objects, which in turn store one ``EVENTCLASS(object)`` reference.
+``Timeline_builder`` currently also creates the ``passive_region``
+hierarchy, and is therefore called with the ``window_factory`` object as argument.
+This is a temporary situation: the region hierarchy is document-wide and hence
+longer lived that timeline objects.
 
-After the upper layer has built the complete timeline it calls the ``timeline.build()``
-method to transform these datastructures into a form that is easily executed.
-This form consists of a linear array of ``active_action`` objects representing all actions
-in all righthandsides, but with symbolic ``timeline_rhs_event`` information replaced by
-a numeric index. This index points into the ``active_dependency`` objects, which correspond
-one-to-one to a single ``timeline_node_event`` but store only a first and last pointer into
-the ``active_action`` array (the actions corresponding to this event) and a counter
-(decremented every time this ``active_dependency`` fires, with the actions executed when
-the counter hits zero).
+The timeline builder class is declared in ``lib/timeline_builder.h``.
 
-Side-effect-only actions are handled similarly, but in stead of having an index into the
-``active_dependency`` list and decrementing a counter they run the corresponding external
-action when triggered.
+``passive_timeline`` objects first go through a building stage, during which the
+timeline builder adds the nodes, adds the delays, and adds the transitions to the nodes.
+These are all stored in ``timeline_node``, ``timeline_delay``, ``timeline_node_transitions``,
+``timeline_event`` and ``timeline_rhs_event`` objects.
 
-The only mutable data structure is the ``active_dependency`` list, the counters of which
-are decremented, and this list contains no pointers to other objects hence it can
-be copied with a straight ``bcopy()``-like operation. Consequently, on creation of an 
-``active_timeline`` object we only need
-to create a copy of the ``active_dependency`` list, the ``active_action`` list is kept in
-the ``passive_timeline`` object and shared among all active copies.
+Once these datastructures are complete the builder calls the ``build()`` method
+on the passive timeline. This converts the information in the datastructures above
+to the form of two arrays, one of ``active_action`` objects and one of ``active_dependency``
+objects. An ``active_action`` stores a single RHS of a timeline node transition, and
+it has various subclasses to cater for the different actions. Active actions for each
+node transition are stored contiguously. An ``active_dependency`` stores the whole
+LHS of a timeline node transition, but only in the form of a dependency count and
+begin/end pointers into the ``active_action`` array. After calling ``build()`` the
+passive timeline is immutable.
+
+The ``active_action`` objects store internal events (the events without side effects)
+as indices into the ``active_dependency`` array. It uses an interior object
+``dependency_index_generator`` to create and store this mapping.
+
+	Timelines could be optimized pretty aggressively: for any state transition in the RHS
+	of a rule that occurs alone in the LHS of another rule we can simply replace
+	it's occurrence in the RHS with its own expansion. This does not happen yet in the current implementation.
+
+Calling ``activate()`` on a ``passive_timeline`` will return a new active timeline 
+object which can execute the
+timeline graph. The ``active_dependency`` array is copied to the active timeline,
+as its dependency counts will be updated during execution, but the ``active_action``
+array is immutable and hence not copied, multiple ``active_timeline`` objects can
+share the copy in the ``passive_timeline``.
+
+Active timelines have ``preroll()`` and ``start()`` methods, similar to nodes.
+It is possible to activate and preroll a timeline without any visible effect,
+hence this can be used to do branch prediction on hyperlinks, etc.
+
+Handling of internal events is straightforward, their ``fire()`` method is called
+which schedules a new dependency. Handling of events with side-effects is a bit
+more elaborate: the ``fire()`` method schedules a low-priority callback to 
+``ext_dependency_callback()`` which calls the actual external method to do the work.
+This roundabout way ensures that all internal events scheduled for a certain point in
+time are processed before all external events, which should make the system
+snappier.

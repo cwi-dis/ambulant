@@ -1,0 +1,21 @@
+Ambulant Design Documentation
+=============================
+
+Currently the design documentation consists of the following
+bits and pieces:
+
+- `Overall`_ has a description of the design documentation, the source
+  code organisation, source code conventions and some high-level
+  design decisions.
+- `Objects`_ has descriptions of the various classes used in Ambulant.
+  Accompanying UML graphics can be found in the `models`_ subdirectory.
+
+.. _Overall: text/overall.html
+.. _Objects: text/objects.html
+.. _models: models
+
+Two older documents that have not been integrated yet, and that may not be
+up-to-date are `remarks.txt`_ and `sdd-schema.txt`_.
+
+.. _remarks.txt: text/remarks.txt
+.. _sdd-schema.txt: text/sdd-schema.txt

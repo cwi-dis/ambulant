@@ -7,7 +7,4 @@ OmniGraffle. The accompanying .pdf files are the output format.
 include has various C++ include files, but is not complete, and not fully
 integrated with the other files yet.
 
-Suggested reading instructions: print the text/*.html files and print the 
-models/*.pdf files. Keep the graphics of the models handy to have a general
-overview of the object model. Start reading the overall.html document, then
-read objects.html, then timelines.html.
+Suggested reading instructions: start with index.html in this directory.

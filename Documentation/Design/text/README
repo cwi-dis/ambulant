@@ -3,5 +3,9 @@ The text files here are formatted in ReST, ReStructured Text, format.
 A description of ReST, plus Python software to convert it to HTML,
 can be found at <http://docutils.sourceforge.net/>.
 
-The HTML is generated from the text files by running
-% python .../docutils/tools/html.py xxx.txt xxx.html
+Once you have installed the docutils package into your python
+you can re-create the html files with the Makefile here.
+
+And if you couldn't be bothered to create the HTML files: the
+ReST format was designed to be pretty readable in its raw form,
+it is similar to the conventions people often use in ASCII mail and such.

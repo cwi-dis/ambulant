@@ -10,30 +10,13 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-01-sep-03">
-<h1><a name="jack-jansen-01-sep-03">Jack Jansen, 01-Sep-03</a></h1>
-<p>This document contains some general thoughts on the Ambulant design. Accompanying
-it we have the following documents:</p>
-<ul class="simple">
-<li>objects.txt (or objects.html) has a breakdown of the main classes and their
-interdependencies.</li>
-<li>auxobjects.txt (or .html) has a quick description of auxiliary classes
-and functions.</li>
-<li>timelines.txt (or .html) has a description of how a timeline
-object works.</li>
-<li>datasource.graffle, renderer.graffle and timeline.graffle (or .pdf)
-have a UML view of the relationships between the classes.</li>
-</ul>
-<p>There are a few more text files, but these
-are currently not fully up-to-date. Remarks.txt contains, among other things,
-a list of solutions we found for various toolkits we need, such as XML
-processing.</p>
-</div>
 <div class="section" id="design-process">
 <h1><a name="design-process">Design process</a></h1>
 <p>The design is going to consist of a mixed bag of technologies:</p>
 <ul class="simple">
-<li>Text files such as this one for informal descriptions.</li>
+<li>Text files such as this one for informal descriptions. They are marked
+up as <a class="reference" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>, a format easily converted to HTML
+but also readable in source form.</li>
 <li>C++ header files for class definitions and such.</li>
 <li>Image files for UML pictures.</li>
 <li>Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
@@ -47,26 +30,8 @@ an emphasized upper case word, as in</p>
 <blockquote>
 <em>QUESTION</em>: explanation of an issue that needs to be resolved.</blockquote>
 <p>The design is going to be done in C++, but we will try to keep it compatible
-with Java or Python, and if possible keep cross-language implementations
-possible.  This would not
-only benefit people extending it in the long run, but could also jump-start
-the initial implementation by re-using the existing GRiNS scheduler.</p>
-<p>Boost.python was considered as a way to achieve C++/Python interoperability, but
-it turns out it is too heavyweight. SWIG is a possible alternative,
-or (for Python) a SWIG/Bgen hybrid.</p>
-</div>
-<div class="section" id="terminology">
-<h1><a name="terminology">Terminology</a></h1>
-<p>We need to settle on terminology for use in the design documentation. There
-are various terms (&quot;event&quot; and &quot;scheduler&quot; come to mind) that could mean four
-or more different things in our context.</p>
-<p>We need a term for &quot;stateless from an external point of view&quot;. There are
-various objects such as data sources that do have lots of internal state
-(such as caching information) but appear immutable/stateless from the outside.
-For the time being we use the term &quot;passive&quot; for this. The companion &quot;active&quot;
-objects are instantiated through the <cite>activate()</cite> call of the passive
-objects, at which point they start to do their thing (push data through,
-render things, etc).</p>
+with Java or Python, and if possible keep the option of cross-language implementations
+open.</p>
 </div>
 <div class="section" id="source-code-organisation">
 <h1><a name="source-code-organisation">Source code organisation</a></h1>
@@ -90,12 +55,12 @@ currently only James Clark's <tt class="literal"><span class="pre">expat</span><
 <div class="section" id="source-code-conventions">
 <h1><a name="source-code-conventions">Source code conventions</a></h1>
 <p>Here's a somewhat random list of source code conventions that we have decided
-to use (at least: Jack thinks this has been decided, please fix if you disagree):</p>
+to use:</p>
 <ul>
 <li><p class="first">Indent 4 spaces, with the following exceptions:</p>
 <ul class="simple">
-<li>namespace doesn't indent at all</li>
-<li>public:, private: and such indent two spaces</li>
+<li><tt class="literal"><span class="pre">namespace</span></tt> doesn't indent at all</li>
+<li><tt class="literal"><span class="pre">public:</span></tt>, <tt class="literal"><span class="pre">private:</span></tt> and such indent two spaces</li>
 </ul>
 </li>
 <li><p class="first">no camelCase, CamelCase or Capitalization in class or variable names</p>
@@ -168,10 +133,11 @@ conditionally include that in <tt class="literal"><span class="pre">lib/mtsync.h
 </div>
 <div class="section" id="global-structure">
 <h1><a name="global-structure">Global structure</a></h1>
-<p>The global structure needs some thought. If we want to be able to use the code
+<p>We want to be able to use the code
 to create, say, a plugin SMIL renderer for use in a browser we need a global
 &quot;playback engine&quot; object that has all the others hanging off it (plus factory
-methods to create them, etc).</p>
+methods to create them, etc). To support this we have a global object <tt class="literal"><span class="pre">player</span></tt>
+that is the controller of all aspects of playback of a single SMIL document.</p>
 <p>With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
@@ -185,13 +151,13 @@ the future.</p>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
-<p>A point of concern is garbage collection. Because we want to do a C++ implementation
+<p>Because we have a C++ implementation
 we cannot rely on refcounting or garbage collection in the underlying runtime.
-lib/refcount.h has a simple refcounting implementation that we could use for
+lib/refcount.h has a simple refcounting implementation that is used for
 garbage collection.</p>
 <p>We need to decide on a per-case basis whether we need refcounting or whether auto_ptr
-or plain pointers are more appropriate. Here's some prose by KK that should
-be incorporated here:</p>
+or plain pointers are more appropriate. Here's some prose by KK that gives some
+of the considerations:</p>
 <blockquote>
 I think that ref-counting should be used when it is absolutely needed
 (proven to be needed). It adds an overhead and some complexity since it can
@@ -225,7 +191,7 @@ on an event infrastructure than the other way around, but these threads are
 threads to handle the events. This should be a compile time option, so we don't
 incur the overhead of locking the event mgr data structures if there's only a
 single worker thread. For now the code assumes multiple threads.</p>
-<p>At first glance that some objects, such as a renderer,
+<p>At first glance that it appears some objects, such as a renderer,
 would benefit from a threaded architecture it turns out this isn't really so.
 The naive threaded implementation:</p>
 <pre class="literal-block">
@@ -246,8 +212,6 @@ while event = wait_for_some_interesting_event():
 <p>The event handler architecture needs an elaborate priority scheme, that is expressive
 enough that the best execution order of things that happen &quot;at the same time&quot;
 is automatic.</p>
-<p>A problem with the event handler is how to represent an event callback.
-lib/callback.h has a solution for this.</p>
 <p>If possible we should design the data structures and API such that a shortcut can be
 taken (if A schedules a callback for B and nothing of higher priority is runnable then
 we call B directly in stead of going through the callback main loop).</p>
@@ -267,12 +231,14 @@ some of the other design issues (GC, event model).</p>
 <div class="section" id="scheduler">
 <h1><a name="scheduler">scheduler</a></h1>
 <p>The scheduler is going to be split in two. There is a high-level language
-dependent scheduler and a low-level independent one. We will write a SMIL
+dependent scheduler and a low-level language independent one. We will write a SMIL
 high level scheduler, other people should be able to replace that with, say,
 a QuickTime or MPEG-4 scheduler while re-using the low-level scheduler.
 For the first release we will supply a scheduler for MMS 2.0. This is a very
 small subset of SMIL 2.0, with documents following a well-defined structure
 and naming convention.</p>
+<p>The initial highlevel scheduler handles the 3GPP MMS 2.0 subset of SMIL
+only, and is wholly contained in the <tt class="literal"><span class="pre">timeline_builder</span></tt> object.</p>
 <p>The Low-level scheduler is based on fixed timelines. The HL
 scheduler identifies a portion of the SMIL document that it can fit on a fixed
 timeline (at least: a fully ordered linear timeline), it creates a schedule for this
@@ -280,9 +246,9 @@ and pushes it down. These low-level schedules look somewhat like a petri-net,
 but they probably need &quot;or&quot; in addition to &quot;and&quot;. The LL schedule will contain
 events that trigger the HL scheduler when needed (such as when the user clicks
 a link, or when the schedule finishes). These timelines are what I referred to
-in the past as &quot;multimedia basic blocks&quot;. A description of what these timelines
-look like is in the file timelines.txt.</p>
-<p>The elements in the timeline need enough information to be able to get back at
+in the past as &quot;multimedia basic blocks&quot;. A description of how these timelines
+work is in <tt class="literal"><span class="pre">timeline.txt</span></tt>.</p>
+<p>Eventually, the elements in the timeline need enough information to be able to get back at
 a HL object from them, so we do the annotation thing. Also, we need to be able
 to get from the HL object tree to the timeline objects too, so that hyperjumps
 can clear out the relevant timelines.</p>

@@ -10,36 +10,27 @@
 <body>
 <div class="document" id="ambulant-design-main-objects">
 <h1 class="title">Ambulant design, main objects</h1>
-<div class="section" id="sep-03">
-<h1><a name="sep-03">30-Sep-03</a></h1>
-<p>Objects we need:</p>
+<p>Objects we have:</p>
 <ul class="simple">
-<li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
-<li>Data Source. Think of these as &quot;media items&quot;, they may refer to a URL
+<li><a class="reference" href="event_processor.html">Event processor</a>. This is the mainloop plus the event/callback mechanism.</li>
+<li><a class="reference" href="datasource.html">Data source</a>. Think of these as &quot;media items&quot;, they may refer to a URL
 or part of a multiplexed stream or so, and provide data to renderers and
 to the parser.</li>
-<li>Decoders. It may be a good idea to have a decoder class that has the
-same interface as a data source and is stacked on a real data source.</li>
-<li>Passive Region. This is an area of screen space (or a speaker). It is &quot;what
+<li><a class="reference" href="region.html">Region</a>. This is an area of screen space (or a speaker). It is &quot;what
 the user sees&quot;.</li>
-<li>Active region. This is where renderers send their data.</li>
-<li>Renderers. These decode data streams, handle timing and do bitblitting
+<li><a class="reference" href="renderer.html">Renderer</a>. These decode data streams, handle timing and do bitblitting
 or push audio through.</li>
-<li>Clocks. These advance a virtual time.</li>
-<li>Document. The representation of a SMIL document.</li>
-<li>Document Parser. The parser for a document.</li>
-<li>Document Scheduler. This reads a document and runs it.</li>
-<li>Timeline. This executes a single timeline.</li>
-<li>Player. This is the toplevel object.</li>
+<li><a class="reference" href="#clocks">Clocks</a>. These advance a virtual time.</li>
+<li><a class="reference" href="document.html">Document</a>. The representation of a SMIL document.</li>
+<li><a class="reference" href="#document-parser">Document parser</a>. The parser for a document.</li>
+<li><a class="reference" href="timeline.html">Timeline</a>. This executes a single timeline.</li>
+<li><a class="reference" href="player.html">Player</a>. This is the toplevel object.</li>
 </ul>
-<p>Objects we may need:</p>
-<ul class="simple">
-<li>Resource. Control access to scarce resources (bandwidth, number of
-open files).</li>
-</ul>
+<p>For each of these we have an accompanying PDF document with UML graphics
+showing how the object relates to other objects. These can be found
+in the <a class="reference" href="../models">models</a> directory.</p>
 <p>In addition we have various auxiliary objects that are explained in
-<tt class="literal"><span class="pre">auxobjects.txt</span></tt>.</p>
-</div>
+<a class="reference" href="auxobjects.html">auxobjects.txt</a>.</p>
 <div class="section" id="common-protocols">
 <h1><a name="common-protocols">Common protocols</a></h1>
 <p>There are a number of (formal and informal) protocols that are shared among
@@ -90,42 +81,11 @@ be master to a clock. Then all clocks will be slaved to such a clock
 master, either another clock, a renderer or the &quot;realtime master clock&quot;
 object.</blockquote>
 </div>
-<div class="section" id="smil-document-parser">
-<h1><a name="smil-document-parser">SMIL Document parser</a></h1>
+<div class="section" id="document-parser">
+<h1><a name="document-parser">Document parser</a></h1>
 <p>To be supplied by KK. Interface is in (I guess) <tt class="literal"><span class="pre">lib/expat_parser.h</span></tt>,
 <tt class="literal"><span class="pre">lib/nscontext.h</span></tt> (correct?), <tt class="literal"><span class="pre">lib/parse_attrs.h</span></tt>, <tt class="literal"><span class="pre">lib/region_eval.h</span></tt>,
 <tt class="literal"><span class="pre">lib/sax_handler.h</span></tt>, <tt class="literal"><span class="pre">lib/sax_types.h</span></tt> (correct?), <tt class="literal"><span class="pre">lib/smil_handler.h</span></tt>.</p>
-</div>
-<div class="section" id="timelines">
-<h1><a name="timelines">Timelines</a></h1>
-<p>Timeline objects again come in active and passive flavors. The passive
-flavor is what is created by the SMIL document scheduler, which is then
-activated when pushed down, at which point the active timeline starts
-running.</p>
-<p>Timeline design is elaborated upon in the document <tt class="literal"><span class="pre">timelines.txt</span></tt>,
-and the API is in <tt class="literal"><span class="pre">lib/timelines.h</span></tt>.</p>
-<p>The timelines can also be pushed down early, in which case they
-will start preloading. This can be used to do &quot;jump optimization&quot; on
-user interaction: if the scheduler can guess where the user is going to
-go it can push the schedule down early thereby giving better responsiveness.</p>
-<p>The main data structure in a timeline is the the list of (prerequisites, action)
-tuples. This is almost a petri-net: when all of the prerequisites have happend
-then all action are triggered. There is a difference with a real petri-net in
-that some of these tuples are &quot;or&quot; in stead of &quot;and&quot;: as soon as any of the
-prerequisites has fired the actions fire. We need a name for these tuples (and
-node and event are already taken), &quot;place&quot; seems to be the petri-net standard
-but I don't like it...</p>
-<p>Actions can either trigger another prerequisite, cause an event to be
-sent to a renderer (play, stop, etc), trigger a clock callback later or
-do an upcall to the document scheduler. These should probably all be
-done through the event processor, so we can use it's priority scheme to
-do things in the right order.</p>
-<p>The timeline has a number of auxiliary objects:</p>
-<ul class="simple">
-<li>the renderers used (with their data sources attached),</li>
-<li>the clock (or master and slave clock),</li>
-<li>probably more.</li>
-</ul>
 </div>
 </div>
 </body>
