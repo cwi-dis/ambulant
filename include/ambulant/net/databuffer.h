@@ -114,6 +114,7 @@ class databuffer
 	/// Returns a pointer from which at most size() bytes can be read.
     char* get_read_ptr();
 	
+	
 	/// Finish reading data.
 	void readdone(int size);
 	
@@ -134,6 +135,7 @@ class databuffer
 	static void default_max_unused_size(int max_unused_size);
   private:
     char* m_buffer;
+  	char* m_read_data_ptr;
 	unsigned long int m_rear;
 	unsigned long int m_size;
  	unsigned long int m_max_size;

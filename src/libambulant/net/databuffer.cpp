@@ -101,6 +101,7 @@ databuffer::databuffer()
 	m_max_unused_size = s_default_max_unused_size;
 	//AM_DBG lib::logger::get_logger()->debug("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
 	m_buffer = NULL;
+	m_read_data_ptr = NULL;
     m_buffer_full = false;
 }
 
@@ -250,13 +251,18 @@ char *
 databuffer::get_read_ptr()
 {
 	m_lock.enter();
-	char *rv = (m_buffer + m_rear);
+	const char *rv = (m_buffer + m_rear);
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
-	//assert (rv);
-	
+	assert(!m_read_data_ptr);
+	if (rv) {
+		m_read_data_ptr = (char*) malloc(m_used);
+		memcpy(m_read_data_ptr, rv, m_used);
+	}
 	m_lock.leave();
-	return rv;
+	return m_read_data_ptr;
+	
 }
+
 
 void
 databuffer::readdone(int sz)
@@ -275,6 +281,12 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	assert(m_read_data_ptr);
+	if (m_read_data_ptr) {
+			free(m_read_data_ptr);
+			m_read_data_ptr = NULL;
+	}
+	
 	if (m_used == 0 || (m_max_unused_size > 0 && m_rear > m_max_unused_size)) {
 		 // Free the unused space in the buffer
 		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) resizing buffer (cur. size = %d)", (void*)this, sz, m_size);

@@ -385,9 +385,15 @@ datasource_reader::readdone()
 		lib::logger::get_logger()->error(gettext("datasource_reader: out of memory"));
 		return;
 	}
-	memcpy(m_data+m_size, m_src->get_read_ptr(), newsize);
-	m_size += newsize;
-	m_src->readdone(newsize);
+	char* dataptr = m_src->get_read_ptr();
+	if (!dataptr) {
+		memcpy(m_data+m_size, dataptr, newsize);
+		m_size += newsize;
+		m_src->readdone(newsize);
+	} else {
+		AM_DBG lib::logger::get_logger()->error(gettext("datasource_reader::readone() get_read_ptr returns NULL "));
+		m_src->readdone(0);
+	}
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);
 }
