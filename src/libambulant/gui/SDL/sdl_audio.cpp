@@ -312,9 +312,10 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	// at the previous callback time
 	//AM_DBG if (m_audio_src) lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
 	//if (size) {
+	if (m_audio_src) {
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
 		m_audio_src->readdone(size);
-	//}
+	}
 	bool still_busy;
 	still_busy = (size != 0);
 	still_busy |= restart_audio_input();
