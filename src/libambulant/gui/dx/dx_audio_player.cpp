@@ -67,16 +67,12 @@ gui::dx::audio_player::audio_player(const std::string& url)
 	m_media_position(0),
 	m_media_event(0),
 	m_basic_audio(0) {
-	HRESULT hr = CoInitialize(NULL);
-	if(FAILED(hr))
-		win_report_error("CoInitialize() failed", hr);
 	open(m_url);
 }
 	
 gui::dx::audio_player::~audio_player() {
 	if(is_playing()) stop();
 	release();
-	CoUninitialize();		
 }
 		
 void gui::dx::audio_player::start(double t) {

@@ -49,6 +49,8 @@
 /* 
  * @$Id$ 
  */
+// CLSID_FilterGraph
+//#include <uuids.h>
 
 #include "ambulant/gui/dx/dx_video_player.h"
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -64,7 +66,8 @@ using ambulant::lib::win32::win_report_last_error;
 using ambulant::lib::logger;
 const ULONGLONG MILLIS_FACT = 10000;
 
-gui::dx::video_player::video_player(const std::string& url, viewport* v, lib::event_processor* evp)
+gui::dx::video_player::video_player(const std::string& url, 
+	viewport* v, lib::event_processor* evp)
 :	m_url(url),
 	m_viewport(v),
 	m_evp(evp), 
@@ -75,15 +78,11 @@ gui::dx::video_player::video_player(const std::string& url, viewport* v, lib::ev
 	m_ddsurf(0),
 	m_wantclicks(false),
 	m_update_event(0) {
-	HRESULT hr = CoInitialize(NULL);
-	if(FAILED(hr))
-		win_report_error("CoInitialize() failed", hr);
 	open(m_url, m_viewport->get_direct_draw());
 }
 
 gui::dx::video_player::~video_player() {
-	if(is_playing()) stop();
-	CoUninitialize();		
+	stop();
 }
 
 void gui::dx::video_player::start(double t) {
@@ -94,16 +93,19 @@ void gui::dx::video_player::start(double t) {
 }
 
 void gui::dx::video_player::stop() {
+	cancel_update();
 	if(!m_mmstream) return;
-	pause();
-	Sleep(50);
+	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
+	if(FAILED(hr)) {
+		win_report_error("IMultiMediaStream::SetState()", hr);	
+	}
 	release();
 	// remove any effects
 }
 
 void gui::dx::video_player::pause() {
-	if(!m_mmstream) return;
 	cancel_update();
+	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {
 		win_report_error("IMultiMediaStream::SetState()", hr);	
@@ -233,11 +235,11 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	return true;
 }
 
-#define RELEASE(x, s) if(x) {logger::get_logger()->trace(s, x->Release());x=NULL;}
-
 void gui::dx::video_player::release() {
-	if(m_mmstream) {
-		/*
+	// avoid an update during release
+	IMultiMediaStream *mmstream = m_mmstream;
+	m_mmstream = 0;
+	if(mmstream) {
 		if(m_ddsurf) {
 			m_ddsurf->Release();
 			m_ddsurf = 0;
@@ -245,7 +247,7 @@ void gui::dx::video_player::release() {
 		if(m_ddsample) {
 			m_ddsample->Release();
 			m_ddsample = 0;
-		}*/
+		}
 		if(m_ddstream)  {
 			m_ddstream->Release();
 			m_ddstream = 0;
@@ -254,8 +256,7 @@ void gui::dx::video_player::release() {
 			m_vidstream->Release();
 			m_vidstream = 0;
 		}
-		m_mmstream->Release();
-		m_mmstream = 0;
+		mmstream->Release();
 	}
 }
 
@@ -264,21 +265,21 @@ bool gui::dx::video_player::update() {
 	return m_ddsample->Update(0, NULL, NULL, 0) == S_OK;
 }
 
+
 void gui::dx::video_player::update_callback() {
 	if(!m_update_event) return;
 	m_update_event = 0;
-	if(update()) {
+	if(m_mmstream && m_ddsample) {
 		m_viewport->redraw();
 		schedule_update();
 	}
-	
 }
 
 void gui::dx::video_player::schedule_update() {
 	if(m_update_event) return;
 	m_update_event = new lib::no_arg_callback_event<video_player>(this, 
 		&video_player::update_callback);
-	m_evp->add_event(m_update_event, 50);
+	m_evp->add_event(m_update_event, 100);
 }
 
 void gui::dx::video_player::cancel_update() {

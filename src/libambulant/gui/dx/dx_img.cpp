@@ -130,7 +130,7 @@ void gui::dx::dx_img_renderer::stop() {
 		v->remove_region(m_region);
 		m_region = 0;
 	}
-	lib::active_renderer::stop();
+	//lib::active_renderer::stop();
 }
 
 void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {

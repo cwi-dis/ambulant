@@ -81,12 +81,21 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 
 gui::dx::dx_video_renderer::~dx_video_renderer() {
 	lib::logger::get_logger()->trace("~dx_video_renderer()");
-	delete m_player;
+	if(m_region) m_region->set_video(0);
+	if(m_player) {
+		m_player->stop();
+		delete m_player;
+	}
+	viewport *v = get_viewport();
+	if(v && m_region) {
+		v->remove_region(m_region);
+	}
 }
 
 void gui::dx::dx_video_renderer::start(double t) {
 	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
 	// This renderer will read/decode its data directly from the url.
+	lib::logger::get_logger()->trace("dx_video_renderer::start()");
 	if(!m_node || !m_src) abort();
 	
 	if(m_player && m_player_initialized) {
@@ -115,7 +124,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 	if(m_player->can_play()) {
 		m_player->start(t);
 		if(m_player->update())
-			m_region->set_video(m_player->getDDSurf(), m_player->getDDSurfRect());
+			m_region->set_video(m_player);
 	}
 	m_player_initialized = true;
 }
@@ -128,29 +137,35 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 void gui::dx::dx_video_renderer::stop() {
 	lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
 	viewport *v = get_viewport();
-	if(v && m_region) {
-		v->remove_region(m_region);
-		m_region = 0;
-	}
+	if(m_region) m_region->set_video(0);
 	if(m_player) {
 		m_player->stop();
 		delete m_player;
 		m_player = 0;
 		m_player_initialized = false;
 	}
-	lib::active_renderer::stop();
+	if(v && m_region) {
+		v->remove_region(m_region);
+		m_region = 0;
+	}
+	//lib::active_renderer::stop();
 }
 
 void gui::dx::dx_video_renderer::pause() {
 	lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
+	if(m_region) m_region->set_video(0);
 	if(m_player) m_player->pause();
 }
 void gui::dx::dx_video_renderer::resume() {
 	lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
+	if(m_region) m_region->set_video(m_player);
 	if(m_player) m_player->resume();
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
+	lib::logger::get_logger()->trace("dx_video_renderer.redraw(0x%x)", this);
+	if(!m_player || !m_region) return;
+	if(m_player) m_player->update();
 	viewport *v = get_viewport(window);
 	v->redraw();
 }

@@ -68,6 +68,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/win32/win32_error.h"
+#include "ambulant/gui/dx/dx_video_player.h"
 
 #include <algorithm>
 #include <cassert>
@@ -278,13 +279,8 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	
 	viewport_logger = lib::logger::get_logger();
 	
-	HRESULT hr = CoInitialize(NULL);
-	if(FAILED(hr)) {
-		win_report_error("CoInitialize() failed", hr);
-		return;
-	}
 	IDirectDrawFactory *pDDF = NULL;
-    hr = CoCreateInstance(CLSID_DirectDrawFactory,
+    HRESULT hr = CoCreateInstance(CLSID_DirectDrawFactory,
                               NULL, CLSCTX_INPROC_SERVER,
                               IID_IDirectDrawFactory,
                               (void **)&pDDF);
@@ -360,8 +356,8 @@ gui::dx::viewport::~viewport() {
 	RELEASE(m_direct_draw);
 	if(palette_entries != 0)
 		delete[] palette_entries;
-	CoUninitialize();
-	RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
+	if(!m_hwnd)
+		RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
 }
 
 RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
@@ -563,7 +559,7 @@ gui::dx::region::region(gui::dx::viewport *v,
 		m_rc(rc),
 		m_clip_rc(crc),
 		m_surface(surface),
-		m_bgd(0), m_vidsurf(0) {
+		m_bgd(0), m_video_p(0) {
 
 	}
 	
@@ -628,18 +624,20 @@ void gui::dx::region::set_bmp(HBITMAP hbmp) {
 	m_surface->ReleaseDC(hdc);
 }
 
-void gui::dx::region::set_video(IDirectDrawSurface* vidsurf, RECT *vidrc) {
+
+void gui::dx::region::set_video(video_player *player) {
 	if(!m_surface) return;
-	m_vidsurf = vidsurf;
-	m_vidrc = vidrc;
+	m_video_p = player;
 	update();
 }
 
 void gui::dx::region::update() {
-	if(!m_vidsurf) return;
+	if(!m_surface || !m_video_p) return;
+	if(!m_video_p->update()) return;
 	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_surface->Blt(&dst_rc, m_vidsurf, m_vidrc, flags, NULL);
+	HRESULT hr = m_surface->Blt(&dst_rc, m_video_p->getDDSurf(), 
+		m_video_p->getDDSurfRect(), flags, NULL);
 	if (FAILED(hr)) {
 		seterror("region::set_video/DirectDrawSurface::Blt()", hr);
 	}
