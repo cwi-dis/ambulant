@@ -20,6 +20,10 @@
 
 #include <sstream>
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 // A scheduler for timeout events
@@ -72,7 +76,7 @@ void lib::delta_timer::insert(event *pe, time_type t) {
 		}
 	}
 	// debug
-	write_trace();
+	AM_DBG write_trace();
 }
 
 void lib::delta_timer::fire_delta_events(time_type delta) {
@@ -96,7 +100,7 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 		decr(m_events.front().second, delta); 
 			
 	// debug
-	if(!queue.empty()) write_trace();
+	AM_DBG if(!queue.empty()) write_trace();
 }
 	
 void lib::delta_timer::write_trace() {
