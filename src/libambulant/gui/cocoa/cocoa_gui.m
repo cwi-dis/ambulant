@@ -54,12 +54,16 @@ void
 cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
 {
 	logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x)", (void *)this);
+	[[NSColor redColor] set];
+	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
 }
 
 void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &r)
 {
 	logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x)", (void *)this);
+	[[NSColor blueColor] set];
+	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
 }
 
 active_renderer *
