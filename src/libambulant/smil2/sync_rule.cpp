@@ -210,8 +210,6 @@ void event_rule::get_instance_times(time_mset& s) const {
 }
 
 void event_rule::reset(time_node *src) {
-	// XXX: Consider exception: 
-	// do not remove event instances that created the 'current' interval
 	m_instances.clear();
 }
 
@@ -238,10 +236,72 @@ void event_rule::add_instance(qtime_type timestamp, time_type instance, const st
 }
 
 //////////////////////////////////
+// transout_rule implementation
+
+void transout_rule::get_instance_times(time_mset& s) const {
+	for(time_list::const_iterator it = m_instances.begin();it!=m_instances.end();it++)
+		s.insert(from_ref(*it) + m_offset);
+}
+
+void transout_rule::reset(time_node *src) {
+	// !src means a document reset.
+	if(!src || m_refnode->is_descendent_of(src))
+		m_instances.clear();
+}
+
+void transout_rule::new_instance(qtime_type timestamp, time_type instance) {
+	if(locked()) return;
+	lock();
+	if(m_trace)
+		AM_DBG logger::get_logger()->trace("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+	m_instances.push_back(to_ref(instance));
+	unlock();
+}
+
+void transout_rule::cancel_instance(qtime_type timestamp, time_type instance) {
+	if(locked()) return;
+	lock();
+	if(m_instances.empty()) {
+		logger::get_logger()->error("model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
+			instance(), to_string().c_str());
+		unlock();
+		return;	
+	}
+	time_type ref_instance = to_ref(instance);
+	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), ref_instance);
+	if(it != m_instances.end())
+		m_instances.erase(it);
+	else 
+		logger::get_logger()->error("model_rule::cancel_instance(%ld) failed (%s)", 
+			instance(), to_string().c_str());	
+	unlock();
+}
+
+void transout_rule::update_instance(qtime_type timestamp, time_type instance, time_type old_instance) {
+	if(locked()) return;
+	lock();
+	if(m_instances.empty()) {
+		logger::get_logger()->error("model_rule::update_instance(%ld, %ld) failed. List is empty (%s)", 
+			instance(), old_instance(), to_string().c_str());
+		unlock();
+		return;	
+	}
+	time_type old_ref_instance = to_ref(old_instance);
+	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), old_ref_instance);
+	if(it != m_instances.end())
+		(*it) = to_ref(instance);
+	else 
+		logger::get_logger()->error("model_rule::update_instance(%ld, %ld) failed (%s)", 
+			instance(), old_instance(), to_string().c_str());	
+	unlock();
+}
+
+//////////////////////////////////
 // trigger_rule implementation
 
 void trigger_rule::new_instance(qtime_type timestamp, time_type instance) {
-	m_target->sync_update(timestamp);
+	//m_target->sync_update(timestamp);
+	logger::get_logger()->show("trigger_rule::new_instance");
 }
 
 void trigger_rule::cancel_instance(qtime_type timestamp, time_type instance) {
@@ -298,6 +358,7 @@ ambulant::smil2::rule_type_str(rule_type rt) {
 	switch(rt) {
 		case rt_begin: return "begin";
 		case rt_end: return "end";
+		case rt_transout: return "transOut";
 	}
 	return "unknown";
 }

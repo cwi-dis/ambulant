@@ -64,7 +64,7 @@
 #include <stack>
 #include <cstdlib>
 
-//#define AM_DBG if(0)
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -87,6 +87,7 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 	build_priorities();
 	build_time_graph();
 	build_timers_graph();
+	build_trans_out_graph();
 }
 
 timegraph::~timegraph() {
@@ -251,6 +252,29 @@ void timegraph::build_timers_graph() {
 		if(tn->is_root()) timer = new lib::timer(m_context->get_timer(), 1.0, false);
 		else timer = new lib::timer(tn->up()->get_timer(), 1.0, false);
 		tn->set_timer(timer);
+	}
+}
+
+// Adds sync rules for out transitions
+void timegraph::build_trans_out_graph() {
+	time_node::iterator it;
+	time_node::iterator end = m_root->end();
+	for(it = m_root->begin(); it != end; it++) {
+		if(!(*it).first) continue;
+		time_node *tn = (*it).second;
+		const lib::node *dn = tn->dom_node();
+		const time_attrs *ta = tn->get_time_attrs();
+		if(!ta->get_trans_out()) continue;
+		time_type offset = -ta->get_trans_out_dur();
+		// We should now arrange so that the out transition 
+		// starts before the node is removed.
+		// To do this we need to consider its freeze behaviour and its context
+		AM_DBG m_logger->trace("%s[%s] transOut with fill: %s start:%ld ms before remove", 
+			ta->get_tag().c_str(), ta->get_id().c_str(), repr(ta->get_fill()).c_str(), offset());
+		if(ta->get_fill() == fill_remove) {
+			sync_rule *sr = new transout_rule(tn, tn_end, offset);
+			tn->set_transout_rule(sr);
+		} // else not implemented yet
 	}
 }
 

@@ -96,6 +96,7 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_deferred(false),
 	m_ffwd_mode(false),
 	m_update_event(false, qtime_type(0, 0)),
+	m_transout_sr(0),
 	m_begin_event_inst(time_type::unresolved),
 	m_domcall_rule(0),
 	m_locked(false),
@@ -125,7 +126,8 @@ time_node::~time_node() {
 		delete (*it);
 	for(it=m_end_list.begin();it!=m_end_list.end();it++)
 		delete (*it);
-		
+	delete m_transout_sr;
+	
 	// This node owns the lists but not 
 	// the sync_rules within the lists.
 	dependency_map::iterator dit;
@@ -232,6 +234,17 @@ void time_node::add_end_rule(sync_rule *sr) {
 	assert(tn!=0);
 	tn->add_dependent(sr, se);
 	m_end_list.push_back(sr);
+}
+
+// Sets a sync_rule for the out transition of this node.
+// This node is not the sync base but the target.
+void time_node::set_transout_rule(sync_rule *sr) {
+	sr->set_target(this, rt_transout);
+	time_node* tn = sr->get_syncbase();
+	sync_event se = sr->get_syncbase_event();
+	assert(tn!=0);
+	tn->add_dependent(sr, se);
+	m_transout_sr = sr;
 }
 
 // Adds a sync arc from this node to a target
@@ -776,10 +789,22 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 		qtime_type timestamp = m_update_event.second;
 		events[timestamp.to_doc()].push_back(this);
 	}
+	
+	if(m_transout_sr) {
+		time_mset set;
+		m_transout_sr->get_instance_times(set);
+		if(!set.empty()) {
+			qtime_type ts(sync_node(), *set.begin());
+			events[ts.to_doc()].push_back(this);
+		}
+	}
 }
 
 void time_node::exec(qtime_type timestamp) {
-	if(!is_alive()) return;
+	if(!is_alive()) {
+		// check for transOut
+		return;
+	}
 	
 	if(m_update_event.first) {
 		sync_update(m_update_event.second);
@@ -800,6 +825,25 @@ void time_node::exec(qtime_type timestamp) {
 	
 	// The following code applies to active nodes
 	assert(is_active());
+	
+	if(m_transout_sr) {
+		// timestamp.second >= m_interval.end
+		time_mset set;
+		m_transout_sr->get_instance_times(set);
+		if(!set.empty()) {
+			qtime_type ts(sync_node(), *set.begin());
+			if(timestamp.second >= ts.second) {
+				// start trasnition
+				AM_DBG 
+				m_logger->trace("%s[%s].start_transition() at %ld (end:%ld)", 
+					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
+					ts.second(),  m_interval.end());
+				const lib::node *trans_out = m_attrs.get_trans_out();
+				m_context->start_transition(m_node, trans_out, false);
+				m_transout_sr->reset(0);
+			}
+		}
+	}
 	
 	// Check for the EOI event
 	if(end_cond(timestamp)) {
@@ -887,7 +931,7 @@ void time_node::sync_update(qtime_type timestamp) {
 
 // Called on the end of simple duration event
 void time_node::on_eosd(qtime_type timestamp) {
-	AM_DBG m_logger->trace("*** %s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
@@ -957,8 +1001,8 @@ void time_node::on_eom(qtime_type timestamp) {
 			time_type pt = timestamp.as_node_time(sync_node());
 			m_impldur = pt - m_interval.begin();
 		}
-		sync_update(timestamp);
-		sync_node()->sync_update(timestamp);
+		raise_update_event(timestamp);
+		sync_node()->raise_update_event(timestamp);
 	}
 }
 
@@ -1000,9 +1044,11 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->pause(qt, d);
-		
+	
 	if(is_playable()) pause_playable();
 	if(m_timer) m_timer->pause();
+	
+	m_paused_sync_time = timestamp.as_time_down_to(sync_node());
 	
 	// could deduce this from the fact that the node 
 	// is active and the timer is nor running
@@ -1043,7 +1089,17 @@ void time_node::resume(qtime_type timestamp) {
 		(*it)->resume(qt);
 	
 	// re-establish sync
-	sync_update(timestamp);
+	time_type end = calc_current_interval_end();
+	time_type resumed_sync_time = timestamp.as_time_down_to(sync_node());
+	time_type pauseoffset = resumed_sync_time - m_paused_sync_time;
+	end += pauseoffset;
+	if(end != m_interval.end) {
+		update_interval_end(timestamp, end);
+	}
+	AM_DBG m_logger->trace("%s[%s].resume(): %s", 
+		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
+		::repr(m_interval).c_str());
+	
 }
 
 // Defers the interval of this node.
@@ -1119,7 +1175,7 @@ void time_node::fill(qtime_type timestamp) {
 	
 	if(keep) {
 		// this node should be freezed
-		AM_DBG m_logger->trace("*** %s[%s].pause() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s].pause() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(),  
 			timestamp.as_time_value_down_to(this), timestamp.second(), 
 			timestamp.as_doc_time_value());
@@ -1149,7 +1205,7 @@ void time_node::fill(qtime_type timestamp) {
 // or when the next is activated.
 void time_node::remove(qtime_type timestamp) {
 	if(!m_needs_remove) return;
-	AM_DBG m_logger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->trace("%s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
