@@ -15,6 +15,8 @@
 #include <string>
 #include <list>
 
+#include "ambulant/lib/asb.h"
+
 namespace ambulant {
 
 namespace lib {
@@ -29,6 +31,31 @@ namespace filesys {
 //	 and therefore, we use sep as a string for simplicity.
 
 const std::string url_path_sep("/");
+
+//////////////////////////
+// Export the following functions:
+
+// -- getcwd()
+// Returns the current working directory
+// std::string lib::filesys::getcwd();
+
+// -- resolve_path()
+// Returns the absolute and normalized form of a path.
+// Takes into account the current working directory
+// Removes '.', '..' from the path name
+// std::string lib::filesys::resolve_path(const char *p);
+
+#ifdef WIN32
+using ambulant::lib::win32::getcwd;
+using ambulant::lib::win32::resolve_path;
+#else
+inline std::string getcwd() {return "";}
+inline std::string resolve_path(const char *p) { return p;}
+#endif
+
+//////////////////////////
+// The following are utility functions for
+// path manipulations.
 
 inline
 std::string join(const std::string& str1, const std::string& str2,
