@@ -107,6 +107,7 @@ class node_context {
 class document : public node_context {
 
   public:
+#if 0
 	/// A document factory function.
 	/// Creates documents from a url.
 	static document* create_from_url(common::factories* factory, const net::url& u);
@@ -114,10 +115,12 @@ class document : public node_context {
 	/// A document factory function.
 	/// Creates documents from local files.
 	static document* create_from_file(common::factories* factory, const std::string& filename);
+#endif/*0*/
 	
 	/// A document factory function.
 	/// Creates documents from source strings.
-	static document* create_from_string(common::factories* factory, const std::string& smil_src);
+	/// The src_id argument is used in error messages only
+	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
 	
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.

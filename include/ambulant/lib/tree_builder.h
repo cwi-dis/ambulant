@@ -93,7 +93,7 @@ class tree_builder :
 
   ///////////////
   public:
-	tree_builder(node_context *context = 0);
+	tree_builder(node_context *context = 0, const char *filename = "");
 	//tree_builder() {};
 	~tree_builder();
 
@@ -106,8 +106,10 @@ class tree_builder :
 	/// build DOM tree from a memory buffer.
 	bool build_tree_from_str(const char *begin, const char *end);
 
+#if 0
 	/// build DOM tree from a file anywhere on the net.
 	bool build_tree_from_url(const net::url& u);
+#endif/*0*/
 	
 	/// Return true if the document was parsed correctly.
 	bool was_well_formed() const {return m_well_formed;}

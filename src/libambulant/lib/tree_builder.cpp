@@ -66,13 +66,13 @@
 
 using namespace ambulant;
 
-lib::tree_builder::tree_builder(node_context *context)
+lib::tree_builder::tree_builder(node_context *context, const char *id)
 :	m_xmlparser(0),
 	m_root(0),
 	m_current(0),
 	m_well_formed(false),
 	m_context(context),
-	m_filename("<no filename>")
+	m_filename(id)
 {
 	reset();
 }
@@ -129,7 +129,9 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #endif
 }
 
-bool lib::tree_builder::build_tree_from_url(const net::url& u) {
+#if 0
+bool 
+lib::tree_builder::build_tree_from_url(const net::url& u) {
 	if(!m_xmlparser) return false;
 	m_filename = u.get_url();
 #if defined(AMBULANT_PLATFORM_WIN32)
@@ -147,6 +149,7 @@ bool lib::tree_builder::build_tree_from_url(const net::url& u) {
 	return false;
 #endif
 }
+#endif/*0*/
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
@@ -185,6 +188,8 @@ lib::tree_builder::reset() {
 	if (m_xmlparser == NULL) {
         	lib::logger::get_logger()->fatal(gettext("Could not create any XML parser (configuration error?)"));
 	}
+	if (m_filename == "")
+		m_filename = "<no filename>";
 }
 
 void 

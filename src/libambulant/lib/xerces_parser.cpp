@@ -105,8 +105,7 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	
 	common::preferences* prefs = common::preferences::get_preferences();
 	// Val_Never, Val_Always, Val_Auto
-	m_saxparser->setValidationScheme
-	  (ambulant_val_scheme_2_xerces_ValSchemes(prefs->m_validation_scheme));
+	m_saxparser->setValidationScheme(ambulant_val_scheme_2_xerces_ValSchemes(prefs->m_validation_scheme));
 	
 	// If set to true, namespace processing must also be turned on
 	m_saxparser->setDoSchema(prefs->m_do_schema);
@@ -145,14 +144,21 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	} catch (const XMLException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
 		int linenumber = e.getSrcLine();
-		m_logger->error(gettext("Parse error line %d: %s: "),
-				linenumber, exceptionMessage);
+		sax_error e(exceptionMessage, linenumber, -1);
+		if(m_error_handler != 0)
+			m_error_handler->error(e);
+		else
+			throw e;
 		XMLString::release(&exceptionMessage);
 	} catch (const SAXParseException& e) {
 		char *exceptionMessage = XMLString::transcode(e.getMessage());
 		int linenumber = e.getLineNumber();
-		m_logger->trace(gettext("Parse error line %d: %s: "),
-				linenumber, exceptionMessage);
+		int column = e.getColumnNumber();
+		sax_error e(exceptionMessage, linenumber, column);
+		if(m_error_handler != 0)
+			m_error_handler->error(e);
+		else
+			throw e;
 		XMLString::release(&exceptionMessage);
 	} catch (...) {
 		m_logger->error(gettext("%s: Unexpected exception during parsing"), m_id);

@@ -53,6 +53,9 @@
 #include "qt_settings.h"
 #include "ambulant/common/preferences.h"
 #include "unix_preferences.h"
+#include "ambulant/lib/logger.h"
+
+using namespace ambulant;
 
 // qt_settings contains the GUI for Ambulant Preferences
 // Settings Window Layout:
@@ -93,7 +96,7 @@ QWidget*
 qt_settings::settings_select() {
 //printf("qt_settings::settings_select() m_parser_val=%d\n", m_parser_val);
   	unix_preferences* m_preferences = (unix_preferences*)
-		ambulant::common::preferences::get_preferences();
+		common::preferences::get_preferences();
 	m_settings_vg = new QVGroupBox("Settings", 0);
 	m_settings_vg->move(160,120);
 	
@@ -173,8 +176,13 @@ qt_settings::settings_finish() {
 void
 qt_settings::settings_ok() {
 	unix_preferences* m_preferences = (unix_preferences*)
-		ambulant::common::preferences::get_preferences();
+		common::preferences::get_preferences();
 
+	int current_log_level = m_loglevel_co->currentItem();
+	if (m_preferences->m_log_level != current_log_level) {
+		m_preferences->m_log_level = current_log_level;
+		lib::logger::get_logger()->set_level(current_log_level);
+	}
 	m_preferences->m_log_level  = m_loglevel_co->currentItem();
 	m_preferences->m_parser_id = parsers[m_parser_co->currentItem()];
 //printf("qt_settings::settings_ok(): m_loglevel_val=%d, m_parser_val=%d, m_settings_vg=0x%x\n", m_loglevel_val, m_parser_val, m_settings_vg);
@@ -191,8 +199,7 @@ qt_settings::settings_ok() {
 		m_preferences->m_validation_schema_full_checking =
 			m_full_check_cb->isChecked();
 	if (m_schema_rb)
-		 m_preferences->m_do_schema	=
-		 	m_schema_rb->isChecked();
+		 m_preferences->m_do_schema = m_schema_rb->isChecked();
 	
 	if (m_use_plugin_cb)
 		 m_preferences->m_use_plugins = m_use_plugin_cb->isChecked();

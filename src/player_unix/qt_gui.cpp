@@ -224,7 +224,11 @@ qt_gui::qt_gui(const char* title,
 		m_menubar->insertItem(gettext("&Help"), helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 		m_o_y = 27;
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+		m_o_y = 20;
+#endif/*QT_NO_FILEDIALOG*/
 	}
 	QObject::connect(this, SIGNAL(signal_player_done()),
 			    this, SLOT(slot_player_done()));
@@ -344,22 +348,22 @@ qt_gui::slot_open() {
 				 gettext("open file dialog"),
 				 gettext("Double Click a file to open")
 				 );
-	openSMILfile(smilfilename, IO_ReadOnly);
-	slot_play();
+	if (openSMILfile(smilfilename, IO_ReadOnly))
+		slot_play();
 #else	/*QT_NO_FILEDIALOG*/	
 	if (m_fileselector == NULL) {
-	  QString mimeTypes("application/smil;");
-	  m_fileselector = new FileSelector(mimeTypes, NULL,
-					    "slot_open", false);
-	  m_fileselector->resize(240, 280);
-	  QObject::connect(m_fileselector, 
-			   SIGNAL(fileSelected(const DocLnk&)),
-			   this, 
-			   SLOT(slot_file_selected(const DocLnk&)));
-	  QObject::connect(m_fileselector, SIGNAL(closeMe()), 
-			   this, SLOT(slot_close_fileselector()));
+		QString mimeTypes("application/smil;");
+		m_fileselector = new FileSelector(mimeTypes, NULL,
+						  "slot_open", false);
+		m_fileselector->resize(240, 280);
+		QObject::connect(m_fileselector, 
+				 SIGNAL(fileSelected(const DocLnk&)),
+				 this, 
+				 SLOT(slot_file_selected(const DocLnk&)));
+		QObject::connect(m_fileselector, SIGNAL(closeMe()), 
+				 this, SLOT(slot_close_fileselector()));
 	} else {
-	  m_fileselector->reread();
+		m_fileselector->reread();
 	}
 	m_fileselector->show();
 #endif	/*QT_NO_FILEDIALOG*/
@@ -369,8 +373,8 @@ qt_gui::slot_open() {
 void
 qt_gui::setDocument(const QString& smilfilename) {
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	openSMILfile(smilfilename, IO_ReadOnly);
-	slot_play();
+	if (openSMILfile(smilfilename, IO_ReadOnly))
+		slot_play();
 #endif/*QT_NO_FILEDIALOG*/
 }
 
@@ -381,8 +385,8 @@ qt_gui::slot_file_selected(const DocLnk& selected_file) {
 	QString smilfilename = *smilfilepointer;
 	delete smilfilepointer;
 	m_fileselector->hide();
-	openSMILfile(smilfilename, IO_ReadOnly);
-	slot_play();
+	if (openSMILfile(smilfilename, IO_ReadOnly))
+		slot_play();
 #endif/*QT_NO_FILEDIALOG*/
 }
 void
@@ -709,8 +713,6 @@ main (int argc, char*argv[]) {
 		std::string error_message = gettext("Cannot open: ");
 		error_message = error_message + "\"" + argv[1] + "\"";
 		std::cerr << error_message << std::endl;
-		lib::logger::get_logger()->error
-		  ((const char*)error_message.c_str());
 		myapp.exec();
 	}
 	delete mywidget;

@@ -230,7 +230,7 @@ qt_mainloop::create_document(const char *filename)
 	}
 	std::string docdata(data, size);
 	free(data);
-	lib::document *rv = lib::document::create_from_string(m_factory,docdata);
+	lib::document *rv = lib::document::create_from_string(m_factory,docdata, filename);
 	if (rv) rv->set_src_url(url);
 	return rv;
 }	

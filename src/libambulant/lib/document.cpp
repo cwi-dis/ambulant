@@ -97,6 +97,7 @@ lib::document::get_root() const {
 	return m_root;
 }
 
+#if 0
 //static 
 lib::document* 
 lib::document::create_from_file(common::factories* factory, const std::string& filename) {
@@ -126,14 +127,15 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	d->set_src_url(u);
 	return d;
 }
+#endif/*0*/
 
 //static 
 lib::document* 
-lib::document::create_from_string(common::factories* factory, const std::string& smil_src) {
+lib::document::create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id) {
 	document *d = new document();
-	tree_builder builder(d);
+	tree_builder builder(d, src_id.c_str());
 	if(!builder.build_tree_from_str(smil_src)) {
-		logger::get_logger()->trace(gettext("Could not build DOM tree for the provided string"));
+		AM_DBG logger::get_logger()->trace(gettext("Could not build DOM tree for the provided string"));
 		return 0;
 	}
 	d->set_root(builder.detach());
