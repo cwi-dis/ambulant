@@ -200,6 +200,7 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
 		NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
+		
 		m_movie_view = [[NSMovieView alloc] initWithFrame: frameRect];
 		[m_movie_view showController: NO adjustingSize: NO];
 		[view addSubview: m_movie_view];

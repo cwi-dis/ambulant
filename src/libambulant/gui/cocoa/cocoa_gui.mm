@@ -102,10 +102,16 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
+	// The following is a strange hack, that somehow makes the setNeedsDisplay work
+	// when this code is executed by one thread while another is in the redraw code.
+	// I think there is a bug in AppKit that makes the setNeedsDisplay get lost in
+	// that case...
+	if ([my_view lockFocusIfCanDraw]) {
+		[my_view unlockFocus];
+	}
 	redraw_lock.enter();
 	[my_view setNeedsDisplayInRect: my_rect];
 	redraw_lock.leave();
-	//[my_view setNeedsDisplay: YES];
 }
 
 void
