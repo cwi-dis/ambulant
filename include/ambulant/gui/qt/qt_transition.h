@@ -191,6 +191,10 @@ class qt_transition_engine_miscshapewipe :
 
 // series 3: clock-type wipes
 
+class qt_transition_engine_clockwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_clockwipe {};
+
 class qt_transition_engine_singlesweepwipe :
 	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_singlesweepwipe {};

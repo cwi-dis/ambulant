@@ -194,7 +194,6 @@ qt_mainloop::~qt_mainloop()
 	if (m_rf) delete m_rf;
 	m_rf = NULL;
 	// m_wf Window factory is owned by caller
-//KB	if (m_wf != NULL) delete m_wf;
 //	m_wf = NULL;
 }
 

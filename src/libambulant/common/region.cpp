@@ -554,6 +554,7 @@ passive_root_layout::~passive_root_layout()
 	AM_DBG lib::logger::get_logger()->trace("~passive_root_layout(0x%x)", (void*)this);
 	if (m_gui_window)
 		delete m_gui_window;
+	m_gui_window = NULL;
 }
 
 void

@@ -101,7 +101,7 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 void
 qt_transition_blitclass_fade::update()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
+//	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -109,7 +109,7 @@ qt_transition_blitclass_fade::update()
 	QImage img2 = npm->convertToImage();
 	QImage res = img1.copy();
 	int i, j, iw = res.width(), ih = res.height();
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
 	// Following code From: Qt-interest Archive, July 2002
 	// blending of qpixmaps, Sebastian Loebbert 
 #define	OPTIM
@@ -161,7 +161,7 @@ qt_transition_blitclass_fade::update()
 void
 qt_transition_blitclass_rect::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rect::update(%f)", m_progress);
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rect::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -175,66 +175,46 @@ qt_transition_blitclass_rect::update()
 void
 qt_transition_blitclass_r1r2r3r4::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: being implemented");
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
-	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
-	lib::screen_rect<int> newdstrect_whole = m_newdstrect;
-	newsrcrect_whole.translate(m_dst->get_global_topleft());
-	newdstrect_whole.translate(m_dst->get_global_topleft());
-	int Ldst = newdstrect_whole.left(), Tdst = newdstrect_whole.top(),
-	  Wdst = newdstrect_whole.width(), Hdst = newdstrect_whole.height();
-	int Lsrc = newsrcrect_whole.left(), Tsrc = newsrcrect_whole.top(),
-	  Wsrc = newsrcrect_whole.width(), Hsrc = newsrcrect_whole.height();
-//	QPixmap* cpm = new QPixmap(npm);
-//	cpm->resize();
-//	bitBlt(qpm, L, T, cpm, L, T, W, H);
-//	delete cpm;
-//	bitBlt(qpm, L, T, cpm, L, T, W, H);
-	qt_transition_debug* dbg = new qt_transition_debug();
-	dbg->paint_rect(aqw, m_dst, 0xFF00FF);
-	delete dbg;
-	bitBlt(qpm, Lsrc, Tsrc, npm, Lsrc, Tsrc, Wsrc, Hsrc);
-#ifdef	JUNK
-	qt_window *window = (qt_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
 	lib::screen_rect<int> oldsrcrect_whole = m_oldsrcrect;
 	lib::screen_rect<int> olddstrect_whole = m_olddstrect;
+	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
+	lib::screen_rect<int> newdstrect_whole = m_newdstrect;
 	oldsrcrect_whole.translate(m_dst->get_global_topleft());
 	olddstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_oldsrcrect_whole = [view NSRectForAmbulantRect: &oldsrcrect_whole];
-	NSRect qt_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
-	NSRect qt_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
-	NSRect qt_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(qt_dstrect_whole);
-#endif
-	[oldsrc drawInRect: qt_olddstrect_whole 
-		fromRect: qt_oldsrcrect_whole
-		operation: NSCompositeCopy
-		fraction: 1.0];
-
-	[newsrc drawInRect: qt_newdstrect_whole 
-		fromRect: qt_newsrcrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0];
-#endif/*JUNK*/
+	newsrcrect_whole.translate(m_dst->get_global_topleft());
+	newdstrect_whole.translate(m_dst->get_global_topleft());
+	int	Loldsrc = oldsrcrect_whole.left(),
+		Toldsrc = oldsrcrect_whole.top(),
+		Woldsrc = oldsrcrect_whole.width(),
+		Holdsrc = oldsrcrect_whole.height();
+//	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: (Loldsrc,Toldsrc,Woldsrc,Holdsrc)=(%d,%d,%d,%d)",Loldsrc,Toldsrc,Woldsrc,Holdsrc);
+	int	Lolddst = olddstrect_whole.left(), 
+		Tolddst = olddstrect_whole.top(),
+		Wolddst = olddstrect_whole.width(),
+		Holddst = olddstrect_whole.height();
+//	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: (Lolddst,Tolddst,Wolddst,Holddst)=(%d,%d,%d,%d)",Lolddst,Tolddst,Wolddst,Holddst);
+	int	Lnewsrc = newsrcrect_whole.left(),
+		Tnewsrc = newsrcrect_whole.top(),
+		Wnewsrc = newsrcrect_whole.width(),
+		Hnewsrc = newsrcrect_whole.height();
+//	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: (Lnewsrc,Tnewsrc,Wnewsrc,Hnewsrc)=(%d,%d,%d,%d)",Lnewsrc,Tnewsrc,Wnewsrc,Hnewsrc);
+	int	Lnewdst = newdstrect_whole.left(),
+		Tnewdst = newdstrect_whole.top(),
+		Wnewdst = newdstrect_whole.width(),
+		Hnewdst = newdstrect_whole.height();
+//	lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
+	bitBlt(qpm, Lolddst, Tolddst, qpm, Loldsrc, Toldsrc, Woldsrc, Holdsrc);
+	bitBlt(qpm, Lnewdst, Tnewdst, npm, Lnewsrc, Tnewsrc, Wnewsrc, Hnewsrc);
 }
 
 void
 qt_transition_blitclass_rectlist::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist::update(%f)", m_progress);
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_rectlist::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -269,7 +249,7 @@ qt_transition_blitclass_rectlist::update()
 void
 qt_transition_blitclass_poly::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_poly::update(%f)", m_progress);
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_poly::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -290,9 +270,7 @@ qt_transition_blitclass_poly::update()
         	W = newrect_whole.width(), H = newrect_whole.height();
 	QPainter paint;
 	paint.begin(qpm);
-	AM_DBG lib::logger::get_logger()->trace(
-				  "qt_transition_blitclass_fade::update(): "
-				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
+//	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
 	paint.drawImage(L,T,img1,0,0,W,H);
 	paint.setClipRegion(qreg);
 	paint.drawImage(L,T,img2,0,0,W,H);
@@ -304,22 +282,41 @@ void
 qt_transition_blitclass_polylist::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_polylist::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: not yet implemented");
-#ifdef	JUNK
-	qt_window *window = (qt_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(qt_dstrect_whole);
-#endif
-#endif/*JUNK*/
+	lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: not yet tested");
+	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
+	QImage img1 = qpm->convertToImage();
+	QImage img2 = npm->convertToImage();
+	QRegion clip_region;
+	  lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
+	std::vector< std::vector<lib::point> >::iterator partpolygon;
+	for (partpolygon=m_newpolygonlist.begin(); 
+	     partpolygon!=m_newpolygonlist.end(); partpolygon++) {
+	  std::vector<lib::point>::iterator newpoint;
+	  lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
+	  QPointArray qpa;
+	  int idx = 0;
+	  for( newpoint=partpolygon->begin();
+	       newpoint != partpolygon->end(); newpoint++) {
+	    lib::point p = *newpoint;
+	    qpa.putPoints(idx++, 1, p.x, p.y);
+	  lib::logger::get_logger()->trace("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
+	  }
+	  QRegion qreg(qpa, true);
+	  clip_region += qpa;
+	}
+	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();
+	newrect_whole.translate(m_dst->get_global_topleft());
+	int L = newrect_whole.left(), T = newrect_whole.top(),
+        	W = newrect_whole.width(), H = newrect_whole.height();
+	QPainter paint;
+	paint.begin(qpm);
+	paint.drawImage(L,T,img1,0,0,W,H);
+	paint.setClipRegion(clip_region);
+	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.flush();
+	paint.end();
 }
 
 smil2::transition_engine *
@@ -394,7 +391,9 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 		rv = new qt_transition_engine_miscshapewipe();
 		break;
 	// series 3: clock-type wipes
-		/*
+	case lib::clockWipe:
+		rv = new qt_transition_engine_clockwipe();
+		break;
 	case lib::singleSweepWipe:
 		rv = new qt_transition_engine_singlesweepwipe();
 		break;
@@ -416,7 +415,6 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 	case lib::pinWheelWipe:
 		rv = new qt_transition_engine_pinwheelwipe();
 		break;
-		*/
 	// series 4: matrix wipe types
 	case lib::snakeWipe:
 		rv = new qt_transition_engine_snakewipe();
