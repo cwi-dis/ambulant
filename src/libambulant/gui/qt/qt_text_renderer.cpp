@@ -133,7 +133,6 @@ qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
 			qt_font.setPointSizeFloat(m_text_size);
 		paint.setFont(qt_font);
 		
-		if (m_text_font || m_text_size)
 		paint.drawText(L,T,W,H,
 			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
 			m_text_storage);
