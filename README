@@ -94,6 +94,15 @@ As SMIL 2.0 is a big language there are undoubtedly areas where
 we have overseen something. Please let us know if you encounter
 problems.
 
+User interface
+--------------
+
+The user interface is a bit clunky on some platforms. More specifically,
+error conditions are not always signalled to the user.
+On MacOSX they sometimes end up on the console (Applications->Utilities->Console
+will show them), on Windows in the file "amlog.txt" in the application
+directory. This will be fixed in a future release.
+
 Documentation
 -------------
 
