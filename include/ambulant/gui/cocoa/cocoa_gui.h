@@ -13,8 +13,8 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_GUI_H
 #define AMBULANT_GUI_COCOA_COCOA_GUI_H
 
-#include "ambulant/lib/region.h"
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/renderer.h"
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
 #endif

@@ -12,9 +12,9 @@
 #ifndef AMBULANT__QT_IMAGE_RENDERER_H
 #define AMBULANT__QT_IMAGE_RENDERER_H
 
-#include "ambulant/lib/region.h"
-#include "ambulant/lib/renderer.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 
 class qt_gui;

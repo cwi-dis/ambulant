@@ -19,22 +19,11 @@ library_include_HEADERS= \
 	node_navigator.h \
 	node.h \
 	nscontext.h \
-	parse_attrs.h \
-	player.h \
 	refcount.h \
-	region_dim.h \
-	region_eval.h \
-	region_node.h \
-	region.h \
-	renderer.h \
 	sax_handler.h \
 	sax_types.h \
-	skeleton.h \
-	smil_handler.h \
 	string_util.h \
 	thread.h \
-	timeline_builder.h \
-	timelines.h \
 	timer.h \
 	tree_builder.h \
 	vnode.h

@@ -13,7 +13,7 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_AUDIO_H
 #define AMBULANT_GUI_COCOA_COCOA_AUDIO_H
 
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>

@@ -8,7 +8,7 @@
  *
  */
 
-#include "ambulant/lib/smil_handler.h"
+#include "ambulant/common/smil_handler.h"
 
 #include <string>
 #include <map>

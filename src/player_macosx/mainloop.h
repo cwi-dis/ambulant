@@ -1,8 +1,8 @@
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/player.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+#include "ambulant/common/player.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 
 class mainloop : public ambulant::lib::ref_counted_obj {

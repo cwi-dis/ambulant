@@ -12,7 +12,7 @@
 #ifndef AMBULANT_GUI_DX_AUDIO_H
 #define AMBULANT_GUI_DX_AUDIO_H
 
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/gui/dx/dx_audio_player.h"
 
 namespace ambulant {

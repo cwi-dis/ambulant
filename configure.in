@@ -12,6 +12,7 @@ AC_CONFIG_FILES([Makefile
 	src/player_macosx/Makefile
 	include/Makefile
 	include/ambulant/Makefile
+	include/ambulant/common/Makefile
 	include/ambulant/lib/Makefile
 	include/ambulant/lib/unix/Makefile
 	include/ambulant/net/Makefile

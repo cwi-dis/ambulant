@@ -30,13 +30,6 @@ libambulant_la_SOURCES = \
 	lib/expat_parser.cpp \
 	lib/logger.cpp \
 	lib/node.cpp \
-	lib/player.cpp \
-	lib/region.cpp \
-	lib/renderer.cpp \
-	lib/skeleton.cpp \
-	lib/smil_handler.cpp \
-	lib/timeline_builder.cpp \
-	lib/timelines.cpp \
 	lib/timer.cpp \
 	lib/tree_builder.cpp \
 	\
@@ -47,6 +40,14 @@ libambulant_la_SOURCES = \
 	\
 	net/datasource.cpp \
 	net/url.cpp \
+	\
+	common/player.cpp \
+	common/region.cpp \
+	common/renderer.cpp \
+	common/skeleton.cpp \
+	common/smil_handler.cpp \
+	common/timeline_builder.cpp \
+	common/timelines.cpp \
 	\
 	gui/none/none_gui.cpp
 

@@ -9,7 +9,7 @@
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 
-#include "ambulant/lib/region.h"
+#include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 
 #include "jpeglib.h"

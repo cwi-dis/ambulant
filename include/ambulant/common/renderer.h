@@ -15,10 +15,10 @@
 
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/lib/region.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/common/region.h"
 #include "ambulant/net/datasource.h"
 
 namespace ambulant {

@@ -9,7 +9,7 @@
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/gui/none/none_gui.h"
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>

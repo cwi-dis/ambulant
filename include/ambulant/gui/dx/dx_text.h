@@ -14,7 +14,7 @@
 #define AMBULANT_GUI_DX_TEXT_H
 
 #include <string>
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/renderer.h"
 
 namespace ambulant {
 

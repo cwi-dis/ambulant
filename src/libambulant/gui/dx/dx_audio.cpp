@@ -6,7 +6,7 @@
 
 #include "ambulant/gui/dx/dx_audio.h"
 
-#include "ambulant/lib/region.h"
+#include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 

@@ -17,16 +17,10 @@
 #undef min
 #endif
 
-// std::numeric_limits<int>
 #include <limits>
-
 #include <cassert>
-
-// region_dim
-#include "ambulant/lib/region_dim.h"
-
-// basic_rect, basic_point, basic_size, screen_rect, 
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/common/region_dim.h"
 
 namespace ambulant {
 

@@ -15,11 +15,11 @@
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
-#include "ambulant/lib/timelines.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/region.h"
-#include "ambulant/lib/renderer.h"
+#include "ambulant/common/timelines.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/renderer.h"
 
 namespace ambulant {
 

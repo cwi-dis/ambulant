@@ -8,9 +8,9 @@
  *
  */
 
-#include "ambulant/lib/region.h"
-#include "ambulant/lib/renderer.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/renderer.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
