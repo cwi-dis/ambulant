@@ -732,7 +732,7 @@ ffmpeg_resample_datasource::data_avail()
 		//if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
 		short int *inbuf = (short int*) m_src->get_read_ptr();
 		short int *outbuf = (short int*) m_buffer.get_write_ptr(outsz);
-		if (inbuf && outbuf) {
+		if (inbuf && outbuf && insamples > 0) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", sz, insamples, outsz, inbuf, outbuf);
 			int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);

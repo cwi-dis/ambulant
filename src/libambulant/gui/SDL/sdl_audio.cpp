@@ -113,6 +113,8 @@ gui::sdl::sdl_active_audio_renderer::init()
 	
 	// Step three - open the mixer
 	SDL_AudioSpec desired, obtained;
+	(void) memset(&desired, 0, sizeof(SDL_AudioSpec));
+	(void) memset(&obtained, 0, sizeof(SDL_AudioSpec));
 	desired.freq = m_ambulant_format.samplerate;
 	desired.format = m_sdl_format;
 	desired.channels = m_ambulant_format.channels;
