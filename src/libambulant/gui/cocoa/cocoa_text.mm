@@ -107,9 +107,6 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
 		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
-	} else {
-		[[NSColor grayColor] set];
-		NSRectFill(dstrect);
 	}
 	m_lock.leave();
 }

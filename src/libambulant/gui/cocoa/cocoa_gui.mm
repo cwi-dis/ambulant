@@ -159,8 +159,6 @@ cocoa_window_factory::new_window(const std::string &name, size bounds)
     AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x", self);
     if (!ambulant_window) {
         AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
-        [[NSColor grayColor] set];
-        NSRectFill([self bounds]);
     } else {
         ambulant::lib::screen_rect<int> arect = [self ambulantRectForNSRect: &rect];
         ambulant_window->redraw(arect, ambulant_window);

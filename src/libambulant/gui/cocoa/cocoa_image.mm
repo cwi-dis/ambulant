@@ -102,9 +102,6 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_windo
 		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
 		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", srcsize.width, srcsize.height, NSMinX(dstrect), NSMinY(dstrect), NSMaxX(dstrect), NSMaxY(dstrect));
 		[m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
-	} else {
-		[[NSColor blueColor] set];
-		NSRectFill(dstrect);
 	}
 	m_lock.leave();
 }
