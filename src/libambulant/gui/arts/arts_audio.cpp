@@ -56,6 +56,9 @@
 namespace ambulant {
 
 using namespace lib;
+
+bool gui::arts::arts_active_audio_renderer::m_arts_init;
+
 gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
@@ -64,7 +67,6 @@ gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	net::passive_datasource *src)
 :	active_renderer(context, cookie, node, evp, src, NULL)
 {
-    //arts_setup(44100,16,1,"arts_audio");
     m_rate = 44100;
     m_channels = 1;
     m_bits=16;
@@ -72,17 +74,31 @@ gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 }
 
 int
+gui::arts::arts_active_audio_renderer::init()
+{
+    int err;
+    if (!m_arts_init) {
+        err  = arts_init();
+        m_arts_init  = true;
+        AM_DBG lib::logger::get_logger()->trace("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
+    } else {
+        err = 0;
+    }
+    return err;
+}
+
+
+int
 gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *name)
 {
     int err;
     if (!m_stream) {
-     AM_DBG lib::logger::get_logger()->trace("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
-    err = arts_init();
+        //err = arts_init();
+        err = init();
     if (err < 0) {
-    AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
+        AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
         return err;
     }
-
     m_stream = arts_play_stream(rate, bits, channels, name);
     return 0;
     }
@@ -93,8 +109,6 @@ gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channe
 gui::arts::arts_active_audio_renderer::~arts_active_audio_renderer()
 {
     arts_close_stream(m_stream);
-    
-    arts_free();
 }
 
 int
