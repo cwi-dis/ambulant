@@ -51,7 +51,8 @@ class url {
     string m_ref;
     
   public:
-  
+ 	url(); 
+ 
 	url(const string& spec); 
 	url(const string& protocol, const string& host, const string& path); 
 		
@@ -111,10 +112,21 @@ class url {
 	
 	// pat: "n:///"
 	void set_from_localhost_file_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	
+	// pat: "/n"
+	void set_from_unix_path(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	
+	// pat: "n:n" or "n:/n"
+	void set_from_windows_path(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	
 };
 
 /////////////////////////
 // inline implementation
+inline 
+url::url() 
+:	m_port(0) {
+}
 
 inline 
 url::url(const string& spec) 
@@ -164,6 +176,11 @@ url::string url::get_file() const {
 } // namespace net
  
 } // namespace ambulant
+
+inline 
+std::ostream& operator<<(std::ostream& os, const ambulant::net::url& u) {
+	return os << u.repr();
+}
 
 #endif // AMBULANT_NET_URL_H
 
