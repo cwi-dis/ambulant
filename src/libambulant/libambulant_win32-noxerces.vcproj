@@ -482,6 +482,9 @@
 					RelativePath=".\smil2\animate_n.cpp">
 				</File>
 				<File
+					RelativePath=".\smil2\params.cpp">
+				</File>
+				<File
 					RelativePath=".\smil2\region_node.cpp">
 				</File>
 				<File
@@ -670,6 +673,9 @@
 							RelativePath="..\..\include\ambulant\gui\dg\dg_mp3_decoder.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_playable.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_player.h">
 						</File>
 						<File
@@ -680,6 +686,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_text.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_transition.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_viewport.h">
@@ -1074,6 +1083,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\animate_n.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\params.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\region_node.h">
