@@ -79,6 +79,7 @@
 
 // return list of nodes
 #include <list>
+#include <algorithm>
 
 // assert
 #include <cassert>
@@ -97,6 +98,11 @@ class node_navigator {
 	static N* detach(N *n);
 	static void delete_tree(N *n);
 	static N* get_root(N *n);
+	static int get_depth(N *n);
+	static void get_path(N *n, std::list<N*>& path);
+	static bool is_descendent(N *n, N *a);
+	static bool is_ancestor(N *n, N *d);
+	static  N* get_common_ancestor(N *n1, N *n2);
 };
 
 template <class N>
@@ -226,11 +232,73 @@ inline void node_navigator<N>::delete_tree(N *n) {
 		}
 	}
 }
+
 template <class N>
 inline N* node_navigator<N>::get_root(N *n) {
 	assert(n != 0);
 	while(n->up()) n = n->up();
 	return n;
+}
+
+// Returns the depth of n. Root has depth zero.
+template <class N>
+inline int node_navigator<N>::get_depth(N *n) {
+	assert(n != 0);
+	int depth = 0;
+	while(n->up()) {
+		n = n->up();
+		depth++;
+	}
+	return depth;
+}
+
+// Creates the path of node as a std::list<N*>
+template <class N>
+inline void node_navigator<N>::get_path(N *n, std::list<N*>& path) {
+	assert(n != 0);
+	path.clear();
+	while(n->up()) {
+		path.push_front(n);
+		n = n->up();
+	}
+	path.push_front(n);
+}
+
+// Returns true when 'n' is descendent of 'a' or when 'n' is 'a'.
+template <class N>
+inline bool node_navigator<N>::is_descendent(N *n, N *a) {
+	assert(n && a);
+	if(n == a) return true;
+	while(n->up()) {
+		n = n->up(); 
+		if(n == a) 
+			return true;
+	}
+	return false;
+}
+
+// Returns true when 'n' is ancestor of 'd' or when 'n' is 'd'.
+template <class N>
+inline bool node_navigator<N>::is_ancestor(N *n, N *d) {
+	return is_descendent(d, n);
+}
+
+// Returns the common ancestor of n1 and n2.
+// The common ancestor is defined to be the first node 
+// that is common to the paths of n1 and n2 and has children.
+template <class N>
+inline N* node_navigator<N>::get_common_ancestor(N *n1, N *n2) {
+	assert(n1 && n2);
+	std::list<N*> path1; get_path(n1, path1);
+	std::list<N*> path2; get_path(n2, path2);
+	for(std::list<N*>::reverse_iterator it1=path1.rbegin();it1!=path1.rend();it1++) {
+		std::list<N*>::reverse_iterator it2 = std::find(path2.rbegin(), path2.rend(), (*it1));
+		if(it2 != path2.rend() && (*it2)->down())
+			return (*it2);
+	}
+	// we can reach this point only for a single element tree.
+	assert(n1==n2 && !n1->down() && !n1->up());
+	return n1;
 }
 
 
