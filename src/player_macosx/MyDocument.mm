@@ -85,6 +85,7 @@
 {
     [super windowControllerDidLoadNib:aController];
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
+    ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *filename = [self fileName];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
@@ -170,8 +171,11 @@
 {
 	if (myMainloop->is_running())
 		myMainloop->set_speed(1.0);
-	else
+	else {
+		// Removed: see comment in [startPlay:]
+		// myMainloop->add_ref();
 		[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
+	}
 	[self validateButtons];
 }
 
@@ -183,19 +187,24 @@
         NSLog(@"startPlay: still not multi-threaded!");
     }
     myMainloop->play();
-	while (myMainloop->is_running()) {
+	// We don't use refcounting on myMainloop, because
+	// otherwise our player infrastructure will be destructed in this
+	// thread, and at that time the window (and the ambulantWidget) is
+	// gone. So the main thread does the cleanup and zaps myMainloop.
+	while (myMainloop && myMainloop->is_running()) {
 		AM_DBG NSLog(@"validating in separate thread");
-		sleep(1);
 		[self validateButtons];
+		sleep(1);
 	}
 	AM_DBG NSLog(@"validating in separate thread - final");
 	[self validateButtons];
     [pool release];
+	// myMainloop->release();
 }
 
 - (IBAction)stop:(id)sender
 {
-    NSLog(@"Stop");
+    AM_DBG NSLog(@"Stop");
 	myMainloop->stop();
 	[self validateButtons];
 }
@@ -207,9 +216,10 @@
 
 - (void)close
 {
-	NSLog(@"close");
-	if (myWindowFactory) delete myWindowFactory;
-	if (myMainloop) delete myMainloop;
+	AM_DBG NSLog(@"close");
+	[self stop: self];
+	if (myMainloop) myMainloop->release();
+	myMainloop = NULL;
 	[super close];
 }
 @end

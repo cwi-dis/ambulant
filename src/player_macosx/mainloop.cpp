@@ -101,7 +101,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	m_df(NULL)
 {
 	using namespace ambulant;
-	
+	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop(0x%x): created", (void*)this);
 	// First create the datasource factory and populate it too.
 	m_df = new net::datasource_factory();
 #ifdef WITH_STDIO_DATASOURCE
@@ -152,6 +152,7 @@ mainloop::~mainloop()
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
+	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::~mainloop(0x%x)", (void*)this);
 	if (m_player) delete m_player;
 	m_player = NULL;
 	if (m_rf) delete m_rf;
@@ -191,6 +192,7 @@ mainloop::set_speed(double speed)
 bool
 mainloop::is_running() const
 {
+	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::is_running(0x%x)", (void*)this);
 	if (!m_running || !m_player) return false;
 	return !m_player->is_done();
 }

@@ -59,7 +59,6 @@
 	IBOutlet id stop_button;
 	IBOutlet id pause_button;
 //    void *window_factory;
-    ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
 	mainloop *myMainloop;
 }
 - (BOOL) validateUIItem:(id)UIItem;

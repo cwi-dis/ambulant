@@ -79,6 +79,7 @@ cocoa_window::~cocoa_window()
 		AmbulantView *my_view = (AmbulantView *)m_view;
 		[my_view ambulantWindowClosed];
 	}
+	m_view = NULL;
 }
 	
 void
