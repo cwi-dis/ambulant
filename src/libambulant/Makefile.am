@@ -31,7 +31,8 @@ toolkit_arts_libraries = libambulant_arts.la
 libambulant_arts_la_LDFLAGS = `artsc-config --libs`
 artsincludes = `artsc-config --cflags`
 libambulant_arts_la_SOURCES =             \
-	gui/arts/arts.cpp
+	gui/arts/arts.cpp \
+	gui/arts/arts_audio.cpp
 else
 artsincludes=
 toolkit_arts_libraries =
