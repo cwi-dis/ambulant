@@ -175,6 +175,7 @@ class dx_player :
 	void update_callback();
 	void schedule_update();
 	void update_transitions();
+	void clear_transitions();
 	bool has_transitions() const;
 	void stopped(common::playable *p);
 	void paused(common::playable *p);
@@ -200,6 +201,7 @@ class dx_player :
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;
+	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
 };

@@ -151,9 +151,10 @@ void gui::dx::dx_player::start() {
 
 void gui::dx::dx_player::stop() {
 	if(m_player) {
-		m_player->stop();
 		m_timer->pause();
 		m_update_event = 0;
+		clear_transitions();
+		m_player->stop();
 	}
 }
 
@@ -377,12 +378,22 @@ bool gui::dx::dx_player::has_transitions() const {
 }
 
 void gui::dx::dx_player::update_transitions() {
+	m_trmap_cs.enter();
 	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
 		if(!(*it).second->next_step()) {
 			delete (*it).second;
 			it = m_trmap.erase(it);
 		}
 	}
+	m_trmap_cs.leave();
+}
+
+void gui::dx::dx_player::clear_transitions() {
+	m_trmap_cs.enter();
+	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++)
+		delete (*it).second;
+	m_trmap.clear();
+	m_trmap_cs.leave();
 }
 
 gui::dx::dx_transition *gui::dx::dx_player::get_transition(common::playable *p) {
