@@ -150,12 +150,13 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);
-		// Copy the background pixels
-		screen_rect<int> dstrect = r;
-		dstrect.translate(m_dest->get_global_topleft());
-		bitBlt(surf, dstrect.left(), dstrect.top(), qpm,
-		       dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
+			// Copy the background pixels
+			screen_rect<int> dstrect = r;
+			dstrect.translate(m_dest->get_global_topleft());
+			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			bitBlt(surf, dstrect.left(),dstrect.top(),
+			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
 		}
 	}
 
@@ -165,17 +166,14 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		aqw->reset_ambulant_surface();
 	}
 	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug
-		  ("qt_renderer.redraw: drawing to view");
-		m_trans_engine->step
-		  (m_event_processor->get_timer()->elapsed());
+		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
+		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef no_arg_callback<qt_renderer>transition_callback;
-		event *ev = new transition_callback
-		  (this, &qt_renderer::transition_step);
-		transition_info::time_type delay
-		  = m_trans_engine->next_step_delay();
+		event *ev = new transition_callback (this, &qt_renderer::transition_step);
+		transition_info::time_type delay = m_trans_engine->next_step_delay();
+//		if (delay < 40) delay = 40; // smooth ransition
 //		if (delay < 33) delay = 33; // XXX band-aid
-//		delay = 500;
+		delay = 50;
 		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
@@ -186,9 +184,7 @@ void
 qt_renderer::transition_step()
 {
 //	m_lock.enter();
-	AM_DBG logger::get_logger()->debug
-	  ("qt_renderer.transition_step: now=%d",
-	   m_event_processor->get_timer()->elapsed());
+	AM_DBG logger::get_logger()->debug("qt_renderer.transition_step: now=%d",m_event_processor->get_timer()->elapsed());
 	if (m_dest) m_dest->need_redraw();
 //	m_lock.leave();
 }

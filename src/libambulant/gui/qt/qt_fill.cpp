@@ -128,9 +128,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug
-	  ("qt_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
-	   (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
 	
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPixmap *surf = NULL;
@@ -146,15 +144,15 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);
-			/*
-		// Copy the background pixels
-		screen_rect<int> dstrect = r;
-		dstrect.translate(m_dest->get_global_topleft());
-		bitBlt(surf, dstrect.left(), dstrect.top(),
-		       qpm,  dstrect.left(), dstrect.top(), 
-		             dstrect.width(), dstrect.height());
-			*/
-		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: drawing to transition surface");
+			// Copy the background pixels
+			screen_rect<int> dstrect = r;
+			dstrect.translate(m_dest->get_global_topleft());
+			AM_DBG logger::get_logger()->debug("qt_fill.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			bitBlt(surf, dstrect.left(),dstrect.top(),
+			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			bitBlt(surf, dstrect.left(), dstrect.top(),
+			       qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: drawing to transition surface");
 		}
 	}
 
@@ -166,19 +164,14 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 	if (m_trans_engine && surf) {
 		AM_DBG logger::get_logger()->debug
 		  ("qt_fill_renderer.redraw: drawing to view");
-		m_trans_engine->step
-		  (m_event_processor->get_timer()->elapsed());
+		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef no_arg_callback<qt_fill_renderer>transition_callback;
-		event *ev = new transition_callback
-		  (this, &qt_fill_renderer::transition_step);
-		transition_info::time_type delay
-		  = m_trans_engine->next_step_delay();
+		event *ev = new transition_callback(this, &qt_fill_renderer::transition_step);
+		transition_info::time_type delay = m_trans_engine->next_step_delay();
+//		if (delay < 40) delay = 40; // smooth ransition
 //		if (delay < 33) delay = 33; // XXX band-aid
-//		delay = 500;
-		AM_DBG logger::get_logger()->debug
-		  ("qt_fill_renderer.redraw: now=%d, schedule step for %d",
-		   m_event_processor->get_timer()->elapsed(), 
-		   m_event_processor->get_timer()->elapsed()+delay);
+		delay = 50;
+		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
 	m_lock.leave();
@@ -227,12 +220,8 @@ qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
 	AM_DBG lib::logger::get_logger()->debug
 		("qt_fill_renderer.redraw_body: clearing to 0x%x", 
 		 (long)color);
-	QColor bgc = QColor(lib::redc(color),
-			    lib::greenc(color),
-			    lib::bluec(color));
-	AM_DBG lib::logger::get_logger()->debug
-	  ("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",
-	   (void *)this, L,T,W,H);
+	QColor bgc = QColor(lib::redc(color),lib::greenc(color),lib::bluec(color));
+	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	paint.setBrush(bgc);
 	paint.drawRect(L,T,W,H);
 	paint.flush();
@@ -244,8 +233,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 			       common::gui_window *window)
 {	
 	const lib::screen_rect<int> &r = m_dst->get_rect();
-	AM_DBG lib::logger::get_logger()->debug
-		("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
 	if (m_src && !m_src->get_transparent()) {
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
@@ -259,14 +247,8 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug(
-			"qt_background_renderer::drawbackground:"
-			 " %s0x%x,%s(%d,%d,%d,%d)",
-			" clearing to ", (long)bgcolor, 
-			" local_ltwh=",L,T,W,H);
-		QColor bgc = QColor(lib::redc(bgcolor),
-				    lib::greenc(bgcolor),
-				    lib::bluec(bgcolor));
+		AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::drawbackground: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
+		QColor bgc = QColor(lib::redc(bgcolor),lib::greenc(bgcolor),lib::bluec(bgcolor));
 		paint.setBrush(bgc);
 		paint.drawRect(L,T,W,H);
 		paint.flush();

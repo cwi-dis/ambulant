@@ -262,23 +262,23 @@ qt_transition_blitclass_rectlist::update()
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	int L = dstrect_whole.left(), T = dstrect_whole.top(),
 		W = dstrect_whole.width(), H = dstrect_whole.height();
-//	logger::get_logger()->debug("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
+	logger::get_logger()->debug("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
 	QPainter paint;
 	QRegion clip_region;
 	paint.begin(qpm);
-	paint.drawImage(L,T,img1,0,0,W,H);
+	paint.drawImage(L,T,img1,L,T,W,H);
 	std::vector< screen_rect<int> >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
 		screen_rect<int> corner_rect = *newrect;
 		corner_rect.translate(m_dst->get_global_topleft());
 		int L = corner_rect.left(), T = corner_rect.top(),
         		W = corner_rect.width(), H = corner_rect.height();
-//		logger::get_logger()->debug("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
+		logger::get_logger()->debug("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
 		QRegion newcorner(L,T,W,H);
 		clip_region += newcorner;
 	}
 	paint.setClipRegion(clip_region);
-	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.drawImage(L,T,img2,L,T,W,H);
 	paint.flush();
 	paint.end();
 	finalize_transition(m_outtrans, aqw, m_dst);
@@ -309,7 +309,7 @@ qt_transition_blitclass_poly::update()
         	W = newrect_whole.width(), H = newrect_whole.height();
 	QPainter paint;
 	paint.begin(qpm);
-//	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
+	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
 //	paint.drawImage(L,T,img1,L,T,W,H);
 	paint.setClipRegion(qreg);
 	paint.drawImage(L,T,img2,L,T,W,H);
@@ -334,23 +334,24 @@ qt_transition_blitclass_polylist::update()
 	std::vector< std::vector<point> >::iterator partpolygon;
 	for (partpolygon=m_newpolygonlist.begin(); 
 	     partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-	  std::vector<point>::iterator newpoint;
-	  logger::get_logger()->debug("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
-	  QPointArray qpa;
-	  int idx = 0;
-	  for( newpoint=partpolygon->begin();
-	       newpoint != partpolygon->end(); newpoint++) {
-	    point p = *newpoint + dst_global_topleft;
-	    qpa.putPoints(idx++, 1, p.x, p.y);
-	  logger::get_logger()->debug("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
-	  }
-	  QRegion qreg(qpa, true);
-	  clip_region += qreg;
+		std::vector<point>::iterator newpoint;
+		logger::get_logger()->debug("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
+		QPointArray qpa;
+		int idx = 0;
+		for( newpoint=partpolygon->begin();
+		     newpoint != partpolygon->end(); newpoint++) {
+			point p = *newpoint + dst_global_topleft;
+			qpa.putPoints(idx++, 1, p.x, p.y);
+			logger::get_logger()->debug("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
+		}
+		QRegion qreg(qpa, true);
+		clip_region += qreg;
 	}
 	screen_rect<int> newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(dst_global_topleft);
 	int L = newrect_whole.left(), T = newrect_whole.top(),
 	 W = newrect_whole.width(), H = newrect_whole.height();
+	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist::update() drawImage npm=0x%x ltwh=(%d,%d,%d,%d)",npm,L,T,W,H);
 	QPainter paint;
 	paint.begin(qpm);
 //	paint.drawImage(L,T,img1,L,T,W,H);
