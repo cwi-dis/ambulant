@@ -62,7 +62,6 @@
 #include "ambulant/net/datasource.h"
 
 #include "avcodec.h"
-#define WITH_FFMPEG_AVFORMAT
 #ifdef WITH_FFMPEG_AVFORMAT
 #include "avformat.h"
 #endif // WITH_FFMPEG_AVFORMAT

@@ -57,7 +57,7 @@ namespace qt {
 class qt_video_factory : public common::playable_factory {
   public:
   
-	qt_video_factory(net::datasource_factory *df) {}
+	qt_video_factory(net::datasource_factory *df)
 	:   m_datasource_factory(df) {}
 	~qt_video_factory();
 		
