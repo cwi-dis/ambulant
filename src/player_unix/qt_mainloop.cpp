@@ -72,7 +72,9 @@ qt_mainloop::run(void* view)
     rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
 #endif    
 #ifdef WITH_QSOUND
-    rf->add_factory(new ambulant::gui::qsound::qsound_renderer_factory());
+		logger::get_logger()->trace("add factory for QSound");
+    	rf->add_factory(new ambulant::gui::qsound::qsound_renderer_factory());
+		logger::get_logger()->trace("add factory for QSound done");
 #endif
     rf->add_factory(new qt_renderer_factory());
     wf = new qt_window_factory(qt_view);

@@ -152,7 +152,34 @@ expat must have been cross-compiled and installed in third_party_packages/expat-
 configure with: ./configure --build=`config.guess` --host=arm-linux])
 fi
 AC_MSG_RESULT($qtopia)
-if test x$qtopia = xfalse; then
+#
+# Test for QSound
+#
+AC_MSG_CHECKING(for --with-qsound (cross compilation for Sharp SL-5600 Zaurus))
+AC_ARG_WITH(qsound,
+     [  --with-qsound    Turn on QSound support ],
+     [case "${withval}" in
+       yes) qsound=true
+                QT_PREFIX=$QTDIR
+		;;
+       no)  qsound=false
+                ;;
+       *)       qsoundtrue
+                QT_PREFIX=${withval}
+                ;;
+     esac],[
+     case x$QSOUND in
+     x) qsound=false
+        ;;
+     *) qsound=true
+        QT_PREFIX=$QTDIR
+        ;;
+     esac])
+AM_CONDITIONAL(WITH_QSOUND, test x$qsound = xtrue)
+AC_MSG_RESULT($qsound)
+#
+# Test for arts 
+#
 AC_MSG_CHECKING(for --with-arts)
 AC_ARG_WITH(arts,
      [  --with-arts    Turn on aRts support],
@@ -171,15 +198,7 @@ AC_ARG_WITH(arts,
      fi
      ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
-AM_CONDITIONAL(WITH_QSOUND, test x$qtopia = xtrue)
 AC_MSG_RESULT($arts)
-else
-AC_MSG_CHECKING(whether we need qsound)
-arts=false
-AM_CONDITIONAL(WITH_QSOUND, test x$qtopia = xtrue)
-AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
-AC_MSG_RESULT($qtopia)
-fi
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #

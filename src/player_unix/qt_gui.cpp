@@ -240,5 +240,8 @@ int main (int argc, char*argv[]) {
     myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
   mywidget->show();
+  myapp.exec();
+  std::cout << "Exiting program" << std::endl;
+	return 0;
   return myapp.exec();
 }
