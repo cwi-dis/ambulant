@@ -38,12 +38,6 @@ lib::unix::critical_section::leave()
 	if (pthread_mutex_unlock(&m_cs) < 0) abort();
 }
 
-lib::critical_section *
-lib::critical_section_factory()
-{
-	return (critical_section *)new unix::critical_section();
-}
-
 lib::unix::counting_semaphore::counting_semaphore()
 :	m_lock(critical_section()),
 	m_wait(critical_section()),

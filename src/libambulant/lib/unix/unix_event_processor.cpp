@@ -17,7 +17,7 @@
 using namespace ambulant;
 
 lib::unix::event_processor::event_processor() 
-:   abstract_event_processor(lib::timer_factory(), lib::critical_section_factory())
+:   abstract_event_processor(lib::timer_factory(), new critical_section())
 {
 	AM_DBG log_trace_event("event_processor 0x%x created", (void *)this);
 	start();

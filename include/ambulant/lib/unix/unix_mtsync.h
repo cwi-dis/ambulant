@@ -14,7 +14,7 @@
 
 #include <pthread.h>
 
-#include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/abstract_mtsync.h"
 
 namespace ambulant {
 
@@ -22,7 +22,7 @@ namespace lib {
 #undef unix
 namespace unix {
 
-class critical_section : public ambulant::lib::critical_section {
+class critical_section : public ambulant::lib::abstract_critical_section {
   public:
 	critical_section();
 	~critical_section();
