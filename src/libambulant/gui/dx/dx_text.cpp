@@ -99,6 +99,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 	// Has this been activated
 	if(m_activated) {
 		// repeat
+		m_dest->need_redraw();
 		return;	
 	}
 	
