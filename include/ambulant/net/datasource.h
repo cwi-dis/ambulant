@@ -134,9 +134,8 @@ inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
  
 class abstract_active_datasource : public ambulant::lib::ref_counted_obj {  	
   public:
-	~abstract_datasource() {}
+	~abstract_active_datasource() {}
 
- w
 	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
 
         // a readdone cal is made by the client if he is ready with len bytes of data.
