@@ -83,10 +83,10 @@ class tokens_vector : public std::vector<std::string> {
 	std::string join(size_type i, char sep) {
 		std::string s;
 		size_type n = size();
-		if(i<n) s += at(i++);
+		if(i<n) s +=  (*this)[i++]; // this->at(i) seems is missing from gcc 2.95
 		for(;i<n;i++) {
 			s += sep;
-			s += at(i);
+			s += (*this)[i];
 		}
 		return s;
 	}
@@ -238,13 +238,13 @@ class reg_scanner {
 	}
 	
 	std::string val_at(size_type i) const {
-		return (i<vals.size())?vals.at(i):"";
+		return (i<vals.size())?vals[i]:"";
 	}
 	
 	std::string join(size_type b, size_type e) const {
 		std::string s;
 		for(size_type i = b; i<e && i< vals.size();i++)
-			s += vals.at(i);
+			s += vals[i];
 		return s;
 	}
 	std::string join(size_type b) const {
