@@ -85,9 +85,8 @@ AC_MSG_RESULT($with_ltdl)
 #
 
 AC_MSG_CHECKING(for --with-dummy-plugin)
-with_dummy_plugin=false
-AC_ARG_WITH([dummy],
-    [AC_HELP_STRING([--with-dummy],[Enable the dummy plugin (default: disabled)])
+AC_ARG_WITH([dummy-plugin],
+    [AC_HELP_STRING([--with-dummy-plugin],[Enable the dummy plugin (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)  	with_dummy_plugin=true
@@ -96,8 +95,8 @@ AC_ARG_WITH([dummy],
 			;;
 	*)		AC_MSG_ERROR("--with-dummy-plugin takes no argument")
 			;;
-	esac
-	])
+	esac],[
+	with_dummy_plugin=false])
 AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
