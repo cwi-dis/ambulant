@@ -17,7 +17,7 @@
 #include "lib/timer.h"
 #endif
 
-#include <time.h>
+#include <sys/time.h>
 
 namespace ambulant {
 
