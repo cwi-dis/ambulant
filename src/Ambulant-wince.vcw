@@ -3,7 +3,7 @@ Microsoft eMbedded Visual Tools Workspace File, Format Version 4.00
 
 ###############################################################################
 
-Project: "libambulant_wince"=".\libambulant\libambulant_wince.vcp" - Package Owner=<4>
+Project: "libambulant_wince"=.\libambulant\libambulant_wince.vcp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "player_wince"=".\player_wince\player_wince.vcp" - Package Owner=<4>
+Project: "player_wince"=.\player_wince\player_wince.vcp - Package Owner=<4>
 
 Package=<5>
 {{{
