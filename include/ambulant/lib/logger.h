@@ -170,7 +170,12 @@ inline bool logger::suppressed(int level) {
 	return level < m_level;
 }
 
-inline logger& __cdecl endl(logger& l) {
+#ifdef WIN32
+#define CDECL __cdecl
+#else
+#define CDECL
+#endif
+inline logger& CDECL endl(logger& l) {
 	l.trace_oss_endl();
 	return l;
 }	
