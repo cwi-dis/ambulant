@@ -48,8 +48,8 @@
 #ifndef __ARTS__
 #define __ARTS__
 
-#include<artsc.h>
-#include<iostream>
+#include <iostream>
+
 
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"
@@ -58,6 +58,8 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+
+
 namespace ambulant {
 using namespace lib;
     namespace gui {
@@ -81,39 +83,6 @@ public:
 
 };
 
-class arts_active_audio_renderer : public active_renderer, public timer_events {
-  public:
-      arts_active_audio_renderer(
-      active_playable_events *context,
-      active_playable_events::cookie_type cookie,
-      const node *node,
-      event_processor *const evp,
-      net::passive_datasource *src);
-        
-      ~arts_active_audio_renderer();
-
-      void start(double where);
-      void stop();
-      void pause();
-      void resume();
-      void speed_changed();
-      void readdone();
-  
-      void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) {};
-  private:
-    
-    int arts_setup(int rate, int bits, int channels, char *name);
-    int arts_play(char *data, int size);
-  
-    arts_stream_t m_stream;
-    int m_rate;
-    int m_channels;
-    int m_bits;
-    char *m_name;
-    event *m_playdone;
-    
-
-};
 
 
 } // end namespace arts_renderer
