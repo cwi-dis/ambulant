@@ -108,14 +108,7 @@ namespace qt_renderer {
 	 "returning qt_active_text_renderer 0x%x",
 	 (void*) node, (void*) rv);
     } else {
-      AM_DBG logger::get_logger()->error("qt_renderer_factory: "
-				  "no Qt renderer for tag \"%s\"",
-				  tag.c_str());
-      rv = new gui::none::none_active_renderer(context, cookie, node, evp, src, dest);
-      AM_DBG logger::get_logger()->trace
-	("qt_renderer_factory: node 0x%x: "
-	 "returning none_active_renderer 0x%x",
-	 (void*) node, (void*) rv);
+      return NULL;
     }
     return rv;
   }    
