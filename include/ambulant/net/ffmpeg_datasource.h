@@ -96,10 +96,10 @@ class ffmpeg_audio_filter_finder : public audio_filter_finder {
 	audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts);
 };
 
-class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
+class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(const std::string& url, datasource *src);
-    ~ffmpeg_audio_datasource();
+	 ffmpeg_decoder_datasource(const std::string& url, datasource *src);
+    ~ffmpeg_decoder_datasource();
      
 		  
     void start(lib::event_processor *evp, lib::event *callback);  

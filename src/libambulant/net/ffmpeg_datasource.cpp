@@ -63,7 +63,7 @@
 using namespace ambulant;
 using namespace net;
 
-typedef lib::no_arg_callback<ffmpeg_audio_datasource> readdone_callback;
+typedef lib::no_arg_callback<ffmpeg_decoder_datasource> readdone_callback;
 typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
@@ -97,11 +97,11 @@ ffmpeg_audio_parser_finder::new_audio_parser(const std::string& url, audio_forma
 	audio_datasource *ds = NULL;
 	if (src) {
 			// XXXX Here we have to check for the mime type.
-			if (!ffmpeg_audio_datasource::supported(url)) {
+			if (!ffmpeg_decoder_datasource::supported(url)) {
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_parser_finder::new_audio_parser: no support for %s", url.c_str());
 				return NULL;
 			}
-			ds = new ffmpeg_audio_datasource(url, src);
+			ds = new ffmpeg_decoder_datasource(url, src);
 			// XXX Here we have to check if ext & fmt are supported by ffmpeg
 			if (ds) return ds;			
 		}
@@ -121,7 +121,7 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 	return new ffmpeg_resample_datasource(src, fmts);
 }
 		
-ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const std::string& url, datasource *const src)
 :	m_url(url),
 	m_codec(NULL),
 	m_con(NULL),
@@ -131,61 +131,61 @@ ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, datasou
 	m_blocked_full(false),
 	m_client_callback(NULL)
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x", (void*)this);
 	ffmpeg_init();
 	const char *ext = getext(m_url);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource: Selecting \"%s\" decoder", ext);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: Selecting \"%s\" decoder", ext);
 	if (!select_decoder(ext))
-		lib::logger::get_logger()->error("ffmpeg_audio_datasource: could not select \"%s\" decoder", ext);
+		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select \"%s\" decoder", ext);
 }
 
-ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
+ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource(0x%x)", (void*)this);
 	// XXXX free m_con?
 	// XXXX free m_codec?
 }	
 
 int
-ffmpeg_audio_datasource::decode(uint8_t* in, int sz, uint8_t* out, int &outsize)
+ffmpeg_decoder_datasource::decode(uint8_t* in, int sz, uint8_t* out, int &outsize)
 {
 	return avcodec_decode_audio(m_con, (short*) out, &outsize, in, sz);
 }
 		  
 void 
-ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
+ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
 	
 	if (m_client_callback != NULL)
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
+		AM_DBG lib::logger::get_logger()->error("ffmpeg_decoder_datasource::start(): m_client_callback already set!");
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (evp && callbackk) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start: trigger client callback");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): no client callback!");
+			AM_DBG lib::logger::get_logger()->error("ffmpeg_decoder_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
 		m_client_callback = callbackk;
 		m_event_processor = evp;
-		lib::event *e = new readdone_callback(this, &ffmpeg_audio_datasource::data_avail);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
+		lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
 		m_src->start(m_event_processor,  e);
 	}
 	m_lock.leave();
 }
  
 void 
-ffmpeg_audio_datasource::readdone(int len)
+ffmpeg_decoder_datasource::readdone(int len)
 {
 	m_lock.enter();
 	m_buffer.readdone(len);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.readdone : done with %d bytes", len);
 //	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {
 //		m_src->start(m_event_processor, m_readdone);
 //	}
@@ -193,44 +193,44 @@ ffmpeg_audio_datasource::readdone(int len)
 }
 
 void 
-ffmpeg_audio_datasource::data_avail()
+ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
 	int sz = m_src->size();
 	if (m_con) {
 		uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail: %d bytes available", sz);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
 		if(!m_buffer.buffer_full()){
 			int outsize = 20*sz;
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, sz);
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bps",m_con->sample_rate);
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 				m_buffer.pushdata(outsize);
 				m_src->readdone(decoded);
 			}
 		}
 		// Restart reading if we still have room to accomodate more data
 		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): calling m_src->start() again");
-			lib::event *e = new readdone_callback(this, &ffmpeg_audio_datasource::data_avail);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): calling m_src->start() again");
+			lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
 			m_src->start(m_event_processor, e);
 		} else {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d", 
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d", 
 				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 	
 		if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src->end_of_file()) ) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): calling client callback");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): calling client callback");
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 			m_client_callback = NULL;
 			//m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): No client callback!");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): No client callback!");
 		}
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): No decoder, flushing available data");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): No decoder, flushing available data");
 		m_src->readdone(sz);
 	}
 	m_lock.leave();
@@ -238,7 +238,7 @@ ffmpeg_audio_datasource::data_avail()
 
 
 bool 
-ffmpeg_audio_datasource::end_of_file()
+ffmpeg_decoder_datasource::end_of_file()
 {
 	m_lock.enter();
 	bool rv = _end_of_file();
@@ -247,7 +247,7 @@ ffmpeg_audio_datasource::end_of_file()
 }
 
 bool 
-ffmpeg_audio_datasource::_end_of_file()
+ffmpeg_decoder_datasource::_end_of_file()
 {
 	// private method - no need to lock
 	if (m_buffer.buffer_not_empty()) return false;
@@ -255,7 +255,7 @@ ffmpeg_audio_datasource::_end_of_file()
 }
 
 bool 
-ffmpeg_audio_datasource::buffer_full()
+ffmpeg_decoder_datasource::buffer_full()
 {
 	m_lock.enter();
 	bool rv = m_buffer.buffer_full();
@@ -264,7 +264,7 @@ ffmpeg_audio_datasource::buffer_full()
 }	
 
 char* 
-ffmpeg_audio_datasource::get_read_ptr()
+ffmpeg_decoder_datasource::get_read_ptr()
 {
 	m_lock.enter();
 	char *rv = m_buffer.get_read_ptr();
@@ -273,48 +273,48 @@ ffmpeg_audio_datasource::get_read_ptr()
 }
 
 int 
-ffmpeg_audio_datasource::size() const
+ffmpeg_decoder_datasource::size() const
 {
 		return m_buffer.size();
 }	
 
 bool 
-ffmpeg_audio_datasource::select_decoder(const char* file_ext)
+ffmpeg_decoder_datasource::select_decoder(const char* file_ext)
 {
 	m_codec = avcodec_find_decoder_by_name(file_ext);
 	if (m_codec == NULL) {
-			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder: Failed to find codec for \"%s\"", file_ext);
+			lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to find codec for \"%s\"", file_ext);
 			return false;
 	}
 	m_con = avcodec_alloc_context();
 	
 	if(avcodec_open(m_con,m_codec) < 0) {
-			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder: Failed to open avcodec for \"%s\"", file_ext);
+			lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 			return false;
 	}
 	return true;
 }
 
 audio_format&
-ffmpeg_audio_datasource::get_audio_format()
+ffmpeg_decoder_datasource::get_audio_format()
 {
 	if (m_con) {
 		// Refresh info on audio format
 		m_fmt.samplerate = m_con->sample_rate;
 		m_fmt.bits = 16; // XXXX
 		m_fmt.channels = m_con->channels;
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::select_decoder: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::select_decoder: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	}
 	return m_fmt;
 }
 
 bool
-ffmpeg_audio_datasource::supported(const std::string& url)
+ffmpeg_decoder_datasource::supported(const std::string& url)
 {
 	ffmpeg_init();
 	const char *file_ext = getext(url);
 	AVCodec  *codec = avcodec_find_decoder_by_name(file_ext);
-	if (codec == NULL) lib::logger::get_logger()->warn("ffmpeg_audio_datasource: no such decoder: \"%s\"", file_ext);
+	if (codec == NULL) lib::logger::get_logger()->warn("ffmpeg_decoder_datasource: no such decoder: \"%s\"", file_ext);
 	return codec != NULL;
 }
 
@@ -412,7 +412,7 @@ ffmpeg_resample_datasource::readdone(int len)
 {
 	m_lock.enter();
 	m_buffer.readdone(len);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.readdone : done with %d bytes", len);
 	m_lock.leave();
 }
 
