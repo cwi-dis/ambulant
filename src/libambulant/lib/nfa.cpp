@@ -56,7 +56,7 @@
 
 #include "ambulant/lib/logger.h"
 
-#define NFA_VERBOSE 1
+#define NFA_VERBOSE 0
 
 using namespace ambulant;
 
@@ -263,15 +263,19 @@ void lib::nfa_expr::verify1() const {
 	assert(empty() || count == 1);
 }
 
-void lib::nfa_expr::mark_expr(int anchor) {
+void lib::nfa_expr::mark_expr(int index) {
+	// mark start
 	std::set<nfa_node*> nodes;
-	std::stack<nfa_node*> ststack;
+	std::stack<nfa_node*> stack;
 	nodes.insert(start);
-	if(start->is_epsilon_trans()) ststack.push(start);
-	if(!ststack.empty()) closure(nodes, ststack);
+	if(start->is_epsilon_trans()) stack.push(start);
+	if(!stack.empty()) closure(nodes, stack);
+	int anchor = (1 << index);
 	for(std::set<lib::nfa_node*>::const_iterator it = nodes.begin(); it!=nodes.end(); it++) {
-		if((*it)->is_important_trans()) (*it)->anchor = anchor;
+		if((*it)->is_important_trans()) (*it)->anchor = anchor + 1;
 	}
+	// mark end
+	accept->anchor = anchor;
 }
 
 // Adds to the set of nodes all epsilon-reachable-nodes from the nodes on the stack.
@@ -279,6 +283,7 @@ void lib::nfa_expr::mark_expr(int anchor) {
 // On exit the stack is empty  
 // param: nodes [in, out]
 // param stack [in]
+// static
 void lib::nfa_expr::closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack) {
 	while(!stack.empty()) {
 		nfa_node *t = stack.top();
@@ -298,9 +303,11 @@ void lib::nfa_expr::closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& s
 	}
 }
 
-// param: nodes [in, out] : on entry nodes contains the previous nodes and on exit the nodes due to transitions on edge 
+// param: nodes [in, out] : on entry nodes contains the previous state nodes and 
+//		on exit the nodes due to the transitions on edge 
 // param: stack [out] : contains the epsilon-unchecked nodes
 // param: edge [in] : the transition symbol
+// static
 void lib::nfa_expr::move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge) {
 	assert(stack.empty());
 	std::set<nfa_node*> from = nodes;
@@ -308,41 +315,157 @@ void lib::nfa_expr::move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stac
 	for(std::set<nfa_node*>::iterator it=from.begin(); it!=from.end(); it++) {
 		if((*it)->edge == edge) {
 			nodes.insert((*it)->next1);
-			if((*it)->next1->is_epsilon_trans()) 
+			if((*it)->next1->is_epsilon_trans())
 				stack.push((*it)->next1);
-		}
+		} 
 	}
 }
 
-bool lib::nfa_expr::match(const std::string& str) {
+// Matches as much as possible from the input iterator
+// Positions the iterator at the end of the parsed input and returns the length parsed.
+// Returns -1 on failure to parse anything
+std::string::iterator::difference_type 
+lib::nfa_expr::parse(std::string::const_iterator& it, const std::string::const_iterator& end_it) const {
+	// The data struct used by this algorithm
 	std::set<nfa_node*> nodes;
 	std::stack<nfa_node*> stack;
-	// Start scanning from this expr start.
+	
+	// Create startup state nodes
 	nodes.insert(start);
 	if(start->is_epsilon_trans()) stack.push(start);
-	if(!stack.empty()) closure(nodes, stack);
+	if(!stack.empty()) nfa_expr::closure(nodes, stack);
 	assert(stack.empty());
-#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
-	std::cout << " expecting: " << nodes << std::endl;;
-#endif
-	// Transitions driven by string
-	for(size_type i=0;i<str.length();i++) {
-		move(nodes, stack, uchar_t(str[i]));
-		if(!stack.empty()) closure(nodes, stack);
+	
+	std::string::iterator::difference_type parsed_length = 0;
+	std::string::iterator::difference_type delta = -1;
+	if(accepts_state(nodes)) {
+		delta = parsed_length;
+	}
+	
+	// Execute the NFA for the provided input stream
+	std::string::const_iterator it_test = it;
+	while(it_test != end_it && !nodes.empty()) {
+		nfa_expr::move(nodes, stack, uchar_t(*it_test));
+		if(!stack.empty()) nfa_expr::closure(nodes, stack);
 		assert(stack.empty());
+		it_test++;parsed_length++;
+		if(accepts_state(nodes)) {
+			it = it_test;
+			delta = parsed_length;
+		}
+	}
+	return delta;
+} 
+
+// Creates a matcher for the argument string
+lib::nfa_matcher* 
+lib::nfa_expr::create_matcher(const std::string& str) const {
+	return new nfa_matcher(str, this);
+}
+
+
+/////////////////////////////////////////
+// nfa_matcher
+
+// param: nodes [in, out] : on entry nodes contains the previous state nodes and 
+//		on exit the nodes due to the transitions on edge 
+// param: stack [out] : contains the epsilon-unchecked nodes
+// param: edge [in] : the transition symbol
+void lib::nfa_matcher::move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge, 
+	std::set<int>& groups) {
+	assert(stack.empty());
+	std::set<nfa_node*> from = nodes;
+	nodes.clear();
+	for(std::set<nfa_node*>::iterator it=from.begin(); it!=from.end(); it++) {
+		if((*it)->edge == edge) {
+			if((*it)->anchor != 0) {
+				get_groups((*it)->anchor, groups);
+			}
+			nodes.insert((*it)->next1);
+			if((*it)->next1->is_epsilon_trans()) {
+				stack.push((*it)->next1);
+			}
+		} 
+	}
+}
+
+bool lib::nfa_matcher::match(const std::string& str) {
+	// The containers used by this algorithm
+	std::set<nfa_node*> nodes;
+	std::stack<nfa_node*> stack;
+	
+	// Create startup state nodes
+	nodes.insert(m_expr->start);
+	if(m_expr->start->is_epsilon_trans()) stack.push(m_expr->start);
+	if(!stack.empty()) nfa_expr::closure(nodes, stack);
+	assert(stack.empty());
+	
 #if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
-		std::cout << str.substr(0, i+1) << " expecting: " << nodes << std::endl;
+	// Report expected start symbols
+	std::cout << "seen:none expecting:" << nodes << std::endl;
 #endif
-		if(nodes.empty()) {
+
+	// Execute the NFA for the provided string
+	for(size_type i=0;i<str.length();i++) {
+		
+		// New state nodes after seen str[i]
+		std::set<int> begin_groups;
+		move(nodes, stack, uchar_t(str[i]), begin_groups);
+		if(!stack.empty()) nfa_expr::closure(nodes, stack);
+		assert(stack.empty());
+		if(!begin_groups.empty())
+			set_groups_begin(begin_groups, int(i));
+		
+		std::set<int> end_groups;
+		for(std::set<nfa_node*>::iterator it=nodes.begin(); it!=nodes.end(); it++) {
+			if( (*it)->anchor && ((*it)->anchor & 1) == 0) get_groups((*it)->anchor, end_groups);
+		}
+		if(!end_groups.empty()) 
+			set_groups_end(end_groups, int(i)+1);
+		if(!nodes.empty()) 
+			set_match_end(int(i)+1);
+		
 #if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
-			// point out mismatch		
+		// Report seen and expected symbols
+		std::cout << "seen:" << str.substr(0, i+1) << " expecting:" << nodes << std::endl;
+#endif
+
+		if(nodes.empty()) {
+			// Missmatch; report offending position end break out
+#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
 			std::cout << "F>> " << str.substr(0, i) << '^' << str[i] << '^' << std::endl;
 #endif
 			break;
 		}
 	}
-	return nodes.find(accept) != nodes.end();
+	
+#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+	// Report groups seen
+	dump_groups(std::cout);
+#endif
+	return !nodes.empty() && nodes.find(m_expr->accept) != nodes.end();
 }
+
+
+// static
+void lib::nfa_matcher::get_groups(int anchor, std::set<int>& groups) {
+	for(int i=1;i<sizeof(int);i++) {
+		anchor >>= 1;
+		if(anchor & 1) groups.insert(i);
+	}
+}
+
+#ifndef AMBULANT_NO_IOSTREAMS
+void lib::nfa_matcher::dump_groups(std::ostream& os) {
+	for(int i=0;i<max_group;i++) {
+		if(seen_group(i)) {
+			std::cout << "group " << i << " : " << get_group(i) << std::endl;
+		}
+	}
+}
+#endif
+
+///////////////////////
 
 #ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes) {
@@ -356,9 +479,7 @@ std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes
 				accept_counter++;
 			else
 				next_chars.insert((*it)->get_edge_repr());
-		} else {
-			next_chars.insert((*it)->get_edge_repr());
-		}
+		} 
 	}
 	for(std::set<char>::iterator it2 = next_chars.begin(); it2!=next_chars.end(); it2++)
 		os << (*it2);
@@ -366,9 +487,4 @@ std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes
 	return os;
 }
 #endif
-
-
-
-
-
 

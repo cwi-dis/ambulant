@@ -128,6 +128,9 @@ struct nfa_node {
 	static int nfa_nodes_counter;
 };
 
+// forward declaration;
+class nfa_matcher;
+
 // An nfa_expr is a directed graph of nfa nodes that represent a NFA.
 // An nfa_expr object keeps a reference to the start and the accept NFA nodes
 // and is the owner of the NFA nodes.
@@ -239,15 +242,25 @@ class nfa_expr {
 		return int(size()*sizeof(nfa_node)) + int(sizeof(nfa_expr));
 	}
 
-	void mark_expr(int gn);
+	void mark_expr(int index);
 	
 	//////////////////////////
 	// Match
 	
+	// Matches as much as possible from the input.
+	// Positions the iterator at the end of the parsed input and returns the length parsed.
+	// Returns -1 on failure to parse anything
+	std::string::iterator::difference_type 
+	parse(std::string::const_iterator& it, const std::string::const_iterator& end_it) const;
+			
 	// Matches the argument string against the regex 
 	// that this nfa_expr represents. 
-	bool match(const std::string& str);
-	bool match(const std::string& str, std::map<int, int>& anchors);
+	bool matches(const std::string& str) const {
+		return parse(str.begin(), str.end()) == str.length();
+	}
+	
+	// Creates a matcher for the argument string
+	nfa_matcher* create_matcher(const std::string& str) const;
 	
 	//////////////////////////
 	// Regex operations
@@ -338,16 +351,86 @@ class nfa_expr {
 	// This consumes expr which becomes null
 	const nfa_expr& or_expr_abs(nfa_expr *eptr);
 	
+	friend class nfa_matcher;
+	
   private:
-	// NFA search algorithm helpers
-	void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge);
-	void closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack);
 	
 	// invariants checks
 	void verify1() const;
-  	
+	
+	// match algorithm execution 
+  	static void closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack);
+	static void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge);
+	bool accepts_state(const std::set<nfa_node*>& nodes) const {
+		return !nodes.empty() && nodes.find(accept) != nodes.end();
+	}
+
 	nfa_node *accept;
 	nfa_node *start;
+};
+
+
+class nfa_matcher {
+  public:
+  	typedef unsigned char uchar_t;
+	typedef std::string::size_type size_type;  
+	enum {max_group = 32};
+	
+	nfa_matcher(const std::string& str, const nfa_expr* expr) 
+	:	m_str(str), m_expr(expr) {
+		memset(m_group_begin, 0, max_group*sizeof(int)); 
+		memset(m_group_end, 0, max_group*sizeof(int));
+		m_matches = match(m_str);
+	}
+	
+	bool seen_group(int i) const {
+		return i<max_group && m_group_end[i] > 0;
+	}
+	
+	std::string get_group(int i) const {
+		if(i>=max_group || m_group_end[i] == 0) return "";
+		int n = m_group_end[i] - m_group_begin[i];
+		return m_str.substr(m_group_begin[i], n);
+	}
+	
+	int length() const { 
+		return m_group_end[0] - m_group_begin[0];
+	}
+	
+	void set_groups_begin(const std::set<int>& groups, int pos) {
+		std::set<int>::const_iterator it;
+		for(it=groups.begin();it!=groups.end();it++) 
+			m_group_begin[*it] = pos;
+	}
+	
+	void set_groups_end(const std::set<int>& groups, int pos) {
+		std::set<int>::const_iterator it;
+		for(it=groups.begin();it!=groups.end();it++) 
+			m_group_end[*it] = pos;
+	}
+	
+	void set_match_end(int pos) {
+		m_group_end[0] = pos;
+	}
+	
+	bool matches() const { return m_matches; }
+	
+#ifndef AMBULANT_NO_IOSTREAMS
+	void dump_groups(std::ostream& os);
+#endif
+
+  private:
+	// NFA search algorithm helpers
+	bool match(const std::string& str);
+	void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, 
+		int edge, std::set<int>& groups);
+    static void get_groups(int anchor, std::set<int>& groups);
+
+	std::string m_str;
+	const nfa_expr* m_expr;
+	bool m_matches;
+	int m_group_begin[max_group];
+	int m_group_end[max_group];
 };
 
 } // namespace lib

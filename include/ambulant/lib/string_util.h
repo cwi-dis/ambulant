@@ -166,7 +166,7 @@ class basic_scanner {
 	// the NUMBER a sequence of one or more digits, and
 	// the SPACE a sequence of one or more space chars.
 	// A digit can not start a name otherwise digits are name characters.  
-	char next() {
+	char_type next() {
 		tok = EOS;
 		tokval = "";
 		if(pos == end) return tok;
@@ -188,6 +188,12 @@ class basic_scanner {
 		vals.push_back(tokval);
 		return tok;
 	}
+	
+	// Iterator like interface for the scanner
+    operator void const*() const { return pos == end? 0: this;}
+    basic_scanner& operator++() { next(); return *this; }
+    char_type const& operator*() const  { return tok;}
+    char_type const* operator->() const { return &tok;}
 		
 	// Returns true when there are more tokens
 	bool has_more() const { return pos != end;}
@@ -278,7 +284,7 @@ class basic_scanner {
 	}
 	
 	bool vpos(size_type ix)  const { 
-		return ix != std::basic_string<char_type>::npos;}
+		return ix != string_type::npos;}
 
   private:
 	
