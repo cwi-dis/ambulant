@@ -101,12 +101,49 @@ void
 qt_transition_blitclass_fade::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_fade: being implemented, m_dst=0x%x", (void*) m_dst);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
-	lib::logger::get_logger()->trace("qt_transition_blitclass_fade: qpm=0x%x", qpm);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_fade: aqw=0x%x", aqw);
-#ifdef FILL_PURPLE
+	QPixmap *npm = aqw->get_ambulant_surface();
+	QImage img2 = qpm->convertToImage();
+	QImage img1 = npm->convertToImage();
+	QImage res = img1.copy();
+	int i, j, iw = res.width(), ih = res.height();
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
+	  // Following code From: Qt-interest Archive, July 2002
+	// blending of qpixmaps, Sebastian Loebbert 
+	double fac1 = m_progress;
+	double fac2 = 1.0 - fac1;
+	for(int i = 0;i < iw;i++){
+	  for(int j = 0; j < ih;j++){
+	    QRgb p1 = img1.pixel(i,j);
+	    QRgb p2 = img2.pixel(i,j);
+	    res.setPixel(i,j,
+			 qRgb ( (int)( qRed(p1)*fac1 + qRed(p2)*fac2  ),
+				(int)( qGreen(p1)*fac1 + qGreen(p2)*fac2  ),
+				(int)( qBlue(p1)*fac1 + qBlue(p2)*fac2  ) )
+			 );
+	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
+	  }
+	}
+	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();
+	newrect_whole.translate(m_dst->get_global_topleft());
+	int L = newrect_whole.left(), T = newrect_whole.top(),
+        	W = newrect_whole.width(), H = newrect_whole.height();
+#ifdef	JUNK
+	QPainter paint;
+	paint.begin(qpm);
+	// XXXX Fill with background color
+	AM_DBG lib::logger::get_logger()->trace(
+				  "qt_transition_blitclass_fade::update(): "
+				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
+	paint.drawImage(L,T,res,0,0,W,H);
+	paint.flush();
+	paint.end();
+#else /*JUNK*/
+	QPixmap* rpm = new QPixmap(*&res);
+	bitBlt(qpm, L, T, rpm, L, T, W, H);
+#endif/*JUNK*/
+#ifndef FILL_PURPLE
 	// Debug: fill with purple
 	common::surface* dst = m_dst;
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
@@ -135,46 +172,41 @@ void
 qt_transition_blitclass_r1r2::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_rlist_r1r2: not yet implemented");
-#ifdef	JUNK
-	qt_window *window = (qt_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-	lib::screen_rect<int> oldrect_whole = m_oldrect;
+	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
 	lib::screen_rect<int> newrect_whole = m_newrect;
-	oldrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_oldrect_whole = [view NSRectForAmbulantRect: &oldrect_whole];
-	NSRect qt_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
-
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(qt_dstrect_whole);
-#endif
-
-	[oldsrc drawInRect: qt_oldrect_whole 
-		fromRect: qt_oldrect_whole
-		operation: NSCompositeCopy
-		fraction: 1.0];
-
-	[newsrc drawInRect: qt_newrect_whole 
-		fromRect: qt_newrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0];
-#endif/*JUNK*/
+	int L = newrect_whole.left(), T = newrect_whole.top(),
+        	W = newrect_whole.width(), H = newrect_whole.height();
+	bitBlt(qpm, L, T, npm, L, T, W, H);
 }
 
 void
 qt_transition_blitclass_r1r2r3r4::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_rlist_r1r2r3r4: not yet implemented");
+	lib::logger::get_logger()->trace("qt_transition_blitclass_rlist_r1r2r3r4: being implemented");
+	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
+	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
+	lib::screen_rect<int> newdstrect_whole = m_newdstrect;
+	newsrcrect_whole.translate(m_dst->get_global_topleft());
+	newdstrect_whole.translate(m_dst->get_global_topleft());
+	int Ldst = newdstrect_whole.left(), Tdst = newdstrect_whole.top(),
+	  Wdst = newdstrect_whole.width(), Hdst = newdstrect_whole.height();
+	int Lsrc = newsrcrect_whole.left(), Tsrc = newsrcrect_whole.top(),
+	  Wsrc = newsrcrect_whole.width(), Hsrc = newsrcrect_whole.height();
+//	QPixmap* cpm = new QPixmap(npm);
+//	cpm->resize();
+//	bitBlt(qpm, L, T, cpm, L, T, W, H);
+//	delete cpm;
+//	bitBlt(qpm, L, T, cpm, L, T, W, H);
+	qt_transition_debug* dbg = new qt_transition_debug();
+	dbg->paint_rect(aqw, m_dst, 0xFF00FF);
+	delete dbg;
+	bitBlt(qpm, Lsrc, Tsrc, npm, Lsrc, Tsrc, Wsrc, Hsrc);
 #ifdef	JUNK
 	qt_window *window = (qt_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
@@ -183,12 +215,8 @@ qt_transition_blitclass_r1r2r3r4::update()
 	NSImage *newsrc = [view getTransitionNewSource];
 	lib::screen_rect<int> oldsrcrect_whole = m_oldsrcrect;
 	lib::screen_rect<int> olddstrect_whole = m_olddstrect;
-	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
-	lib::screen_rect<int> newdstrect_whole = m_newdstrect;
 	oldsrcrect_whole.translate(m_dst->get_global_topleft());
 	olddstrect_whole.translate(m_dst->get_global_topleft());
-	newsrcrect_whole.translate(m_dst->get_global_topleft());
-	newdstrect_whole.translate(m_dst->get_global_topleft());
 	NSRect qt_oldsrcrect_whole = [view NSRectForAmbulantRect: &oldsrcrect_whole];
 	NSRect qt_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
 	NSRect qt_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
