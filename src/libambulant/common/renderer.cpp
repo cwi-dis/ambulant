@@ -54,6 +54,9 @@
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
+// XXXX This is very ugly !!!
+#include "ambulant/gui/SDL/sdl_audio.h"
+
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/net/posix_datasource.h"
 #else
@@ -247,6 +250,10 @@ active_video_renderer::active_video_renderer(
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}
 	if (m_src->has_audio()) {
+		m_audio_ds = m_src->get_audio_datasource();
+		//XXXX This is wrong
+		m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, df, m_audio_ds);
+		
 		lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
 	}
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
@@ -257,6 +264,7 @@ active_video_renderer::start (double where = 1)
 {
 	m_lock.enter();
 	int w;
+	m_audio_renderer->start(where);
 	m_is_playing = true;
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	w = (int) round (where);

@@ -67,7 +67,7 @@ namespace arts {
 
 //bool m_arts_init = false;
 
-class arts_active_audio_renderer : public common::active_renderer, public lib::timer_events {
+class arts_active_audio_renderer : public common::playable_imp {
   public:
       arts_active_audio_renderer(
       common::playable_notification *context,

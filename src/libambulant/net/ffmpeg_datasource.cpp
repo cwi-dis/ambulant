@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -639,9 +639,14 @@ ffmpeg_video_datasource::stop()
 
 bool
 ffmpeg_video_datasource::has_audio()
-{
-	if (get_audio_stream_nr() >= 0)
+{		
+	lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio");
+
+	if (get_audio_stream_nr() >= 0) {
+		lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio TRUE");
 		return true;
+	}
+	lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio FALSE");
 
 	return false;	
 }
@@ -651,6 +656,8 @@ ffmpeg_video_datasource::get_audio_datasource()
 {	
 	AVCodec *codec;
 	AVCodecContext *codeccontext;
+	//net::audio_datasource *audio_ds;
+	
 	int stream_index = get_audio_stream_nr();
 
 	if (stream_index < 0 ) 
@@ -675,6 +682,9 @@ ffmpeg_video_datasource::get_audio_datasource()
 	}
 	
 	return new ffmpeg_audio_datasource(m_url, m_con, m_thread, stream_index);
+	
+	//return new ffmpeg_decoder_datasource(audio_ds);
+	
 }
 
 void 

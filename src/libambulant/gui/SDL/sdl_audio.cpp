@@ -46,7 +46,7 @@
  *
  */
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -227,6 +227,35 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		m_audio_src = NULL;
 	}
 }
+
+gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
+    common::playable_notification *context,
+    common::playable_notification::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *evp,
+	net::datasource_factory *df,
+	net::audio_datasource *ds)
+:	common::playable_imp(context, cookie, node, evp),
+	m_audio_src(ds),
+	m_is_playing(false),
+	m_is_paused(false)
+{
+	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
+	std::string url = node->get_url("src");
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
+	if (init() != 0)
+		return;
+		
+	if (!m_audio_src)
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
+	
+	// Ugly hack to get the resampler.
+	net::audio_datasource *resample_ds = df->new_decoder_datasource(url, supported, ds);
+	if (resample_ds) 
+		m_audio_src = resample_ds;
+	
+}
+
 
 gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
