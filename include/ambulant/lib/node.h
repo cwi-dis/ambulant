@@ -134,8 +134,15 @@ class node {
 	///////////////////////////////
 	// deduced navigation
 
+	// Returns the previous sibling node 
+	// or null when this is the first child.
 	const node* previous() const;
+	
+	// Returns the last child 
+	// or null when this has not any children.
 	const node* get_last_child() const;
+	
+	// Appends the children of this node if any to the provided list.
 	void get_children(std::list<const node*>& l) const;
 
 	///////////////////////////////
