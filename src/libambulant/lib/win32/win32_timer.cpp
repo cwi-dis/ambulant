@@ -72,7 +72,7 @@ lib::win32::win32_timer::elapsed() const {
 	ULONGLONG dt = os_time() - m_epoch;
 	if(m_speed == 1.0)
 		return time_type(dt/MILLIS_FACT);
-	ULONGLONG speed100 = ULONGLONG(std::floor(0.5 + m_speed * 100));
+	ULONGLONG speed100 = ULONGLONG(::floor(0.5 + m_speed * 100));
 	ULONGLONG edt = (speed100 * dt ) / 100;
 	return time_type(edt/MILLIS_FACT);
 }
