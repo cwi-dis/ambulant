@@ -96,6 +96,8 @@ in your ambulant distribution.
 Next, build these by opening
 third_party_packages\third_party_packages.sln in Visual Studio,
 selecting the "Release" configuration and doing Build->Build Solution.
+(Note that it was stated above that you need Visual Studio 7.1, trying to
+open the solution file in 7.0 or earlier will not work, unfortunately).
 
 When this succeeds double-click the batchfile
 third_party_packages\copy_tpp_win32.bat, which copies the various
