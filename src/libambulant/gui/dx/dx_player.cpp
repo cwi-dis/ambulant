@@ -78,6 +78,22 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	m_rf(0),
 	m_smil_player(0),
 	m_logger(lib::logger::get_logger()) {
+	
+	// Parse the provided URL. 
+	m_logger->trace("Parsing: %s", m_url.c_str());	
+	lib::document *doc = lib::document::create_from_file(m_url);
+	if(!doc) {
+		lib::show_message("Failed to parse document %s", m_url.c_str());
+		return;
+	}
+	
+	// Create GUI window_factory and renderer_factory
+	m_wf = new gui::dx::dx_window_factory(this);
+	m_rf = new gui::dx::dx_renderer_factory(this);
+	
+	// Create a player instance
+	m_logger->trace("Creating player instance for: %s", m_url.c_str());	
+	m_smil_player = new lib::smil_player(doc, m_wf, m_rf);	
 }
 
 gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
@@ -103,21 +119,12 @@ bool gui::dx::dx_smil_player_impl::is_done() const {
 }
 
 bool gui::dx::dx_smil_player_impl::start() {
-	m_logger->trace("Attempting to play: %s", m_url.c_str());
-	
-	lib::document *doc = lib::document::create_from_file(m_url);
-	if(!doc) {
-		lib::show_message("Failed to parse document %s", m_url.c_str());
-		return false;
+	if(m_smil_player) {
+		m_logger->trace("Started playing");
+		m_smil_player->start();
+		return  true;
 	}
-	
-	// Create GUI window_factory and renderer_factory
-	m_wf = new gui::dx::dx_window_factory(this);
-	m_rf = new gui::dx::dx_renderer_factory(this);
-	m_smil_player = new lib::smil_player(doc, m_wf, m_rf);	
-	m_smil_player->start();
-	m_logger->trace("Started playing");
-	return  true;
+	return false;
 }
 
 void gui::dx::dx_smil_player_impl::stop() {
