@@ -43,4 +43,3 @@ follow later.
 9. On MacOSX you need to build the player separately using XCode::
 	
 	% open src/player_macosx/cocoambulant.pbproj
-	
