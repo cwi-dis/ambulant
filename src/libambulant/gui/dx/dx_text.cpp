@@ -112,8 +112,10 @@ void gui::dx::dx_text_renderer::readdone() {
 
 void gui::dx::dx_text_renderer::stop() {
 	viewport *v = get_viewport();
-	v->remove_region(m_region);
-	m_region = 0;
+	if(v && m_region) {
+		v->remove_region(m_region);
+		m_region = 0;
+	}
 	lib::active_renderer::stop();
 }
 

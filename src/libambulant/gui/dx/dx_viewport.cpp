@@ -70,6 +70,7 @@
 #include "ambulant/lib/win32/win32_error.h"
 
 #include <algorithm>
+#include <cassert>
 
 using namespace ambulant;
 
@@ -254,6 +255,15 @@ seterror(const char *funcname, HRESULT hr){
 	LocalFree(pszmsg);
 }
 
+static void show(const char *format, ...) {
+	va_list	args;
+	va_start(args, format);
+	char buf[2048] = "";
+	vsprintf(buf, format, args);
+	va_end(args);
+	MessageBox(NULL, buf, "dx_smil_player", MB_OK);
+}
+
 gui::dx::viewport::viewport(int width, int height, HWND hwnd) 
 :	m_width(width), m_height(height),
 	m_direct_draw(NULL),
@@ -268,8 +278,13 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	
 	viewport_logger = lib::logger::get_logger();
 	
+	HRESULT hr = CoInitialize(NULL);
+	if(FAILED(hr)) {
+		win_report_error("CoInitialize() failed", hr);
+		return;
+	}
 	IDirectDrawFactory *pDDF = NULL;
-    HRESULT hr = CoCreateInstance(CLSID_DirectDrawFactory,
+    hr = CoCreateInstance(CLSID_DirectDrawFactory,
                               NULL, CLSCTX_INPROC_SERVER,
                               IID_IDirectDrawFactory,
                               (void **)&pDDF);
@@ -326,11 +341,13 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 }
 
 gui::dx::viewport::~viewport() {
+	assert(m_regions.empty());
 	RELEASE(m_surface);
 	RELEASE(m_primary_surface);
 	RELEASE(m_direct_draw);
 	if(palette_entries != 0)
 		delete[] palette_entries;
+	CoUninitialize();
 	RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
 }
 
@@ -496,6 +513,7 @@ void gui::dx::viewport::remove_region(region *r) {
 void gui::dx::viewport::draw(gui::dx::region *r) {
 	if(!m_surface || !r || !r->get_surface())
 		return;
+	r->update();
 	// XXX: This following operations are not correct for not MMS regions
 	// We should compute the visible part of the area
 	// This requires traversing the hierachy of clipping rects.
@@ -516,7 +534,8 @@ gui::dx::region::region(gui::dx::viewport *v,
 		m_rc(rc),
 		m_clip_rc(crc),
 		m_surface(surface),
-		m_bgd(0) {
+		m_bgd(0), m_vidsurf(0) {
+
 	}
 	
 gui::dx::region::~region() {
@@ -578,5 +597,24 @@ void gui::dx::region::set_bmp(HBITMAP hbmp) {
 	//////////////
 	m_surface->ReleaseDC(hdc);
 }
+
+void gui::dx::region::set_video(IDirectDrawSurface* vidsurf, RECT *vidrc) {
+	if(!m_surface) return;
+	m_vidsurf = vidsurf;
+	m_vidrc = vidrc;
+	update();
+}
+
+void gui::dx::region::update() {
+	if(!m_vidsurf) return;
+	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
+	DWORD flags = DDBLT_WAIT;
+	HRESULT hr = m_surface->Blt(&dst_rc, m_vidsurf, m_vidrc, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("region::set_video/DirectDrawSurface::Blt()", hr);
+	}
+
+}
+
 
 

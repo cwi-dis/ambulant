@@ -187,10 +187,11 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 }
 
 gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
+	if(m_smil_player) stop();
 	delete m_smil_player;
 	delete m_rf;
 	delete m_wf;
-	delete m_viewport;
+    delete m_viewport;
 }
 
 gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
@@ -202,7 +203,6 @@ gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
 }
 
 bool gui::dx::dx_smil_player_impl::is_done() const { 
-	//return m_aplayer && m_aplayer->is_done();
 	if(!m_smil_player) return true;
 	return m_smil_player->is_done();
 }
@@ -219,7 +219,6 @@ bool gui::dx::dx_smil_player_impl::start() {
 	// Create GUI window_factory and renderer_factory
 	m_wf = new gui::dx::dx_window_factory(this);
 	m_rf = new gui::dx::dx_renderer_factory(this);
-	
 	m_smil_player = new lib::smil_player(doc, m_wf, m_rf);	
 	m_smil_player->start();
 	m_logger->trace("Started playing");
@@ -228,8 +227,12 @@ bool gui::dx::dx_smil_player_impl::start() {
 
 void gui::dx::dx_smil_player_impl::stop() {
 	m_logger->trace("Attempting to stop: %s", m_url.c_str());
-	if(m_smil_player) m_smil_player->stop();
-	if(m_viewport) m_viewport->redraw();
+	if(m_smil_player) {
+		m_smil_player->pause();
+		delete m_smil_player;
+		m_smil_player = 0;
+	}
+	//
 }
 
 void gui::dx::dx_smil_player_impl::pause() {
@@ -242,3 +245,12 @@ void gui::dx::dx_smil_player_impl::resume() {
 	if(m_smil_player) m_smil_player->resume();
 }
 
+void gui::dx::dx_smil_player_impl::on_click(int x, int y) {
+	if(m_smil_player)
+		m_smil_player->on_click(x, y);
+}
+	
+void gui::dx::dx_smil_player_impl::on_char(int ch) {
+	if(m_smil_player)
+		m_smil_player->on_char(ch);
+}

@@ -50,20 +50,21 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_img.h"
-
-#include "ambulant/gui/dx/dx_gui.h"
-#include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_video.h"
 
 #include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/lib/logger.h"
+#include "ambulant/lib/event_processor.h"
 
-#include "jpeglib.h"
+#include "ambulant/gui/dx/dx_gui.h"
+#include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_video_player.h"
+
+#include "ambulant/lib/logger.h"
 
 using namespace ambulant;
 
-gui::dx::dx_img_renderer::dx_img_renderer(
+gui::dx::dx_video_renderer::dx_video_renderer(
 	lib::active_playable_events *context,
 	lib::active_playable_events::cookie_type cookie,
 	const lib::node *node,
@@ -71,16 +72,28 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	net::passive_datasource *src,
 	lib::abstract_rendering_surface *const dest,
 	lib::abstract_window *window)
-:   lib::active_renderer(context, cookie, node, evp, src, dest),
-	m_window(window), m_region(0) { 
+:   lib::active_renderer(context, cookie, node, evp, src, dest), 
+	m_window(window),
+	m_player(0), m_region(0), m_player_initialized(false) {
+	if(m_node && m_src)
+		m_player = new video_player(m_src->get_url(), get_viewport(), evp);
 }
 
-gui::dx::dx_img_renderer::~dx_img_renderer() {
-	lib::logger::get_logger()->trace("~dx_img_renderer()");
+gui::dx::dx_video_renderer::~dx_video_renderer() {
+	lib::logger::get_logger()->trace("~dx_video_renderer()");
+	delete m_player;
 }
 
-void gui::dx::dx_img_renderer::start(double t) {
+void gui::dx::dx_video_renderer::start(double t) {
+	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
+	// This renderer will read/decode its data directly from the url.
 	if(!m_node || !m_src) abort();
+	
+	if(m_player && m_player_initialized) {
+		// repeat
+		m_player->start(t);
+		return;	
+	}
 	
 	// Create a dx-region
 	viewport *v = get_viewport();
@@ -89,59 +102,64 @@ void gui::dx::dx_img_renderer::start(double t) {
 	rcv.translate(m_dest->get_global_topleft());
 	m_region = v->create_region(rcv, rc);
 	
-	// Prepare dx-region's pixel map bgd
-	m_region->set_background("silver");
-	m_region->clear();
-	
-	m_dest->show(this);
+	// first time
 	if(!m_src->exists()) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
 		return;
 	}
-	m_src->start(m_event_processor, m_readdone);
-}
-
-void gui::dx::dx_img_renderer::readdone() {
-	lib::logger::get_logger()->trace("dx_img_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	
-	// Prepare dx-region's pixel map
-	typedef jpg_decoder<net::active_datasource, lib::color_trible> decoder_class;
-	
-	HDC hdc = ::GetDC(NULL);
-	decoder_class* decoder = new decoder_class(m_src, hdc);
-	if(decoder->can_decode()) {
-		dib_surface<lib::color_trible> *ds = decoder->decode();
-		m_region->set_bmp(ds->m_hbmp);
+	m_dest->show(this);
+	if(!m_player) {
+		m_player = new gui::dx::video_player(m_src->get_url(), v, m_event_processor);
 	}
-	delete decoder;
-	::DeleteDC(hdc);
-	
-	m_dest->need_redraw();
-	stopped_callback();
+	if(m_player->can_play()) {
+		m_player->start(t);
+		if(m_player->update())
+			m_region->set_video(m_player->getDDSurf(), m_player->getDDSurfRect());
+	}
+	m_player_initialized = true;
 }
 
-void gui::dx::dx_img_renderer::stop() {
+std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
+	if(m_player) return m_player->get_dur();
+	return std::pair<bool, double>(false, 0.0);
+}
+
+void gui::dx::dx_video_renderer::stop() {
+	lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
 	viewport *v = get_viewport();
 	if(v && m_region) {
 		v->remove_region(m_region);
 		m_region = 0;
 	}
+	if(m_player) {
+		m_player->stop();
+		delete m_player;
+		m_player = 0;
+		m_player_initialized = false;
+	}
 	lib::active_renderer::stop();
 }
 
-void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
-	viewport *v = get_viewport(window);
-	if(v) v->redraw();
+void gui::dx::dx_video_renderer::pause() {
+	lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
+	if(m_player) m_player->pause();
+}
+void gui::dx::dx_video_renderer::resume() {
+	lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
+	if(m_player) m_player->resume();
 }
 
-gui::dx::viewport* gui::dx::dx_img_renderer::get_viewport() {
+void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
+	viewport *v = get_viewport(window);
+	v->redraw();
+}
+
+gui::dx::viewport* gui::dx::dx_video_renderer::get_viewport() {
 	return get_viewport(m_window);
 }
 
-gui::dx::viewport* gui::dx::dx_img_renderer::get_viewport(lib::abstract_window *window) {
+gui::dx::viewport* gui::dx::dx_video_renderer::get_viewport(lib::abstract_window *window) {
 	dx_window *dxwindow = (dx_window *) window;
 	return dxwindow->get_viewport();
 }
- 
-
