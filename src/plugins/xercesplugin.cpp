@@ -83,8 +83,8 @@ xerces_plugin_factory::new_parser(
 		lib::sax_error_handler* error_handler) 
 {
 	AM_DBG lib::logger::get_logger()->debug("xerces_factory::new_parser(): xerces parser returned");
-	return NULL;
-	//return new lib::xerces_sax_parser(content_handler, error_handler);	
+	//return NULL;
+	return new lib::xerces_sax_parser(content_handler, error_handler);	
 }
 
 

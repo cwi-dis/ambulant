@@ -133,13 +133,22 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
 	if (data && frame && (m_frames.size() < 2)) {
-		if (memcpy(data, frame, size)) {
-			std::pair<int, char*> element(size, data);
-			m_frames.push(element);
-			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: m_data(0x%x) stored !", (void*) element.second);
+		if (m_frames.size() < 2) {
+			if (memcpy(data, frame, size)) {
+				std::pair<int, char*> element(size, data);
+				m_frames.push(element);
+				AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: m_data(0x%x) stored !", (void*) element.second);
+			}
+		} else {
+			free(data);
+			data = NULL;
 		}
 	} else {
 		lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: m_data is NULL or frame is NULL!");
+		if (data) {
+			free(data);
+			data = NULL;
+		}			
 	}
 
 	//if (m_image) {

@@ -115,14 +115,17 @@ global_parser_factory::new_parser(
 	pv = NULL;
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
 		if (( (*i)->get_parser_name() == parser_id ) || ( parser_id == "any" )) {
+			AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() trying parser %s", parser_id.c_str());
         	pv = (*i)->new_parser(content_handler, error_handler);
+			
+			if (pv){
+				AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
+				return pv;
+			}
 		} else {
 			pv = NULL;
 		}
-        if (pv){
-			AM_DBG lib::logger::get_logger()->debug("lobal_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
-			return pv;
-		}
+      
     }
 	if (m_default_factory) {
 		if (!m_warned && parser_id != "any" && parser_id != m_default_factory->get_parser_name()) {
