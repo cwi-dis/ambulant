@@ -95,9 +95,6 @@ class node_context {
 	
 	virtual std::string 
 	resolve_url(const node *n, const std::string& rurl) const = 0;
-	
-	virtual node *
-	get_node_by_id(std::string idd) = 0;
 };
 
 
@@ -136,7 +133,6 @@ class document : public node_context {
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
 	const char* get_namespace_prefix(const xml_string& uri) const;
 	std::string resolve_url(const node *n, const std::string& rurl) const;
-	node *get_node_by_id(std::string idd);
 	
   protected:
 	document(node *root = 0);
@@ -145,10 +141,6 @@ class document : public node_context {
   private:
 	// the root of this document
 	node *m_root;
-	
-	// the id-to-node mapping
-	bool m_idmap_filled;
-	std::map<std::string, node*>m_idmap;
 	
 	// the external source url
 	ambulant::net::url m_src_url;
@@ -169,15 +161,13 @@ class document : public node_context {
 
 inline 
 document::document(node *root) 
-:	m_root(root),
-	m_idmap_filled(false)
+:	m_root(root)
 {
 }
 
 inline
 document::document(node *root, const std::string& src_url) 
 :	m_root(root),
-	m_idmap_filled(false),
 	m_src_url(src_url)
 {
 }
@@ -259,17 +249,6 @@ document::resolve_url(const node *n, const std::string& rurl) const {
 	return filesys::join(m_src_base.get_path(), rurl); 
 }
 
-inline node *
-document::get_node_by_id(std::string idd)
-{
-	if (!m_idmap_filled)
-		m_root->create_idmap(m_idmap);
-	m_idmap_filled = true;
-	std::map<std::string, node *>::iterator it = m_idmap.find(idd);
-	if (it == m_idmap.end())
-		return NULL;
-	return (*it).second;
-}
 
 } // namespace lib
  
