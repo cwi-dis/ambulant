@@ -200,6 +200,7 @@ END_MESSAGE_MAP()
 // MmView construction/destruction
 
 MmView::MmView()
+:	m_logwindow(NULL)
 {
 	// TODO: add construction code here
 	m_timer_id = 0;

@@ -80,7 +80,7 @@ namespace ambulant {
 
 namespace lib {
 
-typedef void (*show_message_type)(const char *message);
+typedef void (*show_message_type)(int level, const char *message);
 
 /// Logging message handler.
 /// Normal use if this class is through logger::get_logger()->show()

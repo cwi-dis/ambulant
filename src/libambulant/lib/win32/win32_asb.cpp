@@ -99,8 +99,12 @@ std::basic_string<text_char> lib::win32::get_module_filename() {
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 // WINCE should provide its own version
-void lib::win32::show_message(const char *message) {
-	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), MB_OK);
+void lib::win32::show_message(int level, const char *message) {
+	unsigned int type = MB_OK;
+	if (level == lib::logger::LEVEL_WARN) type |= MB_ICONWARNING;
+	if (level == lib::logger::LEVEL_ERROR) type |= MB_ICONERROR;
+	if (level == lib::logger::LEVEL_FATAL) type |= MB_ICONERROR;
+	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), type);
 }
 #endif
 

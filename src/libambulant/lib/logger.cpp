@@ -275,7 +275,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	if(level == LEVEL_SHOW) {
 		// These we prefer to display as a dialog
 		if (m_show_message) {
-			(*m_show_message)(buf);
+			(*m_show_message)(level, buf);
 			return;
 		}
 	} 
@@ -318,10 +318,10 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	os << hbuf;
 	os.flush();
 	m_cs.leave();
-	if (level >= LEVEL_ERROR) {
+	if (level >= LEVEL_WARN) {
 		// These we would like to additionally show as a dialog
 		if (m_show_message)
-			(*m_show_message)(buf);
+			(*m_show_message)(level, buf);
 	}
 }
 
