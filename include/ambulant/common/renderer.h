@@ -62,11 +62,6 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/net/datasource.h"
-#ifdef AMBULANT_PLATFORM_UNIX
-#include "ambulant/net/posix_datasource.h"
-#else
-#include "ambulant/net/stdio_datasource.h"
-#endif
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
@@ -208,7 +203,7 @@ class background_renderer : public renderer {
 // An alt inline direct base for renderer playables.
 class renderer_playable : public playable, public renderer {
   public:
-	common::renderer_playable(
+	renderer_playable(
 		playable_notification *context,
 		cookie_type cookie,
 		const lib::node *node,

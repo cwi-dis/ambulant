@@ -53,6 +53,11 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
+#ifdef AMBULANT_PLATFORM_UNIX
+#include "ambulant/net/posix_datasource.h"
+#else
+#include "ambulant/net/stdio_datasource.h"
+#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
