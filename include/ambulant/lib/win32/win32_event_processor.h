@@ -16,7 +16,7 @@
 #endif
 
 #ifndef AMBULANT_LIB_EVENT_H
-#include "lib/event.h"
+#include "ambulant/lib/event.h"
 #endif
 
 #ifndef AMBULANT_LIB_LOGGER_H
@@ -52,9 +52,7 @@ namespace win32 {
 
 class event_processor : public thread {
   public:
-	typedef unsigned long self_time_type;
-	typedef ambulant::lib::timer<self_time_type> self_timer;
-	typedef ambulant::lib::timeout_event<self_time_type> self_timeout_event;
+	typedef timer::time_type time_type;
 	
 	event_processor() 
 	:   m_wait_event(0),
@@ -70,9 +68,9 @@ class event_processor : public thread {
 			CloseHandle(m_wait_event);
 	}
   
-	void add_event(self_timeout_event *e) {
+	void add_event(event *pe, time_type t) {
 		m_delta_timer_cs.enter();
-		m_delta_timer.insert(e);
+		m_delta_timer.insert(pe, t);
 		wakeup();
  		m_delta_timer_cs.leave();
 	}
@@ -105,7 +103,7 @@ class event_processor : public thread {
 	}
 		
 	//std::queue<event*> m_queue;
-	lib::delta_timer<unsigned long> m_delta_timer;
+	lib::delta_timer m_delta_timer;
 	critical_section m_delta_timer_cs;
 	
 	HANDLE m_wait_event;
