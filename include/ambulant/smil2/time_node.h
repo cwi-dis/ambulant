@@ -65,14 +65,19 @@
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/timer.h"
 
 #include "ambulant/lib/logger.h"
+
+#ifndef AMBULANT_NO_IOSTREAMS
 
 #ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
 #else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
 #endif/*AMBULANT_NO_OSTREAM*/
+
+#endif //AMBULANT_NO_IOSTREAMS
 
 #include <cassert>
 #include <utility>
@@ -90,16 +95,17 @@ class time_node_context : public event_scheduler<time_traits::value_type> {
   public:
 	// Services
 	virtual time_traits::value_type elapsed() const = 0;
+	virtual timer* get_timer() = 0;
 	
 	// Playable commands
-	virtual void start_playable(const lib::node *n, double t) = 0;
-	virtual void stop_playable(const lib::node *n) = 0;
-	virtual void pause_playable(const lib::node *n, common::pause_display d = display_show) = 0;
-	virtual void resume_playable(const lib::node *n) = 0;
-	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
+	virtual void start_playable(const node *n, double t) = 0;
+	virtual void stop_playable(const node *n) = 0;
+	virtual void pause_playable(const node *n, pause_display d = display_show) = 0;
+	virtual void resume_playable(const node *n) = 0;
+	virtual void wantclicks_playable(const node *n, bool want) = 0;
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
+	virtual std::pair<bool, double> get_dur(const node *n) = 0;
 	
 	// Notifications
 	virtual void done_playback() = 0;
@@ -117,7 +123,7 @@ class time_node : public time_traits {
 	typedef node_navigator<time_node> nnhelper;
 	typedef node_navigator<const time_node> const_nnhelper;
 	
-	time_node(context_type *ctx, const lib::node *n, time_container_type type = tc_none, bool discrete = false); 
+	time_node(context_type *ctx, const node *n, time_container_type type = tc_none, bool discrete = false); 
 	
 	virtual ~time_node();
   	
@@ -149,8 +155,11 @@ class time_node : public time_traits {
 	// Sync update 
 	virtual void sync_update(qtime_type timestamp);
 	
+	// Begin of media update
+	void on_bom(qtime_type timestamp);
+	
 	// End of media update
-	virtual void eom_update(qtime_type timestamp);
+	void on_eom(qtime_type timestamp);
 	
 	virtual void raise_begin_event(qtime_type timestamp);
 	virtual void raise_repeat_event(qtime_type timestamp);
@@ -171,9 +180,10 @@ class time_node : public time_traits {
 	void repeat(qtime_type timestamp);
 	void remove(qtime_type timestamp);
 	void fill(qtime_type timestamp);
-	void pause(qtime_type timestamp, common::pause_display d);
+	void pause(qtime_type timestamp, pause_display d);
 	void resume(qtime_type timestamp);
-		
+	void check_repeat(qtime_type timestamp);
+	
 	// Std xml tree interface
 	const time_node *down() const { return m_child;}
 	const time_node *up() const { return m_parent;}
@@ -209,7 +219,7 @@ class time_node : public time_traits {
     const_iterator end() const { return const_iterator(0);}
 	
 	// Returns the underlying DOM node associated with this
-	const lib::node* dom_node() const { return m_node;}
+	const node* dom_node() const { return m_node;}
 	
 	// Timing reference node for this.
 	// This node uses the clock of the sync node for time notifications.
@@ -230,7 +240,9 @@ class time_node : public time_traits {
 	bool is_excl() const { return m_type == tc_excl;}
 	bool is_discrete() const { return m_discrete;}
 	bool is_root() const { return !up();}
+	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
+	bool uses_media_timer() const;
 	
 	// Time graph building functions
 	
@@ -360,7 +372,7 @@ class time_node : public time_traits {
 	
 	// The underlying DOM node
 	// Mimimize or eliminate usage after timegraph construction 
-	const lib::node *m_node;
+	const node *m_node;
 	
 	// Attributes parser
 	time_attrs m_attrs;
@@ -464,8 +476,14 @@ class time_node : public time_traits {
 	bool m_want_accesskey;
 	
 	// Cashed implicit duration for media nodes
+	// A value of m_impldur != time_type::unresolved comes from the playable
+	// It is set by querring the playable and then refined
+	// by the EOM notification.  
 	time_type m_impldur;
 	
+	// Playable timer 
+	timer *m_playable_timer;
+
 	// Last calc_dur() result
 	time_type m_last_cdur;
 	
