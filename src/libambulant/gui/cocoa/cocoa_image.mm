@@ -185,7 +185,10 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *w
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef lib::no_arg_callback<cocoa_active_image_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_active_image_renderer::transition_step);
-		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
+		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
+		if (delay < 33) delay = 33; // XXX band-aid
+		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
+		m_event_processor->add_event(ev, delay);
 	}
 
 	m_lock.leave();
@@ -194,7 +197,10 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *w
 void
 cocoa_active_image_renderer::transition_step()
 {
+//	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
 	if (m_dest) m_dest->need_redraw();
+//	m_lock.leave();
 }
 
 
