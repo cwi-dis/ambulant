@@ -1,7 +1,7 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.0 of Ambulant Player,
+This directory contains version 1.2 of Ambulant Player,
 a playback engine for SMIL documents. 
 The Ambulant homepage is at <http://www.ambulantplayer.org>.
 
@@ -12,24 +12,11 @@ and a number of player applications.
 Ambulant is distributed as either a source distribution or a
 binary installer for a specific platform. This README file
 is common to all distributions, see the INSTALL file for instructions on
-building from source.
+building from source. The NEWS file has information on what is new
+in this release.
 
 Ambulant is Open Source: the license is modified GPL. See the file
 COPYING for details.
-
-What's new?
------------
-
-Complete details are in ChangeLog, but here is a quick summary of the
-changes between 1.0 and 1.2:
-- Help files and man pages added
-- Log window added for diagnostic output
-- Preferences dialog added
-- Localization possible (on Mac/Unix)
-- Xerces XML parser support, which enables rigorous syntax checking of
-  your SMIL document (Mac/Windows/Unix)
-- Plugin support (Mac/Unix)
-- The developer API has been rationalized and fully documented
 
 Feedback
 --------
@@ -61,7 +48,7 @@ Currently we have support for:
 The specific platforms that have been used for testing are:
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
 - MacOSX: 10.3. 10.2 or earlier will not work.
-- Linux: RedHat 9 on fairly recent Intel hardware
+- Linux: RedHat 9/Fedora Core on fairly recent Intel hardware
 - Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
 - Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
 
@@ -92,7 +79,7 @@ Networking support
 ------------------
 
 This release has support for networked presentations. Streaming 
-media items can be retrieved via HTTP or RTP/RTSP on most platforms,
+media items can be retrieved via HTTP on most platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support has not been tested very thoroughly, feedback is requested.
 
@@ -111,20 +98,22 @@ problems.
 User interface
 --------------
 
-The user interface is a bit clunky on some platforms. More specifically,
-error conditions are not always signalled to the user.
-On MacOSX they sometimes end up on the console (Applications->Utilities->Console
-will show them), on Windows in the file "amlog.txt" in the application
-directory. This will be fixed in a future release.
+The user interface is getting better, but still a bit clunky on some
+platforms. There is a logging window in which the player will print
+error messages and such, and a preferences/settings dialog that allows
+you to select which parser to use (the validating Xerces parser or the
+fast expat parser), which level of logging output you want, etc.
 
 Documentation
 -------------
 
-Documentation of the overall design and the class relationships
-can be found in: Documentation/Design in a source distribution.
-For this release that documentation can lag behind the actual code,
-but the various documents should state the release for which they were
-last updated.
+Minimal user documentation is available through the Help menu (on
+Mac/Linux/Windows, not on WinCE) or in the unix manpage.
+
+Documentation of the overall design and the class relationships can be
+found in: Documentation/Design in a source distribution. Detailed
+interface documentation of the classes is in Documentation/API (in a
+source distribution).
 
 Examples
 --------

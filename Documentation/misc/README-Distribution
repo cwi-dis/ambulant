@@ -1,23 +1,32 @@
-To make a distribution make sure you do :
+To make a distribution make sure you do:
 
 
-Before creating the distribution :
-==================================
+Before creating the distribution:
+=================================
 
-- make sure your CVS tree is uptodate and that there are no uncommited files
-- change the version number in configure.in and in include/ambulant/version.h 
-- check the files README, README-ZAURUS, Extras/bindist-readme.txt
-  and third_party_packages/readme.txt, if they need to be updated.
+- make sure your CVS tree is up to date and that there are no uncommited files
+- change the version number in configure.in, in include/ambulant/version.h
+  and src/player_macos/Info.plist.
+- check the following files for being up-to-date:
+  - README
+  - INSTALL
+  - Documentation/misc/README-ZAURUS
+  - Documentation/misc/README-Distribution (this file)
+  - third_party_packages/readme.txt
 - You must update NEWS, give a high-level overview of what has changed.
 - You must update Changelog. There is a tool cvs2cl that does this
   more-or-less automatically, something like the following command line should
   do the trick:
   
   % cvs log -b -d '>'2004-07-01 | cvs2cl.pl --stdout --stdin
+- Update the API documentation in Documentation/API by running doxygen
+- Update the translations:
+  - in po, run "make ambulant.pot-update"
+  - Edit the various ".po" files. Especially check empty strings
+    and fuzzy matches.
 
-
-To create the linux source distribution :
-=========================================
+To create the linux source distribution:
+========================================
 
 - Use make distcheck
 - If make distcheck complains about not being able to find expat, 
@@ -26,17 +35,48 @@ To create the linux source distribution :
 
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
 
---with-arts is needed here, otherwise the last part of "make distcheck"
-will fail. It is the test whether or not the the tarball is self-contained,
-and and the error message is cryptic: "Permission denied" when copying files.
 
+Binary distributions:
+=====================
 
-Binary distributions :
-======================
-
-Binary distribution should contain the following files :
-
-- bindist-readme.txt, the one in Extras
+All binary distribution should contain the following files:
+- README
 - the player binary, preferable staticly linked
-- A demo presentation, provided by Dick.
-- The GNU License
+- COPYING (The GNU License)
+- DemoPresentation from Extras
+
+Windows desktop also needs:
+- Welcome from Extras
+- AmbulantPlayerHelp.chm from Documentation/user-htmlhelp
+
+Windows CE needs:
+- Welcome from Extras
+
+Zaurus needs:
+- Welcome from Extras
+- README-ZAURUS from Documentation/misc
+- Documentation/user
+
+Testing the distributions
+=========================
+
+Here are some random remarks about testing the distributions.
+
+- The Mac player must definitely be tested on a virgin machine,
+  to ensure there are no dependencies on dynamic libraries in /usr/local
+  or something like that.
+  
+- On all platforms, test either on a virgin machine or at least
+  clear out preferences before testing (unix: $HOME/.ambulant;
+  mac: ~/Library/Preferences/org.ambulantplayer.ambulantplayer.plist;
+  windows: HKEY_CURRENT_USER\Software\Ambulant\AmbulantPlayer in the registry).
+  
+- Make sure Welcome plays at first run. Then play DemoPresentation/NYC-SMIL2.smil.
+  Then play the website documents. Use the Xerces parser. Open the log window,
+  select "debug" output, and make sure that there aren't any accidental
+  AM_DBG's left on.
+  
+- For each platform, try and get someone knowledgable with the platform but
+  not the Ambulant Player to build the distribution.
+  
+  

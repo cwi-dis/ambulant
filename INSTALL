@@ -46,6 +46,11 @@ The resulting binary is called AmbulantPlayer and usually deposited in
 configure). Libraries and include files are also installed under
 /usr/local.
 
+By default the player will be built with only the expat XML parser.
+Specify --with-xerces if you want the Xerces validating XML parser too,
+and additionally --with-xerces-plugin if you want that built as a plugin.
+
+
 Building for Mac OS X
 ---------------------
 
@@ -60,6 +65,11 @@ this scheme.
 "make install" installs the shared libraries and such into the path
 specified with the --prefix configure option, but the application,
 "Ambulant Player.app" is always installed into /Applications.
+
+If you want to install only the Ambulant Player.app application you
+should first run make in the toplevel build directory and then
+"sudo make install" in src/player_macosx. This will not install anything
+into /usr/local.
 
 An XCode project is also available, mainly for debugging purposes, but
 this needs some handcrafting to get it to work (it contains absolute
@@ -86,6 +96,7 @@ Install the following distributions into directories in third_party_packages:
 - lpng125: XXXX
 - mp3lib: XXXX
 - zlib: XXXX
+- xerces: XXXX
 As some of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
 third_party_packages-WIN.zip archive, it contains versions that
@@ -109,10 +120,15 @@ needed copies by hand.
 
 After these steps you are ready to build AmbulantPlayer itself: open
 src\Ambulant-win32.sln in Visual Studio, select the Release configuration
-and do Build->Build Solution.
+and do Build->Build Solution. Alternatively, if you don't want xerces support,
+there is an Ambulant-win32-noxerces.sln solution too.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
+
+The solutions and projects also have experimental targets that build the
+Ambulant Player as a shared library (and, therefore with support for
+plugin modules, as on Unix/Mac) but this has not been tested very thoroughly yet.
 
 Building for Zaurus
 -------------------
@@ -178,6 +194,7 @@ configuration for the "PocketPC" platform and build.
 
 The resulting application is deposited in bin\wince-arm in the toplevel
 directory.
+
 
 ==========================================
 Generic installation instructions for Unix

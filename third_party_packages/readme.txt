@@ -80,9 +80,9 @@ xerces-unix:
 	but building xerces-c with the "native" net accessor does seem to work.
 	For Linux there was no such problem.
 	
-	At this point in time (18-Aug-04) you must specify --with-xerces to
-	the Ambulant configure, but that is expected to be automatic before
-	the next source release.
+	At this point in time you must specify --with-xerces to
+	the Ambulant configure, by default AmbulantPlayer is built with only
+	expat support. 
 	
 	Note that if you want to install xerces-c-src_2_5_0 somewhere
 	else (or you have already installed it) you should specify the
@@ -91,7 +91,8 @@ xerces-unix:
 	And note that the --with-xerces pathname should refer to the base of a
 	xerces source distribution, not to the installation prefix location.
 	
-	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to the directory containing libxerces-c.so.
+	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to the 
+	directory containing libxerces-c.so.
 
 ffmpeg:
 	Linux and Mac OS X.

@@ -342,9 +342,8 @@ msgid "&About AmbulantPlayer"
 msgstr "&Over AmbulantPlayer"
 
 #: src/player_unix/qt_gui.cpp:212
-#, fuzzy
 msgid "AmbulantPlayer &Help"
-msgstr "AmbulantPlayer &Website..."
+msgstr "AmbulantPlayer &Help..."
 
 #: src/player_unix/qt_gui.cpp:215
 msgid "AmbulantPlayer &Website..."
@@ -371,9 +370,8 @@ msgid "Cannot find Welcome.smil document"
 msgstr "Welcome.smil document niet gevonden"
 
 #: src/player_unix/qt_gui.cpp:275
-#, fuzzy
 msgid "Cannot find Ambulant Player Help"
-msgstr "Over AmbulantPlayer"
+msgstr "AmbulantPlayer Help is niet gevonden"
 
 #: src/player_unix/qt_gui.cpp:301
 #, c-format
@@ -468,15 +466,3 @@ msgstr "Kan http://www.ambulantplayer.org niet openen"
 #, c-format
 msgid "Cannot open: %s"
 msgstr "Bestand kan niet geopend worden: %s"
-
-#~ msgid "/.ambulant/locale"
-#~ msgstr "/.ambulant/locale"
-
-#~ msgid "Exiting program"
-#~ msgstr "Programma stopt"
-
-#~ msgid "$BROWSER not set: cannot open webpage <%s>"
-#~ msgstr "$BROWSER niet gezet: kan webpage <%s> niet openen"
-
-#~ msgid "Attempt to start browser returned status %d. Command: %s"
-#~ msgstr "Browser kan niet gestart worden, foutstatus %d. Opdracht: %s"
