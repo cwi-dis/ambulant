@@ -161,7 +161,7 @@ class auto_ref : public ref_counted_obj {
 	}
   private:
 	T* m_ptr;
-};
+}; 
 
 // Save release idiom: 
 // p = release(p); 

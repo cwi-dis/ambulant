@@ -107,7 +107,11 @@ class trace_playable : virtual public playable, virtual public lib::ref_counted_
 	}
 
 	const cookie_type& get_cookie() const { return m_cookie; }
-
+	//XXXX @Jack I put these here just to make it compile again, Daniel.
+	long add_ref() {};
+	long release() {};	
+	long get_ref_count() const {};
+		
   private:
 	const lib::node *m_node;
 	const cookie_type m_cookie;

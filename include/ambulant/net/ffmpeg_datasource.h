@@ -111,7 +111,10 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
   	int get_nbits ();
 	int get_samplerate ();
 	int select_decoder(char* file_ext);
-  	
+  	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
+	long add_ref() {};
+	long release() {};	
+	long get_ref_count() const {};
   protected:
 	int init(); 
   	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
@@ -155,7 +158,11 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
    
     int get_input_format(net::audio_context &fmt);  
     int get_output_format(net::audio_context &fmt);
-  	
+  	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
+	long add_ref() {};
+	long release() {};	
+	long get_ref_count() const {};
+		
   protected:
     int init(); 
   	

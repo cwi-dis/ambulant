@@ -305,6 +305,7 @@ sdl_active_audio_renderer::playdone()
 		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
 		// XXX Need to delete reference on this created when we did lock_channel().
 		unlock_channel(m_channel_used);
+		release();
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
 		stopped_callback();
 	} else {
@@ -392,6 +393,7 @@ sdl_active_audio_renderer::new_channel()
 			assert(m_channel_used >= 0);
 		}
 		// XXX Need to addref() this!!
+		add_ref();
 		lock_channel((void*) this, m_channel_used);	
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer:: New Channel : %d", m_channel_used);
 }

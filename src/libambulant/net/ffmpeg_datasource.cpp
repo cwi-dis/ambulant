@@ -240,13 +240,13 @@ int
 net::ffmpeg_audio_datasource::get_nbits ()
 {
 	// XXX This should not be a fixed number ofcourse !
-	return 16;	
+	return 16;
 }
 
 int 
 net::ffmpeg_audio_datasource::get_samplerate ()
 {
-	m_con->sample_rate;
+	return m_con->sample_rate;
 }
 
 int 

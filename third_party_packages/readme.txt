@@ -25,7 +25,7 @@ ffmpeg:
 	If you have downloaded ffmpeg
 	yourself you must point --with-ffmpeg to the libavcodec subdirectory
 	*in the sourcetree*, not as installed (the header files aren't installed).
-	For RedHat you can simply specify --with-ffmpeg.
+	For RedHat with ffmpeg installed from a Redhat RPM you can simply specify --with-ffmpeg.
 	
 	For Macintosh G5 machines you may need to change configure and/or
 	some of the Makefiles. Linker errors will show the way.
