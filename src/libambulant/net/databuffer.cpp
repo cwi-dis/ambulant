@@ -215,13 +215,17 @@ databuffer::get_write_ptr(int sz)
 void databuffer::pushdata(int sz)
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x)::pushdata(%d)", (void*)this, sz);
+	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x)::pushdata(%d) m_size=%d", (void*)this, sz, m_size);
 	if (m_buffer_full) {
         lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
 	m_size += sz;
 	//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",sz);
 	m_used = m_size - m_rear;
+	if ( ! m_size) { // XXXX Is this OK ?
+	  m_lock.leave();
+	  return;
+	}
 	m_buffer = (char*) realloc(m_buffer, m_size);
 	 if (!m_buffer) {
 		 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
