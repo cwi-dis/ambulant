@@ -13,4 +13,4 @@ build_player_macosx=
 endif
 SUBDIRS = libambulant $(build_player_unix) $(build_player_macosx)
 DIST_SUBDIRS = libambulant player_unix player_macosx
-EXTRA_DIST=Ambulant-win32.sln Ambulant-wince.vcw player_mfc
+EXTRA_DIST=Ambulant-win32.sln Ambulant-wince.vcw player_mfc player_wince
