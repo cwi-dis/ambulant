@@ -375,6 +375,7 @@
 		};
 		04382B0F05D7AEE600CFA029 = {
 			children = (
+				04C2210606008C4F00A4E0D7,
 				04382B1105D7AEE600CFA029,
 				04382B1205D7AEE600CFA029,
 				04382B1305D7AEE600CFA029,
@@ -1492,6 +1493,7 @@
 		};
 		0444D324051F2EEF0010C447 = {
 			children = (
+				04C2210406008C3500A4E0D7,
 				0491CB7705B5ABAE007105A3,
 				0444D325051F2EEF0010C447,
 				042239CB0536F48E0010C447,
@@ -2165,6 +2167,34 @@
 		};
 		04B0C2E805DB8E1C00BD8012 = {
 			fileRef = 04B0C2E705DB8E1C00BD8012;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04C2210406008C3500A4E0D7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.objcpp;
+			path = cocoa_video.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04C2210506008C3500A4E0D7 = {
+			fileRef = 04C2210406008C3500A4E0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04C2210606008C4F00A4E0D7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = cocoa_video.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04C2210706008C4F00A4E0D7 = {
+			fileRef = 04C2210606008C4F00A4E0D7;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2919,6 +2949,7 @@
 				04AE676F05E55CC300023FEA,
 				04AE677005E55CC400023FEA,
 				04DB4D3405E646E900F508A6,
+				04C2210706008C4F00A4E0D7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3021,6 +3052,7 @@
 				04AE677405E55CEC00023FEA,
 				04DB4D3205E646C400F508A6,
 				04AC5D0B05FF6C04003CD4DC,
+				04C2210506008C3500A4E0D7,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

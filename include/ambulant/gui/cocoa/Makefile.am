@@ -3,4 +3,5 @@ library_include_HEADERS= \
 	cocoa_audio.h \
 	cocoa_gui.h \
 	cocoa_image.h \
-	cocoa_text.h
+	cocoa_text.h \
+	cocoa_video.h

@@ -55,11 +55,13 @@
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/gui/cocoa/cocoa_fill.h"
+#include "ambulant/gui/cocoa/cocoa_video.h"
 #include "ambulant/gui/cocoa/cocoa_mouse.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -157,6 +159,9 @@ cocoa_renderer_factory::new_playable(
 		rv = new cocoa_active_audio_renderer(context, cookie, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
+	} else if ( tag == "video") {
+		rv = new cocoa_video_renderer(context, cookie, node, evp);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		// logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
                 return NULL;

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#ifndef AMBULANT_GUI_COCOA_COCOA_VIDEO_H
+#define AMBULANT_GUI_COCOA_COCOA_VIDEO_H
 
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
@@ -66,42 +66,34 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_fill_renderer : public active_basic_renderer {
+class cocoa_video_renderer : 
+	public active_basic_renderer {
   public:
-	cocoa_active_fill_renderer(
+	cocoa_video_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-	:	active_basic_renderer(context, cookie, node, evp),
-		m_dest(NULL),
-		m_playing(false) {};
-	~cocoa_active_fill_renderer();
+		event_processor *evp);
+	~cocoa_video_renderer();
 
-	void start(double where) {m_playing = 1; } // XXXX
+	void start(double where) { if (m_dest) m_dest->show(this); }
 	void freeze() {}
-	void stop() { m_playing = 0; }
+	void stop() { if (m_dest) m_dest->renderer_done(); }
 	void pause() {}
 	void resume() {}
 	void wantclicks(bool want) { if (m_dest) m_dest->need_events(want); }
 
-	virtual void set_surface(surface *dest) { m_dest = dest; }
-	virtual surface *get_surface() { return m_dest;}
+	void set_surface(surface *dest) { m_dest = dest; }
+	surface *get_surface() { return m_dest;}
 	void user_event(const point &where) { clicked_callback(); }
-    void redraw(const screen_rect<int> &dirty, abstract_window *window);
+	void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
+	std::string m_url;
 	surface *m_dest;
-	bool m_playing;
+    NSTextStorage *m_text_storage;
+	NSLayoutManager *m_layout_manager;
+	NSTextContainer *m_text_container;
 	critical_section m_lock;
-};
-
-class cocoa_background_renderer : public background_renderer {
-  public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src) {}
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
-  private:
-	
 };
 
 } // namespace cocoa
@@ -110,4 +102,4 @@ class cocoa_background_renderer : public background_renderer {
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+#endif // AMBULANT_GUI_COCOA_COCOA_VIDEO_H
