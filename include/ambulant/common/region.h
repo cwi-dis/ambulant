@@ -60,6 +60,12 @@ class passive_region {
   	std::vector<passive_region *>m_children;
 };
 
+#ifdef __OBJC__
+// This is a workaround for a problem when using gcc 3.3 to compile
+// ObjC++
+;
+#endif
+
 class passive_window : public passive_region {
   public:
   	passive_window(char *name, size bounds)
@@ -67,6 +73,12 @@ class passive_window : public passive_region {
   	
 	virtual void need_redraw(const screen_rect<int> &r);
 };
+
+#ifdef __OBJC__
+// This is a workaround for a problem when using gcc 3.3 to compile
+// ObjC++
+;
+#endif
 
 class window_factory {
   public:
