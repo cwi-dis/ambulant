@@ -75,8 +75,8 @@ class none_video_renderer : public common::active_video_renderer {
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where, int what=0) {};
 
-	void set_surface(common::surface *dest) { abort(); };
-	common::surface *get_surface() { abort(); };
+//	void set_surface(common::surface *dest) {  };
+//	common::surface *get_surface() { return NULL; };
 };
 
 }
