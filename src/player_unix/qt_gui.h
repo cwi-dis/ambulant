@@ -139,8 +139,9 @@ class qt_gui : public QWidget {
 	QString      m_smilfilename;
 #define	TRY_LOCKING
 #ifdef	TRY_LOCKING
-	ambulant::lib::critical_section* m_lock;
-	unsigned long int m_gui_thread;;
+	pthread_cond_t	  m_cond_message;
+	pthread_mutex_t   m_lock_message;
+	unsigned long int m_gui_thread;
 #endif/*TRY_LOCKING*/
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;

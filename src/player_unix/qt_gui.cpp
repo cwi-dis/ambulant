@@ -48,9 +48,6 @@
 
 /* qt_gui.cpp - Qt GUI for Ambulant
  *              
- *              Initial version renders images & text
- *
- * Kees Blom, Oct.29 2003
  */
 
 #include <pthread.h>
@@ -61,15 +58,12 @@
 #include "qt_mainloop.h"
 #include "qt_logger.h"
 #include "qt_renderer.h"
-#include "qthread.h"
+#include <qthread.h>
 #if 1
 #include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/version.h"
 #endif
-
-#ifdef	TRY_LOCKING
-#endif/*TRY_LOCKING*/
 
 // #define AM_DBG
 #ifndef AM_DBG
@@ -144,7 +138,6 @@ qt_gui::qt_gui(const char* title,
 	m_playmenu(),
 	m_programfilename(),
 #ifdef	TRY_LOCKING
-	m_lock(NULL),
 	m_gui_thread(0),
 #endif/*TRY_LOCKING*/
 	m_smilfilename(NULL)
@@ -152,7 +145,8 @@ qt_gui::qt_gui(const char* title,
 
 	m_programfilename = title;
 #ifdef	TRY_LOCKING
-	m_lock = new critical_section();
+	pthread_cond_init(&m_cond_message, NULL);
+	pthread_mutex_init(&m_lock_message, NULL);
 	m_gui_thread = pthread_self();
 #endif/*TRY_LOCKING*/
 	if (initfile != NULL && initfile != "")
@@ -247,7 +241,8 @@ qt_gui::~qt_gui() {
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
-	delete m_lock;
+	pthread_cond_destroy(&m_cond_message);
+	pthread_mutex_destroy(&m_lock_message);
 }
 
 void 
@@ -592,8 +587,9 @@ qt_gui::customEvent(QCustomEvent* e) {
 	}
 #ifdef	TRY_LOCKING
 	if (level >= ambulant::lib::logger::LEVEL_WARN) {
-		// this function is always executed by m_gui_thread
-		m_lock->leave(); // unlock the thread generating the message
+		pthread_mutex_lock(&m_lock_message);
+		pthread_cond_signal(&m_cond_message);
+		pthread_mutex_unlock(&m_lock_message);
 	}
 #endif/*TRY_LOCKING*/
 	free(msg);
@@ -603,13 +599,6 @@ void
 qt_gui::internal_message(int level, char* msg) {
 	int msg_id = level+qt_logger::CUSTOM_OFFSET;
   	qt_message_event* qme = new qt_message_event(msg_id, msg);
-#ifdef	TRY_LOCKING
-	if (level >= ambulant::lib::logger::LEVEL_WARN
-	    && pthread_self() != m_gui_thread) {
-		m_lock->enter(); // acquire lock for calling thread
-				 // it will be released by m_gui_thread
-	}
-#endif/*TRY_LOCKING*/
 #ifdef	QT_THREAD_SUPPORT
 	QThread::postEvent(this, qme);
 #else /*QT_THREAD_SUPPORT*/
@@ -618,8 +607,11 @@ qt_gui::internal_message(int level, char* msg) {
 #ifdef	TRY_LOCKING
 	if (level >= ambulant::lib::logger::LEVEL_WARN
 	    && pthread_self() != m_gui_thread) {
-		m_lock->enter(); // block calling thread
-		m_lock->leave(); // release lock for calling thread
+	  // wait until the message as been OK'd by the user
+		pthread_mutex_lock(&m_lock_message);
+		pthread_cond_wait(&m_cond_message, &m_lock_message);
+		pthread_mutex_unlock(&m_lock_message);
+
 	}
 #endif/*TRY_LOCKING*/
 }
