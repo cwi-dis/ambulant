@@ -59,15 +59,8 @@
 #define AM_DBG if(0)
 #endif
 
-namespace ambulant
-{
-
-using namespace lib;
-
-namespace gui
-{
-namespace qt_renderer
-{
+using namespace ambulant;
+using namespace gui::qt;
 
 qt_active_text_renderer::~qt_active_text_renderer() {
 	if (m_text_storage != NULL) {
@@ -77,11 +70,11 @@ qt_active_text_renderer::~qt_active_text_renderer() {
 }
 
 void
-qt_active_text_renderer::redraw(const screen_rect<int> &r,
-				abstract_window* w) {
+qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
+				common::abstract_window* w) {
 	m_lock.enter();
-	const point p = m_dest->get_global_topleft();
-	AM_DBG logger::get_logger()->trace(
+	const lib::point p = m_dest->get_global_topleft();
+	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_text_renderer.redraw(0x%x):"
 		"ltrb=(%d,%d,%d,%d)\nm_data = %s, p=(%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom(),
@@ -112,9 +105,3 @@ qt_active_text_renderer::redraw(const screen_rect<int> &r,
 	}
 	m_lock.leave();
 }
-
-} // namespace qt_renderer
-
-} // namespace gui
-
-} //namespace ambulant

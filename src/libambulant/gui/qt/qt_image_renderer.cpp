@@ -59,30 +59,23 @@
 #define AM_DBG if(0)
 #endif
 
-namespace ambulant
-{
-
-using namespace lib;
-
-namespace gui
-{
-namespace qt_renderer
-{
+using namespace ambulant;
+using namespace gui::qt;
 
 qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace(
+	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_image_renderer::~qt_active_image_renderer()");
 	m_lock.leave();
 }
 
 void
-qt_active_image_renderer::redraw(const screen_rect<int> &dirty,
-				 abstract_window* w) {
+qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
+				 common::abstract_window* w) {
 	m_lock.enter();
-	const point p = m_dest->get_global_topleft();
-	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace
+	const lib::point p = m_dest->get_global_topleft();
+	const lib::screen_rect<int> &r = m_dest->get_rect();
+	AM_DBG lib::logger::get_logger()->trace
 		("qt_active_image_renderer.redraw(0x%x):"
 		" ltrb=(%d,%d,%d,%d), p=(%d,%d)",
 		(void *)this,
@@ -93,7 +86,7 @@ qt_active_image_renderer::redraw(const screen_rect<int> &dirty,
 			(const uchar*)m_data, m_data_size);
 	}
 	// XXXX WRONG! This is the info for the region, not for the node!
-	const abstract_smil_region_info *info = m_dest->get_info();
+	const common::abstract_smil_region_info *info = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_image_renderer.redraw: info=0x%x", info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
@@ -103,42 +96,42 @@ qt_active_image_renderer::redraw(const screen_rect<int> &dirty,
 	if (info && !info->get_transparent()) {
 	// First find our whole area (which we have to clear to 
 	// background color)
-		screen_rect<int> dstrect_whole = r;
+		lib::screen_rect<int> dstrect_whole = r;
 		dstrect_whole.translate(m_dest->get_global_topleft());
 		int L = dstrect_whole.left(),
 		    T = dstrect_whole.top(),
 		    W = dstrect_whole.width(),
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
-		color_t bgcolor = info->get_bgcolor();
+		lib::color_t bgcolor = info->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_active_image_renderer.redraw:"
 			" clearing to 0x%x", (long)bgcolor);
-		QColor* bgc = new QColor(redc(bgcolor),
-					 greenc(bgcolor),
-					 bluec(bgcolor));
+		QColor* bgc = new QColor(lib::redc(bgcolor),
+					 lib::greenc(bgcolor),
+					 lib::bluec(bgcolor));
 		paint.setBrush(*bgc);
 		paint.drawRect(L,T,W,H);
 	}
 	if (m_image_loaded) {
 		QSize qsize = aqw->ambulant_widget()->frameSize();
-		size srcsize = size(qsize.width(), qsize.height());
-		rect srcrect = rect(size(0,0));
-		screen_rect<int> dstrect = m_dest->get_fit_rect(
+		lib::size srcsize = lib::size(qsize.width(), qsize.height());
+		lib::rect srcrect = lib::rect(lib::size(0,0));
+		lib::screen_rect<int> dstrect = m_dest->get_fit_rect(
 			srcsize, &srcrect);
 		dstrect.translate(m_dest->get_global_topleft());
 		int L = dstrect.left(), 
 		    T = dstrect.top(),
 		    W = dstrect.width(),
 		    H = dstrect.height();
-		AM_DBG logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->trace(
 			" qt_active_image_renderer.redraw(0x%x):"
 			" drawImage at (L=%d,T=%d,W=%d,H=%d)",
 			(void *)this,L,T,W,H);
 		paint.drawImage(L,T,m_image,0,0,W,H);
 	}
 	else {
-		AM_DBG logger::get_logger()->error(
+		AM_DBG lib::logger::get_logger()->error(
 			"qt_active_image_renderer.redraw(0x%x):"
 			" no m_image",
 			(void *)this
@@ -148,9 +141,3 @@ qt_active_image_renderer::redraw(const screen_rect<int> &dirty,
 	paint.end();
 	m_lock.leave();
 }
-
-} // namespace qt_renderer
-
-} // namespace gui
-
-} //namespace ambulant
