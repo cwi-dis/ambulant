@@ -96,7 +96,7 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 	lib::document *doc = lib::document::create_from_file(filename);
 	if (!doc) {
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
-		return NULL;
+		return;
 	}
 	m_smil_player = new lib::smil_player(doc, wf, rf);
 	m_smil_player->start();

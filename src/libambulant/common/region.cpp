@@ -194,21 +194,28 @@ lib::passive_root_layout::passive_root_layout(const std::string &name, size boun
 		
 lib::passive_root_layout::~passive_root_layout()
 {
-	delete m_gui_window;
+	if (m_gui_window)
+		delete m_gui_window;
 	m_gui_window = NULL;
 }
 
 void
 lib::passive_root_layout::need_redraw(const screen_rect<int> &r)
 {
-	m_gui_window->need_redraw(r);
+	if (m_gui_window)
+		m_gui_window->need_redraw(r);
+	else
+		lib::logger::get_logger()->error("passive_root_layout::need_redraw: m_gui_window == NULL");
 }
 
 void
 lib::passive_root_layout::mouse_region_changed()
 {
 	lib::passive_region::mouse_region_changed();
-	m_gui_window->mouse_region_changed();
+	if (m_gui_window)
+		m_gui_window->mouse_region_changed();
+	else
+		lib::logger::get_logger()->error("passive_root_layout::mouse_region_changed: m_gui_window == NULL");
 }
 
 void

@@ -67,6 +67,7 @@ namespace ambulant {
 
 namespace lib {
 
+class document;
 // Forward
 class active_player;
 
@@ -96,7 +97,7 @@ class passive_player {
 
 class active_player : public ref_counted_obj {
   public:
-	active_player(passive_player *const source, node *tree, window_factory *wf, renderer_factory *rf);
+	active_player(passive_player *const source, document *doc, window_factory *wf, renderer_factory *rf);
 	~active_player();
 	
 	void start(event_processor *evp, event *playdone);
@@ -116,6 +117,7 @@ class active_player : public ref_counted_obj {
   private:
   	passive_timeline *build_timeline();
 	
+	document *m_doc;
 	node *m_tree;
 	timer *m_timer;
   	double m_pause_speed;

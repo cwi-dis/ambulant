@@ -87,9 +87,11 @@ libambulant_la_SOURCES = \
 	\
 	common/player.cpp \
 	common/region.cpp \
+	common/region_node.cpp \
 	common/renderer.cpp \
 	common/skeleton.cpp \
 	common/smil_handler.cpp \
+	common/smil_layout.cpp \
 	common/smil_player.cpp \
 	common/timeline_builder.cpp \
 	common/timelines.cpp \

@@ -248,6 +248,20 @@ lib::node::get_first_child(const char *name) {
 	return 0;
 }
 
+const lib::node* 
+lib::node::get_first_child(const char *name) const {
+	const node *e = down();
+	if(!e) return 0;
+	if(e->m_qname.second == name) return e;
+	e = e->next();
+	while(e != 0) {
+		if(e->m_qname.second == name) 
+			return e;
+		e = e->next();
+	}
+	return 0;
+}
+
 lib::node* 
 lib::node::locate_node(const char *path) {
 	if(!path || !path[0]) {

@@ -71,6 +71,14 @@ namespace gui {
 
 namespace cocoa {
 
+cocoa_window::~cocoa_window()
+{
+	if (m_view) {
+		AmbulantView *my_view = (AmbulantView *)m_view;
+		[my_view ambulantWindowClosed];
+	}
+}
+	
 void
 cocoa_window::need_redraw(const screen_rect<int> &r)
 {
@@ -157,13 +165,22 @@ cocoa_renderer_factory::new_renderer(
 abstract_window *
 cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
 {
-	cocoa_window *window = new cocoa_window(name, bounds, m_view, region);
+	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
+		// XXXX Should create new toplevel window and put an ambulantview in it
+		logger::get_logger()->error("cocoa_window_factory: cannot open second toplevel window yet");
+		return NULL;
+	}
+	cocoa_window *window = new cocoa_window(name, bounds, m_defaultwindow_view, region);
 	// And we need to inform the object about it
-	AmbulantView *view = (AmbulantView *)m_view;
+	AmbulantView *view = window->view();
+	// And set the window size
 	[view setAmbulantWindow: window];
+	NSSize cocoa_size = NSMakeSize(bounds.w, bounds.h);
+	[[view window] setContentSize: cocoa_size];
+	NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
 	NSLog(@"Calling mouse_region_changed");
 	window->mouse_region_changed();
-        [[view window] makeKeyAndOrderFront: view];
+	[[view window] makeKeyAndOrderFront: view];
 	return (abstract_window *)window;
 }
 
@@ -220,6 +237,18 @@ cocoa_window_factory::new_mouse_region()
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window
 {
     ambulant_window = window;
+}
+
+- (void)ambulantWindowClosed
+{
+	NSLog(@"ambulantWindowClosed called");
+    ambulant_window = NULL;
+	// XXXX Should we close the window too? Based on preference?
+}
+
+- (bool)isAmbulantWindowInUse
+{
+    return (ambulant_window != NULL);
 }
 
 - (void)resetCursorRects

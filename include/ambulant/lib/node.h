@@ -159,6 +159,7 @@ class node {
 
 	node* locate_node(const char *path);
 	node *get_first_child(const char *name);
+	const node *get_first_child(const char *name) const;
 	void find_nodes_with_name(const xml_string& name, std::list<node*>& list);
 	node* get_root();
 	const char *get_container_attribute(const char *name) const;

@@ -147,6 +147,7 @@
 		};
 		042AF8D7053C2EBD0010C447 = {
 			children = (
+				04C641B105AAFB2600250A48,
 				044C07A305987A2300592A78,
 				042AF8DC053C2EBD0010C447,
 				042AF8DD053C2EBD0010C447,
@@ -321,6 +322,7 @@
 		};
 		042AF8F8053C2F020010C447 = {
 			children = (
+				04C641BB05AAFB3D00250A48,
 				044C06ED05986EB300592A78,
 				042AF8F9053C2F020010C447,
 				042AF8FA053C2F020010C447,
@@ -329,6 +331,7 @@
 				042AF8FD053C2F020010C447,
 				042AF8FE053C2F020010C447,
 				042AF8FF053C2F020010C447,
+				04D59EF705AE0C5E0045E53C,
 			);
 			isa = PBXGroup;
 			path = common;
@@ -436,11 +439,11 @@
 		0444D2DD051F2EEF0010C447 = {
 			children = (
 				0444D320051F2EEF0010C447,
+				042AF8F8053C2F020010C447,
 				0444D323051F2EEF0010C447,
 				0444D328051F2EEF0010C447,
 				0444D34D051F2EF00010C447,
 				04AF0AD405205DB00010C447,
-				042AF8F8053C2F020010C447,
 			);
 			isa = PBXGroup;
 			name = libambulant;
@@ -1823,6 +1826,34 @@
 			settings = {
 			};
 		};
+		04C641B105AAFB2600250A48 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = smil_layout.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04C641B205AAFB2600250A48 = {
+			fileRef = 04C641B105AAFB2600250A48;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04C641BB05AAFB3D00250A48 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = smil_layout.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04C641BC05AAFB3D00250A48 = {
+			fileRef = 04C641BB05AAFB3D00250A48;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04D10D0A054E9D800010C447 = {
 			isa = PBXFileReference;
 			lastKnownFileType = image.icns;
@@ -1832,6 +1863,20 @@
 		};
 		04D10D0B054E9D800010C447 = {
 			fileRef = 04D10D0A054E9D800010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04D59EF705AE0C5E0045E53C = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = region_node.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04D59EF805AE0C5E0045E53C = {
+			fileRef = 04D59EF705AE0C5E0045E53C;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2199,6 +2244,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL=";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -2295,6 +2341,7 @@
 				044C06D905986C1900592A78,
 				044C06DA05986C1900592A78,
 				044C07A405987A2300592A78,
+				04C641B205AAFB2600250A48,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2387,6 +2434,8 @@
 				044C06EA05986D0D00592A78,
 				044C06EE05986EB300592A78,
 				041E39A305A083A2009C0962,
+				04C641BC05AAFB3D00250A48,
+				04D59EF805AE0C5E0045E53C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2416,9 +2465,9 @@
 			};
 		};
 		8D15AC360486D014006FF6A4 = {
+			explicitFileType = text.plist;
 			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text.plist;
 			path = Info.plist;
 			refType = 4;
 			sourceTree = "<group>";
