@@ -483,8 +483,8 @@ gui::dx::dx_player::get_window(const lib::node* n) {
 	return winfo->w;
 }
 
-void gui::dx::dx_player::show_file(const std::string& href) {
-	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.c_str()), NULL, NULL, SW_SHOWNORMAL);
+void gui::dx::dx_player::show_file(const net::url& href) {
+	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 }
 
 

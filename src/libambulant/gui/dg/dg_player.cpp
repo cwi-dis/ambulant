@@ -376,15 +376,15 @@ gui::dg::dg_player::get_window(const lib::node* n) {
 	return winfo->w;
 }
 
-void gui::dg::dg_player::show_file(const std::string& href) {
+void gui::dg::dg_player::show_file(const net::url& href) {
 #ifndef _WIN32_WCE
-	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.c_str()), NULL, NULL, SW_SHOWNORMAL);
+	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 #else
 	SHELLEXECUTEINFO si;
 	memset(&si, 0, sizeof(si));
 	si.cbSize = sizeof(si);
 	si.lpVerb = text_str("open"); 
-	si.lpFile = textptr(href.c_str()).c_wstr(); 
+	si.lpFile = textptr(href.get_url().c_str()).c_wstr(); 
 	si.nShow = SW_SHOWNORMAL; 
 	ShellExecuteEx(&si);
 #endif

@@ -154,7 +154,7 @@ class dx_player :
 	
 	////////////////////
 	// lib::system implementation
-	void show_file(const std::string& href);
+	void show_file(const net::url& href);
 	
 	////////////////////
 	// Implementation specific artifacts
