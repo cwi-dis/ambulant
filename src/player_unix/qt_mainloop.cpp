@@ -66,8 +66,9 @@ qt_mainloop::run(void* view)
       ((window_factory *) wf, (renderer_factory *) qf);
     if (!a) return NULL;
 
+    timer *our_timer = new timer(realtime_timer_factory());
     event_processor *processor
-      = event_processor_factory(realtime_timer_factory());
+      = event_processor_factory(our_timer);
     
     typedef callback<qt_mainloop,qt_mainloop_callback_arg> callback;
     event *ev = new callback(NULL,  //this
