@@ -260,6 +260,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	transition_count = 0;
 #ifdef USE_SMIL21
 	fullscreen_count = 0;
+	fullscreen_previmage = NULL;
 	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
 #endif
@@ -421,7 +422,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (BOOL)wantsDefaultClipping
 {
-#ifdef DUMP_IMAGES_FORMAT
+#ifdef DUMP_REDRAW
 	return NO;
 #else
 	return (transition_count == 0);
@@ -516,10 +517,13 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #ifdef USE_SMIL21
 - (void) startScreenTransition
 {
-	AM_DBG NSLog(@"startScreenTransition");
+	/*AM_DBG*/ NSLog(@"startScreenTransition");
 	if (fullscreen_count)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
+	if (fullscreen_oldimage) [fullscreen_oldimage release];
+	fullscreen_oldimage = fullscreen_previmage;
+	fullscreen_previmage = NULL;
 }
 
 - (void) endScreenTransition
@@ -532,14 +536,10 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now
 {
-	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
+	/*AM_DBG*/ NSLog(@"screenTransitionStep %d", (int)now);
+	assert(fullscreen_count > 0);
 	fullscreen_engine = engine;
 	fullscreen_now = now;
-	if (engine && fullscreen_oldimage == 0) {
-		// Just starting a new fullscreen transition
-		/*AM_DBG*/ NSLog(@"screenTransitionStep: no oldimage: save old bits");
-		fullscreen_oldimage = [[self getTransitionNewSource] retain];
-	}
 }
 
 - (void) _screenTransitionPreRedraw
@@ -552,29 +552,50 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (void) _screenTransitionPostRedraw
 {
-	if (fullscreen_count == 0 && fullscreen_oldimage == NULL)
+	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
+		// Neither in fullscreen transition nor wrapping one up.
+		// Take a snapshot of the screen and return.
+		if (fullscreen_previmage) [fullscreen_previmage release];
+		fullscreen_previmage = [[self _getOnScreenImage] retain];
+		/*DBG*/	[self dump: fullscreen_previmage toImageID: "fsprev"];
 		return;
-	if (fullscreen_oldimage == 0) {
-		// Just starting a new fullscreen transition
-		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: save old bits");
-		fullscreen_oldimage = [self _getOnScreenImage];
-	} else {
-		// Fullscreen transition in progress or finishing
-		AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
-		[[self getTransitionSurface] unlockFocus];
-		if (fullscreen_engine) {
-			fullscreen_engine->step(fullscreen_now);
-		} else {
-			AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
-			NSRect bounds = [self bounds];
-			[[self getTransitionNewSource] compositeToPoint: NSZeroPoint
-				operation: NSCompositeCopy];
-		}
 	}
+	if (fullscreen_oldimage == NULL) {
+		// Just starting a new fullscreen transition. Get the
+		// background bits from the snapshot saved during the previous
+		// redraw.
+//		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: save old bits");
+		fullscreen_oldimage = fullscreen_previmage;
+		fullscreen_previmage = NULL;
+	}
+	
+	// Do the transition step, or simply copy the bits
+	// if no engine available.
+	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
+	[[self getTransitionSurface] unlockFocus];
+//	/*DBG*/	[self dump: [self getTransitionOldSource] toImageID: "fsold"];
+//	/*DBG*/	[self dump: [self getTransitionNewSource] toImageID: "fsnew"];
+	NSRect bounds = [self bounds];
+	if (fullscreen_engine) {
+		[[self getTransitionOldSource] drawInRect: bounds
+			fromRect: bounds
+			operation: NSCompositeCopy
+			fraction: 1.0];
+		fullscreen_engine->step(fullscreen_now);
+	} else {
+		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
+//		[[self getTransitionNewSource] compositeToPoint: NSZeroPoint
+//			operation: NSCompositeCopy];
+		[[self getTransitionNewSource] drawInRect: bounds
+			fromRect: bounds
+			operation: NSCompositeCopy
+			fraction: 1.0];
+	}
+
 	if (fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
-		[fullscreen_oldimage release];
+		if (fullscreen_oldimage) [fullscreen_oldimage release];
 		fullscreen_oldimage = NULL;
 		fullscreen_engine = NULL;
 	}

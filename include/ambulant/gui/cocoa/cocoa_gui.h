@@ -138,6 +138,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 	int transition_count;
 #ifdef USE_SMIL21
 	int fullscreen_count;
+	NSImage *fullscreen_previmage;
 	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
@@ -186,10 +187,10 @@ class cocoa_renderer_factory : public common::playable_factory {
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
 - (NSImage *)getTransitionNewSource;
 
+#ifdef USE_SMIL21
 // Return the current on-screen image
 - (NSImage *)_getOnScreenImage;
 
-#ifdef USE_SMIL21
 - (void) startScreenTransition;
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
