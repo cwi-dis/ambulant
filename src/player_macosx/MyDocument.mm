@@ -93,6 +93,11 @@
     NSString *filename = [self fileName];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
     myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms);
+	uitimer = [NSTimer timerWithTimeInterval: 0.5
+		target:self selector:SEL("validateButtons:") userInfo:nil 
+		repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer: uitimer forMode: NSDefaultRunLoopMode];
+	// XXXX Need to call invalidate when document closes
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType
@@ -151,9 +156,9 @@
 	return [self validateUIItem: menuItem];
 }
 
-- (void) validateButtons
+- (void) validateButtons: (id)dummy
 {
-#if 0
+#if 1
 	BOOL enabled;
 	enabled = [self validateUIItem: play_button];
 	[play_button setEnabled: enabled];
@@ -167,7 +172,7 @@
 - (IBAction)pause:(id)sender
 {
     myMainloop->set_speed(1.0 - myMainloop->get_speed());
-	[self validateButtons];
+	[self validateButtons: nil];
 }
 
 - (IBAction)play:(id)sender
@@ -179,7 +184,7 @@
 		// myMainloop->add_ref();
 		[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
 	}
-	[self validateButtons];
+	[self validateButtons: nil];
 }
 
 - (void)startPlay: (id)dummy
@@ -196,11 +201,11 @@
 	// gone. So the main thread does the cleanup and zaps myMainloop.
 	while (myMainloop && myMainloop->is_running()) {
 		AM_DBG NSLog(@"validating in separate thread");
-		[self validateButtons];
+		[self validateButtons: nil];
 		sleep(1);
 	}
 	AM_DBG NSLog(@"validating in separate thread - final");
-	[self validateButtons];
+	[self validateButtons: nil];
     [pool release];
 	// myMainloop->release();
 }
@@ -209,7 +214,7 @@
 {
     AM_DBG NSLog(@"Stop");
 	myMainloop->stop();
-	[self validateButtons];
+	[self validateButtons: nil];
 }
 
 - (void *)view

@@ -60,10 +60,11 @@
 	IBOutlet id pause_button;
 //    void *window_factory;
 	mainloop *myMainloop;
+	NSTimer *uitimer;
 }
 - (BOOL) validateUIItem:(id)UIItem;
 - (BOOL) validateMenuItem:(id)menuItem;
-- (void) validateButtons;
+- (void) validateButtons:(id)dummy;
 - (IBAction)pause:(id)sender;
 - (IBAction)play:(id)sender;
 - (IBAction)stop:(id)sender;
