@@ -30,9 +30,6 @@ class active_player;
 
 namespace detail {
 
-class timeline_done_arg {
-};
-
 } // namespace detail
 
 // I'm not clear on the split between active and passive player yet. The
@@ -63,7 +60,7 @@ class active_player : public ref_counted_obj {
 	void start(event_processor *evp, event *playdone);
 	void stop();
 	
-	inline void timeline_done_callback(detail::timeline_done_arg *p) {
+	inline void timeline_done_callback() {
 		m_done = true;
 	}
 	
