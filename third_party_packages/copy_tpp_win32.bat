@@ -1,4 +1,5 @@
 @echo off
+REM $Id$
 
 REM Ambulant home directory
 set AMB_HOME=..
