@@ -1,0 +1,38 @@
+*** configure.orig	Sun Sep 28 17:26:39 2003
+--- configure	Thu Apr  8 22:06:48 2004
+***************
+*** 180,186 ****
+  CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer"
+  ;;
+  *3.3*) 
+! CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer -mdynamic-no-pic -force_cpusubtype_ALL"
+  ;;
+  *) 
+  CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer -mdynamic-no-pic"
+--- 180,186 ----
+  CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer"
+  ;;
+  *3.3*) 
+! CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer -force_cpusubtype_ALL"
+  ;;
+  *) 
+  CFLAGS="-no-cpp-precomp -pipe -fomit-frame-pointer -mdynamic-no-pic"
+*** vhook/Makefile.orig	Thu Apr  8 22:09:27 2004
+--- vhook/Makefile	Thu Apr  8 22:09:29 2004
+***************
+*** 5,11 ****
+  CFLAGS=-fPIC $(OPTFLAGS) -Wall -I.. -I$(SRC_PATH) -I$(SRC_PATH)/libavformat -I$(SRC_PATH)/libavcodec -DHAVE_AV_CONFIG_H
+  
+  ifeq ($(CONFIG_DARWIN),yes)
+! SHFLAGS+=-bundle -flat_namespace -undefined suppress
+  endif
+  HOOKS=null.so fish.so
+  
+--- 5,11 ----
+  CFLAGS=-fPIC $(OPTFLAGS) -Wall -I.. -I$(SRC_PATH) -I$(SRC_PATH)/libavformat -I$(SRC_PATH)/libavcodec -DHAVE_AV_CONFIG_H
+  
+  ifeq ($(CONFIG_DARWIN),yes)
+! SHFLAGS=-bundle -flat_namespace -undefined suppress
+  endif
+  HOOKS=null.so fish.so
+  
