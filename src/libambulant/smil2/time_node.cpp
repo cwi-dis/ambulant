@@ -952,8 +952,14 @@ void time_node::on_rom(qtime_type timestamp) {
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
 	m_eom_flag = true;
-	if(is_playable() && !is_discrete()) 
-		raise_update_event(timestamp);
+	if(is_playable() && !is_discrete()) {
+		if(m_impldur == time_type::unresolved) {
+			time_type pt = timestamp.as_node_time(sync_node());
+			m_impldur = pt - m_interval.begin();
+		}
+		sync_update(timestamp);
+		sync_node()->sync_update(timestamp);
+	}
 }
 
 //////////////////////////
@@ -1224,6 +1230,9 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	rule_list::iterator it;
 	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
+		AM_DBG m_logger->trace("%s[%s].on_add_instance() --> %s[%s]", 
+			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
+			owner->get_time_attrs()->get_tag().c_str(), owner->get_time_attrs()->get_id().c_str()); 
 		rule_type rt = (*it)->get_target_attr();
 		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
 			if(!filter || !nnhelper::is_descendent(owner, filter)) {
@@ -1361,9 +1370,10 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
 	if(is_area()) {
 		const char *href = m_node->get_attribute("href");
-		if(href && strcmp(href, "nohref") != 0)
+		if(href && strcmp(href, "nohref") != 0) {
 			m_context->show_link(m_node, href);
-	}
+		}
+	} 
 }
 
 void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
