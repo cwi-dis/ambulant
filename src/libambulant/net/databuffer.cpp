@@ -53,7 +53,10 @@
 
 #include "ambulant/net/databuffer.h"
 #include "ambulant/lib/logger.h"
+
+#ifndef AMBULANT_PLATFORM_WIN32
 #include <unistd.h>
+#endif
 
 //#define AM_DBG
 #ifndef AM_DBG
