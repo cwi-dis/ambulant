@@ -61,17 +61,15 @@ class preferences {
   protected:	
 	preferences();
 	
-	~preferences();
+	virtual ~preferences();
 
   public:
 
-	enum parser_id {EXPAT = 0, XERCES};
+	enum parser_id {ANY = 0, EXPAT, XERCES};
 
 	static preferences* get_preferences();
 
 	parser_id get_parser_id();
-
-	bool set_parser_id(parser_id );
 
 	virtual bool load_preferences();
 

@@ -58,5 +58,7 @@
 - (IBAction)loadFilter:(id)sender;
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;
+- (IBAction)showLogWindow:(id)sender;
 - (IBAction)openURL:(id)sender;
+- (void)showMessage:(NSString *)message;
 @end

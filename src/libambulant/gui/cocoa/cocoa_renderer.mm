@@ -92,8 +92,8 @@ cocoa_renderer::start(double where)
 		if (m_trans_engine)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
-	common::renderer_playable_dsall::start(where);
 	m_lock.leave();
+	common::renderer_playable_dsall::start(where);
 }
 
 void

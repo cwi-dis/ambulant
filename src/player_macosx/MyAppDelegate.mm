@@ -71,7 +71,10 @@ class nslog_ostream : public ambulant::lib::ostream {
 void
 show_message(const char *format, va_list args)
 {
-	NSLog(@"show_message: %s\n", format);
+	NSString *message = [NSString stringWithCString: format];
+	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
+	[delegate performSelectorOnMainThread: @selector(showMessage:) 
+		withObject: message waitUntilDone: YES];
 }
 
 void
@@ -155,6 +158,11 @@ initialize_logger()
 	}
 }
 
+- (IBAction)showLogWindow:(id)sender
+{
+	NSLog(@"Show Log Window");
+}
+
 - (IBAction)openURL:(id)sender
 {
 	NSLog(@"open URL");
@@ -164,6 +172,21 @@ initialize_logger()
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
 		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
 	}
+}
+
+- (void)showMessage:(NSString *)message
+{
+	NSAlert *alert = [[NSAlert alloc] init];
+	[alert addButtonWithTitle:@"OK"];
+	[alert addButtonWithTitle:@"Show Log Window"];
+	[alert setMessageText:message];
+	[alert setInformativeText:@"The Log window may have more detailed information"];
+	[alert setAlertStyle:NSWarningAlertStyle];
+	if ([alert runModal] == NSAlertSecondButtonReturn) {
+		[self showLogWindow: self];
+	}
+	[alert release];
+	[message release];
 }
 
 @end

@@ -47,13 +47,24 @@
  */
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
+#include <stdlib.h>
 
 using namespace ambulant;
 
 using namespace common;
 
 preferences::preferences()
-  :	m_parser_id(EXPAT) {
+:	m_parser_id(ANY)
+{
+	char *parser = getenv("AMBULANT_USE_PARSER");
+	if (parser) {
+		if (strcmp(parser, "expat") == 0)
+			m_parser_id = EXPAT;
+		else if (strcmp(parser, "xerces") == 0)
+			m_parser_id = XERCES;
+		else
+			lib::logger::get_logger()->error("Unknown parser in environment: AMBULANT_USE_PARSER=%s", parser);
+	}
 }
 	
 preferences::~preferences()
@@ -72,11 +83,6 @@ ambulant::common::preferences::get_preferences() {
 preferences::parser_id
 preferences::get_parser_id() {
 	return m_parser_id;
-}
-
-bool 
-preferences::set_parser_id(parser_id parser) {
-	m_parser_id = parser;
 }
 
 bool 

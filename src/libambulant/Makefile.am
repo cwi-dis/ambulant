@@ -96,7 +96,7 @@ toolkit_ffmpeg_libraries=
 endif
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	-I$(EXPAT_INCLUDES) $(XERCES_INCLUDES) $(qtincludes) $(artsincludes)\
+	  $(EXPAT_INCLUDES) $(XERCES_INCLUDES) $(qtincludes) $(artsincludes)\
 	  $(sdlincludes) $(ffmpegincludes)
 
 lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)\
