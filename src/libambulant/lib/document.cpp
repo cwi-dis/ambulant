@@ -137,7 +137,11 @@ lib::document::resolve_url(const node *n, const std::string& rurl) const {
 	// const char *p = n->get_container_attribute("base");
 	// ...
 	// if none is found use source.
-	
+	net::url loc(rurl);
+	if (loc.get_protocol() != "") {
+		/*AM_DBG*/ lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", rurl.c_str());
+		return rurl;
+	}
 	if(m_src_base.get_protocol() == "file") {
 		std::string base_path = m_src_base.get_path();
 		return filesys::join(base_path, rurl, file_separator.c_str());
