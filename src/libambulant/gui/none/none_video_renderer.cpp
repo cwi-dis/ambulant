@@ -58,7 +58,7 @@ using namespace gui;
 using namespace none;
 
 void 
-none_video_renderer::show_frame(char* frame)
+none_video_renderer::show_frame(char* frame, int size)
 {
 	// private method - no locks
 	lib::logger::get_logger ()->trace("**** DISPLAYED");

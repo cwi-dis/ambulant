@@ -65,16 +65,19 @@ namespace ambulant {
 
 namespace net {
 	
-class raw_video_datasource : virtual public lib::ref_counted_obj {
+class raw_video_datasource : virtual public video_datasource {
   public:
 	raw_video_datasource(const std::string &directory);
   	~raw_video_datasource();
   
+	bool has_audio() { return false; };
+	audio_datasource *get_audio_datasource() { return NULL; };
+
 	void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);
   	
   	bool end_of_file();
   	
-  	char* get_frame(double *timestamp); 
+  	char* get_frame(double *timestamp, int *size); 
   	void frame_done(double timestamp);
   
   private:

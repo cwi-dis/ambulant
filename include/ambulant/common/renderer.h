@@ -211,7 +211,7 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
   	bool is_stopped() { return !m_is_playing;};
   	bool is_playing() { return m_is_playing; };  
 	
-	virtual void show_frame(char* frame) = 0;
+	virtual void show_frame(char* frame, int size) = 0;
     virtual void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
 	virtual void wantclicks(bool want) {};
     virtual void user_event(const lib::point &where, int what=0) {};

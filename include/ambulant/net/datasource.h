@@ -156,13 +156,32 @@ class datasource : virtual public ambulant::lib::ref_counted {
 	virtual int size() const = 0;		
 };
 
-// audio_datasource extends the datasource protocl with methods to obtain
+// audio_datasource extends the datasource protocol with methods to obtain
 // information on the way the audio data is encoded. 
 class audio_datasource : virtual public datasource {
   public:
 	virtual ~audio_datasource() {};
 		  
 	virtual audio_format& get_audio_format() = 0;
+};
+
+// Video_datasource is *not* a subclass of datasource: it does not deliver a stream
+// of bytes (like datasource and audio_datasource) but a stream of images.
+// It also has an ad-hoc method to determine whether audio is available too, and obtain
+// a datasource for that.
+class video_datasource : virtual public lib::ref_counted_obj {
+  public:
+  	virtual ~video_datasource() {};
+
+	virtual bool has_audio() = 0;
+	virtual audio_datasource *get_audio_datasource() = 0;
+	
+	virtual void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp) = 0;
+  	
+  	virtual bool end_of_file() = 0;
+  	
+  	virtual char* get_frame(double *timestamp, int *size) = 0; 
+  	virtual void frame_done(double timestamp) = 0;
 };
 
 // This class is the client API used to create a datasource for

@@ -293,16 +293,17 @@ active_video_renderer::data_avail()
 	m_lock.enter();
 	double ts;
 	char *buf = NULL;
+	int size;
 	unsigned long int event_time;
 	bool displayed;
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
-	buf = m_src->get_frame(&ts);
+	buf = m_src->get_frame(&ts, &size);
 	displayed = false;
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
 		if (ts <= now()) {
 			lib::logger::get_logger()->trace("**** (this = 0x%x) Display frame with timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
-			show_frame(buf);
+			show_frame(buf, size);
 			displayed = true;
 			m_src->frame_done(ts);
 			if (!m_src->end_of_file()) {
