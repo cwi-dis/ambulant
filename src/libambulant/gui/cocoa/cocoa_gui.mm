@@ -447,10 +447,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
-		// Note that calling getTransitionOldSource here does not
-		// follow the definition of what getTransitionOldSource
-		// does, it just happens to work.
-		transition_surface = [self getTransitionOldSource];
+		transition_surface = [self _getOnScreenImage];
 		[transition_surface retain];
 	}
 	return transition_surface;
@@ -468,17 +465,14 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
-		// Note that calling getTransitionOldSource here does not
-		// follow the definition of what getTransitionOldSource
-		// does, it just happens to work.
-		transition_tmpsurface = [self getTransitionOldSource];
+		transition_tmpsurface = [self _getOnScreenImage];
 		[transition_tmpsurface retain];
 		[transition_tmpsurface setFlipped: NO];
 	}
 	return transition_tmpsurface;
 }
 
-- (NSImage *)getTransitionOldSource
+- (NSImage *)_getOnScreenImage
 {
 	NSRect bounds = [self bounds];
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
@@ -493,6 +487,13 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #endif
 	rv = [rv autorelease];
 	return rv;
+}
+
+- (NSImage *)getTransitionOldSource
+{
+	if (fullscreen_count && fullscreen_oldimage)
+		return fullscreen_oldimage;
+	return [self _getOnScreenImage];
 }
 
 - (NSImage *)getTransitionNewSource
@@ -534,6 +535,11 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
 	fullscreen_engine = engine;
 	fullscreen_now = now;
+	if (engine && fullscreen_oldimage == 0) {
+		// Just starting a new fullscreen transition
+		/*AM_DBG*/ NSLog(@"screenTransitionStep: no oldimage: save old bits");
+		fullscreen_oldimage = [[self getTransitionNewSource] retain];
+	}
 }
 
 - (void) _screenTransitionPreRedraw
@@ -541,11 +547,6 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	if (fullscreen_count == 0) return;
 	// XXX setup drawing to transition surface
 	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
-	if (fullscreen_oldimage == 0) {
-		// Just starting a new fullscreen transition
-		AM_DBG NSLog(@"_screenTransitionPreRedraw: no oldimage: save old bits");
-		fullscreen_oldimage = [[self getTransitionOldSource] retain];
-	}
 	[[self getTransitionSurface] lockFocus];
 }
 
@@ -555,8 +556,8 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		return;
 	if (fullscreen_oldimage == 0) {
 		// Just starting a new fullscreen transition
-		AM_DBG NSLog(@"_screenTransitionPostRedraw: save old bits");
-		fullscreen_oldimage = [self getTransitionOldSource];
+		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: save old bits");
+		fullscreen_oldimage = [self _getOnScreenImage];
 	} else {
 		// Fullscreen transition in progress or finishing
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
@@ -566,10 +567,8 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		} else {
 			AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
 			NSRect bounds = [self bounds];
-			[[self getTransitionNewSource] drawInRect: bounds
-				fromRect: bounds
-				operation: NSCompositeSourceOver
-				fraction: 1.0];
+			[[self getTransitionNewSource] compositeToPoint: NSZeroPoint
+				operation: NSCompositeCopy];
 		}
 	}
 	if (fullscreen_count == 0) {
