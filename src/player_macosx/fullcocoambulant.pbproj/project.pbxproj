@@ -837,6 +837,7 @@
 				04382B8405D7AEE600CFA029,
 				0478D955060B382C004224C0,
 				04382B8505D7AEE600CFA029,
+				0478D963060B44D9004224C0,
 			);
 			isa = PBXGroup;
 			path = net;
@@ -1963,6 +1964,20 @@
 			settings = {
 			};
 		};
+		0478D963060B44D9004224C0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = raw_audio_datasource.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0478D964060B44D9004224C0 = {
+			fileRef = 0478D963060B44D9004224C0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		047FC13505CEA111003C9A89 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -3076,6 +3091,7 @@
 				04DB4D3405E646E900F508A6,
 				04C2210706008C4F00A4E0D7,
 				0478D956060B382C004224C0,
+				0478D964060B44D9004224C0,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -152,42 +152,6 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
 	bool m_end_of_file;
 };
 
-// This is a temporary class: it allows you to read raw audio files as
-// 16bit mono 44k1 samples
-class raw_audio_datasource : virtual public audio_datasource, virtual public lib::ref_counted_obj {
-  public:
-  	raw_audio_datasource()
-  	:	m_src(new active_datasource()) {}
-  	
-  	raw_audio_datasource(datasource *source)
-  	:	m_src(source) { m_src->add_ref(); }
-  	
-  	raw_audio_datasource(passive_datasource *const source, int file)
-  	:	m_src(new active_datasource(source, file)) {}
-  	
-  	~raw_audio_datasource() {
-  		m_src->release();
-  	}
-  	
-  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) {
-  		m_src->start(evp, callback);
-  	}
-	void readdone(int len) { m_src->readdone(len); }
-    void callback()  {}
-    bool end_of_file() { return m_src->end_of_file(); }
-//	bool buffer_full() { return m_src->buffer_full(); }
-		
-	char* get_read_ptr() { return m_src->get_read_ptr(); }
-	int size() const { return m_src->size(); }
-
-	int get_nchannels () { return 1; }
-  	int get_nbits () { return 16; }
-	int get_samplerate () { return 44100; }
-	int select_decoder(char* file_ext) {}
-  private:
-  	datasource *m_src;
-};
-
 } // end namespace net
 
 } //end namespace ambulant

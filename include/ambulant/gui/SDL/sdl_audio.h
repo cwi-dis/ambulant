@@ -60,6 +60,7 @@
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_datasource.h"
 #endif
+#include "ambulant/net/raw_audio_datasource.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 
