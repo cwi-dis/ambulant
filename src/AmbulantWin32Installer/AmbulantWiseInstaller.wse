@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=9.02
-  Title=Ambulant/X Player for SMIL 2.0 Installation
+  Title=Ambulant/O Player for SMIL 2.0 Installation
   Title French= Installation
   Flags=00000100
   Languages=65 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -28,8 +28,8 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=0.5
-  Version Description=Ambulant/X Player for SMIL 2.0
+  Version File=0.7
+  Version Description=Ambulant/O Player for SMIL 2.0
   Version Copyright=Copyright (c) 2004
   Version Company=CWI
   Crystal Format=10111100101100000010001001001001
@@ -42,7 +42,7 @@ item: Global
   Variable Default2=C:\WINDOWS
   Variable Flags2=00001000
   Variable Name3=_WISE_
-  Variable Default3=C:\Program Files\Wise Installation System
+  Variable Default3=E:\Program Files\Wise Installation System
   Variable Flags3=00001000
   Variable Name4=_ALIASNAME_
   Variable Flags4=00001000
@@ -85,7 +85,7 @@ item: Remark
 end
 item: Set Variable
   Variable=APPTITLE
-  Value=Ambulant/X Player for SMIL 2.0
+  Value=Ambulant/O Player for SMIL 2.0
   Flags=10000000
 end
 item: Remark
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=AmbulantPlayer\Ambulant-X
+  Value=AmbulantPlayer\Ambulant-O
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer\Ambulant-X
+  Value=AmbulantPlayer\Ambulant-O
   Flags=10000000
 end
 item: Remark
@@ -2144,7 +2144,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=0.5
+  New Value=0.7
   Value Name=DisplayVersion
   Root=2
 end
