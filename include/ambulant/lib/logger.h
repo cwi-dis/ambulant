@@ -139,6 +139,7 @@ class logger {
   	void warn(const char *format, ...);
   	void error(const char *format, ...);
   	void fatal(const char *format, ...);
+  	static void assert_expr(bool expr, const char *format, ...);
 	
   	// templates for objects defining the operator<<
 	template <class T>
@@ -267,5 +268,6 @@ inline bool logger::suppressed(int level) {
 
 } // namespace ambulant
 
+#define LOGGER_ASSERT(exp) if(exp) ambulant::lib::logger::assert_expr(exp, #exp)
 
 #endif // 
