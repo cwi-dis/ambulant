@@ -1113,21 +1113,27 @@ ffmpeg_decoder_datasource::data_avail()
 
 	if (m_con) {
 		int sz = m_src->size();
-		//while (sz && !m_buffer.buffer_full()) {
+		if (sz && !m_buffer.buffer_full()) {
 			uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
-			if(!m_buffer.buffer_full()){
 			// Note: outsize is only written by avcodec_decode_audio, not read!
 			// You must always supply a buffer that is AVCODEC_MAX_AUDIO_FRAME_SIZE
 			// bytes big!
 			int outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
-				AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 				// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
 				int cursz = sz;
-				if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
-				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+				//if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
+				
+				//XXX Ugly hack, but it doesn't work  :-(
+				// Someone kicks away the buffer while we still need it.
+				uint8_t *tmpptr = (uint8_t*) malloc(cursz);
+				memcpy(tmpptr, inbuf, cursz);
+				//XXX end hack
+				AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x as 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, tmpptr, sz);
+				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, tmpptr, cursz);
+				free(tmpptr);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 
@@ -1345,7 +1351,7 @@ ffmpeg_resample_datasource::data_avail()
 	int cursize = 0;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
-		lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
+		lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
 		m_lock.leave();			
 		return;
 	}
