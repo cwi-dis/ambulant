@@ -75,6 +75,9 @@
 #endif
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/common/plugin_engine.h"
+#ifdef WITH_XERCES
+#include "ambulant/lib/xerces_parser.h"
+#endif
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -102,7 +105,13 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	m_factory = new common::factories;
 	m_factory->wf = wf;
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
-	// First create the datasource factory and populate it too.
+	// Populate the parser factory
+	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
+#ifdef WITH_XERCES
+	m_factory->pf->add_factory(new lib::xerces_factory());
+#endif
+
+	// Next create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
 	
 #ifdef WITH_FFMPEG
@@ -144,8 +153,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 
-//	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
-//	pf->add_plugins(m_factory);
+	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
+	pf->add_plugins(m_factory);
 
 
 	m_doc = create_document(filename);
