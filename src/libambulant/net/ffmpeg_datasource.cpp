@@ -57,7 +57,9 @@
 #define AM_DBG if(0)
 #endif 
 
-//#define WITH_FFMPEG_0_4_9					
+#if FFMPEG_VERSION_INT == 0x000409
+	#define WITH_FFMPEG_0_4_9					
+#endif
 
 // How many video frames we would like to buffer at most
 #define MAX_VIDEO_FRAMES 25
@@ -251,6 +253,7 @@ detail::ffmpeg_demux::supported(const net::url& url)
 		if (ic) av_close_input_file(ic);
 		return NULL;
 	}
+	//err = av_read_play(ic);
 	err = av_find_stream_info(ic);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
@@ -584,10 +587,10 @@ ffmpeg_video_datasource::new_ffmpeg_video_datasource(const net::url& url, AVForm
 	AVCodecContext *codeccontext;
 	int stream_index;
 	
-	AM_DBG lib::logger::get_logger()->debug("new_ffmpeg_video_datasource()");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource::new_ffmpeg_video_datasource() called");
 	
 	if (!thread) {
-		lib::logger::get_logger()->error(gettext("Cannot start video reader thread"));
+		lib::logger::get_logger()->error(gettext("ffmpeg_video_datasource::new_ffmpeg_video_datasource(): Cannot start video reader thread"));
 		return NULL;
 	}
 
@@ -595,8 +598,13 @@ ffmpeg_video_datasource::new_ffmpeg_video_datasource(const net::url& url, AVForm
 
 	// Find the index of the video stream
 	for (stream_index=0; stream_index < context->nb_streams; stream_index++) {
-		if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
-			break;
+		if (context) {
+			if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
+				break;
+		} else {
+			lib::logger::get_logger()->debug(gettext("ffmpeg_video_datasource::new_ffmpeg_video_datasource(): AVFormatContext is NULL "));
+			return NULL;
+		}
 	}
 	if (stream_index >= context->nb_streams) {
 		lib::logger::get_logger()->error(gettext("%s: no video streams in file"), url.get_url().c_str());
@@ -830,13 +838,14 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 		ptr = inbuf;
 		
 		while (sz > 0) {
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
 				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, frame, &got_pic, ptr, sz);	
 				if (len >= 0) {
 					assert(len <= sz);
 					ptr +=len;	
 					sz -= len;
 					if (got_pic) {
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
 						// Setup the AVPicture for the format we want, plus the data pointer
 						width = m_con->streams[m_stream_index]->codec.width;
 						height = m_con->streams[m_stream_index]->codec.height;
@@ -851,13 +860,11 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 						
 						// And convert the timestamp
 #ifdef	WITH_FFMPEG_0_4_9					
-		
 						num = 0;
 						den = 0;
 #else /*WITH_FFMPEG_0_4_9*/
 						num = m_con->pts_num;
 						den = m_con->pts_den;
-					framebase/framerate;
 #endif/*WITH_FFMPEG_0_4_9*/
 						framerate = m_con->streams[m_stream_index]->codec.frame_rate;
 						framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
