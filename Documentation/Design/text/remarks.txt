@@ -93,6 +93,12 @@ We may consider the following libraries for adding regex support to Ambulant:
 3. Regex++ from Boost, C++ implementation, a litle heavy (but it offers much)
 4. Greta from Microsoft, C++ implementation
 
+URL handling
+------------
+
+There is a lot of standard code we need to handle URLs, such as basejoins,
+converting file: urls to local pathnames, etc. We should look for an existing lightweight package for this, or roll our own.
+
 RTP/RTSP Library
 ----------------
 
