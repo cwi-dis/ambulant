@@ -53,13 +53,25 @@
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/none/none_mouse.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant; 
 using namespace gui::qt;
+
+qt_renderer_factory::qt_renderer_factory(net::datasource_factory *df)
+:	m_datasource_factory(df)
+	{
+	AM_DBG lib::logger::get_logger()->trace("qt_renderer factory (0x%x)", (void*) this);
+	}
+	
+qt_window_factory::qt_window_factory( QWidget* parent_widget, int x, int y)
+:	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
+	{
+	AM_DBG lib::logger::get_logger()->trace("qt_window_factory (0x%x)", (void*) this);
+	}	
   
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   lib::screen_rect<int>* bounds,

@@ -53,7 +53,7 @@
 #include "ambulant/common/region_info.h"
 
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -68,10 +68,32 @@ qt_active_video_renderer::~qt_active_video_renderer()
 void 
 qt_active_video_renderer::show_frame(char* frame, int size)
 {
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d", frame, size);
 	m_lock.enter();
-	memcpy(m_data, frame, size);
-	m_data_size = size;
-	m_dest->need_redraw();
+	if (m_data == NULL) {
+			m_data = (char*) malloc(size);
+			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: allocated m_data=0x%x, size=%d", m_data, size);
+	} else {
+		m_data = (char*) realloc (m_data, size);
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: reallocated m_data=0x%x, size=%d", m_data, size);
+	}
+	
+
+	if (m_data && frame) { 
+		memcpy(m_data, frame, size);
+		m_data_size = size;
+		if (m_dest) {
+			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw");
+				m_dest->need_redraw();
+			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: need_redraw called");
+		} else {
+			lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_dest is NULL !");
+		}
+	} else {
+		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_data is NULL !");
+	}
+
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame done");
 	m_lock.leave();
 }
 
@@ -83,20 +105,13 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	m_lock.enter();
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace
-		("qt_active_video_renderer.redraw(0x%x):"
-		" ltrb=(%d,%d,%d,%d), p=(%d,%d)",
-		(void *)this,
-		r.left(), r.top(), r.right(), r.bottom(),
-		p.x,p.y);
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): ltrb=(%d,%d,%d,%d), p=(%d,%d)",(void *)this,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
-		m_image_loaded = m_image.loadFromData(
-			(const uchar*)m_data, m_data_size);
+		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
 	}
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG lib::logger::get_logger()->trace(
-		"qt_active_video_renderer.redraw: info=0x%x", info);
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw: info=0x%x", info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_widget());

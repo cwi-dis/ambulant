@@ -63,6 +63,7 @@ inline double round(double v) {return floor(v+0.5);}
 #define round(v) ((int)(v+0.5))
 #endif
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -338,7 +339,11 @@ active_video_renderer::data_avail()
 }
 
 void 
-active_video_renderer::set_surface(common::surface *dest) { m_dest = dest;}
+active_video_renderer::set_surface(common::surface *dest) 
+{ 
+	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::set_surface(0x%x) (this = 0x%x)", (void*) dest, (void *) this);
+	m_dest = dest;
+}
 
 surface*
 active_video_renderer::get_surface() { return m_dest;}

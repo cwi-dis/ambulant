@@ -63,10 +63,7 @@
 #include "qt_includes.h"
 #include "qt_fill.h"
 
-// #define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+
 
 namespace ambulant {
 
@@ -115,11 +112,7 @@ class qt_ambulant_widget : public QWidget {
 
 class qt_window_factory : public common::window_factory {
   public:
-	qt_window_factory( QWidget* parent_widget, int x, int y)
-:	m_parent_widget(parent_widget), m_p(lib::point(x,y)) {
-		AM_DBG lib::logger::get_logger()->trace(
-			"qt_window_factory (0x%x)", (void*) this);
-		}
+	qt_window_factory( QWidget* parent_widget, int x, int y);
 		
 		common::abstract_window* new_window(
 			const std::string &name,
@@ -135,12 +128,8 @@ class qt_window_factory : public common::window_factory {
 
 class qt_renderer_factory : public common::playable_factory {
   public:
-	qt_renderer_factory(net::datasource_factory *df)
-	:	m_datasource_factory(df)
-	{
-		AM_DBG lib::logger::get_logger()->trace(
-			"qt_renderer factory (0x%x)", (void*) this);
-	}
+	qt_renderer_factory(net::datasource_factory *df);
+	
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,

@@ -227,6 +227,8 @@ class active_video_renderer : public common::active_basic_renderer {
 
 	virtual void set_surface(common::surface *dest);
 	virtual common::surface *get_surface();
+	virtual renderer *get_renderer() { return this; }
+	
 		
   protected:
 	surface *m_dest; 
