@@ -1,7 +1,7 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 23-June-03
------------------------
+Jack Jansen, 01-Jul-03
+----------------------
 
 Here are some general (unstructured) thoughts on the Ambulant design.
 
@@ -80,6 +80,11 @@ With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
 "create window" and such.
+
+	*QUESTION*: As we have a number of objects that come in active and passive
+	flavors (data sources, data sinks) I am tempted to create a baseclass for
+	active and passive containers. On the other hand: it could be seen as
+	over-generalization.
 
 run-time system
 ---------------

@@ -1,6 +1,6 @@
 Ambulant design, objects 
 ========================
-Jack Jansen, 23-Jun-03.
+Jack Jansen, 01-Jul-03.
 -----------------------
 
 Objects we need:
@@ -13,7 +13,7 @@ Objects we need:
   same interface as a data source and is stacked on a real data source.
 - Region. This is an area of screen space (or a speaker). It is "what
   the user sees".
-- Data sink. This is where renderers send their data.
+- Active region. This is where renderers send their data.
 - Renderers. These decode data streams, handle timing and do bitblitting
   or push audio through.
 - Clocks. These advance a virtual time.
@@ -142,7 +142,7 @@ Region
 A region is more-or-less a SMIL region, it has XYWH parameters, a parent
 region (unless it is a toplevel window) and parameters such as background
 color, transparency, etc. Rendering is not done directly to a region, but
-the region is activated to return a data sink object to which rendering is
+the region is activated to return a active region object to which rendering is
 done.
 
 SMIL animation on region parameters is a tricky issue. Initially I thought
@@ -163,28 +163,28 @@ to a subregion, but with that subragion being simply a transparent
 (0, 0, 100%, 100%) subregion for most nodes. 
 
 
-Data sink
----------
+Active region
+-------------
 
-A data sink is where data is sent. It is invoked with a SMIL region as
+A active region is where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
-graphics APIs. A data sink can send a callback to the renderer for
+graphics APIs. A active region can send a callback to the renderer for
 "redraw" and "reinit". The latter is redraw on steriods: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.
 
-A better name for data sink may be active region (analogous to data 
-source/active data source).
-
+	An active region used to be called a data sink. The name active region is
+	more in line with the other active/passive class names.
+	
 In case of fill=hold or fill=transition someone has to be responsible
-for holding on to the data sink and its contents. I think the best solution
+for holding on to the active region and its contents. I think the best solution
 is to give this responsibility to the region, i.e. in these cases
-ownership of the data sink is passed back to the region (in stead of
-the data sink simply being discarded). The region will need a call
-that returns this "old data sink" so transitions can do their thing.
-That call should probably return a data sink initialized to the background
+ownership of the active region is passed back to the region (in stead of
+the active region simply being discarded). The region will need a call
+that returns this "old active region" so transitions can do their thing.
+That call should probably return a active region initialized to the background
 if there isn't a fill=transition in effect, to simplify the transition
 code (it will always transition between two data sinks, or maybe even
 with two data sinks as sources and a third, new, one as destination).
@@ -210,15 +210,15 @@ we don't have to do it all again when we play the same media again later.
 Maybe a caching scheme is in order again here? Then the question also
 arises where to cache: at the data source is probably a good candidate.
 
-The renderer activates the region to a data sink, it cannot be called
-with a data sink as parameter (as it was in earlier versions of this document)
+The renderer activates the region to a active region, it cannot be called
+with a active region as parameter (as it was in earlier versions of this document)
 because renderer objects are stateless.
 
 The renderer object interface should allow for at least three different
 implementations:
 
 1. The normal one, where the renderer depends on the data source for
-   data, decodes it, and sends it to the data sink.
+   data, decodes it, and sends it to the active region.
 2. A "third party" renderer, that just grabs the information from the
    data source and sink and passes it to a third party engine (think
    QuickTime or Direct X).

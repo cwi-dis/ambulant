@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<div class="section" id="jack-jansen-23-jun-03">
-<h1><a name="jack-jansen-23-jun-03">Jack Jansen, 23-Jun-03.</a></h1>
+<div class="section" id="jack-jansen-01-jul-03">
+<h1><a name="jack-jansen-01-jul-03">Jack Jansen, 01-Jul-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -22,7 +22,7 @@ to the parser.</li>
 same interface as a data source and is stacked on a real data source.</li>
 <li>Region. This is an area of screen space (or a speaker). It is &quot;what
 the user sees&quot;.</li>
-<li>Data sink. This is where renderers send their data.</li>
+<li>Active region. This is where renderers send their data.</li>
 <li>Renderers. These decode data streams, handle timing and do bitblitting
 or push audio through.</li>
 <li>Clocks. These advance a virtual time.</li>
@@ -133,7 +133,7 @@ on non-timed media)?</p>
 <p>A region is more-or-less a SMIL region, it has XYWH parameters, a parent
 region (unless it is a toplevel window) and parameters such as background
 color, transparency, etc. Rendering is not done directly to a region, but
-the region is activated to return a data sink object to which rendering is
+the region is activated to return a active region object to which rendering is
 done.</p>
 <p>SMIL animation on region parameters is a tricky issue. Initially I thought
 the best way to solve this was again by some activate() scheme which would
@@ -150,25 +150,26 @@ issues. It may be a good idea to simply state that every node renders
 to a subregion, but with that subragion being simply a transparent
 (0, 0, 100%, 100%) subregion for most nodes.</p>
 </div>
-<div class="section" id="data-sink">
-<h1><a name="data-sink">Data sink</a></h1>
-<p>A data sink is where data is sent. It is invoked with a SMIL region as
+<div class="section" id="active-region">
+<h1><a name="active-region">Active region</a></h1>
+<p>A active region is where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
-graphics APIs. A data sink can send a callback to the renderer for
+graphics APIs. A active region can send a callback to the renderer for
 &quot;redraw&quot; and &quot;reinit&quot;. The latter is redraw on steriods: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.</p>
-<p>A better name for data sink may be active region (analogous to data 
-source/active data source).</p>
+<blockquote>
+An active region used to be called a data sink. The name active region is
+more in line with the other active/passive class names.</blockquote>
 <p>In case of fill=hold or fill=transition someone has to be responsible
-for holding on to the data sink and its contents. I think the best solution
+for holding on to the active region and its contents. I think the best solution
 is to give this responsibility to the region, i.e. in these cases
-ownership of the data sink is passed back to the region (in stead of
-the data sink simply being discarded). The region will need a call
-that returns this &quot;old data sink&quot; so transitions can do their thing.
-That call should probably return a data sink initialized to the background
+ownership of the active region is passed back to the region (in stead of
+the active region simply being discarded). The region will need a call
+that returns this &quot;old active region&quot; so transitions can do their thing.
+That call should probably return a active region initialized to the background
 if there isn't a fill=transition in effect, to simplify the transition
 code (it will always transition between two data sinks, or maybe even
 with two data sinks as sources and a third, new, one as destination).</p>
@@ -190,14 +191,14 @@ MIME type and such at low cost. On the other hand doing it statically means
 we don't have to do it all again when we play the same media again later.
 Maybe a caching scheme is in order again here? Then the question also
 arises where to cache: at the data source is probably a good candidate.</p>
-<p>The renderer activates the region to a data sink, it cannot be called
-with a data sink as parameter (as it was in earlier versions of this document)
+<p>The renderer activates the region to a active region, it cannot be called
+with a active region as parameter (as it was in earlier versions of this document)
 because renderer objects are stateless.</p>
 <p>The renderer object interface should allow for at least three different
 implementations:</p>
 <ol class="arabic simple">
 <li>The normal one, where the renderer depends on the data source for
-data, decodes it, and sends it to the data sink.</li>
+data, decodes it, and sends it to the active region.</li>
 <li>A &quot;third party&quot; renderer, that just grabs the information from the
 data source and sink and passes it to a third party engine (think
 QuickTime or Direct X).</li>

@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-23-june-03">
-<h1><a name="jack-jansen-23-june-03">Jack Jansen, 23-June-03</a></h1>
+<div class="section" id="jack-jansen-01-jul-03">
+<h1><a name="jack-jansen-01-jul-03">Jack Jansen, 01-Jul-03</a></h1>
 <p>Here are some general (unstructured) thoughts on the Ambulant design.</p>
 </div>
 <div class="section" id="design-process">
@@ -83,6 +83,11 @@ hand us a memory allocator to use.</blockquote>
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
 &quot;create window&quot; and such.</p>
+<blockquote>
+<em>QUESTION</em>: As we have a number of objects that come in active and passive
+flavors (data sources, data sinks) I am tempted to create a baseclass for
+active and passive containers. On the other hand: it could be seen as
+over-generalization.</blockquote>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
