@@ -76,3 +76,13 @@ a HL object from them, so we do the annotation thing.
 Timeline schedules are completely independent, at their level. If one timeline
 kills or pauses another one this happens because it sends an event to the
 HL scheduler which does the killing or pausing.
+
+Missing
+-------
+
+Here is a list of bits of the design that I know are missing:
+- What an event looks like. In a dynamic language we could use a bound method
+plus an optional argument, but this won't work in C++ (I think?).
+- What events are accepted by what objects, and what the arguments are.
+- How we handle anchors.
+- How we handle transitions.
