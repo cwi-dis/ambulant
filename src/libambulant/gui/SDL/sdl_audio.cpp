@@ -226,7 +226,6 @@ gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
 		err = Mix_AllocateChannels(m_mixed_channels);
 		Mix_ChannelFinished(channel_done);
 		init_channel_list(m_mixed_channels);
-			dump_channel_list();
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_renderer.init(0x%x): SDL init succes", (void *)this);			
     } else {
         err = 0;
