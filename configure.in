@@ -54,19 +54,16 @@ AC_ARG_WITH([expat],[
           EXPAT_PREFIX=${withval};;
 	esac],[
 	# First check whether the standard expat is good enough
-	ambulant_save_LIBS=$LIBS
-	LIBS="$LIBS -lexpat"
-	AC_TRY_RUN(
-	    [#include <expat.h>
-	    main() { 
-	        return !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7);
-	    }],
+	AC_TRY_COMPILE(
+	    [#include <expat.h>],[
+	    #if !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7)
+	    #error Need at least expat 1.95.7
+	    #endif],
 	    [expat=true
 	    EXPAT_PREFIX=/usr],
 	    [expat=true
 	    EXPAT_PREFIX=third_party_packages/expat-unix])
 	])
-	LIBS="$ambulant_save_LIBS"
 if test x$expat = xtrue; then
 	if test  -f $EXPAT_PREFIX/include/expat.h; then
 		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
