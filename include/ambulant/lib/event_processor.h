@@ -44,6 +44,9 @@ class event_processor {
 /////////////////////////////////////////////////
 // abstract_event_processor
 
+// abstract_event_processor is not the owner of abstract_timer.
+
+
 #include <queue>
 #include <cassert>
 
@@ -65,7 +68,6 @@ class abstract_event_processor : public event_processor {
 		m_delta_timer_cs(pcs) { assert(t); }
 	
 	~abstract_event_processor() {
-		delete m_timer;
 		delete m_delta_timer_cs;
 	}
 	
