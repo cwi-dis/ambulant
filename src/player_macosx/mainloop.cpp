@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "mainloop.h"
-#include "ambulant/gui/none/none_gui.h"
+#include "ambulant/gui/cocoa/cocoa_gui.h"
 
 void
 usage()
@@ -26,8 +26,8 @@ mainloop::run(char *filename)
 	if (!p) return;
 
 	lib::active_player *a = p->activate(
-		(lib::window_factory *)new gui::none::none_window_factory(),
-		(lib::renderer_factory *)new ambulant::gui::none::none_renderer_factory());
+		(lib::window_factory *)new gui::cocoa::cocoa_window_factory(),
+		(lib::renderer_factory *)new ambulant::gui::cocoa::cocoa_renderer_factory());
 	if (!a) return;
 	
 	lib::event_processor *processor = lib::event_processor_factory();

@@ -1,1 +1,1 @@
-SUBDIRS=none
+SUBDIRS=none cocoa

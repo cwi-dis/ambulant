@@ -16,6 +16,7 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
 	include/ambulant/gui/none/Makefile
+	include/ambulant/gui/cocoa/Makefile
 	Test/Makefile
 	Test/designtests/Makefile
 	third_party_packages/Makefile])
