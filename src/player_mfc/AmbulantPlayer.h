@@ -102,6 +102,7 @@ public:
 	afx_msg void OnFileOpen();
 	afx_msg BOOL OnOpenRecentFile(UINT nID);
 	afx_msg void OnFileOpenurl();
+	afx_msg void OnPreferences();
 };
 
 extern CAmbulantPlayerApp theApp;

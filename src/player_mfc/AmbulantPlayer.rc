@@ -112,6 +112,8 @@ BEGIN
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
         , CHECKED, GRAYED
         MENUITEM SEPARATOR
+        MENUITEM "Preferences...",              ID_FILE_PREFERENCES
+        MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
     POPUP "&View"
@@ -193,6 +195,16 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,242,42,50,14
 END
 
+IDD_PREFERENCES DIALOGEX 0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "AmbulantPlayer Preferences"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -255,6 +267,14 @@ BEGIN
         RIGHTMARGIN, 292
         TOPMARGIN, 7
         BOTTOMMARGIN, 56
+    END
+
+    IDD_PREFERENCES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -392,6 +412,7 @@ END
 STRINGTABLE 
 BEGIN
     ID_FILE_OPENURL         "Open URL\nOpen URL"
+    ID_FILE_PREFERENCES     "Edit preferences\nPreferences"
 END
 
 #endif    // English (U.S.) resources

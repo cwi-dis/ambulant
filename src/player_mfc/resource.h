@@ -8,6 +8,7 @@
 #define IDR_AMBULANTPLAYERTYPE          129
 #define IDC_CURSOR_HAND                 130
 #define IDD_OPEN_URL                    131
+#define IDD_PREFERENCES                 132
 #define IDC_VERSION                     1000
 #define IDC_EDIT_URL                    1001
 #define IDC_BUTTON1                     1002
@@ -22,13 +23,14 @@
 #define ID_VIEW_AUTOPLAY                32783
 #define ID_HELP_WELCOME                 32784
 #define ID_FILE_OPENURL                 32785
+#define ID_FILE_PREFERENCES             32786
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        132
-#define _APS_NEXT_COMMAND_VALUE         32786
+#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_COMMAND_VALUE         32787
 #define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

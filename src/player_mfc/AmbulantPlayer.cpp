@@ -56,6 +56,7 @@
 #include "MmDoc.h"
 #include "MmView.h"
 #include "OpenUrlDlg.h"
+#include "PreferencesDlg.h"
 
 #include "ambulant/version.h"
 #include ".\ambulantplayer.h"
@@ -79,6 +80,7 @@ BEGIN_MESSAGE_MAP(CAmbulantPlayerApp, CWinApp)
 	ON_COMMAND(ID_FILE_OPEN, CAmbulantPlayerApp::OnFileOpen)
 	ON_COMMAND_EX_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE1+16, OnOpenRecentFile)
 	ON_COMMAND(ID_FILE_OPENURL, OnFileOpenurl)
+	ON_COMMAND(ID_FILE_PREFERENCES, OnPreferences)
 END_MESSAGE_MAP()
 
 
@@ -258,4 +260,10 @@ void CAmbulantPlayerApp::OnFileOpenurl()
 	m_recentUrl = dlg.m_url;
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(dlg.m_url);
 	if(mmdoc) mmdoc->StartPlayback();
+}
+
+void CAmbulantPlayerApp::OnPreferences()
+{
+	PreferencesDlg dlg;
+	if(dlg.DoModal() != IDOK) return;
 }

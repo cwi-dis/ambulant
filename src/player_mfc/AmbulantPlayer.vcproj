@@ -151,6 +151,9 @@
 				RelativePath=".\OpenUrlDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\PreferencesDlg.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -187,6 +190,9 @@
 			</File>
 			<File
 				RelativePath=".\OpenUrlDlg.h">
+			</File>
+			<File
+				RelativePath=".\PreferencesDlg.h">
 			</File>
 			<File
 				RelativePath=".\Resource.h">
