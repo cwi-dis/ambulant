@@ -912,6 +912,14 @@ item: WinCE Component
     Dest FileName=License.txt
     Platform Support=37
   end
+  item: WinCE File
+    Source Path=..\..\bin\wince\libjpeg.dll
+    Dest Path=\Windows\libjpeg.dll
+    Check Date Options=2
+    Dest Dir=\Windows
+    Dest FileName=libjpeg.dll
+    Platform Support=35
+  end
   item: WinCE Registry
     Key Name=.smil
     Data Value=smilfile
@@ -2238,10 +2246,10 @@ end
 item: End Block
 end
 item: Edit Registry
-  Total Keys=4
+  Total Keys=3
   item: Key
     Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-    New Value=1.0
+    New Value=1.2
     Value Name=DisplayVersion
     Root=2
   end
@@ -2257,12 +2265,13 @@ item: Edit Registry
     Value Name=URLInfoAbout
     Root=2
   end
-  item: Key
-    Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-    New Value=Ambulant/O Player for Handheld
-    Value Name=Comments
-    Root=2
-  end
+end
+item: Edit Registry
+  Total Keys=1
+  Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
+  New Value=http://www.ambulantPlayer.org/
+  Value Name=HelpLink
+  Root=2
 end
 item: New Event
   Name=Cancel

@@ -2203,7 +2203,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=1.0
+  New Value=1.2
   Value Name=DisplayVersion
   Root=2
 end
