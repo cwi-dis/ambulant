@@ -1382,16 +1382,18 @@ void time_node::raise_repeat_event(qtime_type timestamp) {
 // and notify dependents.
 // Leaf nodes have to notify dependents and pause playable
 void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
-	if(m_interval.end != timestamp.second) {
-		on_update_instance(timestamp, tn_end, timestamp.second, m_interval.end, oproot);
-		m_interval.end = timestamp.second;	
-	}
 	AM_DBG tnlogger->trace("%s[%s].raise_end_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
 		timestamp.as_doc_time_value());
-	assert(timestamp.first == sync_node());
+	if(timestamp.first != sync_node()) {
+		timestamp.to_node(sync_node());
+	}
+	if(m_interval.end != timestamp.second) {
+		on_update_instance(timestamp, tn_end, timestamp.second, m_interval.end, oproot);
+		m_interval.end = timestamp.second;	
+	}
 	on_add_instance(timestamp, tn_end_event, timestamp.second, 0, oproot);
 	
 	// Check parent end_sync conditions
@@ -1518,7 +1520,7 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 	qtime_type qt = timestamp.as_qtime_down_to(this);
 	for(it = children.begin(); it != children.end(); it++) {
 		if((*it)->is_area() && oproot == (*it)->up())
-			(*it)->set_state(ts_postactive, timestamp, oproot);
+			(*it)->set_state(ts_postactive, qt, oproot);
 		else
 			(*it)->kill(qt, oproot);
 	}

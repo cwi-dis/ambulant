@@ -324,7 +324,7 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_self->cancel_schedule();
 	m_self->kill_children(timestamp, oproot);
 	m_self->fill(timestamp);
-	m_self->raise_end_event_async(timestamp, oproot);
+	m_self->raise_end_event(timestamp, oproot);
 	if(m_self->sync_node()->is_excl() && (m_self->paused() || m_self->deferred())) {
 		excl* p = qualify<excl*>(m_self->sync_node());
 		p->remove(m_self);
