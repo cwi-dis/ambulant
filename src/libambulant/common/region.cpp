@@ -167,6 +167,14 @@ passive_region::show(active_region *cur)
 		mouse_region_changed();
 	// We don't schedule a redraw here, assuming it will come shortly.
 	// is that correct?
+	
+#ifdef AMBULANT_PLATFORM_WIN32			
+	if(m_parent) {
+		children_map_t& subregions =  m_parent->get_subregions();
+		subregions[m_info->get_zindex()].push_back(this);
+	}
+#endif
+	
 }
 
 void
@@ -188,12 +196,20 @@ passive_region::active_region_done(active_region *cur)
 		m_active_regions.erase(i);
 	}
 	delete cur;
+	
+#ifdef AMBULANT_PLATFORM_WIN32			
+	if(m_parent) {
+		children_map_t& subregions =  m_parent->get_subregions();
+		subregions[m_info->get_zindex()].remove(this);
+	}
+#endif
 
 	if (need_mr_update)
 		mouse_region_changed();
 	need_redraw(m_inner_bounds);
 }
 
+#ifndef AMBULANT_PLATFORM_WIN32
 void
 passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 {
@@ -216,6 +232,56 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 			(*it2)->redraw(our_rect, window);
 	}
 }
+
+#else 
+
+void
+passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
+{
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	screen_rect<int> our_outer_rect = r & m_outer_bounds;
+	screen_rect<int> our_rect = m_outer_bounds.innercoordinates(our_outer_rect);
+	if (our_rect.empty())
+		return;
+		
+	
+	////////////////
+	// Draw the content of this
+	
+	// First the background
+	draw_background(our_rect, window);	
+	
+	// Then the active region(s)
+	// For the win32 arrangement we should have at most one active
+	assert(m_active_regions.size()<=1);
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
+	std::list<active_region*>::iterator ar;
+	for (ar=m_active_regions.begin(); ar!=m_active_regions.end(); ar++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)(*ar));
+		(*ar)->redraw(our_rect, window);
+	}
+		
+	// Draw active subregions in reverse activation order and in the correct z-order
+	for(children_map_t::iterator it1=m_subregions.begin();it1!=m_subregions.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
+			assert((*it2)->get_info()->is_subregion());
+			(*it2)->redraw(our_rect, window);
+		}
+	}
+	
+	// Finally the children regions of this
+	// XXXX Should go per z-order value
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			//AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) -> child 0x%x, z=%d", (void *)this, (void *)(*i).second, (*i).first);
+			if(!(*it2)->get_info()->is_subregion())
+				(*it2)->redraw(our_rect, window);
+	}
+}
+
+#endif // AMBULANT_PLATFORM_WIN32
 
 void
 passive_region::draw_background(const lib::screen_rect<int> &r, abstract_window *window)

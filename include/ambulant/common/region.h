@@ -132,6 +132,10 @@ class passive_region : public surface_template, public surface_source {
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
 	renderer *m_bg_renderer;  // Background renderer
+#ifdef AMBULANT_PLATFORM_WIN32		
+	children_map_t m_subregions;	// all active children subregions
+	children_map_t& get_subregions() { return m_subregions;}
+#endif
 };
 
 class passive_root_layout : public passive_region {
