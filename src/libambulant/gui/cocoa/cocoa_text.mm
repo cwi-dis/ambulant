@@ -84,22 +84,23 @@ cocoa_text_renderer::cocoa_text_renderer(
 	smil2::params *params = smil2::params::for_node(node);
 	color_t text_color = lib::to_color(0, 0, 0);
 	if (params) {
-		const char *fontname = params->get_str("fontName");
+		const char *fontname = params->get_str("font-family");
+//		const char *fontstyle = params->get_str("font-style");
 		float fontsize = 0.0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		text_color = params->get_color("fontColor", text_color);
-		fontsize = params->get_float("fontSize", 0.0);
-		AM_DBG NSLog(@"params found, fontColor=(%d, %d, %d), fontName=%s, fontSize=%g", 
+		text_color = params->get_color("color", text_color);
+		fontsize = params->get_float("font-size", 0.0);
+		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
 		if (fontname) {
 			NSString *nsfontname = [NSString stringWithCString: fontname];
 			m_text_font = [NSFont fontWithName: nsfontname size: fontsize];
 			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: fontName \"%s\" unknown", fontname);
+				lib::logger::get_logger()->trace("param: font-family \"%s\" unknown", fontname);
 		} else if (fontsize) {
 			m_text_font = [NSFont userFontOfSize: fontsize];
 			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: fontSize \"%g\" unknown", fontsize);
+				lib::logger::get_logger()->trace("param: font-size \"%g\" unknown", fontsize);
 		}
 		delete params;
 		[pool release];
