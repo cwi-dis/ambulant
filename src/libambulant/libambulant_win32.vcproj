@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;D:\ufs\ambulant\third_party_packages\mp3lib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -64,8 +64,8 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;UNICODE"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -124,6 +124,9 @@
 					Name="dx"
 					Filter="">
 					<File
+						RelativePath=".\gui\dx\dx_area.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_audio.cpp">
 					</File>
 					<File
@@ -167,6 +170,15 @@
 					Name="dg"
 					Filter="">
 					<File
+						RelativePath=".\gui\dg\dg_audio.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_audio_player.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_audio_renderer.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dg\dg_bgrenderer.cpp">
 					</File>
 					<File
@@ -177,6 +189,9 @@
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_img.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_mp3_decoder.cpp">
 					</File>
 					<File
 						RelativePath=".\gui\dg\dg_player.cpp">
@@ -242,6 +257,12 @@
 					</File>
 					<File
 						RelativePath=".\lib\win32\win32_factory.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_fstream.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_memfile.cpp">
 					</File>
 					<File
 						RelativePath=".\lib\win32\win32_thread.cpp">
@@ -428,6 +449,15 @@
 							RelativePath="..\..\include\ambulant\gui\dg\dg_area.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_audio.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_audio_player.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_audio_renderer.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_bgrenderer.h">
 						</File>
 						<File
@@ -441,6 +471,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_img.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_mp3_decoder.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_player.h">
@@ -484,10 +517,16 @@
 						RelativePath="..\..\include\ambulant\lib\abstract_mtsync.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\amstream.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\asb.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\basic_types.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\byte_buffer.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\callback.h">
@@ -515,9 +554,6 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\gtypes.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\layout.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\logger.h">
@@ -559,6 +595,12 @@
 						RelativePath="..\..\include\ambulant\lib\string_util.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\system.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\textptr.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\thread.h">
 					</File>
 					<File
@@ -574,13 +616,16 @@
 							RelativePath="..\..\include\ambulant\lib\win32\win32_asb.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\lib\win32\win32_display.h">
-						</File>
-						<File
 							RelativePath="..\..\include\ambulant\lib\win32\win32_error.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\lib\win32\win32_event_processor.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_fstream.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_memfile.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\lib\win32\win32_mtsync.h">
