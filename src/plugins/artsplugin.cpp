@@ -55,8 +55,6 @@
 
 #include <artsc.h>
 
-
-//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -119,6 +117,6 @@ extern "C" void initialize(ambulant::common::factories* factory)
 	AM_DBG lib::logger::get_logger()->debug("arts_plugin::initialize registering factory function");
 	if (factory->rf) {
 		factory->rf->add_factory(new arts_plugin_factory(factory));
-		lib::logger::get_logger()->trace("arts_plugin: registered");
+		AM_DBG lib::logger::get_logger()->trace("arts_plugin: registered");
 	}
 }

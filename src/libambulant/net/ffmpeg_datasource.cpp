@@ -566,7 +566,7 @@ ffmpeg_audio_datasource::get_dur()
 	m_lock.enter();
 	if (m_con && m_con->duration >= 0) {
 		rv = std::pair<bool, double>(true, m_con->duration / (double)AV_TIME_BASE);
-		lib::logger::get_logger()->debug("ffmpeg_audio_datasource::get_dur: duration=%f", rv.second);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource::get_dur: duration=%f", rv.second);
 	}
 	m_lock.leave();
 	return rv;
@@ -1414,7 +1414,7 @@ ffmpeg_resample_datasource::data_avail()
 	int cursize = 0;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
-		lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
 		m_lock.leave();			
 		return;
 	}

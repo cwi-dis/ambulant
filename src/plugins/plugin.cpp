@@ -165,10 +165,10 @@ bug_workaround(ambulant::common::factories* factory)
 extern "C" void initialize(ambulant::common::factories* factory)
 {
 	factory = bug_workaround(factory);
-    lib::logger::get_logger()->debug("basic_plugin: loaded.");
+    AM_DBG lib::logger::get_logger()->debug("basic_plugin: loaded.");
     if (factory->rf) {
     	basic_plugin_factory *bpf = new basic_plugin_factory(factory);
 		factory->rf->add_factory(bpf);
-    	lib::logger::get_logger()->trace("basic_plugin: registered");
+    	AM_DBG lib::logger::get_logger()->trace("basic_plugin: registered");
     }
 }

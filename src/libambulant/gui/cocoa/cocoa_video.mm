@@ -128,7 +128,7 @@ cocoa_video_renderer::get_dur()
 		TimeValue movdur = GetMovieDuration(mov);
 		TimeScale movscale = GetMovieTimeScale(mov);
 		double dur = (double)movdur / (double)movscale;
-		lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur: GetMovieDuration=%f", dur);
+		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur: GetMovieDuration=%f", dur);
 		rv = std::pair<bool, double>(true, dur);
 	}
 	m_lock.leave();
