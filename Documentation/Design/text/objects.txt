@@ -1,6 +1,6 @@
 Ambulant design, objects 
 ========================
-Jack Jansen, 28-Apr-03.
+Jack Jansen, 29-Apr-03.
 -----------------------
 Objects we need::
 - Event processor. This is the mainloop plus the event/callback mechanism.
@@ -15,7 +15,7 @@ the user sees".
 or push audio through.
 - Clocks. These advance a virtual time.
 - Document Scheduler. This reads a document and runs it.
-- Timeline Scheduler. This executes single timelines.
+- Timeline. This executes a single timeline.
 
 Objects we may need::
 - Resource. Control access to scarce resources (bandwidth, number of
@@ -95,7 +95,24 @@ The timeline schedule also contains preloads for the various media items.
 Then it waits for more events (probably from the LL scheduler) and does
 what is needed for them.
 
-The timeline schedules can also be pushed down early, in which case they
+The timelines can also be pushed down early, in which case they
 will start preloading. This can be used to do "jump optimization" on
 user interaction: if the scheduler can guess where the user is going to
 go it can push the schedule down early thereby giving better responsiveness.
+
+The main data structure in a timeline is the the list of (prerequisites, action)
+tuples. This is almost a petri-net: when all of the prerequisites have happend
+then all action are triggered. There is a difference with a real petri-net in
+that some of these tuples are "or" in stead of "and": as soon as any of the
+prerequisites has fired the actions fire. We need a name for these tuples (and
+node and event are already taken), "place" seems to be the petri-net standard
+but I don't like it... 
+
+Actions can either trigger another prerequisite, cause an event to be
+sent to a renderer (play, stop, etc), trigger a clock callback later or
+do an upcall to the document scheduler. These should probably all be
+done through the event processor, so we can use it's priority scheme to
+do things in the right order.
+
+The timeline has a number of auxiliary objects: the renderers used (with their
+data sources attached), the clock (or master and slave clock), probably more.

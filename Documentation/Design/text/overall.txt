@@ -1,6 +1,6 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 28-Apr-03
+Jack Jansen, 29-Apr-03
 ----------------------
 
 Here are some general (unstructured) thoughts on the Ambulant design.
@@ -12,6 +12,11 @@ the initial implementation by re-using the existing GRiNS scheduler.
 
 Boost.python may be a way to achieve C++/Python interoperability, this needs
 to be investigated. Maybe Kleanthis knows more.
+
+A point of concern is garbage collection. Because we want to do a C++ implementation
+we cannot rely on refcounting or garbage collection (I think? Maybe there
+is a C++ library or template or whatever that can handle this for us?)
+so we have to be careful of object ownership and cleanup.
 
 The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
