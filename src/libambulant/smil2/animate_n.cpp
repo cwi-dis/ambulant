@@ -179,7 +179,8 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 		if(!keyTimes.empty() && keyTimesValid) {
 			std::string str;
 			for(size_t i=0;i<keyTimes.size();i++) {
-				char sz[16];sprintf(sz,"%.3f;", keyTimes[i]); str += sz;
+				char sz[32];
+				sprintf(sz,"%.3f;", keyTimes[i]); str += sz;
 			}
 			m_logger->trace("%s[%s] keyTimes: %s", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), str.c_str());
