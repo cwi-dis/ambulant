@@ -45,7 +45,6 @@
  * which carries forward this exception. 
  * 
  */
-
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"

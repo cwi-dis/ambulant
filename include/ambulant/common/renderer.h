@@ -122,8 +122,10 @@ class active_renderer : public active_basic_renderer, public abstract_rendering_
 	virtual void stop();
 	virtual void pause() {}
 	virtual void resume() {}
+	virtual void wantclicks(bool want);
 
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window) = 0;
+	virtual void user_event(const point &where) { clicked_callback(); }
 	
   protected:
 	virtual void readdone();

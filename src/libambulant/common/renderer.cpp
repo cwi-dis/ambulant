@@ -114,6 +114,12 @@ lib::active_renderer::stop()
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
 
+void
+lib::active_renderer::wantclicks(bool want)
+{
+	m_dest->need_events(want);
+}
+
 lib::active_final_renderer::~active_final_renderer()
 {
 	if (m_data) free(m_data);

@@ -82,19 +82,23 @@ class passive_region : public abstract_rendering_source {
 		m_outer_bounds(screen_rect<int>()),
 		m_window_topleft(point(0, 0)),
 		m_parent(NULL),
-		m_cur_active_region(NULL) {}
+		m_cur_active_region(NULL),
+                m_mouse_region(NULL) {}
 	passive_region(const std::string &name)
 	:	m_name(name),
 		m_inner_bounds(screen_rect<int>()),
 		m_outer_bounds(screen_rect<int>()),
 		m_window_topleft(point(0, 0)),
 		m_parent(NULL),
-		m_cur_active_region(NULL) {}
+		m_cur_active_region(NULL),
+                m_mouse_region(NULL){}
 	virtual ~passive_region() {}
 	
 	virtual void show(active_region *cur);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
-
+	virtual void user_event(const point &where);
+	virtual void mouse_region_changed();
+        
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
 	active_region *activate(const node *node);
 	
@@ -102,6 +106,7 @@ class passive_region : public abstract_rendering_source {
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
 	const point &get_global_topleft() const { return m_window_topleft; }
 	const passive_region* get_parent() const { return m_parent; }
+        const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
 	
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
@@ -111,8 +116,16 @@ class passive_region : public abstract_rendering_source {
 		m_outer_bounds(bounds),
 		m_window_topleft(window_topleft),
 		m_parent(parent),
-		m_cur_active_region(NULL) {}
+		m_cur_active_region(NULL),
+                m_mouse_region(NULL)
+        {
+			if (parent && parent->m_mouse_region) {
+				m_mouse_region = parent->m_mouse_region->clone();
+				m_mouse_region->clear();
+			}
+        }
 	virtual void need_redraw(const screen_rect<int> &r);
+	virtual void need_events(abstract_mouse_region *rgn);
 
   	std::string m_name;					// for debugging
   	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based
@@ -121,6 +134,7 @@ class passive_region : public abstract_rendering_source {
   	passive_region *m_parent;			// parent region
   	active_region *m_cur_active_region; // active region currently responsible for redraws
   	std::vector<passive_region *>m_children;	// all subregions
+        abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
 };
 
 class passive_root_layout : public passive_region {
@@ -128,6 +142,7 @@ class passive_root_layout : public passive_region {
 	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
+	void mouse_region_changed();
   private:
 	abstract_window *m_gui_window;
 };
@@ -145,23 +160,35 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 		const node *node)
 	:	m_source(source),
 		m_node(node),
-		m_renderer(NULL) {}
+		m_renderer(NULL),
+                m_mouse_region(NULL)
+        {
+			if (source->m_mouse_region) {
+				m_mouse_region = source->m_mouse_region->clone();
+				m_mouse_region->clear();
+			}
+        }
 	virtual ~active_region() {}
 	
 	virtual void show(abstract_rendering_source *renderer);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
+	virtual void user_event(const point &where);
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_redraw();
+	virtual void need_events(bool want);
+
 	virtual void renderer_done();	
 	const screen_rect<int>& get_rect() const { return m_source->get_rect(); }
 	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
 	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
+        const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
 	
   protected:
 	passive_region *const m_source;
 	const node *m_node;
 	abstract_rendering_source *m_renderer;
+        abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
 };
 
 } // namespace lib

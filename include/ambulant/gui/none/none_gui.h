@@ -69,6 +69,8 @@ class none_window : public lib::abstract_window {
   	:	lib::abstract_window(region) {};
   		
 	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
+//	void need_events(lib::abstract_mouse_region *rgn) {};
+	void mouse_region_changed() {};
 };
 
 class none_window_factory : public lib::window_factory {
@@ -76,6 +78,7 @@ class none_window_factory : public lib::window_factory {
   	none_window_factory() {}
   	
 	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
+	lib::abstract_mouse_region *new_mouse_region() { return NULL; }
 };
 
 class none_active_renderer : public lib::active_renderer {

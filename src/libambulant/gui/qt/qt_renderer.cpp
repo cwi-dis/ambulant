@@ -77,10 +77,21 @@ namespace qt_renderer {
 		    r.width(), r.height(),
 		    true);
   }
+  
+  void
+  qt_window::mouse_region_changed()
+  {
+  	logger::get_logger()->error("qt_window::mouse_region_changed needs to be implemented");
+  }
   void
   qt_window::redraw(const screen_rect<int> &r)
   {
     m_region->redraw(r, this);
+  }
+  void
+  qt_window::user_event(const point &where)
+  {
+    m_region->user_event(where);
   }
     active_renderer *
   qt_renderer_factory::new_renderer(
@@ -122,6 +133,12 @@ namespace qt_renderer {
       m_view->set_ambulant_window((void*)qpw);
       return qpw;
   }
+  abstract_mouse_region *
+  qt_window_factory::new_mouse_region()
+  {
+  	logger::get_logger()->error("qt_window_factory::new_mouse_region needs to be implemented");
+  }
+
   
   
 } // namespace qt_renderer

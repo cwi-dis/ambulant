@@ -122,7 +122,7 @@ void lib::delta_timer::insert(event *pe, time_type t) {
 		}
 	}
 	// debug
-//	AM_DBG write_trace();
+	AM_DBG write_trace();
 }
 
 void lib::delta_timer::cancel(event *pe) {
@@ -163,7 +163,7 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 		decr(m_events.front().second, delta); 
 			
 	// debug
-//	AM_DBG if(!queue.empty()) write_trace();
+	AM_DBG if(!queue.empty()) write_trace();
 }
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)

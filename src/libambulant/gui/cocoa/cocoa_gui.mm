@@ -54,6 +54,7 @@
 #include "ambulant/gui/cocoa/cocoa_audio.h"
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
+#include "ambulant/gui/cocoa/cocoa_mouse.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
@@ -84,11 +85,43 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 	//[my_view setNeedsDisplay: YES];
 }
 
+#if 0
+void
+cocoa_window::need_events(lib::abstract_mouse_region *rgn)
+{
+	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_events(0x%x)", (void *)this);
+	if (!m_view) {
+		logger::get_logger()->fatal("cocoa_passive_window::need_redraw: no m_view");
+		return;
+	}
+	AmbulantView *my_view = (AmbulantView *)m_view;
+//	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
+//	[my_view setNeedsDisplayInRect: my_rect];
+//	//[my_view setNeedsDisplay: YES];
+}
+#endif
+
 void
 cocoa_window::redraw(const screen_rect<int> &r)
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_region->redraw(r, this);
+}
+
+void
+cocoa_window::user_event(const point &where)
+{
+	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d))", (void *)this, where.x, where.y);
+	m_region->user_event(where);
+}
+
+void
+cocoa_window::mouse_region_changed()
+{
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
+	AmbulantView *my_view = (AmbulantView *)m_view;
+        NSWindow *my_window = [my_view window];
+	[my_window invalidateCursorRectsForView: my_view];
 }
 
 active_renderer *
@@ -124,12 +157,21 @@ cocoa_renderer_factory::new_renderer(
 abstract_window *
 cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
 {
-	abstract_window *window = (abstract_window *)new cocoa_window(name, bounds, m_view, region);
+	cocoa_window *window = new cocoa_window(name, bounds, m_view, region);
 	// And we need to inform the object about it
 	AmbulantView *view = (AmbulantView *)m_view;
 	[view setAmbulantWindow: window];
-	return window;
+	NSLog(@"Calling mouse_region_changed");
+	window->mouse_region_changed();
+        [[view window] makeKeyAndOrderFront: view];
+	return (abstract_window *)window;
 }
+
+abstract_mouse_region *
+cocoa_window_factory::new_mouse_region()
+{
+	return new cocoa_mouse_region();
+};
 
 
 } // namespace cocoa
@@ -148,6 +190,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_
     AM_DBG NSLog(@"AmbulantView.initWithFrame: self=0x%x", self);
     return self;
 }
+
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
 {
 	float bot_delta = NSMaxY([self bounds]) - arect->bottom();
@@ -179,6 +222,24 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_
     ambulant_window = window;
 }
 
+- (void)resetCursorRects
+{
+	bool want_events = false;
+	if ( ambulant_window ) {
+		const ambulant::lib::abstract_mouse_region &mrgn = ambulant_window->get_mouse_region();
+		want_events = !mrgn.is_empty();
+	}
+	NSLog(@"resetCursorRects wantevents=%d", (int)want_events);
+	if (want_events) [self addCursorRect: [self visibleRect] cursor: [NSCursor pointingHandCursor]];
+}
+
+- (void)mouseDown: (NSEvent *)theEvent
+{
+	NSPoint where = [theEvent locationInWindow];
+	NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
+	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	if (ambulant_window) ambulant_window->user_event(amwhere);
+}
 @end
 #endif // __OBJC__
 

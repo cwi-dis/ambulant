@@ -88,7 +88,10 @@ namespace qt_renderer {
 	("qt_window::qt_window(0x%x)", (void *)this);
     }
     void need_redraw(const screen_rect<int> &r);
+	void mouse_region_changed();
+
 	void redraw(const lib::screen_rect<int> &r);
+	void user_event(const lib::point &where);
     qt_gui* view() { return m_view; }
     
   private:
@@ -104,6 +107,7 @@ namespace qt_renderer {
 	("qt_window_factory (0x%x)", (void*) this);
     }
     abstract_window* new_window(const std::string &name, size bounds, abstract_rendering_source *region);
+	abstract_mouse_region *new_mouse_region();
   private:
     qt_gui* m_view;
   };
