@@ -272,7 +272,11 @@ void
 gui::sdl::sdl_active_audio_renderer::readdone()
 {
 	int result;
-	
+#ifdef WITH_FFMPEG
+	AM_DBG lib::logger::get_logger()->trace("Using ffmpeg MP3 support");
+#else
+	AM_DBG lib::logger::get_logger()->trace("Not using ffmpeg MP3 support, only raw audio !");
+#endif
 	m_audio_chunck.allocated = 0;
 	m_audio_chunck.volume = 128;
 #ifdef WITH_FFMPEG

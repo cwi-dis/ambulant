@@ -69,13 +69,6 @@ using namespace lib;
     namespace gui {
         namespace sdl {
 
- 
- 
- 
- 
- 
-
-
 	  
 
 class sdl_active_audio_renderer : public active_renderer, public timer_events {
