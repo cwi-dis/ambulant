@@ -48,6 +48,10 @@ xerces-unix:
 	and navigate to "Building". You really want to do this, as they have
 	created some wrappers around the normal configure/make combo.
 	
+	Mac OS X note: I had no success using the default net accessor (socket),
+	but building xerces-c with the "native" net accessor does seem to work.
+	For Linux there was no such problem.
+	
 	At this point in time (18-Aug-04) you must specify --with-xerces to
 	the Ambulant configure, but that is expected to be automatic before
 	the next source release.
