@@ -61,6 +61,7 @@ namespace lib {
 class timer;
 class event_processor;
 class document;
+class system;
 }
 
 namespace common {
@@ -91,7 +92,7 @@ class player {
 
 // Factory functions - should these be here?
 player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
-player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf);
+player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf, lib::system *sys);
 
 } // namespace common
  

@@ -54,8 +54,9 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/document.h"
+#include "ambulant/lib/system.h"
 
-class mainloop : public ambulant::lib::ref_counted_obj {
+class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted_obj {
   public:
 	mainloop(const char *filename, ambulant::common::window_factory *wf, bool use_mms);
 	~mainloop();
@@ -70,6 +71,8 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	void set_speed(double speed);
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
+	
+	void show_file(const std::string& href);
 	
 	static void set_preferences(std::string &path);
   private:

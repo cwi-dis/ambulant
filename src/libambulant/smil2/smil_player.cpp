@@ -75,8 +75,13 @@ using namespace ambulant;
 using namespace smil2;
 
 common::player *
-common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf) {
-	return new smil_player(doc, wf, pf);
+common::create_smil2_player(
+	lib::document *doc,
+	common::window_factory *wf,
+	common::playable_factory *pf,
+	lib::system *sys)
+{
+	return new smil_player(doc, wf, pf, sys);
 }
 
 smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, lib::system *sys)

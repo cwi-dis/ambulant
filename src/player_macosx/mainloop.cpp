@@ -54,6 +54,7 @@
 // Environment for testing design classes
 
 #include <iostream>
+#include <ApplicationServices/ApplicationServices.h>
 #include "mainloop.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
@@ -62,7 +63,7 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
-#define WITH_NONE_VIDEO
+#undef WITH_NONE_VIDEO
 #ifdef WITH_NONE_VIDEO
 #include "ambulant/gui/none/none_factory.h"
 #endif
@@ -143,7 +144,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	if (use_mms)
 		m_player = common::create_mms_player(m_doc, m_wf, m_rf);
 	else
-		m_player = common::create_smil2_player(m_doc, m_wf, m_rf);
+		m_player = common::create_smil2_player(m_doc, m_wf, m_rf, this);
 }
 
 mainloop::~mainloop()
@@ -196,4 +197,16 @@ void
 mainloop::set_preferences(std::string &url)
 {
 	ambulant::smil2::test_attrs::load_test_attrs(url);
+}
+
+void
+mainloop::show_file(const std::string& href)
+{
+	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.c_str(), kCFStringEncodingUTF8);
+	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
+	OSErr status;
+	
+	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open URL <%s>: LSOpenCFURLRef error %d", href.c_str(), status);
+	}
 }
