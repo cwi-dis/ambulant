@@ -86,10 +86,12 @@ void gui::dx::text_renderer::open(const net::url& u, viewport* v) {
 	std::string ustr = ::repr(u);
 	if(!lib::starts_with(ustr, "data:")) {
 		lib::memfile mf(u);
-		if(!mf.read())
+		if(!mf.read()) {
+			lib::logger::get_logger()->show("Failed to read data from %s", 
+				u.get_url().c_str());
 			return;
+		}
 		lib::databuffer& db = mf.get_databuffer();
-		std::basic_string<text_char> text;
 		text.assign(db.begin(), db.end());
 	} else {
 		text.assign(ustr.begin()+6, ustr.end());
