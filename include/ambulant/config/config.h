@@ -23,7 +23,7 @@
 
 // if we don't have a user config, then use the default location:
 #if !defined(AMBULANT_USER_CONFIG) && !defined(AMBULANT_NO_USER_CONFIG)
-#  define AMBULANT_USER_CONFIG <ambulant/config/user.h>
+#  define AMBULANT_USER_CONFIG "ambulant/config/user.h"
 #endif
 // include it first:
 #ifdef AMBULANT_USER_CONFIG
@@ -32,7 +32,7 @@
 
 // if we don't have a compiler config set, try and find one:
 #if !defined(AMBULANT_COMPILER_CONFIG) && !defined(AMBULANT_NO_COMPILER_CONFIG) && !defined(AMBULANT_NO_CONFIG)
-#  include <ambulant/config/select_compiler_config.h>
+#  include "ambulant/config/select_compiler_config.h"
 #endif
 // if we have a compiler config, include it now:
 #ifdef AMBULANT_COMPILER_CONFIG
@@ -41,7 +41,7 @@
 
 // if we don't have a std library config set, try and find one:
 #if !defined(AMBULANT_STDLIB_CONFIG) && !defined(AMBULANT_NO_STDLIB_CONFIG) && !defined(AMBULANT_NO_CONFIG)
-#  include <ambulant/config/select_stdlib_config.h>
+#  include "ambulant/config/select_stdlib_config.h"
 #endif
 // if we have a std library config, include it now:
 #ifdef AMBULANT_STDLIB_CONFIG
@@ -50,7 +50,7 @@
 
 // if we don't have a platform config set, try and find one:
 #if !defined(AMBULANT_PLATFORM_CONFIG) && !defined(AMBULANT_NO_PLATFORM_CONFIG) && !defined(AMBULANT_NO_CONFIG)
-#  include <ambulant/config/select_platform_config.h>
+#  include "ambulant/config/select_platform_config.h"
 #endif
 // if we have a platform config, include it now:
 #ifdef AMBULANT_PLATFORM_CONFIG
@@ -58,7 +58,7 @@
 #endif
 
 // get config suffix code:
-#include <ambulant/config/suffix.h>
+#include "ambulant/config/suffix.h"
 
 #endif  // AMBULANT_CONFIG_H
 

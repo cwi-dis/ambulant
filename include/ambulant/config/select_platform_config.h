@@ -73,7 +73,7 @@
 #     define AMBULANT_HAS_UNISTD_H
 #  endif
 
-#  include <ambulant/config/posix_features.h>
+#  include "ambulant/config/posix_features.h"
 
 #  endif
 
