@@ -68,6 +68,7 @@ transition_info *
 transition_info::from_node(const node *n)
 {
 	// Placeholder
+	if (n == NULL) return NULL;
 	transition_info *rv = new transition_info();
 #if 1
 	const char *ctype = n->get_attribute("type");

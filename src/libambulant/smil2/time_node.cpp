@@ -1055,6 +1055,23 @@ void time_node::on_eom(qtime_type timestamp) {
 	}
 }
 
+// End of transition
+// This notification is sent when a transition ends. It is sent to
+// all nodes that overlap the transition that just finished.
+void time_node::on_transitioned(qtime_type timestamp) {
+	AM_DBG m_logger->debug("%s[%s].on_transitioned() DT:%ld", 
+		m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.second());
+	// If this node is not in fill=fill_transition state we do nothing
+	if (m_active || !m_needs_remove) return;
+	const time_attrs* ta = get_time_attrs();
+	fill_behavior fb = ta->get_fill();
+	if (fb == fill_transition)
+		remove(timestamp);
+
+}
+
 //////////////////////////
 // Node activities (see also activate())
 

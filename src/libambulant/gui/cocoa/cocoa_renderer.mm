@@ -100,7 +100,7 @@ void
 cocoa_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_renderer.start_outtransition(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("cocoa_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
@@ -131,11 +131,6 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 
 	// See whether we're in a transition
 	NSImage *surf = NULL;
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		delete m_trans_engine;
-		m_trans_engine = NULL;
-		m_dest->transition_done();
-	}
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
 		if ([surf isValid]) {
@@ -161,6 +156,15 @@ cocoa_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		m_event_processor->add_event(ev, delay, lib::event_processor::med);
 	}
 
+	// Finally, if the transition is done clean it up and signal that freeze_transition
+	// can end for our peer renderers.
+	// Note that we have to do this through an event because of locking issues.
+	if (m_trans_engine && m_trans_engine->is_done()) {
+		typedef lib::no_arg_callback<cocoa_renderer> stop_transition_callback;
+		lib::event *ev = new stop_transition_callback(this, &cocoa_renderer::stop_transition);
+		m_event_processor->add_event(ev, 0, lib::event_processor::med);
+
+	}
 	m_lock.leave();
 }
 

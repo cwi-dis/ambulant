@@ -604,7 +604,7 @@ passive_region::transition_freeze_end(lib::screen_rect<int> r)
 	
 	// Signal the active renderers
 	// For the win32 arrangement we should have at most one active
-	// Causes deadlock: we are in redraw when we get here. m_children_cs.enter();
+	m_children_cs.enter();
 	assert(m_renderers.size()<=1);
 	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
@@ -622,7 +622,7 @@ passive_region::transition_freeze_end(lib::screen_rect<int> r)
 		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("passive_region.transition_freeze_end(0x%x %s) returning", (void*)this, m_name.c_str());
-	// m_children_cs.leave();
+	m_children_cs.leave();
 }
 
 void 

@@ -838,14 +838,14 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 		ptr = inbuf;
 		
 		while (sz > 0) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
 				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, frame, &got_pic, ptr, sz);	
 				if (len >= 0) {
 					assert(len <= sz);
 					ptr +=len;	
 					sz -= len;
 					if (got_pic) {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
 						// Setup the AVPicture for the format we want, plus the data pointer
 						width = m_con->streams[m_stream_index]->codec.width;
 						height = m_con->streams[m_stream_index]->codec.height;

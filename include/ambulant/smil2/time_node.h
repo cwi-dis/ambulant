@@ -160,6 +160,9 @@ class time_node : public schedulable {
 	// End of simple duration update
 	void on_eosd(qtime_type timestamp);
 	
+	// End of (visual) transition
+	void on_transitioned(qtime_type timestamp);
+	
 	// Raising events
 	virtual void raise_begin_event(qtime_type timestamp);
 	virtual void raise_repeat_event(qtime_type timestamp);

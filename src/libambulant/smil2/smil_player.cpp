@@ -460,6 +460,14 @@ void smil_player::transitioned(int n, double t) {
 	// remove fill effect for nodes specifing fill="transition" 
 	// and overlap with n
 	AM_DBG m_logger->debug("smil_player::transitioned(%d, %f)", n, t);
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> transitioned_event_cb;
+	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+	if(it != m_dom2tn->end()) {
+		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		transitioned_event_cb *cb = new transitioned_event_cb((*it).second, 
+			&time_node::on_transitioned, timestamp);
+		schedule_event(cb, 0, ep_high);
+	}
 }
 
 // Playable notification for a stall event.
