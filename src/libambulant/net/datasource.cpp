@@ -144,6 +144,7 @@ else
 
 void net::databuffer::shift_down(int pos)
 {
+// XXX This does too much work for pos==m_used, and fails silently for pos>m_used
 if (pos <=  m_used)    
 	{
 	memmove(m_buffer,(m_buffer+pos), m_used-pos);
@@ -160,7 +161,7 @@ if (pos <=  m_used)
 
 void net::databuffer::get_data(char *data, int size)
 {
-if (size  < m_used)
+if (size  <= m_used)
 	{		
 	memcpy(data, m_buffer, size);
 	shift_down(size);
