@@ -125,19 +125,51 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
 
+	if ([self fileName] == nil) {
+		[self askForURL: self];
+	} else {
+		[self openTheDocument];
+	}
+	[self validateButtons: self];
+}
+
+- (void)askForURL: (id)sender
+{
+	AM_DBG NSLog(@"Show sheet to ask for URL");
+	[self showWindows];
+	[NSApp beginSheet: ask_url_panel
+		modalForWindow:[self windowForSheet] 
+		modalDelegate:self 
+		didEndSelector:@selector(askForURLDidEnd:returnCode:contextInfo:) 
+		contextInfo:nil];
+}
+
+- (IBAction)closeURLPanel:(id)sender
+{
+	[ask_url_panel orderOut:self];
+	[NSApp endSheet:ask_url_panel returnCode:([sender tag] == 1) ? NSOKButton : NSCancelButton];
+}
+
+- (void)askForURLDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+	if (returnCode == NSOKButton && [[url_field stringValue] length] > 0) {
+		AM_DBG NSLog(@"ask_for_url: User said OK: %@", [url_field stringValue]);
+		[self setFileName: [url_field stringValue]];
+		[self openTheDocument];
+	} else {
+		AM_DBG NSLog(@"ask_for_url: User said cancel");
+		[self close];
+	}
+}
+
+- (void)openTheDocument
+{
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *filename = [self fileName];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
-    myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms, embedder);
-#if 0
-	uitimer = [NSTimer timerWithTimeInterval: 0.5
-		target:self selector:SEL("validateButtons:") userInfo:nil 
-		repeats:YES];
-	[[NSRunLoop currentRunLoop] addTimer: uitimer forMode: NSDefaultRunLoopMode];
-	// XXXX Need to call invalidate when document closes
-#endif
+	myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms, embedder);
 	[self play: self];
 }
 

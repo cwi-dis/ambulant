@@ -74,11 +74,17 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet id play_button;
 	IBOutlet id stop_button;
 	IBOutlet id pause_button;
+	IBOutlet id ask_url_panel;
+	IBOutlet id url_field;
 //    void *window_factory;
 	mainloop *myMainloop;
 	NSTimer *uitimer;
 	document_embedder *embedder;
 }
+- (void)askForURL: (id)sender;
+- (IBAction)closeURLPanel:(id)sender;
+- (void)askForURLDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)openTheDocument;
 - (BOOL) validateUIItem:(id)UIItem;
 - (BOOL) validateMenuItem:(id)menuItem;
 - (void) validateButtons:(id)dummy;

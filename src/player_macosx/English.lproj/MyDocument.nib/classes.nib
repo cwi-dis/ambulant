@@ -14,10 +14,17 @@
             SUPERCLASS = AmbulantView; 
         }, 
         {
-            ACTIONS = {pause = id; play = id; stop = id; }; 
+            ACTIONS = {closeURLPanel = id; pause = id; play = id; stop = id; }; 
             CLASS = MyDocument; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"pause_button" = id; "play_button" = id; "stop_button" = id; view = id; }; 
+            OUTLETS = {
+                "ask_url_panel" = id; 
+                "pause_button" = id; 
+                "play_button" = id; 
+                "stop_button" = id; 
+                "url_field" = id; 
+                view = id; 
+            }; 
             SUPERCLASS = NSDocument; 
         }
     ); 
