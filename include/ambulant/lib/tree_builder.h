@@ -85,7 +85,8 @@ class tree_builder :
 	// build tree functions
 	bool build_tree_from_file(const char *filename);
 	bool build_tree_from_str(const std::string& str);
-
+	bool build_tree_from_str(const char *begin, const char *end);
+	
 	// check result of build tree functions
 	bool was_well_formed() const {return m_well_formed;}
 	
