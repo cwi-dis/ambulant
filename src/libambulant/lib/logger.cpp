@@ -201,6 +201,18 @@ void lib::logger::fatal(const char *format, ...) {
 	abort();
 }
 
+// static
+void lib::logger::assert_expr(bool expr, const char *format, ...) {
+	if(expr) return;
+	va_list	args;
+	va_start(args, format);
+	char buf[2048] = "Assertion failed: ";
+	vsprintf(buf + strlen(buf), format, args);
+	get_logger()->log_cstr(LEVEL_FATAL, buf);
+	va_end(args);
+	abort();
+}
+
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
 	char buf[2048] = "";
 	vsprintf(buf, format, args);
@@ -217,11 +229,16 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		lt = localtime(&t);
 	}
 	std::ostream& os = *m_pos;
+	char tbuf[16];
 	m_cs.enter();
-	if(logger::logdate)
-		os << (1900 + lt->tm_year) << "/" << (1 + lt->tm_mon) << "/" << lt->tm_mday << " ";
-	if(logger::logtime)
-		os << lt->tm_hour << ":" << lt->tm_min << ":" << lt->tm_sec << " ";
+	if(logger::logdate) {
+		sprintf(tbuf, "%d/%02d/%02d", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
+		os << tbuf;
+	}
+	if(logger::logtime) {
+		sprintf(tbuf, "%02d:%02d:%02d", lt->tm_hour, lt->tm_min, lt->tm_sec);
+		os << tbuf;
+	}
 	if(loglevel)
 		os << get_level_name(level) << "\t";
 		
