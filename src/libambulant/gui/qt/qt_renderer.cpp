@@ -51,7 +51,6 @@
 #include "ambulant/gui/qt/qt_fill.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
-#include "ambulant/gui/none/none_mouse.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -286,12 +285,6 @@ qt_window_factory::new_window (const std::string &name,
 		(void*) this, (void*) qaw, (void*) aqw);
 	qaw->show();
 	return aqw;
-}
-
-common::gui_region *
-qt_window_factory::new_mouse_region()
-{
-	return new gui::none::none_mouse_region();
 }
 
 common::renderer *

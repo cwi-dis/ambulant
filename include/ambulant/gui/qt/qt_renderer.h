@@ -120,7 +120,6 @@ class qt_window_factory : public common::window_factory {
 			const std::string &name,
 			lib::size bounds,
 			common::gui_events *region);
-		common::gui_region *new_mouse_region();
 		common::renderer *new_background_renderer(
 			const common::region_info *src);
   private:
