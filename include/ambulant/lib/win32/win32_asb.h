@@ -71,6 +71,7 @@ void sleep_msec(unsigned long msecs);
 std::basic_string<text_char> getcwd();
 std::basic_string<text_char> resolve_path(const text_char *s);
 bool file_exists(const std::string& fn);
+std::basic_string<text_char> get_module_filename();
 
 } // namespace win32
 

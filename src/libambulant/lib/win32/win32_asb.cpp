@@ -57,6 +57,7 @@
 #include "ambulant/lib/win32/win32_asb.h"
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/win32/win32_error.h"
 
 #include <string>
 
@@ -90,6 +91,12 @@ std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
 	return s;
 }
 
+std::basic_string<text_char> lib::win32::get_module_filename() {
+	text_char buf[MAX_PATH];
+	GetModuleFileName(NULL, buf, MAX_PATH);
+	return buf;
+}
+
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 // WINCE should provide its own version
 void lib::show_message(const char *format, ...) {
@@ -105,8 +112,6 @@ void lib::show_message(const char *format, ...) {
 #endif
 
 bool lib::win32::file_exists(const std::string& fn) {
-	return true;
-	/*
 	WIN32_FIND_DATA fd;
 	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
 	bool exists = false;
@@ -115,7 +120,10 @@ bool lib::win32::file_exists(const std::string& fn) {
 		FindClose(hFind);
 		hFind = INVALID_HANDLE_VALUE;
 		exists = true;
-	} 
+	} else  {
+		DWORD dw = GetLastError();
+		if(dw != ERROR_FILE_NOT_FOUND)
+			win_report_error("FindFirstFile()", dw);
+	}
 	return exists;
-	*/
 }
