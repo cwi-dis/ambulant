@@ -159,7 +159,8 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
 		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
 	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
-	virtual bool wait_for_eom() const { return true;}
+	virtual bool wait_for_eom() const { return m_eom_flag;}
+	virtual void set_wait_for_eom(bool b) { m_eom_flag = b;}
 	
 	// Export the layout functionality for those who need it
 	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
@@ -201,6 +202,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	common::play_state m_state;
 	int m_cursorid;
 	const time_node *m_pointed_node;
+	bool m_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
 	critical_section m_playables_cs;
 	lib::logger *m_logger;

@@ -103,7 +103,8 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_scheduler(0),
 	m_state(common::ps_idle),
 	m_cursorid(0), 
-	m_pointed_node(0) {
+	m_pointed_node(0), 
+	m_eom_flag(true) {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->trace("smil_player::smil_player()");
 	m_event_processor = event_processor_factory(m_timer);
@@ -170,12 +171,10 @@ void smil_player::start() {
 		resume();
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
-		m_timer->set_time(0);
 		if(m_root) {
-			m_root->start();
+			m_scheduler->start(m_root);
 			update();
 		}
-		m_timer->resume();
 	}
 }
 
@@ -446,6 +445,16 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 }
 
 void smil_player::show_link(const lib::node *n, const std::string& href) {
+	if(!href.empty() && href[0] == '#') {
+		const lib::node *target = m_doc->get_node(href.c_str()+1);
+		if(target) {
+			std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
+			if(it != m_dom2tn->end()) {
+				m_scheduler->start((*it).second);
+			}
+		}
+		return;
+	}
 	if(m_system) {
 		m_system->show_file(href);
 	} else {

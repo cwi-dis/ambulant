@@ -81,6 +81,7 @@ class time_node_context {
 	virtual void show_link(const lib::node *n, const std::string& href) = 0;
 	virtual animation_engine* get_animation_engine() = 0;
 	virtual bool wait_for_eom() const = 0;
+	virtual void set_wait_for_eom(bool b) = 0;
 	
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) = 0;
@@ -123,6 +124,7 @@ class dummy_time_node_context : public time_node_context {
 	virtual void show_link(const lib::node *n, const std::string& href) {}
 	virtual smil2::animation_engine* get_animation_engine() { return 0;}
 	virtual bool wait_for_eom() const { return false;}
+	virtual void set_wait_for_eom(bool b) {}
 	
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) { return 0;}
@@ -141,7 +143,6 @@ class dummy_time_node_context : public time_node_context {
 	virtual void started_playback() {}
 	virtual void done_playback(){}
 };
-
 
 } // namespace smil2
  

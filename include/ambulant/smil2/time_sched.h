@@ -76,18 +76,28 @@ class scheduler {
 	time_type exec();
 	time_type exec(time_type now);
 	void reset();
+	void start(time_node *tn);
 	
 	static void reset(time_node *tn);
 	static void set_context(time_node *tn, time_node_context *ctx);
 	static bool has_resolved_end(time_node *tn);
+	static std::string get_state_sig(time_node *tn);
 	
   private:
 	void get_pending_events();
+	void restart(time_node *tn);
+	
 	time_node *m_root;
 	lib::timer *m_timer;
-	time_type m_events_horizon;
+	time_type m_horizon;
+	
+	bool m_locked;
+	void lock() { m_locked = true;}
+	void unlock() { m_locked = false;}
+	bool locked() const { return m_locked;}
+	
 	typedef std::map<time_node::time_type, std::list<time_node*> > event_map_t;
-	std::map<time_node::time_type, std::list<time_node*> > m_events;
+	event_map_t m_events;
 	enum { idle_resolution = 100};
 };
 

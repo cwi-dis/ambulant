@@ -90,7 +90,6 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_interval(interval_type::unresolved),
 	m_active(false),
 	m_needs_remove(false),
-	m_last_cdur(time_type::unresolved),
 	m_rad(0),
 	m_rad_offset(0),
 	m_precounter(0),
@@ -105,6 +104,7 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_want_accesskey(false),
 	m_mediadur(time_type::unresolved),
 	m_impldur(time_type::unresolved),
+	m_last_cdur(time_type::unresolved),
 	m_parent(0), m_next(0), m_child(0) {
 	assert(type <= tc_none);
 	node_counter++;
@@ -179,9 +179,11 @@ void time_node::start() {
 		add_begin_rule(m_domcall_rule);
 	}
 	
-	// Bring root to live
 	qtime_type timestamp(this, 0);
-	set_state(ts_proactive, timestamp, this);
+	
+	// Bring node to live
+	if(!is_alive())
+		set_state(ts_proactive, timestamp, this);
 	
 	// Add event instance
 	m_domcall_rule->add_instance(timestamp, 0);
@@ -190,7 +192,8 @@ void time_node::start() {
 // DOM TimeElement::stopElement()
 // Currently supported only for the root.
 void time_node::stop() {
-	qtime_type timestamp(sync_node(), get_sync_simple_time());
+	qtime_type timestamp(this, get_simple_time());
+	//set_state(ts_postactive, timestamp, this);
 	reset(timestamp, this);
 }
 
@@ -207,7 +210,6 @@ void time_node::resume() {
 	// Resume children
 	// Resume playable if a media node
 }
-
 
 // Adds a sync_rule to the begin list of this node.
 // This node is not the sync base but the target (e.g. the node that will be affected).
@@ -494,7 +496,6 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	// Update dependents, event if this interval will never play
 	on_new_instance(timestamp, tn_begin, m_interval.begin);
 	on_new_instance(timestamp, tn_end, m_interval.end);
-	
 
 	// Update parent to recalc end sync status
 	if(sync_node()->is_par() || sync_node()->is_excl())
@@ -533,7 +534,30 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 // Add to history and invalidate current interval
 void time_node::played_interval(qtime_type timestamp) {
 	m_history.push_back(m_interval);
+	q_smil_time b(sync_node(), m_interval.begin);
+	q_smil_time e(sync_node(),m_interval.end);
+	m_doc_history.push_back(interval_type(b.as_doc_time(), e.as_doc_time()));
 	m_interval = interval_type::unresolved;
+}
+
+const time_node::interval_type& time_node::get_first_interval(bool asdoc /* = false*/) const {
+	if(asdoc) {
+		if(!m_doc_history.empty())
+			return m_doc_history.front();
+		return interval_type::unresolved;
+	}
+	if(!m_history.empty())
+		return m_history.front();
+	return m_interval;
+}
+
+// Returns the last interval associated with this (maybe invalid)
+const time_node::interval_type& time_node::get_last_interval() const {
+	if(m_interval.is_valid())
+		return m_interval;
+	if(!m_history.empty())
+		return m_history.back();
+	return m_interval;
 }
 
 // Activates the interval of this node.
@@ -1225,6 +1249,10 @@ void time_node::reset(qtime_type timestamp, time_node *oproot) {
 	// nodes that exit active will raise an endEvent 
 	// This should should not update dependents within this branch
 	m_state->reset(timestamp, oproot);	
+	m_rad = 0;
+	m_precounter = 0;	
+	m_rad_offset = 0;
+	if(m_timer) m_timer->stop();
 	
 	// 3. Reset this instance times with resepect to oproot.
 	rule_list::iterator it2;
@@ -1273,6 +1301,204 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 		else
 			(*it)->kill(qt, oproot);
 	}
+}
+
+// Meta model reset
+// Brings the timegraph to its initial state without propagating events
+void time_node::reset() {
+	///////////////////////////
+	// 1. Reset visuals
+	
+	if(m_needs_remove) {
+		if(is_animation()) {
+			animation_engine *ae = m_context->get_animation_engine();
+			ae->stopped((animate_node*)this);
+		} else if(!is_time_container()) {
+			m_context->stop_playable(m_node);
+		}
+	}
+
+	///////////////////////////
+	// 2. Reset state variables
+	
+	// Structure var
+	// context_type *m_context;
+	
+	// The underlying DOM node
+	// Mimimize or eliminate usage after timegraph construction 
+	// Structure var
+	// const node *m_node;
+	
+	// Attributes parser
+	// Structure var
+	// time_attrs m_attrs;
+	
+	// The time type of this node
+	// Structure var
+	// time_container_type m_type;
+	
+	// The intrinsic time type of this node 
+	// Always false for time containers
+	// Structure var
+	// bool m_discrete;
+			
+	// The timer assigned to this node by the timegraph builder
+	// lib::timer *m_timer;
+	if(m_timer) m_timer->stop();
+	
+	// The lifetime state of this node.
+	// Summarizes the state variables below.
+	// For each state the analytic state variables below 
+	// take particular values.
+	// time_state	*m_state;
+	m_state = m_time_states[ts_reset]; 
+	
+	// Smil timing calculator
+	// Structure var
+	// time_calc *m_time_calc;
+	
+	// The current interval associated with this time node.
+	// When this has not a current interval this is set to unresolved
+	// interval_type m_interval;
+	m_interval = interval_type::unresolved; 
+	
+	// Past intervals
+	// Some intervals may have not "played" but they did
+	// affected the state of the model by propagating 
+	// time change notifications.
+	// Canceled intervals do not contribute.
+	// std::list<interval_type> m_history;
+	m_history.clear();
+	
+	// std::list<interval_type> m_doc_history;
+	m_doc_history.clear();
+	
+	// Flag set when this is active 
+	// e.g during the current interval
+	// bool m_active;
+	m_active = false;
+	
+	// Flag set when this node has finished an interval,
+	// has called start against its peer playable but not stop yet.
+	// e.g there maybe display effects that should be removed
+	// == this has to call stop() against its peer playable.
+	// bool m_needs_remove;
+	m_needs_remove = false;
+	
+	// The following 3 state variables are incemented when the node is active  
+	// and it repeats: 
+	// m_rad += m_last_cdur; m_rad_offset calc, m_precounter++;
+	
+	// Accumulated repeat duration
+	// Incremented after the completion of a simple dur
+	// value_type m_rad;
+	m_rad = 0;
+	
+	// Last begin or repeat instance in parent simple time.
+	// e.g. the accumulated repeat duration (rad) as a parent simple time instance
+	// Therefore: simple_dur_offset = parent_simple_time - m_rad_offset;
+	// value_type m_rad_offset;
+	m_rad_offset = 0;
+	
+	// Number of completed repeat counts
+	// e.g. the current zero-based repeat index
+	// long m_precounter;
+	m_precounter = 0;
+	
+	// Registers for storing activation params
+	// Required by the set-of-implicit-dur-on-eom mechanism
+	// time_type m_activation_time;
+	m_activation_time = 0;
+	// time_type m_media_offset;
+	m_media_offset = 0;
+	// bool m_eom_flag;
+	m_eom_flag = false;
+	
+	// The priority of this node
+	// Applicable for excl children.
+	// Structure var
+	// int m_priority;
+	
+	// Paused flag
+	// bool m_paused;
+	m_paused = false;
+	// time_type m_pause_time;
+	m_pause_time = 0;
+	
+	// Defered flag
+	// bool m_deferred;
+	m_deferred = false;
+	
+	// Sync update event
+	//std::pair<bool, qtime_type> m_update_event;
+	m_update_event.first = false;
+	
+	// Sync rules
+	// typedef std::list<sync_rule*> rule_list;
+	
+	// The begin sync rules of this node.
+	// Structure var but the lists should be cleared
+	// rule_list m_begin_list;
+	rule_list::iterator it1;
+	for(it1=m_begin_list.begin();it1!=m_begin_list.end();it1++)
+		(*it1)->reset(0);
+	
+	// The end sync rules of this node.
+	// Structure var but the lists should be cleared
+	// rule_list m_end_list;
+	for(it1=m_end_list.begin();it1!=m_end_list.end();it1++)
+		(*it1)->reset(0);
+	
+	// On reset all event instances are cleared. 
+	// Keep a register for holding one such instance
+	// The one that will start the current interval
+	// time_type m_begin_event_inst;
+	m_begin_event_inst = time_type::unresolved;
+	
+	// Special DOM calls sync rule of this node.
+	// sync_rule *m_domcall_rule;
+	if(m_domcall_rule) m_domcall_rule->reset(0);
+	
+	// The dependents of this node.
+	// Use pointers to minimize the overhead when there are no dependents
+	//typedef std::map<sync_event, rule_list* > dependency_map;
+	// dependency_map m_dependents;
+		
+	// preventing cycles flag
+	// bool m_locked;
+	m_locked = false;
+	
+	// when set the associated renderer should notify for activate events
+	// Structure var
+	//  bool m_want_activate_events;
+	
+	// when set the associated UI should notify for accesskey events
+	// Structure var
+	// bool m_want_accesskey;
+	
+	// Cashed continous media node duration (audio, video).
+	// A value != time_type::unresolved comes from the playable
+	// It is set by querying the playable.  
+	// time_type m_mediadur;
+	m_mediadur = time_type::unresolved;
+	
+	// Cashed implicit duration of a continous media node (audio, video).
+	// It is set to m_mediadur when an EOM event is raised by the playing media node.
+	// time_type m_impldur;
+	m_impldur = time_type::unresolved;
+	
+	// Last calc_dur() result
+	m_last_cdur = time_type::unresolved;
+	
+	// Time states
+	// Structure var
+	// time_state* m_time_states[ts_dead+1];
+    
+	// Structure vars
+	// timing-tree bonds
+	// time_node *m_parent;
+	// time_node *m_next;
+	// time_node *m_child;	
 }
 
 // The timestamp clock can be any

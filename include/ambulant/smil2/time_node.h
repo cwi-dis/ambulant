@@ -95,6 +95,7 @@ class time_node : public schedulable {
 	virtual void stop();
 	virtual void pause();
 	virtual void resume();
+	virtual void reset();
 	
 	// driver interface
 	virtual void exec(qtime_type timestamp);
@@ -162,7 +163,7 @@ class time_node : public schedulable {
 	void update_interval(qtime_type timestamp, const interval_type& i);
 	void update_interval_end(qtime_type timestamp, time_type newend);
 	void played_interval(qtime_type timestamp);
-	void clear_history() { m_history.clear();}
+	void clear_history() { m_history.clear(); }
 	
 	// excl
 	void defer_interval(qtime_type timestamp);
@@ -298,19 +299,11 @@ class time_node : public schedulable {
 		return m_interval;
 	}
 	// Returns the first interval associated with this (maybe invalid)
-	const interval_type& get_first_interval() const {
-		if(!m_history.empty())
-			return m_history.front();
-		return m_interval;
-	}
+	const interval_type& get_first_interval(bool asdoc = false) const;
+	
 	// Returns the last interval associated with this (maybe invalid)
-	const interval_type& get_last_interval() const {
-		if(m_interval.is_valid())
-			return m_interval;
-		if(!m_history.empty())
-			return m_history.back();
-		return m_interval;
-	}
+	const interval_type& get_last_interval() const;
+	
 	// Returns true when this has played any interval
 	bool played() const { return !m_history.empty();}
 	
@@ -394,6 +387,7 @@ class time_node : public schedulable {
 	// time change notifications.
 	// Canceled intervals do not contribute.
 	std::list<interval_type> m_history;
+	std::list<interval_type> m_doc_history;
 	
 	// Flag set when this is active 
 	// e.g during the current interval
