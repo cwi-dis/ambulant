@@ -210,7 +210,7 @@ void lib::document::read_custom_attributes() {
 		if(start_element && p) {
 			std::string id = to_c_lower(p);
 			custom_test t;
-			t.id = id;
+			t.idd = id;
 			p = n->get_attribute("defaultState");
 			std::string s = p?p:"";
 			t.state = (s == "true")?true:false;

@@ -73,7 +73,7 @@ namespace ambulant {
 namespace lib {
 
 struct custom_test {
-	std::string id;
+	std::string idd;
 	std::string title;
 	bool state;
 	bool override;
@@ -192,7 +192,7 @@ class document : public node_context {
 #if !defined(AMBULANT_PLATFORM_WIN32_WCE)
 inline std::string repr(const ambulant::lib::custom_test& t) {
 	std::string s;
-	return s << '(' << t.id << ", state:" << t.state << ", override:" << t.override << ", \'" << t.title << "\')";
+	return s << '(' << t.idd << ", state:" << t.state << ", override:" << t.override << ", \'" << t.title << "\')";
 }
 inline std::string repr(const ambulant::lib::document& d) {
 	std::string s;
@@ -201,7 +201,7 @@ inline std::string repr(const ambulant::lib::document& d) {
 
 #else
 inline std::string repr(const ambulant::lib::custom_test& t) {
-	return t.id;
+	return t.idd;
 }
 inline std::string repr(const ambulant::lib::custom_test& t) {
 	return "document";
