@@ -73,8 +73,8 @@ namespace qt {
 class qt_active_text_renderer : public common::active_final_renderer {
   public:
 	qt_active_text_renderer(
-		common::active_playable_events *context,
-		common::active_playable_events::cookie_type cookie,
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
     	lib::event_processor *const evp,
 		net::passive_datasource *src,
