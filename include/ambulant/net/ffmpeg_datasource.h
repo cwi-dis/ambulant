@@ -111,7 +111,9 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
   private:
 
   	AVCodec  *m_codec;
-    AVCodecContext *m_con;  
+  	AVCodec  *m_codec_enc;
+    AVCodecContext *m_con;
+	AVCodecContext *m_con_enc;  
     lib::event_processor *const m_event_processor;
 //    lib::event *m_readdone;		// This is the callback our source makes to us
   	abstract_active_datasource* m_src;
@@ -119,6 +121,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
 	uint8_t* m_inbuf;
 	uint8_t* m_outbuf;
 	databuffer m_buffer;
+  	databuffer m_dummy_buffer;
 	bool m_blocked_full;
 	
 	lib::event *m_client_callback;  // This is our calllback to the client

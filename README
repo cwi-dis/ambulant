@@ -26,6 +26,8 @@ playback. To get support for more audio file types you need libffmpeg
 installed. On MacOSX audio is only supported if SDL is installed,
 and again only raw audio. Whether libffmpeg availability gives
 you support for more filetypes is not clear.
+In this release we support on MacOSX and on Linux only mp3s of the 
+format 22050 Hz mono. 
 
 Documentation of the overall design and the class relationships
 can be found in: Documentation/Design. However, some of 
