@@ -98,7 +98,8 @@ initialize_logger()
 {
 	// Connect logger to our message displayer and output processor
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
-	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+	if (getenv("AMBULANT_LOGGER_NOWINDOW") == NULL)
+    	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
 	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
