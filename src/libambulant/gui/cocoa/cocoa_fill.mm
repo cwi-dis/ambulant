@@ -71,9 +71,7 @@ cocoa_fill_renderer::~cocoa_fill_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("~cocoa_fill_renderer(0x%x)", (void *)this);
-	if (m_intransition) delete m_intransition;
 	m_intransition = NULL;
-	if (m_outtransition) delete m_outtransition;
 	m_outtransition = NULL;
 	if (m_trans_engine) delete m_trans_engine;
 	m_trans_engine = NULL;

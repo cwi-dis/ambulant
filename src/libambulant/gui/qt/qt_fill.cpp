@@ -66,9 +66,10 @@ qt_fill_renderer::~qt_fill_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("~qt_fill_renderer(0x%x)", (void *)this);
-	if (m_intransition) delete m_intransition;
-	if (m_outtransition) delete m_outtransition;
+	m_intransition = NULL;
+	m_outtransition = NULL;
 	if (m_trans_engine) delete m_trans_engine;
+	m_trans_engine = NULL;
 	m_lock.leave();
 }
 	

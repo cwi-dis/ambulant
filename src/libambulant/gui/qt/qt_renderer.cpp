@@ -69,9 +69,7 @@ qt_renderer::~qt_renderer()
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug
 	  ("~qt_renderer(0x%x)", (void *)this);
-	if (m_intransition) delete m_intransition;
 	m_intransition = NULL;
-	if (m_outtransition) delete m_outtransition;
 	m_outtransition = NULL;
 	if (m_trans_engine) delete m_trans_engine;
 	m_trans_engine = NULL;
@@ -80,9 +78,7 @@ qt_renderer::~qt_renderer()
 void 
 qt_renderer::set_intransition(const lib::transition_info *info)
 {
-	if (m_intransition == NULL)
-		m_intransition = new transition_info();
-	*m_intransition = *info;
+	m_intransition = info;
 }
 //void start_outtransition(const lib::transition_info *info);
 	
