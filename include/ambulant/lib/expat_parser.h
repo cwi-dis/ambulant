@@ -12,11 +12,7 @@
 #ifndef AMBULANT_LIB_EXPAT_PARSER_H
 #define AMBULANT_LIB_EXPAT_PARSER_H
 
-#ifndef AMBULANT_LIB_SAX_HANDLER_H
-#include "sax_handler.h"
-#endif
-
-#include <string>
+#include "ambulant/lib/sax_handler.h"
 
 #ifndef _WIN32
 #include "expat.h"
