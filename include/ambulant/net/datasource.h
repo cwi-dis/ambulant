@@ -247,7 +247,7 @@ class datasource_factory :
 	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt);
   	video_datasource* new_video_datasource(const std::string& url);
 	
-	audio_datasource* new_decoder_datasource(const std::string& url, audio_format_choices fmt, audio_datasource* ds);
+	audio_datasource* new_filter_datasource(const std::string& url, audio_format_choices fmt, audio_datasource* ds);
 	
   	void add_raw_factory(raw_datasource_factory *df);
 	void add_audio_factory(audio_datasource_factory *df);

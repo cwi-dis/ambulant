@@ -250,7 +250,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
 	
 	// Ugly hack to get the resampler.
-	net::audio_datasource *resample_ds = df->new_decoder_datasource(url, supported, ds);
+	net::audio_datasource *resample_ds = df->new_filter_datasource(url, supported, ds);
 	if (resample_ds) 
 		m_audio_src = resample_ds;
 	

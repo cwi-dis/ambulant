@@ -656,7 +656,7 @@ ffmpeg_video_datasource::get_audio_datasource()
 {	
 	AVCodec *codec;
 	AVCodecContext *codeccontext;
-	//net::audio_datasource *audio_ds;
+	net::audio_datasource *audio_ds;
 	
 	int stream_index = get_audio_stream_nr();
 
@@ -681,9 +681,9 @@ ffmpeg_video_datasource::get_audio_datasource()
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::get_audio_stream_nr(): succesfully opened codec");
 	}
 	
-	return new ffmpeg_audio_datasource(m_url, m_con, m_thread, stream_index);
+	audio_ds = new ffmpeg_audio_datasource(m_url, m_con, m_thread, stream_index);
 	
-	//return new ffmpeg_decoder_datasource(audio_ds);
+	return new ffmpeg_decoder_datasource(audio_ds);
 	
 }
 
@@ -992,6 +992,8 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	if (!select_decoder(fmt))
 		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 }
+
+
 
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
 {

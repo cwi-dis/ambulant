@@ -246,39 +246,26 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 }
 
 audio_datasource*
-datasource_factory::new_decoder_datasource(const std::string& url, audio_format_choices fmts, audio_datasource* ds)
+datasource_factory::new_filter_datasource(const std::string& url, audio_format_choices fmts, audio_datasource* ds)
 {
-	audio_datasource *src = NULL;
 	if (!ds) 
 		return NULL;
 	
-	std::vector<audio_parser_finder*>::iterator ip;
-	for(ip=m_audio_parser_finders.begin(); ip != m_audio_parser_finders.end(); ip++) {
-		src = (*ip)->new_audio_parser(url, fmts, ds);
-		if (src) break;
-	}
-	if (src == NULL) {
-		int rem = ds->release();
-		assert(rem == 0);
-		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", url.c_str());
-		return NULL;
-	}
+
 	// Check whether the format happens to match already.
-	if (fmts.contains(src->get_audio_format()))
-		return src;
+	if (fmts.contains(ds->get_audio_format()))
+		return ds;
 	
 	// Now stack a filter. Note that the first filter finder is the identity
 	// filter.
 	std::vector<audio_filter_finder*>::iterator ic;
 	audio_datasource *convsrc = NULL;
 	for(ic=m_audio_filter_finders.begin(); ic != m_audio_filter_finders.end(); ic++) {
-		convsrc = (*ic)->new_audio_filter(src, fmts);
+		convsrc = (*ic)->new_audio_filter(ds, fmts);
 		if (convsrc) return convsrc;
 	}
 	
 	// Failed to find a filter. Clean up.
-	int rem = src->release(); // This will also release rawsrc
-	assert(rem == 0);
 	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
     return NULL;
 }
