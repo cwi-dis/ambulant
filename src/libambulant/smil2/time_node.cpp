@@ -2188,9 +2188,58 @@ void excl_queue::assert_invariants() const {
 }
 
 void time_node::follow_link(qtime_type timestamp) {
+	const char *nohref = m_node->get_attribute("nohref");
+	if(nohref && strcmp(nohref, "nohref") == 0) {
+		// An anchor with nohref="nohref" does nothing.
+		return;
+	}
 	const char *href = m_node->get_attribute("href");
-	if(href && strcmp(href, "nohref") != 0) {
-		m_context->show_link(m_node, href);
+	const char *sourceplaystate = m_node->get_attribute("sourcePlaystate");
+	const char *destinationplaystate = m_node->get_attribute("destinationPlaystate");
+	const char *show = m_node->get_attribute("show");
+	const char *external = m_node->get_attribute("external");
+	
+	src_playstate source_state = src_replace;
+	dst_playstate destination_state = dst_play;
+
+	// Note: the order here is important
+	if (sourceplaystate && strcmp(sourceplaystate, "play") == 0) {
+		source_state = src_play;
+	} else if (sourceplaystate && strcmp(sourceplaystate, "stop") == 0) {
+		source_state = src_replace;
+	} else  if (sourceplaystate && strcmp(sourceplaystate, "pause") == 0) {
+		source_state = src_pause;
+	}
+	
+	if (destinationplaystate && strcmp(destinationplaystate, "play") == 0) {
+		destination_state = dst_play;
+	} else if (destinationplaystate && strcmp(destinationplaystate, "pause") == 0) {
+		destination_state = dst_pause;
+	}
+	
+	if (show && strcmp("show", "new") == 0) {
+		source_state = src_play;
+	} else if (show && strcmp(show, "pause") == 0) {
+		source_state = src_pause;
+	} else if (show && strcmp(show, "replace") == 0) {
+		source_state = src_replace;
+	}
+	
+	if (external && strcmp(external, "true") == 0) {
+		destination_state = dst_external;
+	}
+#if 0
+	// Is this the right thing to do??!?
+	if (!href.empty() && href[0] != '#') {
+		// Convert to absolute URL
+		net::url url(href);
+		url = url.join_to_base(xxxx);
+		href = url.get_url();
+	}
+#endif
+	
+	if(href) {
+		m_context->show_link(m_node, href, source_state, destination_state);
 	}
 }
 

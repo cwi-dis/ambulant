@@ -153,7 +153,8 @@ class smil_player : public common::player, public time_node_context, public comm
 	// Time node context: Services
 	
 	lib::timer* get_timer() { return m_timer;}
-	void show_link(const lib::node *n, const std::string& href);
+	void show_link(const lib::node *n, const std::string& href, 
+		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play);
 	lib::event_processor* get_evp() { return m_event_processor;}	
 	virtual time_value_type elapsed() const { return m_timer->elapsed();}
 	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep = ep_low);

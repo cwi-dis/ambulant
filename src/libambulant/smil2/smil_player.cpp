@@ -468,8 +468,9 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	if (rem) m_logger->warn("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
-void smil_player::show_link(const lib::node *n, const std::string& href) {
-	if(!href.empty() && href[0] == '#') {
+void smil_player::show_link(const lib::node *n, const std::string& href, src_playstate srcstate, dst_playstate dststate) {
+	if(srcstate == src_replace && !href.empty() && href[0] == '#') {
+		// This is an internal hyperjump
 		const lib::node *target = m_doc->get_node(href.c_str()+1);
 		if(target) {
 			std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
@@ -478,6 +479,17 @@ void smil_player::show_link(const lib::node *n, const std::string& href) {
 			}
 		}
 		return;
+	}
+	
+	if (srcstate == src_pause) {
+		pause();
+	}
+	if (srcstate == src_replace) {
+		// XXX Not good enough: should close document too.
+		stop();
+	}
+	if ( dststate == dst_play || dststate == dst_pause ) {
+		lib::logger::get_logger()->warn("hyperlink: opening new documents not implemented yet. Defaulting to external=true.");
 	}
 	if(m_system) {
 		m_system->show_file(href);

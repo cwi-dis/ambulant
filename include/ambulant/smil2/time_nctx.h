@@ -70,6 +70,9 @@ namespace smil2 {
 
 class animation_engine;
 
+enum src_playstate { src_play, src_pause, src_replace };
+enum dst_playstate { dst_play, dst_pause, dst_external };
+
 // Time nodes context requirements
 // This interface is used by time nodes to communicate with their environment
 // This interface is used by the timegraph builder 
@@ -78,7 +81,8 @@ class time_node_context {
 	// Services
 	virtual time_traits::value_type elapsed() const = 0;
 	virtual lib::timer* get_timer() = 0;
-	virtual void show_link(const lib::node *n, const std::string& href) = 0;
+	virtual void show_link(const lib::node *n, const std::string& href, 
+		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play) = 0;
 	virtual animation_engine* get_animation_engine() = 0;
 	virtual bool wait_for_eom() const = 0;
 	virtual void set_wait_for_eom(bool b) = 0;
@@ -122,7 +126,8 @@ class dummy_time_node_context : public time_node_context {
 	virtual smil2::time_traits::value_type elapsed() const {return 0;}
 	
 	virtual lib::timer* get_timer() {return 0;}
-	virtual void show_link(const lib::node *n, const std::string& href) {}
+	virtual void show_link(const lib::node *n, const std::string& href, 
+		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play) {}
 	virtual smil2::animation_engine* get_animation_engine() { return 0;}
 	virtual bool wait_for_eom() const { return false;}
 	virtual void set_wait_for_eom(bool b) {}
