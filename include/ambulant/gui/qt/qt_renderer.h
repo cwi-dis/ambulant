@@ -119,6 +119,7 @@ class qt_window_factory : public common::window_factory {
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_window_factory (0x%x)", (void*) this);
 		}
+		
 		common::abstract_window* new_window(
 			const std::string &name,
 			lib::size bounds,
