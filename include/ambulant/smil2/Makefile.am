@@ -4,6 +4,7 @@ library_include_HEADERS= \
 	animate_e.h \
 	animate_f.h \
 	animate_n.h \
+	params.h \
 	region_node.h \
 	smil_layout.h \
 	smil_player.h \

@@ -165,6 +165,7 @@ libambulant_la_SOURCES = \
 	smil2/animate_a.cpp \
 	smil2/animate_e.cpp \
 	smil2/animate_n.cpp \
+	smil2/params.cpp \
 	smil2/region_node.cpp \
 	smil2/smil_layout.cpp \
 	smil2/smil_player.cpp \

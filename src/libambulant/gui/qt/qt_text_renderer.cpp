@@ -54,6 +54,7 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/smil2/params.h"
 
 // #define AM_DBG
 #ifndef AM_DBG
@@ -62,6 +63,28 @@
 
 using namespace ambulant;
 using namespace gui::qt;
+
+qt_active_text_renderer::qt_active_text_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+    	lib::event_processor *const evp,
+    	common::factories *factory)
+:	qt_renderer(context, cookie, node, evp, factory),
+ 	m_text_storage(NULL),
+ 	m_text_color(0),
+ 	m_text_font(NULL),
+ 	m_text_size(0)
+{
+	smil2::params *params = smil2::params::for_node(node);
+	if (params) {
+		m_text_font = params->get_str("font-family");
+//		const char *fontstyle = params->get_str("font-style");
+		m_text_color = params->get_color("color", 0);
+		m_text_size = params->get_float("font-size", 0.0);
+		delete params;
+	}
+}
 
 qt_active_text_renderer::~qt_active_text_renderer() {
 	m_lock.enter();
@@ -98,8 +121,19 @@ qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
 		ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 		QPainter paint;
 		paint.begin(aqw->ambulant_pixmap());
-// QtE		paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
-		paint.setPen(Qt::black);
+
+		// Set <param> parameters
+		QColor qt_color(redc(m_text_color), greenc(m_text_color), bluec(m_text_color));
+		paint.setPen(qt_color);
+		
+		QFont qt_font(QApplication::font());
+		if (m_text_font)
+			qt_font.setFamily(m_text_font);
+		if (m_text_size)
+			qt_font.setPointSizeFloat(m_text_size);
+		paint.setFont(qt_font);
+		
+		if (m_text_font || m_text_size)
 		paint.drawText(L,T,W,H,
 			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
 			m_text_storage);
