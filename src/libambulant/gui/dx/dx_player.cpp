@@ -50,7 +50,7 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_player_impl.h"
+#include "ambulant/gui/dx/dx_player.h"
 
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/event_processor.h"
@@ -65,20 +65,18 @@
 
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
 
 using namespace ambulant;
 
-//////////////////////////////////////
-// DX SMIL Player
-
-gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f) 
+gui::dx::dx_player::dx_player(const std::string& url, HWND hwnd) 
 :	m_url(url),
-	m_create_viewport_fn(f),
+	m_hwnd(hwnd),
 	m_viewport(0),
 	m_wf(0), 
 	m_pf(0),
-	m_smil_player(0),
-	m_playing(false),
+	m_player(0),
+	m_processor(0),
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -95,178 +93,92 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	
 	// Create a player instance
 	m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_smil_player = new smil2::smil_player(doc, m_wf, m_pf);	
+	m_player = new smil2::smil_player(doc, m_wf, m_pf);	
 }
 
-gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
-	if(m_smil_player) stop();
-	delete m_smil_player;
+gui::dx::dx_player::~dx_player() {
+	if(m_player) stop();
+	delete m_player;
 	delete m_pf;
 	delete m_wf;
     delete m_viewport;
 }
 
-void gui::dx::dx_smil_player_impl::set_preferences(const std::string& url) {
+void gui::dx::dx_player::set_preferences(const std::string& url) {
 	smil2::test_attrs::load_test_attrs(url);
-	m_smil_player->build_timegraph();
+	m_player->build_timegraph();
 }
 
-gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
-	m_logger->trace("dx_smil_player_impl::create_viewport(%d, %d)", w, h);
-	if(m_create_viewport_fn)
-		return (*m_create_viewport_fn)(w, h);
-	if(!m_viewport)
-		m_viewport = new viewport(w, h, 0);
+gui::dx::viewport* gui::dx::dx_player::create_viewport(int w, int h) {
+	m_logger->trace("dx_player::create_viewport(%d, %d)", w, h);
+	if(m_viewport) delete m_viewport;
+	PostMessage(m_hwnd, WM_SET_CLIENT_RECT, w, h);
+	m_viewport = new gui::dx::viewport(w, h, m_hwnd);
+	m_viewport->redraw();
 	return m_viewport;
 }
-
-bool gui::dx::dx_smil_player_impl::is_done() const {
-	return m_smil_player && m_playing && m_smil_player->is_done();
-}
-
-int gui::dx::dx_smil_player_impl::get_cursor(int x, int y) {
-	if(!m_smil_player || !m_playing) return 0;
-	return m_smil_player->get_cursor(x, y);
-}
-
-void gui::dx::dx_smil_player_impl::update_status() {
-}
-
-bool gui::dx::dx_smil_player_impl::start() {
-	if(m_smil_player) {
-		m_logger->trace("Started playing");
-		m_smil_player->start();
-		m_playing = true;
-		return  true;
-	}
-	return false;
-}
-
-void gui::dx::dx_smil_player_impl::stop() {
-	m_logger->trace("Attempting to stop: %s", m_url.c_str());
-	if(m_smil_player) {
-		m_smil_player->stop();
-		delete m_smil_player;
-		m_smil_player = 0;
-		m_playing = false;
-	}
-}
-
-void gui::dx::dx_smil_player_impl::pause() {
-	m_logger->trace("Attempting to pause: %s", m_url.c_str());
-	if(m_smil_player) m_smil_player->pause();
-}
-
-void gui::dx::dx_smil_player_impl::resume() {
-	m_logger->trace("Attempting to resume: %s", m_url.c_str());
-	if(m_smil_player) m_smil_player->resume();
-}
-
-void gui::dx::dx_smil_player_impl::on_click(int x, int y) {
-	POINT pt = {0, 0}; // margins
-	if(m_smil_player)
-		m_smil_player->on_click(x-pt.x, y-pt.y);
-}
-	
-void gui::dx::dx_smil_player_impl::on_char(int ch) {
-	if(m_smil_player)
-		m_smil_player->on_char(ch);
-}
-
-///////////////////////////
-// Player factory functions
-
-// static 
-gui::dx::dx_player* gui::dx::dx_player::create_player(const std::string& url) {
-#ifndef WITH_MMS_PLAYER	
-	return new dx_smil_player_impl(url, 0);
-#else
-	return new dx_mms_player_impl(url, 0);
-#endif
-}
-
-// static 
-gui::dx::dx_player* gui::dx::dx_player::create_player(const std::string& url, VCF f) {
-#ifndef WITH_MMS_PLAYER	
-	return new dx_smil_player_impl(url, f);
-#else
-	return new dx_mms_player_impl(url, f);
-#endif
-}
-
-
-///////////////////////////
-// DX MMS Player
-
-gui::dx::dx_mms_player_impl::dx_mms_player_impl(const std::string& url, VCF f) 
-:	m_url(url),
-	m_create_viewport_fn(f),
-	m_viewport(0),
-	m_wf(0), 
-	m_rf(0),
-	m_mms_player(0), 
-	m_logger(lib::logger::get_logger()) {
-		
-}
-
-gui::dx::dx_mms_player_impl::~dx_mms_player_impl() {
-	// verify:
-	delete m_mms_player;
-	delete m_rf;
-	delete m_wf;
-	delete m_viewport;
-}
-
-gui::dx::viewport* gui::dx::dx_mms_player_impl::create_viewport(int w, int h) {
-	if(m_create_viewport_fn)
-		return (*m_create_viewport_fn)(w, h);
-	if(!m_viewport)
-		m_viewport = new viewport(w, h, 0);
-	return m_viewport;
-}
-
-bool gui::dx::dx_mms_player_impl::is_done() const { 
-	return m_mms_player == NULL || m_mms_player->is_done();
-}
-
-bool gui::dx::dx_mms_player_impl::start() {
-	m_logger->trace("Attempting to play: %s", m_url.c_str());
-
-	lib::document *doc = lib::document::create_from_file(m_url);
-	if(!doc) {
-		m_logger->error("Failed to parse document %s", m_url.c_str());
-		return false;
-	}
-	
-	// Create GUI window_factory and playable_factory
-	m_wf = new gui::dx::dx_window_factory(this);
-	m_rf = new gui::dx::dx_playable_factory(this);
-	
-	m_mms_player = new mms::mms_player(doc, m_wf, m_rf);
-	m_mms_player->start();
-
-	m_logger->trace("Started playing");
-	return  true;
-}
-
-void gui::dx::dx_mms_player_impl::stop() {
-	m_logger->trace("Attempting to stop: %s", m_url.c_str());
-	if(m_mms_player) m_mms_player->stop();
+void gui::dx::dx_player::redraw() {
 	if(m_viewport) m_viewport->redraw();
 }
-
-void gui::dx::dx_mms_player_impl::pause() {
-	m_logger->trace("Attempting to pause: %s", m_url.c_str());
-	if(m_mms_player)
-		m_mms_player->pause();
+int gui::dx::dx_player::get_cursor(int x, int y) {
+	if(!m_player || !is_playing()) return 0;
+	return m_player->get_cursor(x, y);
 }
 
-void gui::dx::dx_mms_player_impl::resume() {
+void gui::dx::dx_player::start() {
+	if(m_player) m_player->start();
+}
+
+void gui::dx::dx_player::stop() {
+	if(m_player) {
+		m_player->stop();
+		on_done();
+	}
+}
+
+void gui::dx::dx_player::pause() {
+	if(m_player) {
+		if(m_player->is_playing())
+			m_player->pause();
+		else if(m_player->is_pausing())
+			m_player->resume();
+	}
+}
+
+void gui::dx::dx_player::resume() {
 	m_logger->trace("Attempting to resume: %s", m_url.c_str());
-	if(m_mms_player)
-		m_mms_player->resume();
+	if(m_player) m_player->resume();
+}
+
+void gui::dx::dx_player::on_click(int x, int y) {
+	POINT pt = {0, 0}; // margins
+	if(m_player) m_player->on_click(x-pt.x, y-pt.y);
+}
+	
+void gui::dx::dx_player::on_char(int ch) {
+	if(m_player) m_player->on_char(ch);
+}
+
+bool gui::dx::dx_player::is_playing() const {
+	return m_player && m_player->is_playing();
+}
+
+bool gui::dx::dx_player::is_pausing() const {
+	return m_player && m_player->is_pausing();
+}
+
+bool gui::dx::dx_player::is_done() const {
+	return m_player && m_player->is_done();
+}
+
+void gui::dx::dx_player::on_done() {
+	if(m_viewport) {
+		m_viewport->clear();
+		m_viewport->redraw();
+	}
 }
 
 
-////////////////////////////////////////
+
+
 
