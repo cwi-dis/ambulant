@@ -127,9 +127,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-		alignment *align = common::smil_alignment::create_for_dom_node(m_node);
-		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, align, &srcrect);
-		if (align) delete align;
+		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect);
 		dstrect.translate(m_dest->get_global_topleft());
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong

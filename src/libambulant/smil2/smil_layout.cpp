@@ -57,6 +57,7 @@
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/region_node.h"
 #include "ambulant/smil2/smil_layout.h"
 #include <stack>
@@ -365,12 +366,96 @@ smil_layout_manager::get_surface(const lib::node *n) {
 		lib::logger::get_logger()->error("get_surface: subregion positioning on default region not implemented");
 		return get_default_rendering_surface(n);
 	}
-	common::surface_template *surf = rn->get_surface_template();
-	if (surf == NULL) {
+	common::surface_template *stemp = rn->get_surface_template();
+	if (stemp == NULL) {
 		lib::logger::get_logger()->error("get_surface: region found, but no surface");
 		return get_default_rendering_surface(n);
 	}
-	return surf->activate();
+	common::surface *surf = stemp->activate();
+	surf->set_alignment(get_alignment(n));
+	return surf;
+}
+
+// Helper function: decode pre-defined repoint names
+static bool
+decode_regpoint(common::regpoint_spec &pt, const char *name)
+{
+	if (strcmp(name, "topLeft") == 0) pt = common::regpoint_spec(0.0, 0.0);
+	else if (strcmp(name, "topMid") == 0) pt = common::regpoint_spec(0.5, 0.0);
+	else if (strcmp(name, "topRight") == 0) pt = common::regpoint_spec(1.0, 0.0);
+	else if (strcmp(name, "midLeft") == 0) pt = common::regpoint_spec(0.0, 0.5);
+	else if (strcmp(name, "center") == 0) pt = common::regpoint_spec(0.5, 0.5);
+	else if (strcmp(name, "midRight") == 0) pt = common::regpoint_spec(1.0, 0.5);
+	else if (strcmp(name, "bottomLeft") == 0) pt = common::regpoint_spec(0.0, 1.0);
+	else if (strcmp(name, "bottomMid") == 0) pt = common::regpoint_spec(0.5, 1.0);
+	else if (strcmp(name, "bottomRight") == 0) pt = common::regpoint_spec(1.0, 1.0);
+	else
+		return false;
+	return true;
+}
+
+// Helper function: get region_dim value from an attribute
+static common::region_dim
+get_regiondim_attr(const lib::node *rn, char *attrname)
+{
+	const char *attrvalue = rn->get_attribute(attrname);
+	common::region_dim rd;
+	if (attrvalue == NULL || *attrvalue == '\0') {
+		// pass: region_dim are initialized as auto
+	} else {
+		int ivalue;
+		char *endptr;
+		ivalue = strtol(attrvalue, &endptr, 10);
+		if (*endptr == '\0' || strcmp(endptr, "px") == 0) {
+			rd = ivalue;
+		} else if (*endptr == '%') {
+			double fvalue;
+			fvalue = ivalue / 100.0;
+			rd = fvalue;
+		} else {
+			lib::logger::get_logger()->error("region_node: cannot parse %s=\"%s\"", attrname, attrvalue);
+		}
+	}
+	return rd;
+}
+
+common::alignment *
+smil_layout_manager::get_alignment(const lib::node *n)
+{
+	const char *regPoint = n->get_attribute("regPoint");
+	const char *regAlign = n->get_attribute("regAlign");
+	if (regPoint == NULL && regAlign == NULL) return NULL;
+	
+	common::regpoint_spec image_fixpoint = common::regpoint_spec(0, 0);
+	common::regpoint_spec surface_fixpoint = common::regpoint_spec(0, 0);
+	lib::node *regpoint_node = NULL;
+
+	if (!decode_regpoint(surface_fixpoint, regPoint) && regPoint != NULL) {
+		// Non-standard regpoint. Look it up.
+		const lib::node_context *ctx = n->get_context();
+		regpoint_node = ctx->get_node_by_id(regPoint);
+		if (regpoint_node == NULL) {
+			lib::logger::get_logger()->error("smil_alignment: unknown regPoint: %s", regPoint);
+		} else {
+			if (regpoint_node->get_local_name() != "regPoint")
+				lib::logger::get_logger()->error("smil_alignment: node with id \"%s\" is not a regPoint", regPoint);
+			// XXX Just for now:-)
+			surface_fixpoint.left = get_regiondim_attr(regpoint_node, "left");
+			surface_fixpoint.top = get_regiondim_attr(regpoint_node, "top");
+		}
+	}
+	if (!decode_regpoint(image_fixpoint, regAlign)) {
+		// See if we can get one from the regPoint node, if there is one
+		bool found = false;
+		if (regpoint_node) {
+			const char *regPointAlign = regpoint_node->get_attribute("regAlign");
+			if (decode_regpoint(image_fixpoint, regPointAlign))
+				found = true;
+		}
+		if (!found && regAlign != NULL)
+			lib::logger::get_logger()->error("smil_alignment: unknown regAlign value: %s", regAlign);
+	}
+	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
 }
 
 common::surface *

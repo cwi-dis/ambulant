@@ -63,9 +63,9 @@ namespace common {
 
 class smil_alignment : public alignment {
   public:
-    static alignment *create_for_dom_node(const lib::node *n);
-	smil_alignment(const lib::node *n,
-		const char *regPoint, const char *regAlign);
+	smil_alignment(regpoint_spec& image_fixpoint, regpoint_spec& surface_fixpoint)
+	:   m_image_fixpoint(image_fixpoint),
+		m_surface_fixpoint(surface_fixpoint) {}
 	~smil_alignment() {}
 	
 	lib::point get_image_fixpoint(lib::size image_size) const;

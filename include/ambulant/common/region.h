@@ -100,8 +100,6 @@ class passive_region : public surface_template, public renderer {
 	const gui_region& get_mouse_region() const { return *m_mouse_region; }
 	const region_info *get_info() const { return m_info; }	
 		
-	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
-	screen_rect<int> get_fit_rect(const size& src_size, const alignment *align, rect* out_src_rect) const;
   protected:
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(gui_region *rgn);
@@ -158,7 +156,8 @@ class active_region : public surface, public renderer {
 	active_region(passive_region *const source)
 	:	m_source(source),
 		m_renderer(NULL),
-		m_mouse_region(NULL)
+		m_mouse_region(NULL),
+		m_alignment(NULL)
         {
 			if (source->m_mouse_region) {
 				m_mouse_region = source->m_mouse_region->clone();
@@ -180,25 +179,21 @@ class active_region : public surface, public renderer {
 	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
 	const gui_region& get_mouse_region() const { return *m_mouse_region; }
-	const region_info *get_info() const { return m_source->m_info; }	
-	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const
-	{
-		return m_source->get_fit_rect(src_size, out_src_rect);
-	}
-	screen_rect<int> get_fit_rect(const size& src_size, const alignment *align, 
-		rect* out_src_rect) const
-	{
-		return m_source->get_fit_rect(src_size, align, out_src_rect);
-	}
-	
+	const region_info *get_info() const { return m_source->m_info; }
+	void set_alignment(const alignment *align) { m_alignment = align; }
+	const alignment *get_alignment() const { return m_alignment; }
+	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
 	// And some renderer interface we don't support:
 	void set_surface(surface *dest) {abort(); }
 	surface *get_surface() {abort(); }
 
+  private:
+	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
   protected:
 	passive_region *const m_source;
 	renderer *m_renderer;
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
+	const alignment *m_alignment;
 };
 
 class smil_surface_factory : public surface_factory {

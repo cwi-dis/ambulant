@@ -81,6 +81,8 @@ class smil_layout_manager : public common::layout_manager {
 	common::surface_template *create_top_surface(common::window_factory *wf, 
 		const region_node *rn, common::renderer *bgrenderer);
 	
+	common::alignment *get_alignment(const lib::node *node);
+	
 	const common::schema *m_schema;
 	common::surface_factory *m_surface_factory;
 	

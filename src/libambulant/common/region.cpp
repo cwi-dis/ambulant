@@ -297,183 +297,6 @@ passive_region::get_global_topleft() const
 	return m_window_topleft;
 }
 
-
-lib::screen_rect<int> 
-passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const
-{
-	const_cast<passive_region*>(this)->need_bounds();
-	const int image_width = src_size.w;
-	const int image_height = src_size.h;
-	const int region_width = m_inner_bounds.width();
-	const int region_height = m_inner_bounds.height();
-	const int min_width = std::min(image_width, region_width);
-	const int min_height = std::min(image_height, region_height);
-	const double scale_width = (double)region_width / std::max((double)image_width, 0.1);
-	const double scale_height = (double)region_height / std::max((double)image_height, 0.1);
-	double scale;
-	
-	const fit_t fit = (m_info == NULL?fit_hidden : m_info->get_fit());
-	switch (fit) {
-	  case fit_fill:
-		// Fill the area with the image, ignore aspect ration
-		*out_src_rect = lib::rect(lib::point(0, 0), src_size);
-		return m_inner_bounds;
-	  case fit_scroll:
-	  case fit_hidden:
-		// Don't scale at all
-		*out_src_rect = lib::rect(lib::point(0, 0), lib::size(min_width, min_height));
-		return screen_rect<int>(lib::point(0, 0), lib::point(min_width, min_height));
-	  case fit_meet:
-		// Scale to make smallest edge fit (showing some background color)
-		scale = std::min(scale_width, scale_height);
-		break;
-	  case fit_slice:
-		// Scale to make largest edge fit (not showing the full source image)
-		scale = std::max(scale_width, scale_height);
-		break;
-	}
-	// We end up here as common case for meet and slice
-	int proposed_width = std::min((int)(scale*(image_width+0.5)), region_width);
-	int proposed_height = std::min((int)(scale*(image_height+0.5)), region_height);
-	*out_src_rect = lib::rect(lib::point(0, 0), lib::size((int)(proposed_width/scale), (int)(proposed_height/scale)));
-	return screen_rect<int>(lib::point(0, 0), lib::point(proposed_width, proposed_height));
-}
-
-lib::screen_rect<int> 
-passive_region::get_fit_rect(const lib::size& src_size, const alignment *align, lib::rect* out_src_rect) const
-{
-	if (align == NULL)
-		return get_fit_rect(src_size, out_src_rect);
-		
-	const_cast<passive_region*>(this)->need_bounds();
-	const int image_width = src_size.w;
-	const int image_height = src_size.h;
-	const int region_width = m_inner_bounds.width();
-	const int region_height = m_inner_bounds.height();
-	lib::size region_size = lib::size(region_width, region_height);
-	
-	lib::point xy_image = align->get_image_fixpoint(src_size);
-	lib::point xy_region = align->get_surface_fixpoint(region_size);
-	
-	const int x_image_left = xy_image.x;
-	const int x_image_right = image_width - xy_image.x;
-	const int y_image_top = xy_image.y;
-	const int y_image_bottom = image_height - xy_image.y;
-	const int x_region_left = xy_region.x;
-	const int x_region_right = region_width - xy_region.x;
-	const int y_region_top = xy_region.y;
-	const int y_region_bottom = region_height - xy_region.y;
-	
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image size=(%d, %d)", image_width, image_height);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region size=(%d, %d)", region_width, region_height);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image fixpoint=(%d, %d)", xy_image.x, xy_image.y);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region fixpoint=(%d, %d)", xy_region.x, xy_region.y);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image delta fixpoint to ltrb=(%d, %d, %d, %d)", x_image_left, y_image_top, x_image_right, y_image_bottom);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region delta fixpoint to ltrb=(%d, %d, %d, %d)", x_region_left, y_region_top, x_region_right, y_region_bottom);
-	
-	double scale_min_horizontal, scale_max_horizontal, scale_min_vertical, scale_max_vertical;
-	
-	if (x_image_left == 0) {
-		scale_min_horizontal = scale_max_horizontal = (double)x_region_right / (double)x_image_right;
-	} else {
-		scale_min_horizontal = scale_max_horizontal = (double)x_region_left / (double)x_image_left;
-		if (x_image_right != 0) {
-			double scale_right = (double)x_region_right / (double)x_image_right;
-			if (scale_min_horizontal == 0)
-				scale_min_horizontal = scale_right;
-			else
-				scale_min_horizontal = std::min(scale_min_horizontal, scale_right);
-			scale_max_horizontal = std::max(scale_max_horizontal, scale_right);
-		}
-	}
-	if (y_image_top == 0) {
-		scale_min_vertical = scale_max_vertical = (double)y_region_bottom / (double)y_image_bottom;
-	} else {
-		scale_min_vertical = scale_max_vertical = (double)y_region_top / (double)y_image_top;
-		if (y_image_bottom != 0) {
-			double scale_bottom = (double)y_region_bottom / (double)y_image_bottom;
-			if (scale_min_vertical == 0)
-				scale_min_vertical = scale_bottom;
-			else
-				scale_min_vertical = std::min(scale_min_vertical, scale_bottom);
-			scale_max_vertical = std::max(scale_max_vertical, scale_bottom);
-		}
-	}
-	double scale_horizontal, scale_vertical;
-	
-	const fit_t fit = (m_info == NULL?fit_hidden : m_info->get_fit());
-	switch (fit) {
-	  case fit_fill:
-		// Fill the area with the image, ignore aspect ration
-		// XXX I don't think this is correct. Or is it?
-		scale_horizontal = scale_min_horizontal;
-		scale_vertical = scale_min_vertical;
-		break;
-	  case fit_scroll:		// XXXX incorrect
-	  case fit_hidden:
-		scale_horizontal = scale_vertical = 1.0;
-		break;
-	  case fit_meet:
-		// Scale to make smallest edge fit (showing some background color)
-		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
-		break;
-	  case fit_slice:
-		// Scale to make largest edge fit (not showing the full source image)
-		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
-		break;
-	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scale_hor=%f, scale_vert=%f", scale_horizontal, scale_vertical);
-	if (scale_horizontal == 0 || scale_vertical == 0) {
-		*out_src_rect = lib::rect(point(0,0), size(0,0));
-		return lib::screen_rect<int>(point(0,0), point(0,0));
-	}
-	// Convert the image fixpoint to scaled coordinates
-	int x_image_scaled = (int)((xy_image.x * scale_horizontal) + 0.5);
-	int y_image_scaled = (int)((xy_image.y * scale_vertical) + 0.5);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scaled image fixpoint=(%d, %d)", x_image_scaled, y_image_scaled);
-	// Find out where image (0, 0) would end up, and similarly for other
-	// corners. At this point we still allow negative values or values > max
-	int x_region_for_image_left = xy_region.x - x_image_scaled;
-	int x_region_for_image_right = x_region_for_image_left + (int)((image_width * scale_horizontal) + 0.5);
-	int y_region_for_image_top = xy_region.y - y_image_scaled;
-	int y_region_for_image_bottom = y_region_for_image_top + (int)((image_height * scale_vertical) + 0.5);
-	int x_image_for_region_left = 0;
-	int x_image_for_region_right = image_width;
-	int y_image_for_region_top = 0;
-	int y_image_for_region_bottom = image_height;
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
-		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
-	// Finally clamp all values
-	if (x_region_for_image_left < 0) {
-		x_image_for_region_left = (int)((-x_region_for_image_left / scale_horizontal) + 0.5);
-		x_region_for_image_left = 0;
-	}
-	if (x_region_for_image_right > region_width) { // XXXX Or +1?
-		int overshoot = x_region_for_image_right - region_width;
-		x_region_for_image_right = region_width;
-		x_image_for_region_right = x_image_for_region_right - (int)((overshoot / scale_horizontal) + 0.5);
-	}
-	if (y_region_for_image_top < 0) {
-		y_image_for_region_top = (int)((-y_region_for_image_top / scale_vertical) + 0.5);
-		y_region_for_image_top = 0;
-	}
-	if (y_region_for_image_bottom > region_height) {
-		int overshoot = y_region_for_image_bottom - region_height;
-		y_region_for_image_bottom = region_height;
-		y_image_for_region_bottom = y_image_for_region_bottom - (int)((overshoot / scale_vertical) + 0.5);
-	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
-		x_image_for_region_left, y_image_for_region_top, x_image_for_region_right, y_image_for_region_bottom);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
-		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
-	*out_src_rect = lib::rect(
-		point(x_image_for_region_left, y_image_for_region_top),
-		size(x_image_for_region_right-x_image_for_region_left, y_image_for_region_bottom-y_image_for_region_top));
-	return lib::screen_rect<int>(
-		point(x_region_for_image_left, y_region_for_image_top),
-		point(x_region_for_image_right, y_region_for_image_bottom));
-}
-
 void
 passive_region::need_bounds()
 {
@@ -557,6 +380,9 @@ active_region::~active_region()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_region::~active_region(0x%x)", (void*)this);
 	if (m_mouse_region) delete m_mouse_region;
+	m_mouse_region = NULL;
+	if (m_alignment) delete m_alignment;
+	m_alignment = NULL;
 	if (m_renderer) lib::logger::get_logger()->warn("active_region::~active_region(0x%x): m_renderer=0x%x", (void*)this, (void*)m_renderer);
 }
 
@@ -632,3 +458,182 @@ active_region::renderer_done()
 	// parent: it may want to keep us around for a transition or some such.
 	m_source->active_region_done(this);
 }
+
+
+lib::screen_rect<int> 
+active_region::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src_rect) const
+{
+	const_cast<passive_region*>(this->m_source)->need_bounds();
+	const int image_width = src_size.w;
+	const int image_height = src_size.h;
+	const int region_width = m_source->m_inner_bounds.width();
+	const int region_height = m_source->m_inner_bounds.height();
+	const int min_width = std::min(image_width, region_width);
+	const int min_height = std::min(image_height, region_height);
+	const double scale_width = (double)region_width / std::max((double)image_width, 0.1);
+	const double scale_height = (double)region_height / std::max((double)image_height, 0.1);
+	double scale;
+	
+	const fit_t fit = (m_source->m_info == NULL?fit_hidden : m_source->m_info->get_fit());
+	switch (fit) {
+	  case fit_fill:
+		// Fill the area with the image, ignore aspect ration
+		*out_src_rect = lib::rect(lib::point(0, 0), src_size);
+		return m_source->m_inner_bounds;
+	  case fit_scroll:
+	  case fit_hidden:
+		// Don't scale at all
+		*out_src_rect = lib::rect(lib::point(0, 0), lib::size(min_width, min_height));
+		return screen_rect<int>(lib::point(0, 0), lib::point(min_width, min_height));
+	  case fit_meet:
+		// Scale to make smallest edge fit (showing some background color)
+		scale = std::min(scale_width, scale_height);
+		break;
+	  case fit_slice:
+		// Scale to make largest edge fit (not showing the full source image)
+		scale = std::max(scale_width, scale_height);
+		break;
+	}
+	// We end up here as common case for meet and slice
+	int proposed_width = std::min((int)(scale*(image_width+0.5)), region_width);
+	int proposed_height = std::min((int)(scale*(image_height+0.5)), region_height);
+	*out_src_rect = lib::rect(lib::point(0, 0), lib::size((int)(proposed_width/scale), (int)(proposed_height/scale)));
+	return screen_rect<int>(lib::point(0, 0), lib::point(proposed_width, proposed_height));
+}
+
+lib::screen_rect<int> 
+active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const
+{
+	if (m_alignment == NULL)
+		return get_fit_rect_noalign(src_size, out_src_rect);
+		
+	const_cast<passive_region*>(this->m_source)->need_bounds();
+	const int image_width = src_size.w;
+	const int image_height = src_size.h;
+	const int region_width = m_source->m_inner_bounds.width();
+	const int region_height = m_source->m_inner_bounds.height();
+	lib::size region_size = lib::size(region_width, region_height);
+	
+	lib::point xy_image = m_alignment->get_image_fixpoint(src_size);
+	lib::point xy_region = m_alignment->get_surface_fixpoint(region_size);
+	
+	const int x_image_left = xy_image.x;
+	const int x_image_right = image_width - xy_image.x;
+	const int y_image_top = xy_image.y;
+	const int y_image_bottom = image_height - xy_image.y;
+	const int x_region_left = xy_region.x;
+	const int x_region_right = region_width - xy_region.x;
+	const int y_region_top = xy_region.y;
+	const int y_region_bottom = region_height - xy_region.y;
+	
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image size=(%d, %d)", image_width, image_height);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region size=(%d, %d)", region_width, region_height);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image fixpoint=(%d, %d)", xy_image.x, xy_image.y);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region fixpoint=(%d, %d)", xy_region.x, xy_region.y);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image delta fixpoint to ltrb=(%d, %d, %d, %d)", x_image_left, y_image_top, x_image_right, y_image_bottom);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region delta fixpoint to ltrb=(%d, %d, %d, %d)", x_region_left, y_region_top, x_region_right, y_region_bottom);
+	
+	double scale_min_horizontal, scale_max_horizontal, scale_min_vertical, scale_max_vertical;
+	
+	if (x_image_left == 0) {
+		scale_min_horizontal = scale_max_horizontal = (double)x_region_right / (double)x_image_right;
+	} else {
+		scale_min_horizontal = scale_max_horizontal = (double)x_region_left / (double)x_image_left;
+		if (x_image_right != 0) {
+			double scale_right = (double)x_region_right / (double)x_image_right;
+			if (scale_min_horizontal == 0)
+				scale_min_horizontal = scale_right;
+			else
+				scale_min_horizontal = std::min(scale_min_horizontal, scale_right);
+			scale_max_horizontal = std::max(scale_max_horizontal, scale_right);
+		}
+	}
+	if (y_image_top == 0) {
+		scale_min_vertical = scale_max_vertical = (double)y_region_bottom / (double)y_image_bottom;
+	} else {
+		scale_min_vertical = scale_max_vertical = (double)y_region_top / (double)y_image_top;
+		if (y_image_bottom != 0) {
+			double scale_bottom = (double)y_region_bottom / (double)y_image_bottom;
+			if (scale_min_vertical == 0)
+				scale_min_vertical = scale_bottom;
+			else
+				scale_min_vertical = std::min(scale_min_vertical, scale_bottom);
+			scale_max_vertical = std::max(scale_max_vertical, scale_bottom);
+		}
+	}
+	double scale_horizontal, scale_vertical;
+	
+	const fit_t fit = (m_source->m_info == NULL?fit_hidden : m_source->m_info->get_fit());
+	switch (fit) {
+	  case fit_fill:
+		// Fill the area with the image, ignore aspect ration
+		// XXX I don't think this is correct. Or is it?
+		scale_horizontal = scale_min_horizontal;
+		scale_vertical = scale_min_vertical;
+		break;
+	  case fit_scroll:		// XXXX incorrect
+	  case fit_hidden:
+		scale_horizontal = scale_vertical = 1.0;
+		break;
+	  case fit_meet:
+		// Scale to make smallest edge fit (showing some background color)
+		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
+		break;
+	  case fit_slice:
+		// Scale to make largest edge fit (not showing the full source image)
+		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
+		break;
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scale_hor=%f, scale_vert=%f", scale_horizontal, scale_vertical);
+	if (scale_horizontal == 0 || scale_vertical == 0) {
+		*out_src_rect = lib::rect(point(0,0), size(0,0));
+		return lib::screen_rect<int>(point(0,0), point(0,0));
+	}
+	// Convert the image fixpoint to scaled coordinates
+	int x_image_scaled = (int)((xy_image.x * scale_horizontal) + 0.5);
+	int y_image_scaled = (int)((xy_image.y * scale_vertical) + 0.5);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scaled image fixpoint=(%d, %d)", x_image_scaled, y_image_scaled);
+	// Find out where image (0, 0) would end up, and similarly for other
+	// corners. At this point we still allow negative values or values > max
+	int x_region_for_image_left = xy_region.x - x_image_scaled;
+	int x_region_for_image_right = x_region_for_image_left + (int)((image_width * scale_horizontal) + 0.5);
+	int y_region_for_image_top = xy_region.y - y_image_scaled;
+	int y_region_for_image_bottom = y_region_for_image_top + (int)((image_height * scale_vertical) + 0.5);
+	int x_image_for_region_left = 0;
+	int x_image_for_region_right = image_width;
+	int y_image_for_region_top = 0;
+	int y_image_for_region_bottom = image_height;
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
+		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
+	// Finally clamp all values
+	if (x_region_for_image_left < 0) {
+		x_image_for_region_left = (int)((-x_region_for_image_left / scale_horizontal) + 0.5);
+		x_region_for_image_left = 0;
+	}
+	if (x_region_for_image_right > region_width) { // XXXX Or +1?
+		int overshoot = x_region_for_image_right - region_width;
+		x_region_for_image_right = region_width;
+		x_image_for_region_right = x_image_for_region_right - (int)((overshoot / scale_horizontal) + 0.5);
+	}
+	if (y_region_for_image_top < 0) {
+		y_image_for_region_top = (int)((-y_region_for_image_top / scale_vertical) + 0.5);
+		y_region_for_image_top = 0;
+	}
+	if (y_region_for_image_bottom > region_height) {
+		int overshoot = y_region_for_image_bottom - region_height;
+		y_region_for_image_bottom = region_height;
+		y_image_for_region_bottom = y_image_for_region_bottom - (int)((overshoot / scale_vertical) + 0.5);
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
+		x_image_for_region_left, y_image_for_region_top, x_image_for_region_right, y_image_for_region_bottom);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
+		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
+	*out_src_rect = lib::rect(
+		point(x_image_for_region_left, y_image_for_region_top),
+		size(x_image_for_region_right-x_image_for_region_left, y_image_for_region_bottom-y_image_for_region_top));
+	return lib::screen_rect<int>(
+		point(x_region_for_image_left, y_region_for_image_top),
+		point(x_region_for_image_right, y_region_for_image_bottom));
+}
+
+

@@ -167,8 +167,9 @@ class surface {
 	
 	// For a given image size, return portion of source image to display, and where
 	// to display it. The renderer must do the scaling.
+	virtual void set_alignment(const alignment *align) = 0;
+	virtual const alignment *get_alignment() const = 0;
 	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const = 0;
-	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, const alignment *align, lib::rect* out_src_rect) const = 0;
 	
 	// Get object holding SMIL region parameters for querying
 	virtual const region_info *get_info() const = 0;
