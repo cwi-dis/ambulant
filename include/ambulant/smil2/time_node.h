@@ -456,6 +456,7 @@ class time_node : public time_traits {
 	
 	// Paused flag
 	bool m_paused;
+	time_type m_pause_time;
 	
 	// Defered flag
 	bool m_deferred;
