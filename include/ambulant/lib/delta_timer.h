@@ -36,14 +36,12 @@ namespace lib {
 // A scheduler for timeout events
 // Uses delta timer pattern
 
-template <typename time_type = unsigned long>
 class delta_timer {
   public:
-	typedef time_type self_time_type;
-	typedef timer<self_time_type> self_timer;
-	typedef timeout_event<self_time_type> self_timeout_event;
+	typedef timer::time_type time_type;
+	typedef std::pair<event*, time_type> timeout_event;
 	
-	delta_timer(self_timer *t);
+	delta_timer(timer *t);
 	virtual ~delta_timer();
 
 	// called periodically
@@ -56,46 +54,44 @@ class delta_timer {
 	void execute(std::queue<event*>& queue);
 	
 	// Insert a timeout event
-	virtual void insert(self_timeout_event *pe);
+	virtual void insert(event *pe, time_type t);
 
 	// debug output
 	void write_trace();
 	
   private:
-	void fire_delta_events(self_time_type delta);
-	void get_ready_delta_events(self_time_type delta, std::queue<event*>& queue);
+	void fire_delta_events(time_type delta);
+	void get_ready_delta_events(time_type delta, std::queue<event*>& queue);
 	
-	// event list type
-	typedef std::list<self_timeout_event*> event_list;
+	void decr(time_type& t, time_type dt) {
+		if(dt>t) t = 0;
+		else t-= dt;
+	}
 	
 	// event list and its critical section
-	event_list m_events;
+	std::list<timeout_event> m_events;
 	
 	// remember last time run
-	self_time_type m_last_run;
+	time_type m_last_run;
 	
 	// timer
-	self_timer *m_timer;
+	timer *m_timer;
 	};
 
 
-template <typename time_type>
-inline delta_timer<time_type>::delta_timer(self_timer *t)
-:	m_timer(t), m_last_run(t->elapsed()) {
-	}
+inline delta_timer::delta_timer(timer *t)
+:	m_timer(t), m_last_run(t->elapsed()) {}
 	
-template <typename time_type>
-inline delta_timer<time_type>::~delta_timer() {
-	event_list::iterator it;
+inline delta_timer::~delta_timer() {
+	std::list<timeout_event>::iterator it;
 	for(it = m_events.begin(); it != m_events.end(); it++)
-		delete (*it);
+		delete (*it).first;
 	delete m_timer;
 }
 
 // called periodically
 // fires ready events	
-template <typename time_type>
-inline void delta_timer<time_type>::execute() {
+inline void delta_timer::execute() {
 	time_type now = m_timer->elapsed();
 	time_type delta = now - m_last_run;
 	m_last_run = now;
@@ -104,73 +100,70 @@ inline void delta_timer<time_type>::execute() {
 	
 // called periodically
 // returns the events that are ready to fire	
-template <typename time_type>
-inline void delta_timer<time_type>::execute(std::queue<event*>& queue) {
+inline void delta_timer::execute(std::queue<event*>& queue) {
 	time_type now = m_timer->elapsed();
 	time_type delta = now - m_last_run;
 	m_last_run = now;
 	get_ready_delta_events(delta, queue);
 }
 
-template <typename time_type>
-inline void delta_timer<time_type>::insert(self_timeout_event *pe) {
+inline void delta_timer::insert(event *pe, time_type t) {
 	if(m_events.size() == 0){
-		m_events.push_back(pe);
+		m_events.push_back(timeout_event(pe, t));
 	} else {
 		// find correct pos (do: pe->incr(-(*i).get_time() as we traverse the list)
-		event_list::iterator it;
+		std::list<timeout_event>::iterator it;
 		for(it = m_events.begin();it!=m_events.end();it++) {
-			if(pe->get_time() < (*it)->get_time()) 
+			if(t < (*it).second) 
 				break;
-			pe->decr((*it)->get_time());
+			decr(t, (*it).second); 
 		}
 		// insert entry
 		if(it != m_events.end()) {
-			(*it)->decr(pe->get_time());
-			m_events.insert(it, pe);
+			decr((*it).second, t);
+			m_events.insert(it, timeout_event(pe, t));
 		} else {
-			m_events.push_back(pe);
+			m_events.push_back(timeout_event(pe, t));
 		}
 	}
 	// debug
 	write_trace();
 }
 
-template <typename time_type>
-inline void delta_timer<time_type>::fire_delta_events(self_time_type delta) {
-	while(m_events.size()>0 && m_events.front()->get_time() <= delta) {
-		delta -= m_events.front()->get_time();
-		m_events.front()->fire();
-		delete m_events.front();
+inline void delta_timer::fire_delta_events(time_type delta) {
+	while(m_events.size()>0 && m_events.front().second <= delta) {
+		decr(delta, m_events.front().second);
+		m_events.front().first->fire();
+		delete m_events.front().first;
 		m_events.erase(m_events.begin());
 	}
-	if(m_events.size()>0) m_events.front()->incr(-delta);
+	if(m_events.size()>0)
+		decr(m_events.front().second, delta);
 }
 	
-template <typename time_type>
-inline void delta_timer<time_type>::get_ready_delta_events(self_time_type delta, std::queue<event*>& queue) {
-	while(m_events.size()>0 && m_events.front()->get_time() <= delta) {
-		delta -= m_events.front()->get_time();
-		queue.push(m_events.front());
+inline void delta_timer::get_ready_delta_events(time_type delta, std::queue<event*>& queue) {
+	while(m_events.size()>0 && m_events.front().second <= delta) {
+		decr(delta, m_events.front().second);
+		queue.push(m_events.front().first);
 		m_events.erase(m_events.begin());
 	}
-	if(m_events.size()>0) m_events.front()->decr(delta);
-	
+	if(m_events.size()>0) 
+		decr(m_events.front().second, delta); 
+			
 	// debug
 	if(!queue.empty()) write_trace();
 }
 	
-template <typename time_type>
-inline void delta_timer<time_type>::write_trace() {
+inline void delta_timer::write_trace() {
 	std::ostringstream os;
 	os << "delta_timer (";
-	event_list::iterator it = m_events.begin();
+	std::list<timeout_event>::iterator it = m_events.begin();
 	if(it != m_events.end()) {
-		os << (*it)->get_time();
+		os << (*it).second;
 		it++;
 	}
 	for(; it != m_events.end(); it++)
-		os << ", " << (*it)->get_time();
+		os << ", " << (*it).second;
 	os << ")";
 	log_trace_event(os.str());
 }
