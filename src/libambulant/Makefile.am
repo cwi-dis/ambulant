@@ -5,7 +5,11 @@ INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/incl
 # See which toolkit-dependent libraries we want to make
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
-libambulant_cocoa_la_SOURCES = gui/cocoa/cocoa_gui.m
+libambulant_cocoa_la_SOURCES = \
+	gui/cocoa/cocoa_gui.m \
+	gui/cocoa/cocoa_image.m \
+	gui/cocoa/cocoa_text.m \
+	gui/cocoa/cocoa_audio.m
 else
 toolkit_cocoa_libraries =
 endif

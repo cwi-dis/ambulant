@@ -47,6 +47,90 @@
 			settings = {
 			};
 		};
+		042239C30536F4760010C447 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_audio.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239C40536F4760010C447 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_image.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239C50536F4760010C447 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_text.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239C60536F4760010C447 = {
+			fileRef = 042239C30536F4760010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		042239C70536F4760010C447 = {
+			fileRef = 042239C40536F4760010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		042239C80536F4760010C447 = {
+			fileRef = 042239C50536F4760010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		042239CB0536F48E0010C447 = {
+			expectedFileType = sourcecode.cpp.objcpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_audio.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239CC0536F48E0010C447 = {
+			expectedFileType = sourcecode.cpp.objcpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_image.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239CD0536F48E0010C447 = {
+			expectedFileType = sourcecode.cpp.objcpp;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = cocoa_text.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		042239CE0536F48E0010C447 = {
+			fileRef = 042239CB0536F48E0010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		042239CF0536F48E0010C447 = {
+			fileRef = 042239CC0536F48E0010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		042239D00536F48E0010C447 = {
+			fileRef = 042239CD0536F48E0010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0444D2DD051F2EEF0010C447 = {
 			children = (
 				0444D320051F2EEF0010C447,
@@ -82,6 +166,9 @@
 		0444D324051F2EEF0010C447 = {
 			children = (
 				0444D325051F2EEF0010C447,
+				042239CB0536F48E0010C447,
+				042239CC0536F48E0010C447,
+				042239CD0536F48E0010C447,
 			);
 			isa = PBXGroup;
 			path = cocoa;
@@ -611,6 +698,9 @@
 		04AF0ADB05205DB00010C447 = {
 			children = (
 				04AF0ADD05205DB00010C447,
+				042239C30536F4760010C447,
+				042239C40536F4760010C447,
+				042239C50536F4760010C447,
 			);
 			isa = PBXGroup;
 			path = cocoa;
@@ -1780,6 +1870,9 @@
 				046718F205219EFA0010C447,
 				0420AEED052DBC850010C447,
 				0420AEF1052DBC970010C447,
+				042239C60536F4760010C447,
+				042239C70536F4760010C447,
+				042239C80536F4760010C447,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1862,6 +1955,9 @@
 				0444D3D4051F2EF00010C447,
 				046718F105219EFA0010C447,
 				041485080532E37A001276A4,
+				042239CE0536F48E0010C447,
+				042239CF0536F48E0010C447,
+				042239D00536F48E0010C447,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -5,6 +5,9 @@
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cocoa/cocoa_audio.h"
+#include "ambulant/gui/cocoa/cocoa_text.h"
+#include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/lib/renderer.h"
 #include "ambulant/lib/mtsync.h"
@@ -20,61 +23,8 @@ namespace ambulant {
 using namespace lib;
 
 namespace gui {
+
 namespace cocoa {
-
-class cocoa_active_text_renderer : public active_final_renderer {
-  public:
-	cocoa_active_text_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node)
-	:   active_final_renderer(evp, src, dest, node),
-            m_text_storage(NULL) {};
-        ~cocoa_active_text_renderer();
-	
-    void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
-  private:
-    NSTextStorage *m_text_storage;
-	NSLayoutManager *m_layout_manager;
-	NSTextContainer *m_text_container;
-	critical_section m_lock;
-};
-
-class cocoa_active_image_renderer : public active_final_renderer {
-  public:
-	cocoa_active_image_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		passive_region *const dest,
-		const node *node)
-	:	active_final_renderer(evp, src, dest, node),
-		m_image(NULL),
-		m_nsdata(NULL) {};
-	~cocoa_active_image_renderer();
-
-    void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
-  private:
-  	NSImage *m_image;
-  	NSData *m_nsdata;
-	critical_section m_lock;
-};
-
-class cocoa_active_audio_renderer : public active_basic_renderer, public abstract_timer_client {
-  public:
-	cocoa_active_audio_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		const node *node);
-	~cocoa_active_audio_renderer();
-
-	void start(event *playdone);
-//	void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
-	void stop();
-	void speed_changed();
-  private:
-	std::string m_url;
-  	NSSound *m_sound;
-	abstract_timer_client::client_index m_timer_index;
-	critical_section m_lock;
-};
 
 void
 cocoa_passive_window::need_redraw(const screen_rect<int> &r)
@@ -90,180 +40,6 @@ cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 	//[my_view setNeedsDisplay: YES];
 }
 
-cocoa_active_text_renderer::~cocoa_active_text_renderer()
-{
-	m_lock.enter();
-	[m_text_storage release];
-	m_text_storage = NULL;
-	m_lock.leave();
-}
-
-void
-cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
-{
-	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
-
-	if (m_data && !m_text_storage) {
-		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
-		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
-		m_layout_manager = [[NSLayoutManager alloc] init];
-		m_text_container = [[NSTextContainer alloc] init];
-		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release];	// The layoutManager will retain the textContainer
-		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release];	// The textStorage will retain the layoutManager
-	}
-
-	cocoa_passive_window *cwindow = (cocoa_passive_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> window_rect = r;
-	window_rect.translate(window_topleft);
-	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
-	
-	if (m_text_storage && m_layout_manager) {
-		[[NSColor whiteColor] set];
-		NSRectFill(dstrect);
-		NSPoint origin = NSMakePoint(NSMinX(dstrect), NSMidY(dstrect));
-		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
-		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
-		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
-		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
-	} else {
-		[[NSColor grayColor] set];
-		NSRectFill(dstrect);
-	}
-	m_lock.leave();
-}
-
-cocoa_active_image_renderer::~cocoa_active_image_renderer()
-{
-	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
-	if (m_image)
-		[m_image release];
-	m_image = NULL;
-	m_lock.leave();
-}
-	
-void
-cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
-{
-	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), window_topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
-	
-	if (m_data && !m_image) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
-		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
-		m_image = [[NSImage alloc] initWithData: m_nsdata];
-		if (!m_image)
-			logger::get_logger()->error("cocoa_active_image_renderer.redraw: could not create image");
-		// XXXX Could free data and m_data again here...
-	}
-
-	cocoa_passive_window *cwindow = (cocoa_passive_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> window_rect = r;
-	window_rect.translate(window_topleft);
-	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
-
-	if (m_image) {
-		NSSize srcsize = [m_image size];
-		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", srcsize.width, srcsize.height, NSMinX(dstrect), NSMinY(dstrect), NSMaxX(dstrect), NSMaxY(dstrect));
-		[m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
-	} else {
-		[[NSColor blueColor] set];
-		NSRectFill(dstrect);
-	}
-	m_lock.leave();
-}
-
-cocoa_active_audio_renderer::cocoa_active_audio_renderer(event_processor *const evp,
-	net::passive_datasource *src,
-	const node *node)
-:	active_basic_renderer(evp, node),
-	m_url(src->get_url()),
-	m_sound(NULL)
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	if (!m_node) abort();
-	NSString *filename = [NSString stringWithCString: m_url.c_str()];
-	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
-	if (!m_sound)
-		lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot open soundfile: %s", m_url.c_str());
-	m_timer_index = m_event_processor->get_timer()->add_dependent(this);
-	[pool release];
-}
-
-cocoa_active_audio_renderer::~cocoa_active_audio_renderer()
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_active_audio_renderer(0x%x)", (void *)this);
-	if (m_sound)
-		[m_sound release];
-	m_sound = NULL;
-	m_event_processor->get_timer()->remove_dependent(this);
-	m_lock.leave();
-	[pool release];
-}
-	
-void
-cocoa_active_audio_renderer::start(event *playdone)
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	m_lock.enter();
-	std::ostringstream os;
-	os << *m_node;
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	if (m_sound)
-		if (![m_sound play])
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot start audio");
-	if (m_playdone)
-		m_event_processor->add_event(m_playdone, 0, event_processor::low);
-	m_lock.leave();
-	[pool release];
-}
-
-void
-cocoa_active_audio_renderer::stop()
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.stop(0x%x)", (void *)this);
-	if (m_sound) {
-		if (![m_sound stop])
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot stop audio");
-	}
-	m_lock.leave();
-	[pool release];
-}
-
-void
-cocoa_active_audio_renderer::speed_changed()
-{
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.speed_changed(0x%x)", (void *)this);
-	if (m_sound) {
-		abstract_timer *our_timer = m_event_processor->get_timer();
-		double rtspeed = our_timer->get_realtime_speed();
-		
-		if (rtspeed < 0.01) {
-			if (![m_sound pause])
-				lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot pause audio");
-		} else {
-			if (rtspeed < 0.99)
-				lib::logger::get_logger()->trace("cocoa_active_audio_renderer: only speed 1.0 and 0.0 supported, not %f", rtspeed);
-			if (![m_sound resume])
-				lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot resume audio");
-		}
-	}
-	m_lock.leave();
-}
-
 active_renderer *
 cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	net::passive_datasource *src,
@@ -274,10 +50,10 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
-		rv = (active_renderer *)new cocoa_active_image_renderer(evp, src, dest, node);
+		rv = new cocoa_active_image_renderer(evp, src, dest, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
-		rv = (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
+		rv = new cocoa_active_text_renderer(evp, src, dest, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "audio") {
 		rv = (active_renderer *)new cocoa_active_audio_renderer(evp, src, node);
