@@ -173,6 +173,7 @@ gui::sdl::sdl_active_audio_renderer::unregister_renderer(sdl_active_audio_render
 void
 gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
+	/*AM_DBG*/static int total;
 	m_static_lock.enter();
 	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
 	if (m_renderers.size() == 1) {
@@ -184,13 +185,18 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		(*first)->get_data_done(single_len);
 		if (single_len < len)
 			memset(stream+single_len, 0, (len-single_len));
+		/*AM_DBG*/ if (single_len == 0) total = 0; else total += single_len;
+		/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_callback: 1 source wanted %d got %d total %d", len, single_len, total);
 	} else {
 		// No streams, or more than one: use an accumulation buffer
 		memset(stream, 0, len);
+		/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_callback: more sources wanted %d", len);
+		/*AM_DBG*/ total = 0;
 		std::list<sdl_active_audio_renderer *>::iterator i;
 		for (i=first; i != m_renderers.end(); i++) {
 			Uint8 *next_data;
 			int next_len = (*i)->get_data(len, &next_data);
+			/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_callback:          next: got %d", next_len);
 			if (next_len)
 				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2));
 			(*i)->get_data_done(next_len);
