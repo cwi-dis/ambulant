@@ -74,12 +74,12 @@ using namespace smil2;
 
 // Factory function
 common::layout_manager *
-common::create_smil2_layout_manager(common::window_factory *wf,lib::document *doc)
+common::create_smil2_layout_manager(common::factories *factory,lib::document *doc)
 {
-	return new smil_layout_manager(wf, doc);
+	return new smil_layout_manager(factory, doc);
 }
 
-smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::document *doc)
+smil_layout_manager::smil_layout_manager(common::factories *factory,lib::document *doc)
 :   m_schema(common::schema::get_instance()),
 	m_surface_factory(common::create_smil_surface_factory()),
 	m_layout_tree(NULL)
@@ -98,18 +98,18 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 	build_body_regions(doc);
 
 	// Next, create the surfaces that correspond to this tree
-	build_surfaces(wf);
+	build_surfaces(factory->wf);
 	
 	// Now we make sure there is at least one root-layout. This allows us
 	// to use this as the default region. XXXX Should be auto-show eventually.
 	if (m_rootsurfaces.empty()) {
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: no rootLayouts, creating one");
-		create_top_surface(wf, NULL, NULL);
+		create_top_surface(factory->wf, NULL, NULL);
 	}
 	
 #ifdef USE_SMIL21
 	if (m_uses_bgimages)
-		load_bgimages(layout_section);
+		load_bgimages(layout_section, (common::playable_factory *)factory->rf);
 #endif
 }
 
@@ -262,22 +262,6 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 		}
 	}
 }
-
-#ifdef USE_SMIL21
-void
-smil_layout_manager::load_bgimages(const lib::node *layout_root)
-{
-	lib::logger::get_logger()->debug("load_bgimages: loading background images");
-	lib::node::const_iterator it;
-	lib::node::const_iterator end = layout_root->end();
-	for(it = layout_root->begin(); it != end; it++) {
-		if (!(*it).first) continue;
-		const char *bgimage = (*it).second->get_attribute("backgroundImage");
-		if (bgimage == NULL) continue;
-		lib::logger::get_logger()->debug("load_bgimages: should load bgimage %s", bgimage);
-	}
-}
-#endif 
 
 void
 smil_layout_manager::build_body_regions(lib::document *doc) {
@@ -635,5 +619,135 @@ smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	lib::logger::get_logger()->trace("Returning default rendering surface for node %s", (nid?nid:""));
 	return m_rootsurfaces[0]->activate();
 }
+
+#ifdef USE_SMIL21
+class bgimage_loader : public lib::ref_counted_obj, public common::playable_notification {
+  public:
+	bgimage_loader(const lib::node *layout_root, common::playable_factory *pf);
+	~bgimage_loader();
+	
+	void run();
+	
+	/// playable_notification interface: 
+	void started(cookie_type n, double t = 0) {};
+	void stopped(cookie_type n, double t = 0);
+	void stalled(cookie_type n, double t = 0) {};
+	void unstalled(cookie_type n, double t = 0) {};
+	void clicked(cookie_type n, double t = 0) {};
+	void pointed(cookie_type n, double t = 0) {};
+	void transitioned(cookie_type n, double t = 0) {};
+  private:
+	int m_rendercount;
+	const lib::node *m_layout_root;
+	common::playable_factory *m_pf;
+	lib::timer *m_timer;
+	lib::event_processor *m_event_processor;
+	std::vector<lib::node*> m_nodes;
+	std::vector<common::playable*> m_playables;
+
+	lib::critical_section m_lock;
+	lib::condition m_condition;
+};
+
+void
+smil_layout_manager::load_bgimages(const lib::node *layout_root, common::playable_factory *pf)
+{
+	bgimage_loader *loader = new bgimage_loader(layout_root, pf);
+	loader->run();
+	loader->release();
+}
+
+bgimage_loader::bgimage_loader(const lib::node *layout_root, common::playable_factory *pf)
+:	m_rendercount(0),
+	m_layout_root(layout_root),
+	m_pf(pf),
+	m_timer(new lib::timer(lib::realtime_timer_factory(), 1.0, false)),
+	m_event_processor(NULL)
+{
+	m_event_processor = event_processor_factory(m_timer);
+}
+
+bgimage_loader::~bgimage_loader()
+{
+	m_lock.enter();
+	std::vector<lib::node*>::iterator in;
+	for (in=m_nodes.begin(); in != m_nodes.end(); in++)
+		delete *in;
+	std::vector<common::playable*>::iterator ip;
+	for (ip=m_playables.begin(); ip != m_playables.end(); ip++)
+		delete *ip;
+	delete m_event_processor;
+	delete m_timer;
+	m_lock.leave();
+}
+
+void
+bgimage_loader::run()
+{
+	m_lock.enter();
+	lib::logger::get_logger()->debug("load_bgimages: loading background images");
+	// XXX Create an event_processor
+	
+	// Loop over the layout section, starting the renderers as we find regions that
+	// want a background image.
+	lib::node::const_iterator it;
+	lib::node::const_iterator end = m_layout_root->end();
+	for(it = m_layout_root->begin(); it != end; it++) {
+		if (!(*it).first) continue;
+		const char *bgimage = (*it).second->get_attribute("backgroundImage");
+		if (bgimage == NULL) continue;
+		// XXX TODO: repeat
+		lib::logger::get_logger()->debug("load_bgimages: should load bgimage %s", bgimage);
+		const char *attrs[7], **attrp = attrs;
+		*attrp++ = "src";
+		*attrp++ = bgimage;
+		*attrp++ = "erase";
+		*attrp++ = "never";
+		// XXX TODO: tiling
+		*attrp++ = NULL;
+		lib::node *n = new lib::node("img", attrs);
+		
+		// Create the renderer
+		if (n) {
+			common::playable *p = m_pf->new_playable(this, 0, n, m_event_processor);
+			if (p) {
+				// Remember renderer and node.
+				m_rendercount++;
+				m_nodes.push_back(n);
+				m_playables.push_back(p);
+				// And start it
+				m_lock.leave();
+				p->start(0);
+				m_lock.enter();
+			} else {
+				delete n;
+			}
+		}
+	}
+	if (m_rendercount) {
+		// All the renderers are started. Wait for everything to finish.
+		/*AM_DBG*/ lib::logger::get_logger()->debug("bgimage_loader::run: waiting for %d renderers", m_rendercount);
+		m_lock.leave();
+		m_condition.wait(-1, m_lock);
+	}
+	m_lock.leave();
+}
+
+void
+bgimage_loader::stopped(cookie_type n, double t)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->debug("bgimage_loader::stopped() called");
+	m_lock.enter();
+	assert(m_rendercount > 0);
+	m_rendercount--;
+	if (m_rendercount == 0)	{
+		/*AM_DBG*/ lib::logger::get_logger()->debug("bgimage_loader::stopped: signalling condition");
+		m_condition.signal();
+	} else {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("bgimage_loader::stopped: %d more renderers", m_rendercount);
+	}
+	m_lock.leave();
+}
+#endif 
 
 

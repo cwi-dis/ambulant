@@ -75,7 +75,7 @@ class region_node;
 
 class smil_layout_manager : public common::layout_manager {
   public:
-	smil_layout_manager(common::window_factory *wf, lib::document *doc);
+	smil_layout_manager(common::factories *factory, lib::document *doc);
 	~smil_layout_manager();
 	
 	common::surface *get_surface(const lib::node *node);
@@ -96,7 +96,7 @@ class smil_layout_manager : public common::layout_manager {
 	common::surface_template *create_top_surface(common::window_factory *wf, 
 		const region_node *rn, common::bgrenderer *bgrenderer);
 #ifdef USE_SMIL21
-	void load_bgimages(const lib::node *layout_section);
+	void load_bgimages(const lib::node *layout_section, common::playable_factory *pf);
 #endif
 	
 	const common::schema *m_schema;

@@ -72,6 +72,7 @@ class animation_destination;
 class renderer; // forward
 class surface; // forward
 class gui_events; // forward
+class factories;
 
 /// Determine how to align an image in a region.
 class alignment {
@@ -294,7 +295,7 @@ class layout_manager {
 
 
 // XXX These should be elsewhere
-layout_manager *create_smil2_layout_manager(window_factory *wf,lib::document *doc);
+layout_manager *create_smil2_layout_manager(common::factories *factory,lib::document *doc);
 //layout_manager *create_mms_layout_manager();
 surface_factory *create_smil_surface_factory();
 	

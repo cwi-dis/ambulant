@@ -146,7 +146,7 @@ void smil_player::build_layout() {
 		delete m_layout_manager;
 		delete m_animation_engine;
 	}
-	m_layout_manager = new smil_layout_manager(m_factory->wf, m_doc);
+	m_layout_manager = new smil_layout_manager(m_factory, m_doc);
 	m_animation_engine = new animation_engine(m_event_processor, m_layout_manager);
 }
 
