@@ -49,7 +49,7 @@
 /* 
  * @$Id$ 
  */
-
+ 
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
@@ -201,15 +201,16 @@ void smil_player::done_playback() {
 }
 
 // Request to create a playable for the node.
-void smil_player::create_playable(const lib::node *n) {
+common::playable *smil_player::create_playable(const lib::node *n) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
-	if(np) return;
+	if(np) return np;
 	np = new_playable(n);
 	m_playables_cs.enter();
 	m_playables[n] = np;
 	m_playables_cs.leave();
+	return np;
 }
 
 // Request to start the playable of the node.
