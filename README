@@ -1,14 +1,29 @@
-This directory contains a skeleton version of Ambulant.
+This directory contains version 0.2 of Ambulant, a playback engine for
+SMIL documents. The ambulant homepage is at <http://www.ambulantplayer.org>.
+
+At the moment ambulant only supports playing back a tiny subset of SMIL,
+more-or-less the subset as specified by the 3GPP MMS 2.0 specs.
+Also, only local media files are supported, no networking yet.
+
+Ambulant consists of a core library implementing the engine, a number
+of GUI-toolkit specific libraries implementing renderers and a number
+of player applications. Currently we have support for Gtk (on Linux),
+Cocoa (on MacOSX) and DirectX (on Windows).
+
 Documentation is sparse, see Documentation/Design for some design
 documentation and an overview of the source tree.
 
-Build with the standard "configure; make" combo, but:
+Build on Unix with the standard "configure; make" combo, but:
 we need a patched version of expat, follow the instructions in
 third_party_packages/readme.txt.
 
 If you want to try building with standard expat installed on your
 system use "configure --with-expat=/usr", but this is lileky to produce
 disappointing results.
+
+The Cocoa player does not get built with the standard "make", you need
+to build it manually with XCode. src/player_macosx/cocoambulant.pbproj
+is the project to use.
 
 After building you will find a demo player in Test/designtests/demoplayer.
 There is a sample document there too, in mmsdoc/mmsdoc.smil.
