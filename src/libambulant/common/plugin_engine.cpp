@@ -215,7 +215,7 @@ plugin_engine::load_plugins(std::string dirname)
  	            lt_dlhandle handle = lt_dlopen(filename);
                 if (handle) {
                     AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
-                    AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
+                    AM_DBG lib::logger::get_logger()->debug("Registering  plugin's factory");
                     initfuncptr init = (initfuncptr) lt_dlsym(handle,"initialize");
                     if (!init) {
                         lib::logger::get_logger()->error("plugin_engine: no initialize routine");
