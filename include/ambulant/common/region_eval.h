@@ -210,14 +210,14 @@ class region_evaluator {
 	
 	void set_horz(const region_dim& rd, int i) {
 		assert(i>=0 && i<3);
-		if(rd.absolute()) m_horz[i] = rd.get<int>(); 
+		if(rd.absolute()) m_horz[i] = rd.get_as_int(); 
 		else if(rd.relative()) m_horz[i] = rd.get(m_refw);
 		else m_horz[i] = detail::auto_int;
 	}
 	
 	void set_vert(const region_dim& rd, int i) {
 		assert(i>=0 && i<3);
-		if(rd.absolute()) m_vert[i] = rd.get<int>(); 
+		if(rd.absolute()) m_vert[i] = rd.get_as_int(); 
 		else if(rd.relative()) m_vert[i] = rd.get(m_refh);
 		else m_vert[i] = detail::auto_int;
 	}

@@ -93,34 +93,45 @@ namespace ambulant {
 
 namespace lib {
 
+
 class region_dim {
-  public:
   
+	union dim_value_holder_t {
+		int int_val;
+		double dbl_val;
+	};
+	
+  public:
 	//////////////////////
 	// region_dim constructors
 	
 	// default constructor
 	// constructs an auto dim
 	region_dim()
-	:	m_type(rdt_auto), m_holder(0) {}
+	:	m_type(rdt_auto) { m_holder.dbl_val = 0;}
     
 	// constructs an absolute dim (assumed in pixels)
     region_dim(int value)
-    :	m_type(rdt_absolute), m_holder(new region_dim_holder_t<int>(value)){}
+    :	m_type(rdt_absolute) { m_holder.int_val = value;}
 	
 	// constructs a relative dim (proportion or percent)
     region_dim(double value)
-    :	m_type(rdt_relative), m_holder(new region_dim_holder_t<double>(value)){}
+    :	m_type(rdt_relative) { m_holder.dbl_val = value;}
 	
 	// constructs a region dim from an other dim
     region_dim(const region_dim& other)
-    :	m_type(other.m_type), m_holder(other.m_holder?other.m_holder->clone():0) {}
+    :	m_type(other.m_type) {
+		if(other.absolute())
+			m_holder.int_val = other.get_as_int();
+		else if(other.relative())
+ 			m_holder.int_val = other.get_as_int();
+   } 
      
      
 	//////////////////////
 	// region_dim destructor
 	
-    ~region_dim(){ if(m_holder != 0) delete m_holder;}
+    ~region_dim(){}
     
 	//////////////////////
 	// region_dim assignments (construct from existing)
@@ -128,9 +139,8 @@ class region_dim {
 	// sets this to other
     const region_dim& operator=(const region_dim& other) { 
 		if(&other != this) {
-			if(m_holder != 0) delete m_holder;
 			m_type = other.m_type;
-			m_holder = other.m_holder?other.m_holder->clone():0;
+			m_holder = other.m_holder;
 		}
 		return *this;
     }
@@ -138,16 +148,14 @@ class region_dim {
 	// sets this to the absolute value provided
     const region_dim& operator=(int value) { 
 		m_type = rdt_absolute;
-		if(m_holder != 0) delete m_holder;
-		m_holder = new region_dim_holder_t<int>(value);
+		m_holder.int_val = value;
 		return *this;
     }
     
 	// sets this to the relative value provided
     const region_dim& operator=(double value) { 
 		m_type = rdt_relative;
-		if(m_holder != 0) delete m_holder;
-		m_holder = new region_dim_holder_t<double>(value);
+		m_holder.dbl_val = value;
 		return *this;
     }
    
@@ -160,59 +168,31 @@ class region_dim {
 	bool isauto() const { return m_type == rdt_auto;}
 	
 	// Value getter function
-	// throws std::runtime_error on illegal template argument.
-	template<class T>
-	T get() const {
-		if(m_holder == 0)
-			throw std::runtime_error("Illegal call. Region dim is undefined");
-		region_dim_holder_t<T> *holder =
-			(dynamic_cast< region_dim_holder_t<T>* >(m_holder));
-		if(holder == 0)
-			throw std::runtime_error("Illegal template argument");
-		return holder->m_value; 
+	int get_as_int() const { 
+		if(absolute()) return m_holder.int_val; 
+		throw std::runtime_error("Illegal call. Region dim is not absolute");
 	}
 	
+	double get_as_dbl() const { 
+		if(relative()) return m_holder.dbl_val;
+		throw std::runtime_error("Illegal call. Region dim is not relative");
+	}
+		
 	int get(int ref) const {
 		switch(m_type) {
-			case rdt_absolute: return get<int>();
-			case rdt_relative: return int(floor(ref*get<double>() + 0.5));
+			case rdt_absolute: return get_as_int();
+			case rdt_relative: return int(floor(ref*get_as_dbl() + 0.5));
 		}
 		throw std::runtime_error("Illegal call. Region dim is undefined");
 	}
-	
-	// debug print out
-	friend std::ostream& operator<<(std::ostream& os, const region_dim& rd) { 
-		if(rd.relative())
-			return os << rd.get<double>() * 100.0 << '%' ;
-		else if(rd.absolute())
-			return os << rd.get<int>();
-		return os <<  "<auto>";
-	}
-	
+		
   private: 
-	
-	// region_dim_holder base  
-	struct region_dim_holder {
-		virtual ~region_dim_holder() {}
-		virtual region_dim_holder* clone() = 0;
-	};
-	
-	// region_dim_holder
-	template<class T>
-	struct region_dim_holder_t : public region_dim_holder {
-		region_dim_holder_t(const T& value) : m_value(value) {}
-		virtual region_dim_holder* clone() {
-			return new region_dim_holder_t<T>(m_value);
-		}
-		T m_value;
-	};
-	
 	// region dimension types
 	enum region_dim_type {rdt_auto, rdt_relative, rdt_absolute};
 	
 	// region dimension data
 	region_dim_type m_type;
-	region_dim_holder *m_holder;
+	dim_value_holder_t m_holder;
 };
 
 // A structure holding all layout attributes of a region
@@ -226,11 +206,25 @@ struct region_dim_spec {
  
 } // namespace ambulant
 
+
+#ifndef AMBULANT_NO_OSTREAM
+
+// debug region_dim print out
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_dim& rd) { 
+	if(rd.relative())
+		return os << rd.get_as_dbl() * 100.0 << '%' ;
+	else if(rd.absolute())
+		return os << rd.get_as_int();
+	return os <<  "<auto>";
+}
+
 // debug region_dim_spec printout
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_dim_spec& rds) { 
 	os << '('  << rds.left << ", " << rds.width  << ", "  << rds.right;
 	os << ", " << rds.top  << ", " << rds.height << ", "  << rds.bottom;
 	return os << ')';
 }
+
+#endif
 
 #endif // AMBULANT_LIB_REGION_DIM_H
