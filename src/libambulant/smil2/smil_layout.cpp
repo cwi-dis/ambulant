@@ -63,6 +63,8 @@
 #include "ambulant/smil2/test_attrs.h"
 #include <stack>
 
+#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -174,7 +176,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 	// Now we iterate over all the elements, set their dimensions
 	// from the attributes and determine their inheritance
 	lib::node::iterator it;
-	lib::node::const_iterator end = layout_root->end();
+	lib::node::iterator end = layout_root->end();
 	int level = -1;
 	for(it = layout_root->begin(); it != end; it++) {
 		std::pair<bool, lib::node*> pair = *it;
@@ -232,9 +234,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 			const char *pname = n->get_attribute("regionName");
 			if(pname) {
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: mapping regionName %s", pname);
-				std::string name;
-				name = pname;
-				m_name2region.insert(std::pair<std::string, region_node*>(name, rn));
+				m_name2region[pname].push_back(rn);
 			}
 
 			stack.push(rn);
@@ -244,6 +244,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 		}
 	}
 }
+
 
 void
 smil_layout_manager::build_body_regions(lib::document *doc) {
@@ -256,15 +257,15 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		lib::logger::get_logger()->error("smil_layout_manager: no <body> section");
 		return;
 	}
-	lib::node::iterator it;
+	lib::node::const_iterator it;
 	lib::node::const_iterator end = body->end();
 	for(it = body->begin(); it != end; it++) {
-		std::pair<bool, lib::node*> pair = *it;
+		std::pair<bool, const lib::node*> pair = *it;
 		if (!pair.first) continue;
-		lib::node *n = pair.second;
+		const lib::node *n = pair.second;
 		if (!region_node::needs_region_node(n)) continue;
 		
-		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x", (void*)n);
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x %s", (void*)n, n->get_local_name().c_str());
 		region_node *rn = new region_node(n, di_parent);
 		rn->fix_from_dom_node();
 		rn->set_showbackground(false);
@@ -276,7 +277,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		} else {
 			parent->append_child(rn);
 		}
-		m_node2region.insert(std::pair<lib::node *, region_node*>(n, rn));
+		m_node2region[n] = rn;
 	}
 }
 	
@@ -405,18 +406,24 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 	const char *prname = n->get_attribute("region");
 	const char *nid = n->get_attribute("id");
 	if (prname == NULL) {
+		if(n->get_local_name() == "area" && n->up()) {
+			return get_region_node_for(n->up(), nodeoverride);
+		}
 		AM_DBG lib::logger::get_logger()->trace(
 			"smil_layout_manager::get_surface(): no region attribute on %s",
 			(nid?nid:""));
 		return NULL;
 	}
 	std::string rname = prname;
-	std::map<std::string, region_node*>::size_type namecount = m_name2region.count(rname);
+
+	std::map<std::string, std::list<region_node*> >::iterator rit = m_name2region.find(rname);
+	std::map<std::string, region_node*>::size_type namecount = (rit == m_name2region.end())?0:(*rit).second.size();
+
 	if (namecount > 1)
 		lib::logger::get_logger()->warn("smil_layout_manager::get_surface(): Using first region %s only", prname);
 	if (namecount > 0) {
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): matched %s by regionName", prname);
-		return (*m_name2region.find(rname)).second;
+		return (*m_name2region.find(rname)).second.front();
 	}
 	std::multimap<std::string, region_node*>::size_type idcount = m_id2region.count(rname);
 	if (idcount > 0) {
