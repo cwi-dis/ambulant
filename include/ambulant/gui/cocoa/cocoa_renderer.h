@@ -84,8 +84,8 @@ class cocoa_renderer : public renderer_playable_dsall {
 	void start(double where);
     void redraw(const screen_rect<int> &dirty, gui_window *window);
     virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
-	void set_intransition(lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(lib::transition_info *info);
+	void set_intransition(const lib::transition_info *info) { m_intransition = info; }
+	void start_outtransition(const lib::transition_info *info);
   private:
 	void transition_step();
 	void stop_transition();

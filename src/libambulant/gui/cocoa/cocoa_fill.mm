@@ -101,7 +101,7 @@ cocoa_fill_renderer::start(double where)
 }
 
 void
-cocoa_fill_renderer::start_outtransition(lib::transition_info *info)
+cocoa_fill_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
 	m_outtransition = info;

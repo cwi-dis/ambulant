@@ -86,15 +86,15 @@ class cocoa_fill_renderer : public renderer_playable {
 	void stop();
 	void seek(double t) {}
 
-	void set_intransition(lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(lib::transition_info *info);
+	void set_intransition(const lib::transition_info *info) { m_intransition = info; }
+	void start_outtransition(const lib::transition_info *info);
 	void user_event(const point &where, int what = 0);
     void redraw(const screen_rect<int> &dirty, gui_window *window);
   private:
 	void transition_step();
 	
 	bool m_is_showing;
-	lib::transition_info *m_intransition, *m_outtransition;
+	const lib::transition_info *m_intransition, *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };

@@ -107,8 +107,8 @@ class sdl_active_audio_renderer : public common::renderer_playable {
 
 //	void set_surface(common::surface *dest) { abort(); }
 //	common::surface *get_surface() { abort(); }
-//	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
-//	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
+void set_intransition(const lib::transition_info *info) { /* Ignore, for now */ }
+void start_outtransition(const lib::transition_info *info) { /* Ignore, for now */ }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 //	void transition_freeze_end(lib::screen_rect<int> area) {}		  
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
