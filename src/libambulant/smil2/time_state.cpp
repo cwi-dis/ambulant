@@ -330,6 +330,7 @@ void active_state::reset(qtime_type timestamp, time_node *oproot) {
 	// The exit() actions will be executed
 	m_self->remove(timestamp);
 	m_self->set_state(ts_reset, timestamp, oproot);
+	m_self->reset_children(timestamp, oproot);
 	
 }	 
 
