@@ -90,6 +90,7 @@ class basic_plugin : public common::playable_imp
 	
     void data_avail();
 	void start(double where);
+	void seek(double where) {};
     void stop();
     void pause();
     void resume();
