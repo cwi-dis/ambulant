@@ -11,7 +11,7 @@ item: Global
   Progress Bar DLL=%_WISE_%\Progress\WizWin32a.DLL
   Start Gradient=255 128 0
   End Gradient=128 128 64
-  Windows Flags=00000100000000110010110000001000
+  Windows Flags=00000100000000010010110000001000
   Log Pathname=%MAINDIR%\INSTALL.LOG
   Message Font=MS Sans Serif
   Font Size=8
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=AmbulantPlayer\Ambulant
+  Value=Ambulant Player 1.0
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer\Ambulant-1.0
+  Value=AmbulantPlayer-1.0
   Flags=10000000
 end
 item: Remark
@@ -1693,6 +1693,11 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
+  Source=..\..\Copying
+  Destination=%MAINDIR%\License.txt
+  Flags=0000000010000010
+end
+item: Install File
   Source=..\..\Readme
   Destination=%MAINDIR%\Readme.txt
   Flags=0000000010000010
@@ -1809,7 +1814,7 @@ end
 item: Create Shortcut
   Source=%MAINDIR%\AmbulantPlayer.exe
   Destination=%CGROUPDIR%\%CGROUP_SAVE%\Ambulant Player.lnk
-  Icon Number=0
+  Icon Number=1
 end
 item: End Block
 end
@@ -1820,9 +1825,9 @@ item: If/While Statement
 end
 item: Create Shortcut
   Source=%MAINDIR%\AmbulantPlayer.exe
-  Destination=%GROUP%\NYC SMIL Demo.lnk
+  Destination=%CGROUPDIR%\%CGROUP_SAVE%\NYC SMIL Demo.lnk
   Command Options="%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2.smil"
-  Icon Number=0
+  Icon Number=2
 end
 item: End Block
 end
@@ -1833,7 +1838,19 @@ item: If/While Statement
 end
 item: Create Shortcut
   Source=%MAINDIR%\Readme.txt
-  Destination=%GROUP%\Readme.lnk
+  Destination=%CGROUPDIR%\%CGROUP_SAVE%\Readme.lnk
+  Icon Number=0
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%MAINDIR%\License.txt
+  Destination=%CGROUPDIR%\%CGROUP_SAVE%\License.lnk
   Icon Number=0
 end
 item: End Block
@@ -1847,9 +1864,20 @@ item: If/While Statement
 end
 item: Add ProgMan Icon
   Group=%GROUP%
+  Icon Name=License
+  Command Line=%MAINDIR%\License.txt
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
   Icon Name=Readme
   Command Line=%MAINDIR%\Readme.txt
-  Flags=01000000
 end
 item: End Block
 end
@@ -1862,6 +1890,7 @@ item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=Ambulant Player
   Command Line=%MAINDIR%\AmbulantPlayer.exe
+  Icon Number=1
 end
 item: End Block
 end
@@ -1874,7 +1903,7 @@ item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=NYC SMIL Demo
   Command Line=%MAINDIR%\AmbulantPlayer.exe "%MAINDIR%\Extras\DemoPresentation\NYC-SMIL2.smil"
-  Flags=01000000
+  Icon Number=2
 end
 item: End Block
 end
