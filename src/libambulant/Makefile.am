@@ -16,6 +16,7 @@ qtincludes = -I$(QT_PREFIX)/include
 
 libambulant_qt_la_SOURCES = 		\
 	gui/qt/qt_renderer.cpp		\
+	gui/qt/qt_fill.cpp		\
 	gui/qt/qt_image_renderer.cpp	\
 	gui/qt/qt_text_renderer.cpp 
 

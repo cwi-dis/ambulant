@@ -60,10 +60,10 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
 
+#include "qt_fill.h"
 #include "qt_includes.h"
 
-#define AM_DBG
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -128,7 +128,7 @@ namespace qt_renderer {
 	 bounds->right(),bounds->bottom());
      setGeometry(bounds->left(), bounds->top(),
 		 bounds->right(),bounds->bottom());
-     setBackgroundMode (QWidget::PaletteLight);
+/*TMP*/setBackgroundMode (QWidget::PaletteLight);
      this->show();
     }
     void paintEvent(QPaintEvent* e) {
@@ -162,13 +162,7 @@ namespace qt_renderer {
 				size bounds,
 				abstract_rendering_source *region);
 	abstract_mouse_region *new_mouse_region();
-	abstract_bg_rendering_source *new_background_renderer() {
-	   AM_DBG logger::get_logger()->trace
-	    ("qt_window_factory::new_background_renderer(0x%x): TBD",
-	     (void*) this);
-//TBD	   return new qt_background_renderer();
-	   return new none::none_background_renderer();
-	}
+	abstract_bg_rendering_source *new_background_renderer();
   private:
     QWidget* m_parent_widget;
     point m_p;

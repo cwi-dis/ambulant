@@ -161,9 +161,9 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 	}
 	if(m_events.size()>0) 
 		decr(m_events.front().second, delta); 
-			
+
 	// debug
-	AM_DBG if(!queue.empty()) write_trace();
+	AM_DBG  if(!queue.empty()) write_trace();
 }
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)

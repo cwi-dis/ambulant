@@ -48,6 +48,7 @@
 
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
+#include "ambulant/gui/qt/qt_fill.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
@@ -162,7 +163,16 @@ namespace qt_renderer {
     logger::get_logger()->error
       ("qt_window_factory::new_mouse_region needs to be implemented");
   }
-  
+  abstract_bg_rendering_source *
+  qt_window_factory::new_background_renderer()
+  {
+    logger::get_logger()->trace
+	    ("qt_window_factory::new_background_renderer(0x%x): TBD",
+	     (void*) this);
+       return new qt_background_renderer();
+//JNK	   return new none::none_background_renderer();
+  }
+
 } // namespace qt_renderer
 
 } // namespace gui

@@ -60,7 +60,6 @@
 #include "qt_renderer.h"
 
 //#define AM_DBG
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -203,22 +202,7 @@ void qt_gui::slot_stop() {
 			   "This will be \"Stop\"\n"
 			   );
 }
-/*JNK
-void qt_gui::paintEvent(QPaintEvent* e) {
-  AM_DBG printf("%s-%s\n", m_programfilename, "PaintEvent");
-  if (m_ambulant_window == NULL)
-    printf("m_ambulant_window == NULL\n");
-  else {
-    using namespace ambulant::gui::qt_renderer;
-    using namespace ambulant::lib;
-    ambulant_qt_window *aqw = (ambulant_qt_window *)m_ambulant_window;
-    QRect qr = e->rect();
-    screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
-					   point(qr.right(),qr.bottom()));
-    aqw->redraw(r);
-  }
-}
-JNK*/
+
 int main (int argc, char*argv[]) {
 #ifndef QT_NO_FILEDIALOG    /* Assume plain Qt */
   QApplication myapp(argc, argv);
@@ -231,7 +215,8 @@ int main (int argc, char*argv[]) {
                 = new qt_gui(argv[0],
 		  argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-  mywidget->setGeometry(750, 50, 320, 240);
+//  mywidget->setGeometry(750, 50, 320, 240);
+  mywidget->setGeometry(750, 50, 1024, 768);
   /* Fire */
   myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */

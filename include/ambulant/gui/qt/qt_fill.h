@@ -1,4 +1,3 @@
-
 /*
  * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
@@ -41,65 +40,83 @@
  * Note that people who make modified versions of Ambulant Player are not
  * obligated to grant this special exception for their modified versions;
  * it is their choice whether to do so.  The GNU General Public License
- * gives permission to release a modified version without this exception;
+ *` gives permission to release a modified version without this exception;
  * this exception also makes it possible to release a modified version
  * which carries forward this exception. 
  * 
  */
 
 /* 
- * @$Id$ 
+ * $Id$
  */
-#ifndef __QT_MAINLOOP_H__
-#define __QT_MAINLOOP_H__
 
-// Environment for testing design classes
+#ifndef AMBULANT__QT_FILL_H
+#define AMBULANT__QT_FILL_H
 
-#include <iostream>
-#include <ambulant/version.h>
-#include <ambulant/lib/logger.h>
-//#define WITH_MMS_PLAYER
-#ifdef WITH_MMS_PLAYER
-#include <ambulant/common/mms_player.h>
-#else
-#include <ambulant/common/smil_player.h>
-#endif
-#include <ambulant/lib/event_processor.h>
-#include <ambulant/lib/asb.h>
-#include <qt_gui.h>
+#include "ambulant/lib/layout.h"
+#include "ambulant/common/renderer.h"
+#include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
-#include <qt_renderer.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-class qt_mainloop_callback_arg {
-};
-class qt_mainloop : public ambulant::lib::ref_counted {
-//  static bool m_done;
- public:
-  qt_mainloop(qt_gui* parent)
-    :	m_refcount(1),
-    m_parent(parent) {}
-	
-  static void* run(void* qt_gui);
-  long add_ref() {return ++m_refcount;}
-  
-  long release() {
-    if(--m_refcount == 0){
-      delete this;
-      return 0;
-    }
-    return m_refcount;
-  }
-  
-  long get_ref_count() const {return m_refcount;}
-	
- private:
-  qt_gui* m_parent;
-  ambulant::lib::basic_atomic_count<ambulant::lib::critical_section>
-          m_refcount;
-};
-#endif/*__QT_MAINLOOP_H__*/
+class qt_gui;
+
+using namespace std;
+
+namespace ambulant {
+
+using namespace lib;
+
+namespace gui {
+
+namespace qt_renderer {
+
+  class qt_active_fill_renderer : public active_basic_renderer {
+  public:
+    qt_active_fill_renderer(
+			    active_playable_events *context,
+			    active_playable_events::cookie_type cookie,
+			    const node *node,
+			    event_processor *const evp,
+			    net::passive_datasource *src,
+			    abstract_rendering_surface *const dest)
+      :	active_basic_renderer(context, cookie, node, evp),
+      m_dest(dest),
+      m_playing(false) {};
+    ~qt_active_fill_renderer();
+    
+    void start(double where) {m_playing = 1; } // XXXX
+    void freeze() {}
+    void stop() { m_playing = 0; }
+    void pause() {}
+    void resume() {}
+    void wantclicks(bool want) { /* XXXX */ }
+    
+    void user_event(const point &where) { clicked_callback(); }
+    void redraw(const screen_rect<int> &dirty, abstract_window *window);
+  private:
+    abstract_rendering_surface *const m_dest;
+    bool m_playing;
+    critical_section m_lock;
+  };
+
+  class qt_background_renderer : public abstract_bg_rendering_source {
+
+  public:
+    void drawbackground(const abstract_smil_region_info *src,
+			const screen_rect<int> &dirty, 
+			abstract_rendering_surface *dst,
+			abstract_window *windo);
+  };
+
+} // namespace qt_renderer
+
+} // namespace gui
+ 
+} // namespace ambulant
+
+#endif/*AMBULANT__QT_FILL_H*/
