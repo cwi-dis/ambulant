@@ -54,7 +54,7 @@
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
-// #define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -112,9 +112,9 @@ void
 qt_fill_renderer::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("QT_fill_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.stop(0x%x)", (void *)this);
 	if (!m_is_showing) {
-		logger::get_logger()->trace("QT_fill_renderer.stop(0x%x): already stopped", (void*)this);
+		logger::get_logger()->trace("qt_fill_renderer.stop(0x%x): already stopped", (void*)this);
 	} else {
 		m_is_showing = false;
 		if (m_dest) m_dest->renderer_done(this);
@@ -149,8 +149,9 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		// Copy the background pixels
 		screen_rect<int> dstrect = r;
 		dstrect.translate(m_dest->get_global_topleft());
-		bitBlt(surf, dstrect.left(), dstrect.top(), qpm,
-		       dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+		bitBlt(surf, dstrect.left(), dstrect.top(),
+		       qpm,  dstrect.left(), dstrect.top(), 
+		             dstrect.width(), dstrect.height());
 		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
 		}
 	}
@@ -170,7 +171,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		  (this, &qt_fill_renderer::transition_step);
 		transition_info::time_type delay
 		  = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
+//		if (delay < 33) delay = 33; // XXX band-aid
 		AM_DBG logger::get_logger()->debug
 		  ("qt_renderer.redraw: now=%d, schedule step for %d",
 		   m_event_processor->get_timer()->elapsed(), 
@@ -252,7 +253,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug(
-			"qt__background_renderer::drawbackground:"
+			"qt_background_renderer::drawbackground:"
 			 " %s0x%x,%s(%d,%d,%d,%d)",
 			" clearing to ", (long)bgcolor, 
 			" local_ltwh=",L,T,W,H);

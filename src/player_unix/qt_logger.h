@@ -53,11 +53,14 @@
 #ifndef __QT_LOGGER_H__
 #define __QT_LOGGER_H__
 #include <qfeatures.h>
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 
 #include <stdarg.h>
 #include <string.h>
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qtextedit.h>
+#else /*QT_NO_FILEDIALOG*/
+/* No logger window on an embedded system, logging there on "stdout" */
+#endif/*QT_NO_FILEDIALOG*/
 
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
@@ -77,14 +80,18 @@ class qt_logger {
 	};
 	static qt_logger* get_qt_logger();
 	static void show_message(int level, const char *message);
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* get_logger_window();
+#endif/*QT_NO_FILEDIALOG*/
 	static void set_qt_logger_gui(qt_gui*);
 	void log(QString logstring);
  protected:
 	qt_logger();
  private:
 	static qt_logger* s_qt_logger;  // singleton
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* logger_window;
+#endif/*QT_NO_FILEDIALOG*/
 	qt_gui* m_gui;
 	FILE* m_log_FILE;
 };
@@ -107,5 +114,4 @@ class qt_message_event : public QCustomEvent {
  public:
 	qt_message_event(int type, char* message); 
 };
-#endif/*QT_NO_FILEDIALOG*/
 #endif/*__QT_LOGGER_H__*/

@@ -135,7 +135,7 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 		if (memcpy(data, frame, size)) {
 			std::pair<int, char*> element(size, data);
 			m_frames.push(element);
-			/*AM_DBG*/ lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: m_data(0x%x) stored !", (void*) element.second);
+			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: m_data(0x%x) stored !", (void*) element.second);
 		}
 	} else {
 		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_data is NULL or frame is NULL!");
@@ -222,7 +222,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui
 		if (m_frames.size() > 0 ) {
 			std::pair<int, char*> element = m_frames.front();
 			data = element.second;
-			/*AM_DBG*/ lib::logger::get_logger()->debug("qt_active_video_renderer.redraw, data(0x%x) retrieved (this=0x%x) (still %d frames)",(void*) data, (void *)this, m_frames.size());
+			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.redraw, data(0x%x) retrieved (this=0x%x) (still %d frames)",(void*) data, (void *)this, m_frames.size());
 		} else {
 			data = NULL;
 		}

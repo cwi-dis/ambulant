@@ -233,50 +233,8 @@ AC_SUBST(OBJCFLAGS)
 OBJC=$CC
 AC_SUBST(OBJC)
 
-
-AC_MSG_CHECKING(for --with-qt)
-QT_PREFIX=
-AC_ARG_WITH(qt,
-     [  --with-qt    Turn on Qt support],
-     [case "${withval}" in
-       yes) qt=true
-       		QT_PREFIX=$QTDIR
-       		;;
-       no)  qt=false
-       		;;
-       *) 	qt=true
-       		QT_PREFIX=${withval}
-       		;;
-     esac
-     gui_toolkit_found=true],[
-     case x$QTDIR in
-     x)	if test -f /usr/include/qt.h; then
-            # Debian: no QTDIR but Qt installed in /usr
-            QT_PREFIX=/ufs
-            qt=true
-        else
-            qt=false
-        fi
-     	;;
-     *) qt=true
-     	gui_toolkit_found=true
-     	QT_PREFIX=$QTDIR
-     	;;
-     esac])
-AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
-if test x$qt = xtrue -a x$QT_PREFIX = x; then
-	AC_MSG_ERROR(--with-qt without valid QT_PREFIX directory)
-fi
-if test x$qt = xtrue; then
-#  Test for QT_THREAD_SUPPORT
-   AC_TRY_LINK([#include <qthread.h>], [QThread::postEvent(NULL,NULL)], xQThread_ok=true)
-   if test xQThread_ok=xtrue; then
-      CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
-   fi
-fi
-AC_SUBST(QT_PREFIX)
-AC_MSG_RESULT($qt)
-
+# Qtopia is checked before Qt, because on an embedded system Qt configures
+# different: QT_THREAD_SUPPORT is off
 AC_MSG_CHECKING(for --with-qtopia (cross compilation for Sharp SL-5600 Zaurus))
 QTOPIA_PREFIX=
 AC_ARG_WITH(qtopia,
@@ -314,6 +272,49 @@ expat must have been cross-compiled and installed in third_party_packages/expat-
 configure with: ./configure --build=`config.guess` --host=arm-linux])
 fi
 AC_MSG_RESULT($qtopia)
+
+AC_MSG_CHECKING(for --with-qt)
+QT_PREFIX=
+AC_ARG_WITH(qt,
+     [  --with-qt    Turn on Qt support],
+     [case "${withval}" in
+       yes) qt=true
+       		QT_PREFIX=$QTDIR
+       		;;
+       no)  qt=false
+       		;;
+       *) 	qt=true
+       		QT_PREFIX=${withval}
+       		;;
+     esac
+     gui_toolkit_found=true],[
+     case x$QTDIR in
+     x)	if test -f /usr/include/qt.h; then
+            # Debian: no QTDIR but Qt installed in /usr
+            QT_PREFIX=/ufs
+            qt=true
+        else
+            qt=false
+        fi
+     	;;
+     *) qt=true
+     	gui_toolkit_found=true
+     	QT_PREFIX=$QTDIR
+     	;;
+     esac])
+AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
+if test x$qt = xtrue -a x$QT_PREFIX = x; then
+	AC_MSG_ERROR(--with-qt without valid QT_PREFIX directory)
+fi
+if test x$qt = xtrue  && ! test x$qtopia = xtrue; then
+#  Test for QT_THREAD_SUPPORT
+   AC_TRY_LINK([#include <qthread.h>], [QThread::postEvent(NULL,NULL)], xQThread_ok=true)
+   if test xQThread_ok=xtrue; then
+      CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
+   fi
+fi
+AC_SUBST(QT_PREFIX)
+AC_MSG_RESULT($qt)
 #
 # Test for SDL
 #

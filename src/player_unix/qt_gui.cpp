@@ -407,7 +407,7 @@ qt_gui::slot_open_url() {
 	}
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QMessageBox::information (this, m_programfilename,
-		gettext("Open URL not implemented for Embedded Qt"gettext();
+		gettext("Open URL not implemented for Embedded Qt"));
 #endif/*QT_NO_FILEDIALOG*/
 }
 
@@ -565,10 +565,14 @@ qt_gui::customEvent(QCustomEvent* e) {
 			m_mainloop->player_start(&msg[4], start, old);
 		}
 		break;
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	case qt_logger::CUSTOM_LOGMESSAGE:
 		qt_logger::get_qt_logger()->
 			get_logger_window()->append(msg);
 		break;
+#else /*QT_NO_FILEDIALOG*/
+/* No logger window on an embedded system, logging there on "stdout" */
+#endif/*QT_NO_FILEDIALOG*/
 	case ambulant::lib::logger::LEVEL_FATAL:
 		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
 		break;

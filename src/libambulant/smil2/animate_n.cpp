@@ -150,7 +150,11 @@ void linear_values_animation<F, T>::prepare_interval() {
 		// use key times when valid and when not ignorable
 		std::vector<double> keyTimes;
 		m_aattrs->get_key_times(keyTimes);
-		bool keyTimesValid = keyTimes.empty() || verify_key_times(keyTimes);
+//gcc2.95 Internal compiler error in `assign_stack_temp_for_type `
+//		bool keyTimesValid = keyTimes.empty() || verify_key_times(keyTimes);
+		bool keyTimesValid = false;
+		if(keyTimes.empty() || verify_key_times(keyTimes))
+	        	keyTimesValid = true;
 		if(!keyTimes.empty() && keyTimesValid && 
 			(dur.is_definite() || m_aattrs->get_calc_mode() == "discrete")) {
 			m_simple_f.init(sfdur(), m_values, keyTimes);
@@ -179,8 +183,9 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 		if(!keyTimes.empty() && keyTimesValid) {
 			std::string str;
 			for(size_t i=0;i<keyTimes.size();i++) {
-				char sz[32];
-				sprintf(sz,"%.3f;", keyTimes[i]); str += sz;
+//gcc2.95 Internal compiler err.char sz[32];
+				char sz[64];
+				sprintf(sz,"%.3f;", keyTimes[i]);str += sz;
 			}
 			m_logger->debug("%s[%s] keyTimes: %s", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), str.c_str());
