@@ -138,6 +138,7 @@ struct color_trible {
 		 b = bluec(c);
 		 g = greenc(c); 
 		 r = redc(c);
+		 return *this;
 	}
 	
 	bool operator==(color_trible o) const {
