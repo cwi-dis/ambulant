@@ -40,7 +40,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) ..\..\lib\win32"/>
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\lib\win32"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -83,7 +83,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) ..\..\lib\win32"/>
+				CommandLine="copy &quot;$(TargetPath)&quot; ..\..\lib\win32"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
