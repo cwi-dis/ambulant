@@ -74,22 +74,27 @@ gui::arts::arts_renderer_factory::new_renderer(lib::event_processor *const evp,
 	return rv;
 }
 
-gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(event_processor *const evp,
-	net::passive_datasource *src,
-	const node *node)
-:	active_basic_renderer(evp, node),
-	m_url(src->get_url())
+arts_active_audio_renderer::arts_active_audio_renderer(
+	active_playable_events *context,
+	active_playable_events::cookie_type cookie,
+	const node *node,
+	event_processor *const evp,
+	net::passive_datasource *src)
+:	active_basic_renderer(context, cookie, node, evp),
+	m_url(src->get_url()),
+	m_sound(NULL)
 {
     m_evp = evp;
     m_src = src;
     m_node = node;
+    m_ads = m_src->activate();
 }
 
 int
 gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *name)
 {
     int err;
-
+    if (!m_stream) {
     err = arts_init();
     if (err < 0) {
         return err;
@@ -97,7 +102,9 @@ gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channe
 
     m_stream = arts_play_stream(rate, bits, channels, name);
     return 0;
+    }
 }
+
 
 
 gui::arts::arts_active_audio_renderer::~arts_active_audio_renderer()
@@ -115,13 +122,13 @@ gui::arts::arts_active_audio_renderer::arts_play(char *data, int size)
 void
 lib::arts_active_audio_renderer::readdone()
 {
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
+    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
     size=m_ads->size();
     data = new char[data];
     m_ads->read(data,size);
-    arts_setup()
+    arts_setup(44100,16,2,'arts_audio');
     arts_play(data,size);
-stopped_callback();
+    stopped_callback();
 }
 
 void
@@ -135,21 +142,21 @@ lib::arts_active_audio_renderer::playdone()
 void
 lib::arts_active_audio_renderer::start(double where)
 {
-    char *data;
-	if (!m_node) abort();
+
+    if (!m_node) abort();
 	m_playdone = playdone;
 	std::ostringstream os;
 	os << *m_node;
     
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	m_dest->show(this);
+	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
 	if (m_ads) {
 		m_ads->start(m_event_processor, m_readdone);    
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
-		if (m_playdone)
+		if (m_playdone) {
 			m_event_processor->add_event(m_playdone, 0, event_processor::low);
             stopped_callback();
+        }
 	}
     
 }
