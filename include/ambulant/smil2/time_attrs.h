@@ -224,6 +224,15 @@ class time_attrs : public time_traits {
 	double get_decelerate() const { return m_decelerate;}
 	bool auto_reverse() const { return m_auto_reverse;}
 	
+	// Transitions
+	const lib::node *m_trans_in;
+	const lib::node *m_trans_out;
+	void parse_transitions();
+	const lib::node *get_trans_in() const { return m_trans_in;}
+	const lib::node *get_trans_out() const { return m_trans_out;}
+	time_type get_trans_in_dur() const;
+	time_type get_trans_out_dur() const;
+	
   private:
 	void parse_sync_list(const std::list<std::string>& strlist, sync_list& svslist);
 

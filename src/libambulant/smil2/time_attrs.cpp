@@ -50,10 +50,11 @@
  * @$Id$ 
  */
 
+#include "ambulant/smil2/time_attrs.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/lib/parselets.h"
 #include "ambulant/lib/string_util.h"
-#include "ambulant/smil2/time_attrs.h"
 #include "ambulant/smil2/time_node.h"
 
 #include <list>
@@ -94,6 +95,7 @@ void time_attrs::parse_time_attrs() {
 	parse_endsync();
 	parse_fill();
 	parse_restart();
+	parse_transitions();
 	parse_time_manipulations();
 }
 
@@ -578,6 +580,70 @@ restart_behavior time_attrs::get_default_restart() {
 		curr = curr->up();
 	}
 	return rb;
+}
+
+void time_attrs::parse_transitions() {
+	const node_context *nctx = m_node->get_context();
+	const char *p = m_node->get_attribute("transIn");
+	m_trans_in = 0;
+	if(p) {
+		m_trans_in = nctx->get_node(p);
+		if(!m_trans_in) {
+			m_logger->warn("%s[%s] failed to locate transIn element: [%s]", 
+				m_tag.c_str(), m_id.c_str(), p);		
+		} else {
+			if(get_trans_in_dur()() == 0) {
+				m_logger->warn("%s[%s] the specified transIn element has invalid dur", 
+					m_tag.c_str(), m_id.c_str());
+				m_trans_in	= 0;	
+			}
+		}
+	}
+	p = m_node->get_attribute("transOut");
+	m_trans_out = 0;
+	if(p) {
+		m_trans_out = nctx->get_node(p);
+		if(!m_trans_out) {
+			m_logger->warn("%s[%s] failed to locate transOut element: [%s]", 
+				m_tag.c_str(), m_id.c_str(), p);		
+		} else {
+			if(get_trans_out_dur()() == 0) {
+				m_logger->warn("%s[%s] the specified transOut element has invalid dur", 
+					m_tag.c_str(), m_id.c_str());
+				m_trans_out	= 0;	
+			}
+		}
+	}
+}
+
+smil2::time_attrs::time_type time_attrs::get_trans_in_dur() const {
+	if(!m_trans_in) return 0;
+	const char *p = m_trans_in->get_attribute("dur");
+	if(!p) return 0;
+	std::string sdur = trim(p);
+	clock_value_p pl;
+	std::string::const_iterator b = sdur.begin();
+	std::string::const_iterator e = sdur.end();
+	std::ptrdiff_t d = pl.parse(b, e);
+	if(d == -1) {
+		return 0;
+	}
+	return pl.m_result;
+}
+
+smil2::time_attrs::time_type time_attrs::get_trans_out_dur() const {
+	if(!m_trans_out) return 0;
+	const char *p = m_trans_out->get_attribute("dur");
+	if(!p) return 0;
+	std::string sdur = trim(p);
+	clock_value_p pl;
+	std::string::const_iterator b = sdur.begin();
+	std::string::const_iterator e = sdur.end();
+	std::ptrdiff_t d = pl.parse(b, e);
+	if(d == -1) {
+		return 0;
+	}
+	return pl.m_result;
 }
 
 void time_attrs::parse_time_manipulations() {
