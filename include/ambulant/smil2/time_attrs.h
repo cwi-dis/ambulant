@@ -58,6 +58,7 @@
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/node.h"
 #include <string>
 
 

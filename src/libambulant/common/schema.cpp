@@ -55,6 +55,7 @@
 #include <cmath>
 
 using namespace ambulant;
+using namespace common;
 
 // Use hard coding for now
 static const char* time_containers[] = {
@@ -74,23 +75,25 @@ static const char* layout_elements[] = {
 
 // Create the smplest possible schema factory
 // Its sole purpose is to create privately the schema singleton.
-namespace ambulant { namespace lib {
+namespace ambulant {
+namespace common {
 class schema_factory {
   public:
 	static schema schema_inst;
 };
-}} // namespace ambulant lib
+} // namespace common
+} // namespace ambulant
 
 //static 
-lib::schema lib::schema_factory::schema_inst;
+schema schema_factory::schema_inst;
 
 // static 
-const lib::schema* 
-lib::schema::get_instance() { 
+const schema* 
+schema::get_instance() { 
 	return &schema_factory::schema_inst;
 }
 
-lib::schema::schema() {
+schema::schema() {
 	int n = sizeof(time_containers)/sizeof(const char *);
 	int i;
 	for(i =0;i<n;i++)
@@ -114,13 +117,13 @@ lib::schema::schema() {
 	}
 }
 
-lib::schema::~schema() {
+schema::~schema() {
 	// currently all objects allocated are auto-destr
 }
 
 // Returns one of: tc_par | tc_seq | tc_excl | tc_none
-lib::time_container_type 
-lib::schema::get_time_type(const lib::q_name_pair& qname) const {
+time_container_type 
+schema::get_time_type(const lib::q_name_pair& qname) const {
 	time_container_type type = tc_none;
 	if(qname.second == "seq" || qname.second == "body") type = tc_seq;
 	else if(qname.second == "par") type = tc_par;
@@ -128,12 +131,12 @@ lib::schema::get_time_type(const lib::q_name_pair& qname) const {
 	return type;
 }
 
-bool lib::schema::is_discrete(const lib::q_name_pair& qname) const {
+bool schema::is_discrete(const lib::q_name_pair& qname) const {
 	return m_discrete.find(qname.second) != m_discrete.end();
 }
 
 const char* 
-lib::time_container_type_as_str(lib::time_container_type t) {
+time_container_type_as_str(time_container_type t) {
 	switch(t) {
 		case tc_par: return "par";
 		case tc_seq: return "seq";
@@ -143,8 +146,8 @@ lib::time_container_type_as_str(lib::time_container_type t) {
 }
 
 // Returns one of: l_rootlayout, l_region or l_none
-lib::layout_type 
-lib::schema::get_layout_type(const lib::q_name_pair& qname) const {
+layout_type 
+schema::get_layout_type(const lib::q_name_pair& qname) const {
 	layout_type type = l_none;
 	if(qname.second == "root-layout" ) type = l_rootlayout;
 	else if(qname.second == "topLayout") type = l_toplayout;
@@ -153,7 +156,7 @@ lib::schema::get_layout_type(const lib::q_name_pair& qname) const {
 }
 
 const char* 
-lib::layout_type_as_str(lib::layout_type t) {
+layout_type_as_str(layout_type t) {
 	switch(t) {
 		case l_rootlayout: return "root-layout";
 		case l_toplayout: return "topLayout";

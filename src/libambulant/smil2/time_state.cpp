@@ -59,6 +59,7 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
 ///////////////////////
 // time_state
@@ -72,7 +73,7 @@ using namespace ambulant;
 // and then the enter() actions of the new state 
 // (this is true also for self transitions).
 //
-lib::time_state::time_state(time_node *tn) 
+time_state::time_state(time_node *tn) 
 :	m_self(tn),
 	m_interval(tn->m_interval),
 	m_picounter(tn->m_picounter),
@@ -85,21 +86,21 @@ lib::time_state::time_state(time_node *tn)
 	m_attrs(tn->m_attrs){
 }
 
-void lib::time_state::sync_update(qtime_type timestamp) {
+void time_state::sync_update(qtime_type timestamp) {
 }
 
-void lib::time_state::kill(qtime_type timestamp, time_node *oproot) {
+void time_state::kill(qtime_type timestamp, time_node *oproot) {
 	m_self->set_state(ts_dead, timestamp, oproot);
 }
 
-void lib::time_state::reset(qtime_type timestamp, time_node *oproot) {
+void time_state::reset(qtime_type timestamp, time_node *oproot) {
 	m_self->set_state(ts_reset, timestamp, oproot);
 }
 
-void lib::time_state::exit(qtime_type timestamp, time_node *oproot) {
+void time_state::exit(qtime_type timestamp, time_node *oproot) {
 }
 
-void lib::time_state::report_state(qtime_type timestamp) {
+void time_state::report_state(qtime_type timestamp) {
 	AM_DBG logger::get_logger()->trace("%s[%s] --> %s at PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
@@ -122,7 +123,7 @@ void lib::time_state::report_state(qtime_type timestamp) {
 // Reset do / on parent beginEvent transition to PROACTIVE
 // Reset exit / ?
 
-void lib::reset_state::enter(qtime_type timestamp) {
+void reset_state::enter(qtime_type timestamp) {
 	m_interval = interval_type::unresolved;
 	m_picounter = 0;
 	m_active = false;
@@ -136,9 +137,9 @@ void lib::reset_state::enter(qtime_type timestamp) {
 	//report_state(timestamp);
 }
 
-void lib::reset_state::sync_update(qtime_type timestamp) {}
+void reset_state::sync_update(qtime_type timestamp) {}
 
-void lib::reset_state::exit(qtime_type timestamp, time_node *oproot) {
+void reset_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is proactive when the parent begins (normal)
 	// next is a self-transition to reset when an encestor begins or repeats (reset)
 }
@@ -155,7 +156,7 @@ void lib::reset_state::exit(qtime_type timestamp, time_node *oproot) {
 // Proactive do / on sync update re-evaluate interval, enter active on timer event
 // Proactive exit / ?
 
-void lib::proactive_state::enter(qtime_type timestamp) {
+void proactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	interval_type i = m_self->calc_first_interval();
 	if(i.is_valid()) {	
@@ -169,7 +170,7 @@ void lib::proactive_state::enter(qtime_type timestamp) {
 	// else wait in the current state for new happenings 
 }
 
-void lib::proactive_state::sync_update(qtime_type timestamp) {
+void proactive_state::sync_update(qtime_type timestamp) {
 	if(m_self->deferred()) return;
 	interval_type i = m_self->calc_first_interval();
 	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::sync_update %s --> %s at DT:%ld", 
@@ -187,21 +188,21 @@ void lib::proactive_state::sync_update(qtime_type timestamp) {
 	}
 }
 
-void lib::proactive_state::kill(qtime_type timestamp, time_node *oproot) {
+void proactive_state::kill(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to dead
 	if(m_interval.is_valid())
 		m_self->cancel_interval(timestamp);
 	m_self->set_state(ts_dead, timestamp, oproot);
 }
 
-void lib::proactive_state::reset(qtime_type timestamp, time_node *oproot) {
+void proactive_state::reset(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to reset
 	if(m_interval.is_valid())
 		m_self->cancel_interval(timestamp);
 	m_self->set_state(ts_reset, timestamp, oproot);
 }	 
 
-void lib::proactive_state::exit(qtime_type timestamp, time_node *oproot) {
+void proactive_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is active when the interval is within parent AD (normal)
 	// next is postactive if the interval is in the past (jump)
 	// next is reset if the parent repeats or restarts (reset)
@@ -232,7 +233,7 @@ void lib::proactive_state::exit(qtime_type timestamp, time_node *oproot) {
 //
 // timestamp: "scheduled now" in parent simple time
 //
-void lib::active_state::enter(qtime_type timestamp) {
+void active_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	m_active = true;
 	m_needs_remove = true; 
@@ -261,7 +262,7 @@ void lib::active_state::enter(qtime_type timestamp) {
 	m_self->raise_begin_event_async(timestamp);
 }
 
-void lib::active_state::sync_update(qtime_type timestamp) {
+void active_state::sync_update(qtime_type timestamp) {
 	// Update end, consider restart semantics
 	AM_DBG logger::get_logger()->trace("%s[%s].active_state::sync_update() at ST:%ld PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), 
@@ -275,7 +276,7 @@ void lib::active_state::sync_update(qtime_type timestamp) {
 	}
 }
 
-void lib::active_state::kill(qtime_type timestamp, time_node *oproot) {
+void active_state::kill(qtime_type timestamp, time_node *oproot) {
 	// Forced transition to dead originated by oproot 
 	// The exit() actions will be executed
 	// e.g. fill, raise events, update dependents, etc
@@ -283,7 +284,7 @@ void lib::active_state::kill(qtime_type timestamp, time_node *oproot) {
 	
 }
 
-void lib::active_state::reset(qtime_type timestamp, time_node *oproot) {
+void active_state::reset(qtime_type timestamp, time_node *oproot) {
 	// Forced transition to reset originated by oproot 
 	// The exit() actions will be executed
 	m_self->remove(timestamp);
@@ -291,7 +292,7 @@ void lib::active_state::reset(qtime_type timestamp, time_node *oproot) {
 	
 }	 
 
-void lib::active_state::exit(qtime_type timestamp, time_node *oproot) {
+void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
 	m_picounter++;
 	m_self->cancel_schedule();
@@ -321,7 +322,7 @@ void lib::active_state::exit(qtime_type timestamp, time_node *oproot) {
 //					enter dead on parent end
 // Postactive exit / ?
 
-void lib::postactive_state::enter(qtime_type timestamp) {
+void postactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	// m_interval = unchanged (last played interval that is now in the past);
 	// m_picounter = unchanged (was incremeted by Active exit);
@@ -343,7 +344,7 @@ void lib::postactive_state::enter(qtime_type timestamp) {
 	// else wait in the current state for new happenings 
 }
 
-void lib::postactive_state::sync_update(qtime_type timestamp) {
+void postactive_state::sync_update(qtime_type timestamp) {
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_never) return;
 	
@@ -359,7 +360,7 @@ void lib::postactive_state::sync_update(qtime_type timestamp) {
 	}
 }
 
-void lib::postactive_state::kill(qtime_type timestamp, time_node *oproot) {
+void postactive_state::kill(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to dead
 	if(m_interval.is_valid() && m_interval != m_played)
 		m_self->cancel_interval(timestamp);
@@ -368,7 +369,7 @@ void lib::postactive_state::kill(qtime_type timestamp, time_node *oproot) {
 	m_self->set_state(ts_dead, timestamp, oproot);
 }
 
-void lib::postactive_state::reset(qtime_type timestamp, time_node *oproot) {
+void postactive_state::reset(qtime_type timestamp, time_node *oproot) {
 	// cancels any interval and transitions to reset
 	if(m_interval.is_valid() && m_interval != m_played)
 		m_self->cancel_interval(timestamp);
@@ -378,7 +379,7 @@ void lib::postactive_state::reset(qtime_type timestamp, time_node *oproot) {
 	m_self->set_state(ts_reset, timestamp, oproot);
 }	 
 
-void lib::postactive_state::exit(qtime_type timestamp, time_node *oproot) {
+void postactive_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is active when restart != never and next interval is within parent AD 
 	// next is reset if the parent repeats or restarts 
 	// next is dead if the parent ends
@@ -394,10 +395,10 @@ void lib::postactive_state::exit(qtime_type timestamp, time_node *oproot) {
 // Dead do / nothing
 // Dead exit / ?
 
-void lib::dead_state::enter(qtime_type timestamp) {
+void dead_state::enter(qtime_type timestamp) {
 }
 
-void lib::dead_state::exit(qtime_type timestamp, time_node *oproot) {
+void dead_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is reset if the parent restarts 
 	m_self->remove(timestamp);
 }
@@ -406,13 +407,13 @@ void lib::dead_state::exit(qtime_type timestamp, time_node *oproot) {
 //////////////////////////
 // tracing helper
 
-const char* lib::time_state_str(lib::time_state_type state) {
+const char* time_state_str(time_state_type state) {
 	switch(state) {
-		case lib::ts_reset: return "reset";
-		case lib::ts_proactive: return "proactive";
-		case lib::ts_active: return "active";
-		case lib::ts_postactive: return "postactive";
-		case lib::ts_dead: return "dead";
+		case ts_reset: return "reset";
+		case ts_proactive: return "proactive";
+		case ts_active: return "active";
+		case ts_postactive: return "postactive";
+		case ts_dead: return "dead";
 	}
 	return "unknown";
 }

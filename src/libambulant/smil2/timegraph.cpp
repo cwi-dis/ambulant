@@ -68,8 +68,9 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
-lib::timegraph::timegraph(time_node::context_type *ctx, const document *doc, const schema *sch) 
+timegraph::timegraph(time_node::context_type *ctx, const document *doc, const schema *sch) 
 :	m_context(ctx),
 	m_schema(sch), 
 	m_root(0),
@@ -82,7 +83,7 @@ lib::timegraph::timegraph(time_node::context_type *ctx, const document *doc, con
 	build_time_graph();
 }
 
-lib::timegraph::~timegraph() {
+timegraph::~timegraph() {
 	if(m_root) {
 		delete m_root;
 		AM_DBG logger::get_logger()->trace("Undeleted time nodes: %d", time_node::get_node_counter());
@@ -92,26 +93,26 @@ lib::timegraph::~timegraph() {
 }
 
 
-lib::time_node* lib::timegraph::detach_root() {
+time_node* timegraph::detach_root() {
 	time_node* tmp = m_root;
 	m_root = 0;
 	return tmp;
 }
 
-std::map<int, lib::time_node*>* 
-lib::timegraph::detach_dom2tn() {
+std::map<int, time_node*>* 
+timegraph::detach_dom2tn() {
 	std::map<int, time_node*>* tmp = m_dom2tn;
 	m_dom2tn = 0;
 	return tmp;
 }
 
-lib::time_node* 
-lib::timegraph::build_time_tree(const lib::node *root) {
+time_node* 
+timegraph::build_time_tree(const lib::node *root) {
 	const std::set<std::string>& te = m_schema->get_time_elements();
-	lib::time_node *time_root = 0;
+	time_node *time_root = 0;
 	bool switch_on = false;
 	bool switch_option_selected = false;
-	std::stack<lib::time_node*> stack;
+	std::stack<time_node*> stack;
 	std::stack<const lib::node*> switch_stack;
 	std::stack<const lib::node*> select_stack;
 	lib::node::const_iterator it;
@@ -156,7 +157,7 @@ lib::timegraph::build_time_tree(const lib::node *root) {
 		
 		if(start_element) {
 			// create a time node for each start element
-			lib::time_node *tn = create_time_node(n);
+			time_node *tn = create_time_node(n);
 			
 			// read or create node id and add it the map
 			std::string ident;
@@ -184,9 +185,9 @@ lib::timegraph::build_time_tree(const lib::node *root) {
 	return time_root;
 }
 
-lib::time_node* 
-lib::timegraph::create_time_node(const node* n) const {
-	lib::time_node *tn = 0;
+time_node* 
+timegraph::create_time_node(const node* n) const {
+	time_node *tn = 0;
 	time_container_type tct =
 		m_schema->get_time_type(n->get_qname());
 	if(tct == tc_seq) 
@@ -201,7 +202,7 @@ lib::timegraph::create_time_node(const node* n) const {
 	return tn;
 }
 
-void lib::timegraph::build_time_graph() {
+void timegraph::build_time_graph() {
 	time_node::iterator it;
 	time_node::iterator end = m_root->end();
 	for(it = m_root->begin(); it != end; it++) {
@@ -213,7 +214,7 @@ void lib::timegraph::build_time_graph() {
 }
 
 // Adds to the provided time node all begin rules 
-void lib::timegraph::add_begin_sync_rules(time_node *tn) {
+void timegraph::add_begin_sync_rules(time_node *tn) {
 	// get node begin list
 	const time_attrs::sync_list& list = 
 		tn->get_time_attrs()->get_begin_list();
@@ -256,10 +257,10 @@ void lib::timegraph::add_begin_sync_rules(time_node *tn) {
 			time_node *base = get_node_with_id(svs.base, tn);
 			if(!base) continue;
 			if(svs.event == "begin") {
-				lib::sync_rule *sr = new model_rule(base, tn_begin, svs.offset);
+				sync_rule *sr = new model_rule(base, tn_begin, svs.offset);
 				tn->add_begin_rule(sr);
 			} else if(svs.event == "end") {
-				lib::sync_rule *sr = new model_rule(base, tn_end, svs.offset);
+				sync_rule *sr = new model_rule(base, tn_end, svs.offset);
 				tn->add_begin_rule(sr);
 			}
 		}
@@ -274,26 +275,26 @@ void lib::timegraph::add_begin_sync_rules(time_node *tn) {
 			sync_event event = sync_event_from_str(svs.event);
 			if(event == tn_activate_event)
 				base->want_activate_event(true);			
-			lib::sync_rule *sr = new event_rule(base, event, svs.offset);
+			sync_rule *sr = new event_rule(base, event, svs.offset);
 			tn->add_begin_rule(sr);
 		} else if(svs.type == sv_repeat) {
 			time_node *base = svs.base.empty()?tn:get_node_with_id(svs.base, tn);
 			if(!base) continue;
-			lib::sync_rule *sr = new event_rule(base, tn_repeat_event, svs.offset, svs.iparam);
+			sync_rule *sr = new event_rule(base, tn_repeat_event, svs.offset, svs.iparam);
 			tn->add_begin_rule(sr);
 		} else if(svs.type == sv_accesskey) {
 			tn->want_accesskey(true);
-			lib::sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
+			sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
 			tn->add_begin_rule(sr);
 		} else if(svs.type == sv_media_marker) {
-			lib::sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
+			sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
 			tn->add_begin_rule(sr);
 		}
 	}
 }
 
 // Adds to the provided time node all end rules 
-void lib::timegraph::add_end_sync_rules(time_node *tn) {
+void timegraph::add_end_sync_rules(time_node *tn) {
 	// get node end list
 	const time_attrs::sync_list& list = 
 		tn->get_time_attrs()->get_end_list();
@@ -321,10 +322,10 @@ void lib::timegraph::add_end_sync_rules(time_node *tn) {
 			time_node *base = get_node_with_id(svs.base, tn);
 			if(!base) continue;
 			if(svs.event == "begin") {
-				lib::sync_rule *sr = new model_rule(base, tn_begin, svs.offset);
+				sync_rule *sr = new model_rule(base, tn_begin, svs.offset);
 				tn->add_end_rule(sr);
 			} else if(svs.event == "end") {
-				lib::sync_rule *sr = new model_rule(base, tn_end, svs.offset);
+				sync_rule *sr = new model_rule(base, tn_end, svs.offset);
 				tn->add_end_rule(sr);
 			}
 		}
@@ -358,8 +359,8 @@ void lib::timegraph::add_end_sync_rules(time_node *tn) {
 	
 }
 
-lib::sync_rule*
-lib::timegraph::create_impl_syncbase_begin_rule(time_node *tn) {
+sync_rule*
+timegraph::create_impl_syncbase_begin_rule(time_node *tn) {
 	time_node *parent = tn->up();
 	assert(parent);
 	sync_rule *sr = 0;
@@ -381,8 +382,8 @@ lib::timegraph::create_impl_syncbase_begin_rule(time_node *tn) {
 	return sr;
 }
 
-lib::sync_rule*
-lib::timegraph::create_impl_syncbase_rule(time_node *tn, time_type offset) {
+sync_rule*
+timegraph::create_impl_syncbase_rule(time_node *tn, time_type offset) {
 	time_node *parent = tn->up();
 	assert(parent);
 	sync_rule *sr = 0;
@@ -404,14 +405,14 @@ lib::timegraph::create_impl_syncbase_rule(time_node *tn, time_type offset) {
 	return sr;
 }
 
-lib::time_node* 
-lib::timegraph::get_node_with_id(const std::string& ident) const {
+time_node* 
+timegraph::get_node_with_id(const std::string& ident) const {
 	std::map<std::string, time_node*>::const_iterator it = m_id2tn.find(ident);
 	return (it != m_id2tn.end())?(*it).second:0;
 }
 
-lib::time_node* 
-lib::timegraph::get_node_with_id(const std::string& ident, time_node *tn) const {
+time_node* 
+timegraph::get_node_with_id(const std::string& ident, time_node *tn) const {
 	std::map<std::string, time_node*>::const_iterator it = m_id2tn.find(ident);
 	if(it != m_id2tn.end()) return (*it).second;
 	// check also for special logical syncbases 
@@ -420,7 +421,7 @@ lib::timegraph::get_node_with_id(const std::string& ident, time_node *tn) const 
 }
 
 const lib::node* 
-lib::timegraph::select_switch_child(const node* sn) const {
+timegraph::select_switch_child(const node* sn) const {
 	std::list<const node*> cl;
 	std::list<const node*>::const_iterator it;
 	sn->get_children(cl);
@@ -432,7 +433,7 @@ lib::timegraph::select_switch_child(const node* sn) const {
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
-void lib::timegraph::dump(std::ostream& os) {
+void timegraph::dump(std::ostream& os) {
 	m_root->dump(os);
 }
 #endif

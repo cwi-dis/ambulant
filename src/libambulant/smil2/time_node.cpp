@@ -67,13 +67,14 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
 static lib::logger *tnlogger = 0;
 
 // static
-int lib::time_node::node_counter = 0;
+int time_node::node_counter = 0;
 
-lib::time_node::time_node(context_type *ctx, const node *n, 
+time_node::time_node(context_type *ctx, const node *n, 
 	time_container_type type /* = tc_none */, bool discrete /* = false */) 
 :	m_context(ctx),
 	m_node(n),
@@ -108,7 +109,7 @@ lib::time_node::time_node(context_type *ctx, const node *n,
 	m_state = m_time_states[ts_reset];
 }
 	
-lib::time_node::~time_node() {
+time_node::~time_node() {
 	node_counter--;
 		
 	// Delete begin and end list rules
@@ -138,7 +139,7 @@ lib::time_node::~time_node() {
 // For the current implementation the engine is
 // represented by this node whereas the states
 // by an instance of the time_state class.
-void lib::time_node::create_time_states() {
+void time_node::create_time_states() {
 	m_time_states[ts_reset] = new reset_state(this);
 	m_time_states[ts_proactive] = new proactive_state(this);
 	m_time_states[ts_active] = new active_state(this);
@@ -147,7 +148,7 @@ void lib::time_node::create_time_states() {
 }
 
 // Helper function that collects time instances from the provided rules. 
-void lib::time_node::get_instance_times(const rule_list& rules, time_mset& set) const {
+void time_node::get_instance_times(const rule_list& rules, time_mset& set) const {
 	rule_list::const_iterator it;
 	for(it=rules.begin();it!=rules.end();it++)
 		(*it)->get_instance_times(set);
@@ -155,7 +156,7 @@ void lib::time_node::get_instance_times(const rule_list& rules, time_mset& set) 
 
 // Helper function that resets time instances of the provided rules. 
 // Resets instance times following the spec rules for a reset.
-void lib::time_node::reset(rule_list& rules, time_node *src) {
+void time_node::reset(rule_list& rules, time_node *src) {
 	rule_list::iterator it;
 	for(it=rules.begin();it!=rules.end();it++)
 		(*it)->reset(src);
@@ -164,7 +165,7 @@ void lib::time_node::reset(rule_list& rules, time_node *src) {
 // DOM TimeElement::startElement()
 // Starts a node at t = 0.
 // Currently supported only for the root.
-void lib::time_node::start() {
+void time_node::start() {
 	if(!m_domcall_rule) {
 		m_domcall_rule = new event_rule(this, tn_dom_call);
 		add_begin_rule(m_domcall_rule);
@@ -178,21 +179,21 @@ void lib::time_node::start() {
 
 // DOM TimeElement::stopElement()
 // Currently supported only for the root.
-void lib::time_node::stop() {
+void time_node::stop() {
 	m_context->cancel_all_events();
 	qtime_type timestamp(sync_node(), get_sync_simple_time());
 	reset(timestamp, this);
 }
 
 // DOM TimeElement::pauseElement()
-void lib::time_node::pause() {
+void time_node::pause() {
 }
 
 // Adds a sync_rule to the begin list of this node.
 // This node is not the sync base but the target (e.g. the node that will be affected).
 // This is similar to how begin and end conditions are specified in the smil doc.
 // This node is the owner of the sync_rule but not the source of the event. 
-void lib::time_node::add_begin_rule(sync_rule *sr) {
+void time_node::add_begin_rule(sync_rule *sr) {
 	sr->set_target(this, rt_begin);
 	time_node* tn = sr->get_syncbase();
 	sync_event se = sr->get_syncbase_event();
@@ -203,7 +204,7 @@ void lib::time_node::add_begin_rule(sync_rule *sr) {
 
 // Adds a sync_rule to the end list of this node.
 // This node is not the sync base but the target.
-void lib::time_node::add_end_rule(sync_rule *sr) {
+void time_node::add_end_rule(sync_rule *sr) {
 	sr->set_target(this, rt_end);
 	time_node* tn = sr->get_syncbase();
 	sync_event se = sr->get_syncbase_event();
@@ -213,7 +214,7 @@ void lib::time_node::add_end_rule(sync_rule *sr) {
 }
 
 // Adds a sync arc from this node to a target
-void lib::time_node::add_dependent(sync_rule *sr, sync_event ev) {
+void time_node::add_dependent(sync_rule *sr, sync_event ev) {
 	dependency_map::iterator it = m_dependents.find(ev);
 	rule_list *p = 0;
 	if(it == m_dependents.end() || (*it).second == 0) {
@@ -225,14 +226,14 @@ void lib::time_node::add_dependent(sync_rule *sr, sync_event ev) {
 }
 
 // Retuns the local name of this node
-std::string lib::time_node::to_string() const {
+std::string time_node::to_string() const {
 	if(get_type() == tc_none)
 		return dom_node()->get_local_name();
 	return get_type_as_str();
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
-void lib::time_node::dump(std::ostream& os) {
+void time_node::dump(std::ostream& os) {
 	iterator it;
 	iterator endit = end();
 	int depth = 0;
@@ -253,7 +254,7 @@ void lib::time_node::dump(std::ostream& os) {
 	}
 }
 
-void lib::time_node::dump_dependents(std::ostream& os, sync_event ev) {
+void time_node::dump_dependents(std::ostream& os, sync_event ev) {
 	rule_list *p = m_dependents[ev];
 	if(!p) {
 		os << "dependents[" << to_string() << "] = {}" << std::endl;
@@ -272,8 +273,8 @@ void lib::time_node::dump_dependents(std::ostream& os, sync_event ev) {
 // e.g. queries playable for the implicit dur
 // See time_container::calc_implicit_dur()
 // See seq::calc_implicit_dur()
-lib::time_node::time_type 
-lib::time_node::calc_implicit_dur() {
+time_node::time_type 
+time_node::calc_implicit_dur() {
 	assert(!is_time_container());
 	
 	if(is_discrete()) return time_type(0);
@@ -294,8 +295,8 @@ lib::time_node::calc_implicit_dur() {
 // See spec: "Defining the simple duration" 
 // This function calculates the simple duration of this node.
 // The last calculated simple duration is stored in the variable m_last_cdur 
-lib::time_node::time_type 
-lib::time_node::calc_dur() {
+time_node::time_type 
+time_node::calc_dur() {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
 		AM_DBG tnlogger->trace("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(), "indefinite");	
@@ -322,8 +323,8 @@ lib::time_node::calc_dur() {
 // See spec: "Intermediate Active Duration Computation" 
 // This function calculates the "intermediate active duration" of this node.
 // This quantity is used by the active duration calculation.
-lib::time_node::time_type 
-lib::time_node::calc_intermediate_ad() {
+time_node::time_type 
+time_node::calc_intermediate_ad() {
 	time_type cdur = calc_dur();
 	time_type adrad = m_attrs.specified_rcount()?calc_active_rad():time_type::indefinite;
 	time_type rdur = m_attrs.specified_rdur()?m_attrs.get_rdur():time_type::indefinite;
@@ -339,8 +340,8 @@ lib::time_node::calc_intermediate_ad() {
 // See spec: "Intermediate Active Duration Computation" 
 // This function calculates the accumulated sum of the specified 
 // number of simple durations of the iterations of this element.
-lib::time_node::time_type 
-lib::time_node::calc_active_rad() {
+time_node::time_type 
+time_node::calc_active_rad() {
 	assert(m_attrs.specified_rcount());
 	double rcount = m_attrs.get_rcount();
 	
@@ -376,8 +377,8 @@ lib::time_node::calc_active_rad() {
 // See spec: "Active duration algorithm"
 // This functions calculates the preliminary active duration of an element, 
 // before accounting for min and max  semantics
-lib::time_node::time_type 
-lib::time_node::calc_preliminary_ad(time_type b, time_type e) {
+time_node::time_type 
+time_node::calc_preliminary_ad(time_type b, time_type e) {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
 		assert(calc_dur() == time_type::indefinite);
 		if(e.is_definite())
@@ -398,16 +399,16 @@ lib::time_node::calc_preliminary_ad(time_type b, time_type e) {
 // This functions calculates the preliminary active duration of this node, 
 // before accounting for min and max  semantics.
 // Simplified version of the above applicable when "end" is not specified.
-lib::time_node::time_type 
-lib::time_node::calc_preliminary_ad(time_type b) {
+time_node::time_type 
+time_node::calc_preliminary_ad(time_type b) {
 	assert(!m_attrs.specified_end());
 	return calc_intermediate_ad();
 }
 
 // See spec: "Active duration algorithm"
 // This function calculates the active duration of this node.
-lib::time_node::time_type 
-lib::time_node::calc_ad(time_type b, time_type e) {
+time_node::time_type 
+time_node::calc_ad(time_type b, time_type e) {
 	time_type minval = m_attrs.specified_min()?m_attrs.get_min():0;
 	time_type maxval = m_attrs.specified_max()?m_attrs.get_max():time_type::indefinite;
 	time_type pad = calc_preliminary_ad(b, e);
@@ -420,8 +421,8 @@ lib::time_node::calc_ad(time_type b, time_type e) {
 // See spec: "Active duration algorithm"
 // This function calculates the active duration of this node.
 // Simplified version of the above applicable when "end" is not specified.
-lib::time_node::time_type 
-lib::time_node::calc_ad(time_type b) {
+time_node::time_type 
+time_node::calc_ad(time_type b) {
 	assert(!m_attrs.specified_end());
 	time_type minval = m_attrs.specified_min()?m_attrs.get_min():0;
 	time_type maxval = m_attrs.specified_max()?m_attrs.get_max():time_type::indefinite;
@@ -434,23 +435,23 @@ lib::time_node::calc_ad(time_type b) {
 
 // Calculates and returns the active end of this node.
 // This uses calc_ad() function.
-lib::time_node::time_type 
-lib::time_node::calc_end(time_type b, time_type e) {
+time_node::time_type 
+time_node::calc_end(time_type b, time_type e) {
 	return b + calc_ad(b, e);
 }
 
 // Calculates and returns the active end of this node when "end" is not specified.
 // This uses calc_ad() function.
-lib::time_node::time_type 
-lib::time_node::calc_end(time_type b) {
+time_node::time_type 
+time_node::calc_end(time_type b) {
 	assert(!m_attrs.specified_end());
 	return b + calc_ad(b);
 }
 
 // Calculates and returns the current inteval end.
 // This uses calc_ad() function.
-lib::time_node::time_type 
-lib::time_node::calc_current_interval_end()  {
+time_node::time_type 
+time_node::calc_current_interval_end()  {
 	time_mset end_list;
 	get_instance_times(m_end_list, end_list);
 	time_type begin = m_interval.begin;
@@ -490,8 +491,8 @@ lib::time_node::calc_current_interval_end()  {
 // and requires this node's begin and end lists and the parent 
 // simple dur.
 //
-lib::time_node::interval_type 
-lib::time_node::calc_first_interval() {
+time_node::interval_type 
+time_node::calc_first_interval() {
 	// define failure as an alias for the invalid unresolved interval.
 	interval_type failure = interval_type::unresolved;
 		
@@ -556,8 +557,8 @@ lib::time_node::calc_first_interval() {
 // and requires this node's begin and end lists, this node's
 // just ended interval, and the parent simple dur.
 
-lib::time_node::interval_type 
-lib::time_node::calc_next_interval() {
+time_node::interval_type 
+time_node::calc_next_interval() {
 	// define failure as an alias for the invalid unresolved interval.
 	interval_type failure = interval_type::unresolved;
 	
@@ -629,8 +630,8 @@ lib::time_node::calc_next_interval() {
 
 // Returns the current interval as clipped by its parent simple duration.
 // This function is not used currently.
-lib::time_node::interval_type 
-lib::time_node::calc_clipped_interval() {
+time_node::interval_type 
+time_node::calc_clipped_interval() {
 	if(!m_interval.is_valid())
 		return interval_type::unresolved;
 	time_type parent_simple_dur = up()?up()->calc_dur():time_type::indefinite;
@@ -645,7 +646,7 @@ lib::time_node::calc_clipped_interval() {
 
 // Sets the state of this node.
 // timestamp: "scheduled now" in parent simple time
-void lib::time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
+void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
 	m_state->exit(timestamp, oproot);
 	m_state = m_time_states[state];
 	m_state->enter(timestamp);
@@ -661,7 +662,7 @@ void lib::time_node::set_state(time_state_type state, qtime_type timestamp, time
 // via time_node::activate(timestamp).
 // 
 // param timestamp: "now" in parent simple time
-void lib::time_node::schedule_interval(qtime_type timestamp, const interval_type& i) {
+void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) {
 	AM_DBG tnlogger->trace("%s[%s].schedule_interval(): %s (DT=%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 	
@@ -721,7 +722,7 @@ void lib::time_node::schedule_interval(qtime_type timestamp, const interval_type
 }
 
 // Schedules a state transition to happen at dt from now.
-void lib::time_node::schedule_transition(time_state_type tst, qtime_type timestamp, time_type dt) {
+void time_node::schedule_transition(time_state_type tst, qtime_type timestamp, time_type dt) {
 	assert(dt.is_definite());
 	transition_event *trevent = new transition_event(this, tst, timestamp);
 	if(tst == ts_active)
@@ -732,7 +733,7 @@ void lib::time_node::schedule_transition(time_state_type tst, qtime_type timesta
 }
 
 // Scheduled transition callback
-void lib::time_node::transition_callback(const transition_event *e) {
+void time_node::transition_callback(const transition_event *e) {
 	time_state_type tst = e->m_state;
 	if(tst == ts_active) m_begin_trevent = 0;
 	else if(tst == ts_postactive) m_end_trevent = 0;
@@ -757,21 +758,21 @@ void lib::time_node::transition_callback(const transition_event *e) {
 }
 
 // Schedules a repeat notification to happen at dt from now.
-void lib::time_node::schedule_repeat(qtime_type timestamp, time_type dt) {
+void time_node::schedule_repeat(qtime_type timestamp, time_type dt) {
 	assert(dt.is_definite());
 	m_revent = new repeat_event(this, timestamp);
 	m_context->schedule_event(m_revent, dt());
 }
 
 // Schedules a sync update notification to happen at dt from now.
-void lib::time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
+void time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
 	typedef scalar_arg_callback_event<time_node, qtime_type> sync_update_cb;
 	sync_update_cb *cb = new sync_update_cb(this, &time_node::sync_update, timestamp);
 	m_context->schedule_event(cb, dt());
 }
 
 // Scheduled repeat notification callback
-void lib::time_node::repeat_callback(const repeat_event *e) {
+void time_node::repeat_callback(const repeat_event *e) {
 	qtime_type timestamp = e->m_timestamp;
 	
 	// was too late to be canceled
@@ -804,7 +805,7 @@ void lib::time_node::repeat_callback(const repeat_event *e) {
 }
 
 // Cancels the current interval.
-void lib::time_node::cancel_interval(qtime_type timestamp) {
+void time_node::cancel_interval(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
 	assert(m_interval.is_valid());
@@ -821,7 +822,7 @@ void lib::time_node::cancel_interval(qtime_type timestamp) {
 }
 
 // Updates the current interval with the one provided.
-void lib::time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
+void time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
 	AM_DBG tnlogger->trace("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());	
 	assert(m_interval.is_valid());
@@ -851,7 +852,7 @@ void lib::time_node::update_interval(qtime_type timestamp, const interval_type& 
 }
 
 // Updates the current interval end with the value provided.
-void lib::time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
+void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 	AM_DBG tnlogger->trace("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
 		::repr(m_interval.end).c_str(), 
@@ -883,7 +884,7 @@ void lib::time_node::update_interval_end(qtime_type timestamp, time_type new_end
 }
 
 // Cancels the schedule of this node.
-void lib::time_node::cancel_schedule() {
+void time_node::cancel_schedule() {
 	if(m_begin_trevent) {
 		m_context->cancel_event(m_begin_trevent);
 		m_begin_trevent = 0;
@@ -902,7 +903,7 @@ void lib::time_node::cancel_schedule() {
 //
 // timestamp: "scheduled now" in parent simple time
 //
-void lib::time_node::activate(qtime_type timestamp) {
+void time_node::activate(qtime_type timestamp) {
 
 	// verify the assumptions made in the following code
 	assert(timestamp.first == sync_node());
@@ -954,7 +955,7 @@ void lib::time_node::activate(qtime_type timestamp) {
 
 // The following function is called at dur end.
 // It is responsible to execute the repeat actions for this node. 
-void lib::time_node::repeat(qtime_type timestamp) {
+void time_node::repeat(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("*** %s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
@@ -984,7 +985,7 @@ void lib::time_node::repeat(qtime_type timestamp) {
 // This is called always by reset.
 // This maybe called when the element is deactivated
 // or when the next is activated.
-void lib::time_node::remove(qtime_type timestamp) {
+void time_node::remove(qtime_type timestamp) {
 	if(!m_needs_remove) return;
 	AM_DBG tnlogger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  
@@ -1011,7 +1012,7 @@ void lib::time_node::remove(qtime_type timestamp) {
 
 // Pauses this node.
 // Excl element handling.
-void lib::time_node::pause(qtime_type timestamp, pause_display d) {
+void time_node::pause(qtime_type timestamp, pause_display d) {
 	paused(true);
 	if(down()) {
 		std::list<time_node*> children;
@@ -1030,7 +1031,7 @@ void lib::time_node::pause(qtime_type timestamp, pause_display d) {
 
 // Resumes this node.
 // Excl element handling.
-void lib::time_node::resume(qtime_type timestamp) {
+void time_node::resume(qtime_type timestamp) {
 	paused(false);
 	if(down()) {
 		std::list<time_node*> children;
@@ -1049,7 +1050,7 @@ void lib::time_node::resume(qtime_type timestamp) {
 
 // Defers the interval of this node.
 // Excl element handling.
-void lib::time_node::defer_interval(qtime_type timestamp) {
+void time_node::defer_interval(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("%s[%s].defer_interval(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
 	assert(m_interval.is_valid());
@@ -1065,7 +1066,7 @@ void lib::time_node::defer_interval(qtime_type timestamp) {
 
 // Excl element handling.
 // When an element is deferred, the begin time is deferred as well
-void lib::time_node::schedule_deferred_interval(qtime_type timestamp) {
+void time_node::schedule_deferred_interval(qtime_type timestamp) {
 	deferred(false);
 	interval_type i = m_interval;
 	i.translate(timestamp.second-m_interval.begin);
@@ -1082,7 +1083,7 @@ void lib::time_node::schedule_deferred_interval(qtime_type timestamp) {
 // Pause or stop peer playable based on the fill semantics.
 // Results to peer.pause() (m_needs_remove = true) or peer.stop() (m_needs_remove = true).
 //
-void lib::time_node::fill(qtime_type timestamp) {
+void time_node::fill(qtime_type timestamp) {
 	// Does this node have shown anything?
 	if(!m_needs_remove) return;
 	
@@ -1117,7 +1118,7 @@ void lib::time_node::fill(qtime_type timestamp) {
 ///////////////////////////////
 // Dependents updates
 
-void lib::time_node::on_new_instance(qtime_type timestamp, sync_event ev, time_type instance, time_node *filter) {
+void time_node::on_new_instance(qtime_type timestamp, sync_event ev, time_type instance, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
 	if(dit != m_dependents.end() && (*dit).second != 0) {
 		rule_list *p = (*dit).second;
@@ -1129,7 +1130,7 @@ void lib::time_node::on_new_instance(qtime_type timestamp, sync_event ev, time_t
 	}
 }
 
-void lib::time_node::on_update_instance(qtime_type timestamp, sync_event ev, time_type instance, time_type old_instance, time_node *filter) {
+void time_node::on_update_instance(qtime_type timestamp, sync_event ev, time_type instance, time_type old_instance, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
 	if(dit != m_dependents.end() && (*dit).second != 0) {
 		rule_list *p = (*dit).second;
@@ -1141,7 +1142,7 @@ void lib::time_node::on_update_instance(qtime_type timestamp, sync_event ev, tim
 	}
 }
 
-void lib::time_node::on_cancel_instance(qtime_type timestamp, sync_event ev, time_type instance, time_node *filter) {
+void time_node::on_cancel_instance(qtime_type timestamp, sync_event ev, time_type instance, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
 	if(dit != m_dependents.end() && (*dit).second != 0) {
 		rule_list *p = (*dit).second;
@@ -1153,8 +1154,8 @@ void lib::time_node::on_cancel_instance(qtime_type timestamp, sync_event ev, tim
 	}
 }
 
-void lib::time_node::on_add_instance(qtime_type timestamp, lib::sync_event ev, 
-	lib::time_node::time_type instance, int data, time_node *filter) {
+void time_node::on_add_instance(qtime_type timestamp, sync_event ev, 
+	time_node::time_type instance, int data, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
 	if(dit != m_dependents.end() && (*dit).second != 0) {
 		rule_list *p = (*dit).second;
@@ -1174,7 +1175,7 @@ void lib::time_node::on_add_instance(qtime_type timestamp, lib::sync_event ev,
 // Containers have to reset children, bring them to life 
 // and notify dependents.
 // Leaf nodes have to notify dependents and start their peer playable.
-void lib::time_node::raise_begin_event(qtime_type timestamp) {
+void time_node::raise_begin_event(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("%s[%s].raise_begin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
@@ -1195,7 +1196,7 @@ void lib::time_node::raise_begin_event(qtime_type timestamp) {
 // and notify dependents.
 // Leaf nodes have to notify dependents and start their peer playable at 0.
 // timestamp is parent's simple time when this event occurs.
-void lib::time_node::raise_repeat_event(qtime_type timestamp) {
+void time_node::raise_repeat_event(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("%s[%s].raise_repeat_event(%d) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), m_precounter,
 		timestamp.as_time_value_down_to(this),
@@ -1209,7 +1210,7 @@ void lib::time_node::raise_repeat_event(qtime_type timestamp) {
 // On end, containers have to kill their children 
 // and notify dependents.
 // Leaf nodes have to notify dependents and pause playable
-void lib::time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
+void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	if(m_interval.end != timestamp.second) {
 		on_update_instance(timestamp, tn_end, timestamp.second, m_interval.end, oproot);
 		m_interval.end = timestamp.second;	
@@ -1230,7 +1231,7 @@ void lib::time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	if(is_root()) m_context->done_playback();
 }
 
-void lib::time_node::raise_activate_event(qtime_type timestamp) {
+void time_node::raise_activate_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
 	AM_DBG tnlogger->trace("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
@@ -1240,7 +1241,7 @@ void lib::time_node::raise_activate_event(qtime_type timestamp) {
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
 }
 
-void lib::time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
+void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 	qtime_type timestamp = accesskey.first;
 	int ch = accesskey.second;
 	timestamp.to_descendent(sync_node());
@@ -1257,19 +1258,19 @@ void lib::time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 // The purpose of these is to break long chains to smaller ones
 // Makes UI handling more smooth. 
 
-void lib::time_node::raise_begin_event_async(qtime_type timestamp) {
+void time_node::raise_begin_event_async(qtime_type timestamp) {
 	typedef scalar_arg_callback_event<time_node, qtime_type> begin_event_cb;
 	begin_event_cb *cb = new begin_event_cb(this, &time_node::raise_begin_event, timestamp);
 	m_context->schedule_event(cb, 0);
 }
 
-void lib::time_node::raise_repeat_event_async(qtime_type timestamp) {
+void time_node::raise_repeat_event_async(qtime_type timestamp) {
 	typedef scalar_arg_callback_event<time_node, qtime_type> repeat_event_cb;
 	repeat_event_cb *cb = new repeat_event_cb(this, &time_node::raise_repeat_event, timestamp);
 	m_context->schedule_event(cb, 0);
 }
 
-void lib::time_node::raise_end_event_async(qtime_type timestamp, time_node *oproot) {
+void time_node::raise_end_event_async(qtime_type timestamp, time_node *oproot) {
 	typedef scalar_arg2_callback_event<time_node, qtime_type, time_node*> end_event_cb;
 	end_event_cb *cb = new end_event_cb(this, &time_node::raise_end_event, timestamp, oproot);
 	m_context->schedule_event(cb, 0);
@@ -1285,7 +1286,7 @@ void lib::time_node::raise_end_event_async(qtime_type timestamp, time_node *opro
 // when it was created except that, after a reset it may contain 
 // in its begin or end lists some syncbased instances.
 //
-void lib::time_node::reset(qtime_type timestamp, time_node *oproot) {
+void time_node::reset(qtime_type timestamp, time_node *oproot) {
 	// 1. Reset children with resepect to oproot.
 	std::list<time_node*> children;
 	get_children(children);
@@ -1307,7 +1308,7 @@ void lib::time_node::reset(qtime_type timestamp, time_node *oproot) {
 		(*it2)->reset(oproot);
 }
 
-void lib::time_node::reset_children(qtime_type timestamp, time_node *oproot) {
+void time_node::reset_children(qtime_type timestamp, time_node *oproot) {
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -1316,7 +1317,7 @@ void lib::time_node::reset_children(qtime_type timestamp, time_node *oproot) {
 		(*it)->reset(qt, oproot);
 }
 
-void lib::time_node::startup_children(qtime_type timestamp) {
+void time_node::startup_children(qtime_type timestamp) {
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -1325,7 +1326,7 @@ void lib::time_node::startup_children(qtime_type timestamp) {
 		(*it)->set_state(ts_proactive, qt, this);
 }
 
-void lib::time_node::kill(qtime_type timestamp, time_node *oproot) {
+void time_node::kill(qtime_type timestamp, time_node *oproot) {
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -1335,7 +1336,7 @@ void lib::time_node::kill(qtime_type timestamp, time_node *oproot) {
 	m_state->kill(timestamp, oproot);	
 }
 
-void lib::time_node::kill_children(qtime_type timestamp, time_node *oproot) {
+void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -1346,7 +1347,7 @@ void lib::time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 
 // The timestamp clock can be any
 // Convert it if possible to this sync_node clock time
-void lib::time_node::sync_update(qtime_type timestamp) {
+void time_node::sync_update(qtime_type timestamp) {
 	time_type pt = timestamp.as_node_time(sync_node());
 	if(pt.is_resolved()) {
 		timestamp = qtime_type(sync_node(), pt);
@@ -1355,7 +1356,7 @@ void lib::time_node::sync_update(qtime_type timestamp) {
 }
 
 // End of nedia update
-void lib::time_node::eom_update(qtime_type timestamp) {
+void time_node::eom_update(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
 	if(timestamp.second.is_resolved()) {
 		if(is_active())
@@ -1368,12 +1369,12 @@ void lib::time_node::eom_update(qtime_type timestamp) {
 // Timing operations
 
 // Returns the simple time of this sync node (parent).
-lib::time_node::value_type lib::time_node::get_sync_simple_time() const {
+time_node::value_type time_node::get_sync_simple_time() const {
 	return is_root()?m_context->elapsed():sync_node()->get_simple_time();
 }
 
 // Returns the simple time of this node.
-lib::time_node::value_type lib::time_node::get_simple_time() const {
+time_node::value_type time_node::get_simple_time() const {
 	return get_sync_simple_time() - m_rad_offset;
 }
 
@@ -1387,8 +1388,8 @@ lib::time_node::value_type lib::time_node::get_simple_time() const {
 // By default, the implicit duration of a par is defined by 
 // the endsync="last" semantics. The implicit duration ends 
 // with the last active end of the child elements. 
-lib::time_node::time_type 
-lib::time_container::calc_implicit_dur() {
+time_node::time_type 
+time_container::calc_implicit_dur() {
 	if(!down()) return 0;
 	endsync_rule esr = m_attrs.get_endsync_rule();
 	time_type idur = time_type::unresolved;
@@ -1414,8 +1415,8 @@ lib::time_container::calc_implicit_dur() {
 	return idur;
 }
 
-lib::time_node::time_type 
-lib::time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl) {
+time_node::time_type 
+time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
 	time_type idur = time_type::unresolved;
 	for(it=cl.begin();it!=cl.end();it++) {
@@ -1429,8 +1430,8 @@ lib::time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>
 	return idur;	
 }
 
-lib::time_node::time_type 
-lib::time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) {
+time_node::time_type 
+time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
 	time_type idur = time_type::minus_infinity;
 	for(it=cl.begin();it!=cl.end();it++) {
@@ -1448,8 +1449,8 @@ lib::time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>&
 	return (idur == time_type::minus_infinity)?0:idur;	
 }
 
-lib::time_node::time_type 
-lib::time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
+time_node::time_type 
+time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
 	time_type idur = time_type::minus_infinity;
 	for(it=cl.begin();it!=cl.end();it++) {
@@ -1467,8 +1468,8 @@ lib::time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& 
 	return (idur == time_type::minus_infinity)?time_type::unresolved:idur;	
 }
 
-lib::time_node::time_type 
-lib::time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
+time_node::time_type 
+time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
 	time_type idur = time_type::unresolved;
 	for(it=cl.begin();it!=cl.end();it++) {
@@ -1485,7 +1486,7 @@ lib::time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& c
 }
 
 // c: the child just de-activated
-bool lib::time_container::needs_end_sync_update(const time_node *c, qtime_type timestamp) const {
+bool time_container::needs_end_sync_update(const time_node *c, qtime_type timestamp) const {
 	
 	// This does not need a sync_update if the implicit duration
 	// will not be involved in interval calculations
@@ -1542,8 +1543,8 @@ bool lib::time_container::needs_end_sync_update(const time_node *c, qtime_type t
 // of the last child of the seq.  
 // If any child of a seq has an indefinite active duration, 
 // the implicit duration of the seq is also indefinite. 
-lib::time_node::time_type 
-lib::seq::calc_implicit_dur() {
+time_node::time_type 
+seq::calc_implicit_dur() {
 	if(!down()) return 0;
 	const time_node* tn = last_child();
 	const interval_type& i = tn->get_interval();
@@ -1554,7 +1555,7 @@ lib::seq::calc_implicit_dur() {
 	return idur;
 }
 
-bool lib::seq::needs_end_sync_update(const time_node *c, qtime_type timestamp) const {
+bool seq::needs_end_sync_update(const time_node *c, qtime_type timestamp) const {
 	if(c->next()) return false;
 	// c is the last
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end())
@@ -1566,14 +1567,14 @@ bool lib::seq::needs_end_sync_update(const time_node *c, qtime_type timestamp) c
 ///////////////////////////////
 // excl implementation
 
-lib::excl::excl(context_type *ctx, const lib::node *n) 
+excl::excl(context_type *ctx, const lib::node *n) 
 :	time_container(ctx, n, tc_excl), 
 	m_queue(new excl_queue()), 
 	m_num_classes(0),
 	m_priority_attrs(0) {
 }
 
-lib::excl::~excl() {
+excl::~excl() {
 	delete m_queue;
 	for(int i=0;i<m_num_classes;i++)
 		delete m_priority_attrs[i];
@@ -1583,7 +1584,7 @@ lib::excl::~excl() {
 // This function is called once by the timegraph 
 // for each excl element to build the required 
 // priorityClass related structures.
-void lib::excl::built_priorities() {
+void excl::built_priorities() {
 	AM_DBG tnlogger->trace("%s[%s].built_priorities()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 		
@@ -1642,8 +1643,8 @@ void lib::excl::built_priorities() {
 	}
 }
 
-lib::time_node*
-lib::excl::get_active_child() {
+time_node*
+excl::get_active_child() {
 	std::list<time_node*> cl;
 	get_children(cl);
 	std::list<time_node*>::iterator it;
@@ -1652,7 +1653,7 @@ lib::excl::get_active_child() {
 	return it!=cl.end()?(*it):0;
 }
 
-void lib::excl::interrupt(time_node *c, qtime_type timestamp) {
+void excl::interrupt(time_node *c, qtime_type timestamp) {
 	time_node *interrupting_node = c;
 	time_node *active_node = get_active_child();
 	if(active_node == 0) {
@@ -1723,7 +1724,7 @@ void lib::excl::interrupt(time_node *c, qtime_type timestamp) {
 	}
 }
 
-void lib::excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
+void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 	if(!m_queue || m_queue->empty()) return;
 	time_node *next = m_queue->pop();
 	
@@ -1741,7 +1742,7 @@ void lib::excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 		assert(false);
 	}
 }
-void lib::excl::remove(time_node *tn) {
+void excl::remove(time_node *tn) {
 	if(!m_queue || m_queue->empty()) return;
 	m_queue->remove(tn);
 }
@@ -1749,7 +1750,7 @@ void lib::excl::remove(time_node *tn) {
 ///////////////////////
 // excl_queue
 
-void lib::excl_queue::push_pause(lib::time_node *tn) {
+void excl_queue::push_pause(time_node *tn) {
 	// an element may not appear in the queue more than once
 	m_cont.remove(tn);
 	
@@ -1761,7 +1762,7 @@ void lib::excl_queue::push_pause(lib::time_node *tn) {
 	m_cont.insert(it, tn);
 }
 
-void lib::excl_queue::push_defer(lib::time_node *tn) {
+void excl_queue::push_defer(time_node *tn) {
 	// an element may not appear in the queue more than once
 	m_cont.remove(tn);
 	
@@ -1773,8 +1774,8 @@ void lib::excl_queue::push_defer(lib::time_node *tn) {
 	m_cont.insert(it, tn);
 }
 
-void lib::excl_queue::assert_invariants() const {
-	std::set<lib::time_node*> s;
+void excl_queue::assert_invariants() const {
+	std::set<time_node*> s;
 	cont::size_type count = 0;
 	int prev_prio = std::numeric_limits<int>::max();
 	for(cont::const_iterator it = m_cont.begin();it!=m_cont.end();it++) {
