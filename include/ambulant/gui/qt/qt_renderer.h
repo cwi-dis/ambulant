@@ -95,7 +95,7 @@ namespace qt_renderer {
     qt_gui* m_view;
   };
 
-  class qt_window_factory : window_factory {
+  class qt_window_factory : public window_factory {
   
   public:
     qt_window_factory(qt_gui* view)
@@ -108,7 +108,7 @@ namespace qt_renderer {
     qt_gui* m_view;
   };
   
-  class qt_renderer_factory : renderer_factory {
+  class qt_renderer_factory : public renderer_factory {
 
   public:
     qt_renderer_factory() {
