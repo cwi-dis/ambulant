@@ -3,11 +3,12 @@
 
 
 #pragma once
-class CMainFrame : public CMDIFrameWnd
+class CMainFrame : public CFrameWnd
 {
-	DECLARE_DYNAMIC(CMainFrame)
-public:
+	
+protected: // create from serialization only
 	CMainFrame();
+	DECLARE_DYNCREATE(CMainFrame)
 
 // Attributes
 public:

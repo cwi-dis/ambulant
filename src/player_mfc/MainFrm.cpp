@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "player_mfc.h"
+#include "DemoPlayer.h"
 
 #include "MainFrm.h"
 
@@ -13,9 +13,9 @@
 
 // CMainFrame
 
-IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWnd)
+IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
-BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
+BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
@@ -42,7 +42,7 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1)
+	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
@@ -70,11 +70,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	if( !CMDIFrameWnd::PreCreateWindow(cs) )
+	// DO NOT ADD DOCUMENT NAME TO TITLE
+	cs.style &= ~FWS_ADDTOTITLE;
+
+	if( !CFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
+	cs.cx = 176 + 28;
+	cs.cy = 216 + 108;
 	return TRUE;
 }
 
@@ -84,12 +88,12 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
-	CMDIFrameWnd::AssertValid();
+	CFrameWnd::AssertValid();
 }
 
 void CMainFrame::Dump(CDumpContext& dc) const
 {
-	CMDIFrameWnd::Dump(dc);
+	CFrameWnd::Dump(dc);
 }
 
 #endif //_DEBUG
