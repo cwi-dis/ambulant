@@ -69,6 +69,11 @@
 using namespace ambulant;
 using namespace smil2;
 
+////////////////////////////////////
+// animate_node
+//
+// An animate_node is the base class for all animation node flavors
+
 animate_node::animate_node(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	time_node(ctx, n, tc_none, false), 
 	m_aattrs(aattrs) {
@@ -81,147 +86,494 @@ animate_node::~animate_node() {
 void animate_node::prepare_interval() {
 }
 
-bool animate_node::apply_value(common::animation_destination *dst) {
+void animate_node::read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+}
+
+bool animate_node::set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
 	return false;
 }
 
-////////////////////////////////////
-// animate_reg_dim_node
-// "left", "top", "width", "height", "right", "bottom"
-// as common::region_dim
+void animate_node::apply_self_effect(animate_registers& regs) const {
+}
 
-template <class F>
-class animate_reg_dim_node : public animate_node {
+////////////////////////////////////
+// linear_values animation
+
+// A linear_values_animation is applicable for linear-attributes
+// linear-attributes define: addition, subtraction and scaling
+// A linear_values_animation may be continuous or discrete 
+// The interpolation mode (calcMode) of a continuous linear_values animation may be linear, paced or spline
+
+// F: the simple function
+// T: the type of the attribute
+// The type T must define addition, subtraction and scaling
+template <class F, class T>
+class linear_values_animation : public animate_node {
   public:
-	animate_reg_dim_node(context_type *ctx, const node *n, animate_attrs *aattrs);
-	~animate_reg_dim_node();
+	linear_values_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	~linear_values_animation();
 	
 	void prepare_interval();
-	bool apply_value(common::animation_destination *dst);
 	
-  private:
+  protected:
 	F m_simple_f;
 	animate_f<F> *m_animate_f;
+	std::vector<T> m_values;
+	
 };
 
-template <class F>
-animate_reg_dim_node<F>::animate_reg_dim_node(context_type *ctx, const node *n, animate_attrs *aattrs)
-:	animate_node(ctx, n, aattrs) {
-	std::vector<common::region_dim> v;
+template <class F, class T>
+linear_values_animation<F, T>::linear_values_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+:	animate_node(ctx, n, aattrs), m_animate_f(0)  {
+	m_aattrs->get_values(m_values);
+}
+
+template <class F, class T>
+linear_values_animation<F, T>::~linear_values_animation() {
+	delete m_animate_f;
+}
+
+template <class F, class T>
+void linear_values_animation<F, T>::prepare_interval() {
+	time_type dur = calc_dur();
+	time_type sfdur = dur;
+	const time_attrs* ta = get_time_attrs();
+	if(dur.is_definite() && ta->auto_reverse()) sfdur /= 2;
+	if(m_aattrs->get_calc_mode() == "paced") {
+		m_simple_f.paced_init(sfdur(), m_values);
+	} else {
+		m_simple_f.init(sfdur(), m_values);
+	}
+	m_simple_f.set_auto_reverse(ta->auto_reverse());
+	m_simple_f.set_accelerate(ta->get_accelerate(), ta->get_decelerate());	
+	time_type ad = m_interval.end - m_interval.begin;
+	m_animate_f = new animate_f<F>(m_simple_f, dur(), ad(), m_aattrs->is_accumulative());
+}
+
+////////////////////////////////////
+// underlying_to_animation
+
+// A underlying_to_animation is applicable for linear-attributes
+// linear-attributes define: addition, subtraction and scaling
+
+// F: the simple function
+// T: the type of the attribute
+// The type T must define addition, subtraction and scaling
+template <class T>
+class underlying_to_animation : public animate_node {
+  public:
+	underlying_to_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	~underlying_to_animation();
+	
+	void prepare_interval();
+		
+  protected:
+	typedef underlying_to_f<T> F;
+	F m_simple_f;
+	animate_f<F> *m_animate_f;
+	T m_value;
+};
+
+template <class T>
+underlying_to_animation<T>::underlying_to_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+:	animate_node(ctx, n, aattrs), m_animate_f(0)  {
+	std::vector<T> v;
 	m_aattrs->get_values(v);
-	if(aattrs->get_calc_mode() == "paced") {
-		init_map_f_paced(calc_dur()(), v, m_simple_f);
-	} else {
-		init_map_f(calc_dur()(), v, m_simple_f);
-	}
+	m_value = v[0];
 }
 
-template <class F>
-animate_reg_dim_node<F>::~animate_reg_dim_node() {
+template <class T>
+underlying_to_animation<T>::~underlying_to_animation() {
 	delete m_animate_f;
 }
 
-template <class F>
-void animate_reg_dim_node<F>::prepare_interval() {
+template <class T>
+void underlying_to_animation<T>::prepare_interval() {
+	time_type dur = calc_dur();
+	time_type sfdur = dur;
+	const time_attrs* ta = get_time_attrs();
+	if(dur.is_definite() && ta->auto_reverse()) sfdur /= 2;
+	m_simple_f.init(sfdur(), m_value);
+	m_simple_f.set_auto_reverse(ta->auto_reverse());
+	m_simple_f.set_accelerate(ta->get_accelerate(), ta->get_decelerate());
 	time_type ad = m_interval.end - m_interval.begin;
-	m_animate_f = new animate_f<F>(m_simple_f, ad(), m_aattrs->is_accumulative());
-}
-
-template <class F>
-bool animate_reg_dim_node<F>::apply_value(common::animation_destination *dst) {
-	if(!m_animate_f) return false;
-	lib::timer::time_type t = m_timer->elapsed();
-	common::region_dim rd = m_animate_f->at(t);
-	
-	lib::logger::get_logger()->trace("%s(%ld) -> %s", 
-		m_aattrs->get_target_attr().c_str(), t, ::repr(rd).c_str());
-	
-	// XXX: check for additivity
-	// XXX: dst->set_region_dim(m_aattrs->get_target_attr(), rd);
-	
-	
-	// XXX: return true when attr has changed else false
-	return false;
+	m_animate_f = new animate_f<F>(m_simple_f, dur(), ad(), m_aattrs->is_accumulative());
 }
 
 ////////////////////////////////////
-// animate_bgcolor_node
-// backgroundColor value animations
+// regdim_animation
+//
+// A regdim_animation may be used for all region dim animations except for "to" animations
+// 
+// Animateable region/subregion attributes: "left", "top", "width", "height", "right", "bottom"
 
 template <class F>
-class animate_bgcolor_node : public animate_node {
+class regdim_animation : public linear_values_animation<F, common::region_dim> {
   public:
-	animate_bgcolor_node(context_type *ctx, const node *n, animate_attrs *aattrs);
-	~animate_bgcolor_node();
+	regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs) {}
 	
-	void prepare_interval();
-	bool apply_value(common::animation_destination *dst);
-	
-  private:
-	F m_simple_f;
-	animate_f<F> *m_animate_f;
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.rd = dst->get_region_dim(m_aattrs->get_target_attr(), true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::region_dim rd = dst->get_region_dim(m_aattrs->get_target_attr(), false);
+		if(rd != regs.rd) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
+			}
+			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
+			return true;
+		}
+		return false;
+	}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		common::region_dim rd = m_animate_f->at(t);
+		if(m_aattrs->is_additive())
+			regs.rd += rd; // add
+			
+		else
+			regs.rd = rd; // override
+	}
 };
 
-template <class F>
-animate_bgcolor_node<F>::animate_bgcolor_node(context_type *ctx, const node *n, animate_attrs *aattrs)
-:	animate_node(ctx, n, aattrs) {
-	std::vector<lib::color_t> v;
-	m_aattrs->get_color_values(v);
-	if(aattrs->get_calc_mode() == "paced") {
-		init_map_f_paced(calc_dur()(), v, m_simple_f);
-	} else {
-		init_map_f(calc_dur()(), v, m_simple_f);
+class underlying_to_regdim_animation : public underlying_to_animation<common::region_dim> {
+  public:
+	underlying_to_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<common::region_dim>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.rd = dst->get_region_dim(m_aattrs->get_target_attr(), true);
 	}
-}
 
-template <class F>
-animate_bgcolor_node<F>::~animate_bgcolor_node() {
-	delete m_animate_f;
-}
-
-template <class F>
-void animate_bgcolor_node<F>::prepare_interval() {
-	time_type ad = m_interval.end - m_interval.begin;
-	m_animate_f = new animate_f<F>(m_simple_f, ad(), m_aattrs->is_accumulative());
-}
-
-template <class F>
-bool animate_bgcolor_node<F>::apply_value(common::animation_destination *dst) {
-	if(!m_animate_f) return false;
-	lib::timer::time_type t = m_timer->elapsed();
-	lib::color_t newcolor = m_animate_f->at(t);
-	lib::color_t oldcolor = dst->get_bgcolor();
-	// XXX: check for additivity
-	// ...
-	if(newcolor != oldcolor) {
-		dst->set_bgcolor(newcolor);
-		return true;
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::region_dim rd = dst->get_region_dim(m_aattrs->get_target_attr(), false);
+		if(rd != regs.rd) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
+			}		
+			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
+			return true;
+		}
+		return false;
 	}
-	return false;
-}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		common::region_dim rd = m_animate_f->at(t, regs.rd);
+		regs.rd = rd; // override
+	}
+};
+
+////////////////////////////////////
+// color_animation
+//
+// A color_animation may be used for all backgroundColor/color animations except for "to" animations
+// 
+// Animateable region/subregion attributes: "backgroundColor", "color"
+
+
+template <class F>
+class color_animation : public linear_values_animation<F, lib::color_t> {
+  public:
+	color_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, lib::color_t>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.cl = dst->get_region_color(m_aattrs->get_target_attr(), true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		lib::color_t cl = dst->get_region_color(m_aattrs->get_target_attr(), false);
+		if(cl != regs.cl) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> 0x%x", 
+					m_aattrs->get_target_attr().c_str(), t, regs.cl);
+			}				
+			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		lib::color_t cl = m_animate_f->at(t);
+		if(m_aattrs->is_additive())
+			regs.cl += cl; // add
+		else
+			regs.cl = cl; // override
+	}
+};
+
+class underlying_to_color_animation : public underlying_to_animation<lib::color_t> {
+  public:
+	underlying_to_color_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<lib::color_t>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.cl = dst->get_region_color(m_aattrs->get_target_attr(), true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		lib::color_t cl = dst->get_region_color(m_aattrs->get_target_attr(), false);
+		if(cl != regs.cl) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> 0x%x", 
+					m_aattrs->get_target_attr().c_str(), t, regs.cl);
+			}				
+			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		regs.cl = m_animate_f->at(t, regs.cl); // override
+	}
+};
 
 ////////////////////////////////////
 
-//static 
+template <class F>
+class zindex_animation : public linear_values_animation<F, common::zindex_t> {
+  public:
+	zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, common::zindex_t>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.zi = dst->get_region_zindex(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::zindex_t zi = dst->get_region_zindex(false);
+		if(zi != regs.zi) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %d", 
+					m_aattrs->get_target_attr().c_str(), t, regs.zi);
+			}				
+			dst->set_region_zindex(regs.zi);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		common::zindex_t zi = m_animate_f->at(t);
+		if(m_aattrs->is_additive())
+			regs.zi += zi; // add
+		else
+			regs.zi = zi; // override
+	}
+};
+
+class underlying_to_zindex_animation : public underlying_to_animation<common::zindex_t> {
+  public:
+	underlying_to_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<int>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.zi = dst->get_region_zindex(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::zindex_t zi = dst->get_region_zindex(false);
+		if(zi != regs.zi) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %d", 
+					m_aattrs->get_target_attr().c_str(), t, regs.zi);
+			}				
+			dst->set_region_zindex(regs.zi);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		common::zindex_t zi = m_animate_f->at(t, regs.zi);
+		regs.zi = zi; // override
+	}
+};
+////////////////////////////////////
+// values_motion_animation
+//
+// A values_motion_animation may be used for all position animations except for "to" and "path" animations
+// 
+// Animateable region/subregion attributes: "position"
+
+template <class F>
+class values_motion_animation : public linear_values_animation<F, lib::point> {
+  public:
+	values_motion_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, lib::point>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::region_dim left = dst->get_region_dim("left", true);
+		common::region_dim top = dst->get_region_dim("top", true);
+		regs.pt.x = left.get_as_int();
+		regs.pt.y = top.get_as_int();
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		region_dim left = dst->get_region_dim("left", false);
+		region_dim top = dst->get_region_dim("top", false);
+		lib::point pt(left.get_as_int(), top.get_as_int());
+		if(pt != regs.pt) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
+			}			
+			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
+			dst->set_region_dim("top", common::region_dim(regs.pt.y));			
+			return true;
+		}
+		return false;
+	}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		lib::point pt = m_animate_f->at(t);
+		if(m_aattrs->is_additive())
+			regs.pt += pt; // add
+		else
+			regs.pt = pt; // override
+	}
+};
+
+class underlying_to_motion_animation : public underlying_to_animation<lib::point> {
+  public:
+	underlying_to_motion_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<lib::point>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		common::region_dim left = dst->get_region_dim("left", true);
+		common::region_dim top = dst->get_region_dim("top", true);
+		regs.pt.x = left.get_as_int();
+		regs.pt.y = top.get_as_int();
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		region_dim left = dst->get_region_dim("left", false);
+		region_dim top = dst->get_region_dim("top", false);
+		lib::point pt(left.get_as_int(), top.get_as_int());
+		if(pt != regs.pt) {
+			AM_DBG {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
+			}		
+			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
+			dst->set_region_dim("top", common::region_dim(regs.pt.y));			
+			return true;
+		}
+		return false;
+	}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		lib::point pt = m_animate_f->at(t, regs.pt);
+		regs.pt = pt; // override
+	}
+};
+
+////////////////////////////////////
+// animate_node factory functions
+
+// private static 
+animate_node* animate_node::new_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef common::region_dim attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new regdim_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_regdim_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new regdim_animation<F>(ctx, n, aattrs);
+}
+
+// private static 
+animate_node* animate_node::new_color_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef lib::color_t attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new color_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_color_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new color_animation<F>(ctx, n, aattrs);
+}
+
+// private static 
+animate_node* animate_node::new_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef common::zindex_t attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new zindex_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_zindex_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new zindex_animation<F>(ctx, n, aattrs);
+}
+
+// private static 
+animate_node* animate_node::new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef lib::point attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new values_motion_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_motion_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new values_motion_animation<F>(ctx, n, aattrs);
+}
+
+// public static 
 animate_node* animate_node::new_instance(context_type *ctx, const node *n, const node* tparent) {
 	animate_attrs *aattrs = new animate_attrs(n, tparent);
+	
+	// Placeholder
+	if(aattrs->get_animate_type() == "invalid")
+		return new animate_node(ctx, n, aattrs);
+	
+	// Implemeted animations
 	if(aattrs->get_target_attr_type() == "reg_dim") {
-		if(aattrs->get_calc_mode() == "discrete") {
-			typedef discrete_map_f<common::region_dim> F;
-			return new animate_reg_dim_node<F>(ctx, n, aattrs);
-		} else {
-			typedef linear_map_f<common::region_dim> F;
-			return new animate_reg_dim_node<F>(ctx, n, aattrs);
-		}
+		return new_regdim_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "backgroundColor") {
-		if(aattrs->get_calc_mode() == "discrete") {
-			typedef discrete_map_f<lib::color_t> F;
-			return new animate_bgcolor_node<F>(ctx, n, aattrs);
-		} else {
-			typedef linear_map_f<lib::color_t> F;
-			return new animate_bgcolor_node<F>(ctx, n, aattrs);
-		}
+		return new_color_animation(ctx, n, aattrs);
+	} else if(aattrs->get_target_attr() == "z-index") {
+		return new_zindex_animation(ctx, n, aattrs);
+	} else if(aattrs->get_target_attr() == "position") {
+		return new_position_animation(ctx, n, aattrs);
 	}
+	
+	// Not implemented
 	return new animate_node(ctx, n, aattrs);
 }
 

@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/region_dim.h"
+#include "ambulant/lib/gtypes.h"
 #include <cmath>
 #include <map>
 #include <vector>
@@ -75,26 +76,88 @@ namespace ambulant {
 
 namespace smil2 {
 
+// Base class for simple dur animation functions
+// Implements time manupulations for the hierarchy
+//
+class simple_animation_f {
+  public:
+	typedef long time_type;
+
+	simple_animation_f() : m_d(0), m_accelerate(0.0), m_decelerate(0.0) {}
+	
+	time_type dur() const {
+		return m_d;
+	}
+	
+	time_type manipulated(time_type t) const {
+		return accelerate(auto_reverse(t));
+	}
+
+	void set_auto_reverse(bool b) { m_auto_reverse = b;}
+	void set_accelerate(double a, double d) { m_accelerate = a; m_decelerate = d;}
+	
+  protected:
+	// a simple_animation_f is defined for the interval [0,d]
+	time_type m_d;
+  
+  private:	
+	// t in [0, 2*d]
+	time_type auto_reverse(time_type t) const {
+		if(!m_auto_reverse) {
+			t = (t<0)?0:(t>m_d?m_d:t);
+			return t;
+		}	
+		time_type d = 2*m_d;
+		t = (t<0)?0:(t>d?d:t);
+		return (t<=m_d)?t:(m_d - (t-m_d));
+	}
+	
+	// t in [0, dur]
+	// to preserve duration max speed m should be:
+	// d = accTriangle + constRectangle + decTriangle = a*d*m/2 + (d-b*d-a*d)*m + b*d*m/2
+	// therefore max speed m = 1 / (1 - a/2 - b/2)
+	time_type accelerate(time_type t) const {
+		t = (t<0)?0:(t>m_d?m_d:t);
+		double a = m_accelerate;
+		double b = m_decelerate;
+		if(a == 0.0 && b == 0.0) return t;
+		double d = m_d;
+		double ad = a*d;
+		double bd = b*d;
+		double t2 = t*t;
+		double dt2 = (d-t)*(d-t);
+		double m = 1.0/(1.0 - 0.5*a - 0.5*b);
+		double tp = 0.0;
+		if(t<=ad)
+			tp = 0.5*m*t2/ad;
+		else if(t>=a*d && t<=(d-bd))
+			tp = 0.5*m*ad + (t-ad)*m;
+		else if(t>=(d-bd) && t<=d)
+			tp = d - 0.5*m*dt2/bd;
+		assert(tp>=0.0 && tp<=d);
+		return time_type(floor(tp+0.5));
+	}
+	
+
+	// A simple function is defined for the interval [0, d]
+	double m_accelerate;
+	double m_decelerate;
+	bool m_auto_reverse;	
+};
+
 // Simple duration animation function for continues attributes 
 // The attribute type is T
 // T must define operator minus and multiplication/division with an int or double 
 // T must have a copy constructor
 //
 template<class T>
-class linear_map_f {
+class linear_map_f : public simple_animation_f {
   public:
-	typedef long time_type;
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
 	
-	value_type operator()(time_type t) const {
-		return at(t);
-	}
-	
 	value_type at(time_type t) const {
-		assert(!m_ktv.empty());
-		time_type d = dur();
-		t = (t<0)?0:(t>d?d:t);	
+		t = manipulated(t);
 		map_type::const_iterator eit = m_ktv.upper_bound(t);
 		map_type::const_iterator bit = eit;bit--;
 		if(eit == m_ktv.end()) return (*bit).second;
@@ -105,12 +168,68 @@ class linear_map_f {
 		return v1 + ((v2-v1)*dt)/dd;
 	}
 	
+	value_type at(time_type t, const value_type& u) const {
+		return at(t);
+	}
+	
 	time_type dur() const {
-		assert(!m_ktv.empty());
-		return (*m_ktv.rbegin()).first - (*m_ktv.begin()).first;
+		assert(m_d == (*m_ktv.rbegin()).first - (*m_ktv.begin()).first);
+		return m_d;
 	}
 	
 	map_type& get_time_values_map() { return m_ktv;}
+
+	void init(time_type dur, T val) {
+		m_d = dur;
+		m_ktv.clear();
+		m_ktv[0]=val;
+		m_ktv[dur]=val;
+	}
+
+	void init(time_type dur, T from, T to) {
+		m_d = dur;
+		m_ktv.clear();
+		m_ktv[0]=from;
+		m_ktv[dur]=to;
+	}
+
+	void init(time_type dur, const std::vector<T>& vals) {
+		assert(!vals.empty());
+		m_d = dur;
+		int n = int(vals.size());
+		if(n==1) {
+			init(dur, vals[0]);
+		} else if(n==2) {
+			init(dur, vals[0], vals[1]);
+		} else { 
+			m_ktv.clear();
+			time_type to = 0;
+			for(int i=0;i<n;i++, to+=dur)
+				m_ktv[to/(n-1)] = vals[i];
+		}
+	}
+	
+	void paced_init(time_type dur, const std::vector<T>& vals) {
+		assert(!vals.empty());
+		m_d = dur;
+		int n = int(vals.size());
+		if(n==1) {
+			init(dur, vals[0]);
+		} else if(n==2) {
+			init(dur, vals[0], vals[1]);
+		} else { 
+			m_ktv.clear();
+			double length = 0.0;
+			for(int i=1;i<n;i++) length += dist(vals[i-1], vals[i]);
+			double dl = 0;
+			m_ktv[0] = vals[0];
+			for(int i=1;i<n;i++) {
+				dl += dist(vals[i-1], vals[i]);
+				time_type t = time_type(::floor(0.5+dur*dl/length));
+				m_ktv[t] = vals[i];
+			}		
+		}
+	}
 
   private:	
 	map_type m_ktv;	
@@ -121,65 +240,83 @@ class linear_map_f {
 // T must have a copy constructor
 //
 template<class T>
-class discrete_map_f {
+class discrete_map_f : public simple_animation_f {
   public:
-	typedef long time_type;
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
 	
-	value_type operator()(time_type t) const {
-		return at(t);
-	}
-	
 	value_type at(time_type t) const {
 		assert(!m_ktv.empty());
-		time_type d = dur();
-		t = (t<0)?0:(t>d?d:t);	
+		t = manipulated(t);
 		map_type::const_iterator eit = m_ktv.upper_bound(t);
 		map_type::const_iterator bit = eit;bit--;
 		return (*bit).second;
 	}
 	
-	time_type dur() const {
-		assert(!m_ktv.empty());
-		return (*m_ktv.rbegin()).first - (*m_ktv.begin()).first;
+	value_type at(time_type t, const value_type& u) const {
+		return at(t);
 	}
-		
+	
 	map_type& get_time_values_map() { return m_ktv;}
 
+	void init(time_type dur, T val) {
+		m_d = dur;
+		m_ktv.clear();
+		m_ktv[0]=val;
+	}
+
+	void init(time_type dur, T from, T to) {
+		m_d = dur;
+		m_ktv.clear();
+		m_ktv[0]=from;
+		m_ktv[dur/2]=to;
+	}
+
+	void init(time_type dur, const std::vector<T>& vals) {
+		assert(!vals.empty());
+		m_d = dur;
+		int n = int(vals.size());
+		if(n==1) {
+			init(dur, vals[0]);
+		} else if(n==2) {
+			init(dur, vals[0], vals[1]);
+		} else { 
+			m_ktv.clear();
+			time_type to = 0;
+			for(int i=0;i<n;i++, to+=dur)
+				m_ktv[to/n] = vals[i];
+		}
+	}
+
+	void paced_init(long dur, const std::vector<T>& vals) {
+		init(dur, vals);
+	}
+	
   private:	
 	map_type m_ktv;	
 };
 
 // Simple duration animate function for "to" aninations
-template<class T, class C>
-class to_f {
+template<class T>
+class underlying_to_f : public simple_animation_f {
   public:
-	typedef long time_type;
 	typedef T value_type;
-	typedef C context_type;
-	
-	to_f(time_type dur, value_type v, context_type *c) 
-	:	m_d(dur), m_v(v), m_c(c) {}
-
-	value_type operator()(time_type t) const {
-		return at(t);
-	}
-	
+		
 	value_type at(time_type t) const {
-		t = (t<0)?0:(t>m_d?m_d:t);	
-		value_type u = m_c?m_c->underlying():value_type();
-		return (u*(m_d-t))/m_d + (t*m_v)/m_d;
+		return at(t, value_type());
 	}
 	
-	time_type dur() const {
-		return m_d;
+	value_type at(time_type t, const T& u) const {
+		t = manipulated(t);	
+		return (u*(m_d-t))/m_d + (m_v*t)/m_d;
 	}
 	
+	void init(time_type dur, value_type v) {
+		m_d = dur; m_v = v;
+	}
+	 
   private:	
 	value_type m_v;
-	time_type m_d;
-	context_type *m_c;
 };
 
 //
@@ -190,7 +327,6 @@ class to_f {
 // F should define the types: time_type and value_type
 // F should implement:
 // value_type at(time_type t) const;
-// time_type dur() const;
 //
 template <class F>
 class animate_f {
@@ -198,178 +334,34 @@ class animate_f {
 	typedef typename F::time_type time_type;
 	typedef typename F::value_type value_type;
 	
-	animate_f(const F& f, time_type ad, bool sum = false)
-	:	m_f(f), m_ad(ad), m_sum(sum) {}
-	
-	value_type operator()(time_type t) const {
-		return at(t);
-	}	
+	animate_f(const F& f, time_type sd, time_type ad, bool cum = false)
+	:	m_f(f), m_sd(sd), m_ad(ad), m_cum(cum) {}
 	
 	value_type at(time_type t) const {
-		time_type d = m_f.dur();
-		if(t<=m_ad) return m_sum?(m_f.at(d)*(t/d) + m_f.at(t%d)):m_f.at(t%d);
-		if((m_ad%d) != 0) return this->at(m_ad);
-		assert((m_ad%d) == 0);
-		return m_sum?m_f.at(d)*(m_ad/d):m_f.at(d);
+		if(t<=m_ad) return m_cum?(m_f.at(m_sd)*(t/m_sd) + m_f.at(t%m_sd)):m_f.at(t%m_sd);
+		if((m_ad%m_sd) != 0) return this->at(m_ad);
+		assert((m_ad%m_sd) == 0);
+		return m_cum?m_f.at(m_sd)*(m_ad/m_sd):m_f.at(m_sd);
 	}
 	
-	bool set_cumulative(bool c) { m_sum = c;}
+	value_type at(time_type t, const value_type& u) const {
+		if(t<=m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
+		if((m_ad%m_sd) != 0) return this->at(m_ad, u);
+		assert((m_ad%m_sd) == 0);
+		return m_cum?m_f.at(m_sd, u)*(m_ad/m_sd):m_f.at(m_sd, u);
+	}
+	
+	bool set_cumulative(bool c) { m_cum = c;}
 	bool update_ad(time_type ad) { m_ad = ad;}
+	bool update_sd(time_type sd) { m_sd = sd;}
 	
 	const F& m_f;
+	time_type m_sd;
 	time_type m_ad;
-	bool m_sum;
+	bool m_cum;
 };
 
 enum calc_mode_t {cm_linear, cm_discrete, cm_paced, cm_spline};
-
-template<class T>
-void init_map_f(long dur, T from, T to, linear_map_f<T>& mf) {
-	typedef typename linear_map_f<T>::map_type map_type;
-	map_type& ktv = mf.get_time_values_map();
-	ktv.clear();
-	ktv[0]=from;
-	ktv[dur]=to;
-}
-
-template<class T>
-void init_map_f(long dur, T from, T to, discrete_map_f<T>& mf) {
-	typedef typename linear_map_f<T>::map_type map_type;
-	map_type& ktv = mf.get_time_values_map();
-	ktv.clear();
-	ktv[0]=from;
-	ktv[dur/2] = to;
-}
-
-template<class T>
-void init_map_f(long dur, T val, linear_map_f<T>& mf) {
-	typedef typename linear_map_f<T>::map_type map_type;
-	map_type& ktv = mf.get_time_values_map();
-	ktv.clear();
-	ktv[0]=val;
-	ktv[dur]=val;
-}
-
-template<class T>
-void init_map_f(long dur, T val, discrete_map_f<T>& mf) {
-	typedef typename linear_map_f<T>::map_type map_type;
-	map_type& ktv = mf.get_time_values_map();
-	ktv.clear();
-	ktv[0]=val;
-}
-
-template<class T>
-void init_map_f(long dur, T *vals, int n, linear_map_f<T>& mf) {
-	assert(n>0);
-	if(n==1) {
-		init_map_f(dur, vals[0], mf);
-	} else if(n==2) {
-		init_map_f(dur, vals[0], vals[1], mf);
-	} else { 
-		typedef typename linear_map_f<T>::map_type map_type;
-		map_type& ktv = mf.get_time_values_map();
-		ktv.clear();
-		time_type to = 0;
-		for(int i=0;i<n;i++, to+=dur)
-			ktv[to/(n-1)] = vals[i];
-	}
-}
-
-template<class T>
-void init_map_f(long dur, const std::vector<T>& vals, linear_map_f<T>& mf) {
-	assert(!vals.empty());
-	int n = int(vals.size());
-	if(n==1) {
-		init_map_f(dur, vals[0], mf);
-	} else if(n==2) {
-		init_map_f(dur, vals[0], vals[1], mf);
-	} else { 
-		typedef typename linear_map_f<T>::map_type map_type;
-		typedef typename linear_map_f<T>::time_type time_type;
-		map_type& ktv = mf.get_time_values_map();
-		ktv.clear();
-		time_type to = 0;
-		for(int i=0;i<n;i++, to+=dur)
-			ktv[to/(n-1)] = vals[i];
-	}
-}
-
-template<class T>
-void init_map_f(long dur, const std::vector<T>& vals, discrete_map_f<T>& mf) {
-	assert(!vals.empty());
-	int n = int(vals.size());
-	if(n==1) {
-		init_map_f(dur, vals[0], mf);
-	} else if(n==2) {
-		init_map_f(dur, vals[0], vals[1], mf);
-	} else { 
-		typedef typename linear_map_f<T>::map_type map_type;
-		typedef typename linear_map_f<T>::time_type time_type;
-		map_type& ktv = mf.get_time_values_map();
-		ktv.clear();
-		time_type to = 0;
-		for(int i=0;i<n;i++, to+=dur)
-			ktv[to/(n-1)] = vals[i];
-	}
-}
-
-// Type T should define
-// double dist(const T& v1, const T& v2)
-template<class T>
-void init_map_f_paced(long dur, T *vals, int n, linear_map_f<T>& mf) {
-	assert(n>0);
-	if(n==1) {
-		init_map_f(dur, vals[0], mf);
-	} else if(n==2) {
-		init_map_f(dur, vals[0], vals[1], mf);
-	} else { 
-		typedef typename linear_map_f<T>::map_type map_type;
-		typedef typename linear_map_f<T>::time_type time_type;
-		map_type& ktv = mf.get_time_values_map();
-		ktv.clear();
-		double length = 0.0;
-		for(int i=1;i<n;i++) length += dist(vals[i-1], vals[i]);
-		double dl = 0;
-		ktv[0] = vals[0];
-		for(int i=1;i<n;i++) {
-			dl += dist(vals[i-1], vals[i]);
-			time_type t = time_type(::floor(0.5+d*dl/length));
-			ktv[t] = vals[i];
-		}		
-	}
-}
-
-// Type T should define
-// double dist(const T& v1, const T& v2)
-template<class T>
-void init_map_f_paced(long dur, const std::vector<T>& vals, linear_map_f<T>& mf) {
-	assert(!vals.empty());
-	int n = int(vals.size());
-	if(n==1) {
-		init_map_f(dur, vals[0], mf);
-	} else if(n==2) {
-		init_map_f(dur, vals[0], vals[1], mf);
-	} else { 
-		typedef typename linear_map_f<T>::map_type map_type;
-		typedef typename linear_map_f<T>::time_type time_type;
-		map_type& ktv = mf.get_time_values_map();
-		ktv.clear();
-		double length = 0.0;
-		for(int i=1;i<n;i++) length += dist(vals[i-1], vals[i]);
-		double dl = 0;
-		ktv[0] = vals[0];
-		for(int i=1;i<n;i++) {
-			dl += dist(vals[i-1], vals[i]);
-			time_type t = time_type(::floor(0.5+dur*dl/length));
-			ktv[t] = vals[i];
-		}		
-	}
-}
-
-template<class T>
-void init_map_f_paced(long dur, const std::vector<T>& vals, discrete_map_f<T>& mf) {
-	assert(false);
-}
 
 void create_bezier_map(double *e, std::map<double, double>& gr) {
 	const int n = 20;
@@ -393,6 +385,7 @@ double dist(const T& v1, const T& v2) {
 	return std::max(v1, v2) - std::min(v1, v2); 
 }
 
+// Distance specialization for common::region_dim
 template <>
 inline double dist(const ambulant::common::region_dim& rd1, const ambulant::common::region_dim& rd2) {
 	if(rd1.relative())
@@ -400,6 +393,14 @@ inline double dist(const ambulant::common::region_dim& rd1, const ambulant::comm
 	else if(rd1.absolute())
 		return std::max(rd1.get_as_int(), rd2.get_as_int()) - std::min(rd1.get_as_int(), rd2.get_as_int());
 	return 0;
+}
+
+// Distance specialization for lib::point
+template <>
+double dist(const lib::point& p1, const lib::point& p2) {
+	double dx = double(p2.x - p1.x);
+	double dy = double(p2.y - p1.y);
+	return ::sqrt(dx*dx + dy*dy); 
 }
 
 

@@ -54,6 +54,9 @@
 #define AMBULANT_SMIL2_ANIMATE_N_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/colors.h"
+#include "ambulant/common/region_dim.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/smil2/animate_a.h"
 
@@ -65,21 +68,47 @@ namespace common {
 
 namespace smil2 {
 
+// Animation registers
+// One register per linear animateable attribute type
+// Each animator type uses at most one register
+struct animate_registers {
+	common::region_dim rd;
+	lib::color_t cl;
+	lib::point pt;
+	common::zindex_t zi;
+	int iv;
+	double dv;
+};
+
+// An animate_node is the base class for all animation node flavors
 class animate_node : public time_node {
   public:	
 	animate_node(context_type *ctx, const node *n, animate_attrs *aattrs);
 	~animate_node();
 	
+	// Scheduler interface
+	virtual void prepare_interval();
+	
+	// Animation engine interface
 	const lib::node *get_animation_target() const { return m_aattrs->get_target();}
 	const std::string& get_animation_attr() const { return m_aattrs->get_target_attr();}
+	virtual void read_dom_value(common::animation_destination *dst, animate_registers& regs) const;
+	virtual bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const;
+	virtual void apply_self_effect(animate_registers& regs) const;
 	
-	virtual void prepare_interval();
-	virtual bool apply_value(common::animation_destination *dst);
-	virtual bool is_effvalue_animation() const { return false;}
-	
+	// Timegraph building interface
 	static animate_node* new_instance(context_type *ctx, const node *n, const node* tparent);
 	
+  private:
+	// Internal helpers for timegraph building interface
+	static animate_node* new_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	static animate_node* new_color_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	static animate_node* new_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	static animate_node* new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+
   protected:
+	// The set of animation related attributes of this node.
+	// Attributes parsing helper
 	animate_attrs *m_aattrs;
 };
 

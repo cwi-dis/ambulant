@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/colors.h"
+#include "ambulant/lib/gtypes.h"
 
 #include <string>
 #include <vector>
@@ -63,6 +64,7 @@ namespace ambulant {
 
 namespace lib {
 	class node;
+	class logger;
 }
 
 namespace common {
@@ -70,6 +72,8 @@ namespace common {
 }
 
 namespace smil2 {
+
+struct qtuple {double v[4];};
 
 class animate_attrs {
   public:	
@@ -86,9 +90,21 @@ class animate_attrs {
 	bool is_accumulative() const { return m_accumulate;}
 	const std::string& get_calc_mode() const { return m_calc_mode;}
 	
+	// Return true when 
+	// a) calcMode is discrete
+	// b) the attribute is not linear (emum or strings)
+	// c) for set animations
+	bool is_discrete() const;
+	
+	void get_key_times(std::vector<double>& v);
+	void get_key_splines(std::vector<qtuple>& v);
+	
 	void get_values(std::vector<int>& v);
+	void get_values(std::vector<double>& v);
+	void get_values(std::vector<std::string>& v);
 	void get_values(std::vector<common::region_dim>& v);
-	void get_color_values(std::vector<lib::color_t>& v);
+	void get_values(std::vector<lib::color_t>& v);
+	void get_values(std::vector<lib::point>& v);
 	
   private:
 	
@@ -96,6 +112,12 @@ class animate_attrs {
 	void locate_target_attr();
 	const char* find_anim_type();
 	void read_enum_atttrs();
+	void apply_constraints();
+	
+	int safeatoi(const char *p);
+	double safeatof(const char *p);
+	common::region_dim to_region_dim(const std::string& s);
+	lib::point to_point(const std::string& s);
 	
 	const lib::node *m_node;
 	const lib::node *m_tparent;
@@ -111,6 +133,8 @@ class animate_attrs {
 	bool m_additive;
 	bool m_accumulate;
 	std::string m_calc_mode;
+	
+	lib::logger *m_logger;
 };
 
 } // namespace smil2

@@ -77,41 +77,49 @@ animation_engine::animation_engine(lib::event_processor* evp, smil_layout_manage
 animation_engine::~animation_engine() {
 }
 
-void animation_engine::started(animate_node *anode) {
-	const lib::node *target = anode->get_animation_target();
+// Register the provided animator as active
+// XXX: The animator may animate multiple attrs as for example in animateMotion
+void animation_engine::started(animate_node *animator) {
+	const lib::node *target = animator->get_animation_target();
 	if(!target) return;
 	node_animators_t& na = m_animators[target];
-	attribute_animators_t& aa = na[anode->get_animation_attr()];
-	aa.push_back(anode);
+	
+	attribute_animators_t& aa = na[animator->get_animation_attr()];
+	aa.push_back(animator);
+	
 	m_counter++;
 	if(m_update_event == 0) schedule_update();
 }
 
-void animation_engine::stopped(animate_node *anode) {
-	const lib::node *target = anode->get_animation_target();
+// Remove animator from the active animations
+void animation_engine::stopped(animate_node *animator) {
+	const lib::node *target = animator->get_animation_target();
 	if(!target) return;
-	const std::string aattr = anode->get_animation_attr();
+	const std::string aattr = animator->get_animation_attr();
 	node_animators_t& na = m_animators[target];
 	attribute_animators_t& aa = na[aattr];
-	aa.remove(anode);
+	aa.remove(animator);
 	m_counter--;
-	
-	// XXX: reset node attr if needed
-	// XXX: the interface should allow attr reset not node reset
 	if(aa.empty()) {
 		common::animation_destination *dst = m_layout->get_animation_destination(target);
-		dst->reset(); // this should specify what
-		common::animation_notification *anotif = m_layout->get_animation_notification(target);
-		if(anotif) anotif->animated();
+		animate_registers regs;
+		animator->read_dom_value(dst, regs);
+		m_is_node_dirty = animator->set_animated_value(dst, regs);
+		if(m_is_node_dirty)  {
+			common::animation_notification *anotif = m_layout->get_animation_notification(target);
+			if(anotif) anotif->animated();
+		}
 	}
 }
 
+// Evaluate all active animations
 void animation_engine::update() {
 	doc_animators_t::iterator it;
 	for(it = m_animators.begin();it != m_animators.end();it++) 
 		update_node((*it).first, (*it).second);
 }
 
+// Evaluate all node animations and then apply them
 void animation_engine::update_node(const node *target, node_animators_t& animators) {
 	m_is_node_dirty = false;
 	common::animation_destination *dst = m_layout->get_animation_destination(target);
@@ -123,13 +131,21 @@ void animation_engine::update_node(const node *target, node_animators_t& animato
 		if(anotif) anotif->animated();
 	} 
 }
-
+	
+// Evaluate attribute animations taking into account additivity
 void animation_engine::update_attr(const std::string& attr, attribute_animators_t& animators, 
 	common::animation_destination *dst) {
+	if(animators.empty()) return;
+	// get the dom value
+	// apply animations in list order: set or add to value
+	// all animations are associated with the same type
+	animate_node *animator = animators.front();
+	animate_registers regs;
+	animator->read_dom_value(dst, regs);
 	attribute_animators_t::iterator it;
-	for(it = animators.begin();it != animators.end();it++) {
-		if((*it)->apply_value(dst)) m_is_node_dirty = true;
-	}
+	for(it = animators.begin();it != animators.end();it++)
+		(*it)->apply_self_effect(regs);
+	m_is_node_dirty = animator->set_animated_value(dst, regs); 
 }
 
 void animation_engine::update_callback() {
