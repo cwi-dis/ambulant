@@ -107,10 +107,13 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 		lib::logger::get_logger()->error("ambulant_qt_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
+#if 1
 	m_ambulant_widget->repaint(r.left(), r.top(), 
 				   r.width(), r.height(),
-				   true);
-	m_ambulant_widget->update();
+				   false);
+#else
+	m_ambulant_widget->update(r.left(), r.top(),  r.width(), r.height());
+#endif
 }
   
 void
@@ -178,7 +181,7 @@ qt_ambulant_widget::paintEvent(QPaintEvent* e)
 
 void
 qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::mouseReleaseEvent(0x%x): e=0x%x, position=(%d, %d))",
+	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::mouseReleaseEvxent(0x%x): e=0x%x, position=(%d, %d))",
 		(void*) this, (void*) e, e->x(), e->y());
 	if (m_qt_window == NULL) {
 		lib::logger::get_logger()->trace("qt_ambulant_widget::mouseReleaseEvent(0x%x): e=0x%x  position=(%d, %d) m_qt_window==NULL",
