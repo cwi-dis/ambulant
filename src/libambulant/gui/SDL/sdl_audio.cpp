@@ -337,9 +337,10 @@ gui::sdl::sdl_active_audio_renderer::stop()
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
+		// XXX Should we call stopped_callback?
 		m_lock.enter();
 	}
-	m_is_playing = NULL;
+	m_is_playing = false;
 	m_lock.leave();
 }
 

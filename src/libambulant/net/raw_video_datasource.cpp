@@ -59,7 +59,7 @@
 #define AM_DBG if(0)
 #endif
 
-
+#define FRAME_RATE 15
 
 using namespace ambulant;
 using namespace net;
@@ -75,14 +75,23 @@ raw_video_datasource::raw_video_datasource(const std::string &directory)
 }
 
 raw_video_datasource::~raw_video_datasource()
-{ 
+{
+	m_lock.enter();
+	if (m_buffer) free(m_buffer);
+	m_buffer = NULL;
+	m_lock.leave();
 }
 
 void
 raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent, double timestamp)
 {
+	m_lock.enter();
 	bool dummy;
 	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x)", (void*) this);
+	if (m_buffer) {
+		lib::logger::get_logger()->error("raw_video_datasource::start_frame: Previous frame not frame_done()d yet!");
+		m_buffer = NULL;
+	}
 	dummy = read_next_frame();
 	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x): read_next_frame returned %d", (void*) this, dummy);
 	if (1) {
@@ -91,31 +100,40 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}
+	m_lock.leave();
 }
 
 char*
 raw_video_datasource::get_frame(double *timestamp)
 {
-	*timestamp =  (double) m_filenr;
-	return m_buffer;
+	m_lock.enter();
+	*timestamp =  (double) m_filenr/FRAME_RATE;
+	char *rv = m_buffer;
+	m_lock.leave();
+	return rv;
 }
 
 void
 raw_video_datasource::frame_done(double timestamp)
 {
-	if (timestamp > (double) m_filenr) {
-		m_filenr = round(timestamp);
+	m_lock.enter();
+	if (timestamp > (double) m_filenr/FRAME_RATE) {
+		m_filenr = (int)round(timestamp*FRAME_RATE);
 	}
 	if (m_buffer) {
 		free (m_buffer);
 		m_buffer = NULL;
+	} else {
+		lib::logger::get_logger()->error("raw_video_datasource::frame_done: no current frame!");
 	}
+	m_lock.leave();
 }
 
 
 int
 raw_video_datasource::filesize(int stream)
 {
+	// private method - no locking
  	using namespace std;
 	int filesize;
 	int dummy;
@@ -133,6 +151,7 @@ raw_video_datasource::filesize(int stream)
 bool
 raw_video_datasource::read_next_frame()
 {
+	// private method - no locking
 	char filename[255];
 	int file;
 	int sz;

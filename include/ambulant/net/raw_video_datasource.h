@@ -86,6 +86,7 @@ class raw_video_datasource : virtual public lib::ref_counted_obj {
   	bool m_eof;
 	std::string m_directory;  
   	char* m_buffer;
+	lib::critical_section m_lock;
 };
 
 }

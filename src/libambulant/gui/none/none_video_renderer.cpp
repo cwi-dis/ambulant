@@ -57,7 +57,7 @@
 
 #include <unistd.h>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -80,23 +80,27 @@ none_video_renderer::none_video_renderer (common::playable_notification *
 					  lib::event_processor * evp,
 					  net::datasource_factory * df):
 common::active_basic_renderer (context, cookie, node, evp),
-m_evp (evp)
+m_evp (evp),
+m_is_playing(false)
 {
 	AM_DBG lib::logger::get_logger ()->trace("none_video_renderer::none_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!    
-	lib::logger::get_logger ()->warn("none_video_renderer::none_video_renderer(): The path to the video files is fixed. (/ufs/dbenden/testmovie) FIXME");
-	m_src = new net::raw_video_datasource ("/ufs/dbenden/testmovie");
+	lib::logger::get_logger ()->warn("none_video_renderer::none_video_renderer(): The path to the video files is fixed. (/Users/jack/tmp/testmovie) FIXME");
+	m_src = new net::raw_video_datasource ("/Users/jack/tmp/testmovie");
 }
 
 void
 none_video_renderer::start (double where = 1)
 {
+	m_lock.enter();
 	int w;
+	m_is_playing = true;
 	m_epoch = m_evp->get_timer()->elapsed();
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
 	m_src->start_frame (m_evp, e, w);
+	m_lock.leave();
 }
 
 
@@ -104,49 +108,54 @@ none_video_renderer::start (double where = 1)
 double
 none_video_renderer::now() 
 {
-	return (m_evp->get_timer()->elapsed()- m_epoch)/1000;
+	// private method - no locking
+	double rv = ((double)m_evp->get_timer()->elapsed() - m_epoch)/1000;
+	return rv;
 }
 
 void 
 none_video_renderer::show_frame(char* frame)
 {
-lib::logger::get_logger ()->trace("**** DISPLAYED");
+	// private method - no locks
+	lib::logger::get_logger ()->trace("**** DISPLAYED");
 }
 
 void
 none_video_renderer::data_avail ()
 {
+	m_lock.enter();
 	double ts;
-	char *buf;
+	char *buf = NULL;
 	unsigned long int event_time;
 	bool displayed;
-	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(this = 0x%x):", (void *) this);
-	buf = m_src->get_frame (&ts);
+	AM_DBG lib::logger::get_logger()->trace("none_video_renderer::data_avail(this = 0x%x):", (void *) this);
+	buf = m_src->get_frame(&ts);
 	displayed = false;
-	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
-	if (buf) {
+	AM_DBG lib::logger::get_logger()->trace("none_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
+	if (m_is_playing && buf) {
 		if (ts <= now()) {
-			lib::logger::get_logger ()->trace("**** (this = 0x%x) Display frame with timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
+			lib::logger::get_logger()->trace("**** (this = 0x%x) Display frame with timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf);
 			displayed = true;
 			m_src->frame_done(ts);
-		} else {
-			if (!m_src->end_of_file()){
+			if (!m_src->end_of_file()) {
 				lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
-				event_time = (unsigned long int) round( ts*1000 - now()*1000); 
-				m_evp->add_event(e, event_time);
+				m_src->start_frame (m_evp, e, ts);
 			}
+		} else {
+			lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
+			event_time = (unsigned long int) round( ts*1000 - now()*1000); 
+			m_evp->add_event(e, event_time);
 		}
 	} else {
-		lib::logger::get_logger ()->trace("none_video_renderer::data_avial()(this = 0x%x): buf seems to be NULL !) ", (void *) this);
-	}
-	
-	if ((!m_src->end_of_file() ) && (displayed) ) {
-		lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
-		m_src->start_frame (m_evp, e, ts);
-	} else {
-		AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(this = 0x%x): end_of_file ", (void *) this);
+		if (m_is_playing && !m_src->end_of_file()) {
+			lib::logger::get_logger()->trace("none_video_renderer::data_avial: No more data, but not end of file!");
+		}
+		AM_DBG lib::logger::get_logger ()->trace("none_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
+		m_is_playing = false;
+		m_lock.leave();
 		stopped_callback();
+		return;
 	}
-	
+	m_lock.leave();
 }

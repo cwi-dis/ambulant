@@ -62,6 +62,10 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
+#define WITH_NONE_VIDEO
+#ifdef WITH_NONE_VIDEO
+#include "ambulant/gui/none/none_factory.h"
+#endif
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/posix_datasource.h"
 //#define WITH_STDIO_DATASOURCE
@@ -130,6 +134,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	
 	// Next create the playable factory and populate it.
 	m_rf = new common::global_playable_factory();
+#ifdef WITH_NONE_VIDEO
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for none_video");
+	m_rf->add_factory( new gui::none::none_video_factory(m_df) );      
+#endif
 	m_rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_df));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
