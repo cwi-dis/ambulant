@@ -57,7 +57,7 @@
 #include <Cocoa/Cocoa.h>
 #include <QuickTime/QuickTime.h>
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -210,22 +210,6 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
 	}
-#if 0
-	const region_info *info = m_dest->get_info();
-	// First find our whole area
-	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	if (info && !info->get_transparent()) {
-		// XXXX Fill with background color
-		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_video_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
-					green:greenf(bgcolor)
-					blue:bluef(bgcolor)
-					alpha:1.0];
-		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect);
-	}
-#endif
 	
 	m_lock.leave();
 }
