@@ -65,7 +65,7 @@
 using namespace ambulant;
 
 
-int filter(struct dirent* filen)
+int filter(const struct dirent* filen)
 {
 	int len;
 	len = strlen(filen->d_name);
