@@ -252,7 +252,8 @@ void trigger_rule::update_instance(qtime_type timestamp, time_type instance, tim
 }
 ////////////////////////////
 
-sync_event sync_event_from_str(const std::string& s) {
+sync_event
+ambulant::smil2::sync_event_from_str(const std::string& s) {
 	static std::map<std::string, sync_event> events;
 	typedef std::string st;
 	if(events.empty()) {
@@ -273,7 +274,8 @@ sync_event sync_event_from_str(const std::string& s) {
 ////////////////////////////
 // tracing helpers
 
-const char* sync_event_str(sync_event ev) {
+const char*
+ambulant::smil2::sync_event_str(sync_event ev) {
 	switch(ev) {
 		case tn_begin: return "begin";
 		case tn_repeat: return "repeat";
@@ -289,7 +291,8 @@ const char* sync_event_str(sync_event ev) {
 	return "unknownEvent";
 }
 
-const char* rule_type_str(rule_type rt) {
+const char*
+ambulant::smil2::rule_type_str(rule_type rt) {
 	switch(rt) {
 		case rt_begin: return "begin";
 		case rt_end: return "end";

@@ -52,19 +52,20 @@
 
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/common/trace_player.h"
 #include "ambulant/common/trace_playable.h"
 #include "ambulant/common/schema.h"
+#include "ambulant/smil2/trace_player.h"
 #include "ambulant/smil2/timegraph.h"
 
 // A non-gui player for testing scheduler features.
 
 using namespace ambulant;
+using namespace smil2;
 
-lib::trace_player::trace_player(document *doc)
+trace_player::trace_player(lib::document *doc)
 :	m_doc(doc),
 	m_root(0),
-	m_timer(new timer(realtime_timer_factory())),
+	m_timer(new lib::timer(lib::realtime_timer_factory())),
 	m_event_processor(0) {
 	m_logger = logger::get_logger();
 	m_event_processor = event_processor_factory(m_timer);
@@ -72,7 +73,7 @@ lib::trace_player::trace_player(document *doc)
 	m_root = tg.detach_root();
 }
 
-lib::trace_player::~trace_player() {
+trace_player::~trace_player() {
 	std::map<const node*, playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
 		(*it).second->stop();
@@ -84,22 +85,22 @@ lib::trace_player::~trace_player() {
 	delete m_doc;
 }
 
-void lib::trace_player::schedule_event(event *ev, time_type t, event_priority ep) {
+void trace_player::schedule_event(event *ev, time_type t, event_priority ep) {
 	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
 }
 
-void lib::trace_player::start() {
+void trace_player::start() {
 	m_logger->trace("Started playing");
 	m_root->start();
 }
 
-void lib::trace_player::stop() {
+void trace_player::stop() {
 	m_root->stop();
 	m_timer->stop();
 	m_logger->trace("Stopped playing");
 }
 
-void lib::trace_player::pause() {
+void trace_player::pause() {
 	m_timer->pause();
 	// we don't propagate pause/resume yet
 	std::map<const node*, playable *>::iterator it;
@@ -107,7 +108,7 @@ void lib::trace_player::pause() {
 		(*it).second->pause();
 }
 
-void lib::trace_player::resume() {
+void trace_player::resume() {
 	m_timer->resume();
 	// we don't propagate pause/resume yet
 	std::map<const node*, playable *>::iterator it;
@@ -115,11 +116,11 @@ void lib::trace_player::resume() {
 		(*it).second->resume();
 }
 
-bool lib::trace_player::is_done() {
+bool trace_player::is_done() {
 	return !m_root->is_active();
 }
 
-void lib::trace_player::start_playable(const node *n, double t) {
+void trace_player::start_playable(const node *n, double t) {
 	playable *p = get_playable(n);
 	std::map<const node*, playable *>::iterator it = 
 		m_playables.find(n);
@@ -132,7 +133,7 @@ void lib::trace_player::start_playable(const node *n, double t) {
 	p->start(t);	
 }
 
-void lib::trace_player::stop_playable(const node *n) {
+void trace_player::stop_playable(const node *n) {
 	std::map<const node*, playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
@@ -142,24 +143,24 @@ void lib::trace_player::stop_playable(const node *n) {
 	}
 }
 
-void lib::trace_player::pause_playable(const node *n) {
+void trace_player::pause_playable(const node *n) {
 	playable *p = get_playable(n);
 	if(p) p->pause();
 }
 
-void lib::trace_player::resume_playable(const node *n) {
+void trace_player::resume_playable(const node *n) {
 	playable *p = get_playable(n);
 	if(p) p->resume();
 }
 
 std::pair<bool, double> 
-lib::trace_player::get_dur(const node *n) {
+trace_player::get_dur(const node *n) {
 	playable *p = get_playable(n);
 	if(p) return p->get_dur();
 	return std::pair<bool, double>(false, 0);
 }
 
-lib::playable *lib::trace_player::get_playable(const node *n) {
+common::playable *trace_player::get_playable(const lib::node *n) {
 	std::map<const node*, playable *>::iterator it = 
 		m_playables.find(n);
 	return (it != m_playables.end())?(*it).second:0;

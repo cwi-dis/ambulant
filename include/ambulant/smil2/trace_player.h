@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_COMMON_TRACE_PLAYER_H
-#define AMBULANT_COMMON_TRACE_PLAYER_H
+#ifndef AMBULANT_SMIL2_TRACE_PLAYER_H
+#define AMBULANT_SMIL2_TRACE_PLAYER_H
 
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
@@ -96,13 +96,13 @@ USAGE:
 
 namespace ambulant {
 
-namespace common {
+namespace smil2 {
 
 class lib::document;
 class lib::node;
 
 class trace_player : public time_node_context, 
-	public active_playable_events {
+	public common::active_playable_events {
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -152,7 +152,7 @@ class trace_player : public time_node_context,
 	virtual void clicked(int, double t){}
 
   private:
-	playable *get_playable(const node *n);
+	common::playable *get_playable(const node *n);
 	lib::document *m_doc;
 	time_node* m_root;
 	lib::timer *m_timer;
@@ -175,4 +175,4 @@ class trace_player : public time_node_context,
  
 } // namespace ambulant
 
-#endif // AMBULANT_COMMON_REGION_H
+#endif // AMBULANT_SMIL2_TRACE_PLAYER_H

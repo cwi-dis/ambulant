@@ -136,7 +136,7 @@ bool schema::is_discrete(const lib::q_name_pair& qname) const {
 }
 
 const char* 
-time_container_type_as_str(time_container_type t) {
+ambulant::common::time_container_type_as_str(time_container_type t) {
 	switch(t) {
 		case tc_par: return "par";
 		case tc_seq: return "seq";
