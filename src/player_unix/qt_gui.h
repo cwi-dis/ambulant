@@ -66,6 +66,7 @@
 #include <qdial.h>
 #include <qfiledialog.h>
 #include <qimage.h>
+#include <qinputdialog.h>
 #include <qiodevice.h>
 #include <qlabel.h>
 #include <qlcdnumber.h>
@@ -79,12 +80,6 @@
 #include <qtextstream.h>
 #include <qtooltip.h>
 #include <qwidget.h>
-
-//#include "ambulant/gui/qt/qt_renderer.h"
-//#include "qt_mainloop.h"
-
-
-//using namespace ambulant::gui::qt;
 
 class qt_mainloop;
 

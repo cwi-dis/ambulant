@@ -60,7 +60,7 @@
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
-#include <qinputdialog.h>
+#include "ambulant/common/preferences.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -407,12 +407,27 @@ main (int argc, char*argv[]) {
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
+
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
 	myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
 	
 	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
+
+	//XXXX select XML parser, TBD in GUI
+	char* xml_parser = getenv("XMLPARSER");
+#ifdef	WITH_EXPAT
+	if (xml_parser != NULL && strcmp(xml_parser, "EXPAT") == 0)
+		preferences::get_preferences()->
+		  set_parser_id(preferences::EXPAT);
+#endif/*WITH_EXPAT*/
+#ifdef	WITH_XERCES
+	if (xml_parser != NULL && strcmp(xml_parser, "XERCES") == 0)
+		preferences::get_preferences()->
+		  set_parser_id(preferences::XERCES);
+#endif/*WITH_XERCES*/
+
 	bool exec_flag = false;
 	if (argc > 1) {
 		char last[6];
