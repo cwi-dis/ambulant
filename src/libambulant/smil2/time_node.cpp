@@ -918,6 +918,10 @@ void time_node::timer_event_callback(const timer_event *e) {
 	if(is_active() && timestamp.second >= m_interval.end) {
 		qtime_type qt(sync_node(), m_interval.end);
 		set_state(ts_postactive, qt, this);
+		if(sync_node()->is_excl()) {
+			excl *p = static_cast<excl*>(sync_node());
+			p->on_child_normal_end(this, timestamp);
+		}
 		return;
 	} 
 	
@@ -999,7 +1003,7 @@ void time_node::state_transition_callback(const transition_event *e) {
 	time_state_type tst = e->m_state;
 	
 	//if(!is_root() && !is_alive())
-		//return; // not an S transition
+	//	return; // not an S transition
 	
 	if(sync_node()->is_excl()) {
 		excl *p = static_cast<excl*>(sync_node());
@@ -1102,6 +1106,7 @@ void time_node::remove(qtime_type timestamp) {
 // Pauses this node.
 // Excl element handling.
 void time_node::pause(qtime_type timestamp, pause_display d) {
+	cancel_schedule();
 	paused(true);
 	if(down()) {
 		std::list<time_node*> children;
@@ -1131,10 +1136,10 @@ void time_node::resume(qtime_type timestamp) {
 		for(it = children.begin(); it != children.end(); it++)
 			(*it)->resume(qt);
 	} 
-	
 	if(!is_time_container()) {
 		m_context->resume_playable(m_node);
 	}
+	schedule_next_timer_event(timestamp);
 }
 
 // Defers the interval of this node.
