@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<div class="section" id="jack-jansen-16-jun-03">
-<h1><a name="jack-jansen-16-jun-03">Jack Jansen, 16-Jun-03.</a></h1>
+<div class="section" id="jack-jansen-20-jun-03">
+<h1><a name="jack-jansen-20-jun-03">Jack Jansen, 20-Jun-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -102,6 +102,23 @@ datastream? And, if we do want to seek, do we want a subclass or
 simply have this funcitonality on all active datasources (to be ignored
 on non-timed media)?</p>
 </div>
+<div class="section" id="region">
+<h1><a name="region">Region</a></h1>
+<p>A region is more-or-less a SMIL region, it has XYWH parameters, a parent
+region (unless it is a toplevel window) and parameters such as background
+color, transparency, etc. Rendering is not done directly to a region, but
+the region is activated to return a data sink object to which rendering is
+done.</p>
+<p>SMIL animation on region parameters is a tricky issue. Initially I thought
+the best way to solve this was again by some activate() scheme which would
+return an animated_region, but SMIL animation is a truly global effect:
+while the animation is active the results are seen by everything. For
+this reason I now think it's best to have the region object store
+two sets of parameters (XYWH, color, etc): the default set and the animated
+set. An &quot;animation is active&quot; bit will decide which set to use.</p>
+<p>Whenever any of the parameters is animated the region will have to
+communicate this to</p>
+</div>
 <div class="section" id="data-sink">
 <h1><a name="data-sink">Data sink</a></h1>
 <p>A data sink is where data is sent. It is invoked with a SMIL region as
@@ -112,16 +129,38 @@ graphics APIs. A data sink can send a callback to the renderer for
 &quot;redraw&quot; and &quot;reinit&quot;. The latter is redraw on steriods: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.</p>
+<p>A better name for data sink may be active region (analogous to data 
+source/active data source).</p>
+<p>In case of fill=hold or fill=transition someone has to be responsible
+for holding on to the data sink and its contents. I think the best solution
+is to give this responsibility to the region, i.e. in these cases
+ownership of the data sink is passed back to the region (in stead of
+the data sink simply being discarded). The region will need a call
+that returns this &quot;old data sink&quot; so transitions can do their thing.
+That call should probably return a data sink initialized to the background
+if there isn't a fill=transition in effect, to simplify the transition
+code (it will always transition between two data sinks, or maybe even
+with two data sinks as sources and a third, new, one as destination).</p>
 </div>
 <div class="section" id="renderers">
 <h1><a name="renderers">Renderers</a></h1>
-<p>RendererFactory is called with a data source, data sink and a few other
+<p>A renderer is called with a data source, region and a few other
 parameters (such as &quot;ignore implicit repeat in media item&quot;). It returns
-a renderer object. The factory can either return a dormant renderer,
-which is only a placeholder, or a real renderer. To return a real
-renderer, or when a dormant renderer is later activated, we ask all
-known renderer classes whether they are able to handle this data source,
-and instantiate the first one that matches.</p>
+a renderer object.</p>
+<p>When the renderer is activated it activates the data source and region,
+and starts rendering.</p>
+<p><em>QUESTION</em>: at some point someone has to decide which (active) renderer
+class to use to handle the media. Its could either be done dynamically,
+when the active renderer has opened the data source, or statically, at the
+time the static renderer object is created. The advantage of dynamic is
+that at that point we have a data source open, so we can presumably get
+MIME type and such at low cost. On the other hand doing it statically means
+we don't have to do it all again when we play the same media again later.
+Maybe a caching scheme is in order again here? Then the question also
+arises where to cache: at the data source is probably a good candidate.</p>
+<p>The renderer activates the region to a data sink, it cannot be called
+with a data sink as parameter (as it was in earlier versions of this document)
+because renderer objects are stateless.</p>
 <p>The renderer object interface should allow for at least three different
 implementations:</p>
 <ol class="arabic simple">
@@ -161,14 +200,25 @@ master clock for the SMIL syncMaster attribute.</p>
 <p>The SMIL Document Scheduler opens the document (through a data source)
 and parses it into a tree. It then waits for the &quot;play document&quot; event.
 Upon receipt it will create the timeline schedule for the root plus anything
-that is on the same timeline. It creates the data sources and renderers,
+that is on the same timeline.</p>
+<p><em>This section is wrong</em>: It creates the data sources and renderers,
 pushes the whole timeline down and fires the event that sets the thing running.
 The timeline schedule also contains preloads for the various media items.
 Then it waits for more events (probably from the LL scheduler) and does
 what is needed for them.</p>
+<p><em>QUESTION</em>: who is responsible for creating regions? The HL scheduler
+seems the best candidate, but that would interfere with any decoupling
+of HL and LL scheduler. Also, if we want to handle subregion positioning
+by inserting a temporary region into the region tree the timeline scheduler
+should also be able to create regions. Animating subregion positioning
+complicates matters even more.</p>
 </div>
 <div class="section" id="timelines">
 <h1><a name="timelines">Timelines</a></h1>
+<p>Timeline objects again come in active and passive flavors. The passive
+flavor is what is created by the SMIL document scheduler, which is then
+activated when pushed down, at which point the active timeline starts
+running.</p>
 <p>The timelines can also be pushed down early, in which case they
 will start preloading. This can be used to do &quot;jump optimization&quot; on
 user interaction: if the scheduler can guess where the user is going to
