@@ -531,8 +531,42 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 common::alignment *
 smil_layout_manager::get_alignment(const lib::node *n)
 {
-	const char *regPoint = n->get_attribute("regPoint");
-	const char *regAlign = n->get_attribute("regAlign");
+	const char *regPoint;
+	const char *regAlign;
+	const char *rpname = "regPoint";
+	const char *raname = "regAlign";
+	regPoint = n->get_attribute("regPoint");
+	regAlign = n->get_attribute("regAlign");
+#ifdef USE_SMIL21
+	const char *mediaAlign = n->get_attribute("mediaAlign");
+	if (mediaAlign) {
+		// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
+		regPoint = mediaAlign;
+		regAlign = mediaAlign;
+		rpname = raname = "mediaAlign";
+	}
+#endif // USE_SMIL21
+	if (regPoint == NULL || regAlign == NULL) {
+		const region_node *rrn = get_region_node_for(n, false);
+		if (rrn == NULL) return NULL;
+		const lib::node *rn = rrn->dom_node();
+		if (regPoint == NULL) {
+			regPoint = rn->get_attribute("regPoint");
+#ifdef USE_SMIL21
+			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
+			if (regPoint == NULL)
+				regPoint = rn->get_attribute("mediaAlign");
+#endif // USE_SMIL21
+		}
+		if (regAlign == NULL) {
+			regAlign = rn->get_attribute("regAlign");
+#ifdef USE_SMIL21
+			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
+			if (regAlign == NULL)
+				regAlign = rn->get_attribute("mediaAlign");
+#endif // USE_SMIL21
+		}
+	}
 	if (regPoint == NULL && regAlign == NULL) return NULL;
 	
 	common::regpoint_spec image_fixpoint = common::regpoint_spec(0, 0);
@@ -543,8 +577,8 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		// Non-standard regpoint. Look it up.
 		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
 		if (it == m_id2regpoint.end()) {
-			lib::logger::get_logger()->trace("%s: unknown regPoint: %s", n->get_sig().c_str(), regPoint);
-			lib::logger::get_logger()->warn(gettext("Syntax error in regPoint"));
+			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), rpname, regPoint);
+			lib::logger::get_logger()->warn(gettext("Syntax error in regPoint/mediaAlign"));
 		} else {
 			regpoint_node = (*it).second;
 			// XXX Just for now:-)
@@ -561,8 +595,8 @@ smil_layout_manager::get_alignment(const lib::node *n)
 				found = true;
 		}
 		if (!found && regAlign != NULL) {
-			lib::logger::get_logger()->trace("%s: unknown regAlign value: %s", n->get_sig().c_str(), regAlign);
-			lib::logger::get_logger()->warn(gettext("Syntax error in regAlign"));
+			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), raname, regAlign);
+			lib::logger::get_logger()->warn(gettext("Syntax error in regAlign/mediaAlign"));
 		}
 	}
 	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
