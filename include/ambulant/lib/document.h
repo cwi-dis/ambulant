@@ -60,14 +60,16 @@ class document : public node_context {
 	virtual ~document();
 	
 	// Returns the root node of this document
-	node* get_root();
+	// The document remains the owner of the root unless detach is true.
+	node* get_root(bool detach = false);
+	const node* get_root() const;
 	
 	// Locate a node with path
 	node* locate_node(const char *path) {
 		return m_root?m_root->locate_node(path):0;
 	}
 	
-	// Returns the source url of this docuemnt
+	// Returns the source url of this document
 	const std::string& get_src_url() const { return m_src_url;}
 	
 	// node_context interface
@@ -113,7 +115,16 @@ document::~document() {
 }
 
 inline node* 
-document::get_root() {
+document::get_root(bool detach) {
+	if(!detach)
+		return m_root;
+	node* tmp = m_root;
+	m_root = 0;
+	return tmp;
+}
+
+inline const node* 
+document::get_root() const {
 	return m_root;
 }
 
@@ -146,6 +157,10 @@ document::get_namespace_prefix(const xml_string& uri) const {
 inline std::string 
 document::resolve_url(const node *n, const std::string& rurl) const {
 	// locate node context xml:base
+	std::string base = m_src_base;
+	const char *p = n->get_container_attribute("base");
+	// ...
+	
 	// if none is found use source.
 	return filesys::join(m_src_base, rurl); // XXX: WRONG, just return something for now.
 }
