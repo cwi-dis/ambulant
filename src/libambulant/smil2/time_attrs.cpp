@@ -392,6 +392,10 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 		events.insert("endEvent");
 		events.insert("repeat");
 		events.insert("activateEvent");
+		events.insert("focusInEvent");
+		events.insert("focusOutEvent");
+		events.insert("inBoundsEvent");
+		events.insert("outOfBoundsEvent");
 		events.insert("click");
 		events.insert("marker");
 	}
@@ -459,7 +463,7 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
 	} else {
 		svs.event = event;
-		AM_DBG m_logger->trace("%s[%s].%s += [%s]", 
+		/*AM_DBG*/ m_logger->trace("%s[%s].%s += [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
 	}
 	

@@ -362,14 +362,19 @@ void smil_player::pointed(int n, double t) {
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
-		if (m_pointed_node) {
+		bool changed_focus = m_pointed_node != (*it).second;
+		if (m_pointed_node && changed_focus) {
+			// XXX We treat outOfBounds and focusOut identical, which is
+			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
@@ -380,13 +385,23 @@ void smil_player::pointed(int n, double t) {
 		m_pointed_node = (*it).second;
 		if((*it).second->wants_activate_event())
 			m_cursorid = 1;
-		if (m_pointed_node->wants_inbounds_event()) {
+		if (changed_focus) {
+			AM_DBG m_logger->trace("smil_player::pointed: m_pointed_node is now 0x%x %s[%s]",
+				m_pointed_node, 
+				m_pointed_node->get_time_attrs()->get_tag().c_str(),
+				m_pointed_node->get_time_attrs()->get_id().c_str());
+		}
+		// XXX We treat inBounds and focusIn identical, which is
+		// not 100% correct.
+		if (changed_focus && m_pointed_node->wants_inbounds_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_inbounds_event, timestamp);
 				schedule_event(cb, 0);
 		}
-		if (m_pointed_node->wants_focusin_event()) {
+		if (changed_focus && m_pointed_node->wants_focusin_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusin_event, timestamp);
@@ -394,13 +409,17 @@ void smil_player::pointed(int n, double t) {
 		}
 	} else {
 		if (m_pointed_node) {
+			// XXX We treat outOfBounds and focusOut identical, which is
+			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
+				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
@@ -409,6 +428,7 @@ void smil_player::pointed(int n, double t) {
 			m_pointed_node = NULL;
 		}
 	}
+	AM_DBG m_logger->trace("smil_player::pointed: now m_pointed_node=0x%x", m_pointed_node);
 }
 
 // Playable notification for a start event.
@@ -512,7 +532,7 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 }
 
 void smil_player::show_link(const lib::node *n, const net::url& href, src_playstate srcstate, dst_playstate dststate) {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
+	AM_DBG lib::logger::get_logger()->trace("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
 		href.get_url().c_str(), (int)srcstate, (int)dststate);
 	net::url our_url(m_doc->get_src_url()); 
 	if(srcstate == src_replace && href.same_document(our_url)) {
@@ -531,12 +551,12 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 	}
 	
 	if (srcstate == src_pause) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("show_link: pausing source document");
+		AM_DBG lib::logger::get_logger()->trace("show_link: pausing source document");
 		pause();
 	}
 	if (srcstate == src_replace) {
 		// XXX Not good enough: should close document too.
-		/*AM_DBG*/ lib::logger::get_logger()->trace("show_link: stopping source document");
+		AM_DBG lib::logger::get_logger()->trace("show_link: stopping source document");
 		stop();
 	}
 	if ( dststate == dst_play || dststate == dst_pause ) {

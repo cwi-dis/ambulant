@@ -339,7 +339,15 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			if(!base) continue;
 			sync_event event = sync_event_from_str(svs.event);
 			if(event == tn_activate_event)
-				base->set_want_activate_event(true);			
+				base->set_want_activate_event(true);
+			else if (event == tn_focusin_event)
+				base->set_want_focusin_event(true);
+			else if (event == tn_focusout_event)
+				base->set_want_focusout_event(true);
+			else if (event == tn_inbounds_event)
+				base->set_want_inbounds_event(true);
+			else if (event == tn_outofbounds_event)
+				base->set_want_outofbounds_event(true);
 			sync_rule *sr = new event_rule(base, event, svs.offset);
 			tn->add_begin_rule(sr);
 		} else if(svs.type == sv_repeat) {
@@ -405,6 +413,14 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			sync_event event = sync_event_from_str(svs.event);
 			if(event == tn_activate_event)
 				base->set_want_activate_event(true);
+			else if (event == tn_focusin_event)
+				base->set_want_focusin_event(true);
+			else if (event == tn_focusout_event)
+				base->set_want_focusout_event(true);
+			else if (event == tn_inbounds_event)
+				base->set_want_inbounds_event(true);
+			else if (event == tn_outofbounds_event)
+				base->set_want_outofbounds_event(true);
 			sync_rule *sr = new event_rule(base, event, svs.offset);
 			tn->add_end_rule(sr);
 		} else if(svs.type == sv_repeat) {
