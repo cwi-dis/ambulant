@@ -226,7 +226,7 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
 	void playdone() {};
 
 	virtual void set_surface(common::surface *dest) { abort(); }
-	virtual common::surface *get_surface() { abort(); }
+	virtual common::surface *get_surface() { abort(); return 0;}
 	
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
