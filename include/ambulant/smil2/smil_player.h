@@ -62,9 +62,12 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/renderer.h"
 #include <map>
 
 namespace ambulant {

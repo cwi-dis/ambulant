@@ -79,7 +79,7 @@
 
 #include "ambulant/gui/qt/qt_renderer.h"
 
-using namespace ambulant::gui::qt_renderer;
+using namespace ambulant::gui::qt;
 
 class qt_gui : public QWidget {
 

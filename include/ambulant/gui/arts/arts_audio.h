@@ -52,29 +52,28 @@
 #include <artsc.h>
 #include <iostream>
 
-#include "ambulant/common/region.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/net/datasource.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/renderer.h"
+#include "ambulant/gui/none/none_gui.h"
+#include "ambulant/net/datasource.h"
 
 
 namespace ambulant {
-using namespace lib;
-    namespace gui {
-        namespace arts {
+namespace gui {
+namespace arts {
 
 //bool m_arts_init = false;
 
-class arts_active_audio_renderer : public active_renderer, public timer_events {
+class arts_active_audio_renderer : public common::active_renderer, public lib::timer_events {
   public:
       arts_active_audio_renderer(
-      active_playable_events *context,
-      active_playable_events::cookie_type cookie,
-      const node *node,
-      event_processor *const evp,
+      common::active_playable_events *context,
+      common::active_playable_events::cookie_type cookie,
+      const lib::node *node,
+      lib::event_processor *const evp,
       net::passive_datasource *src);
 
       ~arts_active_audio_renderer();
@@ -86,7 +85,7 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
       void resume() {};
       void speed_changed() {};
       void readdone();
-      void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
+      void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
   private:
 
       static bool m_arts_init;
@@ -97,7 +96,7 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
       int m_channels;
       int m_bits;
       char *m_name;
-      event *m_playdone;
+      lib::event *m_playdone;
 
 
 };

@@ -58,7 +58,7 @@
 using namespace ambulant;
 using namespace lib;
 using namespace gui;
-using namespace qt_renderer;
+using namespace qt;
  
 void*
 qt_mainloop::run(void* view) {
@@ -71,8 +71,8 @@ qt_mainloop::run(void* view) {
 
 	document *doc = document::create_from_file(qt_view->filename());
 
-	lib::global_renderer_factory *rf =
-		new lib::global_renderer_factory(); 
+	common::global_renderer_factory *rf =
+		new common::global_renderer_factory(); 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->trace("add factory for SDL");
 	rf->add_factory( new sdl::sdl_renderer_factory() );
@@ -87,11 +87,11 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 				   qt_view->get_o_x(),
 			 	   qt_view->get_o_y());
 			 
-	abstract_player *a;
+	common::abstract_player *a;
 #ifdef WITH_MMS_PLAYER
-	a = new mms_player(doc, wf, rf);
+	a = new mms::mms_player(doc, wf, rf);
 #else
-	a = new smil_player(doc, wf, rf);
+	a = new smil2::smil_player(doc, wf, rf);
 #endif
 				
 	a->start();

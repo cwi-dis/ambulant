@@ -61,29 +61,26 @@
 
 
 namespace ambulant {
-using namespace lib;
-    namespace gui {
-        namespace arts {
+namespace gui {
+namespace arts {
           
-class arts_renderer_factory : public lib::renderer_factory {
+class arts_renderer_factory : public common::renderer_factory {
 public:
-    active_renderer *new_renderer(
+	common::active_renderer *new_renderer(
         lib::event_processor *const evp,
         net::passive_datasource *src,
-        lib::passive_region *dest,
+        common::passive_region *dest,
         const lib::node *node);
 
-     active_renderer *new_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
-		const node *node,
-		event_processor *const evp,
+	common::active_renderer *new_renderer(
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest);
+		common::abstract_rendering_surface *const dest);
 
 };
-
-
 
 } // end namespace arts
 } // end namespace gui
