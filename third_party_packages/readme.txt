@@ -5,9 +5,10 @@ packages, patched and ready to build, see the toplevel README file (section
 
 Here is a list of the packages, where they come from, plus the versions:
 
-***** Win32 *****
+Windows Desktop, Windows CE
+===========================
 
-expat-win32:
+expat:
 	Windows only.
 	
 	James Clark's expat XML parser library, version 1.95.7. Download 
@@ -15,27 +16,35 @@ expat-win32:
 	(it seems to be difficult to build from the source).
 
 
-xerces-win32:
+xerces:
 	windows only.
 	
-	Download xerces-C++ Version 2.5.0 Source Release from
-	<http://xml.apache.org> and extract xerces-c-src_2_5_0 and put its 
+	Download xerces-C++ Version 2.6.0 Source Release from
+	<http://xml.apache.org> and extract xerces-c-src_2_6_0 and put its 
 	content in the directory .../ambulant/third_party_packages/
 	
-	Next read the Readme.html included in the xerces distribution and follow the MSVC Version 7
-	buil instructions. After building xerces copy xerces-c_2_6.dll and xerces-depcom_2_6.dll to 
-	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to ambulant/lib.win32.
-	The files are located in xerces-c-src_2_6_0\Build\Win32\VC7\Release. 
+	Next read the Readme.html included in the xerces distribution and
+	follow the MSVC Version 7 buil instructions. After building xerces
+	copy xerces-c_2_6.dll and xerces-depcom_2_6.dll to
+	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to
+	ambulant/lib.win32. The files are located in
+	xerces-c-src_2_6_0\Build\Win32\VC7\Release.
 
-	But I don't want any xerces!
-	If you want to compile AmbulantPlayer without xerces support use the Ambulant-win32-noxerces.sln
+	If you want to compile AmbulantPlayer without xerces support use the 
+	Ambulant-win32-noxerces.sln solution.
 	
-***** Unix *****
 	
-expat-unix:
-	Linux and Mac OS X.
+others:
+	For this release we don't fully remember where we got the other
+	libraries (jpeg, zlib, mp3lib, lpng125), so it is really in your best
+	interest to use the third_party_packages-WIN.zip archive we have
+	prepared.
 	
-	Ditto, but built from source. Download the expat source via 
+Unix (Linux, MacOSX)
+====================
+	
+expat-unix:	
+	Build from source. Download the expat source via 
 	<http://expat.sourceforge.net> and extract into
 	expat-1.95.7 in this directory (.../ambulant/third_party_packages).
 	Then do the following:
@@ -45,21 +54,16 @@ expat-unix:
 		$ make
 		$ make install
 
-	Note that you really want expat-1.95.7, not 1.95.6: the older version
-	has a bug in the expat.h header file that causes compile time errors for
-	Ambulant.
-	
-	Note that if you want to install expat 1.95.7 somewhere else (or you have
-	already installed it) you should specify the location to the --with-expat
-	option on the main ambulant configure: it will normally only look in
-	third_party_packages/expat-unix.
+	Note that you really want expat-1.95.7, not 1.95.6: the older
+	version has a bug in the expat.h header file that causes compile
+	time errors for Ambulant.
+
+	Note that if you want to install expat 1.95.7 somewhere else (or you
+	have already installed it) you should specify the location to the
+	--with-expat option on the main ambulant configure: it will normally
+	only look in third_party_packages/expat-unix.
 
 xerces-unix:
-	Linux and Mac OS X.
-	
-	For this release you need to build xerces from source, you cannot
-	use a pre-installed xerces.
-	
 	Download xerces-C++ Version 2.6.0 Source Release from 
 	<http://xml.apache.org> and extract xerces-c-src_2_6_0 and extract into
 	xerces-c-src_2_6_0 in the directory (.../ambulant/third_party_packages).
@@ -68,35 +72,26 @@ xerces-unix:
 
 	Next, follow the instructions for building xerces, open Readme.html
 	and navigate to "Building". You really want to do this, as they have
-	created some wrappers around the normal configure/make combo.
-	After this :
-		$ cd $tppdir/xerces-c-src_2_6_0/src/xercesc
-		$ ./configure --prefix=$tppdir/xerces-unix
-		$ gmake
-		$ gmake install
-	
-	
-	Mac OS X note: I had no success using the default net accessor (socket),
-	but building xerces-c with the "native" net accessor does seem to work.
-	For Linux there was no such problem.
+	created some wrappers around the normal configure/make combo. You need to
+	add the prefix directory, and for MacOSX the "-n native" option:
+	    linux$ ./runConfigure -p linux -P $tppdir/xerces-unix
+	or
+		macosx$ ./runConfigure -p macosx -n native -P $tppdir/xerces-unix
+	After this "gmake" and "gmake install" will do the job.
 	
 	At this point in time you must specify --with-xerces to
 	the Ambulant configure, by default AmbulantPlayer is built with only
 	expat support. 
 	
-	Note that if you want to install xerces-c-src_2_5_0 somewhere
+	Note that if you want to install Xerces somewhere
 	else (or you have already installed it) you should specify the
 	location to the --with-xerces option on the main ambulant
 	configure: it will normally only look in third_party_packages/xerces-unix.
-	And note that the --with-xerces pathname should refer to the base of a
-	xerces source distribution, not to the installation prefix location.
 	
 	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to the 
 	directory containing libxerces-c.so.
 
 ffmpeg:
-	Linux and Mac OS X.
-	
 	You need ffmpeg 0.4.8. Download from <http://ffmpeg.sourceforge.net/> and
 	unpack into ffmpeg-0.4.8 in this directory (.../ambulant/third_party_packages).
 	
@@ -121,8 +116,6 @@ ffmpeg:
 	no audio and video (Linux).
 	
 sdl:
-	Linux and Mac OS X.
-	
 	Ambulant has been tested with sdl 1.2.6 or 1.2.7. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure the
 	sdl-config utility is on your $PATH when running the configure for Ambulant.
