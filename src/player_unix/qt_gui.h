@@ -125,6 +125,7 @@ class qt_gui : public QWidget {
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	QString      m_smilfilename;
+	QMenuBar*    m_menubar;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */

@@ -81,6 +81,7 @@ char *welcome_locations[] = {
 	"Extras/Welcome/Welcome.smil",
 	"../Extras/Welcome/Welcome.smil",
 	"/usr/local/lib/ambulant/Welcome/Welcome.smil",
+	"/usr/share/doc/ambulant-1.0/Extras/Welcome/Welcome.smil",
 	NULL
 };
 
@@ -97,21 +98,26 @@ find_welcome_doc()
 qt_gui::qt_gui(const char* title,
 	       const char* initfile) :
         m_busy(true),
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
+	m_cursor_shape(Qt::ArrowCursor),
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	//m_cursor_shape(arrowCursor);
+#endif/*QT_NO_FILEDIALOG*/
+	m_mainloop(NULL),
 	m_o_x(0),	 
 	m_o_y(0),	 
-	m_mainloop(NULL),
 	m_pause_id(),
 	m_pausing(),
 	m_play_id(),
 	m_playing(),
 	m_playmenu(),
 	m_programfilename(),
-	m_smilfilename()
+	m_smilfilename(NULL)
 {
 
 	m_programfilename = title;
 	if (initfile != NULL && initfile != "")
-		m_smilfilename = initfile;
+		m_smilfilename = QString(initfile);
 #ifdef  QT_NO_FILEDIALOG
 	else
 		m_smilfilename = QString(
@@ -122,7 +128,7 @@ qt_gui::qt_gui(const char* title,
 	setCaption(initfile);
 
 	/* Menu bar */
-	QMenuBar* menubar = new QMenuBar(this,"MainMenu");
+	m_menubar = new QMenuBar(this,"MainMenu");
 	{
 		int id;
 		/* File */
@@ -135,7 +141,7 @@ qt_gui::qt_gui(const char* title,
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
 //		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
 		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
-		menubar->insertItem("&File", filemenu);
+		m_menubar->insertItem("&File", filemenu);
 		
 		/* Play */
 		m_playmenu = new QPopupMenu (this, "PlayA");
@@ -147,21 +153,26 @@ qt_gui::qt_gui(const char* title,
 						    SLOT(slot_pause()));
 		m_playmenu->setItemEnabled(m_pause_id, false);
 		m_playmenu->insertItem("&Stop",	this, SLOT(slot_stop()));
-		menubar->insertItem("Pla&y", m_playmenu);
+		m_menubar->insertItem("Pla&y", m_playmenu);
 		
 		/* Help */
 		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
 		assert(helpmenu);
 		helpmenu->insertItem("&About AmbulantPlayer", this, SLOT(slot_about()));
-		menubar->insertItem("&Help", helpmenu);
-		menubar->setGeometry(0,0,320,20);
+		m_menubar->insertItem("&Help", helpmenu);
+		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
 		m_o_y = 27;
 	}
 }
 
 qt_gui::~qt_gui() {
+	AM_DBG printf("%s-%s\n", "~qt_gui()",(const char*)m_menubar->text(0));
 	setCaption(QString::null);
+	if (m_menubar != NULL) {
+		delete m_menubar;
+		m_menubar = NULL;
+	}
 }
 
 void 
@@ -215,21 +226,7 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
-#if 0
-	if ( ! (*smilfilename == '/')) {
- 	         char* workdir = getcwd(NULL, 0);
-		 int workdirlen = strlen(workdir);
-		 int pathnamelen = workdirlen + strlen(smilfilename) + 2;
-		 char* pathname = (char*) malloc(pathnamelen);
-		 strcpy(pathname, workdir);
-		 strcpy(&pathname[workdirlen], "/");
-		 strcpy(&pathname[workdirlen+1], smilfilename);
-		 smilfilename = pathname;
-		 free(workdir);
-	} else
- #endif
-		smilfilename = strdup(smilfilename);
-	        
+	smilfilename = strdup(smilfilename);
 	m_smilfilename = smilfilename;
 	if (m_mainloop != NULL)
 		delete m_mainloop;
@@ -410,33 +407,36 @@ main (int argc, char*argv[]) {
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
 	
-	fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
+	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
 	if (argc > 1) {
-	  char last[6];
-	  char*str = argv[argc-1];
-	  int len = strlen(str);
-	  strcpy(last, &str[len-5]);
-	  fprintf(DBG, "%s %s %d\n", str, last, strcpy(last, ".smil"));
-	  if (strcmp(last, ".smil") == 0
-	      || strcmp(&last[1], ".smi") == 0
-	      || strcmp(&last[1], ".sml") == 0) {
-	    mywidget->openSMILfile(argv[argc-1], IO_ReadOnly);
-	    mywidget->slot_play();
-	  }
-	} else {
-	  char fnbuf[1024];
-	  snprintf(fnbuf, 1024, "%s/.ambulant_welcomeSeen", getenv("HOME"));
-	  if (access(fnbuf, 0) < 0) {
-	  	close(creat(fnbuf, 0666));
-		char *welcome_doc = find_welcome_doc();
-		if (welcome_doc) {
-			mywidget->openSMILfile(welcome_doc, IO_ReadOnly);
+		char last[6];
+		char* str = argv[argc-1];
+		int len = strlen(str);
+		strcpy(last, &str[len-5]);
+		AM_DBG fprintf(DBG, "%s %s %x\n", str, last);
+		if (strcmp(last, ".smil") == 0
+		|| strcmp(&last[1], ".smi") == 0
+	  	|| strcmp(&last[1], ".sml") == 0) {
+		  mywidget->openSMILfile(argv[argc-1],
+					       IO_ReadOnly);
 			mywidget->slot_play();
 		}
-	  }
+	} else {
+		char fnbuf[1024];
+	  	snprintf(fnbuf, 1024, "%s/.ambulant_welcomeSeen",
+			 getenv("HOME"));
+		if (access(fnbuf, 0) < 0) {
+			char *welcome_doc = find_welcome_doc();
+			if (welcome_doc
+			&& mywidget->openSMILfile(welcome_doc,
+						  IO_ReadOnly)) {
+				mywidget->slot_play();
+		  		close(creat(fnbuf, 0666));
+			}
+		}
 	}
-	  	
 	myapp.exec();
+	delete mywidget;
 	std::cout << "Exiting program" << std::endl;
 	return 0;
 }
