@@ -62,6 +62,7 @@ typedef lib::no_arg_callback<net::ffmpeg_audio_datasource> readdone_callback;
 bool net::ffmpeg_audio_datasource::m_codec_selected = false;
 bool net::ffmpeg_audio_datasource::m_avcodec_open = false;
 
+#define INBUF_SIZE 4096
 
 net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(abstract_active_datasource *const src, lib::event_processor *const evp) : m_event_processor(evp)
 {
@@ -116,6 +117,8 @@ net::ffmpeg_audio_datasource::callback()
 	int size;
 	int outsize;
 	int decoded;
+	int blocksize;
+	const int max_block = INBUF_SIZE +  FF_INPUT_BUFFER_PADDING_SIZE;
 	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : I got a callback !");
 
@@ -135,14 +138,20 @@ net::ffmpeg_audio_datasource::callback()
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : open avcodec succes !");
 		m_avcodec_open = true;
 	}
-	decoded = decode(m_inbuf, size, m_outbuf, outsize);
+	if (max_block < size) {
+		blocksize = max_block;
+	} else {
+		blocksize = size;
+	}
+	
+	decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", size, outsize);
 	m_buffer.pushdata(outsize);
 	m_src->readdone(decoded);
 	
 	if ( m_client_waiting ) {
 		m_client_waiting = false;
-		callback();
+		//callback();
 	}
 		
 	if(( !m_src->buffer_full() && !m_src->end_of_file() )) {

@@ -53,7 +53,7 @@
 #include "ambulant/net/datasource.h"
 #include <unistd.h>
 
-
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -343,11 +343,10 @@ net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
  {
  	if (! end_of_file() ) read_file();
 	
-	if (m_buffer->used > 0) {	
-    	if (evp && callback) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
-			evp->add_event(callback, 0, ambulant::lib::event_processor::high);
-		}
+
+    if (evp && callback) {
+		AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+		evp->add_event(callback, 0, ambulant::lib::event_processor::high);
     }
 }
  

@@ -28,5 +28,6 @@ library_include_HEADERS= \
 	string_util.h \
 	thread.h \
 	timer.h \
+	test_attrs.h \
 	tree_builder.h
 
