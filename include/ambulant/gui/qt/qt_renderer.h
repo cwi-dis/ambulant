@@ -80,84 +80,33 @@ class ambulant_qt_window : public common::abstract_window {
   public:
 	ambulant_qt_window(const std::string &name,
 			   lib::screen_rect<int>* bounds,
-			   common::renderer *region)
-:	common::abstract_window(region) ,
-	m_ambulant_widget(NULL) {
-		AM_DBG lib::logger::get_logger()->trace(
-			"ambulant_qt_window::ambulant_qt_window(0x%x)",
-			(void *)this);
-		}
-		void need_redraw(const lib::screen_rect<int> &r);
-		void mouse_region_changed();
-		void redraw(const lib::screen_rect<int> &r);
-		void user_event(const lib::point &where);
-		void set_ambulant_widget(qt_ambulant_widget* qaw) {
-			AM_DBG lib::logger::get_logger()->trace(
-				"ambulant_qt_window:"
-				":set_ambulant_widget(0x%x)",
-				(void *)qaw);
-			m_ambulant_widget = qaw;
-		}
-		qt_ambulant_widget* ambulant_widget() {
-			AM_DBG lib::logger::get_logger()->trace(
-				"ambulant_qt_window:"
-				" ambulant_widget(0x%x)",
-				(void *)m_ambulant_widget);
-			return m_ambulant_widget;
-		}
+			   common::renderer *region);
+	~ambulant_qt_window();
+			   
+	void set_ambulant_widget(qt_ambulant_widget* qaw);
+	qt_ambulant_widget* ambulant_widget();
+
+	void need_redraw(const lib::screen_rect<int> &r);
+	void redraw(const lib::screen_rect<int> &r);
+	void mouse_region_changed();
+	void user_event(const lib::point &where);
+
   private:
-		qt_ambulant_widget* m_ambulant_widget;
+	qt_ambulant_widget* m_ambulant_widget;
 };  // class ambulant_qt_window
 
 class qt_ambulant_widget : public QWidget {
   public:
 	qt_ambulant_widget(const std::string &name,
 			   lib::screen_rect<int>* bounds,
-			   QWidget* parent_widget)
-:	QWidget(parent_widget,"qt_ambulant_widget",0),
-	m_qt_window(NULL) {
-		AM_DBG lib::logger::get_logger()->trace(
-			"qt_ambulant_widget::qt_ambulant_widget"
-			"(0x%x-0x%x(%d,%d,%d,%d))",
-			(void *)this,
-			(void*)  parent_widget,
-			bounds->left(),
-			bounds->top(),
-			bounds->right(),
-			bounds->bottom());
-		setGeometry(bounds->left(),
-			    bounds->top(),
-			    bounds->right(),
-			    bounds->bottom());
-		}
-	void paintEvent(QPaintEvent* e) {
-		AM_DBG lib::logger::get_logger()->trace(
-			"qt_ambulant_widget::paintEvent"
-			"(0x%x) e=0x%x)",
-			(void*) this, (void*) e);
-		QRect qr = e->rect();
-		lib::screen_rect<int> r =  lib::screen_rect<int>(
-			lib::point(qr.left(),qr.top()),
-			lib::point(qr.right(),qr.bottom()));
-		if (m_qt_window == NULL) {
-			lib::logger::get_logger()->trace(
-			"qt_ambulant_widget::paintEvent"
-			"(0x%x) e=0x%x m_qt_window==NULL",
-			(void*) this, (void*) e);
-		return;
-		}
-		m_qt_window->redraw(r);
-	}
-	void set_qt_window( ambulant_qt_window* aqw) {
-		m_qt_window = aqw;
-		AM_DBG lib::logger::get_logger()->trace(
-		"qt_ambulant_widget::set_qt_window"
-		"((0x%x) m_qt_window==0x%x)",
-		(void*) this, (void*) m_qt_window);
-	}
-	ambulant_qt_window* qt_window() {
-		return m_qt_window;
-	}
+			   QWidget* parent_widget);
+	~qt_ambulant_widget();
+	
+	void set_qt_window( ambulant_qt_window* aqw);
+	ambulant_qt_window* qt_window();
+	
+	void paintEvent(QPaintEvent* e);
+
   private:
 	ambulant_qt_window* m_qt_window;
 

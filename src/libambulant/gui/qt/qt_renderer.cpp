@@ -61,6 +61,40 @@
 using namespace ambulant; 
 using namespace gui::qt;
   
+ambulant_qt_window::ambulant_qt_window(const std::string &name,
+	   lib::screen_rect<int>* bounds,
+	   common::renderer *region)
+:	common::abstract_window(region),
+	m_ambulant_widget(NULL)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace(
+		"ambulant_qt_window::ambulant_qt_window(0x%x)",
+		(void *)this);
+}
+
+ambulant_qt_window::~ambulant_qt_window() {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window");
+	/* XXX Should probably delete m_ambulant_widget */
+}
+	
+void
+ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw) {
+	/*AM_DBG*/ lib::logger::get_logger()->trace(
+		"ambulant_qt_window:"
+		":set_ambulant_widget(0x%x)",
+		(void *)qaw);
+	m_ambulant_widget = qaw;
+}
+
+qt_ambulant_widget*
+ambulant_qt_window::ambulant_widget() {
+	AM_DBG lib::logger::get_logger()->trace(
+		"ambulant_qt_window:"
+		" ambulant_widget(0x%x)",
+		(void *)m_ambulant_widget);
+	return m_ambulant_widget;
+}
+
 void
 ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r) {
 	AM_DBG lib::logger::get_logger()->trace(
@@ -100,6 +134,67 @@ ambulant_qt_window::user_event(const lib::point &where) {
 	m_region->user_event(where);
 }
 
+// XXXX
+qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
+		   lib::screen_rect<int>* bounds,
+		   QWidget* parent_widget)
+:	QWidget(parent_widget,"qt_ambulant_widget",0),
+	m_qt_window(NULL)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace(
+		"qt_ambulant_widget::qt_ambulant_widget"
+		"(0x%x-0x%x(%d,%d,%d,%d))",
+		(void *)this,
+		(void*)  parent_widget,
+		bounds->left(),
+		bounds->top(),
+		bounds->right(),
+		bounds->bottom());
+	setGeometry(bounds->left(),
+			bounds->top(),
+			bounds->right(),
+			bounds->bottom());
+}
+
+qt_ambulant_widget::~qt_ambulant_widget() {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_ambulant_widget::~qt_ambulant_widget");
+}
+	
+void
+qt_ambulant_widget::paintEvent(QPaintEvent* e) {
+	AM_DBG lib::logger::get_logger()->trace(
+		"qt_ambulant_widget::paintEvent"
+		"(0x%x) e=0x%x)",
+		(void*) this, (void*) e);
+	QRect qr = e->rect();
+	lib::screen_rect<int> r =  lib::screen_rect<int>(
+		lib::point(qr.left(),qr.top()),
+		lib::point(qr.right(),qr.bottom()));
+	if (m_qt_window == NULL) {
+		lib::logger::get_logger()->trace(
+			"qt_ambulant_widget::paintEvent"
+			"(0x%x) e=0x%x m_qt_window==NULL",
+			(void*) this, (void*) e);
+		return;
+	}
+	m_qt_window->redraw(r);
+}
+
+void 
+qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw) {
+	m_qt_window = aqw;
+	/*AM_DBG*/ lib::logger::get_logger()->trace(
+		"qt_ambulant_widget::set_qt_window"
+		"((0x%x) m_qt_window==0x%x)",
+	(void*) this, (void*) m_qt_window);
+}
+
+ambulant_qt_window* 
+qt_ambulant_widget::qt_window() {
+	return m_qt_window;
+}
+
+// XXXX
 common::playable *
 qt_renderer_factory::new_playable (
 	common::playable_notification *context,
@@ -127,7 +222,7 @@ qt_renderer_factory::new_playable (
 		return NULL;
 	}
     return rv;
-  }
+}
   
 common::abstract_window *
 qt_window_factory::new_window (const std::string &name,
@@ -142,7 +237,7 @@ qt_window_factory::new_window (const std::string &name,
 		r->left(),r->top(),r->right(),r->bottom());
  	ambulant_qt_window * aqw = new ambulant_qt_window(
 		name, r, region);
-      	qt_ambulant_widget * qaw = new qt_ambulant_widget(
+    qt_ambulant_widget * qaw = new qt_ambulant_widget(
 		name, r, m_parent_widget);
 #ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
 	if (qApp == NULL || qApp->mainWidget() == NULL) {
@@ -157,7 +252,7 @@ qt_window_factory::new_window (const std::string &name,
 #endif	/*QT_NO_FILEDIALOG*/
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
- 	AM_DBG lib::logger::get_logger()->trace(
+ 	/*AM_DBG*/ lib::logger::get_logger()->trace(
 		"qt_window_factory::new_window(0x%x)"
 		"ambulant_widget=0x%x qt_window=0x%x",
 		(void*) this, (void*) qaw, (void*) aqw);
