@@ -51,7 +51,7 @@
 #define AM_DBG if(0)
 #endif
 
-#include "ambulant/gui/sdl/sdl_audio.h"
+#include "ambulant/gui/SDL/sdl_audio.h"
 
 namespace ambulant {
 
@@ -62,8 +62,8 @@ extern "C" {
 	{
 		
      std::cout <<"callback " << userdata << std::endl;  		
-	sdl_active_renderer* dummy;
-	dummy = (sdl_active_renderer*) userdata;
+	gui::sdl::sdl_active_audio_renderer* dummy;
+	dummy = (gui::sdl::sdl_active_audio_renderer*) userdata; 
 	dummy->callback(userdata, stream, len);
 		std::cout <<"callback done" << userdata << std::endl;
 	};
@@ -144,7 +144,7 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 void
 gui::sdl::sdl_active_audio_renderer::readdone()
 {
-    if (!end_of_file()) {
+    if (!m_src->end_of_file()) {
 		m_src->start(m_event_processor, m_readdone);
 	} else {
 		stopped_callback();
@@ -153,18 +153,18 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 
 
 void 
-gui::sdl::sdl_active_audio_rederer::callback(void *userdata, Uint8 *stream, int len)
+gui::sdl::sdl_active_audio_renderer::callback(void *userdata, Uint8 *stream, int len)
 {
 	Uint8 *in_ptr;
 	int size;
 	size = m_src->size();
 	if (size > 0) {
 		if (size > len) {
-			in_ptr = (Uint8) m_src->read_ptr();
+			in_ptr = (Uint8*) m_src->read_ptr();
 			memcpy(stream, in_ptr, len);
 			m_src->readdone(len);
 		} else {
-			in_ptr = (Uint8) m_src->read_ptr();
+			in_ptr = (Uint8*) m_src->read_ptr();
 			memcpy(stream, in_ptr, size);
 			m_src->readdone(size);
 		}	

@@ -61,7 +61,7 @@ using namespace lib;
 
 
 
-lib::active_renderer *
+active_renderer *
 gui::arts::arts_renderer_factory::new_renderer(
 		lib::active_playable_events *context,
 		lib::active_playable_events::cookie_type cookie,

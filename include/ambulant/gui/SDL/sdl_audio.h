@@ -83,22 +83,23 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
       void stop() {};
       void pause() {};
       void resume() {};
+	  void freeze() {};
       void speed_changed() {};
       void readdone();
       void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
-  
+	  void wantclicks(bool want) {};
+      void user_event(const point &where) {};
+  	  void callback(void *userdata, Uint8 *stream, int len);
+		  
 	private:
+		
       static bool m_sdl_init;
-      void callback(void *userdata, Uint8 *stream, int len);
-  
   	  int init(int rate, int bits, int channels);
       SDL_AudioSpec *m_audiospec;
       int m_rate;
       int m_channels;
       int m_bits;
       event *m_playdone;
-
-
 };
 
 } // end namespace sdl

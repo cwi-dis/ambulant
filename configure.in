@@ -21,7 +21,7 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/gui/cocoa/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/arts/Makefile
-	include/ambulant/gui/qsound/Makefile
+	include/ambulant/gui/SDL/Makefile
 	Test/Makefile
 	Test/designtests/Makefile
 	third_party_packages/Makefile])
@@ -153,30 +153,22 @@ configure with: ./configure --build=`config.guess` --host=arm-linux])
 fi
 AC_MSG_RESULT($qtopia)
 #
-# Test for QSound
+# Test for SDL
 #
-AC_MSG_CHECKING(for --with-qsound (cross compilation for Sharp SL-5600 Zaurus))
-AC_ARG_WITH(qsound,
-     [  --with-qsound    Turn on QSound support ],
+AC_MSG_CHECKING(for --with-sdl)
+AC_ARG_WITH(sdl,
+     [  --with-sdl    Turn on SDL support],
      [case "${withval}" in
-       yes) qsound=true
-                QT_PREFIX=$QTDIR
-		;;
-       no)  qsound=false
+       yes) sdl=true
                 ;;
-       *)       qsoundtrue
-                QT_PREFIX=${withval}
+       no)  sdl=false
                 ;;
-     esac],[
-     case x$QSOUND in
-     x) qsound=false
-        ;;
-     *) qsound=true
-        QT_PREFIX=$QTDIR
-        ;;
+       *)   AC_MSG_ERROR(--with-sdl takes no argument)
+                ;;
      esac])
-AM_CONDITIONAL(WITH_QSOUND, test x$qsound = xtrue)
-AC_MSG_RESULT($qsound)
+AM_CONDITIONAL(WITH_SDL, test x$sdl = xtrue)
+AC_MSG_RESULT($sdl)
+
 #
 # Test for arts 
 #

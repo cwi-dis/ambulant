@@ -164,7 +164,7 @@ class active_final_renderer : public active_renderer {
 // Foctory class for renderers.
 class renderer_factory {
   public:
-	virtual ~renderer_factory() {}
+	virtual ~renderer_factory() {};
 	virtual active_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,

@@ -5,6 +5,14 @@ bin_PROGRAMS = qt_player
 qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h
 
 # Conditionals for ARTS audio support
+if WITH_SDL
+extra_sdl_DEFINES=-DWITH_SDL
+extra_sdl_ldflags= `sdl-config --libs`
+else
+extra_arts_ldflags=
+extra_sdl_DEFINES=
+endif
+
 if WITH_ARTS
 extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
 extra_arts_ldflags=`artsc-config --libs`
@@ -19,24 +27,18 @@ qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
 else
 qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
 endif
-if WITH_QSOUND
-extra_qsound_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_qsound.a
-extra_qsound_DEFINES=-DWITH_QSOUND
-else
-extra_qsound_LDADD=
-extra_qsound_DEFINES=
-endif
+
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
-	$(extra_qsound_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	$(qt_libs)
 
-AM_LDFLAGS=$(extra_arts_ldflags)
+AM_LDFLAGS=$(extra_arts_ldflags) \
+	   $(extra_sdl_ldflags)
  
-AM_CPPFLAGS = $(extra_arts_DEFINES) \
-	      $(extra_qsound_DEFINES) \
+AM_CPPFLAGS = $(extra_arts_DEFINES)                            \
+	      $(extra_sdl_DEFINES)				\
 	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\

@@ -50,18 +50,23 @@
 #define AM_DBG if(0)
 #endif
  
-#include "ambulant/gui/sdl/sdl.h"
-#include "ambulant/gui/sdl/sdl_audio.h"
+#include "ambulant/gui/SDL/sdl.h"
+#include "ambulant/gui/SDL/sdl_audio.h"
 
 
 namespace ambulant {
 
 using namespace lib;
 
+gui::sdl::sdl_renderer_factory::sdl_renderer_factory()
+{
+}
 
+gui::sdl::sdl_renderer_factory::~sdl_renderer_factory()
+{
+}
 
-
-lib::active_renderer *
+active_renderer *
 gui::sdl::sdl_renderer_factory::new_renderer(
 		lib::active_playable_events *context,
 		lib::active_playable_events::cookie_type cookie,
@@ -77,7 +82,7 @@ gui::sdl::sdl_renderer_factory::new_renderer(
 		rv = (active_renderer *) new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, src);
 		AM_DBG logger::get_logger()->trace("sdl_renderer_factory: node 0x%x: returning sdl_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
-	AM_DBG logger::get_logger()->error("sdl_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
+	AM_DBG logger::get_logger()->error("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
                 return NULL;
 	}
 	return rv;

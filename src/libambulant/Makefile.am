@@ -34,23 +34,25 @@ else
 artsincludes=
 toolkit_arts_libraries =
 endif
-if WITH_QSOUND
-toolkit_qsound_libraries = libambulant_qsound.la
-libambulant_qsound_la_LDFLAGS = 
-qsoundincludes =
-libambulant_qsound_la_SOURCES =             \
-        gui/qsound/qsound_factory.cpp \
-        gui/qsound/qsound_audio.cpp
+
+if WITH_SDL
+toolkit_sdl_libraries = libambulant_sdl.la
+libambulant_sdl_la_LDFLAGS =  ` sdl-config --libs`
+sdlincludes = `sdl-config --cflags`
+libambulant_sdl_la_SOURCES =             \
+        gui/SDL/sdl.cpp \
+        gui/SDL/sdl_audio.cpp
 else
-qsoundincludes=
-toolkit_qsound_libraries =
+sdlincludes=
+toolkit_sdl_libraries =
 endif
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	-I$(EXPAT_PREFIX)/include $(qtincludes) $(artsincludes)
-	  $(qsoundincludes)
+	-I$(EXPAT_PREFIX)/include $(qtincludes) $(artsincludes)\
+	  $(sdlincludes)
 
-lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_qsound_libraries)
+lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)\
+$(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_sdl_libraries)
 
 
 libambulant_la_SOURCES = \
