@@ -36,10 +36,10 @@ void start_##name(const q_name_pair& qn, const q_attributes_list& qattrs);\
 void end_##name(const q_name_pair& qn)
 
 #define REG_ELEMENT_HANDLER(name)\
-register_handler(q_name_pair(XMLNS,#name), &smil_handler::start_##name, &smil_handler::end_##name)
+register_handler(q_name_pair(XMLNS,#name), smil_handler::start_##name, smil_handler::end_##name)
 
 #define REG_ELEMENT_HANDLER2(ename, hname)\
-register_handler(q_name_pair(XMLNS,#ename), &smil_handler::start_##hname, &smil_handler::end_##hname)
+register_handler(q_name_pair(XMLNS,#ename), smil_handler::start_##hname, smil_handler::end_##hname)
 	
 ////////////////
 
@@ -93,7 +93,7 @@ class smil_handler :
 	typedef std::pair<START_ELEMENT_HANDLER, END_ELEMENT_HANDLER> element_handler;
 	std::map<q_name_pair, element_handler> m_handlers;
 	void register_handler(const q_name_pair& qn, START_ELEMENT_HANDLER se, END_ELEMENT_HANDLER ee){ 
-		m_handlers[qn] = element_handler(se, ee);
+		m_handlers[qn] = std::make_pair(se, ee);
 	} 
 	
 	///////////////
