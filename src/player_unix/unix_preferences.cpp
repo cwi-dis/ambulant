@@ -103,8 +103,8 @@ unix_preferences::unix_preferences() {
 	     &m_parser_id, valid_parsers);
 	ADD_PREF("AMBULANT_VALIDATION_SCHEME", STRING,
 	     &m_validation_scheme, valid_schemes);
-	ADD_PREF("AMBULANT_DO_VALIDATION", BOOL,
-	     &m_do_validation, valid_bools);
+//	ADD_PREF("AMBULANT_DO_VALIDATION", BOOL,
+//	     &m_do_validation, valid_bools);
 	ADD_PREF("AMBULANT_DO_NAMESPACES", BOOL,
 	     &m_do_namespaces, valid_bools);
 	ADD_PREF("AMBULANT_DO_SCHEMA", BOOL,

@@ -92,8 +92,11 @@ class qt_settings
 	QVGroupBox*	m_xerces_vg;
 	QCheckBox*	m_namespace_cb;	// Enable XML namespace support
 	bool		m_namespace_val;
-	QCheckBox*	m_validation_cb;// Enable XML validation:
-	bool		m_validation_val;
+ 	QHBox*		m_validation_hb;// Enable XML validation:
+ 	QLabel*		m_validation_lb;// Enable XML validation:
+ 	QComboBox*	m_validation_co;// Enable XML validation:
+	//QCheckBox*	m_validation_cb;
+	//bool		m_validation_val;
 	QVBox*		m_validation_vb;
 	QHButtonGroup*	m_declaration_bg;
 	QRadioButton* 	m_schema_rb;	// Using Schema

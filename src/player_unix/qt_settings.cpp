@@ -87,6 +87,7 @@
 static const char* loglevels[] = 
   { "debug", "trace", "show", "warn", "error", "fatal", 0 };
 static const char* parsers[]   = { "any","expat", "xerces", 0 };
+static const char* val_schemes[] = {"never", "always", "auto", 0};
 
 QWidget* 
 qt_settings::settings_select() {
@@ -95,13 +96,15 @@ qt_settings::settings_select() {
 		ambulant::common::preferences::get_preferences();
 	m_settings_vg = new QVGroupBox("Settings", 0);
 	m_settings_vg->move(160,120);
-
+	
+	// This part takes care of the loglevel
 	m_loglevel_hb	= new QHBox(m_settings_vg);
 	m_loglevel_lb	= new QLabel("Log level:", m_loglevel_hb);
 	m_loglevel_co	= new QComboBox("QComboBox1", m_loglevel_hb);
 	m_loglevel_co->insertStrList(loglevels);
 	m_loglevel_co->setCurrentItem(m_preferences->m_log_level);
 
+	// This part takes care of the parser pref.
 	m_parser_hb	= new QHBox(m_settings_vg);
 	m_parser_lb	= new QLabel("XML parser:", m_parser_hb);
 	m_parser_co	= new QComboBox("QComboBox2", m_parser_hb);
@@ -109,14 +112,21 @@ qt_settings::settings_select() {
 	const char* id	= m_preferences->m_parser_id.data();
 	m_parser_co->setCurrentItem(index_in_string_array(id, parsers));
 
+	
 	m_xerces_vg	= new QVGroupBox("Xerces options:",
 					 m_settings_vg);
 	m_namespace_cb	= new QCheckBox("Enable XML namespace support",
 					m_xerces_vg);
 	m_namespace_cb->setChecked(m_preferences->m_do_namespaces);
-	m_validation_cb = new QCheckBox("Enable XML validation:",
-					m_xerces_vg);
-	m_validation_cb->setChecked(m_preferences->m_do_validation);
+	// do validation or not
+	m_validation_hb = new QHBox(m_settings_vg);
+	m_validation_lb = new QLabel("Enable XML validation:", m_validation_hb);
+	m_validation_co = new QComboBox("QComboBox3", m_validation_hb);
+	m_validation_co->insertStrList(val_schemes);
+	const char* scheme = m_preferences->m_validation_scheme.c_str();
+	m_parser_co->setCurrentItem(index_in_string_array(scheme, val_schemes));
+	
+	//m_validation_cb->setChecked(m_preferences->m_validation_scheme);
 
 	m_validation_vb = new QVBox(m_xerces_vg);
 	m_declaration_bg = new QHButtonGroup(m_validation_vb);
@@ -155,9 +165,12 @@ qt_settings::settings_ok() {
 	if (m_namespace_cb)
 		 m_preferences->m_do_namespaces	=
 		 	m_namespace_cb->isChecked();
-	if (m_validation_cb)
-		 m_preferences->m_do_validation =
-		 	m_validation_cb->isChecked();
+	
+	m_preferences->m_validation_scheme = val_schemes[m_validation_co->currentItem()];
+
+	//	if (m_validation_cb)
+//		 m_preferences->m_validation_scheme =
+//		 	m_validation_cb->isChecked();
 	if (m_full_check_cb)
 		m_preferences->m_validation_schema_full_checking =
 			m_full_check_cb->isChecked();
