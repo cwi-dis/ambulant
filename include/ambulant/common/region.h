@@ -42,6 +42,7 @@ class passive_region {
 		m_cur_active_region(NULL) {}
 	virtual ~passive_region() {}
 	
+	virtual void show(active_region *cur);
 	virtual void redraw(const screen_rect<int> &r);
 
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
