@@ -40,14 +40,14 @@ class active_renderer : public ref_counted {
   		m_node(NULL),
   		m_readdone(NULL),
   		m_playdone(NULL),
-  		m_refcount(1) {}
+  		m_refcount(1), m_dest(0) {}
   	active_renderer(const ambulant::lib::active_renderer& src)
   	:	m_event_processor(src.m_event_processor),
   		m_src(src.m_src),
   		m_node(src.m_node),
   		m_readdone(src.m_readdone),
   		m_playdone(src.m_playdone),
-  		m_refcount(1) {}
+  		m_refcount(1), m_dest(0) {}
 	active_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		passive_region *const dest,
