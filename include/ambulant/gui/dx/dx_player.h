@@ -105,7 +105,6 @@ class dx_player_callbacks {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
-	virtual HWND get_main_window() = 0;
 };
 
 class AMBULANTAPI dx_player : 
@@ -198,6 +197,7 @@ class AMBULANTAPI dx_player :
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
+	HWND get_main_window();
 	void lock_redraw();
 	void unlock_redraw();
 	

@@ -132,7 +132,6 @@ class my_player_callbacks : public gui_callbacks {
   public:
 	HWND new_os_window();
 	void destroy_os_window(HWND hwnd);
-	HWND get_main_window();
 };
 
 my_player_callbacks s_player_callbacks;
@@ -146,10 +145,6 @@ HWND my_player_callbacks::new_os_window() {
 
 void my_player_callbacks::destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
-}
-
-HWND my_player_callbacks::get_main_window() {
-	return AfxGetMainWnd()->GetSafeHwnd();
 }
 
 

@@ -394,6 +394,14 @@ gui::dx::dx_player::get_window(HWND hwnd) {
 	return wi?wi->w:0;
 }
 
+HWND
+gui::dx::dx_player::get_main_window() {
+	// XXXX Unsure that this is correct: we just return any window
+	std::map<std::string, wininfo*>::iterator it = m_windows.begin();
+	if (it == m_windows.end()) return NULL;
+	return (*it).second->h;
+}
+
 ////////////////////
 // common::playable_factory implementation
 
@@ -588,14 +596,14 @@ void gui::dx::dx_player::done(player *p) {
 }
 
 void gui::dx::dx_player::close(player *p) {
-	PostMessage(m_hoster.get_main_window(), WM_CLOSE, 0, 0);
+	PostMessage(get_main_window(), WM_CLOSE, 0, 0);
 }
 
 void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
 	std::string urlstr = newdoc.get_url();
 	if(old) {
 		// Replace the current document
-		PostMessage(m_hoster.get_main_window(), WM_REPLACE_DOC, 
+		PostMessage(get_main_window(), WM_REPLACE_DOC, 
 			startnewdoc?1:0, LPARAM(new std::string(urlstr))); 
 		return;
 	}

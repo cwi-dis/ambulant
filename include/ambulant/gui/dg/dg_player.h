@@ -104,7 +104,6 @@ class dg_player_callbacks {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
-	virtual HWND get_main_window() = 0;
 };
 
 class viewport;
@@ -199,6 +198,7 @@ class dg_player :
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
+	HWND get_main_window();
 
 	// Callbacks to the hosting program
   	dg_player_callbacks &m_hoster;
