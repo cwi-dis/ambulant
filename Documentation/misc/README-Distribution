@@ -71,7 +71,10 @@ Here are some random remarks about testing the distributions.
   mac: ~/Library/Preferences/org.ambulantplayer.ambulantplayer.plist;
   windows: HKEY_CURRENT_USER\Software\Ambulant\AmbulantPlayer in the registry).
   
-- Make sure Welcome plays at first run. Then play DemoPresentation/NYC-SMIL2.smil.
+- Make sure Welcome plays at first run. Check that the preferences have
+  sensible defaults (log level: trace, parser: expat, log window: closed).
+
+- Then play DemoPresentation/NYC-SMIL2.smil.
   Then play the website documents. Use the Xerces parser. Open the log window,
   select "debug" output, and make sure that there aren't any accidental
   AM_DBG's left on.
