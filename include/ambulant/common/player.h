@@ -17,6 +17,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/timelines.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/mtsync.h"
 
 namespace ambulant {
 
@@ -90,7 +91,7 @@ class active_player : public ref_counted {
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
 
-	basic_atomic_count<unix::critical_section> m_refcount;
+	basic_atomic_count<critical_section> m_refcount;
 };
 
 } // namespace lib
