@@ -154,11 +154,13 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 void gui::dx::dx_video_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("stop: %s", m_node->get_path_display_desc().c_str()); 
 	if(!m_player) return;
+	m_cs.enter();
 	m_update_event = 0;
 	video_player *p = m_player;
 	m_player = 0;
 	p->stop();
 	delete p;
+	m_cs.leave();
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
@@ -186,7 +188,7 @@ void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
-	if(!m_player || !m_player->can_play()) {
+	if(!m_player || !m_player->can_play() || !m_update_event) {
 		// No bits available
 		return;
 	}
@@ -253,7 +255,9 @@ void gui::dx::dx_video_renderer::update_callback() {
 	if(!m_update_event || !m_player) {
 		return;
 	}
+	m_cs.enter();
 	m_dest->need_redraw();
+	m_cs.leave();
 	
 	if(m_player->is_playing()) {
 		schedule_update();

@@ -402,11 +402,13 @@ gui::dx::dx_transition *gui::dx::dx_player::get_transition(common::playable *p) 
 }
 
 void gui::dx::dx_player::stopped(common::playable *p) {
+	m_trmap_cs.enter();
 	trmap_t::iterator it = m_trmap.find(p);
 	if(it != m_trmap.end()) {
 		delete (*it).second;
 		m_trmap.erase(it);
 	}
+	m_trmap_cs.leave();
 }
 
 void gui::dx::dx_player::paused(common::playable *p) {
@@ -434,9 +436,11 @@ void gui::dx::dx_player::update_callback() {
 }
 
 void gui::dx::dx_player::schedule_update() {
+	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
 		&dx_player::update_callback);
-	m_worker_processor->add_event(m_update_event, 50);
+	//m_worker_processor->add_event(m_update_event, 50);
+	m_player->schedule_event(m_update_event, 50);
 }
 
 ////////////////////////

@@ -182,6 +182,8 @@ void smil_player::start() {
 void smil_player::stop() {
 	if(m_state != common::ps_pausing && m_state != common::ps_playing)
 		return;
+	m_timer->pause();
+	cancel_all_events();		
 	m_scheduler->reset_document();
 	done_playback();
 }

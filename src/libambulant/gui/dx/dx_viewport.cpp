@@ -486,6 +486,12 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 	} else if(bt == smil2::bt_fade) {
 		IDirectDrawSurface* s1 = create_surface();
 		IDirectDrawSurface* s2 = create_surface();
+		if(!s1 || !s2) {
+			RELEASE(s1);
+			RELEASE(s2);
+			clear(rc, clr, m_surface);
+			return;
+		}
 		clear(rc, clr, s1);
 		copy_bgd_to(s2, rc);
 		HRESULT hr = S_OK;
@@ -621,6 +627,12 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	} else if(bt == smil2::bt_fade) {
 		IDirectDrawSurface* s1 = create_surface();
 		IDirectDrawSurface* s2 = create_surface();
+		if(!s1 || !s2) {
+			RELEASE(s1);
+			RELEASE(s2);
+			draw(src, src_rc, dst_rc, keysrc, m_surface);
+			return;
+		}		
 		draw(src, src_rc, dst_rc, keysrc, s1);
 		copy_bgd_to(s2, dst_rc);
 		HRESULT hr = S_OK;
