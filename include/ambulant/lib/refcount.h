@@ -122,7 +122,7 @@ typedef basic_atomic_count<critical_section> atomic_count;
 //		since the base ref_counted_obj does this by default.
 //		....
 // };
-class ref_counted_obj : public ref_counted {
+class ref_counted_obj : virtual public ref_counted {
   public:
 	ref_counted_obj()
 	:	m_refcount(1) {}

@@ -130,43 +130,26 @@ inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
 		os << "databuffer(" << (void *)&n << ", used=" << n.size() << ")";
 		return os;
 	}
-class abstract_active_datasource : public ambulant::lib::ref_counted_obj {  	
+class datasource : virtual public ambulant::lib::ref_counted {  	
   public:
-	~abstract_active_datasource() {}
+	~datasource() {}
 
-	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
-
-    // a readdone call is made by the client if he is ready with len bytes of data.
+	virtual void start(lib::event_processor *evp, lib::event *callback) = 0;  
     virtual void readdone(int len) = 0;
-	virtual char* get_read_ptr() = 0;
-	virtual int size() const = 0 ;
-		
+
     virtual bool end_of_file() = 0;
-	virtual bool buffer_full() = 0;		
+	virtual char* get_read_ptr() = 0;
+	virtual int size() const = 0;		
 };
 
 
-class abstract_audio_datasource : virtual public abstract_active_datasource {
+class audio_datasource : virtual public datasource {
   public:
-	~abstract_audio_datasource() {};
+	~audio_datasource() {};
 		  
-    virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
-    // a readdone cal is made by the client if he is ready with len bytes of data.
-    virtual void readdone(int len) = 0;
-    virtual bool end_of_file() = 0;
-	virtual bool buffer_full() = 0;
-		
-	virtual char* get_read_ptr() = 0;
-	virtual int size() const = 0;
-	
 	virtual int get_nchannels() = 0;
   	virtual int get_nbits() = 0;
 	virtual int get_samplerate() = 0;
-	
-	virtual int select_decoder(char* file_ext) = 0;
-  protected:
-    virtual void callback() = 0 ;
- 
 };
 
 
@@ -200,13 +183,13 @@ private:
 	
 
 
-class active_datasource : virtual public abstract_active_datasource {
+class active_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	active_datasource();
 	active_datasource(passive_datasource *const source, int file);
   	~active_datasource();
   	
-  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+  	void start(lib::event_processor *evp, lib::event *callback);
 	void readdone(int len);
     void callback();
     bool end_of_file();
@@ -234,7 +217,7 @@ class active_datasource : virtual public abstract_active_datasource {
 
 // This is a temporary class: it allows you to read raw audio files as
 // 16bit mono 44k1 samples
-class raw_audio_datasource : public abstract_audio_datasource {
+class raw_audio_datasource : virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
   	raw_audio_datasource()
   	:	m_src(new active_datasource()) {}
@@ -249,7 +232,7 @@ class raw_audio_datasource : public abstract_audio_datasource {
   		m_src->release();
   	}
   	
-  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) {
+  	void start(lib::event_processor *evp, lib::event *callback) {
   		m_src->start(evp, callback);
   	}
 	void readdone(int len) { m_src->readdone(len); }

@@ -82,13 +82,13 @@ namespace ambulant
 namespace net
 {
 
-class ffmpeg_audio_datasource: public abstract_audio_datasource {
+class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(abstract_active_datasource *const src, lib::event_processor *const evp);
+	 ffmpeg_audio_datasource(datasource *const src, lib::event_processor *const evp);
     ~ffmpeg_audio_datasource();
      
 		  
-    void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);  
+    void start(lib::event_processor *evp, lib::event *callback);  
 
     void readdone(int len);
     void callback();
@@ -116,7 +116,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
 	AVCodecContext *m_con_enc;  
     lib::event_processor *const m_event_processor;
 //    lib::event *m_readdone;		// This is the callback our source makes to us
-  	abstract_active_datasource* m_src;
+  	datasource* m_src;
 
 	uint8_t* m_inbuf;
 	uint8_t* m_outbuf;

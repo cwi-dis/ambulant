@@ -98,7 +98,7 @@ class sdl_active_audio_renderer : public common::active_renderer, public lib::ti
 	void playdone();
 		  
   private:
-	net::abstract_audio_datasource *m_audio_src;
+	net::audio_datasource *m_audio_src;
  	int inc_channels();
 	int init(int rate, int bits, int channels);
 	

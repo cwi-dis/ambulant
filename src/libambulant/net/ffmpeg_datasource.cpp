@@ -63,7 +63,7 @@ typedef lib::no_arg_callback<net::ffmpeg_audio_datasource> readdone_callback;
 
 #define INBUF_SIZE 4096
 
-net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(abstract_active_datasource *const src, lib::event_processor *const evp)
+net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(datasource *const src, lib::event_processor *const evp)
 :	m_codec(NULL),
 	m_con(NULL),
 	m_event_processor(evp),
