@@ -150,6 +150,10 @@ class gpath {
 	
 	// Translates the path by (pt.x, pt.y)
 	virtual void translate(const lib::point& pt) = 0;
+	
+	// Returns the pivot points of this path
+	// The points returned may be used as a first linear aproximation of the path
+	virtual void get_pivot_points(std::vector<lib::point>& v) = 0;
 };
 
 
@@ -217,9 +221,9 @@ class polyline_path : public gpath {
 	double length() const;
 	point at(double s) const;
 	void translate(const point& pt);
-	
+	void get_pivot_points(std::vector<lib::point>& v);
   private:
-	typedef std::map<double, point> map_type;
+	typedef std::map<double, lib::point> map_type;
 	map_type m_curve;
 };
 
