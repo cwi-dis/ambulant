@@ -210,7 +210,7 @@ arts_active_audio_renderer::arts_play(char *data, int size)
 			int delay = 15;
 			AM_DBG lib::logger::get_logger()->debug("arts_plugin::arts_play(0x%x): aRts buffer full, delaying %dms", (void *)this,delay);
 			lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
-			m_event_processor->add_event(e,delay,ambulant::lib::event_processor::high);
+			m_event_processor->add_event(e,delay,ambulant::lib::event_processor::med);
 		}
      } else {
         AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): No aRts stream opened", (void *)this);        

@@ -102,7 +102,7 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 	if (1) {
     	if (evp && cbevent) {
 			AM_DBG lib::logger::get_logger()->debug("raw_video_datasource.start: trigger readdone callback (x%x)", cbevent);
-			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
+			evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
     	}
 	}
 	m_lock.leave();

@@ -351,7 +351,7 @@ void smil_player::clicked(int n, double t) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
 		dom_event_cb *cb = new dom_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
-		schedule_event(cb, 0);
+		schedule_event(cb, 0, ep_high);
 		m_scheduler->exec();
 	}
 }
@@ -371,14 +371,14 @@ void smil_player::pointed(int n, double t) {
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 			}
 			m_pointed_node = NULL;
 		}
@@ -398,14 +398,14 @@ void smil_player::pointed(int n, double t) {
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_inbounds_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 		}
 		if (changed_focus && m_pointed_node->wants_focusin_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusin_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 		}
 	} else {
 		if (m_pointed_node) {
@@ -416,14 +416,14 @@ void smil_player::pointed(int n, double t) {
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
-				schedule_event(cb, 0);
+				schedule_event(cb, 0, ep_high);
 			}
 			m_pointed_node = NULL;
 		}
@@ -440,7 +440,7 @@ void smil_player::started(int n, double t) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
 		bom_event_cb *cb = new bom_event_cb((*it).second, 
 			&time_node::on_bom, timestamp);
-		schedule_event(cb, 0);
+		schedule_event(cb, 0, ep_high);
 	}
 }
 
@@ -453,7 +453,7 @@ void smil_player::stopped(int n, double t) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
 		eom_event_cb *cb = new eom_event_cb((*it).second, 
 			&time_node::on_eom, timestamp);
-		schedule_event(cb, 0);
+		schedule_event(cb, 0, ep_high);
 	}
 }
 
@@ -482,7 +482,7 @@ void smil_player::on_char(int ch) {
 	AM_DBG m_logger->debug("smil_player::on_char(): '%c' [%d] at %ld", char(ch), ch, timestamp.second());
 	accesskey ak(timestamp, ch);
 	accesskey_cb *cb = new accesskey_cb(m_root, &time_node::raise_accesskey, ak);
-	schedule_event(cb, 0);
+	schedule_event(cb, 0, ep_high);
 	m_scheduler->exec();
 }
 
@@ -600,7 +600,7 @@ void smil_player::update() {
 		if(m_root->is_active()) {
 			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
 				&smil_player::update);
-			m_event_processor->add_event(update_event, dt);
+			m_event_processor->add_event(update_event, dt, event_processor::high);
 		}
 	}
 }

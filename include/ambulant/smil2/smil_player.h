@@ -157,7 +157,7 @@ class smil_player : public common::player, public time_node_context, public comm
 		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play);
 	lib::event_processor* get_evp() { return m_event_processor;}	
 	virtual time_value_type elapsed() const { return m_timer->elapsed();}
-	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep = ep_low);
+	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep);
 	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
 		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
 	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}

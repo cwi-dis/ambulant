@@ -80,7 +80,7 @@ class event_scheduler {
 	virtual ~event_scheduler() {}
 	
 	/// Make event ev fire at time t.
-	virtual void schedule_event(event *ev, time_type t, event_priority ep = ep_low) = 0;
+	virtual void schedule_event(event *ev, time_type t, event_priority ep) = 0;
 	
 	/// Cancel a previously scheduled event.
 	virtual void cancel_event(event *ev, event_priority ep = ep_low) = 0;

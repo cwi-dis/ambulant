@@ -71,7 +71,7 @@ class event_processor {
 	virtual ~event_processor() {}
 	
 	/// schedule an event pe to fire at time t at the provided priority.
-	virtual void add_event(event *pe, time_type t, event_priority priority = low) = 0;
+	virtual void add_event(event *pe, time_type t, event_priority priority) = 0;
 
 	/// Cancel all events.
 	virtual void cancel_all_events() = 0;
