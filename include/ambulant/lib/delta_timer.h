@@ -86,7 +86,6 @@ inline delta_timer::~delta_timer() {
 	std::list<timeout_event>::iterator it;
 	for(it = m_events.begin(); it != m_events.end(); it++)
 		delete (*it).first;
-	delete m_timer;
 }
 
 // called periodically
