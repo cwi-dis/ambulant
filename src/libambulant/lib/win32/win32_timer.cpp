@@ -81,7 +81,6 @@ void
 lib::win32::win32_timer::set_speed(double speed) {
 	m_epoch = os_time();
 	m_speed = speed;
-	speed_changed();
 }
 
 // Returns system time in system units (0.1 micro-sec units or 0.0001 msec). 
