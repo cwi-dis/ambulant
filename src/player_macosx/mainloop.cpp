@@ -187,7 +187,7 @@ mainloop::create_document(const char *filename)
 	std::string docdata(data, size);
 	free(data);
 	ambulant::lib::logger::get_logger()->trace("%s: Parsing document...", filename);
-	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
+	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(m_factory, docdata);
 	if (rv) {
 		ambulant::lib::logger::get_logger()->trace("%s: Parser done", filename);
 		rv->set_src_url(url);
