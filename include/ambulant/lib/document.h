@@ -203,7 +203,7 @@ inline std::string repr(const ambulant::lib::document& d) {
 inline std::string repr(const ambulant::lib::custom_test& t) {
 	return t.idd;
 }
-inline std::string repr(const ambulant::lib::custom_test& t) {
+inline std::string repr(const ambulant::lib::document& d) {
 	return "document";
 }
 #endif
