@@ -59,24 +59,37 @@ class databuffer
 	~databuffer();
 	
 	void resize(int newsize);
-	void show(bool verbose);									// show information about the buffer, if verbose is true the buffer is dumped to cout;
-	void get_data(char *data, int size); 				//retrieve data from buffer,  still thinking about arguments.
-																				//there should be something to pass on error messages.
-	void put_data(char *data , int size);			 	// this one puts data alway at the end.						 
 	
+	// show information about the buffer, if verbose is true the buffer is dumped to cout;
+	void dump(ofstream *out, bool verbose);		
+	
+	//retrieve data from buffer,  still thinking about arguments.							
+	void get_data(char *data, int size); 				
+
+	// this one puts data alway at the end.															
+	void put_data(char *data , int size);			 							 
+	
+	// returns the amount of bytes that are used.
 	int used();
 };
 
 
+// forward decleration
 class active_datasource;
+
+
+
 
 class passive_datasource : public ambulant::lib::ref_counted 
 {
 public:
 	
+	// constructor 
 	passive_datasource(char *url);
-	//	passive_datasource(passive_datasource& ds);
 	
+	// copy constructor
+	//	passive_datasource(passive_datasource& ds);
+
 	~passive_datasource();
 	
 	active_datasource *activate();
@@ -115,7 +128,7 @@ public:
 
 
 	//  Get data from buffer and put 'size' bytes in buffer.
-	void read_data(char *data, int size);
+	void read(char *data, int size);
 
 	// Return the amount of data currently in buffer.
 	int size();

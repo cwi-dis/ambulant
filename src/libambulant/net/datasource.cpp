@@ -8,11 +8,8 @@
 
 namespace ambulant {
 
-namespace net {
-
-namespace datasource {
 	
-databuffer::databuffer()
+net::datasource::databuffer::databuffer()
 {
 	m_size=0;
 	m_used=0;
@@ -20,7 +17,7 @@ databuffer::databuffer()
 }
 
 
-void databuffer::resize(int newsize)
+void net::datasource::databuffer::resize(int newsize)
 {
 	int m_dummy;
 	char *m_newbuf;
@@ -50,7 +47,7 @@ void databuffer::resize(int newsize)
 	}
 }
 
-databuffer::databuffer(int size)
+net::datasource::databuffer::databuffer(int size)
 {
 m_size=0;
 m_used=0;
@@ -69,7 +66,7 @@ if ( !m_buffer)
 
 // copy constructor
 
-databuffer::databuffer(databuffer& src)   // copy constructor
+net::datasource::databuffer::databuffer(databuffer& src)   // copy constructor
 {
 int i;
 m_size=0;
@@ -88,7 +85,7 @@ m_used=src.m_used;
 }
 
 
-databuffer::~databuffer()
+net::datasource::databuffer::~databuffer()
 {
 	if(m_buffer)
 		{
@@ -99,11 +96,11 @@ databuffer::~databuffer()
 		}
 }
 
-int databuffer::used()
+int net::datasource::databuffer::used()
 {
 	return(m_used);
 }
-void databuffer::show(bool verbose)
+void net::datasource::databuffer::show(bool verbose)
 {
 int i;
 
@@ -122,7 +119,7 @@ if ((verbose))
  std::cout << std::endl;
 }
 
-void databuffer::put_data(char *data, int size)
+void net::datasource::databuffer::put_data(char *data, int size)
 {
 int dummy;
 
@@ -140,7 +137,7 @@ else
 
 }
 
-void databuffer::shift_down(int pos)
+void net::datasource::databuffer::shift_down(int pos)
 {
 if (pos <=  m_used)    
 	{
@@ -156,7 +153,7 @@ if (pos <=  m_used)
 }
 
 
-void databuffer::get_data(char *data, int size)
+void net::datasource::databuffer::get_data(char *data, int size)
 {
 if (size  < m_used)
 	{		
@@ -175,7 +172,7 @@ if (size  < m_used)
 
 
 
-passive_datasource::passive_datasource(char *url)
+net::datasource::passive_datasource::passive_datasource(char *url)
 : m_refcount(1)
 {
 	int m_len;
@@ -190,7 +187,7 @@ passive_datasource::passive_datasource(char *url)
 	}
 }
 
-active_datasource *passive_datasource::activate()
+net::datasource::active_datasource* net::datasource::passive_datasource::activate()
 {
 	int in;
 	
@@ -206,7 +203,7 @@ active_datasource *passive_datasource::activate()
 		
 }
 
-passive_datasource::~passive_datasource()
+net::datasource::passive_datasource::~passive_datasource()
 {
 	if(m_url) {
 		delete[] m_url;
@@ -217,7 +214,7 @@ passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-active_datasource::active_datasource(passive_datasource *const source,int file)
+net::datasource::active_datasource::active_datasource(passive_datasource *const source,int file)
 :	m_source(source),
 	m_refcount(1)
 {
@@ -236,18 +233,19 @@ active_datasource::active_datasource(passive_datasource *const source,int file)
 	}
 }
 
-active_datasource::~active_datasource()
+net::datasource::active_datasource::~active_datasource()
 {
 	if (buffer) {
-	delete buffer;
-	buffer=NULL;
+		delete buffer;
+		buffer=NULL;
 	}
+	
 	m_source->release();
 	close(m_stream);
 }
 
 
-void active_datasource::filesize()
+void net::datasource::active_datasource::filesize()
  	{
  		using namespace std;
 		int dummy;
@@ -265,7 +263,7 @@ void active_datasource::filesize()
 		}
  	}
 
-  void active_datasource::read_file()
+  void net::datasource::active_datasource::read_file()
   {
 
   	char ch;
@@ -277,7 +275,7 @@ void active_datasource::filesize()
 			
 			do
 			{
-				result=read(m_stream,&ch,1);
+				result=std::read(m_stream,&ch,1);
 				if (result >0 )buffer->put_data(&ch,1); 
 			} while(result > 0);
 		}
@@ -288,7 +286,7 @@ void active_datasource::filesize()
   }
   
   
-void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
+void net::datasource::active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file();
  	buffer->show(false);
@@ -298,14 +296,12 @@ void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulan
 	}
  }
  
- void  active_datasource::read_data(char *data, int size)
+ void  net::datasource::active_datasource::read(char *data, int size)
  {
  	buffer->get_data(data,size);
  }
   
-} //end namespace datasource
 
-} // end namespace net
 
 } //end namespace ambulant
 
