@@ -121,11 +121,8 @@ lib::document*
 lib::document::create_from_url(const net::url& u) {
 	document *d = new document();
 	tree_builder builder(d);
-	if(!builder.build_tree_from_url(u)) {
-		logger::get_logger()->error(
-			"Could not build tree for file: %s", u.get_url().c_str());
+	if(!builder.build_tree_from_url(u))
 		return 0;
-	}
 	d->set_root(builder.detach());
 	d->set_src_url(u);
 	return d;

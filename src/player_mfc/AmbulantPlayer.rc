@@ -169,22 +169,25 @@ CAPTION "About AmbulantPlayer"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "AmbulantPlayer Version 1.0",IDC_VERSION,40,10,132,8,
+    LTEXT           "Ambulant Player version 1.0",IDC_VERSION,40,10,132,8,
                     SS_NOPREFIX
     LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,40,25,128,
                     8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
-IDD_OPEN_URL DIALOGEX 0, 0, 252, 58
+IDD_OPEN_URL DIALOGEX 0, 0, 299, 63
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Open URL"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    EDITTEXT        IDC_EDIT_URL,7,7,238,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "Open",IDOK,139,37,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,195,37,50,14
+    LTEXT           "Enter a URL or select a local file:",IDC_STATIC,7,7,104,
+                    8
+    EDITTEXT        IDC_EDIT_URL,7,17,272,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_BROWSE,279,17,13,14,NOT WS_TABSTOP
+    DEFPUSHBUTTON   "Open",IDOK,186,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,242,42,50,14
 END
 
 
@@ -246,9 +249,9 @@ BEGIN
     IDD_OPEN_URL, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 245
+        RIGHTMARGIN, 292
         TOPMARGIN, 7
-        BOTTOMMARGIN, 51
+        BOTTOMMARGIN, 56
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -268,7 +271,7 @@ IDC_CURSOR_HAND         CURSOR                  "res\\hand.cur"
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "AmbulantPlayer\n\nAmbulantPlayer\nSMIL documents\n.smil\nAmbulantPlayer.Document\nAmbulantPlayer.Document\n"
+    IDR_MAINFRAME           "AmbulantPlayer\n\nAmbulantPlayer\nSMIL documents\n.smil;.smi;.grins\nAmbulantPlayer.Document\nAmbulantPlayer.Document\n"
 END
 
 STRINGTABLE 

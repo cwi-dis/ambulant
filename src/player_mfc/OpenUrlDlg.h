@@ -21,4 +21,8 @@ protected:
 public:
 	// The URL to open
 	CString m_url;
+protected:
+	virtual void OnOK();
+public:
+	afx_msg void OnBnClickedButtonBrowse();
 };

@@ -123,7 +123,8 @@ class dx_player :
 	void stop();
 	void pause();
 	void resume();
-	
+	void restart();
+
 	bool is_playing() const;
 	bool is_pausing() const;
 	bool is_done() const;
@@ -170,12 +171,12 @@ class dx_player :
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
 	const net::url& get_url() const { return m_url;}
+	void on_done();
 	
 	common::window_factory *get_window_factory() { return this;}
 	common::playable_factory *get_playable_factory() {return this;}
 	viewport* create_viewport(int w, int h, HWND hwnd);
 	void redraw(HWND hwnd, HDC hdc);
-	void on_done();
 	
 	///////////////////
 	// Timeslices services and transitions

@@ -204,7 +204,7 @@ END_MESSAGE_MAP()
 void CAmbulantPlayerApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
-	aboutDlg.m_version.Format(TEXT("Ambulant version %s\n"), get_version());	
+	aboutDlg.m_version.Format(TEXT("Ambulant Player version %s\n"), get_version());	
 	aboutDlg.DoModal();
 }
 

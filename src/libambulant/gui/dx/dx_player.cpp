@@ -112,7 +112,7 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	AM_DBG m_logger->trace("Parsing: %s", u.get_url().c_str());	
 	lib::document *doc = lib::document::create_from_url(u);
 	if(!doc) {
-		m_logger->show("Failed to parse document %s", u.get_url().c_str());
+		// message already logged
 		return;
 	}
 	
@@ -184,6 +184,32 @@ void gui::dx::dx_player::resume() {
 		m_player->resume();
 		m_timer->resume();
 	}
+}
+
+void gui::dx::dx_player::restart() {
+	bool playing = is_playing();
+	stop();
+	
+	delete m_player;
+	while(!m_frames.empty()) {
+		frame *pf = m_frames.top();
+		m_frames.pop();
+		m_windows = pf->windows;
+		m_player = pf->player;
+		delete pf;
+		stop();
+		delete m_player;
+	}
+	m_player = 0;	
+	lib::document *doc = lib::document::create_from_url(m_url);
+	if(!doc) {
+		m_logger->show("Failed to parse document %s", m_url.get_url().c_str());
+		return;
+	}
+	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.get_url().c_str());	
+	m_player = new smil2::smil_player(doc, this, this, this);	
+	
+	if(playing) start();	
 }
 
 bool gui::dx::dx_player::is_playing() const {

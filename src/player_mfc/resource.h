@@ -9,8 +9,9 @@
 #define IDC_CURSOR_HAND                 130
 #define IDD_OPEN_URL                    131
 #define IDC_VERSION                     1000
-#define IDC_EDIT1                       1001
 #define IDC_EDIT_URL                    1001
+#define IDC_BUTTON1                     1002
+#define IDC_BUTTON_BROWSE               1002
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773
@@ -28,7 +29,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32786
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -126,10 +126,13 @@ bool lib::tree_builder::build_tree_from_url(const net::url& u) {
 #if defined(AMBULANT_PLATFORM_WIN32)
 	memfile mf(u);
 	if(!mf.read()) {
-		lib::logger::get_logger()->show("Failed to read file: %s", u.get_url().c_str());
+		lib::logger::get_logger()->show("Failed to read URL: %s", u.get_url().c_str());
 		return false;
 	}
 	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);
+	if(!m_well_formed) {
+		lib::logger::get_logger()->show("Failed to parse document %s", u.get_url().c_str());	
+	}
 	return m_well_formed;
 #else
 	return false;

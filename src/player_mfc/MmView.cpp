@@ -266,10 +266,10 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		common::default_layout_width, ambulant::common::default_layout_height);
 
 	CWinApp* pApp = AfxGetApp();
-	CString amver = pApp->GetProfileString("AmbulantPlayer", "Version");
-	if(amver.IsEmpty() || amver != get_version()) {
+	CString val = pApp->GetProfileString("Settings", "Welcome");
+	if(val.IsEmpty()) {
 		// first time; write the string and play welcome
-		pApp->WriteProfileString("AmbulantPlayer", "Version",  get_version());
+		pApp->WriteProfileString("Settings", "Welcome",  "1");
 		if(!m_welcomeDocFilename.IsEmpty())
 			PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 	}
@@ -470,15 +470,16 @@ void MmView::OnOpenFilter() {
 	CWnd* pParentWnd = this;
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
 	dlg.m_ofn.lpstrTitle = TEXT("Select settings file");
-	if(!m_curDocFilename.IsEmpty())
-		dlg.m_ofn.lpstrInitialDir = get_directory(m_curDocFilename);
+	if(!m_curDocFilename.IsEmpty()) {
+		net::url u( (LPCTSTR) m_curDocFilename);
+		if(u.is_local_file())
+			dlg.m_ofn.lpstrInitialDir = get_directory(u.get_file().c_str());
+	}
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
 		m_curFilter = str;
 		smil2::test_attrs::load_test_attrs(lib::textptr(LPCTSTR(str)).c_str());
-		if(player && !m_curDocFilename.IsEmpty()) {
-			SetMMDocument(m_curDocFilename, true);
-		}
+		if(player) player->restart();
 	}	
 }
 
