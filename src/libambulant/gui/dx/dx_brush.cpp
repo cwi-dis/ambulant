@@ -115,14 +115,11 @@ void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::abstr
 	if(!v) return;
 	
 	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	const common::region_info *ri = m_dest->get_info();
-	if(ri) {
-		v->clear(rc, ri->get_bgcolor());
-		v->redraw();
-	}
+	if(ri) v->clear(rc, ri->get_bgcolor());
 }
  
 

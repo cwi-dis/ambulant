@@ -62,6 +62,8 @@
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
 
+#include <math.h>
+
 #include "jpeglib.h"
 
 using namespace ambulant;
@@ -121,7 +123,8 @@ void gui::dx::dx_img_renderer::start(double t) {
 	m_activated = true;
 		
 	// Request a redraw
-	m_dest->need_redraw();
+	// Currently already done by show()
+	// m_dest->need_redraw();
 }
 
 void gui::dx::dx_img_renderer::stop() {
@@ -132,7 +135,7 @@ void gui::dx::dx_img_renderer::stop() {
 	m_activated = false;
 }
 
-void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
 	if(!m_image) {
 		// No bits available
 		return;
@@ -143,14 +146,34 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int> &dirty, common
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
 	
-	lib::rect img_src_rect;
-	lib::screen_rect<int> rc = m_dest->get_fit_rect(m_image->get_size(), &img_src_rect);
+	// Get fit rectangles
+	lib::rect img_rect1;
+	lib::screen_rect<int> img_reg_rc = m_dest->get_fit_rect(m_image->get_size(), &img_rect1);
+	
+	// Use one type of rect to do op
+	lib::screen_rect<int> img_rect(img_rect1);
+	
+	// A complete repaint would be:  
+	// {img, img_rect } -> img_reg_rc
+	
+	// We have to paint only the intersection.
+	// Otherwise we will override upper layers 
+	lib::screen_rect<int> img_reg_rc_dirty = img_reg_rc & dirty;
+	if(img_reg_rc_dirty.empty()) {
+		// this renderer has no pixels for the dirty rect
+		return;
+	}	
+	
+	// Find the part of the image that is mapped to img_reg_rc_dirty
+	lib::screen_rect<int> img_rect_dirty = reverse_transform(&img_reg_rc_dirty, 
+		&img_rect, &img_reg_rc);
+		
+	// Translate img_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	lib::screen_rect<int> image_src(img_src_rect); 
-
-	v->draw(m_image->get_ddsurf(), image_src, rc, m_image->is_transparent());
-	v->redraw();
+	img_reg_rc_dirty.translate(pt);
+	
+	// Finally blit img_rect_dirty to img_reg_rc_dirty
+	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
 }
  
 

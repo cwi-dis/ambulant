@@ -122,14 +122,11 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, commo
 	if(!v) return;
 	
 	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	//const common::region_info *ri = m_dest->get_info();
-	if(!m_text.empty()) {
-		v->draw(m_text, rc);
-		v->redraw();
-	}
+	if(!m_text.empty()) v->draw(m_text, rc);
 }
 
  

@@ -111,7 +111,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 		return;
 	}
 	
-	// // Has this been activated
+	// Has this been activated
 	if(m_activated) {
 		// repeat
 		m_player->start(t);
@@ -176,18 +176,40 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
 	
-	// Draw the pixels of this renderer to the surface specified by m_dest.
+	// Update our bits.
 	if(!m_player->update()) {
 		// next time please...
 		return;
 	}
-	lib::rect vid_src_rect;
-	lib::screen_rect<int> rc = m_dest->get_fit_rect(m_player->get_size(), &vid_src_rect);
+	
+	// Get fit rectangles
+	lib::rect vid_rect1;
+	lib::screen_rect<int> vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1);
+	
+	// Use one type of rect to do op
+	lib::screen_rect<int> vid_rect(vid_rect1);
+	
+	// A complete repaint would be:  
+	// vid_rect -> vid_reg_rc
+	
+	// We have to paint only the intersection.
+	// Otherwise we will override upper layers 
+	lib::screen_rect<int> vid_reg_rc_dirty = vid_reg_rc & dirty;
+	if(vid_reg_rc_dirty.empty()) {
+		// this renderer has no pixels for the dirty rect
+		return;
+	}	
+	
+	// Find the part of the image that is mapped to img_reg_rc_dirty
+	lib::screen_rect<int> vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty, 
+		&vid_rect, &vid_reg_rc);
+		
+	// Translate vid_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	lib::screen_rect<int> vid_src(vid_src_rect); 
-	v->draw(m_player->get_ddsurf(), vid_src, rc);
-	v->redraw();
+	vid_reg_rc_dirty.translate(pt);
+	
+	// Finally blit img_rect_dirty to img_reg_rc_dirty
+	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty);
 }
 
 void gui::dx::dx_video_renderer::update_callback() {

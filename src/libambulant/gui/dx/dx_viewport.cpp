@@ -398,6 +398,21 @@ void gui::dx::viewport::redraw() {
 	}
 }
 
+void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
+	RECT RC;
+	set_rect(rc, &RC);
+	redraw(&RC);
+}
+
+void gui::dx::viewport::redraw(RECT *prc) {
+	DWORD flags = DDBLT_WAIT;
+	RECT scr_rc = *prc;
+	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(scr_rc), m_surface, prc, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::redraw/DirectDrawSurface::Blt()", hr);
+	}
+}
+
 // Clears the back buffer using this viewport bgd color
 void gui::dx::viewport::clear() {
 	if(!m_surface) return;
