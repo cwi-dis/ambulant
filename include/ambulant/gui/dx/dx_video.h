@@ -80,6 +80,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	void start(double t);
 	void stop();
 	void pause();
+	void seek(double t);
 	void resume();
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);

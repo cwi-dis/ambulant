@@ -80,6 +80,7 @@ class dg_audio_renderer : public common::renderer_playable {
 	void stop();
 	void pause();
 	void resume();
+	void seek(double t);
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	std::pair<bool, double> get_dur();
   private:

@@ -99,6 +99,10 @@ gui::dg::dg_audio_renderer::~dg_audio_renderer() {
 	}
 }
 
+void gui::dg::dg_audio_renderer::seek(double t) {
+	lib::logger::get_logger()->debug("dg_audio_renderer::seek(%f): not implemented", t);
+}
+
 void gui::dg::dg_audio_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer::start(0x%x)", this);
 	

@@ -88,7 +88,7 @@ mypreferences::save_preferences()
 	pApp->WriteProfileInt("Settings", "validation_schema_full_checking", (int)m_validation_schema_full_checking);
 	pApp->WriteProfileInt("Settings", "log_level", m_log_level);
 	pApp->WriteProfileInt("Settings", "use_plugins", m_use_plugins);
-	pApp->WriteProfileString("Settings", "plugin_dir", m_plugin_dir);
+	pApp->WriteProfileString("Settings", "plugin_dir", m_plugin_dir.c_str());
 	
 	return true;
 }

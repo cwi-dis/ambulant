@@ -78,6 +78,7 @@ class dx_audio_renderer : public common::renderer_playable {
 	~dx_audio_renderer();
 	void start(double t);
 	void stop();
+	void seek(double t);
 	void pause();
 	void resume();
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);

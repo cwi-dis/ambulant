@@ -134,6 +134,9 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	schedule_update();
 }
 
+void gui::dx::dx_audio_renderer::seek(double t) {
+	if (m_player) m_player->seek(t);
+}
 std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
 	if(m_player) return m_player->get_dur();
 	return std::pair<bool, double>(false, 0.0);

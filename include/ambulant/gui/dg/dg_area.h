@@ -75,6 +75,7 @@ class dg_area : public common::renderer_playable {
 	~dg_area();
 	void start(double t);
 	void stop();
+	void seek(double t) {}
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	dg_gui_region *m_rgn;

@@ -148,6 +148,11 @@ void gui::dx::dx_video_renderer::start(double t) {
 	schedule_update();
 }
 
+void gui::dx::dx_video_renderer::seek(double t) {
+	if (m_player) m_player->seek(t);
+	// ?? if(!m_update_event) schedule_update();
+	// ?? m_dest->need_redraw();
+}
 std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 	if(m_player) return m_player->get_dur();
 	return std::pair<bool, double>(false, 0.0);
