@@ -182,6 +182,7 @@ class dec_p : public parselet {
 		int_p f;
 		d = f.parse(tit, end);
 		if(d == -1) return -1;
+		sd += d;
 		m_result = i.m_result + double(f.m_result)/::pow(10.0, int(d));
 		it = tit;
 		return sd;
@@ -578,6 +579,15 @@ class time_unit_p : public parselet {
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 };
 
+// length_unit ::= "px" | "%"
+class length_unit_p : public parselet {
+  public:
+	typedef length_unit_p self_type;
+	typedef enum {px, percent} result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+};
+
 class full_clock_value_p : public parselet {
   public:
 	typedef full_clock_value_p self_type;
@@ -643,6 +653,22 @@ class offset_value_p : public parselet {
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 	result_type get_value() const { return m_result;}
+};
+
+class coord_p : public parselet {
+  public:
+	typedef coord_p self_type;
+	typedef struct {
+		dec_p::result_type value;
+		length_unit_p::result_type unit;
+	}  result_type;
+	result_type m_result;
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	length_unit_p::result_type get_units() const { return m_result.unit;}
+	int get_px() const { return int(floor(m_result.value+0.5));}
+	double get_percent() const { 
+		return std::max<double>(0.0, std::min<double>(100.0, m_result.value));
+	}
 };
 
 

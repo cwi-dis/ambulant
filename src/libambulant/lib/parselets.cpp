@@ -133,6 +133,20 @@ lib::time_unit_p::parse(const_iterator& it, const const_iterator& end) {
 }
 
 //////////////////////
+// length_unit_p
+
+std::ptrdiff_t 
+lib::length_unit_p::parse(const_iterator& it, const const_iterator& end) {
+	literal_cstr_p px_p("px");
+	literal_cstr_p percent_p("%");
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	if((d = px_p.parse(tit, end)) != -1) return (m_result = px, it = tit, 2);
+	else if((d = percent_p.parse(tit, end)) != -1) return (m_result = percent, it = tit, 1);
+	return -1;
+}
+
+//////////////////////
 // full_clock_value_p
 
 std::ptrdiff_t 
@@ -342,5 +356,36 @@ lib::offset_value_p::parse(const_iterator& it, const const_iterator& end) {
 		return rd;
 }
 
+//////////////////////
+// coord_p
+
+std::ptrdiff_t 
+lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	std::ptrdiff_t sd = 0;
+	
+	// we need this if we want to allow optional space between value and units
+	delimiter_p space(" \t\r\n");
+	star_p<delimiter_p> opt_space_inst = make_star(space);
+	
+	// parse value
+	dec_p p1;
+	d = p1.parse(tit, end);
+	if(d == -1) return -1;
+	m_result.value = p1.m_result;
+	sd += d;
+	
+	// allow optional space between value and units
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	
+	// parse optional units	
+	length_unit_p p2;
+	d = p2.parse(tit, end);
+	if(d == -1) return (m_result.unit = length_unit_p::px, it = tit, sd);
+	sd += d;
+	return (m_result.unit = p2.m_result, it = tit, sd);
+}
 
 
