@@ -68,7 +68,7 @@ namespace ambulant {
 
 namespace lib {
 
-class active_basic_renderer : public active_playable, public abstract_rendering_source {
+class active_basic_renderer : public active_playable, public abstract_rendering_source, public ref_counted_obj {
   public:
   	active_basic_renderer()
   	:	active_playable((active_playable_events *)NULL, 0),
@@ -107,7 +107,7 @@ class nonvisual_renderer_mixin : public virtual active_basic_renderer {
 };
 #endif
 
-class active_renderer : public active_basic_renderer, public ref_counted_obj {
+class active_renderer : public active_basic_renderer {
   public:
   	active_renderer()
   	:	active_basic_renderer(NULL, 0, NULL, NULL),
