@@ -45,9 +45,10 @@
  * which carries forward this exception. 
  * 
  */
+ 
+#include "ambulant/net/ffmpeg_datasource.h" 
+#include "ambulant/net/datasource.h"
 
-#include "net/ffmpeg_datasource.h"
-#include "avcodec.h"
 
 
 
@@ -57,11 +58,18 @@ bool net::ffmpeg_audio_datasource::m_ffmpeg_init = false;
 net::ffmpeg_audio_datasource::ffmpeg_audio_datasource(active_datasource *const src)
 {
 	m_src = src;
+	init();
 }
 
 net::ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
 {
 }	
+
+int
+net::ffmpeg_audio_datasource::decode(char* in, int size, char* out, int &outsize)
+{
+	return avcodec_decode_audio(in,size,out,&outsize);
+}
 		  
 void 
 net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
@@ -88,7 +96,8 @@ net::ffmpeg_audio_datasource::readdone(int len)
 	}
 }
 
-void callback()
+void 
+net::ffmpeg_audio_datasource::callback()
 {
 	int size;
 	int outsize;
@@ -116,44 +125,62 @@ void callback()
 }
 
 
-bool end_of_file()
+bool 
+net::ffmpeg_audio_datasource::end_of_file()
 {
 	return m_src->end_of_file();
 }
 
-bool buffer_full()
+bool 
+net::ffmpeg_audio_datasource::buffer_full()
 {
 	return m_buffer->is_full();
 }	
 
-char* read_ptr()
+char* 
+net::ffmpeg_audio_datasource::read_ptr()
 {
 	return m_src->read_ptr();
 }
 
-int size() const;   
+int 
+net::ffmpeg_audio_datasource::size() const;   
 {
 	return m_src->size();
 }	
 
-int get_nchannels();
+int 
+net::ffmpeg_audio_datasource::get_nchannels();
 {
-	
+	return m_con->channels;
 }
 
-int get_nbits ();
+int 
+net::ffmpeg_audio_datasource::get_nbits ()
+{
+	// XXX This should not be a fixed number ofcourse !
+	return 16;	
+}
 
-int get_bitrate ();
+int 
+net::ffmpeg_audio_datasource::get_bitrate ()
+{
+	m_con->sample_rate;
+}
 
-int select_decoder(char* file_ext)
+int 
+net::ffmpeg_audio_datasource::select_decoder(char* file_ext)
 {
 	m_codec = avcodec_find_decoder_by_name(m_ext.cstr());
+	if (m_con == NULL) {
+			lib::logger::get_logger->error("ffmpeg_audio_datasource.select_decoder : Failed to open codec");
+	}
 }
 
-int init()
+int 
+net::ffmpeg_audio_datasource::init()
 {
-	if (!m_ffmpeg_init) {
 		avcodec_init();
 		avcodec_register_all();
-	}
+		m_con = avcodec_alloc_context();
 }

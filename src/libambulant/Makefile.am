@@ -48,12 +48,24 @@ sdlincludes=
 toolkit_sdl_libraries =
 endif
 
+if WITH_FFMPEG
+toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
+libambulant_ffmpeg_la_LDFLAGS =  -lavcodec
+ffmpegincludes = -I/usr/include/ffmpeg
+
+libambulant_ffmpeg_la_SOURCES = 	\
+		net/ffmpeg_datasource.cpp
+else
+ffmpegincludes=
+toolkit_ffmpeg_libraries=
+endif
+
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	-I$(EXPAT_PREFIX)/include $(qtincludes) $(artsincludes)\
-	  $(sdlincludes)
+	  $(sdlincludes) $(ffmpegincludes)
 
 lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)\
-$(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_sdl_libraries)
+$(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_sdl_libraries) $(toolkit_ffmpeg_libraries)
 
 
 libambulant_la_SOURCES = \

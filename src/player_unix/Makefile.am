@@ -4,7 +4,7 @@ qt_gui-moc.cpp: qt_gui.h qt_gui.cpp
 bin_PROGRAMS = qt_player
 qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h qt_gui.h
 
-# Conditionals for ARTS audio support
+# Conditionals for linux audio support
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
@@ -23,6 +23,18 @@ extra_arts_LDADD=
 extra_arts_ldflags=
 extra_arts_DEFINES=
 endif
+
+if WITH_FFMPEG
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a
+extra_ffmpeg_ldflags=-lavcodec
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG
+else
+extra_ffmpeg_LDADD=
+extra_ffmpeg_ldflags=
+extra_ffmpeg_DEFINES=
+endif
+
+
 if WITH_QTOPIA
 qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
 else
@@ -32,15 +44,18 @@ endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
 	$(extra_sdl_LDADD) \
+	$(extra_ffmpeg_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	$(qt_libs)
 
 AM_LDFLAGS=$(extra_arts_ldflags) \
-	   $(extra_sdl_ldflags)
+	   $(extra_sdl_ldflags)  \
+	   $(extra_ffmpeg_ldflags)
  
 AM_CPPFLAGS = $(extra_arts_DEFINES)                            \
 	      $(extra_sdl_DEFINES)				\
+	      $(extra_ffmpeg_DEFINES)				\
 	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\

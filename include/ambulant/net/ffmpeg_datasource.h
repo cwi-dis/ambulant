@@ -47,8 +47,8 @@
  */
 
 
-#ifndef AMBULANT_NET_LINUX_DATASOURCE_H
-#define AMBULANT_NET_LINUX_DATASOURCE_H
+#ifndef AMBULANT_NET_FFMPEG_DATASOURCE_H
+#define AMBULANT_NET_FFMPEG_DATASOURCE_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/callback.h"
@@ -57,6 +57,8 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/datasource.h"
+
+#include "avcodec.h"
 
 // temporary debug messages
 #include <iostream>
@@ -70,6 +72,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 
 
 namespace ambulant
@@ -102,10 +105,11 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource
   
   private:
 	int init();
-	
+  	active_datasource m_src;
+	AVCodecContex *m_con;
   	AVCodec *m_codec;
-  	AVCodecContex *m_com;
-  	string m_ext;
+  	
+  	//cstring m_ext;
   	bool m_ffmpeg_init;
     active_datasource m_src;
 	char* m_inbuf;
@@ -113,6 +117,9 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource
 	net::databuffer m_buffer;
 	bool m_blocked_full;
 	bool m_client_waiting;
-}
+};
+
 }	// end namespace net
 }	// end namespace ambulant
+
+#endif

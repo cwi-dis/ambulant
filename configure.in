@@ -163,9 +163,15 @@ AC_ARG_WITH(sdl,
                 ;;
        no)  sdl=false
                 ;;
-       *)   AC_MSG_ERROR(--with-sdl takes no argument)
+       *)   AC_MSG_ERROR(--with-sdl takes no argument - it uses sdl-config)
                 ;;
-     esac])
+     esac],[
+     if sdl-config --libs > /dev/null 2>&1; then
+     sdl=true
+     else
+     sdl=false
+     fi
+     ])
 AM_CONDITIONAL(WITH_SDL, test x$sdl = xtrue)
 AC_MSG_RESULT($sdl)
 
@@ -174,7 +180,7 @@ AC_MSG_RESULT($sdl)
 #
 AC_MSG_CHECKING(for --with-arts)
 AC_ARG_WITH(arts,
-     [  --with-arts    Turn on aRts support],
+     [  --with-arts    Turn on aRts (basic) support ],
      [case "${withval}" in
        yes) arts=true
                 ;;
@@ -191,6 +197,29 @@ AC_ARG_WITH(arts,
      ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
+#
+# Test for ffmpeg
+#
+AC_MSG_CHECKING(for --with-ffmpeg)
+AC_ARG_WITH(ffmpeg,
+	[  --with-ffmpeg Turn on ffmpeg audio decoders],
+	[case "${withval}" in
+	  yes) ffmpeg=true
+	  	FFMPEG_PREFIX=/usr/include/ffmpeg
+	  	;;
+	  no)  ffmpeg=false
+	  	;;
+	  *) ffmpeg=true
+	     FFMPEG_PREFIX=${withval}
+	     ;;
+	 esac],[
+	 ffmpeg=false
+	 ])
+AM_CONDITIONAL(WITH_FFMPEG, test x$ffmpeg = xtrue)
+AC_MSG_RESULT($ffmpeg)
+
+
+
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
