@@ -223,7 +223,6 @@ qt_transition_blitclass_rectlist::update()
 	QImage img2 = npm->convertToImage();
 	screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	dstrect_whole.translate(m_dst->get_global_topleft());
 	int L = dstrect_whole.left(), T = dstrect_whole.top(),
 		W = dstrect_whole.width(), H = dstrect_whole.height();
 //	logger::get_logger()->debug("qt_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);

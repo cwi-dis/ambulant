@@ -241,8 +241,6 @@ qt_gui::~qt_gui() {
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
-	pthread_cond_destroy(&m_cond_message);
-	pthread_mutex_destroy(&m_lock_message);
 }
 
 void 
