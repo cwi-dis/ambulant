@@ -50,6 +50,10 @@
  * @$Id$ 
  */
 
+
+#pragma comment (lib,"xerces-c_2.lib")
+
+
 #include "ambulant/lib/xerces_parser.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
@@ -66,6 +70,7 @@
 using namespace ambulant;
 
 using namespace lib;
+
 
 
 

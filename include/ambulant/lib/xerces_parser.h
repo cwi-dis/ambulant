@@ -57,8 +57,10 @@
 
 #include "ambulant/config/config.h"
 
+
 #include "ambulant/common/preferences.h"
 
+#include "ambulant/lib/parser_factory.h"
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/parser_factory.h"
 

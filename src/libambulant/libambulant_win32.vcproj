@@ -158,6 +158,9 @@
 			<File
 				RelativePath=".\get_version.cpp">
 			</File>
+			<File
+				RelativePath=".\lib\xerces_parser.cpp">
+			</File>
 			<Filter
 				Name="gui"
 				Filter="">
@@ -805,9 +808,6 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\xerces_parser.h">
 					</File>
 					<Filter
 						Name="win32"

@@ -178,11 +178,12 @@ lib::tree_builder::reset() {
 
 	lib::logger::get_logger()->debug("tree_builder::reset(): Using parser %s", parser_id.c_str());
 	lib::logger::get_logger()->debug("tree_builder::reset():  pf = 0x%x, this = 0x%x", (void*) pf, (void*) this);
+#ifndef WIN32
 	if (m_xmlparser == NULL) {
 		m_xmlparser = pf->new_parser(this, this);
 	}
-	
-#if 0
+#else
+
 #ifdef	WITH_XERCES
 	if (m_xmlparser == NULL && (parser_id == "xerces" || parser_id == "any"))
 		m_xmlparser = new xerces_sax_parser(this, this);
@@ -191,6 +192,7 @@ lib::tree_builder::reset() {
 	if (m_xmlparser == NULL && (parser_id == "expat" || parser_id == "any"))
 		m_xmlparser = new expat_parser(this, this);
 #endif /*WITH_EXPAT*/
+
 #endif
 	if (m_xmlparser == NULL) {
         	lib::logger::get_logger()->fatal(gettext("Could not create any XML parser (configuration error?)"));
