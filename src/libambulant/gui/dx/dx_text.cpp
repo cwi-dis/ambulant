@@ -69,13 +69,16 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	lib::abstract_rendering_surface *const dest,
 	lib::abstract_window *window)
 :   lib::active_renderer(context, cookie, node, evp, src, dest),
-	m_window(window) { 
+	m_window(window), m_region(0) { 
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
 }
 
 void gui::dx::dx_text_renderer::start(double t) {
+	// On repeat this will be called again
+	if(m_region != 0) return;
+
 	if(!m_node || !m_src) abort();
 	// Create a dx-region
 	viewport *v = get_viewport();

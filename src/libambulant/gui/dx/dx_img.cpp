@@ -80,6 +80,9 @@ gui::dx::dx_img_renderer::~dx_img_renderer() {
 }
 
 void gui::dx::dx_img_renderer::start(double t) {
+	// On repeat this will be called again
+	if(m_region != 0) return;
+	
 	if(!m_node || !m_src) abort();
 	
 	// Create a dx-region
