@@ -62,9 +62,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
 enum time_state_type { 
 	ts_reset,
 	ts_proactive, 
