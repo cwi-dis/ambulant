@@ -92,7 +92,7 @@ open_web_browser(const std::string &href)
 	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
 	char *browserlist = getenv("BROWSER");
 	if (browserlist == NULL) {
-		lib::logger::get_logger()->error("$BROWSER not set: cannot open webpage <%s>", href.c_str());
+		lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
 		return;
 	}
 	char *colon = index(browserlist, ':');
@@ -102,7 +102,7 @@ open_web_browser(const std::string &href)
 	AM_DBG lib::logger::get_logger()->debug("Starting command: %s", cmdbuf);
 	int rv = ::system(cmdbuf);
 	if (rv) {
-		lib::logger::get_logger()->error("Attempt to start browser returned status %d. Command: %s", rv, cmdbuf);
+		lib::logger::get_logger()->error(gettext("Attempt to start browser returned status %d. Command: %s"), rv, cmdbuf);
 	}
 }
 
@@ -334,8 +334,7 @@ qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 //
 	m_doc = create_document(document_name);
 	if(!m_doc) {
-		m_logger->show("Failed to parse document %s", 
-			       document_name);
+		m_logger->error(gettext("%s: Cannot build DOM tree"), document_name);
 		return;
 	}
 	

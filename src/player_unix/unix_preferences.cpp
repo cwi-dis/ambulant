@@ -164,17 +164,18 @@ unix_preferences::load_preference(std::string name, std::string value) {
 					vv++;
 				}
 				if (*vv == "") {
-					log->error("%s %s=%s",
-						   "Invalid value for",
+					log->trace("Invalid preference value: %s=%s",
 						   pe->pref_name.c_str(),
 						   value.c_str());
-					log->error("Valid values are:");
 					vv = pe->pref_valid_val;
 					while ( ! vv->empty()) {
-						log->error("%s",
+						log->trace("Valid value: %s",
 							   vv->c_str());
 						vv++;
 					}
+					log->error(gettext("Invalid value from preference file: %s=%s"),
+						   pe->pref_name.c_str(),
+						   value.c_str());
 					break;
 				}
 			}
@@ -196,13 +197,13 @@ unix_preferences::load_preference(std::string name, std::string value) {
 		}
 	}
 	if ( ! found ) {
-		log->error("Invalid preference name %s.", name.c_str());
-		log->error("Valid preference names  are:");
+		log->trace("Invalid preference name: %s", name.c_str());
 		for (preference_iterator pritr = s_preference_table->begin();
 		     pritr != s_preference_table->end(); pritr++) {
 			preference_entry* pe = *pritr;
-			log->error("%s", pe->pref_name.c_str());
+			log->trace("Valid preference name: %s", pe->pref_name.c_str());
 		}
+		log->error(gettext("Invalid preference name: %s"), name.c_str());
 	}
 	return true;
 }
@@ -247,11 +248,12 @@ unix_preferences::load_preferences_from_file() {
 		char* name; char* value;
 		get_preference(s, &name, &value);
 		if (name == NULL) {
-			logger::get_logger()->error("%s(%s): %s %d - %s",
+			logger::get_logger()->trace("%s(%s): %s %d - %s",
 						    id.c_str(),
 						    m_preferences_filename.c_str(),
 						    "line", lineno,
 						    "malformed");
+			logger::get_logger()->error(gettext("Invalid preference file format"));
 			return false;
 		}
 		std::string s_name  = name;
@@ -312,8 +314,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 			m_preferences_filename = 
 			  m_ambulant_home+"/"+m_preferences_filename;
 		} else {
-			logger::get_logger()->error
-			 	("HOME environment variable not set");
+			logger::get_logger()->error(gettext("HOME environment variable not set"));
 			return NULL;
 		}
 	}
@@ -328,8 +329,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 		// create directory "$HOME/.ambulant" unless it exists
 		if (stat(m_ambulant_home.c_str(), &statbuf) < 0
 		    && mkdir(m_ambulant_home.c_str(), 0755) < 0) {
-		  	logger::get_logger()->error
-				("mkdir(\"%s\") failed: %s",
+		  	logger::get_logger()->error(gettext("mkdir(\"%s\") failed: %s"),
 				 m_ambulant_home.c_str(),
 				 strerror(errno));
 			return NULL;

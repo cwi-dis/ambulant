@@ -99,29 +99,29 @@ qt_settings::settings_select() {
 	
 	// This part takes care of the loglevel
 	m_loglevel_hb	= new QHBox(m_settings_vg);
-	m_loglevel_lb	= new QLabel("Log level:", m_loglevel_hb);
+	m_loglevel_lb	= new QLabel(gettext("Log level:"), m_loglevel_hb);
 	m_loglevel_co	= new QComboBox("QComboBox1", m_loglevel_hb);
 	m_loglevel_co->insertStrList(loglevels);
 	m_loglevel_co->setCurrentItem(m_preferences->m_log_level);
 
 	// This part takes care of the parser pref.
 	m_parser_hb	= new QHBox(m_settings_vg);
-	m_parser_lb	= new QLabel("XML parser:", m_parser_hb);
+	m_parser_lb	= new QLabel(gettext("XML parser:"), m_parser_hb);
 	m_parser_co	= new QComboBox("QComboBox2", m_parser_hb);
 	m_parser_co->insertStrList(parsers);
 	const char* id	= m_preferences->m_parser_id.data();
 	m_parser_co->setCurrentItem(index_in_string_array(id, parsers));
 
 	
-	m_xerces_vg	= new QVGroupBox("Xerces options:",
+	m_xerces_vg	= new QVGroupBox(gettext("Xerces options:"),
 					 m_settings_vg);
 	
-	m_namespace_cb	= new QCheckBox("Enable XML namespace support",
+	m_namespace_cb	= new QCheckBox(gettext("Enable XML namespace support"),
 					m_xerces_vg);
 	m_namespace_cb->setChecked(m_preferences->m_do_namespaces);
 	// do validation or not
 	m_validation_hb = new QHBox(m_xerces_vg);
-	m_validation_lb = new QLabel("Enable XML validation:", m_validation_hb);
+	m_validation_lb = new QLabel(gettext("Enable XML validation:"), m_validation_hb);
 	m_validation_co = new QComboBox("QComboBox3", m_validation_hb);
 	m_validation_co->insertStrList(val_schemes);
 	const char* scheme = m_preferences->m_validation_scheme.c_str();
@@ -131,24 +131,24 @@ qt_settings::settings_select() {
 
 	m_validation_vb = new QVBox(m_xerces_vg);
 	m_declaration_bg = new QHButtonGroup(m_validation_vb);
-	m_schema_rb	= new QRadioButton("Using Schema",
+	m_schema_rb	= new QRadioButton(gettext("Using Schema"),
 					   m_declaration_bg);
 	m_schema_rb->setChecked(m_preferences->m_do_schema);
-	m_dtd_rb 	= new QRadioButton("Using DTD",
+	m_dtd_rb 	= new QRadioButton(gettext("Using DTD"),
 					   m_declaration_bg);
 	m_dtd_rb->setChecked( ! m_preferences->m_do_schema);
 
 	m_full_check_cb = 
-		new QCheckBox("Validation Schema full checking",
+		new QCheckBox(gettext("Validation Schema full checking"),
 			      m_validation_vb);
 	bool full_chk = m_preferences->m_validation_schema_full_checking;
 	m_full_check_cb->setChecked(full_chk);
 
-	m_plugin_vg = new QVGroupBox("Plugin options:", m_settings_vg);
-	m_use_plugin_cb = new QCheckBox("Use plugins",m_plugin_vg);
+	m_plugin_vg = new QVGroupBox(gettext("Plugin options:"), m_settings_vg);
+	m_use_plugin_cb = new QCheckBox(gettext("Use plugins"),m_plugin_vg);
 	m_use_plugin_cb->setChecked(m_preferences->m_use_plugins);
 	
-	m_plugin_dir_lb = new QLabel( "Plugin directory:\n", m_plugin_vg);
+	m_plugin_dir_lb = new QLabel(gettext("Plugin directory:\n"), m_plugin_vg);
 	m_plugin_dir_le = new QLineEdit( m_plugin_vg );
 	m_plugin_dir_lb->setBuddy(m_plugin_dir_le);
 	//m_plugin_dir_le->setGeometry(AlignRight);

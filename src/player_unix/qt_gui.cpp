@@ -147,45 +147,45 @@ qt_gui::qt_gui(const char* title,
 		/* File */
 		QPopupMenu* filemenu = new QPopupMenu (this);
 		assert(filemenu);
-		int open_id = filemenu->insertItem("&Open", this, 
+		int open_id = filemenu->insertItem(gettext("&Open"), this, 
 						   SLOT(slot_open()));
-		int url_id = filemenu->insertItem("Open &URL", this, 
+		int url_id = filemenu->insertItem(gettext("Open &URL"), this, 
 						  SLOT(slot_open_url()));
 #ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
 		// Disable unavailable menu entries
 		filemenu->setItemEnabled(open_id, true);
 		filemenu->setItemEnabled(url_id, false);
 #endif/*QT_NO_FILEDIALOG*/
-		filemenu->insertItem("&Full Screen", this,
+		filemenu->insertItem(gettext("&Full Screen"), this,
 				     SLOT(showFullScreen()));
-		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
-		filemenu->insertItem("&Settings", this,
+		filemenu->insertItem(gettext("&Normal"), this,SLOT(showNormal()));
+		filemenu->insertItem(gettext("&Settings"), this,
 				     SLOT(slot_settings_select()));
 #ifdef	WITH_QT_LOGGER
-		filemenu->insertItem("&Logger", this,
+		filemenu->insertItem(gettext("&Logger"), this,
 				     SLOT(slot_logger_window()));
 #endif/*WITH_QT_LOGGER*/
-		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
-		m_menubar->insertItem("&File", filemenu);
+		filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
+		m_menubar->insertItem(gettext("&File"), filemenu);
 		
 		/* Play */
 		m_playmenu = new QPopupMenu (this, "PlayA");
 		assert(m_playmenu);
-		m_play_id = m_playmenu->insertItem("Pla&y", this,
+		m_play_id = m_playmenu->insertItem(gettext("Pla&y"), this,
 						   SLOT(slot_play()));
 		m_playmenu->setItemEnabled(m_play_id, false);
-		m_pause_id = m_playmenu->insertItem("&Pause", this,
+		m_pause_id = m_playmenu->insertItem(gettext("&Pause"), this,
 						    SLOT(slot_pause()));
 		m_playmenu->setItemEnabled(m_pause_id, false);
-		m_playmenu->insertItem("&Stop",	this, SLOT(slot_stop()));
-		m_menubar->insertItem("Pla&y", m_playmenu);
+		m_playmenu->insertItem("gettext(&Stop"),	this, SLOT(slot_stop()));
+		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
 		
 		/* Help */
 		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
 		assert(helpmenu);
-		helpmenu->insertItem("&About AmbulantPlayer", this,
+		helpmenu->insertItem(gettext("&About AmbulantPlayer"), this,
 				     SLOT(slot_about()));
-		m_menubar->insertItem("&Help", helpmenu);
+		m_menubar->insertItem(gettext("&Help"), helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
 		m_o_y = 27;
@@ -211,11 +211,11 @@ qt_gui::~qt_gui() {
 
 void 
 qt_gui::slot_about() {
-	int but = QMessageBox::information(this, "About AmbulantPlayer",
+	int but = QMessageBox::information(this, gettext("About AmbulantPlayer"),
 					   about_text,
-					   "Homepage...",
-					   "Welcome doc",
-					   "OK",
+					   gettext("Homepage..."),
+					   gettext("Welcome doc"),
+					   gettext("OK"),
 					   2);
 	if (but == 0) {
 		// Show homepage
@@ -254,7 +254,7 @@ checkFilename(QString filename, int mode) {
 void
 qt_gui::fileError(QString smilfilename) {
  	char buf[1024];
-	sprintf(buf, "Cannot open file \"%s\":\n%s\n",
+	sprintf(buf, gettext("Cannot open file \"%s\":\n%s\n"),
 		(const char*) smilfilename, strerror(errno));
 	QMessageBox::information(this, m_programfilename, buf);
 }
@@ -290,10 +290,10 @@ qt_gui::slot_open() {
 	QString smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
-				 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)", // file types
+				 gettext("SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)"), // file types
 				 this,
-				 "open file dialog",
-				 "Double Click a file to open"
+				 gettext("open file dialog"),
+				 gettext("Double Click a file to open")
 				 );
 	openSMILfile(smilfilename, IO_ReadOnly);
 	slot_play();
@@ -351,7 +351,7 @@ qt_gui::slot_open_url() {
 	QString smilfilename =
 		QInputDialog::getText(
 				      "AmbulantPlayer",
-				      "URL to open:",
+				      gettext("URL to open:"),
 				      QLineEdit::Normal,
 				      QString::null,
 				      &ok,
@@ -363,7 +363,7 @@ qt_gui::slot_open_url() {
 	}
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QMessageBox::information (this, m_programfilename,
-		"Open URL not implemented for Embedded Qt");
+		gettext("Open URL not implemented for Embedded Qt"gettext();
 #endif/*QT_NO_FILEDIALOG*/
 }
 
@@ -397,7 +397,7 @@ qt_gui::slot_play() {
 	    || ! m_mainloop->is_open()) {
 		QMessageBox::information(
 			this, m_programfilename,
-			"No file open: Please first select File->Open");
+			gettext("No file open: Please first select File->Open"));
 		return;
 	}
 	if (!m_playing) {
@@ -448,9 +448,9 @@ qt_gui::slot_settings_select() {
 	m_settings = new qt_settings();
 	QWidget* settings_widget = m_settings->settings_select();
 	m_finish_hb = new QHBox(settings_widget);
-	m_ok_pb	= new QPushButton("OK", m_finish_hb);
+	m_ok_pb	= new QPushButton(gettext("OK"), m_finish_hb);
 	m_finish_hb->setSpacing(50);
-	QPushButton* m_cancel_pb= new QPushButton("Cancel", m_finish_hb);
+	QPushButton* m_cancel_pb= new QPushButton(gettext("Cancel"), m_finish_hb);
 	QObject::connect(m_ok_pb, SIGNAL(released()),
 			 this, SLOT(slot_settings_ok()));
 	QObject::connect(m_cancel_pb, SIGNAL(released()),

@@ -121,10 +121,8 @@ qt_logger::qt_logger()
 	if (prefs != NULL && prefs->m_log_file != "") {
 		m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
 		if (m_log_FILE == NULL) {
-			logger->warn("qt_logger(): %s \"%s\" %s",
-				     "cannot open logfile", 
-				     prefs->m_log_file.c_str(),
-				     "for writing");
+			logger->warn(gettext("Cannot open logfile: %s"), 
+				     prefs->m_log_file.c_str());
 		}
 	}
 	// Connect logger to our message displayer and output processor
