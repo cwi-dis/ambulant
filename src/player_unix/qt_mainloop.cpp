@@ -262,7 +262,7 @@ qt_mainloop::set_preferences(std::string &url)
 }
 
 void
-qt_mainloop::show_file(const std::string &href)
+qt_mainloop::show_file(const ambulant::net::url &url)
 {
-	open_web_browser(href);
+	open_web_browser(url.get_url());
 }

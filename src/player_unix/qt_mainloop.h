@@ -95,7 +95,7 @@ class qt_mainloop : public ambulant::lib::system, public ambulant::lib::ref_coun
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
 	
-	void show_file(const std::string &href);
+	void show_file(const ambulant::net::url&);
 	
 	static void set_preferences(std::string &path);
  	
