@@ -160,14 +160,27 @@ ambulant::lib::document *
 mainloop::create_document(const char *filename)
 {
 	char *data;
-	std::string url(filename);
+	ambulant::net::url url(filename);
+	// Correct for relative pathnames for local files
+	if (url.is_local_file() && !url.is_absolute()) {
+#if 0
+		// Not implemented yet for posix
+		ambulant::net::url cwd_url(lib::filesys::getcwd());
+#else
+		char cwdbuf[1024];
+		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
+			strcpy(cwdbuf, ".");
+		strcat(cwdbuf, "/");
+		ambulant::net::url cwd_url(cwdbuf);
+#endif
+		url = url.join_to_base(cwd_url);
+		/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
+	}
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
-	/*DBG*/int fd=creat("/tmp/doc.smil", 0666); write(fd, data, size); close(fd);
 	if (size < 0) {
 		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
 		return NULL;
 	}
-	/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace("mainloop::create_document: document is %d bytes", size);
 	std::string docdata(data, size);
 	free(data);
 	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
