@@ -53,7 +53,6 @@ if test ! -f $EXPAT_PREFIX/include/expat.h; then
 fi
 
 EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
-
 EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
 EXPAT_INCLUDES=-I$EXPAT_PREFIX/include
 AC_SUBST(EXPAT_PREFIX)
@@ -61,6 +60,41 @@ AC_SUBST(EXPAT_LIBS)
 AC_SUBST(EXPAT_INCLUDES)
 
 AC_MSG_RESULT($EXPAT_PREFIX)
+
+#
+# Find xerces
+#
+AC_MSG_CHECKING(for --with-xerces)
+xerces=false
+
+AC_ARG_WITH([xerces],[
+	AC_HELP_STRING([--with-xerces],
+                   [Location xerces is installed (default is third_party_packages/xerces-unix)])
+    ],[
+    case "${withval}" in    
+     yes) xerces=true;
+          XERCES_PREFIX=third_party_packages/xerces-unix ;;
+     no)  xerces=false ;;
+     *)   xerces=true;
+          XERCES_PREFIX=${withval};;
+     esac])
+	
+if test $xerces = true;
+then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
+     then
+     	XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
+	XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
+	XERCES_INCLUDES="-I$XERCES_PREFIX/include -DWITH_XERCES"
+     else  AC_MSG_ERROR([xerces not found in $XERCES_PREFIX, please use --with-xerces])
+     fi
+else
+     unset XERCES_PREFIX;
+fi
+AC_SUBST(XERCES_PREFIX)
+AC_SUBST(XERCES_LIBS)
+AC_SUBST(XERCES_INCLUDES)
+AM_CONDITIONAL(WITH_XERCES, test x$xerces = xtrue)
+AC_MSG_RESULT($xerces)
 
 AC_MSG_CHECKING(for --with-cocoa)
 AC_ARG_WITH(cocoa,

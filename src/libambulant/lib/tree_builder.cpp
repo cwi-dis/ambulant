@@ -49,7 +49,6 @@
 /* 
  * @$Id$ 
  */
-
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
@@ -68,7 +67,12 @@ lib::tree_builder::tree_builder(node_context *context)
 	m_current(0),
 	m_well_formed(false),
 	m_context(context) {
+#ifdef	WITH_XERCES
+	XMLPlatformUtils::Initialize();
+	m_xmlparser = new xerces_sax_parser(this, this);
+#else /*WITH_XERCES*/
 	m_xmlparser = new expat_parser(this, this);
+#endif/*WITH_XERCES*/
 }
 
 lib::tree_builder::~tree_builder()
@@ -91,6 +95,31 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!m_xmlparser) return false;
 	if(!filename || !*filename) return false;
 
+#ifdef	WITH_XERCES
+	m_well_formed = true;
+	try {
+//		lib::logger::get_logger()->trace
+//		  ("build_tree_from_file@parse(%s)\n", filename);
+		m_xmlparser->parse(filename);
+	} catch (const XMLException& e) {
+		char* msg = XMLString::transcode(e.getMessage());
+		lib::logger::get_logger()->trace
+		  ("build_tree_from_file@XMLerror: %s\n", msg);
+		XMLString::release(&msg);
+		m_well_formed = false;
+	} catch (const SAXParseException& e) {
+		char* msg = XMLString::transcode(e.getMessage());
+		lib::logger::get_logger()->trace
+		  ("build_tree_from_file@SAXerror: %s\n", msg);
+		XMLString::release(&msg);
+		m_well_formed = false;
+	} catch (const std::exception& e) {
+		lib::logger::get_logger()->trace
+		  ("build_tree_from_file@error: %s\n", e.what());
+		m_well_formed = false;
+	}
+	return m_well_formed;
+#else /*WITH_XERCES*/
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
@@ -119,6 +148,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #else
 	return false;
 #endif
+#endif/*WITH_XERCES*/
 }
 
 bool lib::tree_builder::build_tree_from_url(const net::url& u) {
@@ -141,13 +171,21 @@ bool lib::tree_builder::build_tree_from_url(const net::url& u) {
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
+#ifdef	WITH_XERCES
+	assert(0); //XXXX TBD HOW?
+#else /*WITH_XERCES*/
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
+#endif/*WITH_XERCES*/
 	return m_well_formed;
 }
 
 bool 
 lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
+#ifdef	WITH_XERCES
+	assert(0); //XXXX TBD HOW?
+#else /*WITH_XERCES*/
 	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
+#endif/*WITH_XERCES*/
 	return m_well_formed;
 }
 
@@ -163,7 +201,11 @@ lib::tree_builder::reset() {
 		m_current = 0;
 	}
 	m_well_formed = false;
+#ifdef	WITH_XERCES
+ 	m_xmlparser = new xerces_sax_parser(this, this);
+#else /*WITH_XERCES*/
 	m_xmlparser = new expat_parser(this, this);
+#endif/*WITH_XERCES*/
 }
 
 void 

@@ -67,6 +67,11 @@
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/util/PlatformUtils.hpp"
 
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 namespace ambulant {
 
 namespace lib {
@@ -78,20 +83,29 @@ using namespace xercesc;
 
 class xerces_sax_parser : public HandlerBase {
   public:
-	xerces_sax_parser();
+	enum {NS_SEP = '|'};
+
+	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
 	~xerces_sax_parser();
 	
 	bool parse(const char *filename);
 	
-	void startElement(const XMLCh* const name, AttributeList& attributes) {
+	void startElement(const XMLCh* const name,
+			  AttributeList& attrs) {
 		char *cname = XMLString::transcode(name);
-		m_logger->trace("*** startElement %s", cname);
+		AM_DBG m_logger->trace("*** startElement %s", cname);
+		q_name_pair qname = to_q_name_pair(name);
+		q_attributes_list qattrs;
+		to_qattrs(attrs, qattrs);
+		m_content_handler->start_element(qname, qattrs);
 		XMLString::release(&cname);
 	}
    
 	void endElement(const XMLCh* const name) {
 		char *cname = XMLString::transcode(name);
-		m_logger->trace("*** endElement %s", cname);
+		AM_DBG m_logger->trace("*** endElement %s", cname);
+		q_name_pair qname = to_q_name_pair(name);
+		m_content_handler->end_element(qname);
 		XMLString::release(&cname);
 	}
     
@@ -106,9 +120,9 @@ class xerces_sax_parser : public HandlerBase {
 		throw exception;
 	}
 
-    void error(const SAXParseException& exception) {
-        m_logger->error("*** Error ");
-        throw exception;
+	void error(const SAXParseException& exception) {
+	        m_logger->error("*** Error ");
+        	throw exception;
 	}
 
 	void fatalError(const SAXParseException& exception)  {
@@ -118,17 +132,29 @@ class xerces_sax_parser : public HandlerBase {
 	
 	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
 	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
+	static q_name_pair to_q_name_pair(const XMLCh*);
+	static void to_qattrs(AttributeList&, q_attributes_list&);
 	// ...
 	
   private:
 	SAXParser *m_saxparser;  
+//XXXX	XML_Parser m_saxParser;
 	lib::logger *m_logger;
+	sax_content_handler *m_content_handler;
+	sax_error_handler *m_error_handler;
+	bool m_parsing;
 };
 
+inline xerces_sax_parser::xerces_sax_parser(sax_content_handler *content_handler,
+					    sax_error_handler *error_handler) 
+:	m_content_handler(content_handler),
+	m_error_handler(error_handler),
+	m_parsing(false),
+	m_saxparser(0), m_logger(0) {
 
-inline xerces_sax_parser::xerces_sax_parser() 
-:	m_saxparser(0), m_logger(0) {
 	m_logger = lib::logger::get_logger();
+        AM_DBG m_logger->trace("***  :xerces_sax_parser()");
+	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 	
 	// Val_Never, Val_Always, Val_Auto
@@ -174,6 +200,37 @@ inline bool xerces_sax_parser::parse(const char *filename) {
          m_logger->error("Unexpected exception during parsing");
     }
 	return succeeded;
+}
+//static
+inline void
+xerces_sax_parser::to_qattrs(AttributeList& attrs, 
+			     q_attributes_list& list) {
+	if(attrs.getLength() == 0) return;
+	for (int i = 0; i < attrs.getLength(); i++) {
+		xml_string value = 
+		  XMLString::transcode(attrs.getValue(i));
+		q_attribute_pair qap (to_q_name_pair(attrs.getName(i)),
+				      value);
+		list.push_back(q_attribute_pair(qap));
+	}
+}
+//static
+inline q_name_pair 
+xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
+	char *cname = XMLString::transcode(name);
+	const char *p = cname;
+	const char ns_sep = char(NS_SEP);
+	while(*p != 0 && *p != ns_sep) p++;
+	q_name_pair qn;
+	if(*p == ns_sep) { 
+		qn.first = std::string(cname, int(p-cname));
+		qn.second = std::string(p+1);
+	} else {
+		qn.first = "";
+		qn.second = cname;
+	}
+	XMLString::release(&cname);
+	return  qn;
 }
 
 } // namespace lib

@@ -58,10 +58,17 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
+//#define WITH_XERCES 
+#ifdef	WITH_XERCES
+#else /*WITH_XERCES*/
+#endif/*WITH_XERCES*/
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/expat_parser.h"
+#ifdef	WITH_XERCES
+#include "ambulant/lib/xerces_parser.h"
+#endif/*WITH_XERCES*/
 #include "ambulant/lib/node.h"
 #include "ambulant/net/url.h"
 
@@ -119,7 +126,11 @@ class tree_builder :
 	
   ///////////////
   private:
+#ifdef	WITH_XERCES
+	xerces_sax_parser*  m_xmlparser;
+#else /*WITH_XERCES*/
 	expat_parser *m_xmlparser;
+#endif/*WITH_XERCES*/
 	node *m_root;
 	node *m_current;
 	bool m_well_formed;

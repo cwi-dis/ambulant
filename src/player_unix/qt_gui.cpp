@@ -188,8 +188,8 @@ qt_gui::slot_about() {
 	} else if (but == 1) {
 		// Play welcome document
 		char *welcome_doc = find_welcome_doc();
-		if (welcome_doc) {
-			openSMILfile(welcome_doc, IO_ReadOnly);
+		if (welcome_doc
+		    && 	openSMILfile(welcome_doc, IO_ReadOnly)) {
 			slot_play();
 		}
 	} else if (but == 2) {
@@ -233,7 +233,7 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	m_mainloop = new qt_mainloop(this);
 	m_playing = false;
 	m_pausing = false;
-	return true;
+	return m_mainloop->is_open();
 }
 
 void 
@@ -267,9 +267,9 @@ qt_gui::slot_open_url() {
 				      &ok,
 				      this
 				 );
-	if (ok && !smilfilename.isEmpty()) {
-	    openSMILfile(smilfilename, IO_ReadOnly);
-	    slot_play();
+	if (ok && !smilfilename.isEmpty()
+	    && openSMILfile(smilfilename, IO_ReadOnly)) {
+		slot_play();
 	}
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QMessageBox::information (this, m_programfilename,
@@ -302,7 +302,8 @@ qt_gui::player_done() {
 void 
 qt_gui::slot_play() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
-	if (m_smilfilename == NULL || m_mainloop == NULL) {
+	if (m_smilfilename == NULL || m_mainloop == NULL
+	    || ! m_mainloop->is_open()) {
 		QMessageBox::information(
 			this, m_programfilename,
 			"No file open: Please first select File->Open");
@@ -408,6 +409,7 @@ main (int argc, char*argv[]) {
 	mywidget->show();
 	
 	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
+	bool exec_flag = false;
 	if (argc > 1) {
 		char last[6];
 		char* str = argv[argc-1];
@@ -417,9 +419,10 @@ main (int argc, char*argv[]) {
 		if (strcmp(last, ".smil") == 0
 		|| strcmp(&last[1], ".smi") == 0
 	  	|| strcmp(&last[1], ".sml") == 0) {
-		  mywidget->openSMILfile(argv[argc-1],
-					       IO_ReadOnly);
-			mywidget->slot_play();
+ 			if (mywidget->openSMILfile(argv[argc-1],
+						   IO_ReadOnly)
+			    && (exec_flag = true))
+				mywidget->slot_play();
 		}
 	} else {
 		char fnbuf[1024];
@@ -434,8 +437,10 @@ main (int argc, char*argv[]) {
 		  		close(creat(fnbuf, 0666));
 			}
 		}
+		exec_flag = true;
 	}
-	myapp.exec();
+	if (exec_flag)
+		myapp.exec();
 	delete mywidget;
 	std::cout << "Exiting program" << std::endl;
 	return 0;

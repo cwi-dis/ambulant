@@ -67,6 +67,8 @@
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/qt/qt_factory.h"
 
+//#include "ambulant/lib/tree_builder.h"
+
 using namespace ambulant;
 using namespace gui::qt;
 
@@ -163,7 +165,6 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	const char *filename = parent->filename();
 	m_doc = create_document(filename);
 	if (!m_doc) {
-		logger::get_logger()->error("Could not build tree for file: %s", filename);
 		return;
 	}
 	bool is_mms = strcmp(".mms", filename + strlen(filename) - 4) == 0;
@@ -175,35 +176,40 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 
 }
 
-ambulant::lib::document *
+lib::document *
 qt_mainloop::create_document(const char *filename)
 {
 	char *data;
-	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::create_document(\"%s\")", filename);
-	ambulant::net::url url(filename);
+	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::create_document(\"%s\")", filename);
+	net::url url(filename);
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
 #if 0
 		// Not implemented yet for posix
-		ambulant::net::url cwd_url(lib::filesys::getcwd());
+		net::url cwd_url(lib::filesys::getcwd());
 #else
 		char cwdbuf[1024];
 		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
 			strcpy(cwdbuf, ".");
 		strcat(cwdbuf, "/");
-		ambulant::net::url cwd_url(cwdbuf);
+		net::url cwd_url(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
-		AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
+		AM_DBG lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
-	int size = ambulant::net::read_data_from_url(url, m_df, &data);
+#define	USE_XERCES
+#ifdef	USE_XERCES
+	lib::document* rv = lib::document::create_from_file(filename);
+#else /*USE_XERCES*/
+	int size = net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
+		lib::logger::get_logger()->error("Cannot open %s", filename);
 		return NULL;
 	}
 	std::string docdata(data, size);
 	free(data);
-	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
+	lib::document *rv = lib::document::create_from_string(docdata);
+#endif/*USE_XERCES*/
 	if (rv) rv->set_src_url(url);
 	return rv;
 }	
@@ -228,14 +234,14 @@ qt_mainloop::play()
 {
 	m_running = true;
 	m_player->start();
-	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
 }
 
 void
 qt_mainloop::stop()
 {
 	m_player->stop();
-	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
 }
 
 void
@@ -257,14 +263,20 @@ qt_mainloop::is_running() const
 	return !m_player->is_done();
 }
 
-void
-qt_mainloop::set_preferences(std::string &url)
+bool
+qt_mainloop::is_open() const
 {
-//	ambulant::smil2::test_attrs::load_test_attrs(url);
+	return m_doc && m_player;
 }
 
 void
-qt_mainloop::show_file(const ambulant::net::url &url)
+qt_mainloop::set_preferences(std::string &url)
+{
+//	smil2::test_attrs::load_test_attrs(url);
+}
+
+void
+qt_mainloop::show_file(const net::url &url)
 {
 	open_web_browser(url.get_url());
 }
@@ -272,11 +284,11 @@ qt_mainloop::show_file(const ambulant::net::url &url)
 void
 qt_mainloop::close(common::player *p)
 {
-	ambulant::lib::logger::get_logger()->warn("qt_mainloop: not implemented: close document");
+	lib::logger::get_logger()->warn("qt_mainloop: not implemented: close document");
 }
 
 void
 qt_mainloop::open(net::url newdoc, bool start, common::player *old)
 {
-	ambulant::lib::logger::get_logger()->warn("qt_mainloop: not implemented: open \"%s\"", newdoc.get_url().c_str());
+	lib::logger::get_logger()->warn("qt_mainloop: not implemented: open \"%s\"", newdoc.get_url().c_str());
 }

@@ -94,6 +94,7 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	void set_speed(double speed);
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
+	bool is_open() const;
 	
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
