@@ -43,6 +43,7 @@ class thread : public ambulant::lib::thread {
 	
 	pthread_t m_thread;
 	bool m_exit_requested;
+	bool m_exit_done;
 	bool m_running;
 };
 

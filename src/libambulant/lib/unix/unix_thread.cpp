@@ -25,6 +25,8 @@ lib::unix::thread::thread()
 
 lib::unix::thread::~thread()
 {
+	if (m_running)
+		stop();
 }
 
 bool 
@@ -41,6 +43,7 @@ lib::unix::thread::stop()
 {
 	m_exit_requested = true;
 	/* TODO: wake thread up */
+	pthread_join(m_thread, NULL);
 }
 	
 bool
