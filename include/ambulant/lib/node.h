@@ -96,7 +96,7 @@ class node {
 	// If this node is part of a tree, detach it first
 	// and then delete the node and its contents
 	
-	~node() { node_navigator<node>::delete_tree(this); }
+	virtual ~node() { node_navigator<node>::delete_tree(this); }
 
 	///////////////////////////////
 	// basic navigation
@@ -225,20 +225,18 @@ class node {
 	xml_string to_trimmed_string() const;
 	
   /////////////
+  protected:
+	// node data 
+	// sufficient for a generic xml element
+	q_name_pair m_qname;
+	q_attributes_list m_qattrs;
+	xml_string m_data;
+	
   private:
-
 	// tree bonds
 	node *m_parent;
 	node *m_next;
 	node *m_child;
-	
-	// node data
-	q_name_pair m_qname;
-	q_attributes_list m_qattrs;
-	xml_string m_data;
-
-	// optimizations
-	// for example keep last child, previous etc
 };
 
 ////////////////////////////////////////
