@@ -165,7 +165,6 @@ qt_logger::log(QString logstring) {
 	}
 	char* message = strdup(logstring.ascii());
 	s_qt_logger->m_gui->show_message(-1, message);
-	logger_window->append(logstring);
 }
 
 void
