@@ -1,1 +1,4 @@
 build
+Makefile.in
+Makefile
+.DS_Store

@@ -49,3 +49,9 @@ libambulant_la_SOURCES = \
 	net/url.cpp \
 	\
 	gui/none/none_gui.cpp
+
+EXTRA_DIST= \
+	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \
+	gui/cocoa/cocoa_image.m gui/cocoa/cocoa_image.mm \
+	gui/cocoa/cocoa_text.m gui/cocoa/cocoa_text.mm \
+	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_audio.mm

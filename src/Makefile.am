@@ -8,10 +8,10 @@ build_player_unix=
 endif
 if WITH_COCOA
 # Cannot built Cocoa player with automake yet
-build_player_cocoa=
+build_player_macosx=
 else
-build_player_cocoa=
+build_player_macosx=
 endif
-SUBDIRS = libambulant $(build_player_unix) $(build_player_cocoa)
-DIST_SUBDIRS = libambulant player_unix player_cocoa
+SUBDIRS = libambulant $(build_player_unix) $(build_player_macosx)
+DIST_SUBDIRS = libambulant player_unix player_macosx
 

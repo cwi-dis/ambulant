@@ -2,7 +2,8 @@ SUFFIXES=-moc.cpp
 .h-moc.cpp:
 	moc -o $@ $<
 bin_PROGRAMS = ambulant
-ambulant_SOURCES = main.cpp ambulant_qt.cpp  ambulant_qt-moc.cpp mainloop.cpp
+ambulant_SOURCES = main.cpp ambulant_qt.cpp mainloop.cpp
+nodist_ambulant_SOURCES = ambulant_qt-moc.cpp
 LDADD = -L$(top_builddir)/src/libambulant -lambulant		\
 	-L$(EXPAT_PREFIX)/lib -lexpat				\
 	-L$(QTDIR)/lib -lqt-mt
