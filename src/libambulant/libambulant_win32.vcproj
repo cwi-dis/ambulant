@@ -25,7 +25,7 @@
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="FALSE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -67,7 +67,7 @@
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT"
 				RuntimeLibrary="0"
-				RuntimeTypeInfo="FALSE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -245,6 +245,9 @@
 					RelativePath=".\common\region.cpp">
 				</File>
 				<File
+					RelativePath=".\common\region_node.cpp">
+				</File>
+				<File
 					RelativePath=".\common\renderer.cpp">
 				</File>
 				<File
@@ -252,6 +255,9 @@
 				</File>
 				<File
 					RelativePath=".\common\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath=".\common\smil_layout.cpp">
 				</File>
 				<File
 					RelativePath=".\common\smil_player.cpp">
@@ -488,6 +494,9 @@
 						RelativePath="..\..\include\ambulant\common\player.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\common\preferences.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\common\region.h">
 					</File>
 					<File
@@ -495,6 +504,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\region_eval.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\region_info.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\region_node.h">
@@ -507,6 +519,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\smil_layout.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_player.h">
