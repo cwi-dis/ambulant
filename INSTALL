@@ -102,7 +102,8 @@ sort of things) you are best off downloading the
 third_party_packages-WIN.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
-in your ambulant distribution.
+in your ambulant distribution. Xerces is not included in third_party_packages-WIN.zip,
+see third_party_packages/readme.txt for installation instructions. 
 
 Next, build these by opening
 third_party_packages\third_party_packages.sln in Visual Studio,
