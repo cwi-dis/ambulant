@@ -118,7 +118,9 @@ libambulant_la_SOURCES = \
 	mms/timeline_builder.cpp \
 	mms/timelines.cpp \
 	\
-	gui/none/none_gui.cpp
+	gui/none/none_gui.cpp \
+	gui/none/none_video_renderer.cpp \
+	gui/none/none_factory.cpp
 
 EXTRA_DIST= \
 	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \

@@ -67,6 +67,7 @@
 #ifdef WITH_RAW_AUDIO
 #include "ambulant/net/raw_audio_datasource.h"
 #endif
+#include "ambulant/gui/none/none_factory.h"
 
 using namespace ambulant;
 using namespace lib;
@@ -123,7 +124,8 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	rf->add_factory(new arts::arts_renderer_factory(df));
 #endif 
 	rf->add_factory(new qt_renderer_factory(df));
- 
+	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_video_factory");
+ 	rf->add_factory(new none::none_video_factory(df));
 	wf = new qt_window_factory(qt_view, 
 				   qt_view->get_o_x(),
 			 	   qt_view->get_o_y());

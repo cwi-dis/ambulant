@@ -65,14 +65,14 @@ namespace net {
 	
 class raw_video_datasource : virtual public lib::ref_counted_obj {
   public:
-	raw_video_datasource(std::string &directory);
+	raw_video_datasource(const std::string &directory);
   	~raw_video_datasource();
   
 	void start_frame(lib::event_processor *evp, lib::event *callback, int timestamp);
   	
   	bool end_of_file();
   	
-  	char* get_frame(int &timestamp);
+  	char* get_frame(int *timestamp); 
   	void frame_done(int timestamp);
   
   private:

@@ -64,7 +64,7 @@
 using namespace ambulant;
 using namespace net;
 
-raw_video_datasource::raw_video_datasource(std::string &directory) 
+raw_video_datasource::raw_video_datasource(const std::string &directory) 
 :	m_filenr(0),
 	m_size(0),
 	m_eof(false),
@@ -93,9 +93,9 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 }
 
 char*
-raw_video_datasource::get_frame(int &timestamp)
+raw_video_datasource::get_frame(int *timestamp)
 {
-	timestamp = m_filenr;
+	m_filenr = *timestamp;
 	return m_buffer;
 }
 
@@ -138,7 +138,7 @@ raw_video_datasource::read_next_frame()
 
 	m_filenr++;
 
-	sprintf(filename, "%s/img%d.jpg", m_directory.c_str(),m_filenr);
+	sprintf(filename, "%s/%08d.jpg", m_directory.c_str(),m_filenr);
 	
 	file = open(filename, O_RDONLY); 
 
