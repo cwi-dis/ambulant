@@ -64,6 +64,14 @@
 	#include <wchar.h>
 #endif 
 
+#ifndef text_str
+	#ifdef UNICODE
+	#define text_str(quote) L##quote
+	#else
+	#define text_str(quote) quote
+	#endif
+#endif
+
 namespace ambulant {
 
 namespace lib {
