@@ -827,11 +827,19 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
 					img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
 					
-					
+//#define WITH_FFMPEG_0_4_9					
+#ifdef	WITH_FFMPEG_0_4_9					
+#else /*WITH_FFMPEG_0_4_9*/
+#endif/*WITH_FFMPEG_0_4_9*/
 					// And convert the timestamp
+#ifdef	WITH_FFMPEG_0_4_9					
+					num = m_con->streams[m_stream_index]->time_base.num;
+					den = m_con->streams[m_stream_index]->time_base.den;
+#else /*WITH_FFMPEG_0_4_9*/
 					num = m_con->pts_num;
 					den = m_con->pts_den;
 					
+#endif/*WITH_FFMPEG_0_4_9*/
 					framerate = m_con->streams[m_stream_index]->codec.frame_rate;
 					framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
 					
@@ -1110,6 +1118,10 @@ ffmpeg_decoder_datasource::data_avail()
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
+				if (outsize <= 0) {
+					m_lock.leave();
+					return;
+				}
 				m_buffer.pushdata(outsize);
 				m_src->readdone(decoded);
 			} else {

@@ -222,7 +222,7 @@ void databuffer::pushdata(int sz)
 	m_size += sz;
 	//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",sz);
 	m_used = m_size - m_rear;
-	if ( ! m_size) { // XXXX Is this OK ?
+	if (sz < 0 || m_size <= 0) { // cannot realloc XXXX Is this OK ?
 	  m_lock.leave();
 	  return;
 	}
