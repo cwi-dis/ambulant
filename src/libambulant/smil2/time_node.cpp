@@ -931,7 +931,11 @@ void time_node::activate(qtime_type timestamp) {
 			common::playable *np = m_context->create_playable(m_node);
 			if(np) {
 				np->wantclicks(m_want_activate_events);
-				np->start(time_type_to_secs(m_media_offset()));
+				const lib::node *trans_in = m_attrs.get_trans_in();
+				if(trans_in) {
+					m_context->start_playable(m_node, time_type_to_secs(m_media_offset()), trans_in);
+				} else
+					np->start(time_type_to_secs(m_media_offset()));
 				AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 					m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 					timestamp.second(),
@@ -1251,7 +1255,6 @@ void time_node::fill(qtime_type timestamp) {
 	fill_behavior pfb = sync_node()->get_time_attrs()->get_fill();
 	
 	bool keep = (fb != fill_remove);
-		//(fb != fill_transition); // no transitions for now
 	
 	if(keep) {
 		// this node should be freezed
