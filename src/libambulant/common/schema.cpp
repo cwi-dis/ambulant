@@ -66,7 +66,11 @@ static const char* discrete_leafs[] = {
 };
 
 static const char* continuous_leafs[] = {
-	"audio", "animation", "video", "textstream", "area", "animate"
+	"audio", "animation", "video", "textstream", "area"
+};
+
+static const char* animate_elements[] = {
+	"animate", "animateColor", "animateMotion", "set"
 };
 
 static const char* layout_elements[] = {
@@ -110,6 +114,13 @@ schema::schema() {
 		m_time_elements.insert(continuous_leafs[i]);
 		m_continuous.insert(continuous_leafs[i]);
 	}
+	
+	n = sizeof(animate_elements)/sizeof(const char *);
+	for(i =0;i<n;i++) {
+		m_time_elements.insert(animate_elements[i]);
+		m_continuous.insert(animate_elements[i]);
+		m_animations.insert(animate_elements[i]);
+	}
 		
 	n = sizeof(layout_elements)/sizeof(const char *);
 	for(i=0; i<n; i++) {
@@ -133,6 +144,10 @@ schema::get_time_type(const lib::q_name_pair& qname) const {
 
 bool schema::is_discrete(const lib::q_name_pair& qname) const {
 	return m_discrete.find(qname.second) != m_discrete.end();
+}
+
+bool schema::is_animation(const lib::q_name_pair& qname) const {
+	return m_animations.find(qname.second) != m_animations.end();
 }
 
 const char* 

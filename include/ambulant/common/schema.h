@@ -111,6 +111,8 @@ class schema {
 	// Allow schema_factory classes to create instances.
 	friend class schema_factory;
 	
+	bool is_animation(const lib::q_name_pair& qname) const;
+	
  	schema();
  	~schema();
 	
@@ -118,6 +120,7 @@ class schema {
 	std::set<std::string> m_time_elements;
 	std::set<std::string> m_discrete;
 	std::set<std::string> m_continuous;
+	std::set<std::string> m_animations;
 	std::set<std::string> m_layout_elements;
 };
 
