@@ -146,6 +146,8 @@ passive_region::new_subsurface(const region_info *info, renderer *bgrenderer)
 	passive_region *rv = new passive_region(info->get_name(), this, bounds, info, bgrenderer);
 	
 	m_active_children.insert(std::make_pair(zindex_t(z), rv));
+	
+	need_redraw(bounds);
 	return rv;
 }
 
@@ -170,13 +172,13 @@ passive_region::show(active_region *cur)
 }
 
 void
-passive_region::active_region_done()
+passive_region::active_region_done(active_region *cur)
 {
-	if (!m_cur_active_region) {
+	if (cur == m_cur_active_region) {
+		m_cur_active_region = NULL;
 		lib::logger::get_logger()->error("passive_region(0x%x).active_region_done() but m_cur_active_region=0x%x!", (void*)this, (void*)m_cur_active_region);
 	}
-	delete m_cur_active_region;
-	m_cur_active_region = NULL;
+	delete cur;
 }
 
 void
@@ -208,14 +210,26 @@ void
 passive_region::draw_background(const lib::screen_rect<int> &r, abstract_window *window)
 {
 	// Do a quick return if we have nothing to draw
-	if (m_info == NULL) return;
+	if (m_info == NULL) {
+		AM_DBG lib::logger::get_logger()->trace("draw_background %s: no m_info", m_name.c_str());
+		return;
+	}
 	AM_DBG lib::logger::get_logger()->trace("draw_background %s: color=0x%x, transparent=%x, showbg=%d, renderer=0x%x",
 		m_name.c_str(), (int)m_info->get_bgcolor(), (int)m_info->get_transparent(), (int)m_info->get_showbackground(), (int)m_bg_renderer);
-	if (m_info->get_transparent()) return;
-	if (!m_info->get_showbackground()) return;
+	if (m_info->get_transparent()) {
+		AM_DBG lib::logger::get_logger()->trace("draw_background %s: transparent", m_name.c_str());
+		return;
+	}
+	if (!m_info->get_showbackground()) {
+		AM_DBG lib::logger::get_logger()->trace("draw_background %s: showbackground is false", m_name.c_str());
+		return;
+	}
 	// Now we should make sure we have a background renderer
-	if (m_bg_renderer)
-		m_bg_renderer->redraw(r, window);
+	if (!m_bg_renderer) {
+		AM_DBG lib::logger::get_logger()->trace("draw_background %s: no m_bg_renderer", m_name.c_str());
+		return;
+	}
+	m_bg_renderer->redraw(r, window);
 }
 
 void
@@ -476,6 +490,8 @@ active_region::renderer_done()
 	m_renderer = NULL;
 	AM_DBG lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
 	need_events(false);
-	need_redraw();	
-	m_source->active_region_done();
+	need_redraw();
+	// Note: whether we are deleted or not is up to our passive_region
+	// parent: it may want to keep us around for a transition or some such.
+	m_source->active_region_done(this);
 }

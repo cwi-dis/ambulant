@@ -61,7 +61,6 @@
 #include "ambulant/smil2/smil_layout.h"
 #include <stack>
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -214,8 +213,10 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		lib::node *n = pair.second;
 		if (!region_node::needs_region_node(n)) continue;
 		
-		/*AM_DBG*/ lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x", (void*)n);
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x", (void*)n);
 		region_node *rn = new region_node(n, di_parent);
+		rn->fix_from_dom_node();
+		rn->set_showbackground(false);
 		
 		region_node *parent = get_region_node_for(n, false);
 		if (!parent) {
@@ -327,8 +328,10 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 {
 	if (nodeoverride) {
 		std::map<const lib::node*, region_node*>::size_type count = m_node2region.count(n);
-		if (count)
+		if (count) {
+			/*AM_DBG*/ lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): per-node override");
 			return (*m_node2region.find(n)).second;
+		}
 	}
 	const char *prname = n->get_attribute("region");
 	const char *nid = n->get_attribute("id");
