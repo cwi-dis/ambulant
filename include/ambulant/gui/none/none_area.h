@@ -50,76 +50,38 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/gui/none/none_area.h"
+#ifndef AMBULANT_GUI_NONE_AREA_H
+#define AMBULANT_GUI_NONE_AREA_H
+
+#include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/common/region_info.h"
-#include "ambulant/lib/logger.h"
 
-using namespace ambulant;
-using namespace lib;
-using namespace common;
+namespace ambulant {
 
-gui::none::none_playable::none_playable(
-	common::playable_notification *context,
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// Workaround for bug in emVC 4.0: it gets confused
-	// when getting a subtype from a class within a function
-	// signature, or something like that
-	int cookie,
-#else
-	common::playable_notification::cookie_type cookie,
-#endif
-	const lib::node *node)
-:	common::active_playable(context, cookie),
-	m_node(node)
-{
-	lib::xml_string tag = node->get_qname().second;
-	std::string url = node->get_url("src");
-	lib::logger::get_logger()->warn("No renderer found for <%s src=\"%s\">, using none_playable", tag.c_str(), url.c_str());
-}
+namespace gui {
 
-void
-gui::none::none_playable::start(double where)
-{
-	lib::logger::get_logger()->trace("none_playable.start(0x%x)", m_node);
-	stopped_callback();
-}
+namespace none {
 
-void
-gui::none::none_playable::stop()
-{
-	lib::logger::get_logger()->trace("none_playable.stop(0x%x)", (void *)this);
-}
+class none_area_renderer : public common::renderer_playable {
+  public:
+	none_area_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp) 
+	: common::renderer_playable(context, cookie, node, evp) {
+	}
+	~none_area_renderer() {}
+	void wantclicks(bool want);
+	void start(double t);
+	void stop();
+	void user_event(const lib::point& pt, int what);
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
+};
+} // namespace none
 
-void
-gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
-{
-	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_src, (void*)m_dst);
-}
+} // namespace gui
+ 
+} // namespace ambulant
 
-playable *
-gui::none::none_playable_factory::new_playable(
-	playable_notification *context,
-	playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor *evp)
-{
-	lib::xml_string tag = node->get_qname().second;
-	if(tag == "area")
-		return new none_area_renderer(context, cookie, node, evp);
-	return new none_playable(context, cookie, node);
-}
-
-renderer *
-gui::none::none_window_factory::new_background_renderer(region_info *src)
-{
-	return new none_background_renderer(src);
-}
-
-abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
-{
-	return new none_window(name, bounds, region);
-}
-
+#endif // AMBULANT_GUI_NONE_AREA_H

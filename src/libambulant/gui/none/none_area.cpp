@@ -50,76 +50,44 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/none/none_area.h"
-#include "ambulant/common/renderer.h"
-#include "ambulant/common/region_info.h"
 #include "ambulant/lib/logger.h"
 
-using namespace ambulant;
-using namespace lib;
-using namespace common;
-
-gui::none::none_playable::none_playable(
-	common::playable_notification *context,
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// Workaround for bug in emVC 4.0: it gets confused
-	// when getting a subtype from a class within a function
-	// signature, or something like that
-	int cookie,
-#else
-	common::playable_notification::cookie_type cookie,
+#ifndef AM_DBG
+#define AM_DBG if(0)
 #endif
-	const lib::node *node)
-:	common::active_playable(context, cookie),
-	m_node(node)
-{
-	lib::xml_string tag = node->get_qname().second;
-	std::string url = node->get_url("src");
-	lib::logger::get_logger()->warn("No renderer found for <%s src=\"%s\">, using none_playable", tag.c_str(), url.c_str());
+
+using namespace ambulant;
+using namespace gui::none;
+
+void
+none_area_renderer::start(double t) {
+	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::start()", (void*)this);
+	if(m_activated) return;	
+	m_dest->show(this);
+	m_activated = true;
 }
 
 void
-gui::none::none_playable::start(double where)
-{
-	lib::logger::get_logger()->trace("none_playable.start(0x%x)", m_node);
-	stopped_callback();
+none_area_renderer::stop() {
+	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::stop()", (void*)this);
+	m_dest->renderer_done();
+	m_activated = false;
 }
 
 void
-gui::none::none_playable::stop()
-{
-	lib::logger::get_logger()->trace("none_playable.stop(0x%x)", (void *)this);
+none_area_renderer::wantclicks(bool want) {
+	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::wantclicks(%d), m_dest=0x%x", (void*)this, want, (void*)m_dest);
+	common::renderer_playable::wantclicks(want);
+	if (m_dest) m_dest->need_events(want);
 }
 
 void
-gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
-{
-	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_src, (void*)m_dst);
+none_area_renderer::user_event(const lib::point& pt, int what) {
+	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d)", (void*)this, pt.x, pt.y, what);
+	if(what == common::user_event_click) {
+		m_context->clicked(m_cookie);
+	} else if(what == common::user_event_mouse_over) {
+		m_context->pointed(m_cookie);
+	}
 }
-
-playable *
-gui::none::none_playable_factory::new_playable(
-	playable_notification *context,
-	playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor *evp)
-{
-	lib::xml_string tag = node->get_qname().second;
-	if(tag == "area")
-		return new none_area_renderer(context, cookie, node, evp);
-	return new none_playable(context, cookie, node);
-}
-
-renderer *
-gui::none::none_window_factory::new_background_renderer(region_info *src)
-{
-	return new none_background_renderer(src);
-}
-
-abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
-{
-	return new none_window(name, bounds, region);
-}
-
