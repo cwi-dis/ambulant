@@ -116,6 +116,29 @@ The event handler architecture needs an elaborate priority scheme, that is expre
 enough that the best execution order of things that happen "at the same time"
 is automatic.
 
+Factory pattern
+---------------
+
+There are various factories that follow a common pattern. There is a client
+interface, called something like ``playable_factory``, that can be used to create
+``playable`` objects. If the factory cannot create the object it returns ``NULL``.
+
+This interface is implemented by all the providers of objects that have the
+``playable`` interface. For example, the implementation of a video renderer 
+for Cocoa on MacOSX will consist of a ``cocoa_video_playable`` implementation and
+a ``cocoa_video_playable_factory`` implementation.
+
+The core also has a provider interface, usually called
+``global_playable_factory``. This interface has a method ``add_playable_factory``
+that the playable provider uses to register its ``playable_factory``. Then,
+when a client uses the ``global_playable_factory`` to create a playable
+it will iterate over all playable factories until one is found that can create
+the object.
+
+These ``global_playable_factory`` objects should be singletons, but in the
+current implementation this isn't always true. Also, the ``global_`` naming
+convention isn't strictly followed for all factories.
+
 Machine-dependent code
 ----------------------
 

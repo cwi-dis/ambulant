@@ -16,28 +16,23 @@ player loads, parses and plays a SMIL document.
 AmbulantPlayer interfaces
 -------------------------
 
-- `Player`_. This is the toplevel object.
-- `Document`_. The representation of a SMIL document. This document
-  also contains a description of the DOM tree (``node`` objects) and related
-  objects.
-- `Parser`_. Describes the interfaces to the XML parser.
+- `Player Interface`_. This is the toplevel object.
+- `Parser Interface`_. Describes the interfaces to the XML parser.
 - `Data source`_. Think of these as "media items", they may refer to a URL
   or part of a multiplexed stream or so, and provide data to renderers and
   to the parser.
-- `Playable`_ and `Renderer`_. These two interfaces together make
-  media items appear on-screen. The first one is the interface as the scheduler
+- `Playable`_. This interface, together with the ``renderer`` interface described
+  in the same document, makes
+  media items appear on the screen. The first one is the interface as the scheduler
   uses it to start and stop playback. The second interface is specific to
   media items that appear on-screen, and handles things like reacting to
   redraw requests.
 - `Layout`_. This document describes the interfaces that are responsible
   for determining where and how the media items are displayed.
 
-.. _Player: player.html
 .. _Document: document.html
-.. _Parser: parser.html
 .. _Data source: datasource.html
 .. _Playable: playable.html
-.. _Renderer: renderer.html
 .. _Layout: layout.html
 
 
@@ -45,6 +40,8 @@ AmbulantPlayer Objects
 ----------------------
 
 - `Event processor`_. This is the mainloop plus the event/callback mechanism.
+- `Document`_. The representation of a SMIL document.
+- `Node`_. The representation of the DOM tree.
 - `Region`_. This is an area of screen space, it is part of an implementation
   of the Layout objects sketched above.
 - `Clocks`_. These advance a virtual time.
@@ -98,6 +95,85 @@ speed) and ``timer``, which implements a new zero-based clock
 based on another ``abstract_timer``. Its speed is settable
 with ``set_speed``, but it is tightly synchronized with its parent clock.
 
-Eventually there will be other implementations of ``timer``,
+Eventually there may be other implementations of ``timer``,
 such as clocks that are allowed to slip synchronization and other such
 semantics as required by SMIL.
+
+Player Interface
+----------------
+
+The player is the top-level object. When it is created you pass a DOM tree,
+a ``factories`` structure containing references to the ``playable_factory``,
+``datasource_factory`` and ``window_factory`` and an embedder object used for
+callbacks to the GUI (on state changes, opening of external documents, etc).
+
+There is a `UML diagram for player`_ showing how the player relates to various other objects.
+
+.. _UML diagram for player: ../models/player.pdf
+
+Player implementations
+----------------------
+
+There are currently two implementations of the player interface: ``smil_player`` and
+``mms_player``. The first one is the all-singing-all-dancing SMIL 2.0 player,
+the second one can play MMS documents, which use a very restricted subset of SMIL 1.0.
+
+A concise walkthrough of how the ``smil_player`` operates is given in the `walkthrough`_
+document.
+
+.. _walkthrough: walkthrough.html
+
+
+Document
+--------
+
+The ``document`` class contains the DOM tree and some auxiliary data:
+
+- the ``node_context`` which can be used to lookup nodes by XML ID and to
+  resolve relative URLs, and
+- the ``nscontext`` which stores information on the use of XML namespaces.
+
+There is a `UML diagram for document`_ showing how the document class relates to various other objects.
+
+.. _UML diagram for document: ../models/document.pdf
+
+Node
+----
+
+The ``node`` class represents a node in the DOM tree. Actually, our tree isn't
+100% compatible with DOM, but close enough. The ``node`` objects store the tag,
+attributes and data pertaining to the XML node. There are basic methods
+to access the parent, next sibling and first child, to insert or remove nodes into a tree
+and more.
+
+There are two auxiliary classes that augment the node functionality using only
+these interfaces:
+
+- ``node_navigator`` uses the basic ``up()/down()/next()`` methods of node to
+  build more complex navigation.
+- ``node_iterator`` is an iterator that allows you to iterate over a subtree.
+
+There is a `UML diagram for node`_ showing how these classes relates to each other.
+
+.. _UML diagram for node: ../models/node.pdf
+
+Parser interface
+----------------
+
+The XML parser roughly follows a SAX interface. To use it you provide it with objects
+having the ``sax_content_handler`` and ``sax_error_handler`` interfaces. You then
+feed your document to the parser and it will call back through those interfaces.
+
+There is a `UML diagram for parser`_ showing how these classes relates to each other.
+
+.. _UML diagram for node: ../models/parser.pdf
+
+Parser implementations
+----------------------
+
+There are currently two parser implementations, ``expat_parser`` uses James Clark's
+`expat` parser, which is a fast and lean no-frills parser. ``xerces_parser`` uses
+the Apache `Xerces` library, which is at the other extreme of the spectrum: it can do
+document validation with both DTDs and Schemas and lots of other wonderful things. But
+this comes at the price of a rather hefty memory footprint.
+

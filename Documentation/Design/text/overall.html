@@ -109,6 +109,25 @@ while event = wait_for_some_interesting_event():
 enough that the best execution order of things that happen &quot;at the same time&quot;
 is automatic.</p>
 </div>
+<div class="section" id="factory-pattern">
+<h1><a name="factory-pattern">Factory pattern</a></h1>
+<p>There are various factories that follow a common pattern. There is a client
+interface, called something like <tt class="literal"><span class="pre">playable_factory</span></tt>, that can be used to create
+<tt class="literal"><span class="pre">playable</span></tt> objects. If the factory cannot create the object it returns <tt class="literal"><span class="pre">NULL</span></tt>.</p>
+<p>This interface is implemented by all the providers of objects that have the
+<tt class="literal"><span class="pre">playable</span></tt> interface. For example, the implementation of a video renderer 
+for Cocoa on MacOSX will consist of a <tt class="literal"><span class="pre">cocoa_video_playable</span></tt> implementation and
+a <tt class="literal"><span class="pre">cocoa_video_playable_factory</span></tt> implementation.</p>
+<p>The core also has a provider interface, usually called
+<tt class="literal"><span class="pre">global_playable_factory</span></tt>. This interface has a method <tt class="literal"><span class="pre">add_playable_factory</span></tt>
+that the playable provider uses to register its <tt class="literal"><span class="pre">playable_factory</span></tt>. Then,
+when a client uses the <tt class="literal"><span class="pre">global_playable_factory</span></tt> to create a playable
+it will iterate over all playable factories until one is found that can create
+the object.</p>
+<p>These <tt class="literal"><span class="pre">global_playable_factory</span></tt> objects should be singletons, but in the
+current implementation this isn't always true. Also, the <tt class="literal"><span class="pre">global_</span></tt> naming
+convention isn't strictly followed for all factories.</p>
+</div>
 <div class="section" id="machine-dependent-code">
 <h1><a name="machine-dependent-code">Machine-dependent code</a></h1>
 <p>The general way to handle machine-dependency is to create a machine-independent

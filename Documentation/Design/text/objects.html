@@ -20,7 +20,7 @@ player loads, parses and plays a SMIL document.</p>
 <div class="section" id="ambulantplayer-interfaces">
 <h1><a name="ambulantplayer-interfaces">AmbulantPlayer interfaces</a></h1>
 <ul class="simple">
-<li><a class="reference" href="player.html">Player</a>. This is the toplevel object.</li>
+<li><a class="reference" href="#player-interface">Player Interface</a>. This is the toplevel object.</li>
 <li><a class="reference" href="document.html">Document</a>. The representation of a SMIL document. This document
 also contains a description of the DOM tree (<tt class="literal"><span class="pre">node</span></tt> objects) and related
 objects.</li>
@@ -28,8 +28,9 @@ objects.</li>
 <li><a class="reference" href="datasource.html">Data source</a>. Think of these as &quot;media items&quot;, they may refer to a URL
 or part of a multiplexed stream or so, and provide data to renderers and
 to the parser.</li>
-<li><a class="reference" href="playable.html">Playable</a> and <a class="reference" href="renderer.html">Renderer</a>. These two interfaces together make
-media items appear on-screen. The first one is the interface as the scheduler
+<li><a class="reference" href="playable.html">Playable</a>. This interface, together with the <tt class="literal"><span class="pre">renderer</span></tt> interface described
+in the same document, makes
+media items appear on the screen. The first one is the interface as the scheduler
 uses it to start and stop playback. The second interface is specific to
 media items that appear on-screen, and handles things like reacting to
 redraw requests.</li>
@@ -77,9 +78,35 @@ the operating-system specific realtime clock (of which you cannot set the
 speed) and <tt class="literal"><span class="pre">timer</span></tt>, which implements a new zero-based clock
 based on another <tt class="literal"><span class="pre">abstract_timer</span></tt>. Its speed is settable
 with <tt class="literal"><span class="pre">set_speed</span></tt>, but it is tightly synchronized with its parent clock.</p>
-<p>Eventually there will be other implementations of <tt class="literal"><span class="pre">timer</span></tt>,
+<p>Eventually there may be other implementations of <tt class="literal"><span class="pre">timer</span></tt>,
 such as clocks that are allowed to slip synchronization and other such
 semantics as required by SMIL.</p>
+</div>
+<div class="section" id="player-interface">
+<h1><a name="player-interface">Player Interface</a></h1>
+<p>The player is the top-level object. When it is created you pass a DOM tree,
+a <tt class="literal"><span class="pre">factories</span></tt> structure containing references to the <tt class="literal"><span class="pre">playable_factory</span></tt>,
+<tt class="literal"><span class="pre">datasource_factory</span></tt> and <tt class="literal"><span class="pre">window_factory</span></tt> and an embedder object used for
+callbacks to the GUI (on state changes, opening of external documents, etc).</p>
+<p>There is a <a class="reference" href="../models/player.pdf">UML diagram for player</a> showing how the player relates to various other objects.</p>
+</div>
+<div class="section" id="player-implementations">
+<h1><a name="player-implementations">Player implementations</a></h1>
+<p>There are currently two implementations of the player interface: <tt class="literal"><span class="pre">smil_player</span></tt> and
+<tt class="literal"><span class="pre">mms_player</span></tt>. The first one is the all-singing-all-dancing SMIL 2.0 player,
+the second one can play MMS documents, which use a very restricted subset of SMIL 1.0.</p>
+<p>A concise walkthrough of how the <tt class="literal"><span class="pre">smil_player</span></tt> operates is given in the <a class="reference" href="walkthrough.html">walkthrough</a>
+document.</p>
+</div>
+<div class="section" id="id2">
+<h1><a name="id2">Document</a></h1>
+<p>The <tt class="literal"><span class="pre">document</span></tt> class contains the DOM tree and some auxiliary data:</p>
+<ul class="simple">
+<li>the <tt class="literal"><span class="pre">node_context</span></tt> which can be used to lookup nodes by XML ID and to
+resolve relative URLs, and</li>
+<li>the <tt class="literal"><span class="pre">nscontext</span></tt> which stores information on the use of XML namespaces.</li>
+</ul>
+<p>There is a <a class="reference" href="../models/document.pdf">UML diagram for document</a> showing how the document class relates to various other objects.</p>
 </div>
 </div>
 </body>
