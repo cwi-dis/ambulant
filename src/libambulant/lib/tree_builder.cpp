@@ -55,7 +55,9 @@
 
 #include "ambulant/lib/logger.h"
 
+#ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>
+#endif
 
 using namespace ambulant;
 
@@ -89,6 +91,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 
 	if(!filename || !*filename) return false;
 
+#ifndef AMBULANT_NO_IOSTREAMS
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
 
@@ -106,6 +109,8 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 		}
 	delete[] buf;
 	ifs.close();
+#endif
+
 	return m_well_formed;
 }
 

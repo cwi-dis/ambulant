@@ -80,10 +80,15 @@ lib::active_renderer::active_renderer(
 void
 lib::active_renderer::start(double t)
 {
+#ifndef AMBULANT_NO_ABORT
 	if (!m_node) abort();
+#endif
+
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::ostringstream os;
 	os << *m_node;
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+#endif
 	m_dest->show(this);
 	if (m_src) {
 		m_src->start(m_event_processor, m_readdone);
@@ -121,7 +126,9 @@ lib::active_final_renderer::readdone()
 	m_data_size = m_src->size();
 	if ((m_data = malloc(m_data_size)) == NULL) {
 		lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", m_data_size);
+#ifndef AMBULANT_NO_ABORT
 		abort();
+#endif
 	}
 	m_src->read((char *)m_data, m_data_size);
 	m_dest->need_redraw();

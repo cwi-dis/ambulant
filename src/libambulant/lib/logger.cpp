@@ -77,8 +77,10 @@ int lib::logger::default_level = lib::logger::LEVEL_DEBUG;
 // This is the default, each specific named logger may 
 // be configured sepaately
 
+#ifndef AMBULANT_NO_IOSTREAMS
 // static
 std::ostream* lib::logger::default_pos = &std::cout;
+#endif
 
 // Output logging date as xx/xx/xx
 //static 
@@ -198,7 +200,10 @@ void lib::logger::fatal(const char *format, ...) {
 	va_start(args, format);
 	log_va_list(LEVEL_FATAL, format, args);
 	va_end(args);
+#ifndef AMBULANT_NO_ABORT
 	abort();
+#endif
+
 }
 
 // static
@@ -210,7 +215,9 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 	vsprintf(buf + strlen(buf), format, args);
 	get_logger()->log_cstr(LEVEL_FATAL, buf);
 	va_end(args);
+#ifndef AMBULANT_NO_ABORT
 	abort();
+#endif
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
@@ -228,6 +235,8 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		time_t t = time(NULL);
 		lt = localtime(&t);
 	}
+
+#ifndef AMBULANT_NO_IOSTREAMS
 	std::ostream& os = *m_pos;
 	char tbuf[16];
 	m_cs.enter();
@@ -249,6 +258,8 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		
 	os << std::endl;
 	os.flush();
+#endif
+
 	m_cs.leave();
 }
 

@@ -55,8 +55,10 @@
 // find_if, etc
 #include <algorithm>
 
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 // ostringstream
 #include <sstream>
+#endif
 
 // assert
 #include <cassert>
@@ -72,6 +74,8 @@
 
 #include "ambulant/lib/logger.h" 
 
+#include <stdio.h> 
+
 using namespace ambulant;
 
 // This module starts with a set of private node visitors
@@ -83,6 +87,7 @@ using namespace ambulant;
 // private output_visitor
 // Writes a tree to an ostream.
 
+#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 class output_visitor {
 	std::ostream& os;
@@ -101,10 +106,13 @@ class output_visitor {
 	const output_visitor& operator=(const output_visitor& o);
 };
 
+#endif
+
 ////////////////////////
 // private trimmed_output_visitor
 // Writes a tree to an ostream without white space.
 
+#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 class trimmed_output_visitor {
 	std::ostream& os;
@@ -119,6 +127,7 @@ class trimmed_output_visitor {
 	void write_end_tag_with_children(const Node*& pe);
 	const trimmed_output_visitor& operator=(const trimmed_output_visitor& o);	
 };
+#endif
 
 ////////////////////////
 // private count_visitor
@@ -376,11 +385,13 @@ lib::node::get_trimmed_data() const {
 	return trim(m_data);
 }
 
+#ifndef _WIN32_WCE
 bool 
 lib::node::has_graph_data() const { 
 	if(m_data.empty()) return false;
 	return std::find_if(m_data.begin(), m_data.end(), isgraph) != m_data.end();
 }
+#endif
 
 const char *
 lib::node::get_attribute(const char *name) const {
@@ -436,6 +447,8 @@ lib::node::xmlrepr() const {
 	return s;
 }
 
+
+#ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
 lib::node::to_string() const {
 	std::ostringstream os;
@@ -443,7 +456,9 @@ lib::node::to_string() const {
 	std::for_each(begin(), end(), visitor);
 	return os.str();
 }
+#endif
 	
+#ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
 lib::node::to_trimmed_string() const {
 	std::ostringstream os;
@@ -451,6 +466,7 @@ lib::node::to_trimmed_string() const {
 	std::for_each(begin(), end(), visitor);
 	return os.str();
 }
+#endif
 
 unsigned int 
 lib::node::size() const {
@@ -465,11 +481,15 @@ void lib::node::create_idmap(std::map<std::string, node*>& m) const {
 	std::for_each(begin(), end(), visitor);
 }
 
+#ifndef AMBULANT_NO_IOSTREAMS
 void lib::node::dump(std::ostream& os) const {
 	output_visitor<ambulant::lib::node> visitor(os);
 	std::for_each(this->begin(), this->end(), visitor);
 }
+#endif
 
+
+#ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n) {
 	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
 	std::string url = n.get_url("src");
@@ -478,6 +498,7 @@ std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n) {
 	os << ")";
 	return os;
 }
+#endif
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -486,6 +507,7 @@ std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n) {
 ////////////////////////
 // output_visitor
 
+#ifndef AMBULANT_NO_IOSTREAMS
 template<class Node>
 void output_visitor<Node>::operator()(std::pair<bool, const Node*> x) {
 	const Node*& pe = x.second;
@@ -527,11 +549,13 @@ void output_visitor<Node>::write_end_tag_with_children(const Node*& pe) {
 	writesp = writesp.substr(0,writesp.length()-ns);
 	os << writesp << "</" + pe->get_local_name() << ">" << std::endl;
 }
+#endif // AMBULANT_NO_IOSTREAMS
 
 
 ////////////////////////
 // trimmed_output_visitor
 
+#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 void trimmed_output_visitor<Node>::operator()(std::pair<bool, const Node*> x) {
 	const Node*& pe = x.second;
@@ -570,4 +594,5 @@ template <class Node>
 void trimmed_output_visitor<Node>::write_end_tag_with_children(const Node*& pe) {
 	os << "</" + pe->get_local_name() << ">";
 }
+#endif // AMBULANT_NO_IOSTREAMS
 

@@ -54,7 +54,9 @@
 
 #include "ambulant/lib/logger.h"
 
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
+#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -146,7 +148,8 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 	// debug
 	AM_DBG if(!queue.empty()) write_trace();
 }
-	
+
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 void lib::delta_timer::write_trace() {
 	std::ostringstream os;
 	os << "delta_timer (";
@@ -160,4 +163,4 @@ void lib::delta_timer::write_trace() {
 	os << ")";
 	lib::logger::get_logger()->trace(os.str());
 }
-
+#endif

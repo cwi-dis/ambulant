@@ -50,11 +50,11 @@
  * @$Id$ 
  */
 
-#include "ambulant/lib/win32/win32_error.h"
+#include <windows.h>
 
+#include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
-#include <windows.h>
 
 using namespace ambulant;
 

@@ -52,11 +52,11 @@
 
 // Ambulant standard base (ASB) compatibility implementations
 
+#include <windows.h>
+
 #include "ambulant/lib/win32/win32_asb.h"
 
 #include <string>
-
-#include <windows.h>
 
 using namespace ambulant;
 

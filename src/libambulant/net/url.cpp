@@ -53,7 +53,11 @@
 #include "ambulant/net/url.h"
  
 #include <string>
+
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
+#endif
+
 #include "ambulant/lib/string_util.h"
 
 using namespace ambulant;
@@ -144,6 +148,7 @@ void net::url::set_parts(lib::reg_scanner& sc, const std::string& pat) {
 	m_ref = sc.join(i3+1);
 }
 
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 std::string net::url::repr() const {
 	std::ostringstream os;
 	if(m_protocol == "file") {
@@ -158,6 +163,7 @@ std::string net::url::repr() const {
 		os << "?" << m_query;
 	return os.str();
 }
+#endif
 
 ///////////////
 // module private static initializer

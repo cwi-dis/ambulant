@@ -135,7 +135,7 @@ lib::timer::apply_speed_manip(lib::timer::time_type dt) const
 {
 	if(m_speed == 1.0) return dt;
 	else if(m_speed == 0.0) return 0;
-	return time_type(std::floor(m_speed*dt + 0.5));
+	return time_type(::floor(m_speed*dt + 0.5));
 }
 
 void 
