@@ -53,19 +53,26 @@
  
 #include "ambulant/gui/arts/arts.h"
 
-using namespace ambulant;
+namespace ambulant {
+
+using namespace lib;
+
+
+
 
 lib::active_renderer *
-gui::arts::arts_renderer_factory::new_renderer(lib::event_processor *const evp,
-	net::passive_datasource *src,
-	lib::passive_region *const dest,
-	const lib::node *node)
+gui::arts::arts_renderer_factory::new_renderer(
+		lib::active_playable_events *context,
+		lib::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+		net::passive_datasource *src,
+		lib::passive_region *const dest)
 {
 	active_renderer *rv;
-
 	xml_string tag = node->get_qname().second;
 	if ( tag == "audio") {
-		rv = (active_renderer *)new arts_active_audio_renderer(evp, src, node);
+		rv = (active_renderer *) new arts_active_audio_renderer(context, cookie, node, evp, src);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 	// logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
@@ -74,20 +81,15 @@ gui::arts::arts_renderer_factory::new_renderer(lib::event_processor *const evp,
 	return rv;
 }
 
-arts_active_audio_renderer::arts_active_audio_renderer(
+gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
 	const node *node,
 	event_processor *const evp,
 	net::passive_datasource *src)
-:	active_basic_renderer(context, cookie, node, evp),
-	m_url(src->get_url()),
-	m_sound(NULL)
+:	active_renderer(context, cookie, node, evp, src, NULL)
 {
-    m_evp = evp;
-    m_src = src;
-    m_node = node;
-    m_ads = m_src->activate();
+
 }
 
 int
@@ -120,41 +122,36 @@ gui::arts::arts_active_audio_renderer::arts_play(char *data, int size)
 }
 
 void
-lib::arts_active_audio_renderer::readdone()
+gui::arts::arts_active_audio_renderer::readdone()
 {
+    char *data;
+    int size;
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
-    size=m_ads->size();
-    data = new char[data];
-    m_ads->read(data,size);
-    arts_setup(44100,16,2,'arts_audio');
+    size = m_src->size();
+    data = new char[size];
+    m_src->read(data,size);
+    arts_setup(44100,16,2,"arts_audio");
     arts_play(data,size);
     stopped_callback();
 }
 
-void
-lib::arts_active_audio_renderer::playdone()
-{
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.playdone(0x%x)", (void *)this);
-    
-	stopped_callback();
-}
+
 
 void
-lib::arts_active_audio_renderer::start(double where)
+gui::arts::arts_active_audio_renderer::start(double where)
 {
 
     if (!m_node) abort();
-	m_playdone = playdone;
+	
 	std::ostringstream os;
 	os << *m_node;
     
-	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	if (m_ads) {
-		m_ads->start(m_event_processor, m_readdone);    
+	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+	if (m_src) {
+		m_src->start(m_event_processor, m_readdone);    
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		if (m_playdone) {
-			m_event_processor->add_event(m_playdone, 0, event_processor::low);
             stopped_callback();
         }
 	}
@@ -162,4 +159,4 @@ lib::arts_active_audio_renderer::start(double where)
 }
 
 
-
+} // end namespace ambulant
