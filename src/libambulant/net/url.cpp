@@ -301,7 +301,7 @@ bool net::url::is_local_file() const
 		return true;
 	if (!m_absolute && m_protocol == "") {
 		// We're not sure.
-		lib::logger::get_logger()->warn("url::is_local_file: assume True for relative url: \"%s\"", repr(*this).c_str());
+		AM_DBG lib::logger::get_logger()->warn("url::is_local_file: assume True for relative url: \"%s\"", repr(*this).c_str());
 		return true;
 	}
 	return false;
