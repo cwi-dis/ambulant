@@ -61,6 +61,7 @@
 
 #include <string>
 #include <map>
+#include <stack>
 
 // The interfaces implemented by dx_player
 #include "ambulant/common/player.h"
@@ -75,6 +76,7 @@
 // Global functions provided by the hosting application.
 extern HWND new_os_window();
 extern void destroy_os_window(HWND hwnd);
+extern HWND get_main_window();
 
 namespace ambulant {
 
@@ -158,6 +160,7 @@ class dx_player :
 	void show_file(const net::url& href);
 	void close(player *p);
 	void open(net::url newdoc, bool start, player *old=NULL);
+	void done(player *p);
 	
 	////////////////////
 	// Implementation specific artifacts
@@ -190,17 +193,26 @@ class dx_player :
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
-
+	
+	// The current document URL
 	net::url m_url;
+	
+	// The current SMIL2 player
 	smil2::smil_player *m_player;
 	
-	lib::timer *m_timer;
-	lib::event_processor *m_worker_processor;	
-	
+	// The current view	
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	
 	wininfo* get_wininfo(HWND hwnd);
 	
+	// The frames stack
+	struct frame {std::map<std::string, wininfo*> windows; smil2::smil_player* player;};
+	std::stack<frame*> m_frames;
+	
+	// The secondary timer and processor
+	lib::timer *m_timer;
+	lib::event_processor *m_worker_processor;	
+		
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;

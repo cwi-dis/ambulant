@@ -127,6 +127,15 @@ gui::dx::dx_player::dx_player(const net::url& u)
 gui::dx::dx_player::~dx_player() {
 	if(m_player) stop();
 	delete m_player;
+	while(!m_frames.empty()) {
+		frame *pf = m_frames.top();
+		m_frames.pop();
+		m_windows = pf->windows;
+		m_player = pf->player;
+		delete pf;
+		stop();
+		delete m_player;
+	}
 	if(m_timer) m_timer->pause();
 	if(m_worker_processor)
 		m_worker_processor->cancel_all_events();
@@ -178,7 +187,7 @@ void gui::dx::dx_player::resume() {
 }
 
 bool gui::dx::dx_player::is_playing() const {
-	return m_player && m_player->is_playing();
+	return (m_player && m_player->is_playing()) || !m_frames.empty();
 }
 
 bool gui::dx::dx_player::is_pausing() const {
@@ -186,7 +195,7 @@ bool gui::dx::dx_player::is_pausing() const {
 }
 
 bool gui::dx::dx_player::is_done() const {
-	return m_player && m_player->is_done();
+	return m_player && m_player->is_done() && m_frames.empty();
 }
 
 void gui::dx::dx_player::set_preferences(const std::string& url) {
@@ -485,22 +494,67 @@ gui::dx::dx_player::get_window(const lib::node* n) {
 
 void gui::dx::dx_player::show_file(const net::url& href) {
 	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
+	
+	// Or for smil
+	//std::string this_exe = lib::win32::get_module_filename();
+	//std::string cmd = this_exe + " " + newdoc.get_url();
+	//if(start) cmd += " /start";
+	//WinExec(cmd.c_str(), SW_SHOW);
+}
+
+
+void gui::dx::dx_player::done(player *p) {
+	m_timer->pause();
+	m_update_event = 0;
+	clear_transitions();
+	if(!m_frames.empty()) {
+		frame *pf = m_frames.top();
+		m_frames.pop();
+		m_windows = pf->windows;
+		m_player = pf->player;
+		delete pf;
+		resume();
+		std::map<std::string, wininfo*>::iterator it;
+		for(it=m_windows.begin();it!=m_windows.end();it++) {
+			dx_window *dxwin = (dx_window *)(*it).second->w;
+			dxwin->need_redraw();
+		}		
+	}
 }
 
 void gui::dx::dx_player::close(player *p) {
-	m_logger->warn("dx_player: not implemented: close document");
+	PostMessage(get_main_window(), WM_CLOSE, 0, 0);
 }
 
-void gui::dx::dx_player::open(net::url newdoc, bool start, player *old) {
-	// For the register application we could use here:
-	// ShellExecute(GetDesktopWindow(), text_str("open"), textptr(newdoc.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
+void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
+	if(old) {
+		// Replace the current document
+		PostMessage(get_main_window(), WM_REPLACE_DOC, 
+			startnewdoc?1:0, LPARAM(new std::string(newdoc.get_url()))); 
+		return;
+	}
 	
-	// But better not use the registry here.
-	// The user may have register the Real player but since he uses Ambulant,
-	// lets open the document with Ambulant also
-	// Here we create always a new app
-	std::string this_exe = lib::win32::get_module_filename();
-	std::string cmd = this_exe + " " + newdoc.get_url();
-	if(start) cmd += " /start";
-	WinExec(cmd.c_str(), SW_SHOW);
+	// Parse the provided URL. 
+	lib::document *doc = lib::document::create_from_url(newdoc);
+	if(!doc) {
+		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
+		return;
+	}
+	
+	// Push the old frame on the stack
+	if(m_player) {
+		pause();
+		frame *pf = new frame();
+		pf->windows = m_windows;
+		pf->player = m_player;
+		m_windows.clear();
+		m_player = 0;
+		m_frames.push(pf);
+	}
+	
+	// Create a player instance
+	AM_DBG m_logger->trace("Creating player instance for: %s", newdoc.get_url().c_str());
+	m_player = new smil2::smil_player(doc, this, this, this);
+	if(startnewdoc) start();
 }
+
