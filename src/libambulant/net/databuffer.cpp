@@ -89,7 +89,9 @@ databuffer::databuffer()
 bool
 databuffer::buffer_full()
 {
-   return m_buffer_full;
+	if (m_buffer_full) lib::logger::get_logger()->trace("databuffer::buffer_full(0x%x): true, max=%d size=%d", 
+		(void*)this, m_max_size, m_used);
+	return m_buffer_full;
 }
 
 
@@ -125,6 +127,8 @@ databuffer::set_max_size(int max_size)
         m_max_size = DEFAULT_MAX_BUF_SIZE;
     }
     m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	if (m_buffer_full) lib::logger::get_logger()->trace("databuffer::set_max_size(0x%x, %d): buffer now full (used=%d)",
+		(void*)this, max_size, m_used);
 	m_lock.leave();
 }
 
@@ -148,7 +152,6 @@ int databuffer::size() const
 
 void databuffer::dump(std::ostream& os, bool verbose) const
 {
-	m_lock.enter();
 	unsigned long int i;
 
 	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
@@ -162,7 +165,6 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 		}
 	} 
  	os << std::endl;
-	m_lock.leave();
 }
 
 char *
@@ -201,7 +203,7 @@ void databuffer::pushdata(int sz)
 	 if (!m_buffer) {
 		 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
 	 }
-	if(m_max_size > 0 && m_size > m_max_size) {
+	if(m_max_size > 0 && m_used > m_max_size) {
 		AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
 		m_buffer_full = true;
 	}
@@ -222,10 +224,14 @@ void
 databuffer::readdone(int sz)
 {
 	m_lock.enter();
-    if ((unsigned long int)sz <= m_used) {
-        m_rear += sz;
-        m_used = m_size - m_rear;
-    }
+    if ((unsigned long int)sz > m_used) {
+		lib::logger::get_logger()->error("databuffer::readdone(%d), but m_used=%d", sz, m_used);
+		sz = m_used;
+	}
+	m_rear += sz;
+	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	/*AM_DBG*/lib::logger::get_logger()->trace("databuffer::readdone(0x%x, %d): now buffull=%d, max=%d used=%d",
+		(void *)this, sz, (int)m_buffer_full, m_max_size, m_used);
 	m_lock.leave();
 }

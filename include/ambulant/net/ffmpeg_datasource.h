@@ -121,6 +121,7 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
   	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
 	  
   private:
+    bool _end_of_file();
 	const std::string m_url;
   	AVCodec  *m_codec;
     AVCodecContext *m_con;
@@ -162,10 +163,11 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
   	
 	  
   private:
+    bool _end_of_file();
+
     audio_datasource* m_src;
 
     bool m_context_set;
-
     ReSampleContext *m_resample_context;
   
     short int* m_inbuf;
