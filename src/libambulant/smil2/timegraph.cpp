@@ -83,6 +83,7 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 	m_dom2tn = new std::map<int, time_node*>();
 	m_root = build_time_tree(doc->get_root());
 	AM_DBG m_logger->trace("Time nodes created: %d", time_node::get_node_counter());
+	build_priorities();
 	build_time_graph();
 }
 
@@ -153,6 +154,8 @@ timegraph::build_time_tree(const lib::node *root) {
 		test_attrs ta(n);
 		if(!ta.selected()) {
 			// skip content
+			AM_DBG m_logger->trace("Filtering out node: %s[%s]", 
+				ta.get_tag().c_str(), ta.get_id().c_str());
 			it++;
 			while((*it).second != n) it++;
 			continue;
@@ -167,9 +170,9 @@ timegraph::build_time_tree(const lib::node *root) {
 			const char *pid = n->get_attribute("id");
 			if(pid) ident = pid;
 			else {
-					ident += "aid";
-					char b[32];sprintf(b,"%u",localIdCounter++);
-					ident += b;
+				ident += "aid";
+				char b[32];sprintf(b,"%u",localIdCounter++);
+				ident += b;
 			}
 			m_id2tn[ident] = tn;
 			
@@ -182,10 +185,6 @@ timegraph::build_time_tree(const lib::node *root) {
 			}
 			stack.push(tn);
 		} else {
-			if(tag == "excl") {
-				excl *e = qualify<excl*>(stack.top());
-				e->built_priorities();
-			}
 			stack.pop();
 		}
 	}
@@ -219,6 +218,19 @@ void timegraph::build_time_graph() {
 		add_end_sync_rules(tn);
 		if(tn->get_time_attrs()->get_tag()=="area")
 			tn->set_want_activate_event(true);
+	}
+}
+
+void timegraph::build_priorities() {
+	time_node::iterator it;
+	time_node::iterator end = m_root->end();
+	for(it = m_root->begin(); it != end; it++) {
+		if(!(*it).first) continue;
+		time_node *tn = (*it).second;
+		if(tn->is_excl()) {
+			excl *e = qualify<excl*>(tn);
+			e->built_priorities();
+		}
 	}
 }
 
@@ -436,7 +448,10 @@ timegraph::select_switch_child(const node* sn) const {
 	sn->get_children(cl);
 	for(it=cl.begin();it!=cl.end();it++) {
 		test_attrs ta(*it);
-		if(ta.selected()) return (*it);
+		if(!ta.selected()) {
+			AM_DBG m_logger->trace("Filtering out node: %s[%s]", 
+				ta.get_tag().c_str(), ta.get_id().c_str());
+		} else return (*it);
 	}
 	return 0;
 }

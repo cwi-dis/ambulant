@@ -831,7 +831,8 @@ void time_node::activate(qtime_type timestamp) {
 
 	// verify the assumptions made in the following code
 	assert(timestamp.first == sync_node());
-	assert(m_interval.contains(timestamp.second));
+	if(!m_interval.contains(timestamp.second))
+		set_state(ts_postactive, timestamp, this);
 	assert(timestamp.second >= 0);
 		
 	// We need to convert parent's simple time to this node's simple time.
@@ -935,11 +936,7 @@ void time_node::timer_event_callback(const timer_event *e) {
 	// Check for the EOI event
 	if(is_active() && timestamp.second >= m_interval.end) {
 		qtime_type qt(sync_node(), m_interval.end);
-		set_state(ts_postactive, qt, this);
-		if(sync_node()->is_excl()) {
-			excl *p = static_cast<excl*>(sync_node());
-			p->on_child_normal_end(this, timestamp);
-		}
+		set_state_ex(ts_postactive, qt);
 		return;
 	} 
 	
@@ -1099,51 +1096,52 @@ void time_node::repeat(qtime_type timestamp) {
 // Pauses this node.
 // Excl element handling.
 void time_node::pause(qtime_type timestamp, pause_display d) {
-	cancel_schedule();
-	paused(true);
-	if(down()) {
-		std::list<time_node*> children;
-		get_children(children);
-		std::list<time_node*>::iterator it;
-		time_type self_simple_time = timestamp.as_time_down_to(this);
-		qtime_type qt(this, self_simple_time);
-		for(it = children.begin(); it != children.end(); it++)
-			(*it)->pause(qt, d);
-	} 
-	
-	if(!is_time_container()) {
-		m_context->pause_playable(m_node, d);
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	time_type self_simple_time = timestamp.as_time_down_to(this);
+	qtime_type qt(this, self_simple_time);
+	for(it = children.begin(); it != children.end(); it++)
+		(*it)->pause(qt, d);
+	if(m_interval.is_valid()) {
+		cancel_schedule();
+		if(!is_time_container()) {
+			m_context->pause_playable(m_node, d);
+		}
 	}
+	set_paused(true);
 }
 
 // Resumes this node.
 // Excl element handling.
 void time_node::resume(qtime_type timestamp) {
-	paused(false);
-	if(down()) {
-		std::list<time_node*> children;
-		get_children(children);
-		std::list<time_node*>::iterator it;
-		time_type self_simple_time = timestamp.as_time_down_to(this);
-		qtime_type qt(this, self_simple_time);
-		for(it = children.begin(); it != children.end(); it++)
-			(*it)->resume(qt);
-	} 
-	if(!is_time_container()) {
-		m_context->resume_playable(m_node);
-	}
-	schedule_next_timer_event(timestamp);
+	set_paused(false);
+	sync_update(timestamp);
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	time_type self_simple_time = timestamp.as_time_down_to(this);
+	qtime_type qt(this, self_simple_time);
+	for(it = children.begin(); it != children.end(); it++)
+		(*it)->resume(qt);
 }
 
 // Defers the interval of this node.
 // Excl element handling.
 void time_node::defer_interval(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].defer_interval(): %s", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
-	assert(m_interval.is_valid());
-	
+
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	time_type self_simple_time = timestamp.as_time_down_to(this);
+	qtime_type qt(this, self_simple_time);
+	for(it = children.begin(); it != children.end(); it++)
+		(*it)->defer_interval(qt);
+		
 	// Cancel notifications
 	interval_type i = m_interval;
+	if(!i.is_valid()) return;
+	
 	m_interval = interval_type::unresolved;	
 	on_cancel_instance(timestamp, tn_begin, i.begin);
 	on_cancel_instance(timestamp, tn_end, i.end);
@@ -1155,14 +1153,17 @@ void time_node::defer_interval(qtime_type timestamp) {
 	m_interval = i;
 	
 	// Mark this node as deferred.
-	deferred(true);
+	set_deferred(true);
+	
 }
 
 // Excl element handling.
 // When an element is deferred, the begin time is deferred as well
 void time_node::schedule_deferred_interval(qtime_type timestamp) {
+	if(!deferred()) return;
+	
 	// Remove deferred marker
-	deferred(false);
+	set_deferred(false);
 	
 	// Translate the defered interval to timestamp
 	interval_type i = m_interval;
@@ -1170,6 +1171,14 @@ void time_node::schedule_deferred_interval(qtime_type timestamp) {
 	
 	// Schedule interval
 	schedule_interval(timestamp, i);
+	
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	time_type self_simple_time = timestamp.as_time_down_to(this);
+	qtime_type qt(this, self_simple_time);
+	for(it = children.begin(); it != children.end(); it++)
+		(*it)->schedule_deferred_interval(qt);
 }
 
 // This function is called always when a node exits the active state,
@@ -1198,7 +1207,6 @@ void time_node::fill(qtime_type timestamp) {
 			m_attrs.get_id().c_str(),  
 			timestamp.as_time_value_down_to(this), timestamp.second(), 
 			timestamp.as_doc_time_value());
-		/*
 		if(down()) {
 			std::list<time_node*> cl;
 			get_children(cl);
@@ -1207,7 +1215,7 @@ void time_node::fill(qtime_type timestamp) {
 			qtime_type qt(this, self_simple_time);
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
-		} */
+		} 
 		if(!is_time_container()) {
 			m_context->pause_playable(m_node);
 		}
@@ -1228,7 +1236,6 @@ void time_node::remove(qtime_type timestamp) {
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
-	/*
 	if(down()) {
 		// Is this correct for a container?	
 		std::list<time_node*> children;
@@ -1239,7 +1246,6 @@ void time_node::remove(qtime_type timestamp) {
 		for(it = children.begin(); it != children.end(); it++)
 			(*it)->remove(qt);
 	} 
-	*/
 	if(!is_time_container()) {
 		m_context->stop_playable(m_node);
 	}
@@ -1865,6 +1871,8 @@ void excl::built_priorities() {
 	
 	// keep number of priorityClass
 	m_num_classes = int(prio_classes.size());
+	AM_DBG tnlogger->trace("%s[%s].built_priorities() %d classes", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), prio_classes.size());
 	
 	// the number to be assigned to the higher priority 
 	int prio = m_num_classes-1;
@@ -1874,10 +1882,10 @@ void excl::built_priorities() {
 	
 	// Scan excl element children (some or all should be priorityClass elements)
 	std::list<const node*>::const_iterator it2;
-	for(it2=prio_classes.begin();it2!=prio_classes.end();it2++) {
+	for(it2=prio_classes.begin();it2!=prio_classes.end();it2++, prio--) {
 		if((*it2)->get_local_name() != "priorityClass") {
 			// not a priorityClass
-			m_priority_attrs[prio--] = new priority_attrs();
+			m_priority_attrs[prio] = new priority_attrs();
 			continue;
 		} 
 		// At this point the iterator (it2) is positioned on a priorityClass
@@ -1890,11 +1898,19 @@ void excl::built_priorities() {
 		for(it3=time_children.begin();it3!=time_children.end();it3++) {
 			// locate time node and set its prio
 			time_node *tn = n2tn[*it3];
-			if(tn) tn->priority(prio);
+			if(tn) { 
+				tn->set_priority(prio);
+				// this prio applies and to all its children
+				
+				const time_attrs* pa = tn->get_time_attrs();
+				AM_DBG tnlogger->trace("%s[%s] priority: %d", 
+					pa->get_tag().c_str(), 
+					pa->get_id().c_str(), prio);
+			}
 			//else not a time node
 		}
 		// create and store prio attrs struct 
-		m_priority_attrs[prio--] = priority_attrs::create_instance(priorityClassNode);
+		m_priority_attrs[prio] = priority_attrs::create_instance(priorityClassNode);
 	}
 }
 
@@ -1904,7 +1920,7 @@ excl::get_active_child() {
 	get_children(cl);
 	std::list<time_node*>::iterator it;
 	for(it=cl.begin();it!=cl.end();it++)
-		if((*it)->is_active()) break;
+		if((*it)->is_active() && !(*it)->paused() && !(*it)->deferred()) break;
 	return it!=cl.end()?(*it):0;
 }
 
@@ -1917,21 +1933,28 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	}
 	
 	// Retrieve priority attrs of active and interrupting nodes
-	priority_attrs *pa = m_priority_attrs[active_node->priority()];
 	priority_attrs *pi = m_priority_attrs[interrupting_node->priority()];
-	
-	// Set interrupt attrs based on whether the interrupting node is peer, higher or lower
-	interrupt_type what;
-	if(interrupting_node->priority() == active_node->priority())
-		what = pa->peers;
-	else if(interrupting_node->priority() > active_node->priority())
-		what = pa->higher;
-	else
-		what = pa->lower;
+	priority_attrs *pa = m_priority_attrs[active_node->priority()];
 	
 	// get time attrs for debug printout
 	const time_attrs* ta = active_node->get_time_attrs();
 	const time_attrs* tai = interrupting_node->get_time_attrs();
+	
+	// Set interrupt attrs based on whether the interrupting node is peer, higher or lower
+	interrupt_type what;
+	if(interrupting_node->priority() == active_node->priority()) {
+		AM_DBG tnlogger->trace("%s[%s] int by peer %s[%s]", ta->get_tag().c_str(), 
+			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		what = pa->peers;
+	} else if(interrupting_node->priority() > active_node->priority()) {
+		AM_DBG tnlogger->trace("%s[%s] int by higher %s[%s]", ta->get_tag().c_str(), 
+			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		what = pa->higher;
+	} else {
+		AM_DBG tnlogger->trace("%s[%s] int by lower %s[%s]", ta->get_tag().c_str(), 
+			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		what = pa->lower;
+	}
 	
 	// handle interrupt based on excl semantics
 	if(what == int_stop) {
@@ -1945,7 +1968,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 				
 		// start interrupting_node
 		interrupting_node->set_state(ts_active, timestamp, c);
-		
+				
 	} else if(what == int_pause) {
 		// pause active_node and and insert it on the queue
 		// do not cancel interval

@@ -373,7 +373,8 @@ void smil_player::show_link(const lib::node *n, const std::string& href) {
 
 std::string smil_player::get_pointed_node_str() const {
 	if(m_pointed_node == 0) return "";
-	const lib::node *n = m_pointed_node->dom_node();
+	const time_node *tn = m_pointed_node;
+	const lib::node *n = tn->dom_node();
 	const char *pid = n->get_attribute("id");
 	const char *reg = 0;
 	if(n->get_local_name() == "area" && n->up()) {

@@ -324,13 +324,13 @@ class time_node : public time_traits {
 	// Returns the priority class of this node
 	// Applicable for excl children.
 	int priority() const { return m_priority;}
-	void priority(int prio) { m_priority = prio;}
+	void set_priority(int prio) { m_priority = prio;}
 	
 	// Excl set/get flags
 	bool paused() { return m_paused;}
-	void paused(bool b) { m_paused = b;}
+	void set_paused(bool b) { m_paused = b;}
 	bool deferred() { return m_deferred;}
-	void deferred(bool b) { m_deferred = b;}
+	void set_deferred(bool b) { m_deferred = b;}
 	
 	////////////////////////
 	// Time calculations

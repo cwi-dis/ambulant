@@ -113,6 +113,7 @@ class timegraph : public time_traits {
   private:
     typedef node_navigator<const lib::node> const_nnhelper;
 	time_node* build_time_tree(const lib::node *root);
+	void build_priorities();
 	void build_time_graph();
 	time_node* create_time_node(const lib::node *n) const;
 	time_node *get_node_with_id(const std::string& ident) const;
