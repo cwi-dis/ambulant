@@ -211,6 +211,9 @@ region_node::fix_from_dom_node()
 		if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
 		else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;
 		else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
+#ifdef USE_SMIL21
+		else if (strcmp(fit_attr, "meetBest") == 0) fit = common::fit_meetbest;
+#endif // USE_SMIL21
 		else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
 		else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
 		else {

@@ -414,6 +414,14 @@ passive_region::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_s
 		// Scale to make smallest edge fit (showing some background color)
 		scale = std::min(scale_width, scale_height);
 		break;
+#ifdef USE_SMIL21
+	  case fit_meetbest:
+		// Scale to make smallest edge fit (showing some background color),
+		// but never scale up
+		scale = std::min(scale_width, scale_height);
+		if (scale > 1.0) scale = 1.0;
+		break;
+#endif // USE_SMIL21
 	  case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale = std::max(scale_width, scale_height);
@@ -509,6 +517,14 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 		// Scale to make smallest edge fit (showing some background color)
 		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
 		break;
+#ifdef USE_SMIL21
+	  case fit_meetbest:
+		// Scale to make smallest edge fit (showing some background color)
+		scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
+		if (scale_vertical > 1.0) scale_vertical = 1.0;
+		scale_horizontal = scale_vertical;
+		break;
+#endif
 	  case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);

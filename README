@@ -90,6 +90,7 @@ This release supports full SMIL 2.0, with the following broad
 exceptions:
 - tag names must match media type, and no support for mimetypes.
 - No %-escapes in URLs, and limited support for data: URLs.
+- accessKey is not implemented.
 
 As SMIL 2.0 is a big language there are undoubtedly areas where
 we have overseen something. Please let us know if you encounter

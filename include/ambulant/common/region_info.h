@@ -66,7 +66,11 @@ namespace common {
 using namespace ambulant::lib;
 
 /// Type that represents the allowable SMIL 2.0 fit values.
-enum fit_t {fit_default, fit_hidden, fit_fill, fit_meet, fit_scroll, fit_slice };
+enum fit_t {fit_default, fit_hidden, fit_fill, fit_meet,
+#ifdef USE_SMIL21
+			fit_meetbest,
+#endif
+			fit_scroll, fit_slice };
 
 /// Type that represents a SMIL 2.0 z-index value.
 typedef int zindex_t;
