@@ -19,7 +19,11 @@ qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
 else
 qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
 endif
-
+if WITH_QSOUND
+extra_qsound_DEFINES=-DWITH_QSOUND
+else
+extra_qsound_DEFINES=
+endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
@@ -29,6 +33,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 AM_LDFLAGS=$(extra_arts_ldflags)
  
 AM_CPPFLAGS = $(extra_arts_DEFINES) \
+	      $(extra_qsound_DEFINES) \
 	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\

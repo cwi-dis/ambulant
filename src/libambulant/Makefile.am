@@ -37,11 +37,24 @@ else
 artsincludes=
 toolkit_arts_libraries =
 endif
+if WITH_QSOUND
+toolkit_qsound_libraries = libambulant_qsound.la
+libambulant_qsound_la_LDFLAGS = 
+qsoundincludes =
+libambulant_qsound_la_SOURCES =             \
+        gui/qsound/qsound_factory.cpp \
+        gui/qsound/qsound_audio.cpp
+else
+qsoundincludes=
+toolkit_qsound_libraries =
+endif
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	-I$(expat_dir)/include $(qtincludes) $(artsincludes)
+	  $(qsoundincludes)
 
-lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries) $(toolkit_arts_libraries)
+lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_qsound_libraries)
+
 
 libambulant_la_SOURCES = \
 	get_version.cpp \

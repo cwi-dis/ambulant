@@ -1,1 +1,1 @@
-SUBDIRS= arts none cocoa qt
+SUBDIRS= arts none cocoa qt qsound
