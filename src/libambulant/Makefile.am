@@ -5,13 +5,18 @@ INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/incl
 libambulant_a_SOURCES = \
 	get_version.cpp \
 	\
-	unix/unix_logger.cpp \
-	\
-	lib/timelines.cpp \
-	lib/region.cpp \
+	lib/colors.cpp \
+	lib/delta_timer.cpp \
+	lib/expat_parser.cpp \
+	lib/logger.cpp \
+	lib/node.cpp \
 	lib/player.cpp \
+	lib/region.cpp \
 	lib/skeleton.cpp \
+	lib/smil_handler.cpp \
 	lib/timeline_builder.cpp \
+	lib/timelines.cpp \
+	lib/tree_builder.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
 	lib/unix/unix_mtsync.cpp \
