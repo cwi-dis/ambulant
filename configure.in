@@ -79,21 +79,18 @@ AC_ARG_WITH(cocoa,
 AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
 AC_MSG_RESULT($cocoa)
 
-if test x$cocoa = xtrue; then
-	# Calling _AM_DEPENDENCIES here is a workaround for a bug
-	# in automake: ObjC support is incomplete. And manually
-	# doing AC_SUBST(OBJCDEPMODE) also fails.
-	# Some details are in
-	# http://mail.gnu.org/archive/html/automake/2003-04/msg00105.html
-	#
-	_AM_DEPENDENCIES([OBJC])
-	OBJCFLAGS=-ObjC++
-	AC_SUBST(OBJCFLAGS)
+# Calling _AM_DEPENDENCIES here is a workaround for a bug
+# in automake: ObjC support is incomplete. And manually
+# doing AC_SUBST(OBJCDEPMODE) also fails.
+# Some details are in
+# http://mail.gnu.org/archive/html/automake/2003-04/msg00105.html
+#
+_AM_DEPENDENCIES([OBJC])
+OBJCFLAGS=-ObjC++
+AC_SUBST(OBJCFLAGS)
 
-	OBJC=$CC
-	AC_SUBST(OBJC)
-	
-fi
+OBJC=$CC
+AC_SUBST(OBJC)
 
 
 AC_MSG_CHECKING(for --with-qt)
