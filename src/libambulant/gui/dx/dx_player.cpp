@@ -247,8 +247,9 @@ void gui::dx::dx_smil_player_impl::resume() {
 }
 
 void gui::dx::dx_smil_player_impl::on_click(int x, int y) {
+	POINT pt = {0, 0}; // margins
 	if(m_smil_player)
-		m_smil_player->on_click(x, y);
+		m_smil_player->on_click(x-pt.x, y-pt.y);
 }
 	
 void gui::dx::dx_smil_player_impl::on_char(int ch) {

@@ -124,7 +124,9 @@ class viewport {
 		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
 	lib::screen_rect<int> get_clip_rc() const { 
 		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
-
+	int get_width() const { return m_width;}
+	int get_height() const { return m_height;}
+	
   private:	
  	void add_region(region *r);
  

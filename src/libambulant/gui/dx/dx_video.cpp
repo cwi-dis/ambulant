@@ -97,10 +97,10 @@ void gui::dx::dx_video_renderer::start(double t) {
 	
 	// Create a dx-region
 	viewport *v = get_viewport();
-	const lib::screen_rect<int>& rc = m_dest->get_rect();
-	lib::screen_rect<int> rcv(rc);
-	rcv.translate(m_dest->get_global_topleft());
-	m_region = v->create_region(rcv, rc);
+	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::point pt = m_dest->get_global_topleft();
+	rc.translate(pt);
+	m_region = v->create_region(rc, v->get_rc());
 	
 	// first time
 	if(!m_src->exists()) {

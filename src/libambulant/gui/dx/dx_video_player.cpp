@@ -233,23 +233,26 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	return true;
 }
 
+#define RELEASE(x, s) if(x) {logger::get_logger()->trace(s, x->Release());x=NULL;}
+
 void gui::dx::video_player::release() {
 	if(m_mmstream) {
-		if(m_vidstream)  {
-			m_vidstream->Release();
-			m_vidstream = 0;
-		}
-		if(m_ddstream)  {
-			m_ddstream->Release();
-			m_ddstream = 0;
+		/*
+		if(m_ddsurf) {
+			m_ddsurf->Release();
+			m_ddsurf = 0;
 		}
 		if(m_ddsample) {
 			m_ddsample->Release();
 			m_ddsample = 0;
+		}*/
+		if(m_ddstream)  {
+			m_ddstream->Release();
+			m_ddstream = 0;
 		}
-		if(m_ddsurf) {
-			m_ddsurf->Release();
-			m_ddsurf = 0;
+		if(m_vidstream)  {
+			m_vidstream->Release();
+			m_vidstream = 0;
 		}
 		m_mmstream->Release();
 		m_mmstream = 0;

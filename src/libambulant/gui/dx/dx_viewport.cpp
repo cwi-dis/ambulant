@@ -326,6 +326,19 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	}
 	get_pixel_format();
 	
+	// Clip output to the provided window
+	if(m_hwnd) {
+		IDirectDrawClipper *clipper = NULL; 
+		hr = m_direct_draw->CreateClipper(0, &clipper, NULL);
+		if (FAILED(hr))
+			seterror("DirectDraw::CreateClipper()", hr);
+		clipper->SetHWnd(0, m_hwnd);
+		hr = m_primary_surface->SetClipper(clipper);
+		if (FAILED(hr))
+			seterror("DirectDrawSurface::SetClipper()", hr);
+		clipper->Release();
+	}
+	
 	// create drawing surface
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
@@ -352,7 +365,7 @@ gui::dx::viewport::~viewport() {
 }
 
 RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
-	POINT pt = {8, 8};
+	POINT pt = {0, 0}; // margins
 	::ClientToScreen(m_hwnd, &pt);
 	r.left += pt.x;
 	r.right += pt.x;
