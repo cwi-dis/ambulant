@@ -167,6 +167,8 @@ pain than it is on unix. For this reason, read these instructions *very carefull
 please. We hope these instructions are complete, otherwise
 please report back.
 
+It is possible to build the various packages AmbulantPlayer depends on from
+source (but read on for an easier solution).
 Install the following distributions into directories in third_party_packages:
 - expat: XXXX
 - jpeg: XXXX

@@ -1,4 +1,8 @@
-This directory contains third-party packages used to build Ambulant.
+This directory contains third-party packages used to build Ambulant. Note that
+for Windows and Windows CE we make available a zipfile with all required
+packages, patched and ready to build, see the toplevel README file (section
+"building for Windows") for details.
+
 Here is a list of the packages, where they come from, plus the versions:
 
 expat-win32:
