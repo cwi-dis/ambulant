@@ -169,6 +169,7 @@ qt_window_factory::new_mouse_region() {
 	lib::logger::get_logger()->error(
 		"qt_window_factory::new_mouse_region"
 		" needs to be implemented");
+	return NULL;
 }
 
 common::renderer *
