@@ -314,11 +314,17 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 		// we use the event processor to unregister ourselves later.
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::stop);
 		m_event_processor->add_event(e, 0, ambulant::lib::event_processor::high);
-		m_audio_src->stop();
-		m_audio_src->release();
-		m_audio_src = NULL;
+		if (m_audio_src) {
+			m_audio_src->stop();
+			m_audio_src->release();
+			m_audio_src = NULL;
+		}
 		m_lock.leave();
-		m_context->stopped(m_cookie, 0);
+		if (m_context) {
+			m_context->stopped(m_cookie, 0);
+		} else {
+			AM_DBG lib::logger::get_logger()->warn("sdl_active_audio_renderer(0x%x): m_context is  NULL", (void*)this);
+		}
 		return;
 	}
 	m_lock.leave();

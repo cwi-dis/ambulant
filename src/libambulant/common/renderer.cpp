@@ -255,6 +255,14 @@ active_video_renderer::active_video_renderer(
 
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 }
+void
+active_video_renderer::stop()
+{ 
+	m_is_playing = false; 
+	if (m_audio_renderer) 
+		m_audio_renderer->stop();
+}
+
 
 void
 active_video_renderer::start (double where = 1)
@@ -305,6 +313,8 @@ active_video_renderer::pause()
 {
 	m_lock.enter();
 	if (!m_is_paused) {
+		if (m_audio_renderer) 
+			m_audio_renderer->pause();
 		m_is_paused = true;
 		m_paused_epoch = m_event_processor->get_timer()->elapsed();
 	}
@@ -316,6 +326,8 @@ active_video_renderer::resume()
 {
 	m_lock.enter();
 	if (m_is_paused) {
+		if (m_audio_renderer) 
+			m_audio_renderer->resume();
 		m_is_paused = false;
 		unsigned long int pause_length = m_event_processor->get_timer()->elapsed() - m_paused_epoch;
 		m_epoch += pause_length;

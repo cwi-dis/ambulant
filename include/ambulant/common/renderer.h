@@ -202,6 +202,17 @@ class global_playable_factory : public playable_factory {
     playable_factory *m_default_factory;
 };
 
+class empty_playable_notification : public playable_notification {
+	public:
+	// Playables nodifications 
+	  void started(cookie_type n, double t = 0)  {};
+	  void stopped(cookie_type n, double t = 0)  {};
+	  void stalled(cookie_type n, double t = 0)  {} ;
+	  void unstalled(cookie_type n, double t = 0) {};
+	  void clicked(cookie_type n, double t = 0)  {};
+	  void pointed(cookie_type n, double t = 0)  {}; // mouse over
+	  void transitioned(cookie_type n, double t = 0) {};
+};
 
 class active_video_renderer : public common::renderer_playable {
   public:
@@ -223,7 +234,7 @@ class active_video_renderer : public common::renderer_playable {
     virtual void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	
 	void start(double where);
-    void stop() { m_is_playing = false; };
+    void stop();
     void pause();
     void resume();
     void data_avail();
@@ -235,6 +246,7 @@ class active_video_renderer : public common::renderer_playable {
   	net::video_datasource* m_src; 
   	net::audio_datasource *m_audio_ds;
   	common::playable *m_audio_renderer;
+  	empty_playable_notification m_playable_notification;
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
 	  double now();
@@ -244,6 +256,8 @@ class active_video_renderer : public common::renderer_playable {
 	  unsigned long int m_paused_epoch;
 	  lib::critical_section m_lock;
 };
+
+
 
 // background_renderer is a convenience class: it implements some of the
 // methods for a renderer that are applicable to background renderers
