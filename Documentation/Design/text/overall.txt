@@ -199,6 +199,24 @@ but if we have the mechanism to do a restart (and do it without too much impact
 on the user experience) it can be used as a fallback mechanism, and speed up
 initial implementation.
 
+Coupling between high and low level
+-----------------------------------
+
+This section is here because I don't know where else to put it. Something that
+struck me is that there are a couple of objects that are really one-one mappings
+of SMIL nodes at different levels. Specifically, the renderer object is the SMIL
+node at the timeline level. Also, it seems that if we decide to always create
+a subregion when playing a node there might also be a 1-1 mapping here.
+
+Could we somehow take these three objects and make them "live together" for
+efficiency reasons? What I would like is three distinct interfaces but all living
+in the same object. At least, optionally: if we at some point decide to do
+the decoupled player the objects will become distinct.
+
+But maybe we are good enough off initially by specifying in the UML that this
+1-1 relationship exists, and put off any optimization until later.
+
+
 Missing
 -------
 
