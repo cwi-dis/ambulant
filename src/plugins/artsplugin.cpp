@@ -54,7 +54,7 @@
 #include <artsc.h>
 
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -230,6 +230,14 @@ arts_plugin::restart_audio_input()
 	if (!m_audio_src || m_audio_src->end_of_file()) {
 		// No more data.
 		AM_DBG lib::logger::get_logger()->debug("arts_plugin::restart_audio_input(0x%x): no more data",(void*) this);
+		m_is_playing=false;
+		if(m_audio_src) {
+			m_audio_src->stop();
+			m_audio_src->release();
+			m_audio_src=NULL;
+		}
+		if (m_context) 
+			m_context->stopped(m_cookie, 0);
 		return false;
 	}
 	if (m_audio_src->size() == 0) {
@@ -251,9 +259,12 @@ arts_plugin::arts_play(char *data, int size)
 			return 0;
             }
 		if (err < size) {
-		    AM_DBG lib::logger::get_logger()->debug("arts_plugin::arts_play(0x%x): aRts buffer full", (void *)this);
+			//int delay = arts_stream_get (m_stream, ARTS_P_TOTAL_LATENCY);
+			int delay = 15;
+			AM_DBG lib::logger::get_logger()->debug("arts_plugin::arts_play(0x%x): aRts buffer full, delaying %dms", (void *)this,delay);
 			lib::event *e = new readdone_callback(this, &arts_plugin::data_avail);
-			m_event_processor->add_event(e,15,ambulant::lib::event_processor::high);
+			m_event_processor->add_event(e,delay,ambulant::lib::event_processor::high);
+			
 
 		}
         } else {
