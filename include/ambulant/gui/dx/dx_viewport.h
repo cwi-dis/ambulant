@@ -112,7 +112,7 @@ class viewport {
 	// with the current background color
 	void clear();	
 	
-	IDirectDrawSurface* create_surface(DWORD w, DWORD h);
+	IDirectDrawSurface* create_surface(DWORD w, DWORD h, DWORD ddcolor = CLR_INVALID);
 	
 	// Creates a new region.
 	// rc: The coordinates of the region relative to this viewport
@@ -205,7 +205,11 @@ class region {
 	
 	const lib::abstract_rendering_surface* get_rsurf() const { return m_rsurf;}
 	const lib::abstract_smil_region_info* get_rinfo() const { return m_rinfo;}
-
+	
+	bool is_transparent() const { 
+		return m_rinfo?m_rinfo->get_transparent():false;
+	}
+	
   private:
 	// The viewport of this region.
 	viewport *m_viewport;	

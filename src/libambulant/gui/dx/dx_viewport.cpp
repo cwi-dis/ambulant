@@ -441,12 +441,6 @@ void gui::dx::viewport::get_pixel_format() {
 	lo_blue_bit  = low_bit_pos( format.dwBBitMask );
 	uint16 hi_blue_bit  = high_bit_pos(format.dwBBitMask);
 	blue_bits=(uint16)(hi_blue_bit-lo_blue_bit+1);
-	/*
-	if(bits_size == 8) {
-		HDC hdc = GetDC(NULL);
-		GetSystemPaletteEntries(hdc, 0, 256, palette_entries);
-		ReleaseDC(NULL, hdc);
-	}*/
 }
 
 uint32 gui::dx::viewport::convert(lib::color_t color) {
@@ -469,7 +463,7 @@ uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 	return ddcolor;
 }
 
-IDirectDrawSurface* gui::dx::viewport::create_surface(DWORD w, DWORD h) {
+IDirectDrawSurface* gui::dx::viewport::create_surface(DWORD w, DWORD h, DWORD ddcolor) {
 	IDirectDrawSurface* surface = 0;
 	DDSURFACEDESC sd;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
@@ -488,13 +482,12 @@ IDirectDrawSurface* gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = 0; 	
+	bltfx.dwFillColor = (ddcolor == CLR_INVALID)?convert(m_bgd):ddcolor; 	
 	RECT dst_rc = {0, 0, w, h};
 	hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror("create_surface::clear/DirectDrawSurface::Blt()", hr);
 	}
-	
 	return surface;
 }
 
@@ -541,7 +534,7 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 	if(!m_surface || !r || !r->get_surface())
 		return;
 	r->update();
-	// XXX: This following operations are not correct for not MMS regions
+
 	// We should compute the visible part of the area
 	// This requires traversing the hierachy of clipping rects.
 	const lib::screen_rect<int>& rc = r->get_rc();
@@ -564,6 +557,7 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 		dst_rc.right - src_rc.left, dst_rc.bottom - src_rc.top};
 	
 	DWORD flags = DDBLT_WAIT;
+	//if(r->is_transparent()) flags |= DDBLT_KEYSRC;
 	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc_clip, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
@@ -573,12 +567,14 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 gui::dx::region::region(gui::dx::viewport *v, 
 	const lib::screen_rect<int>& rc, const lib::screen_rect<int>& crc, 
 	IDirectDrawSurface* surface) 
-	:	m_viewport(v),
-		m_rc(rc),
-		m_clip_rc(crc),
-		m_surface(surface),
-		m_bgd(0), m_imgsurf(0), m_video_p(0) {
-
+:	m_viewport(v), 
+	m_rsurf(0), m_rinfo(0),
+	m_rc(rc),
+	m_clip_rc(crc),
+	m_surface(surface),
+	m_bgd(0), 
+	m_imgsurf(0), 
+	m_video_p(0) {
 	}
 	
 gui::dx::region::~region() {
@@ -588,15 +584,28 @@ gui::dx::region::~region() {
 
 void gui::dx::region::clear() {
 	if(!m_surface) return;
+	DWORD ddbgd = m_viewport->convert(m_bgd);
+	
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = m_viewport->convert(m_bgd); 
+	bltfx.dwFillColor = ddbgd; 
 	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror("region::clear/DirectDrawSurface::Blt()", hr);
+		return;
 	}
+	if(is_transparent()) {
+		DWORD dwFlags = DDCKEY_SRCBLT;
+		DDCOLORKEY ck;
+		ck.dwColorSpaceLowValue = ddbgd;
+		ck.dwColorSpaceHighValue = ddbgd;
+		hr = m_surface->SetColorKey(dwFlags, &ck);
+		if (FAILED(hr)) {
+			seterror("SetColorKey()", hr);
+		}
+	}	
 }
 
 void gui::dx::region::set_text(const char *p, int size) {
@@ -646,8 +655,23 @@ void gui::dx::region::set_bmp(HBITMAP hbmp, int w, int h,
 	m_imgsurf->ReleaseDC(hdc);
 	
 	//////////////
-	// draw img surface on this region
-	// this region has been cleared
+	// If the image is transparent set the color
+	if(transp) {
+		DWORD ddTranspColor = m_viewport->convert(tarnsp_color);
+		DWORD dwFlags = DDCKEY_SRCBLT;
+		DDCOLORKEY ck;
+		ck.dwColorSpaceLowValue = ddTranspColor;
+		ck.dwColorSpaceHighValue = ddTranspColor;
+		hr = m_imgsurf->SetColorKey(dwFlags, &ck);
+		if (FAILED(hr)) {
+			seterror("SetColorKey()", hr);
+		}
+	}
+	
+	//////////////
+	// Draw img surface on this region
+	// This region has been cleared
+	// Take into account image transparency for the Blt() operation
 	
 	lib::size src_size(w, h);
 	lib::rect src;
@@ -656,23 +680,10 @@ void gui::dx::region::set_bmp(HBITMAP hbmp, int w, int h,
 	RECT srcRECT = {src.x, src.y, src.x + src.w, src.y + src.h};
 	RECT dstRECT = {dst.left(), dst.top(), dst.right(), dst.bottom()};
 	DWORD flags = DDBLT_WAIT;
+	if(transp) flags |= DDBLT_KEYSRC;
 	hr = m_surface->Blt(&dstRECT, m_imgsurf, &srcRECT, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
-	}
-	
-	//////////////
-	// If the image is transparent set the transparent color
-	if(transp) {
-		DWORD dwTranspColor = m_viewport->convert(tarnsp_color);
-		DWORD dwFlags = DDCKEY_SRCBLT;
-		DDCOLORKEY ck;
-		ck.dwColorSpaceLowValue = dwTranspColor;
-		ck.dwColorSpaceHighValue = dwTranspColor;
-		h = m_surface->SetColorKey(dwFlags, &ck);
-		if (FAILED(hr)) {
-			seterror("SetColorKey()", hr);
-		}
 	}
 }
 

@@ -88,6 +88,7 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 		if(m_transparent>=0) {
 			color_quad& t = m_palette[m_transparent];
 			rgb[0] = t.r; rgb[1] = t.g; rgb[2] = t.b;
+			m_logger->trace("Gif transparent color (%d, %d, %d)", int(t.r), int(t.g), int(t.b));
 		} else {
 			rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
 		}
@@ -170,7 +171,7 @@ gif_decoder<DataSource, ColorType>::decode() {
 		m_palette = NULL;
 	}
     if((uch & 0x80) == 0x80) {
-		//cout << "reading global color map" << endl;
+		m_logger->trace("Gif palette entries = %d", int(m_scr_colors));
 		m_palette = new color_quad[m_scr_colors];
 		memset(m_palette, 0, m_scr_colors*sizeof(color_quad));
 		for(int i=0; i<m_scr_colors;i++) {
@@ -195,7 +196,7 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 			//m_logger->trace("Image Descriptor");
 			return parse_image();
 		} else if (blockType == 0x21) {
-			m_logger->trace("Extension block");
+			//m_logger->trace("Extension block");
 			uchar_t label = m_src->get();
 			if(label == 0xf9) { 
 				//m_logger->trace("Graphics Control Extension");
@@ -203,8 +204,10 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 					m_disposal= (ext_buf[0]>>2)	& 0x7;
 					m_inputFlag	= (ext_buf[0]>>1) & 0x1;
 					m_delayTime	= to_uint(ext_buf[1], ext_buf[2]);
-					if((ext_buf[0] & 0x1) != 0)
+					if((ext_buf[0] & 0x1) != 0) {
 						m_transparent = ext_buf[3];
+						m_logger->trace("Gif transparent index = %d", int(m_transparent));
+					}
 				}
 				skip_block();
 			} else if (label == 0x1) { 
