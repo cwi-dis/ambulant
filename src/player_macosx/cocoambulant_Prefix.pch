@@ -5,7 +5,3 @@
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
 #endif
-
-#ifdef cplusplus
-    #include "mainloop.h"
-#endif

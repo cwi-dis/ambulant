@@ -86,12 +86,14 @@ class active_renderer : public ref_counted {
 	basic_atomic_count<critical_section> m_refcount;
 };
 
-// Foctory function for renderers. Will eventually become a
-// method of the player object.
-active_renderer * renderer_factory(event_processor *const evp,
-	net::passive_datasource *src,
-	passive_region *const dest,
-	const node *node);
+// Foctory class for renderers.
+class renderer_factory {
+  public:
+	virtual active_renderer *new_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		passive_region *const dest,
+		const node *node) = 0;
+};
 
 } // namespace lib
  

@@ -18,6 +18,8 @@
 #include "ambulant/lib/timelines.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/region.h"
+#include "ambulant/lib/renderer.h"
 
 namespace ambulant {
 
@@ -48,14 +50,14 @@ class passive_player {
 	:	m_url(url) {}
 	~passive_player() {}
 	
-	active_player *activate();
+	active_player *activate(window_factory *wf, renderer_factory *rf);
   private:
   	const char *m_url;
 };
 
 class active_player : public ref_counted_obj {
   public:
-	active_player(passive_player *const source, node *tree);
+	active_player(passive_player *const source, node *tree, window_factory *wf, renderer_factory *rf);
 	~active_player();
 	
 	void start(event_processor *evp, event *playdone);
@@ -73,6 +75,8 @@ class active_player : public ref_counted_obj {
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
+	window_factory *m_window_factory;
+	renderer_factory *m_renderer_factory;
 };
 
 } // namespace lib
