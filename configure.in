@@ -189,7 +189,7 @@ AC_MSG_RESULT($sdl)
 #
 AC_MSG_CHECKING(for --with-arts)
 AC_ARG_WITH(arts,
-     [  --with-arts    Turn on aRts (basic) support ],
+     [  --with-arts    Turn on aRts (basic) support (currently broken) ],
      [case "${withval}" in
        yes) arts=true
                 ;;
@@ -198,11 +198,7 @@ AC_ARG_WITH(arts,
        *)   AC_MSG_ERROR(--with-arts takes no argument - it uses artsc-config)
                 ;;
      esac],[
-     if artsc-config > /dev/null  2>&1; then
-     	arts=true
-     else
      	arts=false
-     fi
      ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
