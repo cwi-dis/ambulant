@@ -633,6 +633,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 			draw(src, src_rc, dst_rc, keysrc, m_surface);
 			return;
 		}		
+		if(keysrc) copy_bgd_to(s1, dst_rc);
 		draw(src, src_rc, dst_rc, keysrc, s1);
 		copy_bgd_to(s2, dst_rc);
 		HRESULT hr = S_OK;
