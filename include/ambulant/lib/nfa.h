@@ -1,0 +1,353 @@
+/*
+ * 
+ * This file is part of Ambulant Player, www.ambulantplayer.org.
+ * 
+ * Copyright (C) 2003 Stiching CWI, 
+ * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+ * 
+ * Ambulant Player is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * Ambulant Player is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Ambulant Player; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * In addition, as a special exception, if you link Ambulant Player with
+ * other files to produce an executable, this library does not by itself
+ * cause the resulting executable to be covered by the GNU General Public
+ * License. This exception does not however invalidate any other reason why
+ * the executable file might be covered by the GNU General Public License.
+ * 
+ * As a special exception, the copyright holders of Ambulant Player give
+ * you permission to link Ambulant Player with independent modules that
+ * communicate with Ambulant Player solely through the region and renderer
+ * interfaces, regardless of the license terms of these independent
+ * modules, and to copy and distribute the resulting combined work under
+ * terms of your choice, provided that every copy of the combined work is
+ * accompanied by a complete copy of the source code of Ambulant Player
+ * (the version of Ambulant Player used to produce the combined work),
+ * being distributed under the terms of the GNU General Public License plus
+ * this exception.  An independent module is a module which is not derived
+ * from or based on Ambulant Player.
+ * 
+ * Note that people who make modified versions of Ambulant Player are not
+ * obligated to grant this special exception for their modified versions;
+ * it is their choice whether to do so.  The GNU General Public License
+ * gives permission to release a modified version without this exception;
+ * this exception also makes it possible to release a modified version
+ * which carries forward this exception. 
+ * 
+ */
+
+/* 
+ * @$Id$ 
+ */
+
+#ifndef AMBULANT_LIB_NFA_H
+#define AMBULANT_LIB_NFA_H
+
+#include "ambulant/config/config.h"
+
+#include <string>
+#include <vector>
+#include <ctype.h>
+#include <set>
+#include <stack>
+#include <cassert>
+
+namespace ambulant {
+
+namespace lib {
+
+//////////////////////////
+//
+// A simple not optimized NFA based regular expression matcher.
+//
+// May be used to match short strings created by 
+// the scanner against hand made (coded) regex. 
+//
+// The intented usage is:
+// a) shring the string to be matched into tokens using the scanner
+// b) use the matcher against the short string of the tokens.
+// This way for example a decimal becomes the literals: d | d.d
+// instead of [0-9] | [0-9].[0-9] resulting to an improvement 
+// nore than an order of magnitude (~20 times).
+
+const int EPSILON = -1;
+const int ACCEPT  = -9;
+const int REPEAT_LIMIT  = 1024;
+const int GROUP_BEGIN = 1;
+const int GROUP_END = 2;
+
+// An nfa node represents a node in a
+// nonderministic finite automaton (NFA)
+// and is associated with 2 transitions 
+// that occur on symbol 'edge'.
+//
+// NFA nodes could be linearized in a
+// continous memory buffer for efficiency.
+
+struct nfa_node {
+	typedef unsigned char uchar_t;
+	typedef std::string::size_type size_type;
+	
+	nfa_node(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
+	:	edge(e), next1(n1), next2(n2), anchor(0) {
+		++nfa_nodes_counter; 
+	}
+	~nfa_node() { --nfa_nodes_counter;}
+
+	void set_transition(int e, nfa_node *n1 = 0, nfa_node *n2 = 0)
+		{ edge = e; next1 = n1; next2 = n2;}
+
+	bool is_epsilon_trans() { return edge == EPSILON;}
+	bool is_important_trans() { return edge != EPSILON;}
+	bool is_accept_node() { return edge == ACCEPT;}
+
+	// Used for expr construction
+	nfa_node *clone(std::set<nfa_node*>& clones);
+	
+	int edge;
+	nfa_node *next1;
+	nfa_node *next2;
+	int anchor;
+	nfa_node *myclone;
+	
+	// verifier
+	static int nfa_nodes_counter;
+};
+
+// An nfa_expr is a directed graph of nfa nodes that represent a NFA.
+// An nfa_expr object keeps a reference to the start and the accept NFA nodes
+// and is the owner of the NFA nodes.
+class nfa_expr {
+  public:
+  	typedef unsigned char uchar_t;
+	typedef std::string::size_type size_type;
+
+	nfa_expr() : accept(0), start(0) {}
+	
+	explicit nfa_expr(int edge) : accept(0), start(0) {
+		accept = new nfa_node(ACCEPT);
+		start = new nfa_node(edge, accept);
+	}
+	
+	explicit nfa_expr(char edge, bool opt = false) : accept(0), start(0) {
+		accept = new nfa_node(ACCEPT);
+		start = new nfa_node(uchar_t(edge), accept);
+		if(opt) optional();
+	}
+	
+	nfa_expr(const char *s)
+	:	start(0), accept(0) {
+		cat_expr(s);
+	}
+	
+	// Assignment constructor.
+	nfa_expr(const nfa_expr& other) 
+	:	accept(0), start(0) {
+		std::set<nfa_node*> cloned;
+		accept = other.accept->clone(cloned);
+		start = other.start->clone(cloned);
+	}
+	
+	// Copy constructor
+	const nfa_expr& operator=(const nfa_expr& expr) {
+		if(this == &expr) return *this;
+		free();
+		nfa_expr *eptr = expr.clone(); 
+		start = eptr->start; 
+		accept = eptr->accept;
+		eptr->clear();
+		delete eptr; 
+		return *this;
+	}
+	
+	////////////////
+	// Constructors that simplify some common cases
+	
+	nfa_expr(const char *s1, const char *s2) : accept(0), start(0) {
+		cat_expr(s1);
+		or_expr(s2);
+	}
+	
+	nfa_expr(const char *s1, const char *s2, const char *s3) : accept(0), start(0) {
+		cat_expr(s1);
+		or_expr(s2);
+		or_expr(s3);
+	}
+	
+	nfa_expr(const char *s1, const char *s2, const char *s3, const char *s4) : accept(0), start(0) {
+		cat_expr(s1);
+		or_expr(s2);
+		or_expr(s3);
+		or_expr(s4);
+	}
+	
+	nfa_expr(char c1, char c2) : accept(0), start(0) {
+		cat_expr(c1);
+		or_expr(c2);
+	}
+	
+	nfa_expr(char c1, char c2, char c3) : accept(0), start(0) {
+		cat_expr(c1);
+		or_expr(c2);
+		or_expr(c3);
+	}
+	
+	nfa_expr(char c1, char c2, char c3, char c4) : accept(0), start(0) {
+		cat_expr(c1);
+		or_expr(c2);
+		or_expr(c3);
+		or_expr(c4);
+	}
+	
+	// The destructor deletes all the nodes of the expr
+	~nfa_expr() { free(); }
+	
+	// Free the NFA nodes of this expr
+	void free();
+	
+	// nullify this without deleting nodes
+	void clear() { start = accept = 0;}
+
+	// deep copy of this
+	nfa_expr *clone() const;
+
+	// Returns true when the urderlying NFA is empty
+	bool empty() const {return start == 0;}
+	
+	// Returns the number of nodes of this expr
+	int size() const { 
+		std::set<nfa_node*> nodes; 
+		return int(get_expr_nodes(nodes).size());
+	}
+	
+	// Returns the memory consumed by this expr in bytes
+	int memsize() const { 
+		return int(size()*sizeof(nfa_node)) + int(sizeof(nfa_expr));
+	}
+
+	//////////////////////////
+	// Match
+	
+	// Matches string against the regex that this nfa_expr represents. 
+	bool match(const std::string& str);
+	bool match(const std::string& str, bool anchors);
+	
+	
+	//////////////////////////
+	// Regex operations
+		
+	// expr expr
+	const nfa_expr& cat_expr(const nfa_expr& expr);
+	
+	// expr | expr
+	const nfa_expr& or_expr(const nfa_expr& expr);
+	
+	// expr?
+	const nfa_expr& optional() { 
+		nfa_expr e(EPSILON);
+		or_expr_abs(&e);
+		assert(e.empty());
+		return *this;
+	}
+		
+	// expr*
+	const nfa_expr& star();
+
+	// expr+
+	const nfa_expr& plus() {
+		nfa_expr *eptr = this->clone();
+		eptr->star();
+		cat_expr_abs(eptr);
+		assert(eptr->empty());
+		delete eptr;
+		return *this;
+	}
+
+	// expr{n}
+	const nfa_expr& power(int n);
+
+	// expr{n, m}
+	const nfa_expr& repeat(int n, int m);
+
+	// sets this expression to the char class 
+	// consisting of the literals in the string
+	const lib::nfa_expr& 
+	set_to_char_class(const std::string& s);
+	
+	//////////////////
+	// Regex operations shortcuts 
+		
+	const nfa_expr& cat_expr(char ch)	{ 
+		nfa_expr e(ch);
+		cat_expr_abs(&e);
+		assert(e.empty());
+		return *this;
+	}
+
+	const nfa_expr& cat_expr(const char *psz);
+
+
+	const nfa_expr& or_expr(char ch) {
+		nfa_expr e(ch);
+		or_expr_abs(&e);
+		assert(e.empty());
+		return *this;
+	}
+	
+	const nfa_expr& or_expr(const char *psz) {
+		nfa_expr e(psz);
+		or_expr_abs(&e);
+		assert(e.empty());
+		return *this;
+	}
+	
+	// Alt cat_expr
+	const nfa_expr& operator+=(char ch) { return cat_expr(ch);}
+	const nfa_expr& operator+=(const char *psz) { return cat_expr(psz);}
+	const nfa_expr& operator+=(const nfa_expr& e) { return cat_expr(e);}
+	
+	// Alt or_expr
+	const nfa_expr& operator*=(char ch) { return or_expr(ch);}
+	const nfa_expr& operator*=(const char *psz) { return or_expr(psz);}
+	const nfa_expr& operator*=(const nfa_expr& e) { return or_expr(e);}
+
+	// Returns the nodes of this expression
+	std::set<nfa_node*>& get_expr_nodes(std::set<nfa_node*>& nodes) const;
+	
+  private:
+	
+	// expr expr
+	// This consumes expr which becomes null
+	const nfa_expr& cat_expr_abs(nfa_expr *eptr);
+	
+	// expr | expr
+	// This consumes expr which becomes null
+	const nfa_expr& or_expr_abs(nfa_expr *eptr);
+	
+	// NFA search algorithm helpers
+	void move(std::set<nfa_node*>& nodes, int edge, std::stack<nfa_node*>& ststack);
+	void closure(std::stack<nfa_node*>& ststack, std::set<nfa_node*>& nodes);
+	
+	// invariants checks
+	void verify1() const;
+  	
+	nfa_node *accept;
+	nfa_node *start;
+};
+
+} // namespace lib
+ 
+} // namespace ambulant
+
+
+#endif // AMBULANT_LIB_NFA_H
