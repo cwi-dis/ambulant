@@ -62,6 +62,7 @@
 #endif
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_datasource.h"
+#include "ambulant/net/ffmpeg_rawdatasource.h"
 #endif
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/qt/qt_factory.h"
@@ -89,16 +90,6 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 {
 	// First create the datasource factory and populate it too.
 	m_df = new net::datasource_factory();
-#ifdef WITH_STDIO_DATASOURCE
-	// This is for debugging only, really: the posix datasource
-	// should always perform better, and is always available on OSX.
-	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
-	// however.
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
-	m_df->add_raw_factory(new net::stdio_datasource_factory());
-#endif
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add posix_datasource_factory");
-	m_df->add_raw_factory(new net::posix_datasource_factory());
 	
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
@@ -109,7 +100,20 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
 	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	m_df->add_video_factory(new net::ffmpeg_video_datasource_factory());
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+	m_df->add_raw_factory(new net::ffmpeg_raw_datasource_factory());
 #endif
+
+#ifdef WITH_STDIO_DATASOURCE
+	// This is for debugging only, really: the posix datasource
+	// should always perform better, and is always available on OSX.
+	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
+	// however.
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
+	m_df->add_raw_factory(new net::stdio_datasource_factory());
+#endif
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add posix_datasource_factory");
+	m_df->add_raw_factory(new net::posix_datasource_factory());
 
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *m_rf =
