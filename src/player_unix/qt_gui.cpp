@@ -127,7 +127,7 @@ void qt_gui::slot_about() {
 				 );
 }
 bool checkFilename(QString filename, int mode) {
-	QFile* file =	new QFile(filename);
+	QFile* file = new QFile(filename);
 	return file->open(mode);
 }
 void qt_gui::slot_open() {
@@ -135,16 +135,17 @@ void qt_gui::slot_open() {
 	m_smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
-				 "SMIL files (*.smil)", // file types
+				 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)", // file types
 				 this,
 				 "open file dialog",
 				 "Double Click a file to open"
 				 );
 #endif/*QT_NO_FILEDIALOG*/
-	if (m_smilfilename.isNull()
-	|| ! checkFilename(m_smilfilename, IO_ReadOnly)) {
+	if (m_smilfilename.isNull())
+		return;
+	if (! checkFilename(m_smilfilename, IO_ReadOnly)) {
 		char buf[1024];
-		sprintf(buf, "Cannot open file \"%s\"\n%s\n",
+		sprintf(buf, "Cannot open file \"%s\":\n%s\n",
 			(const char*) m_smilfilename, strerror(errno));
 		QMessageBox::information(this, m_programfilename, buf);
 		return;
