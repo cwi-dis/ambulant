@@ -327,6 +327,7 @@ class underlying_to_f : public simple_animation_f {
 // F should define the types: time_type and value_type
 // F should implement:
 // value_type at(time_type t) const;
+// value_type at(time_type t, const value_type& u) const;
 //
 template <class F>
 class animate_f {

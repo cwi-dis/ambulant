@@ -54,6 +54,8 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/event.h"
+#include "ambulant/lib/callback.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/transition_info.h"
 
@@ -158,7 +160,7 @@ void smil_player::build_timegraph() {
 	m_scheduler = new scheduler(m_root, m_timer);
 }
 
-void smil_player::schedule_event(lib::event *ev, time_type t, event_priority ep) {
+void smil_player::schedule_event(lib::event *ev, lib::timer::time_type t, event_priority ep) {
 	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
 }
 
@@ -328,7 +330,7 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 
 // Playable notification for a click event.
 void smil_player::clicked(int n, double t) {
-	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
@@ -341,7 +343,7 @@ void smil_player::clicked(int n, double t) {
 
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
-	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
 		m_pointed_node = (*it).second;
@@ -352,7 +354,7 @@ void smil_player::pointed(int n, double t) {
 
 // Playable notification for a start event.
 void smil_player::started(int n, double t) {
-	typedef scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());

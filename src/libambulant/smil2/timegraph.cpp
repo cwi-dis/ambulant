@@ -240,6 +240,8 @@ void timegraph::build_priorities() {
 // The spec allows many aspects to be implementation specific  
 // XXX: for now assume always "can slip sync behavior".
 void timegraph::build_timers_graph() {
+	if(!m_context->get_timer())
+		return; // not supported by context
 	time_node::iterator it;
 	time_node::iterator end = m_root->end();
 	for(it = m_root->begin(); it != end; it++) {

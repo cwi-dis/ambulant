@@ -74,10 +74,15 @@ class scheduler {
 	~scheduler();
 	
 	time_type exec();
+	time_type exec(time_type now);
+	void reset();
+	
+	static void reset(time_node *tn);
+	static void set_context(time_node *tn, time_node_context *ctx);
+	static bool has_resolved_end(time_node *tn);
 	
   private:
 	void get_pending_events();
-	time_type do_exec();
 	time_node *m_root;
 	lib::timer *m_timer;
 	time_type m_events_horizon;

@@ -65,6 +65,9 @@
 using namespace ambulant;
 using namespace smil2;
 
+static scheduler::time_type infinity = 
+std::numeric_limits<scheduler::time_type>::max();
+
 scheduler::scheduler(time_node *root, lib::timer *timer)
 :	m_root(root), 
 	m_timer(timer), 
@@ -77,38 +80,39 @@ scheduler::~scheduler() {
 }
 
 scheduler::time_type scheduler::exec() {
-	time_type waitdur = do_exec();
-	while(waitdur == 0) waitdur = do_exec();
+	time_type now = m_timer->elapsed();
+	time_type next = exec(now);
+	while(next == now) next = exec(now);
+	time_type waitdur = next - now;
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
 
-scheduler::time_type scheduler::do_exec() {
-	time_type waitdur = idle_resolution;
+scheduler::time_type scheduler::exec(time_type now) {
+	time_type next = infinity;
 	m_events.clear();
 	if(!m_root->is_active())
-		return waitdur;
+		return next;
 	get_pending_events();
 	if(m_events.empty())
-		return waitdur;
+		return next;
 	event_map_t::iterator eit = m_events.begin();
-	time_type next = (*eit).first();
+	next = (*eit).first();
 	std::list<time_node*>& elist = (*eit).second;
 	next = std::max(m_events_horizon, next);
-	if(m_timer->elapsed() >= next) {
+	if(now >= next) {
 		time_traits::qtime_type timestamp(m_root, next);
 		std::list<time_node*>::iterator nit;
 		for(nit=elist.begin();nit!=elist.end();nit++)
 			(*nit)->exec(timestamp);
 		m_events_horizon = next;
-		m_timer->set_time(next);
+		if(m_timer) m_timer->set_time(next);
 		eit++;
 		if(eit != m_events.end()) {
 			next = (*eit).first();
 			next = std::max(m_events_horizon, next);
 		}
 	}
-	waitdur = m_timer->elapsed() - next;
-	return waitdur;
+	return next;
 }
 
 void scheduler::get_pending_events() {
@@ -119,4 +123,48 @@ void scheduler::get_pending_events() {
 	}
 }
 
+void scheduler::reset() {
+	time_traits::qtime_type timestamp(m_root, 0);
+	m_root->reset(timestamp, m_root);
+	m_events_horizon = 0;
+	if(m_timer) {
+		m_timer->pause();
+		m_timer->set_time(0);
+	}
+}
+
+// static
+void scheduler::reset(time_node *tn) {
+	time_traits::qtime_type timestamp(tn, 0);
+	tn->reset(timestamp, tn);
+}
+
+// static
+void scheduler::set_context(time_node *tn, time_node_context *ctx) {
+	time_node::iterator it;
+	time_node::iterator end = tn->end();
+	for(it=tn->begin(); it != end; it++) {
+		if((*it).first) (*it).second->set_context(ctx);
+	}
+}
+
+// Returns true when the document will reach its end without requiring events
+// This does not mean that has not event timing. Events may affect playback.
+// static
+bool scheduler::has_resolved_end(time_node *tn) {
+	time_node_context *oldctx = tn->get_context();
+	time_node_context *algoctx = new dummy_time_node_context();
+	set_context(tn, algoctx);
+	reset(tn);
+	scheduler shed(tn, 0);
+	tn->start();
+	timer::time_type next = 0;
+	while(tn->is_active() && next != infinity)
+		next = shed.exec(next);
+	bool finished = tn->get_state()->sig() == 'c';
+	reset(tn);
+	set_context(tn, oldctx);
+	delete algoctx;
+	return finished;
+}
 

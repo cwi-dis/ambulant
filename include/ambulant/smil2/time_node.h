@@ -56,19 +56,14 @@
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/timer.h"
 #include "ambulant/lib/node_navigator.h"
 #include "ambulant/common/schema.h"
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/sync_rule.h"
 #include "ambulant/smil2/time_attrs.h"
 #include "ambulant/smil2/time_state.h"
-#include "ambulant/lib/event.h"
-#include "ambulant/lib/callback.h"
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/timer.h"
-#include "ambulant/common/playable.h"
-
-#include "ambulant/lib/logger.h"
+#include "ambulant/smil2/time_nctx.h"
 
 #include <cassert>
 #include <utility>
@@ -79,38 +74,7 @@ namespace ambulant {
 
 namespace smil2 {
 
-class animation_engine;
-
-// Time nodes context requirements
-class time_node_context : public lib::event_scheduler<time_traits::value_type> {
-  public:
-	// Services
-	virtual time_traits::value_type elapsed() const = 0;
-	virtual timer* get_timer() = 0;
-	virtual void show_link(const lib::node *n, const std::string& href) = 0;
-	virtual animation_engine* get_animation_engine() = 0;
-	
-	// Playable commands
-	virtual common::playable *create_playable(const lib::node *n) = 0;
-	virtual void start_playable(const lib::node *n, double t, const lib::node *trans = 0) = 0;
-	virtual void stop_playable(const lib::node *n) = 0;
-	virtual void pause_playable(const lib::node *n, pause_display d = display_show) = 0;
-	virtual void resume_playable(const lib::node *n) = 0;
-	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
-	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in) = 0;
-	
-	// Playable queries
-	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
-		
-	// Notifications
-	virtual void started_playback() = 0;
-	virtual void done_playback() = 0;
-};
-
 // fwd declaration.
-//class transition_event;
-//class repeat_event;
-//class timer_event;
 class time_calc;
 
 // Represents a node in the timing model.
@@ -153,8 +117,13 @@ class time_node : public schedulable {
 	virtual void get_children(std::list<const time_node*>& l) const { const_nnhelper::get_children(this, l);}
 	virtual time_type get_implicit_dur();
 	
+	// End sync functions
 	virtual bool end_sync_cond_applicable() const { return false;}
 	virtual bool end_sync_cond() const { return true;}
+	
+	// Begin and end conditions evaluator
+	virtual bool begin_cond(qtime_type timestamp);
+	virtual bool end_cond(qtime_type timestamp);
 	
 	// Forced transitions
 	virtual void reset(qtime_type timestamp, time_node *oproot);
@@ -304,6 +273,7 @@ class time_node : public schedulable {
 	
 	// Retuns the context of this time node
 	context_type* get_context() {return m_context;}
+	void set_context(context_type *ctx) { m_context = ctx;}
 	
 	// Sets the state of this node
 	void set_state(time_state_type state, qtime_type timestamp, time_node *oproot);
@@ -323,11 +293,17 @@ class time_node : public schedulable {
 	// this may be called by a second thread
 	bool is_active() const { return m_active;}
 
-	// Returns the current interval associated with this
+	// Returns the current interval associated with this (maybe invalid)
 	const interval_type& get_current_interval() const {
 		return m_interval;
 	}
-	
+	// Returns the first interval associated with this (maybe invalid)
+	const interval_type& get_first_interval() const {
+		if(!m_history.empty())
+			return m_history.front();
+		return m_interval;
+	}
+	// Returns the last interval associated with this (maybe invalid)
 	const interval_type& get_last_interval() const {
 		if(m_interval.is_valid())
 			return m_interval;
@@ -335,6 +311,7 @@ class time_node : public schedulable {
 			return m_history.back();
 		return m_interval;
 	}
+	// Returns true when this has played any interval
 	bool played() const { return !m_history.empty();}
 	
 	// Returns the last calc dur 
@@ -449,6 +426,7 @@ class time_node : public schedulable {
 	// Required by the set-of-implicit-dur-on-eom mechanism
 	time_type m_activation_time;
 	time_type m_media_offset;
+	bool m_eom_flag;
 	
 	// The priority of this node
 	// Applicable for excl children.

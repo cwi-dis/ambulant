@@ -49,9 +49,7 @@
 /* 
  * @$Id$ 
  */
-
 #include "ambulant/smil2/time_node.h"
-#include "ambulant/common/schema.h"
 #include "ambulant/smil2/animate_n.h"
 #include "ambulant/smil2/animate_e.h"
 #include "ambulant/smil2/time_calc.h"
@@ -192,7 +190,6 @@ void time_node::start() {
 // DOM TimeElement::stopElement()
 // Currently supported only for the root.
 void time_node::stop() {
-	m_context->cancel_all_events();
 	qtime_type timestamp(sync_node(), get_sync_simple_time());
 	reset(timestamp, this);
 }
@@ -211,9 +208,6 @@ void time_node::resume() {
 	// Resume playable if a media node
 }
 
-bool time_node::is_animation() const {
-	return common::schema::get_instance()->is_animation(m_node->get_qname());
-}
 
 // Adds a sync_rule to the begin list of this node.
 // This node is not the sync base but the target (e.g. the node that will be affected).
@@ -287,29 +281,20 @@ time_node::get_implicit_dur() {
 	// Can the associated playable provide us the implicit duration? 
 	// If yes, store it a "m_mediadur" in internal timing units (ms).
 	//
-	// Please note that the current implementation,
-	// when the duration is not defined explicitly,
-	// and in order to make slideshows more smooth,
-	// it postpones setting the implicit duration
-	// until an end of media (EOM) event.
-	// This makes the model more complex but i think
-	// the results deserve this extra complexity.
-	// Remains to be proved ...
-	//
 	if(m_mediadur == time_type::unresolved) {
 		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
 		if(dur_pair.first && dur_pair.second>0) {
-			m_mediadur = secs_to_time_type(dur_pair.second)();
+			m_impldur = m_mediadur = secs_to_time_type(dur_pair.second)();
 			AM_DBG tnlogger->trace("%s[%s].media_dur(): %ld", m_attrs.get_tag().c_str(), 
 				m_attrs.get_id().c_str(), m_mediadur());
-		}	
+		}
 	}
 	
 	// No, the playable cannot provide its implicit duration
 	AM_DBG tnlogger->trace("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
 		
-	return time_type::unresolved;
+	return m_impldur;
 }
 
 // This function calculates the simple duration of this node.
@@ -493,7 +478,7 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	assert(m_state->ident() == ts_proactive || m_state->ident() == ts_postactive);
 	assert(is_root() || up()->m_state->ident() == ts_active);
 	
-	if(up() && up()->is_seq()) {
+	if(up() && up()->is_seq() && i.contains(timestamp.second)) {
 		 time_node *prev = previous();
 		 if(prev) {
 			if(prev->is_active()) {
@@ -604,7 +589,7 @@ void time_node::activate(qtime_type timestamp) {
 	// Required by the set-of-implicit-dur-on-eom mechanism
 	m_activation_time = timestamp.second; 
 	
-	m_timer->set_time(sd_offset());
+	if(m_timer) m_timer->set_time(sd_offset());
 	
 	AM_DBG tnlogger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
@@ -619,7 +604,8 @@ void time_node::activate(qtime_type timestamp) {
 		} else {
 			m_media_offset = sd_offset;
 		}
-		m_timer->set_time(m_media_offset());
+		if(m_timer) m_timer->set_time(m_media_offset());
+		m_eom_flag = false;
 		if(paused()) {
 			m_pause_time = m_media_offset;
 			//schedule_next_timer_event(timestamp);
@@ -648,7 +634,7 @@ void time_node::activate(qtime_type timestamp) {
 		}
 	} 
 	if(paused()) m_pause_time = sd_offset;
-	else if(is_animation() || !is_cmedia()) {
+	else if(is_animation() || !is_cmedia() && m_timer) {
 		m_timer->set_speed(m_attrs.get_speed());
 		m_timer->resume();
 	}
@@ -686,24 +672,28 @@ void time_node::exec(qtime_type timestamp) {
 	assert(timestamp.first == sync_node());
 	
 	if(!is_active()) {
-		// check for activation
-		if(m_interval.is_valid() && m_interval.contains(timestamp.second)) {
+		// in this state, activation is the only interesting activity
+		if(begin_cond(timestamp)) {
 			if(deferred()) defer_interval(timestamp);
 			else set_state_ex(ts_active, timestamp);
 		}
 		return;
 	}
 	
+	// The following code applies to active nodes
+	assert(is_active());
+	
 	// Check for the EOI event
-	if(is_active()) {
-		bool ec = end_sync_cond_applicable() && end_sync_cond();
-		bool tc = !end_sync_cond_applicable() && timestamp.second >= m_interval.end;
-		if(ec || tc) {
-			qtime_type qt(sync_node(), m_interval.end);
-			set_state_ex(ts_postactive, qt);
-			return;
-		} 
+	if(end_cond(timestamp)) {
+		// This node should go postactive
+		time_type reftime;
+		if(m_interval.end.is_definite()) reftime = m_interval.end;
+		else reftime = timestamp.second;
+		qtime_type qt(sync_node(),reftime);
+		set_state_ex(ts_postactive, qt);
+		return;
 	}
+	
 	
 	// The AD offset of this node
 	time_type ad_offset = timestamp.second - m_interval.begin;
@@ -725,6 +715,39 @@ void time_node::exec(qtime_type timestamp) {
 		// may call repeat
 		on_eosd(timestamp);
 	}
+}
+
+// Returns true when the end conditions evaluate to true
+// e.g. the node should be deactivated
+// Assums the node is active
+bool time_node::end_cond(qtime_type timestamp) {
+	assert(timestamp.first == sync_node());
+	assert(is_active());
+	bool ec = end_sync_cond_applicable() && end_sync_cond();
+	bool tc = !end_sync_cond_applicable() && timestamp.second >= m_interval.end;
+	
+	// The "tc" condition is not sufficient when needs_implicit_dur()is true
+	// for example: 
+	// a) a video has returned its implicit dur
+	// b) calcs have been done based on this value
+	// c) m_interval.end may have assumed this vale
+	// d) the interval has not been updated yet
+	// e) due to not controled delays the video is still playing
+	if(is_cmedia() && !is_animation() && tc) {
+		if(m_context->wait_for_eom() && !m_eom_flag) {
+			tc = false;
+			AM_DBG tnlogger->trace("%s[%s].end_cond() waiting media end", 
+				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+		}
+	}
+	
+	return ec || tc;
+}
+
+// Returns true when the begin conditions evaluate to true
+// e.g. the node can be activated
+bool time_node::begin_cond(qtime_type timestamp) {
+	return m_interval.is_valid() && m_interval.contains(timestamp.second);
 }
 
 // Calls set_state() after checking for excl
@@ -861,9 +884,6 @@ void time_node::defer_interval(qtime_type timestamp) {
 	on_cancel_instance(timestamp, tn_begin, i.begin);
 	on_cancel_instance(timestamp, tn_end, i.end);
 	
-	// cancel schedule
-	// cancel_schedule();
-	
 	// Remember interval
 	m_interval = i;
 }
@@ -928,7 +948,7 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		} 
-		m_timer->pause();
+		if(m_timer) m_timer->pause();
 		if(!is_time_container() && !is_animation()) {
 			m_context->pause_playable(m_node);
 		}
@@ -966,6 +986,10 @@ void time_node::remove(qtime_type timestamp) {
 		m_context->stop_playable(m_node);
 	}
 	m_needs_remove = false;
+}
+
+bool time_node::is_animation() const {
+	return common::schema::get_instance()->is_animation(m_node->get_qname());
 }
 
 ///////////////////////////////
@@ -1265,6 +1289,7 @@ void time_node::sync_update(qtime_type timestamp) {
 // Currently this notification is not used.
 // Could be used to define to slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
+	m_eom_flag = false;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
@@ -1275,28 +1300,29 @@ void time_node::on_bom(qtime_type timestamp) {
 			pt.second(),
 			timestamp.second()); 
 	}
-	m_timer->resume();
+	if(m_timer) m_timer->resume();
 }
 
 // Notification from the playable that has paused for fetching bits
 void time_node::on_pom(qtime_type timestamp) {
-	m_timer->pause();
+	if(m_timer) m_timer->pause();
 }
 
 // Notification from the playable that has resumed playback
 void time_node::on_rom(qtime_type timestamp) {
-	m_timer->resume();
+	if(m_timer) m_timer->resume();
 }
 
 // End of nedia notification
 // This notification is taken into account when this node is still active
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
+	m_eom_flag = true;
 	if(is_discrete() || !is_active() || !needs_implicit_dur())
 		return;
 		
-	if(m_impldur != time_type::unresolved)
-		return;
+	//if(m_impldur != time_type::unresolved)
+		//return;
 	
 	// 	
 	qtime_type pt = timestamp.as_qtime_down_to(sync_node());
@@ -1391,13 +1417,16 @@ time_container::get_implicit_dur() {
 	return idur;
 }
 
+// Returns the minimum of the children first intervals end
+// If no child has a valid interval returns "unresolved"
+// Played intervals count 
 time_node::time_type 
 time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
 	time_type idur = time_type::unresolved;
 	for(it=cl.begin();it!=cl.end();it++) {
 		const time_node *c = *it;
-		const interval_type& i = c->get_last_interval();
+		const interval_type& i = c->get_first_interval();
 		if(i.is_valid())
 			idur = std::min(idur, i.end);
 	}
@@ -1406,6 +1435,31 @@ time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl)
 	return idur;	
 }
 
+// Returns the interval end of the designated child
+// If the designated child has not a valid interval returns "unresolved"
+time_node::time_type 
+time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
+	std::list<const time_node*>::const_iterator it;
+	time_type idur = time_type::unresolved;
+	std::string endsync_id = m_attrs.get_endsync_id();
+	for(it=cl.begin();it!=cl.end();it++) {
+		const time_node *c = *it;
+		if(endsync_id == c->get_time_attrs()->get_id()) {
+			const interval_type& i = c->get_first_interval();
+			if(i.is_valid()) idur = i.end;
+			break;
+		}
+	}
+	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_id(): %s", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
+	return idur;	
+}
+
+// Returns the maximum of the children interval ends
+// This maybe called before the children go live, consider this case
+// The current interval may not be the first [(*it)->played() maybe true]
+// This is the default for par, excl, media_cond
+// If the children are alive and there isn't any valid interval, returns 0
 time_node::time_type 
 time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
@@ -1414,6 +1468,7 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 		const time_node *c = *it;
 		const interval_type& i = c->get_last_interval();
 		if(!c->is_alive()) {
+			// Building up, wait
 			idur = time_type::unresolved;
 			break; 
 		} else if(i.is_valid()) {
@@ -1425,6 +1480,8 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 	return (idur == time_type::minus_infinity)?0:idur;	
 }
 
+// Returns the maximum of the children interval ends like "last"
+// The diff of "all" is that should wait for all to play at least once
 time_node::time_type 
 time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 	std::list<const time_node*>::const_iterator it;
@@ -1434,7 +1491,7 @@ time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 		const interval_type& i = c->get_last_interval();
 		if(i.is_valid())
 			idur = std::max(idur, i.end);
-		else {
+		else if(!c->played()) {
 			idur = time_type::unresolved;
 			break;
 		}
@@ -1443,24 +1500,6 @@ time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
 	return (idur == time_type::minus_infinity)?time_type::unresolved:idur;	
 }
-
-time_node::time_type 
-time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
-	std::list<const time_node*>::const_iterator it;
-	time_type idur = time_type::unresolved;
-	for(it=cl.begin();it!=cl.end();it++) {
-		const time_node *c = *it;
-		if(m_attrs.get_endsync_id() == c->get_time_attrs()->get_id()) {
-			const interval_type& i = c->get_last_interval();
-			if(i.is_valid()) idur = i.end;
-			break;
-		}
-	}
-	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur_for_esr_id(): %s", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
-	return idur;	
-}
-
 
 // Returns true when the end sync cond is applicable for this container
 bool time_container::end_sync_cond_applicable() const {
