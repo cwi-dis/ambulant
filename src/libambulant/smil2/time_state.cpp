@@ -54,7 +54,7 @@
 #include "ambulant/smil2/time_state.h"
 #include "ambulant/smil2/time_node.h"
 
-//#define AM_DBG
+#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -166,7 +166,6 @@ void reset_state::exit(qtime_type timestamp, time_node *oproot) {
 
 void proactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
-	if(m_self->deferred() || m_self->paused()) return;
 	interval_type i = m_self->calc_first_interval();
 	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::enter calc_first_interval -> %s at DT:%ld", 
 		m_attrs.get_tag().c_str(), 
@@ -185,7 +184,6 @@ void proactive_state::enter(qtime_type timestamp) {
 }
 
 void proactive_state::sync_update(qtime_type timestamp) {
-	if(m_self->deferred() || m_self->paused()) return;
 	interval_type i = m_self->calc_first_interval();
 	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::sync_update %s --> %s at DT:%ld", 
 		m_attrs.get_tag().c_str(), 
@@ -253,21 +251,7 @@ void active_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	m_active = true;
 	m_needs_remove = true;
-	
-	if(m_self->paused()) {
-		AM_DBG logger::get_logger()->trace("%s[%s].active_state::enter() paused", 
-			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str());
-		return;
-	}
-	
-	if(m_self->deferred()) {
-		AM_DBG logger::get_logger()->trace("%s[%s].active_state::enter() deferred", 
-			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str());
-		return;
-	}
-		
+			
 	// if this is in a seq should remove any freeze effect of previous
 	if(m_self->up() && m_self->up()->is_seq()) {
 		 time_node *prev = m_self->previous();
@@ -301,12 +285,6 @@ void active_state::sync_update(qtime_type timestamp) {
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 	
-	if(m_self->paused() || m_self->deferred()) {
-		AM_DBG logger::get_logger()->trace("%s[%s].active_state::sync_update() paused/deferred", 
-			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str());
-		return;
-	}
 	
 	time_type end = m_self->calc_current_interval_end();
 	if(end != m_interval.end) {
@@ -357,6 +335,8 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	if(m_self->sync_node()->is_excl() && (m_self->paused() || m_self->deferred())) {
 		excl* p = qualify<excl*>(m_self->sync_node());
 		p->remove(m_self);
+		m_self->set_paused(false);
+		m_self->set_deferred(false);
 	}
 	// next is postactive if its interval was not cut short (normal)
 	// next is reset if the parent repeats or restarts 	(reset)

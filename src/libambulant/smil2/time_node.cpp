@@ -59,7 +59,7 @@
 
 #include "ambulant/lib/logger.h"
 
-//#define AM_DBG
+#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -776,8 +776,8 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	
 	// verify the assumptions made in the following code
 	assert(timestamp.first == sync_node());
-	assert(is_root() || up()->m_state->ident() == ts_active);
 	assert(m_state->ident() == ts_proactive || m_state->ident() == ts_postactive);
+	assert(is_root() || up()->m_state->ident() == ts_active);
 	
 	// Set the interval as current.
 	m_interval = i;
@@ -786,6 +786,7 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	on_new_instance(timestamp, tn_begin, m_interval.begin);
 	on_new_instance(timestamp, tn_end, m_interval.end);
 	
+
 	// Update parent to recalc end sync status
 	if(sync_node()->is_par() || sync_node()->is_excl())
 		sync_node()->schedule_sync_update(timestamp, 0);
@@ -819,7 +820,8 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	
 	// Else, the interval should be activated now
 	assert(m_interval.contains(timestamp.second));
-	set_state_ex(ts_active, timestamp);
+	if(deferred()) defer_interval(timestamp);
+	else set_state_ex(ts_active, timestamp);
 }
 
 // Activates the interval of this node.
@@ -888,8 +890,13 @@ void time_node::activate(qtime_type timestamp) {
 		} else {
 			m_media_offset = sd_offset;
 		}
+		if(paused()) {
+			m_pause_time = m_media_offset;
+			schedule_next_timer_event(timestamp);
+			return;
+		}
 		common::playable *np = m_context->create_playable(m_node);
-		if(np) {
+		if(np && !paused()) {
 			np->wantclicks(m_want_activate_events);
 			np->start(time_type_to_secs(m_media_offset()));
 			AM_DBG tnlogger->trace("%s[%s].start playable(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
@@ -897,7 +904,8 @@ void time_node::activate(qtime_type timestamp) {
 				timestamp.second(),
 				timestamp.as_doc_time_value());
 		}
-	}
+	} 
+	if(paused()) m_pause_time = sd_offset;
 	
 	// Schedule a check for the next S-transition e.g. repeat or end.
 	// Requires: m_interval, m_last_cdur, m_rad_offset  
@@ -1098,16 +1106,14 @@ void time_node::repeat(qtime_type timestamp) {
 void time_node::pause(qtime_type timestamp, pause_display d) {
 	std::list<time_node*> children;
 	get_children(children);
-	std::list<time_node*>::iterator it;
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
+	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->pause(qt, d);
-	if(m_interval.is_valid()) {
-		cancel_schedule();
-		if(!is_time_container()) {
-			m_context->pause_playable(m_node, d);
-		}
+	if(!is_time_container() && is_active()) {
+		m_pause_time = self_simple_time;
+		m_context->stop_playable(m_node);
 	}
 	set_paused(true);
 }
@@ -1116,28 +1122,33 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 // Excl element handling.
 void time_node::resume(qtime_type timestamp) {
 	set_paused(false);
-	sync_update(timestamp);
+	if(!is_time_container() && is_active()) {
+		m_context->start_playable(m_node, time_type_to_secs(m_pause_time()));
+	}
 	std::list<time_node*> children;
 	get_children(children);
-	std::list<time_node*>::iterator it;
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
+	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->resume(qt);
+	sync_update(timestamp);
 }
 
 // Defers the interval of this node.
 // Excl element handling.
 void time_node::defer_interval(qtime_type timestamp) {
-
 	std::list<time_node*> children;
 	get_children(children);
-	std::list<time_node*>::iterator it;
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
+	std::list<time_node*>::iterator it;
 	for(it = children.begin(); it != children.end(); it++)
 		(*it)->defer_interval(qt);
 		
+	// Mark this node as deferred.
+	set_deferred(true);
+	
 	// Cancel notifications
 	interval_type i = m_interval;
 	if(!i.is_valid()) return;
@@ -1151,10 +1162,6 @@ void time_node::defer_interval(qtime_type timestamp) {
 	
 	// Remember interval
 	m_interval = i;
-	
-	// Mark this node as deferred.
-	set_deferred(true);
-	
 }
 
 // Excl element handling.
@@ -1164,6 +1171,8 @@ void time_node::schedule_deferred_interval(qtime_type timestamp) {
 	
 	// Remove deferred marker
 	set_deferred(false);
+	
+	if(!m_interval.is_valid()) return;
 	
 	// Translate the defered interval to timestamp
 	interval_type i = m_interval;
@@ -1920,7 +1929,7 @@ excl::get_active_child() {
 	get_children(cl);
 	std::list<time_node*>::iterator it;
 	for(it=cl.begin();it!=cl.end();it++)
-		if((*it)->is_active() && !(*it)->paused() && !(*it)->deferred()) break;
+		if((*it)->is_active()) break;
 	return it!=cl.end()?(*it):0;
 }
 
@@ -1967,6 +1976,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
 				
 		// start interrupting_node
+		//interrupting_node->set_state(ts_active, timestamp, c);
 		interrupting_node->set_state(ts_active, timestamp, c);
 				
 	} else if(what == int_pause) {
@@ -1974,6 +1984,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// do not cancel interval
 		// a node may end while paused
 		// accepts sync_update
+		
 		active_node->pause(timestamp, pi->display);
 		m_queue->push_pause(active_node);
 		
