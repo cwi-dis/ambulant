@@ -89,8 +89,10 @@ namespace lib {
 
 class node_context;
 
-// Simple tree node with tag, data and attrs
-// The parent of each node is also its owner and container
+/// Simple tree node with tag, data and attributes.
+/// The node trees are not fully DOM compliant, but should
+/// be compatible with a bit of glue code.
+/// The parent of each node is also its owner and container.
 
 class node {
 
@@ -104,70 +106,97 @@ class node {
 	///////////////////////////////
 	// Constructors
 	
-	// Note: attrs are as per expat parser
-	// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
+	/// Construct a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	node(const char *local_name, const char **attrs = 0, const node_context *ctx = 0);
 
+	/// Construct a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	node(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0);
 
+	/// Construct a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0);
 	
-	// shallow copy from other
+	// shallow copy from other.
 	node(const node* other);
 	
-	///////////////////////////////
-	// Destruct this node and its contents
-	// If this node is part of a tree, detach it first
-	// and then delete the node and its contents
-	
+	/// Destruct this node and its contents.
+	/// If this node is part of a tree, detach it first
+	/// and then delete the node and its contents.
 	virtual ~node();
 
-	///////////////////////////////
-	// basic navigation
 
+	/// Return first child of this node.
 	const node *down() const { return m_child;}
+	
+	/// Return parent of this node.
 	const node *up() const { return m_parent;}
+	
+	/// Return next sibling of this node.
 	const node *next() const { return m_next;}
 
+	/// Return first child of this node.
 	node *down()  { return m_child;}
+	
+	/// Return parent of this node.
 	node *up()  { return m_parent;}
+	
+	/// Return next sibling of this node.
 	node *next()  { return m_next;}
 
-	//////////////////////
-	// set down/up/next
-	
+
+	/// Set first child of this node.
 	void down(node *n)  { m_child = n;}
+	
+	/// Set parent of this node.
 	void up(node *n)  { m_parent = n;}
+	
+	/// Set next sibling of this node.
 	void next(node *n)  { m_next = n;}
 	
-	///////////////////////////////
-	// deduced navigation
-
-	// Returns the previous sibling node 
-	// or null when this is the first child.
+	/// Returns the previous sibling node 
+	/// or null when this is the first child.
 	const node* previous() const;
 	
-	// Returns the last child 
-	// or null when this has not any children.
+	/// Returns the last child 
+	/// or null when this has not any children.
 	const node* get_last_child() const;
 	
-	// Appends the children of this node if any to the provided list.
+	/// Appends the children of this node (if any) to the provided list.
 	void get_children(std::list<const node*>& l) const;
 
 	///////////////////////////////
 	// search operations 
 	// this section should be extented to allow for XPath selectors
 
+	/// Find a node given a path of the form tag/tag/tag.
 	node* locate_node(const char *path);
+	
+	/// Find the first direct child with the given tag.
 	node *get_first_child(const char *name);
+	
+	/// Find the first direct child with the given tag.
 	const node *get_first_child(const char *name) const;
+	
+	/// Find all descendants with the given tag.
 	void find_nodes_with_name(const xml_string& name, std::list<node*>& list);
+	
+	/// Find the root of the tree to which this node belongs.
 	node* get_root();
+	
+	/// Get an attribute from this node or its nearest ancestor that has the attribute.
 	const char *get_container_attribute(const char *name) const;
 	///////////////////////////////
 	// iterators
 
+	/// Return iterator for this node and its subtree.
     iterator begin() { return iterator(this);}
+
+	/// Return iterator for this node and its subtree.
     const_iterator begin() const { return const_iterator(this);}
 
     iterator end() { return iterator(0);}
@@ -176,69 +205,97 @@ class node {
 	///////////////////////
 	// build tree functions
 	
+	/// Append a child node to this node.
 	node* append_child(node* child);
 		
+	
+	/// Append a new child node with the given name to this node.
 	node* append_child(const char *name);
 
+	/// Detach this node and its subtree from its parent tree.
 	node* detach();
 	
+	/// Create a deep copy of this node and its subtree.
 	node* clone() const;
 	
+	/// Append data to the data of this node.
 	void append_data(const char *data, size_t len);
-
+	
+	/// Append c_str to the data of this node.
 	void append_data(const char *c_str);
-
+	
+	/// Append str to the data of this node.
 	void append_data(const xml_string& str);
 
+	/// Add an attribute/value pair.
 	void set_attribute(const char *name, const char *value);
 
+	/// Add an attribute/value pair.
 	void set_attribute(const char *name, const xml_string& value);
 
-	// Note: attrs are as per expat parser
-	// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
+	/// Set a number of attribute/value pairs.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	void set_attributes(const char **attrs);
 	
+	/// Set the namespace for this node.
 	void set_namespace(const xml_string& ns);
 	
 	/////////////////////
 	// data queries
 
+	/// Return the namespace part of the tag for this node.
 	const xml_string& get_namespace() const { return m_qname.first;}
+	
+	/// Return the local part of the tag for this node.
 	const xml_string& get_local_name() const { return m_qname.second;}
+	
+	/// Return namespace and local part of the tag for this node.
 	const q_name_pair& get_qname() const { return m_qname;}
 	
+	/// Return the unique numeric ID for this node.
 	int get_numid() const {return m_numid;}
 	
+	/// Return the data for this node.
 	const xml_string& get_data() const { return m_data;}
-
+	
+	/// Return the trimmed data for this node.
 	xml_string get_trimmed_data() const;
 
 	bool has_graph_data() const;
 	
+	/// Return the value for the given attribute.
 	const char *get_attribute(const char *name) const;
+	
+	/// Return the value for the given attribute.
 	const char *get_attribute(const std::string& name) const;
 	
-	// returns the resolved url of an attribute
+	/// Return the value for the given attribute, interpreted as a URL.
+	/// Relative URLs are resolved against the document base URL, if possible.
 	net::url get_url(const char *attrname) const;
 	
+	/// Return a reference to all attributes.
 	const q_attributes_list& get_attrs() const { return m_qattrs;}
 	
 
-	// return the number of nodes of the xml (sub-)tree starting at this node
+	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	unsigned int size() const;
 
-	// fills in a map with node ids
-	// the map may be used for retreiving nodes from their id
+	/// Fills in a map with node ids.
+	/// the map may be used for retreiving nodes from their id.
 	void create_idmap(std::map<std::string, node*>& m) const; 
 	
-	// returns a "friendly" path desription of this node
+	/// Returns a "friendly" path desription of this node.
 	std::string get_path_display_desc() const;
 	
+	/// Return a friendly string describing this node.
+	/// The string will be of a form similar to <tag id="...">
 	std::string get_sig() const;
 	
 	/////////////////////
 	// string repr
 	
+	/// Return the
 	xml_string xmlrepr() const;
 	xml_string to_string() const;
 	xml_string to_trimmed_string() const;
@@ -250,9 +307,13 @@ class node {
 	/////////////////////
 	// node context
 	
+	/// Return the node_context for this node.
 	const node_context* get_context() const { return m_context;}
+	
+	/// Set the node_context for this node.
 	void set_context(node_context *c) { m_context = c;}
 	
+	/// Return the next unique ID.
 	static int get_node_counter() {return node_counter;}
 	
   /////////////

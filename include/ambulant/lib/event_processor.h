@@ -62,6 +62,7 @@ namespace ambulant {
 
 namespace lib {
 
+/// Interface to be provided by an event scheduler.
 class event_processor {
   public:
 	typedef timer::time_type time_type;
@@ -69,18 +70,22 @@ class event_processor {
 	
 	virtual ~event_processor() {}
 	
-	// schedule an event to fire at time t at the provided priority
+	/// schedule an event pe to fire at time t at the provided priority.
 	virtual void add_event(event *pe, time_type t, event_priority priority = low) = 0;
+
+	/// Cancel all events.
 	virtual void cancel_all_events() = 0;
+
+	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = low) = 0;
 	
-	// serves waiting events 
+	// Fires waiting events.
 	virtual void serve_events() = 0;
 
-	// Get the underlying timer
+	// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
 	
-	// Stop this event processor (stops the underlying thread)
+	// Stop this event processor (stops the underlying thread).
 	virtual void stop_processor_thread() = 0;
 };
 
@@ -110,6 +115,9 @@ namespace ambulant {
 
 namespace lib {
 
+/// Implementation of event_processor (with a badly chosen name).
+/// This is actually a concrete implementation of the
+/// event_processor interface.
 class abstract_event_processor : public event_processor {
   public:
 	abstract_event_processor(timer *t) 

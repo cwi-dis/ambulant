@@ -57,11 +57,17 @@ namespace ambulant {
 
 namespace lib {
 
+/// API for the main synchronisation primitive.
+/// Do not use this class directly, in stead allocate
+/// objects of class critical section.
 class abstract_critical_section {
   public:
 	virtual ~abstract_critical_section() {}
 	
+	/// Enter a critical section.
 	virtual void enter() = 0;
+	
+	/// Leave a critical section.
 	virtual void leave() = 0;
 };
 } // namespace lib

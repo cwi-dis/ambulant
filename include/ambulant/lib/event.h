@@ -59,24 +59,38 @@ namespace ambulant {
 
 namespace lib {
 
+/// Interface to be provided by a scheduler/timer event.
 class event {
   public:
 	virtual ~event() {}
+	
+	/// Called to fire the event.
 	virtual void fire() = 0;
 };
 
 enum event_priority {ep_low, ep_med, ep_high};
 
+#if 0
+// XXX This class seems to be superseded by event_processor.
+/// Interface to be provided by an event scheduler.
 template <class T>
 class event_scheduler {
   public:
 	typedef T time_type;
 	virtual ~event_scheduler() {}
+	
+	/// Make event ev fire at time t.
 	virtual void schedule_event(event *ev, time_type t, event_priority ep = ep_low) = 0;
+	
+	/// Cancel a previously scheduled event.
 	virtual void cancel_event(event *ev, event_priority ep = ep_low) = 0;
+	
+	/// Cancel all events.
 	virtual void cancel_all_events() = 0;
 };
+#endif
 
+/// Convenience event class that sets a flag when the event fires.
 class flag_event : public event {
   public:
 	flag_event(bool& flag)

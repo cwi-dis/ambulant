@@ -59,6 +59,10 @@ namespace common {
 class global_playable_factory;
 	
 struct factories {
+	factories()
+	:	rf(NULL),
+		wf(NULL),
+		df(NULL) {};
 	ambulant::common::global_playable_factory *rf;
 	ambulant::common::window_factory *wf;
 	ambulant::net::datasource_factory *df;

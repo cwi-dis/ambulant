@@ -66,6 +66,7 @@ namespace ambulant {
 
 namespace lib {
 
+/// Information on custom test used in the document.
 struct custom_test {
 	std::string idd;
 	std::string title;

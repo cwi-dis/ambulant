@@ -76,6 +76,8 @@ const T& lmin(const T& l, const T& r){
 	return (l < r ? l : r);
 }
 
+/// A two-dimensional (x, y) point.
+/// T is the scalar type for the coordinates.
 template <class T>
 class basic_point {
   public:
@@ -136,7 +138,8 @@ class basic_point {
 	
 };
 
-
+/// A two-dimensional size.
+/// S is the scalar type for the distances.
 template <class S>
 class basic_size {
   public:
@@ -174,10 +177,10 @@ class basic_size {
 	}
 };
 
-// a basic_rect includes the points (x, y): 
-// where x in [x, x+w) and y in [y, y+h)
-// if w == 0 or h == 0 the basic_rect is empty
-
+/// A two-dimensional rectangle.
+/// a basic_rect includes the points (xx, yy): 
+/// where xx in [x, x+w) and yy in [y, y+h)
+/// if w == 0 or h == 0 the basic_rect is empty.
 template <class T, class S = T >
 class basic_rect {
   public:
@@ -248,10 +251,12 @@ class basic_rect {
 		return h;
 	}
 
+	/// Move a rectangle by a vector (specified as a point).
 	void translate(const basic_point<T>& p) {
 		x += p.x; y += p.y;
 	}
 	
+	/// Get coordinates of a rectangle p in a base setup by this rectangle.
 	basic_rect<T, S> innercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
 		rv &= this;
@@ -259,6 +264,8 @@ class basic_rect {
 		return rv;
 	}
 	
+	/// Get coordinates in outer coordinate system for a rectangle p specified
+	/// in the system setup by this rectangle.
 	basic_rect<T, S> outercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
 		rv.translate(-left_top());
@@ -273,7 +280,8 @@ class basic_rect {
 	void operator-=(basic_point<T> p) {
 		translate(-p);
 	}
-		
+	
+	/// Intersect this rectangle by another rectangle o.
 	void operator&=(const basic_rect<T, S>& o) {
 		// set to intersection
 		// xxx: handle empty rect
@@ -290,6 +298,7 @@ class basic_rect {
 		y = y1;
 	}
 	
+	/// Set this rectangle to a rectangle that also incorporates rectangle o.
 	void operator|=(const basic_rect<T, S>& o) {
 		// set to union
 		// xxx: handle empty rect
@@ -304,6 +313,7 @@ class basic_rect {
 		y = y1;
 	}
 	
+	/// Intersect two rectangles.
 	basic_rect<T, S> operator&(const basic_rect<T, S>& r) const {
 		// return intersection
 		basic_rect<T, S> l(*this); 
@@ -311,6 +321,7 @@ class basic_rect {
 		return l;
 	}
 	
+	/// Return rectangle encompassing both rectangles.
 	basic_rect<T, S> operator|(const basic_rect<T, S>& r)  const {
 		// return union
 		basic_rect<T, S> l(*this); 
@@ -332,23 +343,20 @@ class basic_rect {
 };
 
 
-/////////////////
-// screen_rect
-
-// A special case rectangle that uses variable naming 
-// that depends on axis-orientation.
-// Assumes the y axis is reflected and vertival. 
-// valid rect cond: right>=left and bottom>=top;
-
-// A screen_rect includes the points (x, y): 
-// where x in [left, right) and y in [top, bottom)
-// if w == 0 or h == 0 the basic_rect is empty
-
-// Note: for convenience and by tradition
-// left, top, right, bottom are public.
-// This means that when set directly 
-// this class may not represent a valid rect
-// (use valid() member function to check this).
+/// A special case rectangle that uses variable naming 
+/// that depends on axis-orientation.
+/// Assumes the y axis is reflected and vertival. 
+/// valid rect cond: right>=left and bottom>=top;
+///
+/// A screen_rect includes the points (x, y): 
+/// where x in [left, right) and y in [top, bottom)
+/// if w == 0 or h == 0 the basic_rect is empty
+///
+/// Note: for convenience and by tradition
+/// left, top, right, bottom are public.
+/// This means that when set directly 
+/// this class may not represent a valid rect
+/// (use valid() member function to check this).
 
 template <class T>
 class screen_rect {

@@ -65,6 +65,20 @@ namespace ambulant {
 
 namespace lib {
 
+/// A mutex.
+/// The actual implementation is machine-dependent and
+/// implements the abstract_critical_section interface.
+///
+/// The reason for the slightly convoluted implementation
+/// in stead of a normal pattern is to allow allocation
+/// of critical sections without using the new operator.
+///
+/// Critical sections are not reentrant from the same thread
+/// (nor from other threads, obviously), and there is no
+/// deadlock detection (so you are responsible that there are
+/// no situations where code can sometimes first enter CS 1
+/// and then CS 2 and other paths through the code where first
+/// CS 2 is entered and then CS 1).
 #ifdef AMBULANT_PLATFORM_WIN32
 class critical_section : public win32::critical_section {
 };

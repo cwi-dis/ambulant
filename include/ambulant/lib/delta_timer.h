@@ -71,9 +71,8 @@ namespace ambulant {
 
 namespace lib {
 
-// A scheduler for timeout events
-// Uses delta timer pattern
-
+/// A scheduler for timeout events.
+/// Uses delta timer pattern.
 class delta_timer {
   public:
 	typedef abstract_timer::time_type time_type;
@@ -82,26 +81,27 @@ class delta_timer {
 	delta_timer(abstract_timer *t);
 	virtual ~delta_timer();
 
-	// called periodically
-	// the period defines timer resolution
-	// fires ready events 
+	/// Fires ready events. 
+	/// Must be called periodically,
+	/// the period defines timer resolution.
 	void execute();
 	
-	// like execute but instead of executing events
-	// returns the ready to fire events to the caller
+	/// Return list of read events.
+	// Like execute but instead of executing events
+	// returns the ready to fire events to the caller.
 	void execute(std::queue<event*>& queue);
 	
-	// Insert a timeout event
+	/// Insert a timeout event.
 	void insert(event *pe, time_type t);
 
-	// Cancels a sheduled event
-	// Returns true on sucess
+	/// Cancels a scheduled event.
+	// Returns true on success.
 	bool cancel(event *pe);
 		
-	// Clear all events
+	/// Clear all events.
 	void clear();
 	
-	// debug output
+	// debug output.
 	void write_trace();
 	
   private:
