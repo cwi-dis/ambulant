@@ -23,6 +23,18 @@ class event {
 	virtual void fire() = 0;
 };
 
+class flag_event : public event {
+  public:
+	flag_event(bool& flag)
+	:	m_flag(flag) {}
+	
+	void fire() {
+		m_flag = !m_flag;
+	}
+  public:
+	bool& m_flag;
+};
+
 } // namespace lib
  
 } // namespace ambulant
