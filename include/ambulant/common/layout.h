@@ -117,6 +117,7 @@ class gui_events  {
   public:
 	virtual void redraw(const lib::screen_rect<int> &dirty, gui_window *window) = 0;
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
+	virtual void transition_freeze_end(lib::screen_rect<int> area) = 0;
 };
 
 // renderer is an pure virtual baseclass for renderers that
@@ -155,6 +156,7 @@ class surface {
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void need_redraw() = 0;
 	virtual void need_events(bool want) = 0;
+	virtual void transition_done() = 0;
 
 	virtual const lib::screen_rect<int>& get_rect() const = 0;
 	virtual const lib::point &get_global_topleft() const = 0;

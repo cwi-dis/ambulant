@@ -378,6 +378,7 @@ void smil_player::stopped(int n, double t) {
 void smil_player::transitioned(int n, double t) {
 	// remove fill effect for nodes specifing fill="transition" 
 	// and overlap with n
+	/*AM_DBG*/ m_logger->trace("smil_player::transitioned(%d, %f)", n, t);
 }
 
 // Playable notification for a stall event.

@@ -104,7 +104,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
 	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
 	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
-		  
+	void transition_freeze_end(lib::screen_rect<int> area) {}		  
 	static void sdl_callback(Uint8 *stream, int len);
   private:
 	bool restart_audio_input();

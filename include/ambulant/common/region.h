@@ -92,6 +92,8 @@ class passive_region : public surface_template, public surface, public gui_event
 	const region_info *get_info() const { return m_info; }	
 	gui_window *get_gui_window() { return m_parent->get_gui_window(); }
 
+	void transition_done() { transition_done(m_inner_bounds); }
+
 	// The gui_events interface:
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
 	void user_event(const point &where, int what = 0);
@@ -103,7 +105,11 @@ class passive_region : public surface_template, public surface, public gui_event
 	void need_bounds();					// recompute cached sizes
 	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
 	void draw_background(const screen_rect<int> &r, gui_window *window);
+
   protected:
+	virtual void transition_done(lib::screen_rect<int> area);
+	void transition_freeze_end(lib::screen_rect<int> area);
+
   	std::string m_name;					// for debugging
 
 	bool m_bounds_inited;				// True if bounds and topleft initialized
@@ -134,6 +140,8 @@ class passive_root_layout : public passive_region {
 	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
 	gui_window *get_gui_window() { return m_gui_window; }
+  protected:
+	void transition_done(lib::screen_rect<int> area) { transition_freeze_end(area); }
   private:
 	gui_window *m_gui_window;
 };

@@ -542,6 +542,47 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 		point(x_region_for_image_right, y_region_for_image_bottom));
 }
 
+void 
+passive_region::transition_done(lib::screen_rect<int> area)
+{
+	if (!m_parent)
+		return;   // Audio region or some such
+	area &= m_inner_bounds;
+	m_parent->transition_done(m_outer_bounds.outercoordinates(area));
+}
+
+void 
+passive_region::transition_freeze_end(lib::screen_rect<int> r)
+{
+	AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s, ltrb=(%d, %d, %d, %d))", (void *)this, m_name.c_str(), r.left(), r.top(), r.right(), r.bottom());
+	r &= m_outer_bounds;
+	r = m_outer_bounds.innercoordinates(r);
+	if (r.empty()) {
+	AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) returning: no overlap", (void *)this, m_name.c_str());
+		return;
+	}
+	
+	// Signal the active renderers
+	// For the win32 arrangement we should have at most one active
+	assert(m_renderers.size()<=1);
+	std::list<gui_events*>::iterator ar;
+	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
+		(*ar)->transition_freeze_end(r);
+	}
+
+	// Finally the children regions of this
+	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
+		children_list_t& cl = (*it2).second;
+		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++) {
+			AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) -> child 0x%x", (void *)this, m_name.c_str(), (void *)(*it3));
+			(*it3)->transition_freeze_end(r);
+		}
+	}
+	AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) returning", (void*)this, m_name.c_str());
+}
+
 passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, bgrenderer *bgrenderer, window_factory *wf)
 :   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info, bgrenderer)
 {

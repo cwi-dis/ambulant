@@ -148,6 +148,7 @@ class active_renderer : public active_basic_renderer {
 	virtual void start_outtransition(lib::transition_info *info);
 	virtual surface *get_surface() { return m_dest;}
 	virtual renderer *get_renderer() { return this; }
+	void transition_freeze_end(lib::screen_rect<int> r) { m_context->transitioned(m_cookie); }
 	virtual void readdone() {};
 	
   protected:
@@ -236,6 +237,7 @@ class active_video_renderer : public common::active_basic_renderer {
 	void start_outtransition(lib::transition_info *info) {  }
 	virtual common::surface *get_surface();
 	virtual renderer *get_renderer();
+	void transition_freeze_end(lib::screen_rect<int> r) { m_context->transitioned(m_cookie); }
 	
 		
   protected:
@@ -265,6 +267,7 @@ class background_renderer : public bgrenderer {
 	virtual ~background_renderer() {}
 	void set_surface(surface *destination) { m_dst = destination; }
 	void user_event(const lib::point &where, int what = 0) {};
+	void transition_freeze_end(lib::screen_rect<int> area) {};
   protected:
 	const region_info *m_src;
 	surface *m_dst;
@@ -305,6 +308,7 @@ class renderer_playable : public playable, public renderer {
 	surface *get_surface() { return m_dest;}
 	void user_event(const lib::point &where, int what) {}
 	renderer *get_renderer() { return this; }
+	void transition_freeze_end(lib::screen_rect<int> r) { m_context->transitioned(m_cookie); }
 	
   protected:
     playable_notification *m_context;
