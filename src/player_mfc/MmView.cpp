@@ -50,7 +50,7 @@
 //
 
 #include "stdafx.h"
-#include "DemoPlayer.h"
+#include "AmbulantPlayer.h"
 #include "MainFrm.h"
 
 #include "MmDoc.h"
@@ -71,6 +71,9 @@
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
+#include "ambulant/smil2/test_attrs.h"
+#include "ambulant/lib/win32/win32_asb.h"
+
 #include ".\mmview.h"
 
 #ifdef _DEBUG
@@ -87,6 +90,14 @@ static std::string get_log_filename() {
 	text_strcat(buf, TEXT("\\"));
 	text_strcat(buf, log_name);
 	return std::string(ambulant::lib::textptr(buf).str());
+}
+static TCHAR *get_directory(const TCHAR *fn) {
+	static TCHAR buf[_MAX_PATH];
+	buf[0] = 0;
+	text_strcat(buf, fn);
+	TCHAR *p1 = text_strrchr(buf,'\\');
+	if(p1 != NULL) *p1='\0';
+	return buf;
 }
 
 std::ofstream 
@@ -147,13 +158,15 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_LOG, OnUpdateViewLog)
 	ON_COMMAND(ID_VIEW_LOG, OnViewLog)
 	ON_MESSAGE(WM_SET_CLIENT_RECT, OnSetClientRect)
-	ON_COMMAND(ID_VIEW_TESTS, OnViewTests)
+	ON_COMMAND(ID_VIEW_TESTS, OnOpenFilter)
 	ON_COMMAND(ID_VIEW_FILTER, OnViewFilter)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
 	ON_WM_MOUSEMOVE()
-	ON_UPDATE_COMMAND_UI(ID_VIEW_TESTS, OnUpdateViewTests)
-ON_COMMAND(ID_VIEW_AUTOPLAY, OnViewAutoplay)
-ON_UPDATE_COMMAND_UI(ID_VIEW_AUTOPLAY, OnUpdateViewAutoplay)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_TESTS, OnUpdateOpenFilter)
+	ON_COMMAND(ID_VIEW_AUTOPLAY, OnViewAutoplay)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_AUTOPLAY, OnUpdateViewAutoplay)
+	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTW, 0, 0xFFFF, OnToolTipNotify)
+	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipNotify)
 END_MESSAGE_MAP()
 
 
@@ -166,6 +179,11 @@ MmView::MmView()
 	m_cursor_id = 0;
 	m_autoplay = true;
 	lib::logger::get_logger()->set_std_ostream(log_os);
+#ifdef AM_PLAYER_DG
+	lib::logger::get_logger()->trace("Ambulant DG Player");
+#else
+	lib::logger::get_logger()->trace("Ambulant DX Player");
+#endif
 }
 
 MmView::~MmView()
@@ -237,7 +255,6 @@ void MmView::OnInitialUpdate()
 	SendMessage(WM_SET_CLIENT_RECT, 
 		common::default_layout_width, ambulant::common::default_layout_height);
 	if(player) player->redraw(GetSafeHwnd(), 0);
-
 }
 
 void MmView::OnDestroy()
@@ -249,7 +266,6 @@ void MmView::OnDestroy()
 	}
 	if(m_timer_id) KillTimer(m_timer_id);
 	CView::OnDestroy();
-	// TODO: Add your message handler code here
 }
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName) {
@@ -260,7 +276,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 		delete dummy;
 	}
 	dummy = create_player_instance(lib::textptr(lpszPathName));
-	m_curPathName = lpszPathName;
+	m_curDocFilename = lpszPathName;
 	player = dummy;
 	if(m_autoplay)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
@@ -295,10 +311,16 @@ void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 void MmView::OnFileStop()
 {
 	if(player) {
-		player->stop();
-		player->on_done();
-		InvalidateRect(NULL);
-		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		gui_player *dummy = player;
+		player = 0;
+		if(dummy) {
+			dummy->stop();
+			delete dummy;
+		}
+		dummy = create_player_instance(lib::textptr(LPCTSTR(m_curDocFilename)));
+		player = dummy;
+		PostMessage(WM_INITMENUPOPUP,0, 0);
+		InvalidateRect(NULL); 
 		needs_done_redraw = false;
 	}
 }
@@ -331,6 +353,8 @@ void MmView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if(player) {
 		int new_cursor_id = player->get_cursor(point.x, point.y, GetSafeHwnd());
+		if(new_cursor_id>0) EnableToolTips(TRUE);
+		else CancelToolTips();
 		if(new_cursor_id != m_cursor_id) {
 			HCURSOR new_cursor = 0;
 			if(new_cursor_id == 0) {
@@ -350,15 +374,14 @@ void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	CView::OnChar(nChar, nRepCnt, nFlags);
 }
 
-
 void MmView::OnViewSource() {
 	CString cmd = TEXT("Notepad.exe ");
-	cmd += m_curPathName;
+	cmd += m_curDocFilename;
 	WinExec(cmd, SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
-	pCmdUI->Enable((player && !m_curPathName.IsEmpty())?TRUE:FALSE);
+	pCmdUI->Enable((player && !m_curDocFilename.IsEmpty())?TRUE:FALSE);
 }
 
 void MmView::OnViewLog() {
@@ -374,7 +397,8 @@ void MmView::OnViewLog() {
 }
 
 void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {
-	pCmdUI->Enable((player && !m_curPathName.IsEmpty())?TRUE:FALSE);
+	//pCmdUI->Enable((player && !m_curDocFilename.IsEmpty())?TRUE:FALSE);
+	pCmdUI->Enable(TRUE);
 }
 
 LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
@@ -397,25 +421,30 @@ LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-void MmView::OnViewTests() {
+void MmView::OnOpenFilter() {
 	BOOL bOpenFileDialog = TRUE;
 	TCHAR lpszDefExt[] = TEXT("*.xml");
 	LPCTSTR lpszFileName = NULL; // no initial fn
 	DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-	TCHAR lpszFilter[] = TEXT("Filter Files (*.xml)|*.xml|All Files (*.*)|*.*||");
+	TCHAR lpszFilter[] = TEXT("Settings Files (*.xml)|*.xml|All Files (*.*)|*.*||");
 	CWnd* pParentWnd = this;
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
-	dlg.m_ofn.lpstrTitle = TEXT("Select SMIL tests filter file");
+	dlg.m_ofn.lpstrTitle = TEXT("Select settings file");
+	if(!m_curDocFilename.IsEmpty())
+		dlg.m_ofn.lpstrInitialDir = get_directory(m_curDocFilename);
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
-		if(player) player->set_preferences(LPCTSTR(str));
 		m_curFilter = str;
+		smil2::test_attrs::load_test_attrs(lib::textptr(LPCTSTR(str)).c_str());
+		if(player && !m_curDocFilename.IsEmpty()) {
+			SetMMDocument(m_curDocFilename);
+		}
 	}	
 }
-void MmView::OnUpdateViewTests(CCmdUI *pCmdUI)
+
+void MmView::OnUpdateOpenFilter(CCmdUI *pCmdUI)
 {
-	bool enable = !player || (player && !player->is_playing());
-	pCmdUI->Enable(enable?TRUE:FALSE);
+	pCmdUI->Enable(TRUE);
 }
 
 void MmView::OnViewFilter()
@@ -441,4 +470,44 @@ void MmView::OnUpdateViewAutoplay(CCmdUI *pCmdUI)
 {	
 	pCmdUI->Enable(TRUE);
 	pCmdUI->SetCheck(m_autoplay?1:0);
+}
+
+BOOL MmView::OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult)
+{
+	if(!player) return false;
+	
+	TOOLTIPTEXTA* pTTTA = (TOOLTIPTEXTA*)pNMHDR;
+	TOOLTIPTEXTW* pTTTW = (TOOLTIPTEXTW*)pNMHDR;
+	UINT_PTR nID = pNMHDR->idFrom;
+	CString strTipText;
+	if(pNMHDR->code == TTN_NEEDTEXTA && (pTTTA->uFlags & TTF_IDISHWND) ||
+		pNMHDR->code == TTN_NEEDTEXTW && (pTTTW->uFlags & TTF_IDISHWND)) {
+		std::string str = player->get_pointed_node_str();
+		strTipText.Format("Anchor: %s", str.c_str());
+		if(pNMHDR->code == TTN_NEEDTEXTA)
+			lstrcpyn(pTTTA->szText, str.c_str(), sizeof(pTTTA->szText));
+		else
+			::MultiByteToWideChar( CP_ACP , 0, str.c_str(), -1, pTTTW->szText, sizeof(pTTTW->szText) );
+		*pResult = 0;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+INT_PTR MmView::OnToolHitTest(CPoint point, TOOLINFO* pTI) const {
+	if(player) {
+		int new_cursor_id = player->get_cursor(point.x, point.y, GetSafeHwnd());
+		if(new_cursor_id > 0) {
+			INT_PTR nHit = 1; // node id
+			if (pTI != NULL) {
+				pTI->hwnd = m_hWnd;
+				pTI->uId = (UINT_PTR)m_hWnd; // hWndChild;
+				pTI->uFlags |= TTF_IDISHWND;
+				pTI->lpszText = LPSTR_TEXTCALLBACK;
+				pTI->uFlags |= TTF_NOTBUTTON; //|TTF_CENTERTIP;
+			}
+			return nHit;
+		}
+	} 
+	return -1;  // not found
 }

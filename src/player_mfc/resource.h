@@ -1,11 +1,11 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by DemoPlayer.rc
+// Used by AmbulantPlayer.rc
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDR_MAINFRAME                   128
-#define IDR_DemoPlayerTYPE              129
+#define IDR_AMBULANTPLAYERTYPE          129
 #define IDC_CURSOR_HAND                 130
 #define IDC_VERSION                     1000
 #define ID_FILE_PLAY                    32771

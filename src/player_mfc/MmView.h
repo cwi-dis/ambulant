@@ -67,7 +67,7 @@ public:
 public:
 	void SetMMDocument(LPCTSTR lpszPathName);
 	UINT_PTR m_timer_id;
-	CString m_curPathName;
+	CString m_curDocFilename;
 	CString m_curFilter;
 	UINT m_cursor_id;
 	bool m_autoplay;
@@ -109,14 +109,16 @@ public:
 	afx_msg void OnUpdateViewLog(CCmdUI *pCmdUI);
 	afx_msg void OnViewLog();
 	afx_msg LRESULT OnSetClientRect(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnViewTests();
+	afx_msg void OnOpenFilter();
 	afx_msg void OnViewFilter();
 	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnUpdateViewTests(CCmdUI *pCmdUI);
-//	afx_msg void OnDropFiles(HDROP hDropInfo);
+	afx_msg void OnUpdateOpenFilter(CCmdUI *pCmdUI);
 	afx_msg void OnViewAutoplay();
-	afx_msg void OnUpdateViewAutoplay(CCmdUI *pCmdUI);
+	void OnUpdateViewAutoplay(CCmdUI *pCmdUI);
+	afx_msg BOOL OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
+
+	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

@@ -50,7 +50,7 @@
 //
 
 #include "stdafx.h"
-#include "DemoPlayer.h"
+#include "AmbulantPlayer.h"
 
 #include "MmDoc.h"
 #include ".\mmdoc.h"
