@@ -111,9 +111,9 @@ lib::unix::event_processor::wait_event()
 	dummy = gettimeofday(&tv,NULL);
 	ts.tv_sec = tv.tv_sec;
 	ts.tv_nsec = (tv.tv_usec + 10000)* 1000;
-	if (ts.tv_nsec > 1000000) {
+	if (ts.tv_nsec > 1000000000) {
 		ts.tv_sec += 1;
-		ts.tv_nsec -= 1000000;
+		ts.tv_nsec -= 1000000000;
 	}
 	
 	rv = pthread_cond_timedwait(&m_queue_condition, &m_queue_mutex, &ts);
