@@ -98,7 +98,7 @@ class ffmpeg_audio_filter_finder : public audio_filter_finder {
 
 class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(net::datasource *src);
+	 ffmpeg_audio_datasource(const std::string& url, datasource *src);
     ~ffmpeg_audio_datasource();
      
 		  
@@ -114,17 +114,15 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	
  
 	audio_format& get_audio_format() {return m_fmt; }
-	int select_decoder(char* file_ext);
-  	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
-	long add_ref() {};
-	long release() {};	
-	long get_ref_count() const {};
+	bool select_decoder(const char* file_ext);
+	
+	static bool supported(const std::string& url);
   protected:
 	int init(); 
   	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
 	  
   private:
-
+	const std::string m_url;
   	AVCodec  *m_codec;
     AVCodecContext *m_con;
     lib::event_processor *m_event_processor;
@@ -144,7 +142,7 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-     ffmpeg_resample_datasource(net::audio_datasource *src, audio_format_choices fmts);
+     ffmpeg_resample_datasource(audio_datasource *src, audio_format_choices fmts);
     ~ffmpeg_resample_datasource();
     
     void start(lib::event_processor *evp, lib::event *callback);  
@@ -158,8 +156,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     char* get_read_ptr();
     int size() const;   
    
-//    void get_input_format(net::audio_context &fmt);  
-//    void get_output_format(net::audio_context &fmt);
+//    void get_input_format(audio_context &fmt);  
+//    void get_output_format(audio_context &fmt);
 	audio_format& get_audio_format() { return m_out_fmt; };
 		
   protected:

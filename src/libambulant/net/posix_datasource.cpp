@@ -55,7 +55,7 @@
 #include "ambulant/net/posix_datasource.h"
 #include <unistd.h>
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -66,11 +66,10 @@
 // data_buffer
 
 using namespace ambulant;
+using namespace net;
 
-	
-
-net::datasource* 
-net::posix_datasource_factory::new_raw_datasource(const std::string& url)
+datasource* 
+posix_datasource_factory::new_raw_datasource(const std::string& url)
 {
 	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", url.c_str());
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
@@ -88,8 +87,8 @@ net::posix_datasource_factory::new_raw_datasource(const std::string& url)
 
 
 
-net::datasource* 
-net::passive_datasource::activate()
+datasource* 
+passive_datasource::activate()
 {
 	int in;
 	
@@ -103,7 +102,7 @@ net::passive_datasource::activate()
 		
 }
 
-net::passive_datasource::~passive_datasource()
+passive_datasource::~passive_datasource()
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_datasource::~passive_datasource(0x%x)", (void*)this);
 }
@@ -111,7 +110,7 @@ net::passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-net::active_datasource::active_datasource(passive_datasource *const source, int file)
+active_datasource::active_datasource(passive_datasource *const source, int file)
 :	m_buffer(NULL),
 	m_source(source),
 	m_filesize(0),
@@ -134,18 +133,18 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
 
 
 void
-net::active_datasource::callback()
+active_datasource::callback()
 {
 }
 
 bool
-net::active_datasource::end_of_file()
+active_datasource::end_of_file()
 {
 	if (m_buffer->buffer_not_empty()) return false;
 	return m_end_of_file;
 }
 
-net::active_datasource::~active_datasource()
+active_datasource::~active_datasource()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_datasource::~active_datasource(0x%x)", (void*)this);
 	if (m_buffer) {
@@ -158,13 +157,13 @@ net::active_datasource::~active_datasource()
 }
 
 int
-net::active_datasource::size() const
+active_datasource::size() const
 {
 	return m_buffer->size();
 }
 
 void
-net::active_datasource::filesize()
+active_datasource::filesize()
 {
  	using namespace std;
 	int dummy;
@@ -180,7 +179,7 @@ net::active_datasource::filesize()
 
 
 void
-net::active_datasource::read(char *data, int size)
+active_datasource::read(char *data, int size)
 {
     char* in_ptr;
     if (size <= m_buffer->size()) {
@@ -191,7 +190,7 @@ net::active_datasource::read(char *data, int size)
 }
 
 void
-net::active_datasource::read_file()
+active_datasource::read_file()
 {
   	char *buf;
   	int n; 	
@@ -217,13 +216,13 @@ net::active_datasource::read_file()
 }
  
 char* 
-net::active_datasource::get_read_ptr()
+active_datasource::get_read_ptr()
 {
 	return m_buffer->get_read_ptr();
 }
   
 void
-net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
+active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
  {
  	if (! end_of_file() ) read_file();
 	
@@ -236,7 +235,7 @@ net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 }
  
 void
-net::active_datasource::readdone(int size)
+active_datasource::readdone(int size)
 {
 	m_buffer->readdone(size);
 }

@@ -65,11 +65,10 @@
 // data_buffer
 
 using namespace ambulant;
+using namespace net;
 
-	
-
-net::datasource* 
-net::stdio_datasource_factory::new_raw_datasource(const std::string& url)
+datasource* 
+stdio_datasource_factory::new_raw_datasource(const std::string& url)
 {
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
 	if (url != "") {
@@ -85,7 +84,7 @@ net::stdio_datasource_factory::new_raw_datasource(const std::string& url)
 // *********************** stdio_datasource ***********************************************
 
 
-net::stdio_datasource::stdio_datasource(const std::string& url, FILE* file)
+stdio_datasource::stdio_datasource(const std::string& url, FILE* file)
 :	m_buffer(NULL),
 	m_url(url),
 	m_filesize(0),
@@ -106,18 +105,18 @@ net::stdio_datasource::stdio_datasource(const std::string& url, FILE* file)
 
 
 void
-net::stdio_datasource::callback()
+stdio_datasource::callback()
 {
 }
 
 bool
-net::stdio_datasource::end_of_file()
+stdio_datasource::end_of_file()
 {
 	if (m_buffer->buffer_not_empty()) return false;
 	return m_end_of_file;
 }
 
-net::stdio_datasource::~stdio_datasource()
+stdio_datasource::~stdio_datasource()
 {
 	if (m_buffer) {
 		delete m_buffer;
@@ -127,13 +126,13 @@ net::stdio_datasource::~stdio_datasource()
 }
 
 int
-net::stdio_datasource::size() const
+stdio_datasource::size() const
 {
 	return m_buffer->size();
 }
 
 void
-net::stdio_datasource::filesize()
+stdio_datasource::filesize()
 {
  	using namespace std;
 	if (m_stream >= 0) {
@@ -149,7 +148,7 @@ net::stdio_datasource::filesize()
 
 
 void
-net::stdio_datasource::read(char *data, int size)
+stdio_datasource::read(char *data, int size)
 {
     char* in_ptr;
     if (size <= m_buffer->size()) {
@@ -160,7 +159,7 @@ net::stdio_datasource::read(char *data, int size)
 }
 
 void
-net::stdio_datasource::read_file()
+stdio_datasource::read_file()
 {
   	char *buf;
   	size_t n; 	
@@ -186,13 +185,13 @@ net::stdio_datasource::read_file()
 }
  
 char* 
-net::stdio_datasource::get_read_ptr()
+stdio_datasource::get_read_ptr()
 {
 	return m_buffer->get_read_ptr();
 }
   
 void
-net::stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
+stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
  {
  	if (! end_of_file() ) read_file();
 	
@@ -205,7 +204,7 @@ net::stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 }
  
 void
-net::stdio_datasource::readdone(int size)
+stdio_datasource::readdone(int size)
 {
 	m_buffer->readdone(size);
 }

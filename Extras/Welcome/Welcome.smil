@@ -22,8 +22,8 @@
     <par dur="16s">
       <img src="data/background.png" region="background"/>
       <switch>
-	    <audio systemOperatingSystem="macos" src="data/AmbulantTune.aif" region="audio"/>
         <audio src="data/AmbulantTune.mp3" region="audio"/>
+	    <audio systemOperatingSystem="macos" src="data/AmbulantTune.aif" region="audio"/>
       </switch>
       <par>
       	<img src="data/ambulant.png" begin="0s" region="title"/>

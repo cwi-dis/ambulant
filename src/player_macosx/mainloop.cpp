@@ -64,6 +64,7 @@
 #endif
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/posix_datasource.h"
+//#define WITH_STDIO_DATASOURCE
 #ifdef WITH_STDIO_DATASOURCE
 #include "ambulant/net/stdio_datasource.h"
 #endif

@@ -73,9 +73,9 @@
 #define DEFAULT_MAX_BUF_SIZE 1000000
 
 using namespace ambulant;
+using namespace net;
 
-
-net::databuffer::databuffer()
+databuffer::databuffer()
 {
 	m_size = 0;
     m_used = 0;
@@ -87,14 +87,14 @@ net::databuffer::databuffer()
 }
 
 bool
-net::databuffer::buffer_full()
+databuffer::buffer_full()
 {
    return m_buffer_full;
 }
 
 
 bool
-net::databuffer::buffer_not_empty()
+databuffer::buffer_not_empty()
 {
     if (m_used > 0) {
         return true;
@@ -105,7 +105,7 @@ net::databuffer::buffer_not_empty()
             
 
 
-net::databuffer::databuffer(int max_size)
+databuffer::databuffer(int max_size)
 {
     m_used = 0;
     m_size = 0;
@@ -121,7 +121,7 @@ net::databuffer::databuffer(int max_size)
 }
 
 
-net::databuffer::~databuffer()
+databuffer::~databuffer()
 {
 	if (m_buffer) {
 		free(m_buffer);
@@ -132,12 +132,12 @@ net::databuffer::~databuffer()
 	}
 }
 
-int net::databuffer::size() const
+int databuffer::size() const
 {
 	return m_used;
 }
 
-void net::databuffer::dump(std::ostream& os, bool verbose) const
+void databuffer::dump(std::ostream& os, bool verbose) const
 {
 	int i;
 
@@ -155,7 +155,7 @@ void net::databuffer::dump(std::ostream& os, bool verbose) const
 }
 
 char *
-net::databuffer::get_write_ptr(int size)
+databuffer::get_write_ptr(int size)
 {
 	//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: start BUFSIZ = %d", BUFSIZ);
 	
@@ -174,7 +174,7 @@ net::databuffer::get_write_ptr(int size)
     
 }
 
-void net::databuffer::pushdata(int size)
+void databuffer::pushdata(int size)
 {
     if(!m_buffer_full) {
         m_size += size;
@@ -195,13 +195,13 @@ void net::databuffer::pushdata(int size)
 
 
 char *
-net::databuffer::get_read_ptr()
+databuffer::get_read_ptr()
 {
 	return (m_buffer + m_rear);
 }
 
 void
-net::databuffer::readdone(int size)
+databuffer::readdone(int size)
 {
     if (size <= m_used) {
         m_rear += size;

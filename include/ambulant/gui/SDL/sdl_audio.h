@@ -74,7 +74,7 @@ namespace ambulant {
 namespace gui {
 namespace sdl {	  
 
-class sdl_active_audio_renderer : public common::active_renderer, public lib::timer_events {
+class sdl_active_audio_renderer : public common::active_basic_renderer, public lib::timer_events {
   public:
     sdl_active_audio_renderer(
     common::playable_notification *context,
@@ -102,6 +102,9 @@ class sdl_active_audio_renderer : public common::active_renderer, public lib::ti
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where) {};
 	void playdone();
+
+	void set_surface(common::surface *dest) { abort(); }
+	common::surface *get_surface() { abort(); }
 		  
   private:
 	void new_channel();  

@@ -52,6 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -65,6 +66,15 @@ typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
 
+// Hack, hack. Get extension of a URL.
+static const char *
+getext(const std::string &url)
+{
+	const char *curl = url.c_str();
+	const char *dotpos = rindex(curl, '.');
+	if (dotpos) return dotpos+1;
+	return NULL;
+}
 
 audio_datasource* 
 ffmpeg_audio_parser_finder::new_audio_parser(const std::string& url, audio_format_choices fmts, datasource *src)
@@ -74,7 +84,11 @@ ffmpeg_audio_parser_finder::new_audio_parser(const std::string& url, audio_forma
 	audio_datasource *ds = NULL;
 	if (src) {
 			// XXXX Here we have to check for the mime type.
-			ds = new ffmpeg_audio_datasource(src);
+			if (!ffmpeg_audio_datasource::supported(url)) {
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_parser_finder::new_audio_parser: no support for %s", url.c_str());
+				return NULL;
+			}
+			ds = new ffmpeg_audio_datasource(url, src);
 			// XXX Here we have to check if ext & fmt are supported by ffmpeg
 			if (ds) return ds;			
 		}
@@ -91,8 +105,9 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 	return new ffmpeg_resample_datasource(src, fmts);
 }
 		
-ffmpeg_audio_datasource::ffmpeg_audio_datasource(datasource *const src)
-:	m_codec(NULL),
+ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, datasource *const src)
+:	m_url(url),
+	m_codec(NULL),
 	m_con(NULL),
 	m_fmt(audio_format(0, 0, 0)),
 	m_event_processor(NULL),
@@ -163,18 +178,18 @@ ffmpeg_audio_datasource::readdone(int len)
 void 
 ffmpeg_audio_datasource::callback()
 {
-	int result;
 	int size;
 	int outsize;
 	int decoded;
-	int blocksize;
-	const int max_block = INBUF_SIZE +  FF_INPUT_BUFFER_PADDING_SIZE;
+//	const int max_block = INBUF_SIZE +  FF_INPUT_BUFFER_PADDING_SIZE;
 	
 
 	m_lock.enter();
 	if(!m_codec) {
-		select_decoder("mp3"); // XXX should get from m_src
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selected the MP3 decoder");
+		const char *ext = getext(m_url);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selecting %s decoder", ext);
+		if (!select_decoder(ext))
+			lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback: could not select %s decoder", ext);
 	}
 
 	if (m_con) {
@@ -241,21 +256,31 @@ ffmpeg_audio_datasource::size() const
 		return m_buffer.size();
 }	
 
-int 
-ffmpeg_audio_datasource::select_decoder(char* file_ext)
+bool 
+ffmpeg_audio_datasource::select_decoder(const char* file_ext)
 {
 	m_codec = avcodec_find_decoder_by_name(file_ext);
 	if (m_codec == NULL) {
 			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder : Failed to open codec");
+			return false;
 	}
 	m_con = avcodec_alloc_context();
 	
 	if(avcodec_open(m_con,m_codec) < 0) {
 			lib::logger::get_logger()->error("ffmpeg_audio_datasource.select_decoder : Failed to open avcodec");
+			return false;
 	}
 	m_fmt.samplerate = m_con->sample_rate;
 	m_fmt.bits = 16; // XXXX
 	m_fmt.channels = m_con->channels;
+}
+
+static bool
+ffmpeg_audio_datasource::supported(const std::string& url)
+{
+	const char *file_ext = getext(url);
+	AVCodec  *codec = avcodec_find_decoder_by_name(file_ext);
+	return codec != NULL;
 }
 
 int 

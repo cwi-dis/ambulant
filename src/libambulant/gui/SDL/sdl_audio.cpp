@@ -213,7 +213,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	const lib::node *node,
 	lib::event_processor *evp,
 	net::datasource_factory *df)
-:	common::active_renderer(context, cookie, node, evp, df),
+:	common::active_basic_renderer(context, cookie, node, evp),
 //    m_rate(44100),
 //    m_bits(16),
 //    m_channels(2),
@@ -221,32 +221,13 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_channel_used(-1),
 	m_audio_format(AUDIO_S16SYS)
 {
-	net::audio_datasource *src;
 	net::audio_format_choices supported = net::audio_format_choices(44100, 2, 16);
 	
 	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
-	if (m_src) {
-#ifdef WITH_FFMPEG
-		std::string url = node->get_url("src");
-		
-		AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: url.rfind(\".mp3\") %d, url.size()-4 %d", url.rfind(".mp3"),  url.size()-4);
-		if (url.rfind(".mp3") == url.size()-4 ) {
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using ffmpeg audio reader");
-			m_audio_src = new net::ffmpeg_audio_datasource(m_src);
-		} else {
-			src = new net::raw_audio_datasource(m_src);
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using resample_datasource");
-			m_audio_src = new net::ffmpeg_resample_datasource(src, supported); 
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: created a resample_datasource x%x", m_audio_src);
-		}
-#else
-			m_audio_src = new net::raw_audio_datasource(m_src);
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer: using raw_audio_datasource");
-#endif		
-	} else {
-		lib::logger::get_logger()->error("sdl_active_audio_renderer: m_src=NULL, datasource not created");
-		m_audio_src = NULL;
-	}
+	std::string url = node->get_url("src");
+	m_audio_src = df->new_audio_datasource(url, supported);
+	if (!m_audio_src)
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
 }
 
 gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
@@ -407,7 +388,7 @@ bool
 gui::sdl::sdl_active_audio_renderer::is_paused()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_paused(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_paused(): channel not in use");
 		return false;
 	}
 	if( Mix_Paused(m_channel_used) == 1) {
@@ -421,7 +402,7 @@ bool
 gui::sdl::sdl_active_audio_renderer::is_stopped()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_stopped(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_stopped(): channel not in use");
 		return true;
 	}
 	if( Mix_Playing(m_channel_used) == 0 ) {
@@ -435,7 +416,7 @@ bool
 gui::sdl::sdl_active_audio_renderer::is_playing()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_playing(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::is_playing(): channel not in use");
 		return false;
 	}
 	if( Mix_Playing(m_channel_used) == 1 ) {
@@ -450,7 +431,7 @@ void
 gui::sdl::sdl_active_audio_renderer::stop()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop(): channel not in use");
 		return;
 	}
 	Mix_HaltChannel(m_channel_used);
@@ -460,7 +441,7 @@ void
 gui::sdl::sdl_active_audio_renderer::pause()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::pause(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::pause(): channel not in use");
 		return;
 	}
 	Mix_Pause(m_channel_used);
@@ -470,7 +451,7 @@ void
 gui::sdl::sdl_active_audio_renderer::resume()
 {
 	if (m_channel_used < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer::resume(): channel not in use");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::resume(): channel not in use");
 		return;
 	}
 	Mix_Resume(m_channel_used);
@@ -494,7 +475,7 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
 	} else {
-		lib::logger::get_logger()->error("active_renderer.start: no datasource");
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start: no datasource");
 		stopped_callback();
 	}
 }
