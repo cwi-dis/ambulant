@@ -102,21 +102,21 @@ namespace lib {
 
 class abstract_event_processor : public event_processor {
   public:
-	abstract_event_processor(abstract_timer *t, critical_section *pcs) 
+	abstract_event_processor(abstract_timer *t) 
 	:	m_timer(t),
 		m_high_delta_timer(t), 
 		m_med_delta_timer(t), 
-		m_low_delta_timer(t), 
-		m_delta_timer_cs(pcs) { assert(t); }
+		m_low_delta_timer(t)
+		{ assert(t); }
 	
 	~abstract_event_processor() {
-		delete m_delta_timer_cs;
+		// the timer is not owned by this
 	}
 	
 	abstract_timer *get_timer() const { return m_timer; }
 	
 	void add_event(event *pe, time_type t, event_priority priority = low) {
-		m_delta_timer_cs->enter();
+		m_delta_timer_cs.enter();
 		switch(priority) {
 			case high: 
 				m_high_delta_timer.insert(pe, t);
@@ -129,7 +129,7 @@ class abstract_event_processor : public event_processor {
 				break;
 		}
 		wakeup();
- 		m_delta_timer_cs->leave();
+ 		m_delta_timer_cs.leave();
 	}
 	
 	// serves all events of high priority (including those inserted by firing events)
@@ -159,9 +159,9 @@ class abstract_event_processor : public event_processor {
 
 	bool serve_events_for(delta_timer& dt) {
 		std::queue<event*> queue;
-		m_delta_timer_cs->enter();
+		m_delta_timer_cs.enter();
 		dt.execute(queue);
- 		m_delta_timer_cs->leave();
+ 		m_delta_timer_cs.leave();
 		bool repeat = !queue.empty();
 		while(!queue.empty()) {
 			event *e = queue.front();
@@ -193,7 +193,7 @@ class abstract_event_processor : public event_processor {
 	delta_timer m_low_delta_timer;
 	
 	// protects delta timer lists
-	critical_section *m_delta_timer_cs;  
+	critical_section m_delta_timer_cs;  
 };
 
 // Machine-dependent factory function

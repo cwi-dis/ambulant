@@ -59,7 +59,7 @@
 using namespace ambulant;
 
 lib::unix::event_processor::event_processor(abstract_timer *t) 
-:   abstract_event_processor(t, new lib::critical_section())
+:   abstract_event_processor(t)
 {
   	pthread_mutex_init(&m_queue_mutex, NULL);
 	pthread_cond_init(&m_queue_condition, NULL);
