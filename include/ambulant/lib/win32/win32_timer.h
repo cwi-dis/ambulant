@@ -17,6 +17,10 @@
 #include "ambulant/lib/timer.h"
 #endif
 
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#endif
+
 namespace ambulant {
 
 namespace lib {
@@ -29,7 +33,6 @@ class os_timer : public ambulant::lib::timer  {
 	os_timer() : m_start_time(GetTickCount()) {}
 	virtual time_type elapsed() const { return GetTickCount()-m_start_time;}
 	virtual void restart() { m_start_time = GetTickCount();}
-	
   private:
 	time_type m_start_time;
 };
