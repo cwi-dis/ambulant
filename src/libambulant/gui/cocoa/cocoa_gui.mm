@@ -55,6 +55,24 @@ class cocoa_active_image_renderer : public active_final_renderer {
   	NSData *m_nsdata;
 };
 
+class cocoa_active_audio_renderer : public active_basic_renderer {
+  public:
+	cocoa_active_audio_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		const node *node)
+	:	active_basic_renderer(evp, node),
+		m_url(src->get_url()),
+		m_sound(NULL) {};
+	~cocoa_active_audio_renderer();
+
+	void start(event *playdone);
+//	void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
+	void stop();
+  private:
+	std::string m_url;
+  	NSSound *m_sound;
+};
+
 void
 cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 {
@@ -153,6 +171,39 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_windo
 	}
 }
 
+cocoa_active_audio_renderer::~cocoa_active_audio_renderer()
+{
+	AM_DBG logger::get_logger()->trace("~cocoa_active_audio_renderer(0x%x)", (void *)this);
+	if (m_sound)
+		[m_sound release];
+}
+	
+void
+cocoa_active_audio_renderer::start(event *playdone)
+{
+	if (!m_node) abort();
+	m_playdone = playdone;
+	std::ostringstream os;
+	os << *m_node;
+	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
+	NSString *filename = [NSString stringWithCString: m_url.c_str()];
+	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: NO];
+	if (!m_sound)
+		lib::logger::get_logger()->error("cocoa_active_audio_renderer.start: cannot open soundfile: %s", m_url.c_str());
+	if (m_sound)
+		[m_sound play];
+	if (m_playdone)
+		m_event_processor->add_event(m_playdone, 0, event_processor::low);
+}
+
+void
+cocoa_active_audio_renderer::stop()
+{
+	if (!m_sound)
+		return;
+	[m_sound stop];
+}
+
 active_renderer *
 cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	net::passive_datasource *src,
@@ -168,6 +219,9 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	} else if ( tag == "text") {
 		rv = (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
+	} else if ( tag == "audio") {
+		rv = (active_renderer *)new cocoa_active_audio_renderer(evp, src, node);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
 		rv = new gui::none::none_active_renderer(evp, src, dest, node);
