@@ -71,6 +71,8 @@ mypreferences::load_preferences()
 	m_do_validation = [prefs boolForKey: @"do_validation"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = [prefs integerForKey: @"log_level"];
+	m_use_plugins = [prefs boolForKey: @"use_plugins"];
+	m_plugin_dir = [prefs stringForKey: @"plugin_dir"];
 	return true;
 }
 
