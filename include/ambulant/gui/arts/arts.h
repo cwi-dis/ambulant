@@ -71,22 +71,37 @@ public:
         lib::passive_region *dest,
         const lib::node *node);
 
+        active_renderer *new_renderer(
+		active_playable_events *context,
+		active_playable_events::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
+		net::passive_datasource *src,
+		passive_region *const dest);
+
 };
 
-class arts_active_audio_renderer : public active_basic_renderer, public timer_events {
+class arts_active_audio_renderer : public active_renderer, public timer_events {
   public:
-	arts_active_audio_renderer(event_processor *const evp,
-		net::passive_datasource *src,
-		const node *node);
+      arts_active_audio_renderer(
+      active_playable_events *context,
+      active_playable_events::cookie_type cookie,
+      const node *node,
+      event_processor *const evp,
+      net::passive_datasource *src);
+        
+      ~arts_active_audio_renderer();
 
-	~arts_active_audio_renderer();
-
-	void start(double where);
-	void stop();
-    void pause();
-    void resume();
-	void speed_changed();
+      void start(double where);
+      void stop();
+      void pause();
+      void resume();
+      void speed_changed();
+      void readdone();
+  
+      void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) {};
   private:
+    
     int arts_setup(int rate, int bits, int channels, char *name);
     int arts_play(char *data, int size);
   
@@ -96,7 +111,8 @@ class arts_active_audio_renderer : public active_basic_renderer, public timer_ev
     int m_bits;
     char *m_name;
     event *m_playdone;
-    std::string m_url;
+    
+
 };
 
 
