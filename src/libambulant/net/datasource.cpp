@@ -201,9 +201,9 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
 :	m_source(source), 
 	m_refcount(1)
 {
-	if (file) {
+	if (file >= 0) {
 		m_stream = file;
-    	filesize();
+		filesize();
 		m_source = source;
 		m_buffer = new databuffer(m_filesize);
 		if (!m_buffer) {
@@ -236,13 +236,12 @@ net::active_datasource::filesize()
 {
  		using namespace std;
 		int dummy;
-		
-		if (m_stream) {
+		if (m_stream >= 0) {
 			// Seek to the end of the file, and get the filesize
 			m_filesize=lseek(m_stream, 0, SEEK_END); 		
 	 		dummy=lseek(m_stream, 0, SEEK_SET);						
 			} else {
- 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file open");
+ 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file openXX");
 			m_filesize = 0;
 			}
 }
@@ -252,7 +251,7 @@ net::active_datasource::read_file()
 {
   	char buf[BUFSIZ];
   	int result; 	
-	if (m_stream) {
+	if (m_stream >= 0) {
 
 		do {
 			result = ::read(m_stream, buf, sizeof(buf));
@@ -261,10 +260,8 @@ net::active_datasource::read_file()
 
 		if (result < 0) {
 			lib::logger::get_logger()->error("active_datasource.read_file(): %s", strerror(errno));
-			} else {
- 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file open");
-			}
-		}
+			} 		
+	}
 }
   
   
