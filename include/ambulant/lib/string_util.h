@@ -61,16 +61,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-namespace ambulant {
-
-namespace lib {
-
-class tokens_vector : public std::vector<std::string> {
-  public:
-    tokens_vector(const char* entry, const char* delims);
-	std::string join(size_type i, char sep);
-};
-
 // Workaround for toolsets with missing stringstream functionality.
 //
 // The convention is that objects that want to be served by this 
@@ -89,6 +79,17 @@ inline std::string& operator<<(std::string& s, int c) { char sz[32];sprintf(sz,"
 inline std::string& operator<<(std::string& s, long c) { char sz[32];sprintf(sz,"%ld",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, double c) { char sz[32];sprintf(sz,"%.3f",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, const char *c) { s+=c; return s;}
+
+namespace ambulant {
+
+namespace lib {
+
+class tokens_vector : public std::vector<std::string> {
+  public:
+    tokens_vector(const char* entry, const char* delims);
+	std::string join(size_type i, char sep);
+};
+
 
 
 const std::string space_chars = " \t\r\n";
