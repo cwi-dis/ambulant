@@ -144,12 +144,32 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 void
 gui::sdl::sdl_active_audio_renderer::readdone()
 {
-    
-    
-    
-    stopped_callback();
+    if (!end_of_file()) {
+		m_src->start(m_event_processor, m_readdone);
+	} else {
+		stopped_callback();
+	}
 }
 
+
+void 
+gui::sdl::sdl_active_audio_rederer::callback(void *userdata, Uint8 *stream, int len)
+{
+	Uint8 *in_ptr;
+	int size;
+	size = m_src->size();
+	if (size > 0) {
+		if (size > len) {
+			in_ptr = (Uint8) m_src->read_ptr();
+			memcpy(stream, in_ptr, len);
+			m_src->readdone(len);
+		} else {
+			in_ptr = (Uint8) m_src->read_ptr();
+			memcpy(stream, in_ptr, size);
+			m_src->readdone(size);
+		}	
+	}
+}
 
 
 void

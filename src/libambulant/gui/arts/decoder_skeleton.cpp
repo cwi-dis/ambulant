@@ -1,30 +1,30 @@
 /*
- *
+ * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
- *
- * Copyright (C) 2003 Stiching CWI,
+ * 
+ * Copyright (C) 2003 Stiching CWI, 
  * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
- *
+ * 
  * Ambulant Player is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * Ambulant Player is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
+ * 
  * In addition, as a special exception, if you link Ambulant Player with
  * other files to produce an executable, this library does not by itself
  * cause the resulting executable to be covered by the GNU General Public
  * License. This exception does not however invalidate any other reason why
  * the executable file might be covered by the GNU General Public License.
- *
+ * 
  * As a special exception, the copyright holders of Ambulant Player give
  * you permission to link Ambulant Player with independent modules that
  * communicate with Ambulant Player solely through the region and renderer
@@ -36,58 +36,24 @@
  * being distributed under the terms of the GNU General Public License plus
  * this exception.  An independent module is a module which is not derived
  * from or based on Ambulant Player.
- *
+ * 
  * Note that people who make modified versions of Ambulant Player are not
  * obligated to grant this special exception for their modified versions;
  * it is their choice whether to do so.  The GNU General Public License
  * gives permission to release a modified version without this exception;
  * this exception also makes it possible to release a modified version
- * which carries forward this exception.
- *
+ * which carries forward this exception. 
+ * 
  */
-#ifndef __ARTS__
-#define __ARTS__
-
-#include <iostream>
-
-
-#include "ambulant/common/region.h"
-#include "ambulant/common/renderer.h"
-#include "ambulant/lib/logger.h"
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/net/datasource.h"
-#include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/asb.h"
-
-
-namespace ambulant {
-using namespace lib;
-    namespace gui {
-        namespace arts {
-          
-class arts_renderer_factory : public lib::renderer_factory {
-public:
-    active_renderer *new_renderer(
-        lib::event_processor *const evp,
-        net::passive_datasource *src,
-        lib::passive_region *dest,
-        const lib::node *node);
-
-     active_renderer *new_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
-		const node *node,
-		event_processor *const evp,
-		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest);
-
-};
-
-
-
-} // end namespace arts
-} // end namespace gui
-} // end namespace ambulant
-
-
-#endif
+ 
+ 
+ 
+ #include "ambulant/gui/arts/decoder_skeleton.h"
+ 
+ using namespace ambulant;
+ 
+ 
+gui::audio_decoder::skeleton_decoder(active_datasource *const src);
+{
+	m_src = src;
+}

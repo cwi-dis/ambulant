@@ -46,9 +46,6 @@
  * 
  */
 
-/* 
- * @$Id$ 
- */
 
 #include "ambulant/gui/qt/qt_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"
@@ -122,7 +119,8 @@ namespace qt_renderer {
       return NULL;
     }
     return rv;
-  }    
+  }
+  
   abstract_window *
   qt_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
   {

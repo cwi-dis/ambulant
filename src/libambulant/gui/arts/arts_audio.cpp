@@ -57,7 +57,7 @@ namespace ambulant {
 
 using namespace lib;
 
-bool gui::arts::arts_active_audio_renderer::m_arts_init;
+bool gui::arts::arts_active_audio_renderer::m_arts_init = false;
 
 gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	active_playable_events *context,
@@ -136,14 +136,14 @@ gui::arts::arts_active_audio_renderer::readdone()
     int err;
     
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
-    size = m_src->size();
-    data = new char[size];
-    m_src->read(data,size);
+    
+    data = m_src->read_ptr();
+	size = m_src->size();
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
     arts_setup(44100,16,1,"arts_audio");
     played=arts_play(data,size);
    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
-    delete [] data;
+    m_src->readdone(played);
     stopped_callback();
 }
 

@@ -46,9 +46,6 @@
  * 
  */
 
-/* 
- * @$Id$ 
- */
  
 #ifndef AMBULANT_NET_DATASOURCE_H
 #define AMBULANT_NET_DATASOURCE_H
@@ -91,28 +88,25 @@ typedef char bytes;
 class databuffer  
 {
  private: 
-     // duh, pointer to the buffer.
-	char *m_buffer; 			
-		     
-	// the size of the bufer.
-	int m_size;  			
+    
+	char* m_buffer; 			
+	unsigned long int m_rear;
 	
-	// how many bytes are in the buffer 														 
-	int m_used;							
-										
-	// shift down all data above pos
-	void shift_down(int pos);										
+	
+	unsigned long int m_size;  			
+ 	unsigned long int m_max_size; 														 
+	unsigned long int m_used;							
+	
+	bool m_buffer_full;
+							
  public:
 	// constructors
 	databuffer();				
-	databuffer(int size);	
-
-	databuffer(databuffer& buf);    	  
+	databuffer(int max_size);	
 	
 	// destructor
 	~databuffer();
-	
-	void resize(int newsize);
+
 	
 	// show information about the buffer, if verbose is true the buffer is dumped to cout;
 	void dump(std::ostream& os, bool verbose) const;		
@@ -125,6 +119,13 @@ class databuffer
 	
 	// returns the amount of bytes that are used.
 	int used() const;
+ 	bool is_full();
+    bool not_empty();
+	void readdone(int size);
+	char * prepare();
+	void pushdata(int size);
+    char* get_read_ptr();
+	
 };
 
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
@@ -175,11 +176,18 @@ public:
 	~active_datasource();
 
 
-	void start(ambulant::lib::event_processor *evp,ambulant::lib::event *readdone);
+	void start(ambulant::lib::event_processor *evp,ambulant::lib::event *callback);
 
+        // a readdone cal is made by the client if he is ready with len bytes of data.
+    void readdone(int len);
+    void callback();
+    bool end_of_file();
+	bool buffer_full();
+		
 
 	//  Get data from buffer and put 'size' bytes in buffer.
-	void read(char *data, int size);
+	void read(char *data, int size); // this function only exists so we don't break anything that uses the old API.
+	char* read_ptr();
 
 	// Return the amount of data currently in buffer.
 	int size() const;
@@ -194,6 +202,7 @@ private:
     passive_datasource *m_source;
 	int m_filesize;
 	int m_stream;
+	bool m_end_of_file;
 	void filesize();
     void read_file();
 
