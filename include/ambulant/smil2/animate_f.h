@@ -403,6 +403,15 @@ double dist(const lib::point& p1, const lib::point& p2) {
 	return ::sqrt(dx*dx + dy*dy); 
 }
 
+// Distance specialization for lib::color_t
+template <>
+double dist(const lib::color_t& c1, const lib::color_t& c2) {
+	double dr = double(lib::redc(c2) - lib::redc(c1));
+	double dg = double(lib::greenc(c2) - lib::greenc(c1));
+	double db = double(lib::bluec(c2) - lib::bluec(c1));
+	return ::sqrt(dr*dr + dg*dg + db*db); 
+}
+
 
 } // namespace smil2
  
