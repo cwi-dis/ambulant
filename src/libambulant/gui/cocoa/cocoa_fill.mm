@@ -178,7 +178,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef lib::no_arg_callback<cocoa_fill_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_fill_renderer::transition_step);
-		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
+		m_event_processor->add_event(ev, m_trans_engine->next_step_delay(), lib::event_processor::med);
 	}
 	m_lock.leave();
 }
