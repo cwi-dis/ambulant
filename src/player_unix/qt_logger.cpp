@@ -119,6 +119,7 @@ qt_logger::qt_logger()
 	ambulant::lib::logger* logger =
 		ambulant::lib::logger::get_logger();
 	// Connect logger to our message displayer and output processor
+	//int loglevel = common::preferences::get_preferences()->m_log_level;
 	logger->set_show_message(show_message);
 	// Because QT_THREAD_SUPPORT is off by default, logging is
 	// in a terminal window on Linux.
@@ -143,7 +144,7 @@ qt_logger::get_qt_logger() {
 }
 
 void
-qt_logger::show_message(const char *msg)
+qt_logger::show_message(int level,const char *msg)
 {
 	QMessageBox::information(NULL, "AmbulantPlayer", msg);
 }

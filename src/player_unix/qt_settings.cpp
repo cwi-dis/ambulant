@@ -147,13 +147,17 @@ qt_settings::settings_select() {
 	m_plugin_vg = new QVGroupBox("Plugin options:", m_settings_vg);
 	m_use_plugin_cb = new QCheckBox("Use plugins",m_plugin_vg);
 	m_use_plugin_cb->setChecked(m_preferences->m_use_plugins);
-	m_plugin_dir_le = new QLineEdit( m_settings_vg );
+	
+	m_plugin_dir_lb = new QLabel( "Plugin directory:\n", m_plugin_vg);
+	m_plugin_dir_le = new QLineEdit( m_plugin_vg );
+	m_plugin_dir_lb->setBuddy(m_plugin_dir_le);
+	//m_plugin_dir_le->setGeometry(AlignRight);
 	m_plugin_dir_le->setText(m_preferences->m_plugin_dir.c_str());
 	
 //printf("qt_settings::settings_select m_settings_vg=0x%x\n", m_settings_vg);
 	return m_settings_vg;
 }
-
+ 
 void 
 qt_settings::settings_finish() {
 //printf("qt_settings::settings_finish()\n");
