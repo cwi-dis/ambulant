@@ -55,6 +55,13 @@ extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=
 endif
 
+if WITH_XERCES_BUILTIN
+extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include
+extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
+else
+extra_xerces_DEFINES=
+extra_xerces_LDADD=
+endif
 
 #if USE_NLS
 extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
@@ -74,9 +81,9 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(extra_arts_LDADD)					\
 	$(extra_sdl_LDADD)					\
 	$(extra_ffmpeg_LDADD)					\
+	$(extra_xerces_LDADD)						\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
 	$(EXPAT_PREFIX)/lib/libexpat.a				\
-	$(XERCES_LIBS)						\
 	$(qt_libs)							\
 	$(LIBLTDL)
 
@@ -89,6 +96,7 @@ AM_CPPFLAGS = $(extra_arts_DEFINES)				\
 	      $(extra_sdl_DEFINES)				\
 	      $(extra_ffmpeg_DEFINES)				\
 	      $(extra_nls_DEFINES)				\
+	      $(extra_xerces_DEFINES)			\
 	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\
