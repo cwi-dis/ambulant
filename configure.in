@@ -53,6 +53,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	Extras/Makefile])
 	
 #
+#
 # Do we want plugin support?
 #
 AC_MSG_CHECKING(for --with-ltdl-plugins)
@@ -78,6 +79,28 @@ else
 fi
 AM_CONDITIONAL(WITH_LTDL_PLUGINS, test $with_ltdl = true)
 AC_MSG_RESULT($with_ltdl)
+
+
+# Do we want dummy plugins ?
+#
+
+AC_MSG_CHECKING(for --with-dummy-plugin)
+with_dummy_plugin=false
+AC_ARG_WITH([dummy],
+    [AC_HELP_STRING([--with-dummy],[Enable the dummy plugin (default: disabled)])
+	],[
+	case "${withval}" in
+	yes)  	with_dummy_plugin=true
+			;;
+	no)		with_dummy_plugin=false
+			;;
+	*)		AC_MSG_ERROR("--with-dummy-plugin takes no argument")
+			;;
+	esac
+	])
+AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
+AC_MSG_RESULT($with_dummy_plugin)
+
 
 #
 # Find expat
