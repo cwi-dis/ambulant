@@ -80,11 +80,17 @@ class arts_active_audio_renderer : public common::playable_imp {
       lib::event_processor *const evp,
       common::factories *factory);
 
+  	arts_active_audio_renderer(
+      common::playable_notification *context,
+      common::playable_notification::cookie_type cookie,
+      const lib::node *node,
+      lib::event_processor *const evp,
+      net::audio_datasource *ds);
     ~arts_active_audio_renderer();
 
     int init();
     void start(double where);
-    void stop() {};
+    void stop();
     void pause() ;
     void resume() ;
     void speed_changed() {};
@@ -110,5 +116,7 @@ class arts_active_audio_renderer : public common::playable_imp {
 
 };
 
-
+}
+}
+}
 #endif

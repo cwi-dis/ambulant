@@ -54,8 +54,6 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/factory.h"
 #include <stdlib.h>
-// XXXX This is very ugly !!!
-#include "ambulant/gui/SDL/sdl_audio.h"
 #include "ambulant/common/playable.h"
 
 //#define AM_DBG

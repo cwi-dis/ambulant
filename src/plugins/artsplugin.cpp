@@ -82,10 +82,10 @@ class arts_plugin_factory : public common::playable_factory {
 	
 };
 
-typedef lib::no_arg_callback<arts_active_audio_renderer> readdone_callback;
-net::audio_format arts_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
+typedef lib::no_arg_callback<ambulant::gui::arts::arts_active_audio_renderer> readdone_callback;
+net::audio_format ambulant::gui::arts::arts_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
 
-bool arts_plugin::m_arts_init = false;
+bool ambulant::gui::arts::arts_active_audio_renderer::m_arts_init = false;
 
 
 common::playable* 
@@ -100,7 +100,7 @@ arts_plugin_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") /*or any other tag ofcourse */ {
-		rv = new arts_active_audio_renderer(context, cookie, node, evp, m_factory);
+		rv = new ambulant::gui::arts::arts_active_audio_renderer(context, cookie, node, evp, m_factory);
 		//rv = NULL;
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
 	} else {

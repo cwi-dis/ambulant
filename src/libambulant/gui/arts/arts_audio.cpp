@@ -92,6 +92,37 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	m_lock.leave();
 }
 
+arts_active_audio_renderer::arts_active_audio_renderer(
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *const evp,
+	net::audio_datasource *ds)
+:	common::playable_imp(context, cookie, node, evp),
+	m_rate(44100),
+	m_channels(2),
+	m_bits(16),
+	m_stream(NULL),
+	m_audio_src(ds),
+	m_is_paused(false),
+	m_is_playing(false)
+{
+	m_lock.enter();
+	//init();
+	arts_setup(m_rate,m_bits,m_channels,"arts_audio");
+	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
+	net::url url = node->get_url("src");
+	if (!m_audio_src)
+		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
+	else if (!supported.contains(m_audio_src->get_audio_format())) {
+		lib::logger::get_logger()->error("arts_active_audio_renderer: %s: unsupported format", repr(url).c_str());
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
+	m_lock.leave();
+}
+
+
 int
 arts_active_audio_renderer::init()
 {
@@ -165,20 +196,18 @@ arts_active_audio_renderer::arts_play(char *data, int size)
         if (err < 0) {
             AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): %s", (void *)this, arts_error_text(err));
 			return 0;
-            }
+		}
 		if (err < size) {
 			//int delay = arts_stream_get (m_stream, ARTS_P_TOTAL_LATENCY);
 			int delay = 15;
 			AM_DBG lib::logger::get_logger()->debug("arts_plugin::arts_play(0x%x): aRts buffer full, delaying %dms", (void *)this,delay);
 			lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
 			m_event_processor->add_event(e,delay,ambulant::lib::event_processor::high);
-			
-
 		}
-        } else {
+     } else {
         AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): No aRts stream opened", (void *)this);        
 		return 0;	
-        }
+     }
         
     return err;
 }

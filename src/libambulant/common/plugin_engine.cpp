@@ -101,7 +101,7 @@ plugin_engine::plugin_engine()
 void
 plugin_engine::collect_plugin_directories()
 {
-	m_plugindirs.push_back("/ufs/dbenden/Ambulant/src/plugins/.libs");
+	m_plugindirs.push_back("/ufs/dbenden/Ambulant/ambulant/src/plugins/.libs/");
     m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
 }
 
