@@ -68,8 +68,9 @@ namespace cocoa {
 cocoa_audio_playable::cocoa_audio_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
-	const lib::node *node)
-:	active_playable(context, cookie),
+	const lib::node *node,
+	lib::event_processor *evp)
+:	playable_imp(context, cookie, node, evp),
 	m_url(node->get_url("src")),
 	m_sound(NULL)
 {
@@ -109,9 +110,9 @@ cocoa_audio_playable::start(double where)
 			[m_sound release];
 			m_sound = NULL;
 		}
-	started_callback();
+	m_context->started(m_cookie, 0);
 	if (!m_sound)
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 	m_lock.leave();
 	[pool release];
 }
@@ -127,7 +128,7 @@ cocoa_audio_playable::stop()
 			lib::logger::get_logger()->error("cocoa_audio_playable: cannot stop audio");
 		[m_sound release];
 		m_sound = NULL;
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 	}
 	m_lock.leave();
 	[pool release];

@@ -70,9 +70,9 @@ gui::none::none_playable::none_playable(
 #else
 	common::playable_notification::cookie_type cookie,
 #endif
-	const lib::node *node)
-:	common::active_playable(context, cookie),
-	m_node(node)
+	const lib::node *node,
+	lib::event_processor *evp)
+:	common::playable_imp(context, cookie, node, evp)
 {
 	lib::xml_string tag = node->get_qname().second;
 	std::string url = node->get_url("src");
@@ -83,7 +83,7 @@ void
 gui::none::none_playable::start(double where)
 {
 	lib::logger::get_logger()->trace("none_playable.start(0x%x)", m_node);
-	stopped_callback();
+	m_context->stopped(m_cookie, 0);
 }
 
 void
@@ -108,7 +108,7 @@ gui::none::none_playable_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "area")
 		return new none_area_renderer(context, cookie, node, evp);
-	return new none_playable(context, cookie, node);
+	return new none_playable(context, cookie, node, evp);
 }
 
 bgrenderer *

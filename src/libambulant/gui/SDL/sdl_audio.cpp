@@ -122,14 +122,14 @@ gui::sdl::sdl_active_audio_renderer::init()
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
 	if (err < 0) {
-		lib::logger::get_logger()->error("sdl_active_renderer.init: SDL_OpenAudio failed: error %d", err);
+		lib::logger::get_logger()->error("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %d", err);
 		m_static_lock.leave();
     	return err;
 	}
 	m_ambulant_format.samplerate = obtained.freq;
 	m_ambulant_format.channels = obtained.channels;
 	if (obtained.format != m_sdl_format) {
-		lib::logger::get_logger()->error("sdl_active_renderer.init: SDL_OpenAudio could not support format 0x%x, returned 0x%x",
+		lib::logger::get_logger()->error("sdl_renderer_playable_ds.init: SDL_OpenAudio could not support format 0x%x, returned 0x%x",
 			m_sdl_format, obtained.format);
 		m_static_lock.leave();
 		return -1;
@@ -207,7 +207,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	const lib::node *node,
 	lib::event_processor *evp,
 	net::datasource_factory *df)
-:	common::active_basic_renderer(context, cookie, node, evp),
+:	common::playable_imp(context, cookie, node, evp),
 	m_audio_src(NULL),
 	m_is_playing(false),
 	m_is_paused(false)
@@ -274,7 +274,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	still_busy = (size != 0);
 	still_busy |= restart_audio_input();
 	if (!still_busy) {
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling stopped_callback() this = (x%x)",this);
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: calling m_context->stopped() this = (x%x)",this);
 		assert(m_is_playing);
 		// We cannot call unregister_renderer from here, because we are called from the
 		// SDL callback and already holding the m_global_lock. So, in stead
@@ -285,7 +285,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 		m_audio_src->release();
 		m_audio_src = NULL;
 		m_lock.leave();
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 		return;
 	}
 	m_lock.leave();
@@ -406,6 +406,6 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start: no datasource");
 		m_lock.leave();
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 	}
 }

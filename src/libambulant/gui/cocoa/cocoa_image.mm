@@ -52,9 +52,9 @@
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
-#include "ambulant/gui/cocoa/cocoa_transition.h"
-#include "ambulant/common/region_info.h"
-#include "ambulant/common/smil_alignment.h"
+//#include "ambulant/gui/cocoa/cocoa_transition.h"
+//#include "ambulant/common/region_info.h"
+//#include "ambulant/common/smil_alignment.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -69,76 +69,35 @@ namespace gui {
 
 namespace cocoa {
 
-cocoa_active_image_renderer::~cocoa_active_image_renderer()
+cocoa_image_renderer::~cocoa_image_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("~cocoa_image_renderer(0x%x)", (void *)this);
 	if (m_image)
 		[m_image release];
 	m_image = NULL;
-	if (m_trans_engine) delete m_trans_engine;
 	m_lock.leave();
 }
 	
 void
-cocoa_active_image_renderer::start(double where)
-{
-	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.start(0x%x)", (void *)this);
-	if (m_intransition) {
-		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
-		if (m_trans_engine)
-			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-	}
-	if (m_outtransition) {
-		// XXX Schedule beginning of out transition
-		//lib::event *ev = new transition_callback(this, &transition_outbegin);
-		//m_event_processor->add_event(ev, XXXX);
-	}
-	common::active_final_renderer::start(where);
-}
-
-void
-cocoa_active_image_renderer::start_outtransition(lib::transition_info *info)
-{
-}
-
-void
-cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_image_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	if (m_data && !m_image) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
+		AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw: creating image");
 		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
 		m_image = [[NSImage alloc] initWithData: m_nsdata];
 		if (!m_image)
-			logger::get_logger()->error("cocoa_active_image_renderer.redraw: could not create image");
+			logger::get_logger()->error("cocoa_image_renderer.redraw: could not create image");
 		[m_image setFlipped: true];
 		// XXXX Could free data and m_data again here...
 	}
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-
-	// See whether we're in a transition
-	NSImage *surf = NULL;
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		delete m_trans_engine;
-		m_trans_engine = NULL;
-		m_dest->transition_done();
-	}
-	if (m_trans_engine) {
-		surf = [view getTransitionSurface];
-		if ([surf isValid]) {
-			[surf lockFocus];
-			AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to transition surface");
-		} else {
-			lib::logger::get_logger()->error("cocoa_active_image_renderer.redraw: cannot lockFocus for transition");
-			surf = NULL;
-		}
-	}
 
 	if (m_image) {
 		// Now find both source and destination area for the bitblit.
@@ -150,35 +109,13 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *w
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+		AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
 	} else {
 	}
 	
-	if (surf) [surf unlockFocus];
-	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: drawing to view");
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<cocoa_active_image_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &cocoa_active_image_renderer::transition_step);
-		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay);
-	}
-
 	m_lock.leave();
 }
-
-void
-cocoa_active_image_renderer::transition_step()
-{
-//	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
-	if (m_dest) m_dest->need_redraw();
-//	m_lock.leave();
-}
-
 
 } // namespace cocoa
 

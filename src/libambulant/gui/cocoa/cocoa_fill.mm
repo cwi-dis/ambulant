@@ -67,10 +67,10 @@ namespace gui {
 
 namespace cocoa {
 
-cocoa_active_fill_renderer::~cocoa_active_fill_renderer()
+cocoa_fill_renderer::~cocoa_fill_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("~cocoa_active_fill_renderer(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("~cocoa_fill_renderer(0x%x)", (void *)this);
 	if (m_intransition) delete m_intransition;
 	if (m_outtransition) delete m_outtransition;
 	if (m_trans_engine) delete m_trans_engine;
@@ -78,11 +78,11 @@ cocoa_active_fill_renderer::~cocoa_active_fill_renderer()
 }
 	
 void
-cocoa_active_fill_renderer::start(double where)
+cocoa_fill_renderer::start(double where)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.start(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x)", (void *)this);
 	if (!m_dest) {
-		AM_DBG logger::get_logger()->warn("cocoa_active_fill_renderer.start(0x%x): no surface", (void *)this);
+		AM_DBG logger::get_logger()->warn("cocoa_fill_renderer.start(0x%x): no surface", (void *)this);
 		return;
 	}
 	if (m_intransition) {
@@ -93,7 +93,7 @@ cocoa_active_fill_renderer::start(double where)
 }
 
 void
-cocoa_active_fill_renderer::start_outtransition(lib::transition_info *info)
+cocoa_fill_renderer::start_outtransition(lib::transition_info *info)
 {
 	m_outtransition = info;
 	if (m_outtransition) {
@@ -104,18 +104,18 @@ cocoa_active_fill_renderer::start_outtransition(lib::transition_info *info)
 }
 
 void
-cocoa_active_fill_renderer::stop()
+cocoa_fill_renderer::stop()
 {
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_fill_renderer.stop(0x%x)", (void *)this);
 	if (m_dest) m_dest->renderer_done(this);
 }
 
 void
-cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
@@ -129,7 +129,7 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
 		[surf lockFocus];
-		AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to transition surface");
+		AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to transition surface");
 	}
 	// First find our whole area (which we have to clear to background color)
 	screen_rect<int> dstrect_whole = r;
@@ -140,14 +140,14 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 	if (!color_attr) {
 		lib::logger::get_logger()->warn("<brush> element without color attribute");
 		if (surf) {
-			AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
+			AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to view");
 			[surf unlockFocus];
 		}
 		m_lock.leave();
 		return;
 	}
 	color_t color = lib::to_color(color_attr);
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: clearing to 0x%x", (long)color);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(color)
 				green:greenf(color)
 				blue:bluef(color)
@@ -157,23 +157,23 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine) {
 		assert(surf);
-		AM_DBG logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<cocoa_active_fill_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &cocoa_active_fill_renderer::transition_step);
+		typedef lib::no_arg_callback<cocoa_fill_renderer> transition_callback;
+		lib::event *ev = new transition_callback(this, &cocoa_fill_renderer::transition_step);
 		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
 	}
 	m_lock.leave();
 }
 
 void
-cocoa_active_fill_renderer::transition_step()
+cocoa_fill_renderer::transition_step()
 {
 	if (m_dest) m_dest->need_redraw();
 }
 
 void 
-cocoa_active_fill_renderer::user_event(const point &where, int what)
+cocoa_fill_renderer::user_event(const point &where, int what)
 {
 	if (what == user_event_click) m_context->clicked(m_cookie, 0);
 	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);

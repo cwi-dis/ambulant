@@ -148,13 +148,13 @@ cocoa_video_renderer::stop()
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
+		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
 		[m_movie_view stop: NULL];
 		[m_movie_view removeFromSuperview];
 		m_movie_view = NULL;
 	}
 	if (m_movie) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
+		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
 		[m_movie release];
 		m_movie = NULL;
 	}
@@ -191,13 +191,13 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	const screen_rect<int> &r = m_dest->get_rect();
 	screen_rect<int> dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
-	AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
 	if (m_movie && !m_movie_view) {
-		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.redraw: creating movie view");
+		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
 		NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
 		

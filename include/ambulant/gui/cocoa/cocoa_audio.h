@@ -67,12 +67,13 @@ namespace gui {
 namespace cocoa {
 
 class cocoa_audio_playable : 
-	public active_playable {
+	public playable_imp {
   public:
 	cocoa_audio_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
-		const lib::node *node);
+		const lib::node *node,
+		lib::event_processor *evp);
 	~cocoa_audio_playable();
 
 	void start(double where);

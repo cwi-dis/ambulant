@@ -70,7 +70,7 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_text_renderer : public common::active_final_renderer {
+class qt_active_text_renderer : public common::renderer_playable_dsall {
   public:
 	qt_active_text_renderer(
 		common::playable_notification *context,
@@ -78,7 +78,7 @@ class qt_active_text_renderer : public common::active_final_renderer {
 		const lib::node *node,
     	lib::event_processor *const evp,
     	net::datasource_factory *df)
-:	common::active_final_renderer(context, cookie, node, evp, df),
+:	common::renderer_playable_dsall(context, cookie, node, evp, df),
  	m_text_storage(NULL){
 	}
 	~qt_active_text_renderer();

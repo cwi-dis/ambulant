@@ -50,80 +50,56 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_NONE_NONE_GUI_H
-#define AMBULANT_GUI_NONE_NONE_GUI_H
+#ifndef AMBULANT_GUI_COCOA_COCOA_RENDERER_H
+#define AMBULANT_GUI_COCOA_COCOA_RENDERER_H
 
-#include "ambulant/config/config.h"
-#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/smil2/transition.h"
+#include "ambulant/lib/mtsync.h"
+#include <Cocoa/Cocoa.h>
 
 namespace ambulant {
 
+using namespace lib;
+using namespace common;
+
 namespace gui {
 
-namespace none {
+namespace cocoa {
 
-class none_window : public common::gui_window {
+class cocoa_renderer : public renderer_playable_dsall {
   public:
-  	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
-  	:	common::gui_window(handler) {};
-  		
-	void need_redraw(const lib::screen_rect<int> &r) { m_handler->redraw(r, this); };
-	void need_events(bool want) {};
-};
-
-class none_window_factory : public common::window_factory {
-  public:
-  	none_window_factory() {}
-  	
-	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
-	common::bgrenderer *new_background_renderer(common::region_info *src);
-};
-
-class none_playable : public common::playable_imp {
-  public:
-	none_playable(
-		common::playable_notification *context,
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		// Workaround for bug in emVC 4.0: it gets confused
-		// when getting a subtype from a class within a function
-		// signature, or something like that
-		int cookie,
-#else
-		common::playable_notification::cookie_type cookie,
-#endif
+	cocoa_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *evp);
-	
+		event_processor *evp,
+		net::datasource_factory *df)
+	:	renderer_playable_dsall(context, cookie, node, evp, df),
+		m_intransition(NULL),
+		m_outtransition(NULL),
+		m_trans_engine(NULL) {};
+	~cocoa_renderer();
+
 	void start(double where);
-	void stop();
+    void redraw(const screen_rect<int> &dirty, gui_window *window);
+    virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
+	void set_intransition(lib::transition_info *info) { m_intransition = info; }
+	void start_outtransition(lib::transition_info *info);
+  private:
+	void transition_step();
+	void stop_transition();
+	
+	lib::transition_info *m_intransition;
+	lib::transition_info *m_outtransition;
+	smil2::transition_engine *m_trans_engine;
+	critical_section m_lock;
 };
 
-class none_background_renderer : public common::background_renderer {
-  public:
-	none_background_renderer(common::region_info *src)
-	:   background_renderer(src) {}
-	~none_background_renderer() {}
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
-};
-
-class common::region_info;
-
-class none_playable_factory : public common::playable_factory {
-  public:
-  	none_playable_factory() {}
-  	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp);
-};
-
-} // namespace none
+} // namespace cocoa
 
 } // namespace gui
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_NONE_NONE_GUI_H
+#endif // AMBULANT_GUI_COCOA_COCOA_RENDERER_H

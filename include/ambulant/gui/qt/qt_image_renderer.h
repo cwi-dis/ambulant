@@ -73,7 +73,7 @@ using namespace common;
 
 namespace qt {
 
-class qt_active_image_renderer : public common::active_final_renderer {
+class qt_active_image_renderer : public common::renderer_playable_dsall {
 
   public:
 	qt_active_image_renderer(
@@ -82,15 +82,18 @@ class qt_active_image_renderer : public common::active_final_renderer {
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::datasource_factory *df)
-	:	common::active_final_renderer(context, cookie, node, evp, df),
+	:	common::renderer_playable_dsall(context, cookie, node, evp, df),
 	 	m_image(NULL),
 	 	m_image_loaded(false),
+	 	m_intransition(NULL),
+	 	m_outtransition(NULL),
 	 	m_trans_engine(NULL) 
 	 	{};
 	~qt_active_image_renderer();
     
 	void start(double where);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
+	void set_intransition(lib::transition_info *info) { m_intransition = info; };
 	void start_outtransition(lib::transition_info *info);
 
  private:
@@ -98,6 +101,8 @@ class qt_active_image_renderer : public common::active_final_renderer {
 
 	QImage m_image;
 	bool m_image_loaded;
+	lib::transition_info *m_intransition;
+	lib::transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };

@@ -53,9 +53,9 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_IMAGE_H
 #define AMBULANT_GUI_COCOA_COCOA_IMAGE_H
 
-#include "ambulant/common/renderer.h"
-#include "ambulant/smil2/transition.h"
-#include "ambulant/lib/mtsync.h"
+#include "ambulant/gui/cocoa/cocoa_renderer.h"
+//#include "ambulant/smil2/transition.h"
+//#include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>
 
 namespace ambulant {
@@ -67,29 +67,24 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_image_renderer : public active_final_renderer {
+class cocoa_image_renderer : public cocoa_renderer {
   public:
-	cocoa_active_image_renderer(
+	cocoa_image_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
 		net::datasource_factory *df)
-	:	active_final_renderer(context, cookie, node, evp, df),
+	:	cocoa_renderer(context, cookie, node, evp, df),
 		m_image(NULL),
-		m_nsdata(NULL),
-		m_trans_engine(NULL) {};
-	~cocoa_active_image_renderer();
+		m_nsdata(NULL) {};
+	~cocoa_image_renderer();
 
-	void start(double where);
-    void redraw(const screen_rect<int> &dirty, gui_window *window);
-	void start_outtransition(lib::transition_info *info);
+    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
   private:
-	void transition_step();
 	
   	NSImage *m_image;
   	NSData *m_nsdata;
-	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };
 

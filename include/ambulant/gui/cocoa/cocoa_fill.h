@@ -67,9 +67,9 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_fill_renderer : public renderer_playable {
+class cocoa_fill_renderer : public renderer_playable {
   public:
-	cocoa_active_fill_renderer(
+	cocoa_fill_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
@@ -78,7 +78,7 @@ class cocoa_active_fill_renderer : public renderer_playable {
 		m_intransition(NULL),
 		m_outtransition(NULL),
 		m_trans_engine(NULL) {};
-	~cocoa_active_fill_renderer();
+	~cocoa_fill_renderer();
 
 //	void freeze() {}
 	void start(double where);

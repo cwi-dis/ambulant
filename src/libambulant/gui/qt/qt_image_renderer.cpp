@@ -87,7 +87,7 @@ qt_active_image_renderer::start(double where)
 		//lib::event *ev = new transition_callback(this, &transition_outbegin);
 		//m_event_processor->add_event(ev, XXXX);
 	}
-	common::active_final_renderer::start(where);
+	common::renderer_playable_dsall::start(where);
 }
 
 void

@@ -76,15 +76,14 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_fill_renderer : public common::active_basic_renderer {
+class qt_active_fill_renderer : public common::renderer_playable {
   public:
 	qt_active_fill_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp)
-: common::active_basic_renderer(context, cookie, node, evp),
-	m_dest(NULL),
+: common::renderer_playable(context, cookie, node, evp),
 	m_playing(false) {
 };
 	~qt_active_fill_renderer();
@@ -92,24 +91,12 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
  	void start(double where) {  // XXXX
 		m_playing = 1;
 	}
-	void freeze() {
-	}
 	void stop() {
 		m_playing = 0;
-	}
-	void pause() {
-	}
-	void resume() {
-	}
-	void wantclicks(bool want) { // XXXX
-	}
-	void user_event(const lib::point &where) {
-		clicked_callback();
 	}
 	void redraw(const lib::screen_rect<int> &dirty, 
 		    common::gui_window *window);
   private:
-	common::surface *const m_dest;
 	bool m_playing;
 	lib::critical_section m_lock;
 };

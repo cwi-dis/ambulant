@@ -508,6 +508,7 @@
 		};
 		04382B0F05D7AEE600CFA029 = {
 			children = (
+				046C3FA40676052300F22EF7,
 				04168540065D4B7D00E060C1,
 				04FB91CE06466E7100DE8086,
 				04C2210606008C4F00A4E0D7,
@@ -1610,6 +1611,7 @@
 		};
 		0444D324051F2EEF0010C447 = {
 			children = (
+				046C3FA60676062900F22EF7,
 				0416853E065D4B6000E060C1,
 				04FB91CC06466E5C00DE8086,
 				04C2210406008C3500A4E0D7,
@@ -2223,6 +2225,34 @@
 		};
 		0469447606249D3C0007093B = {
 			fileRef = 0469447506249D3B0007093B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		046C3FA40676052300F22EF7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = cocoa_renderer.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		046C3FA50676052300F22EF7 = {
+			fileRef = 046C3FA40676052300F22EF7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		046C3FA60676062900F22EF7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.objcpp;
+			path = cocoa_renderer.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		046C3FA70676062900F22EF7 = {
+			fileRef = 046C3FA60676062900F22EF7;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3693,6 +3723,7 @@
 				049580EC0652BBF000CDAB3B,
 				049580EE0652C21F00CDAB3B,
 				04168541065D4B7D00E060C1,
+				046C3FA50676052300F22EF7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3819,6 +3850,7 @@
 				049580E80652BBD500CDAB3B,
 				049580F00652C23300CDAB3B,
 				0416853F065D4B6000E060C1,
+				046C3FA70676062900F22EF7,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

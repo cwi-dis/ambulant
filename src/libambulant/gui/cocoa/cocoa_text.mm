@@ -68,7 +68,7 @@ namespace gui {
 
 namespace cocoa {
 
-cocoa_active_text_renderer::~cocoa_active_text_renderer()
+cocoa_text_renderer::~cocoa_text_renderer()
 {
 	m_lock.enter();
 	[m_text_storage release];
@@ -77,11 +77,11 @@ cocoa_active_text_renderer::~cocoa_active_text_renderer()
 }
 
 void
-cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_text_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
@@ -106,7 +106,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 	if (info && !info->get_transparent()) {
 		// XXXX Fill with background color
 		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_text_renderer.redraw: clearing to 0x%x", (long)bgcolor);
+		AM_DBG lib::logger::get_logger()->trace("cocoa_text_renderer.redraw: clearing to 0x%x", (long)bgcolor);
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)
@@ -119,12 +119,12 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *wi
 		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
 		NSSize size = NSMakeSize(NSWidth(cocoa_dstrect), NSHeight(cocoa_dstrect));
 		if (1 /*size != [m_text_container containerSize]*/) {
-			AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw: setting size to (%f, %f)", size.width, size.height);
+			AM_DBG logger::get_logger()->trace("cocoa_text_renderer.redraw: setting size to (%f, %f)", size.width, size.height);
 			[m_text_container setContainerSize: size];
 		}
-		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
+		AM_DBG logger::get_logger()->trace("cocoa_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
-		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
+		//[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
 	}
 	m_lock.leave();

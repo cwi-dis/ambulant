@@ -72,107 +72,89 @@ inline double round(double v) {return floor(v+0.5);}
 using namespace ambulant;
 using namespace common;
 
-typedef lib::no_arg_callback<active_renderer> readdone_callback;
+typedef lib::no_arg_callback<renderer_playable_ds> readdone_callback;
 
-active_renderer::active_renderer(
+renderer_playable_ds::renderer_playable_ds(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
 	net::datasource_factory *df)
-:	active_basic_renderer(context, cookie, node, evp),
-	m_src(NULL),
-	m_dest(NULL),
-	m_intransition(NULL),
-	m_outtransition(NULL)
+:	renderer_playable(context, cookie, node, evp),
+	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	std::string url = node->get_url("src");
 	m_src = df->new_raw_datasource(url);	
 }
 
-active_renderer::~active_renderer()
+renderer_playable_ds::~renderer_playable_ds()
 {
-	AM_DBG lib::logger::get_logger()->trace("~active_renderer(0x%x)", (void *)this);
-	if (m_intransition) delete m_intransition;
-	if (m_outtransition) delete m_outtransition;
-	if (m_alignment) delete m_alignment;
+	AM_DBG lib::logger::get_logger()->trace("~renderer_playable_ds(0x%x)", (void *)this);
 }
 
 void
-active_renderer::start(double t)
+renderer_playable_ds::start(double t)
 {
-#ifndef AMBULANT_NO_ABORT
-	if (!m_node) abort();
-#endif
-
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-	std::ostringstream os;
-	os << *m_node;
-#endif	
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x)", (void *)this);
 
 	if (!m_dest) {
-		lib::logger::get_logger()->error("active_renderer.start: no destination surface");
-		stopped_callback();
+		lib::logger::get_logger()->error("renderer_playable_ds.start: no destination surface");
+		m_context->stopped(m_cookie, 0);
 		return;
 	}
 	m_dest->show(this);
 	if (m_src) {
-		lib::event *e = new readdone_callback(this, &active_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
 	} else {
-		lib::logger::get_logger()->error("active_renderer.start: no datasource");
-		stopped_callback();
+		lib::logger::get_logger()->error("renderer_playable_ds.start: no datasource");
+		m_context->stopped(m_cookie, 0);
 	}
 }
 
-void
-active_renderer::start_outtransition(lib::transition_info *info)
-{
-	lib::logger::get_logger()->warn("active_renderer::start_outtransition: renderer does not support out-transitions");
-}
 
 #if 0
 void
-active_renderer::readdone()
+renderer_playable_ds::readdone()
 {
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	if (m_dest)
 		m_dest->need_redraw();
-	stopped_callback();
+	m_context->stopped(m_cookie, 0);
 }
 #endif
 
 void
-active_renderer::stop()
+renderer_playable_ds::stop()
 {
-	// XXXX Need to handle case that no data (or not all data) has come in yet
 	if (m_dest)
 		m_dest->renderer_done(this);
 	if (m_src)
 		m_src->stop();
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.stop(0x%x)", (void *)this);
 }
 
+#if 0
 void
-active_renderer::wantclicks(bool want)
+renderer_playable_ds::wantclicks(bool want)
 {
-	AM_DBG lib::logger::get_logger()->trace("active_renderer(0x%x)::wantclicks(%d)", (void*)this, want);
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds(0x%x)::wantclicks(%d)", (void*)this, want);
 	if (m_dest)
 		m_dest->need_events(want);
 }
+#endif
 
-active_final_renderer::~active_final_renderer()
+renderer_playable_dsall::~renderer_playable_dsall()
 {
 	if (m_data) free(m_data);
 }
 
 void
-active_final_renderer::readdone()
+renderer_playable_dsall::readdone()
 {
 	unsigned cur_size = m_src->size();
-	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, cur_size);
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x, size=%d)", (void *)this, cur_size);
 	
 	if (!m_data)
 		m_data = malloc(cur_size);
@@ -180,28 +162,28 @@ active_final_renderer::readdone()
 		m_data = realloc(m_data, m_data_size + cur_size);
 	
 	if (m_data == NULL) {
-		lib::logger::get_logger()->fatal("active_final_renderer.readdone: cannot allocate %d bytes", cur_size);
+		lib::logger::get_logger()->fatal("renderer_playable_dsall.readdone: cannot allocate %d bytes", cur_size);
 		// What else can we do...
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 	}
 	
 	char *cur_data = m_src->get_read_ptr();
 	memcpy((char *)m_data + m_data_size, cur_data, cur_size);
 	m_data_size += cur_size;
-	AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
+	AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
 	m_src->readdone(cur_size);
 	
 	if (m_src->end_of_file()) {
 		// All done
-		AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
+		AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
 		if (m_dest)
 			m_dest->need_redraw();
 		m_src->stop();
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 	} else {
 		// Continue reading
-		AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x):  more to come, calling m_src->start()", (void *)this);
-		lib::event *e = new readdone_callback(this, &active_renderer::readdone);
+		AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x):  more to come, calling m_src->start()", (void *)this);
+		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
 	}
 	
@@ -248,14 +230,12 @@ active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_wi
 }
 
 active_video_renderer::active_video_renderer(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
 	const lib::node * node,
 	lib::event_processor * evp,
 	net::datasource_factory * df)
-:	common::active_basic_renderer (context, cookie, node, evp),
-	m_alignment(NULL),
-	m_evp (evp),
+:	renderer_playable (context, cookie, node, evp),
 	m_is_playing(false),
 	m_is_paused(false)
 {
@@ -278,13 +258,13 @@ active_video_renderer::start (double where = 1)
 	m_lock.enter();
 	int w;
 	m_is_playing = true;
-	m_epoch = m_evp->get_timer()->elapsed();
+	m_epoch = m_event_processor->get_timer()->elapsed();
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
 	if (!m_src) {
 		lib::logger::get_logger()->error("active_video_renderer.start: no datasource");
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;
 	}
@@ -293,7 +273,7 @@ active_video_renderer::start (double where = 1)
 	} else {
 		AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
 	}
-	m_src->start_frame (m_evp, e, w);
+	m_src->start_frame (m_event_processor, e, w);
 	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
 	m_lock.leave();
 }
@@ -308,7 +288,7 @@ active_video_renderer::now()
 	if (m_is_paused)
 		rv = (double)(m_paused_epoch - m_epoch) / 1000;
 	else
-		rv = ((double)m_evp->get_timer()->elapsed() - m_epoch)/1000;
+		rv = ((double)m_event_processor->get_timer()->elapsed() - m_epoch)/1000;
 	return rv;
 }
 
@@ -318,7 +298,7 @@ active_video_renderer::pause()
 	m_lock.enter();
 	if (!m_is_paused) {
 		m_is_paused = true;
-		m_paused_epoch = m_evp->get_timer()->elapsed();
+		m_paused_epoch = m_event_processor->get_timer()->elapsed();
 	}
 	m_lock.leave();
 }
@@ -329,7 +309,7 @@ active_video_renderer::resume()
 	m_lock.enter();
 	if (m_is_paused) {
 		m_is_paused = false;
-		unsigned long int pause_length = m_evp->get_timer()->elapsed() - m_paused_epoch;
+		unsigned long int pause_length = m_event_processor->get_timer()->elapsed() - m_paused_epoch;
 		m_epoch += pause_length;
 	}
 	m_lock.leave();
@@ -362,12 +342,12 @@ active_video_renderer::data_avail()
 			m_src->frame_done(ts, true);
 			if (!m_src->end_of_file()) {
 				lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-				m_src->start_frame (m_evp, e, ts);
+				m_src->start_frame (m_event_processor, e, ts);
 			}
 		} else {
 			lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 			event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
-			m_evp->add_event(e, event_time);
+			m_event_processor->add_event(e, event_time);
 		}
 	} else {
 		if (m_is_playing && !m_src->end_of_file()) {
@@ -376,25 +356,8 @@ active_video_renderer::data_avail()
 		AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
 		m_is_playing = false;
 		m_lock.leave();
-		stopped_callback();
+		m_context->stopped(m_cookie, 0);
 		return;
 	}
 	m_lock.leave();
-}
-
-void 
-active_video_renderer::set_surface(common::surface *dest) 
-{ 
-	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::set_surface(0x%x) (this = 0x%x)", (void*) dest, (void *) this);
-	m_dest = dest;
-}
-
-surface*
-active_video_renderer::get_surface() { return m_dest;}
-
-renderer* 
-active_video_renderer::get_renderer() 
-{
-	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::get_renderer() (this = 0x%x)", (void *) this);
-	return this;
 }

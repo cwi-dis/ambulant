@@ -189,6 +189,10 @@ mainloop::~mainloop()
 void
 mainloop::play()
 {
+	if (!m_player) {
+		ambulant::lib::logger::get_logger()->error("mainloop::play: cannot play document");
+		return;
+	}
 	m_running = true;
 	m_speed = 1.0;
 	m_player->start();

@@ -53,7 +53,7 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_TEXT_H
 #define AMBULANT_GUI_COCOA_COCOA_TEXT_H
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/gui/cocoa/cocoa_renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>
 
@@ -66,19 +66,19 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_text_renderer : public active_final_renderer {
+class cocoa_text_renderer : public cocoa_renderer {
   public:
-	cocoa_active_text_renderer(
+	cocoa_text_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
 		net::datasource_factory *df)
-	:   active_final_renderer(context, cookie, node, evp, df),
+	:   cocoa_renderer(context, cookie, node, evp, df),
             m_text_storage(NULL) {};
-        ~cocoa_active_text_renderer();
+        ~cocoa_text_renderer();
 	
-    void redraw(const screen_rect<int> &dirty, gui_window *window);
+    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
   private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
