@@ -166,6 +166,14 @@ timegraph::build_time_tree(const lib::node *root) {
 			// create a time node for each start element
 			time_node *tn = create_time_node(n, stack.empty()?0:stack.top());
 			
+			// add 'a' parent as a child
+			if(n->up() && n->up()->get_local_name() == "a") {
+				time_node *tnp = create_time_node(n->up(), tn);
+				tn->append_child(tnp);
+				const char *pidp = n->get_attribute("id");
+				if(pidp) m_id2tn[pidp] = tn;
+			}
+			
 			// read or create node id and add it the map
 			std::string ident;
 			const char *pid = n->get_attribute("id");
@@ -219,10 +227,9 @@ void timegraph::build_time_graph() {
 		time_node *tn = (*it).second;
 		add_begin_sync_rules(tn);
 		add_end_sync_rules(tn);
-		if(tn->is_area() && tn->get_time_attrs()->get_actuate() == actuate_onrequest)
+		if(tn->is_link() && tn->get_time_attrs()->get_actuate() == actuate_onrequest) {
 			tn->set_want_activate_event(true);
-		if (tn->has_a_parent())
-			tn->set_want_activate_event(true);
+		}
 	}
 }
 

@@ -270,11 +270,11 @@ class time_node : public schedulable {
 	bool is_discrete() const { return m_discrete;}
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
-	bool is_area() const {return m_attrs.get_tag() == "area";}
-	bool is_a() const {return m_attrs.get_tag() == "a";}
+	bool is_area() const { return m_attrs.get_tag() == "area";}
+	bool is_a() const { return m_attrs.get_tag() == "a";}
+	bool is_link() const { return is_area() || is_a();}
 	bool is_animation() const;
 	bool is_playable() const;
-	bool has_a_parent() const;
 
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
 	bool needs_implicit_dur() const;

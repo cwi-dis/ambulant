@@ -681,7 +681,7 @@ void time_node::stop_animation() {
 
 // Returns true when this node is associated with a playable
 bool time_node::is_playable() const {
-	return !is_time_container() && !is_animation() && !is_a();
+	return !is_time_container() && !is_animation();
 }
 
 // Returns true when this node is an animation
@@ -689,45 +689,27 @@ bool time_node::is_animation() const {
 	return common::schema::get_instance()->is_animation(m_node->get_qname());
 }
 
-// Returns true if the node has an <a actuate="onRequest"> parent
-bool time_node::has_a_parent() const {
-	const time_node *parent = up();
-	if (!parent) return false;
-	if (!parent->is_a()) return false;
-	return parent->get_time_attrs()->get_actuate() == actuate_onrequest;
-}
-
-
 //////////////////////////
 // Playables schell
 
 void time_node::start_playable(time_type offset) {
 	if(m_ffwd_mode) return;
-	// Special case for <a actuate="onLoad">
-	if (is_a() && m_attrs.get_actuate() == actuate_onload) {
-		qtime_type atimestamp(this, offset);
-		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str());
-		follow_link(atimestamp);
-	}
 	if(!is_playable() || m_ffwd_mode) return;
 	qtime_type timestamp(this, offset);
 	AM_DBG m_logger->trace("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
-	if (!is_a()) {
-		common::playable *np = create_playable();
-		if(np) np->wantclicks(m_want_activate_events);
-		const lib::node *trans_in = m_attrs.get_trans_in();
-		if(np) {
-			if(trans_in) {
-				m_context->start_playable(m_node, time_type_to_secs(offset()), trans_in);
-			} else {
-				np->start(time_type_to_secs(offset()));
-			} 
-		}
+	common::playable *np = create_playable();
+	if(np) np->wantclicks(m_want_activate_events);
+	const lib::node *trans_in = m_attrs.get_trans_in();
+	if(np) {
+		if(trans_in) {
+			m_context->start_playable(m_node, time_type_to_secs(offset()), trans_in);
+		} else {
+			np->start(time_type_to_secs(offset()));
+		} 
 	}
-	if (is_area() && m_attrs.get_actuate() == actuate_onload) {
+	if (is_link()  && m_attrs.get_actuate() == actuate_onload) {
 		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 		follow_link(timestamp);
@@ -1452,12 +1434,8 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 		timestamp.second(), 
 		timestamp.as_doc_time_value());
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
-	if(is_area()) {
+	if(is_link()) {
 		follow_link(timestamp);
-	}
-	if (has_a_parent()) {
-		time_node *parent = up();
-		parent->follow_link(timestamp);
 	}
 }
 
@@ -1584,7 +1562,7 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 	std::list<time_node*>::iterator it;
 	qtime_type qt = timestamp.as_qtime_down_to(this);
 	for(it = children.begin(); it != children.end(); it++) {
-		if((*it)->is_area() && oproot == (*it)->up())
+		if((*it)->is_link() && oproot == (*it)->up())
 			(*it)->set_state(ts_postactive, qt, oproot);
 		else
 			(*it)->kill(qt, oproot);
@@ -2260,8 +2238,9 @@ void time_node::follow_link(qtime_type timestamp) {
 		// An anchor with nohref="nohref" does nothing.
 		return;
 	}
-	if (m_node->get_attribute("href") == NULL)
+	if(m_node->get_attribute("href") == NULL) {
 		return;
+	} 
 	net::url href = m_node->get_url("href");
 	const char *sourceplaystate = m_node->get_attribute("sourcePlaystate");
 	const char *destinationplaystate = m_node->get_attribute("destinationPlaystate");
