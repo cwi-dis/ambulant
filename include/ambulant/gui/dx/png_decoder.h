@@ -64,10 +64,6 @@
 
 #include <cassert>
 
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
-
 #include "ambulant/config/config.h"
 #include "ambulant/gui/dx/img_decoder.h"
 #include "ambulant/lib/logger.h"
@@ -132,7 +128,7 @@ png_decoder<DataSource, ColorType>::decode() {
       (png_error_ptr)NULL, (png_error_ptr)NULL);
     if(!png_ptr) {
 		m_logger->error("png_create_read_struct() failed");
-        return 0;
+        return 0; 
     }
 
     png_infop info_ptr = png_create_info_struct(png_ptr);
@@ -151,7 +147,7 @@ png_decoder<DataSource, ColorType>::decode() {
 	png_uint_32 width, height;
 	int depth, clrtype;
     png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
-	AM_DBG m_logger->trace("PNG: %dx%d %dbpp [clrtype:%d]", width, height, depth, clrtype);
+	AM_DBG m_logger->trace("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 	
 	// expand images of all color-type and bit-depth to 3x8 bit RGB images
 	// let the library process things like alpha, transparency, background
@@ -184,21 +180,26 @@ png_decoder<DataSource, ColorType>::decode() {
         
 	// get again width, height and the new bit-depth and color-type
     png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
-	m_logger->trace("PNG: %dx%d %d bpp [clrtype: %d]", width, height, depth, clrtype);
+	AM_DBG m_logger->trace("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 	
 	// row_bytes = width x channels
 	png_uint_32 row_bytes = png_get_rowbytes(png_ptr, info_ptr);
     png_uint_32 channels = png_get_channels(png_ptr, info_ptr);
     assert(row_bytes == width * channels);
 	AM_DBG m_logger->trace("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
-		
+	if(channels	!= 3) {
+		m_logger->warn("PNG: Seen: %d channels. Supported: 3 channels", channels);
+		png_destroy_read_struct(&png_ptr, NULL, NULL);
+		return 0; // failed
+	}
+	
 	// create a bmp surface
 	ColorType *pBits = NULL;
 	BITMAPINFO *pbmpi = get_bmp_info(width, height, ColorType::get_bits_size());
 	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
-		return 0;
+		return 0; // failed
 	}
 	surface<ColorType> *psurf = 
 		new surface<ColorType>(width, height, ColorType::get_bits_size(), pBits);
@@ -207,10 +208,13 @@ png_decoder<DataSource, ColorType>::decode() {
 	for(png_uint_32 i=0;i<height;i++)
 		row_ptrs[i] = (png_bytep) psurf->get_row(i);
 	png_read_image(png_ptr, row_ptrs);	
-	png_read_end(png_ptr, NULL); 
+	png_read_end(png_ptr, NULL);
 	delete[] row_ptrs;
     png_destroy_read_struct(&png_ptr, NULL, NULL);
-    	
+	
+	// reverse channels inline
+	psurf->rev_rgb_channels();
+	
     return new dib_surface<ColorType>(bmp, psurf);
 }
 	
