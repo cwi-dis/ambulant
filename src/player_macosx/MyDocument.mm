@@ -61,6 +61,43 @@
 #define AM_DBG if(0)
 #endif
 
+
+void
+document_embedder::show_file(const ambulant::net::url& href)
+{
+	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.get_url().c_str(), kCFStringEncodingUTF8);
+	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
+	OSErr status;
+	
+	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str(), status);
+	}
+}
+
+void
+document_embedder::close(ambulant::common::player *p)
+{
+	[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
+}
+
+void
+document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common::player *old)
+{
+	if (old) {
+		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
+		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
+	}
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSString *str_url = [NSString stringWithCString: newdoc.get_url().c_str()];
+	NSURL *url = [NSURL URLWithString: str_url];
+	NSDocumentController *docController = [NSDocumentController sharedDocumentController];
+	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES];
+	[pool release];
+	// [doc retain] ??
+	
+}
+
+
 @implementation MyDocument
 
 - (id)init
@@ -92,7 +129,8 @@
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *filename = [self fileName];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
-    myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms);
+	embedder = new document_embedder(self);
+    myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms, embedder);
 #if 0
 	uitimer = [NSTimer timerWithTimeInterval: 0.5
 		target:self selector:SEL("validateButtons:") userInfo:nil 
@@ -117,6 +155,7 @@
 
 - (BOOL) validateUIItem:(id)UIItem
 {
+	if (!myMainloop) return NO;
 	SEL theAction = [UIItem action];
 	AM_DBG NSLog(@"Validating %@, is_running=%d, get_speed=%f", UIItem, myMainloop->is_running(),myMainloop->get_speed());
 	if (theAction == @selector(play:)) {
@@ -173,12 +212,13 @@
 
 - (IBAction)pause:(id)sender
 {
-    myMainloop->set_speed(1.0 - myMainloop->get_speed());
+    if (myMainloop) myMainloop->set_speed(1.0 - myMainloop->get_speed());
 	[self validateButtons: nil];
 }
 
 - (IBAction)play:(id)sender
 {
+	if (!myMainloop) return;
 	if (myMainloop->is_running())
 		myMainloop->set_speed(1.0);
 	else {
@@ -191,6 +231,7 @@
 
 - (void)startPlay: (id)dummy
 {
+	if (!myMainloop) return;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     if (![NSThread isMultiThreaded]) {
@@ -215,7 +256,7 @@
 - (IBAction)stop:(id)sender
 {
     AM_DBG NSLog(@"Stop");
-	myMainloop->stop();
+	if (myMainloop) myMainloop->stop();
 	[self validateButtons: nil];
 }
 
@@ -226,18 +267,25 @@
 
 - (void)close
 {
-	AM_DBG NSLog(@"close");
 	[self stop: self];
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
 	if (myMainloop) myMainloop->release();
 	myMainloop = NULL;
+	delete embedder;
+	embedder = NULL;
 	[super close];
+}
+
+- (void)close: (id)dummy
+{
+	[self close];
 }
 
 - (void)fixMouse: (id)dummy
 {
+	if (!myMainloop) return;
 	int cursor = myMainloop->get_cursor();
 	AM_DBG NSLog(@"Fixing mouse to %d", cursor);
 	if (cursor == 0) {
@@ -253,6 +301,6 @@
 
 - (void)resetMouse: (id)dummy
 {
-	myMainloop->set_cursor(0);
+	if (myMainloop) myMainloop->set_cursor(0);
 }
 @end

@@ -266,3 +266,15 @@ qt_mainloop::show_file(const ambulant::net::url &url)
 {
 	open_web_browser(url.get_url());
 }
+
+void
+qt_mainloop::close(common::player *p)
+{
+	ambulant::lib::logger::get_logger()->warn("qt_mainloop: not implemented: close document");
+}
+
+void
+qt_mainloop::open(net::url newdoc, bool start, common::player *old)
+{
+	ambulant::lib::logger::get_logger()->warn("qt_mainloop: not implemented: open \"%s\"", newdoc.get_url().c_str());
+}

@@ -66,7 +66,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
-#include "ambulant/lib/system.h"
+#include "ambulant/common/embedder.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/gui/dx/dx_playable.h"
@@ -107,7 +107,7 @@ class dx_player :
 	public common::window_factory, 
 	public common::playable_factory,
 	public dx_playables_context,
-	public lib::system {
+	public common::embedder {
 	
   public:
 	dx_player(const std::string& url);
@@ -153,8 +153,10 @@ class dx_player :
 
 	
 	////////////////////
-	// lib::system implementation
+	// common::embedder implementation
 	void show_file(const net::url& href);
+	void close(player *p);
+	void open(net::url newdoc, bool start, player *old=NULL);
 	
 	////////////////////
 	// Implementation specific artifacts

@@ -54,11 +54,12 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/document.h"
-#include "ambulant/lib/system.h"
+#include "ambulant/common/embedder.h"
 
-class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted_obj {
+class mainloop : public ambulant::lib::ref_counted_obj {
   public:
-	mainloop(const char *filename, ambulant::common::window_factory *wf, bool use_mms);
+	mainloop(const char *filename, ambulant::common::window_factory *wf,
+		bool use_mms, ambulant::common::embedder *app);
 	~mainloop();
 	
 	// The callback member function.
@@ -75,9 +76,8 @@ class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted
 	int get_cursor() const {return m_player?m_player->get_cursor():0; };
 	void set_cursor(int cursor) { if (m_player) m_player->set_cursor(cursor); }
 	
-	void show_file(const ambulant::net::url& href);
-	
 	static void set_preferences(std::string &path);
+
   private:
 	ambulant::lib::document *create_document(const char *filename);
   	bool m_running;
@@ -87,4 +87,5 @@ class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted
 	ambulant::common::global_playable_factory *m_rf;
 	ambulant::common::window_factory *m_wf;
 	ambulant::net::datasource_factory *m_df;
+	ambulant::common::embedder *m_embedder;
 };

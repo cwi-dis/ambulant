@@ -92,14 +92,16 @@ usage()
 	exit(1);
 }
 
-mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, bool use_mms)
+mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
+	bool use_mms, ambulant::common::embedder *app)
 :   m_running(false),
 	m_speed(1.0),
 	m_doc(NULL),
 	m_player(NULL),
 	m_rf(NULL),
 	m_wf(wf),
-	m_df(NULL)
+	m_df(NULL),
+	m_embedder(app)
 {
 	using namespace ambulant;
 	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop(0x%x): created", (void*)this);
@@ -151,7 +153,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	if (use_mms)
 		m_player = common::create_mms_player(m_doc, m_wf, m_rf);
 	else
-		m_player = common::create_smil2_player(m_doc, m_wf, m_rf, this);
+		m_player = common::create_smil2_player(m_doc, m_wf, m_rf, m_embedder);
 }
 
 ambulant::lib::document *
@@ -231,16 +233,4 @@ void
 mainloop::set_preferences(std::string &url)
 {
 	ambulant::smil2::test_attrs::load_test_attrs(url);
-}
-
-void
-mainloop::show_file(const ambulant::net::url& href)
-{
-	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.get_url().c_str(), kCFStringEncodingUTF8);
-	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
-	OSErr status;
-	
-	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str(), status);
-	}
 }

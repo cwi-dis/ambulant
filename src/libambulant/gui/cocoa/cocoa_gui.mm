@@ -73,7 +73,7 @@
 #define AM_DBG if(0)
 #endif
 
-static ambulant::lib::critical_section redraw_lock;
+//static ambulant::lib::critical_section redraw_lock;
 
 namespace ambulant {
 
@@ -102,20 +102,10 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
-	// The following is a strange hack, that somehow makes the setNeedsDisplay work
-	// when this code is executed by one thread while another is in the redraw code.
-	// I think there is a bug in AppKit that makes the setNeedsDisplay get lost in
-	// that case...
-#if 0
-	if ([my_view lockFocusIfCanDraw]) {
-		[my_view unlockFocus];
-	}
-	redraw_lock.enter();
-#endif
-	[my_view setNeedsDisplayInRect: my_rect];
-#if 0
-	redraw_lock.leave();
-#endif
+	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
+	// XXX Is it safe to cast C++ objects to ObjC id's?
+	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:) 
+		withObject: arect waitUntilDone: NO];
 }
 
 void
@@ -245,6 +235,20 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 } //namespace ambulant
 
 #ifdef __OBJC__
+@implementation NSRectHolder
+
+- (id) initWithRect: (NSRect)r
+{
+	rect = r;
+	return self;
+}
+
+- (NSRect)rect
+{
+	return rect;
+}
+@end
+
 @implementation AmbulantView
 
 - (id)initWithFrame:(NSRect)frameRect
@@ -290,10 +294,17 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	return arect;
 }
 
+- (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect
+{
+	NSRect my_rect = [arect rect];
+	[arect release];
+	[self setNeedsDisplayInRect: my_rect];
+}
+
 - (void)drawRect:(NSRect)rect
 {
     AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(rect), NSMinY(rect), NSMaxX(rect), NSMaxY(rect));
-    redraw_lock.enter();
+//    redraw_lock.enter();
 	if (!ambulant_window) {
         AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
     } else {
@@ -306,7 +317,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		[self dumpToImageID: "redraw"];
 #endif
     }
-	redraw_lock.leave();
+//	redraw_lock.leave();
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window

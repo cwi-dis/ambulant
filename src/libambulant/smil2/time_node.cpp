@@ -706,7 +706,7 @@ void time_node::start_playable(time_type offset) {
 	// Special case for <a actuate="onLoad">
 	if (is_a() && m_attrs.get_actuate() == actuate_onload) {
 		qtime_type atimestamp(this, offset);
-		/*AM_DBG*/ m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 		follow_link(atimestamp);
 	}
@@ -728,7 +728,7 @@ void time_node::start_playable(time_type offset) {
 		}
 	}
 	if (is_area() && m_attrs.get_actuate() == actuate_onload) {
-		/*AM_DBG*/ m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
+		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 		follow_link(timestamp);
 	}
@@ -2260,6 +2260,8 @@ void time_node::follow_link(qtime_type timestamp) {
 		// An anchor with nohref="nohref" does nothing.
 		return;
 	}
+	if (m_node->get_attribute("href") == NULL)
+		return;
 	net::url href = m_node->get_url("href");
 	const char *sourceplaystate = m_node->get_attribute("sourcePlaystate");
 	const char *destinationplaystate = m_node->get_attribute("destinationPlaystate");

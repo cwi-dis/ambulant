@@ -46,50 +46,30 @@
  * 
  */
 
-/* MyDocument */
+/* 
+ * @$Id$ 
+ */
 
-#import <Cocoa/Cocoa.h>
-#include "mainloop.h"
-#include "ambulant/gui/cocoa/cocoa_gui.h"
+#ifndef AMBULANT_COMMON_EMBEDDER_H
+#define AMBULANT_COMMON_EMBEDDER_H
 
-#include "ambulant/common/embedder.h"
+#include "ambulant/lib/system.h"
 #include "ambulant/net/url.h"
 
-class document_embedder : public ambulant::common::embedder {
-  public:
-	document_embedder(id mydocument)
-	:   m_mydocument(mydocument) {}
+namespace ambulant {
 
-	// common:: embedder interface
-	void show_file(const ambulant::net::url& href);
-	void close(ambulant::common::player *p);
-	void open(ambulant::net::url newdoc, bool start, ambulant::common::player *old=NULL);
-  private:
-	id m_mydocument;
+namespace common {
+
+class player;
+
+class embedder : public lib::system {
+  public:
+	virtual void close(player *p) = 0;
+	virtual void open(net::url newdoc, bool start, player *old=NULL) = 0;
 };
 
-@interface MyDocument : NSDocument
-{
-    IBOutlet id view;
-	IBOutlet id play_button;
-	IBOutlet id stop_button;
-	IBOutlet id pause_button;
-//    void *window_factory;
-	mainloop *myMainloop;
-	NSTimer *uitimer;
-	document_embedder *embedder;
-}
-- (BOOL) validateUIItem:(id)UIItem;
-- (BOOL) validateMenuItem:(id)menuItem;
-- (void) validateButtons:(id)dummy;
-- (IBAction)pause:(id)sender;
-- (IBAction)play:(id)sender;
-- (IBAction)stop:(id)sender;
-- (void *)view;
-- (void)startPlay: (id)dummy;
-- (void)close;
-- (void)close: (id)dummy;
-- (void)fixMouse: (id)dummy;
-- (void)resetMouse: (id)dummy;
+} // namespace common
+ 
+} // namespace ambulant
 
-@end
+#endif // AMBULANT_COMMON_EMBEDDER_H

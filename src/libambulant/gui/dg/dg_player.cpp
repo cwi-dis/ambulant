@@ -389,10 +389,10 @@ void gui::dg::dg_player::show_file(const net::url& href) {
 	ShellExecuteEx(&si);
 #endif
 }
+void gui::dg::dg_player::close(common::player *p) {
+	m_logger->warn("dg_player: not implemented: close document");
+}
 
-
-
-
-
-
-
+void gui::dg::dg_player::open(net::url newdoc, bool start, common::player *old) {
+	m_logger->show("dg_player: not implemented: open \"%s\"", newdoc.get_url().c_str());
+}

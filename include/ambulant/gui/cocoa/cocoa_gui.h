@@ -117,6 +117,15 @@ class cocoa_renderer_factory : public common::playable_factory {
 } // namespace ambulant
 
 #ifdef __OBJC__
+@interface NSRectHolder : NSObject
+{
+	NSRect rect;
+}
+
+- (id) initWithRect: (NSRect)r;
+- (NSRect)rect;
+@end
+
 @interface AmbulantView : NSView
 {
     ambulant::gui::cocoa::cocoa_window *ambulant_window;
@@ -135,6 +144,8 @@ class cocoa_renderer_factory : public common::playable_factory {
 
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
+
+- (void) asyncRedrawForAmbulantRect: (id)arect;
 
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;

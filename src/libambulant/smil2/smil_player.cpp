@@ -84,12 +84,12 @@ common::create_smil2_player(
 	lib::document *doc,
 	common::window_factory *wf,
 	common::playable_factory *pf,
-	lib::system *sys)
+	common::embedder *sys)
 {
 	return new smil_player(doc, wf, pf, sys);
 }
 
-smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, lib::system *sys)
+smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, common::embedder *sys)
 :	m_doc(doc),
 	m_wf(wf),
 	m_pf(pf),
@@ -550,22 +550,27 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 		return;
 	}
 	
+	if(!m_system) {
+		lib::logger::get_logger()->error("This implementation cannot open <%s> in new window", href.get_url().c_str());
+		return;
+	}
+	
 	if (srcstate == src_pause) {
 		AM_DBG lib::logger::get_logger()->trace("show_link: pausing source document");
 		pause();
 	}
+	smil_player *to_replace = NULL;
 	if (srcstate == src_replace) {
-		// XXX Not good enough: should close document too.
-		AM_DBG lib::logger::get_logger()->trace("show_link: stopping source document");
-		stop();
+		AM_DBG lib::logger::get_logger()->trace("show_link: replacing source document");
+		to_replace = this;
 	}
-	if ( dststate == dst_play || dststate == dst_pause ) {
-		lib::logger::get_logger()->warn("hyperlink: opening new documents not implemented yet. Defaulting to external=true.");
-	}
-	if(m_system) {
+	if ( dststate == dst_external ) {
+		AM_DBG lib::logger::get_logger()->trace("show_link: open externally: \"%s\"", href.get_url().c_str());
+		if (to_replace)
+			m_system->close(to_replace);
 		m_system->show_file(href);
 	} else {
-		lib::logger::get_logger()->error("This implementation cannot open <%s> in a browser", href.get_url().c_str());
+		m_system->open(href, dststate = dst_play, to_replace);
 	}
 }
 

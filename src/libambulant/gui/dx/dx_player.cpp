@@ -487,8 +487,10 @@ void gui::dx::dx_player::show_file(const net::url& href) {
 	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 }
 
+void gui::dx::dx_player::close(player *p) {
+	m_logger->warn("dx_player: not implemented: close document");
+}
 
-
-
-
-
+void gui::dx::dx_player::open(net::url newdoc, bool start, player *old) {
+	m_logger->show("dx_player: not implemented: open \"%s\"", newdoc.get_url().c_str());
+}

@@ -706,6 +706,9 @@
 					Name="common"
 					Filter="">
 					<File
+						RelativePath="..\..\include\ambulant\common\embedder.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\common\layout.h">
 					</File>
 					<File

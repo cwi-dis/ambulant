@@ -66,7 +66,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
-#include "ambulant/lib/system.h"
+#include "ambulant/common/embedder.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 
@@ -102,7 +102,7 @@ class dg_player :
 	public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
-	public lib::system {
+	public common::embedder {
 	
   public:
 	dg_player(const char *url);
@@ -147,8 +147,11 @@ class dg_player :
 		lib::event_processor * evp);
 
 	////////////////////
-	// lib::system implementation
+	////////////////////
+	// common::embedder implementation
 	void show_file(const net::url& href);
+	void close(common::player *p);
+	void open(net::url newdoc, bool start, common::player *old=NULL);
 
 	////////////////////
 	// Implementation specific artifacts

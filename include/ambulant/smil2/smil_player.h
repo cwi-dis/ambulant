@@ -57,13 +57,13 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/system.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/time_nctx.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/common/embedder.h"
 
 #include <map>
 
@@ -90,7 +90,7 @@ class smil_player : public common::player, public time_node_context, public comm
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, lib::system *sys = 0);
+	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, common::embedder *sys = 0);
 	~smil_player();
 		
 	///////////////////
@@ -193,7 +193,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	lib::document *m_doc;
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
-	lib::system *m_system;
+	common::embedder *m_system;
 	animation_engine *m_animation_engine;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;

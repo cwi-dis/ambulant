@@ -2353,6 +2353,7 @@ SOURCE=.\gui\dg\dg_player.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_DG_PL=\
+	"..\..\include\ambulant\common\embedder.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\player.h"\
@@ -6791,6 +6792,7 @@ SOURCE=.\smil2\smil_player.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_SMIL_P=\
+	"..\..\include\ambulant\common\embedder.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\player.h"\
@@ -8665,6 +8667,10 @@ DEP_CPP_GET_V=\
 # Begin Group "common h"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\common\embedder.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\include\ambulant\common\layout.h
