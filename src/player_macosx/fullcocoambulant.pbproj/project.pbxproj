@@ -5,6 +5,20 @@
 	};
 	objectVersion = 39;
 	objects = {
+		040565AC06139A8600C9C7B2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libavformat.a;
+			path = "/Users/jack/packages/ffmpeg-0.4.8/libavformat/libavformat.a";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		040565AD06139A8600C9C7B2 = {
+			fileRef = 040565AC06139A8600C9C7B2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		041485070532E37A001276A4 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -2850,6 +2864,7 @@
 				048A7E3005CDB4BA003C92BF,
 				04508B3B0507E27700F0FD74,
 				047FC13905CEA19A003C9A89,
+				040565AC06139A8600C9C7B2,
 				1058C7A6FEA54F5311CA2CBB,
 				1058C7A8FEA54F5311CA2CBB,
 				0444D2DD051F2EEF0010C447,
@@ -2972,14 +2987,14 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL= WITH_SDL= WITH_FFMPEG=";
+				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL= WITH_SDL= WITH_FFMPEG= WITH_FFMPEG_AVFORMAT=";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant/include /Users/jack/src/ambulant/third_party_packages/expat-unix/include /usr/local/include/SDL /Users/jack/packages/ffmpeg-0.4.8/libavcodec";
+				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant/include /Users/jack/src/ambulant/third_party_packages/expat-unix/include /usr/local/include/SDL /Users/jack/packages/ffmpeg-0.4.8/libavcodec /Users/jack/packages/ffmpeg-0.4.8/libavformat";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant/.libs /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant /Users/jack/packages/ffmpeg-0.4.8/libavcodec";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant/.libs /Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant /Users/jack/packages/ffmpeg-0.4.8/libavcodec /Users/jack/packages/ffmpeg-0.4.8/libavformat";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -3223,6 +3238,7 @@
 				048A7E3105CDB4BA003C92BF,
 				048A7E3205CDB4BA003C92BF,
 				047FC13A05CEA19A003C9A89,
+				040565AD06139A8600C9C7B2,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

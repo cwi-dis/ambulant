@@ -61,6 +61,9 @@
 #include "ambulant/net/datasource.h"
 
 #include "avcodec.h"
+#ifdef WITH_FFMPEG_AVFORMAT
+#include "avformat.h"
+#endif // WITH_FFMPEG_AVFORMAT
 #include "common.h"
 
 // temporary debug messages
@@ -84,6 +87,12 @@ namespace ambulant
 namespace net
 {
 	
+class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
+  public:
+	~ffmpeg_audio_datasource_factory() {};
+	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmts);
+};
+
 class ffmpeg_audio_parser_finder : public audio_parser_finder {
   public:
 	~ffmpeg_audio_parser_finder() {};
@@ -95,6 +104,40 @@ class ffmpeg_audio_filter_finder : public audio_filter_finder {
 	~ffmpeg_audio_filter_finder() {};
 	audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts);
 };
+
+#ifdef WITH_FFMPEG_AVFORMAT
+
+class ffmpeg_parser_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
+  public:
+	 ffmpeg_parser_datasource(const std::string& url);
+    ~ffmpeg_parser_datasource();
+
+    void start(lib::event_processor *evp, lib::event *callback);  
+
+    void readdone(int len);
+    void data_avail();
+    bool end_of_file();
+	bool buffer_full();
+		
+	char* get_read_ptr();
+	int size() const;   
+	audio_format& get_audio_format();
+
+	static bool supported(const std::string& url);
+	  
+  private:
+    bool _end_of_file();
+	const std::string m_url;
+	audio_format m_fmt;
+    lib::event_processor *m_event_processor;
+
+	databuffer m_buffer;
+		
+	lib::event *m_client_callback;  // This is our calllback to the client
+	lib::critical_section m_lock;
+};
+
+#endif // WITH_FFMPEG_AVFORMAT
 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
@@ -170,7 +213,6 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
   
     databuffer m_buffer;
   	
-    bool m_blocked_full;	
     lib::event_processor *m_event_processor;
     lib::event *m_client_callback;  // This is our calllback to the client
     lib::critical_section m_lock;
