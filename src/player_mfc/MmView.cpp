@@ -85,6 +85,8 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_FILE_STOP, OnUpdateFileStop)
 	ON_WM_TIMER()
 	ON_WM_CREATE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_CHAR()
 END_MESSAGE_MAP()
 
 // MmView construction/destruction
@@ -167,6 +169,7 @@ void MmView::OnInitialUpdate()
 
 void MmView::OnDestroy()
 {
+	player->stop();
 	delete player;
 	player = 0;
 	if(m_timer_id) KillTimer(m_timer_id);
@@ -220,3 +223,16 @@ void MmView::OnTimer(UINT nIDEvent)
 	CView::OnTimer(nIDEvent);
 }
 
+
+void MmView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	if(player) player->on_click(point.x, point.y);
+
+	CView::OnLButtonDown(nFlags, point);
+}
+
+void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	if(player) player->on_char(nChar);
+	CView::OnChar(nChar, nRepCnt, nFlags);
+}

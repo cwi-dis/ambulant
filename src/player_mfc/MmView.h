@@ -98,6 +98,8 @@ public:
 	afx_msg void OnUpdateFileStop(CCmdUI *pCmdUI);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp
