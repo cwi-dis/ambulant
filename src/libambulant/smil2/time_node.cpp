@@ -599,7 +599,10 @@ time_node::calc_next_interval() {
 	interval_type failure = interval_type::unresolved;
 	
 	// this->m_interval holds the just ended interval
-	assert(m_interval.is_valid());
+	if(!m_interval.is_valid()) {
+		// peers="never" for excl
+		return failure;
+	}
 	
 	// verify that this node does the calc when alive
 	interval_type parent_interval = up()?up()->get_interval():
@@ -1852,7 +1855,11 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// do not touch active_node
 		// ignore interrupting_node
 		AM_DBG tnlogger->trace("%s[%s] int_never ignore: %s[%s]", ta->get_tag().c_str(), 
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());	
+			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		
+		// assert that the interval is canceled
+		// e.g. cancel notification to dependents
+		interrupting_node->cancel_interval(timestamp);
 		interrupting_node->set_state(ts_postactive, timestamp, c);
 	}
 }
