@@ -65,10 +65,36 @@ using namespace ambulant;
 const std::string url_delim = ":/?#";
 
 // static 
-std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
- 
+//std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
+// workaround for g++ 2.95
+std::list< net::url::handler_pair* > net::url::s_handlers;
+
 // static
 void net::url::init_statics() {
+
+	// workaround for g++ 2.95
+	static handler_pair h1 = {std::string("n://n:n/"), &url::set_from_host_port_uri};
+ 	s_handlers.push_back(&h1);
+ 	
+	static handler_pair h2 = {std::string("n://n/"), &url::set_from_host_uri};
+ 	s_handlers.push_back(&h2);
+ 	
+	static handler_pair h3 = { std::string("n:///"), &url::set_from_localhost_file_uri};
+ 	s_handlers.push_back(&h3);
+ 	
+	static handler_pair h4 = { std::string("n:///"), &url::set_from_localhost_file_uri};
+ 	s_handlers.push_back(&h4);
+ 	
+	static handler_pair h5 = {std::string("/n"), &url::set_from_unix_path};
+ 	s_handlers.push_back(&h5);
+ 	
+	static handler_pair h6 = {std::string("n:n"), &url::set_from_windows_path};
+ 	s_handlers.push_back(&h6);
+ 	
+	static handler_pair h7 = {std::string("n:/n"), &url::set_from_windows_path};
+ 	s_handlers.push_back(&h7);
+	
+	/*
 	typedef std::pair<std::string, HANDLER> pair;
  	s_handlers.push_back(pair("n://n:n/",&url::set_from_host_port_uri));
   	s_handlers.push_back(pair("n://n/",&url::set_from_host_uri));
@@ -76,17 +102,20 @@ void net::url::init_statics() {
    	s_handlers.push_back(pair("/n",&url::set_from_unix_path));
  	s_handlers.push_back(pair("n:n",&url::set_from_windows_path));
   	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
+  	*/
  }
 
 void net::url::set_from_spec(const string& spec) {
 	lib::scanner sc(spec, url_delim);
 	sc.tokenize();
 	std::string sig = sc.get_tokens();
-	std::list< std::pair<std::string, HANDLER> >::iterator it;
+	//std::list< std::pair<std::string, HANDLER> >::iterator it;
+	std::list<handler_pair*>::iterator it;
 	for(it=s_handlers.begin();it!=s_handlers.end();it++) {
-		if(lib::starts_with(sig, (*it).first)) {
-			HANDLER h = (*it).second;
-			(this->*h)(sc, (*it).first);
+		handler_pair *ph = (*it);
+		if(lib::starts_with(sig, ph->first)) {
+			//HANDLER h = (*it).second;
+			(this->*(ph->second))(sc, ph->first);
 			break;
 		}
 	}

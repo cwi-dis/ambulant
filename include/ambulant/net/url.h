@@ -139,8 +139,14 @@ class url {
 	// protocols to ports map
  	// static std::map<string, short_type > s_ports;
  
-  	typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
-	static std::list< std::pair<std::string, HANDLER> > s_handlers;
+	// workaround for g++ 2.95
+	struct handler_pair { 
+		std::string first; 
+		void (url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
+	};
+	
+  	//typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
+	static std::list<handler_pair*> s_handlers;
 	
 	void set_parts(ambulant::lib::scanner& sc, const std::string& pat);
 	
