@@ -192,10 +192,11 @@ class playable_notification {
 	// Playables nodifications 
 	virtual void started(cookie_type n, double t = 0) = 0;
 	virtual void stopped(cookie_type n, double t = 0) = 0;
-	virtual void paused(cookie_type n, double t = 0) = 0;
-	virtual void resumed(cookie_type n, double t = 0) = 0;
+	virtual void stalled(cookie_type n, double t = 0) = 0;
+	virtual void unstalled(cookie_type n, double t = 0) = 0;
 	virtual void clicked(cookie_type n, double t = 0) = 0;
 	virtual void pointed(cookie_type n, double t = 0) = 0; // mouse over
+	virtual void transitioned(cookie_type n, double t = 0) = 0;
 };
 
 // Factory class for renderers.
