@@ -87,7 +87,6 @@ smil_surface_factory::new_topsurface(
 passive_region::passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
 	const region_info *info, renderer *bgrenderer)
 :	m_name(name),
-	m_name_str(name.c_str()),
 	m_bounds_inited(true),
 	m_inner_bounds(bounds.innercoordinates(bounds)),
 	m_outer_bounds(bounds),
@@ -145,8 +144,7 @@ void
 passive_region::animated()
 {
 	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
-	// XXX test whether anything has changed
-	// XXX if so, do recompute for self and children
+	clear_cache();
 	need_redraw(m_inner_bounds);
 	
 }
@@ -180,7 +178,6 @@ passive_region::renderer_done(renderer *cur)
 	} else {
 		m_renderers.erase(i);
 	}
-	//delete cur;
 	
 	if(m_parent) {
 		children_map_t& subregions =  m_parent->get_subregions();
@@ -206,7 +203,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	// First the background
 	draw_background(our_rect, window);	
 	
-	// Then the active region(s)
+	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
 	assert(m_renderers.size()<=1);
 	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
@@ -340,6 +337,15 @@ void
 passive_region::clear_cache()
 {
 	m_bounds_inited = false;
+	// Better be safe than sorry: clear caches for all child regions
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
+			(*it2)->clear_cache();
+	}
+	// XXXX note that this does *not* propagate the change to the
+	// renderers yet: if they cache information they will have to
+	// invalidate it on the next redraw.
 }
 
 

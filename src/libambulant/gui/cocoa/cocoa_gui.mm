@@ -92,9 +92,9 @@ cocoa_window::~cocoa_window()
 void
 cocoa_window::need_redraw(const screen_rect<int> &r)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_cocoa_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (!m_view) {
-		logger::get_logger()->fatal("cocoa_passive_window::need_redraw: no m_view");
+		logger::get_logger()->fatal("cocoa_cocoa_window::need_redraw: no m_view");
 		return;
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
@@ -109,9 +109,9 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 void
 cocoa_window::need_events(lib::gui_region *rgn)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_events(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_cocoa_window::need_events(0x%x)", (void *)this);
 	if (!m_view) {
-		logger::get_logger()->fatal("cocoa_passive_window::need_redraw: no m_view");
+		logger::get_logger()->fatal("cocoa_cocoa_window::need_redraw: no m_view");
 		return;
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
