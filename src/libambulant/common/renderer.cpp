@@ -72,13 +72,10 @@ active_renderer::active_renderer(
 	m_src(NULL),
 	m_dest(NULL)
 {
+	net::datasource_factory src_factory;
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	std::string url = node->get_url("src");
-	if (url != "") {
-		net::passive_datasource *psrc = new net::passive_datasource(url.c_str());
-		if (psrc)
-			m_src = psrc->activate();
-	}
+	m_src = src_factory.new_datasource(url);	
 }
 
 void

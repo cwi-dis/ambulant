@@ -1,4 +1,4 @@
-/*get_
+/*
  * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  * 
@@ -204,14 +204,47 @@ net::databuffer::readdone(int size)
     }
 }
 // *********************** datasource_factory ***********************************************
+  
+net::datasource* 
+net::datasource_factory::new_datasource(const std::string& url)
+{
+	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
+	if (url != "") {
+		passive_datasource dummy(url);
+		return dummy.activate();
+	} else {
+		return NULL;
+	}
+	
+}
 
+void
+net::global_datasource_factory::add_factory(datasource_factory *df)
+{
+	m_factories.push_back(df);
+}
+
+net::datasource*
+net::global_datasource_factory::new_datasource(const std::string &url)
+{
+    std::vector<datasource_factory *>::iterator i;
+    net::datasource *src;
+    
+    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+        src = (*i)->new_datasource(url);
+        if (src) return src;
+    }
+	//XXXX Maybe the "raw" datasource should be the default or one that always has state end_of_file ?
+    return NULL;
+}
 
 
 // *********************** passive_datasource ***********************************************
 
 
 
-net::datasource* net::passive_datasource::activate()
+net::datasource* 
+net::passive_datasource::activate()
 {
 	int in;
 	

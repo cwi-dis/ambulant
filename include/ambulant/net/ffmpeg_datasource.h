@@ -56,6 +56,8 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/net/databuffer.h"
+#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 
 #include "avcodec.h"

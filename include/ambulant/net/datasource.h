@@ -75,6 +75,8 @@ class datasource : virtual public ambulant::lib::ref_counted {
 };
 
 
+
+
 class audio_datasource : virtual public datasource {
   public:
 	~audio_datasource() {};
@@ -82,6 +84,28 @@ class audio_datasource : virtual public datasource {
 	virtual int get_nchannels() = 0;
   	virtual int get_nbits() = 0;
 	virtual int get_samplerate() = 0;
+};
+
+class datasource_factory {
+  public: 
+	datasource_factory(){};
+    ~datasource_factory(){};
+  
+  	datasource* new_datasource(const std::string& url);
+};
+
+
+class global_datasource_factory : public datasource_factory  {
+  public:
+	global_datasource_factory() 
+  	: m_default_factory(NULL) {};
+  	~global_datasource_factory() {};
+  
+  	void  add_factory(datasource_factory *df);
+	datasource* new_datasource(const std::string& url);
+  private:
+	std::vector<datasource_factory*> m_factories;
+  	datasource_factory *m_default_factory;
 };
 
 } // end namespace net
