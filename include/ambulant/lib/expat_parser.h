@@ -14,11 +14,7 @@
 
 #include "ambulant/lib/sax_handler.h"
 
-#ifndef _WIN32
 #include "expat.h"
-#else
-#include "expat/lib/expat.h"
-#endif
 
 // To execute samples depending on libexpat.dll assert 
 // that the dll is reachable at runtime 
