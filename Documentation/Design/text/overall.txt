@@ -1,6 +1,8 @@
 Ambulant design, overall
 ========================
 
+Last updated for Ambulant version 0.3.
+
 Design process
 --------------
 
@@ -12,9 +14,13 @@ The design is going to consist of a mixed bag of technologies:
 - C++ header files for class definitions and such.
 - Image files for UML pictures.
 - Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
-  and explained in sdd-schema.txt.
+  and explained in sdd-schema.txt. *Note:* this has not been done yet.
   
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
+  
+If possible all design documents will carry a notice stating for
+which version of Ambulant they were last updated, so it is relatively
+easy to spot outdated (or potentially outdated) documents.
   
 When still applicable design choices that were tried and rejected will
 remain listed, with the reason for their rejection. This within the limits or
@@ -32,8 +38,12 @@ open.
 Source code organisation
 ------------------------
 
-Everything is kept under CVS. On Unix we use the standard *automake*, *autoconf*
-and *configure* toolset to build things. On Windows we use Visual Studio 7 (KK?).
+Everything is kept under CVS. On Unix we use the standard *automake*,
+*autoconf*, *configure* and *gcc* (version 3.2 or later) toolset to
+build things. On Windows we use Visual Studio 7. For cross-compilation
+for Windows CE we use Embedded Visual C++ 3.0 (correct?). For
+cross-compilation for the Zaurus Linux handheld we use the Sharp
+toolset, based on gcc 2.95.
 
 At the toplevel we have a number of subdirectories:
 
@@ -59,6 +69,11 @@ to use:
 
   - ``namespace`` doesn't indent at all
   - ``public:``, ``private:`` and such indent two spaces
+  
+- Whether opening braces are at end-of-line or beginning of the next
+  line depends on the circumstances and personal taste. Closing braces,
+  when on a line by themselves, must however align with the construct
+  that opened them.
   
 - no camelCase, CamelCase or Capitalization in class or variable names
 - Underscores to delimit words

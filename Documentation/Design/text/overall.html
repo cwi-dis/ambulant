@@ -3,13 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.2.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
 <title>Ambulant design, overall</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
+<p>Last updated for Ambulant version 0.3.</p>
 <div class="section" id="design-process">
 <h1><a name="design-process">Design process</a></h1>
 <p>The design is going to consist of a mixed bag of technologies:</p>
@@ -20,8 +21,11 @@ but also readable in source form.</li>
 <li>C++ header files for class definitions and such.</li>
 <li>Image files for UML pictures.</li>
 <li>Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
-and explained in sdd-schema.txt.</li>
+and explained in sdd-schema.txt. <em>Note:</em> this has not been done yet.</li>
 </ul>
+<p>If possible all design documents will carry a notice stating for
+which version of Ambulant they were last updated, so it is relatively
+easy to spot outdated (or potentially outdated) documents.</p>
 <p>When still applicable design choices that were tried and rejected will
 remain listed, with the reason for their rejection. This within the limits or
 reasonability:-).</p>
@@ -35,8 +39,12 @@ open.</p>
 </div>
 <div class="section" id="source-code-organisation">
 <h1><a name="source-code-organisation">Source code organisation</a></h1>
-<p>Everything is kept under CVS. On Unix we use the standard <em>automake</em>, <em>autoconf</em>
-and <em>configure</em> toolset to build things. On Windows we use Visual Studio 7 (KK?).</p>
+<p>Everything is kept under CVS. On Unix we use the standard <em>automake</em>,
+<em>autoconf</em>, <em>configure</em> and <em>gcc</em> (version 3.2 or later) toolset to
+build things. On Windows we use Visual Studio 7. For cross-compilation
+for Windows CE we use Embedded Visual C++ 3.0 (correct?). For
+cross-compilation for the Zaurus Linux handheld we use the Sharp
+toolset, based on gcc 2.95.</p>
 <p>At the toplevel we have a number of subdirectories:</p>
 <ul class="simple">
 <li><tt class="literal"><span class="pre">Documentation</span></tt> will eventually contain all documentation, currently
@@ -62,6 +70,11 @@ to use:</p>
 <li><tt class="literal"><span class="pre">namespace</span></tt> doesn't indent at all</li>
 <li><tt class="literal"><span class="pre">public:</span></tt>, <tt class="literal"><span class="pre">private:</span></tt> and such indent two spaces</li>
 </ul>
+</li>
+<li><p class="first">Whether opening braces are at end-of-line or beginning of the next
+line depends on the circumstances and personal taste. Closing braces,
+when on a line by themselves, must however align with the construct
+that opened them.</p>
 </li>
 <li><p class="first">no camelCase, CamelCase or Capitalization in class or variable names</p>
 </li>
