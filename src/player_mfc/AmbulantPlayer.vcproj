@@ -145,6 +145,9 @@
 				RelativePath=".\MmView.cpp">
 			</File>
 			<File
+				RelativePath=".\mypreferences.cpp">
+			</File>
+			<File
 				RelativePath=".\OpenUrlDlg.cpp">
 			</File>
 			<File
@@ -178,6 +181,9 @@
 			</File>
 			<File
 				RelativePath=".\MmView.h">
+			</File>
+			<File
+				RelativePath=".\mypreferences.h">
 			</File>
 			<File
 				RelativePath=".\OpenUrlDlg.h">

@@ -59,6 +59,8 @@
 
 #include "ambulant/version.h"
 #include ".\ambulantplayer.h"
+#include "mypreferences.h"
+
 using namespace ambulant;
 
 #pragma comment (lib,"libjpeg.lib")
@@ -117,6 +119,8 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	SetRegistryKey(_T("Ambulant"));
 	
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+	// Install our preferences handler
+	mypreferences::install_singleton();
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
 	m_pDocTemplate = new CSingleDocTemplate(
