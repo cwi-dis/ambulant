@@ -75,6 +75,10 @@ class url {
 	// Short type representing a protocol port.
 	typedef unsigned short short_type;
 	
+	// True if absolute URL. m_protocol, m_host and m_port are
+	// only valid for absolulte URLs.
+	bool m_absolute;
+	
     // The protocol to use (ftp, http, nntp, ... etc.) 
     string m_protocol;
 
@@ -136,7 +140,13 @@ class url {
 		return m_mime;
 	}
 	
+	bool is_absolute() const {
+		return m_absolute;
+	}
+	
 	string get_file() const;
+	
+	string get_url() const;
 		
  	static void init_statics();
  	
@@ -175,6 +185,9 @@ class url {
 	
 	// pat: "\\n"
 	void set_from_wince_path(ambulant::lib::scanner& sc, const std::string& pat);
+	
+	// pat: "n"
+	void set_from_relative_path(ambulant::lib::scanner& sc, const std::string& pat);
 	
 };
 

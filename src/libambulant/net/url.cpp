@@ -50,15 +50,19 @@
  * @$Id$ 
  */
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 #include "ambulant/net/url.h"
+#include "ambulant/lib/logger.h"
+#include "ambulant/lib/string_util.h"
  
 #include <string>
-
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
 #endif
 
-#include "ambulant/lib/string_util.h"
 
 using namespace ambulant;
 
@@ -88,10 +92,11 @@ void net::url::init_statics() {
  	
 	static handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
  	s_handlers.push_back(&h4);
- 	
+
+	// XXX Could be relative
 	static handler_pair h5 = {"/n", &url::set_from_unix_path};
  	s_handlers.push_back(&h5);
- 	
+
 	static handler_pair h6 = {"n:n", &url::set_from_windows_path};
  	s_handlers.push_back(&h6);
  	
@@ -100,6 +105,9 @@ void net::url::init_statics() {
  	
 	static handler_pair h8 = {"\\n", &url::set_from_wince_path};
  	s_handlers.push_back(&h8);
+	
+	static handler_pair h9 = {"n", &url::set_from_relative_path};
+ 	s_handlers.push_back(&h9);
 	
 	/*
 	typedef std::pair<std::string, HANDLER> pair;
@@ -123,13 +131,15 @@ void net::url::set_from_spec(const string& spec) {
 		if(lib::starts_with(sig, ph->first)) {
 			//HANDLER h = (*it).second;
 			(this->*(ph->second))(sc, ph->first);
-			break;
+			return;
 		}
 	}
+	lib::logger::get_logger()->error("url::set_from_spec: Cannot parse \"%s\"", spec.c_str());
 }
 
 // pat: "n://n:n/"
 void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = sc.val_at(0);
 	m_host = sc.val_at(4);
 	m_port = short_type(atoi(sc.val_at(6).c_str()));
@@ -138,6 +148,7 @@ void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) 
 	
 // pat: "n://n/"
 void net::url::set_from_host_uri(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = sc.val_at(0);
 	m_host = sc.val_at(4);
 	set_parts(sc, pat);
@@ -149,6 +160,7 @@ void net::url::set_from_host_uri(lib::scanner& sc, const std::string& pat) {
 
 // pat: "n:///" for file:///
 void net::url::set_from_localhost_file_uri(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = sc.val_at(0);
 	m_host = "localhost";
 	m_port = 0;
@@ -157,6 +169,7 @@ void net::url::set_from_localhost_file_uri(lib::scanner& sc, const std::string& 
 
 // pat: "/n"
 void net::url::set_from_unix_path(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
@@ -165,6 +178,7 @@ void net::url::set_from_unix_path(lib::scanner& sc, const std::string& pat) {
 
 // pat: "n:n" or "n:/n"
 void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
@@ -173,10 +187,19 @@ void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
 
 // pat: "\\n"
 void net::url::set_from_wince_path(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
 	m_path = sc.get_src();
+}
+
+void net::url::set_from_relative_path(lib::scanner& sc, const std::string& pat) {
+	m_absolute = false;
+	m_protocol = "";
+	m_host = "";
+	m_port = 0;
+	set_parts(sc, pat);
 }
 
 void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
@@ -193,6 +216,13 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	m_ref = sc.join(i3+1);
 }
 
+std::string net::url::get_url() const
+{
+	std::string rv = repr(*this);
+	if (!m_absolute)
+		lib::logger::get_logger()->warn("url::get_url(): URL not absolute: \"%s\"", rv.c_str());
+	return rv;
+}
 
 ///////////////
 // module private static initializer
