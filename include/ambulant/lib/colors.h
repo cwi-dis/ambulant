@@ -80,6 +80,13 @@ template <typename T>
 inline color_t to_color(T r, T g, T b)
 	{return color_t(uchar(r)) | color_t(uchar(g) << 8) | color_t(uchar(b) << 16);}
 
+inline color_t rrggbb_to_color(long v) {
+	uchar r = uchar((v & 0xFF0000) >> 16);
+	uchar g = uchar((v & 0xFF00) >> 8);
+	uchar b = uchar(v & 0xFF);
+	return to_color(r, g, b);
+}
+
 // color_encoding classification
 struct color_encoding {
 	int size;

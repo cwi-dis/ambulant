@@ -73,12 +73,13 @@ bool is_color(const char *name) {
 	return it != html4_colors_map.end();
 }
 
+
 color_t to_color(const char *name) {
 	if (name[0] == '#') {
 		char *endp;
 		long hexcolor = strtol(name+1, &endp, 16);
 		if (*endp != '\0') return 0;
-		return (color_t)hexcolor;
+		return rrggbb_to_color(hexcolor);
 	}
 	colors_map::const_iterator it = html4_colors_map.find(name);
 	if(it == html4_colors_map.end()) return 0;
