@@ -226,6 +226,9 @@
 					RelativePath=".\net\datasource.cpp">
 				</File>
 				<File
+					RelativePath=".\net\stdio_datasource.cpp">
+				</File>
+				<File
 					RelativePath=".\net\url.cpp">
 				</File>
 			</Filter>
@@ -504,10 +507,10 @@
 						RelativePath="..\..\include\ambulant\net\datasource.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\net\posix_datasource.h">
+						RelativePath="..\..\include\ambulant\net\socket.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\net\socket.h">
+						RelativePath="..\..\include\ambulant\net\stdio_datasource.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\net\url.h">

@@ -62,7 +62,11 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/net/datasource.h"
+#ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/net/posix_datasource.h"
+#else
+#include "ambulant/net/stdio_datasource.h"
+#endif
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
