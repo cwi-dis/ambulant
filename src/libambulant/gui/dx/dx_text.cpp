@@ -185,11 +185,7 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, commo
 	lib::point pt = m_dest->get_global_topleft();
 	reg_rc.translate(pt);
 		
-	dx_transition *tr = 0;
-	if(m_transitioning) {
-		tr = m_dxplayer->get_transition(this);
-		m_transitioning = tr?true:false;
-	}
+	dx_transition *tr = get_transition();
 		
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	v->draw(m_text->get_ddsurf(), text_rc, reg_rc, true, tr);

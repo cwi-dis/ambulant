@@ -241,11 +241,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	// keep debug message area
 	m_msg_rect |= vid_reg_rc_dirty;
 	
-	dx_transition *tr = 0;
-	if(m_transitioning) {
-		tr = m_dxplayer->get_transition(this);
-		m_transitioning = tr?true:false;
-	}
+	dx_transition *tr = get_transition();
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());

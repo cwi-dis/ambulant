@@ -214,15 +214,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 	
-	dx_transition *tr = 0;
-	if(m_transitioning) {
-		tr = m_dxplayer->get_transition(this);
-		m_transitioning = tr?true:false;
-		//if(tr && tr->is_outtrans()) {
-		//	const common::region_info *ri = m_dest->get_info();
-		//	if(ri) v->clear(img_reg_rc_dirty,ri->get_bgcolor(), (dx_transition*)0);
-		//}
-	}
+	dx_transition *tr = get_transition();
 	if(tr && tr->is_outtrans()) {
 		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
 		const common::region_info *ri = m_dest->get_info();

@@ -136,11 +136,7 @@ void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_w
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	
-	dx_transition *tr = 0;
-	if(m_transitioning) {
-		tr = m_dxplayer->get_transition(this);
-		m_transitioning = tr?true:false;
-	}	
+	dx_transition *tr = get_transition();
 	v->clear(rc, m_color, tr);
 }
  
