@@ -19,8 +19,8 @@ detailed instructions in README-CVS. We need a patched version of expat,
 follow the instructions to install this in
 third_party_packages/readme.txt (if you want to try building with
 standard expat installed on your system use "configure
---with-expat=/usr", but this is lileky to produce disappointing
-results).
+--with-expat=/usr", but this will not work for expat versions older
+than 1.95.7).
 
 If you are working from a source distribution on Linux/Unix a simple
 "./configure ; make" should work.

@@ -22,10 +22,11 @@ follow later.
 
 	% automake -a
 	
-5. Install a patched version of expat, the details are in 
-   third_party_packages/readme.txt. If you have a version of expat
-   *newer* than 1.95.6 installed you can alternatively give the option
+5. Install expat 1.95.7 or newer, the details are in 
+   third_party_packages/readme.txt. Alternatively give the option
    ``--with-expat=``*prefix_to_expat* to ``./configure`` in step 7.
+   But: you must use 1.95.7 or newer, older versions have a bug that
+   gives compile errors for Ambulant.
    
 6. Create configure from configure.in::
 
