@@ -88,7 +88,7 @@ class passive_datasource : public ambulant::lib::ref_counted
 public:
 	
 	// constructor 
-	passive_datasource(char *url);
+	passive_datasource(const char *url);
 	
 	// copy constructor
 	//	passive_datasource(passive_datasource& ds);
@@ -161,7 +161,7 @@ public:
 	long get_ref_count() const {return m_refcount;}
 
 private:
-    databuffer *buffer;
+    databuffer *m_buffer;
     passive_datasource *m_source;
     ambulant::lib::basic_atomic_count<ambulant::lib::critical_section> m_refcount;
 	int m_filesize;

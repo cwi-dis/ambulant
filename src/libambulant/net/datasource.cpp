@@ -59,7 +59,7 @@ m_used=0;
 m_buffer = new char[size];
 if ( !m_buffer) 
 	{
-	 std::cout <<" Memory allocation error in databuffer::databuffer(char b)" << std::endl;
+	 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", size);
 	 }
 	else
 	{
@@ -77,7 +77,7 @@ int i;
 m_size=0;
 m_used=0;
 m_buffer=new char[src.m_size]; 
-if (!m_buffer) std::cout << "Memory allocation error in databufferdatabuffer(databuffer& src);"<< std::endl;
+if (!m_buffer) 	 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", src.m_size);
 else
 {
 for(i=0;i<src.m_size;i++)
@@ -137,7 +137,7 @@ if (dummy <= m_size)
 	}
 else
 	{
-	std::cout << "Buffer Overflow in databuffer::put_data(char& data, int s)"<< std::endl;
+	lib::logger::get_logger()->error("databuffer::put_data(size=%d): no room", size);
 	}
 
 }
@@ -167,7 +167,7 @@ if (size  < m_used)
 	}
 	else
 	{
-	std::cout << " asking more data then available ! (databuffer::get_data(char& data, int size)"<< std::endl;
+		lib::logger::get_logger()->error("databuffer::get_data(size=%d): only %d available", size, m_used);
 	}
 }
 
@@ -177,18 +177,18 @@ if (size  < m_used)
 
 
 
-net::passive_datasource::passive_datasource(char *url)
+net::passive_datasource::passive_datasource(const char *url)
 : m_refcount(1)
 {
 	int m_len;
 	m_len = strlen(url);
-	m_url= new char[m_len];
+	m_url= new char[m_len+1];
 	if(m_url) {
-		std::memcpy(m_url,url,m_len);
+		std::memcpy(m_url,url,m_len+1);
 	}
 	else
 	{
-		std::cout << " Memory allocation error in passive_datasource::passive_datasource(char *url)" << std::endl;
+ 	 lib::logger::get_logger()->fatal("passive_datasource(%s): out of memory", url);
 	}
 }
 
@@ -202,7 +202,7 @@ net::active_datasource* net::passive_datasource::activate()
 	}
 	else
 	{
-		std::cout << "Failed to open file in passive_datasource::activate" << std::endl;
+		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s", m_url, strerror(errno));
 	}
 	return NULL;
 		
@@ -227,28 +227,32 @@ net::active_datasource::active_datasource(passive_datasource *const source,int f
 	m_stream=file;
     filesize();
 	m_source=source;
-	buffer=new databuffer(m_filesize);
-	if (!buffer) 
+	m_buffer=new databuffer(m_filesize);
+	if (!m_buffer) 
 		{
-			buffer=NULL;
-			std::cout << " Memory allocation error in active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file) " << std::endl;
+			m_buffer=NULL;
+ 			lib::logger::get_logger()->fatal("active_datasource(): out of memory");
 		}
 		m_source->add_ref();
-		AM_DBG buffer->dump(std::cout, false);
+		AM_DBG m_buffer->dump(std::cout, false);
 	}
 }
 
 net::active_datasource::~active_datasource()
 {
-	if (buffer) {
-		delete buffer;
-		buffer=NULL;
+	if (m_buffer) {
+		delete m_buffer;
+		m_buffer=NULL;
 	}
 	
 	m_source->release();
 	close(m_stream);
 }
 
+int net::active_datasource::size() const
+{
+	return m_buffer->used();
+}
 
 void net::active_datasource::filesize()
  	{
@@ -263,7 +267,7 @@ void net::active_datasource::filesize()
 		}
 		else
 		{
-			cout << "Failed to open file in active_datasource::filesize" << endl;
+ 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file open");
 			m_filesize =0;
 		}
  	}
@@ -281,12 +285,14 @@ void net::active_datasource::filesize()
 			do
 			{
 				result = ::read(m_stream, buf, sizeof(buf));
-				if (result >0) buffer->put_data(buf, result); 
+				if (result >0) m_buffer->put_data(buf, result); 
 			} while (result > 0);
+			if (result < 0)
+ 				lib::logger::get_logger()->error("active_datasource.read_file(): %s", strerror(errno));
 		}
 		else
 		{
-			std::cout << "Error reading  file in datasource::read_file" << std::endl;
+ 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file open");
 		}
   }
   
@@ -294,15 +300,15 @@ void net::active_datasource::filesize()
 void net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file();
- 	AM_DBG buffer->dump(std::cout, false);
+ 	AM_DBG m_buffer->dump(std::cout, false);
 	if (evp && readdone) {
-		std::cout << "active_datasource: trigger readdone callback" << std::endl;
-		evp->add_event(readdone, 0, ambulant::lib::event_processor::low);
+		AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+		evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
 	}
 }
  
 void  net::active_datasource::read(char *data, int size)
 {
-	buffer->get_data(data,size);
+	m_buffer->get_data(data,size);
 }
 
