@@ -417,6 +417,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
 		transition_tmpsurface = [self getTransitionOldSource];
+		[transition_tmpsurface setFlipped: NO];
 	}
 	return transition_tmpsurface;
 }
