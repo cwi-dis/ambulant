@@ -94,6 +94,8 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df->add_raw_factory(new net::posix_datasource_factory());
 	
 #ifdef WITH_FFMPEG
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+	m_df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_parser_finder");
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
@@ -178,6 +180,8 @@ qt_mainloop::~qt_mainloop()
 	if (m_rf) delete m_rf;
 	m_rf = NULL;
 	// m_wf Window factory is owned by caller
+//KB	if (m_wf != NULL) delete m_wf;
+//	m_wf = NULL;
 }
 
 void
