@@ -65,18 +65,41 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "qt_gui.h"
 
+using namespace ambulant;
+using namespace common;
+using namespace lib;
+using namespace gui;
+using namespace qt;
+ 
+//#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
+
 class qt_mainloop_callback_arg {
 };
+class qt_gui;
 
 class qt_mainloop : public ambulant::lib::ref_counted {
-//  static bool m_done;
+  //  static bool m_done;
   public:
-	qt_mainloop(qt_gui* parent)
-    :	m_refcount(1),
-	m_parent(parent) {
+        qt_mainloop(qt_gui* parent);
+	~qt_mainloop();
+	
+	// The callback member function.
+	void player_done_callback() {
+		m_running = false;
 	}
 	
-	static void* run(void* qt_gui);
+	void play();
+	void stop();
+	void set_speed(double speed);
+	double get_speed() const { return m_speed; }
+	bool is_running() const;
+	
+	static void set_preferences(std::string &path);
+ 	
+	static void* run(void* qt_mainloop);
 
 	long add_ref() {
 		return ++m_refcount;
@@ -94,9 +117,16 @@ class qt_mainloop : public ambulant::lib::ref_counted {
 		return m_refcount;
 	}
 	
-  private:
-	qt_gui* m_parent;
-	ambulant::lib::basic_atomic_count<ambulant::lib::critical_section>
-	m_refcount;
+ private: 
+	// sorted alphabetically on member name
+	net::datasource_factory*		m_df;
+	document*				m_doc;
+	qt_gui*					m_parent;
+	player*					m_player;
+	basic_atomic_count<critical_section>	m_refcount;
+	global_playable_factory*		m_rf;
+ 	bool					m_running;
+	double					m_speed;
+	window_factory* 			m_wf;
 };
 #endif/*__QT_MAINLOOP_H__*/

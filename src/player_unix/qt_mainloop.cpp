@@ -69,82 +69,147 @@
 #endif
 #include "ambulant/gui/none/none_factory.h"
 
-using namespace ambulant;
-using namespace lib;
-using namespace gui;
-using namespace qt;
- 
-void*
-qt_mainloop::run(void* view) {
-	qt_gui* qt_view = (qt_gui*) view;
-	qt_window_factory *wf;
-	net::datasource_factory *df;
-
-	AM_DBG logger::get_logger()->trace(
-		"qt_mainloop::run(qt_gui=0x%x)",
-		view);
-
-	const char *filename = qt_view->filename();
-	bool is_mms = strcmp(".mms", filename + strlen(filename) - 4) == 0;
-	document *doc = document::create_from_file(filename);
-
+qt_mainloop::qt_mainloop(qt_gui* parent) :
+	m_df(NULL),
+	m_doc(NULL),
+	m_parent(parent),
+	m_player(NULL),
+ 	m_refcount(1),
+	m_rf(NULL),
+ 	m_running(false),
+	m_speed(1.0),
+	m_wf(NULL)
+{
 	// First create the datasource factory and populate it too.
-	df = new net::datasource_factory();
+	m_df = new net::datasource_factory();
 #ifdef WITH_STDIO_DATASOURCE
 	// This is for debugging only, really: the posix datasource
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add stdio_datasource_factory");
-	df->add_raw_factory(new net::stdio_datasource_factory());
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
+	m_df->add_raw_factory(new net::stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add posix_datasource_factory");
-	df->add_raw_factory(new net::posix_datasource_factory());
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add posix_datasource_factory");
+	m_df->add_raw_factory(new net::posix_datasource_factory());
 	
 #ifdef WITH_FFMPEG
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");
-	df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");
-	df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_parser_finder");
+	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
+	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
+
 #endif
 #ifdef WITH_RAW_AUDIO
 	// This is for debugging only
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_audio_parser_finder");
-	df->add_audio_parser_finder(new net::raw_audio_parser_finder());
+    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add raw_audio_parser_finder");
+	m_df->add_audio_parser_finder(new net::raw_audio_parser_finder());
 #endif
-
-	common::global_playable_factory *rf =
+	// Next create the playable factory and populate it.
+	common::global_playable_factory *m_rf =
 		new common::global_playable_factory(); 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->trace("add factory for SDL");
-	rf->add_factory( new sdl::sdl_renderer_factory(df) );
+	m_rf->add_factory( new sdl::sdl_renderer_factory(m_df) );
 AM_DBG logger::get_logger()->trace("add factory for SDL done");
 #endif
 #ifdef WITH_ARTS
-	rf->add_factory(new arts::arts_renderer_factory(df));
+	m_rf->add_factory(new arts::arts_renderer_factory(m_df));
 #endif 
-	rf->add_factory(new qt_renderer_factory(df));
+	m_rf->add_factory(new qt_renderer_factory(m_df));
 	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_video_factory");
- 	rf->add_factory(new none::none_video_factory(df));
-	wf = new qt_window_factory(qt_view, 
-				   qt_view->get_o_x(),
-			 	   qt_view->get_o_y());
-			 
-	common::player *a;
-	if (is_mms) {
-		a = common::create_mms_player(doc, wf, rf);
-	} else {
-		a = common::create_smil2_player(doc, wf, rf);
-	}
-				
-	a->start();
+ 	m_rf->add_factory(new none::none_video_factory(m_df));
 
-	while(!a->is_done())
+	m_wf = new qt_window_factory(parent, 
+				     parent->get_o_x(),
+				     parent->get_o_y());
+
+	const char *filename = parent->filename();
+	m_doc = document::create_from_file(filename);
+	if (!m_doc) {
+		logger::get_logger()->error("Could not build tree for file: %s", filename);
+		return;
+	}
+	bool is_mms = strcmp(".mms", filename + strlen(filename) - 4) == 0;
+	if (is_mms) {
+		m_player = create_mms_player(m_doc, m_wf, m_rf);
+	} else {
+		m_player = create_smil2_player(m_doc, m_wf, m_rf);
+	}
+
+}
+void*
+qt_mainloop::run(void* ml)
+{
+
+	net::datasource_factory*df;
+        qt_mainloop*		mainloop = (qt_mainloop*) ml;
+	qt_gui*			qt_view = mainloop->m_parent;
+	qt_window_factory*	wf;
+
+	AM_DBG logger::get_logger()->trace(
+		"qt_mainloop::run(qt_mainloop=0x%x)",
+		mainloop);
+
+	player** player = &mainloop->m_player;
+	(*player)->start();
+
+	while(!(*player)->is_done())
 		sleep(1);
 
 	// XXXX Should we call a callback in the parent?
 
 	return (void*) 1;
+}
+
+qt_mainloop::~qt_mainloop()
+{
+//  m_doc will be cleaned up by the smil_player.
+//	if (m_doc) delete m_doc;
+//	m_doc = NULL;
+	if (m_player) delete m_player;
+	m_player = NULL;
+	if (m_rf) delete m_rf;
+	m_rf = NULL;
+	// m_wf Window factory is owned by caller
+}
+
+void
+qt_mainloop::play()
+{
+	m_running = true;
+	m_player->start();
+	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+}
+
+void
+qt_mainloop::stop()
+{
+	m_player->stop();
+	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+}
+
+void
+qt_mainloop::set_speed(double speed)
+{
+	m_speed = speed;
+	if (m_player) {
+		if (speed == 0.0)
+			m_player->pause();
+		else
+			m_player->resume();
+	}
+}
+
+bool
+qt_mainloop::is_running() const
+{
+	if (!m_running || !m_player) return false;
+	return !m_player->is_done();
+}
+
+void
+qt_mainloop::set_preferences(std::string &url)
+{
+//	ambulant::smil2::test_attrs::load_test_attrs(url);
 }

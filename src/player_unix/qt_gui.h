@@ -78,8 +78,11 @@
 #include <qwidget.h>
 
 #include "ambulant/gui/qt/qt_renderer.h"
+#include "qt_mainloop.h"
 
 using namespace ambulant::gui::qt;
+
+class qt_mainloop;;
 
 class qt_gui : public QWidget {
 
@@ -90,6 +93,7 @@ class qt_gui : public QWidget {
 	~qt_gui();
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
+	bool is_busy() { return m_busy; }
 
 	int  get_o_x() {
 		return m_o_x;
@@ -106,15 +110,17 @@ class qt_gui : public QWidget {
 	bool openSMILfile(QString smilfilename, int mode);
 
  private:
+	bool	     m_busy;
+	int	     m_o_x;	 // x coord of origin play window
+	int	     m_o_y;	 // y coord of origin play window
+	qt_mainloop* m_mainloop;
+	int          m_pause_id;
+	bool         m_pausing;
+	int          m_play_id;
+	bool         m_playing;
+	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	QString      m_smilfilename;
-	QPopupMenu*  m_playmenu;
-	int          m_play_id;
-	int          m_pause_id;
-	bool         m_playing;
-	bool         m_pausing;
-	int	       m_o_x;	 // x coord of origin play window
-	int	       m_o_y;	 // y coord of origin play window
 
 public slots:
 	void slot_play();
@@ -123,12 +129,12 @@ private slots:
 	void slot_about();
 	void slot_open();
 	void slot_pause();
+	void slot_player_done();
 	void slot_quit();
 	void slot_stop();
-	void slot_player_done();
 
 signals:
-	void signal_need_redraw(const void*, void*, const void*);
 	void signal_player_done();
+	void signal_need_redraw(const void*, void*, const void*);
 };
 #endif/*__QT_GUI_H__*/

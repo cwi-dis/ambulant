@@ -69,7 +69,19 @@ const QString about_text = "This is the Qt GUI for Ambulant.\n"
 			   "Work in  progress by Kees Blom (C) 2004";
 
 qt_gui::qt_gui(const char* title,
-	       const char* initfile) {
+	       const char* initfile) :
+        m_busy(true),
+	m_o_x(0),	 
+	m_o_y(0),	 
+	m_mainloop(NULL),
+	m_pause_id(),
+	m_pausing(),
+	m_play_id(),
+	m_playing(),
+	m_playmenu(),
+	m_programfilename(),
+	m_smilfilename()
+{
 
 	m_programfilename = title;
 	if (initfile != NULL && initfile != "")
@@ -217,32 +229,42 @@ void qt_gui::slot_play() {
 		m_playmenu->setItemEnabled(m_play_id, false);
 		m_playmenu->setItemEnabled(m_pause_id, true);
 		pthread_t playthread;
+		if (m_mainloop != NULL)
+			delete m_mainloop;
+		m_mainloop = new qt_mainloop(this);
 		int rv = pthread_create(&playthread, NULL,
 					&qt_mainloop::run,
-					this);
+					m_mainloop);
 	}
-	if (!m_pausing) {
-		 m_pausing = true;
-	} else {
+	if (m_pausing) {
 		m_pausing = false;
+		m_playmenu->setItemEnabled(m_pause_id, true);
+		m_playmenu->setItemEnabled(m_play_id, false);
+		m_mainloop->set_speed(1);
 	}
 }
 
 void qt_gui::slot_pause() {
 	printf("%s-%s\n", m_programfilename, "slot_pause");
-	m_playmenu->setItemEnabled(m_pause_id, false);
-	m_playmenu->setItemEnabled(m_play_id, true);
+	if (! m_pausing) {
+		m_pausing = true;
+		m_playmenu->setItemEnabled(m_pause_id, false);
+		m_playmenu->setItemEnabled(m_play_id, true);
+		m_mainloop->set_speed(0);
+	}
 }
 
 void qt_gui::slot_stop() {
 	printf("%s-%s\n", m_programfilename, "slot_stop");
-	QMessageBox::information(this, m_programfilename,
-				 "This will be \"Stop\"\n"
-				 );
+	m_mainloop->stop();
 }
 
 void qt_gui::slot_quit() {
 	printf("%s-%s\n", m_programfilename, "slot_quit");
+	delete m_mainloop;
+	m_mainloop = NULL;
+	m_busy = false;
+//TBD setting m_busy = false gives core dump, there is also an event thread
 	exit(0);
 }
 
@@ -270,7 +292,8 @@ int main (int argc, char*argv[]) {
 	}
 //	myapp.processEvents();
 //	myapp.exec();
-	while(1) myapp.processEvents();
+	while(mywidget->is_busy() || myapp.hasPendingEvents())
+		myapp.processEvents();
 	std::cout << "Exiting program" << std::endl;
 	return 0;
 }
