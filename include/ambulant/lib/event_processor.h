@@ -120,102 +120,14 @@ namespace lib {
 /// event_processor interface.
 class abstract_event_processor : public event_processor {
   public:
-	abstract_event_processor(timer *t) 
-	:	m_timer(t),
-		m_high_delta_timer(t), 
-		m_med_delta_timer(t), 
-		m_low_delta_timer(t)
-		{ assert(t != 0); }
+ 	abstract_event_processor(timer *t);	
+	~abstract_event_processor();	
+	timer *get_timer() const;
 	
-	~abstract_event_processor() {
-		// the timer is not owned by this
-	}
-	
-	timer *get_timer() const { return m_timer; }
-	
-	void add_event(event *pe, time_type t, event_priority priority = low) {
-		m_delta_timer_cs.enter();
-		switch(priority) {
-			case high: 
-				m_high_delta_timer.insert(pe, t);
-				break;
-			case med: 
-				m_med_delta_timer.insert(pe, t);
-				break;
-			case low: 
-				m_low_delta_timer.insert(pe, t);
-				break;
-		}
-		wakeup();
- 		m_delta_timer_cs.leave();
-	}
-	
-	bool cancel_event(event *pe, event_priority priority = low) {
-		bool succeeded = false;
-		m_delta_timer_cs.enter();
-		switch(priority) {
-			case high: 
-				succeeded = m_high_delta_timer.cancel(pe);
-				break;
-			case med: 
-				succeeded = m_med_delta_timer.cancel(pe);
-				break;
-			case low: 
-				succeeded = m_low_delta_timer.cancel(pe);
-				break;
-		}
- 		m_delta_timer_cs.leave();
- 		return succeeded;
-	}
-	
-	void cancel_all_events() {
-		m_delta_timer_cs.enter();
-		m_high_delta_timer.clear();
-		m_med_delta_timer.clear();
-		m_low_delta_timer.clear();
- 		m_delta_timer_cs.leave();
-	}
-	
-	// serves all events of high priority (including those inserted by firing events)
-	// then med and finally low. Note that medium and low priority can cause new
-	// events of higher priority to be scheduled, these should be handled first
-	void serve_events() {
-		int another_loop = 1;
-		
-		while (another_loop) {
-			another_loop = 0;
-			// First serve all high priority events
-			while (serve_events_for(m_high_delta_timer))
-				another_loop = 1;
-			// After that, serve one medium priority event, if needed
-			// XXXX Note this is incorrect, really: we only want to serve
-			// one event but actually we serve all medium priority events
-			// that are runnable. It remains to be seen whether this is
-			// a problem. Fixing it would require keeping the queues
-			// in the object in stead of as local variables in serve_events_for().
-			if (serve_events_for(m_med_delta_timer))
-				another_loop = 1;
-			// if there were no medium prio events we serve a lo-prio event
-			else if (serve_events_for(m_low_delta_timer))
-				another_loop = 1;
-		}
-	}
-
-	bool serve_events_for(delta_timer& dt) {
-		std::queue<event*> queue;
-		m_delta_timer_cs.enter();
-		dt.execute(queue);
- 		m_delta_timer_cs.leave();
-		bool repeat = !queue.empty();
-		while(!queue.empty()) {
-			event *e = queue.front();
-			queue.pop();
-			e->fire();
-			delete e;
-		}
-		return repeat; 
-	}
-	
+	void add_event(event *pe, time_type t, event_priority priority);
+	bool cancel_event(event *pe, event_priority priority = low);
+	void cancel_all_events();
+	void serve_events();
 	void stop_processor_thread() {};
 	
   protected:
@@ -225,18 +137,30 @@ class abstract_event_processor : public event_processor {
 	
 	// wait until some thread calls wakeup
 	virtual void wait_event() = 0;
-	
+
 	// the timer for this processor
 	timer *m_timer;
+
+ private:
+	// check, if needed, with a delta_timer to fill its run queue
+	// return true if the run queue contains any events
+	bool events_available(delta_timer& dt, std::queue<event*> *qp);
+
+	// serve a single event from a delta_timer run queue
+	// return true if an event was served
+	bool serve_event(delta_timer& dt, std::queue<event*> *qp);
 	
-	// high priority delta timer
+	// high priority delta timer and its event queue
 	delta_timer m_high_delta_timer;
-	
-	// medium priority delta timer
+	std::queue<event*> m_high_q;
+
+	// medium priority delta timer and its event queue
 	delta_timer m_med_delta_timer;
+	std::queue<event*> m_med_q;
 	
-	// low priority delta timer
+	// low priority delta timer and its event queue
 	delta_timer m_low_delta_timer;
+	std::queue<event*> m_low_q;
 	
 	// protects delta timer lists
 	critical_section m_delta_timer_cs;  

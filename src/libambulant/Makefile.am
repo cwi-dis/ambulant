@@ -130,6 +130,7 @@ libambulant_la_SOURCES = \
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
 	lib/document.cpp \
+	lib/event_processor.cpp \
 	lib/gpaths.cpp \
 	lib/logger.cpp \
 	lib/nfa.cpp \

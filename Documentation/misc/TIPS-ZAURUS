@@ -1,3 +1,27 @@
+Install via network.
+--------------------
+
+The simplest way for the end-user to install software
+for the Zaurus is via internet. The "ipkg" package
+(described below) must then be put on a public
+website, and a script "ipkg-make-index" must be
+run to create a file named "Pacakges" that contains
+vital information about name, size and checksum, etc.
+of each "ipkg" package in that web accessible directory.
+
+Then, on the Zaurus it is easy. Use:
+Setting->Add/Remove Software, select
+"Install Packages via networks"
+Select or define a server with "Package Servers"
+(In Package Manager, at the bottom button row above
+the system buttons, tap 3rd button from right.
+there you can specify the name of your web server).
+You then get a list of available packages from
+the website, and tap the name of the desired ones
+to install them.
+
+Kees Blom, 17 jan 2005.
+
 Installation tips for the Zaurus SL-5600.
 --------------------------------------------------------
 
@@ -101,7 +125,7 @@ in the Start-up Guide. Even the line
 [Desktop Entry]
 must appear as the first line in the 
 ambulantplayer.desktop file.
-
+ 
 A complete working example of this file structure 
 is available in:
 ambulantplayer-ipk.tgz
