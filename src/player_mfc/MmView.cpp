@@ -87,6 +87,10 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_WM_CREATE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_CHAR()
+	ON_COMMAND(ID_VIEW_SOURCE, OnViewSource)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SOURCE, OnUpdateViewSource)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_LOG, OnUpdateViewLog)
+	ON_COMMAND(ID_VIEW_LOG, OnViewLog)
 END_MESSAGE_MAP()
 
 // MmView construction/destruction
@@ -182,6 +186,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 		AfxMessageBox("Player is null");
 		return;
 	}
+	m_curPathName = lpszPathName;
 	player->set_document(lpszPathName);
 }
 
@@ -235,4 +240,26 @@ void MmView::OnLButtonDown(UINT nFlags, CPoint point)
 void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if(player) player->on_char(nChar);
 	CView::OnChar(nChar, nRepCnt, nFlags);
+}
+
+void MmView::OnViewSource() {
+	//ShellExecute(GetSafeHwnd(), "open", m_curPathName, NULL, NULL, SW_SHOW);
+	WinExec(CString("Notepad.exe ") + m_curPathName, SW_SHOW);
+}
+
+void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
+	pCmdUI->Enable((player && !m_curPathName.IsEmpty())?TRUE:FALSE);
+}
+
+void MmView::OnViewLog() {
+	char buf[_MAX_PATH];
+	GetModuleFileName(NULL, buf, _MAX_PATH);
+	char *p1 = strrchr(buf,'\\');
+	if(p1 != NULL) *p1='\0';
+	strcat(buf, "\\log.txt");
+	WinExec(CString("Notepad.exe ") + buf, SW_SHOW);
+}
+
+void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {
+	pCmdUI->Enable((player && !m_curPathName.IsEmpty())?TRUE:FALSE);
 }
