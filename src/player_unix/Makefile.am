@@ -8,8 +8,10 @@ qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h
 #	-L$(QT_PREFIX)/lib -lqt-mt
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
+        $(top_builddir)/src/libambulant/.libs/libambulant_arts.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	-L$(QT_PREFIX)/lib -lqt-mt
+ AM_LDFLAGS=`artsc-config --libs`
 
 INCLUDES = -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
