@@ -98,7 +98,7 @@ class region_node : public common::region_info {
 	
 	// constructs a region node with local name and attrs
 	region_node(const lib::node *n, dimension_inheritance di);
-	virtual ~region_node() {}
+	virtual ~region_node();
 	
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();
@@ -180,6 +180,8 @@ class region_node : public common::region_info {
 	
 	const lib::node *dom_node() const { return m_node; }
 
+	static int get_node_counter() { return node_counter;}
+	
   private:
 	
 	const lib::node *m_node;
@@ -192,6 +194,7 @@ class region_node : public common::region_info {
 	bool m_showbackground;
 	bool m_inherit_bgcolor;
 	common::surface_template *m_surface_template;
+	static int node_counter;
 	
 	// XML tree glue
 	region_node *m_parent;

@@ -110,6 +110,9 @@ region_node::needs_region_node(const lib::node *n) {
 	return false;
 }
 
+// static
+int region_node::node_counter = 0;
+
 region_node::region_node(const lib::node *n, dimension_inheritance di)
 :	m_node(n),
 	m_dim_inherit(di),
@@ -122,7 +125,13 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_surface_template(NULL),
 	m_parent(NULL),
 	m_child(NULL),
-	m_next(NULL) {}
+	m_next(NULL) {node_counter++;}
+
+region_node::~region_node() 
+{
+	node_counter--;
+	node_navigator<region_node>::delete_tree(this); 	
+}
 
 bool
 region_node::fix_from_dom_node()
