@@ -66,6 +66,7 @@ class embedder : public lib::system {
   public:
 	virtual void close(player *p) = 0;
 	virtual void open(net::url newdoc, bool start, player *old=NULL) = 0;
+	virtual void done(player *p) {} 
 };
 
 } // namespace common
