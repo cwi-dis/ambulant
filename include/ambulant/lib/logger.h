@@ -14,6 +14,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <stdarg.h>
 
 #include "ambulant/lib/mtsync.h"
 

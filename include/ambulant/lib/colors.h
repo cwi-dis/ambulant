@@ -13,6 +13,7 @@
 #define AMBULANT_LIB_COLORS_H
 
 #include "ambulant/basic_types.h"
+#include <stdlib.h>
 
 namespace ambulant {
 
