@@ -116,6 +116,9 @@ class ostringstream_wrapper {
 #endif  // AMBULANT_NO_IOSTREAMS
 
 
+// exclude this stuff for g++ 2.95 and othet old compilers
+#ifndef AMBULANT_NO_OPERATORS_IN_NAMESPACE
+
 #ifdef AMBULANT_PLATFORM_WIN32
 #ifndef CDECL
 #define CDECL __cdecl
@@ -130,6 +133,7 @@ inline T& CDECL endl(T& l) {
 	return l;
 }
 
+#endif // AMBULANT_NO_OPERATORS_IN_NAMESPACE
 
 class logger {
   public:
@@ -209,7 +213,7 @@ class logger {
 	// config
 	void set_level(int level); 
 	
-#ifndef AMBULANT_NO_IOSTREAMS
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	void set_ostream(std::ostream* pos); 
 	// The following functions return an ostream like object. 
 	// The output operator<< may be used as for an ostream.

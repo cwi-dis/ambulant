@@ -60,7 +60,7 @@ using namespace lib;
 void
 gui::none::none_active_renderer::start(double where)
 {
-#ifndef AMBULANT_NO_IOSTREAMS
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
 	os << "none_active_renderer.start(" << (void *)this;
 	os << ", node=" << *m_node;
