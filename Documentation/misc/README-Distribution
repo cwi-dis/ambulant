@@ -145,6 +145,7 @@ Here are some random remarks about testing the distributions.
 Uploading the distributions
 ===========================
 
+
 Adding a new file release package.
 ----------------------------------
 A release package is a collection of the ambulant player (binary or source) 
@@ -156,8 +157,32 @@ latest release is always on top). I propose to use the following naming scheme,
 Ambulant <version number> (eg Ambulant 1.0, Ambulant 1.2). The minor release number 
 is always even for stable releases, the development version uses the uneven numbers.
 
+
 Adding file releases to a release package.
 ------------------------------------------
+To add files to a release package choose in the admin menu File releases. 
+At the bottom you will find an overview of all the release packages, click on 
+Add Release next to the release package  you want to add a release to. You will 
+be asked a release new release name. Make sure this name is a unique name (so we can 
+easily track it down in the SF stats). The next step is to upload and add the file belonging 
+to the release. Up load the file to upload.sourceforge.net and click on Edit Releases 
+belonging to the release package your editing in the packeage overview, and click again
+on edit release next to the release you want to add a file to. Fil in the neccesery information 
+in Step 1, and select the file in Step 2.
+In Step 3 fill in the right processor type and file type for the released fil.
+
+
+Proposed naming scheme for release names :
+
+Binary packages : ambulant-<versionnumber>-<platform>.ext
+eg for windows ambulant-1.2-win32.exe;
+for mac ambulant-1.2-osx.dmg
+Source package :
+I think the name make distcheck gives to the package is fine.
+eg ambulant-1.2.tar.gz.
+
+Again the minor release number indactes a stable release if the number is even.
+
 
 Hiding a file release package
 -----------------------------
