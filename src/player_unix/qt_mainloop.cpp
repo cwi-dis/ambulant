@@ -80,9 +80,9 @@ qt_mainloop::run(void* view)
 #endif
   rf->add_factory(new qt_renderer_factory());
  
- wf = new qt_window_factory(qt_view, 
-			    qt_view->get_o_x(),
-			    qt_view->get_o_y());
+  wf = new qt_window_factory(qt_view, 
+			     qt_view->get_o_x(),
+			     qt_view->get_o_y());
   
   active_player *a = p->activate((window_factory *) wf,
 				 (renderer_factory *) rf);

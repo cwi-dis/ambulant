@@ -62,7 +62,7 @@
 
 #include "qt_includes.h"
 
-//#define AM_DBG
+#define AM_DBG
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -160,6 +160,13 @@ namespace qt_renderer {
 				size bounds,
 				abstract_rendering_source *region);
 	abstract_mouse_region *new_mouse_region();
+	abstract_bg_rendering_source *new_background_renderer() {
+	   AM_DBG logger::get_logger()->trace
+	    ("qt_window_factory::new_background_renderer(0x%x): TBD",
+	     (void*) this);
+//TBD	   return new qt_background_renderer();
+	   return NULL;
+	}
   private:
     QWidget* m_parent_widget;
     point m_p;
