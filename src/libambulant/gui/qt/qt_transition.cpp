@@ -103,7 +103,7 @@ qt_transition_blitclass_fade::update()
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
-	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) qpm(%d,%d),npm(%d,%d)", m_progress, qpm->width(),  qpm->height(), npm->width(), npm->height());
+	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) qpm(%d,%d),npm(%d,%d)", m_progress, qpm->width(),  qpm->height(), npm->width(), npm->height());
 	QImage m_old_image;
 	QImage m_new_image;
 	m_old_image = qpm->convertToImage();
@@ -113,7 +113,7 @@ qt_transition_blitclass_fade::update()
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x.  res=0x%x, iw=%d, ih=%d", qpm, npm, &res, iw, ih);
 	// Following code From: Qt-interest Archive, July 2002
 	// blending of qpixmaps, Sebastian Loebbert 
-//#define	OPTIM
+#define	OPTIM
 #ifndef	OPTIM
 	double fac1 = 1.0 - m_progress;
 	double fac2 = 1.0 - fac1;
@@ -160,7 +160,6 @@ qt_transition_blitclass_fade::update()
 	paint.end();
 */
 	QPixmap rpm(res);
-//	rpm.convertFromImage(res);
 	bitBlt(qpm, L, T, &rpm, L, T, W, H);	
 }
 

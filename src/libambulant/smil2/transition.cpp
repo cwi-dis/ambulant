@@ -73,9 +73,10 @@ using namespace ambulant;
 using namespace smil2;
 
 transition_engine::transition_engine()
-:   m_dst(NULL),
+:	m_dst(NULL),
 	m_info(NULL),
 	m_begin_time(0),
+	m_old_progress(0),
 	m_stepcount(0)
 {
 	AM_DBG lib::logger::get_logger()->trace("transition_engine::transition_engine()");
@@ -124,6 +125,10 @@ transition_engine::step(lib::transition_info::time_type now)
 	AM_DBG lib::logger::get_logger()->trace("transition_engine::step(%d)", now);
 	assert(m_info);
 	m_progress = (now-m_begin_time) * m_time2progress;
+	if (m_progress <= m_old_progress)
+		m_progress = m_old_progress;
+	else
+		m_old_progress = m_progress;
 	if (m_progress > m_info->m_endProgress) m_progress = 1.0;
 	AM_DBG lib::logger::get_logger()->trace("transition_engine::step: delta_t=%d, progress=%f%%", now-m_begin_time, m_progress*100);
 	compute();

@@ -68,7 +68,7 @@ using namespace gui::qt;
 qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace(
-		"qt_active_image_renderer::~qt_active_image_renderer()");
+		"qt_active_image_renderer::~qt_active_image_renderer(0x%x)",this);
 	if (m_trans_engine) delete m_trans_engine;
 	m_lock.leave();
 }
@@ -180,10 +180,11 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 	}
 #ifdef	JUNK
 #endif/*JUNK*/
-//	if (surf) [surf unlockFocus];
 	if (surf != NULL) {
 		aqw->reset_ambulant_surface();
 	}
+	paint.flush();
+	paint.end();
 	if (m_trans_engine && surf) {
 		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
@@ -191,10 +192,6 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 		lib::event *ev = new transition_callback(this, &qt_active_image_renderer::transition_step);
 		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
 	}
-
-
-	paint.flush();
-	paint.end();
 	m_lock.leave();
 
 }
@@ -202,6 +199,6 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 void
 qt_active_image_renderer::transition_step()
 {
-  AM_DBG logger::get_logger()->trace("qt_active_image_renderer.:transition_step(x%x) m_dest=",(void*)this, (void*) m_dest);
+  AM_DBG logger::get_logger()->trace("qt_active_image_renderer::transition_step(0x%x) m_dest=0x%x",(void*)this, (void*) m_dest);
 	if (m_dest) m_dest->need_redraw();
 }

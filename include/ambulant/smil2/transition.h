@@ -89,6 +89,7 @@ class transition_engine {
 	lib::transition_info::time_type m_begin_time;
 	int m_stepcount;
 	double m_progress;
+	double m_old_progress;
 	double m_time2progress;
 };
 
