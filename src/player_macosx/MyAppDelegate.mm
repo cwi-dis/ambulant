@@ -78,19 +78,22 @@ class nslog_ostream : public ambulant::lib::ostream {
 int
 nslog_ostream::write(const char *cstr)
 {
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	LogController *log = [LogController sharedLogController];
 	NSString *nsstr = [NSString stringWithCString: cstr];
-//	[nsstr autorelease];
 	if (log) [log insertText: nsstr];
+//	[nsstr release];
+//	[pool release];
 }
 
 void
-show_message(const char *format, va_list args)
+show_message(const char *format)
 {
-	NSString *message = [NSString stringWithCString: format];
+	NSString *message = [[NSString stringWithCString: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:) 
 		withObject: message waitUntilDone: YES];
+	[message release];
 }
 
 bool

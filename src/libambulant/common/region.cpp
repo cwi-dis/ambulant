@@ -162,7 +162,7 @@ passive_region::show(gui_events *cur)
 	m_children_cs.enter();
 	m_renderers.push_back(cur);
 	m_children_cs.leave();
-	AM_DBG lib::logger::get_logger()->debug("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)cur);
+	AM_DBG lib::logger::get_logger()->debug("passive_region[0x%x].show(0x%x)", (void *)this, (void *)cur);
 	
 	if(m_parent) {
 		m_parent->add_subregion(m_info->get_zindex(), this);
@@ -173,14 +173,15 @@ passive_region::show(gui_events *cur)
 void
 passive_region::renderer_done(gui_events *cur)
 {
-	AM_DBG lib::logger::get_logger()->debug("passive_region.renderer_done(0x%x, cur=0x%x)", (void *)this, (void*)cur);
+	AM_DBG lib::logger::get_logger()->debug("passive_region[0x%x].renderer_done(0x%x)", (void *)this, (void*)cur);
 	
 	m_children_cs.enter();
 	std::list<gui_events*>::iterator i = m_renderers.end();
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
 		if ((*i) == cur) break;
 	if (i == m_renderers.end()) {
-		lib::logger::get_logger()->trace("passive_region.renderer_done(0x%x, 0x%x): not active!", (void *)this, (void*)cur);
+		lib::logger::get_logger()->trace("passive_region[0x%x].renderer_done(0x%x): not found in %d active renderers!",
+			(void *)this, (void*)cur, m_renderers.size());
 		lib::logger::get_logger()->error("Internal error: renderer_done() for inactive renderer");
 	} else {
 		m_renderers.erase(i);

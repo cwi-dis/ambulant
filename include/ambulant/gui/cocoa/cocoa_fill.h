@@ -75,6 +75,7 @@ class cocoa_fill_renderer : public renderer_playable {
 		const lib::node *node,
 		event_processor *evp)
 	:	renderer_playable(context, cookie, node, evp),
+		m_is_showing(false),
 		m_intransition(NULL),
 		m_outtransition(NULL),
 		m_trans_engine(NULL) {};
@@ -83,6 +84,7 @@ class cocoa_fill_renderer : public renderer_playable {
 //	void freeze() {}
 	void start(double where);
 	void stop();
+	void seek(double t) {}
 
 	void set_intransition(lib::transition_info *info) { m_intransition = info; }
 	void start_outtransition(lib::transition_info *info);
@@ -91,6 +93,7 @@ class cocoa_fill_renderer : public renderer_playable {
   private:
 	void transition_step();
 	
+	bool m_is_showing;
 	lib::transition_info *m_intransition, *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;

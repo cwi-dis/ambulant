@@ -80,9 +80,16 @@ cocoa_fill_renderer::~cocoa_fill_renderer()
 void
 cocoa_fill_renderer::start(double where)
 {
+	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.start(0x%x)", (void *)this);
+	if (m_is_showing) {
+		logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x): already started", (void*)this);
+		m_lock.leave();
+		return;
+	}
+	m_is_showing = true;
 	if (!m_dest) {
-		AM_DBG logger::get_logger()->warn("cocoa_fill_renderer.start(0x%x): no surface", (void *)this);
+		logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x): no surface", (void *)this);
 		return;
 	}
 	if (m_intransition) {
@@ -90,24 +97,34 @@ cocoa_fill_renderer::start(double where)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_dest->show(this);
+	m_lock.leave();
 }
 
 void
 cocoa_fill_renderer::start_outtransition(lib::transition_info *info)
 {
+	m_lock.enter();
 	m_outtransition = info;
 	if (m_outtransition) {
 		// XXX Schedule beginning of out transition
 		//lib::event *ev = new transition_callback(this, &transition_outbegin);
 		//m_event_processor->add_event(ev, XXXX);
 	}
+	m_lock.leave();
 }
 
 void
 cocoa_fill_renderer::stop()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.stop(0x%x)", (void *)this);
-	if (m_dest) m_dest->renderer_done(this);
+	if (!m_is_showing) {
+		logger::get_logger()->trace("cocoa_fill_renderer.stop(0x%x): already stopped", (void*)this);
+	} else {
+		m_is_showing = false;
+		if (m_dest) m_dest->renderer_done(this);
+	}
+	m_lock.leave();
 }
 
 void

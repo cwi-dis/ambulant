@@ -95,7 +95,7 @@ class playable_imp : public playable {
 	// common::playable methods
 	void pause() {}
 	void resume() {}
-	void seek(double where) {}
+//	void seek(double where) {}
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
 	std::pair<bool, double> get_dur() { return std::pair<bool, double>(true, 0);}
@@ -161,6 +161,7 @@ class renderer_playable_ds : public renderer_playable {
 	virtual ~renderer_playable_ds();
 	
 	virtual void start(double where);
+	virtual void seek(double t);
 //	virtual void freeze() {}
 	virtual void stop();
 //	virtual void pause() {}
@@ -177,7 +178,7 @@ class renderer_playable_ds : public renderer_playable {
 	/// Called whenever data is available.
 	virtual void readdone() = 0;
   protected:
-
+	bool m_is_showing;
   	net::datasource *m_src;	///< The datasource.
 };
 
@@ -204,6 +205,7 @@ class renderer_playable_dsall : public renderer_playable_ds {
 		m_data_size(0) {};
 	virtual ~renderer_playable_dsall();
 	
+	virtual void seek(double t) {}  // Assume dsall playables are images and such
   protected:
 	void readdone();
 	void *m_data;			///< The data to be rendered.
@@ -292,6 +294,7 @@ class active_video_renderer : public common::renderer_playable {
 	
 	void start(double where);
     void stop();
+	void seek(double where);
     void pause();
     void resume();
     void data_avail();

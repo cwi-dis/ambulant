@@ -79,6 +79,7 @@ class cocoa_video_renderer :
 	void start(double where);
 //	void freeze() {}
 	void stop();
+	void seek(double t) {}
 
 	std::pair<bool, double> get_dur();
 	

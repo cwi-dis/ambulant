@@ -460,3 +460,9 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		m_context->stopped(m_cookie, 0);
 	}
 }
+
+void
+gui::sdl::sdl_active_audio_renderer::seek(double where)
+{
+	lib::logger::get_logger()->trace("sdl_active_audio_renderer: seek(%f) not implemented", where);
+}

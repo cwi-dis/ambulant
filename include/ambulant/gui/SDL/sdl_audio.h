@@ -99,6 +99,7 @@ class sdl_active_audio_renderer : public common::playable_imp /*, public lib::ti
  
     void start(double where);
     void stop();
+	void seek(double t);
     void pause();
     void resume();
 //	void freeze() {};

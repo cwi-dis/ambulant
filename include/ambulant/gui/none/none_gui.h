@@ -97,6 +97,7 @@ class none_playable : public common::playable_imp {
 	
 	void start(double where);
 	void stop();
+	void seek(double where) {}
 };
 
 class none_background_renderer : public common::background_renderer {

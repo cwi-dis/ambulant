@@ -83,6 +83,7 @@ renderer_playable_ds::renderer_playable_ds(
 	lib::event_processor *evp,
 	common::factories *factory)
 :	renderer_playable(context, cookie, node, evp),
+	m_is_showing(false),
 	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
@@ -99,7 +100,11 @@ void
 renderer_playable_ds::start(double t)
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x)", (void *)this);
-
+	if (m_is_showing) {
+		lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x): already started", (void*)this);
+		return;
+	}
+	m_is_showing = true;
 	if (!m_dest) {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start: no destination surface, skipping media item");
 		m_context->stopped(m_cookie, 0);
@@ -128,13 +133,25 @@ renderer_playable_ds::readdone()
 #endif
 
 void
+renderer_playable_ds::seek(double t)
+{
+	lib::logger::get_logger()->trace("renderer_playable_ds: seek(%f) not implemented", t);
+}
+
+void
 renderer_playable_ds::stop()
 {
-	if (m_dest)
-		m_dest->renderer_done(this);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x)", (void *)this);
+	if (!m_is_showing) {
+		lib::logger::get_logger()->trace("renderer_playable_ds.stop(0x%x): not started", (void*)this);
+	} else {
+		if (m_dest)
+			m_dest->renderer_done(this);
+	}
+	m_is_showing = false;
 	if (m_src)
 		m_src->stop();
-	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x)", (void *)this);
+	m_src = NULL;
 }
 
 #if 0
@@ -324,6 +341,13 @@ active_video_renderer::start (double where = 1)
 	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
 	m_lock.leave();
 }
+
+void
+active_video_renderer::seek(double t)
+{
+	lib::logger::get_logger()->trace("active_video_renderer: seek(%f) not implemented", t);
+}
+
 
 
 // now() returns the time in seconds !
