@@ -57,6 +57,7 @@
 using namespace ambulant;
 
 using ambulant::lib::win32::win_report_error;
+using ambulant::lib::win32::win_trace_error;
 using ambulant::lib::logger;
 const ULONGLONG MILLIS_FACT = 10000;
 
@@ -145,7 +146,7 @@ bool gui::dx::audio_player::is_playing() {
 	if(hr == E_ABORT) return true;
 	else if(hr == S_OK) return false;
 	else if(FAILED(hr)) {
-		win_report_error("IMediaEvent::WaitForCompletion()", hr);	
+		win_trace_error("IMediaEvent::WaitForCompletion()", hr);	
 		return false;
 	}
 	return evCode == 0;
