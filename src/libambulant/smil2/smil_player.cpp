@@ -81,8 +81,9 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_root(0),
 	m_dom2tn(0),
 	m_layout_manager(0),
-	m_timer(new timer(realtime_timer_factory())),
-	m_event_processor(0)
+	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_event_processor(0),
+	m_state(common::ps_idle)
 {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->trace("smil_player::smil_player()");
@@ -127,17 +128,28 @@ void smil_player::schedule_event(lib::event *ev, time_type t, event_priority ep)
 }
 
 void smil_player::start() {
-	if(!m_root) build_timegraph();
-	if(m_root) m_root->start();
+	if(m_state == common::ps_pausing) {
+		resume();
+	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
+		if(m_state == common::ps_done || !m_root) {
+			build_timegraph();
+		} 
+		m_timer->resume();
+		if(m_root) m_root->start();
+	}
 }
 
 void smil_player::stop() {
-	m_timer->stop();
-	m_event_processor->stop_processor_thread();
+	if(m_state != common::ps_pausing && m_state != common::ps_playing)
+		return;
+	m_state = common::ps_idle;	
+	m_timer->pause();
 	
 	// The following operation deletes all the waiting events
 	// Deleting an event that uses ref-counted objects calls release()
 	m_event_processor->cancel_all_events();
+	
+	if(m_root) m_root->stop();
 	
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++)
@@ -146,6 +158,9 @@ void smil_player::stop() {
 }
 
 void smil_player::pause() {
+	if(m_state != common::ps_playing)
+		return;	
+	m_state = common::ps_pausing;
 	m_timer->pause();
 	// we don't propagate pause/resume yet
 	std::map<const lib::node*, common::playable *>::iterator it;
@@ -154,6 +169,9 @@ void smil_player::pause() {
 }
 
 void smil_player::resume() {
+	if(m_state != common::ps_pausing)
+		return;	
+	m_state = common::ps_playing;
 	m_timer->resume();
 	// we don't propagate pause/resume yet
 	std::map<const lib::node*, common::playable *>::iterator it;
@@ -161,12 +179,18 @@ void smil_player::resume() {
 		(*it).second->resume();
 }
 
-bool smil_player::is_done() const {
-	return !m_root->is_active();
+// Started playback
+void smil_player::started_playback() {
+	m_state = common::ps_playing;
 }
 
 // Done playback callback
 void smil_player::done_playback() {
+	m_state = common::ps_done;
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++)
+		destroy_playable((*it).second, (*it).first);
+	m_playables.clear();
 }
 
 void smil_player::start_playable(const lib::node *n, double t) {
@@ -268,10 +292,15 @@ void smil_player::on_click(int x, int y) {
 	
 	AM_DBG m_logger->trace("smil_player::on_click(%d, %d) at %ld", x, y, timestamp.second());
 	
+	m_playables_cs.enter();
+	// XXX: we must add_ref
+	std::map<const lib::node*, common::playable *> playables = m_playables;
+	m_playables_cs.leave();
+	
 	// WARNING: The following is test code
 	// Does not use mouse regions, z-index etc
 	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++) {
+	for(it = playables.begin();it!=playables.end();it++) {
 		playable *pl = ((*it).second);
 		int nid = pl->get_cookie();
 		renderer *rend = pl->get_renderer();
@@ -300,8 +329,14 @@ void smil_player::on_click(int x, int y) {
 int smil_player::get_cursor(int x, int y) {
 	// WARNING: The following is test code
 	// Does not use mouse regions, z-index etc
+	
+	m_playables_cs.enter();
+	// XXX: we must add_ref
+	std::map<const lib::node*, common::playable *> playables = m_playables;
+	m_playables_cs.leave();
+	
 	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++) {
+	for(it = playables.begin();it!=playables.end();it++) {
 		playable *pl = ((*it).second);
 		int nid = pl->get_cookie();
 		renderer *rend = pl->get_renderer();
@@ -360,12 +395,6 @@ smil_player::create_playable(const lib::node *n) {
 
 void smil_player::destroy_playable(common::playable *r, const lib::node *n) {
 	r->stop();
-//	long rc = r->get_ref_count();
 	r->release();
-//	if(rc > 1) {
-//		const char *pid = n->get_attribute("id");
-//		std::string tag = n->get_local_name();
-//		//lib::show_message("%s[%s].destroy(): [ref_count=%ld]", tag.c_str(), (pid?pid:"no-id"), (rc-1));
-//	}
 }
 
