@@ -71,12 +71,11 @@ namespace cocoa {
 
 cocoa_transition_renderer::~cocoa_transition_renderer()
 {
+	stop();
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~cocoa_transition_renderer(0x%x)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
-	if (m_trans_engine) delete m_trans_engine;
-	m_trans_engine = NULL;
 	m_lock.leave();
 }
 	
@@ -104,14 +103,20 @@ cocoa_transition_renderer::start(double where)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start()");
-	if (m_intransition) {
+	if (m_intransition && m_transition_dest) {
 		m_trans_engine = cocoa_transition_engine(m_transition_dest, false, m_intransition);
-		if (m_trans_engine)
+		if (m_trans_engine) {
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
-		if (m_intransition->m_scope == scope_screen)
-			lib::logger::get_logger()->trace("cocoa_transition_renderer: scope=screen not implemented, default to region");
+			m_fullscreen = m_intransition->m_scope == scope_screen;
+			if (m_fullscreen) {
+				gui_window *window = m_transition_dest->get_gui_window();
+				cocoa_window *cwindow = (cocoa_window *)window;
+				AmbulantView *view = (AmbulantView *)cwindow->view();
+				[view startScreenTransition];
+			}
 #endif
+		}
 	}
 	m_lock.leave();
 }
@@ -119,23 +124,29 @@ cocoa_transition_renderer::start(double where)
 void
 cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
-	if (m_trans_engine) stop_transition();
+	if (m_trans_engine) stop();
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start_outtransition(0x%x)", (void *)this);
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_transition_dest, true, m_outtransition);
-	if (m_trans_engine)
+	if (m_transition_dest && m_trans_engine) {
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
-	if (m_outtransition->m_scope == scope_screen)
-		lib::logger::get_logger()->trace("cocoa_transition_renderer: scope=screen not implemented, default to region");
+		m_fullscreen = m_outtransition->m_scope == scope_screen;
+		if (m_fullscreen) {
+			gui_window *window = m_transition_dest->get_gui_window();
+			cocoa_window *cwindow = (cocoa_window *)window;
+			AmbulantView *view = (AmbulantView *)cwindow->view();
+			[view startScreenTransition];
+		}
 #endif
+	}
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->need_redraw();
 }
 
 void
-cocoa_transition_renderer::stop_transition()
+cocoa_transition_renderer::stop()
 {
 	m_lock.enter();
 	if (m_trans_engine == NULL) {
@@ -144,6 +155,14 @@ cocoa_transition_renderer::stop_transition()
 	}
 	delete m_trans_engine;
 	m_trans_engine = NULL;
+#ifdef USE_SMIL21
+	if (m_fullscreen) {
+		gui_window *window = m_transition_dest->get_gui_window();
+		cocoa_window *cwindow = (cocoa_window *)window;
+		AmbulantView *view = (AmbulantView *)cwindow->view();
+		[view endScreenTransition];
+	}
+#endif
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 }
@@ -161,7 +180,7 @@ cocoa_transition_renderer::redraw_pre(gui_window *window)
 	NSImage *surf = NULL;
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
-		if ([surf isValid]) {
+		if (surf && [surf isValid]) {
 			[surf lockFocus];
 			AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw: drawing to transition surface");
 		} else {
@@ -186,7 +205,15 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 	if (surf) {
 		[surf unlockFocus];
 		AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw: drawing to view");
+#ifdef USE_SMIL21
+		if (m_fullscreen)
+			[view screenTransitionStep: m_trans_engine
+				elapsed: m_event_processor->get_timer()->elapsed()];
+		else
+			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
+#else
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
+#endif
 		typedef lib::no_arg_callback<cocoa_transition_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
@@ -200,7 +227,7 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 	// Note that we have to do this through an event because of locking issues.
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		typedef lib::no_arg_callback<cocoa_transition_renderer> stop_transition_callback;
-		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop_transition);
+		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::event_processor::med);
 
 	}

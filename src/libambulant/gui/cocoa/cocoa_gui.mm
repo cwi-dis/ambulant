@@ -499,5 +499,23 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	return rv;
 }
 
+#ifdef USE_SMIL21
+- (void) startScreenTransition
+{
+	NSLog(@"startScreenTransition");
+}
+
+- (void) endScreenTransition
+{
+	NSLog(@"endScreenTransition");
+}
+
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
+		elapsed: (ambulant::lib::transition_info::time_type)now
+{
+	NSLog(@"screenTransitionStep %d", (int)now);
+}
+
+#endif
 @end
 #endif // __OBJC__

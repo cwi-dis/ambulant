@@ -56,6 +56,9 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#ifdef USE_SMIL21
+#include "ambulant/smil2/transition.h"
+#endif
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
 #endif
@@ -133,6 +136,11 @@ class cocoa_renderer_factory : public common::playable_factory {
 	NSImage *transition_surface;
 	NSImage *transition_tmpsurface;
 	int transition_count;
+#ifdef USE_SMIL21
+	NSImage *fullscreen_oldimage;
+	ambulant::smil2::transition_engine *fullscreen_engine;
+	ambulant::lib::transition_info::time_type fullscreen_now;
+#endif
 }
 
 - (id)initWithFrame:(NSRect)frameRect;
@@ -162,6 +170,13 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (NSImage *)getTransitionTmpSurface;
 - (NSImage *)getTransitionOldSource;
 - (NSImage *)getTransitionNewSource;
+
+#ifdef USE_SMIL21
+- (void) startScreenTransition;
+- (void) endScreenTransition;
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
+		elapsed: (ambulant::lib::transition_info::time_type)now;
+#endif
 @end
 
 #endif // __OBJC__

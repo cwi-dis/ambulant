@@ -79,19 +79,22 @@ class cocoa_transition_renderer : public ref_counted_obj {
 	
 	void set_surface(common::surface *dest);
 	void start(double where);
-    void redraw_pre(gui_window *window);
-    void redraw_post(gui_window *window);
+	void stop();
+	void redraw_pre(gui_window *window);
+	void redraw_post(gui_window *window);
 	void set_intransition(const lib::transition_info *info);
 	void start_outtransition(const lib::transition_info *info);
   private:
 	void transition_step();
-	void stop_transition();
 
 	event_processor *m_event_processor;
 	common::surface *m_transition_dest;
 	const lib::transition_info *m_intransition;
 	const lib::transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
+#ifdef USE_SMIL21
+	bool m_fullscreen;
+#endif
 	critical_section m_lock;
 };
 
@@ -127,6 +130,11 @@ class cocoa_renderer : public RP_Base {
 		RP_Base::start(where);
 	}
 	
+ 	virtual void stop() {
+		stop_transition();
+		RP_Base::stop();
+	}
+	
     void redraw(const screen_rect<int> &dirty, gui_window *window) {
 		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window);
@@ -143,6 +151,9 @@ class cocoa_renderer : public RP_Base {
   protected:
 	void start_transition(double where) {
 		m_transition_renderer->start(where);
+	}
+	void stop_transition() {
+		m_transition_renderer->stop();
 	}
     virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
 
