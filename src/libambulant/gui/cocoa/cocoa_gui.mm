@@ -22,9 +22,15 @@ class cocoa_active_text_renderer : active_final_renderer {
 		net::passive_datasource *src,
 		passive_region *const dest,
 		const node *node)
-	:	active_final_renderer(evp, src, dest, node) {};
+	:   active_final_renderer(evp, src, dest, node),
+            m_text_storage(NULL) {};
+        ~cocoa_active_text_renderer();
 	
     void redraw(const screen_rect<int> &r);
+  private:
+    NSTextStorage *m_text_storage;
+	NSLayoutManager *m_layout_manager;
+	NSTextContainer *m_text_container;
 };
 
 class cocoa_active_image_renderer : active_final_renderer {
@@ -57,12 +63,35 @@ cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 	[my_view setNeedsDisplay: YES];
 }
 
+cocoa_active_text_renderer::~cocoa_active_text_renderer()
+{
+	[m_text_storage release];
+}
+
 void
 cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
 {
 	logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left, r.top, r.right, r.bottom);
+        if (m_data && !m_text_storage) {
+			NSString *the_string = [NSString stringWithCString: m_data length: m_data_size];
+            m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
+            m_layout_manager = [[NSLayoutManager alloc] init];
+            m_text_container = [[NSTextContainer alloc] init];
+            [m_layout_manager addTextContainer:m_text_container];
+            [m_text_container release];	// The layoutManager will retain the textContainer
+            [m_text_storage addLayoutManager:m_layout_manager];
+            [m_layout_manager release];	// The textStorage will retain the layoutManager
+        }
+
 	[[NSColor redColor] set];
 	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
+        if (m_text_storage && m_layout_manager) {
+            NSPoint origin = NSMakePoint(r.top, r.left);
+            NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
+            [m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
+            [m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
+        }
+            
 }
 
 cocoa_active_image_renderer::~cocoa_active_image_renderer()
