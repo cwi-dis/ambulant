@@ -99,7 +99,7 @@ void lib::win32::fstream::close() {
 }
 	
 int lib::win32::fstream::read(unsigned char *buffer, int nbytes) {
-	assert(m_hf != INVALID_HANDLE_VALUE);
+	if(m_hf == INVALID_HANDLE_VALUE) return 0;
 	unsigned long nread = 0;
 	if(ReadFile(m_hf, buffer, nbytes, &nread, NULL) != 0) {
 		m_gptr += nread;
@@ -109,6 +109,7 @@ int lib::win32::fstream::read(unsigned char *buffer, int nbytes) {
 }
 	
 void lib::win32::fstream::read(lib::byte_buffer& bb) {
+	if(m_hf == INVALID_HANDLE_VALUE) return;
 	int nread = read(bb.data()+bb.get_position(), bb.remaining());
 	bb.set_position(bb.get_position()+nread);
 }
@@ -147,10 +148,12 @@ bool lib::win32::fstream::seek(unsigned long pos) {
 }
 	
 int lib::win32::fstream::write(const char *cstr) {
+	assert(m_hf != INVALID_HANDLE_VALUE);
 	return write((const unsigned char *)cstr, (int)strlen(cstr));
 }
 	
 void lib::win32::fstream::write(byte_buffer& bb) {
+	assert(m_hf != INVALID_HANDLE_VALUE);
 	int nwritten = write(bb.data()+bb.get_position(), bb.remaining());
 	bb.set_position(bb.get_position()+nwritten);
 }

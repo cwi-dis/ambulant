@@ -90,19 +90,32 @@ std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
 	return s;
 }
 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+// WINCE should provide its own version
 void lib::show_message(const char *format, ...) {
 	va_list	args;
 	va_start(args, format);
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	int size = _vscprintf(format, args) + 1;
-#else
-	int size = 2048;
-#endif
 	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	va_end(args);
-	MessageBox(NULL, textptr(buf), textptr("DemoPlayer"), MB_OK);
+	MessageBox(NULL, textptr(buf), textptr("AmbulantPlayer"), MB_OK);
 	delete[] buf;
 }
+#endif
 
-
+bool lib::win32::file_exists(const std::string& fn) {
+	return true;
+	/*
+	WIN32_FIND_DATA fd;
+	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
+	bool exists = false;
+	HANDLE hFind = FindFirstFile(fn.c_str(), &fd); 
+	if(hFind != INVALID_HANDLE_VALUE){
+		FindClose(hFind);
+		hFind = INVALID_HANDLE_VALUE;
+		exists = true;
+	} 
+	return exists;
+	*/
+}

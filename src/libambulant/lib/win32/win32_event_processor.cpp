@@ -57,6 +57,12 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/win32/win32_timer.h"
 
+//#define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 lib::win32::event_processor::event_processor(timer *t) 
@@ -76,7 +82,7 @@ lib::win32::event_processor::~event_processor() {
 unsigned long 
 lib::win32::event_processor::run() {
 	lib::logger* logger = lib::logger::get_logger();
-	logger->trace("event_processor::run(=0x%x)", this);
+	AM_DBG logger->trace("event_processor::run(=0x%x)", this);
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 	CoInitialize(NULL);
 #endif
@@ -87,7 +93,7 @@ lib::win32::event_processor::run() {
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 	CoUninitialize();
 #endif
-	logger->trace("event_processor::~run(=0x%x)", this);
+	AM_DBG logger->trace("event_processor::~run(=0x%x)", this);
 	return 0;
 }
 	

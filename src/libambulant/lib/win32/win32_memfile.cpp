@@ -92,15 +92,17 @@ bool lib::win32::memfile::open() {
 		OPEN_EXISTING,  
 		FILE_ATTRIBUTE_READONLY,  
 		NULL); 
-	if(hf == INVALID_HANDLE_VALUE) 
+	if(hf == INVALID_HANDLE_VALUE) {
+		lib::logger::get_logger()->show("Failed to open file %s", textptr(m_url.c_str()));
 		return false;
+	}
 	m_hf = hf;
 	return true;
 }
 
 bool lib::win32::memfile::read() {
 	if(!open()) {
-		MessageBox(NULL,text_str("Failed to open file"),NULL,MB_OK);
+		lib::logger::get_logger()->show("Failed to open file");
 		return false;
 	}
 	const int buf_size = 1024;
