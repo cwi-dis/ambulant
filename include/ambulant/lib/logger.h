@@ -100,6 +100,26 @@ class logger {
 	void set_level(int level); 
 	void set_ostream(std::ostream* pos); 
 	
+	// Allow ostream operations for loggers.
+	// Currently operator<< outputs at trace level.
+	// We could provide a manipulator for selecting the level.
+	template<class T>
+	logger& operator<<(const T& v) {
+		m_tr_oss << v;
+		return *this;
+	}
+	logger& operator<<(const char *s) {
+		m_tr_oss << s;
+		return *this;
+	}
+	logger& operator<<(logger& (*f)(logger&) ) {
+		return f(*this);
+	}
+	void trace_oss_endl() { 
+		trace(m_tr_oss.str());
+		m_tr_oss.str("");
+	}
+	
   private:
 	static const char* get_level_name(int level);
 	
@@ -108,6 +128,7 @@ class logger {
 	std::string m_name;	
 	std::ostream* m_pos;
 	int m_level;
+	std::ostringstream m_tr_oss;
 	
 	// configuration and output format
 	static int default_level;
@@ -149,9 +170,15 @@ inline bool logger::suppressed(int level) {
 	return level < m_level;
 }
 
+inline logger& __cdecl endl(logger& l) {
+	l.trace_oss_endl();
+	return l;
+}	
+
 
 } // namespace lib
 
 } // namespace ambulant
+
 
 #endif // 
