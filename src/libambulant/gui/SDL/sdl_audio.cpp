@@ -46,6 +46,7 @@
  *
  */
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -264,6 +265,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	net::datasource_factory *df)
 :	common::active_basic_renderer(context, cookie, node, evp),
 	m_audio_src(NULL),
+	m_audio_chunk_busy(false),
 	m_channel_used(-1)
 {
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
@@ -306,8 +308,12 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 	// at the previous callback time
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: m_src->readdone(%d)", m_audio_chunk.alen);
 	m_audio_src->readdone(m_audio_chunk.alen);
-	assert(m_channel_used >= 0);
-	if (m_audio_src->end_of_file()) {
+	m_audio_chunk_busy = false;
+	bool still_busy;
+	still_busy = restart_audio_output();
+	still_busy |= restart_audio_input();
+	if (!still_busy) {
+		assert(m_channel_used >= 0);
 		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
 		// XXX Need to delete reference on this created when we did lock_channel().
 		m_static_lock.enter();
@@ -318,32 +324,28 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 		m_lock.leave();
 		stopped_callback();
 		return;
-	} else {
-#if 0
-		// At the moment the next comment is not true, because we've disabled start()ing in
-		// data_avail.
-		// This "shouldn't happen": data_avail() should continue calling start() to read
-		// more data until end of file is true
-		lib::logger::get_logger("sdl_active_audio_renderer::playdone: not at end-of-file! Calling m_audio_src->start()");
-#endif
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
-		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
-		m_audio_src->start(m_event_processor, e);
 	}
 	m_lock.leave();
 }
 
-void
-gui::sdl::sdl_active_audio_renderer::data_avail()
+bool
+gui::sdl::sdl_active_audio_renderer::restart_audio_output()
 {
-	m_lock.enter();
-	int result;
+	// private method - no need to lock.
 	assert(m_audio_src);
+	if (m_audio_chunk_busy) {
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::restart_audio_output: already playing");
+		return true;
+	}
+	if (m_audio_src->size() == 0) {
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::restart_audio_output: no more data");
+		return false;
+	}
 	m_audio_chunk.allocated = 0;
 	m_audio_chunk.volume = 128;
 	m_audio_chunk.abuf = (Uint8*) m_audio_src->get_read_ptr();
 	m_audio_chunk.alen = m_audio_src->size();
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: got %d bytes", m_audio_chunk.alen);
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::restart_audio_output: Mixing %d bytes", m_audio_chunk.alen);
 	
 	if (m_channel_used < 0) {
 		m_static_lock.enter();
@@ -351,31 +353,43 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 		m_static_lock.leave();
 	}
 	
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: STARTING TO PLAY");
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::restart_audio_output: STARTING TO PLAY");
+	int result;
 	result = Mix_PlayChannel(m_channel_used, &m_audio_chunk, 0);
 	if (result < 0) {
-		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): Failed to play sound", (void *)this);	
+		lib::logger::get_logger()->error("sdl_active_renderer.restart_audio_output(0x%x): Failed to play sound", (void *)this);	
 		AM_DBG printf("Mix_PlayChannel: %s\n",Mix_GetError());
 	}
+	m_audio_chunk_busy = true;
+	return true;
+}
 
+bool
+gui::sdl::sdl_active_audio_renderer::restart_audio_input()
+{
+	// private method - no need to lock.
 	if (m_audio_src->end_of_file()) {
-		// No more data. Wait for the playdone callback before we call stopped_callback
-		m_lock.leave();
-		return;
+		// No more data.
+		return false;
 	}
-#if 0
-	// XXX Logic error, needs to use another chunk
-	if (m_audio_chunk.alen > SDL_BUFFER_MAX_BYTES ) {
-		// XXXX Schedule a callback so we start reading later
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
-		m_audio_src->start(m_event_processor, e);
-	} else {
-		// Start reading immedeately
+	if (m_audio_src->size() == 0) {
+		// Start reading 
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
 	}
-#endif
+	return true;
+}
+
+void
+gui::sdl::sdl_active_audio_renderer::data_avail()
+{
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: about to acquire lock");
+	m_lock.enter();
+	assert(m_audio_src);
+	restart_audio_output();
+	restart_audio_input();
 	m_lock.leave();
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: done");
 }	
 
 void
@@ -461,8 +475,10 @@ gui::sdl::sdl_active_audio_renderer::stop()
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop(): channel not in use");
 		return;
 	}
-	Mix_HaltChannel(m_channel_used);
+	// Release the lock before halting the channel, so a possible callback will work.
+	int channel = m_channel_used;
 	m_lock.leave();
+	Mix_HaltChannel(channel);
 }
 
 void
@@ -473,8 +489,10 @@ gui::sdl::sdl_active_audio_renderer::pause()
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::pause(): channel not in use");
 		return;
 	}
-	Mix_Pause(m_channel_used);
+	// Release the lock before halting the channel, so a possible callback will work.
+	int channel = m_channel_used;
 	m_lock.leave();
+	Mix_Pause(channel);
 }
 
 void
@@ -485,8 +503,10 @@ gui::sdl::sdl_active_audio_renderer::resume()
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::resume(): channel not in use");
 		return;
 	}
-	Mix_Resume(m_channel_used);
+	// Release the lock before halting the channel, so a possible callback will work.
+	int channel = m_channel_used;
 	m_lock.leave();
+	Mix_Resume(channel);
 }
 
 

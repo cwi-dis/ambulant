@@ -59,7 +59,7 @@
 
 // Bug workaround: define RESAMPLE_READ_ALL to let the resampler
 // collect all data before calling the client callback
-#define RESAMPLE_READ_ALL
+//#define RESAMPLE_READ_ALL
 using namespace ambulant;
 using namespace net;
 
