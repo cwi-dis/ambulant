@@ -121,7 +121,7 @@ cocoa_window::redraw(const screen_rect<int> &r)
 void
 cocoa_window::user_event(const point &where, int what)
 {
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
+	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
 	m_region->user_event(where, what);
 }
 
@@ -129,7 +129,7 @@ void
 cocoa_window::mouse_region_changed()
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
 	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
@@ -311,6 +311,14 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	/*DBG*/[[self window] invalidateCursorRectsForView: self];
 	NSPoint where = [theEvent locationInWindow];
+	// Is it in our frame?
+	if (!NSPointInRect(where, [self frame])) {
+		AM_DBG NSLog(@"mouseDown outside our frame");
+		return;
+	}
+	// Convert from window to frame coordinates
+	where.x -= NSMinX([self frame]);
+	where.y -= NSMinY([self frame]);
 #ifndef USE_COCOA_BOTLEFT
 	// Mouse clicks are not flipped, even if the view is
 	where.y = NSMaxY([self bounds]) - where.y;
