@@ -229,16 +229,17 @@ detail::timeline_rhs_event::build_action(detail::active_action_vector& actions,
 	detail::dependency_index_generator& indexer, int node_index)
 {
 		// First handle the special cases for external events
+	int asize = int(actions.size());
 	if ( m_what == START_PREROLL_RENDERER ) {
-		detail::active_ext_action *act = new active_preroll_action(actions.size(), m_what, node_index);
+		detail::active_ext_action *act = new active_preroll_action(asize, m_what, node_index);
 		actions.push_back(act);
 	} else
 	if ( m_what == START_PLAY_RENDERER ) {
-		detail::active_ext_action *act = new active_startplay_action(actions.size(), m_what, node_index);
+		detail::active_ext_action *act = new active_startplay_action(asize, m_what, node_index);
 		actions.push_back(act);
 	} else
 	if ( m_what == STOP_PLAY_RENDERER ) {
-		detail::active_ext_action *act = new active_stopplay_action(actions.size(), m_what, node_index);
+		detail::active_ext_action *act = new active_stopplay_action(asize, m_what, node_index);
 		actions.push_back(act);
 	} else 
 	if ( m_what == DELAY) {
@@ -334,10 +335,10 @@ timeline_node_transition::build_actions(detail::active_action_vector& actions,
 #ifndef AMBULANT_NO_IOSTREAMS
 	AM_DBG std::cout << "build actions for " << this << std::endl;
 #endif
-	m_action_begin = actions.size();
+	m_action_begin = int(actions.size());
 	for(i=m_rhs.begin(); i<m_rhs.end(); i++)
 		i->build_action(actions, indexer, node_index);
-	m_action_end = actions.size();
+	m_action_end = int(actions.size());
 }
 
 void 
@@ -346,7 +347,7 @@ timeline_node_transition::build_dependencies(detail::active_dependency_vector& d
 #ifndef AMBULANT_NO_IOSTREAMS
 	AM_DBG std::cout << "build dependencies for " << this << std::endl;
 #endif
-	detail::active_dependency act = detail::active_dependency(m_lhs.size(), m_action_begin, m_action_end);
+	detail::active_dependency act = detail::active_dependency(int(m_lhs.size()), m_action_begin, m_action_end);
 	dependencies.push_back(act);
 }
 
@@ -545,9 +546,9 @@ active_timeline *
 passive_timeline::activate(lib::event_processor *const evp, common::playable_factory *rf, common::layout_manager *lm)
 {
 #ifndef AMBULANT_NO_IOSTREAMS
-	AM_DBG std::cout << "activate(), #dep=" << m_dependencies.size() << " #act=" << m_actions.size() << std::endl;
+	AM_DBG std::cout << "activate(), #dep=" << int(m_dependencies.size()) << " #act=" << int(m_actions.size()) << std::endl;
 #endif
-	return new active_timeline(evp, this, m_dependencies, m_actions, m_timeline_nodes.size(), rf, lm);
+	return new active_timeline(evp, this, m_dependencies, m_actions, int(m_timeline_nodes.size()), rf, lm);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -756,7 +757,7 @@ void
 active_timeline::dump(std::ostream& os)
 {
 	
-	os << "dumping active timeline, #dep=" << m_dependencies.size() << " #act=" << m_actions.size() << std::endl;
+	os << "dumping active timeline, #dep=" << int(m_dependencies.size()) << " #act=" << int(m_actions.size()) << std::endl;
 	detail::active_dependency_vector::iterator i;
 	int c;
 	for(c=0,i=m_dependencies.begin(); i<m_dependencies.end(); c++, i++)
