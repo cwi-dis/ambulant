@@ -30,8 +30,6 @@ namespace ambulant {
 
 namespace net {
 
-namespace datasource {
-	
 typedef char bytes; 
 
 class databuffer  
@@ -158,8 +156,6 @@ private:
     void read_file();
 
 };
-
-} //end namespace datasource
 
 } // end namespace net
 

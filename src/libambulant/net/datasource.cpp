@@ -11,10 +11,10 @@
 
 // data_buffer
 
-namespace ambulant {
+using namespace ambulant;
 
 	
-net::datasource::databuffer::databuffer()
+net::databuffer::databuffer()
 {
 	m_size=0;
 	m_used=0;
@@ -22,7 +22,7 @@ net::datasource::databuffer::databuffer()
 }
 
 
-void net::datasource::databuffer::resize(int newsize)
+void net::databuffer::resize(int newsize)
 {
 	int m_dummy;
 	char *m_newbuf;
@@ -52,7 +52,7 @@ void net::datasource::databuffer::resize(int newsize)
 	}
 }
 
-net::datasource::databuffer::databuffer(int size)
+net::databuffer::databuffer(int size)
 {
 m_size=0;
 m_used=0;
@@ -71,7 +71,7 @@ if ( !m_buffer)
 
 // copy constructor
 
-net::datasource::databuffer::databuffer(databuffer& src)   // copy constructor
+net::databuffer::databuffer(databuffer& src)   // copy constructor
 {
 int i;
 m_size=0;
@@ -90,7 +90,7 @@ m_used=src.m_used;
 }
 
 
-net::datasource::databuffer::~databuffer()
+net::databuffer::~databuffer()
 {
 	if(m_buffer)
 		{
@@ -101,11 +101,11 @@ net::datasource::databuffer::~databuffer()
 		}
 }
 
-int net::datasource::databuffer::used()
+int net::databuffer::used()
 {
 	return(m_used);
 }
-void net::datasource::databuffer::dump(std::ostream& os, bool verbose)
+void net::databuffer::dump(std::ostream& os, bool verbose)
 {
 int i;
 
@@ -124,7 +124,7 @@ if ((verbose))
  os << std::endl;
 }
 
-void net::datasource::databuffer::put_data(char *data, int size)
+void net::databuffer::put_data(char *data, int size)
 {
 int dummy;
 
@@ -142,7 +142,7 @@ else
 
 }
 
-void net::datasource::databuffer::shift_down(int pos)
+void net::databuffer::shift_down(int pos)
 {
 if (pos <=  m_used)    
 	{
@@ -158,7 +158,7 @@ if (pos <=  m_used)
 }
 
 
-void net::datasource::databuffer::get_data(char *data, int size)
+void net::databuffer::get_data(char *data, int size)
 {
 if (size  < m_used)
 	{		
@@ -177,7 +177,7 @@ if (size  < m_used)
 
 
 
-net::datasource::passive_datasource::passive_datasource(char *url)
+net::passive_datasource::passive_datasource(char *url)
 : m_refcount(1)
 {
 	int m_len;
@@ -192,7 +192,7 @@ net::datasource::passive_datasource::passive_datasource(char *url)
 	}
 }
 
-net::datasource::active_datasource* net::datasource::passive_datasource::activate()
+net::active_datasource* net::passive_datasource::activate()
 {
 	int in;
 	
@@ -208,7 +208,7 @@ net::datasource::active_datasource* net::datasource::passive_datasource::activat
 		
 }
 
-net::datasource::passive_datasource::~passive_datasource()
+net::passive_datasource::~passive_datasource()
 {
 	if(m_url) {
 		delete[] m_url;
@@ -219,7 +219,7 @@ net::datasource::passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-net::datasource::active_datasource::active_datasource(passive_datasource *const source,int file)
+net::active_datasource::active_datasource(passive_datasource *const source,int file)
 :	m_source(source),
 	m_refcount(1)
 {
@@ -238,7 +238,7 @@ net::datasource::active_datasource::active_datasource(passive_datasource *const 
 	}
 }
 
-net::datasource::active_datasource::~active_datasource()
+net::active_datasource::~active_datasource()
 {
 	if (buffer) {
 		delete buffer;
@@ -250,7 +250,7 @@ net::datasource::active_datasource::~active_datasource()
 }
 
 
-void net::datasource::active_datasource::filesize()
+void net::active_datasource::filesize()
  	{
  		using namespace std;
 		int dummy;
@@ -268,7 +268,7 @@ void net::datasource::active_datasource::filesize()
 		}
  	}
 
-  void net::datasource::active_datasource::read_file()
+  void net::active_datasource::read_file()
   {
 
   	char ch;
@@ -291,7 +291,7 @@ void net::datasource::active_datasource::filesize()
   }
   
   
-void net::datasource::active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
+void net::active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file();
  	AM_DBG buffer->dump(std::cout, false);
@@ -299,15 +299,10 @@ void net::datasource::active_datasource::start(ambulant::lib::unix::event_proces
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
 		evp->add_event(readdone, 0, ambulant::lib::unix::event_processor::low);
 	}
- }
+}
  
- void  net::datasource::active_datasource::read(char *data, int size)
- {
- 	buffer->get_data(data,size);
- }
-  
-
-
-} //end namespace ambulant
-
+void  net::active_datasource::read(char *data, int size)
+{
+	buffer->get_data(data,size);
+}
 
