@@ -287,8 +287,8 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 {
 	// Acknowledge that we are ready with the data provided to us
 	// at the previous callback time
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: m_src->readdone(%d)", m_audio_chunck.alen);
-	m_audio_src->readdone(m_audio_chunck.alen);
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone: m_src->readdone(%d)", m_audio_chunk.alen);
+	m_audio_src->readdone(m_audio_chunk.alen);
 	assert(m_channel_used >= 0);
 	if (m_audio_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->trace("Unlocking channel %d", m_channel_used);
@@ -300,34 +300,34 @@ gui::sdl::sdl_active_audio_renderer::playdone()
 	} else {
 #if 0
 		// At the moment the next comment is not true, because we've disabled start()ing in
-		// readdone.
-		// This "shouldn't happen": readdone() should continue calling start() to read
+		// data_avail.
+		// This "shouldn't happen": data_avail() should continue calling start() to read
 		// more data until end of file is true
 		lib::logger::get_logger("sdl_active_audio_renderer::playdone: not at end-of-file! Calling m_audio_src->start()");
 #endif
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::playdone(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
 	}
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::readdone()
+gui::sdl::sdl_active_audio_renderer::data_avail()
 {
 	int result;
 	assert(m_audio_src);
-	m_audio_chunck.allocated = 0;
-	m_audio_chunck.volume = 128;
-	m_audio_chunck.abuf = (Uint8*) m_audio_src->get_read_ptr();
-	m_audio_chunck.alen = m_audio_src->size();
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: got %d bytes", m_audio_chunck.alen);
+	m_audio_chunk.allocated = 0;
+	m_audio_chunk.volume = 128;
+	m_audio_chunk.abuf = (Uint8*) m_audio_src->get_read_ptr();
+	m_audio_chunk.alen = m_audio_src->size();
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: got %d bytes", m_audio_chunk.alen);
 	
 	if (m_channel_used < 0) {
 		new_channel();
 	}
 	
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::readdone: STARTING TO PLAY");
-	result = Mix_PlayChannel(m_channel_used, &m_audio_chunck, 0);
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::data_avail: STARTING TO PLAY");
+	result = Mix_PlayChannel(m_channel_used, &m_audio_chunk, 0);
 	if (result < 0) {
 		lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): Failed to play sound", (void *)this);	
 		AM_DBG printf("Mix_PlayChannel: %s\n",Mix_GetError());
@@ -339,13 +339,13 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	}
 #if 0
 	// XXX Logic error, needs to use another chunk
-	if (m_audio_chunck.alen > SDL_BUFFER_MAX_BYTES ) {
+	if (m_audio_chunk.alen > SDL_BUFFER_MAX_BYTES ) {
 		// XXXX Schedule a callback so we start reading later
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
 	} else {
 		// Start reading immedeately
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
 	}
 #endif
@@ -458,7 +458,7 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
+		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
 	} else {

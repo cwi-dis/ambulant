@@ -97,7 +97,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
     void resume();
 	void freeze() {};
     void speed_changed() {};
-    void readdone();
+    void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where) {};
@@ -111,7 +111,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
  	int inc_channels();
 	
 	net::audio_datasource *m_audio_src;
-    Mix_Chunk m_audio_chunck;
+    Mix_Chunk m_audio_chunk;
 	int m_channel_used;
 
 	static int init();
