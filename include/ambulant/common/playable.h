@@ -63,6 +63,10 @@ class node;
 class event_processor;
 } // namespace lib
 
+namespace net {
+class datasource_factory;
+} // namespace net
+
 namespace common {
 
 class renderer;

@@ -141,10 +141,10 @@ class audio_datasource : virtual public datasource {
 
 // This class is the client API used to create a datasource for
 // a given URL.
-class datasource_factory {
+class raw_datasource_factory {
   public: 
-    virtual ~datasource_factory() {}; 	
-  	virtual datasource* new_datasource(const std::string& url) = 0;
+    virtual ~raw_datasource_factory() {}; 	
+  	virtual datasource* new_raw_datasource(const std::string& url) = 0;
 };
 
 // This class is the client API used to create an audio_datasource for
@@ -154,21 +154,6 @@ class audio_datasource_factory  {
   public: 
     virtual ~audio_datasource_factory() {}; 	
   	virtual audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt) = 0;
-};
-
-// This is the finder interface corresponding to datasource_factory, it is
-// implemented by any module that implements datasource objects.
-class datasource_finder : public datasource_factory {
-};
-
-// Finder corresponding to audio_datasource_factory, where the audio_datasource
-// handles everything (getting raw data, parsing it, converting it) itself. The
-// returned audio_datasource (if non-NULL) is guaranteed to deliver data in a
-// format compatible with fmts.
-class audio_datasource_finder {
-  public:
-	virtual ~audio_datasource_finder() {};
-	virtual audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmts) = 0;
 };
 
 // Finder for implementations where the audio_datasource
@@ -190,22 +175,22 @@ class audio_filter_finder  {
   	virtual audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts) = 0;
 };
 
-class global_datasource_factory : public datasource_factory, public audio_datasource_factory  {
+class datasource_factory : public raw_datasource_factory, public audio_datasource_factory  {
   public:
-	global_datasource_factory();
-  	~global_datasource_factory();
+	datasource_factory() {};
+  	~datasource_factory();
   
-  	datasource* new_datasource(const std::string& url);
+  	datasource* new_raw_datasource(const std::string& url);
 	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt);
 	
-  	void add_finder(datasource_finder *df);
-	void add_audio_finder(audio_datasource_finder *df);
+  	void add_raw_factory(raw_datasource_factory *df);
+	void add_audio_factory(audio_datasource_factory *df);
 	void add_audio_parser_finder(audio_parser_finder *df);
 	void add_audio_filter_finder(audio_filter_finder *df);
 		
   private:
-	std::vector<datasource_finder*> m_finders;
-	std::vector<audio_datasource_finder*> m_audio_finders;
+	std::vector<raw_datasource_factory*> m_raw_factories;
+	std::vector<audio_datasource_factory*> m_audio_factories;
 	std::vector<audio_parser_finder*> m_audio_parser_finders;
 	std::vector<audio_filter_finder*> m_audio_filter_finders;
 };

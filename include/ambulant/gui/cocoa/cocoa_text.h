@@ -72,8 +72,9 @@ class cocoa_active_text_renderer : public active_final_renderer {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-	:   active_final_renderer(context, cookie, node, evp),
+		event_processor *evp,
+		net::datasource_factory *df)
+	:   active_final_renderer(context, cookie, node, evp, df),
             m_text_storage(NULL) {};
         ~cocoa_active_text_renderer();
 	

@@ -80,6 +80,16 @@ ffmpeg_audio_parser_finder::new_audio_parser(const std::string& url, audio_forma
 		}
 	return NULL;	
 }
+
+audio_datasource*
+ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format_choices fmts)
+{
+	audio_format& fmt = src->get_audio_format();
+	// First check that we understand the source format
+	if (fmt.bits != 16) return NULL;
+	// XXXX Check that there is at least one destination format we understand too
+	return new ffmpeg_resample_datasource(src, fmts);
+}
 		
 ffmpeg_audio_datasource::ffmpeg_audio_datasource(datasource *const src)
 :	m_codec(NULL),

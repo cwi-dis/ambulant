@@ -62,6 +62,17 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
+#include "ambulant/net/datasource.h"
+#include "ambulant/net/posix_datasource.h"
+#ifdef WITH_STDIO_DATASOURCE
+#include "ambulant/net/stdio_datasource.h"
+#endif
+#ifdef WITH_FFMPEG
+#include "ambulant/net/ffmpeg_datasource.h"
+#endif
+#ifdef WITH_RAW_AUDIO
+#include "ambulant/net/raw_audio_datasource.h"
+#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -81,16 +92,39 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	m_doc(NULL),
 	m_player(NULL),
 	m_rf(NULL),
-	m_wf(wf)
+	m_wf(wf),
+	m_df(NULL)
 {
 	using namespace ambulant;
 	
+	// First create the datasource factory and populate it too.
+	m_df = new net::datasource_factory();
+#ifdef WITH_STDIO_DATASOURCE
+	// This is for debugging only, really: the posix datasource
+	// should always perform better, and is always available on OSX.
+	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
+	// however.
+	m_df->add_raw_factory(new net::stdio_datasource_factory());
+#endif
+	m_df->add_raw_factory(new net::posix_datasource_factory());
+	
+#ifdef WITH_FFMPEG
+	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
+	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
+#endif
+#ifdef WITH_RAW_AUDIO
+	// This is for debugging only
+	m_df->add_audio_parser_finder(new net::raw_audio_parser_finder());
+#endif
+	
+	// Next create the playable factory and populate it.
 	m_rf = new common::global_playable_factory();
-	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
+	m_rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_df));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
-	m_rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
+	m_rf->add_factory( new gui::sdl::sdl_renderer_factory(m_df) );      
 #endif
+
 	m_doc = lib::document::create_from_file(filename);
 	if (!m_doc) {
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);

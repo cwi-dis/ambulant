@@ -57,60 +57,79 @@ using namespace net;
 
 // *********************** datasource_factory ***********************************************
   
-
-void
-global_datasource_factory::add_finder(datasource_finder *df)
+datasource_factory::~datasource_factory()
 {
-	m_finders.push_back(df);
+	std::vector<raw_datasource_factory*>::iterator i;
+	for (i=m_raw_factories.begin(); i!=m_raw_factories.end(); i++)
+		delete (*i);
+		
+	std::vector<audio_datasource_factory*>::iterator i2;
+	for (i2=m_audio_factories.begin(); i2!=m_audio_factories.end(); i2++)
+		delete (*i2);
+		
+	std::vector<audio_parser_finder*>::iterator i3;
+	for (i3=m_audio_parser_finders.begin(); i3!=m_audio_parser_finders.end(); i3++)
+		delete (*i3);
+		
+	std::vector<audio_filter_finder*>::iterator i4;
+	for (i4=m_audio_filter_finders.begin(); i4!=m_audio_filter_finders.end(); i4++)
+		delete (*i4);
 }
 
 void
-global_datasource_factory::add_audio_finder(audio_datasource_finder *df)
+datasource_factory::add_raw_factory(raw_datasource_factory *df)
 {
-	m_audio_finders.push_back(df);
+	m_raw_factories.push_back(df);
 }
 
 void
-global_datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
+datasource_factory::add_audio_factory(audio_datasource_factory *df)
+{
+	m_audio_factories.push_back(df);
+}
+
+void
+datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
 {
 	m_audio_parser_finders.push_back(df);
 }
 
 void
-global_datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
+datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
 {
 	m_audio_filter_finders.push_back(df);
 }
 
 
 datasource*
-global_datasource_factory::new_datasource(const std::string &url)
+datasource_factory::new_raw_datasource(const std::string &url)
 {
-    std::vector<datasource_finder *>::iterator i;
+    std::vector<raw_datasource_factory *>::iterator i;
     datasource *src;
     
-    for(i=m_finders.begin(); i != m_finders.end(); i++) {
-        src = (*i)->new_datasource(url);
+    for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
+        src = (*i)->new_raw_datasource(url);
         if (src) return src;
     }
+	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for %s\n", url.c_str());
     return NULL;
 }
 
 audio_datasource*
-global_datasource_factory::new_audio_datasource(const std::string &url, audio_format_choices fmts)
+datasource_factory::new_audio_datasource(const std::string &url, audio_format_choices fmts)
 {
     audio_datasource *src = NULL;
 
 	// First try to see if anything supports the whole chain
-    std::vector<audio_datasource_finder *>::iterator i;
-    for(i=m_audio_finders.begin(); i != m_audio_finders.end(); i++) {
+    std::vector<audio_datasource_factory *>::iterator i;
+    for(i=m_audio_factories.begin(); i != m_audio_factories.end(); i++) {
         src = (*i)->new_audio_datasource(url, fmts);
         if (src) return src;
     }
 
 	// If that didn't work we try to first create a raw datasource, and
 	// then stack a parser and possibly a filter
-	datasource *rawsrc = new_datasource(url);
+	datasource *rawsrc = new_raw_datasource(url);
 	if (rawsrc == NULL) return NULL;
 	
 	std::vector<audio_parser_finder*>::iterator ip;
@@ -120,8 +139,12 @@ global_datasource_factory::new_audio_datasource(const std::string &url, audio_fo
 	}
 	if (src == NULL) {
 		rawsrc->release();
+		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", url.c_str());
 		return NULL;
 	}
+	// Check whether the format happens to match already.
+	if (fmts.contains(src->get_audio_format()))
+		return src;
 	
 	// Now stack a filter. Note that the first filter finder is the identity
 	// filter.
@@ -134,5 +157,6 @@ global_datasource_factory::new_audio_datasource(const std::string &url, audio_fo
 	
 	// Failed to find a filter. Clean up.
 	src->release(); // This will also release rawsrc
+	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
     return NULL;
 }

@@ -72,19 +72,15 @@ active_renderer::active_renderer(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *evp)
+	lib::event_processor *evp,
+	net::datasource_factory *df)
 :	active_basic_renderer(context, cookie, node, evp),
 	m_src(NULL),
 	m_dest(NULL)
 {
-#ifdef AMBULANT_PLATFORM_UNIX
-	net::posix_datasource_factory src_factory;
-#else
-	net::stdio_datasource_factory src_factory;
-#endif
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	std::string url = node->get_url("src");
-	m_src = src_factory.new_datasource(url);	
+	m_src = df->new_raw_datasource(url);	
 }
 
 void

@@ -58,7 +58,8 @@ namespace sdl {
 class sdl_renderer_factory : public common::playable_factory {
   public:
 
-	sdl_renderer_factory();
+	sdl_renderer_factory(net::datasource_factory *df)
+	:   m_datasource_factory(df) {}
 	~sdl_renderer_factory();
 		
 	common::playable *new_playable(
@@ -66,6 +67,8 @@ class sdl_renderer_factory : public common::playable_factory {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
+  private:
+	net::datasource_factory *m_datasource_factory;
 	
 };
 

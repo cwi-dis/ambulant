@@ -78,4 +78,5 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	ambulant::common::abstract_player *m_player;
 	ambulant::common::global_playable_factory *m_rf;
 	ambulant::common::window_factory *m_wf;
+	ambulant::net::datasource_factory *m_df;
 };

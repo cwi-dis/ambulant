@@ -120,7 +120,8 @@ class active_renderer : public active_basic_renderer {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *evp);
+		lib::event_processor *evp,
+		net::datasource_factory *df);
 		
 	~active_renderer() {}
 	
@@ -155,8 +156,9 @@ class active_final_renderer : public active_renderer {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *evp)
-	:	active_renderer(context, cookie, node, evp),
+		lib::event_processor *evp,
+		net::datasource_factory *df)
+	:	active_renderer(context, cookie, node, evp, df),
 		m_data(NULL),
 		m_data_size(0) {};
 	virtual ~active_final_renderer();

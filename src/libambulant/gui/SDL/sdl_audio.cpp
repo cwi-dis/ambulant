@@ -211,8 +211,9 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *evp)
-:	common::active_renderer(context, cookie, node, evp),
+	lib::event_processor *evp,
+	net::datasource_factory *df)
+:	common::active_renderer(context, cookie, node, evp, df),
 //    m_rate(44100),
 //    m_bits(16),
 //    m_channels(2),
