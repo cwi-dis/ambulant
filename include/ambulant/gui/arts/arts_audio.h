@@ -98,7 +98,7 @@ class arts_active_audio_renderer : public common::playable_imp {
     void speed_changed() {};
     void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
-	std::pair<bool, double> get_dur()	
+	std::pair<bool, double> get_dur();	
 		
   private:
     int arts_setup(int rate, int bits, int channels, char *name);
