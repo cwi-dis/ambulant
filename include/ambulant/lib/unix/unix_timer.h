@@ -30,10 +30,16 @@ namespace unix {
 // simple unix os timer
 class os_timer : public ambulant::lib::timer  {
   public:
-	os_timer() : m_start_time(time(NULL)) {}
-	virtual time_type elapsed() const { return time(NULL)-m_start_time;}
-	virtual void restart() { m_start_time = time(NULL);}
+	os_timer() : m_start_time(millitime()) {}
+	virtual time_type elapsed() const { return millitime()-m_start_time;}
+	virtual void restart() { m_start_time = millitime();}
 	
+	static inline time_type millitime() {
+		struct timeval tv;
+		
+		if (gettimeofday(&tv, NULL) < 0) return 0;
+		return (tv.tv_sec*1000 + tv.tv_usec / 1000);
+	}
   private:
 	time_type m_start_time;
 };
