@@ -60,7 +60,6 @@
 #include "ambulant/gui/dx/dx_player_control.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
 #include "ambulant/common/preferences.h"
-#include "ambulant/smil2/test_attrs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -111,6 +110,7 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_COMMAND(ID_VIEW_TESTS, OnViewTests)
 	ON_COMMAND(ID_VIEW_FILTER, OnViewFilter)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -120,6 +120,7 @@ MmView::MmView()
 {
 	// TODO: add construction code here
 	m_timer_id = 0;
+	m_cursor_id = 0;
 }
 
 MmView::~MmView()
@@ -261,6 +262,24 @@ void MmView::OnLButtonDown(UINT nFlags, CPoint point)
 	CView::OnLButtonDown(nFlags, point);
 }
 
+void MmView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if(player) {
+		int new_cursor_id = player->get_cursor(point.x, point.y);
+		if(new_cursor_id != m_cursor_id) {
+			HCURSOR new_cursor = 0;
+			if(new_cursor_id == 0) {
+				new_cursor = AfxGetApp()->LoadStandardCursor(IDC_ARROW); 
+			} else {
+				new_cursor = AfxGetApp()->LoadCursor(IDC_CURSOR_HAND); 
+			}
+			SetClassLongPtr(GetSafeHwnd(), GCLP_HCURSOR, HandleToLong(new_cursor));
+			m_cursor_id = new_cursor_id;
+		}
+	}
+	CView::OnMouseMove(nFlags, point);
+}
+
 void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if(player) player->on_char(nChar);
 	CView::OnChar(nChar, nRepCnt, nFlags);
@@ -335,3 +354,4 @@ void MmView::OnUpdateViewFilter(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(!m_curFilter.IsEmpty());
 }
+

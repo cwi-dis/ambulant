@@ -111,7 +111,8 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	void pause();
 	void resume();
 	bool is_done() const;
-		
+	int get_cursor(int x, int y);
+	
 	//////////////////////
 	// Time node context: Services
 	

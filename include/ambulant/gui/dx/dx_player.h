@@ -84,7 +84,8 @@ class dx_player {
 	virtual viewport* create_viewport(int w, int h) = 0;
 	virtual void on_click(int x, int y) = 0;
 	virtual void on_char(int ch) = 0;
-	virtual void load_tests_filter(const std::string& url) = 0;
+	virtual int get_cursor(int x, int y) = 0;
+	virtual void set_preferences(const std::string& url) = 0;
 	virtual void update_status() = 0;
 	virtual common::window_factory *get_window_factory() = 0;
 	virtual common::playable_factory *get_playable_factory() = 0;

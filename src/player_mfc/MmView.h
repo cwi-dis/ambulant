@@ -69,6 +69,7 @@ public:
 	void SetMMDocument(LPCTSTR lpszPathName);
 	CString m_curPathName;
 	CString m_curFilter;
+	UINT m_cursor_id;
 	
 // Overrides
 	public:
@@ -110,6 +111,7 @@ public:
 	afx_msg void OnViewTests();
 	afx_msg void OnViewFilter();
 	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

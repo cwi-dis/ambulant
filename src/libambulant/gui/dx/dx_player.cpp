@@ -106,7 +106,7 @@ gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
     delete m_viewport;
 }
 
-void gui::dx::dx_smil_player_impl::load_tests_filter(const std::string& url) {
+void gui::dx::dx_smil_player_impl::set_preferences(const std::string& url) {
 	smil2::test_attrs::load_test_attrs(url);
 	m_smil_player->build_timegraph();
 }
@@ -122,6 +122,11 @@ gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
 
 bool gui::dx::dx_smil_player_impl::is_done() const {
 	return m_smil_player && m_playing && m_smil_player->is_done();
+}
+
+int gui::dx::dx_smil_player_impl::get_cursor(int x, int y) {
+	if(!m_smil_player || !m_playing) return 0;
+	return m_smil_player->get_cursor(x, y);
 }
 
 void gui::dx::dx_smil_player_impl::update_status() {

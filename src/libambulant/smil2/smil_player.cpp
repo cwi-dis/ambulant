@@ -56,7 +56,6 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/smil_player.h"
@@ -298,6 +297,34 @@ void smil_player::on_click(int x, int y) {
 	}
 }
 
+int smil_player::get_cursor(int x, int y) {
+	// WARNING: The following is test code
+	// Does not use mouse regions, z-index etc
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++) {
+		playable *pl = ((*it).second);
+		int nid = pl->get_cookie();
+		renderer *rend = pl->get_renderer();
+		if (rend == NULL) continue;
+		surface *surf = rend->get_surface();
+		if (surf == NULL) continue;
+		
+		lib::screen_rect<int> rc = surf->get_rect();
+		lib::point pt = surf->get_global_topleft();
+		rc.translate(pt);
+		std::map<int, time_node*>::iterator it2 = m_dom2tn->find(nid);
+		if(it2 != m_dom2tn->end() && 
+			(*it2).second->want_activate_event() &&
+			rc.contains(point(x, y))) {
+			// check for area elements
+			if((*it).first->get_local_name() == "area") {
+				AM_DBG m_logger->trace("***** AREA CLICK");
+			}
+			return 1;
+		}
+	}
+	return 0;
+}
 void smil_player::on_char(int ch) {
 	typedef std::pair<q_smil_time, int> accesskey;
 	typedef scalar_arg_callback_event<time_node, accesskey> accesskey_cb;
