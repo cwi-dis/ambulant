@@ -27,16 +27,36 @@ namespace lib {
 
 namespace win32 {
 
-// simple win32 os timer
-class os_timer : public ambulant::lib::timer  {
+class win32_timer : public ambulant::lib::abstract_timer  {
   public:
-	os_timer() : m_start_time(GetTickCount()) {}
-	virtual time_type elapsed() const { return GetTickCount()-m_start_time;}
-	virtual void restart() { m_start_time = GetTickCount();}
+	win32_timer() : m_epoch(0), m_speed(1.0) {}
+	
+	// Returns time in msec since epoch.
+	// Takes into account speed with a 1% precision.	
+	time_type elapsed() const;
+	
+	// Sets the speed of this timer. 	
+	void set_speed(double speed);
+	
+	// Gets the speed of this timer.
+	// XXX: Should be called get_local_speed/get_effective_speed	
+	double get_realtime_speed() const { return m_speed;}
+	
   private:
-	time_type m_start_time;
+  
+	// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
+	static ULONGLONG os_time();
+	
+	// Returns system time in msec. 	
+	static time_type os_millitime();
+	
+	// Converts system units to msec.
+	static time_type to_millis(ULONGLONG t);
+	
+	ULONGLONG m_epoch;
+	double m_speed;
+	
 };
-
 
 } // namespace win32
  
