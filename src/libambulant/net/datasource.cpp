@@ -74,7 +74,7 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 	~mem_datasource() {};
 
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) {
-		evp->add_event(callback, 0, ambulant::lib::event_processor::med);
+		evp->add_event(callback, 0, ambulant::lib::event_processor::low);
 	};
     void readdone(int len) { m_databuf.readdone(len); };
 	void stop() {};

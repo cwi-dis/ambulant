@@ -117,6 +117,8 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = qaw;
+#ifdef	AM_DBG
+	// in debugging mode, initialize with purple background
 	if (qaw != NULL) {
 		QSize size = qaw->frameSize();
 		m_pixmap = new QPixmap(size.width(), size.height());
@@ -128,6 +130,7 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 		paint.end();
 		
 	}
+#endif/*AM_DBG*/
 }
 
 QPixmap*
@@ -148,6 +151,7 @@ QPixmap*
 ambulant_qt_window::new_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+	if (m_surface != NULL) delete m_surface;
 	QSize size = m_pixmap->size();
 	m_surface = new QPixmap(size.width(), size.height());
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
@@ -242,6 +246,7 @@ void dumpPixmap(QPixmap* qpm, std::string filename) {
 	}
 }
 /**/
+
 void
 ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 {

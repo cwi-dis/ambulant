@@ -61,43 +61,36 @@ namespace gui {
 
 using namespace common;
 using namespace lib;
-using namespace net;
+//JNK using namespace net;
 
 namespace qt {
-qt_renderer::~qt_renderer()
+
+qt_transition_renderer::~qt_transition_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug
-	  ("~qt_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("~qt_renderer(0x%x)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
 	if (m_trans_engine) delete m_trans_engine;
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
-void 
-qt_renderer::set_intransition(const lib::transition_info *info)
-{
-	m_intransition = info;
-}
-//void start_outtransition(const lib::transition_info *info);
 	
 void
-qt_renderer::start(double where)
+qt_transition_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("qt_renderer.start(0x%x, \"%s\")", (void *)this, m_node->get_url("src").get_url().c_str());
+	AM_DBG logger::get_logger()->debug("qt_renderer.start(0x%x)", (void *)this);
 	if (m_intransition) {
 		m_trans_engine = qt_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_lock.leave();
-	common::renderer_playable_dsall::start(where);
 }
 
 void
-qt_renderer::start_outtransition(const lib::transition_info *info)
+qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("qt_renderer.start_outtransition(0x%x)", (void *)this);
@@ -111,7 +104,7 @@ qt_renderer::start_outtransition(const lib::transition_info *info)
 }
 
 void
-qt_renderer::stop_transition()
+qt_transition_renderer::stop_transition()
 {
 	// private method - no locking
 	delete m_trans_engine;
@@ -120,7 +113,7 @@ qt_renderer::stop_transition()
 }
 
 void
-qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+qt_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
@@ -139,7 +132,6 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		if (surf == NULL)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
-			aqw->set_ambulant_surface(surf);
 			// Copy the background pixels
 			screen_rect<int> dstrect = r;
 			dstrect.translate(m_dest->get_global_topleft());
@@ -147,30 +139,51 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 			bitBlt(surf, dstrect.left(),dstrect.top(),
 			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
+			aqw->set_ambulant_surface(surf);
 		}
-	}
-
-	redraw_body(dirty, window);
-	
-	if (surf != NULL) {
-		aqw->reset_ambulant_surface();
-	}
-	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef no_arg_callback<qt_renderer>transition_callback;
-		event *ev = new transition_callback (this, &qt_renderer::transition_step);
-		transition_info::time_type delay = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
-//		delay = 500;
-		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, event_processor::med);
 	}
 	m_lock.leave();
 }
 
 void
-qt_renderer::transition_step()
+qt_transition_renderer::redraw_post(gui_window *window)
+{
+	m_lock.enter();
+	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+	QPixmap *surf = aqw->get_ambulant_surface();
+	
+	if (surf != NULL) {
+		aqw->reset_ambulant_surface();
+	}
+	if(m_trans_engine) {
+		if(m_trans_engine->is_done()) {
+			// If the transition is done clean it up and signal that
+			// freeze_transition can end for our peer renderers.
+			// Note that we have to do this through an event because of 
+			// locking issues.
+			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
+			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop_transition);
+			m_event_processor->add_event(ev, 0, lib::event_processor::low);
+		
+		} else {
+			if (surf) {
+				AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
+				m_trans_engine->step(m_event_processor->get_timer()->elapsed());
+				typedef no_arg_callback<qt_transition_renderer>transition_callback;
+				event *ev = new transition_callback (this, &qt_transition_renderer::transition_step);
+				transition_info::time_type delay = m_trans_engine->next_step_delay();
+				if (delay < 33) delay = 33; // XXX band-aid
+//				delay = 1000;
+				AM_DBG logger::get_logger()->debug("qt_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
+				m_event_processor->add_event(ev, delay, event_processor::low);
+			}
+		}
+	}
+	m_lock.leave();
+}
+
+void
+qt_transition_renderer::transition_step()
 {
 //	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("qt_renderer.transition_step: now=%d",m_event_processor->get_timer()->elapsed());

@@ -606,7 +606,7 @@ void smil_player::update() {
 		if(m_root->is_active()) {
 			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
 				&smil_player::update);
-			m_event_processor->add_event(update_event, dt, event_processor::high);
+			m_event_processor->add_event(update_event, dt, event_processor::low);
 		}
 	}
 }

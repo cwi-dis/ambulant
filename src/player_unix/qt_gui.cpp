@@ -127,6 +127,7 @@ qt_gui::qt_gui(const char* title,
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	//m_cursor_shape(arrowCursor);
 	m_fileselector(NULL),
+	m_settings_selector(NULL),
 #endif/*QT_NO_FILEDIALOG*/
 	m_mainloop(NULL),
 	m_o_x(0),	 
@@ -242,13 +243,27 @@ qt_gui::qt_gui(const char* title,
 qt_gui::~qt_gui() {
 	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
+#ifdef  QT_NO_FILEDIALOG	/* Assume embedded Qt */
+	if (m_fileselector != NULL) {
+		delete m_fileselector;
+		m_fileselector = NULL;
+	}
+	if (m_settings_selector != NULL) {
+		delete m_settings_selector;
+		m_settings_selector = NULL;
+	}
+#endif/*QT_NO_FILEDIALOG*/
+	if (m_mainloop != NULL) {
+		delete m_mainloop;
+		m_mainloop = NULL;
+	}
 	if (m_menubar != NULL) {
 		delete m_menubar;
 		m_menubar = NULL;
 	}
-	if (m_mainloop != NULL) {
-		delete m_mainloop;
-		m_mainloop = NULL;
+	if ( ! m_smilfilename.isNull()) {
+		delete m_smilfilename;
+		m_smilfilename = (char*) NULL;
 	}
 }
 
@@ -332,8 +347,8 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
-	smilfilename = strdup(smilfilename);
-	m_smilfilename = smilfilename;
+	if (m_smilfilename != NULL) delete m_smilfilename;
+	m_smilfilename = strdup(smilfilename);
 	if (m_mainloop != NULL)
 		delete m_mainloop;
 	m_mainloop = new qt_mainloop(this);
@@ -404,11 +419,8 @@ qt_gui::slot_close_fileselector()
 void
 qt_gui::slot_settings_selected(const DocLnk& selected_file) {
 #ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	QString* smilsettingspointer = new QString(selected_file.file());
-	QString smilsettingsname = *smilsettingspointer;
-	delete smilsettingspointer;
-	m_settings_selector->hide();
-
+	QString settings_filename(selected_file.file());
+	smil2::test_attrs::load_test_attrs(settings_filename.ascii());
 	if (openSMILfile(m_smilfilename, IO_ReadOnly))
 		slot_play();
 #endif/*QT_NO_FILEDIALOG*/

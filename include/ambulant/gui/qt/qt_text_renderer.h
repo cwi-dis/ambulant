@@ -73,7 +73,7 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_text_renderer : public qt_renderer {
+class qt_active_text_renderer : public qt_renderer<renderer_playable_dsall> {
   public:
 	qt_active_text_renderer(
 		common::playable_notification *context,

@@ -70,7 +70,7 @@ qt_active_text_renderer::qt_active_text_renderer(
 		const lib::node *node,
     	lib::event_processor *const evp,
     	common::factories *factory)
-:	qt_renderer(context, cookie, node, evp, factory),
+:	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
  	m_text_storage(NULL),
  	m_text_color(0),
  	m_text_font(NULL),

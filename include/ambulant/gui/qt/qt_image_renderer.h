@@ -76,7 +76,7 @@ using namespace net;
 
 namespace qt {
 
-class qt_active_image_renderer : public qt_renderer {
+class qt_active_image_renderer : public qt_renderer<renderer_playable_dsall> {
 
   public:
 	qt_active_image_renderer(
@@ -85,7 +85,7 @@ class qt_active_image_renderer : public qt_renderer {
 		const node *node,
 		event_processor *const evp,
 		common::factories *factory)
-	:	qt_renderer(context, cookie, node, evp, factory),
+	:	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
 	 	m_image(NULL),
 		m_image_loaded(false)
 	 	{};
@@ -97,6 +97,7 @@ class qt_active_image_renderer : public qt_renderer {
  private:
 	QImage m_image;
 	bool m_image_loaded;
+	critical_section m_lock;
 };
 
 } // namespace qt

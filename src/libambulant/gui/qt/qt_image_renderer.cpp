@@ -68,9 +68,7 @@ using namespace gui::qt;
 
 qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug
-	  ("qt_active_image_renderer::~qt_active_image_renderer(0x%x)",
-	   this);
+	AM_DBG lib::logger::get_logger()->debug("qt_active_image_renderer::~qt_active_image_renderer(0x%x)", this);
 	m_lock.leave();
 }
 	
@@ -78,26 +76,21 @@ qt_active_image_renderer::~qt_active_image_renderer() {
 void
 qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 				      gui_window* w) {
+	m_lock.enter();
 	const point             p = m_dest->get_global_topleft();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug
-		("qt_active_image_renderer.redraw_body(0x%x):"
-		" m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)",
-		 (void *)this, &m_image,
-		r.left(), r.top(), r.right(), r.bottom(),
-		p.x,p.y);
+	AM_DBG logger::get_logger()->debug("qt_active_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
-		m_image_loaded = m_image.loadFromData
-		  ((const uchar*)m_data, m_data_size);
+		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
 	}
-	if ( ! m_image_loaded)
+	if ( ! m_image_loaded) {
 		// Initially the image may not yet be loaded
-        	return;
+	 	m_lock.leave();
+		return;
+	}
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->debug(
-		"qt_active_image_renderer.redraw_body: info=0x%x",
-		info);
+	AM_DBG logger::get_logger()->debug("qt_active_image_renderer.redraw_body: info=0x%x",info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 
 	QPainter paint;
@@ -105,8 +98,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	QSize qsize = m_image.size();
 	size srcsize = size(qsize.width(), qsize.height());
 	rect srcrect = rect(size(0,0));
-	screen_rect<int> dstrect =
-	  m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+	screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	dstrect.translate(m_dest->get_global_topleft());
 	// O_ for original image coordinates
 	// S_ for source image coordinates
@@ -138,4 +130,5 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W,D_H);
 	paint.flush();
 	paint.end();
+	m_lock.leave();
 }

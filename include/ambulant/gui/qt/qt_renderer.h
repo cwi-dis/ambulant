@@ -62,42 +62,98 @@
 namespace ambulant {
 
 using namespace lib;
-using namespace net;
+//JNK using namespace net;
 using namespace common;
 
 namespace gui {
 
 namespace qt {
 
-class qt_renderer : public renderer_playable_dsall {
+class qt_transition_renderer : public ref_counted_obj {
+  public:
+	qt_transition_renderer(event_processor *evp)
+	:	m_event_processor(evp),
+		m_dest(NULL),
+		m_intransition(NULL),
+		m_outtransition(NULL),
+		m_trans_engine(NULL) {};
+	~qt_transition_renderer();
+
+	void set_surface(common::surface *dest) { m_dest = dest;}
+	void start(double where);
+	void redraw_pre(gui_window *window);
+	void redraw_post(gui_window *window);
+	void set_intransition(const lib::transition_info *info) {
+		m_intransition = info;
+	}
+	void start_outtransition(const lib::transition_info *info);
+
+  protected:
+  private:
+	void transition_step();
+	void stop_transition();
+
+	event_processor* m_event_processor;
+	surface* m_dest;
+	const lib::transition_info* m_intransition;
+	const lib::transition_info* m_outtransition;
+	smil2::transition_engine* m_trans_engine;
+	critical_section m_lock;
+};
+
+template <class RP_Base>
+class qt_renderer : public RP_Base {
   public:
 	qt_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
-		const node *node,
+		const lib::node *node,
 		event_processor *evp,
 		common::factories *factory)
-	:	renderer_playable_dsall(context, cookie, node, evp, factory),
-		m_intransition(NULL),
-		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
-	~qt_renderer();
+	:	RP_Base(context, cookie, node, evp, factory),
+		m_transition_renderer(new qt_transition_renderer(evp)) {};
+	qt_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		event_processor *evp)
+	:	RP_Base(context, cookie, node, evp),
+		m_transition_renderer(new qt_transition_renderer(evp)) {};
+	~qt_renderer() {
+		m_transition_renderer->release();
+	}
 
-	void start(double where);
-        void redraw(const screen_rect<int> &dirty, gui_window *window);
-	virtual void redraw_body(const screen_rect<int> &dirty,
-				 gui_window *window) = 0;
-	void set_intransition(const lib::transition_info *info);
-	void start_outtransition(const lib::transition_info *info);
+	void set_surface(common::surface *dest) {
+		RP_Base::set_surface(dest);
+		m_transition_renderer->set_surface(dest);
+	}
 
+	virtual void start(double where) {
+		start_transition(where);
+		RP_Base::start(where);
+	}
+	
+	void redraw(const screen_rect<int> &dirty, gui_window *window) {
+		m_transition_renderer->redraw_pre(window);
+		redraw_body(dirty, window);
+		m_transition_renderer->redraw_post(window);
+	}
+
+	void set_intransition(const lib::transition_info *info) {
+		m_transition_renderer->set_intransition(info);
+	}
+	
+	void start_outtransition(const lib::transition_info *info) {
+		m_transition_renderer->start_outtransition(info);
+	}
   protected:
-	const lib::transition_info *m_intransition;
-	const lib::transition_info *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
-	critical_section m_lock;
+	void start_transition(double where) {
+		m_transition_renderer->start(where);
+	}
+	virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
+
   private:
-	void transition_step();
-	void stop_transition();
+	qt_transition_renderer *m_transition_renderer;
 };
 
 } // namespace qt

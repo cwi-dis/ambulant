@@ -172,7 +172,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		if (delay < 33) delay = 33; // XXX band-aid
 //		delay = 500;
 		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, event_processor::med);
+		m_event_processor->add_event(ev, delay, event_processor::low);
 	}
 	m_lock.leave();
 }

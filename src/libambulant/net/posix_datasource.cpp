@@ -263,7 +263,7 @@ active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::eve
 	if (m_buffer->size() > 0 ) {
     	if (evp && cbevent) {
 			AM_DBG lib::logger::get_logger()->debug("active_datasource.start: trigger readdone callback (x%x)", cbevent);
-			evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
+			evp->add_event(cbevent, 0, ambulant::lib::event_processor::low);
     	}
 	}
 	m_lock.leave();
