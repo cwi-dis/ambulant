@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<filter>
+	<systemTest name="systemAudioDesc" value="on" />
+	<systemTest name="systemBitrate" value="56000" />
+	<systemTest name="systemCaptions" value="on" />
+	<systemTest name="systemCPU" value="unknown" />
+	<systemTest name="systemLanguage" value="en" />
+	<systemTest name="systemOperatingSystem" value="unknown" />
+	<systemTest name="systemScreenSize" value="1024X1280" />
+	<systemTest name="systemScreenDepth" value="32" />
+	<systemTest name="systemComponent" value="ambulant:sc1 ambulant:sc2" />	
+	<customTest name="testLinking" value="true"/>
+</filter>
