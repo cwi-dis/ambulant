@@ -122,6 +122,9 @@ class document : public node_context {
 	node* locate_node(const char *path) {
 		return m_root?m_root->locate_node(path):0;
 	}
+	const node* locate_node(const char *path) const {
+		return m_root?m_root->locate_node(path):0;
+	}
 	
 	// Get (and set) the layout section of the document
 	node *get_layout() { return m_layout; }
