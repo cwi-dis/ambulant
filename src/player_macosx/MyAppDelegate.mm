@@ -46,13 +46,36 @@
  * 
  */
 
-/* MyAppDelegate */
+#import "MyAppDelegate.h"
+#import "MyDocument.h"
 
-#import <Cocoa/Cocoa.h>
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
-@interface MyAppDelegate : NSObject
+@implementation MyAppDelegate
+- (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
+	return NO;
 }
-- (BOOL) applicationShouldOpenUntitledFile: (id) sender;
-- (void) applicationDidFinishLaunching:(NSNotification *)aNotification;
+
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+	if (welcomePath) {
+		id sender = [aNotification object];
+		AM_DBG NSLog(@"Will play %@", welcomePath);
+		AM_DBG NSLog(@"Application is %@", sender);
+		NSDocumentController *controller = [NSDocumentController sharedDocumentController];
+		AM_DBG NSLog(@"DocumentController is %@", controller);
+		MyDocument *welcomeDoc = [controller openDocumentWithContentsOfFile: welcomePath display: YES];
+		if (welcomeDoc) {
+			[welcomeDoc play: sender];
+		}
+	} else {
+		NSLog(@"No Welcome.smil in bundle");
+	}
+}
 @end
+

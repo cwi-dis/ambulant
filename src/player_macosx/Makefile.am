@@ -1,4 +1,4 @@
-EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.m main.m \
+EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.mm main.m \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h mainloop.h \
 	cocoambulant_Prefix.pch \
 	English.lproj \
@@ -47,6 +47,9 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
+	mkdir -p cocoambulant.app/Contents/Resources/data
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil cocoambulant.app/Contents/Resources
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* cocoambulant.app/Contents/Resources/data
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/cocoambulant.app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
