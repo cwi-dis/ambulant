@@ -77,6 +77,26 @@ typedef enum {
 	IGNORE_RECURSIVE
 } node_type;
 
+class mms_region_info : public common::region_info {
+  public:
+	mms_region_info(std::string name, lib::screen_rect<int> bounds)
+	:   m_name(name),
+		m_bounds(bounds) {}
+		
+	std::string get_name() const {return m_name; }
+	lib::basic_rect<int> get_rect() const { return lib::basic_rect<int>(m_bounds.left_top(), m_bounds.size()); }
+	lib::screen_rect<int> get_screen_rect() const { return m_bounds; }
+	common::fit_t get_fit() const { return common::fit_meet; }
+	lib::color_t get_bgcolor() const { return (lib::color_t)0; }
+	bool get_transparent() const { return true; }
+	common::zindex_t get_zindex() const { return 0; }
+	bool get_showbackground() const { return false; }
+  private:
+	std::string m_name;
+	lib::screen_rect<int> m_bounds;
+};
+	
+	
 
 // Helper function to get the type of a node
 node_type
@@ -105,13 +125,21 @@ get_node_type(const lib::node& n)
 mms_layout_manager::mms_layout_manager(common::window_factory *wf, const lib::document *doc)
 {
 	AM_DBG lib::logger::get_logger()->trace("mms_layout_manager()->0x%x", (void *)this);
-	const lib::screen_rect<int> image_rect = lib::screen_rect<int>(lib::point(0, 0), lib::size(176, 144));
-	const lib::screen_rect<int> text_rect = lib::screen_rect<int>(lib::point(0, 144), lib::size(176, 72));
-	common::passive_root_layout *root_layout = new common::passive_root_layout("root_layout", lib::size(176, 216), wf);
+	const lib::rect root_rect = lib::rect(lib::point(0, 0), lib::size(176, 216));
+	const lib::rect image_rect = lib::rect(lib::point(0, 0), lib::size(176, 144));
+	const lib::rect text_rect = lib::rect(lib::point(0, 144), lib::size(176, 72));
+	// XXXX These info srtuctures aren't freed again
+	mms_region_info *root_info = new mms_region_info("root_layout", root_rect);
+	mms_region_info *image_info = new mms_region_info("Image", image_rect);
+	mms_region_info *text_info = new mms_region_info("Text", text_rect);
+	mms_region_info *audio_info = new mms_region_info("Audio", lib::rect());
 	
-	m_audio_rgn = new common::passive_region("Audio");
-	m_text_rgn = root_layout->subregion("Text", text_rect);
-	m_image_rgn = root_layout->subregion("Image", image_rect);
+	common::passive_root_layout *root_layout = new common::passive_root_layout(
+			root_info, lib::size(176, 216), NULL, wf);
+	
+	m_audio_rgn = root_layout->subregion(audio_info, NULL);
+	m_text_rgn = root_layout->subregion(text_info, NULL);
+	m_image_rgn = root_layout->subregion(image_info, NULL);
 }
 
 mms_layout_manager::~mms_layout_manager()

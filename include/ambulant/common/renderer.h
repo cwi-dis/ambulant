@@ -92,14 +92,12 @@ class active_playable : virtual public playable, virtual public lib::ref_counted
 
 class active_basic_renderer : public active_playable, public renderer {
   public:
+#if 0
   	active_basic_renderer()
   	:	active_playable((playable_notification *)NULL, 0),
 		m_node(NULL),
 		m_event_processor(NULL) {};
-//  	active_basic_renderer(const ambulant::lib::active_basic_renderer& src)
-//  	:	m_event_processor(src.m_event_processor),
-//  		m_node(src.m_node),
-//  		m_playdone(src.m_playdone) {}
+#endif
 	active_basic_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -116,28 +114,8 @@ class active_basic_renderer : public active_playable, public renderer {
 	lib::event_processor *const m_event_processor;
 };
 
-#if 0
-// XXXX I don't understand virtual bases, and therefore I don't understand how
-// to make a mixin class:-(
-// Mixin for audio renderers and such, to be used with either active_basic_renderer
-// or active_renderer
-
-class nonvisual_renderer_mixin : public virtual active_basic_renderer {
-	void wantclicks(bool want) {};
-	void user_event(const point &where) {};
-	void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
-};
-#endif
-
 class active_renderer : public active_basic_renderer {
   public:
-  	active_renderer()
-  	:	active_basic_renderer(NULL, 0, NULL, NULL),
-  		m_src(NULL),
-  		m_dest(0) {}
-  	active_renderer(const active_renderer& src)
-  	:	active_basic_renderer(src.m_context, src.m_cookie, src.m_node, src.m_event_processor),
-  		m_dest(0) {}
 	active_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,

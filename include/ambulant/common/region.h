@@ -76,31 +76,12 @@ class passive_window;
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
 class passive_region : public surface, public renderer {
-  public:
 	friend class active_region;
-	
-	passive_region() 
-	:	m_name("unnamed"),
-		m_name_str("unnamed"),
-		m_bounds_inited(true),
-		m_inner_bounds(screen_rect<int>()),
-		m_outer_bounds(screen_rect<int>()),
-		m_window_topleft(point()),
-		m_parent(NULL),
-		m_cur_active_region(NULL),
-		m_mouse_region(NULL),
-		m_info(NULL) {}
-	passive_region(const std::string &name)
-	:	m_name(name),
-		m_name_str(name.c_str()),
-		m_bounds_inited(true),
-		m_inner_bounds(screen_rect<int>()),
-		m_outer_bounds(screen_rect<int>()),
-		m_window_topleft(point()),
-		m_parent(NULL),
-		m_cur_active_region(NULL),
-		m_mouse_region(NULL),
-		m_info(NULL) {}
+
+  protected:
+	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
+		const region_info *info, renderer *bgrenderer);
+  public:
 	virtual ~passive_region();
 	
 	virtual void show(active_region *cur);
@@ -122,28 +103,6 @@ class passive_region : public surface, public renderer {
 		
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
   protected:
-	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		const region_info *info, renderer *bgrenderer)
-	:	m_name(name),
-		m_name_str(name.c_str()),
-		m_bounds_inited(true),
-		m_inner_bounds(bounds.innercoordinates(bounds)),
-		m_outer_bounds(bounds),
-		m_window_topleft(bounds.left_top()),
-		m_parent(parent),
-		m_cur_active_region(NULL),
-		m_mouse_region(NULL),
-		m_info(info),
-		m_bg_renderer(bgrenderer)
-        {
-			if (parent) m_window_topleft += parent->get_global_topleft();
-			if (parent && parent->m_mouse_region) {
-				m_mouse_region = parent->m_mouse_region->clone();
-				m_mouse_region->clear();
-			}
-			if (m_bg_renderer)
-				m_bg_renderer->set_surface(this);
-        }
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(gui_region *rgn);
 	virtual void clear_cache();
@@ -176,7 +135,6 @@ class passive_region : public surface, public renderer {
 
 class passive_root_layout : public passive_region {
   public:
-	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
 	passive_root_layout(const region_info *info, size bounds, renderer *bgrenderer, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);

@@ -193,7 +193,7 @@ cocoa_window_factory::new_mouse_region()
 };
 
 common::renderer *
-cocoa_window_factory::new_background_renderer(common::region_info *src)
+cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	return new cocoa_background_renderer(src);
 }
