@@ -1,5 +1,5 @@
-EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.mm main.m \
-	MyAmbulantView.h MyAppDelegate.h MyDocument.h mainloop.h \
+EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDelegate.mm main.m \
+	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
 	English.lproj \
 	Info.plist version.plist \
@@ -70,6 +70,7 @@ cocoambulant_executable_SOURCES= \
 	mainloop.cpp \
 	MyAmbulantView.m \
 	MyDocument.m \
+	LogController.m \
 	MyAppDelegate.m
 	
 APPNAME="Ambulant Player"
@@ -80,12 +81,14 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
 	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
 	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
 	mkdir -p $(APPNAME).app/Contents/Resources/data
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(APPNAME).app/Contents/Resources
