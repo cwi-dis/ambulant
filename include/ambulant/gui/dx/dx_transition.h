@@ -185,5 +185,6 @@ class dx_transition_engine : public dx_transition {
 
 HRGN create_rect_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_rectlist_region(ambulant::gui::dx::dx_transition *tr);
+HRGN create_poly_region(ambulant::gui::dx::dx_transition *tr);
 
 #endif // AMBULANT_GUI_DX_TRANSITION_H

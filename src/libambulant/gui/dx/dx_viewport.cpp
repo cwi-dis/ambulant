@@ -519,18 +519,19 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		return;
 	}
 	
-	smil2::blitter_type bt = tr->get_blitter_type();
-	if(bt != smil2::bt_rect && bt != smil2::bt_rectlist) {
-		// Not handled yet, draw normally
-		draw(src, src_rc, dst_rc, keysrc, m_surface);
-		return;
-	}
-	
 	HRGN hrgn = 0;
-	if(bt == smil2::bt_rect)
-		hrgn = create_rect_region(tr); 
-	else if(bt == smil2::bt_rectlist)
-		hrgn = create_rectlist_region(tr); 
+	smil2::blitter_type bt = tr->get_blitter_type();
+	switch(bt) {
+		case smil2::bt_rect: 
+			hrgn = create_rect_region(tr); 
+			break;
+		case smil2::bt_rectlist: 
+			hrgn = create_rectlist_region(tr); 
+			break;
+		case smil2::bt_poly: 
+			hrgn = create_poly_region(tr); 
+			break;
+	}
 		
 	if(!hrgn) {
 		draw(src, src_rc, dst_rc, keysrc, m_surface);

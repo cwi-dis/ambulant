@@ -87,7 +87,9 @@ struct transition_factories {
 	add(lib::barnDoorWipe, new trfact<transition_engine_barndoorwipe>, bt_rect);
 	
 	add(lib::bowTieWipe, new trfact<default_class>, bt_default);
-	add(lib::miscDiagonalWipe, new trfact<default_class>, bt_default);
+	
+	add(lib::miscDiagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
+	
 	add(lib::veeWipe, new trfact<default_class>, bt_default);
 	add(lib::barnVeeWipe, new trfact<default_class>, bt_default);
 	add(lib::zigZagWipe, new trfact<default_class>, bt_default);
@@ -101,7 +103,9 @@ struct transition_factories {
 	add(lib::roundRectWipe, new trfact<default_class>, bt_default);
 	add(lib::starWipe, new trfact<default_class>, bt_default);
 	add(lib::miscShapeWipe, new trfact<default_class>, bt_default);
-	add(lib::clockWipe, new trfact<default_class>, bt_default);
+	
+	add(lib::clockWipe, new trfact<transition_engine_clockwipe>, bt_poly);
+	
 	add(lib::pinWheelWipe, new trfact<default_class>, bt_default);
 	add(lib::singleSweepWipe, new trfact<default_class>, bt_default);
 	add(lib::fanWipe, new trfact<default_class>, bt_default);
@@ -109,13 +113,16 @@ struct transition_factories {
 	add(lib::doubleSweepWipe, new trfact<default_class>, bt_default);
 	add(lib::saloonDoorWipe, new trfact<default_class>, bt_default);
 	add(lib::windshieldWipe, new trfact<default_class>, bt_default);
-	add(lib::snakeWipe, new trfact<default_class>, bt_default);
+	
+	add(lib::snakeWipe, new trfact<transition_engine_snakewipe>, bt_rectlist);
+	
 	add(lib::spiralWipe, new trfact<default_class>, bt_default);
 	add(lib::parallelSnakesWipe, new trfact<default_class>, bt_default);
-	add(lib::waterfallWipe, new trfact<default_class>, bt_default);
+	
+	add(lib::waterfallWipe, new trfact<transition_engine_waterfallwipe>, bt_rectlist);
+	
 	add(lib::pushWipe, new trfact<default_class>, bt_default);
 	add(lib::slideWipe, new trfact<default_class>, bt_default);
-	
 	add(lib::fade, new trfact<transition_engine_fade>, bt_fade);
 	}
 	
@@ -142,11 +149,20 @@ static transition_factories transition_factories_inst;
 
 gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id, 
 	common::playable *playable, lib::timer *timer) {
-	return transition_factories_inst.trfactmap[id]->new_transition(playable, timer);
+	std::map<lib::transition_type, transition_factory*>& m = 
+		transition_factories_inst.trfactmap;
+	std::map<lib::transition_type, transition_factory*>::iterator it = m.find(id);
+	if(it == m.end())
+		return m[lib::clockWipe]->new_transition(playable, timer);
+	return (*it).second->new_transition(playable, timer);
 }
 
 smil2::blitter_type gui::dx::get_transition_blitter_type(lib::transition_type id) {
-	return transition_factories_inst.btmap[id];
+	std::map<lib::transition_type, smil2::blitter_type>& m = 
+		transition_factories_inst.btmap;
+	std::map<lib::transition_type, smil2::blitter_type>::iterator it = m.find(id);
+	if(it == m.end()) return m[lib::clockWipe];
+	return (*it).second;
 }
 
 /////////////////////////////////
@@ -161,6 +177,12 @@ class rect_adapter : public transition_blitclass_rect {
 class rectlist_adapter : public transition_blitclass_rectlist {
   public:
 	std::vector< lib::screen_rect<int> >& get_rectlist() { return m_newrectlist;}
+};
+
+// Hack to make points public
+class poly_adapter : public transition_blitclass_poly {
+  public:
+	std::vector<lib::point>& get_points() { return m_newpolygon;}
 };
 
 /////////////////////////////////
@@ -191,3 +213,18 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	return hrgn;
 }
 
+HRGN create_poly_region(gui::dx::dx_transition *tr) {
+	smil2::transition_blitclass_poly *p = tr->get_as_poly_blitter();
+	if(!p) return 0;
+	poly_adapter *dummy = (poly_adapter*)p;
+	std::vector<lib::point>& v = dummy->get_points();
+	if(v.size()<3) return 0;
+	POINT *ppt = new POINT[v.size()];
+	std::vector<lib::point>::iterator it;
+	int i = 0;
+	for(it = v.begin();it!=v.end();it++,i++) 
+		{ppt[i].x = (*it).x; ppt[i].y = (*it).y;}
+	HRGN hrgn = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
+	delete[] ppt;	
+	return hrgn;
+}
