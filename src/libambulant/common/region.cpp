@@ -182,7 +182,6 @@ passive_region::renderer_done(gui_events *cur)
 	if (i == m_renderers.end()) {
 		lib::logger::get_logger()->trace("passive_region[0x%x].renderer_done(0x%x): not found in %d active renderers!",
 			(void *)this, (void*)cur, m_renderers.size());
-		lib::logger::get_logger()->error("Internal error: renderer_done() for inactive renderer");
 	} else {
 		m_renderers.erase(i);
 	}
