@@ -41,6 +41,22 @@ callback to call. And, if the event processor is a global object, we have the
 problem that the HL scheduler also wants to use the data source, but it lives
 in a different thread. Is this a problem?
 
+*COMMENT by kk* Yes, I agree with the reasoning. The event processor may be 
+a global object or be passed explicitly to constructors. 
+Objects that schedule events will be probably gross grained
+and they will probably need context info beyond the event processor.
+I think that it would be better instead of polluting the global namespace
+create one context object that will be passed explicitly to constructor methods.
+The context object will provide access to the event processor and to what other 
+else is proven to be needed. Concerning multiple threads: The event processor's 
+queue should be made thread safe so that it can be used by multiple threads. 
+I don't think that this is a serious overhead since we will have to make 
+thread safe, only the operation of en-queueing an event. I would suggest
+using a thread for the event processor loop instead of the underlying
+OS event loop. This way we will have a clean engine independent from 
+the underlying OS. Interactions with the OS event loop for drawing may 
+require some more work but I think can be handled.
+   
 The event processor object is created when the application starts, and it
 is set running its mainloop. If it is not implemented using the underlying OS
 event loop it needs either some way to interact with that mainloop or it needs
