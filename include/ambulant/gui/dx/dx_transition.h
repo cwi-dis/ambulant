@@ -82,6 +82,7 @@ class dx_transition {
 	virtual void pause() = 0;
 	virtual void resume() = 0;
 	virtual double get_progress() const = 0;
+	virtual bool is_outtrans() const = 0;
 	virtual smil2::blitter_type get_blitter_type() const = 0;
 	virtual smil2::transition_blitclass_rect *get_as_rect_blitter() = 0;
 	virtual smil2::transition_blitclass_r1r2r3r4 *get_as_r1r2r3r4_blitter() = 0;
@@ -101,8 +102,11 @@ class transition_engine_adapter : public T {
   public:
 	const lib::transition_info *get_info() const { return m_info;}	
 	double get_progress() const { return m_progress;}
+	bool is_outtrans() const { return m_outtrans;}
   protected:
-	virtual void update() {if(m_dst) m_dst->need_redraw();}
+	virtual void update() {
+		if(m_dst) m_dst->need_redraw(); 
+	}
 };
 
 
@@ -137,7 +141,7 @@ class dx_transition_engine : public dx_transition {
 	void resume() {m_timer->resume();}
 	
 	double get_progress() const { return m_engine->get_progress();};
-	
+	bool is_outtrans() const { return m_engine->is_outtrans();}
 	smil2::blitter_type get_blitter_type() const { 
 		return get_transition_blitter_type(m_engine->get_info()->m_type);
 	}
