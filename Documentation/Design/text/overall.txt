@@ -52,10 +52,27 @@ we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that we could use for
 garbage collection.
 
-	XXXX This implementation doesn't seem to have weak references. Do we need
-	them? Are they easy to add?
-	
 	XXXX The refcounting implementation may interfere with any cross-language plans.
+	
+We need to decide on a per-case basis whether we need refcounting or whether auto_ptr
+or plain pointers are more appropriate. Here's some prose by KK that should
+be incorporated here:
+
+	I think that ref-counting should be used when it is absolutely needed
+	(proven to be needed). It adds an overhead and some complexity since it can
+	not happen automatically. On the other hand there are some cases where it
+	simplifies the code  a lot. If I judge from my code and the code of others I
+	have seen, only very few objects need ref counting. First, objects owned by
+	a class, and quite all are, never need to be ref counted. You either use
+	auto_ptr or just delete them. The auto_ptr may be used more extensively but
+	also most of the times plain pointers can do the job. I think that
+	ref-counting is needed when objects containing references are shared by
+	completely independent components. For example you have a processor object
+	with a queue and other application objects submit work items to this queue
+	AND the work items contain references to objects that must be available when
+	the work item is executed. If the work items are self-contained or are
+	shallow enough to make them self-contained, then you don't need
+	ref-counting.
 
 The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing

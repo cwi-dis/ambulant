@@ -36,7 +36,7 @@ or (for Python) a SWIG/Bgen hybrid.</p>
 <div class="section" id="source-code-conventions">
 <h1><a name="source-code-conventions">Source code conventions</a></h1>
 <p>Here's a somewhat random list of source code conventions that we have decided
-to use:</p>
+to use (at least: Jack thinks this has been decided, please fix if you disagree):</p>
 <ul class="simple">
 <li>Indent 4 spaces, with the following exceptions:<ul>
 <li>namespace doesn't indent at all</li>
@@ -58,10 +58,26 @@ we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that we could use for
 garbage collection.</p>
 <blockquote>
-<p>XXXX This implementation doesn't seem to have weak references. Do we need
-them? Are they easy to add?</p>
-<p>XXXX The refcounting implementation may interfere with any cross-language plans.</p>
-</blockquote>
+XXXX The refcounting implementation may interfere with any cross-language plans.</blockquote>
+<p>We need to decide on a per-case basis whether we need refcounting or whether auto_ptr
+or plain pointers are more appropriate. Here's some prose by KK that should
+be incorporated here:</p>
+<blockquote>
+I think that ref-counting should be used when it is absolutely needed
+(proven to be needed). It adds an overhead and some complexity since it can
+not happen automatically. On the other hand there are some cases where it
+simplifies the code  a lot. If I judge from my code and the code of others I
+have seen, only very few objects need ref counting. First, objects owned by
+a class, and quite all are, never need to be ref counted. You either use
+auto_ptr or just delete them. The auto_ptr may be used more extensively but
+also most of the times plain pointers can do the job. I think that
+ref-counting is needed when objects containing references are shared by
+completely independent components. For example you have a processor object
+with a queue and other application objects submit work items to this queue
+AND the work items contain references to objects that must be available when
+the work item is executed. If the work items are self-contained or are
+shallow enough to make them self-contained, then you don't need
+ref-counting.</blockquote>
 <p>The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
 schedules and ending these to a low level scheduler, isn't going to work
