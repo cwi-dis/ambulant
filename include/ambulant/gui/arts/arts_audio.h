@@ -94,6 +94,7 @@ class arts_active_audio_renderer : public common::playable_imp {
     void stop();
     void pause() ;
     void resume() ;
+	void seek(double t) {};
     void speed_changed() {};
     void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};

@@ -235,6 +235,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 			AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
 			if (!(*it2)->get_info()->is_subregion()) {
 				AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
+				//(*it2)->redraw(our_rect, window);
 			}
 			(*it2)->redraw(our_rect, window);
 		}

@@ -129,7 +129,7 @@ qt_logger::qt_logger()
 	// Connect logger to our message displayer and output processor
 	//int loglevel = common::preferences::get_preferences()->m_log_level;
 	logger->set_show_message(show_message);
-	logger->set_ostream(new qt_logger_ostream);
+	//logger->set_ostream(new qt_logger_ostream);
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;

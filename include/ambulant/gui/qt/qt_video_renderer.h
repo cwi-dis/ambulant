@@ -64,6 +64,8 @@ namespace ambulant {
 namespace gui {
 
 namespace qt {
+	
+	
 
 class qt_active_video_renderer : public common::active_video_renderer {
   public:
@@ -78,9 +80,10 @@ class qt_active_video_renderer : public common::active_video_renderer {
     void show_frame(char* frame, int size);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
  private:
-	QImage *m_image;
- 	
- 	char* m_data;
+	//QImage *m_image;
+ 	//char* m_data;
+ 	std::queue< std::pair<int, char*> > m_frames;
+ 	long int m_img_displayed;
  
 	lib::critical_section m_lock;
 };
