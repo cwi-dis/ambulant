@@ -86,8 +86,6 @@ namespace lib {
 class xerces_factory : public parser_factory {
   public:
 	xerces_factory() {};
-	~xerces_factory() {};
-		
 	xml_parser* new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler);
