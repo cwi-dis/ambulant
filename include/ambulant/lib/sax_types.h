@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_SAX_TYPES_H
 #define AMBULANT_LIB_SAX_TYPES_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 
 // pair
@@ -81,9 +83,11 @@ typedef std::list<q_attribute_pair> q_attributes_list;
  
 } // namespace ambulant
 
+#ifndef AMBULANT_NO_IOSTREAMS
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::q_name_pair& n) {
 	os << n.second;
 	return os;
 }
+#endif
 
 #endif // AMBULANT_LIB_SAX_TYPES_H

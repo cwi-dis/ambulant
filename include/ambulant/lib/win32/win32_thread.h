@@ -53,13 +53,26 @@
 #ifndef AMBULANT_LIB_WIN32_THREAD_H
 #define AMBULANT_LIB_WIN32_THREAD_H
 
+#ifndef _INC_WINDOWS
+
+#include <windows.h>
+
+#ifdef min
+#undef min
+#endif
+
+#ifdef max
+#undef max
+#endif
+
+#endif // _INC_WINDOWS
+
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/thread.h"
 
 #include "win32_error.h"
 
-#ifndef _INC_WINDOWS
-#include <windows.h>
-#endif
 
 namespace ambulant {
 

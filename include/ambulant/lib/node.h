@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_NODE_H
 #define AMBULANT_LIB_NODE_H
 
+#include "ambulant/config/config.h"
+
 // tree iterators
 #include "ambulant/lib/node_iterator.h" 
 
@@ -71,8 +73,10 @@
 // return map of id -> nodes
 #include <map>
 
+#ifndef AMBULANT_NO_IOSTREAMS
 // operator<<
 #include <ostream>
+#endif
 
 namespace ambulant {
 
@@ -226,7 +230,9 @@ class node {
 	xml_string to_string() const;
 	xml_string to_trimmed_string() const;
 	
+#ifndef AMBULANT_NO_IOSTREAMS
 	void dump(std::ostream& os) const;
+#endif
 
 	/////////////////////
 	// node context
@@ -270,8 +276,9 @@ class node {
  
 } // namespace ambulant
 
-
+#ifndef AMBULANT_NO_IOSTREAMS
 // global operator<< for node objects
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n);
+#endif
 
 #endif // AMBULANT_LIB_TREE_NODE_H

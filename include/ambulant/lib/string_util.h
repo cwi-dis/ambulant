@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_STRING_UTIL_H
 #define AMBULANT_LIB_STRING_UTIL_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 #include <vector>
 #include <ctype.h>
@@ -177,7 +179,7 @@ class scanner {
 		delims(d) {}
 	
 	char next() {
-		tokval.clear();
+		tokval = "";
 		if(i == end) return 0;
 		size_type ix = delims.find_first_of(s[i]);
 		if(ix != std::string::npos) {

@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_NODE_ITERATOR_H
 #define AMBULANT_LIB_NODE_ITERATOR_H
 
+#include "ambulant/config/config.h"
+
 // pair
 #include <utility>
 

@@ -61,6 +61,8 @@
 #ifndef AMBULANT_LIB_CALLBACK_H
 #define AMBULANT_LIB_CALLBACK_H
 
+#include "ambulant/config/config.h"
+
 // a callback implements event
 #include "ambulant/lib/event.h"
 

@@ -74,6 +74,8 @@
 #ifndef AMBULANT_LIB_REGION_DIM_H
 #define AMBULANT_LIB_REGION_DIM_H
 
+#include "ambulant/config/config.h"
+
 // std::runtime_error
 #include <stdexcept>
 

@@ -53,7 +53,9 @@
 #ifndef AMBULANT_NET_DATASOURCE_H
 #define AMBULANT_NET_DATASOURCE_H
 
-#ifndef WIN32
+#include "ambulant/config/config.h"
+
+#ifndef AMBULANT_PLATFORM_WIN32
 
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
@@ -219,8 +221,11 @@ private:
 
 // debug
 #include "ambulant/lib/logger.h"
+
+#ifndef AMBULANT_NO_IOSTREAMS
 #include <sstream>
 #include <fstream>
+#endif
 
 namespace ambulant {
 
@@ -251,11 +256,13 @@ class passive_datasource : public ambulant::lib::ref_counted_obj {
 	
 	active_datasource *activate();
 	
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::string repr() {
 		std::ostringstream os;
 		os << "passive_datasource(" << m_url << ")";
 		return os.str();
 	};
+#endif
 	
 	const std::string& get_url() const { return m_url;}
 	
@@ -283,10 +290,16 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 	}
 	
 	bool exists() const { 
+
+#ifndef AMBULANT_NO_IOSTREAMS
 		std::ifstream ifs(m_source->get_url().c_str());
 		bool exists = ifs && ifs.good();
 		ifs.close();
 		return exists;
+#else
+		return false;
+#endif
+
 	}
 	
 	databuffer& get_databuffer() { return m_buffer;}
@@ -294,6 +307,7 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 	const std::string& get_url() const { return m_source->get_url();}
 	
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone) {
+#ifndef AMBULANT_NO_IOSTREAMS
 		std::ifstream ifs(m_source->get_url().c_str(), std::ios::in | std::ios::binary);
 		if(!ifs) {
 			logger::get_logger()->error(repr() + "::read() failed");
@@ -308,6 +322,7 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 		}
 		delete[] buf;
 		m_gptr = 0;
+#endif
 		evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
 	}
 
@@ -351,21 +366,25 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 		return (b[1]<<8)| b[0];
 	}
 	
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::string repr() {
 		std::ostringstream os;
 		os << "active_datasource[" << (m_source?m_source->repr():"NULL") + "]";
 		return os.str();
 	};
-	
+#endif
+
 	size_type read(char *b, size_type nb) {
 		return read((byte*)b, nb);
 	}
 	
+#ifndef AMBULANT_NO_IOSTREAMS
 	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
 		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
 		return os;
 	}
-	
+#endif
+
   private:	
 	void throw_range_error() {
 		throw std::range_error("index out of range");

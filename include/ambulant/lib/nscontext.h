@@ -54,6 +54,8 @@
 #ifndef AMBULANT_LIB_NSCONTEXT_H
 #define AMBULANT_LIB_NSCONTEXT_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/sax_types.h"
 
 #include <map>

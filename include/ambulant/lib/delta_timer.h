@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_DELTA_TIMER_H
 #define AMBULANT_LIB_DELTA_TIMER_H
 
+#include "ambulant/config/config.h"
+
 // delta timer list
 #include <list>
 

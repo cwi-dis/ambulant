@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_RENDERER_H
 #define AMBULANT_LIB_RENDERER_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"

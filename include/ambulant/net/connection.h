@@ -59,6 +59,8 @@
 #ifndef AMBULANT_NET_CONNECTION_H
 #define AMBULANT_NET_CONNECTION_H
 
+#include "ambulant/config/config.h"
+
 namespace ambulant {
 
 namespace net {

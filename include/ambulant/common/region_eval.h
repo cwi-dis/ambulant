@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_REGION_EVAL_H
 #define AMBULANT_LIB_REGION_EVAL_H
 
+#include "ambulant/config/config.h"
+
 // should go to config.h
 #ifdef min
 #undef min

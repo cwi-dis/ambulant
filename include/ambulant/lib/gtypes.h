@@ -59,6 +59,7 @@
 #ifndef AMBULANT_LIB_GTYPES_H
 #define AMBULANT_LIB_GTYPES_H
 
+#include "ambulant/config/config.h"
 
 namespace ambulant {
 
@@ -492,6 +493,8 @@ typedef basic_rect<long, unsigned long> lrect;
  
 } // namespace ambulant
 
+#ifndef AMBULANT_NO_IOSTREAMS
+
 // gtypes output operators
 #include <ostream>
 
@@ -514,5 +517,7 @@ template<class T>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::screen_rect<T>& r) { 
 	return os << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
+
+#endif // AMBULANT_NO_IOSTREAMS
 
 #endif // AMBULANT_LIB_GTYPES_H

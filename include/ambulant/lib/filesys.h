@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_FILESYS_H
 #define AMBULANT_LIB_FILESYS_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 #include <list>
 

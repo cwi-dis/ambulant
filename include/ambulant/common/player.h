@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_PLAYER_H
 #define AMBULANT_LIB_PLAYER_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"

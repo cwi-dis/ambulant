@@ -53,13 +53,26 @@
 #ifndef AMBULANT_LIB_WIN32_TIMER_H
 #define AMBULANT_LIB_WIN32_TIMER_H
 
+#ifndef _INC_WINDOWS
+
+#include <windows.h>
+
+#ifdef min
+#undef min
+#endif
+
+#ifdef max
+#undef max
+#endif
+
+#endif // _INC_WINDOWS
+
+#include "ambulant/config/config.h"
+
 #ifndef AMBULANT_LIB_TIMER_H
 #include "ambulant/lib/timer.h"
 #endif
 
-#ifndef _INC_WINDOWS
-#include <windows.h>
-#endif
 
 namespace ambulant {
 

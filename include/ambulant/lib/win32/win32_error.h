@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_WIN32_ERROR_H
 #define AMBULANT_LIB_WIN32_ERROR_H
 
+#include "ambulant/config/config.h"
+
 namespace ambulant {
 
 namespace lib {

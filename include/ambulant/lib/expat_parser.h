@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_EXPAT_PARSER_H
 #define AMBULANT_LIB_EXPAT_PARSER_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/sax_handler.h"
 
 #include "expat.h"

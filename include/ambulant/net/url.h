@@ -53,6 +53,8 @@
 #ifndef AMBULANT_NET_URL_H
 #define AMBULANT_NET_URL_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 #include <list>
 
@@ -218,9 +220,13 @@ url::string url::get_file() const {
  
 } // namespace ambulant
 
+
+#ifndef AMBULANT_NO_IOSTREAMS
 inline 
 std::ostream& operator<<(std::ostream& os, const ambulant::net::url& u) {
 	return os << u.repr();
 }
+#endif
+
 
 #endif // AMBULANT_NET_URL_H

@@ -57,6 +57,8 @@
 #ifndef AMBULANT_LIB_REFCOUNT_H
 #define AMBULANT_LIB_REFCOUNT_H
 
+#include "ambulant/config/config.h"
+
 // assert
 #include <cassert>
 

@@ -54,8 +54,19 @@
 #define AMBULANT_LIB_WIN32_MTSYNC_H
 
 #ifndef _INC_WINDOWS
+
 #include <windows.h>
+#ifdef min
+#undef min
 #endif
+
+#ifdef max
+#undef max
+#endif
+
+#endif // _INC_WINDOWS
+
+#include "ambulant/config/config.h"
 
 #include "ambulant/lib/abstract_mtsync.h"
 

@@ -53,14 +53,25 @@
 #ifndef AMBULANT_LIB_WIN32_EVENT_PROCESSOR_H
 #define AMBULANT_LIB_WIN32_EVENT_PROCESSOR_H
 
+#ifndef _INC_WINDOWS
+
+#include <windows.h>
+#ifdef min
+#undef min
+#endif
+
+#ifdef max
+#undef max
+#endif
+
+#endif
+
+#include "ambulant/config/config.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/timer.h"
 
 #include "win32_thread.h"
 
-#ifndef _INC_WINDOWS
-#include <windows.h>
-#endif
 
 namespace ambulant {
 

@@ -53,7 +53,9 @@
 #ifndef AMBULANT_LIB_COLORS_H
 #define AMBULANT_LIB_COLORS_H
 
+#include "ambulant/config/config.h"
 #include "ambulant/lib/basic_types.h"
+
 #include <stdlib.h>
 
 namespace ambulant {
@@ -143,9 +145,11 @@ struct color_trible {
  
 } // namespace ambulant
 
+#ifndef AMBULANT_NO_IOSTREAMS
 #include <ostream>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::color_trible& t) { 
 	return os << '(' << int(t.r) << ", " << int(t.g) << ", " << int(t.b)  << ')';
 }
+#endif
 
 #endif // AMBULANT_LIB_COLORS_H

@@ -53,6 +53,7 @@
 #ifndef AMBULANT_LIB_THREAD_H
 #define AMBULANT_LIB_THREAD_H
 
+#include "ambulant/config/config.h"
 
 namespace ambulant {
 

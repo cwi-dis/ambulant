@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_SMIL_HANDLER_H
 #define AMBULANT_LIB_SMIL_HANDLER_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 
 // attribute pair

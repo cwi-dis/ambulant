@@ -53,9 +53,18 @@
 #ifndef AMBULANT_LIB_LOGGER_H
 #define AMBULANT_LIB_LOGGER_H
 
+#include "ambulant/config/config.h"
+
+#ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
+#	ifndef AMBULANT_NO_STRINGSTREAM
+#	include <sstream>
+#	endif
+#endif
+
+
+
 #include <string>
-#include <sstream>
 #include <stdarg.h>
 
 #include "ambulant/lib/mtsync.h"
@@ -64,6 +73,7 @@ namespace ambulant {
 
 namespace lib {
 
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 template<class T>
 class ostringstream_wrapper {
   public:	
@@ -103,7 +113,10 @@ class ostringstream_wrapper {
 	void (T::*m_logf)(const std::string& s);
 };
 
-#ifdef WIN32
+#endif  // AMBULANT_NO_IOSTREAMS
+
+
+#ifdef AMBULANT_PLATFORM_WIN32
 #ifndef CDECL
 #define CDECL __cdecl
 #endif
@@ -195,8 +208,9 @@ class logger {
 	
 	// config
 	void set_level(int level); 
-	void set_ostream(std::ostream* pos); 
 	
+#ifndef AMBULANT_NO_IOSTREAMS
+	void set_ostream(std::ostream* pos); 
 	// The following functions return an ostream like object. 
 	// The output operator<< may be used as for an ostream.
 	// Usage example:
@@ -212,6 +226,7 @@ class logger {
 	ostream warn_stream() { return ostream(this, &logger::warn);} 
 	ostream error_stream() { return ostream(this, &logger::error);} 
 	ostream fatal_stream() { return ostream(this, &logger::fatal);} 
+#endif // AMBULANT_NO_IOSTREAMS
 	
   private:
 	static const char* get_level_name(int level);
@@ -219,12 +234,16 @@ class logger {
 	// this logger members
 	critical_section m_cs;
 	std::string m_name;	
+#ifndef AMBULANT_NO_IOSTREAMS
 	std::ostream* m_pos;
+#endif // AMBULANT_NO_IOSTREAMS
 	int m_level;
 	
 	// configuration and output format
 	static int default_level;
+#ifndef AMBULANT_NO_IOSTREAMS
 	static std::ostream* default_pos; 
+#endif // AMBULANT_NO_IOSTREAMS
 	static bool logdate;
 	static bool logtime;
 	static bool logname;
@@ -237,7 +256,9 @@ class logger {
 
 inline logger::logger(const std::string& name) 
 :	m_name(name),
+#ifndef AMBULANT_NO_IOSTREAMS
 	m_pos(logger::default_pos),
+#endif // AMBULANT_NO_IOSTREAMS
 	m_level(logger::default_level) {
 }
 
@@ -254,9 +275,11 @@ inline void logger::set_level(int level) {
 	m_level = level; 
 }
 
+#ifndef AMBULANT_NO_IOSTREAMS
 inline void logger::set_ostream(std::ostream* pos) { 
 	m_pos = pos; 
 }
+#endif // AMBULANT_NO_IOSTREAMS
 
 inline bool logger::suppressed(int level) {
 	return level < m_level;

@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_DOCUMENT_H
 #define AMBULANT_LIB_DOCUMENT_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 
 #include "ambulant/lib/node.h"
@@ -64,7 +66,10 @@
 #include "ambulant/lib/filesys.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
+
+#ifndef AMBULANT_NO_IOSTREAMS
 #include <ostream>
+#endif
 
 // A class respresenting an XML document.
 //
@@ -222,10 +227,12 @@ document::resolve_url(const node *n, const std::string& rurl) const {
  
 } // namespace ambulant
 
+#ifndef AMBULANT_NO_IOSTREAMS
 inline 
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::document& d) {
 	return os << "document(" << (void *)&d << ", \"" << d.get_src_url() << "\")";
 }
+#endif
 
 #endif // AMBULANT_LIB_DOCUMENT_H
 

@@ -62,6 +62,8 @@
 #ifndef AMBULANT_NET_SOCKET_H
 #define AMBULANT_NET_SOCKET_H
 
+#include "ambulant/config/config.h"
+
 namespace ambulant {
 
 namespace net {

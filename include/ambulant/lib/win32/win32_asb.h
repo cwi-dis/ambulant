@@ -55,6 +55,8 @@
 #ifndef AMBULANT_LIB_WIN32_ASB_H
 #define AMBULANT_LIB_WIN32_ASB_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 
 namespace ambulant {

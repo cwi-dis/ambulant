@@ -53,17 +53,19 @@
 #ifndef AMBULANT_LIB_MTSYNC_H
 #define AMBULANT_LIB_MTSYNC_H
 
-#ifdef WIN32
+#ifdef AMBULANT_PLATFORM_WIN32
 #include "ambulant/lib/win32/win32_mtsync.h"
 #else
 #include "ambulant/lib/unix/unix_mtsync.h"
 #endif
 
+#include "ambulant/config/config.h"
+
 namespace ambulant {
 
 namespace lib {
 
-#ifdef WIN32
+#ifdef AMBULANT_PLATFORM_WIN32
 class critical_section : public win32::critical_section {
 };
 #else

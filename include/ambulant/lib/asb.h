@@ -61,7 +61,9 @@
 #ifndef AMBULANT_LIB_ASB_H
 #define AMBULANT_LIB_ASB_H
 
-#ifdef WIN32
+#include "ambulant/config/config.h"
+
+#ifdef AMBULANT_PLATFORM_WIN32
 #include "ambulant/lib/win32/win32_asb.h"
 #else
 #include <unistd.h>
@@ -71,7 +73,7 @@ namespace ambulant {
 
 namespace lib {
 
-#ifdef WIN32
+#ifdef AMBULANT_PLATFORM_WIN32
 
 using ambulant::lib::win32::sleep;
 using ambulant::lib::win32::sleep_msec;

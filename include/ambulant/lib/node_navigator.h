@@ -77,6 +77,8 @@
 #ifndef AMBULANT_LIB_NODE_NAVIGATOR_H
 #define AMBULANT_LIB_NODE_NAVIGATOR_H
 
+#include "ambulant/config/config.h"
+
 // return list of nodes
 #include <list>
 #include <algorithm>

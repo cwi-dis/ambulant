@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_EVENT_PROCESSOR_H
 #define AMBULANT_LIB_EVENT_PROCESSOR_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/timer.h"
 
