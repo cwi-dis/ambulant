@@ -23,7 +23,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -127,6 +127,9 @@
 						RelativePath=".\gui\dx\dx_img.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_player.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_text.cpp">
 					</File>
 					<File
@@ -151,27 +154,6 @@
 				</File>
 				<File
 					RelativePath=".\lib\node.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\player.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\region.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\renderer.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\skeleton.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\smil_handler.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\timeline_builder.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\timelines.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\timer.cpp">
@@ -209,6 +191,31 @@
 					RelativePath=".\net\url.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="common"
+				Filter="">
+				<File
+					RelativePath=".\common\player.cpp">
+				</File>
+				<File
+					RelativePath=".\common\region.cpp">
+				</File>
+				<File
+					RelativePath=".\common\renderer.cpp">
+				</File>
+				<File
+					RelativePath=".\common\skeleton.cpp">
+				</File>
+				<File
+					RelativePath=".\common\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath=".\common\timeline_builder.cpp">
+				</File>
+				<File
+					RelativePath=".\common\timelines.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -241,6 +248,12 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_img.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_player.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_player_impl.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_surface.h">
@@ -317,28 +330,7 @@
 						RelativePath="..\..\include\ambulant\lib\nscontext.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\parse_attrs.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\player.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\refcount.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\region.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\region_dim.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\region_eval.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\region_node.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\renderer.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\sax_handler.h">
@@ -347,22 +339,10 @@
 						RelativePath="..\..\include\ambulant\lib\sax_types.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\skeleton.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\smil_handler.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\string_util.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\thread.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\timeline_builder.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\timelines.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
@@ -413,6 +393,43 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\net\url.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="common"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\common\parse_attrs.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\region.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\region_dim.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\region_eval.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\region_node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\renderer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\skeleton.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\timeline_builder.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\timelines.h">
 					</File>
 				</Filter>
 			</Filter>
