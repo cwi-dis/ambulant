@@ -110,6 +110,12 @@ void time_state::report_state(qtime_type timestamp) {
 		timestamp.second(),
 		timestamp.as_doc_time()());
 }
+void time_state::report_state() {
+	AM_DBG logger::get_logger()->trace("%s[%s] --> %s", 
+		m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		time_state_str(this->ident()));
+}
 
 ///////////////////////
 // reset_state
@@ -136,7 +142,7 @@ void reset_state::enter(qtime_type timestamp) {
 	m_impldur = time_type::unresolved;
 	// Resetting the above variables is only part of the reset process.
 	// See time_node::reset()
-	//report_state(timestamp);
+	report_state();
 }
 
 void reset_state::sync_update(qtime_type timestamp) {}
@@ -322,8 +328,8 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
 	m_picounter++;
 	m_self->cancel_schedule();
-	m_self->kill_children(timestamp, oproot);
 	m_self->fill(timestamp);
+	m_self->kill_children(timestamp, oproot);
 	m_self->raise_end_event(timestamp, oproot);
 	if(m_self->sync_node()->is_excl() && (m_self->paused() || m_self->deferred())) {
 		excl* p = qualify<excl*>(m_self->sync_node());
@@ -422,7 +428,15 @@ void postactive_state::exit(qtime_type timestamp, time_node *oproot) {
 // Dead exit / ?
 
 void dead_state::enter(qtime_type timestamp) {
+	report_state();
 }
+
+void dead_state::kill(qtime_type timestamp, time_node *oproot) {
+}
+
+void dead_state::reset(qtime_type timestamp, time_node *oproot) {
+	m_self->set_state(ts_reset, timestamp, oproot);
+}	 
 
 void dead_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is reset if the parent restarts 

@@ -680,6 +680,7 @@ time_node::calc_clipped_interval() {
 // Sets the state of this node.
 // timestamp: "scheduled now" in parent simple time
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
+	if(m_state->ident() == state) return;
 	m_state->exit(timestamp, oproot);
 	m_state = m_time_states[state];
 	m_state->enter(timestamp);
@@ -1094,34 +1095,6 @@ void time_node::repeat(qtime_type timestamp) {
 	}
 }
 
-// Removes any fill effects
-// This is called always by reset.
-// This maybe called when the element is deactivated
-// or when the next is activated.
-void time_node::remove(qtime_type timestamp) {
-	if(!m_needs_remove) return;
-	AM_DBG tnlogger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(),  
-		timestamp.as_time_value_down_to(this),
-		timestamp.second(),
-		timestamp.as_doc_time_value());
-	
-	if(down()) {
-		// Is this correct for a container?	
-		std::list<time_node*> children;
-		get_children(children);
-		std::list<time_node*>::iterator it;
-		time_type self_simple_time = timestamp.as_time_down_to(this);
-		qtime_type qt(this, self_simple_time);
-		for(it = children.begin(); it != children.end(); it++)
-			(*it)->remove(qt);
-	} 
-	
-	if(!is_time_container()) {
-		m_context->stop_playable(m_node);
-	}
-	m_needs_remove = false;
-}
 
 // Pauses this node.
 // Excl element handling.
@@ -1214,6 +1187,8 @@ void time_node::fill(qtime_type timestamp) {
 	if(!m_needs_remove) return;
 	
 	fill_behavior fb = m_attrs.get_fill();
+	fill_behavior pfb = sync_node()->get_time_attrs()->get_fill();
+	
 	bool keep = (fb != fill_remove);
 		//(fb != fill_transition); // no transitions for now
 	
@@ -1222,7 +1197,8 @@ void time_node::fill(qtime_type timestamp) {
 		AM_DBG tnlogger->trace("*** %s[%s].pause() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(),  
 			timestamp.as_time_value_down_to(this), timestamp.second(), 
-			timestamp.as_doc_time_value());	
+			timestamp.as_doc_time_value());
+		/*
 		if(down()) {
 			std::list<time_node*> cl;
 			get_children(cl);
@@ -1231,7 +1207,7 @@ void time_node::fill(qtime_type timestamp) {
 			qtime_type qt(this, self_simple_time);
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
-		} 
+		} */
 		if(!is_time_container()) {
 			m_context->pause_playable(m_node);
 		}
@@ -1239,6 +1215,35 @@ void time_node::fill(qtime_type timestamp) {
 		// this node should be removed
 		remove(timestamp);
 	}
+}
+
+// Removes any fill effects
+// This is called always by reset.
+// This maybe called when the element is deactivated
+// or when the next is activated.
+void time_node::remove(qtime_type timestamp) {
+	if(!m_needs_remove) return;
+	AM_DBG tnlogger->trace("*** %s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(),  
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(),
+		timestamp.as_doc_time_value());
+	/*
+	if(down()) {
+		// Is this correct for a container?	
+		std::list<time_node*> children;
+		get_children(children);
+		std::list<time_node*>::iterator it;
+		time_type self_simple_time = timestamp.as_time_down_to(this);
+		qtime_type qt(this, self_simple_time);
+		for(it = children.begin(); it != children.end(); it++)
+			(*it)->remove(qt);
+	} 
+	*/
+	if(!is_time_container()) {
+		m_context->stop_playable(m_node);
+	}
+	m_needs_remove = false;
 }
 
 ///////////////////////////////
