@@ -77,10 +77,12 @@ unsigned long
 lib::win32::event_processor::run() {
 	lib::logger* logger = lib::logger::get_logger();
 	logger->trace("event_processor::run(=0x%x)", this);
+	CoInitialize(NULL);
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
+	CoUninitialize();
 	logger->trace("event_processor::~run(=0x%x)", this);
 	return 0;
 }
