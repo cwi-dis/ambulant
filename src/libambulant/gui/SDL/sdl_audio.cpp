@@ -178,13 +178,13 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 {
 
     if (!m_node) abort();
-	init(m_rate, m_bits, m_channels);
 	
 	std::ostringstream os;
 	os << *m_node;
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_src) {
+		init(m_rate, m_bits, m_channels);
 		m_src->start(m_event_processor, m_readdone);
 		SDL_PauseAudio(0);
 	} else {
