@@ -62,6 +62,12 @@ const unsigned int default_layout_height = 480;
 //const char* parser_ids[] = {"any", "expat", "xerces"};
 //const char* val_schemes[] = {"never", "always", "auto"};
 
+
+/// Class providing access to user preference settings.
+/// This is a singleton class, but it doesn't follow the corresponing
+/// design pattern to the letter. It has a method whereby a subclass
+/// can set the singleton. Usually the subclass is an OS-dependent
+/// implementation that is responsible for saving and loading preferences.
 class preferences {
 
   protected:	
@@ -69,29 +75,41 @@ class preferences {
 	
 	virtual ~preferences();
 
+	/// Install the singleton.
 	static void set_preferences_singleton(preferences *prefs);
 
   public:
+  	/// True if this user has seen the Welcome.smil document.
 	bool m_welcome_seen;
 
+	/// Determines how much output the user will see.
 	int m_log_level;
 
+	/// Determines the preferred XML parser.
 	std::string m_parser_id;
 
+	/// XXXX
 	std::string m_validation_scheme;
 
+	/// For an XML parser that supports it, determines namespace support.
 	bool m_do_namespaces;
 
+	/// When set, prefer validation with Schema over DTD.
 	bool m_do_schema;
-
+	
+	/// When set, do XML validation, if the parser supports it.
 	bool m_do_validation;
 
+	/// XXXX
 	bool m_validation_schema_full_checking;
 
+	/// Return the preferences singleton object.
 	static preferences* get_preferences();
 
+	/// Load preferences from OS preferred location.
 	virtual bool load_preferences();
 
+	/// Save preferences.
 	virtual bool save_preferences();
 
   private:

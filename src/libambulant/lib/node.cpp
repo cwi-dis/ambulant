@@ -437,7 +437,7 @@ lib::node::get_url(const char *attrname) const {
 	const char *rurl = get_attribute(attrname);
 	if(!rurl) return net::url();
 	net::url url(rurl);
-	return m_context ? m_context->resolve_url(this, url) : url;
+	return m_context ? m_context->resolve_url(url) : url;
 }
 
 const char *

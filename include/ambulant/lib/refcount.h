@@ -69,22 +69,31 @@ namespace ambulant {
 namespace lib {
 
 
-// Interface of reference counted objects.
+/// Interface for reference counted objects.
 class ref_counted {
   public:
 	virtual ~ref_counted(){}
+
+	/// Increment reference count.
 	virtual long add_ref() = 0;
+
+	/// Decrement reference count.
+	/// Decrements refcount and frees object when refcount goes to 0.
+	/// Returns the new refcount.
 	virtual long release() = 0;
+
+	/// Return current reference count.
 	virtual long get_ref_count() const = 0;
 };
 
-// Template argument T exposes a critical section interface.
-// Boost libraries have a similar construct we may choose to use at some point.
+/// An atomic counter.
+/// Template argument T exposes a critical section interface.
 template <class T>
 class basic_atomic_count {	
   public:
 	explicit basic_atomic_count(long v): m_value(v){}
 	
+	/// Increment the counter.
 	long operator++() {
 		m_cs.enter();
 		++m_value;
@@ -92,6 +101,7 @@ class basic_atomic_count {
 		return m_value;
 	}
 	
+	/// Decrement the counter.
 	long operator--() {
 		m_cs.enter();
 		--m_value;
@@ -99,6 +109,7 @@ class basic_atomic_count {
 		return m_value;
 	}
 	
+	/// Return the current value of the counter.
 	operator long() const {return m_value;}
 	
   private:
@@ -108,20 +119,21 @@ class basic_atomic_count {
 	T m_cs;
 };
 
+/// An atomic counter using the standard critical_section for locking.
 typedef basic_atomic_count<critical_section> atomic_count;
 
-
-// The following class maybe used as a mixin for classes
-// implementing ref_counted objects.
-// For example:
-// class active_player : public ref_counted_obj {
-//		....
-//		No code related with ref counting.
-//		Even the m_refcount doesn't have
-//		to be initialized in the constructor of active_player 
-//		since the base ref_counted_obj does this by default.
-//		....
-// };
+/// An implementation of the ref_counted interface.
+/// The ref_counted_obj class maybe used as a mixin for classes
+/// implementing ref_counted objects.
+/// For example:
+/// class active_player : public ref_counted_obj {
+///		....
+///		No code related with ref counting.
+///		Even the m_refcount doesn't have
+///		to be initialized in the constructor of active_player 
+///		since the base ref_counted_obj does this by default.
+///		....
+/// };
 class ref_counted_obj : virtual public ref_counted {
   public:
 	ref_counted_obj()
@@ -142,12 +154,12 @@ class ref_counted_obj : virtual public ref_counted {
 	atomic_count m_refcount;
 };
 
-// A ref_counted wrapper around a normal objects.
-// Converts normal objects to a ref_counted objects.
-// The cost is that you have to get the wrapped object
-// using get_ptr().
-// As all ref_counted objects and this one
-// is created with the operator new.
+/// A ref_counted wrapper around a normal objects.
+/// Converts normal objects to a ref_counted objects.
+/// The cost is that you have to get the wrapped object
+/// using get_ptr().
+/// As all ref_counted objects and this one
+/// is created with the operator new.
 template<class T>
 class auto_ref : public ref_counted_obj {
   public:
@@ -163,9 +175,9 @@ class auto_ref : public ref_counted_obj {
 	T* m_ptr;
 }; 
 
-// Save release idiom: 
-// p = release(p); 
-// if p is deleted then p == 0.
+/// Save release idiom: 
+/// p = release(p); 
+/// if p is deleted then p == 0.
 template <class T>
 static T* release(T *p) {
 	if(!p) return p;

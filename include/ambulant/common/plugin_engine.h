@@ -66,22 +66,38 @@ class datasource_factory;
 namespace common {
 class global_playable_factory;
 
+/// Plugin loader.
+/// This class, of which a singleton is instantiated, collects all plugins and
+/// loads them. Subsequently, when a new player is created, it calls the init
+/// routines of the plugins to all them to register themselves with the correct
+/// global factories.
 class plugin_engine {
   public:
 
+  	/// Return the singleton plugin_engine object.
     static plugin_engine *get_plugin_engine();
+    
+    /// Add plugins to the given global factories.
     void add_plugins(common::factories *factory);
     
   private:
     
     plugin_engine();
+    
+    /// Determine directories to search for plugins.
     void collect_plugin_directories();
+    
+    /// Load all plugins from directory dirname.
     void load_plugins(std::string dirname);
 
 	
+	/// Pointer to the initialize function in the plugin.
 	typedef void (*initfuncptr)(common::factories* factory);
 
+	/// The list of directories to search for plugins.
   	std::vector< std::string > m_plugindirs;
+  	
+  	/// The list of initialize functions to call.
   	std::vector< initfuncptr > m_initfuncs;
 
     static plugin_engine *s_singleton;

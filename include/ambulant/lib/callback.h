@@ -73,41 +73,34 @@ namespace ambulant {
 
 namespace lib {
 
-////////////////////////////
-// callback_struct
-
-// A structure able to hold the
-// generic callback arguments.
-// T is the target object class
-// A is the callback argument class.
+/// A structure able to hold the
+/// generic callback arguments.
+/// T is the target object class
+/// A is the callback argument class.
 template <class T, class A>
 struct callback_struct {
-	// The target object.
+	/// The target object.
 	T *m_obj;
 	
-	// The taget member function.
+	/// The target member function.
 	void (T::*m_mf)(A *a);
 	
-	// The argument to be passed to the member function.
-	// This object is the owner of the argument object.
+	/// The argument to be passed to the member function.
+	/// This callback_struct object is the owner of the argument object.
 	A *m_arg;
 	
-	// struct constructor
+	/// callback_struct constructor.
 	callback_struct(T* obj, void (T::*mf)(A *a), A* arg) 
 	:	m_obj(obj), m_mf(mf), m_arg(arg) {}
 };
 
-
-////////////////////////////
-// callback_event
-
-// Not ref counted version of a callback.
-//
-// This callback becomes the owner of the argument 
-// (e.g. it is responsible to delete arg)
-// 
-// The target object is not ref counted and 
-// should exist when this fires.
+/// Callback with an argument that is not refcounted.
+///
+/// This callback becomes the owner of the argument 
+/// (e.g. it is responsible to delete arg)
+/// 
+/// The target object is not ref counted and 
+/// should exist when this fires.
 
 template <class T, class A>
 class callback_event : public event, 
@@ -116,18 +109,19 @@ class callback_event : public event,
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
 	callback_event(T* obj, void (T::*mf)(A *a), A* arg);
 	
-	// deletes arg	
+	/// delete callback_event and arg.	
 	~callback_event();
 
-	// event interface implementation
+	/// event interface implementation.
 	virtual void fire();
 };
 
-
-// Apropriate for built-in types arguments (int, double, etc)
-// May be used also for simple structures like point and size.
-// May be used for built-in types arguments
-// or arguments that are references or const references to objects
+/// Callback with an argument that is a builtin type.
+///
+/// Apropriate for built-in types arguments (int, double, etc)
+/// May be used also for simple structures like point and size.
+/// May be used for built-in types arguments
+/// or arguments that are references or const references to objects.
 template <class T, class A>
 class scalar_arg_callback_event : public event {
 	T *m_obj;
@@ -144,6 +138,12 @@ class scalar_arg_callback_event : public event {
 	}
 };
 
+/// Callback with two arguments that are builtin types.
+///
+/// Apropriate for built-in types arguments (int, double, etc)
+/// May be used also for simple structures like point and size.
+/// May be used for built-in types arguments
+/// or arguments that are references or const references to objects.
 template <class T, class A, class B>
 class scalar_arg2_callback_event : public event {
 	T *m_obj;
@@ -161,6 +161,7 @@ class scalar_arg2_callback_event : public event {
 	}
 };
 
+/// Callback without arguments.
 template <class T>
 class no_arg_callback_event : public event {
   public:
@@ -176,7 +177,7 @@ class no_arg_callback_event : public event {
 	}
 };
 
-
+/// Callback with argument that is also an event.
 template <class T, class E = event >
 class event_callback : public event {
 	T *m_obj;
@@ -190,15 +191,12 @@ class event_callback : public event {
 	}
 };
 
-////////////////////////////
-// callback
-
-// Ref counted version of a callback.
-//
-// This callback becomes the owner of the argument 
-// (e.g. it is responsible to delete arg) 
-//
-// The target object is ref counted.
+/// Ref counted version of a callback.
+///
+/// This callback becomes the owner of the argument 
+/// (e.g. it is responsible to delete arg) 
+///
+/// The target object is ref counted.
 
 template <class T, class A>
 class callback : public event, 
@@ -214,10 +212,12 @@ class callback : public event,
 	virtual void fire();
 };
 
-// Apropriate for built-in types arguments (int, double, etc)
-// May be used also for simple structures like point and size.
-// May be used for built-in types arguments
-// or arguments that are references or const references to objects
+/// Callback with an argument that is a builtin type to refcounted obj.
+///
+/// Apropriate for built-in types arguments (int, double, etc)
+/// May be used also for simple structures like point and size.
+/// May be used for built-in types arguments
+/// or arguments that are references or const references to objects
 template <class T, class A>
 class scalar_arg_callback : public event {
 	T *m_obj;
@@ -239,6 +239,7 @@ class scalar_arg_callback : public event {
 	}
 };
 
+/// Callback without arguments to refcounted obj.
 
 template <class T>
 class no_arg_callback : public event {
@@ -263,7 +264,6 @@ class no_arg_callback : public event {
 };
 
 
-/////////////////////////
 // Inline callback_event implementation
 
 // 'obj' is the target object having a member 

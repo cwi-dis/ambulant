@@ -69,25 +69,47 @@ class window_factory;
 class playable_factory;
 class embedder;
 
+/// Current state of the player.
 enum play_state {ps_idle, ps_playing, ps_pausing, ps_done};
 
+/// Baseclass for all players.
+/// This is the API an embedding program would use to control the
+/// player, to implement things like the "Play" command in the GUI.
 class player {
   public:
 	virtual ~player() {};
 	
+	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;
+	
+	/// Return the event_processor this player uses.
 	virtual lib::event_processor* get_evp() = 0;
 
+	/// Start playback.
 	virtual void start() = 0;
+	
+	/// Stop playback.
 	virtual void stop() = 0;
+	
+	/// Pause playback.
 	virtual void pause() = 0;
+	
+	/// Undo the effect of pause.
 	virtual void resume() = 0;
 	
+	/// Return true if player is playing.
 	virtual bool is_playing() const { return false;}
+	
+	/// Retirn true if player is paused.
 	virtual bool is_pausing() const { return false;}
+	
+	/// Return true if player has finished.
 	virtual bool is_done() const { return false;}
 	
+	/// Return index of desired cursor (arrow or hand).
 	virtual int get_cursor() const { return 0; }
+	
+	/// Set desired cursor.
 	virtual void set_cursor(int cursor) {}
 		
 //	void set_speed(double speed);
@@ -95,7 +117,11 @@ class player {
 };
 
 // Factory functions - should these be here?
+
+/// Create a player using the old timeline based MMS scheduler.
 player *create_mms_player(lib::document *doc, common::factories* factory);
+
+/// Create a player using the full SMIL 2.0 scheduler.
 player *create_smil2_player(lib::document *doc, common::factories* factory, common::embedder *sys);
 
 } // namespace common

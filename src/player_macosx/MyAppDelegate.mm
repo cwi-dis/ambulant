@@ -133,8 +133,10 @@ initialize_logger()
 	} else if (strcmp(locale, unix_locale) != 0) {
 		ambulant::lib::logger::get_logger()->warn("MacOS System Preferences locale: \"%s\", Unix locale: LANG=\"%s\"", locale, unix_locale);
 	}
+#if ENABLE_NLS
     bindtextdomain (PACKAGE, LOCALEDIR);
     textdomain (PACKAGE);
+#endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/Cocoa"), __DATE__);
 #if ENABLE_NLS
