@@ -184,10 +184,11 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 			level++;
 			//if (level == 0) continue; // Skip layout section itself
 			lib::node *n = pair.second;
-			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_document_layout: examining %s", n->get_qname().second.c_str());
+			const char *pid = n->get_attribute("id");
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_document_layout: examining %s %s", 
+				n->get_qname().second.c_str(), (pid?pid:"no-id"));
 			// Find node type
 			common::layout_type tp = m_schema->get_layout_type(n->get_qname());
-			const char *pid = n->get_attribute("id");
 			// First we handle regPoint nodes, which we only store
 			if (tp == common::l_regpoint) {
 				if (pid) {
@@ -265,7 +266,10 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		const lib::node *n = pair.second;
 #ifndef AMBULANT_PLATFORM_WIN32		
 		if (!region_node::needs_region_node(n)) continue;
-#endif	
+#else
+		if(!test_attrs(n).selected()) continue;
+		if(!n->get_attribute("region") && !region_node::needs_region_node(n)) continue;
+#endif
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x %s", (void*)n, n->get_local_name().c_str());
 		region_node *rn = new region_node(n, di_parent);
 		rn->fix_from_dom_node();
