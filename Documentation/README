@@ -1,0 +1,14 @@
+This directory contains various bits and pieces of documentation.
+
+The subdirectories and their contents are as follows:
+
+Design has documentation on the overall design of the Ambulant Player,
+plus notes on code organization, source code conventions, etc.
+
+API has the detailed documentation of all the interfaces and classes
+we consider public. Or, actually, it has only a Doxyfile: download Doxygen
+from <http://www.doxygen.org/> to regenerate it yourself.
+
+misc has various bits and pieces of information we want to keep together,
+and that may or may not be relevant to you: how we create distributions,
+how to install the Zaurus cross-development tools, etc.
