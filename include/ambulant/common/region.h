@@ -155,7 +155,7 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	abstract_bg_rendering_source *get_bg_renderer();
   protected:
   	std::string m_name;					// for debugging
-	char *m_name_str;					// ditto
+	const char *m_name_str;					// ditto
 	bool m_bounds_inited;					// True if bounds and topleft initialized
   	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based XXXX do lazy
   	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
