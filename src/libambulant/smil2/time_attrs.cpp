@@ -94,6 +94,7 @@ void time_attrs::parse_time_attrs() {
 	parse_endsync();
 	parse_fill();
 	parse_restart();
+	parse_time_manipulations();
 }
 
 bool time_attrs::end_is_indefinite() const {
@@ -577,6 +578,41 @@ restart_behavior time_attrs::get_default_restart() {
 		curr = curr->up();
 	}
 	return rb;
+}
+
+void time_attrs::parse_time_manipulations() {
+	const char *p = m_node->get_attribute("speed");
+	if(p) m_speed = atof(p);
+	else m_speed = 1.0;
+	if(m_speed == 0.0) m_speed = 1.0;
+	
+	// limit speed to 0.01 resolution
+	double abs_speed = m_speed>0.0?m_speed:-m_speed;
+	unsigned long speed100 = (unsigned long)(::floor(0.5 + abs_speed * 100));
+	if(speed100 == 0) speed100 = 1;
+	m_speed = m_speed>0.0?0.01*speed100:-0.01*speed100;
+	
+	p = m_node->get_attribute("accelerate");
+	if(p) m_accelerate = atof(p);
+	else m_accelerate = 0;
+	m_accelerate = (m_accelerate<0.0)?0.0:((m_accelerate>1.0)?1.0:m_accelerate);
+	
+	p = m_node->get_attribute("decelerate");
+	if(p) m_decelerate = std::max(0.0, atof(p));
+	else m_decelerate = 0;
+	m_decelerate = (m_decelerate<0.0)?0.0:((m_decelerate>1.0)?1.0:m_decelerate);
+	
+	if(m_accelerate + m_decelerate > 1.0) {
+		m_accelerate = m_decelerate = 0;
+	}
+	
+	p = m_node->get_attribute("autoReverse");
+	if(p) m_auto_reverse = (strcmp(p, "true") == 0);
+	else m_auto_reverse = false;
+}
+
+bool time_attrs::has_time_manipulations() const {
+	return m_speed != 1.0 || m_accelerate != 0.0 || m_decelerate != 0.0 || m_auto_reverse;
 }
 
 ////////////////

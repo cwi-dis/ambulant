@@ -251,7 +251,8 @@ class time_node : public time_traits {
 	value_type get_sync_simple_time() const;
 	value_type get_simple_time() const;
 	value_type get_rad() const { return m_rad;}
-	
+	time_type time_manipulated(time_type d) const;
+
 	// Time type queries
 	time_container_type get_type() const { return m_type;}
 	const char* get_type_as_str() const { return time_container_type_as_str(m_type);}

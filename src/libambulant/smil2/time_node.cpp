@@ -315,7 +315,7 @@ time_node::calc_dur() {
 	dur_type dt = m_attrs.get_dur_type();
 	time_type cdur = time_type::unresolved;
 	if(dt == dt_definite) {
-		cdur = m_attrs.get_dur();
+		cdur = time_manipulated(m_attrs.get_dur());
 	} else if(dt == dt_indefinite) {
 		cdur = time_type::indefinite;
 	} else if(dt == dt_unspecified) {
@@ -327,6 +327,18 @@ time_node::calc_dur() {
 		m_attrs.get_id().c_str(), ::repr(cdur).c_str());
 	m_last_cdur = cdur;	
 	return cdur;
+}
+
+time_node::time_type 
+time_node::time_manipulated(time_type d) const {
+	if(!d.is_definite()) return d;
+	double speed = fabs(m_attrs.get_speed());
+	u_value_type speed100 = (u_value_type)(::floor(0.5 + speed * 100));
+	if(speed100 == 0) speed100 = 1;
+	unsigned long ud = (speed100 * d() ) / 100;
+	d = time_type(ud);
+	if(m_attrs.auto_reverse()) d += d;
+	return d;
 }
 
 // Returns true for continous media leaf nodes for which
@@ -374,8 +386,10 @@ time_node::calc_active_rad() {
 	if(dt == dt_definite) {
 		if(m_attrs.is_rcount_indefinite())
 			return time_type::indefinite;
-		else 
-			return (value_type) ::floor(rcount*m_attrs.get_dur()() + 0.5);
+		else {
+			time_type dur = time_manipulated(m_attrs.get_dur());
+			return (value_type) ::floor(rcount*dur() + 0.5);
+		}
 	}
 		
 	// Calculate based on the the implicit dur if definite
@@ -927,7 +941,10 @@ void time_node::activate(qtime_type timestamp) {
 		}
 	} 
 	if(paused()) m_pause_time = sd_offset;
-	else if(is_animation() || !is_cmedia()) m_timer->resume();
+	else if(is_animation() || !is_cmedia()) {
+		m_timer->set_speed(m_attrs.get_speed());
+		m_timer->resume();
+	}
 	// else wait bom from playable
 	
 	// Schedule a check for the next S-transition e.g. repeat or end.
