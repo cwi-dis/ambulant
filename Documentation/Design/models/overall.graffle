@@ -16,6 +16,37 @@
 	<key>GraphicsList</key>
 	<array>
 		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>77</integer>
+			</dict>
+			<key>ID</key>
+			<integer>91</integer>
+			<key>Points</key>
+			<array>
+				<string>{108, 91}</string>
+				<string>{108, 213}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>StickArrow</string>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>68</integer>
+			</dict>
+		</dict>
+		<dict>
 			<key>Bounds</key>
 			<string>{{-8, 179}, {78, 28}}</string>
 			<key>Class</key>
@@ -32,7 +63,7 @@
 				<real>12</real>
 			</dict>
 			<key>ID</key>
-			<integer>61</integer>
+			<integer>90</integer>
 			<key>Rotation</key>
 			<real>270</real>
 			<key>Shape</key>
@@ -86,7 +117,7 @@ independent}</string>
 				<real>12</real>
 			</dict>
 			<key>ID</key>
-			<integer>60</integer>
+			<integer>89</integer>
 			<key>Rotation</key>
 			<real>270</real>
 			<key>Shape</key>
@@ -140,7 +171,7 @@ dependent}</string>
 				<real>12</real>
 			</dict>
 			<key>ID</key>
-			<integer>59</integer>
+			<integer>88</integer>
 			<key>Rotation</key>
 			<real>270</real>
 			<key>Shape</key>
@@ -193,7 +224,7 @@ dependent}</string>
 				<real>12</real>
 			</dict>
 			<key>ID</key>
-			<integer>58</integer>
+			<integer>87</integer>
 			<key>Rotation</key>
 			<real>270</real>
 			<key>Shape</key>
@@ -233,7 +264,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>ID</key>
-			<integer>57</integer>
+			<integer>86</integer>
 			<key>OrthogonalBarAutomatic</key>
 			<true/>
 			<key>OrthogonalBarPosition</key>
@@ -267,7 +298,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>ID</key>
-			<integer>56</integer>
+			<integer>85</integer>
 			<key>OrthogonalBarAutomatic</key>
 			<true/>
 			<key>OrthogonalBarPosition</key>
@@ -300,10 +331,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>48</integer>
+				<integer>77</integer>
 			</dict>
 			<key>ID</key>
-			<integer>55</integer>
+			<integer>84</integer>
 			<key>Points</key>
 			<array>
 				<string>{189, 240}</string>
@@ -322,7 +353,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>44</integer>
+				<integer>73</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -331,10 +362,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>46</integer>
+				<integer>75</integer>
 			</dict>
 			<key>ID</key>
-			<integer>54</integer>
+			<integer>83</integer>
 			<key>Points</key>
 			<array>
 				<string>{450, 213}</string>
@@ -353,7 +384,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>74</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -362,10 +393,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>74</integer>
 			</dict>
 			<key>ID</key>
-			<integer>53</integer>
+			<integer>82</integer>
 			<key>Points</key>
 			<array>
 				<string>{450, 301}</string>
@@ -384,7 +415,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>47</integer>
+				<integer>76</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -393,10 +424,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>74</integer>
 			</dict>
 			<key>ID</key>
-			<integer>52</integer>
+			<integer>81</integer>
 			<key>Points</key>
 			<array>
 				<string>{369, 240}</string>
@@ -415,7 +446,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>43</integer>
+				<integer>72</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -424,10 +455,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>41</integer>
+				<integer>70</integer>
 			</dict>
 			<key>ID</key>
-			<integer>51</integer>
+			<integer>80</integer>
 			<key>Points</key>
 			<array>
 				<string>{234, 213}</string>
@@ -446,7 +477,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>44</integer>
+				<integer>73</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -455,10 +486,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>40</integer>
+				<integer>69</integer>
 			</dict>
 			<key>ID</key>
-			<integer>50</integer>
+			<integer>79</integer>
 			<key>Points</key>
 			<array>
 				<string>{234, 125}</string>
@@ -477,7 +508,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>41</integer>
+				<integer>70</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -486,10 +517,10 @@ dependent}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>40</integer>
+				<integer>69</integer>
 			</dict>
 			<key>ID</key>
-			<integer>49</integer>
+			<integer>78</integer>
 			<key>Points</key>
 			<array>
 				<string>{153, 64}</string>
@@ -508,7 +539,7 @@ dependent}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>39</integer>
+				<integer>68</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -517,7 +548,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>48</integer>
+			<integer>77</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -537,7 +568,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>47</integer>
+			<integer>76</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -557,7 +588,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>46</integer>
+			<integer>75</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -577,7 +608,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>45</integer>
+			<integer>74</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -602,7 +633,7 @@ dependent}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>43</integer>
+					<integer>72</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Text</key>
@@ -622,7 +653,7 @@ dependent}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>44</integer>
+					<integer>73</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Text</key>
@@ -638,7 +669,7 @@ dependent}</string>
 				</dict>
 			</array>
 			<key>ID</key>
-			<integer>42</integer>
+			<integer>71</integer>
 		</dict>
 		<dict>
 			<key>Bounds</key>
@@ -646,7 +677,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>41</integer>
+			<integer>70</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -666,7 +697,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>40</integer>
+			<integer>69</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -686,7 +717,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>39</integer>
+			<integer>68</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -711,7 +742,7 @@ dependent}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>37</integer>
+					<integer>66</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Text</key>
@@ -731,7 +762,7 @@ dependent}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>38</integer>
+					<integer>67</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Text</key>
@@ -747,7 +778,7 @@ dependent}</string>
 				</dict>
 			</array>
 			<key>ID</key>
-			<integer>36</integer>
+			<integer>65</integer>
 		</dict>
 		<dict>
 			<key>Bounds</key>
@@ -755,7 +786,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>35</integer>
+			<integer>64</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -775,7 +806,7 @@ dependent}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>34</integer>
+			<integer>63</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
