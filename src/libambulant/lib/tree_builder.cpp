@@ -68,11 +68,17 @@ lib::tree_builder::tree_builder(node_context *context)
 	m_well_formed(false),
 	m_context(context) {
 #ifdef	WITH_XERCES
+    // XXXX Do this only if the xerces parser is selected in the preferences
 	XMLPlatformUtils::Initialize();
 	m_xmlparser = new xerces_sax_parser(this, this);
-#else /*WITH_XERCES*/
-	m_xmlparser = new expat_parser(this, this);
 #endif/*WITH_XERCES*/
+#ifdef WITH_EXPAT
+    // XXXX Do this only if the expat parser is selected in the preferences
+	m_xmlparser = new expat_parser(this, this);
+#endif /*WITH_EXPAT*/
+    if (m_xmlparser == NULL) {
+        lib::logger::get_logger()->fatal("Could not create XML parser");
+    }
 }
 
 lib::tree_builder::~tree_builder()
