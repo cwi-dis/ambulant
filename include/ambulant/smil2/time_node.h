@@ -324,7 +324,7 @@ class time_node : public schedulable {
 	bool is_active() const { return m_active;}
 
 	// Returns the current interval associated with this
-	const interval_type& get_interval() const {
+	const interval_type& get_current_interval() const {
 		return m_interval;
 	}
 	

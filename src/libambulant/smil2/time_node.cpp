@@ -62,7 +62,7 @@
 
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -1462,6 +1462,7 @@ time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 }
 
 
+// Returns true when the end sync cond is applicable for this container
 bool time_container::end_sync_cond_applicable() const {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end())
 		return false;
@@ -1472,7 +1473,8 @@ bool time_container::end_sync_cond_applicable() const {
 }
 
 // Returns true when the end sync cond evaluates to true
-// Assumes that should_ignore_end_sync_cond() evaluates to false.
+// Assumes that end sync cond is applicable
+// When this returns true the container should be deactivated
 bool time_container::end_sync_cond() const {
 	std::list<const time_node*> cl;
 	std::list<const time_node*>::const_iterator it;
@@ -1480,29 +1482,36 @@ bool time_container::end_sync_cond() const {
 	
 	endsync_rule esr = m_attrs.get_endsync_rule();
 	if(esr == esr_first) {
+		// if any child has played an interval return true
 		for(it=cl.begin();it!=cl.end();it++)
 			if((*it)->played()) return true;
 		return false;
-	} else if(esr == esr_id) {
+	} else if(esr == esr_id) {	
+		// if the designated child has played an interval return true
+		std::string endsync_id = m_attrs.get_endsync_id();
 		for(it=cl.begin();it!=cl.end();it++) {
-			if(m_attrs.get_endsync_id() == (*it)->get_time_attrs()->get_id()) {
+			if(endsync_id == (*it)->get_time_attrs()->get_id()) {
 				if((*it)->played()) return true;
 				else break;
 			}
 		}
 		return false;
 	} else if(esr == esr_last) {
+		// if any child has a valid current interval, wait it to finish (return false)
+		// this is the default for par, excl, media_cond
+		// the current interval may not be the first [(*it)->played() maybe true] 
 		for(it=cl.begin();it!=cl.end();it++) {
-			const interval_type& i = (*it)->get_last_interval();
-			if((*it)->is_active() || (i.is_valid() && !(*it)->played()))
-				return false;
+			const interval_type& i = (*it)->get_current_interval();
+			if(i.is_valid()) return false;
 		}
 		return true;
 	}
 	else if(esr == esr_all) {
+		// if any child has a valid current interval, or it has not has played yet 
+		// wait it to finish or start (return false)
 		for(it=cl.begin();it!=cl.end();it++) {
-			const interval_type& i = (*it)->get_last_interval();
-			if((*it)->is_active() || i.is_valid())
+			const interval_type& i = (*it)->get_current_interval();
+			if(i.is_valid() || !(*it)->played())
 				return false;
 		}
 		return true;
@@ -1530,6 +1539,9 @@ seq::get_implicit_dur() {
 	return idur;
 }
 
+// Returns true when the end sync cond evaluates to true
+// Assumes that end sync cond is applicable
+// When this returns true the seq should be deactivated
 bool seq::end_sync_cond() const {
 	return last_child()->played();
 }
