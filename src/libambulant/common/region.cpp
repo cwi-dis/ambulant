@@ -9,6 +9,7 @@
  */
 
 #include "ambulant/lib/region.h"
+#include "ambulant/lib/logger.h"
 
 namespace ambulant {
 
@@ -24,7 +25,7 @@ passive_region::activate(event_processor *const evp, const node *node)
 void
 active_region::start(event *playdone)
 {
-	std::cout << "active_region.start(" << m_source->m_name << ", playdone=" << (void *)playdone << ")" << std::endl;
+	log_trace_event("active_region.start(0x%x, \"%s\", playdone=0x%x)", (void *)this, m_source->m_name, (void *)playdone);
 	if (playdone)
 		m_event_processor->add_event(playdone, 0, event_processor::low);
 }
@@ -32,7 +33,7 @@ active_region::start(event *playdone)
 void
 active_region::stop()
 {
-	std::cout << "active_region.stop(" << m_source->m_name << ")" << std::endl;
+	log_trace_event("active_region.stop(0x%x, \"%s\")", (void *)this, m_source->m_name);
 }
 
 } // namespace lib
