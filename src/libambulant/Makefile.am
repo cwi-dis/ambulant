@@ -83,6 +83,7 @@ libambulant_la_SOURCES = \
 	lib/string_util.cpp \
 	lib/smil_time.cpp \
 	lib/sync_rule.cpp \
+	lib/test_attrs.cpp \
 	lib/time_attrs.cpp \
 	lib/time_node.cpp \
 	lib/time_state.cpp \
