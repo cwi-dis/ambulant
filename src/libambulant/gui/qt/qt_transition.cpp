@@ -95,6 +95,7 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 	paint.drawRect(L,T,W,H);
 	paint.flush();
 	paint.end();
+	delete bgc;
 }
 
 void
@@ -129,45 +130,14 @@ qt_transition_blitclass_fade::update()
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
-#ifndef	JUNK
 	QPainter paint;
 	paint.begin(qpm);
-	// XXXX Fill with background color
 	AM_DBG lib::logger::get_logger()->trace(
 				  "qt_transition_blitclass_fade::update(): "
 				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
 	paint.drawImage(L,T,res,0,0,W,H);
 	paint.flush();
 	paint.end();
-#else /*JUNK*/
-//	QPixmap* rpm = new QPixmap(*&res);
-	QPixmap* rpm = new QPixmap(iw, ih);
-	rpm->convertFromImage(res);
-	bitBlt(qpm, L, T, rpm, L, T, W, H);
-#endif/*JUNK*/
-#ifndef FILL_PURPLE
-	// Debug: fill with purple
-	common::surface* dst = m_dst;
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	qt_transition_debug* dbg = new qt_transition_debug();
-	dbg->paint_rect(aqw, m_dst, 0xFF00FF);
-	delete dbg;
-//	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-//	[[NSColor purpleColor] set];
-//	NSRectFill(qt_dstrect_whole);
-#endif
-#ifdef	JUNK
-	NSImage *newsrc = [view getTransitionNewSource];
-	const lib::screen_rect<int> &r =  m_dst->get_rect();
-	lib::screen_rect<int> dstrect_whole = r;
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[newsrc drawInRect: qt_dstrect_whole 
-		fromRect: qt_dstrect_whole
-		operation: NSCompositeSourceOver
-		fraction: m_progress];
-#endif/*JUNK*/
 }
 
 void
@@ -269,22 +239,37 @@ void
 qt_transition_blitclass_poly::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_poly::update(%f)", m_progress);
-	lib::logger::get_logger()->trace("qt_transition_blitclass_poly: not yet implemented");
-#ifdef	JUNK
-	qt_window *window = (qt_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect qt_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(qt_dstrect_whole);
-#endif
-#endif/*JUNK*/
+	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
+	QPixmap *qpm = aqw->ambulant_pixmap();
+	QPixmap *npm = aqw->get_ambulant_surface();
+	QImage img1 = qpm->convertToImage();
+	QImage img2 = npm->convertToImage();
+	QImage res = img1.copy();
+	std::vector<lib::point>::iterator newpoint;
+	QPointArray* qpa = new QPointArray(m_newpolygon.size());
+	int idx = 0;
+	for( newpoint=m_newpolygon.begin();
+	     newpoint != m_newpolygon.end(); newpoint++) {
+		lib::point p = *newpoint;
+		qpa->setPoint(idx++, p.x, p.y);
+	}
+	QRegion* qreg = new QRegion(*qpa, true);
+	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();
+	newrect_whole.translate(m_dst->get_global_topleft());
+	int L = newrect_whole.left(), T = newrect_whole.top(),
+        	W = newrect_whole.width(), H = newrect_whole.height();
+	QPainter paint;
+	paint.begin(qpm);
+	AM_DBG lib::logger::get_logger()->trace(
+				  "qt_transition_blitclass_fade::update(): "
+				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
+	paint.drawImage(L,T,res,0,0,W,H);
+	paint.setClipRegion(*qreg);
+	paint.drawImage(L,T,img2,0,0,W,H);
+	paint.flush();
+	paint.end();
+	delete qpa;
+	delete qreg;
 }
 
 void
@@ -315,9 +300,7 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 	smil2::transition_engine *rv;
 	
 	switch(info->m_type) {
-	case lib::fade:
-		rv = new qt_transition_engine_fade();
-		break;
+	// Series 1: edge wipes
 	case lib::barWipe:
 		rv = new qt_transition_engine_barwipe();
 		break;
@@ -351,6 +334,41 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 	case lib::bowTieWipe:
 		rv = new qt_transition_engine_bowtiewipe();
 		break;
+	// series 2: iris wipes
+	case lib::irisWipe:
+		rv = new qt_transition_engine_iriswipe();
+		break;
+	case lib::pentagonWipe:
+		rv = new qt_transition_engine_pentagonwipe();
+		break;
+	case lib::arrowHeadWipe:
+		rv = new qt_transition_engine_arrowheadwipe();
+		break;
+	case lib::triangleWipe:
+		rv = new qt_transition_engine_trianglewipe();
+		break;
+	case lib::hexagonWipe:
+		rv = new qt_transition_engine_hexagonwipe();
+		break;
+	case lib::eyeWipe:
+		rv = new qt_transition_engine_eyewipe();
+		break;
+	case lib::roundRectWipe:
+		rv = new qt_transition_engine_roundrectwipe();
+		break;
+	case lib::ellipseWipe:
+		rv = new qt_transition_engine_ellipsewipe();
+		break;
+	case lib::starWipe:
+		rv = new qt_transition_engine_starwipe();
+		break;
+	case lib::miscShapeWipe:
+		rv = new qt_transition_engine_miscshapewipe();
+		break;
+	// series 3: clock-type wipes
+	case lib::singleSweepWipe:
+		rv = new qt_transition_engine_singlesweepwipe();
+		break;
 	case lib::doubleSweepWipe:
 		rv = new qt_transition_engine_doublesweepwipe();
 		break;
@@ -360,11 +378,40 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 	case lib::windshieldWipe:
 		rv = new qt_transition_engine_windshieldwipe();
 		break;
+	case lib::fanWipe:
+		rv = new qt_transition_engine_fanwipe();
+		break;
+	case lib::doubleFanWipe:
+		rv = new qt_transition_engine_doublefanwipe();
+		break;
+	case lib::pinWheelWipe:
+		rv = new qt_transition_engine_pinwheelwipe();
+		break;
+	// series 4: matrix wipe types
+	case lib::snakeWipe:
+		rv = new qt_transition_engine_snakewipe();
+		break;
+	case lib::waterfallWipe:
+		rv = new qt_transition_engine_waterfallwipe();
+		break;
+	case lib::spiralWipe:
+		rv = new qt_transition_engine_spiralwipe();
+		break;
+	case lib::parallelSnakesWipe:
+		rv = new qt_transition_engine_parallelsnakeswipe();
+		break;
+	case lib::boxSnakesWipe:
+		rv = new qt_transition_engine_boxsnakeswipe();
+		break;
+	// series 5: SMIL-specific types
 	case lib::pushWipe:
 		rv = new qt_transition_engine_pushwipe();
 		break;
 	case lib::slideWipe:
 		rv = new qt_transition_engine_slidewipe();
+		break;
+	case lib::fade:
+		rv = new qt_transition_engine_fade();
 		break;
 	default:
 		lib::logger::get_logger()->warn("qt_transition_engine: transition type %s not yet implemented",

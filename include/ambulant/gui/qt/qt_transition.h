@@ -100,6 +100,9 @@ class qt_transition_blitclass_polylist : virtual public smil2::transition_blitcl
 	void update();
 };
 
+
+// Series 1: edge wipes
+
 class qt_transition_engine_barwipe :
 	virtual public qt_transition_blitclass_rect,
 	virtual public smil2::transition_engine_barwipe {};
@@ -144,6 +147,54 @@ class qt_transition_engine_bowtiewipe :
 	virtual public qt_transition_blitclass_polylist,
 	virtual public smil2::transition_engine_bowtiewipe {};
 
+// series 2: iris wipes
+class qt_transition_engine_iriswipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_iriswipe {};
+
+class qt_transition_engine_pentagonwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_pentagonwipe {};
+
+class qt_transition_engine_arrowheadwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_arrowheadwipe {};
+
+class qt_transition_engine_trianglewipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_trianglewipe {};
+
+class qt_transition_engine_hexagonwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_hexagonwipe {};
+
+class qt_transition_engine_eyewipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_eyewipe {};
+
+class qt_transition_engine_roundrectwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_roundrectwipe {};
+
+class qt_transition_engine_ellipsewipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_ellipsewipe {};
+
+class qt_transition_engine_starwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_starwipe {};
+
+class qt_transition_engine_miscshapewipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_miscshapewipe {};
+
+
+// series 3: clock-type wipes
+
+class qt_transition_engine_singlesweepwipe :
+	virtual public qt_transition_blitclass_polylist,
+	virtual public smil2::transition_engine_singlesweepwipe {};
+
 class qt_transition_engine_doublesweepwipe :
 	virtual public qt_transition_blitclass_polylist,
 	virtual public smil2::transition_engine_doublesweepwipe {};
@@ -156,6 +207,42 @@ class qt_transition_engine_windshieldwipe :
 	virtual public qt_transition_blitclass_poly,
 	virtual public smil2::transition_engine_windshieldwipe {};
 
+class qt_transition_engine_fanwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_fanwipe {};
+
+class qt_transition_engine_doublefanwipe :
+	virtual public qt_transition_blitclass_poly,
+	virtual public smil2::transition_engine_doublefanwipe {};
+
+class qt_transition_engine_pinwheelwipe :
+	virtual public qt_transition_blitclass_polylist,
+	virtual public smil2::transition_engine_pinwheelwipe {};
+
+// series 4: matrix wipe types
+
+class qt_transition_engine_snakewipe :
+	virtual public qt_transition_blitclass_rectlist,
+	virtual public smil2::transition_engine_snakewipe {};
+
+class qt_transition_engine_waterfallwipe :
+	virtual public qt_transition_blitclass_rectlist,
+	virtual public smil2::transition_engine_waterfallwipe {};
+
+class qt_transition_engine_spiralwipe :
+	virtual public qt_transition_blitclass_rectlist,
+	virtual public smil2::transition_engine_spiralwipe {};
+
+class qt_transition_engine_parallelsnakeswipe :
+	virtual public qt_transition_blitclass_rectlist,
+	virtual public smil2::transition_engine_parallelsnakeswipe {};
+
+class qt_transition_engine_boxsnakeswipe :
+	virtual public qt_transition_blitclass_rectlist,
+	virtual public smil2::transition_engine_boxsnakeswipe {};
+
+// series 5: SMIL-specific types
+
 class qt_transition_engine_pushwipe :
 	virtual public qt_transition_blitclass_r1r2r3r4,
 	virtual public smil2::transition_engine_pushwipe {};
@@ -167,7 +254,7 @@ class qt_transition_engine_slidewipe :
 class qt_transition_engine_fade : 
 	virtual public qt_transition_blitclass_fade,
 	virtual public smil2::transition_engine_fade {};
-	
+
 smil2::transition_engine *qt_transition_engine(
 	common::surface *dst, bool is_outtrans, lib::transition_info *info);
 	
