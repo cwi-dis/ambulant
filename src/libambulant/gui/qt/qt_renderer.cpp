@@ -73,7 +73,8 @@ namespace qt_renderer {
        (void *)this, r.left(), r.top(), r.right(), r.bottom());
     if (ambulant_widget() == NULL) {
       logger::get_logger()->error
-	("ambulant_qt_window::need_redraw(0x%x):ambulant_widget() == NULL !!!",
+	("ambulant_qt_window::need_redraw(0x%x):"
+	 "ambulant_widget() == NULL !!!",
 	 (void*) this);
       return;
     }
@@ -86,8 +87,9 @@ namespace qt_renderer {
   void
   ambulant_qt_window::mouse_region_changed()
   {
-  	logger::get_logger()->error
-	  ("ambulant_qt_window::mouse_region_changed needs to be implemented");
+    logger::get_logger()->error
+      ("ambulant_qt_window::mouse_region_changed "
+       "needs to be implemented");
   }
   void
   ambulant_qt_window::redraw(const screen_rect<int> &r)
@@ -145,24 +147,28 @@ namespace qt_renderer {
     screen_rect<int> * r = new screen_rect<int>(m_p, bounds);
     AM_DBG logger::get_logger()->trace
       ("qt_window_factory::new_window (0x%x) name=%s %d,%d,%d,%d", 
-       (void*) this, name.c_str(),r->left(),r->top(),r->right(),r->bottom());
+       (void*) this, name.c_str(),
+       r->left(),r->top(),r->right(),r->bottom());
       ambulant_qt_window * aqw
 	= new ambulant_qt_window(name, r, region);
       qt_ambulant_widget * qaw
 	= new qt_ambulant_widget(name, r, m_parent_widget);
-#ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-//    qApp->mainWidget()->resize(bounds.w+m_p.x, bounds.h+m_p.y);
+#ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
       if (qApp == NULL || qApp->mainWidget() == NULL) {
 	logger::get_logger()->error
 	  ("qt_window_factory::new_window (0x%x) %s", (void*) this,
 	   "qApp == NULL || qApp->mainWidget() == NULL");
       }
-      qApp->mainWidget()->setGeometry(m_p.x, m_p.y, bounds.w, bounds.h);
-#endif/*QT_NO_FILEDIALOG*/
+
+      qApp->mainWidget()->resize(bounds.w + m_p.x, bounds.h + m_p.y);
+#else	/*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
+      /* No resize implemented for embedded Q */
+#endif	/*QT_NO_FILEDIALOG*/
       aqw->set_ambulant_widget(qaw);
       qaw->set_qt_window(aqw);
       AM_DBG logger::get_logger()->trace
-	("qt_window_factory::new_window(0x%x) ambulant_widget=0x%x qt_window=0x%x",
+	("qt_window_factory::new_window(0x%x)"
+	 "ambulant_widget=0x%x qt_window=0x%x",
 	 (void*) this, (void*) qaw, (void*) aqw);
       qaw->show();
       return aqw;
