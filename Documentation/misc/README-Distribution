@@ -9,6 +9,7 @@ Before creating the distribution
   - configure.in
   - include/ambulant/version.h
   - src/player_macos/Info.plist
+  - src/player_macos/*.lproj/InfoPlist.strings
   - src/player_wince/AmbulantPlayer.rc
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
