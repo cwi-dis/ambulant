@@ -79,6 +79,8 @@ class smil_layout_manager : public common::layout_manager {
 	~smil_layout_manager();
 	
 	common::surface *get_surface(const lib::node *node);
+	common::animation_notification *get_animation_notification(const lib::node *node);
+	common::animation_destination *get_animation_destination(const lib::node *node);
 	common::surface_template *get_region(const lib::node *n);
 	
   private:

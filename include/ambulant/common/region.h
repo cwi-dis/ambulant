@@ -92,6 +92,7 @@ class passive_region : public surface_template, public surface_source {
         
 	virtual common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
 	surface *activate();
+	void animated();
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }

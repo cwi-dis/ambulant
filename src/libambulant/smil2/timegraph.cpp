@@ -114,8 +114,6 @@ time_node*
 timegraph::build_time_tree(const lib::node *root) {
 	const std::set<std::string>& te = m_schema->get_time_elements();
 	time_node *time_root = 0;
-	bool switch_on = false;
-	bool switch_option_selected = false;
 	std::stack<time_node*> stack;
 	std::stack<const lib::node*> switch_stack;
 	std::stack<const lib::node*> select_stack;

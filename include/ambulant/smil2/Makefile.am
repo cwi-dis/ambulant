@@ -1,6 +1,7 @@
 library_includedir=$(includedir)/ambulant/smil2
 library_include_HEADERS= \
 	region_node.h \
+	smil_animation.h \
 	smil_layout.h \
 	smil_player.h \
 	smil_time.h \

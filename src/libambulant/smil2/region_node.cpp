@@ -142,7 +142,7 @@ region_node::fix_from_dom_node()
 	bool changed = false;
 	
 	// For every node in the layout section we fill in the dimensions
-	AM_DBG lib::logger::get_logger()->trace("region_node::fix_from_dom_node: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
+	AM_DBG lib::logger::get_logger()->trace("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
 	common::region_dim_spec rdspec;
 	rdspec.left = get_regiondim_attr(m_node, "left");
 	rdspec.width = get_regiondim_attr(m_node, "width");
@@ -154,7 +154,7 @@ region_node::fix_from_dom_node()
 	AM_DBG {
 		//lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
 		// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
-		//os << "region_node::fix_from_dom_node: result=(" 
+		//os << "region_node::reset: result=(" 
 		//	<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
 		//	<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
 	}
@@ -177,7 +177,7 @@ region_node::fix_from_dom_node()
 		bgcolor = lib::to_color(bgcolor_attr);
 		transparent = false;
 	}
-	AM_DBG lib::logger::get_logger()->trace("region_node::fix_from_dom_node: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
+	AM_DBG lib::logger::get_logger()->trace("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
 	if (bgcolor != m_bgcolor || transparent != m_transparent || inherit != m_inherit_bgcolor) {
 		changed = true;
 		set_bgcolor(bgcolor, transparent, inherit);
@@ -219,7 +219,7 @@ region_node::fix_from_dom_node()
 	const char *z_attr = m_node->get_attribute("z-index");
 	common::zindex_t z = 0;
 	if (z_attr) z = strtol(z_attr, NULL, 10);
-	AM_DBG lib::logger::get_logger()->trace("region_node::fix_from_dom_node: z-index=%d", z);
+	AM_DBG lib::logger::get_logger()->trace("region_node::reset: z-index=%d", z);
 	if (z != m_zindex) {
 		changed = true;
 		set_zindex(z);

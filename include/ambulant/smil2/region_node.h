@@ -81,7 +81,7 @@ namespace smil2 {
 enum dimension_inheritance { di_none, di_parent, di_rootlayout };
 	
 
-class region_node : public common::region_info {
+class region_node : public common::animation_destination {
   public:
 	typedef lib::node_navigator<region_node> nnhelper;
 	typedef lib::node_navigator<const region_node> const_nnhelper;
@@ -102,10 +102,12 @@ class region_node : public common::region_info {
 	
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();
-	
+
 	// Tie together region and surface_template trees
 	void set_surface_template(common::surface_template *surf) { m_surface_template = surf; }
 	common::surface_template *get_surface_template() { return m_surface_template; }
+	common::animation_notification *get_animation_notification() { return m_surface_template; };
+	common::animation_destination *get_animation_destination() { return this; };
 	
 	// query for this region's rectangle
 	// the rectangle is evaluaded on the fly
@@ -129,8 +131,10 @@ class region_node : public common::region_info {
 	common::zindex_t get_zindex() const { return m_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
 	// And corresponding setting interface
+	void reset() {(void)fix_from_dom_node(); };
 	void set_fit(common::fit_t f) { m_fit = f; }
 	void set_bgcolor(lib::color_t c, bool transparent, bool inherit);
+	void set_bgcolor(lib::color_t c) { set_bgcolor(c, false, false); };
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; }
 	void set_as_subregion(bool b) { m_is_subregion = b; }

@@ -212,7 +212,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 
 			// Put it in the tree
 			region_node *rn = new region_node(n, di);
-			rn->fix_from_dom_node();
+			rn->reset();
 			if (stack.empty()) {
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_document_layout: 0x%x is m_layout_tree", (void*)rn);
 				if(m_layout_tree != NULL) {
@@ -237,6 +237,9 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: mapping regionName %s", pname);
 				m_name2region[pname].push_back(rn);
 			}
+			
+			// And finally into the node->region mapping (for animate)
+			m_node2region[n] = rn;
 
 			stack.push(rn);
 		} else {
@@ -273,7 +276,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 #endif
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_body_regions: region for 0x%x %s", (void*)n, n->get_local_name().c_str());
 		region_node *rn = new region_node(n, di_parent);
-		rn->fix_from_dom_node();
+		rn->reset();
 		rn->set_showbackground(false);
 		rn->set_as_subregion(true);
 
@@ -464,6 +467,18 @@ common::surface_template *
 smil_layout_manager::get_region(const lib::node *n) {
 	region_node *rn = get_region_node_for(n, true);
 	return rn?rn->get_surface_template():NULL;
+}
+
+common::animation_notification *
+smil_layout_manager::get_animation_notification(const lib::node *n) {
+	region_node *rn = get_region_node_for(n, true);
+	return rn?rn->get_animation_notification():NULL;
+}
+
+common::animation_destination *
+smil_layout_manager::get_animation_destination(const lib::node *n) {
+	region_node *rn = get_region_node_for(n, true);
+	return rn?rn->get_animation_destination():NULL;
 }
 
 // Helper function: decode pre-defined repoint names

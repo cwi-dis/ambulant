@@ -153,6 +153,16 @@ passive_region::activate()
 }
 
 void
+passive_region::animated()
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
+	// XXX test whether anything has changed
+	// XXX if so, do recompute for self and children
+	need_redraw(m_inner_bounds);
+	
+}
+
+void
 passive_region::show(active_region *cur)
 {
 	bool need_mr_update = false;

@@ -66,7 +66,7 @@ static colors_map html4_colors_map;
 bool is_color(const char *name) {
 	if (name[0] == '#') {
 		char *endp;
-		long hexcolor = strtol(name+1, &endp, 16);
+		(void)strtol(name+1, &endp, 16);
 		return (*endp == '\0');
 	}
 	colors_map::const_iterator it = html4_colors_map.find(name);

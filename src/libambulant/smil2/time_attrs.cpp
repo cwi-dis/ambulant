@@ -605,13 +605,13 @@ std::string smil2::repr(const sync_value_struct& svs) {
 	std::string os;
 	char sz[64];
 	if(svs.type == sv_offset) {
-		sprintf(sz, "%d", svs.offset);
+		sprintf(sz, "%ld", svs.offset);
 		os += sz;
 	} else if(svs.type == sv_accesskey) {
 		sprintf(sz, "accesskey(%c)", char(svs.iparam));
 		os += sz;
-		if(svs.offset>0) {sprintf(sz, " + %d", svs.offset); os += sz;}
-		else if(svs.offset<0) {sprintf(sz, " - %d", -svs.offset); os += sz;}
+		if(svs.offset>0) {sprintf(sz, " + %ld", svs.offset); os += sz;}
+		else if(svs.offset<0) {sprintf(sz, " - %ld", -svs.offset); os += sz;}
 	} else  {
 		if(svs.base.empty()) {
 			os += svs.event;
@@ -623,8 +623,8 @@ std::string smil2::repr(const sync_value_struct& svs) {
 			os += sz;
 		} else if(!svs.sparam.empty())
 			os += "(" + svs.sparam + ")";
-		if(svs.offset>0) {sprintf(sz, " + %d", svs.offset);os += sz;}
-		else if(svs.offset<0) {sprintf(sz, " - %d", -svs.offset);os += sz;}
+		if(svs.offset>0) {sprintf(sz, " + %ld", svs.offset);os += sz;}
+		else if(svs.offset<0) {sprintf(sz, " - %ld", -svs.offset);os += sz;}
 		
 	} 
 	return os;

@@ -81,6 +81,13 @@ class region_info {
 	virtual bool is_subregion() const = 0;
 };
 
+class animation_destination : public region_info {
+  public:
+	virtual void reset() = 0;
+	virtual void set_bgcolor(lib::color_t c) = 0;
+	virtual void set_zindex(common::zindex_t z) = 0;
+};
+
 } // namespace common
  
 } // namespace ambulant
