@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AmbulantWin32Installer", "AmbulantWin32Installer.vdproj", "{0407C050-EAB5-4A72-8871-D6A4FD94228B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0407C050-EAB5-4A72-8871-D6A4FD94228B}.Debug.ActiveCfg = Debug
+		{0407C050-EAB5-4A72-8871-D6A4FD94228B}.Debug.Build.0 = Debug
+		{0407C050-EAB5-4A72-8871-D6A4FD94228B}.Release.ActiveCfg = Release
+		{0407C050-EAB5-4A72-8871-D6A4FD94228B}.Release.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
