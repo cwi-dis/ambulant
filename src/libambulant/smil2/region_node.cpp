@@ -223,8 +223,8 @@ region_node::fix_from_dom_node()
 	AM_DBG lib::logger::get_logger()->trace("region_node::reset: z-index=%d", z);
 	if (z != m_zindex) {
 		changed = true;
-		set_zindex(z);
 	}
+       	set_zindex(z);
 	return changed;
 }
 

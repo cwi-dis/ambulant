@@ -384,6 +384,7 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 		rv = new qt_transition_engine_miscshapewipe();
 		break;
 	// series 3: clock-type wipes
+		/*
 	case lib::singleSweepWipe:
 		rv = new qt_transition_engine_singlesweepwipe();
 		break;
@@ -405,6 +406,7 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, lib::transition_inf
 	case lib::pinWheelWipe:
 		rv = new qt_transition_engine_pinwheelwipe();
 		break;
+		*/
 	// series 4: matrix wipe types
 	case lib::snakeWipe:
 		rv = new qt_transition_engine_snakewipe();
