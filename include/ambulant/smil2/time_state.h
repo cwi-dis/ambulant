@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TIME_STATE_H
-#define AMBULANT_LIB_TIME_STATE_H
+#ifndef AMBULANT_SMIL2_TIME_STATE_H
+#define AMBULANT_SMIL2_TIME_STATE_H
 
 #include "ambulant/config/config.h"
 
@@ -172,4 +172,4 @@ class dead_state : public time_state {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_TIME_STATE_H
+#endif // AMBULANT_SMIL2_TIME_STATE_H

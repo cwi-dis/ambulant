@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_MMS_PLAYER_H
-#define AMBULANT_LIB_MMS_PLAYER_H
+#ifndef AMBULANT_MMS_MMS_PLAYER_H
+#define AMBULANT_MMS_MMS_PLAYER_H
 
 #include "ambulant/config/config.h"
 
@@ -109,4 +109,4 @@ class mms_player : public abstract_player, public ref_counted_obj {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_MMS_PLAYER_H
+#endif // AMBULANT_MMS_MMS_PLAYER_H

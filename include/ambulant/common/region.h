@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_REGION_H
-#define AMBULANT_LIB_REGION_H
+#ifndef AMBULANT_COMMON_REGION_H
+#define AMBULANT_COMMON_REGION_H
 
 #include "ambulant/config/config.h"
 
@@ -233,4 +233,4 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_REGION_H
+#endif // AMBULANT_COMMON_REGION_H

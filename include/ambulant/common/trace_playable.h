@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TRACE_PLAYABLE_H
-#define AMBULANT_LIB_TRACE_PLAYABLE_H
+#ifndef AMBULANT_COMMON_TRACE_PLAYABLE_H
+#define AMBULANT_COMMON_TRACE_PLAYABLE_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/playable.h"
@@ -128,6 +128,6 @@ class trace_playable : public playable {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_COUT_PLAYABLE_H
+#endif // AMBULANT_COMMON_COUT_PLAYABLE_H
 
 

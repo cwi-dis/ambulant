@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_SMIL_HANDLER_H
-#define AMBULANT_LIB_SMIL_HANDLER_H
+#ifndef AMBULANT_COMMON_SMIL_HANDLER_H
+#define AMBULANT_COMMON_SMIL_HANDLER_H
 
 #include "ambulant/config/config.h"
 
@@ -262,5 +262,5 @@ inline void smil_handler::error(const sax_error& error) {
 #undef REG_ELEMENT_HANDLER2
 #undef XMLNS
 
-#endif // AMBULANT_LIB_SMIL_HANDLER_H
+#endif // AMBULANT_COMMON_SMIL_HANDLER_H
 

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_SMIL_TIME_H
-#define AMBULANT_LIB_SMIL_TIME_H
+#ifndef AMBULANT_SMIL2_SMIL_TIME_H
+#define AMBULANT_SMIL2_SMIL_TIME_H
 
 #include "ambulant/config/config.h"
 #   if __GNUC__ == 2 && __GNUC_MINOR__ <= 97
@@ -511,4 +511,4 @@ inline std::string repr(const ambulant::lib::smil_interval<long>& interval) {
 	return buf;
 }
 
-#endif // AMBULANT_LIB_SMIL_TIME_H
+#endif // AMBULANT_SMIL2_SMIL_TIME_H

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_REGION_BUILDER_H
-#define AMBULANT_LIB_REGION_BUILDER_H
+#ifndef AMBULANT_SMIL2_REGION_BUILDER_H
+#define AMBULANT_SMIL2_REGION_BUILDER_H
 
 #include "ambulant/config/config.h"
 
@@ -92,4 +92,4 @@ class smil_layout_manager : public layout_manager {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_REGION_BUILDER_H
+#endif // AMBULANT_SMIL2_REGION_BUILDER_H

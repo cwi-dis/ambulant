@@ -47,10 +47,10 @@
  */
 
 /* Necessary QT files for the renderers */
-#ifndef __AMBULANT_QT_H__ 
-#define __AMBULANT_QT_H__ 
+#ifndef AMBULANT_GUI_QT_QT_INCLUDES_H
+#define AMBULANT_GUI_QT_QT_INCLUDES_H 
 #include <qapplication.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qwidget.h>
-#endif/*__AMBULANT_QT_H__ */
+#endif/*AMBULANT_GUI_QT_QT_INCLUDES_H */

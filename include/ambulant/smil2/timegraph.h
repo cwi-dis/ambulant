@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_TIMEGRAPH_H
-#define AMBULANT_TIMEGRAPH_H
+#ifndef AMBULANT_SMIL2_TIMEGRAPH_H
+#define AMBULANT_SMIL2_TIMEGRAPH_H
 
 #include "ambulant/config/config.h"
 
@@ -124,4 +124,4 @@ class timegraph : public time_traits {
  
 } // namespace ambulant
 
-#endif // AMBULANT_TIMEGRAPH_H
+#endif // AMBULANT_SMIL2_TIMEGRAPH_H

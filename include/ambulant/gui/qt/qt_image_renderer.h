@@ -52,8 +52,8 @@
 
 /* from: renderer.h,v 1.1 2003/09/15 10:36:17 jack Exp */
  
-#ifndef AMBULANT__QT_IMAGE_RENDERER_H
-#define AMBULANT__QT_IMAGE_RENDERER_H
+#ifndef AMBULANT_GUI_QT_QT_IMAGE_RENDERER_H
+#define AMBULANT_GUI_QT_QT_IMAGE_RENDERER_H
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
@@ -107,4 +107,4 @@ class qt_active_image_renderer : active_final_renderer {
  
 } // namespace ambulant
 
-#endif/*AMBULANT__QT_IMAGE_RENDERER_H*/
+#endif/*AMBULANT_GUI_QT_QT_IMAGE_RENDERER_H*/

@@ -71,8 +71,8 @@
 // have been converted to uniform units.
 /////////////////////////////
 
-#ifndef AMBULANT_LIB_REGION_DIM_H
-#define AMBULANT_LIB_REGION_DIM_H
+#ifndef AMBULANT_COMMON_REGION_DIM_H
+#define AMBULANT_COMMON_REGION_DIM_H
 
 #include "ambulant/config/config.h"
 
@@ -227,4 +227,4 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::region_di
 
 #endif
 
-#endif // AMBULANT_LIB_REGION_DIM_H
+#endif // AMBULANT_COMMON_REGION_DIM_H

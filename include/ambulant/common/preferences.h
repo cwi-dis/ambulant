@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_PREFERENCES_H
-#define AMBULANT_LIB_PREFERENCES_H
+#ifndef AMBULANT_COMMON_PREFERENCES_H
+#define AMBULANT_COMMON_PREFERENCES_H
 
 namespace ambulant {
 
@@ -65,4 +65,4 @@ const unsigned int default_layout_height = 200;
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_PREFERENCES_H
+#endif // AMBULANT_COMMON_PREFERENCES_H

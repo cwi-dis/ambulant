@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TIME_ATTRS_H
-#define AMBULANT_LIB_TIME_ATTRS_H
+#ifndef AMBULANT_SMIL2_TIME_ATTRS_H
+#define AMBULANT_SMIL2_TIME_ATTRS_H
 
 #include "ambulant/config/config.h"
 
@@ -246,4 +246,4 @@ struct priority_attrs {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_TIME_ATTRS_H
+#endif // AMBULANT_SMIL2_TIME_ATTRS_H

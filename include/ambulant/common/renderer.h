@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_RENDERER_H
-#define AMBULANT_LIB_RENDERER_H
+#ifndef AMBULANT_COMMON_RENDERER_H
+#define AMBULANT_COMMON_RENDERER_H
 
 #include "ambulant/config/config.h"
 
@@ -210,4 +210,4 @@ class global_renderer_factory : public renderer_factory {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_RENDERER_H
+#endif // AMBULANT_COMMON_RENDERER_H

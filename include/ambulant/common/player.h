@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_PLAYER_H
-#define AMBULANT_LIB_PLAYER_H
+#ifndef AMBULANT_COMMON_PLAYER_H
+#define AMBULANT_COMMON_PLAYER_H
 
 #include "ambulant/config/config.h"
 
@@ -81,4 +81,4 @@ class abstract_player {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_PLAYER_H
+#endif // AMBULANT_COMMON_PLAYER_H

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TIMELINE_BUILDER_H
-#define AMBULANT_LIB_TIMELINE_BUILDER_H
+#ifndef AMBULANT_MMS_TIMELINE_BUILDER_H
+#define AMBULANT_MMS_TIMELINE_BUILDER_H
 
 #include "ambulant/config/config.h"
 
@@ -99,5 +99,5 @@ class timeline_builder {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_TIMELINE_BUILDER_H
+#endif // AMBULANT_MMS_TIMELINE_BUILDER_H
 

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_SMIL_PLAYER_H
-#define AMBULANT_LIB_SMIL_PLAYER_H
+#ifndef AMBULANT_SMIL2_SMIL_PLAYER_H
+#define AMBULANT_SMIL2_SMIL_PLAYER_H
 
 //////////////////////////////////////////////
 //
@@ -166,4 +166,4 @@ class smil_player : public abstract_player, public time_node_context, public pla
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_REGION_H
+#endif // AMBULANT_SMIL2_REGION_H

@@ -50,8 +50,8 @@
  * $Id$
  */
 
-#ifndef AMBULANT__QT_FILL_H
-#define AMBULANT__QT_FILL_H
+#ifndef AMBULANT_GUI_QT_QT_FILL_H
+#define AMBULANT_GUI_QT_QT_FILL_H
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
@@ -132,4 +132,4 @@ class qt_background_renderer : public abstract_bg_rendering_source {
 } // namespace gui
 
 } // namespace ambulant
-#endif  /*AMBULANT__QT_FILL_H*/
+#endif  /*AMBULANT_GUI_QT_QT_FILL_H*/

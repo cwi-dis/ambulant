@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TIMELINES_H
-#define AMBULANT_LIB_TIMELINES_H
+#ifndef AMBULANT_MMS_TIMELINES_H
+#define AMBULANT_MMS_TIMELINES_H
 
 #include "ambulant/config/config.h"
 
@@ -509,4 +509,4 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::active_ti
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_TIMELINES_H
+#endif // AMBULANT_MMS_TIMELINES_H

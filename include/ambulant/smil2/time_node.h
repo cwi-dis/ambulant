@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_TIME_NODE_H
-#define AMBULANT_LIB_TIME_NODE_H
+#ifndef AMBULANT_SMIL2_TIME_NODE_H
+#define AMBULANT_SMIL2_TIME_NODE_H
 
 #include "ambulant/config/config.h"
 
@@ -605,4 +605,4 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::time_node
 }
 #endif
 
-#endif // AMBULANT_LIB_TIME_NODE_H
+#endif // AMBULANT_SMIL2_TIME_NODE_H

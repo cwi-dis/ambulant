@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_LAYOUT_H
-#define AMBULANT_LIB_LAYOUT_H
+#ifndef AMBULANT_COMMON_LAYOUT_H
+#define AMBULANT_COMMON_LAYOUT_H
 
 #include <string>
 #include "ambulant/lib/gtypes.h"
@@ -190,4 +190,4 @@ class layout_manager {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_LAYOUT_H
+#endif // AMBULANT_COMMON_LAYOUT_H

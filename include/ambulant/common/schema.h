@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_SCHEMA_H
-#define AMBULANT_LIB_SCHEMA_H
+#ifndef AMBULANT_COMMON_SCHEMA_H
+#define AMBULANT_COMMON_SCHEMA_H
 
 #include "ambulant/config/config.h"
 
@@ -125,4 +125,4 @@ class schema {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_SCHEMA_H
+#endif // AMBULANT_COMMON_SCHEMA_H

@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_PLAYABLE_H
-#define AMBULANT_LIB_PLAYABLE_H
+#ifndef AMBULANT_COMMON_PLAYABLE_H
+#define AMBULANT_COMMON_PLAYABLE_H
 
 #include <utility>
 
@@ -208,6 +208,6 @@ typedef playable_events active_playable_events;
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_PLAYABLE_H
+#endif // AMBULANT_COMMON_PLAYABLE_H
 
 

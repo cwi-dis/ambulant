@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_REGION_INFO_H
-#define AMBULANT_LIB_REGION_INFO_H
+#ifndef AMBULANT_COMMON_REGION_INFO_H
+#define AMBULANT_COMMON_REGION_INFO_H
 
 #include "ambulant/config/config.h"
 
@@ -82,4 +82,4 @@ class abstract_smil_region_info {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_REGION_INFO_H
+#endif // AMBULANT_COMMON_REGION_INFO_H

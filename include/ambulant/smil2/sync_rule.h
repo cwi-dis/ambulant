@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_SYNC_RULE_H
-#define AMBULANT_LIB_SYNC_RULE_H
+#ifndef AMBULANT_SMIL2_SYNC_RULE_H
+#define AMBULANT_SMIL2_SYNC_RULE_H
 
 #include "ambulant/config/config.h"
 
@@ -312,4 +312,4 @@ class sync_rule_context : public time_traits {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_SYNC_RULE_H
+#endif // AMBULANT_SMIL2_SYNC_RULE_H

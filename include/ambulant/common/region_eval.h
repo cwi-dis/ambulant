@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_REGION_EVAL_H
-#define AMBULANT_LIB_REGION_EVAL_H
+#ifndef AMBULANT_COMMON_REGION_EVAL_H
+#define AMBULANT_COMMON_REGION_EVAL_H
 
 #include "ambulant/config/config.h"
 
@@ -285,4 +285,4 @@ inline void region_evaluator::eval_linear_dim(int dim[], int w) {
  
 } // namespace ambulant
 
-#endif // AMBULANT_LIB_REGION_EVAL_H
+#endif // AMBULANT_COMMON_REGION_EVAL_H
