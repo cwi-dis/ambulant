@@ -61,6 +61,7 @@
 using namespace ambulant;
 
 typedef lib::no_arg_callback<net::ffmpeg_audio_datasource> readdone_callback;
+typedef lib::no_arg_callback<net::ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
 
@@ -165,37 +166,20 @@ net::ffmpeg_audio_datasource::callback()
 		select_decoder("mp3"); // XXX should get from m_src
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : Selected the MP3 decoder");
 	}
-	// XXX This is done in  select_decoder now !
-	
-	//~ if(m_con == NULL && m_codec) {
-		//~ m_con = avcodec_alloc_context();
-		//~ result = avcodec_open(m_con, m_codec);
-    	//~ if ( result < 0) {
-			//~ lib::logger::get_logger()->error("ffmpeg_audio_datasource.callback : Failed to open avcodec");
-			//~ m_con = NULL; // XXX Should we free?
-		//~ } else {
-			//~ AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : open avcodec succes !");
-		//~ }
-	//~ }
-	if (m_con) {
-		size = m_src->size();
-		//while (size > 0 && !m_buffer.buffer_full()) {
-			m_inbuf = (uint8_t*) m_src->get_read_ptr();
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", size);
-			if(!m_buffer.buffer_full()){
-			m_outbuf = (uint8_t*) m_buffer.get_write_ptr(20*size);
 
-			//~ if (max_block < size) {
-				//~ blocksize = max_block;
-			//~ } else {
-				//~ blocksize = size;
-			//~ }
-			decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, size);
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
-			m_buffer.pushdata(outsize);
-			m_src->readdone(decoded);
-			}
+	if (m_con) {
+	    size = m_src->size();
+		//while (size > 0 && !m_buffer.buffer_full()) {
+		m_inbuf = (uint8_t*) m_src->get_read_ptr();
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", size);
+		if(!m_buffer.buffer_full()){
+		m_outbuf = (uint8_t*) m_buffer.get_write_ptr(20*size);
+		decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, size);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
+		m_buffer.pushdata(outsize);
+		m_src->readdone(decoded);
+		}
 		//}
 	
 		if ( m_client_callback ) {
@@ -284,4 +268,48 @@ net::ffmpeg_audio_datasource::init()
 {
 		avcodec_init();
 		avcodec_register_all();
+}
+
+
+
+
+
+void
+net::ffmpeg_resample_datasource::set_format(net::audio_context in_fmt, net::audio_context out_fmt)
+{
+    m_resample_context = audio_resample_init(out_fmt.channels, in_fmt.channels, out_fmt.sample_rate, in_fmt.sample_rate);
+    m_context_set = true;
+}
+
+
+
+
+void
+net::ffmpeg_resample_datasource::data_avail()
+{
+  int resampled;
+  int size;
+
+  if (m_context_set) {
+	size = m_src->size();
+	m_inbuf = (short int*) m_src->get_read_ptr();
+	m_outbuf = (short int*) m_buffer.get_write_ptr(20*size);
+	// XXXX : daniel is not sure aboutr the 2 at the and of audio_resample. What does this mean ? should this be the number of bytes in a sample ?
+	//XXXX : daniel does not know what audio_resample returns ! I guess it's the amount of bytes writen in m_outbuf
+	resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf,2);
+    m_buffer.pushdata(resampled);
+	//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
+	m_src->readdone(size);
+	if (m_client_callback) {
+	   AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): calling client callback");
+	   m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
+	   m_client_callback = NULL;
+   	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No client callback!");
+	}
+
+  } else {
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No resample context flusshing data");
+	m_src->readdone(size);
+  }
 }

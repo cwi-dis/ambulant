@@ -481,7 +481,7 @@ sdl_active_audio_renderer::start(double where)
 	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_audio_src) {
-		init(m_rate, m_bits, m_channels);
+		init(44100, 16, 2);
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::readdone);
 		AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)", (void*)m_event_processor, (void*)e, this);
 		m_audio_src->start(m_event_processor, e);
