@@ -2947,7 +2947,7 @@
 			dependencies = (
 			);
 			isa = PBXNativeTarget;
-			name = fullcocoambulant;
+			name = cocoambulant;
 			productInstallPath = "$(HOME)/Applications";
 			productName = cocoambulant;
 			productReference = 8D15AC370486D014006FF6A4;

@@ -34,24 +34,25 @@ cocoambulant_executable_SOURCES= \
 	MyDocument.m \
 	MyAppDelegate.m
 	
+APPNAME="Ambulant Player"
 cocoambulant_bundle: cocoambulant_executable
-	mkdir -p cocoambulant.app/Contents/MacOS
-	mkdir -p cocoambulant.app/Contents/Resources
-	echo "APPL????" > cocoambulant.app/Contents/PkgInfo
-	$(INSTALL_DATA) $(srcdir)/Info.plist cocoambulant.app/Contents/Info.plist
-	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
-	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
-	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns cocoambulant.app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
-	$(INSTALL_DATA) $(srcdir)/*.png cocoambulant.app/Contents/Resources
-	mkdir -p cocoambulant.app/Contents/Resources/data
-	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil cocoambulant.app/Contents/Resources
-	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* cocoambulant.app/Contents/Resources/data
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/cocoambulant.app/Contents/MacOS/cocoambulant
+	mkdir -p $(APPNAME).app/Contents/MacOS
+	mkdir -p $(APPNAME).app/Contents/Resources
+	echo "APPL????" > $(APPNAME).app/Contents/PkgInfo
+	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist $(APPNAME).app/Contents/Resources/English.lproj
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
+	mkdir -p $(APPNAME).app/Contents/Resources/data
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(APPNAME).app/Contents/Resources/data
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(APPNAME).app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_sdl_LDADD) \
@@ -68,7 +69,7 @@ dist-hook:
 	rm -rf `find $(distdir) -name CVS`
 	
 install-exec-hook: cocoambulant_bundle
-	rm -rf $(DESTDIR)/Applications/cocoambulant.app
-	mkdir -p $(DESTDIR)/Applications/cocoambulant.app
-	cp -r cocoambulant.app $(DESTDIR)/Applications
+	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
+	mkdir -p $(DESTDIR)/Applications/$(APPNAME).app
+	cp -r $(APPNAME).app $(DESTDIR)/Applications
 	
