@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -176,7 +176,7 @@ ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::li
 		// will signal the client.
 		m_client_callback = callbackk;
 		m_event_processor = evp;
-		lib::event *e = new readdone_callback(this, &ffmpeg_audio_datasource::callback);
+		lib::event *e = new readdone_callback(this, &ffmpeg_audio_datasource::data_avail);
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
 		m_src->start(m_event_processor,  e);
 	}
@@ -196,7 +196,7 @@ ffmpeg_audio_datasource::readdone(int len)
 }
 
 void 
-ffmpeg_audio_datasource::callback()
+ffmpeg_audio_datasource::data_avail()
 {
 	int sz;
 	int outsize;
@@ -209,27 +209,27 @@ ffmpeg_audio_datasource::callback()
 	    sz = m_src->size();
 		//while (size > 0 && !m_buffer.buffer_full()) {
 		m_inbuf = (uint8_t*) m_src->get_read_ptr();
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", sz);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail: %d bytes available", sz);
 		if(!m_buffer.buffer_full()){
 		m_outbuf = (uint8_t*) m_buffer.get_write_ptr(20*sz);
 		decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, sz);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bps",m_con->sample_rate);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 		m_buffer.pushdata(outsize);
 		m_src->readdone(decoded);
 		}
 		//}
 	
 		if ( m_client_callback ) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): calling client callback");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): calling client callback");
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No client callback!");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): No client callback!");
 		}
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No decoder, flushing available data");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::data_avail(): No decoder, flushing available data");
 		m_src->readdone(sz);
 		m_lock.leave();
 		return;
@@ -350,12 +350,14 @@ ffmpeg_resample_datasource::data_avail()
 	if (m_resample_context) {
 		sz = m_src->size();
 		m_inbuf = (short int*) m_src->get_read_ptr();
-		m_outbuf = (short int*) m_buffer.get_write_ptr(20*sz);	
-		resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, sz / 2);
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples", resampled);
-		m_buffer.pushdata(resampled*2);
-		//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
-		m_src->readdone(sz);
+		m_outbuf = (short int*) m_buffer.get_write_ptr(20*sz);
+		if (m_inbuf && m_outbuf) {
+			resampled = audio_resample(m_resample_context, m_outbuf, m_inbuf, sz / 2);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples", resampled);
+			m_buffer.pushdata(resampled*2);
+			//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
+			m_src->readdone(sz);
+		}
 #ifdef RESAMPLE_READ_ALL
 		// workaround for sdl bug: if RESAMPLE_READ_ALL is defined we continue
 		// reading until we have all data
@@ -372,7 +374,7 @@ ffmpeg_resample_datasource::data_avail()
 			m_client_callback = NULL;
 			m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): No client callback!");
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No client callback!");
 		}
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): No resample context flusshing data");

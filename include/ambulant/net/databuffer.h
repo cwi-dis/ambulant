@@ -92,7 +92,7 @@ class databuffer
 	char* get_write_ptr(int size);
 	void  pushdata(int size);
     char* get_read_ptr();
-	
+	void set_max_size(int max_size);
   private: 
     char* m_buffer; 			
 	unsigned long int m_rear;

@@ -71,12 +71,12 @@
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_datasource.h"
 #endif
-//#define WITH_RAW_AUDIO
+#define WITH_RAW_AUDIO
 #ifdef WITH_RAW_AUDIO
 #include "ambulant/net/raw_audio_datasource.h"
 #endif
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

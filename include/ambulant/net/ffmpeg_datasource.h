@@ -105,7 +105,7 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
     void start(lib::event_processor *evp, lib::event *callback);  
 
     void readdone(int len);
-    void callback();
+    void data_avail();
     bool end_of_file();
 	bool buffer_full();
 		
@@ -174,7 +174,6 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
   	
     bool m_blocked_full;	
     lib::event_processor *m_event_processor;
-//    lib::event *m_readdone;		// This is the callback our source makes to us
     lib::event *m_client_callback;  // This is our calllback to the client
     lib::critical_section m_lock;
   	audio_format m_in_fmt;

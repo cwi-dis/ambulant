@@ -111,15 +111,20 @@ databuffer::databuffer(int max_size)
     m_size = 0;
     m_rear = 0;
 	m_buffer = NULL;
-    if (max_size > 0) {
+    set_max_size(max_size);
+}
+
+void
+databuffer::set_max_size(int max_size)
+{
+	// Zero means: no limit, <0 means: default
+    if (max_size >= 0) {
         m_max_size = max_size;
     } else {
         m_max_size = DEFAULT_MAX_BUF_SIZE;
     }
-	//AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(%d): [size = %d, max size = %d]",max_size, m_size, m_max_size);
-    m_buffer_full = false;
+    m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
 }
-
 
 databuffer::~databuffer()
 {
@@ -184,7 +189,7 @@ void databuffer::pushdata(int sz)
          if (!m_buffer) {
              lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
          }
-        if(m_size > m_max_size) {
+        if(m_max_size > 0 && m_size > m_max_size) {
 			AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
             m_buffer_full = true;
         }
