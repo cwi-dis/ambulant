@@ -117,6 +117,9 @@ class viewport {
 	// Draw the text to the back buffer within destination rectangle
 	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
 	
+	// Draw a frame around the provided rect
+	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
+	
 	int get_width() const { return m_width;}
 	
 	int get_height() const { return m_height;}

@@ -62,41 +62,24 @@ namespace gui {
 
 namespace dg {
 
-class dg_area_renderer : public common::renderer_playable {
+class dg_gui_region;
+
+class dg_area : public common::renderer_playable {
   public:
-	dg_area_renderer(
+	dg_area(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::abstract_window *window) 
-	: common::renderer_playable(context, cookie, node, evp) {
-	}
-	~dg_area_renderer() {}
+		common::abstract_window *window); 
+	~dg_area();
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	dg_gui_region *m_rgn;
 };
 
-inline void gui::dg::dg_area_renderer::start(double t) {		
-	if(m_activated) return;	
-	m_dest->show(this);
-	m_activated = true;
-}
-
-inline void gui::dg::dg_area_renderer::stop() {
-	m_dest->renderer_done();
-	m_activated = false;
-}
-
-inline void gui::dg::dg_area_renderer::user_event(const lib::point& pt, int what) {
-	if(what == common::user_event_click)
-		m_context->clicked(m_cookie);
-	else if(what == common::user_event_mouse_over) {
-		m_context->pointed(m_cookie);
-	}
-}
 
 } // namespace dg
 
