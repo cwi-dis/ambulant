@@ -70,12 +70,12 @@ class raw_video_datasource : virtual public lib::ref_counted_obj {
 	raw_video_datasource(const std::string &directory);
   	~raw_video_datasource();
   
-	void start_frame(lib::event_processor *evp, lib::event *callback, int timestamp);
+	void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);
   	
   	bool end_of_file();
   	
-  	char* get_frame(int *timestamp); 
-  	void frame_done(int timestamp);
+  	char* get_frame(double *timestamp); 
+  	void frame_done(double timestamp);
   
   private:
 	bool read_next_frame();	 

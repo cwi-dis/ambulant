@@ -58,6 +58,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/raw_video_datasource.h"
+#include "ambulant/lib/timer.h"
 
 namespace ambulant {
 namespace gui {
@@ -73,12 +74,14 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
 	net::datasource_factory *df);
 
   	~none_video_renderer() {};
-
+	double now();
       
   	bool is_paused() {};
   	bool is_stopped() {};
   	bool is_playing() {};
- 
+ 	
+	void show_frame(char* frame);
+		
     void start(double where);
     void stop() {};
     void pause() {};
@@ -97,7 +100,7 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
   private:
 	  lib::event_processor* m_evp;
   	  net::raw_video_datasource* m_src; 
-
+  	  unsigned long int m_epoch;
 };
 
 }

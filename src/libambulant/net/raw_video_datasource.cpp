@@ -79,7 +79,7 @@ raw_video_datasource::~raw_video_datasource()
 }
 
 void
-raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent, int timestamp)
+raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent, double timestamp)
 {
 	bool dummy;
 	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x)", (void*) this);
@@ -94,17 +94,17 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 }
 
 char*
-raw_video_datasource::get_frame(int *timestamp)
+raw_video_datasource::get_frame(double *timestamp)
 {
-	*timestamp = m_filenr;
+	*timestamp =  (double) m_filenr;
 	return m_buffer;
 }
 
 void
-raw_video_datasource::frame_done(int timestamp)
+raw_video_datasource::frame_done(double timestamp)
 {
-	if (timestamp > m_filenr) {
-		m_filenr = timestamp;
+	if (timestamp > (double) m_filenr) {
+		m_filenr = round(timestamp);
 	}
 	if (m_buffer) {
 		free (m_buffer);

@@ -92,28 +92,56 @@ void
 none_video_renderer::start (double where = 1)
 {
 	int w;
+	m_epoch = m_evp->get_timer()->elapsed();
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
 	m_src->start_frame (m_evp, e, w);
 }
 
+
+// now() returns the time in seconds !
+double
+none_video_renderer::now() 
+{
+	return (m_evp->get_timer()->elapsed()- m_epoch)/1000;
+}
+
+void 
+none_video_renderer::show_frame(char* frame)
+{
+lib::logger::get_logger ()->trace("**** DISPLAYED");
+}
+
 void
 none_video_renderer::data_avail ()
 {
-	int ts;
+	double ts;
 	char *buf;
+	unsigned long int event_time;
+	bool displayed;
 	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(this = 0x%x):", (void *) this);
 	buf = m_src->get_frame (&ts);
-	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(buf = 0x%x) (ts=%d):", (void *) buf,ts);	
+	displayed = false;
+	AM_DBG lib::logger::get_logger ()->trace ("none_video_renderer::data_avial()(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (buf) {
-		lib::logger::get_logger ()->trace("**** (this = 0x%x) Display framenr : %d (located at 0x%x) ", (void *) this, ts, (void *) buf);
-		m_src->frame_done (ts);
+		if (ts <= now()) {
+			lib::logger::get_logger ()->trace("**** (this = 0x%x) Display frame with timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
+			show_frame(buf);
+			displayed = true;
+			m_src->frame_done(ts);
+		} else {
+			if (!m_src->end_of_file()){
+				lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
+				event_time = (unsigned long int) round( ts*1000 - now()*1000); 
+				m_evp->add_event(e, event_time);
+			}
+		}
 	} else {
 		lib::logger::get_logger ()->trace("none_video_renderer::data_avial()(this = 0x%x): buf seems to be NULL !) ", (void *) this);
 	}
 	
-	if (!m_src->end_of_file ()) {
+	if ((!m_src->end_of_file() ) && (displayed) ) {
 		lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
 		m_src->start_frame (m_evp, e, ts);
 	} else {
