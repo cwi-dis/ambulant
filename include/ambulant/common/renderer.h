@@ -133,7 +133,7 @@ class active_renderer : public active_basic_renderer {
 	virtual void wantclicks(bool want);
 
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const lib::point &where) { clicked_callback(); }
+	virtual void user_event(const lib::point &where, int what = 0) { clicked_callback(); }
 	virtual void set_surface(surface *dest) { m_dest = dest; }
 	virtual surface *get_surface() { return m_dest;}
 	virtual renderer *get_renderer() { return this; }
@@ -195,7 +195,7 @@ class background_renderer : public renderer {
 		m_dst(NULL) {}
 	virtual ~background_renderer() {}
 	virtual void set_surface(surface *destination) { m_dst = destination; }
-	virtual void user_event(const lib::point &where) { /* Ignore, for now */ }
+	virtual void user_event(const lib::point &where, int what = 0) { /* Ignore, for now */ }
 	virtual surface *get_surface() { return m_dst; }
   protected:
 	const region_info *m_src;
@@ -231,7 +231,7 @@ class renderer_playable : public playable, public renderer {
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
 	surface *get_surface() { return m_dest;}
-	void user_event(const lib::point &where) {}
+	void user_event(const lib::point &where, int what) {}
 	renderer *get_renderer() { return this; }
 	
   protected:
