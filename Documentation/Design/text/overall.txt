@@ -1,6 +1,6 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 22-Jul-03
+Jack Jansen, 28-Jul-03
 ----------------------
 
 This document contains some general thoughts on the Ambulant design. Accompanying
@@ -83,6 +83,16 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
   (as in: ``template <class A> {}``)
 - Header files need to include any header files on which they depend, and
   they guard against multiple inclusion with a preprocessor construct.
+- We need to define which preprocessor defines we are going to
+  switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in
+  one place and something completely different in another place.
+  Suggestion:
+  
+  - `#ifdef _WIN32` to test for Windows
+  - something to test for Linux
+  - `#ifdef __APPLE__` to test for MacOSX
+  - something to test for 386 or other architectures?
+  - something to test for Visual Studio versus gcc?
 
 Global structure
 ----------------
