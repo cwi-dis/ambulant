@@ -301,7 +301,7 @@ qt_mainloop::show_file(const net::url &url)
 void
 qt_mainloop::done(common::player *p)
 {
-	m_logger->warn("qt_mainloop: implementing: done document");
+	m_logger->debug("qt_mainloop: implementing: done document");
 //TBD	m_timer->pause();
 //TBD	m_update_event = 0;
 //TBD	clear_transitions();
