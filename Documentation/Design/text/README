@@ -1,0 +1,7 @@
+The text files here are formatted in ReST, ReStructured Text, format.
+
+A description of ReST, plus Python software to convert it to HTML,
+can be found at <http://docutils.sourceforge.net/>.
+
+The HTML is generated from the text files by running
+% python .../docutils/tools/html.py xxx.txt xxx.html
