@@ -2,9 +2,10 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            ACTIONS = {setLogLevel = id; }; 
             CLASS = LogController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {text = id; }; 
+            OUTLETS = {"level_popup" = id; text = id; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = "java.lang.Object"; LANGUAGE = Java; }

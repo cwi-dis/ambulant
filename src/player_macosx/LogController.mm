@@ -47,7 +47,7 @@
  */
 
 #import "LogController.h"
-
+#import "MyAppDelegate.h"
 
 @implementation LogController
 
@@ -78,6 +78,18 @@
     [text replaceCharactersInRange:endRange withString:data];
     endRange.length = [data length];
     [text scrollRangeToVisible:endRange];
+}
+
+- (void) setLogLevel: (id) sender
+{
+	int level = [sender indexOfSelectedItem];
+	MyAppDelegate *app = [[NSApplication sharedApplication] delegate];
+	[app setLogLevel: level];
+}
+
+- (void) setLogLevelUI: (int) level
+{
+	[level_popup selectItemWithIndex: level];
 }
 
 @end

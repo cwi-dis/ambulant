@@ -51,9 +51,12 @@
 
 @interface LogController : NSWindowController {
 	IBOutlet NSTextView *text;
+	IBOutlet NSPopUpButton *level_popup;
 }
 
 + (id) sharedLogController;
 
 - (void) insertText: (NSString *)data;
+- (void) setLogLevel: (id) sender;
+- (void) setLogLevelUI: (int) level;
 @end

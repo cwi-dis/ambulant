@@ -80,6 +80,7 @@ class preferences {
 
 	bool m_validation_schema_full_checking;
 #endif/*WITH_XERCES*/
+	int m_log_level;
 
 	static preferences* get_preferences();
 

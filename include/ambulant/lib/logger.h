@@ -182,8 +182,8 @@ class logger {
 		m_pos = pos;
 	} 
 	
-  private:
 	static const char* get_level_name(int level);
+  private:
 	
 	// this logger members
 	critical_section m_cs;

@@ -58,6 +58,7 @@
 #include "ambulant/lib/amstream.h"
 #include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/common/preferences.h"
 #include <stdarg.h>
 
 class nslog_ostream : public ambulant::lib::ostream {
@@ -90,8 +91,15 @@ show_message(const char *format, va_list args)
 void
 initialize_logger()
 {
+	// Connect logger to our message displayer and output processor
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
 	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+	// Tell the logger about the output level preference
+	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+	ambulant::lib::logger::get_logger()->set_level(level);
+	// And tell the UI too
+	LogController *log = [LogController sharedLogController];
+	if (log) [log setLogLevelUI: level];	
 }
 
 @implementation MyAppDelegate
@@ -191,5 +199,14 @@ initialize_logger()
 	[message release];
 }
 
+- (void)setLogLevel: (int)level
+{
+	ambulant::common::preferences::get_preferences()->m_log_level = level;
+	ambulant::common::preferences::get_preferences()->save_preferences();
+	ambulant::lib::logger::get_logger()->set_level(0);
+	ambulant::lib::logger::get_logger()->trace("Log level set to %s",
+		ambulant::lib::logger::get_level_name(level));
+	ambulant::lib::logger::get_logger()->set_level(level);
+}
 @end
 
