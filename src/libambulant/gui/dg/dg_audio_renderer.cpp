@@ -54,6 +54,7 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -62,19 +63,15 @@
 using namespace ambulant;
 
 gui::dg::audio_renderer::audio_renderer()
-:	m_hWaveOut(NULL),
-	m_hDoneEvent(CreateEvent(NULL, TRUE, FALSE, NULL)) {
-	if(!m_hDoneEvent) 
-		lib::win32::win_report_last_error("CreateEvent");
+:	m_hWaveOut(NULL) {
 }
 	
 gui::dg::audio_renderer::~audio_renderer() {
-	if(m_hDoneEvent) 
-		CloseHandle(m_hDoneEvent);
+	if(m_hWaveOut) stop();
 }
 
 //static 
-bool gui::dg::audio_renderer::can_play(WAVEFORMATEX& wfx) {
+bool gui::dg::audio_renderer::can_play(WAVEFORMATEX& wfx) {	
 	DWORD flags = WAVE_FORMAT_QUERY;
 	MMRESULT mmres = waveOutOpen(NULL, WAVE_MAPPER, &wfx, 0, 0, flags);
 	if(mmres != MMSYSERR_NOERROR) {
@@ -100,9 +97,13 @@ bool gui::dg::audio_renderer::open(int nSamplesPerSec, int nChannels) {
 }
 
 bool gui::dg::audio_renderer::open(WAVEFORMATEX& wfx) {
+	// waveOutReset() blocks with callbacks 
+	//MMRESULT mmres = waveOutOpen(&m_hWaveOut, WAVE_MAPPER, &wfx, 
+	//	reinterpret_cast<DWORD_PTR>(audio_renderer::callback), 
+	//	reinterpret_cast<DWORD_PTR>(this), CALLBACK_FUNCTION);
+	if(m_hWaveOut) stop();
 	MMRESULT mmres = waveOutOpen(&m_hWaveOut, WAVE_MAPPER, &wfx, 
-		reinterpret_cast<DWORD_PTR>(audio_renderer::callback), 
-		reinterpret_cast<DWORD_PTR>(this), CALLBACK_FUNCTION);
+		0, 0, CALLBACK_NULL);
 	if(mmres != MMSYSERR_NOERROR) {
 		seterror("waveOutOpen()", mmres);
 		return false;
@@ -116,7 +117,11 @@ bool gui::dg::audio_renderer::open(WAVEFORMATEX& wfx) {
 }
 
 void gui::dg::audio_renderer::close() {
-	stop();
+	if(m_hWaveOut == NULL) return;
+	MMRESULT mmres = waveOutClose(m_hWaveOut);
+	if(mmres != MMSYSERR_NOERROR)
+		seterror("waveOutClose()", mmres);
+	m_hWaveOut = NULL;
 }
 
 void gui::dg::audio_renderer::start() {
@@ -139,25 +144,44 @@ void gui::dg::audio_renderer::resume() {
 
 void gui::dg::audio_renderer::stop() {
 	if(m_hWaveOut == NULL) return;
-	waveOutPause(m_hWaveOut);
-	waveOutClose(m_hWaveOut);
+	MMRESULT mmres = waveOutReset(m_hWaveOut);
+	if(mmres != MMSYSERR_NOERROR)
+		seterror("waveOutReset()", mmres);
+	update();
+	if(!m_audio_data.empty())
+		lib::logger::get_logger()->warn("NOT DONE BUFFERS: %u", m_audio_data.size());
+	clear_data();
+	close();
 }
 
 // static 
 void gui::dg::audio_renderer::seterror(const char *funcname, MMRESULT mmres) {
-	if(mmres != MMSYSERR_NOERROR) {
-		if(mmres == MMSYSERR_INVALHANDLE)
+	if(mmres == MMSYSERR_NOERROR) return;
+	switch(mmres) {
+		case MMSYSERR_INVALHANDLE:
 			seterror(funcname, "MMSYSERR_INVALHANDLE, Specified device handle is invalid.");
-		else if(mmres == MMSYSERR_BADDEVICEID)
+			break;
+		case MMSYSERR_BADDEVICEID:
 			seterror(funcname, "MMSYSERR_BADDEVICEID, Specified device identifier is out of range.");
-		else if(mmres == MMSYSERR_NODRIVER)
+			break;
+		case MMSYSERR_NODRIVER:
 			seterror(funcname, "MMSYSERR_NODRIVER, No device driver is present");
-		else if(mmres == MMSYSERR_NOMEM)
+			break;
+		case MMSYSERR_NOMEM:
 			seterror(funcname, "MMSYSERR_NOMEM, Unable to allocate or lock memory.");
-		else if(mmres == WAVERR_BADFORMAT)
+			break;
+		case WAVERR_BADFORMAT:
 			seterror(funcname, "WAVERR_BADFORMAT, Attempted to open with an unsupported waveform-audio format.");
-		else if(mmres == WAVERR_SYNC)
+			break;
+		case WAVERR_SYNC:
 			seterror(funcname, "WAVERR_SYNC, Device is synchronous but waveOutOpen was called without using the WAVE_ALLOWSYNC flag");
+			break;
+		case WAVERR_STILLPLAYING:
+			seterror(funcname, "WAVERR_STILLPLAYING, There are still buffers in the queue");
+			break;
+		default:
+			lib::logger::get_logger()->error("%s failed, Error: %u", funcname, mmres);
+			break;
 	}
 }
 
@@ -169,31 +193,6 @@ void gui::dg::audio_renderer::seterror(const char *funcname, const char *msg) {
 // static 
 void gui::dg::audio_renderer::seterror(const char *funcname) {
 	lib::logger::get_logger()->error("%s failed", funcname);
-}
-
-// Destructs done audio chunks
-// Deletes the audio_renderer instance on WOM_CLOSE
-// Therefore we don't need to wait until a WOM_CLOSE to delete the audio_renderer instance.
-//
-// static 
-void __stdcall gui::dg::audio_renderer::callback(HWAVEOUT hwo, UINT uMsg, 
-	DWORD_PTR dwInstance, DWORD dwParam1, DWORD dwParam2) {
-	audio_renderer *wout = 
-		reinterpret_cast<audio_renderer*>(dwInstance);
-	if(uMsg == WOM_OPEN) {
-		AM_DBG lib::logger::get_logger()->trace("WOM_OPEN");
-	} else if(uMsg == WOM_DONE) {
-		AM_DBG lib::logger::get_logger()->trace("WOM_DONE");
-		wout->unprepare_front();
-		if(!wout->has_audio_data())
-			SetEvent(wout->m_hDoneEvent);
-	} else if(uMsg == WOM_CLOSE) {
-		AM_DBG lib::logger::get_logger()->trace("WOM_CLOSE");
-		wout->clear_data();
-		SetEvent(wout->m_hDoneEvent);
-		wout->m_hWaveOut = 0;
-		delete wout;
-	}
 }
 
 bool gui::dg::audio_renderer::write(audio_buffer* p) {
@@ -211,7 +210,23 @@ bool gui::dg::audio_renderer::write(audio_buffer* p) {
 		seterror("waveOutWrite()");
 	return (mmres == MMSYSERR_NOERROR);
 }
-	
+
+void gui::dg::audio_renderer::update() {
+	while(!m_audio_data.empty()) {
+		WAVEHDR& waveHdr = m_audio_data.front();
+		if((waveHdr.dwFlags & WHDR_DONE) == WHDR_DONE) {
+			if(m_hWaveOut) {
+				MMRESULT mmres = waveOutUnprepareHeader(m_hWaveOut, &waveHdr, sizeof(WAVEHDR));
+				if(mmres != MMSYSERR_NOERROR)
+					seterror("waveOutUnprepareHeader()");
+			}
+			audio_buffer *p =  reinterpret_cast<audio_buffer*>(waveHdr.dwUser);
+			delete p;
+			m_audio_data.pop_front();
+		} else break;
+	}
+}
+
 void gui::dg::audio_renderer::unprepare_front() {
 	if(!m_audio_data.empty()) {
 		WAVEHDR& waveHdr = m_audio_data.front();
@@ -227,6 +242,11 @@ void gui::dg::audio_renderer::unprepare_front() {
 }
 
 void gui::dg::audio_renderer::clear_data() {
-	while(has_audio_data()) unprepare_front();
+	while(has_audio_data()) {
+		WAVEHDR& waveHdr = m_audio_data.front();
+		audio_buffer *p =  reinterpret_cast<audio_buffer*>(waveHdr.dwUser);
+		delete p;
+		m_audio_data.pop_front();
+	}
 }
 

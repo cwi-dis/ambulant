@@ -98,29 +98,27 @@ class audio_renderer {
 
 	void stop();
 
+	void update();
+	
 	static void seterror(const char *funcname, MMRESULT mmres);
 	static void seterror(const char *funcname, const char *msg);
 	static void seterror(const char *funcname);
 
-	static void __stdcall callback(HWAVEOUT hwo, UINT uMsg, DWORD_PTR dwInstance, 
-		DWORD dwParam1, DWORD dwParam2);
-
 	bool is_open() const { return (m_hWaveOut != NULL);}
 	operator HWAVEOUT() { return m_hWaveOut;}
-	HANDLE get_done_event() const { return m_hDoneEvent;}
 
 	bool write(audio_buffer* p);
 	
 	bool has_audio_data() const { return !m_audio_data.empty();}
 	size_t get_audio_data_size() const { return m_audio_data.size();}
 	
+	void set_done_event(HANDLE hDoneEvent);
 	void unprepare_front();
 	void clear_data();
 	
   private:
 	HWAVEOUT m_hWaveOut;
 	std::deque<WAVEHDR> m_audio_data;
-	HANDLE m_hDoneEvent;
 };
 
 } // namespace dg

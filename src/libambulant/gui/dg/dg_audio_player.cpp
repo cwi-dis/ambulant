@@ -54,6 +54,7 @@
 #include "ambulant/gui/dg/dg_mp3_decoder.h"
 #include "ambulant/gui/dg/dg_audio_renderer.h"
 #include "ambulant/lib/win32/win32_fstream.h"
+#include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
 #ifndef AM_DBG
@@ -62,10 +63,11 @@
 
 using namespace ambulant;
 
+static gui::dg::audio_renderer s_renderer;
+
 gui::dg::audio_player::audio_player(const std::string& url) 
 :	m_bbuf(read_size),
-	m_decbuf(0), 
-	m_renderer(0) {
+	m_decbuf(0) {
 	memset(&m_wfx, 0, sizeof(WAVEFORMATEX));
 	if(!m_ifs.open(url)) {
 		lib::logger::get_logger()->error("Failed to open: %s", url);
@@ -73,45 +75,39 @@ gui::dg::audio_player::audio_player(const std::string& url)
 	m_ifs.read(m_bbuf);
 	m_bbuf.flip();
 	m_decoder.get_wave_format(m_bbuf, m_wfx);
-	m_renderer = new gui::dg::audio_renderer();
-	m_renderer->open(m_wfx);
-	render();
+	s_renderer.open(m_wfx);
+	update();
 }
 
 gui::dg::audio_player::~audio_player() {
-	stop();
 	if(m_ifs.is_open()) m_ifs.close();
+	if(s_renderer.is_open()) s_renderer.stop();
 	if(m_decbuf != 0) delete m_decbuf;
 }
 
 bool gui::dg::audio_player::can_play() const {
-	return m_ifs.is_open() && m_renderer;
+	return m_ifs.is_open() && s_renderer.is_open();
 }
 	
 void gui::dg::audio_player::start(double t) {
-	if(m_renderer) m_renderer->start();
+	if(s_renderer.is_open())
+		s_renderer.start();
 }
 
 void gui::dg::audio_player::pause() {
-	if(m_renderer) m_renderer->pause();
+	if(s_renderer.is_open())
+		s_renderer.pause();
 }
 	
 void gui::dg::audio_player::resume() {
-	if(m_renderer) m_renderer->resume();
+	if(s_renderer.is_open())
+		s_renderer.resume();
 }
 	
 void gui::dg::audio_player::stop() {
-	gui::dg::audio_renderer *dummy = m_renderer;
-	m_renderer = 0;
-	if(dummy) {
-		// audio_renderer::stop() will delete after 
-		// a while the audio_renderer object
-		dummy->stop(); 
-		
-		// Due to the audio_renderer::stop() arrangement the following code is not necessary 
-		//if(WaitForSingleObject(dummy->get_done_event(), 3000) != WAIT_OBJECT_0) {
-		//	lib::logger::get_logger()->warn("Wait for audio renderer done event failed");
-		//}
+	if(m_ifs.is_open()) m_ifs.close();
+	if(s_renderer.is_open()) {
+		s_renderer.stop();
 	}
 }
 	
@@ -121,15 +117,16 @@ gui::dg::audio_player::get_dur() {
 }
 
 bool gui::dg::audio_player::is_playing() {
-	return m_renderer != 0 && 
-		WaitForSingleObject(m_renderer->get_done_event(), 0) != WAIT_OBJECT_0;
+	if(s_renderer.is_open()) update();
+	return s_renderer.is_open() && s_renderer.has_audio_data();
 }
 	
-void gui::dg::audio_player::render() {
-	if(!m_renderer) return;
-	if(m_renderer->get_audio_data_size() > lo_limit) return;
+void gui::dg::audio_player::update() {
+	if(s_renderer.is_open()) s_renderer.update();
+	if(!s_renderer.is_open() || !m_ifs.is_open()) return;
+	if(s_renderer.get_audio_data_size() > lo_limit) return;
 	while(m_ifs.is_open() && 
-		m_renderer->get_audio_data_size()<hi_limit) {
+		s_renderer.get_audio_data_size()<hi_limit) {
 		// Decode
 		if(m_decbuf == 0) {
 			m_decbuf = new std::basic_string<char>();
@@ -140,7 +137,7 @@ void gui::dg::audio_player::render() {
 				
 		// Render buffer
 		if(m_decbuf->size() > 0) {
-			m_renderer->write(m_decbuf);
+			s_renderer.write(m_decbuf);
 			m_decbuf = 0;
 		}
 		

@@ -166,7 +166,6 @@ void gui::dg::dg_audio_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 void gui::dg::dg_audio_renderer::update_callback() {
 	if(!m_update_event || !m_player) return;
 	if(m_player->is_playing()) {
-		m_player->render();
 		schedule_update();
 	} else {
 		m_update_event = 0;
@@ -177,5 +176,5 @@ void gui::dg::dg_audio_renderer::update_callback() {
 void gui::dg::dg_audio_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dg_audio_renderer>(this, 
 		&dg_audio_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 500);
+	m_event_processor->add_event(m_update_event, 250);
 }

@@ -81,22 +81,16 @@ class audio_player {
 	void stop();	
 	std::pair<bool, double> get_dur();
 	bool is_playing();
-
-	void render();
-	gui::dg::audio_renderer *get_audio_renderer() {
-		return m_renderer;
-	}
+	void update();	
 	
   private:
 	void resample();
 	
 	enum { read_size = 8192, dec_size_estim = 81920};
-	enum { lo_limit = 4, hi_limit = 8};
+	enum { lo_limit = 1, hi_limit = 2};
 	
 	lib::byte_buffer m_bbuf;
 	std::basic_string<char> *m_decbuf;
-	gui::dg::audio_renderer *m_renderer;
-	
 	lib::win32::fstream m_ifs;
 	gui::dg::mp3_decoder m_decoder;
 	WAVEFORMATEX m_wfx;  
