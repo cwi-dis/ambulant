@@ -1,1 +1,74 @@
-Ambulant design, random thoughts ================================Jack Jansen, 28-Apr-03.-----------------------Objects we need::- Data Source. Think of these as "media items", they may refer to a URLor part of a multiplexed stream or so, and provide data to renderers andto the parser.- Region. This is an area of screen space (or a speaker). It is "whatthe user sees".- Data sink. This is where renderers send their data.- Renderers. These decode data streams, handle timing and do bitblittingor push audio through.- Clocks. These advance a virtual time.- Document Scheduler. This reads a document and runs it.Objects we may need::- Resource. Control access to scarce resources (bandwidth, number ofopen files).Data sources come in two flavors: active and dormant. These can be usedinterchangeably (active is probably a subclass of dormant). Dormant hasURL, clip-begin/clip-end and such. Active also has methods for I/O.A data sink is where data is sent. It is invoked with a SMIL region asparameter, but multiple sinks can share a region, in which casedouble-buffering for transitions and such happens there. It has no APIfor graphics or such, this is handled by the renderers using the localgraphics APIs. A data sink can send a callback to the renderer for"redraw" and "reinit". The latter is redraw on steriods: the underlyingOS window may have changed (end of transition, resize).RendererFactory is called with a data source, data sink and a few otherparameters (such as "ignore implicit repeat in media item"). It returnsa renderer object. The factory can either return a dormant renderer,which is only a placeholder, or a real renderer. To return a realrenderer, or when a dormant renderer is later activated, we ask allknown renderer classes whether they are able to handle this data source,and instantiate the first one that matches.The renderer object interface should allow for at least three differentimplementations::1. The normal one, where the renderer depends on the data source fordata, decodes it, and sends it to the data sink.2. A "third party" renderer, that just grabs the information from thedata source and sink and passes it to a third party engine (thinkQuickTime or Direct X).3. A mix of the above.We need the dormant renderer object, which only holds the informationneeded to allow later activation (on demand?). Otherwise resources maybecome scarce: think of a seq with 1000 slides: we don't want to openall images beforehand or we will run out of file descriptors. Butsometimes the document scheduler must open the data source, if the mediaitem is part of a switch, for instance.Clocks come in two flavors. The normal flavor is a free-running clock, arenderer that is subscribed to it can access it in two modes (dependingon what programming model it prefers): callback or polling. In callbackmode it will get callbacks when the virtual clock time has drifted morethan delta from the wallclock. In polling mode it can ask for the timeand ask for a callback at a specific time/interval. Renderers can alsotell the clock what time they think it is, but this is completelyignored.The other clock flavor is the master clock. Each normal clock can haveat most one master clock attached to it. The master clock has the sameAPI as a normal clock, from the renderer point of view, but it does notgive callbacks and it *does* listen when the renderer tells it what timeit is (and updates its dependent slave clock). The scheduler assigns amaster clock for the SMIL syncMaster attribute.The SMIL Document Scheduler opens the document (through a data source)and parses it into a tree. 
+Ambulant design, random thoughts 
+================================
+Jack Jansen, 28-Apr-03.
+-----------------------
+Objects we need::
+- Data Source. Think of these as "media items", they may refer to a URL
+or part of a multiplexed stream or so, and provide data to renderers and
+to the parser.
+- Region. This is an area of screen space (or a speaker). It is "what
+the user sees".
+- Data sink. This is where renderers send their data.
+- Renderers. These decode data streams, handle timing and do bitblitting
+or push audio through.
+- Clocks. These advance a virtual time.
+- Document Scheduler. This reads a document and runs it.
+
+Objects we may need::
+- Resource. Control access to scarce resources (bandwidth, number of
+open files).
+
+Data sources come in two flavors: active and dormant. These can be used
+interchangeably (active is probably a subclass of dormant). Dormant has
+URL, clip-begin/clip-end and such. Active also has methods for I/O.
+
+A data sink is where data is sent. It is invoked with a SMIL region as
+parameter, but multiple sinks can share a region, in which case
+double-buffering for transitions and such happens there. It has no API
+for graphics or such, this is handled by the renderers using the local
+graphics APIs. A data sink can send a callback to the renderer for
+"redraw" and "reinit". The latter is redraw on steriods: the underlying
+OS window may have changed (end of transition, resize).
+
+RendererFactory is called with a data source, data sink and a few other
+parameters (such as "ignore implicit repeat in media item"). It returns
+a renderer object. The factory can either return a dormant renderer,
+which is only a placeholder, or a real renderer. To return a real
+renderer, or when a dormant renderer is later activated, we ask all
+known renderer classes whether they are able to handle this data source,
+and instantiate the first one that matches.
+
+The renderer object interface should allow for at least three different
+implementations::
+1. The normal one, where the renderer depends on the data source for
+data, decodes it, and sends it to the data sink.
+2. A "third party" renderer, that just grabs the information from the
+data source and sink and passes it to a third party engine (think
+QuickTime or Direct X).
+3. A mix of the above.
+
+We need the dormant renderer object, which only holds the information
+needed to allow later activation (on demand?). Otherwise resources may
+become scarce: think of a seq with 1000 slides: we don't want to open
+all images beforehand or we will run out of file descriptors. But
+sometimes the document scheduler must open the data source, if the media
+item is part of a switch, for instance.
+
+Clocks come in two flavors. The normal flavor is a free-running clock, a
+renderer that is subscribed to it can access it in two modes (depending
+on what programming model it prefers): callback or polling. In callback
+mode it will get callbacks when the virtual clock time has drifted more
+than delta from the wallclock. In polling mode it can ask for the time
+and ask for a callback at a specific time/interval. Renderers can also
+tell the clock what time they think it is, but this is completely
+ignored.
+
+The other clock flavor is the master clock. Each normal clock can have
+at most one master clock attached to it. The master clock has the same
+API as a normal clock, from the renderer point of view, but it does not
+give callbacks and it *does* listen when the renderer tells it what time
+it is (and updates its dependent slave clock). The scheduler assigns a
+master clock for the SMIL syncMaster attribute.
+
+The SMIL Document Scheduler opens the document (through a data source)
+and parses it into a tree. 
