@@ -146,7 +146,13 @@ struct color_trible {
 } // namespace ambulant
 
 #ifndef AMBULANT_NO_IOSTREAMS
+
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
+
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::color_trible& t) { 
 	return os << '(' << int(t.r) << ", " << int(t.g) << ", " << int(t.b)  << ')';
 }

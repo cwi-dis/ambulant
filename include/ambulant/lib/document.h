@@ -67,11 +67,11 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
 
-#ifndef AMBULANT_NO_IOSTREAMS
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else
+#else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
-#endif
+#endif/*AMBULANT_NO_OSTREAM*/
 
 // A class respresenting an XML document.
 //

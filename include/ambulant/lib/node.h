@@ -75,7 +75,11 @@
 
 #ifndef AMBULANT_NO_IOSTREAMS
 // operator<<
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
 #endif
 
 namespace ambulant {

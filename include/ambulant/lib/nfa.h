@@ -439,7 +439,11 @@ class nfa_matcher {
 } // namespace ambulant
 
 #ifndef AMBULANT_NO_IOSTREAMS
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::nfa_node& n) {
 	return os << n.get_edge_repr();
 }

@@ -496,7 +496,11 @@ typedef basic_rect<long, unsigned long> lrect;
 #ifndef AMBULANT_NO_IOSTREAMS
 
 // gtypes output operators
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
 
 template<class T>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_point<T>& p) { 

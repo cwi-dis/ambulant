@@ -80,7 +80,11 @@
 #include <stdexcept>
 
 // std::ostream for debug output
+#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
+#else /*AMBULANT_NO_OSTREAM*/
+#include <ostream.h>
+#endif/*AMBULANT_NO_OSTREAM*/
 
 // floor
 #include <math.h>

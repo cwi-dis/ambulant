@@ -29,7 +29,13 @@
 #     endif
 #   endif
 
+#   if __GNUC__ == 2 && __GNUC_MINOR__ == 95
+/* gcc 2.95 has <ostream.h> instead of <ostream> keesblom */
+#    define  AMBULANT_NO_OSTREAM
+#   endif
+
 #   if __GNUC__ == 2 && __GNUC_MINOR__ <= 97
+
 #     define AMBULANT_NO_MEMBER_TEMPLATE_FRIENDS
 #     define AMBULANT_NO_OPERATORS_IN_NAMESPACE
 #   endif
