@@ -91,6 +91,8 @@ static std::string get_log_filename() {
 	text_strcat(buf, log_name);
 	return std::string(ambulant::lib::textptr(buf).str());
 }
+
+
 static TCHAR *get_directory(const TCHAR *fn) {
 	static TCHAR buf[_MAX_PATH];
 	buf[0] = 0;
@@ -167,6 +169,8 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_AUTOPLAY, OnUpdateViewAutoplay)
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTW, 0, 0xFFFF, OnToolTipNotify)
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipNotify)
+	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
+	ON_UPDATE_COMMAND_UI(ID_HELP_WELCOME, OnUpdateHelpWelcome)
 END_MESSAGE_MAP()
 
 
@@ -252,9 +256,13 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void MmView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	SendMessage(WM_SET_CLIENT_RECT, 
-		common::default_layout_width, ambulant::common::default_layout_height);
-	if(player) player->redraw(GetSafeHwnd(), 0);
+	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Welcome.smil")))
+		PostMessage(WM_COMMAND, ID_HELP_WELCOME);
+	else 
+		SendMessage(WM_SET_CLIENT_RECT, 
+			common::default_layout_width, ambulant::common::default_layout_height);
 }
 
 void MmView::OnDestroy()
@@ -510,4 +518,35 @@ INT_PTR MmView::OnToolHitTest(CPoint point, TOOLINFO* pTI) const {
 		}
 	} 
 	return -1;  // not found
+}
+
+bool MmView::LocateWelcomeDoc(LPCTSTR rpath) {
+	TCHAR buf[_MAX_PATH];
+	GetModuleFileName(NULL, buf, _MAX_PATH);
+	TCHAR *p1 = text_strrchr(buf,'\\');
+	if(p1) *++p1='\0';
+	text_strcat(buf, rpath);
+	TCHAR path[_MAX_PATH];
+	TCHAR *pFilePart = 0;	
+	GetFullPathName(buf, MAX_PATH, path, &pFilePart);
+	WIN32_FIND_DATA fd;
+	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
+	HANDLE hFind = FindFirstFile(path, &fd); 
+	if(hFind != INVALID_HANDLE_VALUE){
+		FindClose(hFind);
+		m_welcomeDocFilename = path;
+		return true;
+	} 
+	return false;
+}
+
+void MmView::OnHelpWelcome()
+{
+	if(!m_welcomeDocFilename.IsEmpty())
+		SetMMDocument(m_welcomeDocFilename);
+}
+
+void MmView::OnUpdateHelpWelcome(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!m_welcomeDocFilename.IsEmpty());
 }

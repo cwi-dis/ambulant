@@ -128,6 +128,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "&About AmbulantPlayer...",    ID_APP_ABOUT
+        MENUITEM "&Welcome",                    ID_HELP_WELCOME
     END
 END
 
@@ -169,7 +170,8 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "AmbulantPlayer Version 1.0",IDC_VERSION,40,10,132,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2003",IDC_STATIC,40,25,119,8
+    LTEXT           "Copyright (C) 2004, Stichting CWI",IDC_STATIC,40,25,128,
+                    8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
@@ -202,7 +204,7 @@ BEGIN
             VALUE "InternalName", "AmbulantPlayer.exe"
             VALUE "LegalCopyright", "(c) Ambulant.  All rights reserved."
             VALUE "OriginalFilename", "AmbulantPlayer.exe"
-            VALUE "ProductName", "Ambulant Player"
+            VALUE "ProductName", "Ambulant/X Player"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END

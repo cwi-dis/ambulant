@@ -66,11 +66,13 @@ public:
 // Operations
 public:
 	void SetMMDocument(LPCTSTR lpszPathName);
+	bool LocateWelcomeDoc(LPCTSTR rpath);
 	UINT_PTR m_timer_id;
 	CString m_curDocFilename;
 	CString m_curFilter;
 	UINT m_cursor_id;
 	bool m_autoplay;
+	CString m_welcomeDocFilename;
 	
 // Overrides
 	public:
@@ -119,6 +121,8 @@ public:
 	afx_msg BOOL OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
 
 	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
+	afx_msg void OnHelpWelcome();
+	afx_msg void OnUpdateHelpWelcome(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp
