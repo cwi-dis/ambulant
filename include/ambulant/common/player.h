@@ -44,13 +44,13 @@ class passive_player {
 	
 	passive_player() 
 	:	m_url("") {}
-	passive_player(char *url)
+	passive_player(const char *url)
 	:	m_url(url) {}
 	~passive_player() {}
 	
 	active_player *activate();
   private:
-  	char *m_url;
+  	const char *m_url;
 };
 
 class active_player : public ref_counted_obj {
