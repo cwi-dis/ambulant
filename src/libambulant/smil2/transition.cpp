@@ -56,6 +56,11 @@
 #include "ambulant/smil2/transition.h"
 #include <math.h>
 
+// It seems M_PI isn't defined for VC++
+#ifndef M_PI
+#define M_PI 3.1415926
+#endif
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
