@@ -76,3 +76,30 @@ Using exceptions will make our code more clean, robust and easier to test.
 If it is needed and when it is needed a porting for compilers 
 that do not support exceptions may be made.
 
+XML Parser
+----------
+Ambulant may use/support through a SAX plug-in interface 
+the following XML parsers:
+
+1. Expat, James Clark’s XML parser, lightweight 
+(release dll size ~140KB), C implementation
+
+2. Xerces, Apache validating XML parser, 
+complete but heavy (release dll size ~1.654KB), 
+C++ implementation (rather a Java port)
+
+3. Msxml, Microsoft’s validating XML parser, 
+complete, heavy (release dll size ~1.230KB) 
+but always present on windows platforms.
+
+Regex libraries
+---------------
+We may consider the following libraries for adding regex support to Ambulant:
+
+1. Philip Hazel's pcre, regular expression library, C implementation
+2. Henry Spencer's regular expression library, C implementation
+3. Regex++ from Boost, C++ implementation, a litle heavy (but it offers much)
+4. Greta from Microsoft, C++ implementation
+
+
+
