@@ -130,7 +130,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 region_node::~region_node() 
 {
 	node_counter--;
-	node_navigator<region_node>::delete_tree(this); 	
+	lib::node_navigator<region_node>::delete_tree(this); 	
 }
 
 bool
