@@ -26,11 +26,11 @@
 #include <memory>
 
 #ifndef AMBULANT_LIB_EVENT_H
-#include "lib/event.h"
+#include "event.h"
 #endif
 
 #ifndef AMBULANT_LIB_REFCOUNT_H
-#include "lib/refcount.h"
+#include "refcount.h"
 #endif
 
 namespace ambulant {
