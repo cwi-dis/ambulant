@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/win32/win32_event_processor.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"

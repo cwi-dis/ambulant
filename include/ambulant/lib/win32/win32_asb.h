@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 // Ambulant standard base (ASB) compatibility interface
 
 #ifndef AMBULANT_LIB_WIN32_ASB_H

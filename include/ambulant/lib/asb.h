@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 // This header defines and exports  
 // a set of handy not std functions.
 // All functions defined here are accessible

@@ -2,13 +2,6 @@
 /* 
  * @$Id$ 
  */
-
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 // A utility for managing the namespaces appearing in a document.
 
 #ifndef AMBULANT_LIB_NSCONTEXT_H

@@ -1,7 +1,5 @@
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
+/* 
+ * @$Id$ 
  */
  
 #ifndef AMBULANT_NET_DATASOURCE_H

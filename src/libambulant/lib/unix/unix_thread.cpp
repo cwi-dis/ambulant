@@ -2,12 +2,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/unix/unix_thread.h"
 #include <pthread.h>
 #include <stdio.h>

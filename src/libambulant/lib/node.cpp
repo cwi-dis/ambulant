@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/node.h"
 
 // find_if, etc

@@ -3,13 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
-
 /* 
  * A socket is an endpoint for communication
  * between two machines. 

@@ -1,8 +1,8 @@
- /*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
+
+/* 
+ * @$Id$ 
  */
+
 #include "qt_gui.h"
 #include "qt_text_renderer.h"
 

@@ -2,12 +2,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"

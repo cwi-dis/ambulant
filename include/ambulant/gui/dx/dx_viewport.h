@@ -2,12 +2,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #ifndef AMBULANT_LIB_DX_VIEWPORT_H
 #define AMBULANT_LIB_DX_VIEWPORT_H
 

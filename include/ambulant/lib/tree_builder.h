@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 // A utility for building a dom tree
 // from a file or a string.
 // Uses expat parser as the xml parser

@@ -1,3 +1,8 @@
+
+/* 
+ * @$Id$ 
+ */
+
 #include "ambulant/net/datasource.h"
 #include <unistd.h>
 

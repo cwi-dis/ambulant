@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/unix/unix_mtsync.h"
 #include "ambulant/lib/logger.h"
 #include <stdlib.h>

@@ -2,13 +2,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
- 
 #ifndef AMBULANT_LIB_FILESYS_H
 #define AMBULANT_LIB_FILESYS_H
 

@@ -4,12 +4,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #include "ambulant/lib/win32/win32_thread.h"
 
 #include "ambulant/lib/thread.h"

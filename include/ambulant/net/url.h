@@ -3,12 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 #ifndef AMBULANT_NET_URL_H
 #define AMBULANT_NET_URL_H
 

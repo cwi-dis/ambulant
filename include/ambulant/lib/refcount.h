@@ -1,13 +1,6 @@
 /* 
  * @$Id$ 
  */
-
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
 /* 
  * Ref-counted mechanism implementation.
  *

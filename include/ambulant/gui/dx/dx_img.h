@@ -3,13 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
- 
 #ifndef AMBULANT_GUI_DX_IMG_H
 #define AMBULANT_GUI_DX_IMG_H
 

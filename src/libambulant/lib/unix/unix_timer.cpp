@@ -3,13 +3,6 @@
  * @$Id$ 
  */
 
-/*
- * The contents of this file are subject to the Public
- * License XXX. 
- *
- */
-
- 
 #include "ambulant/lib/unix/unix_timer.h"
 #include "ambulant/lib/logger.h"
 #include <sys/time.h>
