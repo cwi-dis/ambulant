@@ -5,20 +5,6 @@
 	};
 	objectVersion = 39;
 	objects = {
-		040189D30517380900C7614F = {
-			expectedFileType = archive.ar;
-			isa = PBXFileReference;
-			name = libambulant_cocoa.a;
-			path = "/Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib/libambulant_cocoa.a";
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		040189D40517380900C7614F = {
-			fileRef = 040189D30517380900C7614F;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		04508B1A0507DED800F0FD74 = {
 			expectedFileType = sourcecode.cpp.objcpp;
 			fileEncoding = 30;
@@ -97,20 +83,6 @@
 			settings = {
 			};
 		};
-		0467E01A0507E9F7007FC763 = {
-			expectedFileType = archive.ar;
-			isa = PBXFileReference;
-			name = libambulant.a;
-			path = ../../installed/lib/libambulant.a;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		0467E01B0507E9F7007FC763 = {
-			fileRef = 0467E01A0507E9F7007FC763;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		048DEE940511DB2F0010C447 = {
 			expectedFileType = sourcecode.cpp.objcpp;
 			fileEncoding = 30;
@@ -135,6 +107,45 @@
 		};
 		048DEE970511DB2F0010C447 = {
 			fileRef = 048DEE950511DB2F0010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04DE8EA90545D75B007E0517 = {
+			children = (
+				04508B630507E68200F0FD74,
+				04DE8EDC0545E135007E0517,
+				04DE8EDD0545E135007E0517,
+			);
+			isa = PBXGroup;
+			name = "Static Libraries";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04DE8EDC0545E135007E0517 = {
+			expectedFileType = archive.ar;
+			isa = PBXFileReference;
+			name = libambulant_cocoa.a;
+			path = /Volumes/Vuur/Users/jack/src/ambulant/installed/lib/libambulant_cocoa.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		04DE8EDD0545E135007E0517 = {
+			expectedFileType = archive.ar;
+			isa = PBXFileReference;
+			name = libambulant.a;
+			path = /Volumes/Vuur/Users/jack/src/ambulant/installed/lib/libambulant.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		04DE8EDE0545E135007E0517 = {
+			fileRef = 04DE8EDC0545E135007E0517;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04DE8EEC0545E209007E0517 = {
+			fileRef = 04DE8EDD0545E135007E0517;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -235,6 +246,8 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
+			buildSettings = {
+			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
@@ -253,6 +266,7 @@
 				2A37F4AFFDCFA73011CA2CEA,
 				2A37F4B8FDCFA73011CA2CEA,
 				2A37F4C3FDCFA73011CA2CEA,
+				04DE8EA90545D75B007E0517,
 				19C28FB0FE9D524F11CA2CBB,
 			);
 			isa = PBXGroup;
@@ -373,9 +387,6 @@
 		};
 		2A37F4C3FDCFA73011CA2CEA = {
 			children = (
-				0467E01A0507E9F7007FC763,
-				040189D30517380900C7614F,
-				04508B630507E68200F0FD74,
 				04508B3B0507E27700F0FD74,
 				1058C7A6FEA54F5311CA2CBB,
 				1058C7A8FEA54F5311CA2CBB,
@@ -480,7 +491,7 @@
 				04508B280507E0A700F0FD74,
 			);
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = ../../installed/lib;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -488,10 +499,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = ../../installed/include;
+				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /Volumes/Vuur/Users/jack/src/ambulant/installed/lib /Users/jack/src/ambulant/third_party_packages/expat-unix/lib";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -592,8 +603,8 @@
 				8D15AC340486D014006FF6A4,
 				04508B3C0507E27700F0FD74,
 				04508B640507E68200F0FD74,
-				0467E01B0507E9F7007FC763,
-				040189D40517380900C7614F,
+				04DE8EDE0545E135007E0517,
+				04DE8EEC0545E209007E0517,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

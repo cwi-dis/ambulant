@@ -28,8 +28,9 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) English.lproj/MyDocument.nib/*.nib cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/cocoambulant.app/Contents/MacOS/cocoambulant
 	
-LDADD = -L$(top_builddir)/src/libambulant -lambulant -lambulant_cocoa	\
-	-L$(EXPAT_PREFIX)/lib -lexpat -lstdc++
+LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
+	$(EXPAT_PREFIX)/lib/libexpat.a -lstdc++
 AM_LDFLAGS=-framework Cocoa
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
