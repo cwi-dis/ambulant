@@ -159,6 +159,8 @@ basic_plugin::resume()
 
 
 extern "C" void initialize(ambulant::common::factories*& factory)
-{	
+{
+    lib::logger::get_logger()->debug("basic_plugin: loaded.");
 	factory->rf->add_factory(new basic_plugin_factory(factory));
+    lib::logger::get_logger()->debug("basic_plugin: added basic_plugin_factory.");
 }
