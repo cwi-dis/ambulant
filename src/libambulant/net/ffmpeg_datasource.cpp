@@ -57,7 +57,7 @@
 #define AM_DBG if(0)
 #endif 
 
-//#define WITH_FFMPEG_0_4_9					
+#define WITH_FFMPEG_0_4_9					
 
 // How many video frames we would like to buffer at most
 #define MAX_VIDEO_FRAMES 25
@@ -813,89 +813,94 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 		while (sz > 0) {
 
 				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, ptr, sz);	
-				assert( len <= sz);
-				ptr +=len;	
-				sz -= len;
-				if (got_pic) {
-					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
-					// Setup the AVPicture for the format we want, plus the data pointer
-					width = m_con->streams[m_stream_index]->codec.width;
-					height = m_con->streams[m_stream_index]->codec.height;
-					m_size = width * height * 4;
-					char *framedata = (char*) malloc(m_size);
-					assert(framedata != NULL);
-					dst_pic_fmt = PIX_FMT_RGBA32;
-					dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, width, height);
-					// The format we have is already in frame. Convert.
-					pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
-					img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
-					
-					// And convert the timestamp
+				if (len >= 0) {
+					assert( len <= sz);
+					ptr +=len;	
+					sz -= len;
+					if (got_pic) {
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+						// Setup the AVPicture for the format we want, plus the data pointer
+						width = m_con->streams[m_stream_index]->codec.width;
+						height = m_con->streams[m_stream_index]->codec.height;
+						m_size = width * height * 4;
+						char *framedata = (char*) malloc(m_size);
+						assert(framedata != NULL);
+						dst_pic_fmt = PIX_FMT_RGBA32;
+						dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, width, height);
+						// The format we have is already in frame. Convert.
+						pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
+						img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
+						
+						// And convert the timestamp
 #ifdef	WITH_FFMPEG_0_4_9					
-					num = m_con->streams[m_stream_index]->time_base.num;
-					den = m_con->streams[m_stream_index]->time_base.den;
+						num = m_con->streams[m_stream_index]->time_base.num;
+						den = m_con->streams[m_stream_index]->time_base.den;
 #else /*WITH_FFMPEG_0_4_9*/
-					num = m_con->pts_num;
-					den = m_con->pts_den;
+						num = m_con->pts_num;
+						den = m_con->pts_den;
 					
 #endif/*WITH_FFMPEG_0_4_9*/
-					framerate = m_con->streams[m_stream_index]->codec.frame_rate;
-					framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
+						framerate = m_con->streams[m_stream_index]->codec.frame_rate;
+						framebase = m_con->streams[m_stream_index]->codec.frame_rate_base;
 					
 					
-					pts = 0;
-					
-					if (ipts != AV_NOPTS_VALUE)
-						pts = (double) ipts * ((double) num)/den;
-					AM_DBG lib::logger::get_logger()->trace("pts seems to be : %f",pts);
-					pts1= pts;
-					
-					if (m_con->streams[m_stream_index]->codec.has_b_frames && frame.pict_type != FF_B_TYPE) {
-						pts = m_last_p_pts;
-						m_last_p_pts = pts1;
-						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:frame has B frames but this frame is no B frame  (this=0x%x) ", this);
-						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
-					}
-					
-					if (pts != 0 ) {
-						m_pts_last_frame = pts;
-					} else {
-						if (framerate != 0) {
-							frame_delay = (double) framebase/framerate;
+						pts = 0;
+						
+						if (ipts != AV_NOPTS_VALUE)
+							pts = (double) ipts * ((double) num)/den;
+						AM_DBG lib::logger::get_logger()->trace("pts seems to be : %f",pts);
+						pts1= pts;
+						
+						if (m_con->streams[m_stream_index]->codec.has_b_frames && frame.pict_type != FF_B_TYPE) {
+							pts = m_last_p_pts;
+							m_last_p_pts = pts1;
+							AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:frame has B frames but this frame is no B frame  (this=0x%x) ", this);
+							AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
+						}
+						
+						
+						if (pts != 0 ) {
+							m_pts_last_frame = pts;
 						} else {
-							frame_delay = 0;
+							if (framerate != 0) {
+								frame_delay = (double) framebase/framerate;
+							} else {
+								frame_delay = 0;
+							}
+							pts = m_pts_last_frame + frame_delay;
+							m_pts_last_frame = pts;			
+							//~ if( frame.repeat_pict) {
+								//~ pts += frame.repeat_pict * (frame_delay * 0.5);
+							//~ }
+							AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts was 0, set to %f", pts);
 						}
-						pts = m_pts_last_frame + frame_delay;
-						m_pts_last_frame = pts;			
-						//~ if( frame.repeat_pict) {
-							//~ pts += frame.repeat_pict * (frame_delay * 0.5);
-						//~ }
-						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:pts was 0, set to %f", pts);
-					}
-					
-					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
-					
-					AM_DBG {
-						switch(frame.pict_type) {
-							case FF_B_TYPE:
-								lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %f", pts); 
-								break;
-							case FF_P_TYPE:
-								lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %f", pts); 
-								break;
-							case FF_I_TYPE:
-								lib::logger::get_logger()->trace("IIIII ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
-								break;
-							default:
-								lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
+						
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
+						
+						AM_DBG {
+							switch(frame.pict_type) {
+								case FF_B_TYPE:
+									lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %f", pts); 
+									break;
+								case FF_P_TYPE:
+									lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %f", pts); 
+									break;
+								case FF_I_TYPE:
+									lib::logger::get_logger()->trace("IIIII ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
+									break;
+								default:
+									lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: I-frame, timestamp = %f", pts); 
+							}
 						}
+						// And store the data.
+						std::pair<double, char*> element(pts, framedata);
+						m_frames.push(element);
+					} else {
+						AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 					}
-					// And store the data.
-					std::pair<double, char*> element(pts, framedata);
-					m_frames.push(element);
-		  		} else {
-					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
-				}
+				} else {
+						lib::logger::get_logger()->error("ffmpeg_video_datasource.data_avail: error while decoding frame !");
+					}
 		}
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:done decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
 
@@ -1117,15 +1122,13 @@ ffmpeg_decoder_datasource::data_avail()
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
-#ifdef	WITH_FFMPEG_0_4_9					
-				if (outsize < 0) {
-		lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::data_avail: avcodec_decode_audio sets \"outsize\" to %d", outsize);
-					m_lock.leave();
-					return;
+
+				if (outsize > 0) { 
+					m_buffer.pushdata(outsize);
 				}
-#endif/*WITH_FFMPEG_0_4_9*/
-				m_buffer.pushdata(outsize);
-				m_src->readdone(decoded);
+				if (decoded > 0) {
+					m_src->readdone(decoded);
+				}
 			} else {
 				lib::logger::get_logger()->error("ffmpeg_decoder_datasource::data_avail: no room in output buffer");
 			}
