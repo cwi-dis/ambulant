@@ -273,6 +273,20 @@ void gui::dx::dx_player::on_done() {
 	}
 }
 
+void gui::dx::dx_player::lock_redraw() {
+	std::map<std::string, wininfo*>::iterator it;
+	for(it=m_windows.begin();it!=m_windows.end();it++) {
+		(*it).second->w->lock_redraw();
+	}
+}
+
+void gui::dx::dx_player::unlock_redraw() {
+	std::map<std::string, wininfo*>::iterator it;
+	for(it=m_windows.begin();it!=m_windows.end();it++) {
+		(*it).second->w->unlock_redraw();
+	}
+}
+
 ////////////////////
 // common::window_factory implementation
 
@@ -414,12 +428,15 @@ bool gui::dx::dx_player::has_transitions() const {
 
 void gui::dx::dx_player::update_transitions() {
 	m_trmap_cs.enter();
+	lib::timer::time_type pt = m_timer->elapsed();
+	//lock_redraw();
 	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
-		if(!(*it).second->next_step()) {
+		if(!(*it).second->next_step(pt)) {
 			delete (*it).second;
 			it = m_trmap.erase(it);
 		}
 	}
+	//unlock_redraw();
 	m_trmap_cs.leave();
 }
 
@@ -474,7 +491,6 @@ void gui::dx::dx_player::schedule_update() {
 	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
 		&dx_player::update_callback);
-	//m_worker_processor->add_event(m_update_event, 50);
 	m_player->schedule_event(m_update_event, 50);
 }
 
@@ -553,10 +569,16 @@ void gui::dx::dx_player::close(player *p) {
 }
 
 void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
+	std::string urlstr = newdoc.get_url();
 	if(old) {
 		// Replace the current document
 		PostMessage(get_main_window(), WM_REPLACE_DOC, 
-			startnewdoc?1:0, LPARAM(new std::string(newdoc.get_url()))); 
+			startnewdoc?1:0, LPARAM(new std::string(urlstr))); 
+		return;
+	}
+	if(!lib::ends_with(urlstr, ".smil") && !lib::ends_with(urlstr, ".smi") &&
+		!lib::ends_with(urlstr, ".grins")) {
+		show_file(newdoc);
 		return;
 	}
 	

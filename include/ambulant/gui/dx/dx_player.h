@@ -195,6 +195,8 @@ class dx_player :
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
+	void lock_redraw();
+	void unlock_redraw();
 	
 	// The current document URL
 	net::url m_url;

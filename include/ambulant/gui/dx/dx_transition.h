@@ -79,6 +79,7 @@ class dx_transition {
 	virtual void init(common::surface *dst, bool is_outtrans, lib::transition_info *info) = 0;
 	virtual void first_step() = 0;
 	virtual bool next_step() = 0;
+	virtual bool next_step(lib::timer::time_type pt) = 0;
 	virtual void pause() = 0;
 	virtual void resume() = 0;
 	virtual double get_progress() const = 0;
@@ -134,6 +135,11 @@ class dx_transition_engine : public dx_transition {
 	
 	bool next_step() { 
 		m_engine->step(m_timer->elapsed());
+		return !m_engine->is_done();
+	}
+	
+	bool next_step(lib::timer::time_type pt) {
+		m_engine->step(m_timer->elapsed(pt));
 		return !m_engine->is_done();
 	}
 	

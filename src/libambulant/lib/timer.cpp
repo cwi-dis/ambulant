@@ -96,6 +96,13 @@ lib::timer::elapsed() const
 	return m_local_epoch + apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 }
 
+lib::timer::time_type
+lib::timer::elapsed(time_type pe) const
+{
+	if(!m_running) return m_local_epoch;
+	return m_local_epoch + apply_speed_manip(pe - m_parent_epoch);
+}
+
 void lib::timer::start(time_type t /* = 0 */) {
 	m_parent_epoch = m_parent->elapsed();
 	m_local_epoch = t;

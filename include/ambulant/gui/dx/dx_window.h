@@ -90,9 +90,12 @@ class dx_window : public common::gui_window {
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
+  	void lock_redraw();
+	void unlock_redraw();
 	
 	viewport *get_viewport() { return m_viewport;}
   private:
+
 	// gui_window:
 	// passive_region *m_region;
 	region *m_rgn;
@@ -100,6 +103,11 @@ class dx_window : public common::gui_window {
 	lib::screen_rect<int> m_viewrc;
 	common::window_factory *m_wf;
     viewport* m_viewport;
+    
+    // lock/unlock redraw
+	bool m_locked;
+	lib::screen_rect<int> m_redraw_rect;
+	bool m_isnew_redraw_rect;
 };
 
 } // namespace dx

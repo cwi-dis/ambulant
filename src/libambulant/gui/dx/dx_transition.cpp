@@ -212,6 +212,8 @@ class polylist_adapter : public transition_blitclass_polylist {
 // Hack to make rects public
 class r1r2r3r4_adapter : public transition_blitclass_r1r2r3r4 {
   public:
+	lib::screen_rect<int>& get_old_src_rect() { return m_oldsrcrect;}
+	lib::screen_rect<int>& get_old_dst_rect() { return m_olddstrect;}
 	lib::screen_rect<int>& get_src_rect() { return m_newsrcrect;}
 	lib::screen_rect<int>& get_dst_rect() { return m_newdstrect;}
 };
@@ -323,9 +325,11 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::screen_rect<int>& src, lib::screen_rect<int>& dst) {
 	smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 	assert(p);
-	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;
+	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;	
 	lib::screen_rect<int>& r3 = dummy->get_src_rect(); r3.translate(src.left_top());
 	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
-	//src &= r3;
-	//dst &= r4;
+	src &= r3;
+	dst &= r4;
+	AM_DBG lib::logger::get_logger()->trace("%s -> %s (%s -> %s)",
+		repr(r3).c_str(), repr(r4).c_str(), repr(src).c_str(), ::repr(dst).c_str());
 }

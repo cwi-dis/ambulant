@@ -99,6 +99,9 @@ class timer : public abstract_timer, public timer_events {
 	// Returns the zero-based time elapsed.
 	time_type elapsed() const;
 	
+	// Returns the zero-based time elapsed for the provided parent elapsed time.
+	time_type elapsed(time_type pt) const;
+	
 	// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
 	
