@@ -120,7 +120,7 @@ private:
 	
 
 
-class active_datasource : public datasource {
+class active_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	active_datasource();
 	active_datasource(passive_datasource *const source, int file);
@@ -154,7 +154,7 @@ class active_datasource : public datasource {
 
 // This is a temporary class: it allows you to read raw audio files as
 // 16bit mono 44k1 samples
-class raw_audio_datasource : public audio_datasource {
+class raw_audio_datasource : virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
   	raw_audio_datasource()
   	:	m_src(new active_datasource()) {}

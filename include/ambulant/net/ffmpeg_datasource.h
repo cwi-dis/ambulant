@@ -156,12 +156,13 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	
     void set_format(net::audio_context in_fmt, net::audio_context out_fmt); 
    
-    int get_input_format(net::audio_context &fmt);  
-    int get_output_format(net::audio_context &fmt);
+    void get_input_format(net::audio_context &fmt);  
+    void get_output_format(net::audio_context &fmt);
+  
   	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
-	long add_ref() {};
-	long release() {};	
-	long get_ref_count() const {};
+	//long add_ref() {};
+	//long release() {};	
+	//long get_ref_count() const {};
 		
   protected:
     int init(); 
@@ -183,6 +184,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 //    lib::event *m_readdone;		// This is the callback our source makes to us
     lib::event *m_client_callback;  // This is our calllback to the client
     lib::critical_section m_lock;
+  	audio_context m_in_fmt;
+  	audio_context m_out_fmt;
 };
 
 }	// end namespace net

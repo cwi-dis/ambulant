@@ -271,6 +271,29 @@ net::ffmpeg_audio_datasource::init()
 }
 
 
+net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(datasource *const src, lib::event_processor *const evp) 
+:	m_src(src),
+	m_context_set(false),
+	m_resample_context(NULL),
+	m_inbuf(NULL),
+	m_outbuf(NULL),
+	m_blocked_full(false),
+	m_event_processor(evp),
+	m_client_callback(NULL)
+{
+	m_in_fmt.sample_rate = 0;
+	m_in_fmt.channels = 0;
+	m_in_fmt.bits = 0;
+	
+	m_out_fmt.sample_rate = 0;
+	m_out_fmt.channels = 0;
+	m_out_fmt.bits = 0;
+}
+
+net::ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
+{
+}
+
 
 
 
@@ -313,3 +336,60 @@ net::ffmpeg_resample_datasource::data_avail()
 	m_src->readdone(size);
   }
 }
+
+
+void 
+net::ffmpeg_resample_datasource::readdone(int len)
+{
+	m_lock.enter();
+	m_buffer.readdone(len);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
+	m_lock.leave();
+}
+
+bool 
+net::ffmpeg_resample_datasource::end_of_file()
+{
+	if (m_buffer.buffer_not_empty()) return false;
+	return m_src->end_of_file();
+}
+
+bool 
+net::ffmpeg_resample_datasource::buffer_full()
+{
+	return m_buffer.buffer_full();
+}	
+
+char* 
+net::ffmpeg_resample_datasource::get_read_ptr()
+{
+	return m_buffer.get_read_ptr();
+}
+
+int 
+net::ffmpeg_resample_datasource::size() const
+{
+	return m_buffer.size();
+}	
+
+void	
+net::ffmpeg_resample_datasource::get_input_format(net::audio_context &fmt)
+{
+	fmt.sample_rate = m_in_fmt.sample_rate;
+	fmt.channels = m_in_fmt.channels;
+	fmt.bits = m_in_fmt.bits;
+}
+
+void
+net::ffmpeg_resample_datasource::get_output_format(net::audio_context &fmt)
+{ 
+	fmt.sample_rate = m_out_fmt.sample_rate;
+	fmt.channels = m_out_fmt.channels;
+	fmt.bits = m_out_fmt.bits;
+}
+
+
+
+void 
+net::ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
+{}
