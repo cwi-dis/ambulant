@@ -157,6 +157,7 @@ then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
      fi
 else
      unset XERCES_PREFIX;
+     unset XERCES_INCLUDES;
 fi
 AC_SUBST(XERCES_PREFIX)
 AC_SUBST(XERCES_LIBS)

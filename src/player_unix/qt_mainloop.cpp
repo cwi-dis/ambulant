@@ -67,7 +67,9 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/parser_factory.h"
+#ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
+#endif
 //#include "ambulant/lib/expat_parser.h"
 
 
@@ -392,4 +394,3 @@ qt_mainloop::player_start(QString document_name, bool start, bool old)
 		m_player->start();
 	}
 }
-

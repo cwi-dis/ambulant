@@ -71,9 +71,9 @@
 #ifdef WITH_EXPAT
 #include "ambulant/lib/expat_parser.h"
 #endif
-#ifdef	WITH_XERCES
-#include "ambulant/lib/xerces_parser.h"
-#endif/*WITH_XERCES*/
+//#ifdef WITH_XERCES_BUILTIN
+//#include "ambulant/lib/xerces_parser.h"
+//#endif/*WITH_XERCES_BUILTIN*/
 #include "ambulant/lib/node.h"
 #include "ambulant/net/url.h"
 #include "ambulant/common/factory.h"

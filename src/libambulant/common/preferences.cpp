@@ -49,9 +49,6 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 
-#ifdef	WITH_XERCES
-#include <xercesc/parsers/SAXParser.hpp>
-#endif/*WITH_XERCES*/
 
 //#define AM_DBG
 #ifndef AM_DBG

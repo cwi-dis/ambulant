@@ -1,14 +1,18 @@
 # See which toolkit-dependent libraries we want to make
 if WITH_EXPAT
 expat_parser_source = lib/expat_parser.cpp
+
 else
 expat_parser_source = 
+
 endif
 
 if WITH_XERCES_BUILTIN
 xerces_parser_source = lib/xerces_parser.cpp
+xerces_includes = $(XERCES_INCLUDES)
 else
 xerces_parser_source = 
+xerces_includes =
 endif
 
 if WITH_COCOA
@@ -99,7 +103,7 @@ INCLUDES = \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	$(EXPAT_INCLUDES) \
-	$(XERCES_INCLUDES) \
+	$(xerces_includes) \
 	$(qtincludes) \
 	$(artsincludes) \
 	$(sdlincludes) \
