@@ -1,6 +1,6 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 20-June-03
+Jack Jansen, 23-June-03
 -----------------------
 
 Here are some general (unstructured) thoughts on the Ambulant design.
@@ -56,6 +56,30 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
 - semi-private classes go into into a namespace named "detail".
 - Template type parameters start with an upper case letter
   (as in: ``template <class A> {}``)
+
+Global structure
+----------------
+
+The global structure needs some thought. If we want to be able to use the code
+to create, say, a plugin SMIL renderer for use in a browser we need a global
+"playback engine" object that has all the others hanging off it (plus factory
+methods to create them, etc). There will be a performance penalty to this, but
+I don't think it's too big. If we have this global object we might as well
+subclass all the children of this object from a common base class that handles
+the global administration, and the global object could hold things like
+memory allocators, stderr, etc.
+
+	*QUESTION*: is there a way we could handle the memory allocator transparently?
+	With things like stdout I think we can (put a member "cout" in our object
+	base class, make it always refer to the "cout" in the playback engine), but
+	for memory allocators I don't know whether we can break into C++'s new operator.
+	This may be important if we want to embed our player, as the embedder may
+	hand us a memory allocator to use.
+
+With a structure like this the application itself becomes basically a skeleton
+embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
+playback engine objects when needed and has a small number of callbacks for
+"create window" and such.
 
 run-time system
 ---------------

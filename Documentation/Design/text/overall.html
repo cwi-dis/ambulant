@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-20-june-03">
-<h1><a name="jack-jansen-20-june-03">Jack Jansen, 20-June-03</a></h1>
+<div class="section" id="jack-jansen-23-june-03">
+<h1><a name="jack-jansen-23-june-03">Jack Jansen, 23-June-03</a></h1>
 <p>Here are some general (unstructured) thoughts on the Ambulant design.</p>
 </div>
 <div class="section" id="design-process">
@@ -61,6 +61,28 @@ under that</li>
 <li>Template type parameters start with an upper case letter
 (as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</li>
 </ul>
+</div>
+<div class="section" id="global-structure">
+<h1><a name="global-structure">Global structure</a></h1>
+<p>The global structure needs some thought. If we want to be able to use the code
+to create, say, a plugin SMIL renderer for use in a browser we need a global
+&quot;playback engine&quot; object that has all the others hanging off it (plus factory
+methods to create them, etc). There will be a performance penalty to this, but
+I don't think it's too big. If we have this global object we might as well
+subclass all the children of this object from a common base class that handles
+the global administration, and the global object could hold things like
+memory allocators, stderr, etc.</p>
+<blockquote>
+<em>QUESTION</em>: is there a way we could handle the memory allocator transparently?
+With things like stdout I think we can (put a member &quot;cout&quot; in our object
+base class, make it always refer to the &quot;cout&quot; in the playback engine), but
+for memory allocators I don't know whether we can break into C++'s new operator.
+This may be important if we want to embed our player, as the embedder may
+hand us a memory allocator to use.</blockquote>
+<p>With a structure like this the application itself becomes basically a skeleton
+embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
+playback engine objects when needed and has a small number of callbacks for
+&quot;create window&quot; and such.</p>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
