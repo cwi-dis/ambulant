@@ -121,7 +121,7 @@ cocoa_window::redraw(const screen_rect<int> &r)
 void
 cocoa_window::user_event(const point &where, int what)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
+	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
 	m_region->user_event(where, what);
 }
 
@@ -129,7 +129,7 @@ void
 cocoa_window::mouse_region_changed()
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
+	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
 	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
@@ -313,7 +313,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	NSPoint where = [theEvent locationInWindow];
 #ifndef USE_COCOA_BOTLEFT
 	// Mouse clicks are not flipped, even if the view is
-	where.x = NSMaxY([self bounds]) - where.x;
+	where.y = NSMaxY([self bounds]) - where.y;
 #endif
 	AM_DBG NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
