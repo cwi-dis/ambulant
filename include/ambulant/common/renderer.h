@@ -115,6 +115,8 @@ class active_renderer : public active_basic_renderer {
 	virtual void start(event *playdone);
 	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
 	virtual void stop();
+	virtual void pause() {}
+	virtual void resume() {}
 	
   protected:
 	virtual void readdone();

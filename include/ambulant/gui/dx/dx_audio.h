@@ -69,6 +69,8 @@ class dx_audio_renderer : public lib::active_renderer {
 	~dx_audio_renderer();
 	void start(lib::event *playdone);
 	void stop();
+	void pause();
+	void resume();
 	void redraw(const lib::screen_rect<int> &dirty, lib::passive_window *window, 
 		const lib::point &window_topleft); 
   private:

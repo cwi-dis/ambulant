@@ -106,6 +106,8 @@ class active_player : public ref_counted_obj {
 	}
 	
 	void start() { start(NULL, NULL);}
+	void pause();
+	void resume();
 	bool is_done() const {return m_done;}
 	double get_speed() const;
 	
@@ -114,7 +116,8 @@ class active_player : public ref_counted_obj {
 	
 	node *m_tree;
 	timer *m_timer;
-  	event_processor *const m_event_processor;
+  	double m_pause_speed;
+	event_processor *m_event_processor;
 	passive_player *const m_source;
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
