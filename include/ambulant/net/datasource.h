@@ -16,8 +16,8 @@
 #ifndef AMBULANT_NET_DATASOURCE_H
 #define AMBULANT_NET_DATASOURCE_H
 
-#include "lib/callback.h"
-#include "net/url.h"
+#include "ambulant/lib/callback.h"
+#include "url.h"
 
 // temporary debug messages
 #include <iostream>
