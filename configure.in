@@ -100,6 +100,19 @@ AC_ARG_WITH([dummy-plugin],
 AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
+#
+# Do we want SMIL 2.1 support?
+#
+AC_MSG_CHECKING(for --enable-smil21)
+AC_ARG_ENABLE([smil21],[
+    AC_HELP_STRING([--disable-smil21],
+                   [Only support SMIL 2.0, not SMIL 2.1(LC)])
+    ],[enable_smil21=${enableval}], [enable_smil21=yes])
+if test "x$enable_smil21" = xyes;
+then
+    AC_DEFINE(USE_SMIL21, 1, [Define to enable SMIL 2.1 support])
+fi
+AC_MSG_RESULT($enable_smil21)
 
 #
 # Find expat
