@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_DX_PLAYER_H
 #define AMBULANT_GUI_DX_PLAYER_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 
 namespace ambulant {

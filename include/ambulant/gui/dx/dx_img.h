@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_DX_IMG_H
 #define AMBULANT_GUI_DX_IMG_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 #include "ambulant/common/renderer.h"
 

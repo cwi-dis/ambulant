@@ -53,13 +53,13 @@
 #ifndef AMBULANT_GUI_BMP_DECODER_H
 #define AMBULANT_GUI_BMP_DECODER_H
 
+#include "ambulant/config/config.h"
+
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif
 
 #include <cassert>
-
-#include "ambulant/config/config.h"
 
 #include "ambulant/gui/dx/img_decoder.h"
 #include "ambulant/lib/logger.h"

@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_DX_SURFACE_H
 #define AMBULANT_GUI_DX_SURFACE_H
 
+#include "ambulant/config/config.h"
+
 namespace ambulant {
 
 namespace gui {

@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_DX_AUDIO_H
 #define AMBULANT_GUI_DX_AUDIO_H
 
+#include "ambulant/config/config.h"
+
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region.h"
 #include "ambulant/lib/playable.h"

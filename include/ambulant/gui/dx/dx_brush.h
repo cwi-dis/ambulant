@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_DX_BRUSH_H
 #define AMBULANT_GUI_DX_BRUSH_H
 
+#include "ambulant/config/config.h"
+
 #include <string>
 #include "ambulant/common/renderer.h"
 
