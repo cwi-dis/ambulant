@@ -75,11 +75,13 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::abstract_window *window, 
+	lib::event_processor* worker)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
 	m_update_event(0), 
-	m_window(window) {
+	m_window(window),
+	m_worker(worker) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
@@ -129,6 +131,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
+	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 		
 	// Start the underlying player
@@ -153,10 +156,13 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 void gui::dx::dx_video_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
 	if(!m_player) return;
-	m_update_event = 0;
-	m_player->stop();
-	delete m_player;
+	m_cs.enter();
+	video_player *p = m_player;
 	m_player = 0;
+	m_update_event = 0;
+	m_cs.leave();
+	p->stop();
+	delete p;
 	m_dest->renderer_done();
 	m_activated = false;
 	
@@ -203,6 +209,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	if(!v) return;
 	
 	// Update our bits.
+	//m_player->update();
 	if(!m_player->update()) {
 		// next time please...
 		return;
@@ -220,7 +227,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	
 	// We have to paint only the intersection.
 	// Otherwise we will override upper layers 
-	lib::screen_rect<int> vid_reg_rc_dirty = vid_reg_rc & dirty;
+	lib::screen_rect<int> vid_reg_rc_dirty = vid_reg_rc ;/*& dirty*/;
 	if(vid_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		return;
@@ -238,13 +245,18 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	m_msg_rect |= vid_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
+	//AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty);
+	
 }
 
 void gui::dx::dx_video_renderer::update_callback() {
-	if(!m_update_event || !m_player) return;
-	
 	// Schedule a redraw callback 
+	m_cs.enter();
+	if(!m_update_event || !m_player) {
+		m_cs.leave();
+		return;
+	}
 	m_dest->need_redraw();
 	
 	if(m_player->is_playing()) {
@@ -253,10 +265,11 @@ void gui::dx::dx_video_renderer::update_callback() {
 		m_update_event = 0;
 		m_context->stopped(m_cookie);
 	}
+	m_cs.leave();
 }
 
 void gui::dx::dx_video_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_video_renderer>(this, 
 		&dx_video_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 50);
+	m_worker->add_event(m_update_event, 50);
 }

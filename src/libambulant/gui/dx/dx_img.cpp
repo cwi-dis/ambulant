@@ -140,6 +140,7 @@ void gui::dx::dx_img_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
+	m_dest->need_redraw();
 	m_dest->renderer_done();
 	m_activated = false;
 	
@@ -205,6 +206,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	m_msg_rect |= img_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
+	//AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
 }
 

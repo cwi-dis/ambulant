@@ -126,7 +126,7 @@ void gui::dx::dx_area::redraw(const lib::screen_rect<int> &dirty,
 		lib::point pt = m_dest->get_global_topleft();
 		reg_rc.translate(pt);
 		
-		v->frame_rect(reg_rc);
+		v->frame_rect(reg_rc, 0xFF);
 	}
 }
 

@@ -90,6 +90,11 @@ void gui::dx::dx_window::need_redraw(const lib::screen_rect<int> &r) {
 	m_viewport->redraw(rc);
 }
 
+void gui::dx::dx_window::need_redraw() {
+	m_rgn->redraw(m_viewrc, this);
+	m_viewport->redraw();
+}
+
 void gui::dx::dx_window::mouse_region_changed() {
 }
 

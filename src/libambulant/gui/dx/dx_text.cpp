@@ -60,6 +60,8 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 
+//#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -150,6 +152,7 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, commo
 	
 	if(!m_text || !m_text->can_play()) {
 		// No bits available
+		AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::redraw with no text");
 		return;
 	}
 	

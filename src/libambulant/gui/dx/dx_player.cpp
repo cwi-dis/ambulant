@@ -86,7 +86,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/smil2/smil_layout.h"
 
-#define AM_DBG
+//#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -99,6 +99,8 @@ int gui::dx::dx_gui_region::s_counter = 0;
 gui::dx::dx_player::dx_player(const std::string& url) 
 :	m_url(url),
 	m_player(0),
+	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_worker_processor(0),	
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -112,38 +114,60 @@ gui::dx::dx_player::dx_player(const std::string& url)
 	// Create a player instance
 	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);	
+	
+	// Create a worker processor instance
+	m_worker_processor = event_processor_factory(m_timer);	
 }
 
 gui::dx::dx_player::~dx_player() {
 	if(m_player) stop();
 	delete m_player;
+	if(m_timer) m_timer->pause();
+	if(m_worker_processor)
+		m_worker_processor->cancel_all_events();
+	delete m_worker_processor;
+	delete m_timer;	
 	assert(m_windows.empty());
 	if(dx_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
 }
 
 void gui::dx::dx_player::start() {
-	if(m_player) m_player->start();
+	if(m_player) {
+		m_player->start();
+		m_timer->resume();
+		std::map<std::string, wininfo*>::iterator it;
+		for(it=m_windows.begin();it!=m_windows.end();it++) {
+			dx_window *dxwin = (dx_window *)(*it).second->w;
+			dxwin->need_redraw();
+		}
+	}
 }
 
 void gui::dx::dx_player::stop() {
 	if(m_player) {
 		m_player->stop();
-		on_done();
+		m_timer->pause();
 	}
 }
 
 void gui::dx::dx_player::pause() {
 	if(m_player) {
-		if(m_player->is_playing())
+		if(m_player->is_playing()) {
 			m_player->pause();
-		else if(m_player->is_pausing())
+			m_timer->pause();
+		} else if(m_player->is_pausing()) {
 			m_player->resume();
+			m_timer->resume();
+		}
 	}
 }
 
 void gui::dx::dx_player::resume() {
-	if(m_player) m_player->resume();
+	if(m_player) {
+		m_player->resume();
+		m_timer->resume();
+	}
 }
 
 bool gui::dx::dx_player::is_playing() const {
@@ -184,7 +208,12 @@ int gui::dx::dx_player::get_cursor(int x, int y, HWND hwnd) {
 	if(r) r->user_event(pt, common::user_event_mouse_over);
 	return m_player->get_cursor();
 }
-	
+
+std::string gui::dx::dx_player::get_pointed_node_str() {
+	if(!m_player || !is_playing()) return "";
+	return m_player->get_pointed_node_str();
+}
+
 void gui::dx::dx_player::on_char(int ch) {
 	if(m_player) m_player->on_char(ch);
 }
@@ -248,6 +277,8 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	assert(it != m_windows.end());
 	wininfo *wi = (*it).second;
 	m_windows.erase(it);
+	wi->v->clear();
+	wi->v->redraw();
 	delete wi->v;
 	destroy_os_window(wi->h);
 	delete wi;
@@ -308,9 +339,9 @@ gui::dx::dx_player::new_playable(
 	} else if(tag == "img") {
 		p = new dx_img_renderer(context, cookie, node, evp, window);
 	} else if(tag == "audio") {
-		p = new dx_audio_renderer(context, cookie, node, evp, window);
+		p = new dx_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
-		p = new dx_video_renderer(context, cookie, node, evp, window);
+		p = new dx_video_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "area") {
 		p = new dx_area(context, cookie, node, evp, window);
 	} else if(tag == "brush") {

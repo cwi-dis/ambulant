@@ -67,6 +67,8 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/system.h"
+#include "ambulant/lib/timer.h"
+#include "ambulant/lib/event_processor.h"
 
 // Global functions provided by the hosting application.
 extern HWND new_os_window();
@@ -157,6 +159,7 @@ class dx_player :
 	void on_char(int ch);
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
+	std::string get_pointed_node_str();
 	
 	common::window_factory *get_window_factory() { return this;}
 	common::playable_factory *get_playable_factory() {return this;}
@@ -170,6 +173,9 @@ class dx_player :
 
 	std::string m_url;
 	smil2::smil_player *m_player;
+	
+	lib::timer *m_timer;
+	lib::event_processor *m_worker_processor;	
 	
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	

@@ -71,10 +71,12 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::abstract_window *window,
+	lib::event_processor* worker)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
-	m_update_event(0) {
+	m_update_event(0), 
+	m_worker(worker) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	std::string url = m_node->get_url("src");
@@ -138,10 +140,13 @@ std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
 void gui::dx::dx_audio_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
 	if(!m_player) return;
-	m_update_event = 0;
-	m_player->stop();
-	delete m_player;
+	m_cs.enter();
+	audio_player *p = m_player;
 	m_player = 0;
+	m_update_event = 0;
+	m_cs.leave();
+	p->stop();
+	delete p;
 	m_activated = false;
 }
 
@@ -160,17 +165,22 @@ void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 }
 
 void gui::dx::dx_audio_renderer::update_callback() {
-	if(!m_update_event || !m_player) return;
+	m_cs.enter();
+	if(!m_update_event || !m_player) {
+		m_cs.leave();
+		return;
+	}
 	if(m_player->is_playing()) {
 		schedule_update();
 	} else {
 		m_update_event = 0;
 		m_context->stopped(m_cookie);
 	}
+	m_cs.leave();
 }
 
 void gui::dx::dx_audio_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_audio_renderer>(this, 
 		&dx_audio_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 100);
+	m_worker->add_event(m_update_event, 50);
 }

@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/lib/colors.h"
 
 namespace ambulant {
 
@@ -75,6 +76,8 @@ class dx_brush : public common::renderer_playable {
 	void stop();
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+  private:
+	lib::color_t m_color;
 };
 
 } // namespace dx

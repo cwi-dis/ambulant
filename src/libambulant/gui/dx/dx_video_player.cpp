@@ -271,5 +271,11 @@ void gui::dx::video_player::release_player() {
 
 bool gui::dx::video_player::update() {
 	if(!m_mmstream || !m_ddsample) return false;
-	return m_ddsample->Update(0, NULL, NULL, 0) == S_OK;
+	HRESULT hr = m_ddsample->Update(0, NULL, NULL, 0);
+	if(hr != S_OK) {
+		// OK, use the previous sample
+		//win_report_error("IDirectDrawStreamSample::Update()", hr);
+		return false;
+	}
+	return true;
 }
