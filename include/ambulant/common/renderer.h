@@ -129,14 +129,16 @@ class renderer_playable : public playable_imp, public renderer {
 	void set_surface(common::surface *dest) { m_dest = dest;}
 	void set_alignment(common::alignment *align) { m_alignment = align; }
 	surface *get_surface() { return m_dest;}
-	void user_event(const lib::point &where, int what) {}
+	virtual void user_event(const lib::point &where, int what = 0);	
 	renderer *get_renderer() { return this; }
 	void transition_freeze_end(lib::screen_rect<int> r) { m_context->transitioned(m_cookie); }
+	virtual void start(double t);
+	virtual void stop();
 	
   protected:
 	surface *m_dest;		///< The surface we should render to.
 	alignment *m_alignment;	///< The image alignment to use when rendering.
-	bool m_activated;		///< True when playing (deprecated??).
+	bool m_activated;		///< True when playing
 };
 
 
@@ -167,16 +169,9 @@ class renderer_playable_ds : public renderer_playable {
 //	virtual void wantclicks(bool want);
 
 	virtual void redraw(const lib::screen_rect<int> &dirty, gui_window *window) = 0;
-	void user_event(const lib::point &where, int what = 0) {
-		if (what == user_event_click) m_context->clicked(m_cookie, 0);
-		else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
-		else assert(0);
-	}
-	
 	/// Called whenever data is available.
 	virtual void readdone() = 0;
   protected:
-	bool m_is_showing;
   	net::datasource *m_src;	///< The datasource.
 };
 

@@ -71,65 +71,31 @@ cocoa_fill_renderer::~cocoa_fill_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("~cocoa_fill_renderer(0x%x)", (void *)this);
-	m_intransition = NULL;
-	m_outtransition = NULL;
-	if (m_trans_engine) delete m_trans_engine;
-	m_trans_engine = NULL;
 	m_lock.leave();
 }
 	
 void
 cocoa_fill_renderer::start(double where)
 {
+	start_transition(where);
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.start(0x%x)", (void *)this);
-	if (m_is_showing) {
+	if (m_activated) {
 		logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x): already started", (void*)this);
 		m_lock.leave();
 		return;
 	}
-	m_is_showing = true;
+	m_activated = true;
 	if (!m_dest) {
 		logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x): no surface", (void *)this);
 		return;
-	}
-	if (m_intransition) {
-		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
-		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_dest->show(this);
 	m_lock.leave();
 }
 
 void
-cocoa_fill_renderer::start_outtransition(const lib::transition_info *info)
-{
-	m_lock.enter();
-	m_outtransition = info;
-	if (m_outtransition) {
-		// XXX Schedule beginning of out transition
-		//lib::event *ev = new transition_callback(this, &transition_outbegin);
-		//m_event_processor->add_event(ev, XXXX);
-	}
-	m_lock.leave();
-}
-
-void
-cocoa_fill_renderer::stop()
-{
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.stop(0x%x)", (void *)this);
-	if (!m_is_showing) {
-		logger::get_logger()->trace("cocoa_fill_renderer.stop(0x%x): already stopped", (void*)this);
-	} else {
-		m_is_showing = false;
-		if (m_dest) m_dest->renderer_done(this);
-	}
-	m_lock.leave();
-}
-
-void
-cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_fill_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
@@ -138,17 +104,6 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
-	// See whether we're in a transition
-	NSImage *surf = NULL;
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		delete m_trans_engine;
-		m_trans_engine = NULL;
-	}
-	if (m_trans_engine) {
-		surf = [view getTransitionSurface];
-		[surf lockFocus];
-		AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to transition surface");
-	}
 	// First find our whole area (which we have to clear to background color)
 	screen_rect<int> dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
@@ -157,10 +112,6 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	const char *color_attr = m_node->get_attribute("color");
 	if (!color_attr) {
 		lib::logger::get_logger()->trace("<brush> element without color attribute");
-		if (surf) {
-			AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to view");
-			[surf unlockFocus];
-		}
 		m_lock.leave();
 		return;
 	}
@@ -172,30 +123,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 				alpha:1.0];
 	[cocoa_bgcolor set];
 	NSRectFill(cocoa_dstrect_whole);
-	if (surf) [surf unlockFocus];
-	if (m_trans_engine) {
-		assert(surf);
-		AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to view");
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<cocoa_fill_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &cocoa_fill_renderer::transition_step);
-		m_event_processor->add_event(ev, m_trans_engine->next_step_delay(), lib::event_processor::med);
-	}
 	m_lock.leave();
-}
-
-void
-cocoa_fill_renderer::transition_step()
-{
-	if (m_dest) m_dest->need_redraw();
-}
-
-void 
-cocoa_fill_renderer::user_event(const point &where, int what)
-{
-	if (what == user_event_click) m_context->clicked(m_cookie, 0);
-	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
-	else assert(0);
 }
 
 void

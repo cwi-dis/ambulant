@@ -56,6 +56,7 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/gui/cocoa/cocoa_renderer.h"
 #include <Cocoa/Cocoa.h>
 
 namespace ambulant {
@@ -67,35 +68,22 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_fill_renderer : public renderer_playable {
+class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
   public:
 	cocoa_fill_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp)
-	:	renderer_playable(context, cookie, node, evp),
-		m_is_showing(false),
-		m_intransition(NULL),
-		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
+	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp) {};
 	~cocoa_fill_renderer();
 
 //	void freeze() {}
 	void start(double where);
-	void stop();
 	void seek(double t) {}
 
-	void set_intransition(const lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(const lib::transition_info *info);
-	void user_event(const point &where, int what = 0);
-    void redraw(const screen_rect<int> &dirty, gui_window *window);
+    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
   private:
-	void transition_step();
-	
-	bool m_is_showing;
-	const lib::transition_info *m_intransition, *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };
 

@@ -94,15 +94,13 @@ none_area_renderer::start(double starttime) {
 	}
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: wantclicks=%d", m_wantclicks);
 	m_dest->need_events(m_wantclicks);
-	m_dest->show(this);
-	m_activated = true;
+	renderer_playable::start(starttime);
 }
 
 void
 none_area_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::stop()", (void*)this);
-	m_dest->renderer_done(this);
-	m_activated = false;
+	renderer_playable::stop();
 	if(m_rgn) {
 		delete m_rgn;
 		m_rgn = 0;

@@ -223,14 +223,6 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	m_lock.leave();
 }
 
-void 
-cocoa_video_renderer::user_event(const point &where, int what)
-{
-	if (what == user_event_click) m_context->clicked(m_cookie, 0);
-	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
-	else assert(0);
-}
-
 } // namespace cocoa
 
 } // namespace gui

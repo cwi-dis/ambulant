@@ -76,6 +76,42 @@ using namespace common;
 
 typedef lib::no_arg_callback<renderer_playable_ds> readdone_callback;
 
+void
+renderer_playable::start(double t)
+{
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable.start(0x%x)", (void *)this);
+	if (m_activated) {
+		lib::logger::get_logger()->trace("renderer_playable.start(0x%x): already started", (void*)this);
+		return;
+	}
+	m_activated = true;
+	if (!m_dest) {
+		lib::logger::get_logger()->trace("renderer_playable.start: no destination surface, skipping media item");
+		m_context->stopped(m_cookie, 0);
+		return;
+	}
+	m_dest->show(this);
+}
+
+void
+renderer_playable::stop()
+{
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable.stop(0x%x)", (void *)this);
+	if (!m_activated) {
+		lib::logger::get_logger()->trace("renderer_playable.stop(0x%x): not started", (void*)this);
+	} else {
+		if (m_dest)
+			m_dest->renderer_done(this);
+	}
+	m_activated = false;
+}
+
+void renderer_playable::user_event(const lib::point &where, int what) {
+	if (what == user_event_click) m_context->clicked(m_cookie, 0);
+	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
+	else assert(0);
+}
+
 renderer_playable_ds::renderer_playable_ds(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
@@ -83,7 +119,6 @@ renderer_playable_ds::renderer_playable_ds(
 	lib::event_processor *evp,
 	common::factories *factory)
 :	renderer_playable(context, cookie, node, evp),
-	m_is_showing(false),
 	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
@@ -100,17 +135,11 @@ void
 renderer_playable_ds::start(double t)
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x)", (void *)this);
-	if (m_is_showing) {
+	if (m_activated) {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x): already started", (void*)this);
 		return;
 	}
-	m_is_showing = true;
-	if (!m_dest) {
-		lib::logger::get_logger()->trace("renderer_playable_ds.start: no destination surface, skipping media item");
-		m_context->stopped(m_cookie, 0);
-		return;
-	}
-	m_dest->show(this);
+	renderer_playable::start(t);
 	if (m_src) {
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
@@ -119,18 +148,6 @@ renderer_playable_ds::start(double t)
 		m_context->stopped(m_cookie, 0);
 	}
 }
-
-
-#if 0
-void
-renderer_playable_ds::readdone()
-{
-	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	if (m_dest)
-		m_dest->need_redraw();
-	m_context->stopped(m_cookie, 0);
-}
-#endif
 
 void
 renderer_playable_ds::seek(double t)
@@ -142,27 +159,11 @@ void
 renderer_playable_ds::stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x)", (void *)this);
-	if (!m_is_showing) {
-		lib::logger::get_logger()->trace("renderer_playable_ds.stop(0x%x): not started", (void*)this);
-	} else {
-		if (m_dest)
-			m_dest->renderer_done(this);
-	}
-	m_is_showing = false;
+	renderer_playable::stop();
 	if (m_src)
 		m_src->stop();
 	m_src = NULL;
 }
-
-#if 0
-void
-renderer_playable_ds::wantclicks(bool want)
-{
-	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds(0x%x)::wantclicks(%d)", (void*)this, want);
-	if (m_dest)
-		m_dest->need_events(want);
-}
-#endif
 
 renderer_playable_dsall::~renderer_playable_dsall()
 {

@@ -108,6 +108,13 @@ class cocoa_renderer : public RP_Base {
 		common::factories *factory)
 	:	RP_Base(context, cookie, node, evp, factory),
 		m_transition_renderer(new cocoa_transition_renderer(evp)) {};
+	cocoa_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		event_processor *evp)
+	:	RP_Base(context, cookie, node, evp),
+		m_transition_renderer(new cocoa_transition_renderer(evp)) {};
 	~cocoa_renderer() {
 		m_transition_renderer->release();
 	}
@@ -117,8 +124,8 @@ class cocoa_renderer : public RP_Base {
 		m_transition_renderer->set_surface(dest);
 	}
 
-	void start(double where) {
-		m_transition_renderer->start(where);
+	virtual void start(double where) {
+		start_transition(where);
 		RP_Base::start(where);
 	}
 	
@@ -127,7 +134,6 @@ class cocoa_renderer : public RP_Base {
 		redraw_body(dirty, window);
 		m_transition_renderer->redraw_post(window);
 	}
-    virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
 
 	void set_intransition(const lib::transition_info *info) {
 		m_transition_renderer->set_intransition(info);
@@ -136,6 +142,12 @@ class cocoa_renderer : public RP_Base {
 	void start_outtransition(const lib::transition_info *info) {
 		m_transition_renderer->start_outtransition(info);
 	}
+  protected:
+	void start_transition(double where) {
+		m_transition_renderer->start(where);
+	}
+    virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
+
   private:
 	cocoa_transition_renderer *m_transition_renderer;
 };

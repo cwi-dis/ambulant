@@ -73,7 +73,6 @@ class none_video_renderer : public common::active_video_renderer {
 		
     void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
-    void user_event(const lib::point &where, int what=0) {};
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
 
