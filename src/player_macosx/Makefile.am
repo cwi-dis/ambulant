@@ -1,4 +1,5 @@
 EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDelegate.mm main.m \
+	mypreferences.mm mypreferences.h \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
 	English.lproj \
@@ -68,10 +69,11 @@ noinst_PROGRAMS = cocoambulant_executable
 cocoambulant_executable_SOURCES= \
 	main.m \
 	mainloop.cpp \
+	mypreferrences.m \
 	MyAmbulantView.m \
 	MyDocument.m \
 	LogController.m \
-	MyAppDelegate.m
+	MyAppDelegate.m 
 	
 APPNAME="Ambulant Player"
 cocoambulant_bundle: cocoambulant_executable

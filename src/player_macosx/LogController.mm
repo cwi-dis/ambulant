@@ -69,6 +69,11 @@
     return self;
 }
 
+- (void) awakeFromNib
+{
+	if (level_popup) [level_popup selectItemAtIndex: level];
+}
+	
 - (void) insertText: (NSString *)data
 {
     NSRange endRange;
@@ -87,9 +92,10 @@
 	[app setLogLevel: level];
 }
 
-- (void) setLogLevelUI: (int) level
+- (void) setLogLevelUI: (int) newlevel
 {
-	[level_popup selectItemWithIndex: level];
+	level = newlevel;
+	if (level_popup) [level_popup selectItemAtIndex: level];
 }
 
 @end

@@ -49,6 +49,7 @@
 #import "MyAppDelegate.h"
 #import "MyDocument.h"
 #import "LogController.h"
+#import "mypreferences.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -110,6 +111,7 @@ initialize_logger()
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	mypreferences::install_singleton();
 	initialize_logger();
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
@@ -183,6 +185,13 @@ initialize_logger()
 	LogController *log = [LogController sharedLogController];
 	if (log) [log showWindow: sender];
 }
+
+#if 0
+- (IBAction)showPreferences:(id)sender
+{
+	NSLog(@"Show Preferences Window");
+}
+#endif
 
 - (void)showMessage:(NSString *)message
 {

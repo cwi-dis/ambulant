@@ -7,7 +7,13 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {loadFilter = id; playWelcome = id; showHomepage = id; showLogWindow = id; }; 
+            ACTIONS = {
+                loadFilter = id; 
+                playWelcome = id; 
+                showHomepage = id; 
+                showLogWindow = id; 
+                showPreferences = id; 
+            }; 
             CLASS = MyAppDelegate; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
