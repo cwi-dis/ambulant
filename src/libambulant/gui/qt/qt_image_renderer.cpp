@@ -100,21 +100,47 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	paint.begin(aqw->ambulant_pixmap());
 
 	if (m_image_loaded) {
-		QSize qsize = aqw->ambulant_pixmap()->size();
+		QSize qsize = m_image.size();
 		size srcsize = size(qsize.width(), qsize.height());
 		rect srcrect = rect(size(0,0));
 		screen_rect<int> dstrect =
 		  m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
-		int L = dstrect.left(), 
-		    T = dstrect.top(),
-		    W = dstrect.width(),
-		    H = dstrect.height();
+		// O_ for original image coordintates
+		// S_ for source image coordinates
+		// N_ for new (scaled) image coordinates
+		// D_ for destination coordinates
+		int O_W = srcsize.w,
+		    O_H = srcsize.h;
+		int S_L = srcrect.left(), 
+		    S_T = srcrect.top(),
+		    S_W = srcrect.width(),
+		    S_H = srcrect.height();
+		int D_L = dstrect.left(), 
+		    D_T = dstrect.top(),
+		    D_W = dstrect.width(),
+		    D_H = dstrect.height();
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_active_image_renderer.redraw_body(0x%x):"
-			" drawImage at (L=%d,T=%d,W=%d,H=%d)",
-			(void *)this,L,T,W,H);
-		paint.drawImage(L,T,m_image,0,0,W,H);
+			" drawImage at (L=%d,T=%d,W=%d,H=%d)"
+			" from (L=%d,T=%d,W=%d,H=%d)",
+			(void *)this,D_L,D_T,D_W,D_H,
+			S_L, S_T, S_W, S_H);
+		float fact_W = (float)D_W/(float)S_W,
+		      fact_H = (float)D_H/(float)S_H;
+		int N_L = (int)(S_L*fact_W),
+		    N_T = (int)(S_T*fact_H),
+		    N_W = (int)(O_W*fact_W),
+		    N_H = (int)(O_H*fact_H);
+		AM_DBG lib::logger::get_logger()->trace(
+			"qt_active_image_renderer.redraw_body(0x%x):"
+			"orig=(%d, %d) scalex=%f, scaley=%f"
+			" intermediate (L=%d,T=%d,W=%d,H=%d)",
+			(void *)this, O_W, O_H, fact_W, fact_H,
+			N_L, N_T, N_W, N_H);
+		QImage scaledimage = m_image.smoothScale(N_W, N_H,
+							 QImage::ScaleFree);
+		paint.drawImage(D_L,D_T,scaledimage,N_L, N_T, D_W,D_H);
 	}
 	else {
 		AM_DBG lib::logger::get_logger()->error(
