@@ -21,6 +21,8 @@
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/filesys.h"
+#include "ambulant/lib/asb.h"
+#include "ambulant/net/url.h"
 #include <ostream>
 
 // A class respresenting an XML document.
@@ -70,7 +72,7 @@ class document : public node_context {
 	}
 	
 	// Returns the source url of this document
-	const std::string& get_src_url() const { return m_src_url;}
+	const ambulant::net::url& get_src_url() const { return m_src_url;}
 	
 	// node_context interface
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
@@ -86,10 +88,12 @@ class document : public node_context {
 	node *m_root;
 	
 	// the external source url
-	std::string m_src_url;
+	ambulant::net::url m_src_url;
 	
 	// this base url
-	std::string m_src_base;
+	ambulant::net::url m_src_base;
+	
+	bool m_is_file;
 	
 	// document namespaces registry
 	nscontext m_namespaces;
@@ -139,8 +143,11 @@ document::create_from_file(const std::string& str) {
 		return 0;
 	}
 	d->m_root = builder.detach();
-	d->m_src_url = str;
-	d->m_src_base = filesys::get_base(str);
+	d->m_src_url = ambulant::net::url(str);
+	
+	std::string base = filesys::get_base(str, file_separator.c_str());
+	d->m_src_base = ambulant::net::url(base);
+	
 	return d;
 }
 
@@ -157,12 +164,14 @@ document::get_namespace_prefix(const xml_string& uri) const {
 inline std::string 
 document::resolve_url(const node *n, const std::string& rurl) const {
 	// locate node context xml:base
-	std::string base = m_src_base;
 	// const char *p = n->get_container_attribute("base");
 	// ...
-	
 	// if none is found use source.
-	return filesys::join(m_src_base, rurl); // XXX: WRONG, just return something for now.
+	
+	if(m_src_base.get_protocol() == "file")
+		return filesys::join(m_src_base.get_path(), rurl, file_separator.c_str());
+		
+	return filesys::join(m_src_base.get_path(), rurl); 
 }
 
 } // namespace lib

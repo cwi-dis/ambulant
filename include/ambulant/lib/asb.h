@@ -34,10 +34,12 @@ namespace lib {
 
 using ambulant::lib::win32::sleep;
 using ambulant::lib::win32::sleep_msec;
+const std::string file_separator = "\\/";
 
 #else
 
 using ::sleep;
+const std::string file_separator = "/";
 
 #endif
 
