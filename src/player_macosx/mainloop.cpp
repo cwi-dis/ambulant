@@ -163,6 +163,7 @@ void
 mainloop::play()
 {
 	m_running = true;
+	m_speed = 1.0;
 	m_player->start();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }
@@ -171,6 +172,7 @@ void
 mainloop::stop()
 {
 	m_player->stop();
+	m_speed = 1.0;
 	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }
 
