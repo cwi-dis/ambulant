@@ -71,6 +71,7 @@ class dx_player {
 	virtual bool start() = 0;
 	virtual void stop() = 0;
 	virtual void pause() = 0;
+	virtual void resume() = 0;
 	virtual bool is_done() const = 0;
 	virtual viewport* create_viewport(int w, int h) = 0;
 	
