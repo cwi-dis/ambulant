@@ -55,7 +55,7 @@
 #include "ambulant/net/posix_datasource.h"
 #include <unistd.h>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -75,8 +75,8 @@ net::posix_datasource_factory::new_raw_datasource(const std::string& url)
 	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", url.c_str());
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
 	if (url != "") {
-		passive_datasource dummy(url);
-		return dummy.activate();
+		passive_datasource *pds = new passive_datasource(url);
+		return pds->activate();
 	} else {
 		return NULL;
 	}
@@ -105,6 +105,7 @@ net::passive_datasource::activate()
 
 net::passive_datasource::~passive_datasource()
 {
+	AM_DBG lib::logger::get_logger()->trace("passive_datasource::~passive_datasource(0x%x)", (void*)this);
 }
 
 // *********************** active_datasource ***********************************************
@@ -117,6 +118,7 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
 	m_stream(file),
 	m_end_of_file(false)
 {
+	AM_DBG lib::logger::get_logger()->trace("active_datasource::active_datasource(0x%x, %d)->0x%x", (void*)source, file, (void*)this);
 	m_source->add_ref();
 	if (file >= 0) {
 		filesize();
@@ -145,11 +147,13 @@ net::active_datasource::end_of_file()
 
 net::active_datasource::~active_datasource()
 {
+	AM_DBG lib::logger::get_logger()->trace("active_datasource::~active_datasource(0x%x)", (void*)this);
 	if (m_buffer) {
 		delete m_buffer;
 		m_buffer = NULL;
 	}
-	m_source->release();
+	if (m_source) m_source->release();
+	m_source = NULL;
 	close(m_stream);
 }
 
