@@ -51,6 +51,13 @@
  */
 
 #include "ambulant/lib/timer.h"
+
+#   if __GNUC__ == 2 && __GNUC_MINOR__ <= 97
+#include "ambulant/compat/limits"
+#else
+#include <limits>
+#endif
+
 #include "ambulant/lib/logger.h"
 #include <cmath>
 
@@ -60,12 +67,15 @@
 
 using namespace ambulant;
 
+static long infinite = std::numeric_limits<long>::max();
+
 lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool running /* = true */)
 :   m_parent(parent),
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
 	m_speed(speed),
 	m_running(running),
+	m_period(infinite),
 	m_listeners(0)
 {	
 	AM_DBG lib::logger::get_logger()->trace("lib::timer()");
@@ -110,9 +120,28 @@ void lib::timer::resume() {
 		m_running = true;
 	}
 }
-	
-void
-lib::timer::set_speed(double speed)
+
+void lib::timer::set_time(time_type t) {
+	if(!m_running) {
+		m_local_epoch = t;
+	} else {
+		pause();
+		m_local_epoch = t;
+		resume();
+	}
+}	
+
+lib::timer::time_type 
+lib::timer::get_time() const {
+	return (m_period == infinite)?elapsed():(elapsed() % m_period);
+}
+
+lib::timer::time_type 
+lib::timer::get_repeat() const {
+	return (m_period == infinite)?0:(elapsed() / m_period);
+}
+
+void lib::timer::set_speed(double speed)
 {
 	if(!m_running) {
 		m_speed = speed;

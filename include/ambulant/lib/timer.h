@@ -122,6 +122,13 @@ class timer : public abstract_timer, public timer_events {
 	// the new speed is applied immediately. 
 	void set_speed(double speed);
 	
+	void set_time(time_type t);
+	
+	time_type get_time() const;
+	time_type get_repeat() const;
+	
+	void set_period(time_type t) { m_period = t;}
+	
 	// Returns the speed of this timer.
 	double get_speed() const { return m_speed;}
 	
@@ -144,6 +151,7 @@ class timer : public abstract_timer, public timer_events {
 	time_type m_local_epoch;
 	double m_speed;
 	bool m_running;
+	long m_period;
 	
 	// Note: event listeners are not owned by this.
 	std::set<timer_events *> *m_listeners;
