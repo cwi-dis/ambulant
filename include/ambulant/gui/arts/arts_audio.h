@@ -84,22 +84,22 @@ class arts_active_audio_renderer : public common::playable_imp {
     void pause() {};
     void resume() {};
     void speed_changed() {};
-    void readdone();
+    void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
 		
   private:
     int arts_setup(int rate, int bits, int channels, char *name);
     int arts_play(char *data, int size);
-    
+    bool restart_audio_input();
     int m_rate;
     int m_channels;
     int m_bits;
   	arts_stream_t m_stream;
   	net::audio_datasource *m_audio_src;
     char *m_name;
-  	arts_stream_t m_stream;
 	static bool m_arts_init;
     lib::event *m_playdone;
+  	static net::audio_format m_ambulant_format;
 
 };
 

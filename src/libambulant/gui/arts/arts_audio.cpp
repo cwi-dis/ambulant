@@ -46,6 +46,7 @@
  *
  */
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -55,7 +56,8 @@
 using namespace ambulant;
 using namespace gui::arts;
 
-typedef lib::no_arg_callback<common::playable_imp> readdone_callback;
+typedef lib::no_arg_callback<gui::arts::arts_active_audio_renderer> readdone_callback;
+net::audio_format gui::arts::arts_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
 
 bool arts_active_audio_renderer::m_arts_init = false;
  
@@ -72,7 +74,18 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	m_stream(NULL),
 	m_audio_src(NULL)
 {
-init();
+	//init();
+	arts_setup(44100,16,2,"arts_audio");
+	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
+	net::url url = node->get_url("src");
+	m_audio_src = df->new_audio_datasource(url, supported);
+	if (!m_audio_src)
+		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
+	else if (!supported.contains(m_audio_src->get_audio_format())) {
+		lib::logger::get_logger()->error("arts_active_audio_renderer: %s: unsupported format", repr(url).c_str());
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
 }
 
 int
@@ -96,18 +109,38 @@ arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *n
     if (!m_stream) {
         //err = arts_init();
         err = init();
-    if (err < 0) {
-        AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
-        return err;
-    }
-    m_stream = arts_play_stream(rate, bits, channels, name);
-    return 0;
+    	if (err < 0) {
+        	AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
+        	return err;
+    	}
+    	m_stream = arts_play_stream(rate, bits, channels, name);
+		if (!m_stream) {
+			AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): m_stream == NULL");
+		}
+    	return 0;
     }
 }
 
 arts_active_audio_renderer::~arts_active_audio_renderer()
 {
     arts_close_stream(m_stream);
+}
+
+
+bool
+arts_active_audio_renderer::restart_audio_input()
+{
+ 	// private method - no need to lock.
+	if (!m_audio_src || m_audio_src->end_of_file()) {
+		// No more data.
+		return false;
+	}
+	if (m_audio_src->size() == 0) {
+		// Start reading 
+		lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
+		m_audio_src->start(m_event_processor, e);
+	}
+	return true;
 }
 
 int
@@ -127,7 +160,7 @@ arts_active_audio_renderer::arts_play(char *data, int size)
 }
 
 void
-arts_active_audio_renderer::readdone()
+arts_active_audio_renderer::data_avail()
 {
     char *data;
     int size;
@@ -135,15 +168,18 @@ arts_active_audio_renderer::readdone()
     int err;
     
     AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)", (void *)this);
-    
-    data = m_src->get_read_ptr();
-	size = m_src->size();
+    data = m_audio_src->get_read_ptr();
+	size = m_audio_src->size();
     AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
-    arts_setup(44100,16,1,"arts_audio");
+    //arts_setup(44100,16,1,"arts_audio");
     played=arts_play(data,size);
 	AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
-    m_src->readdone(played);
-    stopped_callback();
+    m_audio_src->readdone(played);
+	
+	
+	restart_audio_input();
+    //m_context->stopped(m_cookie, 0);
+
 }
 
 
@@ -157,14 +193,17 @@ arts_active_audio_renderer::start(double where)
 	std::ostringstream os;
 	os << *m_node;
 
+	
 	AM_DBG lib::logger::get_logger()->debug("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
-	if (m_src) {
-		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
-		m_src->start(m_event_processor, e);
+	if (m_audio_src) {
+		lib::event *e = new readdone_callback(this, &arts_active_audio_renderer::data_avail);
+		m_audio_src->start(m_event_processor, e);
+
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		if (m_playdone) {
-            stopped_callback();
+			m_context->stopped(m_cookie, 0);
+            //stopped_callback();
         }
 	}
 }

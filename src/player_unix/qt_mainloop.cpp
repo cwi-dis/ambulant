@@ -147,8 +147,9 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	plugin::plugin_engine *m_pf = new plugin::plugin_engine(m_rf,m_df);
 	
 #ifdef WITH_SDL
+
 	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	m_rf->add_factory( new sdl::sdl_renderer_factory(m_df) );
+	//m_rf->add_factory( new sdl::sdl_renderer_factory(m_df) );
 AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
 
