@@ -28,8 +28,6 @@ AC_CONFIG_FILES([Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
-	Test/Makefile
-	Test/designtests/Makefile
 	third_party_packages/Makefile])
 #
 # Find expat

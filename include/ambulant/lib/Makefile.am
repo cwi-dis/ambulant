@@ -2,8 +2,10 @@ SUBDIRS=unix
 library_includedir=$(includedir)/ambulant/lib
 library_include_HEADERS= \
 	abstract_mtsync.h \
+	amstream.h \
 	asb.h \
 	basic_types.h \
+	byte_buffer.h \
 	callback.h \
 	colors.h \
 	delta_timer.h \
@@ -14,6 +16,7 @@ library_include_HEADERS= \
 	filesys.h \
 	gtypes.h \
 	logger.h \
+	memfile.h \
 	mtsync.h \
 	nfa.h \
 	node_iterator.h \
@@ -26,6 +29,7 @@ library_include_HEADERS= \
 	sax_types.h \
 	string_util.h \
 	thread.h \
+	textptr.h \
 	timer.h \
 	tree_builder.h
 
