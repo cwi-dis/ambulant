@@ -65,6 +65,7 @@ class event_processor;
 
 namespace net {
 class datasource_factory;
+class audio_datasource;
 } // namespace net
 
 namespace common {
@@ -227,6 +228,13 @@ class playable_factory {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp) = 0;
+		
+	virtual playable *new_aux_audio_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src) {return NULL;};	
 };
 
 } // namespace common
@@ -234,5 +242,3 @@ class playable_factory {
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_PLAYABLE_H
-
-

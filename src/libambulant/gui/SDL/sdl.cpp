@@ -81,3 +81,24 @@ sdl_renderer_factory::new_playable(
 	}
 	return rv;
 }
+
+common::playable *
+sdl_renderer_factory::new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	common::playable *rv;
+	lib::xml_string tag = node->get_qname().second;
+    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	if ( tag == "audio") {
+		rv = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, m_factory, src);
+		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_active_audio_renderer 0x%x", (void *)node, (void *)rv);
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
+        return NULL;
+	}
+	return rv;
+}

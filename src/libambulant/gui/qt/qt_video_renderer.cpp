@@ -87,7 +87,7 @@ qt_active_video_renderer::qt_active_video_renderer(
 		m_audio_ds = m_src->get_audio_datasource();
 		//XXXX This is wrong
 		if (m_audio_ds) {
-			m_audio_renderer = factory->rf->new_playable(context, cookie, node, evp);
+			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
 			//m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
 			//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
 		} else {
