@@ -81,7 +81,7 @@ class event_processor {
 	virtual timer *get_timer() const = 0;
 	
 	// Stop this event processor (stops the underlying thread)
-	virtual void stop() = 0;
+	virtual void stop_processor_thread() = 0;
 };
 
 } // namespace lib
@@ -205,7 +205,7 @@ class abstract_event_processor : public event_processor {
 		return repeat; 
 	}
 	
-	virtual void stop() {};
+	void stop_processor_thread() {};
 	
   protected:
 	// called by add_event
