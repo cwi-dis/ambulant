@@ -177,7 +177,7 @@ qt_gui::qt_gui(const char* title,
 		m_pause_id = m_playmenu->insertItem(gettext("&Pause"), this,
 						    SLOT(slot_pause()));
 		m_playmenu->setItemEnabled(m_pause_id, false);
-		m_playmenu->insertItem("gettext(&Stop"),	this, SLOT(slot_stop()));
+		m_playmenu->insertItem(gettext("&Stop"),	this, SLOT(slot_stop()));
 		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
 		
 		/* Help */
