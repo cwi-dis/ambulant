@@ -57,21 +57,17 @@
 #define AM_DBG if(0)
 #endif
 
-namespace ambulant {
-  
-using namespace lib;
-  
-namespace gui {
-namespace qt_renderer {
+using namespace ambulant; 
+using namespace gui::qt;
   
 void
-ambulant_qt_window::need_redraw(const screen_rect<int> &r) {
-	AM_DBG logger::get_logger()->trace(
+ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r) {
+	AM_DBG lib::logger::get_logger()->trace(
 		"ambulant_qt_window::need_redraw(0x%x), "
 		"ltrb=(%d,%d,%d,%d)",
 	       (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (ambulant_widget() == NULL) {
-		logger::get_logger()->error(
+		lib::logger::get_logger()->error(
 			"ambulant_qt_window::need_redraw(0x%x):"
 			"ambulant_widget() == NULL !!!",
 		 	(void*) this);
@@ -85,46 +81,46 @@ ambulant_qt_window::need_redraw(const screen_rect<int> &r) {
   
 void
 ambulant_qt_window::mouse_region_changed() {
-	logger::get_logger()->error(
+	lib::logger::get_logger()->error(
 	"ambulant_qt_window::mouse_region_changed"
 	" needs to be implemented");
 }
 
 void
-ambulant_qt_window::redraw(const screen_rect<int> &r) {
-	AM_DBG logger::get_logger()->trace(
+ambulant_qt_window::redraw(const lib::screen_rect<int> &r) {
+	AM_DBG lib::logger::get_logger()->trace(
 		"ambulant_qt_window::redraw(0x%x), ltrb=(%d,%d,%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_region->redraw(r, this);
 }
 
 void
-ambulant_qt_window::user_event(const point &where) {
+ambulant_qt_window::user_event(const lib::point &where) {
 	m_region->user_event(where);
 }
 
-active_renderer *
+common::active_renderer *
 qt_renderer_factory::new_renderer (
-	lib::active_playable_events *context,
-	lib::active_playable_events::cookie_type cookie,
+	common::active_playable_events *context,
+	common::active_playable_events::cookie_type cookie,
 	const lib::node *node,
-	event_processor *const evp,
+	lib::event_processor *const evp,
 	net::passive_datasource *src,
-	abstract_rendering_surface *const dest) {
+	common::abstract_rendering_surface *const dest) {
 
-	xml_string tag = node->get_qname().second;
-	active_renderer* rv;
+	lib::xml_string tag = node->get_qname().second;
+	common::active_renderer* rv;
 	if (tag == "img") {
- 		rv = (active_renderer*) new qt_active_image_renderer(
+ 		rv = new qt_active_image_renderer(
 			context, cookie, node, evp, src, dest);
-		AM_DBG logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 			"returning qt_active_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
-		rv = (active_renderer*) new qt_active_text_renderer(
+		rv = new qt_active_text_renderer(
 			context, cookie, node, evp, src, dest);
-		AM_DBG logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 	 		"returning qt_active_text_renderer 0x%x",
 			(void*) node, (void*) rv);
@@ -134,13 +130,13 @@ qt_renderer_factory::new_renderer (
     return rv;
   }
   
-abstract_window *
+common::abstract_window *
 qt_window_factory::new_window (const std::string &name,
-			       size bounds,
-			       abstract_rendering_source *region)
+			       lib::size bounds,
+			       common::abstract_rendering_source *region)
 {
-	screen_rect<int> * r = new screen_rect<int>(m_p, bounds);
-	AM_DBG logger::get_logger()->trace(
+	lib::screen_rect<int> * r = new lib::screen_rect<int>(m_p, bounds);
+	AM_DBG lib::logger::get_logger()->trace(
 		"qt_window_factory::new_window (0x%x)"
 		" name=%s %d,%d,%d,%d",
 		(void*) this, name.c_str(),
@@ -151,7 +147,7 @@ qt_window_factory::new_window (const std::string &name,
 		name, r, m_parent_widget);
 #ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
 	if (qApp == NULL || qApp->mainWidget() == NULL) {
-		logger::get_logger()->error(
+		lib::logger::get_logger()->error(
 			"qt_window_factory::new_window (0x%x) %s",
 			(void*) this,
 	   		"qApp == NULL || qApp->mainWidget() == NULL");
@@ -162,7 +158,7 @@ qt_window_factory::new_window (const std::string &name,
 #endif	/*QT_NO_FILEDIALOG*/
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
- 	AM_DBG logger::get_logger()->trace(
+ 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_window_factory::new_window(0x%x)"
 		"ambulant_widget=0x%x qt_window=0x%x",
 		(void*) this, (void*) qaw, (void*) aqw);
@@ -170,23 +166,17 @@ qt_window_factory::new_window (const std::string &name,
 	return aqw;
 }
 
-abstract_mouse_region *
+common::abstract_mouse_region *
 qt_window_factory::new_mouse_region() {
-	logger::get_logger()->error(
+	lib::logger::get_logger()->error(
 		"qt_window_factory::new_mouse_region"
 		" needs to be implemented");
 }
 
-abstract_bg_rendering_source *
+common::abstract_bg_rendering_source *
 qt_window_factory::new_background_renderer() {
-	logger::get_logger()->trace(
+	lib::logger::get_logger()->trace(
 		"qt_window_factory::new_background_renderer(0x%x): TBD",
 		(void*) this);
 	return new qt_background_renderer();
 }
-
-} // namespace qt_renderer
-
-} // namespace gui
-
-} //namespace ambulant

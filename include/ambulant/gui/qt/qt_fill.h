@@ -63,31 +63,22 @@
 #define AM_DBG if(0)
 #endif
 
-class qt_gui;
+namespace ambulant {
 
-using namespace std;
+namespace gui {
 
-namespace ambulant
-{
+namespace qt {
 
-using namespace lib;
-
-namespace gui
-{
-
-namespace qt_renderer
-{
-
-class qt_active_fill_renderer : public active_basic_renderer {
+class qt_active_fill_renderer : public common::active_basic_renderer {
   public:
 	qt_active_fill_renderer(
-		active_playable_events *context,
-		active_playable_events::cookie_type cookie,
-		const node *node,
-		event_processor *const evp,
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		abstract_rendering_surface *const dest)
-: active_basic_renderer(context, cookie, node, evp),
+		common::abstract_rendering_surface *const dest)
+: common::active_basic_renderer(context, cookie, node, evp),
 	m_dest(dest),
 	m_playing(false) {
 };
@@ -107,27 +98,27 @@ class qt_active_fill_renderer : public active_basic_renderer {
 	}
 	void wantclicks(bool want) { // XXXX
 	}
-	void user_event(const point &where) {
+	void user_event(const lib::point &where) {
 		clicked_callback();
 	}
-	void redraw(const screen_rect<int> &dirty, 
-		    abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, 
+		    common::abstract_window *window);
   private:
-	abstract_rendering_surface *const m_dest;
+	common::abstract_rendering_surface *const m_dest;
 	bool m_playing;
-	critical_section m_lock;
+	lib::critical_section m_lock;
 };
 
-class qt_background_renderer : public abstract_bg_rendering_source {
+class qt_background_renderer : public common::abstract_bg_rendering_source {
   public:
 	void drawbackground(
-		const abstract_smil_region_info *src,
-		const screen_rect<int> &dirty,
-		abstract_rendering_surface *dst,
-		abstract_window *windo);
+		const common::abstract_smil_region_info *src,
+		const lib::screen_rect<int> &dirty,
+		common::abstract_rendering_surface *dst,
+		common::abstract_window *windo);
 };
 
-} // namespace qt_renderer
+} // namespace qt
 
 } // namespace gui
 
