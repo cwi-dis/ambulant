@@ -4,6 +4,9 @@ Instructions for build Ambulant from CVS
 These instructions are currently for unix only, Windows instructions will
 follow later.
 
+NOTE: It appears that steps 2, 3, 4 and 6 can be replaced by a simple
+invocation of "autoreconf", if you have it.
+
 1. Check out the CVS tree (which you have presumably done already).
 
 2. Create a symlink ltmain.sh. On most platforms the original will
