@@ -80,7 +80,7 @@ using namespace gui::qt;
 
 
  
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -106,10 +106,10 @@ open_web_browser(const std::string &href)
 	}
 }
 
-qt_mainloop::qt_mainloop(qt_gui* parent) :
+qt_mainloop::qt_mainloop(qt_gui* gui) :
 	m_factory(NULL),
 	m_doc(NULL),
-	m_parent(parent),
+	m_gui(gui),
 	m_player(NULL),
  	m_refcount(1),
  	m_running(false),
@@ -176,11 +176,11 @@ AM_DBG logger::get_logger()->debug("add factory for SDL done");
 	m_factory->rf->add_factory(new none::none_video_factory(m_factory));
 
 	
-	m_factory->wf = new qt_window_factory(parent, 
-				     parent->get_o_x(),
-				     parent->get_o_y());
+	m_factory->wf = new qt_window_factory(m_gui, 
+					      m_gui->get_o_x(),
+					      m_gui->get_o_y());
 
-	const char *filename = parent->filename();
+	const char *filename = m_gui->filename();
 	m_doc = create_document(filename);
 	if (!m_doc) {
 		return;
@@ -301,50 +301,73 @@ qt_mainloop::show_file(const net::url &url)
 void
 qt_mainloop::done(common::player *p)
 {
-	m_logger->debug("qt_mainloop: implementing: done document");
+	AM_DBG m_logger->debug("qt_mainloop: implementing: done()");
+	m_gui->player_done();
+}
+
+bool
+qt_mainloop::player_done()
+  // return true when the last player is done
+{
+	AM_DBG m_logger->debug("qt_mainloop: implementing: player_done");
 //TBD	m_timer->pause();
 //TBD	m_update_event = 0;
 //TBD	clear_transitions();
 	if(!m_frames.empty()) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
-		m_parent = pf->windows;
+		m_gui = pf->windows;
 		m_player = pf->player;
 		delete pf;
 		m_player->resume();
 //TBD		m_player->need_redraw();
+		return false;
 	}
+	return true;
 }
 
 void
 qt_mainloop::close(common::player *p)
 {
-	m_logger->warn("qt_mainloop: implementing: close document");
+	AM_DBG m_logger->trace("qt_mainloop: implementing: close document");
 	stop();
 }
 
 void
 qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 {
-	const char* document_name = newdoc.get_url().c_str();
-	m_logger->warn("qt_mainloop: implementing: open \"%s\"",
-		       document_name);
+	QString document_name(newdoc.get_url().c_str());
+	AM_DBG m_logger->trace("qt_mainloop: implementing: open \"%s\"",document_name.ascii());
+	m_gui->player_start(document_name, start, old);
+}
 
+void
+qt_mainloop::player_start(QString document_name, bool start, bool old)
+{
+	AM_DBG m_logger->debug("player_start(%s,%d,%d)",document_name.ascii(),start,old);
 	// Parse the provided URL. 
-//
 	m_doc = create_document(document_name);
 	if(!m_doc) {
-		m_logger->error(gettext("%s: Cannot build DOM tree"), document_name);
+		m_logger->error(gettext("%s: Cannot build DOM tree"), 
+				document_name.ascii());
 		return;
 	}
-	
-	// Push the old frame on the stack
+	if (old) {
+		m_player->stop();
+		//TBD delete m_player;
+		m_player = create_player(document_name);
+		if (start)
+			m_player->start();
+		return;
+	}
+/* Next code failed test
 	if(m_player) {
+	// Push the old frame on the stack
 		m_player->pause();
 		frame *pf = new frame();
-		pf->windows = m_parent;
+		pf->windows = m_gui;
 		pf->player = m_player;
-//TBD		m_parent->erase();
+//TBD		m_gui->erase();
 		m_player = NULL;
 		m_frames.push(pf);
 	}
@@ -353,8 +376,8 @@ qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 	AM_DBG m_logger->debug("Creating player instance for: %s",
 			       document_name);
 	m_player = create_player(document_name);
-	if(start) {
+//TBD	if(start) {
 		m_player->start();
-		m_parent->need_redraw(NULL,NULL,NULL);
-	}
+//TBD	}
+*/
 }

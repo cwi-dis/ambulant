@@ -283,7 +283,7 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
-	assert(m_read_data_ptr);
+//	assert(m_read_data_ptr);
 	if (m_read_data_ptr) {
 			free(m_read_data_ptr);
 			m_read_data_ptr = NULL;

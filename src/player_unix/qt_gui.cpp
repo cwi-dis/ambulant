@@ -208,6 +208,10 @@ qt_gui::qt_gui(const char* title,
 			 this, SLOT(slot_show_message(int, const char*)));
 	QObject::connect(this, SIGNAL(signal_log(qt_logger*, QString)),
 			 this, SLOT(slot_log(qt_logger*, QString)));
+	QObject::connect(this, SIGNAL(signal_player_done()),
+			    this, SLOT(slot_player_done()));
+	QObject::connect(this, SIGNAL(signal_player_start(QString,bool,bool)),
+			    this, SLOT(slot_player_start(QString,bool,bool)));
 }
 
 qt_gui::~qt_gui() {
@@ -387,11 +391,20 @@ qt_gui::slot_open_url() {
 void 
 qt_gui::slot_player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_player_done");
-	m_playmenu->setItemEnabled(m_pause_id, false);
-	m_playmenu->setItemEnabled(m_play_id, true);
-	m_playing = false;
-	QObject::disconnect(this, SIGNAL(signal_player_done()),
-			    this, SLOT(slot_player_done()));
+	/*
+	if (m_mainloop->player_done()) {
+		m_playmenu->setItemEnabled(m_pause_id, false);
+		m_playmenu->setItemEnabled(m_play_id, true);
+		m_playing = false;
+	}
+	*/
+}
+
+
+void 
+qt_gui::slot_player_start(QString document_name, bool start, bool old) {
+	AM_DBG printf("%s-%s(%s)\n", m_programfilename, "slot_player_start", document_name.ascii());
+	m_mainloop->player_start(document_name, start, old);
 }
 
 void 
@@ -408,6 +421,12 @@ qt_gui::player_done() {
 }
 
 void 
+qt_gui::player_start(QString document_name, bool start, bool old) {
+	AM_DBG printf("%s-%s\n", m_programfilename, "player_start");
+	emit signal_player_start(document_name, start, old);
+}
+
+void 
 qt_gui::slot_play() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
 	if (m_smilfilename == NULL || m_mainloop == NULL
@@ -419,8 +438,6 @@ qt_gui::slot_play() {
 	}
 	if (!m_playing) {
 		m_playing = true;
-		QObject::connect(this, SIGNAL(signal_player_done()),
-				 this, SLOT(slot_player_done()));
 		m_playmenu->setItemEnabled(m_play_id, false);
 		m_playmenu->setItemEnabled(m_pause_id, true);
 #if 1
@@ -454,7 +471,8 @@ qt_gui::slot_pause() {
 void 
 qt_gui::slot_stop() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
-	m_mainloop->stop();
+	if(m_mainloop)
+		m_mainloop->stop();
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
 	m_playing = false;
@@ -531,7 +549,7 @@ qt_gui::slot_quit() {
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void
 qt_gui::unsetCursor() { //XXXX Hack
-	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
+//	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
 	Qt::CursorShape cursor_shape = m_mainloop->get_cursor() ?
 		Qt::PointingHandCursor : Qt::ArrowCursor;
 	if (cursor_shape != m_cursor_shape) {

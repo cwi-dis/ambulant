@@ -230,8 +230,6 @@ qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
 	paint.flush();
 	paint.end();
 }
-#ifdef	JUNK
-#endif/*JUNK*/
 
 void
 qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,

@@ -107,6 +107,8 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	void close(common::player *p);
 	void done(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL);
+	bool player_done();
+	void player_start(QString document_name, bool start, bool old);
 	
 	static void* run(void* qt_mainloop);
 
@@ -145,10 +147,10 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	ambulant::lib::document *create_document(const char *filename);
 	ambulant::common::player* create_player(const char* filename);
 	// sorted alphabetically on member name
- 	common::factories* m_factory;
 	document*				m_doc;
+ 	common::factories*			m_factory;
+	qt_gui*					m_gui;
 	lib::logger*				m_logger;
-	qt_gui*					m_parent;
 	player*					m_player;
 	basic_atomic_count<critical_section>	m_refcount;
 	

@@ -115,6 +115,7 @@ class qt_gui : public QWidget {
 	void log(qt_logger*, QString);
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
+	void player_start(QString,bool,bool);
 	void show_message(int level, const char* message);
 
    private:
@@ -166,6 +167,7 @@ class qt_gui : public QWidget {
 	void slot_open_url();
 	void slot_pause();
 	void slot_player_done();
+	void slot_player_start(QString,bool,bool);
 	void slot_quit();
 	void slot_settings_cancel();
 	void slot_settings_ok();
@@ -176,6 +178,7 @@ class qt_gui : public QWidget {
   signals:
 	void signal_log(qt_logger*, QString);
 	void signal_player_done();
+	void signal_player_start(QString,bool,bool);
 	void signal_need_redraw(const void*, void*, const void*);
 	void signal_show_message(int, const char*);
 
