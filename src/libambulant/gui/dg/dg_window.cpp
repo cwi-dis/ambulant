@@ -70,10 +70,9 @@ gui::dg::dg_window::dg_window(const std::string& name,
 :	common::abstract_window(rgn),
 	m_rgn(rgn),
 	m_name(name),
+	m_viewrc(point(0, 0), point(bounds.w, bounds.h)),
 	m_wf(wf),
 	m_viewport(v) {
-	//AM_DBG lib::logger::get_logger()->trace_stream() 
-	//	<< "dg_window(" << name << ", " << bounds << ")" << lib::endl;
 }
 
 gui::dg::dg_window::~dg_window() {
@@ -82,10 +81,15 @@ gui::dg::dg_window::~dg_window() {
 }
   		
 void gui::dg::dg_window::need_redraw(const lib::screen_rect<int> &r) {
-	//AM_DBG lib::logger::get_logger()->trace_stream()
-	//	<< "dg_window::need_redraw" << r << lib::endl;
-	m_rgn->redraw(r, this);
-	m_viewport->redraw(r);
+	lib::screen_rect<int> rc = r;
+	rc &= m_viewrc;
+	m_rgn->redraw(rc, this);
+	m_viewport->redraw(rc);
+}
+
+void gui::dg::dg_window::need_redraw() {
+	m_rgn->redraw(m_viewrc, this);
+	m_viewport->redraw();
 }
 
 void gui::dg::dg_window::mouse_region_changed() {

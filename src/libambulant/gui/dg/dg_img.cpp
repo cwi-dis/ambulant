@@ -131,28 +131,17 @@ void gui::dg::dg_img_renderer::start(double t) {
 	m_activated = true;
 		
 	// Request a redraw
-	// Currently already done by show()
+	// Currently done by show()
 	// m_dest->need_redraw();
 }
 
 void gui::dg::dg_img_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::stop(0x%x)", this);
+	if(!m_activated) return;
 	delete m_image;
 	m_image = 0;
 	m_dest->renderer_done();
 	m_activated = false;
-	
-	// show debug message 'stopped'
-	AM_DBG {
-		dg_window *dgwindow = static_cast<dg_window*>(m_window);
-		viewport *v = dgwindow->get_viewport();
-		if(v) {
-			if(!m_msg_rect.empty()) {
-				v->draw(text_str("STOPPED"), m_msg_rect, lib::to_color("red"));
-				v->redraw(m_msg_rect);
-			}
-		}
-	}
 }
 
 void gui::dg::dg_img_renderer::user_event(const lib::point& pt, int what) {
@@ -204,7 +193,8 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	m_msg_rect |= img_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	v->draw(m_image->get_dibsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
+	v->draw(m_image->get_dibsurf(), img_rect_dirty, img_reg_rc_dirty, 
+		m_image->is_transparent(), m_image->get_transp_color());
 }
 
 

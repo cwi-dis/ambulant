@@ -135,7 +135,8 @@ create_img_decoder(lib::memfile *src, HDC hdc) {
 gui::dg::image_renderer::image_renderer(const std::string& url, viewport* v)
 :	m_url(url),
 	m_dibsurf(0),
-	m_transparent(false) {
+	m_transparent(false),
+	m_transp_color(CLR_INVALID) {
 	open(m_url, v);
 }
 
@@ -166,7 +167,7 @@ void gui::dg::image_renderer::open(const std::string& url, viewport* v) {
 		return;
 	}
 	m_transparent = decoder->is_transparent();
-	lib::color_t tarnsp_color = decoder->get_transparent_color();
+	m_transp_color = decoder->get_transparent_color();
 	delete decoder;
 	
 	m_size.w = DWORD(m_dibsurf->get_pixmap()->get_width());

@@ -97,6 +97,8 @@ int gui::dg::dg_gui_region::s_counter = 0;
 gui::dg::dg_player::dg_player(const char *url) 
 :	m_url(url),
 	m_player(0),
+	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_worker_processor(0),
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -110,38 +112,59 @@ gui::dg::dg_player::dg_player(const char *url)
 	// Create a player instance
 	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);
+	
+	// Create the worker processor
+	m_worker_processor = event_processor_factory(m_timer);
 }
 
 gui::dg::dg_player::~dg_player() {
 	if(m_player) stop();
 	delete m_player;
+	m_timer->pause();
+	m_worker_processor->cancel_all_events();
+	delete m_worker_processor;
+	delete m_timer;
 	assert(m_windows.empty());
 	if(dg_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dg_gui_region::s_counter);
 }
 
 void gui::dg::dg_player::start() {
-	if(m_player) m_player->start();
+	if(m_player) {
+		m_timer->resume();
+		m_player->start();
+		std::map<std::string, wininfo*>::iterator it;
+		for(it=m_windows.begin();it!=m_windows.end();it++) {
+			dg_window *dgwin = (dg_window *)(*it).second->w;
+			dgwin->need_redraw();
+		}
+	}
 }
-
 void gui::dg::dg_player::stop() {
 	if(m_player) {
 		m_player->stop();
+		m_timer->pause();
 		on_done();
 	}
 }
 
 void gui::dg::dg_player::pause() {
 	if(m_player) {
-		if(m_player->is_playing())
+		if(m_player->is_playing()) {
 			m_player->pause();
-		else if(m_player->is_pausing())
+			m_timer->pause();
+		} else if(m_player->is_pausing()) {
 			m_player->resume();
+			m_timer->resume();
+		}
 	}
 }
 
 void gui::dg::dg_player::resume() {
-	if(m_player) m_player->resume();
+	if(m_player) {
+		m_player->resume();
+		m_timer->resume();
+	}
 }
 
 bool gui::dg::dg_player::is_playing() const {
@@ -154,13 +177,6 @@ bool gui::dg::dg_player::is_pausing() const {
 
 bool gui::dg::dg_player::is_done() const {
 	return m_player && m_player->is_done();
-}
-
-void gui::dg::dg_player::set_preferences(const char *url) {
-	if(!url || !url[0]) return;
-	smil2::test_attrs::load_test_attrs(url);
-	if(is_playing()) stop();
-	if(m_player) m_player->build_timegraph();
 }
 
 void gui::dg::dg_player::on_click(int x, int y, HWND hwnd) {
@@ -182,7 +198,12 @@ int gui::dg::dg_player::get_cursor(int x, int y, HWND hwnd) {
 	if(r) r->user_event(pt, common::user_event_mouse_over);
 	return m_player->get_cursor();
 }
-	
+
+std::string gui::dg::dg_player::get_pointed_node_str() {
+	if(!m_player || !is_playing()) return "";
+	return m_player->get_pointed_node_str();
+}
+
 void gui::dg::dg_player::on_char(int ch) {
 	if(m_player) m_player->on_char(ch);
 }
@@ -246,6 +267,8 @@ gui::dg::dg_player::window_done(const std::string &name) {
 	assert(it != m_windows.end());
 	wininfo *wi = (*it).second;
 	m_windows.erase(it);
+	wi->v->clear();
+	wi->v->redraw();
 	delete wi->v;
 	destroy_os_window(wi->h);
 	delete wi;
@@ -305,7 +328,7 @@ gui::dg::dg_player::new_playable(
 	} else if(tag == "img") {
 		p = new dg_img_renderer(context, cookie, node, evp, window);
 	} else if(tag == "audio") {
-		p = new dg_audio_renderer(context, cookie, node, evp, window);
+		p = new dg_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
 		p = new dg_area(context, cookie, node, evp, window);
 	} else if(tag == "area") {

@@ -152,6 +152,7 @@ void gui::dg::viewport::redraw(HDC hdc) {
 void gui::dg::viewport::redraw(const lib::screen_rect<int>& rc) {
 	if(!m_surf || !m_memdc)
 		return;
+	
 	HDC hdc = GetDC(m_hwnd);
 	if(!hdc) {
 		win_report_last_error("GetDC");
@@ -172,37 +173,61 @@ void gui::dg::viewport::clear() {
 
 // Clears the specified back buffer rectangle using the provided color 
 void gui::dg::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr) {
-	if(!m_surf) return;
-	m_surf->fill(rc, lib::color_trible(clr));
+	if(m_surf) m_surf->fill(rc, lib::color_trible(clr));
+	/*
+	if(!m_memdc) return;
+	HBRUSH brush = CreateSolidBrush(clr);
+	HPEN pen = CreatePen(PS_NULL, 1, clr);
+	HGDIOBJ oldbrush = SelectObject(m_memdc, (HGDIOBJ) brush);
+	HGDIOBJ oldpen = SelectObject(m_memdc, (HGDIOBJ) pen);
+	if(Rectangle(m_memdc, rc.left(), rc.top(), rc.right(), rc.bottom()) == 0)
+		win_report_last_error("Rectangle()");
+	DeleteObject(SelectObject(m_memdc, oldpen));
+	DeleteObject(SelectObject(m_memdc, oldbrush));
+	*/
 }
 
-// Draw the whole dib surface to the back buffer and destination rectangle
-void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc, bool keysrc) {
-	if(!src || !m_surf || !m_memdc) return;
-	HDC bmpdc = CreateCompatibleDC(m_memdc);
-	HGDIOBJ old = SelectObject(bmpdc, (HGDIOBJ) src->get_handle());
-	int x_dst = dst_rc.left(), y_dst = dst_rc.top();
-	int w_dst = dst_rc.width(), h_dst = dst_rc.height();
-	int x_src = 0, y_src = 0;
-	BOOL res = BitBlt(m_memdc, x_dst, y_dst, w_dst, h_dst, bmpdc, x_src, y_src, SRCCOPY);
-	if(!res) win_report_last_error("BitBlt");
-	SelectObject(bmpdc, old);
-	DeleteDC(bmpdc);
-}
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
 void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& src_rc,
-	const lib::screen_rect<int>& dst_rc, bool keysrc) {
+	const lib::screen_rect<int>& dst_rc, bool keysrc, lib::color_t transp) {
 	if(!src || !m_surf || !m_memdc) return;
-	HDC bmpdc = CreateCompatibleDC(m_memdc);
-	HGDIOBJ old = SelectObject(bmpdc, (HGDIOBJ) src->get_handle());
-	int x_dst = dst_rc.left(), y_dst = dst_rc.top();
-	int w_dst = dst_rc.width(), h_dst = dst_rc.height();
-	int x_src = src_rc.left(), y_src = src_rc.top();
-	BOOL res = BitBlt(m_memdc, x_dst, y_dst, w_dst, h_dst, bmpdc, x_src, y_src, SRCCOPY);
-	if(!res) win_report_last_error("BitBlt");
-	SelectObject(bmpdc, old);
-	DeleteDC(bmpdc);
+	
+	if(src_rc != dst_rc) {
+		HDC bmpdc = CreateCompatibleDC(m_memdc);
+		HGDIOBJ old = SelectObject(bmpdc, (HGDIOBJ) src->get_handle());
+		int x_dst = dst_rc.left(), y_dst = dst_rc.top();
+		int w_dst = dst_rc.width(), h_dst = dst_rc.height();
+		int x_src = src_rc.left(), y_src = src_rc.top();
+		int w_src = src_rc.width(), h_src = src_rc.height();
+		BOOL res = StretchBlt(m_memdc, x_dst, y_dst, w_dst, h_dst, bmpdc, x_src, y_src, w_src, h_src, SRCCOPY);
+		if(!res) win_report_last_error("BitBlt");
+		SelectObject(bmpdc, old);
+		DeleteDC(bmpdc);
+		return;
+	}
+	
+	if(keysrc && transp != CLR_INVALID) {
+		m_surf->blit(src->get_pixmap(), dst_rc, src_rc.left(), src_rc.top(), lib::color_trible(transp));
+	} else {
+		HDC bmpdc = CreateCompatibleDC(m_memdc);
+		HGDIOBJ old = SelectObject(bmpdc, (HGDIOBJ) src->get_handle());
+		int x_dst = dst_rc.left(), y_dst = dst_rc.top();
+		int w_dst = dst_rc.width(), h_dst = dst_rc.height();
+		int x_src = src_rc.left(), y_src = src_rc.top();
+		BOOL res = BitBlt(m_memdc, x_dst, y_dst, w_dst, h_dst, bmpdc, x_src, y_src, SRCCOPY);
+		if(!res) win_report_last_error("BitBlt");
+		SelectObject(bmpdc, old);
+		DeleteDC(bmpdc);
+	}
+}
+
+// Draw the whole dib surface to the back buffer and destination rectangle
+void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc, 
+	bool keysrc, lib::color_t transp) {
+	surface_t *p = src->get_pixmap();
+	lib::screen_rect<int> src_rc(lib::point(0,0), lib::point(p->get_width(),p->get_height()));
+	draw(src, src_rc, dst_rc, keysrc, transp);
 }
 
 // Paints the provided string

@@ -74,7 +74,8 @@ gui::dg::dg_brush::dg_brush(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::renderer_playable(context, cookie, node, evp) { 
+:   common::renderer_playable(context, cookie, node, evp),
+	m_color(0) { 
 	AM_DBG lib::logger::get_logger()->trace("dg_brush::dg_brush(0x%x)", this);
 }
 
@@ -91,6 +92,14 @@ void gui::dg::dg_brush::start(double t) {
 		return;	
 	}
 	
+	const char *color_attr = m_node->get_attribute("color");
+	if(color_attr && lib::is_color(color_attr))
+		m_color = lib::to_color(color_attr);
+	else {
+		const common::region_info *ri = m_dest->get_info();
+		m_color = ri?ri->get_bgcolor():0;
+	}
+	
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
@@ -98,7 +107,8 @@ void gui::dg::dg_brush::start(double t) {
 	m_activated = true;
 		
 	// Request a redraw
-	m_dest->need_redraw();
+	// Currently done by show()
+	// m_dest->need_redraw();
 }
 
 
@@ -126,8 +136,7 @@ void gui::dg::dg_brush::redraw(const lib::screen_rect<int> &dirty, common::abstr
 	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	const common::region_info *ri = m_dest->get_info();
-	if(ri) v->clear(rc, ri->get_bgcolor());
+	v->clear(rc, m_color);
 }
  
 

@@ -73,7 +73,8 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::renderer_playable(context, cookie, node, evp) { 
+:   common::renderer_playable(context, cookie, node, evp), 
+	m_window(window) { 
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer(0x%x)", this);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
@@ -117,14 +118,16 @@ void gui::dg::dg_text_renderer::start(double t) {
 	m_activated = true;
 		
 	// Request a redraw
-	m_dest->need_redraw();
+	//m_dest->need_redraw();
 }
 
 void gui::dg::dg_text_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer::stop(0x%x)", this);
+	if(!m_activated) return;
 	m_text = text_str("");
 	m_dest->renderer_done();
 	m_activated = false;
+	
 }
 
 void gui::dg::dg_text_renderer::user_event(const lib::point& pt, int what) {
@@ -145,7 +148,6 @@ void gui::dg::dg_text_renderer::redraw(const lib::screen_rect<int> &dirty, commo
 	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	//const common::region_info *ri = m_dest->get_info();
 	if(!m_text.empty()) v->draw(m_text, rc);
 }
 

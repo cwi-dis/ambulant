@@ -57,6 +57,8 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
+//#define AM_DBG if(1)
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -70,7 +72,8 @@ gui::dg::audio_player::audio_player(const std::string& url)
 	m_decbuf(0) {
 	memset(&m_wfx, 0, sizeof(WAVEFORMATEX));
 	if(!m_ifs.open(url)) {
-		lib::logger::get_logger()->error("Failed to open: %s", url);
+		lib::logger::get_logger()->show("Failed to open: %s", url);
+		return;
 	} 
 	m_ifs.read(m_bbuf);
 	m_bbuf.flip();

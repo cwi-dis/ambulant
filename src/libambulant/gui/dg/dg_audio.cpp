@@ -61,6 +61,8 @@
 
 #include "ambulant/common/region.h"
 
+//#define AM_DBG if(1)
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -72,10 +74,12 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::abstract_window *window,
+	lib::event_processor* worker)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
-	m_update_event(0) {
+	m_update_event(0), 
+	m_worker(worker) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer(0x%x)", this);
 	std::string rurl = m_node->get_url("src");
@@ -84,14 +88,17 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 	if(lib::starts_with(url, "http://") || lib::memfile::exists(url))
 		m_player = new gui::dg::audio_player(url);
 	else {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
+		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.c_str());
 	}
 }
 
 gui::dg::dg_audio_renderer::~dg_audio_renderer() {
 	AM_DBG lib::logger::get_logger()->trace("~dg_audio_renderer()");
-	if(m_player) stop();
+	if(m_player) {
+		m_player->stop();
+		delete m_player;	
+	}
 }
 
 void gui::dg::dg_audio_renderer::start(double t) {
@@ -109,6 +116,9 @@ void gui::dg::dg_audio_renderer::start(double t) {
 	if(!m_player->can_play()) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
+		// And the user
+		lib::logger::get_logger()->error("Unsupported audio format %s", 
+			m_node->get_url("src").c_str());
 		return;
 	}
 	
@@ -141,12 +151,15 @@ std::pair<bool, double> gui::dg::dg_audio_renderer::get_dur() {
 void gui::dg::dg_audio_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer.stop(0x%x)", this);
 	if(!m_player) return;
-	audio_player *dummy = m_player;
+	m_cs.enter();
+	audio_player *p = m_player;
 	m_player = 0;
 	m_update_event = 0;
-	dummy->stop();
-	delete dummy;
 	m_activated = false;
+	m_cs.leave();
+	p->stop();
+	delete p;
+	
 }
 
 void gui::dg::dg_audio_renderer::pause() {
@@ -164,17 +177,22 @@ void gui::dg::dg_audio_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 }
 
 void gui::dg::dg_audio_renderer::update_callback() {
-	if(!m_update_event || !m_player) return;
+	m_cs.enter();
+	if(!m_update_event || !m_player) {
+		m_cs.leave();
+		return;
+	}
 	if(m_player->is_playing()) {
 		schedule_update();
 	} else {
 		m_update_event = 0;
 		m_context->stopped(m_cookie);
 	}
+	m_cs.leave();
 }
 
 void gui::dg::dg_audio_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dg_audio_renderer>(this, 
 		&dg_audio_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 250);
+	m_worker->add_event(m_update_event, 100);
 }

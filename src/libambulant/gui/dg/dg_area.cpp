@@ -56,7 +56,7 @@
 #include "ambulant/gui/dg/dg_rgn.h"
 #include "ambulant/common/region_dim.h"
 
-//#define AM_DBG
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

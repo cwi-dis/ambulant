@@ -54,7 +54,7 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

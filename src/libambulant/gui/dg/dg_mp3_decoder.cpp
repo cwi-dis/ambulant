@@ -56,7 +56,7 @@
 #define MP3LIB_STATIC
 #include "mp3lib.h"
 
-#define AM_DBG
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -102,14 +102,15 @@ void gui::dg::mp3_decoder::get_wave_format(lib::byte_buffer& bbuf, WAVEFORMATEX&
 	// Desired freq
 	int freq = m_wfx.nSamplesPerSec;
 		
-	// channel sample size in bits
-	const int depth = 16; 
-		
 	int nchannels, bitrate;
 	mp3_lib_decode_header(m_mp3lib_inst, bbuf.data(), bbuf.remaining(), &freq, &nchannels, &bitrate);
+			
+	// channel sample size in bits
+	const int depth = 16;
+	 
 	AM_DBG lib::logger::get_logger()->trace("freq:%d, channels:%d depth:%d bitrate:%d", 
 		freq, nchannels, depth, bitrate);
-		
+	
 	// sample size in bytes
 	int samplesize = nchannels*depth/8; 
 		
