@@ -101,5 +101,12 @@ lib::win32::win32_timer::os_time() {
 // timer class
 lib::abstract_timer*
 lib::realtime_timer_factory() {
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	return new lib::win32::win32_timer();
+#else
+	return new lib::win32::win_timer();
+#endif
 }
+
+
+

@@ -68,6 +68,7 @@
 #endif // _INC_WINDOWS
 
 #include "ambulant/config/config.h"
+#include "math.h"
 
 #ifndef AMBULANT_LIB_TIMER_H
 #include "ambulant/lib/timer.h"
@@ -107,6 +108,47 @@ class win32_timer : public ambulant::lib::abstract_timer  {
 	double m_speed;
 	
 };
+
+class win_timer : public ambulant::lib::abstract_timer  {
+  public:
+	win_timer() : m_epoch(os_time()), m_speed(1.0) {}
+	
+	// Returns time in msec since epoch.
+	// Takes into account speed with a 1% precision.	
+	time_type elapsed() const {
+		DWORD dt = os_time() - m_epoch;
+		if(m_speed == 1.0)
+			return time_type(dt);
+		DWORD speed100 = DWORD(::floor(0.5 + m_speed * 100));
+		DWORD edt = (speed100 * dt ) / 100;
+		return time_type(edt);
+	}
+	
+	// Sets the speed of this timer. 	
+	void set_speed(double speed) {
+		m_epoch = os_time();
+		m_speed = speed;
+	}
+	
+	// Gets the speed of this timer
+	double get_speed() const { return m_speed;}
+	
+	// Gets the realtime speed of this 
+	// timer as modulated by its parent
+	double get_realtime_speed() const { return m_speed;}
+	
+  private:
+  
+	// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
+	static DWORD os_time() {
+		return GetTickCount();
+	}
+		
+	DWORD m_epoch;
+	double m_speed;
+	
+};
+
 
 } // namespace win32
  
