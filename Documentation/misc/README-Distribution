@@ -76,7 +76,9 @@ Zaurus needs:
 Creating the MacOSX installer
 =============================
 
-- Build *and install* the player.
+- Build the whole source tree, don't forget options for
+  enabling xerces, etc.
+- Install the player in src/player_macos.
 - Create a folder called something like "Ambulant Player 1.2", 
   and copy the items mentioned above into it.
 - Use Applications->Utilities->Disk Utilities to create a .dmg
@@ -193,7 +195,7 @@ Proposed naming scheme for release names:
 - Binary packages: ambulant-<versionnumber>-<platform>.ext (eg. for
   windows ambulant-1.2-win32.exe, for mac ambulant-1.2-osx.dmg).
 - Source package: I think the name make distcheck gives to the package is
-  fine. eg ambulant-1.2.tar.gz.
+  fine. eg ambulant-1.2.tar.gz. Don't use ".tgz", winzip doesn't like it.
 
 Again the minor release number indicates a stable release if the number is even.
 
