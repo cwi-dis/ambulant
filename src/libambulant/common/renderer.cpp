@@ -264,7 +264,8 @@ global_playable_factory::new_aux_audio_playable(
     return m_default_factory->new_playable(context, cookie, node, evp);
 }
 
-
+#undef AM_DBG
+#define AM_DBG
 
 void 
 active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
@@ -282,13 +283,14 @@ active_video_renderer::active_video_renderer(
 	m_src(NULL),
 	m_audio_ds(NULL),
 	m_audio_renderer(NULL),
+	m_timer(NULL),
+	m_epoch(0),
 	m_is_playing(false),
 	m_is_paused(false)
 	
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
-	// XXXX FIXME : The path to the jpg's is fixed !!!!!
 	net::url url = node->get_url("src");
 	m_src = factory->df->new_video_datasource(url);
 	if (m_src == NULL) {
@@ -324,7 +326,12 @@ active_video_renderer::start (double where = 1)
 		m_audio_renderer->start(where);
 		
 	m_is_playing = true;
-	m_epoch = m_event_processor->get_timer()->elapsed();
+#if 0
+	m_timer = m_event_processor->get_timer();
+#else
+	m_timer = lib::realtime_timer_factory();
+#endif
+	m_epoch = m_timer->elapsed();
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
@@ -378,7 +385,7 @@ active_video_renderer::now()
 	if (m_is_paused)
 		rv = (double)(m_paused_epoch - m_epoch) / 1000;
 	else
-		rv = ((double)m_event_processor->get_timer()->elapsed() - m_epoch)/1000;
+		rv = ((double)m_timer->elapsed() - m_epoch)/1000;
 	return rv;
 }
 
@@ -390,7 +397,7 @@ active_video_renderer::pause()
 		if (m_audio_renderer) 
 			m_audio_renderer->pause();
 		m_is_paused = true;
-		m_paused_epoch = m_event_processor->get_timer()->elapsed();
+		m_paused_epoch = m_timer->elapsed();
 	}
 	m_lock.leave();
 }
@@ -403,7 +410,7 @@ active_video_renderer::resume()
 		if (m_audio_renderer) 
 			m_audio_renderer->resume();
 		m_is_paused = false;
-		unsigned long int pause_length = m_event_processor->get_timer()->elapsed() - m_paused_epoch;
+		unsigned long int pause_length = m_timer->elapsed() - m_paused_epoch;
 		m_epoch += pause_length;
 	}
 	m_lock.leave();
