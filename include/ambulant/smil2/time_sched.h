@@ -84,7 +84,6 @@ class scheduler {
 	static std::string get_state_sig(time_node *tn);
 	
   private:
-	void get_pending_events();
 	void goto_next(time_node *tn);
 	void goto_previous(time_node *tn);
 	void restart(time_node *tn);

@@ -93,6 +93,8 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_precounter(0),
 	m_priority(0),
 	m_paused(false), 
+	m_paused_sync_time(0),
+	m_pad(0),
 	m_deferred(false),
 	m_ffwd_mode(false),
 	m_update_event(false, qtime_type(0, 0)),
@@ -548,6 +550,7 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 		
 		// Jump to post active
 		set_state(ts_postactive, timestamp, this);
+		
 		return; 
 	}
 		
@@ -567,7 +570,7 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 void time_node::played_interval(qtime_type timestamp) {
 	m_history.push_back(m_interval);
 	q_smil_time b(sync_node(), m_interval.begin);
-	q_smil_time e(sync_node(),m_interval.end);
+	q_smil_time e(sync_node(), m_interval.end);
 	m_doc_history.push_back(interval_type(b.as_doc_time(), e.as_doc_time()));
 	m_interval = interval_type::unresolved;
 }
@@ -711,7 +714,7 @@ void time_node::start_playable(time_type offset) {
 	}
 	if (is_link()  && m_attrs.get_actuate() == actuate_onload) {
 		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str());
+			m_attrs.get_id().c_str());
 		follow_link(timestamp);
 	}
 }
@@ -780,19 +783,19 @@ void time_node::prepare_playables() {
 }
 
 //////////////////////////
-// Driver schell
+// Driver shell
 
 void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& events) {
-	if(!is_alive()) return;
+	if(!is_alive() || paused() || deferred()) return;
 	if(m_interval.is_valid()) {
 		if(!is_active()) {
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			events[timestamp.to_doc()].push_back(this);
 		} else if(m_interval.end.is_definite()) {
 			// XXX: check for repeat (or leave it to sampling)
-			qtime_type timestamp(sync_node(), m_interval.end);
-			events[timestamp.to_doc()].push_back(this);
-			
+			qtime_type timestamp(sync_node(), m_interval.end + m_pad);
+			time_type doctime = timestamp.to_doc();
+			events[doctime].push_back(this);
 		}
 	}
 	if(m_update_event.first) {
@@ -808,6 +811,13 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			events[ts.to_doc()].push_back(this);
 		}
 	}
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	for(it = children.begin(); it != children.end(); it++) {
+		(*it)->get_pending_events(events);
+	}
+	
 }
 
 void time_node::exec(qtime_type timestamp) {
@@ -861,13 +871,13 @@ void time_node::exec(qtime_type timestamp) {
 		time_type reftime;
 		if(m_interval.end.is_definite()) reftime = m_interval.end;
 		else reftime = timestamp.second;
-		qtime_type qt(sync_node(),reftime);
+		qtime_type qt(sync_node(), reftime);
 		set_state_ex(ts_postactive, qt);
 		return;
 	}
 	
 	// The AD offset of this node
-	time_type ad_offset = timestamp.second - m_interval.begin;
+	time_type ad_offset = timestamp.second - m_interval.begin - m_pad;
 	
 	// The SD offset of this node
 	time_type sd_offset;
@@ -882,10 +892,13 @@ void time_node::exec(qtime_type timestamp) {
 	}
 	
 	// Check for the EOSD event
+	if(timestamp.as_time_value_down_to(this) >= m_last_cdur())
+		on_eosd(timestamp);
+	/*
 	if(m_last_cdur.is_definite() && m_last_cdur != 0 && sd_offset >= m_last_cdur) {
 		// may call repeat
 		on_eosd(timestamp);
-	}
+	}*/
 }
 
 // Returns true when the end conditions of this node evaluate to true
@@ -895,7 +908,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 	assert(timestamp.first == sync_node());
 	assert(is_active());
 	bool ec = end_sync_cond_applicable() && end_sync_cond();
-	bool tc = !end_sync_cond_applicable() && timestamp.second >= m_interval.end;
+	bool tc = !end_sync_cond_applicable() && timestamp.second >= (m_interval.end + m_pad);
 	
 	if(is_time_container() && (ec || tc)) {
 		AM_DBG m_logger->trace("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(), 
@@ -929,7 +942,7 @@ bool time_node::begin_cond(qtime_type timestamp) {
 //////////////////////////
 // Notifications
 
-// The clock used bu the argument timestamp can be any
+// The clock used by the argument timestamp can be any
 // Convert it if possible to this sync_node clock time
 void time_node::sync_update(qtime_type timestamp) {
 	time_type pt = timestamp.as_node_time(sync_node());
@@ -975,7 +988,7 @@ void time_node::on_eosd(qtime_type timestamp) {
 
 // Begin of media notification
 // Currently this notification is not used.
-// Could be used to define to slip sync offset.
+// Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
 	m_eom_flag = false;
 	if(!is_discrete()) {
@@ -1033,7 +1046,7 @@ void time_node::repeat(qtime_type timestamp) {
 			
 	if(down()) {
 		// The reset_children op ends all active children
-		// In consequence for excl emties its pause queue
+		// In consequence for excl empties its pause queue
 		reset_children(timestamp, this);
 		startup_children(timestamp);
 	} 
@@ -1047,13 +1060,8 @@ void time_node::repeat(qtime_type timestamp) {
 // Excl element handling.
 void time_node::pause(qtime_type timestamp, pause_display d) {
 	if(!is_active()) return;
-	std::list<time_node*> children;
-	get_children(children);
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
-	std::list<time_node*>::iterator it;
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->pause(qt, d);
 	
 	if(is_playable()) pause_playable();
 	if(m_timer) m_timer->pause();
@@ -1062,14 +1070,29 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	
 	// could deduce this from the fact that the node 
 	// is active and the timer is nor running
-	interval_type i1 = m_interval;
 	set_paused(true); 
+	
+	// Recalculate the interval of this node as if its dur was indefinite
+	// The interval semantics are applicable when paused
+	interval_type i1 = m_interval;
 	m_time_calc->set_paused_mode(true);
-	sync_update(timestamp);
-	interval_type i2 = m_interval;
+	time_type iend = calc_current_interval_end();
+	if(iend != m_interval.end) {
+		update_interval_end(timestamp, iend);
+	}
+	
+	// Report changed interval
 	AM_DBG m_logger->trace("%s[%s].pause(): %s -> %s at %ld", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
-		::repr(i1).c_str(), ::repr(i2).c_str(), self_simple_time());
+		::repr(i1).c_str(), ::repr(m_interval).c_str(), self_simple_time());
+		
+	// Pause playable active children
+	time_node::iterator nit;
+	time_node::iterator end_nit = end();
+	for(nit=begin(); nit != end_nit; nit++) {
+		if(!(*nit).first && (*nit).second->is_playable() && (*nit).second->is_active()) 
+			(*nit).second->pause_playable();
+	}
 }
 
 // Resumes this node.
@@ -1086,43 +1109,39 @@ void time_node::resume(qtime_type timestamp) {
 	set_paused(false);
 	AM_DBG m_logger->trace("%s[%s].resume()", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
-	
-	if(is_playable()) resume_playable();
-	if(m_timer) m_timer->resume();
-	
-	std::list<time_node*> children;
-	get_children(children);
+		
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
-	std::list<time_node*>::iterator it;
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->resume(qt);
-	
+
 	// re-establish sync
-	time_type end = calc_current_interval_end();
+	time_type iend = calc_current_interval_end();
 	time_type resumed_sync_time = timestamp.as_time_down_to(sync_node());
 	time_type pauseoffset = resumed_sync_time - m_paused_sync_time;
-	end += pauseoffset;
-	if(end != m_interval.end) {
-		update_interval_end(timestamp, end);
+	m_pad += pauseoffset;
+	if(iend != m_interval.end) {
+		update_interval_end(timestamp, iend);
 	}
+		
 	AM_DBG m_logger->trace("%s[%s].resume(): %s", 
 		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
 		::repr(m_interval).c_str());
-	
+		
+	if(is_playable()) resume_playable();
+	if(m_timer) m_timer->resume();
+		
+	// Resume playable active children
+	time_node::iterator nit;
+	time_node::iterator end_nit = end();
+	for(nit=begin(); nit != end_nit; nit++) {
+		if(!(*nit).first && (*nit).second->is_playable() && (*nit).second->is_active()) {
+			(*nit).second->resume_playable();
+		}
+	}
 }
 
 // Defers the interval of this node.
 // Excl element handling.
 void time_node::defer_interval(qtime_type timestamp) {
-	std::list<time_node*> children;
-	get_children(children);
-	time_type self_simple_time = timestamp.as_time_down_to(this);
-	qtime_type qt(this, self_simple_time);
-	std::list<time_node*>::iterator it;
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->defer_interval(qt);
-		
 	// Mark this node as deferred.
 	set_deferred(true);
 	
@@ -1154,18 +1173,10 @@ void time_node::set_deferred_interval(qtime_type timestamp) {
 	
 	// Schedule interval
 	set_interval(timestamp, i);
-	
-	std::list<time_node*> children;
-	get_children(children);
-	std::list<time_node*>::iterator it;
-	time_type self_simple_time = timestamp.as_time_down_to(this);
-	qtime_type qt(this, self_simple_time);
-	for(it = children.begin(); it != children.end(); it++)
-		(*it)->set_deferred_interval(qt);
 }
 
-// This function is called always when a node exits the active state,
-// and is responsible to apply the appropriate fill behavior for this node.
+// This function is called always when a node exits the active state.
+// Applies the appropriate fill behavior for this node.
 //
 // For containers the current implementation calls first kill_children().
 // Therefore this function will be called first for the children and
@@ -1365,7 +1376,7 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 	
 	// Simulate a timegraph-sampling implementation
 	// For a time container we know that more info will be available
-	// immediately after its starts.  
+	// immediately after it starts.  
 	if(down() && m_interval.end == time_type::indefinite)
 		raise_update_event(timestamp);
 }
@@ -1679,6 +1690,14 @@ void time_node::reset() {
 	// Paused flag
 	// bool m_paused;
 	m_paused = false;
+		
+	// Accumulated pause duration
+	//time_type m_pad;
+	m_pad = 0;
+	
+	// Register for storing pause time
+	// time_type m_paused_sync_time;
+	m_paused_sync_time = 0;
 	
 	// Defered flag
 	// bool m_deferred;
@@ -1826,7 +1845,7 @@ time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 		const time_node *c = *it;
 		if(endsync_id == c->get_time_attrs()->get_id()) {
 			const interval_type& i = c->get_first_interval();
-			if(i.is_valid()) idur = i.end;
+			if(i.is_valid()) idur = i.end + c->get_pad();
 			break;
 		}
 	}
@@ -1847,12 +1866,12 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 	for(it=cl.begin();it!=cl.end();it++) {
 		const time_node *c = *it;
 		const interval_type& i = c->get_last_interval();
-		if(!c->is_alive()) {
+		if(!c->is_alive() || c->paused()) {
 			// Building up, wait
 			idur = time_type::unresolved;
 			break; 
 		} else if(i.is_valid()) {
-			idur = std::max(idur, i.end);
+			idur = std::max(idur, i.end + c->get_pad());
 		}
 	}
 	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_last(): %s", m_attrs.get_tag().c_str(), 

@@ -98,7 +98,8 @@ class time_state : public time_traits {
 	bool& m_active;
 	bool& m_needs_remove;
 	time_type& m_last_cdur;
-	value_type& m_rad;
+	time_type& m_rad;
+	time_type& m_pad;
 	long& m_precounter;
 	time_type& m_impldur;
 	const time_attrs& m_attrs;

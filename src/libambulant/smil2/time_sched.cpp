@@ -229,7 +229,8 @@ scheduler::time_type scheduler::exec(time_type now) {
 	m_events.clear();
 	if(!m_root->is_active())
 		return next;
-	get_pending_events();
+	// get all the pending events from the timegraph
+	m_root->get_pending_events(m_events);
 	if(m_events.empty())
 		return next;
 	event_map_t::iterator eit = m_events.begin();
@@ -250,15 +251,6 @@ scheduler::time_type scheduler::exec(time_type now) {
 		}
 	}
 	return next;
-}
-
-// Iterates and retreives all the pending events from the timegraph
-void scheduler::get_pending_events() {
-	time_node::iterator it;
-	time_node::iterator end = m_root->end();
-	for(it=m_root->begin(); it != end; it++) {
-		if((*it).first) (*it).second->get_pending_events(m_events);
-	}
 }
 
 // Sets the fast forward flag of the time node branch 

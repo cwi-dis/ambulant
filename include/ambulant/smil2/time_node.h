@@ -258,7 +258,8 @@ class time_node : public schedulable {
 	time_node* sync_node() { return up()?up():this;}
 	value_type get_sync_simple_time() const;
 	value_type get_simple_time() const;
-	value_type get_rad() const { return m_rad;}
+	time_type get_rad() const { return m_rad;}
+	time_type get_pad() const { return m_pad();}
 
 	// Time type queries and classification
 	time_container_type get_type() const { return m_type;}
@@ -363,9 +364,9 @@ class time_node : public schedulable {
 	void set_priority(int prio) { m_priority = prio;}
 	
 	// Excl set/get flags
-	bool paused() { return m_paused;}
+	bool paused() const { return m_paused;}
 	void set_paused(bool b) { m_paused = b;}
-	bool deferred() { return m_deferred;}
+	bool deferred() const { return m_deferred;}
 	void set_deferred(bool b) { m_deferred = b;}
 	
 	// fast forward mode
@@ -452,7 +453,7 @@ class time_node : public schedulable {
 	
 	// Accumulated repeat duration
 	// Incremented after the completion of a simple dur
-	value_type m_rad;
+	time_type m_rad;
 	
 	// Last begin or repeat instance in parent simple time.
 	// e.g. the accumulated repeat duration (rad) as a parent simple time instance
@@ -472,6 +473,11 @@ class time_node : public schedulable {
 	
 	// Paused flag
 	bool m_paused;
+	
+	// Accumulated pause duration
+	time_type m_pad;
+	
+	// Register for storing pause time
 	time_type m_paused_sync_time;
 	
 	// Defered flag

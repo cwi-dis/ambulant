@@ -82,6 +82,7 @@ time_state::time_state(time_node *tn)
 	m_needs_remove(tn->m_needs_remove),
 	m_last_cdur(tn->m_last_cdur),
 	m_rad(tn->m_rad),
+	m_pad(tn->m_pad),
 	m_precounter(tn->m_precounter),
 	m_impldur(tn->m_impldur),
 	m_attrs(tn->m_attrs) {
@@ -136,6 +137,7 @@ void reset_state::enter(qtime_type timestamp) {
 	m_needs_remove = false;
 	m_last_cdur = time_type::unresolved;
 	m_rad = 0;
+	m_pad = 0;
 	m_precounter = 0;
 	m_impldur = time_type::unresolved;
 	m_self->clear_history();
