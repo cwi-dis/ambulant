@@ -139,9 +139,16 @@ timegraph::build_time_tree(const lib::node *root) {
 				select_stack.pop();
 			}
 		} 
-				
+		// <a actuate="onLoad"/> we treat as area. This is not pretty, but it
+		// works.
+		bool is_onload_a = false;
+		if (tag == "a" && n->down() == NULL) {
+			const char *actuate = n->get_attribute("actuate");
+			if (actuate && strcmp(actuate, "onLoad") == 0)
+				is_onload_a = true;
+		}
 		// if not a time element then continue to next
-		if(te.find(tag) == te.end()) continue;
+		if(te.find(tag) == te.end() && !is_onload_a) continue;
 		
 		// when within a switch and not selected then continue to next
 		if(!switch_stack.empty() && (select_stack.top() == 0 ||
