@@ -403,12 +403,14 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 			return (*m_node2region.find(n)).second;
 		}
 	}
-	const char *prname = n->get_attribute("region");
+	const char *prname = NULL;
+	if(n->get_local_name() == "area" && n->up()) {
+		prname = n->up()->get_attribute("region");
+	} else {
+		prname = n->get_attribute("region");
+	}
 	const char *nid = n->get_attribute("id");
 	if (prname == NULL) {
-		if(n->get_local_name() == "area" && n->up()) {
-			return get_region_node_for(n->up(), nodeoverride);
-		}
 		AM_DBG lib::logger::get_logger()->trace(
 			"smil_layout_manager::get_surface(): no region attribute on %s",
 			(nid?nid:""));
