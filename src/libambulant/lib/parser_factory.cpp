@@ -55,6 +55,8 @@
 
 #include "ambulant/lib/parser_factory.h"
 #include "ambulant/lib/expat_parser.h"  
+#include "ambulant/common/preferences.h"
+
  using namespace ambulant;
  using namespace lib;
 
@@ -78,7 +80,6 @@ global_parser_factory::get_parser_factory()
 
 
 global_parser_factory::global_parser_factory() 
-:	m_parser_pref("")
 {
 	
 	m_default_factory = new lib::expat_factory();
@@ -104,13 +105,14 @@ global_parser_factory::new_parser(
 	sax_content_handler* content_handler,
 	sax_error_handler* error_handler)
 {
-	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called (pref = %s)",m_parser_pref.c_str());
+	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called (pref = %s)",parser_id.c_str());
 
     std::vector<parser_factory*>::iterator i;
     xml_parser *pv;
 	pv = NULL;
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
-		if (( (*i)->get_parser_name() == m_parser_pref ) || ( m_parser_pref == "any" )) {
+		if (( (*i)->get_parser_name() == parser_id ) || ( parser_id == "any" )) {
         	pv = (*i)->new_parser(content_handler, error_handler);
 		} else {
 			pv = NULL;
@@ -125,10 +127,4 @@ global_parser_factory::new_parser(
 	} else {
 		return NULL;
 	}
-}
-
-void
-global_parser_factory::set_preference(std::string pref)
-{
-	m_parser_pref = pref;
 }

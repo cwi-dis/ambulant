@@ -238,7 +238,7 @@ class playable_factory {
 		net::audio_datasource *src) {
 			lib::logger::get_logger()->debug("new_aux_audio_playabel std definition called\n");
 			return NULL;
-			};	
+		};	
 };
 
 } // namespace common
