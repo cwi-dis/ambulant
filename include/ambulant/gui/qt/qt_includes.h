@@ -46,60 +46,10 @@
  * 
  */
 
-#include "qt_mainloop.h"
-#ifdef WITH_ARTS
-#include <ambulant/gui/arts/arts.h>
-#endif
-#ifdef WITH_SDL
-#include <ambulant/gui/SDL/sdl.h>
-#endif
-
-using namespace ambulant;
-using namespace lib;
-using namespace gui;
-using namespace qt_renderer;
- 
-void*
-qt_mainloop::run(void* view)
-{
-  qt_gui* qt_view = (qt_gui*) view;
-  qt_window_factory *wf;
-  
-  AM_DBG logger::get_logger()->trace("qt_mainloop::run(qt_gui=0x%x)",
-				     view);
-  passive_player *p = new passive_player(qt_view->filename());
-  if (!p) return NULL;
-  lib::global_renderer_factory *rf = new lib::global_renderer_factory();
-#ifdef WITH_ARTS
-  rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
-#endif    
-#ifdef WITH_SDL
-  AM_DBG logger::get_logger()->trace("add factory for SDL");
-  rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
-  AM_DBG logger::get_logger()->trace("add factory for SDL done");
-#endif
-  rf->add_factory(new qt_renderer_factory());
- 
- wf = new qt_window_factory(qt_view, 
-			    qt_view->get_o_x(),
-			    qt_view->get_o_y());
-  
-  active_player *a = p->activate((window_factory *) wf,
-				 (renderer_factory *) rf);
-  if (!a) return NULL;
-  
-  timer *our_timer = new timer(realtime_timer_factory());
-  event_processor *processor
-    = event_processor_factory(our_timer);
-    
-  typedef callback<qt_mainloop,qt_mainloop_callback_arg> callback;
-  event *ev = new callback(NULL,  //this
-			   &qt_mainloop::player_done_callback, 
-			   new qt_mainloop_callback_arg());
-  
-  a->start(processor, ev);
-//while (!done())
-  while(true)
-    sleep(1);
-  return (void*) 1;
-}
+/* Necessary QT files for the renderers */
+#ifndef __AMBULANT_QT_H__ 
+#define __AMBULANT_QT_H__ 
+#include <qimage.h>
+#include <qpainter.h>
+#include <qwidget.h>
+#endif/*__AMBULANT_QT_H__ */

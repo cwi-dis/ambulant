@@ -60,11 +60,14 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
 
+#include "qt_includes.h"
+
+//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-class qt_gui;
 
 using namespace std;
 
@@ -76,41 +79,91 @@ namespace gui {
 
 namespace qt_renderer {
 
-  class qt_window : public abstract_window {
+  class qt_ambulant_widget;
+
+  class ambulant_qt_window : public abstract_window {
     
   public:
-    qt_window(const std::string &name, 
-					 size bounds, qt_gui* view,
-					 abstract_rendering_source *region) 
-      : abstract_window(region),
-      m_view(view) {
+    ambulant_qt_window(const std::string &name, 
+		       screen_rect<int>* bounds,
+		       abstract_rendering_source *region) 
+      : abstract_window(region) {
       AM_DBG logger::get_logger()->trace
-	("qt_window::qt_window(0x%x)", (void *)this);
+	("ambulant_qt_window::ambulant_qt_window(0x%x)", (void *)this);
     }
     void need_redraw(const screen_rect<int> &r);
-	void mouse_region_changed();
-
-	void redraw(const lib::screen_rect<int> &r);
-	void user_event(const lib::point &where);
-    qt_gui* view() { return m_view; }
+    void mouse_region_changed();
+    
+    void redraw(const lib::screen_rect<int> &r);
+    void user_event(const lib::point &where);
+    void set_ambulant_widget(qt_ambulant_widget* qaw) {
+      AM_DBG logger::get_logger()->trace
+	("ambulant_qt_window::set_ambulant_widget(0x%x)",(void *)qaw);
+      m_ambulant_widget = qaw;
+    }
+    qt_ambulant_widget* ambulant_widget() {
+      AM_DBG logger::get_logger()->trace
+	("ambulant_qt_window::ambulant_widget(0x%x)",
+	 (void *)m_ambulant_widget);
+      return m_ambulant_widget;
+    }
     
   private:
-    qt_gui* m_view;
-  };
+     qt_ambulant_widget* m_ambulant_widget;
+  }; // class ambulant_qt_window
+
+  class qt_ambulant_widget : public QWidget {
+    
+  public:
+    qt_ambulant_widget(const std::string &name,
+		       lib::screen_rect<int>* bounds,
+		       QWidget* parent_widget)
+      : QWidget(parent_widget,"qt_ambulant_widget",0)  {
+     AM_DBG logger::get_logger()->trace
+	("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))", 
+	 (void *)this, (void*)  parent_widget,
+	 bounds->left(),bounds->top(),
+	 bounds->right(),bounds->bottom());
+     setGeometry(bounds->left(), bounds->top(),
+		 bounds->right(),bounds->bottom());
+     setBackgroundMode (QWidget::PaletteLight);
+     this->show();
+    }
+    void paintEvent(QPaintEvent* e) {
+    AM_DBG logger::get_logger()->trace
+	("qt_ambulant_widget::paintEvent(%x))", (void*) this
+	 );
+     QRect qr = e->rect();
+    screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
+					   point(qr.right(),qr.bottom()));
+     m_qt_window->redraw(r);
+    }
+    void set_qt_window( ambulant_qt_window* aqw) {
+      m_qt_window = aqw;
+    }
+    ambulant_qt_window* qt_window() {
+      return m_qt_window;
+    }
+  private:
+    ambulant_qt_window* m_qt_window;
+  }; // class qt_ambulant_widget
 
   class qt_window_factory : public window_factory {
-  
+    
   public:
-    qt_window_factory(qt_gui* view)
-      : m_view(view) {
+    qt_window_factory( QWidget* parent_widget, int x, int y)
+      :  m_parent_widget(parent_widget), m_p(point(x,y)) {
       AM_DBG logger::get_logger()->trace
 	("qt_window_factory (0x%x)", (void*) this);
     }
-    abstract_window* new_window(const std::string &name, size bounds, abstract_rendering_source *region);
+    abstract_window* new_window(const std::string &name,
+				size bounds,
+				abstract_rendering_source *region);
 	abstract_mouse_region *new_mouse_region();
   private:
-    qt_gui* m_view;
-  };
+    QWidget* m_parent_widget;
+    point m_p;
+  }; // class qt_window_factory 
   
   class qt_renderer_factory : public renderer_factory {
 
@@ -119,14 +172,16 @@ namespace qt_renderer {
       AM_DBG logger::get_logger()->trace
 	("qt_renderer factory (0x%x)", (void*) this);
     }
-    active_renderer *new_renderer(
-				  lib::active_playable_events *context,
-				  lib::active_playable_events::cookie_type cookie,
-				  const lib::node *node,
-    			  event_processor *const evp,
-				  net::passive_datasource *src,
-				  abstract_rendering_surface *const dest);
-  };
+    active_renderer *new_renderer
+      (
+       lib::active_playable_events *context,
+       lib::active_playable_events::cookie_type cookie,
+       const lib::node *node,
+       event_processor *const evp,
+       net::passive_datasource *src,
+       abstract_rendering_surface *const dest
+       );
+  };  // class qt_renderer_factory
 
 } // namespace qt_renderer
 

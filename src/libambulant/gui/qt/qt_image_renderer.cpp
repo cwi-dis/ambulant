@@ -50,10 +50,11 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/qt/qt_gui.h"
+#include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -94,9 +95,9 @@ namespace qt_renderer {
 	("qt_active_image_renderer.redraw(0x%x), "
 	 "drawImage at (L=%d,T=%d,W=%d,H=%d)",
 	 (void *)this,L,T,W,H);
-      qt_window* qpw = (qt_window*) w;
+      ambulant_qt_window* aqw = (ambulant_qt_window*) w;
       QPainter paint;
-      paint.begin(qpw->view()->workspace());
+      paint.begin(aqw->ambulant_widget());
       paint.eraseRect(L,T,W,H);
       paint.drawImage(L,T,m_image,0,0,W,H);
       paint.flush();

@@ -50,10 +50,11 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/qt/qt_gui.h"
+#include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -92,9 +93,9 @@ namespace qt_renderer {
     if (m_text_storage) {
       int L = r.left()+p.x, T = r.top()+p.y,
 	W = r.width(), H = r.height();
-      qt_window* qpw = (qt_window*) w;
+      ambulant_qt_window* aqw = (ambulant_qt_window*) w;
       QPainter paint;
-      paint.begin(qpw->view()->workspace());
+      paint.begin(aqw->ambulant_widget());
       paint.setPen(Qt::blue);
       paint.eraseRect(L,T,W,H);
 //    paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);

@@ -59,18 +59,19 @@
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
 
+//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 const QString about_text = 
                     "This is the skeleton Qt GUI for Ambulant.\n"
-                     "Work in  progress by Kees Blom (C) 2003";
+                     "Work in  progress by Kees Blom (C) 2004";
 
 qt_gui::qt_gui(const char* title,
 	       const char* initfile) {
 
-  m_ambulant_window = NULL;
   m_programfilename = title;
   if (initfile != NULL && initfile != "")
     m_smilfilename = initfile;
@@ -109,14 +110,9 @@ qt_gui::qt_gui(const char* title,
     helpmenu->insertItem("&About", this, SLOT(slot_about()));
     menubar->insertItem("&Help", helpmenu);
     menubar->setGeometry(0,0,320,20);
+    m_o_x = 0;
+    m_o_y = 27;
   }
-  /* Workspace */
-  m_workspace = new QWidget(this);
-  assert(m_workspace);
-  m_workspace->setGeometry(0,20,320,220);
-  //  m_workspace->setBackgroundMode (Qt::PaletteBackground);
-  m_workspace->setBackgroundMode (QWidget::PaletteLight);
-  //  m_workspace->setScrollBarsEnabled(true);
 }
 qt_gui::~qt_gui() {
   setCaption(QString::null);
@@ -187,7 +183,8 @@ void qt_gui::slot_play() {
     m_playmenu->setItemEnabled(m_play_id, false);
     m_playmenu->setItemEnabled(m_pause_id, true);
     pthread_t playthread;
-    int rv = pthread_create(&playthread, NULL, &qt_mainloop::run, this);
+    int rv = pthread_create(&playthread, NULL, &qt_mainloop::run,
+			    this);
   }
   if (!m_pausing) {
      m_pausing = true;
@@ -206,6 +203,7 @@ void qt_gui::slot_stop() {
 			   "This will be \"Stop\"\n"
 			   );
 }
+/*JNK
 void qt_gui::paintEvent(QPaintEvent* e) {
   AM_DBG printf("%s-%s\n", m_programfilename, "PaintEvent");
   if (m_ambulant_window == NULL)
@@ -213,14 +211,14 @@ void qt_gui::paintEvent(QPaintEvent* e) {
   else {
     using namespace ambulant::gui::qt_renderer;
     using namespace ambulant::lib;
-    qt_window *qpw = (qt_window *)m_ambulant_window;
+    ambulant_qt_window *aqw = (ambulant_qt_window *)m_ambulant_window;
     QRect qr = e->rect();
     screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
 					   point(qr.right(),qr.bottom()));
-    qpw->redraw(r);
+    aqw->redraw(r);
   }
 }
-
+JNK*/
 int main (int argc, char*argv[]) {
 #ifndef QT_NO_FILEDIALOG    /* Assume plain Qt */
   QApplication myapp(argc, argv);
@@ -237,7 +235,7 @@ int main (int argc, char*argv[]) {
   /* Fire */
   myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
-    myapp.showMainWidget(mywidget);
+  myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
   mywidget->show();
   myapp.exec();
