@@ -25,10 +25,22 @@ else
 qtincludes=
 toolkit_qt_libraries =
 endif
+if WITH_ARTS
+toolkit_arts_libraries = libambulant_arts.la
+
+libambulant_arts_la_LDLIBS = `artsc-config --libs`
+libambulant_arts_la_CFLAGS = `artsc-config --cflags`
+libambulant_arts_la_SOURCES =             \
+	gui/qt/arts.cpp
+else
+artsincludes=
+toolkit_arts_libraries =
+endif
+
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	-I$(expat_dir)/include $(qtincludes)
 
-lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries)
+lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries) $(toolkit_arts_libraries)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
