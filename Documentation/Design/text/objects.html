@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<div class="section" id="jack-jansen-11-jun-03">
-<h1><a name="jack-jansen-11-jun-03">Jack Jansen, 11-Jun-03.</a></h1>
+<div class="section" id="jack-jansen-16-jun-03">
+<h1><a name="jack-jansen-16-jun-03">Jack Jansen, 16-Jun-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -43,35 +43,48 @@ snappyness of the system. Design of this is TBD, because it depends on a number
 of unknowns (such as how to represent callbacks). We may want to tack on
 to existing OS infrastructure (such as the Windows event loop), but that may
 be too inefficient.</p>
+<p><em>QUESTION</em>: is the event processor a global object? It has to be available when
+an object wants to schedule a callback, so it either has to be a global object
+or it has to be passed explicitly to constructor methods or when setting the
+callback to call. And, if the event processor is a global object, we have the
+problem that the HL scheduler also wants to use the data source, but it lives
+in a different thread. Is this a problem?</p>
 </div>
 <div class="section" id="data-source">
 <h1><a name="data-source">Data source</a></h1>
-<p>A data source is the thing that gives you data. You instantiate it
-in dormant state, where it only stores information on where the media resides
-and which bits we are interested in:
-URL, clip-begin/clip-end and such. From dormant it can go to prerolling,
-at which point it starts retrieving data, probably up to some limit
-given when starting the preroll. From preroll it goes to active,
-at which time you can start to do I/O.
-Data sources are always (really always?) push-based: the client asks
+<p>A data source is the thing that gives you data. It consists of two classes: a
+passive data source which is a placeholder for parameters (URL, clip-begin/clip-end and such)
+and which can hold caching information. The second class is the active data
+source which actually fetches data and pushes it to the consumer.</p>
+<p>The passive data source has a call &quot;preroll()&quot; which creates the active counterpart
+behind the scenes, so that a later call to activate() will return quickly.</p>
+<p>Data sources are push-based: the client asks
 for data, this call returns immedeately, and when the data is available
 an event is fired. There is probably also a call that says &quot;don't
 send me the event until you have all the data that is there&quot;.</p>
+<p><em>QUESTION</em> in addition we could have a call read_all() which does away
+with all the event processing (or at least hides it) and just dums all data into a
+buffer. Do we need this?</p>
+<p><em>QUESTION</em> what sort of push-based API do we want? We could have one where the
+producer callback simply signals data availability, and the consumer would then read()
+this data (thereby signalling to the producer that it could go get more data).
+Alternatively, the producer callback could contain a reference to the data/length.
+In that case, if there is more data than the consumer can handle presently, who is
+responsible for keeping it? I.e. can the consumer push it back to the producer, or
+will it have to do buffering?</p>
 <p>Some data sources will be able to handle some of the extra parameters
 (clip-begin/end, ignore-repeat) itself, the rest will be passed to 
 the renderer to handle.</p>
-<p>All three transitions between the states are possible. Data sources in
-dormant/preroll state are in a common pool, active data sources are owned by
-a renderer. We need the pool for the prerolling data sources because of
-the  SMIL prefetch
-element. Also, the dormant data source could keep interesting information
-for reuse (it could for instance keep information on locally cached images,
-so you don't get the same image over the net twice).</p>
-<p>Maybe there really are two data source objects, one storing the information
-(URL, etc, plus chached information) and one to do the transfer (which would
-start out as a child of the dormant datasource, when that source goes to
-preroll, and would then be passed to the renderer when it goes active).</p>
-<p>We need to think about how to handle multiplexed data streams such as RTSP.
+<p><em>QUESTION</em> is this actually feasible? Is
+there a way we could do this? Maybe there is: you pass all
+such extra paremeter (lets call them &quot;filtering parameters&quot;) to the
+passive data source creation method. The active data source will handle
+some of these itself, and those that it can't handle it keeps for future
+reference. Then when you start actually reading from the active data source
+you first ask for any unhandled filtering parameters and are given this list.
+you are then responsible for implementing them.</p>
+<p><em>QUESTION</em> there
+We need to think about how to handle multiplexed data streams such as RTSP.
 It could be that this is simply someone elses problem (the RTSP library),
 but maybe we need multiplexed data streams too.</p>
 <p>A decoder object gets data from a data source, does something to it (such
@@ -80,6 +93,14 @@ as decoding JPEG data) and passes it on.</p>
 I keep flipping back-and-forth about where to do decoding: at the
 source end (as stated in the previous paragraph), in the Renderer
 object or at the sink. Comments?</blockquote>
+<p><em>QUESTION</em> buffer management isn't touched on. Do we need a buffer type?
+Or does simply malloced memory, along with strict rules for who is
+responsible for freeing it at what time, suffice?</p>
+<p><em>QUESTION</em> we could have a subclass timed_active_datasource, for data sources
+which refer to timed media. Do we need this, i.e. do we ever want to seek a
+datastream? And, if we do want to seek, do we want a subclass or
+simply have this funcitonality on all active datasources (to be ignored
+on non-timed media)?</p>
 </div>
 <div class="section" id="data-sink">
 <h1><a name="data-sink">Data sink</a></h1>
