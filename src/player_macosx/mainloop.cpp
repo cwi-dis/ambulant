@@ -56,6 +56,7 @@
 #include <iostream>
 #include "mainloop.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 
 void
@@ -71,11 +72,11 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 {
 	using namespace ambulant;
 	
+	lib::global_renderer_factory *rf = new lib::global_renderer_factory();
+	rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
+#ifdef WITH_MMS_PLAYER
 	lib::passive_player *p = new lib::passive_player(filename);
 	if (!p) return;
-        
-        lib::global_renderer_factory *rf = new lib::global_renderer_factory();
-        rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
 	m_active_player = p->activate(wf, rf);
 	if (!m_active_player) return;
 	lib::timer *our_timer = new lib::timer(lib::realtime_timer_factory());
@@ -91,12 +92,32 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 		sleep(1);
 //	delete m_active_player;
 	m_active_player = NULL;
+#else
+	lib::document *doc = lib::document::create_from_file(filename);
+	if (!doc) {
+		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
+		return NULL;
+	}
+	m_smil_player = new lib::smil_player(doc, wf, rf);
+	m_smil_player->start();
+	while (!m_smil_player->is_done())
+		sleep(1);
+#endif
 }
 
 void
 mainloop::set_speed(double speed)
 {
 	m_speed = speed;
+#ifdef WITH_MMS_PLAYER
 	if (m_active_player)
 		m_active_player->set_speed(speed);
+#else
+	if (m_smil_player) {
+		if (speed == 0.0)
+			m_smil_player->pause();
+		else
+			m_smil_player->resume();
+	}
+#endif
 }

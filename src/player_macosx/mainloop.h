@@ -50,7 +50,11 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+#ifdef WITH_MMS_PLAYER
 #include "ambulant/common/player.h"
+#else
+#include "ambulant/common/smil_player.h"
+#endif
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 
 class mainloop : public ambulant::lib::ref_counted_obj {
@@ -58,7 +62,12 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	mainloop()
 	:   m_running(false),
 		m_speed(1.0),
-		m_active_player(NULL) {}
+#ifdef WITH_MMS_PLAYER
+		m_active_player(NULL)
+#else
+		m_smil_player(NULL)
+#endif
+		{}
 	
 	// The callback member function.
 	void player_done_callback() {
@@ -73,5 +82,10 @@ class mainloop : public ambulant::lib::ref_counted_obj {
   private:
   	bool m_running;
 	double m_speed;
+#ifdef WITH_MMS_PLAYER
 	ambulant::lib::active_player *m_active_player;
+#else
+	ambulant::lib::smil_player *m_smil_player;
+#endif
+
 };
