@@ -221,24 +221,39 @@ class audio_filter_finder  {
   	virtual audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts) = 0;
 };
 
-class datasource_factory : public raw_datasource_factory, public audio_datasource_factory  {
+// This class is the client API used to create a video_datasource for
+// a given URL
+class video_datasource_factory  {
+  public: 
+    virtual ~video_datasource_factory() {}; 	
+  	virtual video_datasource* new_video_datasource(const std::string& url) = 0;
+};
+
+class datasource_factory :
+	public raw_datasource_factory,
+	public audio_datasource_factory,
+	public video_datasource_factory
+{
   public:
 	datasource_factory() {};
   	~datasource_factory();
   
   	datasource* new_raw_datasource(const std::string& url);
 	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt);
+  	video_datasource* new_video_datasource(const std::string& url);
 	
   	void add_raw_factory(raw_datasource_factory *df);
 	void add_audio_factory(audio_datasource_factory *df);
 	void add_audio_parser_finder(audio_parser_finder *df);
 	void add_audio_filter_finder(audio_filter_finder *df);
+	void add_video_factory(video_datasource_factory *df);
 		
   private:
 	std::vector<raw_datasource_factory*> m_raw_factories;
 	std::vector<audio_datasource_factory*> m_audio_factories;
 	std::vector<audio_parser_finder*> m_audio_parser_finders;
 	std::vector<audio_filter_finder*> m_audio_filter_finders;
+	std::vector<video_datasource_factory*> m_video_factories;
 };
 
 } // end namespace net

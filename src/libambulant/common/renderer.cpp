@@ -228,9 +228,13 @@ m_is_playing(false),
 m_is_paused(false)
 {
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
-	// XXXX FIXME : The path to the jpg's is fixed !!!!!    
-	lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): The path to the video files is fixed. (/Users/jack/tmp/testmovie) FIXME");
-	m_src = new net::raw_video_datasource ("/Users/jack/tmp/testmovie");
+	// XXXX FIXME : The path to the jpg's is fixed !!!!!
+	std::string url = node->get_url("src");
+	m_src = df->new_video_datasource(url);
+	if (m_src == NULL) {
+		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): PLACEHOLDER VIDEO: The path to the video files is fixed. (/Users/jack/tmp/testmovie) FIXME");
+		m_src = new net::raw_video_datasource ("/Users/jack/tmp/testmovie");
+	}
 }
 
 

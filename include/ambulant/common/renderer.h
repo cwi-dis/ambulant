@@ -232,7 +232,7 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
 	  double now();
 	  lib::event_processor* m_evp;
-  	  net::raw_video_datasource* m_src; 
+  	  net::video_datasource* m_src; 
   	  unsigned long int m_epoch;
 	  bool m_is_playing;
 	  bool m_is_paused;

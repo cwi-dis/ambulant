@@ -139,6 +139,10 @@ datasource_factory::~datasource_factory()
 	std::vector<audio_filter_finder*>::iterator i4;
 	for (i4=m_audio_filter_finders.begin(); i4!=m_audio_filter_finders.end(); i4++)
 		delete (*i4);
+
+	std::vector<video_datasource_factory*>::iterator i5;
+	for (i5=m_video_factories.begin(); i5!=m_video_factories.end(); i5++)
+		delete (*i5);
 }
 
 void
@@ -167,6 +171,13 @@ datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
 {
 	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_filter_finder(0x%x)", (void*)df);
 	m_audio_filter_finders.push_back(df);
+}
+
+void
+datasource_factory::add_video_factory(video_datasource_factory *df)
+{
+	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_video_factory(0x%x)", (void*)df);
+	m_video_factories.push_back(df);
 }
 
 
@@ -230,3 +241,19 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
     return NULL;
 }
+
+video_datasource*
+datasource_factory::new_video_datasource(const std::string &url)
+{
+    std::vector<video_datasource_factory *>::iterator i;
+    video_datasource *src;
+    
+    for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
+        src = (*i)->new_video_datasource(url);
+		AM_DBG lib::logger::get_logger()->trace("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
+        if (src) return src;
+    }
+	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", url.c_str());
+    return NULL;
+}
+
