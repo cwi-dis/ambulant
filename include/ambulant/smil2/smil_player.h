@@ -83,6 +83,7 @@ namespace smil2 {
 
 class smil_layout_manager;
 class animation_engine;
+class scheduler;
 
 class smil_player : public common::player, public time_node_context, public common::playable_notification {
   public:
@@ -181,6 +182,8 @@ class smil_player : public common::player, public time_node_context, public comm
 			m_playables.find(n);
 		return (it != m_playables.end())?(*it).second:0;
 	}
+	// timegraph sampling
+	void update();
 	
 	lib::document *m_doc;
 	common::window_factory *m_wf;
@@ -192,6 +195,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	smil_layout_manager *m_layout_manager;
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;	
+	scheduler *m_scheduler;
 	common::play_state m_state;
 	int m_cursorid;
 	const time_node *m_pointed_node;

@@ -65,6 +65,7 @@
 #include "ambulant/smil2/smil_player.h"
 #include "ambulant/smil2/timegraph.h"
 #include "ambulant/smil2/smil_layout.h"
+#include "ambulant/smil2/time_sched.h"
 #include "ambulant/smil2/animate_e.h"
 
 //#define AM_DBG if(1)
@@ -97,6 +98,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_layout_manager(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_event_processor(0),
+	m_scheduler(0),
 	m_state(common::ps_idle),
 	m_cursorid(0), 
 	m_pointed_node(0) {
@@ -126,6 +128,7 @@ smil_player::~smil_player() {
 	delete m_dom2tn;
 	delete m_animation_engine;
 	delete m_root;
+	delete m_scheduler;
 	delete m_doc;
 	delete m_layout_manager;
 }
@@ -147,10 +150,12 @@ void smil_player::build_timegraph() {
 	if(m_root) {
 		delete m_root;
 		delete m_dom2tn;
+		delete m_scheduler;
 	}
 	timegraph tg(this, m_doc, schema::get_instance());
 	m_root = tg.detach_root();
 	m_dom2tn = tg.detach_dom2tn();
+	m_scheduler = new scheduler(m_root, m_timer);
 }
 
 void smil_player::schedule_event(lib::event *ev, time_type t, event_priority ep) {
@@ -163,7 +168,11 @@ void smil_player::start() {
 		resume();
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
-		if(m_root) m_root->start();
+		m_timer->set_time(0);
+		if(m_root) {
+			m_root->start();
+			update();
+		}
 		m_timer->resume();
 	}
 }
@@ -326,6 +335,7 @@ void smil_player::clicked(int n, double t) {
 		activate_event_cb *cb = new activate_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
 		schedule_event(cb, 0);
+		m_scheduler->exec();
 	}
 }
 
@@ -387,6 +397,7 @@ void smil_player::on_char(int ch) {
 	accesskey ak(timestamp, ch);
 	accesskey_cb *cb = new accesskey_cb(m_root, &time_node::raise_accesskey, ak);
 	schedule_event(cb, 0);
+	m_scheduler->exec();
 }
 
 // Creates and returns a playable for the node.
@@ -458,4 +469,15 @@ std::string smil_player::get_pointed_node_str() const {
 	else
 		sprintf(buf, "%.32s - %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"));
 	return buf;
+}
+
+void smil_player::update() {
+	if(m_scheduler && m_root && m_root->is_active()) {
+		lib::timer::time_type dt = m_scheduler->exec();
+		if(m_root->is_active()) {
+			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
+				&smil_player::update);
+			m_event_processor->add_event(update_event, dt);
+		}
+	}
 }
