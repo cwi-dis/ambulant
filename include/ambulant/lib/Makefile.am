@@ -14,6 +14,7 @@ library_include_HEADERS= \
 	event.h \
 	expat_parser.h \
 	filesys.h \
+	gpaths.h \
 	gtypes.h \
 	logger.h \
 	memfile.h \

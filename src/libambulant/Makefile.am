@@ -95,6 +95,7 @@ libambulant_la_SOURCES = \
 	lib/delta_timer.cpp \
 	lib/document.cpp \
 	lib/expat_parser.cpp \
+	lib/gpaths.cpp \
 	lib/logger.cpp \
 	lib/nfa.cpp \
 	lib/node.cpp \
