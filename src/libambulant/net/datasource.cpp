@@ -271,7 +271,7 @@ void net::active_datasource::filesize()
   void net::active_datasource::read_file()
   {
 
-  	char ch;
+  	char buf[BUFSIZ];
   	int result;
   	
   	 if(m_stream)
@@ -280,9 +280,9 @@ void net::active_datasource::filesize()
 			
 			do
 			{
-				result=::read(m_stream,&ch,1);
-				if (result >0 )buffer->put_data(&ch,1); 
-			} while(result > 0);
+				result = ::read(m_stream, buf, sizeof(buf));
+				if (result >0) buffer->put_data(buf, result); 
+			} while (result > 0);
 		}
 		else
 		{
@@ -296,7 +296,7 @@ void net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant
  	read_file();
  	AM_DBG buffer->dump(std::cout, false);
 	if (evp && readdone) {
-		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
+		std::cout << "active_datasource: trigger readdone callback" << std::endl;
 		evp->add_event(readdone, 0, ambulant::lib::event_processor::low);
 	}
 }

@@ -106,7 +106,7 @@ public:
    long add_ref() {return ++m_refcount;}
 
 	long release() {
-		std::cout << "active_skeleton.release, count=" << m_refcount << std::endl;
+		std::cout << "active_datasource.release, count=" << m_refcount << std::endl;
 		if(--m_refcount == 0){
 			delete this;
 			return 0;
@@ -150,7 +150,7 @@ public:
    long add_ref() {return ++m_refcount;}
 
 	long release() {
-		std::cout << "active_skeleton.release, count=" << m_refcount << std::endl;
+		std::cout << "active_datasource.release, count=" << m_refcount << std::endl;
 		if(--m_refcount == 0){
 			delete this;
 			return 0;
