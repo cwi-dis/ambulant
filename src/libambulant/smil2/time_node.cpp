@@ -517,15 +517,9 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	assert(timestamp.first == sync_node());
 	assert(m_state->ident() == ts_proactive || m_state->ident() == ts_postactive);
 	assert(is_root() || up()->m_state->ident() == ts_active);
-	
-	if(up() && up()->is_seq() && i.contains(timestamp.second)) {
-		 time_node *prev = previous();
-		 if(prev) {
-			if(prev->is_active()) {
-				// wait
-				return;
-			}
-		 }
+	if(!can_set_interval(timestamp, i)) {
+		raise_update_event(timestamp);
+		return;
 	}
 	
 	// Set the interval as current.
@@ -564,6 +558,43 @@ void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	assert(m_interval.contains(timestamp.second));
 	if(deferred()) defer_interval(timestamp);
 	else set_state_ex(ts_active, timestamp);
+}
+
+// Returns true when the node can establish its interval
+// Fixes biased intervals
+// The design should be improved so that this function always returns true. 
+bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
+	if(is_root() || i.after(timestamp.second)) return true;
+	if(up() && up()->is_seq()) {
+		// the node should go active but the interval may be wrong/biased
+		 time_node *prev = previous();
+		 if(prev && prev->is_active()) {
+			// wait
+			AM_DBG m_logger->trace("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), 
+				m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+			return false;
+		 }
+	}
+	// if an ancestor is paused or deferred return false
+	std::list<const time_node*> path;
+	get_path(path);
+	std::list<const time_node*>::reverse_iterator it = path.rbegin();
+	it++; // pass over this
+	for(;it!=path.rend();it++) {
+		const time_node *atn = (*it);
+		if(atn->paused() || atn->deferred()) {
+			AM_DBG {
+				std::string astate;
+				if(atn->paused()) astate = "paused";
+				else if(atn->deferred()) astate = "deferred";
+				m_logger->trace("%s[%s] attempt to set_current_interval() but an ancestor is %s: %s (DT=%ld)", 
+					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), astate.c_str(),
+					::repr(i).c_str(), timestamp.as_doc_time_value());
+			}
+			return false;
+		}
+	}
+	return true;
 }
 
 // Add to history and invalidate the current interval

@@ -179,6 +179,7 @@ class time_node : public schedulable {
 	void update_interval_end(qtime_type timestamp, time_type newend);
 	void played_interval(qtime_type timestamp);
 	void clear_history() { m_history.clear(); }
+	bool can_set_interval(qtime_type timestamp, const interval_type& i);
 	
 	// excl
 	void defer_interval(qtime_type timestamp);
