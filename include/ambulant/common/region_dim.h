@@ -75,6 +75,7 @@
 #define AMBULANT_COMMON_REGION_DIM_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
 
 // std::runtime_error
 #include <stdexcept>
@@ -134,6 +135,21 @@ class region_dim {
  			m_holder.dbl_val = other.get_as_dbl();
    } 
      
+	// constructs a region dim from the provided str
+	region_dim(const std::string& s) 
+	:	m_type(rdt_auto) {
+		m_holder.dbl_val = 0;
+		if(s.empty()) return;	
+		char *endptr;
+		int ivalue = strtol(s.c_str(), &endptr, 10);
+		if(*endptr == '\0' || strcmp(endptr, "px") == 0) {
+			m_holder.int_val = ivalue;
+			m_type = rdt_absolute;
+		} else if (*endptr == '%') {
+			m_holder.dbl_val = ivalue / 100.0;
+			m_type = rdt_relative;
+		} 
+	}
      
 	//////////////////////
 	// region_dim destructor
@@ -218,6 +234,46 @@ class region_dim {
 
 	bool operator!= (const region_dim& other) const { return !(*this == other); }
 		
+	region_dim& operator+=(const region_dim& rhs) {
+		assert(m_type == rhs.m_type);
+		if(absolute())
+			m_holder.int_val += rhs.get_as_int();
+		else if(relative())
+ 			m_holder.dbl_val += rhs.get_as_dbl();
+		return *this;
+	}
+	
+	region_dim& operator-=(const region_dim& rhs) {
+		assert(m_type == rhs.m_type);
+		if(absolute())
+			m_holder.int_val -= rhs.get_as_int();
+		else if(relative())
+ 			m_holder.dbl_val -= rhs.get_as_dbl();
+		return *this;
+	}
+	
+	region_dim operator+(const region_dim& rhs) const { region_dim t(*this); t+=rhs; return t;}
+	
+	region_dim operator-(const region_dim& rhs) const { region_dim t(*this); t-=rhs; return t;}
+		
+	// define comparisons
+	bool operator<(const region_dim& rhs) const {
+		if(isauto()) return true;
+		return  absolute()?(m_holder.dbl_val<rhs.m_holder.dbl_val):
+			m_holder.int_val<rhs.m_holder.int_val;}
+	bool operator<=(const region_dim& rhs) const {
+		if(isauto()) return true;
+		return  absolute()?m_holder.dbl_val<= rhs.m_holder.dbl_val:
+			m_holder.int_val<=rhs.m_holder.int_val;}
+	bool operator>(const region_dim& rhs) const {
+		if(isauto()) return true;
+		return  absolute()?(m_holder.dbl_val>rhs.m_holder.dbl_val):
+			m_holder.int_val>rhs.m_holder.int_val;}
+	bool operator>=(const region_dim& rhs) const {
+		if(isauto()) return true;
+		return  absolute()?m_holder.dbl_val>=rhs.m_holder.dbl_val:
+			m_holder.int_val>=rhs.m_holder.int_val;}
+
   private: 
 	// region dimension types
 	enum region_dim_type {rdt_auto, rdt_relative, rdt_absolute};
@@ -232,13 +288,66 @@ class region_dim {
 struct region_dim_spec {
 	region_dim left, width, right;
 	region_dim top, height, bottom;
+	region_dim_spec() {}
+	region_dim_spec(const std::string& coords, const char *shape = 0);
 	bool operator== (region_dim_spec& other) const {
 		return left==other.left && width==other.width && right==other.right
 		    && top == other.top && height==other.height && bottom==other.bottom;
 	}
-	
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
+	void convert(const lib::screen_rect<int>& rc);
 };
+
+
+// Sets the region dimensions from the bounding box specified by the coords attribute
+inline region_dim_spec::region_dim_spec(const std::string& coords, const char *shape) {
+	if(coords.empty()) return;
+	std::list<std::string> list;
+	lib::split_trim_list(coords, list, ',');
+	std::list<std::string>::iterator it = list.begin();
+	if((!shape || (shape && strcmp(shape, "rect")==0)) && list.size() == 4) {
+		left = region_dim(*it++);
+		top = region_dim(*it++);
+		width = region_dim(*it++) - left;
+		height = region_dim(*it++) - top;
+	} else if((shape && strcmp(shape, "circle")==0) && list.size() == 3) {
+		region_dim x(*it++);
+		region_dim y(*it++);
+		region_dim r(*it++);
+		left = x-r;
+		top = y-r;
+		width = r+r;
+		height = width;
+	}
+	else if((shape && strcmp(shape, "poly")==0) && list.size() >= 6 && (list.size() % 2) == 0) {
+		region_dim l, t, r, b;
+		while(it!=list.end()) {
+			region_dim x(*it++);
+			l = std::min<region_dim>(l, x);
+			r = std::max<region_dim>(r, x);
+			region_dim y(*it++);
+			t = std::min<region_dim>(t, y);
+			b = std::max<region_dim>(b, y);
+		}
+		left = l;
+		top = t;
+		width = r-l;
+		height = b-t;
+	} 
+}
+
+// Converts those coordinates that are relative to absolute 
+inline void region_dim_spec::convert(const lib::screen_rect<int>& rc) {
+	int w = rc.width(), h = rc.height();
+	
+	if(!left.isauto()) left = left.get(w);
+	if(!right.isauto()) right = right.get(w);
+	if(!width.isauto()) width = width.get(w);
+	
+	if(!top.isauto()) top = top.get(h);
+	if(!bottom.isauto()) bottom = bottom.get(h);
+	if(!height.isauto()) height = height.get(h);
+}
 
 // A structure holding attributes of a regPoint or regAlign
 // A region node may hold along its other attributes this data structure.
