@@ -101,6 +101,7 @@ class arts_active_audio_renderer : public common::playable_imp {
   	arts_stream_t m_stream;
   	net::audio_datasource *m_audio_src;
   	bool m_is_paused;
+  	bool m_is_playing;
     char *m_name;
 	static bool m_arts_init;
     lib::event *m_playdone;
@@ -108,10 +109,6 @@ class arts_active_audio_renderer : public common::playable_imp {
   	static net::audio_format m_ambulant_format;
 
 };
-
-} // end namespace arts
-} // end namespace gui
-} // end namespace ambulant
 
 
 #endif
