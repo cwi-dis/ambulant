@@ -14,10 +14,12 @@ protected: // create from serialization only
 // Attributes
 public:
 	MmDoc* GetDocument() const;
-
+	UINT_PTR m_timer_id;
+	
 // Operations
 public:
-
+	void SetMMDocument(LPCTSTR lpszPathName);
+	
 // Overrides
 	public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
@@ -40,6 +42,14 @@ protected:
 public:
 	afx_msg void OnDestroy();
 	virtual void OnInitialUpdate();
+	afx_msg void OnFilePlay();
+	afx_msg void OnUpdateFilePlay(CCmdUI *pCmdUI);
+	afx_msg void OnFilePause();
+	afx_msg void OnUpdateFilePause(CCmdUI *pCmdUI);
+	afx_msg void OnFileStop();
+	afx_msg void OnUpdateFileStop(CCmdUI *pCmdUI);
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

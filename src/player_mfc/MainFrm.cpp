@@ -77,8 +77,11 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
+	
+	// Set the startup dimensions for MMS 
 	cs.cx = 176 + 28;
 	cs.cy = 216 + 108;
+	
 	return TRUE;
 }
 

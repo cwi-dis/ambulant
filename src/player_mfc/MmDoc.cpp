@@ -7,6 +7,9 @@
 #include "MmDoc.h"
 #include ".\mmdoc.h"
 
+#include "MmView.h"
+#include ".\mmview.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -39,7 +42,6 @@ BOOL MmDoc::OnNewDocument()
 
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
-
 	return TRUE;
 }
 
@@ -80,15 +82,15 @@ void MmDoc::Dump(CDumpContext& dc) const
 
 BOOL MmDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
-	if (!CDocument::OnOpenDocument(lpszPathName))
-		return FALSE;
+	//if (!CDocument::OnOpenDocument(lpszPathName))
+	//	return FALSE;
 
 	// TODO:  Add your specialized creation code here
 	POSITION pos = GetFirstViewPosition();
 	if(pos != NULL) {
 		CView* pView = GetNextView(pos);
 		ASSERT_VALID(pView);
-		//AfxMessageBox(CString("OnOpenDocument ") + lpszPathName);
+		((MmView*)pView)->SetMMDocument(lpszPathName);
 	}
 	return TRUE;
 }
