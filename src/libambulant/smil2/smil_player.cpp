@@ -570,7 +570,7 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 			m_system->close(to_replace);
 		m_system->show_file(href);
 	} else {
-		m_system->open(href, dststate = dst_play, to_replace);
+		m_system->open(href, dststate == dst_play, to_replace);
 	}
 }
 
