@@ -75,6 +75,7 @@
 #include "ambulant/lib/win32/win32_asb.h"
 #include "ambulant/net/url.h"
 #include "ambulant/lib/string_util.h"
+#include "ambulant/version.h"
 
 #include ".\mmview.h"
 
@@ -252,13 +253,20 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
 	
-	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
-		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
-		LocateWelcomeDoc(TEXT("Welcome.smil")))
-		{}//PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 
 	PostMessage(WM_SET_CLIENT_RECT, 
 		common::default_layout_width, ambulant::common::default_layout_height);
+
+	CWinApp* pApp = AfxGetApp();
+	CString amver = pApp->GetProfileString("AmbulantPlayer", "Version");
+	if(amver.IsEmpty() || amver != get_version()) {
+		// first time; write the string and play welcome
+		pApp->WriteProfileString("AmbulantPlayer", "Version",  get_version());
+		if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
+			LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
+			LocateWelcomeDoc(TEXT("Welcome.smil")))
+		PostMessage(WM_COMMAND, ID_HELP_WELCOME);
+	}
 
 	return 0;
 }
