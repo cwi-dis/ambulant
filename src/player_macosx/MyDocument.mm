@@ -57,6 +57,10 @@
 #import "MyDocument.h"
 #import "MyAmbulantView.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 @implementation MyDocument
 
 - (id)init
@@ -99,34 +103,67 @@
     return YES;
 }
 
-- (BOOL) validateMenuItem:(id)menuItem
+- (BOOL) validateUIItem:(id)UIItem
 {
-	SEL theAction = [menuItem action];
+	SEL theAction = [UIItem action];
+	AM_DBG NSLog(@"Validating %@, is_running=%d, get_speed=%f", UIItem, myMainloop->is_running(),myMainloop->get_speed());
 	if (theAction == @selector(play:)) {
-		if (myMainloop->is_running() && myMainloop->get_speed() == 1.0)
-			[menuItem setState: NSOnState];
-		else
-			[menuItem setState: NSOffState];
-		return !myMainloop->is_running() || myMainloop->get_speed() == 0.0;
+		if (myMainloop->is_running() && myMainloop->get_speed() == 1.0) {
+			AM_DBG NSLog(@"play - On");
+			[UIItem setState: NSOnState];
+		} else {
+			AM_DBG NSLog(@"play - Off");
+			[UIItem setState: NSOffState];
+		}
+		//AM_DBG NSLog(@"play - enabled=%d", (!myMainloop->is_running() || myMainloop->get_speed() == 0.0));
+		//return !myMainloop->is_running() || myMainloop->get_speed() == 0.0;
+		return YES;
 	} else if (theAction == @selector(stop:)) {
-		if (!myMainloop->is_running())
-			[menuItem setState: NSOnState];
-		else
-			[menuItem setState: NSOffState];
+		if (!myMainloop->is_running()) {
+			AM_DBG NSLog(@"stop - On");
+			[UIItem setState: NSOnState];
+		} else {
+			AM_DBG NSLog(@"stop - On");
+			[UIItem setState: NSOffState];
+		}
+		AM_DBG NSLog(@"play - enabled=%d", (myMainloop->is_running()));
 		return myMainloop->is_running();
 	} else if (theAction == @selector(pause:)) {
-		if (myMainloop->is_running() && myMainloop->get_speed() == 0.0)
-			[menuItem setState: NSOnState];
-		else
-			[menuItem setState: NSOffState];
+		if (myMainloop->is_running() && myMainloop->get_speed() == 0.0) {
+			AM_DBG NSLog(@"pause - On");
+			[UIItem setState: NSOnState];
+		} else {
+			AM_DBG NSLog(@"pause - On");
+			[UIItem setState: NSOffState];
+		}
+		AM_DBG NSLog(@"play - enabled=%d", (myMainloop->is_running()));
 		return myMainloop->is_running();
 	}
 	return NO;
 }
 
+- (BOOL) validateMenuItem:(id)menuItem
+{
+	return [self validateUIItem: menuItem];
+}
+
+- (void) validateButtons
+{
+#if 0
+	BOOL enabled;
+	enabled = [self validateUIItem: play_button];
+	[play_button setEnabled: enabled];
+	enabled = [self validateUIItem: stop_button];
+	[stop_button setEnabled: enabled];
+	enabled = [self validateUIItem: pause_button];
+	[pause_button setEnabled: enabled];
+#endif
+}
+
 - (IBAction)pause:(id)sender
 {
     myMainloop->set_speed(1.0 - myMainloop->get_speed());
+	[self validateButtons];
 }
 
 - (IBAction)play:(id)sender
@@ -135,6 +172,7 @@
 		myMainloop->set_speed(1.0);
 	else
 		[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
+	[self validateButtons];
 }
 
 - (void)startPlay: (id)dummy
@@ -144,13 +182,22 @@
     if (![NSThread isMultiThreaded]) {
         NSLog(@"startPlay: still not multi-threaded!");
     }
-    myMainloop->run();
+    myMainloop->play();
+	while (myMainloop->is_running()) {
+		AM_DBG NSLog(@"validating in separate thread");
+		sleep(1);
+		[self validateButtons];
+	}
+	AM_DBG NSLog(@"validating in separate thread - final");
+	[self validateButtons];
     [pool release];
 }
 
 - (IBAction)stop:(id)sender
 {
     NSLog(@"Stop");
+	myMainloop->stop();
+	[self validateButtons];
 }
 
 - (void *)view

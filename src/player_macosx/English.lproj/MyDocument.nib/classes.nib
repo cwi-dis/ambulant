@@ -17,7 +17,7 @@
             ACTIONS = {pause = id; play = id; stop = id; }; 
             CLASS = MyDocument; 
             LANGUAGE = ObjC; 
-            OUTLETS = {view = AmbulantView; }; 
+            OUTLETS = {"pause_button" = id; "play_button" = id; "stop_button" = id; view = id; }; 
             SUPERCLASS = NSDocument; 
         }
     ); 

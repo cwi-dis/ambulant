@@ -65,10 +65,11 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 		m_running = false;
 	}
 	
-	void run();
+	void play();
+	void stop();
 	void set_speed(double speed);
 	double get_speed() const { return m_speed; }
-	bool is_running() const { return m_running; }
+	bool is_running() const;
 	
   private:
   	bool m_running;

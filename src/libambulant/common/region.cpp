@@ -415,7 +415,7 @@ void
 active_region::user_event(const lib::point &where)
 {
 	if (m_renderer) {
-		AM_DBG lib::logger::get_logger()->trace("active_region.user_event(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
+		/*AM_DBG*/ lib::logger::get_logger()->trace("active_region.user_event(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
 		m_renderer->user_event(where);
 	} else {
 		// At this point we should have a renderer that draws the default background
@@ -447,7 +447,7 @@ active_region::need_events(bool want)
 		return;
 	m_mouse_region->clear();
 	if (want) *m_mouse_region = m_source->m_inner_bounds;
-	AM_DBG lib::logger::get_logger()->trace("active_region::need_events(%d): is_empty() is %d", (int)want, (int)m_mouse_region->is_empty());
+	/*AM_DBG*/ lib::logger::get_logger()->trace("active_region::need_events(%d): is_empty() is %d", (int)want, (int)m_mouse_region->is_empty());
 	m_source->mouse_region_changed();
 }
 

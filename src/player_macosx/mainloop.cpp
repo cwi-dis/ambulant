@@ -115,9 +115,17 @@ mainloop::~mainloop()
 }
 
 void
-mainloop::run()
+mainloop::play()
 {
+	m_running = true;
 	m_player->start();
+	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
+}
+
+void
+mainloop::stop()
+{
+	m_player->stop();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }
 
@@ -132,3 +140,11 @@ mainloop::set_speed(double speed)
 			m_player->resume();
 	}
 }
+
+bool
+mainloop::is_running() const
+{
+	if (!m_running || !m_player) return false;
+	return !m_player->is_done();
+}
+

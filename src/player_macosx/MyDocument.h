@@ -55,11 +55,16 @@
 @interface MyDocument : NSDocument
 {
     IBOutlet id view;
+	IBOutlet id play_button;
+	IBOutlet id stop_button;
+	IBOutlet id pause_button;
 //    void *window_factory;
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
 	mainloop *myMainloop;
 }
+- (BOOL) validateUIItem:(id)UIItem;
 - (BOOL) validateMenuItem:(id)menuItem;
+- (void) validateButtons;
 - (IBAction)pause:(id)sender;
 - (IBAction)play:(id)sender;
 - (IBAction)stop:(id)sender;
