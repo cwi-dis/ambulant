@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2004-11-12 16:12+0100\n"
+"POT-Creation-Date: 2004-11-15 12:58+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -76,11 +76,11 @@ msgstr ""
 msgid "Failed to parse document: %s"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:198
+#: src/libambulant/lib/tree_builder.cpp:186
 msgid "Could not create any XML parser (configuration error?)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:255
+#: src/libambulant/lib/tree_builder.cpp:243
 #, c-format
 msgid "%s: Error parsing document"
 msgstr ""
@@ -288,123 +288,135 @@ msgid "Cannot play document: no player"
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:150
-msgid "&Open"
+msgid "&Open..."
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:152
-msgid "Open &URL"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:159
-msgid "&Full Screen"
+msgid "Open &URL..."
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:161
-msgid "&Normal"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:162
 msgid "&Settings"
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:165
-msgid "&Logger"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:168
 msgid "&Quit"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:169
+#: src/player_unix/qt_gui.cpp:166
 msgid "&File"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:174 src/player_unix/qt_gui.cpp:181
+#: src/player_unix/qt_gui.cpp:171 src/player_unix/qt_gui.cpp:178
 msgid "Pla&y"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:177
+#: src/player_unix/qt_gui.cpp:174
 msgid "&Pause"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:180
+#: src/player_unix/qt_gui.cpp:177
 msgid "&Stop"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:186
+#: src/player_unix/qt_gui.cpp:182
+msgid "&Full Screen"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:184
+msgid "&Window"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:187
+msgid "&Log Window..."
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:190
+msgid "&View"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:195
 msgid "&About AmbulantPlayer"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:188
+#: src/player_unix/qt_gui.cpp:198
+msgid "AmbulantPlayer &Website..."
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:200
+msgid "&Play Welcome Document"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:202
 msgid "&Help"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:214
+#: src/player_unix/qt_gui.cpp:228
 msgid "About AmbulantPlayer"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:216
-msgid "Homepage..."
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:217
-msgid "Welcome doc"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:218 src/player_unix/qt_gui.cpp:451
+#: src/player_unix/qt_gui.cpp:230 src/player_unix/qt_gui.cpp:468
 msgid "OK"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:257
+#: src/player_unix/qt_gui.cpp:248
+msgid "Cannot find Welcome.smil document"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:274
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:293
+#: src/player_unix/qt_gui.cpp:310
 msgid ""
 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any "
 "file (*)"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:295
+#: src/player_unix/qt_gui.cpp:312
 msgid "open file dialog"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:296
+#: src/player_unix/qt_gui.cpp:313
 msgid "Double Click a file to open"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:354
+#: src/player_unix/qt_gui.cpp:371
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:366
+#: src/player_unix/qt_gui.cpp:383
 msgid "Open URL not implemented for Embedded Qt"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:400
+#: src/player_unix/qt_gui.cpp:417
 msgid "No file open: Please first select File->Open"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:453
+#: src/player_unix/qt_gui.cpp:470
 msgid "Cancel"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:558 src/player_macosx/MyAppDelegate.mm:159
+#: src/player_unix/qt_gui.cpp:562
+msgid "/.ambulant/locale"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:588 src/player_macosx/MyAppDelegate.mm:159
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:559
+#: src/player_unix/qt_gui.cpp:589
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/Qt"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:561
+#: src/player_unix/qt_gui.cpp:591
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:620
+#: src/player_unix/qt_gui.cpp:649
 msgid "Exiting program"
 msgstr ""
 
