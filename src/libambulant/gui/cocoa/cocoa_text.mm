@@ -102,7 +102,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 	if (m_text_storage && m_layout_manager) {
 		[[NSColor whiteColor] set];
 		NSRectFill(dstrect);
-		NSPoint origin = NSMakePoint(NSMinX(dstrect), NSMidY(dstrect));
+		NSPoint origin = NSMakePoint(NSMinX(dstrect), NSMinY(dstrect));
 		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
 		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];

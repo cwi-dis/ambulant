@@ -102,7 +102,8 @@ cocoa_active_audio_renderer::start(event *playdone)
 	std::ostringstream os;
 	os << *m_node;
 	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	if (m_sound)
+	m_playdone = playdone;
+        if (m_sound)
 		if (![m_sound play])
 			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot start audio");
 	if (m_playdone)
