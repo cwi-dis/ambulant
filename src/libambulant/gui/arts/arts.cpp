@@ -69,7 +69,7 @@ gui::arts::arts_renderer_factory::new_playable(
      AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
 		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp,
-			m_datasource_factory);
+			m_factory);
 		AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 	AM_DBG lib::logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
