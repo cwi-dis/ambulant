@@ -52,6 +52,7 @@
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/smil2/params.h"
 #include <math.h>
 
@@ -65,35 +66,45 @@ using namespace smil2;
 params *
 params::for_node(const lib::node *n)
 {
-	bool has_params = (bool)n->get_first_child("param");
-#ifdef SMIL_21
-	const char *indir_params = n->get_attribute("param");
-	if (indir_params) abort();
+	lib::node *paramchild = n->get_first_child("param");
+	lib::node *paramcontainerchild = NULL;
+#ifdef USE_SMIL21
+	const char *pname = n->get_attribute("paramGroup");
+	if (pname) {
+		lib::node_context *ctx = n->get_context();
+		lib::node *pcontainer = ctx->get_node(pname);
+		if (pcontainer) {
+			paramcontainerchild = pcontainer->down();
+		} else {
+			lib::logger::get_logger()->trace("param=\"%s\": ID not found", pname);
+		}
+	}
 #endif
-	if (has_params) return new params(n);
+	if (paramchild || paramcontainerchild) {
+		params *rv = new params();
+		if (paramcontainerchild) rv->addparamnodes(paramcontainerchild);
+		if (paramchild) rv->addparamnodes(paramchild);
+		return rv;
+	}
 	return NULL;
 }
 
-params::params(const lib::node *n)
+params::addparamnodes(const lib::node *pnode)
 {
-#ifdef SMIL_21
-	const char *indir_params = n->get_attribute("param");
-	if (indir_params) abort();
-#endif
-	const lib::node *pnode = n->get_first_child("param");
-	while (pnode && pnode->get_local_name() == "param") {
-		const char *cname = pnode->get_attribute("name");
-		const char *cvalue = pnode->get_attribute("value");
-		
-		if (cname == NULL) {
-			lib::logger::get_logger()->trace("<param> missed \"name\" attribute");
-		} else if (cvalue == NULL) {
-			lib::logger::get_logger()->trace("<param> missed \"value\" attribute");
-		} else {
-			std::string name(cname);
-			m_params[name] = cvalue;
+	while (pnode) {
+		if (pnode->get_local_name() == "param") {
+			const char *cname = pnode->get_attribute("name");
+			const char *cvalue = pnode->get_attribute("value");
+			
+			if (cname == NULL) {
+				lib::logger::get_logger()->trace("<param> missed \"name\" attribute");
+			} else if (cvalue == NULL) {
+				lib::logger::get_logger()->trace("<param> missed \"value\" attribute");
+			} else {
+				std::string name(cname);
+				m_params[name] = cvalue;
+			}
 		}
-		
 		pnode = pnode->next();
 	}
 }

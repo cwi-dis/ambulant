@@ -100,7 +100,7 @@ void
 cocoa_renderer::start_outtransition(lib::transition_info *info)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cocoa_renderer.start_outtransition(0x%x)", (void *)this);
+	/*AM_DBG*/ logger::get_logger()->debug("cocoa_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
