@@ -73,24 +73,26 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region : public abstract_rendering_source {
+class passive_region : public abstract_rendering_surface, public abstract_rendering_source {
   public:
 	friend class active_region;
 	
 	passive_region() 
 	:	m_name("unnamed"),
+		m_bounds_inited(true),
 		m_inner_bounds(screen_rect<int>()),
 		m_outer_bounds(screen_rect<int>()),
-		m_window_topleft(point(0, 0)),
+		m_window_topleft(point()),
 		m_parent(NULL),
 		m_cur_active_region(NULL),
 		m_mouse_region(NULL),
 		m_info(NULL) {}
 	passive_region(const std::string &name)
 	:	m_name(name),
+		m_bounds_inited(true),
 		m_inner_bounds(screen_rect<int>()),
 		m_outer_bounds(screen_rect<int>()),
-		m_window_topleft(point(0, 0)),
+		m_window_topleft(point()),
 		m_parent(NULL),
 		m_cur_active_region(NULL),
 		m_mouse_region(NULL),
@@ -108,7 +110,7 @@ class passive_region : public abstract_rendering_source {
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
-	const point &get_global_topleft() const { return m_window_topleft; }
+	virtual const point &get_global_topleft() const;
 	const passive_region* get_parent() const { return m_parent; }
 	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
 	const abstract_smil_region_info *get_info() const { return m_info; }	
@@ -116,16 +118,19 @@ class passive_region : public abstract_rendering_source {
 	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const;
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		point window_topleft, const abstract_smil_region_info *info)
+		const abstract_smil_region_info *info)
 	:	m_name(name),
+		m_bounds_inited(true),
 		m_inner_bounds(bounds.innercoordinates(bounds)),
 		m_outer_bounds(bounds),
-		m_window_topleft(window_topleft),
+		m_window_topleft(bounds.left_top()),
 		m_parent(parent),
 		m_cur_active_region(NULL),
 		m_mouse_region(NULL),
-		m_info(info)
+		m_info(info),
+		m_bg_renderer(NULL)
         {
+			if (parent) m_window_topleft += parent->get_global_topleft();
 			if (parent && parent->m_mouse_region) {
 				m_mouse_region = parent->m_mouse_region->clone();
 				m_mouse_region->clear();
@@ -133,16 +138,28 @@ class passive_region : public abstract_rendering_source {
         }
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_events(abstract_mouse_region *rgn);
+	virtual void clear_cache();
+  private:
+	// This is part of the abstract_rendering_surface interface that we don't export
+	void show(abstract_rendering_source *renderer) {abort();};
+	void renderer_done() {abort();};
+	void need_redraw() {abort();};
+	void need_events(bool want) {abort();};
 
-  	std::string m_name;					// for debugging XXXX do lazy
+	void need_bounds();
+	void draw_background();
+  protected:
+  	std::string m_name;					// for debugging
+	bool m_bounds_inited;					// True if bounds and topleft initialized
   	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based XXXX do lazy
   	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
 	point m_window_topleft;				// region top-left in window coordinate space XXXX do lazy
   	passive_region *m_parent;			// parent region
   	active_region *m_cur_active_region; // active region currently responsible for redraws
-  	std::vector<passive_region *>m_children;	// all subregions XXXX z-order
+  	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
 	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
 	const abstract_smil_region_info *m_info;	// Information such as z-order, etc.
+	abstract_bg_rendering_source *m_bg_renderer;  // Background renderer
 };
 
 class passive_root_layout : public passive_region {
@@ -152,6 +169,7 @@ class passive_root_layout : public passive_region {
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
 	void mouse_region_changed();
+	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
   private:
 	abstract_window *m_gui_window;
 };
@@ -170,7 +188,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	:	m_source(source),
 		m_node(node),
 		m_renderer(NULL),
-                m_mouse_region(NULL)
+		m_mouse_region(NULL)
         {
 			if (source->m_mouse_region) {
 				m_mouse_region = source->m_mouse_region->clone();
@@ -202,7 +220,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	passive_region *const m_source;
 	const node *m_node;
 	abstract_rendering_source *m_renderer;
-        abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
+	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
 };
 
 } // namespace lib

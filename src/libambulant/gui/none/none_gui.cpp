@@ -52,6 +52,7 @@
 
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/lib/logger.h"
 
 using namespace ambulant;
@@ -81,7 +82,13 @@ gui::none::none_active_renderer::stop()
 	lib::logger::get_logger()->trace("none_active_renderer.stop(0x%x)", (void *)this);
 }
 
-active_renderer *
+void
+gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+{
+	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_info, (void*)m_dest);
+}
+
+active_basic_renderer *
 gui::none::none_renderer_factory::new_renderer(
 	lib::active_playable_events *context,
 	active_playable_events::cookie_type cookie,
@@ -91,6 +98,14 @@ gui::none::none_renderer_factory::new_renderer(
 	lib::abstract_rendering_surface *const dest)
 {
 	return new none_active_renderer(context, cookie, node, evp, src, dest);
+}
+
+lib::abstract_bg_rendering_source *
+gui::none::none_renderer_factory::new_background_renderer(
+	const lib::abstract_smil_region_info *info,
+	lib::abstract_rendering_surface *const dest)
+{
+	return new none_background_renderer(info, dest);
 }
 
 abstract_window *

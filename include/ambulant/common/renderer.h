@@ -68,7 +68,7 @@ namespace ambulant {
 
 namespace lib {
 
-class active_basic_renderer : public active_playable {
+class active_basic_renderer : public active_playable, public abstract_rendering_source {
   public:
   	active_basic_renderer()
   	:	active_playable((active_playable_events *)NULL, 0),
@@ -94,9 +94,20 @@ class active_basic_renderer : public active_playable {
   	event_processor *const m_event_processor;
 };
 
-;
+#if 0
+// XXXX I don't understand virtual bases, and therefore I don't understand how
+// to make a mixin class:-(
+// Mixin for audio renderers and such, to be used with either active_basic_renderer
+// or active_renderer
 
-class active_renderer : public active_basic_renderer, public abstract_rendering_source, public ref_counted_obj {
+class nonvisual_renderer_mixin : public virtual active_basic_renderer {
+	void wantclicks(bool want) {};
+	void user_event(const point &where) {};
+	void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
+};
+#endif
+
+class active_renderer : public active_basic_renderer, public ref_counted_obj {
   public:
   	active_renderer()
   	:	active_basic_renderer(NULL, 0, NULL, NULL),
@@ -162,16 +173,21 @@ class active_final_renderer : public active_renderer {
 
 
 // Foctory class for renderers.
+class abstract_smil_region_info;
+
 class renderer_factory {
   public:
 	virtual ~renderer_factory() {};
-	virtual active_renderer *new_renderer(
+	virtual active_basic_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest) = 0;
+	virtual abstract_bg_rendering_source *new_background_renderer(
+		const abstract_smil_region_info *info,
+		abstract_rendering_surface *const dest) { return NULL; };
 };
 
 class global_renderer_factory : public renderer_factory {
@@ -181,12 +197,15 @@ class global_renderer_factory : public renderer_factory {
     
     void add_factory(renderer_factory *rf);
     
-    active_renderer *new_renderer(
+    active_basic_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
+		abstract_rendering_surface *const dest);
+	abstract_bg_rendering_source *new_background_renderer(
+		const abstract_smil_region_info *info,
 		abstract_rendering_surface *const dest);
   private:
     std::vector<renderer_factory *> m_factories;

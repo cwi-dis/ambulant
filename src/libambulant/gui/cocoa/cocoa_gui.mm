@@ -133,7 +133,7 @@ cocoa_window::mouse_region_changed()
 	[my_window invalidateCursorRectsForView: my_view];
 }
 
-active_renderer *
+active_basic_renderer *
 cocoa_renderer_factory::new_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
@@ -142,7 +142,7 @@ cocoa_renderer_factory::new_renderer(
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
 {
-	active_renderer *rv;
+	active_basic_renderer *rv;
 	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
@@ -151,14 +151,12 @@ cocoa_renderer_factory::new_renderer(
 	} else if ( tag == "text") {
 		rv = new cocoa_active_text_renderer(context, cookie, node, evp, src, dest);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
-#if 0
-	} else if ( tag == "fill") { // XXXX Is that the right name?
+	} else if ( tag == "brush") {
 		rv = new cocoa_active_fill_renderer(context, cookie, node, evp, src, dest);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_fill_renderer 0x%x", (void *)node, (void *)rv);
-#endif
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
-		rv = (active_renderer *)new cocoa_active_audio_renderer(context, cookie, node, evp, src);
+		rv = new cocoa_active_audio_renderer(context, cookie, node, evp, src);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else {
@@ -216,16 +214,27 @@ cocoa_window_factory::new_mouse_region()
 
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
 {
+#ifdef USE_COCOA_BOTLEFT
 	float bot_delta = NSMaxY([self bounds]) - arect->bottom();
 	return NSMakeRect(arect->left(), bot_delta, arect->width(), arect->height());
+#else
+	return NSMakeRect(arect->left(), arect->top(), arect->width(), arect->height());
+#endif
 }
 
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect
 {
+#ifdef USE_COCOA_BOTLEFT
 	float top_delta = NSMaxY([self bounds]) - NSMaxY(*nsrect);
 	ambulant::lib::screen_rect<int> arect = ambulant::lib::screen_rect<int>(
                 ambulant::lib::point(int(NSMinX(*nsrect)), int(top_delta)),
 				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
+#else
+	ambulant::lib::screen_rect<int> arect = ambulant::lib::screen_rect<int>(
+                ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
+				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
+	 
+#endif
 	return arect;
 }
 
@@ -255,6 +264,15 @@ cocoa_window_factory::new_mouse_region()
 - (bool)isAmbulantWindowInUse
 {
     return (ambulant_window != NULL);
+}
+
+- (BOOL)isFlipped
+{
+#ifdef USE_COCOA_BOTLEFT
+	return false;
+#else
+	return true;
+#endif
 }
 
 - (void)resetCursorRects

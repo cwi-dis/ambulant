@@ -54,7 +54,6 @@
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/common/region_info.h"
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

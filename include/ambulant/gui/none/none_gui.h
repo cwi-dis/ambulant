@@ -104,16 +104,36 @@ class none_active_renderer : public lib::active_renderer {
 	void stop();
 };
 
+class none_background_renderer : public lib::abstract_bg_rendering_source {
+  public:
+	none_background_renderer(
+		const lib::abstract_smil_region_info *info,
+		lib::abstract_rendering_surface *const dest)
+	:   m_info(info),
+		m_dest(dest) {};
+		
+	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
+	void user_event(const lib::point &where) {};
+  private:
+	const lib::abstract_smil_region_info *m_info;
+	lib::abstract_rendering_surface *const m_dest;
+};
+
+class lib::abstract_smil_region_info;
+
 class none_renderer_factory : public lib::renderer_factory {
   public:
   	none_renderer_factory() {}
   	
-	lib::active_renderer *new_renderer(
+	lib::active_basic_renderer *new_renderer(
 		lib::active_playable_events *context,
 		lib::active_playable_events::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
+		lib::abstract_rendering_surface *const dest);
+	lib::abstract_bg_rendering_source *new_background_renderer(
+		const lib::abstract_smil_region_info *info,
 		lib::abstract_rendering_surface *const dest);
 };
 

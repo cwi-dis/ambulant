@@ -100,7 +100,7 @@ class cocoa_renderer_factory : public lib::renderer_factory {
   public:
   	cocoa_renderer_factory() {}
   	
-	lib::active_renderer *new_renderer(
+	lib::active_basic_renderer *new_renderer(
 		lib::active_playable_events *context,
 		lib::active_playable_events::cookie_type cookie,
 		const lib::node *node,
@@ -124,6 +124,7 @@ class cocoa_renderer_factory : public lib::renderer_factory {
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window;
 - (void)ambulantWindowClosed;
 - (bool)isAmbulantWindowInUse;
+- (BOOL)isFlipped;
 
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;

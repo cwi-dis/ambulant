@@ -174,8 +174,8 @@ document::document(node *root)
 inline
 document::document(node *root, const std::string& src_url) 
 :	m_root(root),
-	m_src_url(src_url),
-	m_layout(NULL)
+	m_layout(NULL),
+	m_src_url(src_url)
 {
 }
 

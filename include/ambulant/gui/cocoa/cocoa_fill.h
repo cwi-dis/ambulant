@@ -65,7 +65,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_fill_renderer : public active_basic_renderer, public abstract_rendering_source {
+class cocoa_active_fill_renderer : public active_basic_renderer {
   public:
 	cocoa_active_fill_renderer(
 		active_playable_events *context,

@@ -75,6 +75,7 @@ class abstract_smil_region_info {
 	virtual color_t get_bgcolor() const = 0;
 	virtual bool get_transparent() const = 0;
 	virtual zindex_t get_zindex() const = 0;
+	virtual bool get_showbackground() const = 0;
 };
 
 } // namespace lib

@@ -183,7 +183,7 @@ class region_dim {
 	// debug print out
 	friend std::ostream& operator<<(std::ostream& os, const region_dim& rd) { 
 		if(rd.relative())
-			return os << rd.get<double>();
+			return os << rd.get<double>() * 100.0 << '%' ;
 		else if(rd.absolute())
 			return os << rd.get<int>();
 		return os <<  "<auto>";

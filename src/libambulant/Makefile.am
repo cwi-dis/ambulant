@@ -2,6 +2,7 @@
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
 libambulant_cocoa_la_SOURCES = \
+	gui/cocoa/cocoa_fill.m \
 	gui/cocoa/cocoa_gui.m \
 	gui/cocoa/cocoa_image.m \
 	gui/cocoa/cocoa_text.m \
