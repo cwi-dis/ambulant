@@ -66,12 +66,7 @@ gui::none::none_active_renderer::start(double where)
 	os << ", node=" << *m_node;
 	os << ")" << lib::endl;
 #endif
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// emVC 4.0 doesn't like the baseclass call?
-	((lib::active_renderer *)this)->start(where);
-#else
-	lib::active_renderer::start(where);
-#endif
+	active_renderer::start(where);
 }
 
 void
