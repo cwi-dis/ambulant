@@ -18,14 +18,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "lpng125\projects\ms
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		DLL = DLL
-		DLL ASM = DLL ASM
-		DLL Debug = DLL Debug
-		DLL Debug ASM = DLL Debug ASM
-		DLL VB = DLL VB
-		LIB = LIB
-		LIB Debug = LIB Debug
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
