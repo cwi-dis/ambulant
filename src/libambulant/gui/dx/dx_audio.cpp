@@ -69,17 +69,27 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	lib::abstract_window *window)
 :   lib::active_renderer(context, cookie, node, evp, src, dest), 
 	m_window(window),
-	m_player(0) {
+	m_player(0), m_player_initialized(false) {
+	if(m_node && m_src)
+		m_player = new gui::dx::audio_player(m_src->get_url());
 }
 
 gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	lib::logger::get_logger()->trace("~dx_audio_renderer()");
-	delete m_player;
+	if(m_player) delete m_player;
 }
 
 void gui::dx::dx_audio_renderer::start(double t) {
 	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
 	// This renderer will read/decode its data directly from the url.
+	
+	if(m_player && m_player_initialized) {
+		// repeat
+		m_player->start(t);
+		return;	
+	}
+	
+	// first time
 	if(!m_node || !m_src) abort();
 	if(!m_src->exists()) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
@@ -88,28 +98,32 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	}
 	m_dest->show(this);
 	if(!m_player)
-		m_player = new gui::dx::audio_player<net::active_datasource>(m_src);
-	m_player->play();
+		m_player = new gui::dx::audio_player(m_src->get_url());
+	m_player->start(t);
+	m_player_initialized = true;
 }
 
+std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
+	if(m_player) return m_player->get_dur();
+	return std::pair<bool, double>(false, 0.0);
+}
 
 void gui::dx::dx_audio_renderer::stop() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
 	if(m_player) {
 		m_player->stop();
+		delete m_player;
+		m_player = 0;
+		m_player_initialized = false;
 	}
 }
 void gui::dx::dx_audio_renderer::pause() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
-	if(m_player) {
-		m_player->pause();
-	}
+	if(m_player) m_player->pause();
 }
 void gui::dx::dx_audio_renderer::resume() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.resume(0x%x)", this);
-	if(m_player) {
-		m_player->play();
-	}
+	if(m_player) m_player->resume();
 }
 void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
 	// we don't need to do anything for audio
