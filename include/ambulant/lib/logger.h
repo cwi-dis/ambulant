@@ -20,12 +20,13 @@
 namespace ambulant {
 
 // public ambulant logging functions
-extern void log_error_event(const char *format, ...);
-extern void log_warning_event(const char *format, ...);
-extern void log_trace_event(const char *format, ...);
+void log_error_event(const char *format, ...);
+void log_warning_event(const char *format, ...);
+void log_trace_event(const char *format, ...);
 
 template<class T>
 void log_trace_event(const T& obj);
+
 
 namespace lib {
 
@@ -119,6 +120,13 @@ inline bool logger::suppressed(int level) {
 
 
 } // namespace lib
+
+template<class T>
+void log_trace_event(const T& obj) {
+	lib::logger *logger = lib::logger::get_logger();
+	if(!logger->suppressed(lib::logger::LEVEL_TRACE))
+		logger->log_obj(lib::logger::LEVEL_TRACE, obj);
+}
 
 } // namespace ambulant
 

@@ -14,9 +14,7 @@
 #ifndef AMBULANT_LIB_NSCONTEXT_H
 #define AMBULANT_LIB_NSCONTEXT_H
 
-#ifndef AMBULANT_LIB_SAX_TYPES_H
-#include "sax_types.h"
-#endif
+#include "ambulant/lib/sax_types.h"
 
 #include <map>
 

@@ -18,7 +18,6 @@
 #ifndef AMBULANT_LIB_GTYPES_H
 #define AMBULANT_LIB_GTYPES_H
 
-#include "logger.h"
 
 namespace ambulant {
 

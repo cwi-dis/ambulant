@@ -20,13 +20,10 @@
 // map
 #include <utility>
 
-#include "sax_handler.h"
-
-#include "node.h"
-
-#include "logger.h"
-
-#include "nscontext.h"
+#include "ambulant/lib/sax_handler.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/lib/nscontext.h"
+#include "ambulant/lib/logger.h"
 
 ////////////////
 // Define local preprocessor symbols and macros

@@ -23,14 +23,10 @@
 #include <cassert>
 
 // region_dim
-#ifndef AMBULANT_LIB_REGION_DIM_H
-#include "region_dim.h"
-#endif
+#include "ambulant/lib/region_dim.h"
 
 // basic_rect, basic_point, basic_size, screen_rect, 
-#ifndef AMBULANT_LIB_GTYPES_H
-#include "gtypes.h"
-#endif
+#include "ambulant/lib/gtypes.h"
 
 namespace ambulant {
 

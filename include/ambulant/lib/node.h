@@ -12,10 +12,10 @@
 #define AMBULANT_LIB_NODE_H
 
 // tree iterators
-#include "node_iterator.h" 
+#include "ambulant/lib/node_iterator.h" 
 
 // q_name_pair and qattr
-#include "sax_types.h"
+#include "ambulant/lib/sax_types.h"
 
 // attribute pair
 #include <utility>

@@ -17,10 +17,10 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
-#include "sax_handler.h"
-#include "expat_parser.h"
-#include "node.h"
-#include "nscontext.h"
+#include "ambulant/lib/sax_handler.h"
+#include "ambulant/lib/expat_parser.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/lib/nscontext.h"
 
 #include <string>
 

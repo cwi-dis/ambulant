@@ -24,7 +24,7 @@
 // std::runtime_error
 #include <stdexcept>
 
-#include "sax_types.h"
+#include "ambulant/lib/sax_types.h"
 
 namespace ambulant {
 
