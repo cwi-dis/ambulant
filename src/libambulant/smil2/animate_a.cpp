@@ -57,6 +57,7 @@
 #include "ambulant/common/region_dim.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/parselets.h"
+#include "ambulant/lib/gpaths.h"
 
 //#define AM_DBG if(1)
 
@@ -469,10 +470,12 @@ lib::point animate_attrs::to_point(const std::string& s) {
 }
 
 void animate_attrs::get_values(std::vector<lib::point>& v) {
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "path") {
-		m_logger->show("path is not implemented");
-		v.push_back(lib::point());
+		const char *ppath = m_node->get_attribute("path");
+		lib::gpath_descr pd(ppath?ppath:"m 0 0");
+		lib::polyline_builder builder; 
+		lib::gpath *path = builder.build_path(&pd);
+		path->get_pivot_points(v);
 	} else if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
