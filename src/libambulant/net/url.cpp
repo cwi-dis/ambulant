@@ -216,7 +216,7 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	m_ref = sc.join(i3+1);
 }
 
-bool is_local_file() const
+bool net::url::is_local_file() const
 {
 	if (m_protocol == "file" && m_host == "localhost")
 		return true;
