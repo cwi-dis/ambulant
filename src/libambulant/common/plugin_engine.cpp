@@ -49,6 +49,7 @@
 
 #include"ambulant/common/plugin_engine.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/common/preferences.h"
 
 //#include<dlfcn.h>
 #include<stdlib.h>
@@ -85,6 +86,8 @@ plugin_engine::get_plugin_engine()
 
 plugin_engine::plugin_engine()
 {
+bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
+
 #ifdef WITH_PLUGINS
     collect_plugin_directories();
 #ifdef WITH_LTDL_PLUGINS
@@ -98,10 +101,12 @@ plugin_engine::plugin_engine()
 #ifdef WITH_WINDOWS_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
 #endif
-	std::vector< std::string >::iterator i;
-    for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
-        load_plugins(*i);
-    }
+	if (use_plugins) {
+		std::vector< std::string >::iterator i;
+    	for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
+        	load_plugins(*i);
+    	}
+	}
 #else
 	lib::logger::get_logger()->trace("plugin_engine: no plugin loader configured");
 #endif
@@ -111,11 +116,16 @@ void
 plugin_engine::collect_plugin_directories()
 {
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
-	char *plugindir = getenv("AMBULANT_PLUGIN_DIR");
-	if (plugindir)
-		m_plugindirs.push_back(plugindir);
+	setenv("LD_LIBRARY_PATH",".",1);
+	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
+		if(plugin_dir == "") {
+    		m_plugindirs.push_back("/usr/local/lib/ambulant");
+		} else {
+			m_plugindirs.push_back(plugin_dir.c_str());
 #endif
-    m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
+			m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
+		
+	}
 }
 
 #ifdef WITH_LTDL_PLUGINS

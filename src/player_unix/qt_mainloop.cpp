@@ -119,9 +119,12 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	
 	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
 	m_factory->pf->add_factory(new lib::expat_factory());
+if(0) {
 #ifdef WITH_XERCES
 	m_factory->pf->add_factory(new lib::xerces_factory());
 #endif
+}
+
 	// First create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
 	
