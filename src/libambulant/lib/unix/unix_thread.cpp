@@ -12,23 +12,23 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#undef terminate
 
 using namespace ambulant;
-using namespace lib;
 
-unix::thread::thread()
+lib::unix::thread::thread()
 :	m_thread(NULL),
 	m_exit_requested(false),
 	m_running(false)
 {
 }
 
-unix::thread::~thread()
+lib::unix::thread::~thread()
 {
 }
 
 bool 
-unix::thread::start()
+lib::unix::thread::start()
 {
 	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
 		perror("pthread_create");
@@ -36,14 +36,14 @@ unix::thread::start()
 }
 
 void
-unix::thread::stop()
+lib::unix::thread::stop()
 {
 	m_exit_requested = true;
 	/* TODO: wake thread up */
 }
 	
 bool
-unix::thread::terminate()
+lib::unix::thread::terminate()
 {
 	// No idea what to do here...
 	abort();
@@ -51,25 +51,25 @@ unix::thread::terminate()
 }
 	
 bool
-unix::thread::exit_requested() const
+lib::unix::thread::exit_requested() const
 {
 	return m_exit_requested; 
 }
 
 bool
-unix::thread::is_running() const
+lib::unix::thread::is_running() const
 {
 	return m_running;
 }
 	
 void
-unix::thread::signal_exit_thread(){
+lib::unix::thread::signal_exit_thread(){
 	// Don't know how to do this, yet.
 	abort();
 }
 
 void *
-unix::thread::threadproc(void *pParam)
+lib::unix::thread::threadproc(void *pParam)
 {
 	thread* p = static_cast<thread*>(pParam);
 	p->m_running = 1;

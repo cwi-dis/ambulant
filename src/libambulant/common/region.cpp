@@ -11,19 +11,16 @@
 #include "ambulant/lib/region.h"
 #include "ambulant/lib/logger.h"
 
-namespace ambulant {
+using namespace ambulant;
 
-namespace lib {
-
-
-active_region *
-passive_region::activate(event_processor *const evp, const node *node)
+lib::active_region *
+lib::passive_region::activate(event_processor *const evp, const node *node)
 {
-	return new active_region(evp, this, node);
+	return new lib::active_region(evp, this, node);
 }
 
 void
-active_region::start(event *playdone)
+lib::active_region::start(event *playdone)
 {
 	log_trace_event("active_region.start(0x%x, \"%s\", playdone=0x%x)", (void *)this, m_source->m_name, (void *)playdone);
 	if (playdone)
@@ -31,11 +28,7 @@ active_region::start(event *playdone)
 }
 
 void
-active_region::stop()
+lib::active_region::stop()
 {
 	log_trace_event("active_region.stop(0x%x, \"%s\")", (void *)this, m_source->m_name);
 }
-
-} // namespace lib
- 
-} // namespace ambulant

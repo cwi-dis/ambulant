@@ -14,38 +14,37 @@
 #include <stdlib.h>
 
 using namespace ambulant;
-using namespace lib;
 #undef unix
 
-unix::critical_section::critical_section()
+lib::unix::critical_section::critical_section()
 {
 	if (pthread_mutex_init(&m_cs, NULL) < 0) abort();
 }
 
-unix::critical_section::~critical_section()
+lib::unix::critical_section::~critical_section()
 {
 	if (pthread_mutex_destroy(&m_cs) < 0) abort();
 }
 
 void
-unix::critical_section::enter()
+lib::unix::critical_section::enter()
 {
 	if (pthread_mutex_lock(&m_cs) < 0) abort();
 }
 
 void
-unix::critical_section::leave()
+lib::unix::critical_section::leave()
 {
 	if (pthread_mutex_unlock(&m_cs) < 0) abort();
 }
 
-critical_section *
-ambulant::lib::critical_section_factory()
+lib::critical_section *
+lib::critical_section_factory()
 {
 	return (critical_section *)new unix::critical_section();
 }
 
-unix::counting_semaphore::counting_semaphore()
+lib::unix::counting_semaphore::counting_semaphore()
 :	m_lock(critical_section()),
 	m_wait(critical_section()),
 	m_count(0)
@@ -54,12 +53,12 @@ unix::counting_semaphore::counting_semaphore()
 	m_wait.enter();
 }
 
-unix::counting_semaphore::~counting_semaphore()
+lib::unix::counting_semaphore::~counting_semaphore()
 {
 }
 
 void
-unix::counting_semaphore::down()
+lib::unix::counting_semaphore::down()
 {
 	m_lock.enter();
 	m_count--;
@@ -71,7 +70,8 @@ unix::counting_semaphore::down()
 	}
 }
 
-void unix::counting_semaphore::up()
+void
+lib::unix::counting_semaphore::up()
 {
 	m_lock.enter();
 	m_count++;
@@ -81,7 +81,8 @@ void unix::counting_semaphore::up()
 	m_lock.leave();
 }
 
-int unix::counting_semaphore::count()
+int
+lib::unix::counting_semaphore::count()
 {
 	m_lock.enter();
 	int rv = m_count;

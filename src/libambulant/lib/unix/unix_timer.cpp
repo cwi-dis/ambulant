@@ -14,27 +14,26 @@
 #include <sys/time.h>
 
 using namespace ambulant;
-using namespace lib;
 
-unix::os_timer::os_timer()
+lib::unix::os_timer::os_timer()
 :	m_start_time(millitime())
 {
 }
 
-unix::os_timer::time_type
-unix::os_timer::elapsed() const
+lib::unix::os_timer::time_type
+lib::unix::os_timer::elapsed() const
 {
 	return millitime()-m_start_time;
 }
 
 void
-unix::os_timer::restart()
+lib::unix::os_timer::restart()
 {
 	m_start_time = millitime();
 }
 
-unix::os_timer::time_type
-unix::os_timer::millitime()
+lib::unix::os_timer::time_type
+lib::unix::os_timer::millitime()
 {
 	struct timeval tv;
 	
@@ -44,8 +43,8 @@ unix::os_timer::millitime()
 
 // Factory routine for the machine-independent
 // timer class
-timer *
-ambulant::lib::timer_factory()
+lib::timer *
+lib::timer_factory()
 {
-	return (timer *)new unix::os_timer();
+	return (timer *)new lib::unix::os_timer();
 }
