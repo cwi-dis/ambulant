@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;&quot;..\..\third_party_packages\lib-src\jpeg&quot;;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;D:\ufs\ambulant\third_party_packages\mp3lib"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -154,6 +154,9 @@
 						RelativePath=".\gui\dx\dx_text_renderer.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_transition.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_video.cpp">
 					</File>
 					<File
@@ -224,6 +227,9 @@
 				</File>
 				<File
 					RelativePath=".\lib\expat_parser.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\gpaths.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\logger.cpp">
@@ -424,10 +430,10 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_img.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_player.h">
+							RelativePath="..\..\include\ambulant\gui\dx\dx_playable.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_player_control.h">
+							RelativePath="..\..\include\ambulant\gui\dx\dx_player.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_rgn.h">
@@ -440,6 +446,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_text_renderer.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_transition.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_video.h">
@@ -471,9 +480,6 @@
 						Filter="">
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\bmp_decoder.h">
-						</File>
-						<File
-							RelativePath="..\..\include\ambulant\lib\callback.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_area.h">
@@ -559,6 +565,9 @@
 						RelativePath="..\..\include\ambulant\lib\byte_buffer.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\callback.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\colors.h">
 					</File>
 					<File
@@ -578,6 +587,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\filesys.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\gpaths.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\gtypes.h">
@@ -913,6 +925,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\time_calc.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\time_nctx.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\time_node.h">
