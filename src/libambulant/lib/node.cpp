@@ -129,21 +129,6 @@ class trimmed_output_visitor {
 };
 #endif
 
-////////////////////////
-// private count_visitor
-// Counts tree nodes
-
-template <class Node>
-class count_visitor {
-  public:
-	count_visitor(unsigned int& count) : m_count(count) {}
-	void operator()(std::pair<bool, const Node*> x) 
-		{if(x.first) m_count++;}
-  private:
-	unsigned int& m_count;
-	const count_visitor& operator=(const count_visitor& o);	
-};
-
 
 ////////////////////////
 // private attr_collector
@@ -457,13 +442,14 @@ lib::node::size() const {
 	return count;
 }
 
-/*
 #ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
 lib::node::to_string() const {
 	std::ostringstream os;
 	output_visitor<node> visitor(os);
-	std::for_each(begin(), end(), visitor);
+	const_iterator it;
+	const_iterator e = end();
+	for(it = begin(); it != e; it++) visitor(*it);
 	return os.str();
 }
 #endif
@@ -473,7 +459,9 @@ lib::xml_string
 lib::node::to_trimmed_string() const {
 	std::ostringstream os;
 	trimmed_output_visitor<node> visitor(os);
-	std::for_each(begin(), end(), visitor);
+	const_iterator it;
+	const_iterator e = end();
+	for(it = begin(); it != e; it++) visitor(*it);
 	return os.str();
 }
 #endif
@@ -481,16 +469,19 @@ lib::node::to_trimmed_string() const {
 
 void lib::node::create_idmap(std::map<std::string, node*>& m) const {
 	attr_collector<node> visitor(m);
-	std::for_each(begin(), end(), visitor);
+	const_iterator it;
+	const_iterator e = end();
+	for(it = begin(); it != e; it++) visitor(*it);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
 void lib::node::dump(std::ostream& os) const {
 	output_visitor<ambulant::lib::node> visitor(os);
-	std::for_each(this->begin(), this->end(), visitor);
+	const_iterator it;
+	const_iterator e = end();
+	for(it = begin(); it != e; it++) visitor(*it);
 }
 #endif
-*/
 
 
 #ifndef AMBULANT_NO_IOSTREAMS
