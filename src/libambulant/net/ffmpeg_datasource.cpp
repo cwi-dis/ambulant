@@ -109,7 +109,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const std::string& url)
 		return NULL;
 	}
 	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
-	video_datasource *ds = new ffmpeg_video_datasource(url, context, thread);
+	video_datasource *ds = ffmpeg_video_datasource::new_ffmpeg_video_datasource(url, context, thread);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
 
 	if (ds == NULL) {
@@ -501,11 +501,54 @@ ffmpeg_audio_datasource::get_audio_format()
 
 // **************************** ffmpeg_video_datasource *****************************
 
-ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+ffmpeg_video_datasource *
+ffmpeg_video_datasource::new_ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
 	detail::ffmpeg_demux *thread)
+{
+	AVCodec *codec;
+	AVCodecContext *codeccontext;
+	int stream_index;
+	
+	AM_DBG lib::logger::get_logger()->trace("new_ffmpeg_video_datasource()");
+	
+	if (!thread) {
+		lib::logger::get_logger()->error("new_ffmpeg_video_datasource: cannot start thread");
+		return NULL;
+	}
+
+	ffmpeg_init();
+
+	// Find the index of the video stream
+	for (stream_index=0; stream_index < context->nb_streams; stream_index++) {
+		if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
+			break;
+	}
+	if (stream_index >= context->nb_streams) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no video streams");
+		return NULL;
+	}
+	
+	codeccontext = &context->streams[stream_index]->codec; 
+	codec = avcodec_find_decoder(codeccontext->codec_id);
+	
+	if( !codec) {
+		lib::logger::get_logger()->error("new_ffmpeg_video_datasource: %s: Codec %d not found", url.c_str(), codeccontext->codec_id);
+		return NULL;
+	}
+	
+	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
+		lib::logger::get_logger()->error("new_ffmpeg_video_datasource: %s: Codec %d: cannot open", url.c_str(), codeccontext->codec_id);
+		return NULL;
+	}
+
+	return new ffmpeg_video_datasource(url, context, thread, stream_index);
+}
+
+ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+	detail::ffmpeg_demux *thread, int stream_index)
 :	m_url(url),
 	m_con(context),
-	m_stream_index(-1),
+	m_stream_index(stream_index),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
@@ -513,42 +556,8 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
     m_thread_started(false),
 	m_pts_last_frame(0.0),
 	m_last_p_pts(0.0)
-{
-	AVCodec *codec;
-	AVCodecContext *codeccontext;
-	
+{	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x)", (void*)this);
-	ffmpeg_init();
-	// Find the index of the audio stream
-	for (m_stream_index=0; m_stream_index < context->nb_streams; m_stream_index++) {
-		if (context->streams[m_stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
-			break;
-	}
-	
-	codeccontext = &context->streams[m_stream_index]->codec; 
-	codec = avcodec_find_decoder(codeccontext->codec_id);
-	
-	if( !codec) {
-		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) No Codec found", (void*)this);
-		codec = avcodec_find_decoder(CODEC_ID_NONE);
-		AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) codec = 0x%x", (void*)this, codec);
-	}
-	
-	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
-			lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource() (this = 0x%x) Failed to open codec", (void*)this);
-	}
-
-	
-	if (m_stream_index >= context->nb_streams) {
-		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no audio streams");
-		m_src_end_of_file = true;
-		return;
-	}
-	if (!m_thread) {
-		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource: cannot start thread");
-		m_src_end_of_file = true;
-	}
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	m_thread->add_datasink(this, m_stream_index);
 }
 

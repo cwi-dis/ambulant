@@ -187,8 +187,12 @@ class ffmpeg_video_datasource:
 	public detail::datasink,
 	virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+	 static ffmpeg_video_datasource *new_ffmpeg_video_datasource(
+		const std::string& url, AVFormatContext *context,
 		detail::ffmpeg_demux *thread);
+
+	 ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+		detail::ffmpeg_demux *thread, int stream_index);
     ~ffmpeg_video_datasource();
 
 	bool has_audio();
