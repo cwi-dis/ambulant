@@ -128,7 +128,7 @@ int dummy;
 
 dummy=m_used + size;
 
-if (dummy < m_size)
+if (dummy <= m_size)
 	{
 	memcpy((m_buffer+m_used),data,size);
         m_used = m_used +size;
@@ -192,7 +192,9 @@ passive_datasource::passive_datasource(char *url)
 
 active_datasource *passive_datasource::activate()
 {
-	std::ifstream in(m_url, std::ios::in | std::ios::binary);
+	std::FILE *in;
+	
+	in = fopen(m_url,"rb");
 	if (in) {
 		return new active_datasource(this,in);
 	}
@@ -215,12 +217,13 @@ passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file)
+active_datasource::active_datasource(passive_datasource *const source,FILE *file)
 :	m_source(source),
 	m_refcount(1)
 {
-	if (file) std::cout << " TEST" << std::endl;
-    filesize(file);
+	if (file) {
+	m_stream=file;
+    filesize();
 	m_source=source;
 	buffer=new databuffer(m_filesize);
 	if (!buffer) 
@@ -230,6 +233,7 @@ active_datasource::active_datasource(passive_datasource *const source,std::ifstr
 		}
 		m_source->add_ref();
 		buffer->show(false);
+	}
 }
 
 active_datasource::~active_datasource()
@@ -239,21 +243,22 @@ active_datasource::~active_datasource()
 	buffer=NULL;
 	}
 	m_source->release();
-	m_stream.close();
+	fclose(m_stream);
 }
 
 
-void active_datasource::filesize(std::ifstream &file)
+void active_datasource::filesize()
  	{
  		using namespace std;
 		
 		
-		if(file)
+		if(m_stream)
 		{
 			// Seek to the end of the file.
-			file.seekg(0,ios::end); 		
+			fseek(m_stream,0,SEEK_END); 		
 			// Get file size.
-	 		m_filesize=file.tellg(); 							
+	 		m_filesize=ftell(m_stream);
+	 		rewind(m_stream); 							
 		}
 		else
 		{
@@ -262,24 +267,19 @@ void active_datasource::filesize(std::ifstream &file)
 		}
  	}
 
-  void active_datasource::read_file(std::ifstream &file)
+  void active_datasource::read_file()
   {
-  	std::cout << " ------> in function read_file" << std::endl;
+
   	char ch;
-  	 if(file)
+  	 if(m_stream)
 		{
-			std::cout << " ------> file is open and ready" << std::endl;
-			while(file)
+			std::rewind(m_stream);
+			
+			do
 			{
-				std::cout << "R";
-				file.get(ch);
-				if(file) 
-				{
-					std::cout << "P";
-					buffer->put_data(&ch,1);
-				}
-			}
-			std::cout << " ------> read done" << std::endl;
+				ch=std::getc(m_stream);
+				if (!feof(m_stream) )buffer->put_data(&ch,1); 
+			} while(!feof(m_stream));
 		}
 		else
 		{
@@ -290,9 +290,7 @@ void active_datasource::filesize(std::ifstream &file)
   
 void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
- 	 std::cout<< " READING FILE" << std::endl;
- 	read_file(m_stream);
- 	std::cout<< " READING FILE DONE" << std::endl;
+ 	read_file();
  	buffer->show(false);
 	if (evp && readdone) {
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
