@@ -57,35 +57,40 @@
 
 #include ".\mmview.h"
 
-#include "ambulant/gui/dx/dx_player_control.h"
+#include <fstream>
+#include <string>
+
+#include "ambulant/gui/dx/dx_player.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/lib/logger.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+static std::string get_log_filename() {
+	char buf[_MAX_PATH];
+	GetModuleFileName(NULL, buf, _MAX_PATH);
+	char *p1 = strrchr(buf,'\\');
+	if(p1 != NULL) *p1='\0';
+	strcat(buf, "\\log.txt");
+	return buf;
+}
+
+std::ofstream log_os(get_log_filename().c_str());
+
 using namespace ambulant;
 
-// The player_control this view creates and interacts with
-static common::player_control *player = 0;
-
-// player_control factory
-static ambulant::common::player_control* 
-create_player_control_instance(const std::string& which, HWND hwnd) {
-	if(which == "dx") 
-		return new ambulant::gui::dx::dx_player_control(hwnd);
+static gui::dx::dx_player* 
+create_player_instance(std::string which, const char *url, HWND hwnd) {
+	if(which == "dx")
+		return new gui::dx::dx_player(url, hwnd);
 	return 0;
 }
 
-// Global function providing access to the player_control 
-// instance created by the GUI toolkit.
-// This function should be implemented by the GUI toolkit.
-ambulant::common::player_control* 
-get_player_control_instance() {
-	return player;
-}
-
+static gui::dx::dx_player *player = 0;
+static needs_done_redraw = false;
 // MmView
 
 IMPLEMENT_DYNCREATE(MmView, CView)
@@ -121,6 +126,7 @@ MmView::MmView()
 	// TODO: add construction code here
 	m_timer_id = 0;
 	m_cursor_id = 0;
+	lib::logger::get_logger()->set_ostream(&log_os);
 }
 
 MmView::~MmView()
@@ -178,10 +184,7 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	player = create_player_control_instance("dx", m_hWnd);
-	
-	// We currently don't need a timer
-	//m_timer_id = SetTimer(1, 500, 0);
+	m_timer_id = SetTimer(1, 500, 0);
 
 	return 0;
 }
@@ -208,23 +211,26 @@ void MmView::OnDestroy()
 }
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName) {
-	if(!player) {
-		AfxMessageBox("Player is null");
-		return;
+	if(player) {
+		delete player;
+		player = 0;
 	}
+	player = create_player_instance("dx", lpszPathName, m_hWnd);
 	m_curPathName = lpszPathName;
-	player->set_document(lpszPathName);
 }
 
 void MmView::OnFilePlay()
 {
-	if(player) player->start();
+	if(player) {
+		player->start();
+		needs_done_redraw = true;
+	}
 }
 
 void MmView::OnUpdateFilePlay(CCmdUI *pCmdUI)
-{
-	pCmdUI->Enable((player != 0 && player->can_start())?TRUE:FALSE);
-	
+{	
+	bool enable = player && !player->is_playing();
+	pCmdUI->Enable(enable?TRUE:FALSE);
 }
 
 void MmView::OnFilePause()
@@ -234,23 +240,37 @@ void MmView::OnFilePause()
 
 void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable((player && player->can_pause())?TRUE:FALSE);
+	bool enable = player && (player->is_playing() || player->is_pausing());
+	pCmdUI->Enable(enable?TRUE:FALSE);
+	if(enable) pCmdUI->SetCheck(player->is_pausing()?1:0);
 }
 
 void MmView::OnFileStop()
 {
-	if(player) player->stop();
+	if(player) {
+		player->stop();
+		player->on_done();
+		InvalidateRect(NULL);
+		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		needs_done_redraw = false;
+	}
 }
 
 void MmView::OnUpdateFileStop(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable((player && player->can_stop())?TRUE:FALSE);
+	bool enable = player && (player->is_playing() || player->is_pausing());
+	pCmdUI->Enable(enable?TRUE:FALSE);
 }
 
 void MmView::OnTimer(UINT nIDEvent)
 {
-	//if(player)player->update_status();
 	CView::OnTimer(nIDEvent);
+	if(player && needs_done_redraw && player->is_done()) {
+		player->on_done();
+		InvalidateRect(NULL);
+		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		needs_done_redraw = false;
+	}
 }
 
 
@@ -338,7 +358,7 @@ void MmView::OnViewTests() {
 	dlg.m_ofn.lpstrTitle = "Select SMIL tests filter file";
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
-		player->set_preferences(LPCTSTR(str));
+		if(player) player->set_preferences(LPCTSTR(str));
 		m_curFilter = str;
 	}	
 }
