@@ -56,7 +56,6 @@
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_video.h"
-#include "ambulant/gui/cocoa/cocoa_mouse.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
@@ -104,22 +103,6 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 	redraw_lock.leave();
 	//[my_view setNeedsDisplay: YES];
 }
-
-#if 0
-void
-cocoa_window::need_events(lib::gui_region *rgn)
-{
-	AM_DBG logger::get_logger()->trace("cocoa_cocoa_window::need_events(0x%x)", (void *)this);
-	if (!m_view) {
-		logger::get_logger()->fatal("cocoa_cocoa_window::need_redraw: no m_view");
-		return;
-	}
-	AmbulantView *my_view = (AmbulantView *)m_view;
-//	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
-//	[my_view setNeedsDisplayInRect: my_rect];
-//	//[my_view setNeedsDisplay: YES];
-}
-#endif
 
 void
 cocoa_window::redraw(const screen_rect<int> &r)
@@ -219,12 +202,6 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, gui_event
 	[[view window] makeKeyAndOrderFront: view];
 	return (gui_window *)window;
 }
-
-gui_region *
-cocoa_window_factory::new_mouse_region()
-{
-	return new cocoa_mouse_region();
-};
 
 common::renderer *
 cocoa_window_factory::new_background_renderer(const common::region_info *src)

@@ -51,7 +51,6 @@
  */
 
 #include "ambulant/gui/none/none_area.h"
-#include "ambulant/gui/none/none_mouse.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region_dim.h"
 

@@ -77,7 +77,6 @@ class none_window_factory : public common::window_factory {
   	none_window_factory() {}
   	
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
-	common::gui_region *new_mouse_region() { return NULL; }
 	common::renderer *new_background_renderer(common::region_info *src);
 };
 

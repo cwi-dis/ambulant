@@ -92,38 +92,6 @@ class animation_notification {
 	virtual void animated() = 0;
 };
 
-class gui_region {
-  public:
-	virtual ~gui_region() {};
-	virtual gui_region *clone() const = 0;
-	
-	virtual void clear() = 0;
-	virtual bool is_empty() const = 0;
-	virtual bool contains(const lib::point &p) const = 0;
-	virtual gui_region& operator =(const lib::screen_rect<int> &rect) = 0;    /* assignment */
-	virtual gui_region& operator &=(const gui_region &r) = 0; /* intersection */
-	virtual gui_region& operator &=(const lib::screen_rect<int> &rect) = 0;
-	virtual gui_region& operator |=(const gui_region &r) = 0; /* union */
-	virtual gui_region& operator -=(const gui_region &r) = 0; /* difference */
-	virtual gui_region& operator +=(const lib::point &tr) = 0; /* translation */
-        
-	virtual gui_region* operator &(const gui_region &r) const {
-            gui_region *rv = this->clone();
-            *rv &= r;
-            return rv;
-        }
-	virtual gui_region* operator |(const gui_region &r) const {
-            gui_region *rv = this->clone();
-            *rv |= r;
-            return rv;
-        }
-	virtual gui_region* operator -(const gui_region &r) const {
-            gui_region *rv = this->clone();
-            *rv -= r;
-            return rv;
-        }
-};
-
 // gui_window is a virtual baseclass for GUI-dependent window classes.
 // It is the only interface that the ambulant core code uses to talk to the
 // GUI layer.
@@ -205,7 +173,6 @@ class window_factory {
   public:
 	virtual ~window_factory() {}
 	virtual gui_window *new_window(const std::string &name, lib::size bounds, gui_events *handler) = 0;
-	virtual gui_region *new_mouse_region() = 0;
 	virtual renderer *new_background_renderer(const region_info *src) = 0;
 	virtual void window_done(const std::string &name) {} 
 };
