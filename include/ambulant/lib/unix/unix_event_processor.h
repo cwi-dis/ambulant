@@ -43,6 +43,7 @@ class event_processor :
 	void wakeup();
 	pthread_cond_t m_queue_condition;
 	pthread_mutex_t m_queue_mutex;
+	bool m_is_running;
 	
 };
 
