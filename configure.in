@@ -65,13 +65,15 @@ AC_ARG_WITH(cocoa,
 AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
 AC_MSG_RESULT($cocoa)
 
-# Set objective-c compiler parameters
-OBJC=$CC
-OBJCDEPMODE=$CCDEPMODE
-OBJCFLAGS=-ObjC++
-AC_SUBST(OBJC)
-#KB automake complains AC_SUBST(OBJCDEPMODE)
-AC_SUBST(OBJCFLAGS)
+if test x$cocoa = xtrue; then
+	_AM_DEPENDENCIES([OBJC])
+	OBJCFLAGS=-ObjC++
+	AC_SUBST(OBJCFLAGS)
+
+	OBJC=$CC
+	AC_SUBST(OBJC)
+	
+fi
 
 
 AC_MSG_CHECKING(for --with-qt)
