@@ -94,7 +94,7 @@ qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("qt_renderer.start_outtransition(0x%x)", (void *)this);
-	if (m_trans_engine) stop_transition();
+	if (m_trans_engine) stop();
 	m_outtransition = info;
 	m_trans_engine = qt_transition_engine(m_dest, true, m_outtransition);
 	if (m_trans_engine)
@@ -104,7 +104,7 @@ qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 }
 
 void
-qt_transition_renderer::stop_transition()
+qt_transition_renderer::stop()
 {
 	// private method - no locking
 	delete m_trans_engine;
@@ -162,7 +162,7 @@ qt_transition_renderer::redraw_post(gui_window *window)
 			// Note that we have to do this through an event because of 
 			// locking issues.
 			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
-			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop_transition);
+			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop);
 			m_event_processor->add_event(ev, 0, lib::event_processor::low);
 		
 		} else {

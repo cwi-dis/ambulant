@@ -81,6 +81,7 @@ class qt_transition_renderer : public ref_counted_obj {
 
 	void set_surface(common::surface *dest) { m_dest = dest;}
 	void start(double where);
+	void stop();
 	void redraw_pre(gui_window *window);
 	void redraw_post(gui_window *window);
 	void set_intransition(const lib::transition_info *info) {
@@ -91,7 +92,6 @@ class qt_transition_renderer : public ref_counted_obj {
   protected:
   private:
 	void transition_step();
-	void stop_transition();
 
 	event_processor* m_event_processor;
 	surface* m_dest;
@@ -133,6 +133,11 @@ class qt_renderer : public RP_Base {
 		RP_Base::start(where);
 	}
 	
+ 	virtual void stop() {
+		stop_transition();
+		RP_Base::stop();
+	}
+
 	void redraw(const screen_rect<int> &dirty, gui_window *window) {
 		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window);
@@ -149,6 +154,9 @@ class qt_renderer : public RP_Base {
   protected:
 	void start_transition(double where) {
 		m_transition_renderer->start(where);
+	}
+	void stop_transition() {
+		m_transition_renderer->stop();
 	}
 	virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
 
