@@ -108,7 +108,7 @@ class ffmpeg_audio_filter_finder : public audio_filter_finder {
 
 #ifdef WITH_FFMPEG_AVFORMAT
 
-class ffmpeg_parser_datasource;
+class ffmpeg_audio_datasource;
 
 namespace detail {
 
@@ -118,23 +118,23 @@ class ffmpeg_parser_thread : public lib::unix::thread, public lib::ref_counted_o
 	:   m_con(con) { memset(m_sinks, 0, sizeof m_sinks);}
 	~ffmpeg_parser_thread() {}
 	
-	void add_datasink(ffmpeg_parser_datasource *parent, int stream_index) {
+	void add_datasink(ffmpeg_audio_datasource *parent, int stream_index) {
 		assert(m_sinks[stream_index] == 0);
 		m_sinks[stream_index] = parent;
 	}
   protected:
 	unsigned long run();
   private:
-    ffmpeg_parser_datasource *m_sinks[MAX_STREAMS];
+    ffmpeg_audio_datasource *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
 };
 
 }
 
-class ffmpeg_parser_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
+class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_parser_datasource(const std::string& url, AVFormatContext *context);
-    ~ffmpeg_parser_datasource();
+	 ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context);
+    ~ffmpeg_audio_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  
 
