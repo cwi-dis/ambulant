@@ -29,7 +29,7 @@ namespace win32 {
 
 class win32_timer : public ambulant::lib::abstract_timer  {
   public:
-	win32_timer() : m_epoch(0), m_speed(1.0) {}
+	win32_timer();
 	
 	// Returns time in msec since epoch.
 	// Takes into account speed with a 1% precision.	
@@ -46,13 +46,7 @@ class win32_timer : public ambulant::lib::abstract_timer  {
   
 	// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
 	static ULONGLONG os_time();
-	
-	// Returns system time in msec. 	
-	static time_type os_millitime();
-	
-	// Converts system units to msec.
-	static time_type to_millis(ULONGLONG t);
-	
+		
 	ULONGLONG m_epoch;
 	double m_speed;
 	
