@@ -218,7 +218,7 @@ scheduler::time_type scheduler::exec() {
 	lock();
 	time_type now = m_timer->elapsed();
 	time_type next = exec(now);
-	while(next == now) next = exec(now);
+	//while(next == now) next = exec(now);
 	time_type waitdur = next - now;
 	unlock();
 	AM_DBG lib::logger::get_logger()->debug("scheduler::exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
