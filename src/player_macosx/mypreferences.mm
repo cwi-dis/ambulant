@@ -72,7 +72,8 @@ mypreferences::load_preferences()
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = [prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
-	m_plugin_dir = [prefs stringForKey: @"plugin_dir"];
+	if ([prefs stringForKey: @"plugin_dir"])
+		m_plugin_dir = [prefs stringForKey: @"plugin_dir"];
 	return true;
 }
 
@@ -88,5 +89,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_do_validation forKey: @"do_validation"];
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
 	[prefs setInteger: m_log_level forKey: @"log_level"];
+	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
+	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
 	return true;
 }
