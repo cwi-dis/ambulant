@@ -317,9 +317,90 @@ datasource_factory::new_video_datasource(const net::url &url)
     return NULL;
 }
 
+// Helper class - Read all data from a datasource
+class datasource_reader : public lib::ref_counted_obj {
+  public:
+	datasource_reader(datasource *src);
+	~datasource_reader();
+	void run();
+	int getresult(char **result) ;
+  private:
+	void readdone();
+	lib::timer *m_timer;
+	lib::event_processor *m_event_processor;
+	datasource *m_src;
+	char *m_data;
+	int m_size;
+};
+typedef lib::no_arg_callback<datasource_reader> readdone_callback;
+
+datasource_reader::datasource_reader(datasource *src)
+:   m_timer(new lib::timer(lib::realtime_timer_factory(), 1.0, false)),
+	m_src(src),
+	m_data(NULL),
+	m_size(0)
+{
+	m_event_processor = event_processor_factory(m_timer);
+}
+
+datasource_reader::~datasource_reader()
+{
+	m_src->release();
+	delete m_event_processor;
+	delete m_timer;
+	if (m_data) free(m_data);
+}
+
+void
+datasource_reader::run()
+{
+	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
+	m_src->start(m_event_processor, e);
+	while (!m_src->end_of_file()) {
+		sleep(1); // XXXX should be woken by readdone()
+	}
+}
+
+int
+datasource_reader::getresult(char **result)
+{
+	*result = m_data;
+	m_data = NULL;
+	return m_size;
+}
+
+void
+datasource_reader::readdone()
+{
+	if (m_src->end_of_file()) {
+		// XXX Should wake up run()
+		return;
+	}
+	int newsize = m_src->size();
+	m_data = (char *)realloc(m_data, m_size + newsize);
+	if (m_data == NULL) {
+		m_size = 0;
+		lib::logger::get_logger()->error("datasource_reader: out of memory");
+		return;
+	}
+	memcpy(m_data+m_size, m_src->get_read_ptr(), newsize);
+	m_size += newsize;
+	m_src->readdone(newsize);
+	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
+	m_src->start(m_event_processor, e);
+}
+
 int
 ambulant::net::read_data_from_url(const net::url &url, datasource_factory *df, char **result)
 {
 	*result = NULL;
-	return 0;
+	datasource *src = df->new_raw_datasource(url);
+	if (src == NULL) {
+		return 0;
+	}
+	datasource_reader *dr = new datasource_reader(src);
+	dr->run();
+	int nbytes = dr->getresult(result);
+	dr->release();
+	return nbytes;
 }

@@ -150,12 +150,12 @@ class document : public node_context {
 	const std::map<std::string, custom_test>* get_custom_tests() const
 		{ return &m_custom_tests;}
 	
+	void set_src_url(ambulant::net::url u) { m_src_url = u;}
   protected:
 	document(node *root = 0);
 	document(node *root, const std::string& src_url);
 	
 	void set_root(node* n);
-	void set_src_url(ambulant::net::url u) { m_src_url = u;}
 //	void set_src_base(ambulant::net::url u) { m_src_base = u;}
 	
   private:

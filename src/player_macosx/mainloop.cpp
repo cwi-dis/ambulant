@@ -159,20 +159,20 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 ambulant::lib::document *
 mainloop::create_document(const char *filename)
 {
-#if 1
-	return ambulant::lib::document::create_from_file(filename);
-#else
 	char *data;
 	std::string url(filename);
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
+	/*DBG*/int fd=creat("/tmp/doc.smil", 0666); write(fd, data, size); close(fd);
 	if (size < 0) {
 		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
 		return NULL;
 	}
-	std::string docdata(data);
+	/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace("mainloop::create_document: document is %d bytes", size);
+	std::string docdata(data, size);
 	free(data);
-	return ambulant::lib::document::create_from_string(docdata);
-#endif
+	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
+	if (rv) rv->set_src_url(url);
+	return rv;
 }	
 
 mainloop::~mainloop()
@@ -204,7 +204,7 @@ mainloop::play()
 void
 mainloop::stop()
 {
-	m_player->stop();
+	if (m_player) m_player->stop();
 	m_speed = 1.0;
 	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
 }

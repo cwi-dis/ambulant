@@ -58,4 +58,5 @@
 - (IBAction)loadFilter:(id)sender;
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;
+- (IBAction)openURL:(id)sender;
 @end

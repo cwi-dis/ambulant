@@ -127,5 +127,16 @@
 	}
 }
 
+- (IBAction)openURL:(id)sender
+{
+	NSLog(@"open URL");
+	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
+	OSErr status;
+	
+	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
+	}
+}
+
 @end
 
