@@ -76,7 +76,7 @@ inline float redf(color_t rgb) { return float(redc(rgb) / 255.0); }
 inline float greenf(color_t rgb) { return float(greenc(rgb) / 255.0); }
 inline float bluef(color_t rgb) { return float(bluec(rgb) / 255.0); }
 
-template <typename T>
+template <class T>
 inline color_t to_color(T r, T g, T b)
 	{return color_t(uchar(r)) | color_t(uchar(g) << 8) | color_t(uchar(b) << 16);}
 
@@ -114,8 +114,10 @@ struct color_trible {
 	
 	color_trible(uchar _r, uchar _g, uchar _b) : b(_b), g(_g), r(_r) {}
 	
-	template <typename T>
+#ifndef AMBULANT_NO_MEMBER_TEMPLATES	
+	template <class T>
 	color_trible(T _r, T _g, T _b) : b(uchar(_b)), g(uchar(_g)), r(uchar(_r)) {}
+#endif
 	
 	color_trible(color_t rgb) : b(bluec(rgb)), g(greenc(rgb)), r(redc(rgb)) {}
 	
@@ -125,14 +127,16 @@ struct color_trible {
 	uchar green() const { return g;}
 	uchar red() const { return r;}
 
-	template <typename T>
+#ifndef AMBULANT_NO_MEMBER_TEMPLATES	
+	template <class T>
 	void blue(T _b) { b = uchar(_b);}
 	
-	template <typename T>
+	template <class T>
 	void green(T _g) { g = uchar(_g);}
 	
-	template <typename T>
+	template <class T>
 	void red(T _r) { r = uchar(_r);}
+#endif
 	
 	color_trible& operator=(color_t c) {
 		 b = bluec(c);
