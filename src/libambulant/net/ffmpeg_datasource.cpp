@@ -790,6 +790,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 		while (sz > 0) {
 
 				len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, ptr, sz);	
+				assert( len <= sz);
 				ptr +=len;	
 				sz -= len;
 				if (got_pic) {
@@ -1291,6 +1292,7 @@ ffmpeg_resample_datasource::stop()
 void
 ffmpeg_resample_datasource::data_avail()
 {
+	
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
@@ -1315,11 +1317,10 @@ ffmpeg_resample_datasource::data_avail()
 		if (insamples * m_in_fmt.channels * sizeof(short) != sz) {
 			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: incmplete samples: %d", sz);
 		}
-		int outsz = sz + 4;
-		if (m_in_fmt.channels && m_in_fmt.samplerate) {
-			long long tmp = (long long)insamples * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate;
-			outsz = tmp;
-		}
+		
+		long long tmp = (long long)insamples * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate;
+		long outsz = tmp + 8;
+		
 		if (!sz && !m_src->end_of_file()) {
 			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
 			m_lock.leave();			
@@ -1337,9 +1338,11 @@ ffmpeg_resample_datasource::data_avail()
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", sz, insamples, outsz, inbuf, outbuf);
 				int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
-				assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
+				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
+//lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(): Possible bufferoverflow here ! REMOVE comments to fix");
+			assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
 				m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
-				m_src->readdone(sz);
+				m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
 			}
 		}
 		// Restart reading if we still have room to accomodate more data
