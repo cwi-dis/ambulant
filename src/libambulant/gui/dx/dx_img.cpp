@@ -64,13 +64,11 @@
 
 #include <math.h>
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
-
 
 gui::dx::dx_img_renderer::dx_img_renderer(
 	common::playable_notification *context,
@@ -79,11 +77,11 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
-	m_image(0) {
+	m_image(0), m_window(window) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::ctr(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();	
+	viewport *v = dxwindow->get_viewport();
 	std::string url = m_node->get_url("src");
 	if(lib::memfile::exists(url)) {
 		m_image = new image_renderer(m_node->get_url("src"), v);
@@ -116,6 +114,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	// Has this been activated
 	if(m_activated) {
 		// repeat
+		m_dest->need_redraw();
 		return;	
 	}
 	
@@ -135,18 +134,31 @@ void gui::dx::dx_img_renderer::stop() {
 	m_image = 0;
 	m_dest->renderer_done();
 	m_activated = false;
+	
+	// show debug message 'stopped'
+	AM_DBG {
+		dx_window *dxwindow = static_cast<dx_window*>(m_window);
+		viewport *v = dxwindow->get_viewport();
+		if(v) {
+			if(!m_msg_rect.empty()) {
+				v->draw("STOPPED", m_msg_rect, lib::to_color("red"));
+				v->redraw(m_msg_rect);
+			}
+			dxwindow->need_redraw(m_msg_rect);
+		}
+	}
 }
 
 void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
-	if(!m_image) {
-		// No bits available
-		return;
-	}
-	
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
+	
+	if(!m_image) {
+		// No bits available
+		return;
+	}
 	
 	// Get fit rectangles
 	lib::rect img_rect1;
@@ -174,8 +186,12 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	lib::point pt = m_dest->get_global_topleft();
 	img_reg_rc_dirty.translate(pt);
 	
+	// keep rect for debug messages
+	m_msg_rect |= img_reg_rc_dirty;
+	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
 }
- 
+
+
 

@@ -77,7 +77,8 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	common::abstract_window *window)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
-	m_update_event(0) {
+	m_update_event(0), 
+	m_window(window) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
@@ -157,6 +158,18 @@ void gui::dx::dx_video_renderer::stop() {
 	m_player = 0;
 	m_dest->renderer_done();
 	m_activated = false;
+	
+	// show debug message 'stopped'
+	AM_DBG {
+		dx_window *dxwindow = static_cast<dx_window*>(m_window);
+		viewport *v = dxwindow->get_viewport();
+		if(v) {
+			if(!m_msg_rect.empty()) {
+				v->draw("STOPPED", m_msg_rect, lib::to_color("red"));
+				v->redraw(m_msg_rect);
+			}
+		}
+	}
 }
 
 void gui::dx::dx_video_renderer::pause() {
@@ -213,6 +226,9 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	// Translate vid_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();
 	vid_reg_rc_dirty.translate(pt);
+	
+	// keep debug message area
+	m_msg_rect |= vid_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty);
