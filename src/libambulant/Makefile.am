@@ -1,4 +1,4 @@
-CXXFLAGS=-g -O0 -fno-inline $(PTHREAD_CFLAGS)
+AM_CXXFLAGS=-g -O0 -fno-inline $(PTHREAD_CFLAGS)
 expat_dir = $(EXPAT_PREFIX)
 
 # See which toolkit-dependent libraries we want to make
