@@ -35,20 +35,29 @@ expat-unix:
 	third_party_packages/expat-unix.
 
 xerces-unix:
-	Linux
+	Linux and Mac OS X.
+	
+	For this release you need to build xerces from source, you cannot
+	use a pre-installed xerces.
 	
 	Download xerces-C++ Version 2.5.0 Source Release from
 	<http://xml.apache.org> and extract xerces-c-src_2_5_0 in
-	this directory (.../ambulant/third_party_packages/xerces-unix).
-	Then do the following:
-		$ ./configure --with-xerces
-		$ make
+	the directory .../ambulant/third_party_packages/xerces-unix.
+	
+	Next, follow the instructions for building xerces, open Readme.html
+	and navigate to "Building". You really want to do this, as they have
+	created some wrappers around the normal configure/make combo.
+	
+	At this point in time (18-Aug-04) you must specify --with-xerces to
+	the Ambulant configure, but that is expected to be automatic before
+	the next source release.
 	
 	Note that if you want to install xerces-c-src_2_5_0 somewhere
 	else (or you have already installed it) you should specify the
 	location to the --with-xerces option on the main ambulant
-	configure: it will normally only look in:
-	third_party_packages/xerces-unix.
+	configure: it will normally only look in third_party_packages/xerces-unix.
+	And note that the --with-xerces pathname should refer to the base of a
+	xerces source distribution, not to the installation prefix location.
 
 ffmpeg:
 	Linux and Mac OS X.
