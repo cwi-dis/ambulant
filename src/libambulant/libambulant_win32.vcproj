@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -300,6 +300,9 @@
 			<Filter
 				Name="common"
 				Filter="">
+				<File
+					RelativePath=".\common\preferences.cpp">
+				</File>
 				<File
 					RelativePath=".\common\region.cpp">
 				</File>
