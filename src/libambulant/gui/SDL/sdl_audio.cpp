@@ -53,6 +53,8 @@
 
 #include "ambulant/gui/SDL/sdl_audio.h"
 #include "ambulant/net/posix_datasource.h"
+#include "ambulant/common/region_info.h"
+
 #include <stdlib.h>
 
 using namespace ambulant;
@@ -68,11 +70,17 @@ void sdl_C_callback(void *userdata, Uint8 *stream, int len)
 }
 
 static void
-add_samples(short *outbuf, short *inbuf, int size)
+add_samples(short *outbuf, short *inbuf, int size, float *volumes, int volcount)
 {
 	int i;
+	int vol_index = 0;
 	for(i=0; i<size; i++) {
-		long value = (long)outbuf[i] + (long)inbuf[i];
+		long value = (long)inbuf[i];
+		if (volcount) {
+			value = (long)(value * volumes[vol_index]);
+			if (++vol_index >= volcount) vol_index = 0;
+		}
+		value += (long)outbuf[i];
 		if (value > 0x7fff) value = 0x7fff;
 		else if (value < -0x7fff) value = -0x7fff;
 		outbuf[i] = (short)value;
@@ -178,8 +186,8 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
 	m_static_lock.enter();
 	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
-	if (m_renderers.size() == 1) {
-		// Exactly one active stream: use simple copy
+	if (m_renderers.size() == 1 && (*first)->m_volcount == 0) {
+		// Exactly one active stream, no volume/pan processing: use simple copy
 		Uint8 *single_data;
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
@@ -202,7 +210,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			int next_len = (*i)->get_data(len, &next_data);
 			if (next_len)
-				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2));
+				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2), (*i)->m_volumes, (*i)->m_volcount);
 
 			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
 			(*i)->get_data_done(next_len);
@@ -219,11 +227,12 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	const lib::node *node,
 	lib::event_processor *evp,
 	common::factories *factory)
-:	common::playable_imp(context, cookie, node, evp),
+:	common::renderer_playable(context, cookie, node, evp),
 	m_audio_src(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
-	m_read_ptr_called(false)
+	m_read_ptr_called(false),
+	m_volcount(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() -> 0x%x",  this);
 	if (init() != 0)
@@ -248,7 +257,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
     lib::event_processor *evp,
 	common::factories* factory,
 	net::audio_datasource *ds)
-:	common::playable_imp(context, cookie, node, evp),
+:	common::renderer_playable(context, cookie, node, evp),
 	m_audio_src(ds),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -312,6 +321,25 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		rv = m_audio_src->size();
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
+		// Also set volume(s)
+		if (m_dest) {
+			double leftlevel, rightlevel;
+			const common::region_info *info = m_dest->get_info();
+			leftlevel = rightlevel = info->get_soundlevel();
+#ifdef USE_SMIL21
+			// TBD
+#endif
+			if (leftlevel == 1.0 && rightlevel == 1.0)
+				m_volcount = 0;
+			else if (leftlevel == rightlevel) {
+				m_volcount = 1;
+				m_volumes[0] = leftlevel;
+			} else {
+				m_volcount = 2;
+				m_volumes[0] = leftlevel;
+				m_volumes[1] = rightlevel;
+			}
+		}
 	}
 	m_lock.leave();
 	return rv;

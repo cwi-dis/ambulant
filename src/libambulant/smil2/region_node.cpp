@@ -71,6 +71,7 @@ static char *subregionattrs[] = {
 	"backgroundColor", "background-color",
 	"transparent",
 	"fit",
+	"soundLevel",
 	NULL
 };
 
@@ -226,7 +227,7 @@ region_node::fix_from_dom_node()
 		set_fit(fit);
 	}
 	
-	// And finally z-index.
+	// And z-index.
 	// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
 	// we interpret missing z-index as zero, but the standard says "auto" which is
 	// slightly different.
@@ -237,7 +238,22 @@ region_node::fix_from_dom_node()
 	if (z != m_zindex) {
 		changed = true;
 	}
-       	set_zindex(z);
+	set_zindex(z);
+
+	// soundLevel.
+	// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
+	// we interpret missing z-index as zero, but the standard says "auto" which is
+	// slightly different.
+	const char *soundlevel_attr = m_node->get_attribute("soundLevel");
+	double sl = 1.0;
+	char *lastp;
+	if (soundlevel_attr) sl = strtod(soundlevel_attr, &lastp);
+	if (*lastp == '%') sl *= 0.01;
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
+	if (sl != m_soundlevel) {
+		changed = true;
+	}
+	set_soundlevel(sl);
 	return changed;
 }
 
@@ -372,6 +388,10 @@ common::zindex_t region_node::get_region_zindex(bool fromdom) const {
 	return fromdom?m_zindex:m_display_zindex;
 }
 
+double region_node::get_region_soundlevel(bool fromdom) const {
+	return fromdom?m_soundlevel:m_display_soundlevel;
+}
+
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_dim(\"%s\", \"%s\") to %s", m_node->get_attribute("id"), which.c_str(), repr(rd).c_str());
@@ -395,5 +415,11 @@ void region_node::set_region_color(const std::string& which, lib::color_t clr) {
 void region_node::set_region_zindex(common::zindex_t z) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_zindex()");
 	m_display_zindex = z;
+}
+
+// Sets the display value of the sound level
+void region_node::set_region_soundlevel(double level) {
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_zindex()");
+	m_display_soundlevel = level;
 }
 

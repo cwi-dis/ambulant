@@ -66,13 +66,13 @@
 #define SDL_BUFFER_MAX_BYTES 819200
 #define SDL_BUFFER_MIN_BYTES 20480
 
-
+#define AMBULANT_MAX_CHANNELS 2
  
 namespace ambulant {
 namespace gui {
 namespace sdl {	  
 
-class sdl_active_audio_renderer : public common::playable_imp /*, public lib::timer_events */ {
+class sdl_active_audio_renderer : public common::renderer_playable {
   public:
     sdl_active_audio_renderer(
     common::playable_notification *context,
@@ -111,6 +111,7 @@ class sdl_active_audio_renderer : public common::playable_imp /*, public lib::ti
 //	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 //	void transition_freeze_end(lib::screen_rect<int> area) {}		  
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
 	static void sdl_callback(Uint8 *stream, int len);
   private:
     void data_avail();
@@ -125,6 +126,8 @@ class sdl_active_audio_renderer : public common::playable_imp /*, public lib::ti
 	bool m_is_paused;
   	bool m_read_ptr_called;
 	bool m_audio_started;
+	int m_volcount;
+	float m_volumes[AMBULANT_MAX_CHANNELS];
   	// class methods and attributes:
 	static int init();
  	static void register_renderer(sdl_active_audio_renderer *rnd);

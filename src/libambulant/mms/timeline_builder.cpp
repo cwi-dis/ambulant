@@ -92,6 +92,7 @@ class mms_region_info : public common::region_info {
 	lib::color_t get_bgcolor() const { return (lib::color_t)0; }
 	bool get_transparent() const { return true; }
 	common::zindex_t get_zindex() const { return 0; }
+	double get_soundlevel() const { return 1.0; }
 	bool get_showbackground() const { return false; }
 	bool is_subregion() const { return false; }
   private:

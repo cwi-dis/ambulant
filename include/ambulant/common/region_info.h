@@ -106,6 +106,9 @@ class region_info {
 	
 	/// Return true if this object represents subregion positioning on a body node.
 	virtual bool is_subregion() const = 0;
+	
+	/// Return audio volume
+	virtual double get_soundlevel() const = 0;
 };
 
 /// Interface to animate region information.
@@ -131,6 +134,11 @@ class animation_destination : public region_info {
 	/// value (as animated by previous set_ calls).
 	virtual zindex_t get_region_zindex(bool fromdom = false) const = 0;
   
+	/// Get the audio volume of a region.
+	/// If fromdom is true get the original DOM value, otherwise get the current
+	/// value (as animated by previous set_ calls).
+	virtual double get_region_soundlevel(bool fromdom = false) const = 0;
+  
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
 	virtual void set_region_dim(const std::string& which, const region_dim& rd) = 0;
@@ -141,6 +149,9 @@ class animation_destination : public region_info {
 	
 	/// Set the region z-index to a new value.
 	virtual void set_region_zindex(common::zindex_t z) = 0;
+	
+	/// Set the region audio volume to a new value.
+	virtual void set_region_soundlevel(double level) = 0;
 };
 
 } // namespace common
