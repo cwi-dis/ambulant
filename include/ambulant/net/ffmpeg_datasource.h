@@ -114,26 +114,26 @@ namespace detail {
 
 class ffmpeg_parser_thread : public lib::unix::thread, public lib::ref_counted_obj {
   public:
-	ffmpeg_parser_thread(AVFormatContext *con)
-	:   m_con(con) { memset(m_sinks, 0, sizeof m_sinks);}
-	~ffmpeg_parser_thread() {}
+	ffmpeg_parser_thread(AVFormatContext *con);
+	~ffmpeg_parser_thread();
 	
-	void add_datasink(ffmpeg_audio_datasource *parent, int stream_index) {
-		assert(m_sinks[stream_index] == 0);
-		m_sinks[stream_index] = parent;
-	}
+	void add_datasink(ffmpeg_audio_datasource *parent, int stream_index);
+	void remove_datasink(int stream_index);
+	void cancel();
   protected:
 	unsigned long run();
   private:
     ffmpeg_audio_datasource *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
+	int m_nstream;
 };
 
 }
 
 class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context);
+	 ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
+		detail::ffmpeg_parser_thread *thread);
     ~ffmpeg_audio_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  
@@ -153,6 +153,7 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
     bool _end_of_file();
 	const std::string m_url;
 	AVFormatContext *m_con;
+	int m_stream_index;
 	audio_format m_fmt;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;

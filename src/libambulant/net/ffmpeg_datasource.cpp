@@ -105,8 +105,14 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: no support for %s", url.c_str());
 		return NULL;
 	}
-	audio_datasource *ds = new ffmpeg_audio_datasource(url, context);
-	if (ds == NULL) return NULL;
+	detail::ffmpeg_parser_thread *thread = new detail::ffmpeg_parser_thread(context);
+	audio_datasource *ds = new ffmpeg_audio_datasource(url, context, thread);
+	if (ds == NULL) {
+		thread->cancel();
+		return NULL;
+	}
+	thread->start();
+	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: parser ds = 0x%x", (void*)ds);
 	// XXXX This code should become generalized in datasource_factory
 	if (fmts.contains(ds->get_audio_format())) {
@@ -175,6 +181,47 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 
 #ifdef WITH_FFMPEG_AVFORMAT
 
+detail::ffmpeg_parser_thread::ffmpeg_parser_thread(AVFormatContext *con)
+:   m_con(con),
+	m_nstream(0)
+{
+	memset(m_sinks, 0, sizeof m_sinks);
+}
+
+detail::ffmpeg_parser_thread::~ffmpeg_parser_thread()
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_parser_thread::~ffmpeg_parser_thread()");
+	if (m_con) av_close_input_file(m_con);
+	m_con = NULL;
+}
+
+void
+detail::ffmpeg_parser_thread::cancel()
+{
+	if (is_running())
+		stop();
+	release();
+}
+
+void 
+detail::ffmpeg_parser_thread::add_datasink(ffmpeg_audio_datasource *parent, int stream_index)
+{
+	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(m_sinks[stream_index] == 0);
+	m_sinks[stream_index] = parent;
+	m_nstream++;
+}
+
+void
+detail::ffmpeg_parser_thread::remove_datasink(int stream_index)
+{
+	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(m_sinks[stream_index] != 0);
+	m_sinks[stream_index] = 0;
+	m_nstream--;
+	if (m_nstream <= 0) cancel();
+}
+
 unsigned long
 detail::ffmpeg_parser_thread::run()
 {
@@ -210,38 +257,37 @@ detail::ffmpeg_parser_thread::run()
 		
 // **************************** ffmpeg_audio_datasource *****************************
 
-ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context)
+ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
+	detail::ffmpeg_parser_thread *thread)
 :	m_url(url),
 	m_con(context),
+	m_stream_index(-1),
 	m_fmt(audio_format("ffmpeg")),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
-	m_thread(NULL),
+	m_thread(thread),
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource() -> 0x%x", (void*)this);
 	ffmpeg_init();
 	// Find the index of the audio stream
-	int stream_index;
-	for (stream_index=0; stream_index < context->nb_streams; stream_index++) {
-		if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
+	for (m_stream_index=0; m_stream_index < context->nb_streams; m_stream_index++) {
+		if (context->streams[m_stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
 			break;
 	}
-	if (stream_index >= context->nb_streams) {
+	if (m_stream_index >= context->nb_streams) {
 		lib::logger::get_logger()->error("ffmpeg_audio_datasource::ffmpeg_audio_datasource(): no audio streams");
 		m_src_end_of_file = true;
 		return;
 	} else {
-		m_fmt.parameters = (void *)&context->streams[stream_index]->codec;
+		m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
 	}
-	m_thread = new detail::ffmpeg_parser_thread(context);
 	if (!m_thread) {
 		lib::logger::get_logger()->error("ffmpeg_audio_datasource::ffmpeg_audio_datasource: cannot start thread");
 		m_src_end_of_file = true;
 	}
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource: rate=%d, channels=%d", context->streams[stream_index]->codec.sample_rate, context->streams[stream_index]->codec.channels);
-	m_thread->add_datasink(this, stream_index);
-	m_thread->start();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::ffmpeg_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
+	m_thread->add_datasink(this, m_stream_index);
 }
 
 ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
@@ -249,14 +295,12 @@ ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource(0x%x)", (void*)this);
 	if (m_thread) {
-		if (m_thread->is_running())
-			m_thread->stop();
-		m_thread->release();
+		m_thread->remove_datasink(m_stream_index);
+		m_thread = NULL;
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource: thread stopped");
-	if (m_con) av_close_input_file(m_con);
-	m_con = NULL;
+	m_con = NULL; // owned by the thread
 	m_lock.leave();
 }	
 
