@@ -45,112 +45,73 @@
  * which carries forward this exception. 
  * 
  */
-
-/* 
- * @$Id$ 
- */
-
-#ifndef AMBULANT_LIB_XERCES_PARSER_H
-#define AMBULANT_LIB_XERCES_PARSER_H
-
-#include <string>
-
-#include "ambulant/config/config.h"
-
-#include "ambulant/common/preferences.h"
-
-#include "ambulant/lib/sax_handler.h"
-
-// temp for inline impl
-#include "ambulant/lib/logger.h"
-
-#ifdef	WITH_XERCES
-// Assuming "xml-xerces/c/src" of the distribution 
-// is in the include path and bin directory in the lib path
-#include "xercesc/parsers/SAXParser.hpp"
-#include "xercesc/sax/HandlerBase.hpp"
-#include "xercesc/util/XMLString.hpp"
-#include "xercesc/util/PlatformUtils.hpp"
-
-//#define AM_DBG
+ 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-namespace ambulant {
 
-namespace lib {
-	
-	
-class xerces_factory : public lib::parser_factory {
-  public:
-	xerces_factory() {};
-	~xerces_factory() {};
-		
-	lib::xml_parser* new_parser(
-		sax_content_handler* content_handler, 
-		sax_error_handler* error_handler);
-};
 
-///////////////////////////
-// Adapter for xerces parser
+#include "ambulant/lib/parser_factory.h"
+#include "ambulant/lib/expat_parser.h"  
+ using namespace ambulant;
+ using namespace lib;
 
-using namespace xercesc;
+global_parser_factory* ambulant::lib::global_parser_factory::s_singleton = NULL;
 
-class xerces_sax_parser : public HandlerBase, public xml_parser {
-  public:
-	enum {NS_SEP = '|'};
-
-	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
-	virtual ~xerces_sax_parser();
-	
-	bool parse(const char *filename);
-	
-	bool parse(const char *buf, size_t len, bool final);
-
-	void set_content_handler(sax_content_handler *h);
-       
-	void set_error_handler(sax_error_handler *h);
-
-	void startElement(const XMLCh* const name, AttributeList& attrs);
-
- 	void endElement(const XMLCh* const name);   
-
-	void characters(const XMLCh* const chars, const unsigned int length) {}
-        
-	void ignorableWhitespace(const XMLCh* const chars,
-				 const unsigned int length) {}
-    
-	void resetDocument() {}
-
-	void warning(const SAXParseException& exception);
-
-	void error(const SAXParseException& exception);
-
-	void fatalError(const SAXParseException& exception);
-	
-	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
-	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
-	
-  private:
-	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
-	static q_name_pair to_q_name_pair(const XMLCh* name);
-
-	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(std::string v);
-
-	SAXParser *m_saxparser;  
-	lib::logger *m_logger;
-	sax_content_handler *m_content_handler;
-	sax_error_handler *m_error_handler;
-	bool m_parsing;
-	char* m_buf;
-	size_t m_size;
-	const char* m_id;
-};
-
-} // namespace lib
  
-} // namespace ambulant
-#endif/*WITH_XERCES*/
+ 
+global_parser_factory* 
+global_parser_factory::get_parser_factory()
+{
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::get_parser_factory() called");
 
-#endif // AMBULANT_LIB_XERCES_PARSER_H
+	if (s_singleton == NULL) {
+        s_singleton = new global_parser_factory();
+		AM_DBG lib::logger::get_logger()->debug("global_parser_factory::get_parser_factory() returning 0x%x", (void*) s_singleton);
+	}
+    return s_singleton;
+}
+
+
+
+
+global_parser_factory::global_parser_factory()
+{
+	
+	m_default_factory = new lib::expat_factory();
+}
+
+global_parser_factory::~global_parser_factory()
+{
+    // XXXX Should I delete the factories in m_factories? I think
+    // so, but I'm not sure...
+    delete m_default_factory;
+}
+    
+void
+global_parser_factory::add_factory(parser_factory *pf)
+{
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::add_factory(0x%x) called", (void*) pf);
+    m_factories.push_back(pf);
+}
+    
+xml_parser*
+global_parser_factory::new_parser(
+	sax_content_handler* content_handler,
+	sax_error_handler* error_handler)
+{
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called");
+
+    std::vector<parser_factory*>::iterator i;
+    xml_parser *pv;
+    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+        pv = (*i)->new_parser(content_handler, error_handler);
+        if (pv){
+			AM_DBG lib::logger::get_logger()->debug("lobal_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
+			return pv;
+		}
+    }
+    return m_default_factory->new_parser(content_handler, error_handler);
+}

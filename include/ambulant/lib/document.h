@@ -58,6 +58,7 @@
 #include <string>
 #include <map>
 
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/nscontext.h"
 #include "ambulant/net/url.h"
@@ -108,15 +109,15 @@ class document : public node_context {
   public:
 	/// A document factory function.
 	/// Creates documents from a url.
-	static document* create_from_url(const net::url& u);
+	static document* create_from_url(common::factories* factory, const net::url& u);
   
 	/// A document factory function.
 	/// Creates documents from local files.
-	static document* create_from_file(const std::string& filename);
+	static document* create_from_file(common::factories* factory, const std::string& filename);
 	
 	/// A document factory function.
 	/// Creates documents from source strings.
-	static document* create_from_string(const std::string& smil_src);
+	static document* create_from_string(common::factories* factory, const std::string& smil_src);
 	
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.
@@ -219,5 +220,3 @@ inline std::string repr(const ambulant::lib::document& d) {
 
 
 #endif // AMBULANT_LIB_DOCUMENT_H
-
-

@@ -162,6 +162,8 @@ lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
 
 void 
 lib::tree_builder::reset() {
+	global_parser_factory* pf;
+	pf = lib::global_parser_factory::get_parser_factory();
 	if(m_xmlparser != 0) {
 		delete m_xmlparser;
 		m_xmlparser = 0;
@@ -173,7 +175,12 @@ lib::tree_builder::reset() {
 	}
 	m_well_formed = false;
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
-	lib::logger::get_logger()->debug("Using parser %s", parser_id.c_str());
+	lib::logger::get_logger()->debug("tree_builder::reset(): Using parser %s", parser_id.c_str());
+	lib::logger::get_logger()->debug("tree_builder::reset():  pf = 0x%x, this = 0x%x", 1 (void*) pf, (void*) this);
+	
+	m_xmlparser = pf->new_parser(this, this);
+	
+#if 0
 #ifdef	WITH_XERCES
 	if (m_xmlparser == NULL && (parser_id == "xerces" || parser_id == "any"))
 		m_xmlparser = new xerces_sax_parser(this, this);
@@ -182,6 +189,7 @@ lib::tree_builder::reset() {
 	if (m_xmlparser == NULL && (parser_id == "expat" || parser_id == "any"))
 		m_xmlparser = new expat_parser(this, this);
 #endif /*WITH_EXPAT*/
+#endif
 	if (m_xmlparser == NULL) {
         	lib::logger::get_logger()->fatal(gettext("Could not create any XML parser (configuration error?)"));
 	}

@@ -64,6 +64,9 @@
 #endif/*WITH_XERCES*/
 #include "ambulant/config/config.h"
 
+
+
+
 #include "ambulant/lib/sax_handler.h"
 #ifdef WITH_EXPAT
 #include "ambulant/lib/expat_parser.h"
@@ -73,6 +76,7 @@
 #endif/*WITH_XERCES*/
 #include "ambulant/lib/node.h"
 #include "ambulant/net/url.h"
+#include "ambulant/common/factory.h"
 
 #include <string>
 
@@ -90,7 +94,7 @@ class tree_builder :
   ///////////////
   public:
 	tree_builder(node_context *context = 0);
-	
+	//tree_builder() {};
 	~tree_builder();
 
 	/// build DOM tree from a local file.
@@ -157,4 +161,3 @@ class tree_builder :
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_TREE_BUILDER_H
-

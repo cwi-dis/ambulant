@@ -56,7 +56,7 @@
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/sax_handler.h"
-#include "ambulant/common/parser_factory.h"
+#include "ambulant/lib/parser_factory.h"
 
 #include "expat.h"
 
@@ -69,12 +69,10 @@ namespace ambulant {
 
 namespace lib {
 	
-class expat_factory : public common::parser_factory {
+class expat_factory : public lib::parser_factory {
   public:
 
-	expat_factory(
-  		sax_content_handler* content_handler, 
-  		sax_error_handler* error_handler) {};
+	expat_factory() {};
 	~expat_factory() {};
 		
 	lib::xml_parser* new_parser(

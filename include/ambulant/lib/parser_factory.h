@@ -45,112 +45,49 @@
  * which carries forward this exception. 
  * 
  */
+ 
+#ifndef AMBULANT_COMMON_PARSER_FACTORY_H
+#define AMBULANT_COMMON_PARSER_FACTORY_H
 
-/* 
- * @$Id$ 
- */
-
-#ifndef AMBULANT_LIB_XERCES_PARSER_H
-#define AMBULANT_LIB_XERCES_PARSER_H
-
-#include <string>
-
-#include "ambulant/config/config.h"
-
-#include "ambulant/common/preferences.h"
-
+#include <vector>
 #include "ambulant/lib/sax_handler.h"
-
-// temp for inline impl
 #include "ambulant/lib/logger.h"
-
-#ifdef	WITH_XERCES
-// Assuming "xml-xerces/c/src" of the distribution 
-// is in the include path and bin directory in the lib path
-#include "xercesc/parsers/SAXParser.hpp"
-#include "xercesc/sax/HandlerBase.hpp"
-#include "xercesc/util/XMLString.hpp"
-#include "xercesc/util/PlatformUtils.hpp"
-
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
 
 namespace ambulant {
 
 namespace lib {
-	
-	
-class xerces_factory : public lib::parser_factory {
+
+
+class parser_factory {
   public:
-	xerces_factory() {};
-	~xerces_factory() {};
-		
-	lib::xml_parser* new_parser(
-		sax_content_handler* content_handler, 
-		sax_error_handler* error_handler);
+	  
+	virtual ~parser_factory() {};
+	virtual xml_parser* new_parser(
+		sax_content_handler* content_handler,
+		sax_error_handler* error_handler) = 0;
 };
 
-///////////////////////////
-// Adapter for xerces parser
 
-using namespace xercesc;
-
-class xerces_sax_parser : public HandlerBase, public xml_parser {
+class global_parser_factory : public parser_factory {
   public:
-	enum {NS_SEP = '|'};
-
-	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
-	virtual ~xerces_sax_parser();
-	
-	bool parse(const char *filename);
-	
-	bool parse(const char *buf, size_t len, bool final);
-
-	void set_content_handler(sax_content_handler *h);
-       
-	void set_error_handler(sax_error_handler *h);
-
-	void startElement(const XMLCh* const name, AttributeList& attrs);
-
- 	void endElement(const XMLCh* const name);   
-
-	void characters(const XMLCh* const chars, const unsigned int length) {}
-        
-	void ignorableWhitespace(const XMLCh* const chars,
-				 const unsigned int length) {}
     
-	void resetDocument() {}
-
-	void warning(const SAXParseException& exception);
-
-	void error(const SAXParseException& exception);
-
-	void fatalError(const SAXParseException& exception);
-	
-	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
-	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
+  	static global_parser_factory* get_parser_factory();
+    ~global_parser_factory();
+    
+    void add_factory(parser_factory *pf);
+    
+    xml_parser* new_parser(
+		sax_content_handler* content_handler,
+		sax_error_handler* error_handler);
 	
   private:
-	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
-	static q_name_pair to_q_name_pair(const XMLCh* name);
-
-	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(std::string v);
-
-	SAXParser *m_saxparser;  
-	lib::logger *m_logger;
-	sax_content_handler *m_content_handler;
-	sax_error_handler *m_error_handler;
-	bool m_parsing;
-	char* m_buf;
-	size_t m_size;
-	const char* m_id;
+	 global_parser_factory();
+    std::vector<parser_factory *> m_factories;
+    parser_factory *m_default_factory;
+  	static global_parser_factory* s_singleton;
 };
 
-} // namespace lib
- 
-} // namespace ambulant
-#endif/*WITH_XERCES*/
+}
+} // end namespaces
 
-#endif // AMBULANT_LIB_XERCES_PARSER_H
+#endif

@@ -99,7 +99,7 @@ lib::document::get_root() const {
 
 //static 
 lib::document* 
-lib::document::create_from_file(const std::string& filename) {
+lib::document::create_from_file(common::factories* factory, const std::string& filename) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_file(filename.c_str())) {
@@ -117,7 +117,7 @@ lib::document::create_from_file(const std::string& filename) {
 
 //static 
 lib::document* 
-lib::document::create_from_url(const net::url& u) {
+lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_url(u))
@@ -129,7 +129,7 @@ lib::document::create_from_url(const net::url& u) {
 
 //static 
 lib::document* 
-lib::document::create_from_string(const std::string& smil_src) {
+lib::document::create_from_string(common::factories* factory, const std::string& smil_src) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_str(smil_src)) {
@@ -221,5 +221,3 @@ void lib::document::read_custom_attributes() {
 		}
 	}
 }
-
-

@@ -67,6 +67,10 @@
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/common/plugin_engine.h"
+#include "ambulant/lib/parser_factory.h"
+#include "ambulant/lib/xerces_parser.h"
+#include "ambulant/lib/expat_parser.h"
+
 
 //#include "ambulant/lib/tree_builder.h"
 
@@ -111,7 +115,13 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_speed(1.0)
 {
 	m_factory = new common::factories;
+	// First create the parser factory and populate it;
 	
+	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
+	m_factory->pf->add_factory(new lib::expat_factory());
+#ifdef WITH_XERCES
+	m_factory->pf->add_factory(new lib::xerces_factory());
+#endif
 	// First create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
 	
@@ -211,7 +221,7 @@ qt_mainloop::create_document(const char *filename)
 	}
 	std::string docdata(data, size);
 	free(data);
-	lib::document *rv = lib::document::create_from_string(docdata);
+	lib::document *rv = lib::document::create_from_string(m_factory,docdata);
 	if (rv) rv->set_src_url(url);
 	return rv;
 }	

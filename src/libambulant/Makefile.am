@@ -124,6 +124,7 @@ libambulant_la_SOURCES = \
 	lib/transition_info.cpp \
 	lib/tree_builder.cpp \
 	\
+	lib/parser_factory.cpp \
 	lib/unix/unix_event_processor.cpp \
 	lib/unix/unix_mtsync.cpp \
 	lib/unix/unix_thread.cpp \
@@ -143,7 +144,6 @@ libambulant_la_SOURCES = \
 	common/smil_alignment.cpp \
 	common/smil_handler.cpp \
 	common/plugin_engine.cpp \
-	common/parser_factory.h\
 	\
 	smil2/animate_a.cpp \
 	smil2/animate_e.cpp \

@@ -48,6 +48,7 @@
 #ifndef FACTORY_H
 #define FACTORY_H
 
+#include "ambulant/lib/parser_factory.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/layout.h"
@@ -62,10 +63,12 @@ struct factories {
 	factories()
 	:	rf(NULL),
 		wf(NULL),
-		df(NULL) {};
+		df(NULL),
+		pf(NULL) {};
 	ambulant::common::global_playable_factory *rf;
 	ambulant::common::window_factory *wf;
-	ambulant::net::datasource_factory *df;
+	ambulant::net::datasource_factory *df;	
+	ambulant::lib::global_parser_factory* pf;
 };
 
 
