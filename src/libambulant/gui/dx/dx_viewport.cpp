@@ -348,20 +348,25 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	clear();
 	
 	// create shared transition surface
+	IDirectDrawSurface* surf;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-	hr = m_direct_draw->CreateSurface(&sd, &m_trsurface, NULL);
+	hr = m_direct_draw->CreateSurface(&sd, &surf, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
+	m_surfaces.push_back(surf);
 }
 
 gui::dx::viewport::~viewport() {
+	std::list<IDirectDrawSurface*>::iterator it;
+	for(it=m_surfaces.begin();it!=m_surfaces.end();it++)
+		(*it)->Release();
 	RELEASE(m_surface);
 	RELEASE(m_primary_surface);
 	RELEASE(m_direct_draw);
@@ -396,6 +401,20 @@ gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	return surface;
 }
 
+IDirectDrawSurface* gui::dx::viewport::create_surface() {
+	IDirectDrawSurface* surf = 0;
+	if(m_surfaces.empty()) {
+		return create_surface(m_width, m_height);
+	}
+	std::list<IDirectDrawSurface*>::iterator it = m_surfaces.begin();
+	surf = *it;
+	m_surfaces.erase(it);
+	return surf;
+}
+
+void gui::dx::viewport::release_surface(IDirectDrawSurface* surf) {
+	m_surfaces.push_back(surf);
+}
 
 // Blt back buffer to primary surface
 void gui::dx::viewport::redraw() {
@@ -465,21 +484,28 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 		clear(rc_v, clr, m_surface);
 		return;
 	} else if(bt == smil2::bt_fade) {
-		trcopy(rc);
-		clear(rc, clr, m_trsurface);
+		IDirectDrawSurface* s1 = create_surface();
+		IDirectDrawSurface* s2 = create_surface();
+		clear(rc, clr, s1);
+		copy_bgd_to(s2, rc);
 		HRESULT hr = S_OK;
-		if(bits_size == 32)
-			hr = blt_blend32(rc, tr->get_progress());
-		else if(bits_size == 24)
-			hr = blt_blend24(rc, tr->get_progress());
-		else if(bits_size == 16)
-			hr = blt_blend16(rc, tr->get_progress());
-		else {
-			trdraw(rc, 0);
+		if(bits_size == 32) {
+			hr = blt_blend32(rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, rc, 0);
+		} else if(bits_size == 24) {
+			hr = blt_blend24(rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, rc, 0);
+		} else if(bits_size == 16) {
+			hr = blt_blend16(rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, rc, 0);
+		} else {
+			draw_to_bgd(s1, rc, 0);
 		}
 		if (FAILED(hr)) {
 			seterror("blt_blendXX()", hr);
 		}
+		release_surface(s1);
+		release_surface(s2);
 		return;
 	}
 	
@@ -506,9 +532,9 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 		// nothiing to paint
 		return;
 	}
-	trcopy(rc);
-	clear(rc, clr, m_trsurface);
-	trdraw(rc, hrgn);
+	IDirectDrawSurface* s1 = create_surface();
+	clear(rc, clr, s1);
+	draw_to_bgd(s1, rc, hrgn);
 	DeleteObject((HGDIOBJ)hrgn);
 }
 
@@ -577,7 +603,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
 void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
 	const lib::screen_rect<int>& dst_rc, bool keysrc, dx_transition *tr) {
-	if(!m_surface || !src || !m_trsurface) return;
+	if(!m_surface || !src) return;
 	
 	if(!tr) {
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
@@ -593,21 +619,28 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
 		return;
 	} else if(bt == smil2::bt_fade) {
-		trcopy(dst_rc);
-		draw(src, src_rc, dst_rc, keysrc, m_trsurface);
+		IDirectDrawSurface* s1 = create_surface();
+		IDirectDrawSurface* s2 = create_surface();
+		draw(src, src_rc, dst_rc, keysrc, s1);
+		copy_bgd_to(s2, dst_rc);
 		HRESULT hr = S_OK;
-		if(bits_size == 32)
-			hr = blt_blend32(dst_rc, tr->get_progress());
-		else if(bits_size == 24)
-			hr = blt_blend24(dst_rc, tr->get_progress());
-		else if(bits_size == 16)
-			hr = blt_blend16(dst_rc, tr->get_progress());
-		else {
-			trdraw(dst_rc, 0);
+		if(bits_size == 32) {
+			hr = blt_blend32(dst_rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, dst_rc, 0);
+		} else if(bits_size == 24) {
+			hr = blt_blend24(dst_rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, dst_rc, 0);
+		} else if(bits_size == 16) {
+			hr = blt_blend16(dst_rc, tr->get_progress(), s1, s2);
+			draw_to_bgd(s2, dst_rc, 0);
+		} else {
+			draw_to_bgd(s1, dst_rc, 0);
 		}
 		if (FAILED(hr)) {
 			seterror("blt_blendXX()", hr);
 		}
+		release_surface(s1);
+		release_surface(s2);
 		return;
 	}
 	
@@ -634,9 +667,11 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		// nothiing to paint
 		return;
 	}
-	trcopy(dst_rc);
-	draw(src, src_rc, dst_rc, keysrc, m_trsurface);
-	trdraw(dst_rc, hrgn);
+	IDirectDrawSurface* surf = create_surface();
+	copy_bgd_to(surf, dst_rc);
+	draw(src, src_rc, dst_rc, keysrc, surf);
+	draw_to_bgd(surf, dst_rc, hrgn);
+	release_surface(surf);
 	DeleteObject((HGDIOBJ)hrgn);
 }
 
@@ -769,20 +804,20 @@ void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::screen_rect<in
 	}
 }
 
-void gui::dx::viewport::trcopy(const lib::screen_rect<int>& rc) {
-	if(!m_surface || !m_trsurface) return;
+void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc) { 
+	if(!m_surface || !surf) return;
 	DWORD flags = DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
-	HRESULT hr = m_trsurface->Blt(&RC, m_surface, &RC, flags, NULL);
+	HRESULT hr = surf->Blt(&RC, m_surface, &RC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::copy/DirectDrawSurface::Blt()", hr);
 	}
 }
 
-void gui::dx::viewport::trdraw(const lib::screen_rect<int>& rc, HRGN hrgn) {
-	if(!m_surface || !m_trsurface) return;
+void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc, HRGN hrgn) {
+	if(!m_surface) return;
 	DWORD flags = DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT vrc = {0, 0, m_width, m_height};
@@ -794,8 +829,8 @@ void gui::dx::viewport::trdraw(const lib::screen_rect<int>& rc, HRGN hrgn) {
 		seterror("DirectDrawSurface::GetDC()", hr);
 		return;
 	}
-	HDC htrdc;
-	hr = m_trsurface->GetDC(&htrdc);
+	HDC hsurfdc;
+	hr = surf->GetDC(&hsurfdc);
 	if(FAILED(hr)) {
 		m_surface->ReleaseDC(hdc);
 		seterror("DirectDrawSurface::GetDC()", hr);
@@ -807,11 +842,11 @@ void gui::dx::viewport::trdraw(const lib::screen_rect<int>& rc, HRGN hrgn) {
 	
 	int w = RC.right - RC.left;
 	int h = RC.bottom - RC.top;
-	BOOL res = BitBlt(hdc, RC.left, RC.top, w, h, htrdc, RC.left, RC.top, SRCCOPY);
+	BOOL res = BitBlt(hdc, RC.left, RC.top, w, h, hsurfdc, RC.left, RC.top, SRCCOPY);
 	if(!res) win_report_last_error("BitBlt");
 	
 	m_surface->ReleaseDC(hdc);
-	m_trsurface->ReleaseDC(htrdc);
+	surf->ReleaseDC(hsurfdc);
 }
 
 ////////////////////////
@@ -902,9 +937,8 @@ RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 
 __forceinline int blend(int w, int c1, int c2) {return (c1==c2)?c1:(c1 + w*(c2-c1)/256); }
 
-HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double progress) {
-	IDirectDrawSurface *surf1 = m_trsurface;
-	IDirectDrawSurface *surf2 = m_surface;
+HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double progress,
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -947,9 +981,8 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double p
 }
 
 
-HRESULT gui::dx::viewport::blt_blend24(const lib::screen_rect<int>& rc, double progress) {
-	IDirectDrawSurface *surf1 = m_trsurface;
-	IDirectDrawSurface *surf2 = m_surface;
+HRESULT gui::dx::viewport::blt_blend24(const lib::screen_rect<int>& rc, double progress,
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1018,9 +1051,8 @@ struct trible565 {
 	BYTE red() { return (v & 0x1f) << 3;}
 };
 
-HRESULT gui::dx::viewport::blt_blend16(const lib::screen_rect<int>& rc, double progress) {
-	IDirectDrawSurface *surf1 = m_trsurface;
-	IDirectDrawSurface *surf2 = m_surface;
+HRESULT gui::dx::viewport::blt_blend16(const lib::screen_rect<int>& rc, double progress,
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));

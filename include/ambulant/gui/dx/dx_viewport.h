@@ -100,6 +100,10 @@ class viewport {
 		return create_surface(s.w, s.h);
 	}
 	
+	// Surfaces cashe
+	IDirectDrawSurface* create_surface();
+	void release_surface(IDirectDrawSurface* surf);
+	
 	// Blt back buffer to primary surface
 	void redraw();
 	void redraw(const lib::screen_rect<int>& rc);
@@ -140,16 +144,19 @@ class viewport {
 	// Copies to the DD surface the bits of the back buffer within the from rect
 	void rdraw(IDirectDrawSurface* dst, const lib::screen_rect<int>& from_rc);
 	
-	// Creates a copy of the provided rect 
-	void trcopy(const lib::screen_rect<int>& rc);
+	// Creates a copy of the bgd 
+	void copy_bgd_to(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc);
 	
 	// Draw the copy using the clipping region
-	void trdraw(const lib::screen_rect<int>& rc, HRGN hrgn);
+	void draw_to_bgd(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc, HRGN hrgn);
 	
 	// Fading support
-	HRESULT blt_blend32(const lib::screen_rect<int>& rc, double progress);
-	HRESULT blt_blend24(const lib::screen_rect<int>& rc, double progress);
-	HRESULT blt_blend16(const lib::screen_rect<int>& rc, double progress);
+	HRESULT blt_blend32(const lib::screen_rect<int>& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
+	HRESULT blt_blend24(const lib::screen_rect<int>& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
+	HRESULT blt_blend16(const lib::screen_rect<int>& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
 	
 	// Paints the provided rect
 	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
@@ -179,7 +186,7 @@ class viewport {
 	IDirectDraw* m_direct_draw;
 	IDirectDrawSurface* m_primary_surface;
 	IDirectDrawSurface* m_surface;
-	IDirectDrawSurface* m_trsurface;
+	std::list<IDirectDrawSurface*> m_surfaces;
 	
 	int m_width, m_height;
 	lib::color_t m_bgd;
