@@ -77,6 +77,7 @@ using namespace ambulant;
 
 BEGIN_MESSAGE_MAP(CAmbulantPlayerApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+	ON_COMMAND(ID_HELP_HELP, OnAppHelp)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_OPEN, CAmbulantPlayerApp::OnFileOpen)
 	ON_COMMAND_EX_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE1+16, OnOpenRecentFile)
@@ -161,6 +162,11 @@ BOOL CAmbulantPlayerApp::InitInstance()
 			break;
 	}
 
+	// Initialize the help filename
+	EnableHtmlHelp();
+	if (!LocateHelpDoc("AmbulantPlayerHelp.chm"))
+		LocateHelpDoc("..\\..\\Documentation\\user-htmlhelp\\AmbulantPlayerHelp.chm");
+
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
@@ -218,6 +224,13 @@ void CAmbulantPlayerApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
+// Show help
+void CAmbulantPlayerApp::OnAppHelp()
+{
+//	m_pszHelpFilePath = "E:\\ufs\\jack\\ambulant\\Documentation\\user-htmlhelp\\AmbulantPlayerHelp.chm";
+	HtmlHelp(NULL, HH_DISPLAY_TOC);
+}
+
 // CAmbulantPlayerApp message handlers
 CDocument* CAmbulantPlayerApp::OpenDocumentFile(LPCTSTR lpszFileName)
 {
@@ -270,4 +283,25 @@ void CAmbulantPlayerApp::OnPreferences()
 {
 	PreferencesDlg dlg;
 	if(dlg.DoModal() != IDOK) return;
+}
+
+bool CAmbulantPlayerApp::LocateHelpDoc(LPCTSTR rpath) {
+	TCHAR buf[_MAX_PATH];
+	GetModuleFileName(NULL, buf, _MAX_PATH);
+	TCHAR *p1 = text_strrchr(buf,'\\');
+	if(p1) *++p1='\0';
+	text_strcat(buf, rpath);
+	TCHAR path[_MAX_PATH];
+	TCHAR *pFilePart = 0;	
+	GetFullPathName(buf, MAX_PATH, path, &pFilePart);
+	WIN32_FIND_DATA fd;
+	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
+	HANDLE hFind = FindFirstFile(path, &fd); 
+	if(hFind != INVALID_HANDLE_VALUE){
+		FindClose(hFind);
+		free((void*)m_pszHelpFilePath);
+		m_pszHelpFilePath = _tcsdup(path);
+		return true;
+	} 
+	return false;
 }

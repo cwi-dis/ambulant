@@ -11,7 +11,7 @@ item: Global
   Progress Bar DLL=%_WISE_%\Progress\WizWin32a.DLL
   Start Gradient=255 128 0
   End Gradient=128 128 64
-  Windows Flags=00000100000000010010110000001000
+  Windows Flags=00000100000000110010110000001000
   Log Pathname=%MAINDIR%\INSTALL.LOG
   Message Font=MS Sans Serif
   Font Size=8
@@ -1116,11 +1116,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\bindist-readme.txt
-  Destination=%MAINDIR%\Extras\bindist-readme.txt
-  Flags=0000000010000010
-end
-item: Install File
   Source=..\..\Extras\Welcome\Welcome.smil
   Destination=%MAINDIR%\Extras\Welcome\Welcome.smil
   Flags=0000000010000010
@@ -1656,11 +1651,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\readme.txt
-  Destination=%MAINDIR%\Extras\readme.txt
-  Flags=0000000010000010
-end
-item: Install File
   Source=..\..\Extras\Welcome\data\ambulant.png
   Destination=%MAINDIR%\Extras\Welcome\data\ambulant.png
   Flags=0000000010000010
@@ -1691,6 +1681,11 @@ item: If/While Statement
   Variable=COMPONENTS
   Value=A
   Flags=00001010
+end
+item: Install File
+  Source=..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm
+  Destination=%MAINDIR%\AmbulantPlayerHelp.chm
+  Flags=0000000010000010
 end
 item: Install File
   Source=..\..\bin\win32\zlib.dll
@@ -1870,7 +1865,57 @@ item: Create Shortcut
 end
 item: End Block
 end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%MAINDIR%\AmbulantPlayerHelp.chm
+  Destination=%GROUP%\Ambulant Player Help.lnk
+  Icon Number=0
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%MAINDIR%\AmbulantPlayer.exe
+  Destination=%DESKTOPDIR%\Ambulant Player.lnk
+  Icon Number=0
+end
+item: End Block
+end
 item: Else Statement
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=Ambulant Player Help
+  Command Line=%MAINDIR%\AmbulantPlayerHelp.chm
+  Flags=01000000
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=Ambulant Player
+  Command Line=%MAINDIR%\AmbulantPlayer.exe
+  Flags=01000000
+end
+item: End Block
 end
 item: If/While Statement
   Variable=COMPONENTS

@@ -131,7 +131,9 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "&About AmbulantPlayer...",    ID_APP_ABOUT
-        MENUITEM "&Welcome",                    ID_HELP_WELCOME
+        MENUITEM "AmbulantPlayer &Help",        ID_HELP_HELP
+        MENUITEM SEPARATOR
+        MENUITEM "Play &Welcome Document",      ID_HELP_WELCOME
     END
 END
 

@@ -98,6 +98,7 @@ public:
 	
 // Implementation
 	afx_msg void OnAppAbout();
+	afx_msg void OnAppHelp();
 	DECLARE_MESSAGE_MAP()
 	virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
 	afx_msg void OnFileOpen();
@@ -105,6 +106,7 @@ public:
 	afx_msg void OnFileOpenurl();
 	afx_msg void OnPreferences();
 	afx_msg void OnViewLog();
+	bool LocateHelpDoc(LPCTSTR rpath);
 };
 
 extern CAmbulantPlayerApp theApp;

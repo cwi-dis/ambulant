@@ -23,7 +23,6 @@
 #define IDC_CHECK3                      1009
 #define IDC_VALIDATION_SCHEMA_FULL_CHECKING 1009
 #define IDC_RICHEDIT21                  1010
-#define IDC_VALIDATE_                   1011
 #define IDC_VALIDATION_SCHEME           1011
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
@@ -36,13 +35,14 @@
 #define ID_HELP_WELCOME                 32784
 #define ID_FILE_OPENURL                 32785
 #define ID_FILE_PREFERENCES             32786
+#define ID_HELP_HELP                    32788
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        137
-#define _APS_NEXT_COMMAND_VALUE         32787
+#define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
