@@ -241,11 +241,11 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	char tbuf[16];
 	m_cs.enter();
 	if(logger::logdate) {
-		sprintf(tbuf, "%d/%02d/%02d", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
+		sprintf(tbuf, "%d/%02d/%02d ", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
 		os << tbuf;
 	}
 	if(logger::logtime) {
-		sprintf(tbuf, "%02d:%02d:%02d", lt->tm_hour, lt->tm_min, lt->tm_sec);
+		sprintf(tbuf, "%02d:%02d:%02d ", lt->tm_hour, lt->tm_min, lt->tm_sec);
 		os << tbuf;
 	}
 	if(loglevel)
