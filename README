@@ -1,44 +1,49 @@
-This directory contains version 0.2 of Ambulant, a playback engine for
-SMIL documents. The ambulant homepage is at <http://www.ambulantplayer.org>.
+This directory contains version 0.4 of Ambulant,
+a playback engine for SMIL documents. 
+The ambulant homepage is at <http://www.ambulantplayer.org>.
 
-At the moment ambulant only supports playing back a tiny subset of SMIL,
-more-or-less the subset as specified by the 3GPP MMS 2.0 specs. Also,
-only local media files are supported, no networking yet.
+At the moment ambulant only supports playing back a subset of SMIL,
+more-or-less the subset as specified by the 3GPP MMS 2.0 specs
+Also, only local media files are supported, no networking yet.
 
-Ambulant consists of a core library implementing the engine, a number of
-GUI-toolkit specific libraries implementing renderers and a number of
-player applications. Currently we have support for Qt (on Linux), Cocoa
-(on MacOSX) and DirectX (on Windows). On MacOSX and Windows there is
-limited support for playback of audio, on Linux there is none.
+Ambulant consists of a core library implementing the engine,
+a number of GUI-toolkit specific libraries implementing renderers,
+and a number of player applications.
 
-Documentation is sparse, see Documentation/Design for some design
-documentation and an overview of the source tree.
+Currently we have support for:
+- Linux
+- MacOSX
+- Windows
+?? - Zaurus.
 
-If you are working from the CVS repository, on Linux/Unix follow the
-detailed instructions in README-CVS. We need a patched version of expat,
-follow the instructions to install this in
-third_party_packages/readme.txt (if you want to try building with
-standard expat installed on your system use "configure
---with-expat=/usr", but this will not work for expat versions older
-than 1.95.7).
+?? Audio, image and text playback is supported on these platforms.
+Video is only supported on Windows, at the moment.
 
-If you are working from a source distribution on Linux/Unix a simple
-"./configure ; make" should work.
+?? Documentation of the overall design and the class relationships
+can be found in: Documentation/Design.
 
-After building you will find a text-only demo player in
-Test/designtests/demoplayer. There is a sample document too, in
-Test/designtests/mmsdoc/mmsdoc.smil.
-A more expanded demo can be found in:
-Extras/DemoPresentation/Demo.smil
+Various example SMIL 2.0 documents can be found in Extras/*.
+Not all of them are known to work on all platforms yet.
 
-A GUI based on QT capable of showing images and text can be found in
-src/player-unix/qt_player. It is able to play the sample documents
-mentioned above (first select the .smil document with "File->Open", then
-select "Play").
+You need to have "expat 1.95.7" installed before building ambulant;
+"expat" is used for XML-paring of .smil input files. Previous
+versions of "expat" will not work with ambulant.
+
+For installation on Linux/Unix follow the detailed instructions 
+in README-CVS. A GUI player (build with Qt) will be available
+in src/player-unix/qt_player. It will play .smil documents
+found in Extras/* (first select the .smil document with "File->Open",
+then select "Play->Play"). Stop, Pause and re-Open do not work yet.
 
 For MacOS, there is a Cocoa player which does not get built with the
 standard "make", you need to build it manually with XCode.
-src/player_macosx/cocoambulant.pbproj is the project to use. It also
-plays audio.
+src/player_macosx/cocoambulant.pbproj is the project to use.
 
-For Windows, see the instructions in bin/win32.
+For Windows, see instructions in bin/win32.
+
+For Zaurus, see detailed instructions in README-ZAURUS.
+
+Various SMIL 2.0 documents can be found in Extras.
+Not all of them are known to work on all platforms yet.
+
+
