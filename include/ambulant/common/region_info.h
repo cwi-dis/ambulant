@@ -78,6 +78,7 @@ class region_info {
 	virtual bool get_transparent() const = 0;
 	virtual zindex_t get_zindex() const = 0;
 	virtual bool get_showbackground() const = 0;
+	virtual bool is_subregion() const = 0;
 };
 
 } // namespace common
