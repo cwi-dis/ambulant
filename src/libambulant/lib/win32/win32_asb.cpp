@@ -86,10 +86,12 @@ std::string lib::win32::resolve_path(const char *s) {
 void lib::show_message(const char *format, ...) {
 	va_list	args;
 	va_start(args, format);
-	char buf[2048] = "";
+	int size = _vscprintf(format, args) + 1;
+	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	va_end(args);
 	MessageBox(NULL, buf, "DemoPlayer", MB_OK);
+	delete[] buf;
 }
 
 

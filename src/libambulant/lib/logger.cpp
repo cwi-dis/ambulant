@@ -231,9 +231,16 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
-	char buf[2048] = "";
+	// Do we have a std function for this?
+#ifdef AMBULANT_PLATFORM_WIN32 
+	int size = _vscprintf(format, args) + 1;
+#else 
+	int size = 4096;
+#endif
+	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	log_cstr(level, buf);
+	delete[] buf;
 }
 
 // Output format/hook
@@ -266,17 +273,14 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	}
 	if(loglevel)
 		os << get_level_name(level) << "\t";
-		
 	os << buf;
-	
 	if(logger::logname)
 		os << " [" <<  m_name << "]" ;
-		
 	os << std::endl;
 	os.flush();
+	m_cs.leave();
 #endif
 
-	m_cs.leave();
 }
 
 // static
