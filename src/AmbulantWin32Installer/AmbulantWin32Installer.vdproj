@@ -219,12 +219,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_49FA1BAC53454FD1BCA1A1173F6ECD09"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_4AD16137874A499F85897C18EE18D421"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -676,6 +670,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E63CB77356D5470D8C9DA425B2941A64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E6CA39C9A210440F8C13FA8AA00E4B50"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3891,16 +3891,16 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_49FA1BAC53454FD1BCA1A1173F6ECD09"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_E6CA39C9A210440F8C13FA8AA00E4B50"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:FALSE"
-            "SourcePath" = "8:c:\\program files\\microsoft visual studio .net 2003\\common7\\tools\\deployment\\vspkgs\\..\\dotnetfxredist_x86.msm"
+            "SourcePath" = "8:c:\\program files\\common files\\merge modules\\vc_user_crt71_rtl_x86_---.msm"
                 "Properties"
                 {
                 }
-            "LanguageId" = "3:1033"
-            "Exclude" = "11:TRUE"
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
             "Folder" = "8:"
             "Feature" = "8:"
             "IsolateTo" = "8:"
