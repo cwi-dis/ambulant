@@ -204,7 +204,9 @@ class node {
 	const xml_string& get_namespace() const { return m_qname.first;}
 	const xml_string& get_local_name() const { return m_qname.second;}
 	const q_name_pair& get_qname() const { return m_qname;}
-
+	
+	int get_numid() const {return m_numid;}
+	
 	const xml_string& get_data() const { return m_data;}
 
 	xml_string get_trimmed_data() const;
@@ -262,6 +264,9 @@ class node {
 	
 	// the context of this node
 	const node_context *m_context;
+	
+	// a magic id
+	int m_numid;
 	
 	const node& operator =(const node& o);
 	

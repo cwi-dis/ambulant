@@ -171,7 +171,7 @@ lib::node::node(const char *local_name, const char **attrs, const node_context *
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
-	node_counter++;
+	m_numid = ++node_counter;
 }
 
 lib::node::node(const xml_string& local_name, const char **attrs, const node_context *ctx)
@@ -179,13 +179,13 @@ lib::node::node(const xml_string& local_name, const char **attrs, const node_con
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
-	node_counter++;
+	m_numid = ++node_counter;
 }
 
 lib::node::node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
 :	m_qname(qn), m_qattrs(qattrs), m_context(ctx),
 	m_parent(0), m_next(0), m_child(0){
-	node_counter++;
+	m_numid = ++node_counter;
 }
 
 // shallow copy from other
@@ -195,7 +195,7 @@ lib::node::node(const node* other)
 	m_data(other->get_data()),
 	m_context(other->get_context()),
 	m_parent(0), m_next(0), m_child(0) {
-	node_counter++;
+	m_numid = ++node_counter;
 }
 
 //////////////////////
