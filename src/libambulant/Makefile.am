@@ -5,6 +5,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_fill.m \
 	gui/cocoa/cocoa_gui.m \
 	gui/cocoa/cocoa_image.m \
+	gui/cocoa/cocoa_mouse.m \
 	gui/cocoa/cocoa_text.m \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m
@@ -123,8 +124,10 @@ libambulant_la_SOURCES = \
 	gui/none/none_factory.cpp
 
 EXTRA_DIST= \
+	gui/cocoa/cocoa_fill.m gui/cocoa/cocoa_fill.mm \
 	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \
 	gui/cocoa/cocoa_image.m gui/cocoa/cocoa_image.mm \
+	gui/cocoa/cocoa_mouse.m gui/cocoa/cocoa_mouse.mm \
 	gui/cocoa/cocoa_text.m gui/cocoa/cocoa_text.mm \
 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_audio.mm \
 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_video.mm

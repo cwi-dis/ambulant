@@ -157,13 +157,20 @@ passive_region::activate()
 void
 passive_region::show(active_region *cur)
 {
+	bool need_mr_update = false;
 	if (m_cur_active_region) {
 		lib::logger::get_logger()->error("passive_region(0x%x).show(0x%x) but m_cur_active_region=0x%x!", (void*)this, (void*)cur, (void*)m_cur_active_region);
+		if (!m_cur_active_region->get_mouse_region().is_empty())
+			need_mr_update = true;
 	}
 //	if (m_cur_active_region)
 //		delete m_cur_active_region;
 	m_cur_active_region = cur;
 	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)m_cur_active_region);
+	if (!m_cur_active_region->get_mouse_region().is_empty())
+		need_mr_update = true;
+	if (need_mr_update)
+		mouse_region_changed();
 	// We don't schedule a redraw here, assuming it will come shortly.
 	// is that correct?
 }
@@ -173,7 +180,12 @@ passive_region::active_region_done(active_region *cur)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.active_region_done(0x%x, cur=0x%x), m_cur_active_region=0x%x", (void *)this, (void*)cur, (void *)m_cur_active_region);
 	if (cur == m_cur_active_region) {
+		bool need_mr_update = false;
+		if (!m_cur_active_region->get_mouse_region().is_empty())
+			need_mr_update = true;
 		m_cur_active_region = NULL;
+		if (need_mr_update)
+			mouse_region_changed();
 	} else {
 		lib::logger::get_logger()->error("passive_region(0x%x, \"%s\").active_region_done(0x%x) but m_cur_active_region=0x%x!", (void*)this, m_name.c_str(), (void*)cur, (void*)m_cur_active_region);
 	}
@@ -404,12 +416,12 @@ void
 active_region::user_event(const lib::point &where, int what)
 {
 	if (m_renderer) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("active_region.user_event(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
+		/*AM_DBG*/ lib::logger::get_logger()->trace("active_region.user_event(0x%x, %d) -> renderer 0x%x", (void *)this, what, (void *)m_renderer);
 		m_renderer->user_event(where, what);
 	} else {
 		// At this point we should have a renderer that draws the default background
 		// When that is implemented this trace message should turn into an error (or fatal).
-		AM_DBG lib::logger::get_logger()->warn("active_region.user_event(0x%x) no renderer", (void *)this);
+		/*AM_DBG*/ lib::logger::get_logger()->warn("active_region.user_event(0x%x, %d) no renderer", (void *)this, what);
 	}
 }
 

@@ -1509,6 +1509,7 @@
 		};
 		0444D324051F2EEF0010C447 = {
 			children = (
+				04DDD47D0618C56100825034,
 				04C2210406008C3500A4E0D7,
 				0491CB7705B5ABAE007105A3,
 				0444D325051F2EEF0010C447,
@@ -2375,6 +2376,20 @@
 			settings = {
 			};
 		};
+		04DDD47D0618C56100825034 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.objcpp;
+			path = cocoa_mouse.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04DDD47E0618C56100825034 = {
+			fileRef = 04DDD47D0618C56100825034;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04EA7C3A05D7C48600487047 = {
 			children = (
 				04EA7C3B05D7C48600487047,
@@ -3217,6 +3232,7 @@
 				04C2210506008C3500A4E0D7,
 				04FD793F0609E97100E69C96,
 				0478D958060B383E004224C0,
+				04DDD47E0618C56100825034,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -128,17 +128,18 @@ cocoa_window::user_event(const point &where, int what)
 void
 cocoa_window::mouse_region_changed()
 {
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
-	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
 	[my_window invalidateCursorRectsForView: my_view];
 	if (![my_window areCursorRectsEnabled]) {
-		/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x areCursorRectsEnabled], calling enableCursorRects", (void*)my_window);
+		AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x areCursorRectsEnabled], calling enableCursorRects", (void*)my_window);
 		[my_window enableCursorRects];
 	}
 	if (![my_window isKeyWindow]) {
-		/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x isKeyWindow], calling makeKeyWindow", (void*)my_window);
+		AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x isKeyWindow], calling makeKeyWindow", (void*)my_window);
 		[my_window makeKeyWindow];
 	}
 }
@@ -187,7 +188,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, renderer 
 	}
 	cocoa_window *window = new cocoa_window(name, bounds, m_defaultwindow_view, region);
 	// And we need to inform the object about it
-	AmbulantView *view = window->view();
+	AmbulantView *view = (AmbulantView *)window->view();
 	// And set the window size
 	[view setAmbulantWindow: window];
 	AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
@@ -299,7 +300,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		const ambulant::common::gui_region &mrgn = ambulant_window->get_mouse_region();
 		want_events = !mrgn.is_empty();
 	}
-	/*AM_DBG*/ NSLog(@"0x%x resetCursorRects wantevents=%d", (void*)self, (int)want_events);
+	AM_DBG NSLog(@"0x%x resetCursorRects wantevents=%d", (void*)self, (int)want_events);
 	if (want_events) 
 		[self addCursorRect: [self bounds] cursor: [NSCursor pointingHandCursor]];
 	else
