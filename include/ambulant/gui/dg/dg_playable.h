@@ -94,14 +94,14 @@ class dg_renderer_playable : public common::renderer_playable {
 		//m_transitioning = true; 
 		//m_dgplayer->start_outtransition(this, info);
 	}
- 	gui::dx::dx_transition *get_transition() {
-		//if (!m_transitioning) return NULL;
-		//gui::dx::dx_transition *tr = m_dxplayer->get_transition(this);
-		//if (tr) return tr;
-		//m_transitioning = false;
-		//m_dest->transition_done();
-		return NULL;
-	}
+ //	gui::dx::dx_transition *get_transition() {
+//		if (!m_transitioning) return NULL;
+//		gui::dx::dx_transition *tr = m_dxplayer->get_transition(this);
+//		if (tr) return tr;
+//		m_transitioning = false;
+//		m_dest->transition_done();
+//		return NULL;
+//	}
  protected:
 	common::gui_window *m_window;
 	dg_playables_context *m_dgplayer;
