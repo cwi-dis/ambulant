@@ -169,16 +169,21 @@ passive_region::show(active_region *cur)
 //		delete m_cur_active_region;
 	m_cur_active_region = cur;
 	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)m_cur_active_region);
+	// We don't schedule a redraw here, assuming it will come shortly.
+	// is that correct?
 }
 
 void
 passive_region::active_region_done(active_region *cur)
 {
+	AM_DBG lib::logger::get_logger()->trace("passive_region.active_region_done(0x%x, cur=0x%x), m_cur_active_region=0x%x", (void *)this, (void*)cur, (void *)m_cur_active_region);
 	if (cur == m_cur_active_region) {
 		m_cur_active_region = NULL;
-		lib::logger::get_logger()->error("passive_region(0x%x).active_region_done() but m_cur_active_region=0x%x!", (void*)this, (void*)m_cur_active_region);
+	} else {
+		lib::logger::get_logger()->error("passive_region(0x%x).active_region_done(0x%x) but m_cur_active_region=0x%x!", (void*)this, (void*)cur, (void*)m_cur_active_region);
 	}
 	delete cur;
+	need_redraw(m_inner_bounds);
 }
 
 void
@@ -490,7 +495,6 @@ active_region::renderer_done()
 	m_renderer = NULL;
 	AM_DBG lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
 	need_events(false);
-	need_redraw();
 	// Note: whether we are deleted or not is up to our passive_region
 	// parent: it may want to keep us around for a transition or some such.
 	m_source->active_region_done(this);
