@@ -53,11 +53,7 @@
 #include "ambulant/smil2/time_calc.h"
 #include <cmath>
 
-//#define AM_DBG if(1)
-
-#ifndef AM_DBG
 #define AM_DBG if(0)
-#endif
 
 using namespace ambulant;
 using namespace smil2;
@@ -299,11 +295,10 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 			m_attrs.get_id().c_str());	
 		return failure;
 	} 
-	AM_DBG clogger->trace("%s[%s].calc_first_interval(): begin list(%s, ...) [parent: %s]", 
+	AM_DBG clogger->trace("%s[%s].calc_first_interval(): begin list(%s, ...)", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
-		::repr(*begin_list.lower_bound(begin_after)).c_str(), 
-		::repr(begin_before).c_str());	
+		::repr(*begin_list.lower_bound(begin_after)).c_str());	
 	
 	while(true) {
 		time_mset::iterator bit = begin_list.lower_bound(begin_after);
@@ -322,15 +317,21 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 				// either the list is empty or no time >= temp_begin
 				if(m_attrs.end_has_event_conditions() || end_list.empty())
 					temp_end = time_type::unresolved;
-				else
+				else {
+					AM_DBG clogger->trace("%s[%s].calc_first_interval(): %s", 
+						m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(failure).c_str());
 					return failure;
+				}
 			}
 			temp_end = calc_end(temp_begin, temp_end);
 		}
 		// Handle the zero duration intervals at the parent begin time as a special case
 		// see: http://www.w3.org/2001/07/REC-SMIL20-20010731-errata
 		if(temp_end()>0 || (temp_begin()== 0 && temp_end()==0)) {
-			return interval_type(temp_begin, temp_end);
+			interval_type ret(temp_begin, temp_end);
+			AM_DBG clogger->trace("%s[%s].calc_first_interval(): %s", 
+				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(ret).c_str());
+			return ret;
 		} 
 		// else
 		begin_after = temp_end;

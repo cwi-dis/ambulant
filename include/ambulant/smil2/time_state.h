@@ -84,6 +84,7 @@ class time_state : public time_traits {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() = 0;
 	virtual const char* name() const = 0;
+	virtual char sig() const = 0;
 
   protected:
 	void report_state(qtime_type timestamp);
@@ -94,7 +95,6 @@ class time_state : public time_traits {
 	// these are shared variables between the states
 	// and the time_node. 
 	interval_type& m_interval;
-	long& m_picounter;
 	bool& m_active;
 	bool& m_needs_remove;
 	time_type& m_last_cdur;
@@ -113,6 +113,7 @@ class reset_state : public time_state {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_reset;}
 	virtual const char* name() const { return "reset";}
+	virtual char sig() const { return 'r';}
 };
 
 class proactive_state : public time_state {
@@ -126,6 +127,7 @@ class proactive_state : public time_state {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_proactive;}
 	virtual const char* name() const { return "proactive";}
+	virtual char sig() const { return 'e';}
   private:
 	void on_sync_update(qtime_type timestamp);  
 };
@@ -141,6 +143,7 @@ class active_state : public time_state {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_active;}
 	virtual const char* name() const { return "active";}
+	virtual char sig() const { return 'a';}
 };
 
 class postactive_state : public time_state {
@@ -154,8 +157,7 @@ class postactive_state : public time_state {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_postactive;}
 	virtual const char* name() const { return "postactive";}
-  private:
-	interval_type m_played;
+	virtual char sig() const { return 'c';}
 };
 
 class dead_state : public time_state {
@@ -168,6 +170,7 @@ class dead_state : public time_state {
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_dead;}
 	virtual const char* name() const { return "dead";}
+	virtual char sig() const { return 'd';}
 };
 
 } // namespace smil2

@@ -50,74 +50,40 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_SMIL2_TIMEGRAPH_H
-#define AMBULANT_SMIL2_TIMEGRAPH_H
+#ifndef AMBULANT_SMIL2_TIME_SCHED_H
+#define AMBULANT_SMIL2_TIME_SCHED_H
 
 #include "ambulant/config/config.h"
 
-#include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/time_node.h"
-#include "ambulant/smil2/test_attrs.h"
-
-#include <string>
+#include "ambulant/lib/timer.h"
 #include <map>
-
+#include <list>
 
 namespace ambulant {
 
-template <class N>
-class lib::node_navigator;
-
 namespace smil2 {
 
+class time_node;
 
-class lib::document;
-class common::schema;
-class lib::node;
-class lib::logger;
-
-// Builds the time tree and the time graph.
-// Wraps the time root.
- 
-class timegraph : public time_traits {
+class scheduler {
   public:
- public:
-	timegraph(time_node::context_type *ctx, 
-		const lib::document *doc, 
-		const common::schema *sch);
-	~timegraph();
+	typedef lib::timer::time_type time_type;
 	
-	time_node* get_root() { return m_root;}
-	const time_node* get_root() const { return m_root;}
+	scheduler(time_node *root, lib::timer *timer);
+	~scheduler();
 	
-	time_node* detach_root();
-	std::map<int, time_node*>* detach_dom2tn();
+	time_type exec();
 	
   private:
-    typedef node_navigator<const lib::node> const_nnhelper;
-	time_node* build_time_tree(const lib::node *root);
-	void build_priorities();
-	void build_time_graph();
-	void build_timers_graph();
-	time_node* create_time_node(const lib::node *n, time_node* tparent) const;
-	time_node *get_node_with_id(const std::string& ident) const;
-	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
-	
-	// helpers for creating sync rules
-	void add_begin_sync_rules(time_node *tn);
-	void add_end_sync_rules(time_node *tn);
-	sync_rule* create_impl_syncbase_begin_rule(time_node *tn);
-	sync_rule* create_impl_syncbase_rule(time_node *tn, time_type offset);
-
-	const lib::node* select_switch_child(const node* sn) const;
-	
-	time_node::context_type *m_context;
-	const common::schema *m_schema;
-	const std::map<std::string, custom_test>* m_custom_tests;
-	time_node* m_root;
-	std::map<std::string, time_node*> m_id2tn;
-	std::map<int, time_node*> *m_dom2tn;
-	lib::logger *m_logger;
+	void get_pending_events();
+	time_type do_exec();
+	time_node *m_root;
+	lib::timer *m_timer;
+	time_type m_events_horizon;
+	typedef std::map<time_node::time_type, std::list<time_node*> > event_map_t;
+	std::map<time_node::time_type, std::list<time_node*> > m_events;
+	enum { idle_resolution = 100};
 };
 
 
@@ -125,4 +91,4 @@ class timegraph : public time_traits {
  
 } // namespace ambulant
 
-#endif // AMBULANT_SMIL2_TIMEGRAPH_H
+#endif // AMBULANT_SMIL2_TIME_SCHED_H

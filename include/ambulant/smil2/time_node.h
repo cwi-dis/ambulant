@@ -70,19 +70,10 @@
 
 #include "ambulant/lib/logger.h"
 
-#ifndef AMBULANT_NO_IOSTREAMS
-
-#ifndef AMBULANT_NO_OSTREAM
-#include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-#endif //AMBULANT_NO_IOSTREAMS
-
 #include <cassert>
 #include <utility>
 #include <list>
+#include <map>
 
 namespace ambulant {
 
@@ -117,9 +108,9 @@ class time_node_context : public lib::event_scheduler<time_traits::value_type> {
 };
 
 // fwd declaration.
-class transition_event;
-class repeat_event;
-class timer_event;
+//class transition_event;
+//class repeat_event;
+//class timer_event;
 class time_calc;
 
 // Represents a node in the timing model.
@@ -139,6 +130,11 @@ class time_node : public schedulable {
 	virtual void start();
 	virtual void stop();
 	virtual void pause();
+	virtual void resume();
+	
+	// driver interface
+	virtual void exec(qtime_type timestamp);
+	void get_pending_events(std::map<time_type, std::list<time_node*> >& events);
 	
 	// Sets the timer for this node
 	// This node becomes the owner of the timer e.g. should delete it on exit
@@ -156,7 +152,9 @@ class time_node : public schedulable {
 	virtual void get_children(std::list<time_node*>& l) { nnhelper::get_children(this, l);}
 	virtual void get_children(std::list<const time_node*>& l) const { const_nnhelper::get_children(this, l);}
 	virtual time_type get_implicit_dur();
-	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const { return false;}
+	
+	virtual bool end_sync_cond_applicable() const { return false;}
+	virtual bool end_sync_cond() const { return true;}
 	
 	// Forced transitions
 	virtual void reset(qtime_type timestamp, time_node *oproot);
@@ -188,15 +186,16 @@ class time_node : public schedulable {
 	virtual void raise_end_event(qtime_type timestamp, time_node *oproot);
 	virtual void raise_activate_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
-	void raise_begin_event_async(qtime_type timestamp);
-	void raise_repeat_event_async(qtime_type timestamp);
-	void raise_end_event_async(qtime_type timestamp, time_node *oproot);
-	void activate_async(qtime_type timestamp);
-	
-	void schedule_interval(qtime_type timestamp, const interval_type& i);
+	virtual void raise_update_event(qtime_type timestamp);
+		
+	void set_interval(qtime_type timestamp, const interval_type& i);
 	void cancel_interval(qtime_type timestamp);
-	void update_interval_end(qtime_type timestamp, time_type newend);
 	void update_interval(qtime_type timestamp, const interval_type& i);
+	void update_interval_end(qtime_type timestamp, time_type newend);
+	void played_interval(qtime_type timestamp);
+	void clear_history() { m_history.clear();}
+	
+	// excl
 	void defer_interval(qtime_type timestamp);
 	
 	void activate(qtime_type timestamp);
@@ -324,15 +323,19 @@ class time_node : public schedulable {
 	// this may be called by a second thread
 	bool is_active() const { return m_active;}
 
-	bool has_started() const {
-		time_state_type tst = m_state->ident(); 
-		return tst == ts_active || tst == ts_postactive;
-	}
-				
 	// Returns the current interval associated with this
 	const interval_type& get_interval() const {
 		return m_interval;
 	}
+	
+	const interval_type& get_last_interval() const {
+		if(m_interval.is_valid())
+			return m_interval;
+		if(!m_history.empty())
+			return m_history.back();
+		return m_interval;
+	}
+	bool played() const { return !m_history.empty();}
 	
 	// Returns the last calc dur 
 	// Used to avoid recursion when a child makes calcs 
@@ -359,17 +362,11 @@ class time_node : public schedulable {
 		
 	// Calculate interval
 	interval_type calc_first_interval();
-	interval_type calc_next_interval();
+	interval_type calc_next_interval(interval_type previous = interval_type::unresolved);
 	
 	// Re-calculate current interval end
 	time_type calc_current_interval_end();
 		
-	// Dump this branch to the provided std::ostream.
-#ifndef AMBULANT_NO_IOSTREAMS
-	void dump(std::ostream& os);
-	void dump_dependents(std::ostream& os, sync_event se);
-#endif
-
 	std::string to_string() const;
 		
 	// Verifier
@@ -378,8 +375,7 @@ class time_node : public schedulable {
  	friend class time_state;
  	
  	// public S/O transitions
- 	void cancel_schedule();
-	void schedule_deferred_interval(qtime_type timestamp);
+	void set_deferred_interval(qtime_type timestamp);
 	void set_begin_event_inst(time_type inst) {m_begin_event_inst = inst;}
 	
  protected:
@@ -415,15 +411,12 @@ class time_node : public schedulable {
 	// When this has not a current interval this is set to unresolved
 	interval_type m_interval;
 	
-	// The number of valid past intervals this node has created 
-	// till now during its lifetime (after exiting ts_new).
-	// Any current interval will increment
-	// this counter when it ends.
+	// Past intervals
 	// Some intervals may have not "played" but they did
 	// affected the state of the model by propagating 
 	// time change notifications.
-	// Canceled intervals do not contribute to the counter.
-	long m_picounter;
+	// Canceled intervals do not contribute.
+	std::list<interval_type> m_history;
 	
 	// Flag set when this is active 
 	// e.g during the current interval
@@ -467,7 +460,10 @@ class time_node : public schedulable {
 	
 	// Defered flag
 	bool m_deferred;
-		
+	
+	// Sync update event
+	std::pair<bool, qtime_type> m_update_event;
+	
 	// Sync rules
 	typedef std::list<sync_rule*> rule_list;
 	
@@ -519,16 +515,7 @@ class time_node : public schedulable {
 	time_type m_last_cdur;
 	
 	// S-transitions scheduling
-	void schedule_state_transition(time_state_type state, qtime_type timestamp, time_type dt);
-	void state_transition_callback(const transition_event *e);
-	void schedule_next_timer_event(qtime_type timestamp);
-	void timer_event_callback(const timer_event *e);	
-	void schedule_sync_update(qtime_type timestamp, time_type dt);
-	event *m_pending_event;
-	friend class transition_event;
-	friend class timer_event;
 	friend class active_state;
-	enum {sampling_delta = 100};
 	
   private:
 	// Time states
@@ -552,7 +539,8 @@ class time_container : public time_node {
 	~time_container() {}
 	
 	virtual time_type get_implicit_dur();
-	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const;
+	virtual bool end_sync_cond_applicable() const;
+	virtual bool end_sync_cond() const;
   private:
 	time_type calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl);
 	time_type calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl);
@@ -573,7 +561,7 @@ class seq : public time_container {
 	:	time_container(ctx, n, tc_seq) {}
 	~seq() {}
 	virtual time_type get_implicit_dur();
-	virtual bool needs_end_sync_update(const time_node *c, qtime_type timestamp) const;
+	virtual bool end_sync_cond() const;
 };
 
 class excl_queue;
@@ -613,26 +601,6 @@ class excl_queue {
 	cont m_cont;
 };
 
-class transition_event : public event_callback<time_node, const transition_event> {
-  public:
-	typedef event_callback<time_node, const transition_event> evcb;
-	transition_event(time_node* tn, time_state_type state, time_traits::qtime_type timestamp) 
-	:	evcb(tn, &time_node::state_transition_callback),
-		m_state(state), 
-		m_timestamp(timestamp) {}
-	time_state_type m_state;
-	time_traits::qtime_type m_timestamp;
-};
-
-class timer_event : public event_callback<time_node, const timer_event> {
-  public:
-	typedef event_callback<time_node, const timer_event> evcb;
-	timer_event(time_node* tn, time_traits::qtime_type timestamp) 
-	:	evcb(tn, &time_node::timer_event_callback),
-		m_timestamp(timestamp) {}
-	time_traits::qtime_type m_timestamp;
-};
-
 template <class T> 
 T qualify(time_node *n) {
 	// Bad, but we can't assume RTTI available
@@ -644,16 +612,5 @@ T qualify(time_node *n) {
 } // namespace smil2
  
 } // namespace ambulant
-
-
-#ifndef AMBULANT_NO_IOSTREAMS
-inline std::ostream& operator<<(std::ostream& os, const ambulant::smil2::time_node& tn) {
-	if(tn.get_type() == ambulant::smil2::tc_none)
-		os << (tn.dom_node())->get_local_name();
-	else 
-		os << tn.get_type_as_str();
-	return os;
-}
-#endif
 
 #endif // AMBULANT_SMIL2_TIME_NODE_H

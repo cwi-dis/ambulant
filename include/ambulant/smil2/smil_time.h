@@ -115,6 +115,8 @@ class smil_time {
 	// Allow implicit convertions of T to smil_time
 	smil_time(T t = 0) : m_val(t) {}
 	
+	smil_time(const smil_time& o) : m_val(o()) {}
+	
 	// define operator += for times
 	// unresolved and indefinite behave as math infinity
 	smil_time& operator+=(const smil_time& rhs);
@@ -258,6 +260,10 @@ struct smil_interval {
 		return  contains(other.begin) && (contains(other.end) || end == other.end); 
 	}
 	
+	bool overlaps(const time_type& b, const time_type& e) const {
+		return b<=end && e>=begin;
+	}
+	
 	bool operator==(const smil_interval& rhs) const {	
 		return begin == rhs.begin && end == rhs.end;
 	}
@@ -342,14 +348,21 @@ class q_smil_time : public std::pair<const time_node*, smil_time<long> > {
 		return *this;
 	}
 	
-	q_smil_time& operator+(long rhs) { 
+	q_smil_time& operator+(value_type rhs) { 
 		this->second += rhs;
 		return *this;
 	}
 
+	q_smil_time&  operator+=(value_type rhs) {this->second += rhs; return *this;}
+	q_smil_time&  operator-=(value_type rhs) {this->second -= rhs; return *this;}
+	
   private:
 	bool up();
 	void down(const time_node *child);
+};
+
+template<class T>
+class q_smil_interval : public std::pair<const time_node*, smil_interval<T> > {
 };
 
 // Time traits

@@ -50,79 +50,73 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_SMIL2_TIMEGRAPH_H
-#define AMBULANT_SMIL2_TIMEGRAPH_H
-
-#include "ambulant/config/config.h"
-
-#include "ambulant/smil2/smil_time.h"
+#include "ambulant/smil2/time_sched.h"
 #include "ambulant/smil2/time_node.h"
-#include "ambulant/smil2/test_attrs.h"
-
-#include <string>
-#include <map>
 
 
-namespace ambulant {
+#include "ambulant/lib/logger.h"
 
-template <class N>
-class lib::node_navigator;
+//#define AM_DBG if(1)
 
-namespace smil2 {
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+using namespace ambulant;
+using namespace smil2;
+
+scheduler::scheduler(time_node *root, lib::timer *timer)
+:	m_root(root), 
+	m_timer(timer), 
+	m_events_horizon(0) {
+}
+
+scheduler::~scheduler() {
+	// m_root is a borrowed ref
+	// m_timer is a borrowed ref
+}
+
+scheduler::time_type scheduler::exec() {
+	time_type waitdur = do_exec();
+	while(waitdur == 0) waitdur = do_exec();
+	return waitdur>idle_resolution?idle_resolution:waitdur;
+}
+
+scheduler::time_type scheduler::do_exec() {
+	time_type waitdur = idle_resolution;
+	m_events.clear();
+	if(!m_root->is_active())
+		return waitdur;
+	get_pending_events();
+	if(m_events.empty())
+		return waitdur;
+	event_map_t::iterator eit = m_events.begin();
+	time_type next = (*eit).first();
+	std::list<time_node*>& elist = (*eit).second;
+	next = std::max(m_events_horizon, next);
+	if(m_timer->elapsed() >= next) {
+		time_traits::qtime_type timestamp(m_root, next);
+		std::list<time_node*>::iterator nit;
+		for(nit=elist.begin();nit!=elist.end();nit++)
+			(*nit)->exec(timestamp);
+		m_events_horizon = next;
+		m_timer->set_time(next);
+		eit++;
+		if(eit != m_events.end()) {
+			next = (*eit).first();
+			next = std::max(m_events_horizon, next);
+		}
+	}
+	waitdur = m_timer->elapsed() - next;
+	return waitdur;
+}
+
+void scheduler::get_pending_events() {
+	time_node::iterator it;
+	time_node::iterator end = m_root->end();
+	for(it=m_root->begin(); it != end; it++) {
+		if((*it).first) (*it).second->get_pending_events(m_events);
+	}
+}
 
 
-class lib::document;
-class common::schema;
-class lib::node;
-class lib::logger;
-
-// Builds the time tree and the time graph.
-// Wraps the time root.
- 
-class timegraph : public time_traits {
-  public:
- public:
-	timegraph(time_node::context_type *ctx, 
-		const lib::document *doc, 
-		const common::schema *sch);
-	~timegraph();
-	
-	time_node* get_root() { return m_root;}
-	const time_node* get_root() const { return m_root;}
-	
-	time_node* detach_root();
-	std::map<int, time_node*>* detach_dom2tn();
-	
-  private:
-    typedef node_navigator<const lib::node> const_nnhelper;
-	time_node* build_time_tree(const lib::node *root);
-	void build_priorities();
-	void build_time_graph();
-	void build_timers_graph();
-	time_node* create_time_node(const lib::node *n, time_node* tparent) const;
-	time_node *get_node_with_id(const std::string& ident) const;
-	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
-	
-	// helpers for creating sync rules
-	void add_begin_sync_rules(time_node *tn);
-	void add_end_sync_rules(time_node *tn);
-	sync_rule* create_impl_syncbase_begin_rule(time_node *tn);
-	sync_rule* create_impl_syncbase_rule(time_node *tn, time_type offset);
-
-	const lib::node* select_switch_child(const node* sn) const;
-	
-	time_node::context_type *m_context;
-	const common::schema *m_schema;
-	const std::map<std::string, custom_test>* m_custom_tests;
-	time_node* m_root;
-	std::map<std::string, time_node*> m_id2tn;
-	std::map<int, time_node*> *m_dom2tn;
-	lib::logger *m_logger;
-};
-
-
-} // namespace smil2
- 
-} // namespace ambulant
-
-#endif // AMBULANT_SMIL2_TIMEGRAPH_H

@@ -474,8 +474,3 @@ timegraph::select_switch_child(const node* sn) const {
 	return 0;
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
-void timegraph::dump(std::ostream& os) {
-	m_root->dump(os);
-}
-#endif
