@@ -137,6 +137,7 @@ class active_renderer : public active_basic_renderer, public ref_counted_obj {
 
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window) = 0;
 	virtual void user_event(const point &where) { clicked_callback(); }
+	virtual abstract_rendering_surface *get_rendering_surface() { return m_dest;}
 	
   protected:
 	virtual void readdone();
