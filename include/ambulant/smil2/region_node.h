@@ -127,11 +127,13 @@ class region_node : public common::region_info {
 	bool get_transparent() const;
 	bool get_showbackground() const;
 	common::zindex_t get_zindex() const { return m_zindex; }
+	bool is_subregion() const { return m_is_subregion; }
 	// And corresponding setting interface
 	void set_fit(common::fit_t f) { m_fit = f; }
 	void set_bgcolor(lib::color_t c, bool transparent, bool inherit);
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; }
+	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
@@ -194,6 +196,7 @@ class region_node : public common::region_info {
 	bool m_showbackground;
 	bool m_inherit_bgcolor;
 	common::surface_template *m_surface_template;
+	bool m_is_subregion;
 	static int node_counter;
 	
 	// XML tree glue

@@ -125,6 +125,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_showbackground(true),
 	m_inherit_bgcolor(false),
 	m_surface_template(NULL),
+	m_is_subregion(false),
 	m_parent(NULL),
 	m_child(NULL),
 	m_next(NULL) {node_counter++;}
