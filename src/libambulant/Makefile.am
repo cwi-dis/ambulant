@@ -1,12 +1,22 @@
-lib_LTLIBRARIES = libambulant.la
+CXXFLAGS=-g -O0 -fno-inline $(PTHREAD_CFLAGS)
 expat_dir = $(top_builddir)/third_party_packages/expat-unix
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include
 
+# See which toolkit-dependent libraries we want to make
 if WITH_COCOA
-toolkit_dep_sources = gui/none/none_gui.cpp gui/cocoa/cocoa_gui.cpp
+toolkit_cocoa_libraries = libambulant_cocoa.la
+libambulant_cocoa_la_SOURCES = gui/cocoa/cocoa_gui.m
 else
-toolkit_dep_sources = gui/cocoa/cocoa_gui.cpp
+toolkit_cocoa_libraries =
 endif
+# if WITH_QT
+# toolkit_qr_libraries = libambulant_qt.la
+# libambulant_qt_la_SOURCES = gui/qt/qt_gui.cpp
+# else
+# toolkit_qt_libraries =
+# endif
+
+lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
@@ -32,4 +42,4 @@ libambulant_la_SOURCES = \
 	\
 	net/datasource.cpp \
 	\
-	$(toolkit_dep_sources)
+	gui/none/none_gui.cpp

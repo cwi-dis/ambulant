@@ -15,7 +15,7 @@
 using namespace ambulant;
 
 lib::passive_region *
-lib::passive_region::subregion(char *name, screen_rect<int> bounds)
+lib::passive_region::subregion(const std::string &name, screen_rect<int> bounds)
 {
 	passive_region *rv = new passive_region(name, this, bounds);
 	m_children.push_back(rv);
@@ -69,7 +69,7 @@ void
 lib::active_region::show(active_renderer *renderer)
 {
 	m_renderer = renderer;
-	lib::logger::get_logger()->trace("active_region.show(0x%x, \"%s\")", (void *)this, m_source->m_name);
+	lib::logger::get_logger()->trace("active_region.show(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
 	need_redraw();
 }
 
@@ -101,6 +101,6 @@ void
 lib::active_region::done()
 {
 	m_renderer = NULL;
-	lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name);
+	lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
 	need_redraw();
 }

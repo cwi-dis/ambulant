@@ -35,25 +35,26 @@ class passive_region {
 		m_bounds(screen_rect<int>(0, 0, 0, 0)),
 		m_parent(NULL),
 		m_cur_active_region(NULL) {}
-	passive_region(char *name)
+	passive_region(const std::string &name)
 	:	m_name(name),
 		m_bounds(screen_rect<int>(0, 0, 0, 0)),
 		m_parent(NULL),
 		m_cur_active_region(NULL) {}
 	~passive_region() {}
 	
-	virtual passive_region *subregion(char *name, screen_rect<int> bounds);
+	virtual void redraw(const screen_rect<int> &r);
+
+	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
 	active_region *activate(event_processor *const evp, const node *node);
   protected:
-	passive_region(char *name, passive_region *parent, screen_rect<int> bounds)
+	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds)
 	:	m_name(name),
 		m_bounds(bounds),
 		m_parent(parent),
 		m_cur_active_region(NULL) {}
-	virtual void redraw(const screen_rect<int> &r);
 	virtual void need_redraw(const screen_rect<int> &r);
 
-  	char *m_name; // for debugging
+  	std::string m_name; // for debugging
   	screen_rect<int> m_bounds;
   	active_region *m_cur_active_region;
   	passive_region *m_parent;
@@ -68,7 +69,7 @@ class passive_region {
 
 class passive_window : public passive_region {
   public:
-  	passive_window(char *name, size bounds)
+  	passive_window(const std::string &name, size bounds)
   	:	passive_region(name, NULL, screen_rect<int>(0, 0, bounds.w, bounds.h)) {}
   	
 	virtual void need_redraw(const screen_rect<int> &r);
@@ -82,7 +83,7 @@ class passive_window : public passive_region {
 
 class window_factory {
   public:
-	virtual passive_window *new_window(char *name, size bounds) = 0;
+	virtual passive_window *new_window(const std::string &name, size bounds) = 0;
 };
 
 class active_region {

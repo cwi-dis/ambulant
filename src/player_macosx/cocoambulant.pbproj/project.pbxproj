@@ -5,6 +5,20 @@
 	};
 	objectVersion = 39;
 	objects = {
+		040189D30517380900C7614F = {
+			expectedFileType = archive.ar;
+			isa = PBXFileReference;
+			name = libambulant_cocoa.a;
+			path = "/Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib/libambulant_cocoa.a";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		040189D40517380900C7614F = {
+			fileRef = 040189D30517380900C7614F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04508B1A0507DED800F0FD74 = {
 			expectedFileType = sourcecode.cpp.objcpp;
 			fileEncoding = 30;
@@ -221,6 +235,8 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
+			buildSettings = {
+			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
@@ -360,6 +376,7 @@
 		2A37F4C3FDCFA73011CA2CEA = {
 			children = (
 				0467E01A0507E9F7007FC763,
+				040189D30517380900C7614F,
 				04508B630507E68200F0FD74,
 				04508B3B0507E27700F0FD74,
 				1058C7A6FEA54F5311CA2CBB,
@@ -476,7 +493,7 @@
 				HEADER_SEARCH_PATHS = ../../installed/include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -578,6 +595,7 @@
 				04508B3C0507E27700F0FD74,
 				04508B640507E68200F0FD74,
 				0467E01B0507E9F7007FC763,
+				040189D40517380900C7614F,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

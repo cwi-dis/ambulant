@@ -21,7 +21,7 @@ gui::none::none_renderer_factory::new_renderer(event_processor *const evp,
 }
 
 passive_window *
-gui::none::none_window_factory::new_window(char *name, size bounds)
+gui::none::none_window_factory::new_window(const std::string &name, size bounds)
 {
 	return new ambulant::lib::passive_window(name, bounds);
 }
