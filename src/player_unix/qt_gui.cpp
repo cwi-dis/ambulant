@@ -147,24 +147,21 @@ qt_gui::qt_gui(const char* title,
 		/* File */
 		QPopupMenu* filemenu = new QPopupMenu (this);
 		assert(filemenu);
-		int open_id = filemenu->insertItem(gettext("&Open"), this, 
+		int open_id = filemenu->insertItem(gettext("&Open..."), this, 
 						   SLOT(slot_open()));
-		int url_id = filemenu->insertItem(gettext("Open &URL"), this, 
+		int url_id = filemenu->insertItem(gettext("Open &URL..."), this, 
 						  SLOT(slot_open_url()));
 #ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
 		// Disable unavailable menu entries
 		filemenu->setItemEnabled(open_id, true);
 		filemenu->setItemEnabled(url_id, false);
 #endif/*QT_NO_FILEDIALOG*/
-		filemenu->insertItem(gettext("&Full Screen"), this,
-				     SLOT(showFullScreen()));
-		filemenu->insertItem(gettext("&Normal"), this,SLOT(showNormal()));
+		filemenu->insertSeparator();
+		
 		filemenu->insertItem(gettext("&Settings"), this,
 				     SLOT(slot_settings_select()));
-#ifdef	WITH_QT_LOGGER
-		filemenu->insertItem(gettext("&Logger"), this,
-				     SLOT(slot_logger_window()));
-#endif/*WITH_QT_LOGGER*/
+		filemenu->insertSeparator();
+		
 		filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
 		m_menubar->insertItem(gettext("&File"), filemenu);
 		
@@ -180,11 +177,28 @@ qt_gui::qt_gui(const char* title,
 		m_playmenu->insertItem(gettext("&Stop"),	this, SLOT(slot_stop()));
 		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
 		
+		/* View */
+		QPopupMenu* viewmenu = new QPopupMenu(this, "View");
+		viewmenu->insertItem(gettext("&Full Screen"), this,
+				     SLOT(showFullScreen()));
+		viewmenu->insertItem(gettext("&Window"), this,SLOT(showNormal()));
+		viewmenu->insertSeparator();
+#ifdef	WITH_QT_LOGGER
+		viewmenu->insertItem(gettext("&Log Window..."), this,
+				     SLOT(slot_logger_window()));
+#endif/*WITH_QT_LOGGER*/
+		m_menubar->insertItem(gettext("&View"), viewmenu);
+		
 		/* Help */
 		QPopupMenu* helpmenu = new QPopupMenu (this, "HelpA");
 		assert(helpmenu);
 		helpmenu->insertItem(gettext("&About AmbulantPlayer"), this,
 				     SLOT(slot_about()));
+		helpmenu->insertSeparator();
+		helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this,
+				     SLOT(slot_homepage()));
+		helpmenu->insertItem(gettext("&Play Welcome Document"), this,
+				     SLOT(slot_welcome()));
 		m_menubar->insertItem(gettext("&Help"), helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
 		m_o_x = 0;
@@ -213,22 +227,25 @@ void
 qt_gui::slot_about() {
 	int but = QMessageBox::information(this, gettext("About AmbulantPlayer"),
 					   about_text,
-					   gettext("Homepage..."),
-					   gettext("Welcome doc"),
-					   gettext("OK"),
-					   2);
-	if (but == 0) {
-		// Show homepage
-		open_web_browser("http://www.ambulantplayer.org");
-	} else if (but == 1) {
-		// Play welcome document
-		char *welcome_doc = find_welcome_doc();
-		if (welcome_doc
-		    && 	openSMILfile(welcome_doc, IO_ReadOnly)) {
+					   gettext("OK"));
+}
+
+void 
+qt_gui::slot_homepage() {
+	open_web_browser("http://www.ambulantplayer.org");
+}
+
+void 
+qt_gui::slot_welcome() {
+	char *welcome_doc = find_welcome_doc();
+	
+	if (welcome_doc) {
+		if( openSMILfile(welcome_doc, IO_ReadOnly)) {
 			slot_play();
 		}
-	} else if (but == 2) {
-		// Do nothing
+	} else {
+		QMessageBox::information(this, m_programfilename, 
+			gettext("Cannot find Welcome.smil document"));
 	}
 }
 
