@@ -34,12 +34,13 @@ lib::win32::event_processor::~event_processor() {
     
 unsigned long 
 lib::win32::event_processor::run() {
-	app_logger->trace("event_processor started");
+	lib::logger* logger = lib::logger::get_logger();
+	logger->trace("event_processor started");
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
-	app_logger->trace("event_processor stopped");
+	logger->trace("event_processor stopped");
 	return 0;
 }
 	

@@ -178,6 +178,8 @@ class node {
 	q_attributes_list m_qattrs;
 	xml_string m_data;
 	
+	const node& operator =(const node& o);
+	
   private:
 	// tree bonds
 	node *m_parent;

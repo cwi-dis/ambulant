@@ -53,6 +53,7 @@ class output_visitor {
 	void write_start_tag_no_children(const Node*& pe);
 	void write_start_tag_with_children(const Node*& pe);
 	void write_end_tag_with_children(const Node*& pe);
+	const output_visitor& operator=(const output_visitor& o);
 };
 
 ////////////////////////
@@ -71,6 +72,7 @@ class trimmed_output_visitor {
 	void write_start_tag_no_children(const Node*& pe);
 	void write_start_tag_with_children(const Node*& pe);
 	void write_end_tag_with_children(const Node*& pe);
+	const trimmed_output_visitor& operator=(const trimmed_output_visitor& o);	
 };
 
 ////////////////////////
@@ -85,6 +87,7 @@ class count_visitor {
 		{if(x.first) m_count++;}
   private:
 	unsigned int& m_count;
+	const count_visitor& operator=(const count_visitor& o);	
 };
 
 ////////////////////////
@@ -108,6 +111,7 @@ class attr_collector {
   private:
 	std::string m_attr;
 	std::map<std::string, Node*>& m_map;
+	const attr_collector& operator=(const attr_collector& o);	
 };
 
 ///////////////////////////////////////////////
@@ -180,7 +184,12 @@ lib::node::get_first_child(const char *name) {
 	node *e = down();
 	if(!e) return 0;
 	if(e->m_qname.second == name) return e;
-	while((e=e->next())) if(e->m_qname.second == name) return e;
+	e = e->next();
+	while(e != 0) {
+		if(e->m_qname.second == name) 
+			return e;
+		e = e->next();
+	}
 	return 0;
 }
 
@@ -273,7 +282,11 @@ lib::node::clone() const {
 	const node *e = down();
 	if(e != 0) {
 		c->append_child(e->clone());
-		while((e = e->next())) c->append_child(e->clone());
+		e = e->next();
+		while(e) {
+			c->append_child(e->clone());
+			e = e->next();
+		}
 	}
 	return c;
 }

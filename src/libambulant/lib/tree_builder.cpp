@@ -108,6 +108,7 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 
 void 
 lib::tree_builder::end_element(const q_name_pair& qn) {
+	(qn); // UNREFERENCED_PARAMETER(qn);
 	if(m_current != 0)
 		m_current = m_current->up();
 	else
@@ -129,10 +130,11 @@ lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::st
 
 void 
 lib::tree_builder::end_prefix_mapping(const std::string& prefix) {
+	(prefix); // UNREFERENCED_PARAMETER(prefix)
 }
 
 void 
 lib::tree_builder::error(const sax_error& error) {
 	m_well_formed = false;
-	app_logger->error("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
+	lib::logger::get_logger()->error("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
 }

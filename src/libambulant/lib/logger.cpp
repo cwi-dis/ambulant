@@ -79,10 +79,6 @@ loggers_manager::~loggers_manager() {
 static 
 loggers_manager loggers_singleton;
 
-// to simplify logging statements
-// when using the root/appl logger
-lib::logger* lib::app_logger = lib::logger::get_logger();
-
 ////////////////////////////////
 
 const std::string app_logger_name = "app_logger";
@@ -206,40 +202,6 @@ lib::logger::get_level_name(int level) {
 		case LEVEL_ERROR: return "ERROR";
 		case LEVEL_FATAL: return "FATAL";
 		default: return "UNKNOWN";
-	}
-}
-////////////////////////////
-// public logging functions
-// The following lobal functions use the 
-// global logger "app_logger" for logging.
-
-void ambulant::log_error_event(const char *format, ...) {
-	lib::logger *logger = lib::logger::get_logger();
-	if(!logger->suppressed(lib::logger::LEVEL_ERROR)) {
-		va_list	args;
-		va_start(args, format);
-		logger->log_va_list(lib::logger::LEVEL_ERROR, format, args);
-		va_end(args);
-	}
-}
-
-void ambulant::log_warning_event(const char *format, ...) {
-	lib::logger *logger = lib::logger::get_logger();
-	if(!logger->suppressed(lib::logger::LEVEL_WARN)) {
-		va_list	args;
-		va_start(args, format);
-		logger->log_va_list(lib::logger::LEVEL_WARN, format, args);
-		va_end(args);
-	}
-}
-
-void ambulant::log_trace_event(const char *format, ...) {
-	lib::logger *logger = lib::logger::get_logger();
-	if(!logger->suppressed(lib::logger::LEVEL_TRACE)) {
-		va_list	args;
-		va_start(args, format);
-		logger->log_va_list(lib::logger::LEVEL_TRACE, format, args);
-		va_end(args);
 	}
 }
 

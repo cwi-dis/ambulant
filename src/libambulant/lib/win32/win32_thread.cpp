@@ -105,7 +105,7 @@ bool lib::win32::thread::exit_requested() const {
 DWORD __stdcall lib::win32::thread::threadproc(LPVOID pParam) {
 	thread* p = static_cast<thread*>(pParam);
 	unsigned long dw = p->run();
-	ExitThread(dw);
+	//ExitThread(dw);
 	return dw;
 }
 

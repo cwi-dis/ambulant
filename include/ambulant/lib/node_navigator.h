@@ -83,7 +83,11 @@ inline const N* node_navigator<N>::last_child(const N *n) {
 	const N *e = n->down();
 	if(!e) return 0;
 	const N *last = e;
-	while((e = e->next())) last = e;
+	e = e->next();
+	while(e) {
+		last = e;
+		e = e->next();
+	}
 	return last;
 }
 
@@ -93,7 +97,11 @@ inline void node_navigator<N>::get_children(const N *n, std::list<const N*>& l) 
 	const N *e = n->down();
 	if(!e) return;
 	l.push_back(e);
-	while((e = e->next())) l.push_back(e);
+	e = e->next();
+	while(e) {
+		l.push_back(e);
+		e = e->next();
+	}
 }
 
 template <class N>
@@ -139,7 +147,8 @@ inline N* node_navigator<N>::detach(N *n) {
 	}
 
 	N *prev = e;
-	while((e = e->next())) {
+	e = e = e->next();
+	while(e) {
 		if(e == n) {
 			// set previous to next
 			prev->next(n->next());
@@ -150,6 +159,7 @@ inline N* node_navigator<N>::detach(N *n) {
 			return n;
 		}
 		prev = e;
+		e = e->next();
 	}
 	assert(0);
 	return 0;

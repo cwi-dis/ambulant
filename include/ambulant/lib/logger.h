@@ -20,15 +20,6 @@
 
 namespace ambulant {
 
-// public ambulant logging functions
-void log_error_event(const char *format, ...);
-void log_warning_event(const char *format, ...);
-void log_trace_event(const char *format, ...);
-
-template<class T>
-void log_trace_event(const T& obj);
-
-
 namespace lib {
 
 class logger {
@@ -64,11 +55,9 @@ class logger {
  	}
  	
  	// specialization for strings
- 	template <>
  	void debug(const std::string& s) {
  		log_cstr(LEVEL_DEBUG, s.c_str());
   	} 
- 	template <>
   	void trace(const std::string& s) {
  		log_cstr(LEVEL_TRACE, s.c_str());
   	} 
@@ -109,10 +98,6 @@ class logger {
 	
 };
 
-// to simplify logging statements
-// when using the root/appl logger
-extern logger* app_logger;
-
 //////////////////////////////
 // Inline part of the implementation
 
@@ -145,13 +130,6 @@ inline bool logger::suppressed(int level) {
 
 
 } // namespace lib
-
-template<class T>
-void log_trace_event(const T& obj) {
-	lib::logger *logger = lib::logger::get_logger();
-	if(!logger->suppressed(lib::logger::LEVEL_TRACE))
-		logger->log_obj(lib::logger::LEVEL_TRACE, obj);
-}
 
 } // namespace ambulant
 
