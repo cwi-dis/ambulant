@@ -76,7 +76,7 @@ class cocoa_window : public common::abstract_window {
 	void mouse_region_changed();
 	
 	void redraw(const lib::screen_rect<int> &r);
-	void user_event(const lib::point &where);
+	void user_event(const lib::point &where, int what = 0);
 
 	void *view() { return m_view; }
 	const common::gui_region &get_mouse_region() { return m_region->get_mouse_region(); }

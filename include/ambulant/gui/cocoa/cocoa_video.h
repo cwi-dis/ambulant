@@ -88,7 +88,7 @@ class cocoa_video_renderer :
 	renderer *get_renderer() { return this; }
 	void set_surface(surface *dest) { m_dest = dest; }
 	surface *get_surface() { return m_dest;}
-	void user_event(const point &where) { clicked_callback(); }
+	void user_event(const point &where, int what = 0) { user_event_callback(what); }
 	void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
 	std::string m_url;

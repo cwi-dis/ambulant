@@ -119,19 +119,28 @@ cocoa_window::redraw(const screen_rect<int> &r)
 }
 
 void
-cocoa_window::user_event(const point &where)
+cocoa_window::user_event(const point &where, int what)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d))", (void *)this, where.x, where.y);
-	m_region->user_event(where);
+	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
+	m_region->user_event(where, what);
 }
 
 void
 cocoa_window::mouse_region_changed()
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
+	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
 	AmbulantView *my_view = (AmbulantView *)m_view;
-        NSWindow *my_window = [my_view window];
+	NSWindow *my_window = [my_view window];
+	/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
 	[my_window invalidateCursorRectsForView: my_view];
+	if (![my_window areCursorRectsEnabled]) {
+		/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x areCursorRectsEnabled], calling enableCursorRects", (void*)my_window);
+		[my_window enableCursorRects];
+	}
+	if (![my_window isKeyWindow]) {
+		/*AM_DBG*/ logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x isKeyWindow], calling makeKeyWindow", (void*)my_window);
+		[my_window makeKeyWindow];
+	}
 }
 
 playable *
@@ -290,12 +299,16 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		const ambulant::common::gui_region &mrgn = ambulant_window->get_mouse_region();
 		want_events = !mrgn.is_empty();
 	}
-	AM_DBG NSLog(@"resetCursorRects wantevents=%d", (int)want_events);
-	if (want_events) [self addCursorRect: [self visibleRect] cursor: [NSCursor pointingHandCursor]];
+	/*AM_DBG*/ NSLog(@"0x%x resetCursorRects wantevents=%d", (void*)self, (int)want_events);
+	if (want_events) 
+		[self addCursorRect: [self bounds] cursor: [NSCursor pointingHandCursor]];
+	else
+		[self addCursorRect: [self bounds] cursor: [NSCursor crosshairCursor]];
 }
 
 - (void)mouseDown: (NSEvent *)theEvent
 {
+	/*DBG*/[[self window] invalidateCursorRectsForView: self];
 	NSPoint where = [theEvent locationInWindow];
 #ifndef USE_COCOA_BOTLEFT
 	// Mouse clicks are not flipped, even if the view is

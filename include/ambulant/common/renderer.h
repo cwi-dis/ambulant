@@ -85,6 +85,12 @@ class active_playable : public playable {
     void started_callback() const { m_context->started(m_cookie, 0); };
     void stopped_callback() const { m_context->stopped(m_cookie, 0); };
     void clicked_callback() const { m_context->clicked(m_cookie, 0); };
+    void pointed_callback() const { m_context->pointed(m_cookie, 0); };
+	void user_event_callback(int what) const {
+		if (what == user_event_click) m_context->clicked(m_cookie, 0);
+		else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
+		else assert(0);
+	}
     
     playable_notification *const m_context;
     cookie_type m_cookie;
@@ -133,7 +139,7 @@ class active_renderer : public active_basic_renderer {
 	virtual void wantclicks(bool want);
 
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const lib::point &where, int what = 0) { clicked_callback(); }
+	virtual void user_event(const lib::point &where, int what = 0) { user_event_callback(what); }
 	virtual void set_surface(surface *dest) { m_dest = dest; }
 	virtual surface *get_surface() { return m_dest;}
 	virtual renderer *get_renderer() { return this; }

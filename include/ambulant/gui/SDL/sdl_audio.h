@@ -97,7 +97,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
     void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
 	void wantclicks(bool want) {};
-    void user_event(const lib::point &where) {};
+    void user_event(const lib::point &where, int what=0) {};
 	void playdone();
 
 	void set_surface(common::surface *dest) { abort(); }
