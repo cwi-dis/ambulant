@@ -66,7 +66,7 @@ static const char* discrete_leafs[] = {
 };
 
 static const char* continuous_leafs[] = {
-	"audio", "animation", "video", "textstream", "area"
+	"audio", "animation", "video", "textstream", "area", "a"
 };
 
 static const char* animate_elements[] = {

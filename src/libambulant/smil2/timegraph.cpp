@@ -221,6 +221,8 @@ void timegraph::build_time_graph() {
 		add_end_sync_rules(tn);
 		if(tn->is_area() && tn->get_time_attrs()->get_actuate() == actuate_onrequest)
 			tn->set_want_activate_event(true);
+		if (tn->has_a_parent())
+			tn->set_want_activate_event(true);
 	}
 }
 
