@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-16-june-03">
-<h1><a name="jack-jansen-16-june-03">Jack Jansen, 16-June-03</a></h1>
+<div class="section" id="jack-jansen-20-june-03">
+<h1><a name="jack-jansen-20-june-03">Jack Jansen, 20-June-03</a></h1>
 <p>Here are some general (unstructured) thoughts on the Ambulant design.</p>
 </div>
 <div class="section" id="design-process">
@@ -33,6 +33,15 @@ the initial implementation by re-using the existing GRiNS scheduler.</p>
 it turns out it is too heavyweight. SWIG is a possible alternative,
 or (for Python) a SWIG/Bgen hybrid.</p>
 </div>
+<div class="section" id="terminology">
+<h1><a name="terminology">Terminology</a></h1>
+<p>We need to settle on terminology for use in the design documentation. There
+are various terms (&quot;event&quot; and &quot;scheduler&quot; come to mind) that could mean four
+or more different things in our context.</p>
+<p>We need a term for &quot;stateless from an external point of view&quot;. There are
+various objects such as data sources that do have lots of internal state
+(such as caching information) but appear immutable/stateless from the outside.</p>
+</div>
 <div class="section" id="source-code-conventions">
 <h1><a name="source-code-conventions">Source code conventions</a></h1>
 <p>Here's a somewhat random list of source code conventions that we have decided
@@ -49,6 +58,8 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
 <li>we have a toplevel namespace ambulant, with a second level of namespaces
 under that</li>
 <li>semi-private classes go into into a namespace named &quot;detail&quot;.</li>
+<li>Template type parameters start with an upper case letter
+(as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</li>
 </ul>
 </div>
 <div class="section" id="run-time-system">
