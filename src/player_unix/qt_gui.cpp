@@ -558,6 +558,13 @@ qt_gui::customEvent(QCustomEvent* e) {
 //	std::cerr<<id<<std::endl;
 //	std::cerr<<id+" type: "<<e->type()<<" msg:"<<msg<<std::endl;
 	switch (e->type()-qt_logger::CUSTOM_OFFSET) {
+	case qt_logger::CUSTOM_NEW_DOCUMENT:
+		if (m_mainloop) {
+			bool start = msg[0] == 'S' ? true : false;
+			bool old = msg[2] == 'O' ? true : false;
+			m_mainloop->player_start(&msg[4], start, old);
+		}
+		break;
 	case qt_logger::CUSTOM_LOGMESSAGE:
 		qt_logger::get_qt_logger()->
 			get_logger_window()->append(msg);
@@ -577,7 +584,7 @@ qt_gui::customEvent(QCustomEvent* e) {
 }
 
 void
-qt_gui::show_message(int level, char* msg) {
+qt_gui::internal_message(int level, char* msg) {
 	int msg_id = level+qt_logger::CUSTOM_OFFSET;
   	qt_message_event* qme = new qt_message_event(msg_id, msg);
 #ifdef	QT_THREAD_SUPPORT

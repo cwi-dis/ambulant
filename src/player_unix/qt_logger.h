@@ -72,7 +72,8 @@ class qt_logger {
  public:
 	enum custom_events {
 		CUSTOM_OFFSET=10000,
-		CUSTOM_LOGMESSAGE=-1
+		CUSTOM_LOGMESSAGE=-1,
+		CUSTOM_NEW_DOCUMENT=-2
 	};
 	static qt_logger* get_qt_logger();
 	static void show_message(int level, const char *message);

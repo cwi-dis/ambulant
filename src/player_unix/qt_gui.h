@@ -112,11 +112,13 @@ class qt_gui : public QWidget {
 
 	bool openSMILfile(QString smilfilename, int mode);
 
+	// send a QEvent to the gui thread
+	void internal_message(int level, char* msg);
+
 	// signal interfaces
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
 	void player_start(QString,bool,bool);
-	void show_message(int level, char* msg);
 
 /*TMP*/	qt_mainloop* m_mainloop;
    private:

@@ -80,7 +80,7 @@
 using namespace ambulant;
 using namespace gui::qt;
 
-// #define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -92,8 +92,10 @@ open_web_browser(const std::string &href)
 	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
 	char *browserlist = getenv("BROWSER");
 	if (browserlist == NULL) {
-		lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
-		return;
+	//	lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
+	// return;
+		// currently common available browsers on Linux
+		browserlist = "firefox:mozilla:opera:netscape";
 	}
 	char *colon = index(browserlist, ':');
 	if (colon) *colon = 0; // Brrrr...
@@ -336,31 +338,41 @@ qt_mainloop::close(common::player *p)
 void
 qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
 {
-	QString document_name(newdoc.get_url().c_str());
-	AM_DBG m_logger->trace("qt_mainloop: implementing: open \"%s\"",document_name.ascii());
-	player_start(document_name, start, old);
+  //X	QString document_name(newdoc.get_url().c_str());
+  //X	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",document_name.ascii());
+	AM_DBG m_logger->trace("qt_mainloop::open(\"%s\")",
+			       newdoc.get_url().c_str());
+ 	// Parse the provided URL. 
+  //X	m_doc = create_document(document_name);
+ 	m_doc = create_document(newdoc.get_url().c_str());
+	if(!m_doc) {
+		m_logger->error(gettext("%s: Cannot build DOM tree"), 
+  //X				document_name.ascii());
+				newdoc.get_url().c_str());
+		return;
+	}
+	// send msg to gui thread
+	std::string msg("");
+	msg += start ? "S-" : "  ";
+	msg += old   ? "O-" : "  ";
+  //X	msg += document_name.ascii();
+	msg += newdoc;
+	m_gui->internal_message(qt_logger::CUSTOM_NEW_DOCUMENT,
+				strdup(msg.c_str()));
 }
 
 void
 qt_mainloop::player_start(QString document_name, bool start, bool old)
 {
 	AM_DBG m_logger->debug("player_start(%s,%d,%d)",document_name.ascii(),start,old);
-	// Parse the provided URL. 
-	m_doc = create_document(document_name);
-	if(!m_doc) {
-		m_logger->error(gettext("%s: Cannot build DOM tree"), 
-				document_name.ascii());
-		return;
-	}
 	if (old) {
 		m_player->stop();
-		//TBD delete m_player;
+		delete m_player;
 		m_player = create_player(document_name);
 		if (start)
 			m_player->start();
 		return;
 	}
-/* Next code failed test
 	if(m_player) {
 	// Push the old frame on the stack
 		m_player->pause();
@@ -374,10 +386,10 @@ qt_mainloop::player_start(QString document_name, bool start, bool old)
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s",
-			       document_name);
+			       document_name.ascii());
 	m_player = create_player(document_name);
-//TBD	if(start) {
+	if(start) {
 		m_player->start();
-//TBD	}
-*/
+	}
 }
+

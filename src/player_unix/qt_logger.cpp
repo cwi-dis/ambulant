@@ -124,7 +124,7 @@ qt_logger::qt_logger()
 		if (m_log_FILE == NULL) {
 			logger->warn(gettext("Cannot open logfile: %s"), 
 				     prefs->m_log_file.c_str());
-		}
+		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	// Connect logger to our message displayer and output processor
 	//int loglevel = common::preferences::get_preferences()->m_log_level;
@@ -164,13 +164,13 @@ qt_logger::log(QString logstring) {
 		fprintf(m_log_FILE, "%s", (const char*)logstring);
 	}
 	char* message = strdup(logstring.ascii());
-	s_qt_logger->m_gui->show_message(-1, message);
+	s_qt_logger->m_gui->internal_message(-1, message);
 }
 
 void
 qt_logger::show_message(int level, const char *msg) {
 	char* message = strdup(msg);
-	s_qt_logger->m_gui->show_message(level, message);
+	s_qt_logger->m_gui->internal_message(level, message);
 }
 
 QTextEdit*
