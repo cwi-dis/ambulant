@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -60,6 +60,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
@@ -101,6 +102,86 @@
 			<File
 				RelativePath=".\get_version.cpp">
 			</File>
+			<Filter
+				Name="gui"
+				Filter="">
+				<Filter
+					Name="none"
+					Filter="">
+					<File
+						RelativePath=".\gui\none\none_gui.cpp">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="lib"
+				Filter="">
+				<File
+					RelativePath=".\lib\colors.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\delta_timer.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\expat_parser.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\logger.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\node.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\player.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\region.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\renderer.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\skeleton.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\timeline_builder.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\timelines.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\tree_builder.cpp">
+				</File>
+				<Filter
+					Name="win32"
+					Filter="">
+					<File
+						RelativePath=".\lib\win32\win32_asb.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_error.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_event_processor.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_factory.cpp">
+					</File>
+					<File
+						RelativePath=".\lib\win32\win32_thread.cpp">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="net"
+				Filter="">
+				<File
+					RelativePath=".\net\url.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -109,15 +190,177 @@
 			<File
 				RelativePath="..\..\include\ambulant.h">
 			</File>
+			<Filter
+				Name="ambulant"
+				Filter="">
+				<Filter
+					Name="gui"
+					Filter="">
+					<Filter
+						Name="none"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\gui\none\none_gui.h">
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="lib"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\lib\abstract_mtsync.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\asb.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\callback.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\colors.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\delta_timer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\document.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\event.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\event_processor.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\expat_parser.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\filesys.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\gtypes.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\logger.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\mtsync.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\node_iterator.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\node_navigator.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\nscontext.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\parse_attrs.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\refcount.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\region.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\region_dim.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\region_eval.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\region_node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\renderer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\sax_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\sax_types.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\skeleton.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\string_util.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\thread.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\timeline_builder.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\timelines.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\timer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\vnode.h">
+					</File>
+					<Filter
+						Name="win32"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_asb.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_error.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_event_processor.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_mtsync.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_thread.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\lib\win32\win32_timer.h">
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="net"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\net\connection.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\net\datasource.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\net\socket.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\net\url.h">
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
