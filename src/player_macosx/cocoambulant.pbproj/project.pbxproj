@@ -193,8 +193,6 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
-			buildSettings = {
-			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
@@ -437,7 +435,7 @@
 				04508B280507E0A700F0FD74,
 			);
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "/Users/jack/src/ambulant-10.3/installed/lib";
+				FRAMEWORK_SEARCH_PATHS = ../../installed/lib;
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -445,10 +443,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "/Users/jack/src/ambulant-10.3/installed/include";
+				HEADER_SEARCH_PATHS = ../../installed/include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /Volumes/Vuur/Users/jack/src/ambulant-10.3/installed/lib /Volumes/Vuur/Users/jack/src/ambulant-10.3/third_party_packages/expat-unix/lib";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../installed/lib ../../third_party_packages/expat-unix/lib";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
