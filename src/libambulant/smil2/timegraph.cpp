@@ -219,7 +219,7 @@ void timegraph::build_time_graph() {
 		time_node *tn = (*it).second;
 		add_begin_sync_rules(tn);
 		add_end_sync_rules(tn);
-		if(tn->get_time_attrs()->get_tag()=="area")
+		if(tn->is_area() && tn->get_time_attrs()->get_actuate() == actuate_onrequest)
 			tn->set_want_activate_event(true);
 	}
 }

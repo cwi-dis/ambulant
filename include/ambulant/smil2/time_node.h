@@ -180,6 +180,9 @@ class time_node : public schedulable {
 	void resume(qtime_type timestamp);
 	void check_repeat(qtime_type timestamp);
 	
+	// Anchors and areas
+	void follow_link(qtime_type timestamp);
+	
 	// Playable commands
 	common::playable *create_playable();
 	void start_playable(time_type offset = 0);

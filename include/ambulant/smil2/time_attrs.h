@@ -109,6 +109,9 @@ enum restart_behavior { restart_always, restart_when_not_active, restart_never,
 	restart_default, restart_inherit};
 std::string repr(restart_behavior f);
 
+enum actuate { actuate_onload, actuate_onrequest};
+std::string repr(actuate f);
+
 class lib::node;
 class lib::logger;
 
@@ -211,6 +214,11 @@ class time_attrs : public time_traits {
 	void parse_restart();
 	restart_behavior get_default_restart();
 	restart_behavior get_restart() const { return m_restart;}
+
+	//
+	actuate m_actuate;
+	void parse_actuate();
+	actuate get_actuate() const { return m_actuate;}
 	
 	// Time manipulations
 	double m_speed;

@@ -704,6 +704,11 @@ void time_node::start_playable(time_type offset) {
 			np->start(time_type_to_secs(offset()));
 		} 
 	}
+	if (is_area() && m_attrs.get_actuate() == actuate_onload) {
+		AM_DBG m_logger->trace("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
+		follow_link(timestamp);
+	}
 }
 
 void time_node::seek_playable(time_type offset) {
@@ -1425,10 +1430,7 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 		timestamp.as_doc_time_value());
 	on_add_instance(timestamp, tn_activate_event, timestamp.second);
 	if(is_area()) {
-		const char *href = m_node->get_attribute("href");
-		if(href && strcmp(href, "nohref") != 0) {
-			m_context->show_link(m_node, href);
-		}
+		follow_link(timestamp);
 	} 
 }
 
@@ -2183,5 +2185,12 @@ void excl_queue::assert_invariants() const {
 	// Assert:
 	// An element may not appear in the queue more than once
 	assert(s.size() == count);
+}
+
+void time_node::follow_link(qtime_type timestamp) {
+	const char *href = m_node->get_attribute("href");
+	if(href && strcmp(href, "nohref") != 0) {
+		m_context->show_link(m_node, href);
+	}
 }
 

@@ -95,6 +95,7 @@ void time_attrs::parse_time_attrs() {
 	parse_endsync();
 	parse_fill();
 	parse_restart();
+	parse_actuate();
 	parse_transitions();
 	parse_time_manipulations();
 }
@@ -562,6 +563,18 @@ void time_attrs::parse_restart() {
 		m_tag.c_str(), m_id.c_str(), repr(m_restart).c_str());
 }
 
+// actuate ::= onLoad | onRequest
+void time_attrs::parse_actuate() {
+	m_actuate = actuate_onrequest;
+	const char *p = m_node->get_attribute("actuate");
+	if(!p) return;
+	std::string actuate = trim(p);
+	if(actuate == "onLoad") m_actuate = actuate_onload;
+	else if(actuate == "onRequest") m_actuate = actuate_onrequest;
+	AM_DBG m_logger->trace("%s[%s].actuate = [%s]", 
+		m_tag.c_str(), m_id.c_str(), repr(m_actuate).c_str());
+}
+
 // Returns the restartDefault attribute active for this. 
 // restartDefault := always | whenNotActive | never | inherit 
 // Applicable for an element and all descendents
@@ -754,6 +767,15 @@ std::string smil2::repr(restart_behavior f) {
 		case restart_never: return "never";
 		case restart_default: return "default";
 		case restart_inherit: return "inherit";
+	}
+	assert(false);
+	return "";
+}
+
+std::string smil2::repr(actuate f) {
+	switch(f) {
+		case actuate_onload: return "onLoad";
+		case actuate_onrequest: return "onRequest";
 	}
 	assert(false);
 	return "";
