@@ -16,7 +16,7 @@ copy %TPP_HOME%\lpng125\projects\msvc\win32\libpng\dll\libpng13.lib %AMB_HOME%\l
 
 REM ZLib DLL
 copy %TPP_HOME%\lpng125\projects\msvc\win32\zlib\dll\zlib.dll %AMB_HOME%\bin\win32\zlib.dll
-copy %TPP_HOME%\lpng125\projects\msvc\win32\zlib\dll\zlib.dll %AMB_HOME%\lib\win32\zlib.lib
+copy %TPP_HOME%\lpng125\projects\msvc\win32\zlib\dll\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
 
 REM JPEG static library
 copy %TPP_HOME%\jpeg\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib
