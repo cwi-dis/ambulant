@@ -48,6 +48,32 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/qsound/Makefile
 	third_party_packages/Makefile])
 	
+#
+# Do we want plugin support?
+#
+AC_MSG_CHECKING(for --with-ltdl-plugins)
+AC_ARG_WITH([ltdl-plugins],[
+    AC_HELP_STRING([--without-ltdl-plugins],
+                   [Disable plugin support (based on libltdl)])
+    ],[
+    case "${withval}" in
+    yes)    ;;
+    no)     unset LIBLTDL
+            UNSET INCLTDL
+            ;;
+    *)      AC_MSG_ERROR("No value allowed for --with-ltdl-plugins")
+            ;;
+    esac
+    ])
+if test "x$LIBLTDL" = x;
+then
+    with_ltdl=false
+else
+    with_ltdl=true
+    AC_DEFINE(WITH_LTDL_PLUGINS, 1, [Define to use libltdl-based plugins])
+fi
+AM_CONDITIONAL(WITH_LTDL_PLUGINS, test $with_ltdl = true)
+AC_MSG_RESULT($with_ltdl)
 
 #
 # Find expat
