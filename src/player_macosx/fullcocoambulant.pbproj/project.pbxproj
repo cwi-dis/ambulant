@@ -14,9 +14,9 @@
 			);
 			isa = PBXGroup;
 			name = libambulant;
-			path = "/Volumes/sap-macosx/Users/jack/src/ambulant/src/libambulant";
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../libambulant;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		0444D320051F2EEF0010C447 = {
 			expectedFileType = sourcecode.cpp.cpp;
@@ -600,6 +600,8 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
+			buildSettings = {
+			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
