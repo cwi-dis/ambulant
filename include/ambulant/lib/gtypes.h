@@ -187,9 +187,16 @@ class basic_rect {
 		x += p.x; y += p.y;
 	}
 	
-	basic_rect<T, S> inset(const basic_rect<T, S>& p) {
+	basic_rect<T, S> innercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
-		rv.translate(top_left());
+		rv &= this;
+		rv.translate(left_top());
+		return rv;
+	}
+	
+	basic_rect<T, S> outercoordinates(const basic_rect<T, S>& p) const {
+		basic_rect<T, S> rv = p;
+		rv.translate(-left_top());
 		rv &= this;
 		return rv;
 	}
@@ -286,9 +293,6 @@ class screen_rect {
 	screen_rect() 
 	:	m_left(0), m_top(0), m_right(0), m_bottom(0) {}
 	
-	screen_rect(T l, T t, T r, T b) 
-	:	m_left(l), m_top(t), m_right(r), m_bottom(b) {}
-	
 	screen_rect(const screen_rect<T>& o) 
 	:	m_left(o.m_left), m_top(o.m_top), m_right(o.m_right), m_bottom(o.m_bottom) {}
 	
@@ -360,10 +364,17 @@ class screen_rect {
 		m_top += p.y; m_bottom += p.y;
 	}
 
-	screen_rect<T> inset(const screen_rect<T>& p) {
+	screen_rect<T> outercoordinates(const screen_rect<T>& p) const {
 		screen_rect<T> rv = p;
-		rv.translate(top_left());
-		rv &= this;
+		rv.translate(left_top());
+		rv &= *this;
+		return rv;
+	}
+		
+	screen_rect<T> innercoordinates(const screen_rect<T>& p) const {
+		screen_rect<T> rv = p;
+		rv &= *this;
+		rv.translate(-left_top());
 		return rv;
 	}
 		
