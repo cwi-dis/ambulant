@@ -24,7 +24,7 @@ extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
 	-L$(FFMPEG_FORMAT_LIB) -lavformat -lz
 extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
-	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_FORMAT
+	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT
 else
 extra_ffmpeg_LDADD=
 extra_ffmpeg_ldflags=
@@ -79,4 +79,3 @@ install-exec-hook: cocoambulant_bundle
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
 	mkdir -p $(DESTDIR)/Applications/$(APPNAME).app
 	cp -r $(APPNAME).app $(DESTDIR)/Applications
-	
