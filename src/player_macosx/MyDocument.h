@@ -70,4 +70,7 @@
 - (void *)view;
 - (void)startPlay: (id)dummy;
 - (void)close;
+- (void)fixMouse: (id)dummy;
+- (void)resetMouse: (id)dummy;
+
 @end

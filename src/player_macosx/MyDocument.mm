@@ -85,6 +85,9 @@
 {
     [super windowControllerDidLoadNib:aController];
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
+	[[view window] makeFirstResponder: view];
+	[[view window] setAcceptsMouseMovedEvents: YES];
+
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *filename = [self fileName];
@@ -221,5 +224,25 @@
 	if (myMainloop) myMainloop->release();
 	myMainloop = NULL;
 	[super close];
+}
+
+- (void)fixMouse: (id)dummy
+{
+	int cursor = myMainloop->get_cursor();
+	AM_DBG NSLog(@"Fixing mouse to %d", cursor);
+	if (cursor == 0) {
+		if ([NSCursor currentCursor] != [NSCursor arrowCursor])
+			[[NSCursor arrowCursor] set];
+	} else if (cursor == 1) {
+		if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
+			[[NSCursor pointingHandCursor] set];
+	} else {
+		NSLog(@"Warning: unknown cursor index %d", cursor);
+	}
+}
+
+- (void)resetMouse: (id)dummy
+{
+	myMainloop->set_cursor(0);
 }
 @end

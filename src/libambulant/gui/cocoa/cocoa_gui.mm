@@ -130,19 +130,32 @@ void
 cocoa_window::mouse_region_changed()
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", get_mouse_region().is_empty());
+	bool is_empty = get_mouse_region().is_empty();
+	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", is_empty);
+		
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: [0x%x invalidateCursorRectsForView: 0x%x]", (void *)my_window, (void*)my_view);
-	[my_window invalidateCursorRectsForView: my_view];
-	if (![my_window areCursorRectsEnabled]) {
-		AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x areCursorRectsEnabled], calling enableCursorRects", (void*)my_window);
-		[my_window enableCursorRects];
+	AM_DBG NSLog(@"my_window acceptsMouseMovedEvents = %d", [my_window acceptsMouseMovedEvents]);
+	// Synthesize a mouseMoved event
+	NSPoint where = [my_window mouseLocationOutsideOfEventStream];
+	if (!NSPointInRect(where, [my_view frame])) {
+		AM_DBG NSLog(@"mouse outside our frame");
+		return;
 	}
-	if (![my_window isKeyWindow]) {
-		AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: not [0x%x isKeyWindow], calling makeKeyWindow", (void*)my_window);
-		[my_window makeKeyWindow];
-	}
+	// Convert from window to frame coordinates
+	where.x -= NSMinX([my_view frame]);
+	where.y -= NSMinY([my_view frame]);
+#ifndef USE_COCOA_BOTLEFT
+	// Mouse clicks are not flipped, even if the view is
+	where.y = NSMaxY([my_view bounds]) - where.y;
+#endif
+	AM_DBG NSLog(@"pseudoMouseMoved at (%f, %f)", where.x, where.y);
+	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	// XXX Set correct cursor
+	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: my_view];
+	user_event(amwhere, 1);
+	// XXX Set correct cursor
+	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: my_view];
 }
 
 playable *
@@ -223,14 +236,6 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #ifdef __OBJC__
 @implementation AmbulantView
 
-- (id)initWithFrame:(NSRect)frameRect
-{
-    [super initWithFrame:frameRect];
-    ambulant_window = NULL;
-    AM_DBG NSLog(@"AmbulantView.initWithFrame: self=0x%x, rect=(%f, %f, %f, %f)", self, NSMinX(frameRect), NSMinY(frameRect), NSWidth(frameRect), NSHeight(frameRect));
-    return self;
-}
-
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
 {
 #ifdef USE_COCOA_BOTLEFT
@@ -270,6 +275,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window
 {
+//	[[self window] setAcceptsMouseMovedEvents: true];
     ambulant_window = window;
 }
 
@@ -294,23 +300,8 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #endif
 }
 
-- (void)resetCursorRects
-{
-	bool want_events = false;
-	if ( ambulant_window ) {
-		const ambulant::common::gui_region &mrgn = ambulant_window->get_mouse_region();
-		want_events = !mrgn.is_empty();
-	}
-	AM_DBG NSLog(@"0x%x resetCursorRects wantevents=%d", (void*)self, (int)want_events);
-	if (want_events) 
-		[self addCursorRect: [self bounds] cursor: [NSCursor pointingHandCursor]];
-	else
-		[self addCursorRect: [self bounds] cursor: [NSCursor crosshairCursor]];
-}
-
 - (void)mouseDown: (NSEvent *)theEvent
 {
-	/*DBG*/[[self window] invalidateCursorRectsForView: self];
 	NSPoint where = [theEvent locationInWindow];
 	// Is it in our frame?
 	if (!NSPointInRect(where, [self frame])) {
@@ -327,6 +318,29 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	AM_DBG NSLog(@"mouseDown at (%f, %f)", where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
+}
+
+- (void)mouseMoved: (NSEvent *)theEvent
+{
+	NSPoint where = [theEvent locationInWindow];
+	// Is it in our frame?
+	if (!NSPointInRect(where, [self frame])) {
+		AM_DBG NSLog(@"mouseMoved outside our frame");
+		return;
+	}
+	// Convert from window to frame coordinates
+	where.x -= NSMinX([self frame]);
+	where.y -= NSMinY([self frame]);
+#ifndef USE_COCOA_BOTLEFT
+	// Mouse clicks are not flipped, even if the view is
+	where.y = NSMaxY([self bounds]) - where.y;
+#endif
+	AM_DBG NSLog(@"mouseMoved at (%f, %f)", where.x, where.y);
+	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
+	// XXX Set correct cursor
+	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
 }
 @end
 #endif // __OBJC__

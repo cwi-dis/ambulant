@@ -72,6 +72,9 @@ class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
 	
+	int get_cursor() const {return m_player?m_player->get_cursor():0; };
+	void set_cursor(int cursor) { if (m_player) m_player->set_cursor(cursor); }
+	
 	void show_file(const std::string& href);
 	
 	static void set_preferences(std::string &path);

@@ -85,6 +85,9 @@ class player {
 	virtual bool is_playing() const { return false;}
 	virtual bool is_pausing() const { return false;}
 	virtual bool is_done() const { return false;}
+	
+	virtual int get_cursor() const { return 0; }
+	virtual void set_cursor(int cursor) {}
 		
 //	void set_speed(double speed);
 //	double get_speed() const;
