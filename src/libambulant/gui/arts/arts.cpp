@@ -46,7 +46,6 @@
  *
  */
 
- 
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -69,19 +68,21 @@ gui::arts::arts_renderer_factory::new_renderer(
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::passive_region *const dest)
+		lib::abstract_rendering_surface *const dest)
 {
 	active_renderer *rv;
 	xml_string tag = node->get_qname().second;
+     AM_DBG logger::get_logger()->trace("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
-		rv = (active_renderer *) new arts_active_audio_renderer(context, cookie, node, evp, src);
+		rv = (active_renderer *) new gui::arts::arts_active_audio_renderer(context, cookie, node, evp, src);
 		AM_DBG logger::get_logger()->trace("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
-	// logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
+	AM_DBG logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
                 return NULL;
 	}
 	return rv;
 }
+
 
 
 } // end namespace ambulant

@@ -46,7 +46,6 @@
  *
  */
 
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -64,7 +63,10 @@ gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
 	net::passive_datasource *src)
 :	active_renderer(context, cookie, node, evp, src, NULL)
 {
-
+    arts_setup(44100,16,1,"arts_audio");
+    m_rate = 44100;
+    m_channels = 1;
+    m_bits=16;
 }
 
 int
@@ -74,6 +76,7 @@ gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channe
     if (!m_stream) {
     err = arts_init();
     if (err < 0) {
+    AM_DBG lib::logger::get_logger()->error("active_renderer.arts_setup(0x%x): %s", (void *)this, arts_error_text(err));
         return err;
     }
 
@@ -87,13 +90,19 @@ gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channe
 gui::arts::arts_active_audio_renderer::~arts_active_audio_renderer()
 {
     arts_close_stream(m_stream);
+    
     arts_free();
 }
 
 int
 gui::arts::arts_active_audio_renderer::arts_play(char *data, int size)
 {
-    return ::arts_write(m_stream, data, size);
+    int err;
+    err = arts_write(m_stream, data, size);
+    AM_DBG lib::logger::get_logger()->error("active_renderer.arts_play(0x%x): %s", (void *)this, arts_error_text(err));
+    arts_close_stream(m_stream);
+    arts_free();
+    return err;
 }
 
 void
@@ -101,12 +110,18 @@ gui::arts::arts_active_audio_renderer::readdone()
 {
     char *data;
     int size;
+    int played;
+    int err;
+    
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
     size = m_src->size();
     data = new char[size];
     m_src->read(data,size);
-    arts_setup(44100,16,2,"arts_audio");
-    arts_play(data,size);
+    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
+    arts_setup(44100,16,1,"arts_audio");
+    played=arts_play(data,size);
+   AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
+    delete [] data;
     stopped_callback();
 }
 
@@ -130,6 +145,7 @@ gui::arts::arts_active_audio_renderer::start(double where)
             stopped_callback();
         }
 	}
+    
 
 }
 
