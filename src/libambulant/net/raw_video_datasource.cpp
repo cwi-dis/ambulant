@@ -94,7 +94,7 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 	bool dummy;
 	AM_DBG lib::logger::get_logger()->debug("raw_video_datasource.start (0x%x)", (void*) this);
 	if (m_buffer) {
-		lib::logger::get_logger()->error("raw_video_datasource::start_frame: Previous frame not frame_done()d yet!");
+		lib::logger::get_logger()->error("Internal error: raw_video_datasource::start_frame: Previous frame not frame_done()d yet!");
 		m_buffer = NULL;
 	}
 	dummy = read_next_frame();
@@ -131,7 +131,7 @@ raw_video_datasource::frame_done(double timestamp, bool keepdata)
 		free (m_buffer);
 		m_buffer = NULL;
 	} else {
-		lib::logger::get_logger()->error("raw_video_datasource::frame_done: no current frame!");
+		lib::logger::get_logger()->error("Internal error: raw_video_datasource::frame_done: no current frame!");
 	}
 	m_lock.leave();
 }

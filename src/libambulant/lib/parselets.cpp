@@ -400,7 +400,7 @@ lib::clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 				break;
 		}
 	} else {
-		logger::get_logger()->error("clock_value_p logic error");
+		logger::get_logger()->error("Internal error: clock_value_p logic error");
 	}	
 	it = test_it;
 	return d;

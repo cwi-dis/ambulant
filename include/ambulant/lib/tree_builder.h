@@ -133,6 +133,7 @@ class tree_builder :
 	node *m_current;
 	bool m_well_formed;
 	node_context *m_context;
+	std::string m_filename;		// For error messages only!
 };
 
 

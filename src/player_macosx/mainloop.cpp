@@ -147,7 +147,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 
 	m_doc = create_document(filename);
 	if (!m_doc) {
-		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
+		lib::logger::get_logger()->error("%s: Cannot build DOM tree", filename);
 		return;
 	}
 	if (use_mms)
@@ -178,13 +178,19 @@ mainloop::create_document(const char *filename)
 	}
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
+		ambulant::lib::logger::get_logger()->error("%s: Cannot open", filename);
 		return NULL;
 	}
 	std::string docdata(data, size);
 	free(data);
+	ambulant::lib::logger::get_logger()->trace("%s: Parsing document...", filename);
 	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
-	if (rv) rv->set_src_url(url);
+	if (rv) {
+		ambulant::lib::logger::get_logger()->trace("%s: Parser done", filename);
+		rv->set_src_url(url);
+	} else {
+		ambulant::lib::logger::get_logger()->trace("%s: Failed to parse document ", filename);
+	}
 	return rv;
 }	
 
@@ -205,7 +211,7 @@ void
 mainloop::play()
 {
 	if (!m_player) {
-		ambulant::lib::logger::get_logger()->error("mainloop::play: cannot play document");
+		ambulant::lib::logger::get_logger()->error("Cannot play document: no player");
 		return;
 	}
 	m_running = true;

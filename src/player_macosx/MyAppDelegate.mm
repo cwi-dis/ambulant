@@ -164,7 +164,8 @@ initialize_logger()
 	OSErr status;
 	
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
+		ambulant::lib::logger::get_logger()->trace("Opening http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
+		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org");
 	}
 }
 
@@ -173,17 +174,6 @@ initialize_logger()
 	AM_DBG NSLog(@"Show Log Window");
 	LogController *log = [LogController sharedLogController];
 	if (log) [log showWindow: sender];
-}
-
-- (IBAction)openURL:(id)sender
-{
-	AM_DBG NSLog(@"open URL");
-	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
-	OSErr status;
-	
-	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
-		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
-	}
 }
 
 - (void)showMessage:(NSString *)message

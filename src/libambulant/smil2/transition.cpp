@@ -98,7 +98,7 @@ transition_engine::init(common::surface *dst, bool outtrans, lib::transition_inf
 	m_progress = m_info->m_startProgress;
 	lib::transition_info::time_type dur = m_info->m_dur;
 	if (dur <= 0) {
-		lib::logger::get_logger()->error("transition_engine: incorrect transition duration %f", float(dur));
+		lib::logger::get_logger()->error("transition: duration %f, should be greater than zero", float(dur));
 		dur = 1;
 	}
 	m_time2progress = (m_info->m_endProgress - m_info->m_startProgress) / dur;
@@ -534,7 +534,7 @@ detail::angle_computer::angle2edge(double angle, lib::point &edgepoint)
 		edge = edge_topleft;
 		AM_DBG lib::logger::get_logger()->debug("angle_computer::angle2edge: topleft");
 	} else
-		lib::logger::get_logger()->error("anglecomputer: impossible angle %f", angle);
+		lib::logger::get_logger()->error("transition_engine: impossible angle %f", angle);
 	// Next compute the intersection point
 	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
 	if (edge == edge_topleft || edge == edge_topright)

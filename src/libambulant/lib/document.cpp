@@ -103,8 +103,7 @@ lib::document::create_from_file(const std::string& filename) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_file(filename.c_str())) {
-		logger::get_logger()->error(
-			"Could not build tree for file: %s", filename.c_str());
+		logger::get_logger()->error("%s: Could not build DOM tree", filename.c_str());
 		return 0;
 	}
 	d->set_root(builder.detach());
@@ -134,8 +133,7 @@ lib::document::create_from_string(const std::string& smil_src) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_str(smil_src)) {
-		logger::get_logger()->error(
-			"Could not build tree for the provided string");
+		logger::get_logger()->error("Could not build DOM tree for the provided string");
 		return 0;
 	}
 	d->set_root(builder.detach());

@@ -180,7 +180,8 @@ passive_region::renderer_done(gui_events *cur)
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
 		if ((*i) == cur) break;
 	if (i == m_renderers.end()) {
-		lib::logger::get_logger()->error("passive_region.renderer_done(0x%x, 0x%x): not active!", (void *)this, (void*)cur);
+		lib::logger::get_logger()->trace("passive_region.renderer_done(0x%x, 0x%x): not active!", (void *)this, (void*)cur);
+		lib::logger::get_logger()->error("Internal error: renderer_done() for inactive renderer");
 	} else {
 		m_renderers.erase(i);
 	}
@@ -640,8 +641,10 @@ passive_root_layout::need_redraw(const lib::screen_rect<int> &r)
 {
 	if (m_gui_window)
 		m_gui_window->need_redraw(r);
-	else
-		lib::logger::get_logger()->error("passive_root_layout::need_redraw: m_gui_window == NULL");
+	else {
+		lib::logger::get_logger()->trace("passive_root_layout::need_redraw: m_gui_window == NULL");
+		lib::logger::get_logger()->error("Internal error: requesting redraw without a window");
+	}
 }
 
 void
@@ -649,6 +652,8 @@ passive_root_layout::need_events(bool want)
 {
 	if (m_gui_window)
 		m_gui_window->need_events(want);
-	else
-		lib::logger::get_logger()->error("passive_root_layout::need_events: m_gui_window == NULL");
+	else {
+		lib::logger::get_logger()->trace("passive_root_layout::need_events: m_gui_window == NULL");
+		lib::logger::get_logger()->error("Internal error: requesting user events without a window");
+	}
 }

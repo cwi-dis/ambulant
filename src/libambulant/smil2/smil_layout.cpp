@@ -216,7 +216,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 			if (stack.empty()) {
 				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is m_layout_tree", (void*)rn);
 				if(m_layout_tree != NULL) {
-					lib::logger::get_logger()->error("smil_layout_manager::get_document_layout: multiple layout roots!");
+					lib::logger::get_logger()->error("smil_layout_manager: multiple layout roots!");
 				}
 				m_layout_tree = rn;
 			} else {
@@ -345,7 +345,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 				// Test that rootlayouts are correctly nested.
 				if (!stack.empty()) {
 					if (tag != common::l_region) {
-						lib::logger::get_logger()->error("topLayout element inside other element: %s", ident.c_str());
+						lib::logger::get_logger()->error("%s: topLayout element inside other element", n->get_sig().c_str());
 						tag = common::l_region;
 					}
 				}
@@ -455,7 +455,7 @@ smil_layout_manager::get_surface(const lib::node *n) {
 	}
 	common::surface_template *stemp = rn->get_surface_template();
 	if (stemp == NULL) {
-		lib::logger::get_logger()->error("get_surface: region found, but no surface, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
+		lib::logger::get_logger()->error("Internal error: get_surface: region found, but no surface, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
 		return get_default_rendering_surface(n);
 	}
 	common::surface *surf = stemp->activate();
@@ -517,7 +517,7 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 			fvalue = ivalue / 100.0;
 			rd = fvalue;
 		} else {
-			lib::logger::get_logger()->error("region_node: cannot parse %s=\"%s\"", attrname, attrvalue);
+			lib::logger::get_logger()->error("%s: cannot parse %s=\"%s\"", rn->get_sig().c_str(), attrname, attrvalue);
 		}
 	}
 	return rd;
@@ -538,7 +538,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		// Non-standard regpoint. Look it up.
 		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
 		if (it == m_id2regpoint.end()) {
-			lib::logger::get_logger()->error("smil_alignment: unknown regPoint: %s", regPoint);
+			lib::logger::get_logger()->error("%s: unknown regPoint: %s", n->get_sig().c_str(), regPoint);
 		} else {
 			regpoint_node = (*it).second;
 			// XXX Just for now:-)
@@ -555,7 +555,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 				found = true;
 		}
 		if (!found && regAlign != NULL)
-			lib::logger::get_logger()->error("smil_alignment: unknown regAlign value: %s", regAlign);
+			lib::logger::get_logger()->error("%s: unknown regAlign value: %s", n->get_sig().c_str(), regAlign);
 	}
 	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
 }

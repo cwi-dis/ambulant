@@ -213,7 +213,7 @@ void net::url::set_from_spec(const string& spec) {
 			return;
 		}
 	}
-	lib::logger::get_logger()->error("url::set_from_spec: Cannot parse \"%s\"", spec.c_str());
+	lib::logger::get_logger()->error("%s: Cannot parse URL", spec.c_str());
 }
 
 // pat: "n://n:d/"

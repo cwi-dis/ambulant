@@ -14,8 +14,7 @@ invocation of "autoreconf", if you have it.
    
    	% ln -s /usr/share/libtool/ltmain.sh .
    
-   (If anyone knows why this symlink isn't created by automake: please
-   let us know!)
+   (autoreconf should probably do this for you)
    
 3. Create the autoconf helper files::
 

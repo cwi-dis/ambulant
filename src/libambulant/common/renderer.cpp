@@ -101,7 +101,7 @@ renderer_playable_ds::start(double t)
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x)", (void *)this);
 
 	if (!m_dest) {
-		lib::logger::get_logger()->error("renderer_playable_ds.start: no destination surface");
+		lib::logger::get_logger()->trace("renderer_playable_ds.start: no destination surface, skipping media item");
 		m_context->stopped(m_cookie, 0);
 		return;
 	}
@@ -110,7 +110,7 @@ renderer_playable_ds::start(double t)
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
 	} else {
-		lib::logger::get_logger()->error("renderer_playable_ds.start: no datasource");
+		lib::logger::get_logger()->trace("renderer_playable_ds.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
 	}
 }
@@ -288,7 +288,7 @@ active_video_renderer::start (double where = 1)
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
 	if (!m_src) {
-		lib::logger::get_logger()->error("active_video_renderer.start: no datasource");
+		lib::logger::get_logger()->trace("active_video_renderer.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;
@@ -357,7 +357,7 @@ active_video_renderer::data_avail()
 	bool displayed;
 	
 	if (!m_src) {
-		lib::logger::get_logger()->error("active_video_renderer.data_avail: no datasource");
+		lib::logger::get_logger()->trace("active_video_renderer.data_avail: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;

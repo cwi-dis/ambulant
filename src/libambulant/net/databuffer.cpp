@@ -254,7 +254,7 @@ databuffer::readdone(int sz)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
     if ((unsigned long int)sz > m_used) {
-		lib::logger::get_logger()->error("databuffer::readdone(%d), but m_used=%d", sz, m_used);
+		lib::logger::get_logger()->error("Internal error: databuffer::readdone(%d), but m_used=%d", sz, m_used);
 		sz = m_used;
 	}
 #ifdef RANDOM_BYTES

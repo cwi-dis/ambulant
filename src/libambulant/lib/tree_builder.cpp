@@ -60,6 +60,10 @@
 #include <fstream>
 #endif
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
 lib::tree_builder::tree_builder(node_context *context)
@@ -67,7 +71,8 @@ lib::tree_builder::tree_builder(node_context *context)
 	m_root(0),
 	m_current(0),
 	m_well_formed(false),
-	m_context(context)
+	m_context(context),
+	m_filename("<no filename>")
 {
 	reset();
 }
@@ -92,6 +97,7 @@ bool
 lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!m_xmlparser) return false;
 	if(!filename || !*filename) return false;
+	m_filename = filename;
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 	std::ifstream ifs(filename);
@@ -125,6 +131,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 
 bool lib::tree_builder::build_tree_from_url(const net::url& u) {
 	if(!m_xmlparser) return false;
+	m_filename = u.get_url();
 #if defined(AMBULANT_PLATFORM_WIN32)
 	memfile mf(u);
 	if(!mf.read()) {
@@ -221,7 +228,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 
 void 
 lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::string& uri) {
-	lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
+	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
 		m_context->set_prefix_mapping(prefix, uri);
 }
@@ -234,5 +241,6 @@ lib::tree_builder::end_prefix_mapping(const std::string& prefix) {
 void 
 lib::tree_builder::error(const sax_error& error) {
 	m_well_formed = false;
-	lib::logger::get_logger()->error("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
+	lib::logger::get_logger()->trace("%s, line %d, column %d: Parse error: %s", m_filename.c_str(), error.get_line(), error.get_column(), error.what());
+	lib::logger::get_logger()->error("%s: Error parsing document", m_filename.c_str());
 }

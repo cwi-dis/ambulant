@@ -109,7 +109,7 @@ class active_int_action : public active_action {
 void
 active_int_action::delayed_fire(active_timeline * const parent) const
 {
-	lib::logger::get_logger()->error("timelines.active_int_action::delayed_fire called!");
+	lib::logger::get_logger()->error("Internal error: timelines.active_int_action::delayed_fire called!");
 #ifndef AMBULANT_NO_ABORT
 	abort();
 #endif
@@ -728,7 +728,7 @@ active_timeline::ext_play(int node_index)
 	if (m_playables[node_index] == &dead_playable) {
 		// It was STOPPLAY-ed before this PLAY came in.
 		// Fire the playdone event
-		lib::logger::get_logger()->error("active_timeline::ext_play(%d) after ext_stop()!", node_index);
+		lib::logger::get_logger()->error("Internal error: active_timeline::ext_play(%d) after ext_stop()!", node_index);
 	} else {
 		m_playables[node_index]->start(0);
 #if JACK_DEBUG_MOUSEREGIONS

@@ -96,7 +96,7 @@ passive_datasource::activate()
 	if (in >= 0) {
 		return new active_datasource(this, in);
 	} else {
-		lib::logger::get_logger()->error("passive_datasource.activate(filename=\"%s\"): %s",  m_filename.c_str(), strerror(errno));
+		lib::logger::get_logger()->error("%s: Cannot open: %s",  m_filename.c_str(), strerror(errno));
 	}
 	return NULL;
 		

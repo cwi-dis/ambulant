@@ -108,7 +108,7 @@ get_node_type(const lib::node& n)
 	lib::q_name_pair qname = n.get_qname();
 	
 	if (qname.first != "") {
-		lib::logger::get_logger()->warn("timeline_builder.get_node_type: ignoring XML namespace");
+		lib::logger::get_logger()->warn("MMS player: ignoring XML namespace");
 	}
 	if (qname.second == "par")
 		return PAR;
@@ -121,7 +121,7 @@ get_node_type(const lib::node& n)
 		return IGNORE;
 	if (qname.second == "head")
 		return IGNORE_RECURSIVE;
-	lib::logger::get_logger()->error("timeline_builder.get_node_type: unknown nodename" /* , qname.second */);
+	lib::logger::get_logger()->error("MMS player: unknown tag \"%s\"", qname.second.c_str());
 	return IGNORE_RECURSIVE;
 }
 
@@ -166,7 +166,7 @@ mms_layout_manager::get_surface(const lib::node *node)
 	else if ( tag == "text") rgn = m_text_rgn->activate();
 	else if ( tag == "audio") rgn = m_audio_rgn->activate();
 	else {
-		lib::logger::get_logger()->error("timeline_builder.build_leaf: unknown node type %s", tag.c_str());
+		lib::logger::get_logger()->error("MMS player: unknown tag \"%s\"", tag.c_str());
 		return NULL;
 	}
 	return rgn;
@@ -226,7 +226,7 @@ timeline_builder::build_node(const lib::node& n)
 		AM_DBG std::cout << "build_node: skipping node" << std::endl;
 #endif
 	} else {
-		lib::logger::get_logger()->error("timeline_builder.build_node: unknown nodetype %d", (int)tp);
+		lib::logger::get_logger()->error("Internal error: timeline_builder.build_node: unknown nodetype %d", (int)tp);
 	}
 }
 
@@ -264,7 +264,7 @@ timeline_builder::build_seq(const lib::node& n)
 	std::list<const lib::node*> children;
 	n.get_children(children);
 	if (children.size() < 1) {
-		lib::logger::get_logger()->error("timeline_builder.build_par: empty seq not allowed in MMS");
+		lib::logger::get_logger()->error("MMS Player: empty seq not allowed in MMS");
 		return;
 	}
 	
@@ -300,19 +300,19 @@ timeline_builder::build_par(const lib::node& n)
 	std::list<const lib::node*> children;
 	n.get_children(children);
 	if (children.size() < 1) {
-		lib::logger::get_logger()->error("timeline_builder.build_par: empty par not allowed in MMS");
+		lib::logger::get_logger()->error("MMS Player: empty par not allowed in MMS");
 		return;
 	}
 	
 	int duration = 5000;
 	const char *duration_str = n.get_attribute("dur");
 	if (duration_str == NULL) {
-		lib::logger::get_logger()->error("timeline_builder.build_par: par must have explicit delay in MMS");
+		lib::logger::get_logger()->error("MMS Player: par must have explicit delay in MMS");
 	} else {
 		char *dur_follow_str;
 		duration = strtol(duration_str, &dur_follow_str, 10);
 		if (strcmp(dur_follow_str, "ms") != 0) {
-			lib::logger::get_logger()->error("timeline_builder.build_par: dur attribute must be of form \"1000ms\"");
+			lib::logger::get_logger()->error("MMS Player: dur attribute must be of form \"1000ms\"");
 			duration = 5000;
 		}
 	}

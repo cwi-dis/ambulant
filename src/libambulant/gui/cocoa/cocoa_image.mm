@@ -91,7 +91,7 @@ cocoa_image_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *win
 		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
 		m_image = [[NSImage alloc] initWithData: m_nsdata];
 		if (!m_image)
-			logger::get_logger()->error("cocoa_image_renderer.redraw: could not create image");
+			logger::get_logger()->error("%s: could not create NSImage", m_node->get_url("src").get_url().c_str());
 		[m_image setFlipped: true];
 		// XXXX Could free data and m_data again here...
 	}

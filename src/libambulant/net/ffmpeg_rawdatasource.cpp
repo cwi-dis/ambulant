@@ -178,7 +178,7 @@ ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *co
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::ffmpeg_raw_datasource() -> 0x%x", (void*)this);
 	if (!m_thread) {
-		lib::logger::get_logger()->error("ffmpeg_raw_datasource::ffmpeg_raw_datasource: cannot start thread");
+		lib::logger::get_logger()->error("%s: Cannot start reader thread", url.get_url().c_str());
 		m_src_end_of_file = true;
 	}
 	m_thread->set_datasink(this);
@@ -227,7 +227,7 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
-			AM_DBG lib::logger::get_logger()->error("ffmpeg_raw_datasource::start(): no client callback!");
+			AM_DBG lib::logger::get_logger()->error("Internal error: ffmpeg_raw_datasource::start(): no client callback!");
 		}
 	} else {
 		// We have no data available. Start our source, and in our data available callback we

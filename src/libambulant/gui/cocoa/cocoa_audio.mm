@@ -78,7 +78,7 @@ cocoa_audio_playable::cocoa_audio_playable(
 	NSString *filename = [NSString stringWithCString: m_url.get_url().c_str()];
 	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
 	if (!m_sound)
-		lib::logger::get_logger()->error("cocoa_audio_playable: cannot open soundfile: %s", m_url.get_url().c_str());
+		lib::logger::get_logger()->error("%s: cannot open soundfile", m_url.get_url().c_str());
 //	m_event_processor->get_timer()->add_listener(this);
 	[pool release];
 }
@@ -106,7 +106,7 @@ cocoa_audio_playable::start(double where)
 		lib::logger::get_logger()->warn("cocoa_audio_playable: ignoring start time %f, starting at 0", where);
 	if (m_sound)
 		if (![m_sound play]) {
-			lib::logger::get_logger()->error("cocoa_audio_playable: cannot start audio");
+			lib::logger::get_logger()->error("Cannot start audio playback");
 			[m_sound release];
 			m_sound = NULL;
 		}
@@ -125,7 +125,7 @@ cocoa_audio_playable::stop()
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.stop(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound stop])
-			lib::logger::get_logger()->error("cocoa_audio_playable: cannot stop audio");
+			lib::logger::get_logger()->error("Cannot stop audio playback");
 		[m_sound release];
 		m_sound = NULL;
 		m_context->stopped(m_cookie, 0);
@@ -142,7 +142,7 @@ cocoa_audio_playable::pause()
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.pause(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound pause])
-			lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
+			lib::logger::get_logger()->error("Cannot pause audio playback");
 	}
 	m_lock.leave();
 //	[pool release];
@@ -156,7 +156,7 @@ cocoa_audio_playable::resume()
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.resume(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound resume])
-			lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
+			lib::logger::get_logger()->error("Cannot resume audio playback");
 	}
 	m_lock.leave();
 //	[pool release];
@@ -174,12 +174,12 @@ cocoa_audio_playable::speed_changed()
 		
 		if (rtspeed < 0.01) {
 			if (![m_sound pause])
-				lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
+				lib::logger::get_logger()->error("Cannot pause audio playback");
 		} else {
 			if (rtspeed < 0.99)
 				lib::logger::get_logger()->debug("cocoa_audio_playable: only speed 1.0 and 0.0 supported, not %f", rtspeed);
 			if (![m_sound resume])
-				lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
+				lib::logger::get_logger()->error("Cannot resume audio playback");
 		}
 	}
 	m_lock.leave();
