@@ -1,6 +1,6 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 04-Jul-03
+Jack Jansen, 22-Jul-03
 ----------------------
 
 This document contains some general thoughts on the Ambulant design. Accompanying
@@ -81,6 +81,8 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
 - semi-private classes go into into a namespace named "detail".
 - Template type parameters start with an upper case letter
   (as in: ``template <class A> {}``)
+- Header files need to include any header files on which they depend, and
+  they guard against multiple inclusion with a preprocessor construct.
 
 Global structure
 ----------------

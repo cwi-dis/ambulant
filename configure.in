@@ -4,5 +4,10 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
-AC_CONFIG_FILES([Makefile src/Makefile src/libambulant/Makefile src/player_unix/Makefile])
+AC_CONFIG_FILES([Makefile 
+	src/Makefile 
+	src/libambulant/Makefile 
+	src/player_unix/Makefile
+	Test/Makefile
+	Test/designtests/Makefile])
 AC_OUTPUT
