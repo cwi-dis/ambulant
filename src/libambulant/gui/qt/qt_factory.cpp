@@ -46,7 +46,7 @@
  *
  */
  
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -207,7 +207,7 @@ ambulant_qt_window::mouse_region_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::mouse_region_changed needs to be implemented");
 }
-/* dumpPixmap on file */
+/* dumpPixmap on file * /
 static QImage* oldImageP;
 void dumpPixmap(QPixmap* qpm, std::string filename) {
    static int i;
@@ -224,14 +224,14 @@ void dumpPixmap(QPixmap* qpm, std::string filename) {
 	oldImageP = new QImage(img);
    }
 }
-/**/
+/ **/
 void
 ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_handler->redraw(r, this);
 	bitBlt(m_ambulant_widget,  r.left(), r.top(), m_pixmap, r.left(), r.top(), r.right(), r.bottom());
-	AM_DBG	dumpPixmap(m_pixmap, "top"); //AM_DBG 
+//	AM_DBG	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
 
 void
