@@ -64,6 +64,7 @@
 #include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/common/plugin_engine.h"
 #include <stdarg.h>
 
 class nslog_ostream : public ambulant::lib::ostream {
@@ -161,6 +162,14 @@ initialize_logger()
 #if ENABLE_NLS
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
+
+	// Initialize the plugins, so we can parser the system test settings file
+	{
+		ambulant::common::factories fact;
+		fact.pf = ambulant::lib::global_parser_factory::get_parser_factory();
+		ambulant::common::plugin_engine *pf = ambulant::common::plugin_engine::get_plugin_engine();
+		pf->add_plugins(&fact);
+	}
 
 	// Initialize the default system test settings
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];

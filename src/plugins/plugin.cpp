@@ -51,9 +51,6 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/unix/unix_mtsync.h"
 
-
-
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -109,7 +106,7 @@ basic_plugin_factory::new_playable(
 	
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
-	if ( tag == "audio") /*or any other tag ofcourse */ {
+	if ( tag == "plugindatatype") /*or any other tag ofcourse */ {
 		rv = new basic_plugin(context, cookie, node, evp, m_factory);
 		//rv = NULL;
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
@@ -162,7 +159,9 @@ basic_plugin::resume()
 extern "C" void initialize(ambulant::common::factories* factory)
 {
     lib::logger::get_logger()->debug("basic_plugin: loaded.");
-    basic_plugin_factory *bpf = new basic_plugin_factory(factory);
-	factory->rf->add_factory(bpf);
-    lib::logger::get_logger()->debug("basic_plugin: added basic_plugin_factory.");
+    if (factory->rf) {
+    	basic_plugin_factory *bpf = new basic_plugin_factory(factory);
+		factory->rf->add_factory(bpf);
+    	lib::logger::get_logger()->trace("basic_plugin: registered");
+    }
 }

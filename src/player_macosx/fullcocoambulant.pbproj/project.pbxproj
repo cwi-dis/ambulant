@@ -1917,6 +1917,7 @@
 		04382ABC05D7AEE600CFA029 = {
 			children = (
 				04EA3150068AED1F00DD982C,
+				04A107720748E0A6002EA347,
 				04382ABE05D7AEE600CFA029,
 				04382AC105D7AEE600CFA029,
 				04382AC205D7AEE600CFA029,
@@ -4296,6 +4297,20 @@
 			settings = {
 			};
 		};
+		04A107720748E0A6002EA347 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = factory.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04A107730748E0A6002EA347 = {
+			fileRef = 04A107720748E0A6002EA347;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04AC5D0A05FF6C04003CD4DC = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -5657,6 +5672,7 @@
 				04B9F60B070050FB00B78CC4,
 				04C65259071FC0C3001E3C7B,
 				041614850720836C00A8B0B6,
+				04A107730748E0A6002EA347,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -100,7 +100,10 @@ xerces_plugin_factory::get_parser_name()
 extern "C" void initialize(ambulant::common::factories* factory)
 {	
 	AM_DBG lib::logger::get_logger()->debug("xerces_plugin::initialize registering factory function");
-	factory->pf->add_factory(new xerces_plugin_factory(factory));
+	if (factory->pf) {
+		factory->pf->add_factory(new xerces_plugin_factory(factory));
+		lib::logger::get_logger()->trace("xerces_plugin: registered");
+	}
 }
 
 #endif
