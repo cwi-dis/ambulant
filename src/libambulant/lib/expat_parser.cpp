@@ -54,9 +54,8 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
 #ifndef AM_DBG
-#define AM_DB if(0)
+#define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
