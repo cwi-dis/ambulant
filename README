@@ -148,7 +148,8 @@ Building for Windows
 --------------------
 
 Installing and building the third party packages on Windows is more of a
-pain than it is on unix. We hope these instructions are complete, otherwise
+pain than it is on unix. For this reason, read these instructions *very carefully*,
+please. We hope these instructions are complete, otherwise
 please report back.
 
 Install the following distributions into directories in third_party_packages:
@@ -157,6 +158,12 @@ Install the following distributions into directories in third_party_packages:
 - lpng125: XXXX
 - mp3lib: XXXX
 - zlib: XXXX
+As some of these need some fiddling (missing Visual Studio projects, that
+sort of things) you are best off downloading the
+INTO-third_party_packages-for-win32.zip archive, it contains versions that
+are known to work on at least one machine. Download and unzip in a temporary
+location, then move the directories named above into third_party_packages
+in your ambulant distribution.
 
 Next, build these by opening
 third_party_packages\third_party_packages.sln in Visual Studio,
@@ -185,5 +192,47 @@ For Zaurus, see detailed instructions in README-ZAURUS.
 Building for Windows CE
 -----------------------
 
-To be provided.
+Installing and building the third party packages for Windows CE is even more of a
+pain than it is for Windows desktop. For this reason, read these instructions
+*very carefully*, please. We hope these instructions are complete, otherwise
+please report back.
+
+The projects (and these instructions) have been tried only for Windows CE on various
+Compaq (or HP) iPaqs, the oldest one being a 3660. Of the various configurations
+in the project files, only the ones for this specific platform (ARM processor,
+non-debugging, PocketPC operating system) have been kept up-to-date.
+
+Install the following distributions into directories in third_party_packages:
+- expat: XXXX
+- jpeg: XXXX
+- lpng125: XXXX
+- mp3lib: XXXX
+- zlib: XXXX
+As most of these need some fiddling (missing Visual Studio projects, that
+sort of things) you are best off downloading the
+INTO-third_party_packages-for-win32.zip archive, it contains versions that
+are known to work on at least one machine. Download and unzip in a temporary
+location, then move the directories named above into third_party_packages
+in your ambulant distribution.
+
+Next, build these by opening
+third_party_packages\third_party_packages.vcw in Embedded Visual C++ 3.0,
+select the expat project as default project, 
+select the "ARM Release" configuration for the "PocketPC" platform and build.
+Repeat these steps for all projects in the workspace.
+
+When this succeeds double-click the batchfile
+third_party_packages\copy_tpp_wince.bat, which copies the various
+libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
+lib\wince-arm in the toplevel Ambulant directory. 
+
+NOTE: if this step fails please inspect the script and do the
+needed copies by hand.
+
+After these steps you are ready to build AmbulantPlayer itself: open
+src\Ambulant-wince.vcw in Embedded Visual C++ 3.0, select the "ARM Release" 
+configuration for the "PocketPC" platform and build.
+
+The resulting application is deposited in bin\wince-arm in the toplevel
+directory.
 
