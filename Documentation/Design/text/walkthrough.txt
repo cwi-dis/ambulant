@@ -1,6 +1,8 @@
 How does the AmbulantPlayer play a SMIL document?
 =================================================
 
+Last updated for Ambulant version 1.1.
+
 This section attempts to explain the basic structure of the Ambulant Player by
 loosely explaining what happens when you run it and play a document.
 
@@ -128,3 +130,16 @@ the user clicked the mouse, etc) it invokes a corresponding method on its
 ``playable_notification``. This interface is implemented by the scheduler, and these
 notifications are how the scheduler gets informed that it can start scheduling new things,
 etc.
+
+Where next?
+-----------
+
+If you haven't already done so, a good place to continue reading is the
+`Overall design`_ document, which gives an overview of the design principles
+and explains some of the choices made. Then continue
+with the `objects`_ document which describes the main objects in more detail.
+Or go back to the `main documentation index`_.
+
+.. _Overall design: overall.html
+.. _objects: objects.html
+.. _main documentation index: ../index.html

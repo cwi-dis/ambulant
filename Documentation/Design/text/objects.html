@@ -3,39 +3,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.2.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
 <title>Ambulant design, main objects</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
 <div class="document" id="ambulant-design-main-objects">
 <h1 class="title">Ambulant design, main objects</h1>
-<p>Objects we have:</p>
+<p>Last updated for Ambulant version 1.1.</p>
+<p>This document describes the function of various of the more important
+objects and interfaces in the Ambulant Player. If you haven't already done
+so it is probably a good idea to first read the <a class="reference" href="overall.html">Overall design</a> and 
+<a class="reference" href="walkthrough.html">walkthrough</a> documents. The first one explains the design principles and
+some of the choices made, the second one is a brief walkthrough of how the
+player loads, parses and plays a SMIL document.</p>
+<div class="section" id="ambulantplayer-interfaces">
+<h1><a name="ambulantplayer-interfaces">AmbulantPlayer interfaces</a></h1>
 <ul class="simple">
-<li><a class="reference" href="event_processor.html">Event processor</a>. This is the mainloop plus the event/callback mechanism.</li>
+<li><a class="reference" href="player.html">Player</a>. This is the toplevel object.</li>
+<li><a class="reference" href="document.html">Document</a>. The representation of a SMIL document. This document
+also contains a description of the DOM tree (<tt class="literal"><span class="pre">node</span></tt> objects) and related
+objects.</li>
+<li><a class="reference" href="parser.html">Parser</a>. Describes the interfaces to the XML parser.</li>
 <li><a class="reference" href="datasource.html">Data source</a>. Think of these as &quot;media items&quot;, they may refer to a URL
 or part of a multiplexed stream or so, and provide data to renderers and
 to the parser.</li>
-<li><a class="reference" href="region.html">Region</a>. This is an area of screen space (or a speaker). It is &quot;what
-the user sees&quot;.</li>
-<li><a class="reference" href="renderer.html">Renderer</a>. These decode data streams, handle timing and do bitblitting
-or push audio through.</li>
+<li><a class="reference" href="playable.html">Playable</a> and <a class="reference" href="renderer.html">Renderer</a>. These two interfaces together make
+media items appear on-screen. The first one is the interface as the scheduler
+uses it to start and stop playback. The second interface is specific to
+media items that appear on-screen, and handles things like reacting to
+redraw requests.</li>
+<li><a class="reference" href="layout.html">Layout</a>. This document describes the interfaces that are responsible
+for determining where and how the media items are displayed.</li>
+</ul>
+</div>
+<div class="section" id="ambulantplayer-objects">
+<h1><a name="ambulantplayer-objects">AmbulantPlayer Objects</a></h1>
+<ul class="simple">
+<li><a class="reference" href="event_processor.html">Event processor</a>. This is the mainloop plus the event/callback mechanism.</li>
+<li><a class="reference" href="region.html">Region</a>. This is an area of screen space, it is part of an implementation
+of the Layout objects sketched above.</li>
 <li><a class="reference" href="#clocks">Clocks</a>. These advance a virtual time.</li>
-<li><a class="reference" href="document.html">Document</a>. The representation of a SMIL document.</li>
-<li><a class="reference" href="#document-parser">Document parser</a>. The parser for a document.</li>
-<li><a class="reference" href="timeline.html">Timeline</a>. This executes a single timeline.</li>
-<li><a class="reference" href="player.html">Player</a>. This is the toplevel object.</li>
+<li><a class="reference" href="timeline.html">Timeline</a>. This is a description of another scheduler: the MMS scheduler.
+This scheduler has a much simpler structure than the SMIL 2.0 scheduler.</li>
 </ul>
 <p>For each of these we have an accompanying PDF document with UML graphics
 showing how the object relates to other objects. These can be found
 in the <a class="reference" href="../models">models</a> directory.</p>
 <p>In addition we have various auxiliary objects that are explained in
 <a class="reference" href="auxobjects.html">auxobjects.txt</a>.</p>
-<div class="section" id="common-protocols">
-<h1><a name="common-protocols">Common protocols</a></h1>
-<p>There are a number of (formal and informal) protocols that are shared among
-multiple object classes: the <cite>refcounting protocol</cite> and the <cite>active/passive
-protocol</cite>.</p>
+<p>You may notice that the core of the player, the SMIL 2.0 scheduler, is not
+mentioned here. Unfortunately it is not documented yet.</p>
+</div>
+<div class="section" id="refcounting-protocol">
+<h1><a name="refcounting-protocol">Refcounting protocol</a></h1>
 <p>The <cite>refcounting protocol</cite> is contained in the file <tt class="literal"><span class="pre">lib/refcount.h</span></tt>. It needs to
 be implemented only by objects that are truly shared, i.e. any object whose
 lifetime is not predetermined by some other object. New instances of refcounted
@@ -43,16 +64,6 @@ objects are created using the operator new. Any object that needs to share
 a particular instance calls add_ref against this instance. The creator
 of the refcounted object and any sharer are responsible to call the release
 function of the object when they don't need the object any more.</p>
-<p>The <cite>active/passive protocol</cite> is more a pattern than a protocol. The pattern
-is used often in Ambulant for objects that go through two stages during
-their lifetime: a building stage and an active (running) stage. The passive
-object is the object that corresponds to the building stage and the built
-stage that follows it. The passive object <em>appears</em> to be immutable.
-Once the object actually needs to do work we activate it, giving a new instance
-of an active object that does the actual work. The passive object remains
-in existence, and can be re-used.</p>
-<p>Note that I say &quot;appears immutable&quot;: passive objects could internally cache
-information, or keep one or more active instances ready for quick disposal.</p>
 </div>
 <div class="section" id="clocks">
 <h1><a name="clocks">Clocks</a></h1>
@@ -69,34 +80,6 @@ with <tt class="literal"><span class="pre">set_speed</span></tt>, but it is tigh
 <p>Eventually there will be other implementations of <tt class="literal"><span class="pre">timer</span></tt>,
 such as clocks that are allowed to slip synchronization and other such
 semantics as required by SMIL.</p>
-<blockquote>
-<p>Some parts of the design are not finished yet. The intention is that
-various renderers will adhere to the <tt class="literal"><span class="pre">abstract_timer</span></tt> interface,
-so continuous media can be used as sync master in the SMIL sense.
-It may be a good idea to have all renderers supply the interface,
-with renderers that do not implement their own timing simply deferring
-to their master clock.</p>
-<p>Something else that is needed are <tt class="literal"><span class="pre">pause()</span></tt> and <tt class="literal"><span class="pre">unpause()</span></tt> calls,
-to signal passing of &quot;non-time&quot;. These are not pause and unpause in the
-GUI sense of the word, but they are called by the event_processor or
-other agents when they know real-time is going to pass that may not
-need to be reflected in the clock. Some clocks would ignore these
-calls, some would pause their clock for them. Pause and unpause should
-stack, with the clock only advancing (if the clock doesn't ignore
-pausing) when the pause level is zero.</p>
-<p>A nifty idea that needs some thought is the introduction of a
-&quot;GUI clock&quot;. This would be a realtime clock, but with one added feature:
-on <tt class="literal"><span class="pre">pause()</span></tt> it delays redraw requests originating from ambulant,
-releasing them on <tt class="literal"><span class="pre">unpause()</span></tt>. This would have the effect of coalescing
-redraw events scheduled for the same &quot;document time&quot;, giving a snappier
-presentation.</p>
-</blockquote>
-</div>
-<div class="section" id="document-parser">
-<h1><a name="document-parser">Document parser</a></h1>
-<p>To be supplied by KK. Interface is in (I guess) <tt class="literal"><span class="pre">lib/expat_parser.h</span></tt>,
-<tt class="literal"><span class="pre">lib/nscontext.h</span></tt> (correct?), <tt class="literal"><span class="pre">lib/parse_attrs.h</span></tt>, <tt class="literal"><span class="pre">lib/region_eval.h</span></tt>,
-<tt class="literal"><span class="pre">lib/sax_handler.h</span></tt>, <tt class="literal"><span class="pre">lib/sax_types.h</span></tt> (correct?), <tt class="literal"><span class="pre">lib/smil_handler.h</span></tt>.</p>
 </div>
 </div>
 </body>

@@ -10,6 +10,7 @@
 <body>
 <div class="document" id="how-does-the-ambulantplayer-play-a-smil-document">
 <h1 class="title">How does the AmbulantPlayer play a SMIL document?</h1>
+<p>Last updated for Ambulant version 1.1.</p>
 <p>This section attempts to explain the basic structure of the Ambulant Player by
 loosely explaining what happens when you run it and play a document.</p>
 <p>The main program is platform dependent and GUI-toolkit dependent. The details
@@ -83,7 +84,7 @@ items should be displayed. The smil_layout_manager reads the <tt class="literal"
 of the DOM tree and builds a parallel layout tree (which also contains information
 on some of the body media nodes, the ones that have layout information themselves)
 of <tt class="literal"><span class="pre">region_node</span></tt> objects. Then this tree of <tt class="literal"><span class="pre">region_node</span></tt> objects is
-converted into a tree of <tt class="literal"><span class="pre">surface_template</span></tt> objects. For toplevel windows
+converted into a tree of <tt class="literal"><span class="pre">surface_template</span></tt> objects. To create toplevel windows
 the <tt class="literal"><span class="pre">new_topsurface</span></tt> method of the window factory is used, and subregions are
 created using the <tt class="literal"><span class="pre">new_subsurface</span></tt> method of their parent <tt class="literal"><span class="pre">surface_template</span></tt>.
 The layout manager also contains mappings to be able to get from a <tt class="literal"><span class="pre">node</span></tt> to the
@@ -102,7 +103,7 @@ node of the tree. The scheduler will now do all the SMIL 2 magic, whereby events
 such as the root node being played causes other nodes to become playable, etc.</p>
 <p>At some point a media item needs to be rendered. The scheduler calls the <tt class="literal"><span class="pre">new_playable</span></tt>
 method from the <tt class="literal"><span class="pre">global_playable_factory</span></tt>. This will pass the DOM <tt class="literal"><span class="pre">node</span></tt> to the
-various factories until one singals it can create a <tt class="literal"><span class="pre">playable</span></tt> for the object.
+various factories until one signals it can create a <tt class="literal"><span class="pre">playable</span></tt> for the object.
 In addition, if the playable has a renderer (which is true for most media objects,
 but not for things like SMIL animations) we also obtain the <tt class="literal"><span class="pre">surface</span></tt> on which
 the media item should be renderered, through the <tt class="literal"><span class="pre">layout_manager</span></tt>. We then tell
@@ -123,6 +124,14 @@ the user clicked the mouse, etc) it invokes a corresponding method on its
 <tt class="literal"><span class="pre">playable_notification</span></tt>. This interface is implemented by the scheduler, and these
 notifications are how the scheduler gets informed that it can start scheduling new things,
 etc.</p>
+</div>
+<div class="section" id="where-next">
+<h1><a name="where-next">Where next?</a></h1>
+<p>If you haven't already done so, a good place to continue reading is the
+<a class="reference" href="overall.html">Overall design</a> document, which gives an overview of the design principles
+and explains some of the choices made. Then continue
+with the <a class="reference" href="objects.html">objects</a> document which describes the main objects in more detail.
+Or go back to the <a class="reference" href="../index.html">main documentation index</a>.</p>
 </div>
 </div>
 </body>

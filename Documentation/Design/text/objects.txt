@@ -1,29 +1,60 @@
 Ambulant design, main objects 
 =============================
 
-Objects we have:
+Last updated for Ambulant version 1.1.
 
-- `Event processor`_. This is the mainloop plus the event/callback mechanism.
+This document describes the function of various of the more important
+objects and interfaces in the Ambulant Player. If you haven't already done
+so it is probably a good idea to first read the `Overall design`_ and 
+`walkthrough`_ documents. The first one explains the design principles and
+some of the choices made, the second one is a brief walkthrough of how the
+player loads, parses and plays a SMIL document.
+
+.. _Overall design: overall.html
+.. _walkthrough: walkthrough.html
+
+AmbulantPlayer interfaces
+-------------------------
+
+- `Player`_. This is the toplevel object.
+- `Document`_. The representation of a SMIL document. This document
+  also contains a description of the DOM tree (``node`` objects) and related
+  objects.
+- `Parser`_. Describes the interfaces to the XML parser.
 - `Data source`_. Think of these as "media items", they may refer to a URL
   or part of a multiplexed stream or so, and provide data to renderers and
   to the parser.
-- `Region`_. This is an area of screen space (or a speaker). It is "what
-  the user sees".
-- `Renderer`_. These decode data streams, handle timing and do bitblitting
-  or push audio through.
+- `Playable`_ and `Renderer`_. These two interfaces together make
+  media items appear on-screen. The first one is the interface as the scheduler
+  uses it to start and stop playback. The second interface is specific to
+  media items that appear on-screen, and handles things like reacting to
+  redraw requests.
+- `Layout`_. This document describes the interfaces that are responsible
+  for determining where and how the media items are displayed.
+
+.. _Player: player.html
+.. _Document: document.html
+.. _Parser: parser.html
+.. _Data source: datasource.html
+.. _Playable: playable.html
+.. _Renderer: renderer.html
+.. _Layout: layout.html
+
+
+AmbulantPlayer Objects
+----------------------
+
+- `Event processor`_. This is the mainloop plus the event/callback mechanism.
+- `Region`_. This is an area of screen space, it is part of an implementation
+  of the Layout objects sketched above.
 - `Clocks`_. These advance a virtual time.
-- `Document`_. The representation of a SMIL document.
-- `Document parser`_. The parser for a document.
-- `Timeline`_. This executes a single timeline.
-- `Player`_. This is the toplevel object.
+- `Timeline`_. This is a description of another scheduler: the MMS scheduler.
+  This scheduler has a much simpler structure than the SMIL 2.0 scheduler.
 
 .. _Event processor: event_processor.html
-.. _Data source: datasource.html
 .. _Region: region.html
 .. _Renderer: renderer.html
-.. _Document: document.html
 .. _Timeline: timeline.html
-.. _Player: player.html
 
 For each of these we have an accompanying PDF document with UML graphics
 showing how the object relates to other objects. These can be found
@@ -37,12 +68,11 @@ In addition we have various auxiliary objects that are explained in
 
 .. _auxobjects.txt: auxobjects.html
 
-Common protocols
-----------------
+You may notice that the core of the player, the SMIL 2.0 scheduler, is not
+mentioned here. Unfortunately it is not documented yet.
 
-There are a number of (formal and informal) protocols that are shared among
-multiple object classes: the `refcounting protocol` and the `active/passive
-protocol`.
+Refcounting protocol
+--------------------
 
 The `refcounting protocol` is contained in the file ``lib/refcount.h``. It needs to
 be implemented only by objects that are truly shared, i.e. any object whose
@@ -51,18 +81,6 @@ objects are created using the operator new. Any object that needs to share
 a particular instance calls add_ref against this instance. The creator
 of the refcounted object and any sharer are responsible to call the release
 function of the object when they don't need the object any more. 
-
-The `active/passive protocol` is more a pattern than a protocol. The pattern
-is used often in Ambulant for objects that go through two stages during
-their lifetime: a building stage and an active (running) stage. The passive
-object is the object that corresponds to the building stage and the built
-stage that follows it. The passive object *appears* to be immutable.
-Once the object actually needs to do work we activate it, giving a new instance
-of an active object that does the actual work. The passive object remains
-in existence, and can be re-used.
-
-Note that I say "appears immutable": passive objects could internally cache
-information, or keep one or more active instances ready for quick disposal.
 
 Clocks
 ------
@@ -83,35 +101,3 @@ with ``set_speed``, but it is tightly synchronized with its parent clock.
 Eventually there will be other implementations of ``timer``,
 such as clocks that are allowed to slip synchronization and other such
 semantics as required by SMIL.
-
-	Some parts of the design are not finished yet. The intention is that
-	various renderers will adhere to the ``abstract_timer`` interface,
-	so continuous media can be used as sync master in the SMIL sense.
-	It may be a good idea to have all renderers supply the interface,
-	with renderers that do not implement their own timing simply deferring
-	to their master clock.
-	
-	Something else that is needed are ``pause()`` and ``unpause()`` calls,
-	to signal passing of "non-time". These are not pause and unpause in the
-	GUI sense of the word, but they are called by the event_processor or
-	other agents when they know real-time is going to pass that may not
-	need to be reflected in the clock. Some clocks would ignore these
-	calls, some would pause their clock for them. Pause and unpause should
-	stack, with the clock only advancing (if the clock doesn't ignore
-	pausing) when the pause level is zero.
-	
-	A nifty idea that needs some thought is the introduction of a
-	"GUI clock". This would be a realtime clock, but with one added feature:
-	on ``pause()`` it delays redraw requests originating from ambulant,
-	releasing them on ``unpause()``. This would have the effect of coalescing
-	redraw events scheduled for the same "document time", giving a snappier
-	presentation.
-
-
-Document parser
----------------
-
-To be supplied by KK. Interface is in (I guess) ``lib/expat_parser.h``,
-``lib/nscontext.h`` (correct?), ``lib/parse_attrs.h``, ``lib/region_eval.h``,
-``lib/sax_handler.h``, ``lib/sax_types.h`` (correct?), ``lib/smil_handler.h``.
-

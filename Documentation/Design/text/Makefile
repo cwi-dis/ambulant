@@ -1,6 +1,6 @@
 ALL=objects.html auxobjects.html overall.html timeline.html datasource.html \
 	document.html event_processor.html player.html region.html renderer.html \
-	playable.html walkthrough.html
+	playable.html walkthrough.html organisation.html parser.html layout.html
 	
 
 REST2HTML=/Users/jack/tmp/docutils/tools/html.py

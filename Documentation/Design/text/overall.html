@@ -10,170 +10,55 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<p>Last updated for Ambulant version 0.3.</p>
+<p>Last updated for Ambulant version 1.1.</p>
 <div class="section" id="design-process">
 <h1><a name="design-process">Design process</a></h1>
-<p>The design is going to consist of a mixed bag of technologies:</p>
+<p>The design consists of a mixed bag of technologies:</p>
 <ul class="simple">
 <li>Text files such as this one for informal descriptions. They are marked
 up as <a class="reference" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>, a format easily converted to HTML
 but also readable in source form.</li>
 <li>C++ header files for class definitions and such.</li>
 <li>Image files for UML pictures.</li>
-<li>Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
-and explained in sdd-schema.txt. <em>Note:</em> this has not been done yet.</li>
 </ul>
 <p>If possible all design documents will carry a notice stating for
 which version of Ambulant they were last updated, so it is relatively
 easy to spot outdated (or potentially outdated) documents.</p>
-<p>When still applicable design choices that were tried and rejected will
-remain listed, with the reason for their rejection. This within the limits or
-reasonability:-).</p>
-<p>Open issues and discussion points are indented paragraphs starting with
-an emphasized upper case word, as in</p>
-<blockquote>
-<em>QUESTION</em>: explanation of an issue that needs to be resolved.</blockquote>
-<p>The design is going to be done in C++, but we will try to keep it compatible
-with Java or Python, and if possible keep the option of cross-language implementations
-open.</p>
-</div>
-<div class="section" id="source-code-organisation">
-<h1><a name="source-code-organisation">Source code organisation</a></h1>
-<p>Everything is kept under CVS. On Unix we use the standard <em>automake</em>,
-<em>autoconf</em>, <em>configure</em> and <em>gcc</em> (version 3.2 or later) toolset to
-build things. On Windows we use Visual Studio 7. For cross-compilation
-for Windows CE we use Embedded Visual C++ 3.0 (correct?). For
-cross-compilation for the Zaurus Linux handheld we use the Sharp
-toolset, based on gcc 2.95.</p>
-<p>At the toplevel we have a number of subdirectories:</p>
-<ul class="simple">
-<li><tt class="literal"><span class="pre">Documentation</span></tt> will eventually contain all documentation, currently
-it only has <tt class="literal"><span class="pre">Design</span></tt>, which is what you are reading now.</li>
-<li><tt class="literal"><span class="pre">include</span></tt> has all the C++ header files.</li>
-<li><tt class="literal"><span class="pre">src</span></tt> has all the sources, with the engine built as a library
-from the <tt class="literal"><span class="pre">libambulant</span></tt> subdirectory, and driver programs for the
-various platforms (not in the current version).</li>
-<li><tt class="literal"><span class="pre">Tests</span></tt> has test code. The only subdirectory currently in active use
-is <tt class="literal"><span class="pre">designtests</span></tt> which has a program that does minimal testing of all
-modules.</li>
-<li><tt class="literal"><span class="pre">third_party_packages</span></tt> holds the source to third party packages we use,
-currently only James Clark's <tt class="literal"><span class="pre">expat</span></tt> XML parser.</li>
-</ul>
-</div>
-<div class="section" id="source-code-conventions">
-<h1><a name="source-code-conventions">Source code conventions</a></h1>
-<p>Here's a somewhat random list of source code conventions that we have decided
-to use:</p>
-<ul>
-<li><p class="first">Indent 4 spaces, with the following exceptions:</p>
-<ul class="simple">
-<li><tt class="literal"><span class="pre">namespace</span></tt> doesn't indent at all</li>
-<li><tt class="literal"><span class="pre">public:</span></tt>, <tt class="literal"><span class="pre">private:</span></tt> and such indent two spaces</li>
-</ul>
-</li>
-<li><p class="first">Whether opening braces are at end-of-line or beginning of the next
-line depends on the circumstances and personal taste. Closing braces,
-when on a line by themselves, must however align with the construct
-that opened them.</p>
-</li>
-<li><p class="first">no camelCase, CamelCase or Capitalization in class or variable names</p>
-</li>
-<li><p class="first">Underscores to delimit words</p>
-</li>
-<li><p class="first">attribute names start with &quot;m_&quot;</p>
-</li>
-<li><p class="first">we have a toplevel namespace ambulant, with a second level of namespaces
-under that</p>
-</li>
-<li><p class="first">semi-private classes go into into a namespace named &quot;detail&quot;.</p>
-</li>
-<li><p class="first">Template type parameters start with an upper case letter
-(as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</p>
-</li>
-<li><p class="first">Header files need to include any header files on which they depend, and
-they guard against multiple inclusion with a preprocessor construct.</p>
-<blockquote>
-<p>I think we should use the guards only in the files themselves. There
-are some places now that also check for the guards before doing the
-#include, but this seems like overkill, and moreover makes the code less readable.</p>
-</blockquote>
-</li>
-<li><p class="first">Header files are all in an &quot;ambulant&quot; directory, and are included by full
-path, as in:</p>
-<pre class="literal-block">
-#include &quot;ambulant/net/url.h&quot;
-</pre>
-</li>
-<li><p class="first">Everything goes into namespace &quot;ambulant&quot;, with sub-namespaces &quot;lib&quot;,
-&quot;net&quot;, etc. Machine-dependent code goes into it's own &quot;unix&quot;, &quot;win32&quot;, etc
-subnamespace of those.</p>
-</li>
-<li><p class="first">Source files have <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">ambulant;</span></tt> at the top. In addition,
-there's a using namespace for your own namespace, i.e. <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">common;</span></tt>
-for source files in common. Normally, there are no other global <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span></tt>
-declarations, i.e. everything outside of your own namespace is used qualified.</p>
-</li>
-<li><p class="first">Header files that declare abstract interfaces try to include as few other
-header files as possible. In other words, if you need a <tt class="literal"><span class="pre">lib::node</span> <span class="pre">*</span></tt> in an
-abstract header file it is better not to include <tt class="literal"><span class="pre">ambulant/lib/node.h</span></tt>,
-but instead to add a construct:</p>
-<pre class="literal-block">
-namespace ambulant {
-namespace lib {
-class node;
-}
-}
-</pre>
-</li>
-<li><p class="first">We need to define which preprocessor defines we are going to
-switch on for platform-dependent code, so we don't get <cite>#ifdef _WIN32</cite> in
-one place and something completely different in another place.
-Suggestion:</p>
-<ul class="simple">
-<li><cite>#ifdef _WIN32</cite> to test for Windows</li>
-<li>something to test for Linux</li>
-<li><cite>#ifdef __APPLE__</cite> to test for MacOSX</li>
-<li>something to test for 386 or other architectures?</li>
-<li>something to test for Visual Studio versus gcc?</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="machine-dependent-code">
-<h1><a name="machine-dependent-code">Machine-dependent code</a></h1>
-<p>The general way to handle machine-dependency is to create a machine-independent
-abstract base class, plus machine-dependent subclasses. Then there is a factory
-function that creates a machine-dependent instance and returns it casted
-to its machine-independent base class.</p>
-<p>With this scheme we can handle machine-dependent extensions to the base class
-easily: modules using these extensions declare objects of the subclass and
-call the initializer directly in stead of through the factory function.</p>
-<p>The scheme does not work for all objects, however: it breaks if we want to
-create static copies of the objects. For classes for which this is the case,
-such as the <tt class="literal"><span class="pre">critical_region</span></tt> object, we declare an abstract object 
-<tt class="literal"><span class="pre">abstract_critical_section</span></tt> in
-<tt class="literal"><span class="pre">lib/abstract_mtsync.h</span></tt>, subclass that as <tt class="literal"><span class="pre">PLATFORM::critical_section</span></tt>
-in <tt class="literal"><span class="pre">lib/PLATFORM/PLATFORM_mtsync.h</span></tt>,
-conditionally include that in <tt class="literal"><span class="pre">lib/mtsync.h</span></tt> and create an empty subclass
-<tt class="literal"><span class="pre">critical_section</span></tt> of it.</p>
 </div>
 <div class="section" id="global-structure">
 <h1><a name="global-structure">Global structure</a></h1>
-<p>We want to be able to use the code
+<p>To be able to use the code
 to create, say, a plugin SMIL renderer for use in a browser we need a global
 &quot;playback engine&quot; object that has all the others hanging off it (plus factory
 methods to create them, etc). To support this we have a global object <tt class="literal"><span class="pre">player</span></tt>
 that is the controller of all aspects of playback of a single SMIL document.</p>
+<p>In addition we use factories for creating things like renderers, file readers,
+parsers and windows. These factories are populated by the main program and then
+used during document playback.</p>
 <p>With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
 &quot;create window&quot; and such.</p>
-<p>We have a number of objects that come in active and passive
-flavors (data sources, data sinks). For the time being these do not have a common
-base class but in stead follow an informal protocol, and the example objects
-<tt class="literal"><span class="pre">passive_skeleton</span></tt> and <tt class="literal"><span class="pre">active_skeleton</span></tt> can be used as a boilerplate to implement
-new objects following this protocol. We may decide to use a common base class in
-the future.</p>
+<p>In addition, because the main program is responsible for creating all the factories
+it should be possible to create a different main program that does not actually
+render anything, but only prints on stdout what should happen at what time, or
+any other form of symbolic execution.</p>
+</div>
+<div class="section" id="replaceable-components">
+<h1><a name="replaceable-components">Replaceable components</a></h1>
+<p>AmbulantPlayer is intended to be a research system, and therefore all components
+should be easy to replace with interfering with the rest of the system. This
+allows a researcher to concentrate on one issue, such as network protocols or
+scheduling algorithms, while the rest of the system is usable as-is.</p>
+<p>This replacability is incorporated in the design through two means:</p>
+<ul class="simple">
+<li>Clear well-defined APIs between the various parts of the system;</li>
+<li>Factory functions to create most objects.</li>
+</ul>
+<p>In the current implementation there are two main objects for which this
+has not been implemented (the DOM tree and the low-level event scheduler),
+this will be done at a later stage. All other functionality (media playback,
+data retrieval, parsing, layout, scheduling) does follow this pattern.</p>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
@@ -181,25 +66,14 @@ the future.</p>
 we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that is used for
 garbage collection.</p>
-<p>We need to decide on a per-case basis whether we need refcounting or whether auto_ptr
-or plain pointers are more appropriate. Here's some prose by KK that gives some
-of the considerations:</p>
-<blockquote>
-I think that ref-counting should be used when it is absolutely needed
-(proven to be needed). It adds an overhead and some complexity since it can
-not happen automatically. On the other hand there are some cases where it
-simplifies the code  a lot. If I judge from my code and the code of others I
-have seen, only very few objects need ref counting. First, objects owned by
-a class, and quite all are, never need to be ref counted. You either use
-auto_ptr or just delete them. The auto_ptr may be used more extensively but
-also most of the times plain pointers can do the job. I think that
-ref-counting is needed when objects containing references are shared by
-completely independent components. For example you have a processor object
-with a queue and other application objects submit work items to this queue
-AND the work items contain references to objects that must be available when
-the work item is executed. If the work items are self-contained or are
-shallow enough to make them self-contained, then you don't need
-ref-counting.</blockquote>
+<p>Ref-counting should be used when it is absolutely needed, it adds an
+overhead and some complexity since it can not happen automatically. On
+the other hand there are some cases where it simplifies the code  a lot.
+If I judge from my code and the code of others I have seen, only very
+few objects need ref counting. First, objects owned by a class, and
+quite all are, never need to be ref counted. You just delete them.
+Ref-counting is needed when objects containing references are shared by
+completely independent components.</p>
 <p>The architecture is fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
 schedules and ending these to a low level scheduler, isn't going to work
@@ -207,16 +81,12 @@ for SMIL without putting almost all SMIL complexity in the low-level scheduler.<
 </div>
 <div class="section" id="main-loop">
 <h1><a name="main-loop">main loop</a></h1>
-<p>The basic architecture is going to be event-driven, with a small
+<p>The basic architecture is event-driven, with a small
 number of worker threads picking up events from the event queue. The alternative
 is to use multiple threads all over, but it seems event-driven is the better
 choice. An object that wants to use multiple threads can do so more easily
 on an event infrastructure than the other way around, but these threads are
 &quot;somebody else's problem&quot;, as they are hidden from the rest of the architecture.</p>
-<p>In the future, we may want to allow the option (probably compile time) to allow only a single worker
-threads to handle the events. This should be a compile time option, so we don't
-incur the overhead of locking the event mgr data structures if there's only a
-single worker thread. For now the code assumes multiple threads.</p>
 <p>At first glance that it appears some objects, such as a renderer,
 would benefit from a threaded architecture it turns out this isn't really so.
 The naive threaded implementation:</p>
@@ -238,9 +108,24 @@ while event = wait_for_some_interesting_event():
 <p>The event handler architecture needs an elaborate priority scheme, that is expressive
 enough that the best execution order of things that happen &quot;at the same time&quot;
 is automatic.</p>
-<p>If possible we should design the data structures and API such that a shortcut can be
-taken (if A schedules a callback for B and nothing of higher priority is runnable then
-we call B directly in stead of going through the callback main loop).</p>
+</div>
+<div class="section" id="machine-dependent-code">
+<h1><a name="machine-dependent-code">Machine-dependent code</a></h1>
+<p>The general way to handle machine-dependency is to create a machine-independent
+abstract base class, plus machine-dependent subclasses. Then there is a factory
+function that creates a machine-dependent instance and returns it casted
+to its machine-independent base class.</p>
+<p>With this scheme we can handle machine-dependent extensions to the base class
+easily: modules using these extensions declare objects of the subclass and
+call the initializer directly in stead of through the factory function.</p>
+<p>The scheme does not work for all objects, however: it breaks if we want to
+create static copies of the objects. For classes for which this is the case,
+such as the <tt class="literal"><span class="pre">critical_region</span></tt> object, we declare an abstract object 
+<tt class="literal"><span class="pre">abstract_critical_section</span></tt> in
+<tt class="literal"><span class="pre">lib/abstract_mtsync.h</span></tt>, subclass that as <tt class="literal"><span class="pre">PLATFORM::critical_section</span></tt>
+in <tt class="literal"><span class="pre">lib/PLATFORM/PLATFORM_mtsync.h</span></tt>,
+conditionally include that in <tt class="literal"><span class="pre">lib/mtsync.h</span></tt> and create an empty subclass
+<tt class="literal"><span class="pre">critical_section</span></tt> of it.</p>
 </div>
 <div class="section" id="integrating-third-party-tools">
 <h1><a name="integrating-third-party-tools">integrating third-party tools</a></h1>
@@ -248,79 +133,22 @@ we call B directly in stead of going through the callback main loop).</p>
 Think of QuickTime and DirectX, where you basically pass a URL and say &quot;play&quot; and
 have nothing to worry about anymore. Also, existing URL access libraries (such
 as the caching infrastructure on windows) and a third party RTSP library need
-to be used. This also means we don't have to handle firewalls and what more.
-Investigating toolkits we can use needs to be done early, as it may influence
-some of the other design issues (GC, event model).</p>
-<p>remarks.txt lists options we have for XML parsers, SAX/DOM, regex and RTP/RTSP toolkits.</p>
-<p>We need to be able to re-use existing (Explorer, Netscape) plugins, when applicable.</p>
+to be used. This also means we don't have to handle firewalls and what more.</p>
+<p>We would like to be able to re-use existing (Explorer, Netscape) plugins
+when applicable, but no work on this has been done yet.</p>
 </div>
-<div class="section" id="scheduler">
-<h1><a name="scheduler">scheduler</a></h1>
-<p>The scheduler is going to be split in two. There is a high-level language
-dependent scheduler and a low-level language independent one. We will write a SMIL
-high level scheduler, other people should be able to replace that with, say,
-a QuickTime or MPEG-4 scheduler while re-using the low-level scheduler.
-For the first release we will supply a scheduler for MMS 2.0. This is a very
-small subset of SMIL 2.0, with documents following a well-defined structure
-and naming convention.</p>
-<p>The initial highlevel scheduler handles the 3GPP MMS 2.0 subset of SMIL
-only, and is wholly contained in the <tt class="literal"><span class="pre">timeline_builder</span></tt> object.</p>
-<p>The Low-level scheduler is based on fixed timelines. The HL
-scheduler identifies a portion of the SMIL document that it can fit on a fixed
-timeline (at least: a fully ordered linear timeline), it creates a schedule for this
-and pushes it down. These low-level schedules look somewhat like a petri-net,
-but they probably need &quot;or&quot; in addition to &quot;and&quot;. The LL schedule will contain
-events that trigger the HL scheduler when needed (such as when the user clicks
-a link, or when the schedule finishes). These timelines are what I referred to
-in the past as &quot;multimedia basic blocks&quot;. A description of how these timelines
-work is in <tt class="literal"><span class="pre">timeline.txt</span></tt>.</p>
-<p>Eventually, the elements in the timeline need enough information to be able to get back at
-a HL object from them, so we do the annotation thing. Also, we need to be able
-to get from the HL object tree to the timeline objects too, so that hyperjumps
-can clear out the relevant timelines.</p>
-<p>Timeline schedules are completely independent, at their level. If one timeline
-kills or pauses another one this happens because it sends an event to the
-HL scheduler which does the killing or pausing. It may be that timelines can
-share a clock (or, probably better, that the clock in a timeline can be slaved
-to the clock in another timeline).</p>
-<p>I think there are always going to be situations where we want to &quot;restart the world&quot;,
-i.e. stop everything, tell the highlevel scheduler where we are and let it re-create
-the lowlevel schedules to put us back where we were before the restart (but respecting
-the new situation that caused the restart). Situations that come to mind are a resize
-of the playback window, UI changes like turning on subtitles or other system-test
-attributes, etc. We could probably solve each of these cases without restarting,
-but if we have the mechanism to do a restart (and do it without too much impact
-on the user experience) it can be used as a fallback mechanism, and speed up
-initial implementation.</p>
+<div class="section" id="other-languages">
+<h1><a name="other-languages">Other languages</a></h1>
+<p>It is our intention to eventually allow bridging of Ambulant Player to other languages
+such as Python or Java. An effort has been made to keep the APIs clean enough
+to allow this, but no actual work has been done on it yet.</p>
 </div>
-<div class="section" id="coupling-between-high-and-low-level">
-<h1><a name="coupling-between-high-and-low-level">Coupling between high and low level</a></h1>
-<p>This section is here because I don't know where else to put it. Something that
-struck me is that there are a couple of objects that are really one-one mappings
-of SMIL nodes at different levels. Specifically, the renderer object is the SMIL
-node at the timeline level. Also, it seems that if we decide to always create
-a subregion when playing a node there might also be a 1-1 mapping here.</p>
-<p>Could we somehow take these three objects and make them &quot;live together&quot; for
-efficiency reasons? What I would like is three distinct interfaces but all living
-in the same object. At least, optionally: if we at some point decide to do
-the decoupled player the objects will become distinct.</p>
-<p>But maybe we are good enough off initially by specifying in the UML that this
-1-1 relationship exists, and put off any optimization until later.</p>
-</div>
-<div class="section" id="missing">
-<h1><a name="missing">Missing</a></h1>
-<p>Here is a list of bits of the design that I know are missing:</p>
-<ul class="simple">
-<li>What events are accepted by what objects, and what the arguments are.</li>
-<li>How we handle anchors. Maybe treat as nodes?</li>
-<li>How we handle transitions. Maybe also treat as nodes? We probably shouldn't
-follow the SMIL model too closely, as its transitions are a bit funny.</li>
-<li>How we handle subregions. Maybe the same as normal regions, but created dynamically?
-Or are they simply a part of the renderer objects?
-Does this influence anchors too? Do regions belong to a timeline?</li>
-<li>How we handle SMIL animation. This needs to be done in a way that doesn't
-require restarting the world.</li>
-</ul>
+<div class="section" id="where-next">
+<h1><a name="where-next">Where next?</a></h1>
+<p>A good place to continue reading is the <a class="reference" href="walkthrough.html">walkthrough</a> document, which gives a terse
+description of how a SMIL document is opened, parsed and played. Then continue
+with the <a class="reference" href="objects.html">objects</a> document which describes the main objects in more detail.
+Or go back to the <a class="reference" href="../index.html">main documentation index</a>.</p>
 </div>
 </div>
 </body>

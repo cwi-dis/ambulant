@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
+<title>Ambulant source code organisation</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ambulant-source-code-organisation">
+<h1 class="title">Ambulant source code organisation</h1>
+<p>Last updated for Ambulant version 1.1.</p>
+<div class="section" id="source-code-organisation">
+<h1><a name="source-code-organisation">Source code organisation</a></h1>
+<p>Everything is kept under CVS, on sourceforge. On Unix we use the standard <em>automake</em>,
+<em>autoconf</em>, <em>configure</em> and <em>gcc</em> (version 3.2 or later) toolset to
+build things. On Windows we use Visual Studio 7. For cross-compilation
+for Windows CE we use Embedded Visual C++ 3.0. For
+cross-compilation for the Zaurus Linux handheld we use the Sharp
+toolset, based on gcc 2.95.</p>
+<p>At the toplevel we have a number of subdirectories:</p>
+<ul class="simple">
+<li><tt class="literal"><span class="pre">Documentation</span></tt> will eventually contain all documentation, currently
+<tt class="literal"><span class="pre">Design</span></tt>, which is what you are reading now, and <tt class="literal"><span class="pre">API</span></tt>, which is
+low-level documentation of classes, methods, etc.</li>
+<li><tt class="literal"><span class="pre">include</span></tt> has all the C++ header files.</li>
+<li><tt class="literal"><span class="pre">src</span></tt> has all the sources, with the engine built as a library
+from the <tt class="literal"><span class="pre">libambulant</span></tt> subdirectory, and driver programs in <tt class="literal"><span class="pre">player_macos</span></tt>,
+<tt class="literal"><span class="pre">player_mfc</span></tt>, etc.</li>
+<li><tt class="literal"><span class="pre">third_party_packages</span></tt> holds the source to third party packages we use,
+such as James Clark's <tt class="literal"><span class="pre">expat</span></tt> XML parser, the IJG libjpeg library and more.</li>
+<li><tt class="literal"><span class="pre">Extras</span></tt> has the two included presentations: Welcome and the DemoPresentation
+on New York.</li>
+<li><tt class="literal"><span class="pre">po</span></tt> has the files used to create localisations. This uses the
+GNU gettext library.</li>
+<li><tt class="literal"><span class="pre">m4</span></tt> has extra macros for automake.</li>
+</ul>
+</div>
+<div class="section" id="source-code-conventions">
+<h1><a name="source-code-conventions">Source code conventions</a></h1>
+<p>Here's a somewhat random list of source code conventions that we have decided
+to use:</p>
+<ul>
+<li><p class="first">Indent 4 spaces, with the following exceptions:</p>
+<ul class="simple">
+<li><tt class="literal"><span class="pre">namespace</span></tt> doesn't indent at all</li>
+<li><tt class="literal"><span class="pre">public:</span></tt>, <tt class="literal"><span class="pre">private:</span></tt> and such indent two spaces</li>
+</ul>
+</li>
+<li><p class="first">Whether opening braces are at end-of-line or beginning of the next
+line depends on the circumstances and personal taste. Closing braces,
+when on a line by themselves, must however align with the construct
+that opened them.</p>
+</li>
+<li><p class="first">no camelCase, CamelCase or Capitalization in class or variable names</p>
+</li>
+<li><p class="first">Underscores to delimit words</p>
+</li>
+<li><p class="first">attribute names start with &quot;m_&quot;</p>
+</li>
+<li><p class="first">static attributes start with &quot;s_&quot;</p>
+</li>
+<li><p class="first">we have a toplevel namespace ambulant, with a second level of namespaces
+under that</p>
+</li>
+<li><p class="first">semi-private classes go into into a namespace named &quot;detail&quot;.</p>
+</li>
+<li><p class="first">Template type parameters start with an upper case letter
+(as in: <tt class="literal"><span class="pre">template</span> <span class="pre">&lt;class</span> <span class="pre">A&gt;</span> <span class="pre">{}</span></tt>)</p>
+</li>
+<li><p class="first">Header files need to include any header files on which they depend, and
+they guard against multiple inclusion with a preprocessor construct.</p>
+</li>
+<li><p class="first">Header files are all in an &quot;ambulant&quot; directory, and are included by full
+path, as in:</p>
+<pre class="literal-block">
+#include &quot;ambulant/net/url.h&quot;
+</pre>
+</li>
+<li><p class="first">Everything goes into namespace &quot;ambulant&quot;, with sub-namespaces &quot;lib&quot;,
+&quot;net&quot;, etc. Machine-dependent code goes into it's own &quot;unix&quot;, &quot;win32&quot;, etc
+subnamespace of those.</p>
+</li>
+<li><p class="first">Source files have <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">ambulant;</span></tt> at the top. In addition,
+there's a using namespace for your own namespace, i.e. <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">common;</span></tt>
+for source files in common. Normally, there are no other global <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span></tt>
+declarations, i.e. everything outside of your own namespace is used qualified.</p>
+</li>
+<li><p class="first">Header files that declare abstract interfaces try to include as few other
+header files as possible. In other words, if you need a <tt class="literal"><span class="pre">lib::node</span> <span class="pre">*</span></tt> in an
+abstract header file it is better not to include <tt class="literal"><span class="pre">ambulant/lib/node.h</span></tt>,
+but instead to add a construct:</p>
+<pre class="literal-block">
+namespace ambulant {
+namespace lib {
+class node;
+}
+}
+</pre>
+</li>
+<li><p class="first">We need to define which preprocessor defines we are going to
+switch on for platform-dependent code, so we don't get <cite>#ifdef _WIN32</cite> in
+one place and something completely different in another place.
+Suggestion:</p>
+<ul class="simple">
+<li><cite>#ifdef _WIN32</cite> to test for Windows</li>
+<li>something to test for Linux?</li>
+<li><cite>#ifdef __APPLE__</cite> to test for MacOSX</li>
+<li>something to test for 386 or other architectures?</li>
+<li>something to test for Visual Studio versus gcc?</li>
+</ul>
+</li>
+<li><p class="first">APIs that could be considered external must be documented inline, in a form
+compatible with Doxygen. The easiest way to do this is with a triple-slashed
+comment block. The first line should end in a period and is the short description.
+Anything after that is the long description:</p>
+<pre class="literal-block">
+/// Hold user preference information.
+/// This class holds all settings the user can change. It is normally subclassed
+/// in machine-dependent code to override the load() and save() methods.
+class preferences {
+
+        /// Load preferences from disk.
+        void load();
+        
+        /// Save preferences to disk.
+        void save();
+}
+</pre>
+</li>
+</ul>
+</div>
+</div>
+</body>
+</html>
