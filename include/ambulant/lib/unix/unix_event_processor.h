@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_UNIX_EVENT_PROCESSOR_H
 #define AMBULANT_LIB_UNIX_EVENT_PROCESSOR_H
 
+#include<sys/time.h>
+
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/unix/unix_thread.h"
 #include "ambulant/lib/mtsync.h"

@@ -647,10 +647,10 @@ ffmpeg_video_datasource::stop()
 bool
 ffmpeg_video_datasource::has_audio()
 {		
-	lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio");
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio");
 
 	if (get_audio_stream_nr() >= 0) {
-		lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio TRUE");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio TRUE");
 		return true;
 	}
 	lib::logger::get_logger()->trace("ffmpeg_video_datasource::has_audio FALSE");
@@ -1094,6 +1094,7 @@ ffmpeg_decoder_datasource::data_avail()
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
 				AM_DBG lib::logger::get_logger()->trace("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
+				// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
 				int cursz = sz;
 				if (cursz > 4096) cursz = 4096;
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
@@ -1327,8 +1328,9 @@ ffmpeg_resample_datasource::data_avail()
 		if (m_resample_context) {
 		// Convert all the input data we have available. We make an educated guess at the number of bytes
 		// this will produce on output.
-		//while (sz > 0) {
+	
 			cursize = sz;
+			// Don't feed to much data to the resampler, it doesn't like to do lists ;-)
 			if (cursize > 4096) 
 				cursize = 4096;
 			int insamples = cursize / (m_in_fmt.channels * sizeof(short));	
@@ -1338,8 +1340,8 @@ ffmpeg_resample_datasource::data_avail()
 			
 			long long tmp = (long long)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
 			long outsz = tmp;
-			int outsamples_est = outsz /(m_out_fmt.channels * sizeof(short));
-			//outsz = (long) tmp *1.1;
+			
+	
 			if (!cursize && !m_src->end_of_file()) {
 				AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
 				m_lock.leave();			
@@ -1356,18 +1358,15 @@ ffmpeg_resample_datasource::data_avail()
 				if (inbuf && outbuf && insamples > 0) {
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", cursize, insamples, outsz, inbuf, outbuf);
 					int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
-					if (outsamples != outsamples_est) {
-						/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): outsamples: %d,  estimated outsamples from %d", outsamples, outsamples_est);	
-					}
+					
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
 					assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
 					m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
 					m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
-//					sz = m_src->size();
+
 				}
 			}
-		//}
 		// Restart reading if we still have room to accomodate more data
 		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
 			lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);

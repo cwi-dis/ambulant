@@ -630,4 +630,3 @@ void trimmed_output_visitor<Node>::write_end_tag_with_children(const Node*& pe) 
 	os << "</" + pe->get_local_name() << ">";
 }
 #endif // AMBULANT_NO_IOSTREAMS
-

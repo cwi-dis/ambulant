@@ -103,10 +103,19 @@ lib::unix::event_processor::wait_event()
 {
 	int rv;
 	struct timespec ts;
+	struct timeval tv;
+	int dummy;
+		
 	
-	// XXXX This is wrong.
-	ts.tv_sec = time(NULL);
-	ts.tv_nsec = 10000000; /* 10ms */
+	// we want to wait for 10ms
+	dummy = gettimeofday(&tv,NULL);
+	ts.tv_sec = tv.tv_sec;
+	ts.tv_nsec = (tv.tv_usec + 10000)* 1000;
+	if (ts.tv_nsec > 1000000) {
+		ts.tv_sec += 1;
+		ts.tv_nsec -= 1000000;
+	}
+	
 	rv = pthread_cond_timedwait(&m_queue_condition, &m_queue_mutex, &ts);
 	if ( rv < 0 && errno != ETIMEDOUT) {
 		lib::logger::get_logger()->fatal("unix_event_processor.wait_event: pthread_cond_wait failed: %s", strerror(errno));
