@@ -239,7 +239,7 @@
 				Name="common"
 				Filter="">
 				<File
-					RelativePath=".\common\player.cpp">
+					RelativePath=".\common\mms_player.cpp">
 				</File>
 				<File
 					RelativePath=".\common\region.cpp">
