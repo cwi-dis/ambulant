@@ -54,6 +54,8 @@
 #include "ambulant/smil2/time_state.h"
 #include "ambulant/smil2/time_node.h"
 
+//#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -204,7 +206,9 @@ void proactive_state::reset(qtime_type timestamp, time_node *oproot) {
 
 void proactive_state::exit(qtime_type timestamp, time_node *oproot) {
 	// next is active when the interval is within parent AD (normal)
-	// next is postactive if the interval is in the past (jump)
+	// next is postactive if 
+	//		the interval is in the past (jump)
+	//		the interval will not be exec because of peers="never" excl semantics
 	// next is reset if the parent repeats or restarts (reset)
 	// next is dead if the parent ends (kill)
 	
@@ -273,6 +277,23 @@ void active_state::sync_update(qtime_type timestamp) {
 	time_type end = m_self->calc_current_interval_end();
 	if(end != m_interval.end) {
 		m_self->update_interval_end(timestamp, end);
+	}
+	
+	restart_behavior rb = m_attrs.get_restart();
+	if(rb == restart_always) {
+		interval_type dummy = m_interval;
+		m_interval.end = timestamp.second;
+		interval_type i = m_self->calc_next_interval();
+		m_interval = dummy;
+		if(i.is_valid()) {
+			AM_DBG logger::get_logger()->trace("%s[%s] restart interval %s",
+				m_attrs.get_tag().c_str(), 
+				m_attrs.get_id().c_str(),
+				::repr(i).c_str()); 
+			m_self->set_state(ts_postactive, timestamp, m_self);
+			m_self->set_begin_event_inst(timestamp.second);
+			m_self->schedule_sync_update(timestamp, 0);
+		}
 	}
 }
 

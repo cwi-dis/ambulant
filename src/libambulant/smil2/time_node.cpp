@@ -59,7 +59,7 @@
 
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
+//#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -96,6 +96,7 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_priority(0),
 	m_paused(false), 
 	m_deferred(false),
+	m_begin_event_inst(time_type::unresolved),
 	m_pending_event(0),
 	m_domcall_rule(0),
 	m_locked(false),
@@ -236,42 +237,6 @@ std::string time_node::to_string() const {
 	return get_type_as_str();
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
-void time_node::dump(std::ostream& os) {
-	iterator it;
-	iterator endit = end();
-	int depth = 0;
-	for(it = begin(); it != endit; it++) {
-		if(!(*it).first) {depth--;continue;}
-		time_node *tn = (*it).second;
-		for(int i=0;i<depth;i++) os << "  ";
-		os << tn->to_string() << " ";
-		if(tn->get_interval().is_valid()) {
-			os << ::repr(tn->get_interval());
-			interval_type i = tn->calc_clipped_interval();
-			if(i != tn->get_interval())
-				os << " C" << ::repr(i);
-		} else
-			os << "[]";
-		os << std::endl;	
-		depth++;
-	}
-}
-
-void time_node::dump_dependents(std::ostream& os, sync_event ev) {
-	rule_list *p = m_dependents[ev];
-	if(!p) {
-		os << "dependents[" << to_string() << "] = {}" << std::endl;
-		return;
-	}
-	os << "dependents[" << to_string() << "] = {" << std::endl;
-	for(rule_list::iterator it=p->begin();it!=p->end();it++)
-		os << "\t" << (*it)->to_string() << std::endl;
-	os << "}" << std::endl;
-}
-#endif // AMBULANT_NO_IOSTREAMS
-
-
 // Returns the implicit duration of this node. 
 // This is an implementation for a leaf-node.
 // e.g. queries playable for the implicit dur.
@@ -297,7 +262,17 @@ time_node::calc_implicit_dur() {
 		return m_impldur;	
 	
 	// Can the associated playable provide us the implicit duration? 
-	// If yes, remember it in internal timing units (ms)
+	// If yes, store it a "m_mediadur" in internal timing units (ms).
+	//
+	// Please note that the current implementation,
+	// when the duration is not defined explicitly,
+	// and in order to make slideshows more smooth,
+	// it postpones setting the implicit duration
+	// until an end of media (EOM) event.
+	// This makes the model more complex but i think
+	// the results deserve this extra complexity.
+	// Remains to be proved ...
+	//
 	if(m_mediadur == time_type::unresolved) {
 		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
 		if(dur_pair.first && dur_pair.second>0) {
@@ -310,6 +285,7 @@ time_node::calc_implicit_dur() {
 	// No, the playable cannot provide its implicit duration
 	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur(): unresolved", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
+		
 	return time_type::unresolved;
 }
 
@@ -552,6 +528,8 @@ time_node::calc_first_interval() {
 	if(begin_list.empty())
 		return failure;
 	
+	// clear event based end lists
+	
 	// Get the end instance list
 	time_mset end_list;
 	get_instance_times(m_end_list, end_list);
@@ -620,6 +598,10 @@ time_node::calc_next_interval() {
 	// Get the begin instance list
 	time_mset begin_list;
 	get_instance_times(m_begin_list, begin_list);
+	if(m_begin_event_inst != time_type::unresolved) {
+		begin_list.insert(m_begin_event_inst);
+		m_begin_event_inst = time_type::unresolved;
+	}
 	if(begin_list.empty())
 		return failure;
 	
@@ -667,7 +649,6 @@ time_node::calc_next_interval() {
 	}
 	return interval_type(temp_begin, temp_end);
 }
-
 
 // XXX: Not used currently
 // Returns the current interval as clipped by its parent simple duration.
@@ -794,6 +775,7 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	on_new_instance(timestamp, tn_begin, m_interval.begin);
 	on_new_instance(timestamp, tn_end, m_interval.end);
 	
+	// Update parent to recalc end sync status
 	if(sync_node()->is_par() || sync_node()->is_excl())
 		sync_node()->schedule_sync_update(timestamp, 0);
 	
@@ -1277,15 +1259,67 @@ void time_node::on_cancel_instance(qtime_type timestamp, sync_event ev, time_typ
 	}
 }
 
+// Update dependents for an event instance
+// Asserts that the same event is not used to update the same element twice.
 void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev, 
 	time_node::time_type instance, int data, time_node *filter) {
 	dependency_map::iterator dit = m_dependents.find(ev);
-	if(dit != m_dependents.end() && (*dit).second != 0) {
-		rule_list *p = (*dit).second;
-		for(rule_list::iterator it=p->begin();it!=p->end();it++) {
-			time_node* owner = (*it)->get_target();
-			if(!filter || !nnhelper::is_descendent(owner, filter))
+	if(dit == m_dependents.end() || (*dit).second == 0) {
+		// no dependents
+		return;
+	}
+	
+	// List of rules to update 
+	rule_list *p = (*dit).second;
+	
+	// Set of dependents
+	std::set<time_node*> dset;
+	
+	// 1. add event to not active
+	// 1.1 begin
+	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
 				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	// 1.2 end
+	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(!owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	
+	// 2. add event to active
+	// 2.1 end
+	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	// 2.2 begin
+	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
 		}
 	}
 }
@@ -1984,3 +2018,40 @@ void excl_queue::assert_invariants() const {
 	assert(s.size() == count);
 }
 
+////////////////////////
+// Debug 
+
+#ifndef AMBULANT_NO_IOSTREAMS
+void time_node::dump(std::ostream& os) {
+	iterator it;
+	iterator endit = end();
+	int depth = 0;
+	for(it = begin(); it != endit; it++) {
+		if(!(*it).first) {depth--;continue;}
+		time_node *tn = (*it).second;
+		for(int i=0;i<depth;i++) os << "  ";
+		os << tn->to_string() << " ";
+		if(tn->get_interval().is_valid()) {
+			os << ::repr(tn->get_interval());
+			interval_type i = tn->calc_clipped_interval();
+			if(i != tn->get_interval())
+				os << " C" << ::repr(i);
+		} else
+			os << "[]";
+		os << std::endl;	
+		depth++;
+	}
+}
+
+void time_node::dump_dependents(std::ostream& os, sync_event ev) {
+	rule_list *p = m_dependents[ev];
+	if(!p) {
+		os << "dependents[" << to_string() << "] = {}" << std::endl;
+		return;
+	}
+	os << "dependents[" << to_string() << "] = {" << std::endl;
+	for(rule_list::iterator it=p->begin();it!=p->end();it++)
+		os << "\t" << (*it)->to_string() << std::endl;
+	os << "}" << std::endl;
+}
+#endif // AMBULANT_NO_IOSTREAMS

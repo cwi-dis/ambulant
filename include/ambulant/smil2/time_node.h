@@ -376,6 +376,7 @@ class time_node : public time_traits {
  	// public S/O transitions
  	void cancel_schedule();
 	void schedule_deferred_interval(qtime_type timestamp);
+	void set_begin_event_inst(time_type inst) {m_begin_event_inst = inst;}
 	
  protected:
 	context_type *m_context;
@@ -455,7 +456,7 @@ class time_node : public time_traits {
 	
 	// Defered flag
 	bool m_deferred;
-	
+		
 	// Sync rules
 	typedef std::list<sync_rule*> rule_list;
 	
@@ -464,6 +465,11 @@ class time_node : public time_traits {
 	
 	// The end sync rules of this node.
 	rule_list m_end_list;
+	
+	// On reset all event instances are cleared. 
+	// Keep a register for holding one such instance
+	// The one that will start the current interval
+	time_type m_begin_event_inst;
 	
 	// Special DOM calls sync rule of this node.
 	sync_rule *m_domcall_rule;
