@@ -55,16 +55,6 @@ LIB32=link.exe -lib
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
-# Begin Custom Build
-TargetPath=\ufs\ambulant\lib\wince-arm\libambulant_wince.lib
-TargetName=libambulant_wince
-InputPath=\ufs\ambulant\lib\wince-arm\libambulant_wince.lib
-SOURCE="$(InputPath)"
-
-"$(TargetPath)" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(TargetPath)  d:/ufs/ambulant/lib/wince/$(TargetName)
-
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
