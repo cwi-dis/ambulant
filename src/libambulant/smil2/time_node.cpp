@@ -59,6 +59,8 @@
 
 #include "ambulant/lib/logger.h"
 
+#define AM_DBG
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -792,6 +794,9 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	on_new_instance(timestamp, tn_begin, m_interval.begin);
 	on_new_instance(timestamp, tn_end, m_interval.end);
 	
+	if(sync_node()->is_par() || sync_node()->is_excl())
+		sync_node()->schedule_sync_update(timestamp, 0);
+	
 	// Is this a cut-off interval?
 	// this can happen when proactive
 	if(m_interval.before(timestamp.second)) {
@@ -872,6 +877,10 @@ void time_node::activate(qtime_type timestamp) {
 		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
 	}
 		
+	// Store the the activation time
+	// Required by the set-of-implicit-dur-on-eom mechanism
+	m_activation_time = timestamp.second; 
+	
 	AM_DBG tnlogger->trace("*** %s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
@@ -879,7 +888,12 @@ void time_node::activate(qtime_type timestamp) {
 	
 	// If this is a leaf node start playable at 'sd_offset' within media
 	if(!is_time_container()) {
-		m_context->start_playable(m_node, time_type_to_secs(sd_offset()));
+		if(!is_discrete() && needs_implicit_dur() && m_mediadur != time_type::unresolved) {
+			// we need this due to the set-of-implicit-dur-on-eom mechanism
+			m_media_offset = sd_offset.rem(m_mediadur);
+		} else 
+			m_media_offset = sd_offset;
+		m_context->start_playable(m_node, time_type_to_secs(m_media_offset()));
 		m_context->wantclicks_playable(m_node, want_activate_event());
 	}
 	
@@ -1152,21 +1166,33 @@ void time_node::defer_interval(qtime_type timestamp) {
 		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
 	assert(m_interval.is_valid());
 	
+	// Cancel notifications
 	interval_type i = m_interval;
 	m_interval = interval_type::unresolved;	
 	on_cancel_instance(timestamp, tn_begin, i.begin);
 	on_cancel_instance(timestamp, tn_end, i.end);
-	m_interval = i;
+	
+	// cancel schedule
 	cancel_schedule();
+	
+	// Remember interval
+	m_interval = i;
+	
+	// Mark this node as deferred.
 	deferred(true);
 }
 
 // Excl element handling.
 // When an element is deferred, the begin time is deferred as well
 void time_node::schedule_deferred_interval(qtime_type timestamp) {
+	// Remove deferred marker
 	deferred(false);
+	
+	// Translate the defered interval to timestamp
 	interval_type i = m_interval;
 	i.translate(timestamp.second-m_interval.begin);
+	
+	// Schedule interval
 	schedule_interval(timestamp, i);
 }
 
@@ -1473,32 +1499,53 @@ void time_node::on_bom(qtime_type timestamp) {
 // This notification is taken into account when this node is still active
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
-	if(!is_discrete() && is_active() && needs_implicit_dur()) {
-		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
-		qtime_type st = pt.as_qtime_down_to(this);
-		AM_DBG tnlogger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
-			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str(), 
-			st.second(),
-			pt.second(),
-			timestamp.second()); 
+	if(is_discrete() || !is_active() || !needs_implicit_dur())
+		return;
 		
-		// The new knowledge we have just acquired.
-		m_impldur = m_mediadur;
+	if(m_impldur != time_type::unresolved)
+		return;
+	
+	// 	
+	qtime_type pt = timestamp.as_qtime_down_to(sync_node());
+	qtime_type st = pt.as_qtime_down_to(this);
+	AM_DBG tnlogger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
+		m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		st.second(),
+		pt.second(),
+		timestamp.second()); 
+	
+	
+	
+	// The new knowledge we have just acquired.
+	m_impldur = m_mediadur;
 		
-		// Update last_dur for any repeat
-		// calc_dur();
-		
-		// Knowing the above calc current interval
-		time_type end = calc_current_interval_end();
-		if(end != m_interval.end) {
-			// Create model instance
-			qtime_type mqt(sync_node(), qtime_type::to_sync_time(this, m_impldur));
+	// Knowing the above calc current interval
+	time_type end = calc_current_interval_end();
 			
-			// Update interval refering the model instance.
-			update_interval_end(mqt, end);
-		}
+	// Do deferred calculation of activation registers
+	time_type ad_offset = m_activation_time - m_interval.begin;
+	time_type cdur = m_last_cdur;
+	if(ad_offset != 0 && cdur.is_definite() && cdur != 0) {
+		// The current repeat index
+		m_precounter = ad_offset.mod(cdur);
+		
+		// The accumulated repeat interval.
+		m_rad = m_precounter*cdur();
+		
+		// The accumulated repeat interval as a parent simple time instance
+		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
 	}
+	
+	// Update interval end	
+	if(end != m_interval.end) {		
+		// The model instance of EOM
+		time_type model_time = m_activation_time + (m_mediadur - m_media_offset);
+						
+		// Update interval refering the model instance.
+		update_interval_end(qtime_type(sync_node(), model_time), end);
+	}
+	
 }
 
 ///////////////////////////////

@@ -441,6 +441,11 @@ class time_node : public time_traits {
 	// e.g. the current zero-based repeat index
 	long m_precounter;
 	
+	// Registers for storing activation params
+	// Required by the set-of-implicit-dur-on-eom mechanism
+	time_type m_activation_time;
+	time_type m_media_offset;
+	
 	// The priority of this node
 	// Applicable for excl children.
 	int m_priority;
