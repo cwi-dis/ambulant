@@ -76,7 +76,7 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
   	~none_video_renderer() {};
 	double now();
       
-  	bool is_paused() { return false; };
+  	bool is_paused() { return m_is_paused; };
   	bool is_stopped() { return !m_is_playing;};
   	bool is_playing() { return m_is_playing; };
  	
@@ -84,8 +84,8 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
 		
     void start(double where);
     void stop() { m_is_playing = false; };
-    void pause() {};
-    void resume() {};
+    void pause();
+    void resume();
 	void freeze() {};
     void speed_changed() {};
     void data_avail();
@@ -102,6 +102,8 @@ class none_video_renderer : public common::active_basic_renderer, public lib::ti
   	  net::raw_video_datasource* m_src; 
   	  unsigned long int m_epoch;
 	  bool m_is_playing;
+	  bool m_is_paused;
+	  unsigned long int m_paused_epoch;
 	  lib::critical_section m_lock;
 };
 

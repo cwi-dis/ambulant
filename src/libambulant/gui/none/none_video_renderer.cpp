@@ -81,7 +81,8 @@ none_video_renderer::none_video_renderer (common::playable_notification *
 					  net::datasource_factory * df):
 common::active_basic_renderer (context, cookie, node, evp),
 m_evp (evp),
-m_is_playing(false)
+m_is_playing(false),
+m_is_paused(false)
 {
 	AM_DBG lib::logger::get_logger ()->trace("none_video_renderer::none_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!    
@@ -109,8 +110,35 @@ double
 none_video_renderer::now() 
 {
 	// private method - no locking
-	double rv = ((double)m_evp->get_timer()->elapsed() - m_epoch)/1000;
+	double rv;
+	if (m_is_paused)
+		rv = (double)(m_paused_epoch - m_epoch) / 1000;
+	else
+		rv = ((double)m_evp->get_timer()->elapsed() - m_epoch)/1000;
 	return rv;
+}
+
+void
+none_video_renderer::pause()
+{
+	m_lock.enter();
+	if (!m_is_paused) {
+		m_is_paused = true;
+		m_paused_epoch = m_evp->get_timer()->elapsed();
+	}
+	m_lock.leave();
+}
+
+void
+none_video_renderer::resume()
+{
+	m_lock.enter();
+	if (m_is_paused) {
+		m_is_paused = false;
+		unsigned long int pause_length = m_evp->get_timer()->elapsed() - m_paused_epoch;
+		m_epoch += pause_length;
+	}
+	m_lock.leave();
 }
 
 void 
@@ -144,7 +172,7 @@ none_video_renderer::data_avail ()
 			}
 		} else {
 			lib::event * e = new dataavail_callback (this, &none_video_renderer::data_avail);
-			event_time = (unsigned long int) round( ts*1000 - now()*1000); 
+			event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
 			m_evp->add_event(e, event_time);
 		}
 	} else {
