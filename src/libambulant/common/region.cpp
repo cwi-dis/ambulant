@@ -156,13 +156,13 @@ passive_region::animated()
 void
 passive_region::show(gui_events *cur)
 {
-
+	m_renderers_cs.enter();
 	m_renderers.push_back(cur);
+	m_renderers_cs.leave();
 	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)cur);
-	// We don't schedule a redraw here, assuming it will come shortly.
-	// is that correct?
 	
 	if(m_parent) {
+		// XXXX Should lock parents' subregions too!
 		children_map_t& subregions =  m_parent->get_subregions();
 		subregions[m_info->get_zindex()].push_back(this);
 	}
@@ -174,6 +174,7 @@ passive_region::renderer_done(gui_events *cur)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.renderer_done(0x%x, cur=0x%x)", (void *)this, (void*)cur);
 	
+	m_renderers_cs.enter();
 	std::list<gui_events*>::iterator i = m_renderers.end();
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
 		if ((*i) == cur) break;
@@ -182,8 +183,10 @@ passive_region::renderer_done(gui_events *cur)
 	} else {
 		m_renderers.erase(i);
 	}
+	m_renderers_cs.leave();
 	
 	if(m_parent) {
+		// XXXX Should lock parent subregion too?
 		children_map_t& subregions =  m_parent->get_subregions();
 		subregions[m_info->get_zindex()].remove(this);
 	}
@@ -213,14 +216,17 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
+	m_renderers_cs.enter();
 	assert(m_renderers.size()<=1);
 	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->redraw(our_rect, window);
 	}
+	m_renderers_cs.leave();
 		
 	// Draw active subregions in reverse activation order and in the correct z-order
+	// XXXX Should lock m_subregions
 	for(children_map_t::iterator it1=m_subregions.begin();it1!=m_subregions.end();it1++) {
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
@@ -235,6 +241,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	
 	// Finally the children regions of this
 	// XXXX Should go per z-order value
+	
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
 		children_list_t& cl = (*it2).second;
@@ -289,10 +296,12 @@ passive_region::user_event(const lib::point &where, int what)
 	our_point -= m_outer_bounds.left_top();
 	
 	std::list<gui_events*>::reverse_iterator ari;
+	m_renderers_cs.enter();
 	for (ari=m_renderers.rbegin(); ari!=m_renderers.rend(); ari++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
 		(*ari)->user_event(our_point, what);
 	}
+	m_renderers_cs.leave();
 	children_map_t::reverse_iterator it1;
 	for(it1=m_active_children.rbegin();it1!=m_active_children.rend();it1++) {
 		children_list_t& cl = (*it1).second;
@@ -564,12 +573,14 @@ passive_region::transition_freeze_end(lib::screen_rect<int> r)
 	
 	// Signal the active renderers
 	// For the win32 arrangement we should have at most one active
+	// Causes deadlock: we are in redraw when we get here. m_renderers_cs.enter();
 	assert(m_renderers.size()<=1);
 	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.transition_freeze_end(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->transition_freeze_end(r);
 	}
+	// m_renderers_cs.leave();
 
 	// Finally the children regions of this
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
