@@ -18,6 +18,10 @@ we cannot rely on refcounting or garbage collection (I think? Maybe there
 is a C++ library or template or whatever that can handle this for us?)
 so we have to be careful of object ownership and cleanup.
 
+	It seems that a variation on the STL autoptr is possible. We need to ask
+	KK for details on this (or other insight he has), and we also need to check
+	that this doesn't impact performance on handhelds overmuch.
+
 The architecture is going to be fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
 schedules and ending these to a low level scheduler, isn't going to work
@@ -31,22 +35,34 @@ threads are always going to incur a performance penalty.
 
 Also, although it seems at first glance that some objects, such as a renderer,
 would benefit from a threaded architecture it turns out this isn't really so.
-The naive threaded implementation
+The naive threaded implementation::
+
     while data = read_data():
     	render_data(data)
+
 will not work, because many other things can also happen, such as a user-initiated
 event, or the timeline for the renderer being torn down. So, the naive loop
-sketched here will become hairy anyway, and look like
+sketched here will become hairy anyway, and look like::
+
 	while event = wait_for_some_interesting_event():
 		switch event:
 			case DATA: render_data(data)
 			case STOP: close_resources_and_exit()
 			...
+
 so we might as will split this out in the architecture.
 
 The event handler architecture needs an elaborate priority scheme, that is expressive
 enough that the best execution order of things that happen "at the same time"
 is automatic.
+
+	A problem with the event handler is how to represent an event callback.
+	Ideally (in Python) it would be a tuple (anobject, amethod, arguments) and
+	it would call "anobject->amethod(arguments)", but this is impossible in C++.
+	The equivalent (aboundmethod, arguments) also doesn't work, as C++ apparently
+	cannot represent a bound method. There may be a solution in using a common
+	base class CallbackHandler that declares virtual methods for all callback
+	types. 
 
 We need to be able to re-use existing (Explorer, Netscape) plugins, when applicable.
 
@@ -81,8 +97,9 @@ Missing
 -------
 
 Here is a list of bits of the design that I know are missing:
+
 - What an event looks like. In a dynamic language we could use a bound method
-plus an optional argument, but this won't work in C++ (I think?).
+  plus an optional argument, but this won't work in C++ (I think?).
 - What events are accepted by what objects, and what the arguments are.
 - How we handle anchors.
 - How we handle transitions.

@@ -2,24 +2,26 @@ Ambulant design, objects
 ========================
 Jack Jansen, 29-Apr-03.
 -----------------------
-Objects we need::
+Objects we need:
+
 - Event processor. This is the mainloop plus the event/callback mechanism.
-TBD.
+  TBD.
 - Data Source. Think of these as "media items", they may refer to a URL
-or part of a multiplexed stream or so, and provide data to renderers and
-to the parser.
+  or part of a multiplexed stream or so, and provide data to renderers and
+  to the parser.
 - Region. This is an area of screen space (or a speaker). It is "what
-the user sees".
+  the user sees".
 - Data sink. This is where renderers send their data.
 - Renderers. These decode data streams, handle timing and do bitblitting
-or push audio through.
+  or push audio through.
 - Clocks. These advance a virtual time.
 - Document Scheduler. This reads a document and runs it.
 - Timeline. This executes a single timeline.
 
-Objects we may need::
+Objects we may need:
+
 - Resource. Control access to scarce resources (bandwidth, number of
-open files).
+  open files).
 
 Data sources come in two flavors: active and dormant. These can be used
 interchangeably (active is probably a subclass of dormant). Dormant has
@@ -55,12 +57,13 @@ known renderer classes whether they are able to handle this data source,
 and instantiate the first one that matches.
 
 The renderer object interface should allow for at least three different
-implementations::
+implementations:
+
 1. The normal one, where the renderer depends on the data source for
-data, decodes it, and sends it to the data sink.
+   data, decodes it, and sends it to the data sink.
 2. A "third party" renderer, that just grabs the information from the
-data source and sink and passes it to a third party engine (think
-QuickTime or Direct X).
+   data source and sink and passes it to a third party engine (think
+   QuickTime or Direct X).
 3. A mix of the above.
 
 We need the dormant renderer object, which only holds the information
@@ -114,5 +117,8 @@ do an upcall to the document scheduler. These should probably all be
 done through the event processor, so we can use it's priority scheme to
 do things in the right order.
 
-The timeline has a number of auxiliary objects: the renderers used (with their
-data sources attached), the clock (or master and slave clock), probably more.
+The timeline has a number of auxiliary objects: 
+
+- the renderers used (with their data sources attached), 
+- the clock (or master and slave clock), 
+- probably more.
