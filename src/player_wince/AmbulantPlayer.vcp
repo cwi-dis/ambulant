@@ -52,7 +52,7 @@ RSC=rc.exe
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "NDEBUG" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /r
 CPP=clarm.exe
 # ADD BASE CPP /nologo /W3 /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /Yu"stdafx.h" /Oxs /M$(CECrtMT) /c
-# ADD CPP /nologo /W3 /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /FR /Yu"stdafx.h" /Oxs /M$(CECrtMT) /c
+# ADD CPP /nologo /W3 /I "..\..\include" /I "..\..\include\ce3\stl" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /FR /Yu"stdafx.h" /Oxs /M$(CECrtMT) /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -84,7 +84,7 @@ RSC=rc.exe
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "DEBUG" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /r
 CPP=clarm.exe
 # ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /Yu"stdafx.h" /M$(CECrtMTDebug) /c
-# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /Yu"stdafx.h" /M$(CECrtMTDebug) /c
+# ADD CPP /nologo /W3 /Zi /Od /I "..\..\include" /I "..\..\include\ce3\stl" /D "DEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /Yu"stdafx.h" /M$(CECrtMTDebug) /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
@@ -116,7 +116,7 @@ RSC=rc.exe
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "NDEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "i486" /r
 CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /Yu"stdafx.h" /Gz /Oxs /c
-# ADD CPP /nologo /W3 /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /Yu"stdafx.h" /Gz /Oxs /c
+# ADD CPP /nologo /W3 /I "..\..\include" /I "..\..\include\ce3\stl" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /Yu"stdafx.h" /Gz /Oxs /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -148,7 +148,7 @@ RSC=rc.exe
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "DEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "i486" /r
 CPP=cl.exe
 # ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /Yu"stdafx.h" /Gz /c
-# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /Yu"stdafx.h" /Gz /c
+# ADD CPP /nologo /W3 /Zi /Od /I "..\..\include" /I "..\..\include\ce3\stl" /D "DEBUG" /D "i486" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /Yu"stdafx.h" /Gz /c
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
@@ -183,6 +183,14 @@ DEP_CPP_AMBUL=\
 	".\AmbulantPlayerView.h"\
 	".\MainFrm.h"\
 	".\StdAfx.h"\
+	{$(INCLUDE)}"ambulant\config\config.h"\
+	{$(INCLUDE)}"ambulant\config\posix_features.h"\
+	{$(INCLUDE)}"ambulant\config\select_compiler_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_platform_config.h"\
+	{$(INCLUDE)}"ambulant\config\select_stdlib_config.h"\
+	{$(INCLUDE)}"ambulant\config\suffix.h"\
+	{$(INCLUDE)}"ambulant\lib\textptr.h"\
+	{$(INCLUDE)}"ambulant\version.h"\
 	
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
@@ -307,6 +315,7 @@ DEP_CPP_AMBULAN=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
 	".\AmbulantPlayerView.h"\
+	".\SelectDlg.h"\
 	".\StdAfx.h"\
 	{$(INCLUDE)}"ambulant\common\layout.h"\
 	{$(INCLUDE)}"ambulant\common\playable.h"\
@@ -324,17 +333,28 @@ DEP_CPP_AMBULAN=\
 	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
 	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
+	{$(INCLUDE)}"ambulant\lib\delta_timer.h"\
+	{$(INCLUDE)}"ambulant\lib\document.h"\
+	{$(INCLUDE)}"ambulant\lib\event.h"\
+	{$(INCLUDE)}"ambulant\lib\event_processor.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\node.h"\
+	{$(INCLUDE)}"ambulant\lib\node_iterator.h"\
+	{$(INCLUDE)}"ambulant\lib\nscontext.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
+	{$(INCLUDE)}"ambulant\lib\sax_types.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
 	{$(INCLUDE)}"ambulant\lib\system.h"\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
+	{$(INCLUDE)}"ambulant\lib\timer.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_fstream.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
+	{$(INCLUDE)}"ambulant\net\url.h"\
+	{$(INCLUDE)}"ambulant\smil2\test_attrs.h"\
 	
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
