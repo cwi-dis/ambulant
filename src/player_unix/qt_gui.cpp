@@ -333,7 +333,7 @@ qt_gui::fileError(QString smilfilename) {
 }
 
 bool 
-qt_gui::openSMILfile(QString smilfilename, int mode) {
+qt_gui::openSMILfile(const QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
 #if 0
@@ -347,7 +347,6 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
-	if (m_smilfilename != NULL) delete m_smilfilename;
 	m_smilfilename = strdup(smilfilename);
 	if (m_mainloop != NULL)
 		delete m_mainloop;

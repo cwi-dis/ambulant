@@ -233,7 +233,7 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 		// immedeately signal our client again
 		if (evp && callbackk) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start: trigger client callback");
-			evp->add_event(callbackk, 0, ambulant::lib::event_processor::low);
+			evp->add_event(callbackk, 0, ambulant::lib::event_processor::med);
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_raw_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered"));
@@ -284,7 +284,7 @@ ffmpeg_raw_datasource::pushdata(int size)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);
-		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::low);
+		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::med);
 		m_client_callback = NULL;
 		//m_event_processor = NULL;
 	} else {

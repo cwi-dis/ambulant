@@ -27,7 +27,7 @@
  * 
  * As a special exception, the copyright holders of Ambulant Player give
  * you permission to link Ambulant Player with independent modules that
- * communicate with Ambulant Player solely through the region and renderer
+ * communicate with Ambulant Player solely throlowugh the region and renderer
  * interfaces, regardless of the license terms of these independent
  * modules, and to copy and distribute the resulting combined work under
  * terms of your choice, provided that every copy of the combined work is
@@ -606,7 +606,7 @@ void smil_player::update() {
 		if(m_root->is_active()) {
 			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
 				&smil_player::update);
-			m_event_processor->add_event(update_event, dt, event_processor::low);
+			m_event_processor->add_event(update_event, dt, event_processor::high);
 		}
 	}
 }

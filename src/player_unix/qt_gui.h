@@ -110,7 +110,7 @@ class qt_gui : public QWidget {
 		return m_smilfilename;
 	}
 
-	bool openSMILfile(QString smilfilename, int mode);
+	bool openSMILfile(const QString smilfilename, int mode);
 
 	// send a QEvent to the gui thread
 	void internal_message(int level, char* msg);

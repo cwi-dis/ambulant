@@ -454,7 +454,7 @@ active_video_renderer::data_avail()
 		} else {
 			lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 			event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
-			m_event_processor->add_event(e, event_time, lib::event_processor::low);
+			m_event_processor->add_event(e, event_time, lib::event_processor::med);
 		}
 	} else {
 		if (m_is_playing && !m_src->end_of_file()) {
