@@ -137,7 +137,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 		// Update start of next command
 		it = next;
 	}
-	AM_DBG lib::logger::get_logger()->trace("%s --> %s", strpath.c_str(), m_cmds.c_str());
+	AM_DBG lib::logger::get_logger()->debug("%s --> %s", strpath.c_str(), m_cmds.c_str());
 }
 
 
@@ -280,7 +280,7 @@ void lib::gpath_builder::truetype_quadratic_bezier_curveto(bool abs, arg_iterato
 void lib::polyline_builder::close_path(bool abs, arg_iterator it) { 
 	gpath_builder::close_path(abs, it);
 	m_cpx = m_mx; m_cpy = m_my;
-	AM_DBG plogger->trace("%c [CP: %.0f, %.0f]", m_cmd, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c [CP: %.0f, %.0f]", m_cmd, m_cpx, m_cpy);
 }
 
 // m %f{2} 
@@ -289,7 +289,7 @@ void lib::polyline_builder::moveto(bool abs, arg_iterator it) {
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
 	m_mx = m_cpx; m_my = m_cpy;
-	AM_DBG plogger->trace("%c %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy);
 }
 
 // l %f{2}
@@ -297,7 +297,7 @@ void lib::polyline_builder::lineto(bool abs, arg_iterator it) {
 	gpath_builder::lineto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy);
 }
 
 // c %f{6}
@@ -305,7 +305,7 @@ void lib::polyline_builder::curveto(bool abs, arg_iterator it) {
 	gpath_builder::curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x1, m_y1, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x1, m_y1, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy);
 }
 
 // q %f{4}
@@ -313,7 +313,7 @@ void lib::polyline_builder::quadratic_bezier_curveto(bool abs, arg_iterator it) 
 	gpath_builder::quadratic_bezier_curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x1, m_y1, m_x, m_y, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x1, m_y1, m_x, m_y, m_cpx, m_cpy);
 }
 
 // a %f{7}
@@ -321,7 +321,7 @@ void lib::polyline_builder::elliptic_arc(bool abs, arg_iterator it) {
 	gpath_builder::elliptic_arc(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", 
 		m_cmd,  m_r1, m_r2, m_arc_flag, m_sweep_flag, m_x, m_y, m_cpx, m_cpy);
 }
 
@@ -330,7 +330,7 @@ void lib::polyline_builder::horizontal_lineto(bool abs, arg_iterator it) {
 	gpath_builder::horizontal_lineto(abs, it);
 	if(abs) {m_cpx = m_x;}
 	else {m_cpx += m_x;}
-	AM_DBG plogger->trace("%c %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_cpx, m_cpy);
 }
 
 // v %f{1}
@@ -338,7 +338,7 @@ void lib::polyline_builder::vertical_lineto(bool abs, arg_iterator it) {
 	gpath_builder::vertical_lineto(abs, it);
 	if(abs) {m_cpy = m_y;}
 	else {m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f [CP: %.0f, %.0f]", m_cmd, m_y, m_cpx, m_cpy);
+	AM_DBG plogger->debug("%c %.0f [CP: %.0f, %.0f]", m_cmd, m_y, m_cpx, m_cpy);
 }
 
 // s %f{4}
@@ -346,7 +346,7 @@ void lib::polyline_builder::smooth_curveto(bool abs, arg_iterator it) {
 	gpath_builder::smooth_curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy); 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy); 
 }
 
 // t %f{2}
@@ -354,7 +354,7 @@ void lib::polyline_builder::truetype_quadratic_bezier_curveto(bool abs, arg_iter
 	gpath_builder::truetype_quadratic_bezier_curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->trace("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy); 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy); 
 }
 
 // Returns the pivot points of the path as a set of polylines

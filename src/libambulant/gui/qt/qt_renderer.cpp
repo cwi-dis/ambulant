@@ -66,7 +66,7 @@ namespace qt {
 qt_renderer::~qt_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 	  ("~qt_renderer(0x%x)", (void *)this);
 	if (m_intransition) delete m_intransition;
 	m_intransition = NULL;
@@ -81,7 +81,7 @@ void
 qt_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 	  ("qt_renderer.start(0x%x, \"%s\")", (void *)this, 
 	   m_node->get_url("src").get_url().c_str());
 	if (m_intransition) {
@@ -99,7 +99,7 @@ void
 qt_renderer::start_outtransition(lib::transition_info *info)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 	  ("qt_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
 	m_outtransition = info;
@@ -126,7 +126,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 	  ("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
 	   (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
@@ -149,7 +149,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		dstrect.translate(m_dest->get_global_topleft());
 		bitBlt(surf, dstrect.left(), dstrect.top(), qpm,
 		       dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-		AM_DBG logger::get_logger()->trace("qt_renderer.redraw: drawing to transition surface");
+		AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
 		}
 	}
 
@@ -159,7 +159,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		aqw->reset_ambulant_surface();
 	}
 	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->trace
+		AM_DBG logger::get_logger()->debug
 		  ("qt_renderer.redraw: drawing to view");
 		m_trans_engine->step
 		  (m_event_processor->get_timer()->elapsed());
@@ -169,7 +169,7 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		transition_info::time_type delay
 		  = m_trans_engine->next_step_delay();
 		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG logger::get_logger()->trace
+		AM_DBG logger::get_logger()->debug
 		  ("qt_renderer.redraw: now=%d, schedule step for %d",
 		   m_event_processor->get_timer()->elapsed(), 
 		   m_event_processor->get_timer()->elapsed()+delay);
@@ -182,7 +182,7 @@ void
 qt_renderer::transition_step()
 {
 //	m_lock.enter();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 	  ("qt_renderer.transition_step: now=%d",
 	   m_event_processor->get_timer()->elapsed());
 	if (m_dest) m_dest->need_redraw();

@@ -61,5 +61,5 @@ void
 none_video_renderer::show_frame(char* frame, int size)
 {
 	// private method - no locks
-	lib::logger::get_logger ()->trace("**** DISPLAYED");
+	lib::logger::get_logger ()->trace("none_video_renderer::show_frame: display frame");
 }

@@ -102,7 +102,7 @@ gui::dg::viewport::viewport(int width, int height, HWND hwnd)
 	m_memdc = CreateCompatibleDC(hdc);
 	m_hold = (HBITMAP) SelectObject(m_memdc, m_hbmp);
 	DeleteDC(hdc);
-	AM_DBG m_logger->trace("dg::viewport() succeeded");
+	AM_DBG m_logger->debug("dg::viewport() succeeded");
 }
 
 gui::dg::viewport::~viewport() {

@@ -94,7 +94,7 @@ open_web_browser(const std::string &href)
 	if (colon) *colon = 0; // Brrrr...
 	char cmdbuf[2048];
 	snprintf(cmdbuf, sizeof(cmdbuf), "%s %s &", browserlist, href.c_str());
-	lib::logger::get_logger()->trace("Starting command: %s", cmdbuf);
+	AM_DBG lib::logger::get_logger()->debug("Starting command: %s", cmdbuf);
 	int rv = ::system(cmdbuf);
 	if (rv) {
 		lib::logger::get_logger()->error("Attempt to start browser returned status %d. Command: %s", rv, cmdbuf);
@@ -116,15 +116,15 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df = new net::datasource_factory();
 	
 #ifdef WITH_FFMPEG
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	m_df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_parser_finder");
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: add ffmpeg_audio_parser_finder");
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
-	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_video_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	m_df->add_video_factory(new net::ffmpeg_video_datasource_factory());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	m_df->add_raw_factory(new net::ffmpeg_raw_datasource_factory());
 #endif
 
@@ -133,23 +133,23 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
 	m_df->add_raw_factory(new net::stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add posix_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: add posix_datasource_factory");
 	m_df->add_raw_factory(new net::posix_datasource_factory());
 
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *m_rf =
 		new common::global_playable_factory(); 
 		
-	lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: Starting the plugin engine");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 	plugin::plugin_engine *m_pf = new plugin::plugin_engine(m_rf,m_df);
 	
 #ifdef WITH_SDL
-	AM_DBG logger::get_logger()->trace("add factory for SDL");
+	AM_DBG logger::get_logger()->debug("add factory for SDL");
 	m_rf->add_factory( new sdl::sdl_renderer_factory(m_df) );
-AM_DBG logger::get_logger()->trace("add factory for SDL done");
+AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
 
 #ifdef WITH_ARTS
@@ -158,9 +158,9 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 
 	m_rf->add_factory(new qt_renderer_factory(m_df));
 	
-	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: added qt_video_factory");		
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: added qt_video_factory");		
  	m_rf->add_factory(new qt_video_factory(m_df));
-		AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: added none_video_factory");		
+		AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: added none_video_factory");		
 
 	m_rf->add_factory(new none::none_video_factory(m_df));
 
@@ -187,7 +187,7 @@ lib::document *
 qt_mainloop::create_document(const char *filename)
 {
 	char *data;
-	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::create_document(\"%s\")", filename);
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::create_document(\"%s\")", filename);
 	net::url url(filename);
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
@@ -202,7 +202,7 @@ qt_mainloop::create_document(const char *filename)
 		net::url cwd_url(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
-		AM_DBG lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
+		AM_DBG lib::logger::get_logger()->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
 	int size = net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
@@ -221,7 +221,7 @@ qt_mainloop::~qt_mainloop()
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
-	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::~qt_mainloop() m_player=0x%x", m_player);
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::~qt_mainloop() m_player=0x%x", m_player);
 	if (m_player) {
 		delete m_player;
 	}
@@ -237,14 +237,14 @@ qt_mainloop::play()
 {
 	m_running = true;
 	m_player->start();
-	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::run(): returning");
 }
 
 void
 qt_mainloop::stop()
 {
 	m_player->stop();
-	AM_DBG lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::run(): returning");
 }
 
 void

@@ -302,7 +302,7 @@ void net::url::set_from_relative_path(lib::scanner& sc, const std::string& pat) 
 	m_host = "";
 	m_port = 0;
 	set_parts(sc, pat);
-	AM_DBG lib::logger::get_logger()->trace("url::set_from_relative_path: \"%s\" -> \"%s\"", pat.c_str(), m_path.c_str());
+	AM_DBG lib::logger::get_logger()->debug("url::set_from_relative_path: \"%s\" -> \"%s\"", pat.c_str(), m_path.c_str());
 }
 
 // pat: "data:,"
@@ -363,7 +363,7 @@ net::url net::url::join_to_base(const net::url &base) const
 		newpath = lib::filesys::join(lib::filesys::get_base(basepath, base.m_pathsep), newpath, m_pathsep);
 		//newpath = lib::filesys::join(basepath, newpath, "/");
 	}
-	AM_DBG lib::logger::get_logger()->trace("url::join_to_base: old \"%s\" base \"%s\" newpath \"%s\"",
+	AM_DBG lib::logger::get_logger()->debug("url::join_to_base: old \"%s\" base \"%s\" newpath \"%s\"",
 		repr(*this).c_str(), repr(base).c_str(), newpath.c_str());
 	return net::url(
 		base.get_protocol(),

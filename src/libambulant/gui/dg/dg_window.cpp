@@ -76,7 +76,7 @@ gui::dg::dg_window::dg_window(const std::string& name,
 }
 
 gui::dg::dg_window::~dg_window() {
-	AM_DBG lib::logger::get_logger()->trace("~dg_window()");
+	AM_DBG lib::logger::get_logger()->debug("~dg_window()");
 	m_wf->window_done(m_name);
 }
   		

@@ -64,15 +64,15 @@ using namespace ambulant;
 
 gui::dg::dg_bgrenderer::dg_bgrenderer(const common::region_info *src)
 :	common::background_renderer(src) {
-	AM_DBG lib::logger::get_logger()->trace("new dg_bgrenderer<0x%x>", this);
+	AM_DBG lib::logger::get_logger()->debug("new dg_bgrenderer<0x%x>", this);
 }
 	
 gui::dg::dg_bgrenderer::~dg_bgrenderer() {
-	AM_DBG lib::logger::get_logger()->trace("~dg_bgrenderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~dg_bgrenderer(0x%x)", this);
 }
 	
 void gui::dg::dg_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
-	AM_DBG lib::logger::get_logger()->trace("dg_bgrenderer::redraw(%s)",repr(dirty).c_str());
+	AM_DBG lib::logger::get_logger()->debug("dg_bgrenderer::redraw(%s)",repr(dirty).c_str());
 	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dst->get_global_topleft();
 	rc.translate(pt);

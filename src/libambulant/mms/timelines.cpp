@@ -772,7 +772,7 @@ active_timeline::dump(std::ostream& os)
 void 
 active_timeline::started(int n, double t)
 {
-	AM_DBG lib::logger::get_logger()->trace("active_timeline::started(%d)", n);
+	AM_DBG lib::logger::get_logger()->debug("active_timeline::started(%d)", n);
 }
 
 void 
@@ -780,7 +780,7 @@ active_timeline::stopped(int n, double t)
 {
 	// XXXX This should call dependency_callback(playdone_index)
 	int playdone_index = m_source->m_playdone_indices[n];
-	AM_DBG lib::logger::get_logger()->trace("active_timeline::stopped(%d) playdone %d", n, playdone_index);
+	AM_DBG lib::logger::get_logger()->debug("active_timeline::stopped(%d) playdone %d", n, playdone_index);
 	if (playdone_index < 0)
 		lib::logger::get_logger()->fatal("active_timeline::stopped(node %d): playdone_index=%d", n, playdone_index);
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
@@ -791,7 +791,7 @@ active_timeline::stopped(int n, double t)
 void 
 active_timeline::clicked(int n, double t)
 {
-	AM_DBG lib::logger::get_logger()->trace("active_timeline::clicked(%d)", n);
+	AM_DBG lib::logger::get_logger()->debug("active_timeline::clicked(%d)", n);
 }
 
 } // namespace mms

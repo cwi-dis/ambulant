@@ -96,7 +96,7 @@ cocoa_video_renderer::cocoa_video_renderer(
 		lib::logger::get_logger()->error("cocoa_video_renderer: cannot open movie: %s", [[nsurl absoluteString] cString]);
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer: m_movie=0x%x", m_movie);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);
 	[pool release];
 }
 
@@ -123,16 +123,16 @@ cocoa_video_renderer::get_dur()
 	if (!m_movie)
 		return std::pair<bool, double>(false, 0);
 	Movie mov = (Movie)[m_movie QTMovie];
-	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer: QTMovie is 0x%x", (void *)mov);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: QTMovie is 0x%x", (void *)mov);
 	return std::pair<bool, double>(true, 7);
 }
 
 void
 cocoa_video_renderer::start(double where)
 {
-	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer::start()");
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::start()");
 	if (!m_dest) {
-		lib::logger::get_logger()->trace("cocoa_video_renderer::start: no destination surface");
+		lib::logger::get_logger()->debug("cocoa_video_renderer::start: no destination surface");
 		m_context->stopped(m_cookie);
 		return;
 	}
@@ -148,13 +148,13 @@ cocoa_video_renderer::stop()
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
-		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
+		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
 		[m_movie_view stop: NULL];
 		[m_movie_view removeFromSuperview];
 		m_movie_view = NULL;
 	}
 	if (m_movie) {
-		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
+		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
 		[m_movie release];
 		m_movie = NULL;
 	}
@@ -178,7 +178,7 @@ cocoa_video_renderer::poll_playing()
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
 	}
-	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
 	m_lock.leave();
 	if (is_stopped)
 		m_context->stopped(m_cookie);
@@ -191,13 +191,13 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	const screen_rect<int> &r = m_dest->get_rect();
 	screen_rect<int> dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
-	AM_DBG logger::get_logger()->trace("cocoa_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
 	if (m_movie && !m_movie_view) {
-		AM_DBG logger::get_logger()->trace("cocoa_video_renderer.redraw: creating movie view");
+		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
 		NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
 		

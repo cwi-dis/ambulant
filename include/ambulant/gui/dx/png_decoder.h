@@ -151,7 +151,7 @@ png_decoder<DataSource, ColorType>::decode() {
 	png_uint_32 width, height;
 	int depth, clrtype;
     png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
-	AM_DBG m_logger->trace("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
+	AM_DBG m_logger->debug("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 	
 	// expand images of all color-type and bit-depth to 3x8 bit RGB images
 	// let the library process things like alpha, transparency, background
@@ -182,13 +182,13 @@ png_decoder<DataSource, ColorType>::decode() {
         
 	// get again width, height and the new bit-depth and color-type
     png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
-	AM_DBG m_logger->trace("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
+	AM_DBG m_logger->debug("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 	
 	// row_bytes = width x channels
 	png_uint_32 row_bytes = png_get_rowbytes(png_ptr, info_ptr);
     png_uint_32 channels = png_get_channels(png_ptr, info_ptr);
     assert(row_bytes == width * channels);
-	AM_DBG m_logger->trace("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
+	AM_DBG m_logger->debug("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
 	if(channels	!= 3) {
 		m_logger->warn("PNG: Seen: %d channels. Supported: 3 channels", channels);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);

@@ -97,7 +97,7 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 	errors = lt_dlinit ();
 	
 	
-	AM_DBG lib::logger::get_logger()->trace("plugin_engine::Scaning plugin directory : %s", m_plugindir);
+	AM_DBG lib::logger::get_logger()->debug("plugin_engine::Scanning plugin directory: %s", m_plugindir);
 
 	if (m_plugindir != NULL) {
 		nr_of_files = scandir(m_plugindir, &namelist, &filter , NULL);
@@ -113,8 +113,8 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 					strcat(filename,namelist[nr_of_files]->d_name);
 					handle = lt_dlopen(filename);
 				  	if (handle) {
-  						AM_DBG lib::logger::get_logger()->trace("plugin_playable_factory::reading plugin SUCCES [ %s ]",filename);
-						AM_DBG lib::logger::get_logger()->trace("Registring test plugin's factory");
+  						AM_DBG lib::logger::get_logger()->debug("plugin_playable_factory::reading plugin SUCCES [ %s ]",filename);
+						AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
 						init = (initfunctype) lt_dlsym(handle,"initialize");
 						if (!init) {
 							lib::logger::get_logger()->error("plugin_playable_factory: no initialize routine");

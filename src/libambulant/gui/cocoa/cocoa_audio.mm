@@ -87,7 +87,7 @@ cocoa_audio_playable::~cocoa_audio_playable()
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_audio_playable(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("~cocoa_audio_playable(0x%x)", (void *)this);
 	if (m_sound)
 		[m_sound release];
 	m_sound = NULL;
@@ -101,7 +101,7 @@ cocoa_audio_playable::start(double where)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.get_url().c_str(), where);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.get_url().c_str(), where);
 	if (where != 0.0)
 		lib::logger::get_logger()->warn("cocoa_audio_playable: ignoring start time %f, starting at 0", where);
 	if (m_sound)
@@ -122,7 +122,7 @@ cocoa_audio_playable::stop()
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.stop(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound stop])
 			lib::logger::get_logger()->error("cocoa_audio_playable: cannot stop audio");
@@ -139,7 +139,7 @@ cocoa_audio_playable::pause()
 {
 //    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.pause(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.pause(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound pause])
 			lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
@@ -153,7 +153,7 @@ cocoa_audio_playable::resume()
 {
 //    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.resume(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.resume(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound resume])
 			lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
@@ -167,7 +167,7 @@ void
 cocoa_audio_playable::speed_changed()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.speed_changed(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.speed_changed(0x%x)", (void *)this);
 	if (m_sound) {
 		abstract_timer *our_timer = m_event_processor->get_timer();
 		double rtspeed = our_timer->get_realtime_speed();
@@ -177,7 +177,7 @@ cocoa_audio_playable::speed_changed()
 				lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
 		} else {
 			if (rtspeed < 0.99)
-				lib::logger::get_logger()->trace("cocoa_audio_playable: only speed 1.0 and 0.0 supported, not %f", rtspeed);
+				lib::logger::get_logger()->debug("cocoa_audio_playable: only speed 1.0 and 0.0 supported, not %f", rtspeed);
 			if (![m_sound resume])
 				lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
 		}

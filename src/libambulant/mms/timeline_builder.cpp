@@ -127,7 +127,7 @@ get_node_type(const lib::node& n)
 
 mms_layout_manager::mms_layout_manager(common::window_factory *wf, const lib::document *doc)
 {
-	AM_DBG lib::logger::get_logger()->trace("mms_layout_manager()->0x%x", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("mms_layout_manager()->0x%x", (void *)this);
 	const lib::rect root_rect = lib::rect(lib::point(0, 0), lib::size(176, 216));
 	const lib::rect image_rect = lib::rect(lib::point(0, 0), lib::size(176, 144));
 	const lib::rect text_rect = lib::rect(lib::point(0, 144), lib::size(176, 72));
@@ -148,7 +148,7 @@ mms_layout_manager::mms_layout_manager(common::window_factory *wf, const lib::do
 
 mms_layout_manager::~mms_layout_manager()
 {
-	AM_DBG lib::logger::get_logger()->trace("~mms_layout_manager(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("~mms_layout_manager(0x%x)", (void *)this);
 	delete m_image_rgn;
 	m_image_rgn = NULL;
 	delete m_text_rgn;

@@ -81,7 +81,7 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 	m_update_event(0), 
 	m_worker(worker) {
 	
-	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer(0x%x)", this);
 	net::url url = m_node->get_url("src");
 	if(url.is_local_file() && lib::win32::file_exists(url.get_file()))
 		m_player = new gui::dg::audio_player(url.get_file());
@@ -92,7 +92,7 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 }
 
 gui::dg::dg_audio_renderer::~dg_audio_renderer() {
-	AM_DBG lib::logger::get_logger()->trace("~dg_audio_renderer()");
+	AM_DBG lib::logger::get_logger()->debug("~dg_audio_renderer()");
 	if(m_player) {
 		m_player->stop();
 		delete m_player;	
@@ -100,7 +100,7 @@ gui::dg::dg_audio_renderer::~dg_audio_renderer() {
 }
 
 void gui::dg::dg_audio_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer::start(0x%x)", this);
 	
 	if(!m_player) {
 		// Not created or stopped (gone)
@@ -146,7 +146,7 @@ std::pair<bool, double> gui::dg::dg_audio_renderer::get_dur() {
 }
 
 void gui::dg::dg_audio_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer.stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer.stop(0x%x)", this);
 	if(!m_player) return;
 	m_cs.enter();
 	audio_player *p = m_player;
@@ -160,12 +160,12 @@ void gui::dg::dg_audio_renderer::stop() {
 }
 
 void gui::dg::dg_audio_renderer::pause() {
-	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer.pause(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
 }
 
 void gui::dg::dg_audio_renderer::resume() {
-	lib::logger::get_logger()->trace("dg_audio_renderer.resume(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer.resume(0x%x)", this);
 	if(m_player) m_player->resume();
 }
 

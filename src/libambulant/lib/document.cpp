@@ -159,11 +159,11 @@ lib::document::resolve_url(const node *n, const net::url& rurl) const {
 	// a local file. 
 	net::url loc(rurl);
 	if (loc.is_absolute()) {
-		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", repr(rurl).c_str());
+		AM_DBG lib::logger::get_logger()->debug("document::resolve_url(%s): absolute URL", repr(rurl).c_str());
 		return rurl;
 	}
 	net::url rv(rurl.join_to_base(m_src_url));
-	AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): %s\n", repr(rurl).c_str(), repr(rv).c_str());
+	AM_DBG lib::logger::get_logger()->debug("document::resolve_url(%s): %s\n", repr(rurl).c_str(), repr(rv).c_str());
 	return rv;
 }
 
@@ -222,7 +222,7 @@ void lib::document::read_custom_attributes() {
 			p = n->get_attribute("uid");
 			t.uid = p?p:""; 
 			m_custom_tests[id] = t;
-			AM_DBG logger::get_logger()->trace("Custom test: %s", ::repr(t).c_str());
+			AM_DBG logger::get_logger()->debug("Custom test: %s", ::repr(t).c_str());
 		}
 	}
 }

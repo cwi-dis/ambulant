@@ -87,12 +87,12 @@ qt_active_video_renderer::qt_active_video_renderer(
 		//XXXX This is wrong
 		if (m_audio_ds) {
 			m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
-			//lib::logger::get_logger()->trace("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
+			//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
 		} else {
 			m_audio_renderer = NULL;
 		}
 		
-		//lib::logger::get_logger()->trace("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
+		//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
 	}
 }
 qt_active_video_renderer::~qt_active_video_renderer()
@@ -102,14 +102,14 @@ qt_active_video_renderer::~qt_active_video_renderer()
 void 
 qt_active_video_renderer::show_frame(char* frame, int size)
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 	m_lock.enter();
 	if (m_data == NULL) {
 			m_data = (char*) malloc(size);
-			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: allocated m_data=0x%x, size=%d", m_data, size);
+			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: allocated m_data=0x%x, size=%d", m_data, size);
 	} else {
 		m_data = (char*) realloc (m_data, size);
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: reallocated m_data=0x%x, size=%d", m_data, size);
+		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: reallocated m_data=0x%x, size=%d", m_data, size);
 	}
 	if (m_data && frame) {
 		memcpy(m_data, frame, size);
@@ -123,20 +123,20 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 	if (m_data ) {
 		int width = m_size.w;
 		int height = m_size.h;
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
+		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
 
 		m_image = new QImage((uchar*) m_data, width, height, 32, NULL, 0, QImage::IgnoreEndian);
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer, m_data=0x%x (this=0x%x)",(void*) m_data, (void *)this);
+		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer, m_data=0x%x (this=0x%x)",(void*) m_data, (void *)this);
 	}
 	if (m_dest) {
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
+		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
 		m_dest->need_redraw();	
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: need_redraw called");
+		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: need_redraw called");
 	} else {
 		lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_dest is NULL !");
 	}
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame done");
+	AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame done");
 	m_lock.leave();
 }
 
@@ -146,13 +146,13 @@ void
 qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 				 common::gui_window* w) {
 	
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x)",(void*) this);
+	AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw: info=0x%x", info);
+	AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.redraw: info=0x%x", info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
@@ -169,7 +169,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt_active_video_renderer.redraw:"
 			" clearing to 0x%x", (long)bgcolor);
 		QColor bgc = QColor(lib::redc(bgcolor),
@@ -189,7 +189,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    T = dstrect.top(),
 		    W = dstrect.width(),
 		    H = dstrect.height();
-		AM_DBG lib::logger::get_logger()->trace(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
+		AM_DBG lib::logger::get_logger()->debug(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
 		paint.drawImage(L,T,*m_image,0,0,W,H);
 	} else {
 		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);

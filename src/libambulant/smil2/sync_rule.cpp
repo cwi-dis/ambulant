@@ -155,7 +155,7 @@ void model_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->trace("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+		AM_DBG logger::get_logger()->debug("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -218,7 +218,7 @@ void event_rule::add_instance(qtime_type timestamp, time_type instance, int data
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->trace("event_rule::add_instance(%ld, %d) (%s)[%d]", instance(), data, to_string().c_str(), m_selector);	
+		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %d) (%s)[%d]", instance(), data, to_string().c_str(), m_selector);	
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -229,7 +229,7 @@ void event_rule::add_instance(qtime_type timestamp, time_type instance, const st
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->trace("event_rule::add_instance(%ld, %s) (%s)[%s]", instance(), data.c_str(), to_string().c_str(), m_str_selector.c_str());	
+		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %s) (%s)[%s]", instance(), data.c_str(), to_string().c_str(), m_str_selector.c_str());	
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -253,7 +253,7 @@ void transout_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->trace("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+		AM_DBG logger::get_logger()->debug("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
 	m_instances.push_back(to_ref(instance));
 	unlock();
 }

@@ -78,7 +78,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
 	m_text(0) {
-	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_text_renderer(0x%x)", this);
 }
 
 void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
@@ -97,11 +97,11 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
-	AM_DBG lib::logger::get_logger()->trace("~dx_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~dx_text_renderer(0x%x)", this);
 }
 
 void gui::dx::dx_text_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_text_renderer::start(0x%x)", this);
 		
 	if(!m_text) {
 		// Notify scheduler
@@ -128,7 +128,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 }
 
 void gui::dx::dx_text_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_text_renderer::stop(0x%x)", this);
 	delete m_text;
 	m_text = 0;
 	m_dest->renderer_done(this);
@@ -152,7 +152,7 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, commo
 	
 	if(!m_text || !m_text->can_play()) {
 		// No bits available
-		AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::redraw with no text");
+		AM_DBG lib::logger::get_logger()->debug("dx_text_renderer::redraw with no text");
 		return;
 	}
 	

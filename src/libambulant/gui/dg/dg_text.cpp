@@ -78,7 +78,7 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_window(window) { 
 	
-	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_text_renderer(0x%x)", this);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
@@ -95,11 +95,11 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 }
 
 gui::dg::dg_text_renderer::~dg_text_renderer() {
-	AM_DBG lib::logger::get_logger()->trace("~dg_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~dg_text_renderer(0x%x)", this);
 }
 
 void gui::dg::dg_text_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_text_renderer::start(0x%x)", this);
 		
 	// Has this been activated
 	if(m_activated) {
@@ -119,7 +119,7 @@ void gui::dg::dg_text_renderer::start(double t) {
 }
 
 void gui::dg::dg_text_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_text_renderer::stop(0x%x)", this);
 	if(!m_activated) return;
 	m_text = text_str("");
 	m_dest->renderer_done(this);

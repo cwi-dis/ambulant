@@ -72,7 +72,7 @@ gui::dx::dx_area::dx_area(
 	common::gui_window *window) 
 :	common::renderer_playable(context, cookie, node, evp), 
 	m_rgn(0) {
-	AM_DBG lib::logger::get_logger()->trace("dx_area::ctr(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_area::ctr(0x%x)", this);
 }
 
 gui::dx::dx_area::~dx_area() {
@@ -82,7 +82,7 @@ gui::dx::dx_area::~dx_area() {
 void gui::dx::dx_area::start(double t) {		
 	if(m_activated) return;	
 	lib::screen_rect<int> rrc = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace("dx_area::start(%s)", 
+	AM_DBG lib::logger::get_logger()->debug("dx_area::start(%s)", 
 		repr(rrc).c_str());
 	
 	const char *coords = m_node->get_attribute("coords");

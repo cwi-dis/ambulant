@@ -104,22 +104,22 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	m_embedder(app)
 {
 	using namespace ambulant;
-	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop(0x%x): created", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
 	// First create the datasource factory and populate it too.
 	m_df = new net::datasource_factory();
 	
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_video_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	m_df->add_video_factory(new net::ffmpeg_video_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	m_df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_parser_finder");
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	m_df->add_raw_factory(new net::ffmpeg_raw_datasource_factory());
 #endif
 #ifdef WITH_STDIO_DATASOURCE
@@ -127,21 +127,21 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add stdio_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
 	m_df->add_raw_factory(new net::stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add posix_datasource_factory");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
 	m_df->add_raw_factory(new net::posix_datasource_factory());
 	
 	// Next create the playable factory and populate it.
 	m_rf = new common::global_playable_factory();
 #ifdef WITH_NONE_VIDEO
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for none_video");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for none_video");
 	m_rf->add_factory( new gui::none::none_video_factory(m_df) );      
 #endif
 	m_rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_df));
 #ifdef WITH_SDL
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");
+    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
 	m_rf->add_factory( new gui::sdl::sdl_renderer_factory(m_df) );      
 #endif
 
@@ -174,7 +174,7 @@ mainloop::create_document(const char *filename)
 		ambulant::net::url cwd_url(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
-		AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
+		AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
@@ -193,7 +193,7 @@ mainloop::~mainloop()
 //  m_doc will be cleaned up by the smil_player.
 //	if (m_doc) delete m_doc;
 //	m_doc = NULL;
-	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::~mainloop(0x%x)", (void*)this);
+	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::~mainloop(0x%x)", (void*)this);
 	if (m_player) delete m_player;
 	m_player = NULL;
 	if (m_rf) delete m_rf;
@@ -211,7 +211,7 @@ mainloop::play()
 	m_running = true;
 	m_speed = 1.0;
 	m_player->start();
-	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
+	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::run(): returning");
 }
 
 void
@@ -219,7 +219,7 @@ mainloop::stop()
 {
 	if (m_player) m_player->stop();
 	m_speed = 1.0;
-	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::run(): returning");
+	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::run(): returning");
 }
 
 void
@@ -237,7 +237,7 @@ mainloop::set_speed(double speed)
 bool
 mainloop::is_running() const
 {
-	AM_DBG ambulant::lib::logger::get_logger()->trace("mainloop::is_running(0x%x)", (void*)this);
+	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::is_running(0x%x)", (void*)this);
 	if (!m_running || !m_player) return false;
 	return !m_player->is_done();
 }

@@ -177,35 +177,35 @@ datasource_factory::~datasource_factory()
 void
 datasource_factory::add_raw_factory(raw_datasource_factory *df)
 {
-	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_raw_factory(0x%x)", (void*)df);
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_raw_factory(0x%x)", (void*)df);
 	m_raw_factories.push_back(df);
 }
 
 void
 datasource_factory::add_audio_factory(audio_datasource_factory *df)
 {
-	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_factory(0x%x)", (void*)df);
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_audio_factory(0x%x)", (void*)df);
 	m_audio_factories.push_back(df);
 }
 
 void
 datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
 {
-	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_parser_finder(0x%x)", (void*)df);
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_audio_parser_finder(0x%x)", (void*)df);
 	m_audio_parser_finders.push_back(df);
 }
 
 void
 datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
 {
-	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_filter_finder(0x%x)", (void*)df);
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_audio_filter_finder(0x%x)", (void*)df);
 	m_audio_filter_finders.push_back(df);
 }
 
 void
 datasource_factory::add_video_factory(video_datasource_factory *df)
 {
-	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_video_factory(0x%x)", (void*)df);
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_video_factory(0x%x)", (void*)df);
 	m_video_factories.push_back(df);
 }
 
@@ -218,12 +218,12 @@ datasource_factory::new_raw_datasource(const net::url &url)
     
     for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
         src = (*i)->new_raw_datasource(url);
-		AM_DBG lib::logger::get_logger()->trace("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
+		AM_DBG lib::logger::get_logger()->debug("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
 	// Check for a data: url
 	if (lib::starts_with(url.get_url(), "data:")) {
-		AM_DBG lib::logger::get_logger()->trace("new_raw_datasource: returning mem_datasource");
+		AM_DBG lib::logger::get_logger()->debug("new_raw_datasource: returning mem_datasource");
 		return new mem_datasource(url);
 	}
 	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for \"%s\"\n", repr(url).c_str());
@@ -311,7 +311,7 @@ datasource_factory::new_video_datasource(const net::url &url)
     
     for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
         src = (*i)->new_video_datasource(url);
-		AM_DBG lib::logger::get_logger()->trace("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
+		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
 	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", repr(url).c_str());

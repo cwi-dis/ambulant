@@ -81,13 +81,13 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt_active_fill_renderer.redraw:"
 			" clearing to 0x%x", (long)bgcolor);
 		QColor bgc = QColor(lib::redc(bgcolor),
 				    lib::greenc(bgcolor),
 				    lib::bluec(bgcolor));
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt_active_fill_renderer.redraw(0x%x,"
 			" local_ltrb=(%d,%d,%d,%d)",
 			(void *)this, L,T,W,H);
@@ -104,7 +104,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 	common::gui_window *window)
 {	
 	const lib::screen_rect<int> &r = m_dst->get_rect();
-	AM_DBG lib::logger::get_logger()->trace
+	AM_DBG lib::logger::get_logger()->debug
 		("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
 	if (m_src && !m_src->get_transparent()) {
 	// First find our whole area to be cleared to background color
@@ -119,7 +119,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt__background_renderer::drawbackground:"
 			 " %s0x%x,%s(%d,%d,%d,%d)",
 			" clearing to ", (long)bgcolor, 

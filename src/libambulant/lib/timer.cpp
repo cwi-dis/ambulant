@@ -78,7 +78,7 @@ lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool ru
 	m_period(infinite),
 	m_listeners(0)
 {	
-	AM_DBG lib::logger::get_logger()->trace("lib::timer()");
+	AM_DBG lib::logger::get_logger()->debug("lib::timer()");
 }
 
 lib::timer::~timer()
@@ -86,7 +86,7 @@ lib::timer::~timer()
 	// This class does not own event listeners.
 	// Therefore, deleting the container is enough
 	delete m_listeners;
-	AM_DBG lib::logger::get_logger()->trace("~lib::timer()");
+	AM_DBG lib::logger::get_logger()->debug("~lib::timer()");
 }
 
 lib::timer::time_type

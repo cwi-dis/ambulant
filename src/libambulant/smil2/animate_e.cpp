@@ -95,7 +95,7 @@ void animation_engine::started(animate_node *animator) {
 	
 	AM_DBG {
 		const time_attrs* ata = animator->get_time_attrs();
-		lib::logger::get_logger()->trace("%s[%s] started targeting %s.%s", 
+		lib::logger::get_logger()->debug("%s[%s] started targeting %s.%s", 
 			ata->get_tag().c_str(), ata->get_id().c_str(), 
 			 target->get_local_name().c_str(), 
 			animator->get_animation_attr().c_str());
@@ -125,7 +125,7 @@ void animation_engine::stopped(animate_node *animator) {
 
 // Evaluate all active animations
 void animation_engine::update() {
-	AM_DBG lib::logger::get_logger()->trace("Updating animators");
+	AM_DBG lib::logger::get_logger()->debug("Updating animators");
 	doc_animators_t::iterator it;
 	for(it = m_animators.begin();it != m_animators.end();it++) 
 		update_node((*it).first, (*it).second);

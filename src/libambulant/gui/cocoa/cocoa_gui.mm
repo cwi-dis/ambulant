@@ -95,7 +95,7 @@ cocoa_window::~cocoa_window()
 void
 cocoa_window::need_redraw(const screen_rect<int> &r)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_cocoa_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_cocoa_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (!m_view) {
 		logger::get_logger()->fatal("cocoa_cocoa_window::need_redraw: no m_view");
 		return;
@@ -111,21 +111,21 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 void
 cocoa_window::redraw(const screen_rect<int> &r)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_handler->redraw(r, this);
 }
 
 void
 cocoa_window::user_event(const point &where, int what)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
+	AM_DBG logger::get_logger()->debug("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
 	m_handler->user_event(where, what);
 }
 
 void
 cocoa_window::need_events(bool want)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::need_events(0x%x, %d)", (void *)this, want);
+	AM_DBG logger::get_logger()->debug("cocoa_window::need_events(0x%x, %d)", (void *)this, want);
 		
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
@@ -164,34 +164,34 @@ cocoa_renderer_factory::new_playable(
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
 		rv = new cocoa_image_renderer(context, cookie, node, evp, m_datasource_factory);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
 		rv = new cocoa_text_renderer(context, cookie, node, evp, m_datasource_factory);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_text_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "brush") {
 		rv = new cocoa_fill_renderer(context, cookie, node, evp);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_fill_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_fill_renderer 0x%x", (void *)node, (void *)rv);
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
 		rv = new cocoa_audio_renderer(context, cookie, node);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else if ( tag == "video") {
 #ifdef AM_PREFER_QUICKTIME
 		rv = new cocoa_video_renderer(context, cookie, node, evp);
 		if (rv) {
-			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
 			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
-			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 		}
 #else
 		rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
 		if (rv) {
-			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
 			rv = new cocoa_video_renderer(context, cookie, node, evp);
-			AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
 		}
 #endif // AM_PREFER_QUICKTIME
 	} else {

@@ -106,13 +106,13 @@ basic_plugin_factory::new_playable(
 	common::playable *rv;
 	
 	lib::xml_string tag = node->get_qname().second;
-    AM_DBG lib::logger::get_logger()->trace("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") /*or any other tag ofcourse */ {
 		rv = new basic_plugin(context, cookie, node, evp, m_datasource_factory);
 		//rv = NULL;
-		AM_DBG lib::logger::get_logger()->trace("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
+		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("basic_plugin_factory : plugin does not support \"%s\"", tag.c_str());
+		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory : plugin does not support \"%s\"", tag.c_str());
         return NULL;
 	}
 	return rv;

@@ -92,16 +92,16 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 {
 	m_lock.enter();
 	bool dummy;
-	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x)", (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("raw_video_datasource.start (0x%x)", (void*) this);
 	if (m_buffer) {
 		lib::logger::get_logger()->error("raw_video_datasource::start_frame: Previous frame not frame_done()d yet!");
 		m_buffer = NULL;
 	}
 	dummy = read_next_frame();
-	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x): read_next_frame returned %d", (void*) this, dummy);
+	AM_DBG lib::logger::get_logger()->debug("raw_video_datasource.start (0x%x): read_next_frame returned %d", (void*) this, dummy);
 	if (1) {
     	if (evp && cbevent) {
-			AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start: trigger readdone callback (x%x)", cbevent);
+			AM_DBG lib::logger::get_logger()->debug("raw_video_datasource.start: trigger readdone callback (x%x)", cbevent);
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}
@@ -165,14 +165,14 @@ raw_video_datasource::read_next_frame()
 	int nb_read;
 	
 	m_filenr++;
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): framenr : %d", m_filenr);
+	AM_DBG lib::logger::get_logger()->debug("active_datasource.read_next_frame(): framenr : %d", m_filenr);
 	
 	sprintf(filename, "%s/0%07i.jpg", m_directory.c_str(), m_filenr);
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): Opening %s", filename);
+	AM_DBG lib::logger::get_logger()->debug("active_datasource.read_next_frame(): Opening %s", filename);
 	file = open(filename, O_RDONLY); 
 
 	if (file < 0 ) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): Unable to open file");
+			AM_DBG lib::logger::get_logger()->debug("active_datasource.read_next_frame(): Unable to open file");
 			m_eof = true;
 			m_buffer = NULL;
 			return false;
@@ -181,7 +181,7 @@ raw_video_datasource::read_next_frame()
 	sz = filesize(file);
 	m_size = sz;
 	m_buffer = (char*) malloc(sz);
-	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): m_buffer = 0x%x", (void*) m_buffer);
+	AM_DBG lib::logger::get_logger()->debug("active_datasource.read_next_frame(): m_buffer = 0x%x", (void*) m_buffer);
 
 	do {
 		nb_read = read(file, m_buffer, sz);

@@ -76,16 +76,16 @@ datasource*
 ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 {
 	
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", repr(url).c_str());
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", repr(url).c_str());
 	URLContext *context = detail::ffmpeg_rawreader::supported(url);
 	if (!context) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
 	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context);
 	datasource *ds = new ffmpeg_raw_datasource(url, context, thread);
 	if (ds == NULL) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource: could not allocate ffmpeg_video_datasource");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
@@ -104,7 +104,7 @@ detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con)
 
 detail::ffmpeg_rawreader::~ffmpeg_rawreader()
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_rawreader::~ffmpeg_rawreader()");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::~ffmpeg_rawreader()");
 	if (m_con) url_close(m_con);
 	m_con = NULL;
 }
@@ -117,7 +117,7 @@ detail::ffmpeg_rawreader::supported(const net::url& url)
 	URLContext *ic = NULL;
 	int err = url_open(&ic, url.get_url().c_str(), URL_RDONLY);
 	if (err) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) url_close(ic);
 	}
 	return ic;
@@ -141,7 +141,7 @@ detail::ffmpeg_rawreader::set_datasink(detail::rawdatasink *parent)
 unsigned long
 detail::ffmpeg_rawreader::run()
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_rawreader::run: started");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: started");
 	while (!exit_requested()) {
 		uint8_t *sinkbuffer;
 		int sinkbuffersize;
@@ -160,7 +160,7 @@ detail::ffmpeg_rawreader::run()
 				break;
 		}
 	}
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_rawreader::run: final sinkdata(0)");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: final sinkdata(0)");
 	if (m_sink) m_sink->pushdata(0);
 	return 0;
 }
@@ -176,7 +176,7 @@ ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *co
 	m_thread(thread),
 	m_client_callback(NULL)
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::ffmpeg_raw_datasource() -> 0x%x", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::ffmpeg_raw_datasource() -> 0x%x", (void*)this);
 	if (!m_thread) {
 		lib::logger::get_logger()->error("ffmpeg_raw_datasource::ffmpeg_raw_datasource: cannot start thread");
 		m_src_end_of_file = true;
@@ -186,7 +186,7 @@ ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *co
 
 ffmpeg_raw_datasource::~ffmpeg_raw_datasource()
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::~ffmpeg_raw_datasource(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::~ffmpeg_raw_datasource(0x%x)", (void*)this);
 	stop();
 }
 
@@ -194,7 +194,7 @@ void
 ffmpeg_raw_datasource::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
 		detail::ffmpeg_rawreader *tmpthread = m_thread;
 		m_thread = NULL;
@@ -203,7 +203,7 @@ ffmpeg_raw_datasource::stop()
 		m_lock.enter();
 	}
 	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop: thread stopped");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::stop: thread stopped");
 	m_con = NULL; // owned by the thread
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
@@ -216,7 +216,7 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 	m_lock.enter();
 	
 	if (m_client_callback != NULL) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::start(): m_client_callback already set!");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start(): m_client_callback already set!");
 		delete m_client_callback;
 		m_client_callback = NULL;
 	}
@@ -224,7 +224,7 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (evp && callbackk) {
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::start: trigger client callback");
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
 		} else {
 			AM_DBG lib::logger::get_logger()->error("ffmpeg_raw_datasource::start(): no client callback!");
@@ -243,7 +243,7 @@ ffmpeg_raw_datasource::readdone(int len)
 {
 	m_lock.enter();
 	m_buffer.readdone(len);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource.readdone : done with %d bytes", len);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource.readdone : done with %d bytes", len);
 //	restart_input();
 	m_lock.leave();
 }
@@ -274,12 +274,12 @@ ffmpeg_raw_datasource::pushdata(int size)
 	if (size == 0)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);
 		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 		m_client_callback = NULL;
 		//m_event_processor = NULL;
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::pushdata(): No client callback!");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): No client callback!");
 	}
 	m_lock.leave();
 }

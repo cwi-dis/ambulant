@@ -69,16 +69,16 @@ none_area_renderer::~none_area_renderer()
 
 void
 none_area_renderer::start(double starttime) {
-	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::start()", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::start()", (void*)this);
 	if(m_activated) return;	
 	lib::screen_rect<int> rrc = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace("none_area_renderer::start(%s)", 
+	AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start(%s)", 
 		repr(rrc).c_str());
 	
 	const char *coords = m_node->get_attribute("coords");
 	const char *shape = m_node->get_attribute("shape");
 	if(!coords || !coords[0]) {
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer::start: no coords, whole area");
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: no coords, whole area");
 		m_rgn = new lib::screen_rect<int>(m_dest->get_rect());
 	} else {
 		common::region_dim_spec rds(coords, shape);
@@ -87,12 +87,12 @@ none_area_renderer::start(double starttime) {
 		int t = rds.top.absolute()?rds.top.get_as_int():rrc.top();
 		int w = rds.width.absolute()?rds.width.get_as_int():rrc.width();
 		int h = rds.height.absolute()?rds.height.get_as_int():rrc.height();
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer::start: lt=(%d,%d) wh=(%d,%d)", l, t, w, h);
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: lt=(%d,%d) wh=(%d,%d)", l, t, w, h);
 		lib::screen_rect<int> rc;
 		rc.set_coord(l, t, l+w, t+h);
 		m_rgn = new lib::screen_rect<int>(rc);
 	}
-	AM_DBG lib::logger::get_logger()->trace("none_area_renderer::start: wantclicks=%d", m_wantclicks);
+	AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: wantclicks=%d", m_wantclicks);
 	m_dest->need_events(m_wantclicks);
 	m_dest->show(this);
 	m_activated = true;
@@ -100,7 +100,7 @@ none_area_renderer::start(double starttime) {
 
 void
 none_area_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::stop()", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::stop()", (void*)this);
 	m_dest->renderer_done(this);
 	m_activated = false;
 	if(m_rgn) {
@@ -111,20 +111,20 @@ none_area_renderer::stop() {
 
 void
 none_area_renderer::user_event(const lib::point& pt, int what) {
-	AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d)", (void*)this, pt.x, pt.y, what);
+	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d)", (void*)this, pt.x, pt.y, what);
 	if(!m_rgn) {
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer: no region");
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer: no region");
 		return;
 	}
 	if(!m_rgn->contains(pt)) {
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer: not in our region");
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer: not in our region");
 		return;
 	}
 	if(what == common::user_event_click) {
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): clicked", (void*)this, pt.x, pt.y, what);
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d): clicked", (void*)this, pt.x, pt.y, what);
 		m_context->clicked(m_cookie);
 	} else if(what == common::user_event_mouse_over) {
-		AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): pointed", (void*)this, pt.x, pt.y, what);
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d): pointed", (void*)this, pt.x, pt.y, what);
 		m_context->pointed(m_cookie);
 	}
 }

@@ -70,7 +70,7 @@ namespace cocoa {
 cocoa_fill_renderer::~cocoa_fill_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("~cocoa_fill_renderer(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("~cocoa_fill_renderer(0x%x)", (void *)this);
 	if (m_intransition) delete m_intransition;
 	if (m_outtransition) delete m_outtransition;
 	if (m_trans_engine) delete m_trans_engine;
@@ -80,7 +80,7 @@ cocoa_fill_renderer::~cocoa_fill_renderer()
 void
 cocoa_fill_renderer::start(double where)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.start(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.start(0x%x)", (void *)this);
 	if (!m_dest) {
 		AM_DBG logger::get_logger()->warn("cocoa_fill_renderer.start(0x%x): no surface", (void *)this);
 		return;
@@ -106,7 +106,7 @@ cocoa_fill_renderer::start_outtransition(lib::transition_info *info)
 void
 cocoa_fill_renderer::stop()
 {
-	AM_DBG lib::logger::get_logger()->trace("cocoa_fill_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.stop(0x%x)", (void *)this);
 	if (m_dest) m_dest->renderer_done(this);
 }
 
@@ -115,7 +115,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
@@ -129,7 +129,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
 		[surf lockFocus];
-		AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to transition surface");
+		AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to transition surface");
 	}
 	// First find our whole area (which we have to clear to background color)
 	screen_rect<int> dstrect_whole = r;
@@ -140,14 +140,14 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	if (!color_attr) {
 		lib::logger::get_logger()->warn("<brush> element without color attribute");
 		if (surf) {
-			AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to view");
+			AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to view");
 			[surf unlockFocus];
 		}
 		m_lock.leave();
 		return;
 	}
 	color_t color = lib::to_color(color_attr);
-	AM_DBG lib::logger::get_logger()->trace("cocoa_fill_renderer.redraw: clearing to 0x%x", (long)color);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(color)
 				green:greenf(color)
 				blue:bluef(color)
@@ -157,7 +157,7 @@ cocoa_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine) {
 		assert(surf);
-		AM_DBG logger::get_logger()->trace("cocoa_fill_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef lib::no_arg_callback<cocoa_fill_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_fill_renderer::transition_step);
@@ -184,11 +184,11 @@ void
 cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {
 	const screen_rect<int> &r =  m_dst->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_bg_renderer::drawbackground: %d clearing to 0x%x", !m_src->get_transparent(), (long)m_src->get_bgcolor());
+	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: %d clearing to 0x%x", !m_src->get_transparent(), (long)m_src->get_bgcolor());
 	if (m_src && !m_src->get_transparent()) {
 		// First find our whole area (which we have to clear to background color)
 		screen_rect<int> dstrect_whole = r;
@@ -196,7 +196,7 @@ cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gu
 		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 		// XXXX Fill with background color
 		color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_bg_renderer::drawbackground: clearing to 0x%x", (long)bgcolor);
+		AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x", (long)bgcolor);
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)

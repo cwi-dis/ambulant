@@ -131,12 +131,12 @@ void time_attrs::parse_dur() {
 	if(sdur == "indefinite") {
 		m_dur.type = dt_indefinite;
 		m_dur.value = time_type::indefinite;
-		AM_DBG m_logger->trace("%s[%s].dur=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].dur=indefinite", m_tag.c_str(), m_id.c_str());	
 		return;
 	}
 	if(sdur == "media") {
 		m_dur.type = dt_media;
-		AM_DBG m_logger->trace("%s[%s].dur=media", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].dur=media", m_tag.c_str(), m_id.c_str());	
 		return;
 	}
 	clock_value_p pl;
@@ -150,7 +150,7 @@ void time_attrs::parse_dur() {
 	}
 	m_dur.type = dt_definite;
 	m_dur.value = time_type(pl.m_result);
-	AM_DBG m_logger->trace("%s[%s].dur=%ld", m_tag.c_str(), m_id.c_str(), m_dur.value());	
+	AM_DBG m_logger->debug("%s[%s].dur=%ld", m_tag.c_str(), m_id.c_str(), m_dur.value());	
 }
 
 // repeatCount ::= floating_point | "indefinite"
@@ -161,7 +161,7 @@ void time_attrs::parse_rcount() {
 	std::string rcount_str = trim(p);
 	if(rcount_str == "indefinite") {
 		m_rcount = std::numeric_limits<double>::max(); //smil_time<double>::indefinite();
-		AM_DBG m_logger->trace("%s[%s].repeatCount=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].repeatCount=indefinite", m_tag.c_str(), m_id.c_str());	
 		return;
 	}
 	number_p parser;
@@ -174,7 +174,7 @@ void time_attrs::parse_rcount() {
 		return;
 	}
 	m_rcount = parser.m_result;
-	AM_DBG m_logger->trace("%s[%s].repeatCount=%.3f", m_tag.c_str(), m_id.c_str(), m_rcount);	
+	AM_DBG m_logger->debug("%s[%s].repeatCount=%.3f", m_tag.c_str(), m_id.c_str(), m_rcount);	
 }
 
 // repeatDur ::= Clock-value | "indefinite"
@@ -185,7 +185,7 @@ void time_attrs::parse_rdur() {
 	std::string rdur_str = trim(p);
 	if(rdur_str == "indefinite") {
 		m_rdur = time_type::indefinite;
-		AM_DBG m_logger->trace("%s[%s].repeatDur=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].repeatDur=indefinite", m_tag.c_str(), m_id.c_str());	
 		return;
 	}
 	clock_value_p parser;
@@ -198,7 +198,7 @@ void time_attrs::parse_rdur() {
 		return;
 	}
 	m_rdur = parser.m_result;
-	AM_DBG m_logger->trace("%s[%s].repeatDur=%ld", m_tag.c_str(), m_id.c_str(), m_rdur());	
+	AM_DBG m_logger->debug("%s[%s].repeatDur=%ld", m_tag.c_str(), m_id.c_str(), m_rdur());	
 }
 
 // min ::= Clock-value | "media" 
@@ -307,7 +307,7 @@ void time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs
 	}
 	svs.offset = parser.m_result;
 	sl.push_back(svs);	
-	AM_DBG m_logger->trace("%s[%s].%s += [%s]", 
+	AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
 		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
 }
 
@@ -337,7 +337,7 @@ void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, s
 	std::string rest = trim(s.substr(close_par_ix+1));
 	if(rest.empty()) {
 		sl.push_back(svs);
-		AM_DBG m_logger->trace("%s[%s].%s += [%s] (as int %d)", 
+		AM_DBG m_logger->debug("%s[%s].%s += [%s] (as int %d)", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.iparam);
 		return;	
 	}
@@ -350,7 +350,7 @@ void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, s
 	}
 	svs.offset = parser.m_result;
 	sl.push_back(svs);	
-	AM_DBG m_logger->trace("%s[%s].%s += [%s] (as int %d)", 
+	AM_DBG m_logger->debug("%s[%s].%s += [%s] (as int %d)", 
 		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.iparam);
 }
 
@@ -463,7 +463,7 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
 	} else {
 		svs.event = event;
-		AM_DBG m_logger->trace("%s[%s].%s += [%s]", 
+		AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
 	}
 	
@@ -494,7 +494,7 @@ void time_attrs::parse_endsync() {
 			m_endsync.ident = endsync_str;
 		}
 	}
-	AM_DBG m_logger->trace("%s[%s].endsync = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].endsync = [%s]", 
 			m_tag.c_str(), m_id.c_str(), endsync_str.c_str());
 	
 }
@@ -504,7 +504,7 @@ void time_attrs::parse_fill() {
 	m_fill = modulated_fill(get_default_fill());
 	const char *p = m_node->get_attribute("fill");
 	if(!p) {
-		AM_DBG m_logger->trace("%s[%s].fill = [%s]", 
+		AM_DBG m_logger->debug("%s[%s].fill = [%s]", 
 			m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
 		return;
 	}
@@ -517,7 +517,7 @@ void time_attrs::parse_fill() {
 	else if(fill == "auto") m_fill = fill_auto;
 	// else default or invalid
 	if(m_fill == fill_auto) m_fill = modulated_fill(m_fill);
-	AM_DBG m_logger->trace("%s[%s].fill = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].fill = [%s]", 
 			m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
 	
 }
@@ -563,7 +563,7 @@ void time_attrs::parse_restart() {
 	else if(restart == "whenNotActive") m_restart = restart_when_not_active;
 	else if(restart == "never") m_restart = restart_never;
 	// else restart == "default"
-	AM_DBG m_logger->trace("%s[%s].restart = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].restart = [%s]", 
 		m_tag.c_str(), m_id.c_str(), repr(m_restart).c_str());
 }
 
@@ -575,7 +575,7 @@ void time_attrs::parse_actuate() {
 	std::string actuate = trim(p);
 	if(actuate == "onLoad") m_actuate = actuate_onload;
 	else if(actuate == "onRequest") m_actuate = actuate_onrequest;
-	AM_DBG m_logger->trace("%s[%s].actuate = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].actuate = [%s]", 
 		m_tag.c_str(), m_id.c_str(), repr(m_actuate).c_str());
 }
 

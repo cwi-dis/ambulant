@@ -82,7 +82,7 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 :   dg_renderer_playable(context, cookie, node, evp, window, dgplayer),
 	m_image(0) {
 	
-	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::ctr(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::ctr(0x%x)", this);
 	net::url url = m_node->get_url("src");
 	if(!window) {
 		lib::logger::get_logger()->show("get_window() failed. [%s]",
@@ -101,13 +101,13 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 }
 
 gui::dg::dg_img_renderer::~dg_img_renderer() {
-	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::dtr(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::dtr(0x%x)", this);
 	delete m_image;
 }
 
 
 void gui::dg::dg_img_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::start(0x%x)", this);
 	if(!m_image) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
@@ -140,7 +140,7 @@ void gui::dg::dg_img_renderer::start(double t) {
 }
 
 void gui::dg::dg_img_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::stop(0x%x)", this);
 	if(!m_activated) return;
 	delete m_image;
 	m_image = 0;

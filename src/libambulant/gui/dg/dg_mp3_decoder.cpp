@@ -108,7 +108,7 @@ void gui::dg::mp3_decoder::get_wave_format(lib::byte_buffer& bbuf, WAVEFORMATEX&
 	// channel sample size in bits
 	const int depth = 16;
 	 
-	AM_DBG lib::logger::get_logger()->trace("freq:%d, channels:%d depth:%d bitrate:%d", 
+	AM_DBG lib::logger::get_logger()->debug("freq:%d, channels:%d depth:%d bitrate:%d", 
 		freq, nchannels, depth, bitrate);
 	
 	// sample size in bytes
@@ -138,17 +138,17 @@ void gui::dg::mp3_decoder::decode(lib::byte_buffer& bbuf, std::basic_string<char
 	int produced; // bytes produced by m_decoder for each call
 	int status = mp3_lib_decode_buffer(m_mp3lib_inst, bbuf.data(), bbuf.remaining(),
 		m_dec_buf, dec_buf_size, &produced, &inputpos);
-	//AM_DBG lib::logger::get_logger()->trace("produced: %d, position: %d, status: %d", produced, inputpos, status);
+	//AM_DBG lib::logger::get_logger()->debug("produced: %d, position: %d, status: %d", produced, inputpos, status);
 	if(produced > 0) decbuf->append(m_dec_buf, produced);
 	while(status == 0) {
 		status = mp3_lib_decode_buffer(m_mp3lib_inst, NULL, 0,
 			m_dec_buf, dec_buf_size, &produced, &inputpos);
-		//AM_DBG lib::logger::get_logger()->trace("produced: %d, position: %d, status: %d", produced, inputpos, status);
+		//AM_DBG lib::logger::get_logger()->debug("produced: %d, position: %d, status: %d", produced, inputpos, status);
 		if(produced > 0) {
 			decbuf->append(m_dec_buf, produced);
 		}
 	}
-	AM_DBG lib::logger::get_logger()->trace("Total bytes produced: %d", decbuf->length());
+	AM_DBG lib::logger::get_logger()->debug("Total bytes produced: %d", decbuf->length());
 	// mp3lib conventions: 
 	// -1	: error
 	// 0	: continue

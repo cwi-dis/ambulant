@@ -315,7 +315,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			const char *value = n->get_attribute("value");
 			if(name && value) {
 				active_tests_attrs_map[name] = value;
-				AM_DBG lib::logger::get_logger()->trace("systemTest %s: %s", name, value);
+				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
 			}
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
@@ -325,7 +325,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			if(!sn.empty() && !sv.empty()) {
 				sn = lib::to_c_lower(sn);
 				active_custom_tests_attrs_map[sn] = (sv == "true")?true:false;
-				AM_DBG lib::logger::get_logger()->trace("customTest %s: %s",
+				AM_DBG lib::logger::get_logger()->debug("customTest %s: %s",
 					sn.c_str(), (sv == "true")?"true":"false");
 			}
 		}

@@ -76,15 +76,15 @@ gui::dx::dx_brush::dx_brush(
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
 	m_color(0) {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_brush::dx_brush(0x%x)", this);
 }
 
 gui::dx::dx_brush::~dx_brush() {
-	AM_DBG lib::logger::get_logger()->trace("~dx_brush()");
+	AM_DBG lib::logger::get_logger()->debug("~dx_brush()");
 }
 
 void gui::dx::dx_brush::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_brush::start(0x%x)", this);
 	
 	// Has this been activated
 	if(m_activated) {
@@ -112,7 +112,7 @@ void gui::dx::dx_brush::start(double t) {
 
 
 void gui::dx::dx_brush::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_brush::stop(0x%x)", this);
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
@@ -127,7 +127,7 @@ void gui::dx::dx_brush::user_event(const lib::point& pt, int what) {
 }
 
 void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
-	AM_DBG lib::logger::get_logger()->trace("dx_brush::redraw(): %s", repr(dirty).c_str());
+	AM_DBG lib::logger::get_logger()->debug("dx_brush::redraw(): %s", repr(dirty).c_str());
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();

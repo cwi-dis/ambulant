@@ -81,7 +81,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 :   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
 	m_player(0), 
 	m_update_event(0) {
-	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
@@ -96,12 +96,12 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 }
 
 gui::dx::dx_video_renderer::~dx_video_renderer() {
-	AM_DBG lib::logger::get_logger()->trace("~dx_video_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~dx_video_renderer(0x%x)", this);
 	if(m_player) stop();
 }
 
 void gui::dx::dx_video_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("start: %s", m_node->get_path_display_desc().c_str()); 
+	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str()); 
 	
 	if(!m_player) {
 		// Not created or stopped (gone)
@@ -154,7 +154,7 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 }
 
 void gui::dx::dx_video_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("stop: %s", m_node->get_path_display_desc().c_str()); 
+	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
 	if(!m_player) return;
 	m_cs.enter();
 	m_update_event = 0;
@@ -169,13 +169,13 @@ void gui::dx::dx_video_renderer::stop() {
 }
 
 void gui::dx::dx_video_renderer::pause() {
-	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer.pause(0x%x)", this);
 	m_update_event = 0;
 	if(m_player) m_player->pause();
 }
 
 void gui::dx::dx_video_renderer::resume() {
-	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer.resume(0x%x)", this);
 	if(m_player) m_player->resume();
 	if(!m_update_event) schedule_update();
 	m_dest->need_redraw();
@@ -243,7 +243,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	}
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	//AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
+	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
 		
 	AM_DBG 	{

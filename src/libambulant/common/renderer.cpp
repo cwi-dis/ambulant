@@ -92,13 +92,13 @@ renderer_playable_ds::renderer_playable_ds(
 
 renderer_playable_ds::~renderer_playable_ds()
 {
-	AM_DBG lib::logger::get_logger()->trace("~renderer_playable_ds(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
 }
 
 void
 renderer_playable_ds::start(double t)
 {
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x)", (void *)this);
 
 	if (!m_dest) {
 		lib::logger::get_logger()->error("renderer_playable_ds.start: no destination surface");
@@ -120,7 +120,7 @@ renderer_playable_ds::start(double t)
 void
 renderer_playable_ds::readdone()
 {
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.readdone(0x%x, size=%d)", (void *)this, m_src->size());
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	if (m_dest)
 		m_dest->need_redraw();
 	m_context->stopped(m_cookie, 0);
@@ -134,14 +134,14 @@ renderer_playable_ds::stop()
 		m_dest->renderer_done(this);
 	if (m_src)
 		m_src->stop();
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x)", (void *)this);
 }
 
 #if 0
 void
 renderer_playable_ds::wantclicks(bool want)
 {
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_ds(0x%x)::wantclicks(%d)", (void*)this, want);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds(0x%x)::wantclicks(%d)", (void*)this, want);
 	if (m_dest)
 		m_dest->need_events(want);
 }
@@ -156,7 +156,7 @@ void
 renderer_playable_dsall::readdone()
 {
 	unsigned cur_size = m_src->size();
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x, size=%d)", (void *)this, cur_size);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d)", (void *)this, cur_size);
 	
 	if (!m_data)
 		m_data = malloc(cur_size);
@@ -172,19 +172,19 @@ renderer_playable_dsall::readdone()
 	char *cur_data = m_src->get_read_ptr();
 	memcpy((char *)m_data + m_data_size, cur_data, cur_size);
 	m_data_size += cur_size;
-	AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
 	m_src->readdone(cur_size);
 	
 	if (m_src->end_of_file()) {
 		// All done
-		AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
+		AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
 		if (m_dest)
 			m_dest->need_redraw();
 		m_src->stop();
 		m_context->stopped(m_cookie, 0);
 	} else {
 		// Continue reading
-		AM_DBG lib::logger::get_logger()->trace("renderer_playable_dsall.readdone(0x%x):  more to come, calling m_src->start()", (void *)this);
+		AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x):  more to come, calling m_src->start()", (void *)this);
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
 	}
@@ -228,7 +228,7 @@ global_playable_factory::new_playable(
 void 
 active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {
-	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::redraw (this = 0x%x)", (void *) this);
+	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::redraw (this = 0x%x)", (void *) this);
 }
 
 active_video_renderer::active_video_renderer(
@@ -246,7 +246,7 @@ active_video_renderer::active_video_renderer(
 	
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
+	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!
 	net::url url = node->get_url("src");
 	m_src = df->new_video_datasource(url);
@@ -254,7 +254,7 @@ active_video_renderer::active_video_renderer(
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}
 
-	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
+	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 	m_lock.leave();
 }
 
@@ -286,7 +286,7 @@ active_video_renderer::start (double where = 1)
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
+	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
 	if (!m_src) {
 		lib::logger::get_logger()->error("active_video_renderer.start: no datasource");
 		m_context->stopped(m_cookie, 0);
@@ -296,10 +296,10 @@ active_video_renderer::start (double where = 1)
 	if (m_dest) {
 		m_dest->show(this);
 	} else {
-		AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
+		AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
 	}
 	m_src->start_frame (m_event_processor, e, w);
-	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
+	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
 	m_lock.leave();
 }
 
@@ -363,16 +363,16 @@ active_video_renderer::data_avail()
 		return;
 	}
 	
-	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
-	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
 	buf = m_src->get_frame(&ts, &size);
 	displayed = false;
-	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
 		if (ts <= now()) {
-			AM_DBG lib::logger::get_logger()->trace("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
+			AM_DBG lib::logger::get_logger()->debug("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			displayed = true;
@@ -388,9 +388,9 @@ active_video_renderer::data_avail()
 		}
 	} else {
 		if (m_is_playing && !m_src->end_of_file()) {
-			lib::logger::get_logger()->trace("active_video_renderer::data_avial: No more data, but not end of file!");
+			lib::logger::get_logger()->debug("active_video_renderer::data_avial: No more data, but not end of file!");
 		}
-		AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
+		AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
 		m_is_playing = false;
 		m_lock.leave();
 		m_context->stopped(m_cookie, 0);

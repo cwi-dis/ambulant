@@ -186,16 +186,16 @@ stdio_datasource::read_file()
 	// private method - no need to lock
   	char *buf;
   	size_t n; 	
-	//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: 	reading file ");
+	//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: 	reading file ");
 	if (m_stream >= 0) {
 		do {
-		//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: getting buffer pointer");
+		//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: getting buffer pointer");
             buf = m_buffer->get_write_ptr(BUFSIZ);
-			//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: buffer ptr : %x", buf);
+			//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: buffer ptr : %x", buf);
 			if (buf) {
-				//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: start reading %d bytes", BUFSIZ);
+				//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: start reading %d bytes", BUFSIZ);
 				n = fread(buf, 1, BUFSIZ, m_stream);
-				//AM_DBG lib::logger::get_logger()->trace("stdio_datasource.readfile: done reading %d bytes", n);
+				//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: done reading %d bytes", n);
 				if (n > 0) m_buffer->pushdata((int)n); 
 			}
 		
@@ -224,7 +224,7 @@ stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 	
 	if (m_buffer->size() > 0 ) {
     	if (evp && cbevent) {
-			AM_DBG lib::logger::get_logger()->trace("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
+			AM_DBG lib::logger::get_logger()->debug("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}

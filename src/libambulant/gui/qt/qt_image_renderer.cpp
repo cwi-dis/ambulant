@@ -68,7 +68,7 @@ using namespace gui::qt;
 
 qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace
+	AM_DBG lib::logger::get_logger()->debug
 	  ("qt_active_image_renderer::~qt_active_image_renderer(0x%x)",
 	   this);
 	m_lock.leave();
@@ -80,7 +80,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 				      gui_window* w) {
 	const point             p = m_dest->get_global_topleft();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace
+	AM_DBG logger::get_logger()->debug
 		("qt_active_image_renderer.redraw_body(0x%x):"
 		" m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)",
 		 (void *)this, &m_image,
@@ -92,7 +92,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	}
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->trace(
+	AM_DBG logger::get_logger()->debug(
 		"qt_active_image_renderer.redraw_body: info=0x%x",
 		info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
@@ -120,7 +120,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 		    D_T = dstrect.top(),
 		    D_W = dstrect.width(),
 		    D_H = dstrect.height();
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt_active_image_renderer.redraw_body(0x%x):"
 			" drawImage at (L=%d,T=%d,W=%d,H=%d)"
 			" from (L=%d,T=%d,W=%d,H=%d)",
@@ -132,7 +132,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 		    N_T = (int)(S_T*fact_H),
 		    N_W = (int)(O_W*fact_W),
 		    N_H = (int)(O_H*fact_H);
-		AM_DBG lib::logger::get_logger()->trace(
+		AM_DBG lib::logger::get_logger()->debug(
 			"qt_active_image_renderer.redraw_body(0x%x):"
 			"orig=(%d, %d) scalex=%f, scaley=%f"
 			" intermediate (L=%d,T=%d,W=%d,H=%d)",

@@ -109,7 +109,7 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
-	AM_DBG m_logger->trace("Parsing: %s", u.get_url().c_str());	
+	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
 	lib::document *doc = lib::document::create_from_url(u);
 	if(!doc) {
 		// message already logged
@@ -117,7 +117,7 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	}
 	
 	// Create a player instance
-	AM_DBG m_logger->trace("Creating player instance for: %s", u.get_url().c_str());	
+	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);	
 	
 	// Create a worker processor instance
@@ -206,7 +206,7 @@ void gui::dx::dx_player::restart() {
 		m_logger->show("Failed to parse document %s", m_url.get_url().c_str());
 		return;
 	}
-	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.get_url().c_str());	
+	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);	
 	
 	if(playing) start();	
@@ -294,7 +294,7 @@ common::gui_window *
 gui::dx::dx_player::new_window(const std::string &name, 
 	lib::size bounds, common::gui_events *src) {
 	
-	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
+	AM_DBG lib::logger::get_logger()->debug("dx_window_factory::new_window(%s): %s", 
 		name.c_str(), ::repr(bounds).c_str());
 	
 	// wininfo struct that will hold the associated objects
@@ -320,7 +320,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 	
 	// Store the wininfo struct
 	m_windows[name] = winfo;
-	AM_DBG m_logger->trace("windows: %d", m_windows.size());
+	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 	
 	// Return gui_window
 	return winfo->w;
@@ -338,7 +338,7 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	delete wi->v;
 	destroy_os_window(wi->h);
 	delete wi;
-	AM_DBG m_logger->trace("windows: %d", m_windows.size());
+	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 }
 
 common::bgrenderer*
@@ -347,7 +347,7 @@ gui::dx::dx_player::new_background_renderer(const common::region_info *src) {
 }
 
 gui::dx::viewport* gui::dx::dx_player::create_viewport(int w, int h, HWND hwnd) {
-	AM_DBG m_logger->trace("dx_player::create_viewport(%d, %d)", w, h);
+	AM_DBG m_logger->debug("dx_player::create_viewport(%d, %d)", w, h);
 	PostMessage(hwnd, WM_SET_CLIENT_RECT, w, h);
 	viewport *v = new gui::dx::viewport(w, h, hwnd);
 	v->redraw();
@@ -383,7 +383,7 @@ gui::dx::dx_player::new_playable(
 	common::gui_window *window = get_window(node);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
-	AM_DBG m_logger->trace("dx_player::new_playable: %s", tag.c_str());
+	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
 	if(tag == "text") {
 		p = new dx_text_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "img") {
@@ -403,7 +403,7 @@ gui::dx::dx_player::new_playable(
 }
 
 void gui::dx::dx_player::set_intransition(common::playable *p, lib::transition_info *info) { 
-	lib::logger::get_logger()->trace("set_intransition : %s", repr(info->m_type).c_str());
+	lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
@@ -413,7 +413,7 @@ void gui::dx::dx_player::set_intransition(common::playable *p, lib::transition_i
 }
 
 void gui::dx::dx_player::start_outtransition(common::playable *p, lib::transition_info *info) {  
-	lib::logger::get_logger()->trace("start_outtransition : %s", repr(info->m_type).c_str());
+	lib::logger::get_logger()->debug("start_outtransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
@@ -601,7 +601,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
 	}
 	
 	// Create a player instance
-	AM_DBG m_logger->trace("Creating player instance for: %s", newdoc.get_url().c_str());
+	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
 	m_player = new smil2::smil_player(doc, this, this, this);
 	if(startnewdoc) start();
 }

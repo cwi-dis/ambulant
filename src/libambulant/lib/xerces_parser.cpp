@@ -64,7 +64,7 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	m_saxparser(0), m_logger(0), m_buf((char*)malloc(1)), m_size(0),
 	m_id("AmbulantXercesParser") {
 	m_logger = lib::logger::get_logger();
-        AM_DBG m_logger->trace("***  :xerces_sax_parser()");
+        AM_DBG m_logger->debug("***  :xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 	
@@ -88,7 +88,7 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 }
 
 xerces_sax_parser::~xerces_sax_parser() {
-	m_logger->trace("xerces_sax_parser::~xerces_sax_parser()");
+	AM_DBG m_logger->debug("xerces_sax_parser::~xerces_sax_parser()");
 	XMLPlatformUtils::Terminate();
 	free (m_buf);
 }
@@ -138,7 +138,7 @@ void
 xerces_sax_parser::startElement(const XMLCh* const name,
 				AttributeList& attrs) {
 	char *cname = XMLString::transcode(name);
-	AM_DBG m_logger->trace("*** startElement %s", cname);
+	AM_DBG m_logger->debug("*** startElement %s", cname);
 	q_name_pair qname = to_q_name_pair(name);
 	q_attributes_list qattrs;
 	to_qattrs(attrs, qattrs);
@@ -149,7 +149,7 @@ xerces_sax_parser::startElement(const XMLCh* const name,
 void
 xerces_sax_parser::endElement(const XMLCh* const name) {
 	char *cname = XMLString::transcode(name);
-	AM_DBG m_logger->trace("*** endElement %s", cname);
+	AM_DBG m_logger->debug("*** endElement %s", cname);
 	q_name_pair qname = to_q_name_pair(name);
 	m_content_handler->end_element(qname);
 	XMLString::release(&cname);

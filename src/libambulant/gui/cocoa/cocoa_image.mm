@@ -72,7 +72,7 @@ namespace cocoa {
 cocoa_image_renderer::~cocoa_image_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_image_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("~cocoa_image_renderer(0x%x)", (void *)this);
 	if (m_image)
 		[m_image release];
 	m_image = NULL;
@@ -84,10 +84,10 @@ cocoa_image_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *win
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	if (m_data && !m_image) {
-		AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw: creating image");
+		AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: creating image");
 		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
 		m_image = [[NSImage alloc] initWithData: m_nsdata];
 		if (!m_image)
@@ -109,7 +109,7 @@ cocoa_image_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *win
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-		AM_DBG logger::get_logger()->trace("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+		AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
 	} else {
 	}

@@ -267,9 +267,9 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	AM_DBG {
 		RECT rc;
 		GetRgnBox(hrgn, &rc);
-		lib::logger::get_logger()->trace("RegionBox: %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
+		lib::logger::get_logger()->debug("RegionBox: %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
 		if(rc.left == rc.right || rc.top == rc.bottom)
-			lib::logger::get_logger()->trace("Region is empty");
+			lib::logger::get_logger()->debug("Region is empty");
 	}
 	return hrgn;
 }
@@ -330,6 +330,6 @@ void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::screen_rect<int>& src, lib
 	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
 	src &= r3;
 	dst &= r4;
-	AM_DBG lib::logger::get_logger()->trace("%s -> %s (%s -> %s)",
+	AM_DBG lib::logger::get_logger()->debug("%s -> %s (%s -> %s)",
 		repr(r3).c_str(), repr(r4).c_str(), repr(src).c_str(), ::repr(dst).c_str());
 }

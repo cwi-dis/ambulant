@@ -71,7 +71,7 @@ using namespace net;
 datasource* 
 posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
+	AM_DBG lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
 	if (url.is_local_file()) {
 
 		passive_datasource *pds = new passive_datasource(url.get_file());
@@ -104,7 +104,7 @@ passive_datasource::activate()
 
 passive_datasource::~passive_datasource()
 {
-	AM_DBG lib::logger::get_logger()->trace("passive_datasource::~passive_datasource(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("passive_datasource::~passive_datasource(0x%x)", (void*)this);
 }
 
 // *********************** active_datasource ***********************************************
@@ -117,7 +117,7 @@ active_datasource::active_datasource(passive_datasource *const source, int file)
 	m_stream(file),
 	m_end_of_file(false)
 {
-	AM_DBG lib::logger::get_logger()->trace("active_datasource::active_datasource(0x%x, %d)->0x%x", (void*)source, file, (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("active_datasource::active_datasource(0x%x, %d)->0x%x", (void*)source, file, (void*)this);
 	m_source->add_ref();
 	if (file >= 0) {
 		filesize();
@@ -163,7 +163,7 @@ active_datasource::~active_datasource()
 {
 	stop();
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("active_datasource::stop(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("active_datasource::stop(0x%x)", (void*)this);
 	if (m_buffer) {
 		delete m_buffer;
 		m_buffer = NULL;
@@ -223,16 +223,16 @@ active_datasource::read_file()
 	// private method - no need to lock
   	char *buf;
   	int n; 	
-	//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading file ");
+	//AM_DBG lib::logger::get_logger()->debug("active_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {
-		//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: getting buffer pointer");
+		//AM_DBG lib::logger::get_logger()->debug("active_datasource.readfile: getting buffer pointer");
             buf = m_buffer->get_write_ptr(BUFSIZ);
-			//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: buffer ptr : %x", buf);
+			//AM_DBG lib::logger::get_logger()->debug("active_datasource.readfile: buffer ptr : %x", buf);
 			if (buf) {
-				//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading %d bytes", BUFSIZ);
+				//AM_DBG lib::logger::get_logger()->debug("active_datasource.readfile: start reading %d bytes", BUFSIZ);
 				n = ::read(m_stream, buf, BUFSIZ);
-				//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: done reading %d bytes", n);
+				//AM_DBG lib::logger::get_logger()->debug("active_datasource.readfile: done reading %d bytes", n);
 				if (n > 0) m_buffer->pushdata(n); 
 			}
 		
@@ -261,7 +261,7 @@ active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::eve
 	
 	if (m_buffer->size() > 0 ) {
     	if (evp && cbevent) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback (x%x)", cbevent);
+			AM_DBG lib::logger::get_logger()->debug("active_datasource.start: trigger readdone callback (x%x)", cbevent);
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
     	}
 	}

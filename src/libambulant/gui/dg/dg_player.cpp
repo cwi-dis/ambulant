@@ -107,7 +107,7 @@ gui::dg::dg_player::dg_player(const net::url& u)
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
-	AM_DBG m_logger->trace("Parsing: %s", u.get_url().c_str());	
+	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
 	lib::document *doc = lib::document::create_from_url(u);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", u.get_url().c_str());
@@ -115,7 +115,7 @@ gui::dg::dg_player::dg_player(const net::url& u)
 	}
 	
 	// Create a player instance
-	AM_DBG m_logger->trace("Creating player instance for: %s", u.get_url().c_str());	
+	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);
 	
 	// Create the worker processor
@@ -243,7 +243,7 @@ common::gui_window *
 gui::dg::dg_player::new_window(const std::string &name, 
 	lib::size bounds, common::gui_events *src) {
 	
-	AM_DBG lib::logger::get_logger()->trace("dg_window_factory::new_window(%s): %s", 
+	AM_DBG lib::logger::get_logger()->debug("dg_window_factory::new_window(%s): %s", 
 		name.c_str(), ::repr(bounds).c_str());
 	
 	// wininfo struct that will hold the associated objects
@@ -269,7 +269,7 @@ gui::dg::dg_player::new_window(const std::string &name,
 	
 	// Store the wininfo struct
 	m_windows[name] = winfo;
-	AM_DBG m_logger->trace("windows: %d", m_windows.size());
+	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 	
 	// Return gui_window
 	return winfo->w;
@@ -287,7 +287,7 @@ gui::dg::dg_player::window_done(const std::string &name) {
 	delete wi->v;
 	destroy_os_window(wi->h);
 	delete wi;
-	AM_DBG m_logger->trace("windows: %d", m_windows.size());
+	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 }
 
 common::bgrenderer*
@@ -296,7 +296,7 @@ gui::dg::dg_player::new_background_renderer(const common::region_info *src) {
 }
 
 gui::dg::viewport* gui::dg::dg_player::create_viewport(int w, int h, HWND hwnd) {
-	AM_DBG m_logger->trace("dg_player::create_viewport(%d, %d)", w, h);
+	AM_DBG m_logger->debug("dg_player::create_viewport(%d, %d)", w, h);
 	PostMessage(hwnd, WM_SET_CLIENT_RECT, w, h);
 	viewport *v = new gui::dg::viewport(w, h, hwnd);
 	v->redraw();
@@ -352,7 +352,7 @@ gui::dg::dg_player::new_playable(
 }
 
 void gui::dg::dg_player::set_intransition(common::playable *p, lib::transition_info *info) { 
-	lib::logger::get_logger()->trace("set_intransition : %s", repr(info->m_type).c_str());
+	lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
@@ -362,7 +362,7 @@ void gui::dg::dg_player::set_intransition(common::playable *p, lib::transition_i
 }
 
 void gui::dg::dg_player::start_outtransition(common::playable *p, lib::transition_info *info) {  
-	lib::logger::get_logger()->trace("start_outtransition : %s", repr(info->m_type).c_str());
+	lib::logger::get_logger()->debug("start_outtransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
@@ -547,7 +547,7 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	}
 	
 	// Create a player instance
-	AM_DBG m_logger->trace("Creating player instance for: %s", newdoc.get_url().c_str());
+	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
 	m_player = new smil2::smil_player(doc, this, this, this);
 	if(startnewdoc) start();
 }

@@ -106,7 +106,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_pointed_node(0), 
 	m_eom_flag(true) {
 	m_logger = lib::logger::get_logger();
-	AM_DBG m_logger->trace("smil_player::smil_player()");
+	AM_DBG m_logger->debug("smil_player::smil_player()");
 	m_event_processor = event_processor_factory(m_timer);
 	
 	// build the layout (we need the top-level layout)
@@ -117,7 +117,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 }
 
 smil_player::~smil_player() {
-	AM_DBG m_logger->trace("smil_player::~smil_player()");
+	AM_DBG m_logger->debug("smil_player::~smil_player()");
 	
 	// sync destruction
 	m_timer->pause();
@@ -243,7 +243,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 // Request to start the playable of the node.
 // When trans is not null the playable should transition in 
 void smil_player::start_playable(const lib::node *n, double t, const lib::node *trans) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::start_playable(0x%x, %f)", (void*)n, t);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::start_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
 	if (trans) {
 		common::renderer *rend = np->get_renderer();
@@ -260,14 +260,14 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::node *
 
 // Request to seek the playable of the node.
 void smil_player::seek_playable(const lib::node *n, double t) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::seek_playable(0x%x, %f)", (void*)n, t);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::seek_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
 	np->seek(t);
 }
 
 // Request to start a transition of the playable of the node.
 void smil_player::start_transition(const lib::node *n, const lib::node *trans, bool in) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::start_transition(0x%x, -x%x, in=%d)", (void*)n, trans, in);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::start_transition(0x%x, -x%x, in=%d)", (void*)n, trans, in);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
@@ -294,7 +294,7 @@ void smil_player::start_transition(const lib::node *n, const lib::node *trans, b
 
 // Request to stop the playable of the node.
 void smil_player::stop_playable(const lib::node *n) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::stop_playable(0x%x)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)", (void*)n);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
@@ -307,14 +307,14 @@ void smil_player::stop_playable(const lib::node *n) {
 
 // Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::pause_playable(0x%x)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(0x%x)", (void*)n);
 	common::playable *np = get_playable(n);
 	if(np) np->pause();
 }
 
 // Request to resume the playable of the node.
 void smil_player::resume_playable(const lib::node *n) {
-	AM_DBG lib::logger::get_logger()->trace("smil_player::resume_playable(0x%xf)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::resume_playable(0x%xf)", (void*)n);
 	common::playable *np = get_playable(n);
 	if(np) np->resume();
 }
@@ -329,12 +329,12 @@ smil_player::get_dur(const lib::node *n) {
 	if(np) {
 		std::pair<bool, double> idur = np->get_dur();
 		if(idur.first) m_playables_dur[n] = idur.second;
-		AM_DBG lib::logger::get_logger()->trace("smil_player::get_dur(0x%x): <%s, %f>", n, idur.first?"true":"false", idur.second);
+		AM_DBG lib::logger::get_logger()->debug("smil_player::get_dur(0x%x): <%s, %f>", n, idur.first?"true":"false", idur.second);
 		return idur;
 	}
 	std::map<const node*, double>::iterator it2 = m_playables_dur.find(n);
 	std::pair<bool, double> rv = (it2 != m_playables_dur.end())?std::pair<bool, double>(true,(*it2).second):not_available;
-	AM_DBG lib::logger::get_logger()->trace("smil_player::get_dur(0x%x): <%s, %f>", n, rv.first?"true":"false", rv.second);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::get_dur(0x%x): <%s, %f>", n, rv.first?"true":"false", rv.second);
 	return rv;
 }
 
@@ -346,7 +346,7 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 
 // Playable notification for a click event.
 void smil_player::clicked(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::clicked(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::clicked(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
@@ -360,7 +360,7 @@ void smil_player::clicked(int n, double t) {
 
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::pointed(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::pointed(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
@@ -369,14 +369,14 @@ void smil_player::pointed(int n, double t) {
 			// XXX We treat outOfBounds and focusOut identical, which is
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
@@ -388,7 +388,7 @@ void smil_player::pointed(int n, double t) {
 		if((*it).second->wants_activate_event())
 			m_cursorid = 1;
 		if (changed_focus) {
-			AM_DBG m_logger->trace("smil_player::pointed: m_pointed_node is now 0x%x %s[%s]",
+			AM_DBG m_logger->debug("smil_player::pointed: m_pointed_node is now 0x%x %s[%s]",
 				m_pointed_node, 
 				m_pointed_node->get_time_attrs()->get_tag().c_str(),
 				m_pointed_node->get_time_attrs()->get_id().c_str());
@@ -396,14 +396,14 @@ void smil_player::pointed(int n, double t) {
 		// XXX We treat inBounds and focusIn identical, which is
 		// not 100% correct.
 		if (changed_focus && m_pointed_node->wants_inbounds_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_inbounds_event, timestamp);
 				schedule_event(cb, 0);
 		}
 		if (changed_focus && m_pointed_node->wants_focusin_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusin_event, timestamp);
@@ -414,14 +414,14 @@ void smil_player::pointed(int n, double t) {
 			// XXX We treat outOfBounds and focusOut identical, which is
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
-				AM_DBG m_logger->trace("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
@@ -430,12 +430,12 @@ void smil_player::pointed(int n, double t) {
 			m_pointed_node = NULL;
 		}
 	}
-	AM_DBG m_logger->trace("smil_player::pointed: now m_pointed_node=0x%x", m_pointed_node);
+	AM_DBG m_logger->debug("smil_player::pointed: now m_pointed_node=0x%x", m_pointed_node);
 }
 
 // Playable notification for a start event.
 void smil_player::started(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::started(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::started(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
@@ -448,7 +448,7 @@ void smil_player::started(int n, double t) {
 
 // Playable notification for a stop event.
 void smil_player::stopped(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::stopped(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::stopped(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
@@ -463,17 +463,17 @@ void smil_player::stopped(int n, double t) {
 void smil_player::transitioned(int n, double t) {
 	// remove fill effect for nodes specifing fill="transition" 
 	// and overlap with n
-	AM_DBG m_logger->trace("smil_player::transitioned(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::transitioned(%d, %f)", n, t);
 }
 
 // Playable notification for a stall event.
 void smil_player::stalled(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::stalled(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::stalled(%d, %f)", n, t);
 }
 
 // Playable notification for an unstall event.
 void smil_player::unstalled(int n, double t) {
-	AM_DBG m_logger->trace("smil_player::unstalled(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::unstalled(%d, %f)", n, t);
 }
 
 // UI notification for a char event.
@@ -481,7 +481,7 @@ void smil_player::on_char(int ch) {
 	typedef std::pair<q_smil_time, int> accesskey;
 	typedef scalar_arg_callback_event<time_node, accesskey> accesskey_cb;
 	q_smil_time timestamp(m_root, m_root->get_simple_time());
-	AM_DBG m_logger->trace("smil_player::on_char(): '%c' [%d] at %ld", char(ch), ch, timestamp.second());
+	AM_DBG m_logger->debug("smil_player::on_char(): '%c' [%d] at %ld", char(ch), ch, timestamp.second());
 	accesskey ak(timestamp, ch);
 	accesskey_cb *cb = new accesskey_cb(m_root, &time_node::raise_accesskey, ak);
 	schedule_event(cb, 0);
@@ -496,7 +496,7 @@ smil_player::new_playable(const lib::node *n) {
 	const char *pid = n->get_attribute("id");
 	
 	surface *surf = m_layout_manager->get_surface(n);
-	AM_DBG m_logger->trace("%s[%s].new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+	AM_DBG m_logger->debug("%s[%s].new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
 		(void*)n, nid,
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
@@ -507,12 +507,12 @@ smil_player::new_playable(const lib::node *n) {
 		common::renderer *rend = np->get_renderer();
 		
 		if (rend) {
-			AM_DBG m_logger->trace("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
+			AM_DBG m_logger->debug("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
 			alignment *align = m_layout_manager->get_alignment(n);
 			rend->set_alignment(align);
 		} else {
-			AM_DBG m_logger->trace("smil_player::new_playable: surface not set because rend == NULL");
+			AM_DBG m_logger->debug("smil_player::new_playable: surface not set because rend == NULL");
 		}
 
 		
@@ -526,7 +526,7 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
 	
-	AM_DBG m_logger->trace("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
+	AM_DBG m_logger->debug("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 #endif
 	np->stop();
 	int rem = np->release();
@@ -534,7 +534,7 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 }
 
 void smil_player::show_link(const lib::node *n, const net::url& href, src_playstate srcstate, dst_playstate dststate) {
-	AM_DBG lib::logger::get_logger()->trace("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
+	AM_DBG lib::logger::get_logger()->debug("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
 		href.get_url().c_str(), (int)srcstate, (int)dststate);
 	net::url our_url(m_doc->get_src_url()); 
 	if(srcstate == src_replace && href.same_document(our_url)) {
@@ -558,16 +558,16 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 	}
 	
 	if (srcstate == src_pause) {
-		AM_DBG lib::logger::get_logger()->trace("show_link: pausing source document");
+		AM_DBG lib::logger::get_logger()->debug("show_link: pausing source document");
 		pause();
 	}
 	smil_player *to_replace = NULL;
 	if (srcstate == src_replace) {
-		AM_DBG lib::logger::get_logger()->trace("show_link: replacing source document");
+		AM_DBG lib::logger::get_logger()->debug("show_link: replacing source document");
 		to_replace = this;
 	}
 	if ( dststate == dst_external ) {
-		AM_DBG lib::logger::get_logger()->trace("show_link: open externally: \"%s\"", href.get_url().c_str());
+		AM_DBG lib::logger::get_logger()->debug("show_link: open externally: \"%s\"", href.get_url().c_str());
 		if (to_replace)
 			m_system->close(to_replace);
 		m_system->show_file(href);

@@ -63,7 +63,7 @@ lib::unix::event_processor::event_processor(timer *t)
 {
   	pthread_mutex_init(&m_queue_mutex, NULL);
 	pthread_cond_init(&m_queue_condition, NULL);
-	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x created", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x created", (void *)this);
 	if (pthread_mutex_init(&m_queue_mutex, NULL) < 0) {
 		lib::logger::get_logger()->fatal("unix_event_processor: pthread_mutex_init failed: %s", strerror(errno));
 	}
@@ -76,13 +76,13 @@ lib::unix::event_processor::event_processor(timer *t)
 lib::unix::event_processor::~event_processor()
 {
 	stop();
-	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x deleted", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x deleted", (void *)this);
 }
 
 unsigned long
 lib::unix::event_processor::run()
 {
-	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x started", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
 	// XXXX Note: the use of the mutex means that only one thread is actively
 	// serving events. This needs to be rectified at some point: only the
 	// queue manipulations should be locked with the mutex.
@@ -94,7 +94,7 @@ lib::unix::event_processor::run()
 		wait_event();
 	}
 	pthread_mutex_unlock(&m_queue_mutex);
-	AM_DBG lib::logger::get_logger()->trace("event_processor 0x%x stopped", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x stopped", (void *)this);
 	return 0;
 }
 

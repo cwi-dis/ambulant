@@ -76,7 +76,7 @@ time_calc::time_calc(schedulable *tn)
 time_calc::time_type 
 time_calc::calc_dur() {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
-		AM_DBG clogger->trace("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
+		AM_DBG clogger->debug("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(), "indefinite");
 		return time_type::indefinite;
 	}
@@ -95,7 +95,7 @@ time_calc::calc_dur() {
 		m_uses_dur = true;
 		cdur = m_tn->get_implicit_dur();
 	} 
-	AM_DBG clogger->trace("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG clogger->debug("%s[%s].calc_dur(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(cdur).c_str());
 	return cdur;
 }
@@ -209,7 +209,7 @@ time_calc::calc_ad(time_type b, time_type e) {
 	time_type maxval = m_attrs.specified_max()?m_attrs.get_max():time_type::indefinite;
 	time_type pad = calc_preliminary_ad(b, e);
 	time_type cad = std::min(maxval, std::max(minval, pad));
-	AM_DBG clogger->trace("%s[%s].calc_ad(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG clogger->debug("%s[%s].calc_ad(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(cad).c_str());	
 	return cad;
 }
@@ -224,7 +224,7 @@ time_calc::calc_ad(time_type b) {
 	time_type maxval = m_attrs.specified_max()?m_attrs.get_max():time_type::indefinite;
 	time_type pad = calc_preliminary_ad(b);
 	time_type cad = std::min(maxval, std::max(minval, pad));
-	AM_DBG clogger->trace("%s[%s].calc_ad(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG clogger->debug("%s[%s].calc_ad(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(cad).c_str());	
 	return cad;
 }
@@ -258,7 +258,7 @@ time_calc::calc_interval_end(interval_type& i, time_mset& end_list)  {
 		else end = time_type::unresolved;
 		end = calc_end(begin, end);
 	}
-	AM_DBG clogger->trace("%s[%s].calc_interval_end(): %s", m_attrs.get_tag().c_str(), 
+	AM_DBG clogger->debug("%s[%s].calc_interval_end(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(end).c_str());	
 	return end;
 }
@@ -296,12 +296,12 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 	
 	// Check the begin instance list
 	if(begin_list.empty()) {
-		AM_DBG clogger->trace("%s[%s].calc_first_interval(): begin list is empty", 
+		AM_DBG clogger->debug("%s[%s].calc_first_interval(): begin list is empty", 
 			m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str());	
 		return failure;
 	} 
-	AM_DBG clogger->trace("%s[%s].calc_first_interval(): begin list(%s, ...)", 
+	AM_DBG clogger->debug("%s[%s].calc_first_interval(): begin list(%s, ...)", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		::repr(*begin_list.lower_bound(begin_after)).c_str());	
@@ -324,7 +324,7 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 				if(m_attrs.end_has_event_conditions() || end_list.empty())
 					temp_end = time_type::unresolved;
 				else {
-					AM_DBG clogger->trace("%s[%s].calc_first_interval(): %s", 
+					AM_DBG clogger->debug("%s[%s].calc_first_interval(): %s", 
 						m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(failure).c_str());
 					return failure;
 				}
@@ -335,7 +335,7 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 		// see: http://www.w3.org/2001/07/REC-SMIL20-20010731-errata
 		if(temp_end()>0 || (temp_begin()== 0 && temp_end()==0)) {
 			interval_type ret(temp_begin, temp_end);
-			AM_DBG clogger->trace("%s[%s].calc_first_interval(): %s", 
+			AM_DBG clogger->debug("%s[%s].calc_first_interval(): %s", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(ret).c_str());
 			return ret;
 		} 

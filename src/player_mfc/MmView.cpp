@@ -192,9 +192,9 @@ MmView::MmView()
 	m_autoplay = true;
 	lib::logger::get_logger()->set_std_ostream(log_os);
 #ifdef AM_PLAYER_DG
-	lib::logger::get_logger()->trace("Ambulant DG Player");
+	lib::logger::get_logger()->trace("Ambulant: using DG Player");
 #else
-	lib::logger::get_logger()->trace("Ambulant DX Player");
+	lib::logger::get_logger()->trace("Ambulant: using DX Player");
 #endif
 }
 

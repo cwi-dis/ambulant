@@ -105,7 +105,7 @@ cocoa_transition_blitclass_fade::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_fade::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_fade::update(%f)", m_progress);
 	const lib::screen_rect<int> &r =  m_dst->get_rect();
 	lib::screen_rect<int> dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
@@ -123,7 +123,7 @@ cocoa_transition_blitclass_rect::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rect::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_rect::update(%f)", m_progress);
 	lib::screen_rect<int> newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	NSRect cocoa_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
@@ -143,7 +143,7 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 
 	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
 	lib::screen_rect<int> oldsrcrect_whole = m_oldsrcrect;
 	lib::screen_rect<int> olddstrect_whole = m_olddstrect;
 	lib::screen_rect<int> newsrcrect_whole = m_newsrcrect;
@@ -185,7 +185,7 @@ cocoa_transition_blitclass_rectlist::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rectlist::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_rectlist::update(%f)", m_progress);
 	std::vector< lib::screen_rect<int> >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
 		lib::screen_rect<int> newrect_whole = *newrect;
@@ -209,7 +209,7 @@ polygon2path(std::vector<lib::point> polygon)
 	bool first = true;
 	for( newpoint=polygon.begin(); newpoint != polygon.end(); newpoint++) {
 		lib::point p = *newpoint;
-		AM_DBG lib::logger::get_logger()->trace("polygon2path: point=%d, %d", p.x, p.y);
+		AM_DBG lib::logger::get_logger()->debug("polygon2path: point=%d, %d", p.x, p.y);
 		NSPoint pc = NSMakePoint(p.x, p.y);
 		if (first) {
 			[path moveToPoint: pc];
@@ -270,7 +270,7 @@ cocoa_transition_blitclass_poly::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	NSBezierPath *path = polygon2path(m_newpolygon);
 
@@ -286,7 +286,7 @@ cocoa_transition_blitclass_polylist::update()
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	NSBezierPath *path = NULL;
 	std::vector< std::vector<lib::point> >::iterator partpolygon;

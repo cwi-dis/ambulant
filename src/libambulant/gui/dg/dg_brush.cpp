@@ -76,15 +76,15 @@ gui::dg::dg_brush::dg_brush(
 	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
 	m_color(0) { 
-	AM_DBG lib::logger::get_logger()->trace("dg_brush::dg_brush(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_brush::dg_brush(0x%x)", this);
 }
 
 gui::dg::dg_brush::~dg_brush() {
-	AM_DBG lib::logger::get_logger()->trace("~dg_brush()");
+	AM_DBG lib::logger::get_logger()->debug("~dg_brush()");
 }
 
 void gui::dg::dg_brush::start(double t) {
-	AM_DBG lib::logger::get_logger()->trace("dg_brush::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_brush::start(0x%x)", this);
 	
 	// Has this been activated
 	if(m_activated) {
@@ -113,7 +113,7 @@ void gui::dg::dg_brush::start(double t) {
 
 
 void gui::dg::dg_brush::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dg_brush::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dg_brush::stop(0x%x)", this);
 	m_dest->renderer_done(this);
 	m_activated = false;
 }

@@ -83,7 +83,7 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 	m_logger = lib::logger::get_logger();
 	m_dom2tn = new std::map<int, time_node*>();
 	m_root = build_time_tree(doc->get_root());
-	AM_DBG m_logger->trace("Time nodes created: %d", time_node::get_node_counter());
+	AM_DBG m_logger->debug("Time nodes created: %d", time_node::get_node_counter());
 	build_priorities();
 	build_time_graph();
 	build_timers_graph();
@@ -93,7 +93,7 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 timegraph::~timegraph() {
 	if(m_root) {
 		delete m_root;
-		AM_DBG m_logger->trace("Undeleted time nodes: %d", time_node::get_node_counter());
+		AM_DBG m_logger->debug("Undeleted time nodes: %d", time_node::get_node_counter());
 	} // else detached
 	if(m_dom2tn)
 		delete m_dom2tn;
@@ -155,7 +155,7 @@ timegraph::build_time_tree(const lib::node *root) {
 		test_attrs ta(n);
 		if(!ta.selected()) {
 			// skip content
-			AM_DBG m_logger->trace("Filtering out node: %s[%s]", 
+			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
 				ta.get_tag().c_str(), ta.get_id().c_str());
 			it++;
 			while((*it).second != n) it++;
@@ -278,7 +278,7 @@ void timegraph::build_trans_out_graph() {
 		// We should now arrange so that the out transition 
 		// starts before the node is removed.
 		// To do this we need to consider its freeze behaviour and its context
-		AM_DBG m_logger->trace("%s[%s] transOut with fill: %s start:%ld ms before remove", 
+		AM_DBG m_logger->debug("%s[%s] transOut with fill: %s start:%ld ms before remove", 
 			ta->get_tag().c_str(), ta->get_id().c_str(), repr(ta->get_fill()).c_str(), offset());
 		if(ta->get_fill() == fill_remove) {
 			sync_rule *sr = new transout_rule(tn, tn_end, offset);
@@ -518,7 +518,7 @@ timegraph::select_switch_child(const node* sn) const {
 	for(it=cl.begin();it!=cl.end();it++) {
 		test_attrs ta(*it);
 		if(!ta.selected()) {
-			AM_DBG m_logger->trace("Filtering out node: %s[%s]", 
+			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
 				ta.get_tag().c_str(), ta.get_id().c_str());
 		} else return (*it);
 	}

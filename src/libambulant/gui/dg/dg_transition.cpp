@@ -265,9 +265,9 @@ HRGN create_rectlist_region(gui::dg::dg_transition *tr) {
 	AM_DBG {
 		RECT rc;
 		GetRgnBox(hrgn, &rc);
-		lib::logger::get_logger()->trace("RegionBox: %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
+		lib::logger::get_logger()->debug("RegionBox: %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
 		if(rc.left == rc.right || rc.top == rc.bottom)
-			lib::logger::get_logger()->trace("Region is empty");
+			lib::logger::get_logger()->debug("Region is empty");
 	}
 	return hrgn;
 }

@@ -103,7 +103,7 @@ void time_state::exit(qtime_type timestamp, time_node *oproot) {
 }
 
 void time_state::report_state(qtime_type timestamp) {
-	AM_DBG logger::get_logger()->trace("%s[%s] --> %s at PT:%ld, DT:%ld", 
+	AM_DBG logger::get_logger()->debug("%s[%s] --> %s at PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		time_state_str(this->ident()),
@@ -111,7 +111,7 @@ void time_state::report_state(qtime_type timestamp) {
 		timestamp.as_doc_time()());
 }
 void time_state::report_state() {
-	AM_DBG logger::get_logger()->trace("%s[%s] --> %s", 
+	AM_DBG logger::get_logger()->debug("%s[%s] --> %s", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		time_state_str(this->ident()));
@@ -168,7 +168,7 @@ void reset_state::exit(qtime_type timestamp, time_node *oproot) {
 void proactive_state::enter(qtime_type timestamp) {
 	report_state(timestamp);
 	interval_type i = m_self->calc_first_interval();
-	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::enter calc_first_interval -> %s at DT:%ld", 
+	AM_DBG logger::get_logger()->debug("%s[%s].proactive_state::enter calc_first_interval -> %s at DT:%ld", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		::repr(i).c_str(),
@@ -186,7 +186,7 @@ void proactive_state::enter(qtime_type timestamp) {
 
 void proactive_state::sync_update(qtime_type timestamp) {
 	interval_type i = m_self->calc_first_interval();
-	AM_DBG logger::get_logger()->trace("%s[%s].proactive_state::sync_update %s --> %s at DT:%ld", 
+	AM_DBG logger::get_logger()->debug("%s[%s].proactive_state::sync_update %s --> %s at DT:%ld", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		::repr(m_interval).c_str(),
@@ -292,7 +292,7 @@ void active_state::enter(qtime_type timestamp) {
 
 void active_state::sync_update(qtime_type timestamp) {
 	// Update end, consider restart semantics
-	AM_DBG logger::get_logger()->trace("%s[%s].active_state::sync_update() at ST:%ld PT:%ld, DT:%ld", 
+	AM_DBG logger::get_logger()->debug("%s[%s].active_state::sync_update() at ST:%ld PT:%ld, DT:%ld", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(m_self),
@@ -310,7 +310,7 @@ void active_state::sync_update(qtime_type timestamp) {
 		interval_type candidate(m_interval.begin, timestamp.second); 
 		interval_type i = m_self->calc_next_interval(candidate);
 		if(i.is_valid()) {
-			AM_DBG logger::get_logger()->trace("%s[%s] restart interval %s",
+			AM_DBG logger::get_logger()->debug("%s[%s] restart interval %s",
 				m_attrs.get_tag().c_str(), 
 				m_attrs.get_id().c_str(),
 				::repr(i).c_str()); 

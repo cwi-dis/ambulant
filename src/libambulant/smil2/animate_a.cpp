@@ -80,7 +80,7 @@ animate_attrs::animate_attrs(const lib::node *n, const lib::node* tparent)
 	locate_target_attr();
 	m_animtype = find_anim_type();
 	read_enum_atttrs();
-	AM_DBG m_logger->trace("%s[%s].%s --> %s.%s", 
+	AM_DBG m_logger->debug("%s[%s].%s --> %s.%s", 
 		m_tag.c_str(), m_id.c_str(), m_animtype.c_str(), 
 		m_target_type.c_str(), m_attrname.c_str());
 	apply_constraints();	

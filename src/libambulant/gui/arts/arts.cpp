@@ -66,11 +66,11 @@ gui::arts::arts_renderer_factory::new_playable(
 {
 	common::playable *rv;
 	lib::xml_string tag = node->get_qname().second;
-     AM_DBG lib::logger::get_logger()->trace("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+     AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
 		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp,
 			m_datasource_factory);
-		AM_DBG lib::logger::get_logger()->trace("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 	AM_DBG lib::logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
                 return NULL;

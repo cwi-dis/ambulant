@@ -82,7 +82,7 @@ arts_active_audio_renderer::init()
     if (!m_arts_init) {
         err  = arts_init();
         m_arts_init  = true;
-        AM_DBG lib::logger::get_logger()->trace("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
+        AM_DBG lib::logger::get_logger()->debug("active_renderer.arts_setup(0x%x): initialising aRts", (void *)this);
     } else {
         err = 0;
     }
@@ -134,14 +134,14 @@ arts_active_audio_renderer::readdone()
     int played;
     int err;
     
-    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
+    AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)", (void *)this);
     
     data = m_src->get_read_ptr();
 	size = m_src->size();
-    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
+    AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
     arts_setup(44100,16,1,"arts_audio");
     played=arts_play(data,size);
-	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
+	AM_DBG lib::logger::get_logger()->debug("active_renderer.readdone(0x%x)  played %d bytes", (void *)this, played);
     m_src->readdone(played);
     stopped_callback();
 }
@@ -157,7 +157,7 @@ arts_active_audio_renderer::start(double where)
 	std::ostringstream os;
 	os << *m_node;
 
-	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+	AM_DBG lib::logger::get_logger()->debug("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_src) {
 		lib::event *e = new readdone_callback(this, &common::active_renderer::readdone);
 		m_src->start(m_event_processor, e);

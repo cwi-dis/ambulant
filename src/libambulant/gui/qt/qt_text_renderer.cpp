@@ -77,7 +77,7 @@ qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
 				     common::gui_window* w) {
 // No m_lock needed, protected by base class
 	const lib::point p = m_dest->get_global_topleft();
-	AM_DBG lib::logger::get_logger()->trace(
+	AM_DBG lib::logger::get_logger()->debug(
 		"qt_active_text_renderer.redraw(0x%x):"
 		"ltrb=(%d,%d,%d,%d)\nm_data = %s, p=(%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom(),

@@ -182,7 +182,7 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 				char sz[32];
 				sprintf(sz,"%.3f;", keyTimes[i]); str += sz;
 			}
-			m_logger->trace("%s[%s] keyTimes: %s", 
+			m_logger->debug("%s[%s] keyTimes: %s", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), str.c_str());
 		}
 	}
@@ -261,7 +261,7 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
 		if(rd != regs.rd || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
 			}
 			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
@@ -296,7 +296,7 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
 		if(rd != regs.rd || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
 			}		
 			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
@@ -336,7 +336,7 @@ class color_animation : public linear_values_animation<F, lib::color_t> {
 		if(cl != regs.cl || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> 0x%x", 
+				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x", 
 					m_aattrs->get_target_attr().c_str(), t, regs.cl);
 			}				
 			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
@@ -370,7 +370,7 @@ class underlying_to_color_animation : public underlying_to_animation<lib::color_
 		if(cl != regs.cl || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> 0x%x", 
+				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x", 
 					m_aattrs->get_target_attr().c_str(), t, regs.cl);
 			}				
 			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
@@ -403,7 +403,7 @@ class zindex_animation : public linear_values_animation<F, common::zindex_t> {
 		if(zi != regs.zi || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %d", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %d", 
 					m_aattrs->get_target_attr().c_str(), t, regs.zi);
 			}				
 			dst->set_region_zindex(regs.zi);
@@ -437,7 +437,7 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
 		if(zi != regs.zi || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %d", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %d", 
 					m_aattrs->get_target_attr().c_str(), t, regs.zi);
 			}				
 			dst->set_region_zindex(regs.zi);
@@ -480,7 +480,7 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
 		if(pt != regs.pt || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
 			}			
 			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
@@ -520,7 +520,7 @@ class underlying_to_motion_animation : public underlying_to_animation<lib::point
 		if(pt != regs.pt || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
 			}		
 			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
