@@ -87,5 +87,17 @@
 		NSLog(@"No Welcome.smil in bundle");
 	}
 }
+
+- (IBAction)loadFilter:(id)sender
+{
+	NSOpenPanel *panel = [NSOpenPanel openPanel];
+	int result = [panel runModalForDirectory: nil file: nil types: nil];
+	if (result != NSOKButton) return;
+	NSString *filename = [[panel filenames] objectAtIndex: 0];
+	std::string path([filename cString]);
+	mainloop::set_preferences(path);
+}
+
+
 @end
 

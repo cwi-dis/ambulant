@@ -55,4 +55,5 @@
 }
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender;
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification;
+- (IBAction)loadFilter:(id)sender;
 @end
