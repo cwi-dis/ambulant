@@ -93,5 +93,22 @@ We may consider the following libraries for adding regex support to Ambulant:
 3. Regex++ from Boost, C++ implementation, a litle heavy (but it offers much)
 4. Greta from Microsoft, C++ implementation
 
+RTP/RTSP Library
+----------------
 
+We are going to need an RTP/RTSP library for transport, and the license is important.
+A quick search on the web came up with the following packages, which haven't yet
+been examined further:
+1. Live.com Streaming Media - RTP/RTSP, and also includes various codecs. LGPL License. 
+   Fairly popular, according to themselves. Runs on Windows/Linux/MacOSX.
+   The website looks a bit clunky.
+2. Vovida.org - RTP/RTSP and much more. License looks BSD-like, but needs to be read
+   more carefully. This may not run on Windows out of the box.
+3. MPEG4IP - This looks pretty similar to Ambulant itself, but MPEG4-centered in stead
+   of SMIL-centered. Mainly linux, but "a crude windows port is available". Mozilla license.
+   The RTP library used is actually the UCL Common Media Library implementation.
+   I have seen no mention of RTSP here, nor on the UCL site, so we would need to check
+   that it actually has it.
+   
+Question: is there RTP/RTSP support builtin on win32/wince?
 
