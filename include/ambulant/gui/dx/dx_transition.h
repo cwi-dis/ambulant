@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/gtypes.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/smil2/transition.h"
@@ -91,6 +92,7 @@ class dx_transition {
 
 dx_transition *make_transition(lib::transition_type id, 
 	common::playable *playable, lib::timer *timer);
+	
 smil2::blitter_type get_transition_blitter_type(lib::transition_type id);
 
 template<class T>
@@ -186,5 +188,8 @@ class dx_transition_engine : public dx_transition {
 HRGN create_rect_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_rectlist_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_poly_region(ambulant::gui::dx::dx_transition *tr);
+HRGN create_polylist_region(ambulant::gui::dx::dx_transition *tr);
+void clipto_r1r2r3r4(ambulant::gui::dx::dx_transition *tr, 
+	ambulant::lib::screen_rect<int>& src, ambulant::lib::screen_rect<int>& dst);
 
 #endif // AMBULANT_GUI_DX_TRANSITION_H

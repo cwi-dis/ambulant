@@ -197,6 +197,11 @@ inline void set_rect(const lib::screen_rect<int>& rc, RECT *r) {
 	r->bottom = rc.bottom();
 }
 
+inline bool is_empty_region(HRGN hrgn) {
+	RECT rc;
+	return (GetRgnBox(hrgn, &rc) == NULLREGION) || rc.top == rc.bottom || rc.left == rc.right;
+}
+
 } // namespace dx
 
 } // namespace gui

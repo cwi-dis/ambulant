@@ -509,6 +509,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	}
 }
 
+
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
 void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
 	const lib::screen_rect<int>& dst_rc, bool keysrc, dx_transition *tr) {
@@ -519,8 +520,17 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		return;
 	}
 	
-	HRGN hrgn = 0;
 	smil2::blitter_type bt = tr->get_blitter_type();
+	
+	if(bt == smil2::bt_r1r2r3r4) {
+		lib::screen_rect<int> src_rc_v = src_rc;
+		lib::screen_rect<int> dst_rc_v = dst_rc;
+		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
+		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
+		return;
+	}
+	
+	HRGN hrgn = 0;
 	switch(bt) {
 		case smil2::bt_rect: 
 			hrgn = create_rect_region(tr); 
@@ -531,10 +541,16 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		case smil2::bt_poly: 
 			hrgn = create_poly_region(tr); 
 			break;
+		case smil2::bt_polylist: 
+			hrgn = create_polylist_region(tr); 
+			break;
 	}
 		
 	if(!hrgn) {
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
+		return;
+	} else if(is_empty_region(hrgn)) {
+		// nothiing to paint
 		return;
 	}
 	trcopy(dst_rc);

@@ -51,10 +51,16 @@
  */
  
 #include "ambulant/gui/dx/dx_transition.h"
+#include "ambulant/lib/win32/win32_error.h"
+#include "ambulant/lib/logger.h"
+
 #include <map>
+
+using ambulant::lib::win32::win_report_last_error;
 
 using namespace ambulant;
 using namespace smil2;
+
 
 /////////////////////////////////
 // Module private definitions
@@ -121,8 +127,9 @@ struct transition_factories {
 	
 	add(lib::waterfallWipe, new trfact<transition_engine_waterfallwipe>, bt_rectlist);
 	
-	add(lib::pushWipe, new trfact<default_class>, bt_default);
-	add(lib::slideWipe, new trfact<default_class>, bt_default);
+	add(lib::pushWipe, new trfact<transition_engine_pushwipe>, bt_r1r2r3r4);
+	add(lib::slideWipe, new trfact<transition_engine_slidewipe>, bt_r1r2r3r4);
+	
 	add(lib::fade, new trfact<transition_engine_fade>, bt_fade);
 	}
 	
@@ -152,8 +159,10 @@ gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id,
 	std::map<lib::transition_type, transition_factory*>& m = 
 		transition_factories_inst.trfactmap;
 	std::map<lib::transition_type, transition_factory*>::iterator it = m.find(id);
-	if(it == m.end())
+	if(it == m.end()) {
+		lib::logger::get_logger()->warn("Missing transition factory for type %d. Returning default", id);
 		return m[lib::clockWipe]->new_transition(playable, timer);
+	}
 	return (*it).second->new_transition(playable, timer);
 }
 
@@ -161,11 +170,15 @@ smil2::blitter_type gui::dx::get_transition_blitter_type(lib::transition_type id
 	std::map<lib::transition_type, smil2::blitter_type>& m = 
 		transition_factories_inst.btmap;
 	std::map<lib::transition_type, smil2::blitter_type>::iterator it = m.find(id);
-	if(it == m.end()) return m[lib::clockWipe];
+	if(it == m.end()) {
+		lib::logger::get_logger()->warn("Missing transition blitter entry for type %d. Returning default", id);
+		return m[lib::clockWipe];
+	}
 	return (*it).second;
 }
 
 /////////////////////////////////
+// Private
 
 // Hack to make rect public
 class rect_adapter : public transition_blitclass_rect {
@@ -185,23 +198,47 @@ class poly_adapter : public transition_blitclass_poly {
 	std::vector<lib::point>& get_points() { return m_newpolygon;}
 };
 
+// Hack to make points lists public
+class polylist_adapter : public transition_blitclass_polylist {
+  public:
+	std::vector< std::vector<lib::point> >& get_point_lists() { return m_newpolygonlist;}
+};
+
+// Hack to make rects public
+class r1r2r3r4_adapter : public transition_blitclass_r1r2r3r4 {
+  public:
+	lib::screen_rect<int>& get_src_rect() { return m_newsrcrect;}
+	lib::screen_rect<int>& get_dst_rect() { return m_newdstrect;}
+};
+
+
+// Empty region used on error conditions
+inline HRGN empty_region() {return CreateRectRgn(0, 0, 0, 0);}
+
 /////////////////////////////////
+// Public interface
 // Create appropriate entities for blitting
+
 
 HRGN create_rect_region(gui::dx::dx_transition *tr) {
 	smil2::transition_blitclass_rect *p = tr->get_as_rect_blitter();
-	if(!p) return 0;
+	assert(p);
 	rect_adapter *dummy = (rect_adapter*)p;
 	lib::screen_rect<int>& rect = dummy->get_rect();
-	return CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
+	HRGN hrgn = CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
+	if(!hrgn) {
+		win_report_last_error("CreateRectRgn()");
+		return empty_region();
+	}
+	return hrgn;
 }
 
 HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	smil2::transition_blitclass_rectlist *p = tr->get_as_rectlist_blitter();
-	if(!p) return 0;
+	assert(p);
 	rectlist_adapter *dummy = (rectlist_adapter*)p;
 	std::vector< lib::screen_rect<int> >& v = dummy->get_rectlist();
-	if(v.empty()) return 0;
+	if(v.empty()) return empty_region();
 	HRGN hrgn = CreateRectRgn(0, 0, 0, 0);
 	std::vector< lib::screen_rect<int> >::iterator it;
 	for(it = v.begin();it!=v.end();it++) {
@@ -209,13 +246,17 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 		HRGN next = CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
 		CombineRgn(hrgn, hrgn, next, RGN_OR);
 		DeleteObject((HGDIOBJ)next); 
+		if(!hrgn) {
+			win_report_last_error("CombineRgn()");
+			return empty_region();
+		}
 	}
 	return hrgn;
 }
 
 HRGN create_poly_region(gui::dx::dx_transition *tr) {
 	smil2::transition_blitclass_poly *p = tr->get_as_poly_blitter();
-	if(!p) return 0;
+	assert(p);
 	poly_adapter *dummy = (poly_adapter*)p;
 	std::vector<lib::point>& v = dummy->get_points();
 	if(v.size()<3) return 0;
@@ -226,5 +267,48 @@ HRGN create_poly_region(gui::dx::dx_transition *tr) {
 		{ppt[i].x = (*it).x; ppt[i].y = (*it).y;}
 	HRGN hrgn = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
 	delete[] ppt;	
+	if(!hrgn) {
+		win_report_last_error("CreatePolygonRgn()");
+		return empty_region();
+	}
 	return hrgn;
+}
+
+HRGN create_polylist_region(gui::dx::dx_transition *tr) {
+	smil2::transition_blitclass_polylist *p = tr->get_as_polylist_blitter();
+	assert(p);
+	polylist_adapter *dummy = (polylist_adapter*)p;
+	std::vector< std::vector<lib::point> > vv = dummy->get_point_lists();
+	HRGN hrgn = CreateRectRgn(0, 0, 0, 0);
+	std::vector< std::vector<lib::point> >::iterator it;
+	for(it = vv.begin();it!=vv.end();it++) {
+		std::vector<lib::point>& v = *it; int i = 0;
+		POINT *ppt = new POINT[v.size()];
+		for(std::vector<lib::point>::iterator pit = v.begin();pit!=v.end();pit++,i++) 
+			{ppt[i].x = (*pit).x; ppt[i].y = (*pit).y;}
+		HRGN next = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
+		delete[] ppt;	
+		if(!next) {
+			win_report_last_error("CreatePolygonRgn()");
+			next = empty_region();
+		}
+		CombineRgn(hrgn, hrgn, next, RGN_OR);
+		DeleteObject((HGDIOBJ)next); 
+		if(!hrgn) {
+			win_report_last_error("CombineRgn()");
+			return empty_region();
+		}
+	}
+	return hrgn;
+}
+
+void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::screen_rect<int>& src, lib::screen_rect<int>& dst) {
+	smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
+	assert(p);
+	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;
+	lib::point pt = src.left_top();
+	lib::screen_rect<int>& r3 = dummy->get_src_rect(); r3.translate(pt);
+	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(pt);
+	src &= r3;
+	dst &= r4;
 }
