@@ -80,8 +80,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
-
 namespace ambulant
 {
 
@@ -92,6 +90,12 @@ class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
   public:
 	~ffmpeg_audio_datasource_factory() {};
 	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmts);
+};
+
+class ffmpeg_video_datasource_factory : public video_datasource_factory {
+  public:
+	~ffmpeg_video_datasource_factory() {};
+	video_datasource* new_video_datasource(const std::string& url);
 };
 
 class ffmpeg_audio_parser_finder : public audio_parser_finder {
@@ -112,28 +116,43 @@ class ffmpeg_audio_datasource;
 
 namespace detail {
 
-class ffmpeg_parser_thread : public lib::unix::thread, public lib::ref_counted_obj {
+// Actually, these classes could easily be used for a general demultiplexing
+// datasource, there is very little code that is ffmpeg-dependent.
+
+class datasink {
   public:
-	ffmpeg_parser_thread(AVFormatContext *con);
-	~ffmpeg_parser_thread();
+    virtual void data_avail(int64_t pts, uint8_t *data, int size) = 0;
+	virtual bool buffer_full() = 0;
+};
 	
-	void add_datasink(ffmpeg_audio_datasource *parent, int stream_index);
+class ffmpeg_demux : public lib::unix::thread, public lib::ref_counted_obj {
+  public:
+	ffmpeg_demux(AVFormatContext *con);
+	~ffmpeg_demux();
+	
+	static AVFormatContext *supported(const std::string& url);
+	  
+	void add_datasink(datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
 	void cancel();
   protected:
 	unsigned long run();
   private:
-    ffmpeg_audio_datasource *m_sinks[MAX_STREAMS];
+    datasink *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
 	int m_nstream;
 };
 
 }
 
-class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
+class ffmpeg_audio_datasource: 
+	virtual public audio_datasource,
+	public detail::datasink,
+	virtual public lib::ref_counted_obj
+{
   public:
 	 ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
-		detail::ffmpeg_parser_thread *thread);
+		detail::ffmpeg_demux *thread);
     ~ffmpeg_audio_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  
@@ -147,8 +166,6 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 	int size() const;   
 	audio_format& get_audio_format();
 
-	static AVFormatContext *supported(const std::string& url);
-	  
   private:
     bool _end_of_file();
 	const std::string m_url;
@@ -159,7 +176,38 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
     lib::event_processor *m_event_processor;
 
 	databuffer m_buffer;
-	detail::ffmpeg_parser_thread *m_thread;
+	detail::ffmpeg_demux *m_thread;
+	lib::event *m_client_callback;  // This is our calllback to the client
+	lib::critical_section m_lock;
+};
+
+class ffmpeg_video_datasource: virtual public video_datasource, virtual public lib::ref_counted_obj {
+  public:
+	 ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+		detail::ffmpeg_demux *thread);
+    ~ffmpeg_video_datasource();
+
+    void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);  
+
+    void data_avail(int64_t pts, uint8_t *data, int size);
+	bool buffer_full();
+		
+    bool end_of_file();
+	char* get_frame(double *timestamp, int *size);
+	void frame_done(double timestamp);
+	
+	static AVFormatContext *supported(const std::string& url);
+	  
+  private:
+    bool _end_of_file();
+	const std::string m_url;
+	AVFormatContext *m_con;
+	int m_stream_index;
+	bool m_src_end_of_file;
+    lib::event_processor *m_event_processor;
+
+//	databuffer m_buffer;
+	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
 };

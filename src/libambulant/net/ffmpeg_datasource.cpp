@@ -93,6 +93,33 @@ getext(const std::string &url)
 	return NULL;
 }
 
+video_datasource* 
+ffmpeg_video_datasource_factory::new_video_datasource(const std::string& url)
+{
+#ifdef WITH_FFMPEG_AVFORMAT
+	net::url   loc(url);
+	
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource(%s)", url.c_str());
+	AVFormatContext *context = detail::ffmpeg_demux::supported(url);
+	if (!context) {
+		/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: no support for %s", url.c_str());
+		return NULL;
+	}
+	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
+	video_datasource *ds = NULL; /* new ffmpeg_video_datasource(url, context, thread)*/;
+	if (ds == NULL) {
+		/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
+		thread->cancel();
+		return NULL;
+	}
+	thread->start();
+	return ds;
+#else
+	return NULL;	
+#endif // WITH_FFMPEG_AVFORMAT
+}
+
+
 audio_datasource* 
 ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, audio_format_choices fmts)
 {
@@ -100,14 +127,15 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const std::string& url, au
 	net::url   loc(url);
 	
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource(%s)", url.c_str());
-	AVFormatContext *context = ffmpeg_audio_datasource::supported(url);
+	AVFormatContext *context = detail::ffmpeg_demux::supported(url);
 	if (!context) {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource_factory::new_audio_datasource: no support for %s", url.c_str());
 		return NULL;
 	}
-	detail::ffmpeg_parser_thread *thread = new detail::ffmpeg_parser_thread(context);
+	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
 	audio_datasource *ds = new ffmpeg_audio_datasource(url, context, thread);
 	if (ds == NULL) {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
@@ -177,26 +205,55 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 	return new ffmpeg_resample_datasource(src, fmts);
 }
 
-// **************************** ffmpeg_parser_thread *****************************
+// **************************** ffmpeg_demux *****************************
 
 #ifdef WITH_FFMPEG_AVFORMAT
 
-detail::ffmpeg_parser_thread::ffmpeg_parser_thread(AVFormatContext *con)
+detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 :   m_con(con),
 	m_nstream(0)
 {
 	memset(m_sinks, 0, sizeof m_sinks);
 }
 
-detail::ffmpeg_parser_thread::~ffmpeg_parser_thread()
+detail::ffmpeg_demux::~ffmpeg_demux()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_parser_thread::~ffmpeg_parser_thread()");
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) av_close_input_file(m_con);
 	m_con = NULL;
 }
 
+AVFormatContext *
+detail::ffmpeg_demux::supported(const std::string& url)
+{
+	ffmpeg_init();
+	// Setup struct to allow ffmpeg to determine whether it supports this
+	AVInputFormat *fmt;
+	AVProbeData probe_data;
+	
+	probe_data.filename = url.c_str();
+	probe_data.buf = NULL;
+	probe_data.buf_size = 0;
+	fmt = av_probe_input_format(&probe_data, 0);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_probe_input_format: 0x%x", url.c_str(), (void*)fmt);
+	AVFormatContext *ic;
+	int err = av_open_input_file(&ic, url.c_str(), fmt, 0, 0);
+	if (err) {
+		lib::logger::get_logger()->warn("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
+		if (ic) av_close_input_file(ic);
+	}
+	err = av_find_stream_info(ic);
+	if (err < 0) {
+		lib::logger::get_logger()->warn("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
+		if (ic) av_close_input_file(ic);
+	}
+	AM_DBG dump_format(ic, 0, url.c_str(), 0);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
+	return ic;
+}
+
 void
-detail::ffmpeg_parser_thread::cancel()
+detail::ffmpeg_demux::cancel()
 {
 	if (is_running())
 		stop();
@@ -204,7 +261,7 @@ detail::ffmpeg_parser_thread::cancel()
 }
 
 void 
-detail::ffmpeg_parser_thread::add_datasink(ffmpeg_audio_datasource *parent, int stream_index)
+detail::ffmpeg_demux::add_datasink(detail::datasink *parent, int stream_index)
 {
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] == 0);
@@ -213,7 +270,7 @@ detail::ffmpeg_parser_thread::add_datasink(ffmpeg_audio_datasource *parent, int 
 }
 
 void
-detail::ffmpeg_parser_thread::remove_datasink(int stream_index)
+detail::ffmpeg_demux::remove_datasink(int stream_index)
 {
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] != 0);
@@ -223,7 +280,7 @@ detail::ffmpeg_parser_thread::remove_datasink(int stream_index)
 }
 
 unsigned long
-detail::ffmpeg_parser_thread::run()
+detail::ffmpeg_demux::run()
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: started");
 	while (!exit_requested()) {
@@ -234,7 +291,7 @@ detail::ffmpeg_parser_thread::run()
 		if (ret < 0) break;
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
-		ffmpeg_audio_datasource *sink = m_sinks[pkt->stream_index];
+		detail::datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: Drop data for stream %d", pkt->stream_index);
 		} else {
@@ -258,7 +315,7 @@ detail::ffmpeg_parser_thread::run()
 // **************************** ffmpeg_audio_datasource *****************************
 
 ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, AVFormatContext *context,
-	detail::ffmpeg_parser_thread *thread)
+	detail::ffmpeg_demux *thread)
 :	m_url(url),
 	m_con(context),
 	m_stream_index(-1),
@@ -422,35 +479,6 @@ ffmpeg_audio_datasource::get_audio_format()
 	}
 #endif
 	return m_fmt;
-}
-
-AVFormatContext *
-ffmpeg_audio_datasource::supported(const std::string& url)
-{
-	ffmpeg_init();
-	// Setup struct to allow ffmpeg to determine whether it supports this
-	AVInputFormat *fmt;
-	AVProbeData probe_data;
-	
-	probe_data.filename = url.c_str();
-	probe_data.buf = NULL;
-	probe_data.buf_size = 0;
-	fmt = av_probe_input_format(&probe_data, 0);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::supported(%s): av_probe_input_format: 0x%x", url.c_str(), (void*)fmt);
-	AVFormatContext *ic;
-	int err = av_open_input_file(&ic, url.c_str(), fmt, 0, 0);
-	if (err) {
-		lib::logger::get_logger()->warn("ffmpeg_audio_datasource::supported(%s): av_open_input_file returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
-		if (ic) av_close_input_file(ic);
-	}
-	err = av_find_stream_info(ic);
-	if (err < 0) {
-		lib::logger::get_logger()->warn("ffmpeg_audio_datasource::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
-		if (ic) av_close_input_file(ic);
-	}
-	AM_DBG dump_format(ic, 0, url.c_str(), 0);
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
-	return ic;
 }
 
 #endif // WITH_FFMPEG_AVFORMAT
