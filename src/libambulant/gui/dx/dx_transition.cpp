@@ -326,6 +326,6 @@ void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::screen_rect<int>& src, lib
 	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;
 	lib::screen_rect<int>& r3 = dummy->get_src_rect(); r3.translate(src.left_top());
 	lib::screen_rect<int>& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
-	src &= r3;
-	dst &= r4;
+	//src &= r3;
+	//dst &= r4;
 }
