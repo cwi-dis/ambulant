@@ -88,7 +88,7 @@ class smil_player : public common::abstract_player, public time_node_context, pu
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf);
+	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf);
 	~smil_player();
 		
 	lib::timer* get_timer() { return m_timer;}
@@ -164,7 +164,7 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	common::playable *get_playable(const lib::node *n);
 	lib::document *m_doc;
 	common::window_factory *m_wf;
-	common::playable_factory *m_rf;
+	common::playable_factory *m_pf;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
 	common::layout_manager *m_layout_manager;
