@@ -102,7 +102,7 @@ smil_alignment::get_image_fixpoint(lib::size image_size) const
 lib::point
 smil_alignment::get_surface_fixpoint(lib::size surface_size) const
 {
-	int x = m_image_fixpoint.left.get(surface_size.w);
-	int y = m_image_fixpoint.top.get(surface_size.h);
+	int x = m_surface_fixpoint.left.get(surface_size.w);
+	int y = m_surface_fixpoint.top.get(surface_size.h);
 	return lib::point(x, y);
 }
