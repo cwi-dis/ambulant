@@ -79,12 +79,18 @@
 // std::runtime_error
 #include <stdexcept>
 
+///////////////////////////////
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
+
 // std::ostream for debug output
 #ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
 #else /*AMBULANT_NO_OSTREAM*/
 #include <ostream.h>
 #endif/*AMBULANT_NO_OSTREAM*/
+
+#endif // AMBULANT_NO_IOSTREAMS_HEADERS
+///////////////////////////////
 
 // floor
 #include <math.h>
@@ -171,12 +177,22 @@ class region_dim {
 	// Value getter function
 	int get_as_int() const { 
 		if(absolute()) return m_holder.int_val; 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is not absolute");
+#else
+		abort();
+#endif
+		return 0;
 	}
 	
 	double get_as_dbl() const { 
 		if(relative()) return m_holder.dbl_val;
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is not relative");
+#else
+		abort();
+#endif
+		return 0;
 	}
 		
 	int get(int ref) const {
@@ -185,7 +201,12 @@ class region_dim {
 			case rdt_relative: return int(floor(ref*get_as_dbl() + 0.5));
 			case rdt_auto: break;
 		}
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is undefined");
+#else
+		abort();
+		return 0;
+#endif
 	}
 	
 	bool operator== (const region_dim& other) const {
