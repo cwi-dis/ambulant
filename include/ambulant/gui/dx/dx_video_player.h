@@ -86,11 +86,9 @@ namespace gui {
 
 namespace dx {
 
-class viewport;
-
 class video_player : public lib::playable {
   public:
-	video_player(const std::string& url, viewport *v, lib::event_processor* evp);
+	video_player(const std::string& url, IDirectDraw* ddraw);
 	~video_player();
 	
 	void start(double t);
@@ -116,14 +114,8 @@ class video_player : public lib::playable {
  private:
 	bool open(const std::string& url, IDirectDraw* dd);
  	void release();
-	void update_callback();
-	void schedule_update();
-	void cancel_update();
- 	lib::event *m_update_event;
  	
 	std::string m_url;
-	viewport *m_viewport;
-	lib::event_processor* m_evp;
 	cookie_type m_cookie;
 	
 	IMultiMediaStream *m_mmstream;

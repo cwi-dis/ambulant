@@ -89,10 +89,6 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 
 	virtual bool can_decode();
 	virtual dib_surface<ColorType>* decode();
-	virtual bool is_transparent() { return false;}
-	virtual void get_transparent_color(BYTE *rgb) { 
-		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
-	}
 
 	private:
 	void write_pixel_rows(j_decompress_ptr cinfo, surface<ColorType> *psurf);
@@ -179,7 +175,7 @@ jpg_decoder<DataSource, ColorType>::decode() {
 
 	// create a bmp surface
 	ColorType *pBits = NULL;
-	BITMAPINFO *pbmpi = get_bitmapinfo(width, height, ColorType::get_bits_size());
+	BITMAPINFO *pbmpi = get_bmp_info(width, height, ColorType::get_bits_size());
 	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");

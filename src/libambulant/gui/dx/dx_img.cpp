@@ -54,17 +54,55 @@
 
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
-
 #include "ambulant/gui/dx/jpg_decoder.h"
 #include "ambulant/gui/dx/gif_decoder.h"
+#include "ambulant/gui/dx/png_decoder.h"
+#include "ambulant/gui/dx/bmp_decoder.h"
 
 #include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 
 #include "jpeglib.h"
 
 using namespace ambulant;
+
+////////////////////////
+// img_decoder factory function
+
+typedef gui::dx::img_decoder<net::active_datasource, lib::color_trible> img_decoder_class;
+
+static img_decoder_class*
+create_img_decoder(net::active_datasource *src, HDC hdc) {
+	typedef gui::dx::jpg_decoder<net::active_datasource, lib::color_trible> jpg_decoder_class;
+	typedef gui::dx::gif_decoder<net::active_datasource, lib::color_trible> gif_decoder_class;
+	typedef gui::dx::png_decoder<net::active_datasource, lib::color_trible> png_decoder_class;
+	typedef gui::dx::bmp_decoder<net::active_datasource, lib::color_trible> bmp_decoder_class;
+	
+	img_decoder_class* decoder = 0;
+	
+	decoder = new jpg_decoder_class(src, hdc);
+	if(decoder->can_decode()) return decoder;
+	delete decoder;
+	
+	decoder = new gif_decoder_class(src, hdc);
+	if(decoder->can_decode()) return decoder;
+	delete decoder;
+	
+	decoder = new png_decoder_class(src, hdc);
+	if(decoder->can_decode()) return decoder;
+	delete decoder;
+	
+	decoder = new bmp_decoder_class(src, hdc);
+	if(decoder->can_decode()) return decoder;
+	delete decoder;
+	
+	return 0;
+}
+
+////////////////////////
+//
 
 gui::dx::dx_img_renderer::dx_img_renderer(
 	lib::active_playable_events *context,
@@ -88,19 +126,22 @@ void gui::dx::dx_img_renderer::start(double t) {
 	
 	if(!m_node || !m_src) abort();
 	
+	const lib::abstract_smil_region_info *ri = m_dest->get_info();
+	
 	// Create a dx-region
 	viewport *v = get_viewport();
 	lib::screen_rect<int> rc = m_dest->get_rect();
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	m_region = v->create_region(rc, v->get_rc());
+	m_region = v->create_region(rc, v->get_rc(), ri?ri->get_zindex():0);
 	
-	// Prepare dx-region's pixel map bgd
-	m_region->set_background("silver");
+	m_region->set_rendering_surface(m_dest);
+	m_region->set_rendering_info(ri);
+	m_region->set_background(ri?ri->get_bgcolor():0);
 	m_region->clear();
 	
-	m_dest->show(this);
 	if(!m_src->exists()) {
+		m_dest->show(this);
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
 		return;
@@ -112,40 +153,32 @@ void gui::dx::dx_img_renderer::readdone() {
 	lib::logger::get_logger()->trace("dx_img_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	
 	// Prepare dx-region's pixel map
-	typedef img_decoder<net::active_datasource, lib::color_trible> img_decoder_class;
-	typedef jpg_decoder<net::active_datasource, lib::color_trible> jpg_decoder_class;
-	typedef gif_decoder<net::active_datasource, lib::color_trible> gif_decoder_class;
-	
 	HDC hdc = ::GetDC(NULL);
-	img_decoder_class* decoder = 0;
-	
-	decoder = new jpg_decoder_class(m_src, hdc);
-	if(decoder->can_decode()) {
-		dib_surface<lib::color_trible> *ds = decoder->decode();
-		if(ds) m_region->set_bmp(ds->m_hbmp);
-	}
-	delete decoder;
-	
-	decoder = new gif_decoder_class(m_src, hdc);
-	if(decoder->can_decode()) {
-		dib_surface<lib::color_trible> *ds = decoder->decode();
-		if(ds) m_region->set_bmp(ds->m_hbmp);
-	}
-	delete decoder;
-	
+	img_decoder_class* decoder = create_img_decoder(m_src, hdc);
 	::DeleteDC(hdc);
-	
+	if(decoder) {
+		dib_surface<lib::color_trible> *ds = decoder->decode();
+		if(ds) {
+			m_region->set_bmp(ds->get_handle(), 
+				(int)ds->get_pixmap()->get_width(), (int)ds->get_pixmap()->get_height(),
+				decoder->is_transparent(), decoder->get_transparent_color());
+		}
+		delete decoder;
+		delete ds;
+	}
 	m_dest->need_redraw();
 	stopped_callback();
 }
+
 
 void gui::dx::dx_img_renderer::stop() {
 	viewport *v = get_viewport();
 	if(v && m_region) {
 		v->remove_region(m_region);
 		m_region = 0;
+		v->redraw();
 	}
-	//lib::active_renderer::stop();
+	lib::active_renderer::stop();
 }
 
 void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {

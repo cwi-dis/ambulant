@@ -191,13 +191,13 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 	while(true) {
 		uchar_t blockType = m_src->get();
 		if(blockType == 0x2c) { 
-			m_logger->trace("Image Descriptor");
+			//m_logger->trace("Image Descriptor");
 			return parse_image();
 		} else if (blockType == 0x21) {
 			m_logger->trace("Extension block");
 			uchar_t label = m_src->get();
 			if(label == 0xf9) { 
-				m_logger->trace("Graphics Control Extension");
+				//m_logger->trace("Graphics Control Extension");
 				if(get_data_block(ext_buf)>0) {
 					m_disposal= (ext_buf[0]>>2)	& 0x7;
 					m_inputFlag	= (ext_buf[0]>>1) & 0x1;
@@ -207,16 +207,16 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 				}
 				skip_block();
 			} else if (label == 0x1) { 
-				m_logger->trace("Plain text extension");
+				//m_logger->trace("Plain text extension");
 				skip_block();
 			} else if (label == 0xfe) { 
-				m_logger->trace("Comment extension");
+				//m_logger->trace("Comment extension");
 				skip_block();
 			} else if (label == 0xff) { 
-				m_logger->trace("Application extension");
+				//m_logger->trace("Application extension");
 				skip_block();
 			} else { 
-				m_logger->trace("Unknown extension");
+				//m_logger->trace("Unknown extension");
 				skip_block();
 			}
 		}
@@ -267,7 +267,7 @@ gif_decoder<DataSource, ColorType>::parse_image() {
 	/////////////
 	// create a bmp surface
 	ColorType *pBits = NULL;
-	BITMAPINFO *pbmpi = get_bitmapinfo(imageWidth, imageHeight, ColorType::get_bits_size());
+	BITMAPINFO *pbmpi = get_bmp_info(imageWidth, imageHeight, ColorType::get_bits_size());
 	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");

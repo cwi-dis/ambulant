@@ -71,8 +71,7 @@ gui::dx::audio_player::audio_player(const std::string& url)
 }
 	
 gui::dx::audio_player::~audio_player() {
-	if(is_playing()) stop();
-	release();
+	stop();
 }
 		
 void gui::dx::audio_player::start(double t) {
@@ -140,7 +139,7 @@ bool gui::dx::audio_player::can_play() {
 
 bool gui::dx::audio_player::is_playing() {
 	if(m_media_event == 0) return false;
-	long msTimeout = 0;
+	long msTimeout = 50;
 	long evCode = 0;
 	HRESULT hr = m_media_event->WaitForCompletion(msTimeout, &evCode);
 	if(hr == E_ABORT) return true;

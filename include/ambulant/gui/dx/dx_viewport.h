@@ -64,6 +64,9 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/layout.h"
+#include "ambulant/common/region.h"
+
 #include "ambulant/common/preferences.h"
 
 struct IDirectDraw;
@@ -109,10 +112,12 @@ class viewport {
 	// with the current background color
 	void clear();	
 	
+	IDirectDrawSurface* create_surface(DWORD w, DWORD h);
+	
 	// Creates a new region.
 	// rc: The coordinates of the region relative to this viewport
 	// crc: The coordinates of the parent or cliping region relative to this viewport
-	region* create_region(const lib::screen_rect<int>& rc, const lib::screen_rect<int>& crc);
+	region* create_region(const lib::screen_rect<int>& rc, const lib::screen_rect<int>& crc, int zindex);
 	void remove_region(region *r);
 	
 	// ddraw services
@@ -128,6 +133,8 @@ class viewport {
 	int get_width() const { return m_width;}
 	int get_height() const { return m_height;}
 	
+	void set_layout(const lib::passive_region *layout) { m_layout = layout; }
+	
   private:	
  	void add_region(region *r);
  
@@ -140,6 +147,8 @@ class viewport {
 	uint16 low_bit_pos(uint32 dword);
 	uint16 high_bit_pos(uint32 dword);
 
+	// link to the layout
+	const lib::passive_region *m_layout;
 	
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
@@ -188,12 +197,22 @@ class region {
 	
 	void set_text(const char *p, int size);
 	void set_text(const std::string& what);
-	void set_bmp(HBITMAP hbmp);
+	void set_bmp(HBITMAP hbmp, int width, int height, bool transp, lib::color_t tarnsp_color);
 	void set_video(video_player *player);
 	
+	void set_rendering_surface(const lib::abstract_rendering_surface *rsurf) { m_rsurf = rsurf;}
+	void set_rendering_info(const lib::abstract_smil_region_info *rinfo) { m_rinfo = rinfo;}
+	
+	const lib::abstract_rendering_surface* get_rsurf() const { return m_rsurf;}
+	const lib::abstract_smil_region_info* get_rinfo() const { return m_rinfo;}
+
   private:
 	// The viewport of this region.
 	viewport *m_viewport;	
+	
+	// links to the layout
+	const lib::abstract_rendering_surface *m_rsurf;
+	const lib::abstract_smil_region_info *m_rinfo;
 	
 	// The coordinates of this region 
 	// relative to the viewport
@@ -210,7 +229,10 @@ class region {
 	// The background color of this region.
 	lib::color_t m_bgd;	
 	
-	// xxx: temp
+	// image
+	IDirectDrawSurface* m_imgsurf;
+	
+	// video
 	video_player *m_video_p;
 	
 };

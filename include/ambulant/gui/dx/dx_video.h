@@ -56,6 +56,7 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region.h"
 #include "ambulant/lib/playable.h"
+#include "ambulant/lib/event.h"
 
 namespace ambulant {
 
@@ -86,12 +87,15 @@ class dx_video_renderer : public lib::active_renderer {
 	std::pair<bool, double> get_dur();
 	
   private:
+	void update_callback();
+	void schedule_update();
+ 	lib::event *m_update_event;
+  
 	video_player *m_player;
 	viewport* get_viewport(lib::abstract_window *window);
 	viewport* get_viewport();
 	region* m_region;
 	lib::abstract_window *m_window;
-	bool m_player_initialized;
 	
 };
 

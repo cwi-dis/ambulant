@@ -69,38 +69,34 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	lib::abstract_window *window)
 :   lib::active_renderer(context, cookie, node, evp, src, dest), 
 	m_window(window),
-	m_player(0), m_player_initialized(false) {
-	if(m_node && m_src)
+	m_player(0) {
+	
+	// this renderer does not obey active_renderer assumptions 
+	// If this cb is not deleted then this has an extra add_ref()
+	delete m_readdone;
+	m_readdone = 0;
+	
+	// create player so that get_dur() succeeds
+	if(m_src->exists())
 		m_player = new gui::dx::audio_player(m_src->get_url());
+	else {
+		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
+			m_src->get_url().c_str());
+	}
 }
 
 gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	lib::logger::get_logger()->trace("~dx_audio_renderer()");
-	if(m_player) delete m_player;
+	if(m_player) stop();
 }
 
 void gui::dx::dx_audio_renderer::start(double t) {
-	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
-	// This renderer will read/decode its data directly from the url.
-	
-	if(m_player && m_player_initialized) {
-		// repeat
-		m_player->start(t);
-		return;	
-	}
-	
-	// first time
-	if(!m_node || !m_src) abort();
 	if(!m_src->exists()) {
-		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
-		return;
+	} else if(m_player) {
+		//lib::show_message("Starting audio %s at %f", m_src->get_url().c_str(), t);
+		m_player->start(t);
 	}
-	m_dest->show(this);
-	if(!m_player)
-		m_player = new gui::dx::audio_player(m_src->get_url());
-	m_player->start(t);
-	m_player_initialized = true;
 }
 
 std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
@@ -114,7 +110,6 @@ void gui::dx::dx_audio_renderer::stop() {
 		m_player->stop();
 		delete m_player;
 		m_player = 0;
-		m_player_initialized = false;
 	}
 }
 void gui::dx::dx_audio_renderer::pause() {

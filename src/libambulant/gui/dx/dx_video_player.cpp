@@ -66,19 +66,15 @@ using ambulant::lib::win32::win_report_last_error;
 using ambulant::lib::logger;
 const ULONGLONG MILLIS_FACT = 10000;
 
-gui::dx::video_player::video_player(const std::string& url, 
-	viewport* v, lib::event_processor* evp)
+gui::dx::video_player::video_player(const std::string& url, IDirectDraw* ddraw)
 :	m_url(url),
-	m_viewport(v),
-	m_evp(evp), 
 	m_mmstream(0),
 	m_vidstream(0),
 	m_ddstream(0),
 	m_ddsample(0),
 	m_ddsurf(0),
-	m_wantclicks(false),
-	m_update_event(0) {
-	open(m_url, m_viewport->get_direct_draw());
+	m_wantclicks(false) {
+	open(m_url, ddraw);
 }
 
 gui::dx::video_player::~video_player() {
@@ -93,18 +89,15 @@ void gui::dx::video_player::start(double t) {
 }
 
 void gui::dx::video_player::stop() {
-	cancel_update();
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {
 		win_report_error("IMultiMediaStream::SetState()", hr);	
 	}
 	release();
-	// remove any effects
 }
 
 void gui::dx::video_player::pause() {
-	cancel_update();
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {
@@ -118,7 +111,6 @@ void gui::dx::video_player::resume() {
 	if(FAILED(hr)) {
 		win_report_error("IMultiMediaStream::SetState()", hr);	
 	}
-	schedule_update();
 }
 
 void gui::dx::video_player::seek(double t) {
@@ -263,28 +255,4 @@ void gui::dx::video_player::release() {
 bool gui::dx::video_player::update() {
 	if(!m_mmstream || !m_ddsample) return false;
 	return m_ddsample->Update(0, NULL, NULL, 0) == S_OK;
-}
-
-
-void gui::dx::video_player::update_callback() {
-	if(!m_update_event) return;
-	m_update_event = 0;
-	if(m_mmstream && m_ddsample) {
-		m_viewport->redraw();
-		schedule_update();
-	}
-}
-
-void gui::dx::video_player::schedule_update() {
-	if(m_update_event) return;
-	m_update_event = new lib::no_arg_callback_event<video_player>(this, 
-		&video_player::update_callback);
-	m_evp->add_event(m_update_event, 100);
-}
-
-void gui::dx::video_player::cancel_update() {
-	if(m_update_event) {
-		m_evp->cancel_event(m_update_event);
-		m_update_event = 0;
-	}
 }

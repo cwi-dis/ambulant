@@ -57,6 +57,7 @@
 
 #include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/layout.h"
 
 using namespace ambulant;
 
@@ -80,20 +81,24 @@ void gui::dx::dx_text_renderer::start(double t) {
 	if(m_region != 0) return;
 
 	if(!m_node || !m_src) abort();
+	
+	const lib::abstract_smil_region_info *ri = m_dest->get_info();
+	
 	// Create a dx-region
 	viewport *v = get_viewport();
 	lib::screen_rect<int> rc = m_dest->get_rect();
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	m_region = v->create_region(rc, v->get_rc());
+	m_region = v->create_region(rc, v->get_rc(), ri->get_zindex());
 	
 	// Prepare dx-region's pixel map
-	m_region->set_background("teal");
+	m_region->set_rendering_surface(m_dest);
+	m_region->set_rendering_info(ri);
+	m_region->set_background(ri->get_bgcolor());
 	m_region->clear();
 	
-	m_dest->show(this);
-	
 	if(!m_src->exists()) {
+		m_dest->show(this);
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
 		return;
@@ -117,6 +122,7 @@ void gui::dx::dx_text_renderer::stop() {
 	if(v && m_region) {
 		v->remove_region(m_region);
 		m_region = 0;
+		v->redraw();
 	}
 	lib::active_renderer::stop();
 }

@@ -58,6 +58,7 @@
 #endif
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/colors.h"
 
 #include "ambulant/gui/dx/dx_surface.h"
 
@@ -80,6 +81,7 @@ struct dib_surface {
 		if(m_hbmp) ::DeleteObject(m_hbmp);
 	}
 	surface<ColorType>* get_pixmap() { return m_surf;}
+	HBITMAP get_handle() { return m_hbmp;}
 	
 	HBITMAP detach_handle() {HBITMAP hbmp = m_hbmp; m_hbmp = 0; return hbmp;}
 	
@@ -95,15 +97,21 @@ class img_decoder {
 	virtual ~img_decoder() {}
 	virtual bool can_decode() = 0;
 	virtual dib_surface<ColorType>* decode() = 0;
-	virtual bool is_transparent() { return false; }
-	virtual void get_transparent_color(uchar_t *rgb) {}
+	virtual bool is_transparent() { return false;}
+	virtual void get_transparent_color(BYTE *rgb) { 
+		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
+	}
+	virtual lib::color_t get_transparent_color() { 
+		BYTE rgb[3];get_transparent_color(rgb);
+		return lib::to_color(rgb[0], rgb[1], rgb[2]);
+	}
 
   protected:
 	DataSource* m_src;
 	HDC m_hdc;
 };
 
-inline BITMAPINFO* get_bitmapinfo(size_t width, size_t height, size_t depth) {
+inline BITMAPINFO* get_bmp_info(size_t width, size_t height, size_t depth) {
 	static BITMAPINFO bmi;
 	BITMAPINFOHEADER& h = bmi.bmiHeader;
 	memset(&h, 0, sizeof(BITMAPINFOHEADER));
