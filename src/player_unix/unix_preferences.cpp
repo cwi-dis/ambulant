@@ -64,23 +64,30 @@ unix_preferences::load_preferences() {
 	set_preferences_singleton(this);
 
 	char *parser = getenv("AMBULANT_USE_PARSER");
-	if (parser) {
-		if (strcmp(parser, "expat") == 0)
-			m_parser_id = EXPAT;
-		else if (strcmp(parser, "xerces") == 0)
-			m_parser_id = XERCES;
-		else
+	if (parser != NULL) {
+		if (strcasecmp(parser, "expat") == 0
+		    || strcasecmp(parser, "xerces") == 0)
+			m_parser_id = parser;
+		else {
 			lib::logger::get_logger()->error("Unknown parser in environment: AMBULANT_USE_PARSER=%s", parser);
+			parser = NULL;
+		}
 	}
+	if (parser == NULL)
+		m_parser_id = "any";
 	char *validation_scheme = getenv("AMBULANT_VALIDATION_SCHEME");
 	if (validation_scheme != NULL) {
-		if (strcasecmp(validation_scheme,"always") == 0) {
-			m_validation_scheme = ALWAYS;
-		} else if (strcasecmp(validation_scheme,"auto") == 0) {
-			m_validation_scheme = AUTO;
-		} else if (strcasecmp(validation_scheme,"never") == 0) {
-			m_validation_scheme = NEVER;
+		if (strcasecmp(validation_scheme,"always") == 0
+		    || strcasecmp(validation_scheme,"auto") == 0
+		    || strcasecmp(validation_scheme,"never") == 0) {
+			m_validation_scheme = validation_scheme;
+		} else {
+		  lib::logger::get_logger()->error("Unknown validation scheme in environment: AMBULANT_VALIDATION_SCHEME=%s", validation_scheme);
+			validation_scheme = NULL;
 		}
+	}
+	if (validation_scheme != NULL) {
+		validation_scheme = "never";
 	}
 	char *do_namespaces = getenv("AMBULANT_DO_NAMESPACES");
 	if (do_namespaces != NULL 

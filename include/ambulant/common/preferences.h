@@ -56,6 +56,9 @@ namespace common {
 const unsigned int default_layout_width = 640;
 const unsigned int default_layout_height = 480;
 
+static const char* parser_ids[] = {"any", "expat", "xerces"};
+static const char* val_schemes[] = {"never", "always", "auto"};
+
 class preferences {
 
   protected:	
@@ -65,11 +68,7 @@ class preferences {
 
   public:
 
-	enum parser_id {ANY = 0, EXPAT, XERCES};
-
-	enum val_scheme {NEVER = 0, ALWAYS, AUTO};
-
-	val_scheme m_validation_scheme;
+	char* m_validation_scheme;
 
 	bool m_do_namespaces;
 
@@ -81,7 +80,7 @@ class preferences {
 
 	int m_log_level;
 
-	parser_id m_parser_id;
+	char* m_parser_id;
 
 	static preferences* get_preferences();
 

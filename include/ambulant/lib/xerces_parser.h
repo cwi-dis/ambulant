@@ -123,7 +123,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
 	static q_name_pair to_q_name_pair(const XMLCh* name);
 
-	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(common::preferences::val_scheme v);
+	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(char* v);
 
 	SAXParser *m_saxparser;  
 	lib::logger *m_logger;

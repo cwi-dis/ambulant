@@ -213,21 +213,15 @@ xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
 }
 
 SAXParser::ValSchemes
-xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(common::preferences::val_scheme v) {
-	SAXParser::ValSchemes rv;
+xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(char* v) {
+	SAXParser::ValSchemes rv = SAXParser::Val_Never;
 
-	switch(v) {
-	default:
-	case common::preferences::NEVER:
+	if (strcasecmp(v, "never"))
 		rv = SAXParser::Val_Never;
-		break;
-	case common::preferences::ALWAYS:
+	else if (strcasecmp(v, "always"))
 		rv = SAXParser::Val_Always;
-		break;
-	case common::preferences::AUTO:
+	else if (strcasecmp(v, "auto"))
 		rv = SAXParser::Val_Auto;
-		break;
-	}
 	return rv;
 }
 #endif/*WITH_XERCES*/

@@ -81,8 +81,9 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 {
 	const char *attrvalue = rn->get_attribute(attrname);
 	common::region_dim rd;
-	if (attrvalue == NULL || *attrvalue == '\0') {
-		// pass: region_dim are initialized as auto
+	if (attrvalue == NULL || *attrvalue == '\0'
+	    || strcasecmp(attrvalue, "auto") == 0) {
+		// pass: region_dim are initialized as "auto"
 	} else {
 		int ivalue;
 		char *endptr;
