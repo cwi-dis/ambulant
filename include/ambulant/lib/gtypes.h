@@ -493,6 +493,18 @@ typedef basic_rect<long, unsigned long> lrect;
  
 } // namespace ambulant
 
+#include "ambulant/lib/string_util.h"
+
+inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
+	std::string s;
+	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
+}
+inline std::string repr(const ambulant::lib::basic_point<int>& p) {
+	std::string s;
+	return s << '(' << p.x << ", " << p.y << ')';
+}
+
+
 #ifndef AMBULANT_NO_IOSTREAMS
 
 // gtypes output operators
