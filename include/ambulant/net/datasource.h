@@ -92,7 +92,6 @@ class databuffer
 	char* m_buffer; 			
 	unsigned long int m_rear;
 	
-	
 	unsigned long int m_size;  			
  	unsigned long int m_max_size; 														 
 	unsigned long int m_used;							
@@ -111,11 +110,11 @@ class databuffer
 	// show information about the buffer, if verbose is true the buffer is dumped to cout;
 	void dump(std::ostream& os, bool verbose) const;		
 	
-	//retrieve data from buffer,  still thinking about arguments.							
-	void get_data(char *data, int size); 				
+								
+	//void get_data(char *data, int size); 				
 
 	// this one puts data alway at the end.															
-	void put_data(char *data , int size);			 							 
+	//void put_data(char *data , int size);			 							 
 	
 	// returns the amount of bytes that are used.
 	int used() const;
@@ -132,13 +131,53 @@ inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
 	os << "databuffer(" << (void *)&n << ", used=" << n.used() << ")";
 	return os;
 }
+ 
+class abstract_datasource : public ambulant::lib::ref_counted_obj {  	
+  public:
+	~abstract_datasource() {}
+
+ 
+	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
+
+        // a readdone cal is made by the client if he is ready with len bytes of data.
+    virtual void readdone(int len) = 0;
+    virtual void callback() = 0 ;
+    virtual bool end_of_file() = 0;
+	virtual bool buffer_full() = 0;
+		
+	virtual char* read_ptr() = 0;
+	virtual int size() const = 0 ;
+	
+  private:
+	virtual void filesize() = 0 ;
+    virtual void read_file() = 0 ;
+};
 
 
-// forward decleration
+class abstract_audio_datasource : public abstract_datasource {
+  public:
+	  ~abstract_audio_datasource() {};
+		  
+    virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
+
+        // a readdone cal is made by the client if he is ready with len bytes of data.
+    virtual void readdone(int len) = 0;
+    virtual void callback() = 0 ;
+    virtual bool end_of_file() = 0;
+	virtual bool buffer_full() = 0;
+		
+	virtual char* read_ptr() = 0;
+	virtual int size() const = 0;
+	
+	virtual int get_nchannels () = 0;
+  	virtual int get_nbits () = 0;
+	virtual int get_bitrate () = 0;
+	virtual int select_decoder(char* file_ext) = 0;
+ 
+};
+
+
 class active_datasource;
-
-
-
 
 class passive_datasource : public ambulant::lib::ref_counted_obj
 {
@@ -166,47 +205,41 @@ private:
 };
 
 	
- 
-class active_datasource : public ambulant::lib::ref_counted_obj {  	
-public:
-	// constructors 
+
+
+class active_datasource : public abstract_datasource {
+  public:
 	active_datasource();
 	active_datasource(passive_datasource *const source, int file);
-	 // destructor
-	~active_datasource();
-
-
-	void start(ambulant::lib::event_processor *evp,ambulant::lib::event *callback);
-
-        // a readdone cal is made by the client if he is ready with len bytes of data.
-    void readdone(int len);
+  	~active_datasource();
+  	
+  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+	void readdone(int len);
     void callback();
     bool end_of_file();
 	bool buffer_full();
 		
-
-	//  Get data from buffer and put 'size' bytes in buffer.
-	void read(char *data, int size); // this function only exists so we don't break anything that uses the old API.
 	char* read_ptr();
-
-	// Return the amount of data currently in buffer.
 	int size() const;
-	
-	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
+
+  
+	void read(char *data, int size);
+  	
+  	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
 		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
 		return os;
 	}
-
-private:
-    databuffer *m_buffer;
-    passive_datasource *m_source;
+  private: 
+	void filesize();
+    void read_file();
+	databuffer *m_buffer;
+  	passive_datasource *m_source;
 	int m_filesize;
 	int m_stream;
 	bool m_end_of_file;
-	void filesize();
-    void read_file();
-
 };
+
+
 
 } // end namespace net
 

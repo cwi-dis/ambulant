@@ -53,6 +53,7 @@
 #include "ambulant/net/datasource.h"
 #include <unistd.h>
 
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -130,19 +131,19 @@ int net::databuffer::used() const
 
 void net::databuffer::dump(std::ostream& os, bool verbose) const
 {
-int i;
+	int i;
 
-os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
-os << "BYTES USED : " << m_used << " bytes" << std::endl;
-os << "m_rear   : " << m_rear << std::endl;
-if (verbose) {
-	if (m_buffer) {
-		for (i = m_rear;i < m_size;i++) {
+	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
+	os << "BYTES USED : " << m_used << " bytes" << std::endl;
+	os << "m_rear   : " << m_rear << std::endl;
+	if (verbose) {
+		if (m_buffer) {
+			for (i = m_rear;i < m_size;i++) {
 	   		os << m_buffer[i];
 	   		}
-	   	}
+		}
 	} 
- os << std::endl;
+ 	os << std::endl;
 }
 
 char *
@@ -188,7 +189,7 @@ void net::databuffer::pushdata(int size)
 char *
 net::databuffer::get_read_ptr()
 {
-return (m_buffer + m_rear);
+	return (m_buffer + m_rear);
 }
 
 void
@@ -251,6 +252,10 @@ net::active_datasource::buffer_full()
 	return m_buffer->is_full();
 }
 
+void
+net::active_datasource::callback()
+{
+}
 
 bool
 net::active_datasource::end_of_file()
@@ -277,16 +282,16 @@ net::active_datasource::size() const
 void
 net::active_datasource::filesize()
 {
- 		using namespace std;
-		int dummy;
-		if (m_stream >= 0) {
-			// Seek to the end of the file, and get the filesize
-			m_filesize=lseek(m_stream, 0, SEEK_END); 		
-	 		dummy=lseek(m_stream, 0, SEEK_SET);						
-			} else {
- 			lib::logger::get_logger()->fatal("active_datasource.filesize(): no file openXX");
-			m_filesize = 0;
-			}
+ 	using namespace std;
+	int dummy;
+	if (m_stream >= 0) {
+		// Seek to the end of the file, and get the filesize
+		m_filesize=lseek(m_stream, 0, SEEK_END); 		
+	 	dummy=lseek(m_stream, 0, SEEK_SET);						
+	} else {
+ 		lib::logger::get_logger()->fatal("active_datasource.filesize(): no file openXX");
+		m_filesize = 0;
+	}
 }
 
 
@@ -295,9 +300,9 @@ net::active_datasource::read(char *data, int size)
 {
     char* in_ptr;
     if (size <= m_buffer->used()) {
-            in_ptr = m_buffer->get_read_ptr();
-            memcpy(data,in_ptr,size);
-            m_buffer->readdone(size);
+    	in_ptr = m_buffer->get_read_ptr();
+        memcpy(data,in_ptr,size);
+        m_buffer->readdone(size);
     }
 }
 
@@ -337,10 +342,10 @@ void
 net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
  {
  	read_file();
-        	if (evp && callback) {
-				AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
-				evp->add_event(callback, 0, ambulant::lib::event_processor::high);
-        	}
+    if (evp && callback) {
+		AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback");
+		evp->add_event(callback, 0, ambulant::lib::event_processor::high);
+    }
 }
  
 void
@@ -348,4 +353,8 @@ net::active_datasource::readdone(int size)
 {
 	m_buffer->readdone(size);
 }
+
+
+
+
 
