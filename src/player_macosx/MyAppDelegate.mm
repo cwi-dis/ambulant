@@ -50,12 +50,16 @@
 #import "MyDocument.h"
 #import "LogController.h"
 #import "mypreferences.h"
+#import <CoreFoundation/CoreFoundation.h>
+#include <locale.h>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 // XXXX Should go elsewhere
+#include "ambulant/version.h"
+#include "ambulant/config/config.h"
 #include "ambulant/lib/amstream.h"
 #include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
@@ -89,7 +93,7 @@ show_message(const char *format, va_list args)
 		withObject: message waitUntilDone: YES];
 }
 
-void
+bool
 initialize_logger()
 {
 	// Connect logger to our message displayer and output processor
@@ -114,7 +118,29 @@ initialize_logger()
 	// Install our preferences handler
 	mypreferences::install_singleton();
 	// Install our logger
-	initialize_logger();
+	if (initialize_logger() ) {
+		// Show the logger window immedeately if log level is DEBUG
+		[self showLogWindow: self];
+	}
+	// Initialize the gettext library
+	CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
+	NSString *userLocaleName = (NSString *)CFLocaleGetIdentifier(userLocaleRef);
+	const char *locale = [userLocaleName cString];
+	const char *unix_locale = getenv("LANG");
+	if (unix_locale == NULL || *unix_locale == '\0') {
+		setlocale(LC_MESSAGES, locale);
+		setenv("LANG", locale, 1);
+	} else if (strcmp(locale, unix_locale) != 0) {
+		ambulant::lib::logger::get_logger()->warn("MacOS System Preferences locale: \"%s\", Unix locale: LANG=\"%s\"", locale, unix_locale);
+	}
+    bindtextdomain (PACKAGE, LOCALEDIR);
+    textdomain (PACKAGE);
+	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/Cocoa"), __DATE__);
+#if ENABLE_NLS
+	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
+#endif
+
 	// Initialize the default system test settings
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
@@ -138,7 +164,7 @@ initialize_logger()
 			[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
 		}
 	} else {
-		ambulant::lib::logger::get_logger()->error("No Welcome.smil in application bundle");
+		ambulant::lib::logger::get_logger()->error(gettext("No Welcome.smil in application bundle"));
 	}
 	// Ask for notification when preferences change.
 #if 0
@@ -176,10 +202,10 @@ initialize_logger()
 		if (welcomeDoc) {
 			[welcomeDoc play: self];
 		} else {
-			ambulant::lib::logger::get_logger()->error("Welcome.smil could not be opened");
+			ambulant::lib::logger::get_logger()->error(gettext("Welcome.smil could not be opened"));
 		}
 	} else {
-		ambulant::lib::logger::get_logger()->error("No Welcome.smil in application bundle");
+		ambulant::lib::logger::get_logger()->error(gettext("No Welcome.smil in application bundle"));
 	}
 }
 
@@ -191,7 +217,7 @@ initialize_logger()
 	
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
 		ambulant::lib::logger::get_logger()->trace("Opening http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
-		ambulant::lib::logger::get_logger()->error("Cannot open http://www.ambulantplayer.org");
+		ambulant::lib::logger::get_logger()->error(gettext("Cannot open http://www.ambulantplayer.org"));
 	}
 }
 

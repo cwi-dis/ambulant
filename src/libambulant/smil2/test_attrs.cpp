@@ -291,7 +291,7 @@ bool test_attrs::test_custom_attribute(const char *value) const {
 bool test_attrs::load_test_attrs(const std::string& filename) {
 	lib::tree_builder builder;
 	if(!builder.build_tree_from_file(filename.c_str())) {
-		lib::logger::get_logger()->error("While loading settings: %s: Could not create DOM tree", filename.c_str());
+		lib::logger::get_logger()->error(gettext("While loading settings: %s: Could not create DOM tree"), filename.c_str());
 		return false;
 	}
 	

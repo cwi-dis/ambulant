@@ -195,7 +195,7 @@ cocoa_renderer_factory::new_playable(
 		}
 #endif // AM_PREFER_QUICKTIME
 	} else {
-		// logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
+		// logger::get_logger()->error(gettext("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\""), tag.c_str());
 		return NULL;
 	}
 	return rv;
@@ -206,7 +206,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, gui_event
 {
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it
-		logger::get_logger()->error("Unsupported: AmbulantPlayer cannot open second toplevel window yet");
+		logger::get_logger()->error(gettext("Unsupported: AmbulantPlayer cannot open second toplevel window yet"));
 		return NULL;
 	}
 	cocoa_window *window = new cocoa_window(name, bounds, m_defaultwindow_view, handler);

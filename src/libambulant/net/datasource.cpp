@@ -381,7 +381,7 @@ datasource_reader::readdone()
 	m_data = (char *)realloc(m_data, m_size + newsize);
 	if (m_data == NULL) {
 		m_size = 0;
-		lib::logger::get_logger()->error("datasource_reader: out of memory");
+		lib::logger::get_logger()->error(gettext("datasource_reader: out of memory"));
 		return;
 	}
 	memcpy(m_data+m_size, m_src->get_read_ptr(), newsize);

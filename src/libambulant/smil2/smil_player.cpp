@@ -547,13 +547,13 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 				m_scheduler->start((*it).second);
 			}
 		} else {
-			m_logger->error("Link destination not found: %s", href.get_url().c_str());
+			m_logger->error(gettext("Link destination not found: %s"), href.get_url().c_str());
 		}
 		return;
 	}
 	
 	if(!m_system) {
-		lib::logger::get_logger()->error("This implementation cannot open <%s> in new window", href.get_url().c_str());
+		lib::logger::get_logger()->error(gettext("This implementation cannot open <%s> in new window"), href.get_url().c_str());
 		return;
 	}
 	

@@ -88,7 +88,8 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 	initfunctype init;
 
 	dirent **namelist;
-	m_plugindir = getenv("AMB_PLUGIN_DIR");
+//	m_plugindir = getenv("AMB_PLUGIN_DIR");
+	m_plugindir = "/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/";
 	
 	// Init libltdl
 	errors = lt_dlinit ();

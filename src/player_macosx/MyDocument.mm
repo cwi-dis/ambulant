@@ -71,7 +71,7 @@ document_embedder::show_file(const ambulant::net::url& href)
 	
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
 		ambulant::lib::logger::get_logger()->trace("Opening URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str(), status);
-		ambulant::lib::logger::get_logger()->error("Cannot open: %s", href.get_url().c_str());
+		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s"), href.get_url().c_str());
 	}
 }
 

@@ -5,7 +5,8 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AM_PROG_LIBTOOL
-AC_CONFIG_FILES([Makefile 
+AM_GNU_GETTEXT([external])
+AC_CONFIG_FILES([Makefile po/Makefile.in m4/Makefile 
 	src/Makefile 
 	src/libambulant/Makefile 
 	src/player_unix/Makefile

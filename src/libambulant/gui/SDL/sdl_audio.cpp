@@ -106,7 +106,7 @@ gui::sdl::sdl_active_audio_renderer::init()
 	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("sdl_active_audio_renderer.init: SDL_Init failed: error %d", err);
-		lib::logger::get_logger()->error("Cannot initialize SDL audio library");
+		lib::logger::get_logger()->error(gettext("Cannot initialize SDL audio library"));
 		m_static_lock.leave();
 		return err;
 	}
@@ -124,7 +124,7 @@ gui::sdl::sdl_active_audio_renderer::init()
 	err = SDL_OpenAudio(&desired, &obtained);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %d", err);
-		lib::logger::get_logger()->error("Cannot open SDL audio output stream");
+		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream"));
 		m_static_lock.leave();
     	return err;
 	}
@@ -133,7 +133,7 @@ gui::sdl::sdl_active_audio_renderer::init()
 	if (obtained.format != m_sdl_format) {
 		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio could not support format 0x%x, returned 0x%x",
 			m_sdl_format, obtained.format);
-		lib::logger::get_logger()->error("Cannot open SDL audio output stream with required characteristics");
+		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream with required characteristics"));
 		m_static_lock.leave();
 		return -1;
 	}
@@ -223,9 +223,9 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	net::url url = node->get_url("src");
 	m_audio_src = df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
-		lib::logger::get_logger()->error("%s: cannot open audio file", repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
-		lib::logger::get_logger()->error("%s: audio format not supported", repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), repr(url).c_str());
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
@@ -250,7 +250,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		return;
 		
 	if (!m_audio_src)
-		lib::logger::get_logger()->error("%s: cannot open", repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: cannot open"), repr(url).c_str());
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {

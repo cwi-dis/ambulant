@@ -318,7 +318,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 		// create directory "$HOME/.ambulant" unless it exists
 		if (stat(m_ambulant_home.c_str(), &statbuf) < 0
 		    && mkdir(m_ambulant_home.c_str(), 0755) < 0) {
-			logger::get_logger()->error
+		  	logger::get_logger()->error
 				("mkdir(\"%s\") failed: %s",
 				 m_ambulant_home.c_str(),
 				 strerror(errno));
@@ -327,7 +327,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 		preferences_filep = fopen(m_preferences_filename.c_str(),
 					  mode.c_str());
 		if (preferences_filep == NULL) {
-			logger::get_logger()->error
+			AM_DBG logger::get_logger()->debug
 				("fopen(\"%s\",\"%s\") failed: %s",
 				 m_preferences_filename.c_str(),
 				 mode.c_str(),

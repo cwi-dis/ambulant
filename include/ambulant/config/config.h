@@ -60,6 +60,9 @@
 // get config suffix code:
 #include "ambulant/config/suffix.h"
 
+// Also here, include gettext.h (for optional internationalization)
+#include "ambulant/config/gettext.h"
+
 #endif  // AMBULANT_CONFIG_H
 
 

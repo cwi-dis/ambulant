@@ -88,12 +88,12 @@ cocoa_video_renderer::cocoa_video_renderer(
 	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str()]];
 //	NSURL *nsurl = [NSURL fileURLWithPath: [NSString stringWithCString: m_url.get_url().c_str()]];
 	if (!nsurl) {
-		lib::logger::get_logger()->error("%s: cannot convert to URL", m_url.get_url().c_str());
+		lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 		return;
 	}
 	m_movie = [[NSMovie alloc] initWithURL: nsurl byReference: YES];
 	if (!m_movie) {
-		lib::logger::get_logger()->error("%s: cannot open movie", [[nsurl absoluteString] cString]);
+		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), [[nsurl absoluteString] cString]);
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);

@@ -71,7 +71,7 @@ transition_info::from_node(const node *n)
 #if 1
 	const char *ctype = n->get_attribute("type");
 	if (!ctype) {
-		lib::logger::get_logger()->error("transition: no `type' attribute");
+		lib::logger::get_logger()->error(gettext("transition: no `type' attribute"));
 		delete rv;
 		return NULL;
 	}
@@ -114,7 +114,7 @@ transition_info::from_node(const node *n)
 	else if (type == "slideWipe") rv->m_type = slideWipe;
 	else if (type == "fade") rv->m_type = fade;
 	else {
-		lib::logger::get_logger()->error("transition: unknown type=\"%s\"", ctype);
+		lib::logger::get_logger()->error(gettext("transition: unknown type=\"%s\""), ctype);
 		delete rv;
 		return NULL;
 	}

@@ -151,7 +151,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 
 	m_doc = create_document(filename);
 	if (!m_doc) {
-		lib::logger::get_logger()->error("%s: Cannot build DOM tree", filename);
+		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), filename);
 		return;
 	}
 	if (use_mms)
@@ -182,7 +182,7 @@ mainloop::create_document(const char *filename)
 	}
 	int size = ambulant::net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
-		ambulant::lib::logger::get_logger()->error("%s: Cannot open", filename);
+		ambulant::lib::logger::get_logger()->error(gettext("%s: Cannot open"), filename);
 		return NULL;
 	}
 	std::string docdata(data, size);
@@ -215,7 +215,7 @@ void
 mainloop::play()
 {
 	if (!m_player) {
-		ambulant::lib::logger::get_logger()->error("Cannot play document: no player");
+		ambulant::lib::logger::get_logger()->error(gettext("Cannot play document: no player"));
 		return;
 	}
 	m_running = true;

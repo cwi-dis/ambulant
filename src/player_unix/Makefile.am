@@ -46,6 +46,12 @@ extra_ffmpeg_DEFINES=
 endif
 
 
+#if USE_NLS
+extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
+#else
+#extra_nls_DEFINES=
+#endif
+
 if WITH_QTOPIA
 qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
 else
@@ -70,6 +76,7 @@ AM_LDFLAGS=$(extra_arts_ldflags)				\
 AM_CPPFLAGS = $(extra_arts_DEFINES)				\
 	      $(extra_sdl_DEFINES)				\
 	      $(extra_ffmpeg_DEFINES)				\
+	      $(extra_nls_DEFINES)				\
 	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\

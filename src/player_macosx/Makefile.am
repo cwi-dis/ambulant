@@ -2,7 +2,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	mypreferences.mm mypreferences.h \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
-	English.lproj \
+	English.lproj Dutch.lproj Japanese.lproj \
 	Info.plist version.plist \
 	cocoambulant.pbproj fullcocoambulant.pbproj \
 	cocoambulant.icns \
@@ -64,6 +64,12 @@ extra_xerces_DEFINES=
 extra_xerces_LDADD=
 endif
 
+#if USE_NLS
+extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
+#else
+#extra_nls_DEFINES=
+#endif
+
 # Building a MacOSX .app bundle is a bit tricky.
 noinst_PROGRAMS = cocoambulant_executable
 cocoambulant_executable_SOURCES= \
@@ -81,17 +87,41 @@ cocoambulant_bundle: cocoambulant_executable
 	mkdir -p $(APPNAME).app/Contents/Resources
 	echo -n "APPLAmbl" > $(APPNAME).app/Contents/PkgInfo
 	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
-	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
 	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(APPNAME).app/Contents/Resources
+
+    # Install localizations
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/English.lproj
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
+	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/Log.nib
-	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
+
+	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/Dutch.lproj
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/Dutch.lproj
+	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
+#	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
+#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
+#	mkdir -p $(APPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
+#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
+
+	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/Japanese.lproj
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/Japanese.lproj
+	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
+#	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
+#	mkdir -p $(APPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
+#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Log.nib/*.nib $(APPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
+
+#	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
 	mkdir -p $(APPNAME).app/Contents/Resources/data
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(APPNAME).app/Contents/Resources/data
@@ -102,6 +132,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_xerces_LDADD) \
+	$(LIBINTL) \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
     -lstdc++
 AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime
@@ -110,7 +141,8 @@ INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \
     $(extra_xerces_DEFINES) \
 	$(extra_sdl_DEFINES) \
-	$(extra_ffmpeg_DEFINES)
+	$(extra_ffmpeg_DEFINES) \
+	$(extra_nls_DEFINES)
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`

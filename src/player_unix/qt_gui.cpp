@@ -60,6 +60,11 @@
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
+#if 1
+#include "ambulant/config/config.h"
+#include "ambulant/lib/logger.h"
+#include "ambulant/version.h"
+#endif
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -392,6 +397,15 @@ qt_gui::unsetCursor() { //XXXX Hack
 
 int
 main (int argc, char*argv[]) {
+#if 1
+    bindtextdomain (PACKAGE, LOCALEDIR);
+    textdomain (PACKAGE);
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
+#if USE_NLS
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+#endif
+#endif
 	unix_preferences unix_prefs;
 	unix_prefs.load_preferences();
 

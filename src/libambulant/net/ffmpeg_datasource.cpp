@@ -175,7 +175,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: matches!");
 		return rds;
 	}
-	lib::logger::get_logger()->error("%s: unable to create audio resampler");
+	lib::logger::get_logger()->error(gettext("%s: unable to create audio resampler"));
 	int rem = rds->release();
 	assert(rem == 0);
 #endif // WITH_FFMPEG_AVFORMAT
@@ -360,7 +360,7 @@ ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(
 	
 	
 	if (stream_index >= context->nb_streams) {
-		lib::logger::get_logger()->error("%s: no more audio streams", url.get_url().c_str());
+		lib::logger::get_logger()->error(gettext("%s: no more audio streams"), url.get_url().c_str());
 		return NULL;
 	} 
 
@@ -369,7 +369,7 @@ ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(
 	codec = avcodec_find_decoder(codeccontext->codec_id);
 	
 	if( !codec) {
-		lib::logger::get_logger()->error("%s: Audio codec %d(%s) not supported", repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
+		lib::logger::get_logger()->error(gettext("%s: Audio codec %d(%s) not supported"), repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
 		return NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(): codec found!");
@@ -377,7 +377,7 @@ ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(
 
 	
 	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
-		lib::logger::get_logger()->error("%s: Cannot open audio codec %d(%s)", repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
+		lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
 		return NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource::new_ffmpeg_audio_datasource(): succesfully opened codec");
@@ -571,7 +571,7 @@ ffmpeg_video_datasource::new_ffmpeg_video_datasource(const net::url& url, AVForm
 	AM_DBG lib::logger::get_logger()->debug("new_ffmpeg_video_datasource()");
 	
 	if (!thread) {
-		lib::logger::get_logger()->error("Cannot start video reader thread");
+		lib::logger::get_logger()->error(gettext("Cannot start video reader thread"));
 		return NULL;
 	}
 
@@ -583,7 +583,7 @@ ffmpeg_video_datasource::new_ffmpeg_video_datasource(const net::url& url, AVForm
 			break;
 	}
 	if (stream_index >= context->nb_streams) {
-		lib::logger::get_logger()->error("%s: no video streams in file", url.get_url().c_str());
+		lib::logger::get_logger()->error(gettext("%s: no video streams in file"), url.get_url().c_str());
 		return NULL;
 	}
 	
@@ -591,12 +591,12 @@ ffmpeg_video_datasource::new_ffmpeg_video_datasource(const net::url& url, AVForm
 	codec = avcodec_find_decoder(codeccontext->codec_id);
 	
 	if( !codec) {
-		lib::logger::get_logger()->error("%s: Video codec %d(%s) not supported", repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
+		lib::logger::get_logger()->error(gettext("%s: Video codec %d(%s) not supported"), repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
 		return NULL;
 	}
 	
 	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
-		lib::logger::get_logger()->error("%s: Video codec %d(%s): cannot open", repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
+		lib::logger::get_logger()->error(gettext("%s: Video codec %d(%s): cannot open"), repr(url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
 		return NULL;
 	}
 
@@ -695,7 +695,7 @@ ffmpeg_video_datasource::get_audio_datasource()
 	}
 
 	if((!codec) || (avcodec_open(codeccontext,codec) < 0) ) {
-		lib::logger::get_logger()->error("%s: Audio codec %d(%s): cannot open", repr(m_url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
+		lib::logger::get_logger()->error(gettext("%s: Audio codec %d(%s): cannot open"), repr(m_url).c_str(), codeccontext->codec_id, codeccontext->codec_name);
 		return NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource::get_audio_stream_nr(): succesfully opened codec");
@@ -904,7 +904,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 					}
 				} else {
-						lib::logger::get_logger()->error("%s: error decoding video frame", m_url.get_url().c_str());
+						lib::logger::get_logger()->error(gettext("%s: error decoding video frame"), m_url.get_url().c_str());
 					}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource.data_avail:done decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
@@ -1008,7 +1008,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, dataso
 	const char *ext = getext(url);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: Selecting \"%s\" decoder", ext);
 	if (!select_decoder(ext))
-		lib::logger::get_logger()->error("%s: audio decoder \"%s\" not supported", url.get_url().c_str(), ext);
+		lib::logger::get_logger()->error(gettext("%s: audio decoder \"%s\" not supported"), url.get_url().c_str(), ext);
 }
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src)
@@ -1023,7 +1023,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	audio_format fmt = src->get_audio_format();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!select_decoder(fmt))
-		lib::logger::get_logger()->error("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
+		lib::logger::get_logger()->error(gettext("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
 }
 
   

@@ -1,0 +1,276 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Stiching CWI
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
+"POT-Creation-Date: 2004-09-17 14:33+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:109
+msgid "Cannot initialize SDL audio library"
+msgstr ""
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:127
+msgid "Cannot open SDL audio output stream"
+msgstr ""
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:136
+msgid "Cannot open SDL audio output stream with required characteristics"
+msgstr ""
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:226
+#, c-format
+msgid "%s: cannot open audio file"
+msgstr ""
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:228
+#, c-format
+msgid "%s: audio format not supported"
+msgstr ""
+
+#: src/libambulant/gui/SDL/sdl_audio.cpp:253
+#, c-format
+msgid "%s: cannot open"
+msgstr ""
+
+#: src/libambulant/lib/document.cpp:106
+#, c-format
+msgid "%s: Could not build DOM tree"
+msgstr ""
+
+#: src/libambulant/lib/document.cpp:136
+msgid "Could not build DOM tree for the provided string"
+msgstr ""
+
+#: src/libambulant/lib/transition_info.cpp:74
+msgid "transition: no `type' attribute"
+msgstr ""
+
+#: src/libambulant/lib/transition_info.cpp:117
+#, c-format
+msgid "transition: unknown type=\"%s\""
+msgstr ""
+
+#: src/libambulant/lib/tree_builder.cpp:122
+#, c-format
+msgid "Failed to read file: %s"
+msgstr ""
+
+#: src/libambulant/lib/tree_builder.cpp:138
+#, c-format
+msgid "Failed to read URL: %s"
+msgstr ""
+
+#: src/libambulant/lib/tree_builder.cpp:143
+#, c-format
+msgid "Failed to parse document: %s"
+msgstr ""
+
+#: src/libambulant/lib/tree_builder.cpp:186
+msgid "Could not create any XML parser (configuration error?)"
+msgstr ""
+
+#: src/libambulant/lib/tree_builder.cpp:243
+#, c-format
+msgid "%s: Error parsing document"
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:124
+#: src/libambulant/mms/timeline_builder.cpp:169
+#, c-format
+msgid "MMS player: unknown tag \"%s\""
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:229
+#, c-format
+msgid "Internal error: timeline_builder.build_node: unknown nodetype %d"
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:267
+msgid "MMS Player: empty seq not allowed in MMS"
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:303
+msgid "MMS Player: empty par not allowed in MMS"
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:310
+msgid "MMS Player: par must have explicit delay in MMS"
+msgstr ""
+
+#: src/libambulant/mms/timeline_builder.cpp:315
+msgid "MMS Player: dur attribute must be of form \"1000ms\""
+msgstr ""
+
+#: src/libambulant/net/datasource.cpp:384
+msgid "datasource_reader: out of memory"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:178
+#, c-format
+msgid "%s: unable to create audio resampler"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:363
+#, c-format
+msgid "%s: no more audio streams"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:372
+#, c-format
+msgid "%s: Audio codec %d(%s) not supported"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:380
+#, c-format
+msgid "%s: Cannot open audio codec %d(%s)"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:574
+msgid "Cannot start video reader thread"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:586
+#, c-format
+msgid "%s: no video streams in file"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:594
+#, c-format
+msgid "%s: Video codec %d(%s) not supported"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:599
+#, c-format
+msgid "%s: Video codec %d(%s): cannot open"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:698
+#, c-format
+msgid "%s: Audio codec %d(%s): cannot open"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:907
+#, c-format
+msgid "%s: error decoding video frame"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:1011
+#, c-format
+msgid "%s: audio decoder \"%s\" not supported"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_datasource.cpp:1026
+#, c-format
+msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_rawdatasource.cpp:181
+#, c-format
+msgid "%s: Cannot start reader thread"
+msgstr ""
+
+#: src/libambulant/net/posix_datasource.cpp:99
+#, c-format
+msgid "%s: Cannot open: %s"
+msgstr ""
+
+#: src/libambulant/net/url.cpp:216
+#, c-format
+msgid "%s: Cannot parse URL"
+msgstr ""
+
+#: src/libambulant/smil2/smil_player.cpp:550
+#, c-format
+msgid "Link destination not found: %s"
+msgstr ""
+
+#: src/libambulant/smil2/smil_player.cpp:556
+#, c-format
+msgid "This implementation cannot open <%s> in new window"
+msgstr ""
+
+#: src/libambulant/smil2/test_attrs.cpp:294
+#, c-format
+msgid "While loading settings: %s: Could not create DOM tree"
+msgstr ""
+
+#: src/player_macosx/mainloop.cpp:150
+#, c-format
+msgid "%s: Cannot build DOM tree"
+msgstr ""
+
+#: src/player_macosx/mainloop.cpp:181
+#, c-format
+msgid "%s: Cannot open"
+msgstr ""
+
+#: src/player_macosx/mainloop.cpp:214
+msgid "Cannot play document: no player"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:403 src/player_macosx/MyAppDelegate.mm:138
+#, c-format
+msgid "Ambulant Player: compile time version %s, runtime version %s"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:404
+#, c-format
+msgid "Ambulant Player: built on %s for Unix/Qt"
+msgstr ""
+
+#: src/player_unix/qt_gui.cpp:406
+msgid "Ambulant Player: localization enabled (english)"
+msgstr ""
+
+#: src/libambulant/gui/cocoa/cocoa_gui.mm:209
+msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
+msgstr ""
+
+#: src/libambulant/gui/cocoa/cocoa_video.mm:91
+#, c-format
+msgid "%s: cannot convert to URL"
+msgstr ""
+
+#: src/libambulant/gui/cocoa/cocoa_video.mm:96
+#, c-format
+msgid "%s: cannot open movie"
+msgstr ""
+
+#: src/player_macosx/MyAppDelegate.mm:139
+#, c-format
+msgid "Ambulant Player: built on %s for Macintosh/Cocoa"
+msgstr ""
+
+#: src/player_macosx/MyAppDelegate.mm:141
+#, c-format
+msgid "Ambulant Player: localization enabled (english; user requested %s)"
+msgstr ""
+
+#: src/player_macosx/MyAppDelegate.mm:167
+#: src/player_macosx/MyAppDelegate.mm:208
+msgid "No Welcome.smil in application bundle"
+msgstr ""
+
+#: src/player_macosx/MyAppDelegate.mm:205
+msgid "Welcome.smil could not be opened"
+msgstr ""
+
+#: src/player_macosx/MyAppDelegate.mm:220
+msgid "Cannot open http://www.ambulantplayer.org"
+msgstr ""
+
+#: src/player_macosx/MyDocument.mm:74
+#, c-format
+msgid "Cannot open: %s"
+msgstr ""

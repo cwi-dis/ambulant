@@ -1,5 +1,5 @@
-SUBDIRS = src include third_party_packages
-EXTRA_DIST = Documentation Extras 
+SUBDIRS = m4 po src include third_party_packages
+EXTRA_DIST = config.rpath  Documentation Extras 
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:
@@ -19,3 +19,5 @@ macosbininstaller:
 	rm -rf `find dist -name CVS`
 	hdiutil create -srcfolder dist/$(MACOS_INSTALLDIR) dist/$(MACOS_DMGNAME).dmg
 	
+
+ACLOCAL_AMFLAGS = -I m4
