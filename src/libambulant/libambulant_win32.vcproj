@@ -214,6 +214,12 @@
 				Name="net"
 				Filter="">
 				<File
+					RelativePath=".\net\databuffer.cpp">
+				</File>
+				<File
+					RelativePath=".\net\datasource.cpp">
+				</File>
+				<File
 					RelativePath=".\net\url.cpp">
 				</File>
 			</Filter>
@@ -224,13 +230,13 @@
 					RelativePath=".\common\region.cpp">
 				</File>
 				<File
-					RelativePath=".\common\region_node.cpp">
-				</File>
-				<File
 					RelativePath=".\common\renderer.cpp">
 				</File>
 				<File
 					RelativePath=".\common\schema.cpp">
+				</File>
+				<File
+					RelativePath=".\common\smil_alignment.cpp">
 				</File>
 				<File
 					RelativePath=".\common\smil_handler.cpp">
@@ -239,6 +245,9 @@
 			<Filter
 				Name="smil2"
 				Filter="">
+				<File
+					RelativePath=".\smil2\region_node.cpp">
+				</File>
 				<File
 					RelativePath=".\smil2\smil_layout.cpp">
 				</File>
@@ -265,9 +274,6 @@
 				</File>
 				<File
 					RelativePath=".\smil2\timegraph.cpp">
-				</File>
-				<File
-					RelativePath=".\smil2\trace_player.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -406,6 +412,9 @@
 						RelativePath="..\..\include\ambulant\lib\logger.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\memfile.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\mtsync.h">
 					</File>
 					<File
@@ -425,9 +434,6 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\parselets.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\playable.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\refcount.h">
@@ -486,6 +492,9 @@
 						RelativePath="..\..\include\ambulant\net\datasource.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\net\posix_datasource.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\net\socket.h">
 					</File>
 					<File
@@ -520,13 +529,13 @@
 						RelativePath="..\..\include\ambulant\common\region_info.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\region_node.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\common\renderer.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\schema.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\smil_alignment.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
