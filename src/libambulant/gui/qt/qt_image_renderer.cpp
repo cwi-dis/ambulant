@@ -86,7 +86,7 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 			(const uchar*)m_data, m_data_size);
 	}
 	// XXXX WRONG! This is the info for the region, not for the node!
-	const common::abstract_smil_region_info *info = m_dest->get_info();
+	const common::region_info *info = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_image_renderer.redraw: info=0x%x", info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;

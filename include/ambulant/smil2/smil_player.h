@@ -62,31 +62,32 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
-#include "ambulant/lib/document.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/renderer.h"
 #include <map>
 
 namespace ambulant {
+namespace lib {
+class document;
+class node;
+class timer;
+} // namespace lib
+
+namespace common {
+class abstract_player;
+class window_factory;
+class playable_factory;
+} // namespace common
 
 namespace smil2 {
-
-class lib::document;
-class lib::node;
-class lib::logger;
-class common::window_factory;
-class common::renderer_factory;
-class common::active_basic_renderer;
-class common::layout_manager;
 
 class smil_player : public common::abstract_player, public time_node_context, public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf);
+	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf);
 	~smil_player();
 		
 	lib::timer* get_timer() { return m_timer;}
@@ -150,18 +151,18 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	virtual void on_char(int ch);
 	
   private:
-	common::active_basic_renderer *create_renderer(const lib::node *n); 
-	void destroy_renderer(common::active_basic_renderer *r, const lib::node *n); 
-	common::active_basic_renderer *get_renderer(const lib::node *n);
+	common::playable *create_playable(const lib::node *n); 
+	void destroy_playable(common::playable *r, const lib::node *n); 
+	common::playable *get_playable(const lib::node *n);
 	lib::document *m_doc;
 	common::window_factory *m_wf;
-	common::renderer_factory *m_rf;
+	common::playable_factory *m_rf;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
 	common::layout_manager *m_layout_manager;
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;	
-	std::map<const lib::node*, common::active_basic_renderer *> m_renderers;
+	std::map<const lib::node*, common::playable *> m_playables;
 	lib::logger *m_logger;
 };
 

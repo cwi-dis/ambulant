@@ -97,7 +97,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	// XXXX WRONG! This is the info for the region, not for the node!
-	const abstract_smil_region_info *info = m_dest->get_info();
+	const region_info *info = m_dest->get_info();
 	// First find our whole area
 	screen_rect<int> dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());

@@ -105,14 +105,12 @@ create_img_decoder(net::active_datasource *src, HDC hdc) {
 //
 
 gui::dx::dx_img_renderer::dx_img_renderer(
-	common::active_playable_events *context,
-	common::active_playable_events::cookie_type cookie,
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	net::passive_datasource *src,
-	common::abstract_rendering_surface *const dest,
 	common::abstract_window *window)
-:   common::active_renderer(context, cookie, node, evp, src, dest),
+:   common::active_renderer(context, cookie, node, evp),
 	m_window(window), m_region(0) { 
 }
 
@@ -126,7 +124,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	
 	if(!m_node || !m_src) abort();
 	
-	const common::abstract_smil_region_info *ri = m_dest->get_info();
+	const common::region_info *ri = m_dest->get_info();
 	
 	// Create a dx-region
 	viewport *v = get_viewport();

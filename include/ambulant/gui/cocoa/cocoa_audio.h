@@ -66,29 +66,20 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_active_audio_renderer : 
-	public active_basic_renderer, 
-	// public virtual nonvisual_renderer_mixin,
-	public timer_events {
+class cocoa_audio_playable : 
+	public active_playable {
   public:
-	cocoa_active_audio_renderer(
+	cocoa_audio_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *const evp,
-		net::passive_datasource *src);
-	~cocoa_active_audio_renderer();
+		const lib::node *node);
+	~cocoa_audio_playable();
 
 	void start(double where);
 	void stop();
 	void pause();
 	void resume();
-	void speed_changed();
-#if 1
-	void wantclicks(bool want) {};
-	void user_event(const point &where) {};
-	void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
-#endif
+//	void speed_changed();
   private:
 	std::string m_url;
   	NSSound *m_sound;

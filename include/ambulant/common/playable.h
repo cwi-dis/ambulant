@@ -58,6 +58,11 @@
 
 namespace ambulant {
 
+namespace lib {
+class node;
+class event_processor;
+} // namespace lib
+
 namespace common {
 
 class renderer;
@@ -158,7 +163,7 @@ class playable : virtual public lib::ref_counted {
 	// The cookie was provided to this playable when it was constructed.
 	virtual const cookie_type& get_cookie() const = 0;
 	
-	virtual renderer *get_renderer() const { return (renderer *)NULL; }
+	virtual renderer *get_renderer() { return (renderer *)NULL; }
 };
 
 
@@ -183,6 +188,17 @@ class playable_notification {
 	virtual void started(cookie_type n, double t) = 0;
 	virtual void stopped(cookie_type n, double t) = 0;
 	virtual void clicked(cookie_type n, double t) = 0;
+};
+
+// Factory class for renderers.
+class playable_factory {
+  public:
+	virtual ~playable_factory() {};
+	virtual playable *new_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp) = 0;
 };
 
 } // namespace common

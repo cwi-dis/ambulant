@@ -89,9 +89,9 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 		return;
 	}
 	
-	// Create GUI window_factory and renderer_factory
+	// Create GUI window_factory and playable_factory
 	m_wf = new gui::dx::dx_window_factory(this);
-	m_rf = new gui::dx::dx_renderer_factory(this);
+	m_rf = new gui::dx::dx_playable_factory(this);
 	
 	// Create a player instance
 	m_logger->trace("Creating player instance for: %s", m_url.c_str());	
@@ -233,9 +233,9 @@ bool gui::dx::dx_mms_player_impl::start() {
 		return false;
 	}
 	
-	// Create GUI window_factory and renderer_factory
+	// Create GUI window_factory and playable_factory
 	m_wf = new gui::dx::dx_window_factory(this);
-	m_rf = new gui::dx::dx_renderer_factory(this);
+	m_rf = new gui::dx::dx_playable_factory(this);
 	
 	m_mms_player = new mms::mms_player(doc, m_wf, m_rf);
 	m_mms_player->start();

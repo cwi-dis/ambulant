@@ -71,8 +71,8 @@ qt_mainloop::run(void* view) {
 
 	document *doc = document::create_from_file(qt_view->filename());
 
-	common::global_renderer_factory *rf =
-		new common::global_renderer_factory(); 
+	common::global_playable_factory *rf =
+		new common::global_playable_factory(); 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->trace("add factory for SDL");
 	rf->add_factory( new sdl::sdl_renderer_factory() );

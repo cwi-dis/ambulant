@@ -63,13 +63,13 @@
 using namespace ambulant;
 using namespace mms;
 
-mms_player::mms_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf)
+mms_player::mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
 :	m_doc(doc),
 	m_tree(doc->get_root()),
 	m_timer(new lib::timer(lib::realtime_timer_factory(), 0.0)),
 	m_event_processor(lib::event_processor_factory(m_timer)),
 	m_window_factory(wf),
-	m_renderer_factory(rf)
+	m_playable_factory(rf)
 {
 }
 
@@ -90,7 +90,7 @@ mms_player::start()
 		AM_DBG std::cout << "------------ mms_player: passive_timeline:" << std::endl;
 		AM_DBG ptl->dump(std::cout);
 #endif
-		active_timeline *atl = ptl->activate(m_event_processor, m_renderer_factory, layoutmgr);
+		active_timeline *atl = ptl->activate(m_event_processor, m_playable_factory, layoutmgr);
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: active_timeline:" << std::endl;
 		AM_DBG atl->dump(std::cout);

@@ -99,27 +99,23 @@ ambulant_qt_window::user_event(const lib::point &where) {
 	m_region->user_event(where);
 }
 
-common::active_renderer *
-qt_renderer_factory::new_renderer (
+common::playable *
+qt_renderer_factory::new_playable (
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src,
-	common::abstract_rendering_surface *const dest) {
+	lib::event_processor *const evp) {
 
 	lib::xml_string tag = node->get_qname().second;
-	common::active_renderer* rv;
+	common::playable* rv;
 	if (tag == "img") {
- 		rv = new qt_active_image_renderer(
-			context, cookie, node, evp, src, dest);
+ 		rv = new qt_active_image_renderer(context, cookie, node, evp);
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 			"returning qt_active_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
-		rv = new qt_active_text_renderer(
-			context, cookie, node, evp, src, dest);
+		rv = new qt_active_text_renderer(context, cookie, node, evp);
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 	 		"returning qt_active_text_renderer 0x%x",
@@ -133,7 +129,7 @@ qt_renderer_factory::new_renderer (
 common::abstract_window *
 qt_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
-			       common::abstract_rendering_source *region)
+			       common::renderer *region)
 {
 	lib::screen_rect<int> * r = new lib::screen_rect<int>(m_p, bounds);
 	AM_DBG lib::logger::get_logger()->trace(
@@ -166,7 +162,7 @@ qt_window_factory::new_window (const std::string &name,
 	return aqw;
 }
 
-common::abstract_mouse_region *
+common::gui_region *
 qt_window_factory::new_mouse_region() {
 	lib::logger::get_logger()->error(
 		"qt_window_factory::new_mouse_region"

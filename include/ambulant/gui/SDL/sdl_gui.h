@@ -49,34 +49,23 @@
 #define __SDL__
 
 #include <iostream>
-
-
-#include "ambulant/common/region.h"
-#include "ambulant/common/renderer.h"
-#include "ambulant/lib/logger.h"
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/net/datasource.h"
-#include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/asb.h"
-
+#include "ambulant/common/playable.h"
 
 namespace ambulant {
 namespace gui {
 namespace sdl {
 
-class sdl_renderer_factory : public common::renderer_factory {
+class sdl_renderer_factory : public common::playable_factory {
   public:
 
 	sdl_renderer_factory();
 	~sdl_renderer_factory();
 		
-	common::active_renderer *new_renderer(
+	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest);
+		lib::event_processor *evp);
 	
 };
 

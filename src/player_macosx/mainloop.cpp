@@ -90,7 +90,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf)
 {
 	using namespace ambulant;
 	
-	m_rf = new common::global_renderer_factory();
+	m_rf = new common::global_playable_factory();
 	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add factory for SDL");

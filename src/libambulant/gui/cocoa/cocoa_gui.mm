@@ -96,7 +96,7 @@ cocoa_window::need_redraw(const screen_rect<int> &r)
 
 #if 0
 void
-cocoa_window::need_events(lib::abstract_mouse_region *rgn)
+cocoa_window::need_events(lib::gui_region *rgn)
 {
 	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_events(0x%x)", (void *)this);
 	if (!m_view) {
@@ -133,30 +133,28 @@ cocoa_window::mouse_region_changed()
 	[my_window invalidateCursorRectsForView: my_view];
 }
 
-active_basic_renderer *
-cocoa_renderer_factory::new_renderer(
+playable *
+cocoa_renderer_factory::new_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	event_processor *const evp,
-	net::passive_datasource *src,
-	abstract_rendering_surface *const dest)
+	event_processor *evp)
 {
-	active_basic_renderer *rv;
+	playable *rv;
 	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
-		rv = new cocoa_active_image_renderer(context, cookie, node, evp, src, dest);
+		rv = new cocoa_active_image_renderer(context, cookie, node, evp);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
-		rv = new cocoa_active_text_renderer(context, cookie, node, evp, src, dest);
+		rv = new cocoa_active_text_renderer(context, cookie, node, evp);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "brush") {
-		rv = new cocoa_active_fill_renderer(context, cookie, node, evp, src, dest);
+		rv = new cocoa_active_fill_renderer(context, cookie, node, evp);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_fill_renderer 0x%x", (void *)node, (void *)rv);
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
-		rv = new cocoa_active_audio_renderer(context, cookie, node, evp, src);
+		rv = new cocoa_active_audio_renderer(context, cookie, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else {
@@ -167,7 +165,7 @@ cocoa_renderer_factory::new_renderer(
 }
 
 abstract_window *
-cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
+cocoa_window_factory::new_window(const std::string &name, size bounds, renderer *region)
 {
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it
@@ -188,7 +186,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_
 	return (abstract_window *)window;
 }
 
-abstract_mouse_region *
+gui_region *
 cocoa_window_factory::new_mouse_region()
 {
 	return new cocoa_mouse_region();
@@ -284,7 +282,7 @@ cocoa_window_factory::new_background_renderer()
 {
 	bool want_events = false;
 	if ( ambulant_window ) {
-		const ambulant::common::abstract_mouse_region &mrgn = ambulant_window->get_mouse_region();
+		const ambulant::common::gui_region &mrgn = ambulant_window->get_mouse_region();
 		want_events = !mrgn.is_empty();
 	}
 	AM_DBG NSLog(@"resetCursorRects wantevents=%d", (int)want_events);

@@ -96,7 +96,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	// XXXX WRONG! This is the info for the region, not for the node!
-	const abstract_smil_region_info *info = m_dest->get_info();
+	const region_info *info = m_dest->get_info();
 	if (info && !info->get_transparent()) {
 		// First find our whole area (which we have to clear to background color)
 		screen_rect<int> dstrect_whole = r;

@@ -75,7 +75,7 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region : public abstract_rendering_surface, public abstract_rendering_source {
+class passive_region : public surface, public renderer {
   public:
 	friend class active_region;
 	
@@ -110,20 +110,20 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	virtual void mouse_region_changed();
         
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
-	virtual passive_region *subregion(const abstract_smil_region_info *info);
+	virtual passive_region *subregion(const region_info *info);
 	active_region *activate(const node *node);
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
 	virtual const point &get_global_topleft() const;
 	const passive_region* get_parent() const { return m_parent; }
-	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
-	const abstract_smil_region_info *get_info() const { return m_info; }	
+	const gui_region& get_mouse_region() const { return *m_mouse_region; }
+	const region_info *get_info() const { return m_info; }	
 		
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		const abstract_smil_region_info *info)
+		const region_info *info)
 	:	m_name(name),
 		m_name_str(name.c_str()),
 		m_bounds_inited(true),
@@ -143,14 +143,17 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 			}
         }
 	virtual void need_redraw(const screen_rect<int> &r);
-	virtual void need_events(abstract_mouse_region *rgn);
+	virtual void need_events(gui_region *rgn);
 	virtual void clear_cache();
   private:
-	// This is part of the abstract_rendering_surface interface that we don't export
-	void show(abstract_rendering_source *renderer) {abort();};
+	// This is part of the surface interface that we don't export
+	void show(renderer *rend) {abort();};
 	void renderer_done() {abort();};
 	void need_redraw() {abort();};
 	void need_events(bool want) {abort();};
+	// And some renderer interface we don't support:
+	void set_surface(surface *dest) {abort(); }
+	surface *get_surface() {abort(); }
 
 	void need_bounds();
 	void draw_background(const screen_rect<int> &r, abstract_window *window);
@@ -165,15 +168,15 @@ class passive_region : public abstract_rendering_surface, public abstract_render
   	passive_region *m_parent;			// parent region
   	active_region *m_cur_active_region; // active region currently responsible for redraws
   	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
-	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
-	const abstract_smil_region_info *m_info;	// Information such as z-order, etc.
+	gui_region *m_mouse_region;   // The area in which we want mouse clicks
+	const region_info *m_info;	// Information such as z-order, etc.
 	abstract_bg_rendering_source *m_bg_renderer;  // Background renderer
 };
 
 class passive_root_layout : public passive_region {
   public:
 	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
-	passive_root_layout(const abstract_smil_region_info *info, size bounds, window_factory *wf);
+	passive_root_layout(const region_info *info, size bounds, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
 	void mouse_region_changed();
@@ -189,7 +192,7 @@ class passive_root_layout : public passive_region {
 ;
 #endif
 
-class active_region : public abstract_rendering_surface, public abstract_rendering_source {
+class active_region : public surface, public renderer {
   public:
 	active_region(passive_region *const source,
 		const node *node)
@@ -205,7 +208,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
         }
 	virtual ~active_region();
 	
-	virtual void show(abstract_rendering_source *renderer);
+	virtual void show(renderer *rend);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
 	virtual void user_event(const point &where);
 	virtual void need_redraw(const screen_rect<int> &r);
@@ -217,18 +220,22 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
 	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
-	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
-	const abstract_smil_region_info *get_info() const { return m_source->m_info; }	
+	const gui_region& get_mouse_region() const { return *m_mouse_region; }
+	const region_info *get_info() const { return m_source->m_info; }	
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const
 	{
 		return m_source->get_fit_rect(src_size, out_src_rect);
 	}
 	
+	// And some renderer interface we don't support:
+	void set_surface(surface *dest) {abort(); }
+	surface *get_surface() {abort(); }
+
   protected:
 	passive_region *const m_source;
 	const node *m_node;
-	abstract_rendering_source *m_renderer;
-	abstract_mouse_region *m_mouse_region;   // The area in which we want mouse clicks
+	renderer *m_renderer;
+	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 };
 
 } // namespace common

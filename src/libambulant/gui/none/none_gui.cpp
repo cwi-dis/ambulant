@@ -60,49 +60,40 @@ using namespace lib;
 using namespace common;
 
 void
-gui::none::none_active_renderer::start(double where)
+gui::none::none_playable::start(double where)
 {
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
 	lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
-	os << "none_active_renderer.start(" << (void *)this;
+	os << "none_playable.start(" << (void *)this;
 	os << ", node=" << *m_node;
 	os << ")" << lib::endl;
 #endif
-	active_renderer::start(where);
+	stopped_callback();
 }
 
 void
-gui::none::none_active_renderer::redraw(const screen_rect<int> &r, abstract_window *window)
+gui::none::none_playable::stop()
 {
-	lib::logger::get_logger()->trace("none_active_renderer.redraw(0x%x)", (void *)this);
-}
-
-void
-gui::none::none_active_renderer::stop()
-{
-	lib::logger::get_logger()->trace("none_active_renderer.stop(0x%x)", (void *)this);
-	active_renderer::stop();
+	lib::logger::get_logger()->trace("none_playable.stop(0x%x)", (void *)this);
 }
 
 void
 gui::none::none_background_renderer::drawbackground(
-	const abstract_smil_region_info *src, 
+	const region_info *src, 
 	const screen_rect<int> &dirty, 
-	abstract_rendering_surface *dst, abstract_window *window)
+	surface *dst, abstract_window *window)
 {
 	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)src, (void*)dst);
 }
 
-active_basic_renderer *
-gui::none::none_renderer_factory::new_renderer(
+playable *
+gui::none::none_playable_factory::new_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src,
-	abstract_rendering_surface *const dest)
+	lib::event_processor *evp)
 {
-	return new none_active_renderer(context, cookie, node, evp, src, dest);
+	return new none_playable(context, cookie, node);
 }
 
 abstract_bg_rendering_source *
@@ -112,7 +103,7 @@ gui::none::none_window_factory::new_background_renderer()
 }
 
 abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
+gui::none::none_window_factory::new_window(const std::string &name, size bounds, renderer *region)
 {
 	return new none_window(name, bounds, region);
 }

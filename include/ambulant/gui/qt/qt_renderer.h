@@ -80,7 +80,7 @@ class ambulant_qt_window : public common::abstract_window {
   public:
 	ambulant_qt_window(const std::string &name,
 			   lib::screen_rect<int>* bounds,
-			   common::abstract_rendering_source *region)
+			   common::renderer *region)
 :	common::abstract_window(region) ,
 	m_ambulant_widget(NULL) {
 		AM_DBG lib::logger::get_logger()->trace(
@@ -173,27 +173,25 @@ class qt_window_factory : public common::window_factory {
 		common::abstract_window* new_window(
 			const std::string &name,
 			lib::size bounds,
-			common::abstract_rendering_source *region);
-		common::abstract_mouse_region *new_mouse_region();
+			common::renderer *region);
+		common::gui_region *new_mouse_region();
 		common::abstract_bg_rendering_source *new_background_renderer();
   private:
 	QWidget* m_parent_widget;
 	lib::point m_p;
 };  // class qt_window_factory
 
-class qt_renderer_factory : public common::renderer_factory {
+class qt_renderer_factory : public common::playable_factory {
   public:
 	qt_renderer_factory() {
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer factory (0x%x)", (void*) this);
 		}
-	common::active_renderer *new_renderer(
+	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest);
+		lib::event_processor *const evp);
 
 };  // class qt_renderer_factory
 

@@ -65,11 +65,11 @@ namespace none {
 
 class none_window : public common::abstract_window {
   public:
-  	none_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region)
+  	none_window(const std::string &name, lib::size bounds, common::renderer *region)
   	:	common::abstract_window(region) {};
   		
 	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
-//	void need_events(lib::abstract_mouse_region *rgn) {};
+//	void need_events(lib::gui_region *rgn) {};
 	void mouse_region_changed() {};
 };
 
@@ -77,14 +77,14 @@ class none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region);
-	common::abstract_mouse_region *new_mouse_region() { return NULL; }
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::renderer *region);
+	common::gui_region *new_mouse_region() { return NULL; }
 	common::abstract_bg_rendering_source *new_background_renderer();
 };
 
-class none_active_renderer : public common::active_renderer {
+class none_playable : public common::active_playable {
   public:
-	none_active_renderer(
+	none_playable(
 		common::playable_notification *context,
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 		// Workaround for bug in emVC 4.0: it gets confused
@@ -94,38 +94,39 @@ class none_active_renderer : public common::active_renderer {
 #else
 		common::playable_notification::cookie_type cookie,
 #endif
-		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest)
-	:	common::active_renderer(context, cookie, node, evp, src, dest) {};
+		const lib::node *node)
+	:	common::active_playable(context, cookie),
+		m_node(node) {};
 	
 	void start(double where);
 	void redraw(const lib::screen_rect<int> &r, common::abstract_window *window);
 	void stop();
+	void pause() {};
+	void resume() {};
+	void wantclicks(bool want) {};
+  private:
+	const lib::node *m_node;
 };
 
 class none_background_renderer : public common::abstract_bg_rendering_source {
   public:
-	void drawbackground(const common::abstract_smil_region_info *src, 
+	void drawbackground(const common::region_info *src, 
 		const lib::screen_rect<int> &dirty, 
-		common::abstract_rendering_surface *dst, 
+		common::surface *dst, 
 		common::abstract_window *window);
 };
 
-class common::abstract_smil_region_info;
+class common::region_info;
 
-class none_renderer_factory : public common::renderer_factory {
+class none_playable_factory : public common::playable_factory {
   public:
-  	none_renderer_factory() {}
+  	none_playable_factory() {}
   	
-	common::active_basic_renderer *new_renderer(
+	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest);
+		lib::event_processor *evp);
 };
 
 } // namespace none

@@ -75,11 +75,11 @@ class smil_layout_manager : public common::layout_manager {
 	smil_layout_manager(common::window_factory *wf, lib::document *doc);
 	~smil_layout_manager();
 	
-	common::abstract_rendering_surface *get_rendering_surface(const lib::node *node);
+	common::surface *get_surface(const lib::node *node);
   private:
 	void fix_document_layout(lib::document *doc);
 	
-	common::abstract_rendering_surface *get_default_rendering_surface(const lib::node *n);
+	common::surface *get_default_rendering_surface(const lib::node *n);
 	void build_layout_tree(common::window_factory *wf, const lib::node *layout_root);
 
 	common::passive_root_layout *create_top_region(common::window_factory *wf, const common::region_node *rn);

@@ -64,7 +64,7 @@ void
 qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 				common::abstract_window *window) {
 	m_lock.enter();
-	const common::abstract_smil_region_info *info = m_dest->get_info();
+	const common::region_info *info = m_dest->get_info();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPainter paint;
@@ -100,9 +100,9 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 
 void
 qt_background_renderer::drawbackground(
-	const common::abstract_smil_region_info *src,
+	const common::region_info *src,
 	const lib::screen_rect<int> &dirty,
-	common::abstract_rendering_surface *dst,
+	common::surface *dst,
 	common::abstract_window *window) {
 	const lib::screen_rect<int> &r = dst->get_rect();
 	AM_DBG lib::logger::get_logger()->trace

@@ -342,35 +342,35 @@ smil_layout_manager::create_top_region(common::window_factory *wf, const common:
 	return rootrgn;
 }
 
-common::abstract_rendering_surface *
-smil_layout_manager::get_rendering_surface(const lib::node *n) {
+common::surface *
+smil_layout_manager::get_surface(const lib::node *n) {
 	// XXXX This code is blissfully unaware of subregion positioning right now.
 	const char *prname = n->get_attribute("region");
 	const char *nid = n->get_attribute("id");
 	if (prname == NULL) {
 		AM_DBG lib::logger::get_logger()->trace(
-			"smil_layout_manager::get_rendering_surface(): no region attribute on %s",
+			"smil_layout_manager::get_surface(): no region attribute on %s",
 			(nid?nid:""));
 		return get_default_rendering_surface(n);
 	}
 	std::string rname = prname;
 	std::map<std::string, common::passive_region*>::size_type namecount = m_name2region.count(rname);
 	if (namecount > 1)
-		lib::logger::get_logger()->warn("smil_layout_manager::get_rendering_surface(): Using first region %s only", prname);
+		lib::logger::get_logger()->warn("smil_layout_manager::get_surface(): Using first region %s only", prname);
 	if (namecount > 0) {
-		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_rendering_surface(): matched %s by regionName", prname);
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): matched %s by regionName", prname);
 		return (*m_name2region.find(rname)).second->activate(n);
 	}
 	std::multimap<std::string, common::passive_region*>::size_type idcount = m_id2region.count(rname);
 	if (idcount > 0) {
-		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_rendering_surface(): matched %s by id", prname);
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): matched %s by id", prname);
 		return m_id2region[rname]->activate(n);
 	}
-	AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_rendering_surface(): no match for %s", prname);
+	AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): no match for %s", prname);
 	return get_default_rendering_surface(n);
 }
 
-common::abstract_rendering_surface *
+common::surface *
 smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	const char *nid = n->get_attribute("id");
 	lib::logger::get_logger()->warn("Returning default rendering surface for node %s", (nid?nid:""));

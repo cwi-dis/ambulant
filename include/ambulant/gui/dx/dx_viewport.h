@@ -196,11 +196,11 @@ class region {
 	void set_bmp(HBITMAP hbmp, int width, int height, bool transp, lib::color_t tarnsp_color);
 	void set_video(video_player *player);
 	
-	void set_rendering_surface(const common::abstract_rendering_surface *rsurf) { m_rsurf = rsurf;}
-	void set_rendering_info(const common::abstract_smil_region_info *rinfo) { m_rinfo = rinfo;}
+	void set_rendering_surface(const common::surface *rsurf) { m_rsurf = rsurf;}
+	void set_rendering_info(const common::region_info *rinfo) { m_rinfo = rinfo;}
 	
-	const common::abstract_rendering_surface* get_rsurf() const { return m_rsurf;}
-	const common::abstract_smil_region_info* get_rinfo() const { return m_rinfo;}
+	const common::surface* get_rsurf() const { return m_rsurf;}
+	const common::region_info* get_rinfo() const { return m_rinfo;}
 	
 	bool is_transparent() const { 
 		return m_rinfo?m_rinfo->get_transparent():false;
@@ -214,8 +214,8 @@ class region {
 	viewport *m_viewport;	
 	
 	// links to the layout
-	const common::abstract_rendering_surface *m_rsurf;
-	const common::abstract_smil_region_info *m_rinfo;
+	const common::surface *m_rsurf;
+	const common::region_info *m_rinfo;
 	
 	// The coordinates of this region 
 	// relative to the viewport

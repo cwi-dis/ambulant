@@ -57,20 +57,18 @@
 using namespace ambulant;
 using namespace gui::arts;
 
-common::active_renderer *
-gui::arts::arts_renderer_factory::new_renderer(
+common::playable *
+gui::arts::arts_renderer_factory::new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest)
+		lib::event_processor *const evp)
 {
-	common::active_renderer *rv;
+	common::playable *rv;
 	lib::xml_string tag = node->get_qname().second;
      AM_DBG lib::logger::get_logger()->trace("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
-		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp, src);
+		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp);
 		AM_DBG lib::logger::get_logger()->trace("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 	AM_DBG lib::logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());

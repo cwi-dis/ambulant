@@ -54,7 +54,7 @@
 #define AMBULANT_GUI_COCOA_COCOA_GUI_H
 
 #include "ambulant/common/layout.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/playable.h"
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
 #endif
@@ -67,7 +67,7 @@ namespace cocoa {
 
 class cocoa_window : public common::abstract_window {
   public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::abstract_rendering_source *region)
+  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::renderer *region)
   	:	common::abstract_window(region),
   		m_view(_view) {};
 	~cocoa_window();
@@ -79,7 +79,7 @@ class cocoa_window : public common::abstract_window {
 	void user_event(const lib::point &where);
 
 	void *view() { return m_view; }
-	const common::abstract_mouse_region &get_mouse_region() { return m_region->get_mouse_region(); }
+	const common::gui_region &get_mouse_region() { return m_region->get_mouse_region(); }
   private:
     void *m_view;
 };
@@ -90,24 +90,22 @@ class cocoa_window_factory : public common::window_factory {
   	cocoa_window_factory(void *view)
   	:	m_defaultwindow_view(view) {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::abstract_rendering_source *region);
-	common::abstract_mouse_region *new_mouse_region();
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::renderer *region);
+	common::gui_region *new_mouse_region();
 	common::abstract_bg_rendering_source *new_background_renderer();
   private:
     void *m_defaultwindow_view;
 };
 
-class cocoa_renderer_factory : public common::renderer_factory {
+class cocoa_renderer_factory : public common::playable_factory {
   public:
   	cocoa_renderer_factory() {}
   	
-	common::active_basic_renderer *new_renderer(
+	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest);
+		lib::event_processor *evp);
 };
 
 } // namespace cocoa

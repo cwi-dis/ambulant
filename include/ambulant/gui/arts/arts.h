@@ -52,7 +52,7 @@
 
 
 #include "ambulant/common/region.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
@@ -64,21 +64,13 @@ namespace ambulant {
 namespace gui {
 namespace arts {
           
-class arts_renderer_factory : public common::renderer_factory {
+class arts_renderer_factory : public common::playable_factory {
 public:
-	common::active_renderer *new_renderer(
-        lib::event_processor *const evp,
-        net::passive_datasource *src,
-        common::passive_region *dest,
-        const lib::node *node);
-
-	common::active_renderer *new_renderer(
+	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest);
+		lib::event_processor *const evp);
 
 };
 

@@ -86,7 +86,7 @@ void gui::dx::audio_player::stop() {
 	if(FAILED(hr)) {
 		win_report_error("IMediaControl::stop()", hr);	
 	}
-	release();
+	release_player();
 }
 
 void gui::dx::audio_player::pause() {
@@ -207,7 +207,7 @@ bool gui::dx::audio_player::open(const std::string& url) {
 	return true;
 }
 
-void gui::dx::audio_player::release() {
+void gui::dx::audio_player::release_player() {
 	if(m_graph_builder) {
 		if(m_media_event) {
 			m_media_event->Release();

@@ -55,8 +55,6 @@
 
 #include "ambulant/config/config.h"
 
-//#include "ambulant/lib/event_processor.h"
-
 namespace ambulant {
 
 namespace lib {

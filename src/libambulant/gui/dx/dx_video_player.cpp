@@ -94,7 +94,7 @@ void gui::dx::video_player::stop() {
 	if(FAILED(hr)) {
 		win_report_error("IMultiMediaStream::SetState()", hr);	
 	}
-	release();
+	release_player();
 }
 
 void gui::dx::video_player::pause() {
@@ -227,7 +227,7 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	return true;
 }
 
-void gui::dx::video_player::release() {
+void gui::dx::video_player::release_player() {
 	// avoid an update during release
 	IMultiMediaStream *mmstream = m_mmstream;
 	m_mmstream = 0;

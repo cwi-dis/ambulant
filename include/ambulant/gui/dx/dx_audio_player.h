@@ -84,7 +84,7 @@ namespace dx {
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::logger;
 
-class audio_player : public common::playable {
+class audio_player : virtual public common::playable, virtual public lib::ref_counted_obj {
   public:
 	audio_player(const std::string& url);
 	~audio_player();
@@ -119,7 +119,7 @@ class audio_player : public common::playable {
 
   private:
 	bool open(const std::string& url);
-	void release();
+	void release_player();
 	
 	std::string m_url;
 	cookie_type m_cookie;

@@ -82,7 +82,7 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	const abstract_smil_region_info *info = m_dest->get_info();
+	const region_info *info = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: %d clearing to 0x%x", !info->get_transparent(), (long)info->get_bgcolor());
 	if (info && !info->get_transparent()) {
 		// First find our whole area (which we have to clear to background color)
@@ -103,8 +103,8 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 }
 
 void
-cocoa_background_renderer::drawbackground(const abstract_smil_region_info *src, const screen_rect<int> &dirty, 
-	abstract_rendering_surface *dst, abstract_window *window)
+cocoa_background_renderer::drawbackground(const region_info *src, const screen_rect<int> &dirty, 
+	surface *dst, abstract_window *window)
 {
 	const screen_rect<int> &r = dst->get_rect();
 	AM_DBG logger::get_logger()->trace("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());

@@ -52,7 +52,7 @@
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region.h"
-#include "ambulant/common/renderer.h"
+//#include "ambulant/common/renderer.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -92,7 +92,7 @@ common::passive_region::subregion(const std::string &name, lib::screen_rect<int>
 }
 
 common::passive_region *
-common::passive_region::subregion(const abstract_smil_region_info *info)
+common::passive_region::subregion(const region_info *info)
 {
 	screen_rect<int> bounds = info->get_screen_rect();
 	zindex_t z = info->get_zindex();
@@ -222,7 +222,7 @@ common::passive_region::need_redraw(const lib::screen_rect<int> &r)
 }
 
 void
-common::passive_region::need_events(abstract_mouse_region *rgn)
+common::passive_region::need_events(gui_region *rgn)
 {
 	if (!m_parent)
 		return;   // Audio region or some such
@@ -335,7 +335,7 @@ common::passive_root_layout::passive_root_layout(const std::string &name, lib::s
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x, bgrenderer=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region, (void *)m_bg_renderer);
 }
 		
-common::passive_root_layout::passive_root_layout(const abstract_smil_region_info *info, lib::size bounds, window_factory *wf)
+common::passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, window_factory *wf)
 :   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info)
 {
 	m_mouse_region = wf->new_mouse_region();
@@ -382,11 +382,11 @@ common::active_region::~active_region()
 }
 
 void
-common::active_region::show(abstract_rendering_source *renderer)
+common::active_region::show(renderer *rend)
 {
-	m_renderer = renderer;
+	m_renderer = rend;
 	m_source->show(this);
-	AM_DBG lib::logger::get_logger()->trace("active_region.show(0x%x, \"%s\", renderer=0x%x)", (void *)this, m_source->m_name.c_str(), (void *)renderer);
+	AM_DBG lib::logger::get_logger()->trace("active_region.show(0x%x, \"%s\", renderer=0x%x)", (void *)this, m_source->m_name.c_str(), (void *)rend);
 	need_redraw();
 }
 

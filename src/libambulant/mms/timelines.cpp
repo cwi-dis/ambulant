@@ -59,22 +59,26 @@
 namespace ambulant {
 namespace mms {
 
-class dead_renderer_class : public common::active_basic_renderer {
+class dead_playable_class : public common::playable {
   public:
-  	dead_renderer_class()
-  	:	active_basic_renderer() {}
+  	dead_playable_class()
+  	:	common::playable() {}
   	
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
 	void stop() {}
 	void start(double t) {};
 	void pause() {};
 	void resume() {};
 	void seek(double t) {};
 	void wantclicks(bool want) {};
-	void user_event(const lib::point &where) {};
+	void preroll(double t1, double t2, double t3) {};
+	std::pair<bool, double> get_dur() { return std::pair<bool, double>(false, 0.0); }
+	virtual const int& get_cookie() const { return 0; }
+	long add_ref() {return 1;};
+	long release() {return 1;};
+	long get_ref_count() const { return 1;}
 };
 
-dead_renderer_class dead_renderer;
+dead_playable_class dead_playable;
 
 namespace detail {
 /* ---------------- */
@@ -497,14 +501,6 @@ passive_timeline::add_node(const lib::node *the_node)
 	return rv;
 }
 
-timeline_node *
-passive_timeline::add_node(const lib::node *the_node, net::passive_datasource *the_datasource)
-{
-	timeline_node *rv = new timeline_node(the_node, the_datasource);
-	m_timeline_nodes.push_back(rv);
-	return rv;
-}
-
 timeline_delay *
 passive_timeline::add_delay(int timeout)
 {
@@ -546,7 +542,7 @@ passive_timeline::build()
 }
 
 active_timeline *
-passive_timeline::activate(lib::event_processor *const evp, common::renderer_factory *rf, common::layout_manager *lm)
+passive_timeline::activate(lib::event_processor *const evp, common::playable_factory *rf, common::layout_manager *lm)
 {
 #ifndef AMBULANT_NO_IOSTREAMS
 	AM_DBG std::cout << "activate(), #dep=" << m_dependencies.size() << " #act=" << m_actions.size() << std::endl;
@@ -578,15 +574,15 @@ active_timeline::active_timeline(lib::event_processor *const evp,
 	const detail::active_dependency_vector& dependencies,
 	const detail::active_action_vector& actions,
 	int nregion,
-	common::renderer_factory *rf,
+	common::playable_factory *rf,
 	common::layout_manager *lm)
 :	m_event_processor(evp),
-	m_renderer_factory(rf),
+	m_playable_factory(rf),
 	m_source(source),
 	m_layout_manager(lm),
 	m_dependencies(dependencies),
 	m_actions(actions),
-	m_renderers(std::vector<common::active_basic_renderer *>(nregion, (common::active_basic_renderer *)NULL)),
+	m_playables(std::vector<common::playable *>(nregion, (common::playable *)NULL)),
 	m_playdone(NULL)
 {
 	m_source->add_ref();
@@ -630,12 +626,12 @@ active_timeline::start(lib::event *playdone)
 void
 active_timeline::stop()
 {
-	std::vector<common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it != m_renderers.end();it++) {
-		if(*it != 0 && *it != &dead_renderer) {
+	std::vector<common::playable *>::iterator it;
+	for(it = m_playables.begin();it != m_playables.end();it++) {
+		if(*it != 0 && *it != &dead_playable) {
 			(*it)->stop();
 			(*it)->release();
-			(*it) = &dead_renderer;
+			(*it) = &dead_playable;
 		}
 	}
 }
@@ -643,9 +639,9 @@ active_timeline::stop()
 void
 active_timeline::pause()
 {
-	std::vector<common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it != m_renderers.end();it++) {
-		if(*it != 0 && *it != &dead_renderer) {
+	std::vector<common::playable *>::iterator it;
+	for(it = m_playables.begin();it != m_playables.end();it++) {
+		if(*it != 0 && *it != &dead_playable) {
 			(*it)->pause();
 		}
 	}
@@ -654,9 +650,9 @@ active_timeline::pause()
 void
 active_timeline::resume()
 {
-	std::vector<common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it != m_renderers.end();it++) {
-		if(*it != 0 && *it != &dead_renderer) {
+	std::vector<common::playable *>::iterator it;
+	for(it = m_playables.begin();it != m_playables.end();it++) {
+		if(*it != 0 && *it != &dead_playable) {
 			(*it)->resume();
 		}
 	}
@@ -701,35 +697,43 @@ active_timeline::ext_dependency_callback(detail::dependency_callback_arg arg)
 void
 active_timeline::ext_preroll(int node_index)
 {
-	if (m_renderers[node_index] == &dead_renderer)
+	if (m_playables[node_index] == &dead_playable)
 		return;
-	if (m_renderers[node_index] != NULL) {
+	if (m_playables[node_index] != NULL) {
 		return;
 	}
 	timeline_node *tln = m_source->m_timeline_nodes[node_index];
-	net::passive_datasource *the_datasource = tln->m_datasource;
 	const lib::node *the_node = tln->m_node;
-	m_renderers[node_index] = m_renderer_factory->new_renderer(
-		this, node_index, the_node, m_event_processor, the_datasource, 
-		m_layout_manager->get_rendering_surface(the_node));
+	common::playable *pl = m_playable_factory->new_playable(
+		this, node_index, the_node, m_event_processor);
+	// Connect the playable/renderer to its output surface, if applicable
+	if (pl) {
+		common::renderer *rend = pl->get_renderer();
+		if (rend) {
+			common::surface *dest = m_layout_manager->get_surface(the_node);
+			rend->set_surface(dest);
+		}
+	}
+	m_playables[node_index] = pl;
+
 }
 
 void
 active_timeline::ext_play(int node_index)
 {
-	if (m_renderers[node_index] == NULL) {
+	if (m_playables[node_index] == NULL) {
 		ext_preroll(node_index);
 	}
-	if (m_renderers[node_index] == &dead_renderer) {
+	if (m_playables[node_index] == &dead_playable) {
 		// It was STOPPLAY-ed before this PLAY came in.
 		// Fire the playdone event
 		lib::logger::get_logger()->error("active_timeline::ext_play(%d) after ext_stop()!", node_index);
 	} else {
-		m_renderers[node_index]->start(0);
+		m_playables[node_index]->start(0);
 #if JACK_DEBUG_MOUSEREGIONS
                 // Temporary code to enable mous clicking in every second node played
 		static int counter;
-		if (counter++ & 1) m_renderers[node_index]->wantclicks(true);
+		if (counter++ & 1) m_playables[node_index]->wantclicks(true);
 #endif
 	}
 }
@@ -737,13 +741,13 @@ active_timeline::ext_play(int node_index)
 void
 active_timeline::ext_stop(int node_index)
 {
-	if (m_renderers[node_index] == &dead_renderer)
+	if (m_playables[node_index] == &dead_playable)
 		return;
-	if (m_renderers[node_index]) {
-		m_renderers[node_index]->stop();
-		m_renderers[node_index]->release();
+	if (m_playables[node_index]) {
+		m_playables[node_index]->stop();
+		m_playables[node_index]->release();
 	}
-	m_renderers[node_index] = &dead_renderer;
+	m_playables[node_index] = &dead_playable;
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS

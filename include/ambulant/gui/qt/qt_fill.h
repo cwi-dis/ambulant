@@ -76,10 +76,9 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest)
+		net::passive_datasource *src)
 : common::active_basic_renderer(context, cookie, node, evp),
-	m_dest(dest),
+	m_dest(NULL),
 	m_playing(false) {
 };
 	~qt_active_fill_renderer();
@@ -104,7 +103,7 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 	void redraw(const lib::screen_rect<int> &dirty, 
 		    common::abstract_window *window);
   private:
-	common::abstract_rendering_surface *const m_dest;
+	common::surface *const m_dest;
 	bool m_playing;
 	lib::critical_section m_lock;
 };
@@ -112,9 +111,9 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 class qt_background_renderer : public common::abstract_bg_rendering_source {
   public:
 	void drawbackground(
-		const common::abstract_smil_region_info *src,
+		const common::region_info *src,
 		const lib::screen_rect<int> &dirty,
-		common::abstract_rendering_surface *dst,
+		common::surface *dst,
 		common::abstract_window *windo);
 };
 

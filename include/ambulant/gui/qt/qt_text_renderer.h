@@ -76,10 +76,8 @@ class qt_active_text_renderer : public common::active_final_renderer {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-    	lib::event_processor *const evp,
-		net::passive_datasource *src,
-		common::abstract_rendering_surface *const dest)
-:	common::active_final_renderer(context, cookie, node, evp, src, dest),
+    	lib::event_processor *const evp)
+:	common::active_final_renderer(context, cookie, node, evp),
  	m_text_storage(NULL){
 	}
 	~qt_active_text_renderer();

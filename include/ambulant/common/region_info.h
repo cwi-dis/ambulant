@@ -68,7 +68,7 @@ enum fit_t { fit_fill, fit_hidden, fit_meet, fit_scroll, fit_slice };
 typedef int zindex_t;
 
 // This interface allows access to all information 
-class abstract_smil_region_info {
+class region_info {
   public:
 	virtual std::string get_name() const = 0;
 	virtual basic_rect<int> get_rect() const = 0;

@@ -70,7 +70,7 @@ class mms_layout_manager : public common::layout_manager {
 	mms_layout_manager(common::window_factory *wf, const lib::document *doc);
 	~mms_layout_manager();
 	
-	common::abstract_rendering_surface *get_rendering_surface(const lib::node *node);
+	common::surface *get_surface(const lib::node *node);
   private:
   	common::passive_region *m_audio_rgn, *m_text_rgn, *m_image_rgn;
 };

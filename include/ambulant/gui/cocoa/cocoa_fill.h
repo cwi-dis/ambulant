@@ -72,11 +72,9 @@ class cocoa_active_fill_renderer : public active_basic_renderer {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp,
-		net::passive_datasource *src,
-		abstract_rendering_surface *const dest)
+		event_processor *evp)
 	:	active_basic_renderer(context, cookie, node, evp),
-		m_dest(dest),
+		m_dest(NULL),
 		m_playing(false) {};
 	~cocoa_active_fill_renderer();
 
@@ -87,18 +85,20 @@ class cocoa_active_fill_renderer : public active_basic_renderer {
 	void resume() {}
 	void wantclicks(bool want) { /* XXXX */ }
 
+	virtual void set_surface(surface *dest) { m_dest = dest; }
+	virtual surface *get_surface() { return m_dest;}
 	void user_event(const point &where) { clicked_callback(); }
     void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
-	abstract_rendering_surface *const m_dest;
+	surface *m_dest;
 	bool m_playing;
 	critical_section m_lock;
 };
 
 class cocoa_background_renderer : public abstract_bg_rendering_source {
   public:
-	void drawbackground(const abstract_smil_region_info *src, const screen_rect<int> &dirty, 
-		abstract_rendering_surface *dst, abstract_window *window);
+	void drawbackground(const region_info *src, const screen_rect<int> &dirty, 
+		surface *dst, abstract_window *window);
 };
 
 } // namespace cocoa

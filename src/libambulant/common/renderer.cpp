@@ -67,13 +67,18 @@ active_renderer::active_renderer(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src,
-	abstract_rendering_surface *const dest)
+	lib::event_processor *evp)
 :	active_basic_renderer(context, cookie, node, evp),
-	m_src(src?src->activate():NULL),
-	m_dest(dest)
+	m_src(NULL),
+	m_dest(NULL)
 {
+	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
+	std::string url = node->get_url("src");
+	if (url != "") {
+		net::passive_datasource *psrc = new net::passive_datasource(url.c_str());
+		if (psrc)
+			m_src = psrc->activate();
+	}
 }
 
 void
@@ -88,6 +93,11 @@ active_renderer::start(double t)
 	os << *m_node;
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 #endif
+	if (!m_dest) {
+		lib::logger::get_logger()->error("active_renderer.start: no destination surface");
+		stopped_callback();
+		return;
+	}
 	m_dest->show(this);
 	if (m_src) {
 		lib::event *e = new readdone_callback(this, &active_renderer::readdone);
@@ -102,7 +112,8 @@ void
 active_renderer::readdone()
 {
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	m_dest->need_redraw();
+	if (m_dest)
+		m_dest->need_redraw();
 	stopped_callback();
 }
 
@@ -110,14 +121,16 @@ void
 active_renderer::stop()
 {
 	// XXXX Need to handle case that no data (or not all data) has come in yet
-	m_dest->renderer_done();
+	if (m_dest)
+		m_dest->renderer_done();
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
 
 void
 active_renderer::wantclicks(bool want)
 {
-	m_dest->need_events(want);
+	if (m_dest)
+		m_dest->need_events(want);
 }
 
 active_final_renderer::~active_final_renderer()
@@ -137,16 +150,17 @@ active_final_renderer::readdone()
 #endif
 	}
 	m_src->read((char *)m_data, m_data_size);
-	m_dest->need_redraw();
+	if (m_dest)
+		m_dest->need_redraw();
 	stopped_callback();
 }
 
-global_renderer_factory::global_renderer_factory()
-:   m_default_factory(new gui::none::none_renderer_factory())
+global_playable_factory::global_playable_factory()
+:   m_default_factory(new gui::none::none_playable_factory())
 {
 }
 
-global_renderer_factory::~global_renderer_factory()
+global_playable_factory::~global_playable_factory()
 {
     // XXXX Should I delete the factories in m_factories? I think
     // so, but I'm not sure...
@@ -154,26 +168,24 @@ global_renderer_factory::~global_renderer_factory()
 }
     
 void
-global_renderer_factory::add_factory(renderer_factory *rf)
+global_playable_factory::add_factory(playable_factory *rf)
 {
     m_factories.push_back(rf);
 }
     
-active_basic_renderer *
-global_renderer_factory::new_renderer(
+playable *
+global_playable_factory::new_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src,
-	abstract_rendering_surface *const dest)
+	lib::event_processor *evp)
 {
-    std::vector<renderer_factory *>::iterator i;
-    active_basic_renderer *rv;
+    std::vector<playable_factory *>::iterator i;
+    playable *rv;
     
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        rv = (*i)->new_renderer(context, cookie, node, evp, src, dest);
+        rv = (*i)->new_playable(context, cookie, node, evp);
         if (rv) return rv;
     }
-    return m_default_factory->new_renderer(context, cookie, node, evp, src, dest);
+    return m_default_factory->new_playable(context, cookie, node, evp);
 }

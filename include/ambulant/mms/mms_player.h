@@ -62,7 +62,7 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/mms/timelines.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/playable.h"
 
 namespace ambulant {
 
@@ -72,7 +72,7 @@ class lib::document;
 
 class mms_player : public common::abstract_player, public lib::ref_counted_obj {
   public:
-	mms_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf);
+	mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf);
 	~mms_player();
 	
 	virtual lib::timer* get_timer() { return m_event_processor->get_timer(); }
@@ -102,7 +102,7 @@ class mms_player : public common::abstract_player, public lib::ref_counted_obj {
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
 	common::window_factory *m_window_factory;
-	common::renderer_factory *m_renderer_factory;
+	common::playable_factory *m_playable_factory;
 };
 
 } // namespace mms

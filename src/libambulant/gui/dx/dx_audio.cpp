@@ -60,14 +60,12 @@
 using namespace ambulant;
 
 gui::dx::dx_audio_renderer::dx_audio_renderer(
-	common::active_playable_events *context,
-	common::active_playable_events::cookie_type cookie,
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	net::passive_datasource *src,
-	common::abstract_rendering_surface *const dest,
 	common::abstract_window *window)
-:   common::active_renderer(context, cookie, node, evp, src, dest), 
+:   common::active_renderer(context, cookie, node, evp), 
 	m_window(window),
 	m_player(0) {
 	

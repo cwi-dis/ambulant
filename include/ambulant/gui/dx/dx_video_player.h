@@ -87,7 +87,7 @@ namespace gui {
 
 namespace dx {
 
-class video_player : public common::playable {
+	class video_player : virtual public common::playable, virtual public lib::ref_counted_obj {
   public:
 	video_player(const std::string& url, IDirectDraw* ddraw);
 	~video_player();
@@ -114,7 +114,7 @@ class video_player : public common::playable {
 	
  private:
 	bool open(const std::string& url, IDirectDraw* dd);
- 	void release();
+ 	void release_player();
  	
 	std::string m_url;
 	cookie_type m_cookie;

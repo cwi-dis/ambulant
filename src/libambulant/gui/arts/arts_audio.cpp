@@ -63,9 +63,8 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src)
-:	common::active_renderer(context, cookie, node, evp, src, NULL)
+	lib::event_processor *const evp)
+:	common::active_renderer(context, cookie, node, evp)
 {
     m_rate = 44100;
     m_channels = 1;

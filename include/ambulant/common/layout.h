@@ -65,42 +65,39 @@ class node;
 
 namespace common {
 
-class abstract_smil_region_info;
-class abstract_rendering_source; // forward
-class abstract_rendering_surface; // forward
+class region_info;
+class renderer; // forward
+class surface; // forward
 
 //class mouse_region_factory; // forward
 
-class abstract_mouse_region {
+class gui_region {
   public:
-	//virtual abstract_mouse_region* new_abstract_mouse_region() - returns empty  region
-	//virtual abstract_mouse_region* new_abstract_mouse_region(const screen_rect<int> &r) - returns xywh region
-	//virtual abstract_mouse_region* new_abstract_mouse_region(const abstract_mouse_region &r) - copy constructor
-	virtual ~abstract_mouse_region() {};
-	virtual abstract_mouse_region *clone() const = 0;
+	virtual ~gui_region() {};
+	virtual gui_region *clone() const = 0;
 	
         virtual void clear() = 0;
 	virtual bool is_empty() const = 0;
 	virtual bool contains(const lib::point &p) const = 0;
-	virtual abstract_mouse_region& operator =(const lib::screen_rect<int> &rect) = 0;    /* assignment */
-	virtual abstract_mouse_region& operator &=(const abstract_mouse_region &r) = 0; /* intersection */
-	virtual abstract_mouse_region& operator &=(const lib::screen_rect<int> &rect) = 0;
-	virtual abstract_mouse_region& operator |=(const abstract_mouse_region &r) = 0; /* union */
-	virtual abstract_mouse_region& operator -=(const abstract_mouse_region &r) = 0; /* difference */
-	virtual abstract_mouse_region& operator +=(const lib::point &tr) = 0; /* translation */
+	virtual gui_region& operator =(const lib::screen_rect<int> &rect) = 0;    /* assignment */
+	virtual gui_region& operator &=(const gui_region &r) = 0; /* intersection */
+	virtual gui_region& operator &=(const lib::screen_rect<int> &rect) = 0;
+	virtual gui_region& operator |=(const gui_region &r) = 0; /* union */
+	virtual gui_region& operator -=(const gui_region &r) = 0; /* difference */
+	virtual gui_region& operator +=(const lib::point &tr) = 0; /* translation */
         
-	virtual abstract_mouse_region* operator &(const abstract_mouse_region &r) const {
-            abstract_mouse_region *rv = this->clone();
+	virtual gui_region* operator &(const gui_region &r) const {
+            gui_region *rv = this->clone();
             *rv &= r;
             return rv;
         }
-	virtual abstract_mouse_region* operator |(const abstract_mouse_region &r) const {
-            abstract_mouse_region *rv = this->clone();
+	virtual gui_region* operator |(const gui_region &r) const {
+            gui_region *rv = this->clone();
             *rv |= r;
             return rv;
         }
-	virtual abstract_mouse_region* operator -(const abstract_mouse_region &r) const {
-            abstract_mouse_region *rv = this->clone();
+	virtual gui_region* operator -(const gui_region &r) const {
+            gui_region *rv = this->clone();
             *rv -= r;
             return rv;
         }
@@ -111,14 +108,14 @@ class abstract_mouse_region {
 // GUI layer.
 class abstract_window {
   protected:
-	abstract_window(abstract_rendering_source *region)
+	abstract_window(renderer *region)
 	:   m_region(region) {};
   public:
 	virtual ~abstract_window() { m_region = NULL; }
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void mouse_region_changed() = 0;
   protected:
-	abstract_rendering_source *m_region;
+	renderer *m_region;
 };
 
 // abstract_bg_rendering_source is a pure virtual class used by regions to render their 
@@ -128,8 +125,8 @@ class abstract_bg_rendering_source {
   public:
 	virtual ~abstract_bg_rendering_source() {};
 	
-	virtual void drawbackground(const abstract_smil_region_info *src, const lib::screen_rect<int> &dirty, 
-		abstract_rendering_surface *dst, abstract_window *window) = 0;
+	virtual void drawbackground(const region_info *src, const lib::screen_rect<int> &dirty, 
+		surface *dst, abstract_window *window) = 0;
 };
 
 // window_factory is subclassed by the various GUI implementations.
@@ -138,34 +135,38 @@ class abstract_bg_rendering_source {
 class window_factory {
   public:
 	virtual ~window_factory() {}
-	virtual abstract_window *new_window(const std::string &name, lib::size bounds, abstract_rendering_source *region) = 0;
-	virtual abstract_mouse_region *new_mouse_region() = 0;
+	virtual abstract_window *new_window(const std::string &name, lib::size bounds, renderer *region) = 0;
+	virtual gui_region *new_mouse_region() = 0;
 	virtual abstract_bg_rendering_source *new_background_renderer() = 0;
 };
 
-// abstract_rendering_source is an pure virtual baseclass for renderers that
+// renderer is an pure virtual baseclass for renderers that
 // render to a region (as opposed to audio renderers, etc) and for subregions
 // themselves. It is used to commmunicate redraw requests (and, eventually,
 // other things like mouse clicks) from the GUI window all the way down to
 // the renderer.
-class abstract_rendering_source {
+class renderer {
   public:
-	virtual ~abstract_rendering_source() {};
+	virtual ~renderer() {};
 	
+	virtual void set_surface(surface *destination) = 0;
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
 	virtual void user_event(const lib::point &where) = 0;
 	// XXXX This is a hack.
-	virtual const abstract_mouse_region& get_mouse_region() const { abort(); };
+	virtual const gui_region& get_mouse_region() const { abort(); };
+	// XXXX And this is another hack
+	virtual surface *get_surface() = 0;
+
 };
 
-// abstract_rendering_surface is a pure virtual baseclass for a region of screenspace.
+// surface is a pure virtual baseclass for a region of screenspace.
 // It is the only interface that renderers use when talking to regions, and regions
 // use when talking to their parent regions.
-class abstract_rendering_surface {
+class surface {
   public:
-	virtual ~abstract_rendering_surface() {};
+	virtual ~surface() {};
 	
-	virtual void show(abstract_rendering_source *renderer) = 0;
+	virtual void show(renderer *renderer) = 0;
 	virtual void renderer_done() = 0;
 
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
@@ -180,14 +181,14 @@ class abstract_rendering_surface {
 	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const = 0;
 	
 	// Get object holding SMIL region parameters for querying
-	virtual const abstract_smil_region_info *get_info() const = 0;
+	virtual const region_info *get_info() const = 0;
 };
 
 class layout_manager {
   public:
 	virtual ~layout_manager() {};
 	
-	virtual abstract_rendering_surface *get_rendering_surface(const lib::node *node) = 0;
+	virtual surface *get_surface(const lib::node *node) = 0;
 };
 	
 } // namespace common

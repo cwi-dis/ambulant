@@ -213,9 +213,8 @@ sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp,
-	net::passive_datasource *src)
-:	common::active_renderer(context, cookie, node, evp, src, NULL),
+	lib::event_processor *evp)
+:	common::active_renderer(context, cookie, node, evp),
     m_rate(44100),
     m_bits(16),
     m_channels(1),
@@ -226,7 +225,7 @@ sdl_active_audio_renderer::sdl_active_audio_renderer(
 	AM_DBG lib::logger::get_logger()->trace("****** sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
 	if (m_src) {
 #ifdef WITH_FFMPEG
-		std::string url = src->get_url();
+		std::string url = node->get_url("src");
 		
 		AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: url.rfind(\".mp3\") %d, url.size()-4 %d", url.rfind(".mp3"),  url.size()-4);
 		if (url.rfind(".mp3") == url.size()-4 ) {

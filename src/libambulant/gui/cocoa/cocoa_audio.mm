@@ -65,52 +65,47 @@ namespace gui {
 
 namespace cocoa {
 
-cocoa_active_audio_renderer::cocoa_active_audio_renderer(
+cocoa_audio_playable::cocoa_audio_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
-	const lib::node *node,
-	event_processor *const evp,
-	net::passive_datasource *src)
-:	active_basic_renderer(context, cookie, node, evp),
-	m_url(src->get_url()),
+	const lib::node *node)
+:	active_playable(context, cookie),
+	m_url(node->get_url("src")),
 	m_sound(NULL)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	if (!m_node) abort();
 	NSString *filename = [NSString stringWithCString: m_url.c_str()];
 	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
 	if (!m_sound)
-		lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot open soundfile: %s", m_url.c_str());
-	m_event_processor->get_timer()->add_listener(this);
+		lib::logger::get_logger()->error("cocoa_audio_playable: cannot open soundfile: %s", m_url.c_str());
+//	m_event_processor->get_timer()->add_listener(this);
 	[pool release];
 }
 
-cocoa_active_audio_renderer::~cocoa_active_audio_renderer()
+cocoa_audio_playable::~cocoa_audio_playable()
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG logger::get_logger()->trace("~cocoa_active_audio_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("~cocoa_audio_playable(0x%x)", (void *)this);
 	if (m_sound)
 		[m_sound release];
 	m_sound = NULL;
-	m_event_processor->get_timer()->remove_listener(this);
+//	m_event_processor->get_timer()->remove_listener(this);
 	m_lock.leave();
 	[pool release];
 }
 	
 void
-cocoa_active_audio_renderer::start(double where)
+cocoa_audio_playable::start(double where)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	std::ostringstream os;
-	os << *m_node;
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.start(0x%x, %s, %f)", (void *)this, os.str().c_str(), where);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.c_str(), where);
 	if (where != 0.0)
-		lib::logger::get_logger()->warn("cocoa_active_audio_renderer: ignoring start time %f, starting at 0", where);
+		lib::logger::get_logger()->warn("cocoa_audio_playable: ignoring start time %f, starting at 0", where);
 	if (m_sound)
 		if (![m_sound play]) {
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot start audio");
+			lib::logger::get_logger()->error("cocoa_audio_playable: cannot start audio");
 			[m_sound release];
 			m_sound = NULL;
 		}
@@ -122,14 +117,14 @@ cocoa_active_audio_renderer::start(double where)
 }
 
 void
-cocoa_active_audio_renderer::stop()
+cocoa_audio_playable::stop()
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.stop(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound stop])
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot stop audio");
+			lib::logger::get_logger()->error("cocoa_audio_playable: cannot stop audio");
 		[m_sound release];
 		m_sound = NULL;
 		stopped_callback();
@@ -139,56 +134,56 @@ cocoa_active_audio_renderer::stop()
 }
 
 void
-cocoa_active_audio_renderer::pause()
+cocoa_audio_playable::pause()
 {
 //    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.pause(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.pause(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound pause])
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot pause audio");
+			lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
 	}
 	m_lock.leave();
 //	[pool release];
 }
 
 void
-cocoa_active_audio_renderer::resume()
+cocoa_audio_playable::resume()
 {
 //    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.resume(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.resume(0x%x)", (void *)this);
 	if (m_sound) {
 		if (![m_sound resume])
-			lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot resume audio");
+			lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
 	}
 	m_lock.leave();
 //	[pool release];
 }
 
-
+#if 0
 void
-cocoa_active_audio_renderer::speed_changed()
+cocoa_audio_playable::speed_changed()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_audio_renderer.speed_changed(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.speed_changed(0x%x)", (void *)this);
 	if (m_sound) {
 		abstract_timer *our_timer = m_event_processor->get_timer();
 		double rtspeed = our_timer->get_realtime_speed();
 		
 		if (rtspeed < 0.01) {
 			if (![m_sound pause])
-				lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot pause audio");
+				lib::logger::get_logger()->error("cocoa_audio_playable: cannot pause audio");
 		} else {
 			if (rtspeed < 0.99)
-				lib::logger::get_logger()->trace("cocoa_active_audio_renderer: only speed 1.0 and 0.0 supported, not %f", rtspeed);
+				lib::logger::get_logger()->trace("cocoa_audio_playable: only speed 1.0 and 0.0 supported, not %f", rtspeed);
 			if (![m_sound resume])
-				lib::logger::get_logger()->error("cocoa_active_audio_renderer: cannot resume audio");
+				lib::logger::get_logger()->error("cocoa_audio_playable: cannot resume audio");
 		}
 	}
 	m_lock.leave();
 }
-
+#endif
 
 
 } // namespace cocoa

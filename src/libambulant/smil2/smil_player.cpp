@@ -70,7 +70,7 @@
 using namespace ambulant;
 using namespace smil2;
 
-smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf)
+smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
 :	m_doc(doc),
 	m_wf(wf),
 	m_rf(rf),
@@ -135,25 +135,25 @@ void smil_player::stop() {
 	// Deleting an event that uses ref-counted objects calls release()
 	m_event_processor->cancel_all_events();
 	
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it!=m_renderers.end();it++)
-		destroy_renderer((*it).second, (*it).first);
-	m_renderers.clear();
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++)
+		destroy_playable((*it).second, (*it).first);
+	m_playables.clear();
 }
 
 void smil_player::pause() {
 	m_timer->pause();
 	// we don't propagate pause/resume yet
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it!=m_renderers.end();it++)
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++)
 		(*it).second->pause();
 }
 
 void smil_player::resume() {
 	m_timer->resume();
 	// we don't propagate pause/resume yet
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it!=m_renderers.end();it++)
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++)
 		(*it).second->resume();
 }
 
@@ -166,59 +166,59 @@ void smil_player::done_playback() {
 }
 
 void smil_player::start_playable(const lib::node *n, double t) {
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it = 
-		m_renderers.find(n);
-	common::active_basic_renderer *nr = (it != m_renderers.end())?(*it).second:0;
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	common::playable *nr = (it != m_playables.end())?(*it).second:0;
 	if(nr) {
 		nr->start(t);
 		return;
 	}
-	nr = create_renderer(n);
-	m_renderers[n] = nr;
+	nr = create_playable(n);
+	m_playables[n] = nr;
 	nr->start(t);	
 }
 
 void smil_player::stop_playable(const lib::node *n) {
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it = 
-		m_renderers.find(n);
-	if(it != m_renderers.end()) {
-		destroy_renderer((*it).second, (*it).first);
-		m_renderers.erase(it);
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	if(it != m_playables.end()) {
+		destroy_playable((*it).second, (*it).first);
+		m_playables.erase(it);
 	}
 }
 
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
-	common::active_basic_renderer *nr = get_renderer(n);
+	common::playable *nr = get_playable(n);
 	if(nr) nr->pause();
 }
 
 void smil_player::resume_playable(const lib::node *n) {
-	common::active_basic_renderer *nr = get_renderer(n);
+	common::playable *nr = get_playable(n);
 	if(nr) nr->resume();
 }
 
-common::active_basic_renderer *
-smil_player::get_renderer(const lib::node *n) {
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it = 
-		m_renderers.find(n);
-	return (it != m_renderers.end())?(*it).second:0;
+common::playable *
+smil_player::get_playable(const lib::node *n) {
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	return (it != m_playables.end())?(*it).second:0;
 }
 
 std::pair<bool, double> 
 smil_player::get_dur(const lib::node *n) {
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it = 
-		m_renderers.find(n);
-	common::active_basic_renderer *nr = (it != m_renderers.end())?(*it).second:0;
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	common::playable *nr = (it != m_playables.end())?(*it).second:0;
 	if(nr) {
 		return nr->get_dur();
 	}
-	nr = create_renderer(n);
-	m_renderers[n] = nr;
+	nr = create_playable(n);
+	m_playables[n] = nr;
 	return nr->get_dur();
 }
 
 void smil_player::wantclicks_playable(const lib::node *n, bool want) {
-	common::active_basic_renderer *nr = get_renderer(n);
+	common::playable *nr = get_playable(n);
 	if(nr) nr->wantclicks(want);
 }
 
@@ -257,12 +257,15 @@ void smil_player::on_click(int x, int y) {
 	
 	// WARNING: The following is test code
 	// Does not use mouse regions, z-index etc
-	std::map<const lib::node*, common::active_basic_renderer *>::iterator it;
-	for(it = m_renderers.begin();it!=m_renderers.end();it++) {
-		active_renderer *r = static_cast<active_renderer*>((*it).second);
-		int nid = r->get_cookie();
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++) {
+		playable *pl = ((*it).second);
+		int nid = pl->get_cookie();
+		renderer *rend = pl->get_renderer();
+		if (rend == NULL) continue;
+		surface *surf = rend->get_surface();
+		if (surf == NULL) continue;
 		
-		abstract_rendering_surface *surf = r->get_rendering_surface();
 		lib::screen_rect<int> rc = surf->get_rect();
 		lib::point pt = surf->get_global_topleft();
 		rc.translate(pt);
@@ -291,25 +294,30 @@ void smil_player::on_char(int ch) {
 	schedule_event(cb, 0);
 }
 
-common::active_basic_renderer *
-smil_player::create_renderer(const lib::node *n) {
-	net::passive_datasource *src = 0;
-	std::string url = n->get_url("src");
-	if (url != "") src = new net::passive_datasource(url.c_str());
+common::playable *
+smil_player::create_playable(const lib::node *n) {
 	int nid = n->get_numid();
-	abstract_rendering_surface *surf = m_layout_manager->get_rendering_surface(n);
+	surface *surf = m_layout_manager->get_surface(n);
 	if(true) {
 		const char *pid = n->get_attribute("id");
 		std::string tag = n->get_local_name();
-		AM_DBG m_logger->trace("%s[%s].new_renderer  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+		AM_DBG m_logger->trace("%s[%s].new_playable  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
 			::repr(surf->get_rect()).c_str(),
 			::repr(surf->get_global_topleft()).c_str()
 			);
 	}
-	return m_rf->new_renderer(this, nid, n, m_event_processor, src, surf);
+	common::playable *rv = m_rf->new_playable(this, nid, n, m_event_processor);
+	// And connect it to the rendering surface
+	if (rv) {
+		common::renderer *rend = rv->get_renderer();
+		if (rend) {
+			rend->set_surface(surf);
+		}
+	}
+	return rv;
 }
 
-void smil_player::destroy_renderer(common::active_basic_renderer *r, const lib::node *n) {
+void smil_player::destroy_playable(common::playable *r, const lib::node *n) {
 	r->stop();
 	long rc = r->get_ref_count();
 	r->release();

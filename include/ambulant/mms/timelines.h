@@ -63,7 +63,7 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/net/datasource.h"
 
 namespace ambulant {
@@ -362,11 +362,7 @@ class timeline_node {
 
   	// XXXX Note: I think node, datasource and region need to be refcounted.
 	timeline_node(const lib::node *the_node)
-	:	m_node(the_node),
-		m_datasource(NULL) {};
-	timeline_node(const lib::node *the_node, net::passive_datasource *the_datasource)
-	:	m_node(the_node),
-		m_datasource(the_datasource) {};
+	:	m_node(the_node) {};
 
 	timeline_node_transition *add_transition();
 	
@@ -383,7 +379,6 @@ class timeline_node {
 #endif
   private:
   	const lib::node *m_node;
-  	net::passive_datasource *m_datasource;
   	std::vector<timeline_node_transition*> m_transitions;
 };
 
@@ -411,13 +406,12 @@ class passive_timeline : public lib::ref_counted_obj {
 
 	// Methods used while building the passive timeline
 	timeline_node *add_node(const lib::node *the_node);
-	timeline_node *add_node(const lib::node *the_node, net::passive_datasource *the_datasource);
 	timeline_delay *add_delay(int timeout);
 	
 	void build();
 	inline bool is_built() { return m_is_built; }
 	
-	active_timeline *activate(lib::event_processor *const evp, common::renderer_factory *rf, common::layout_manager *lm);
+	active_timeline *activate(lib::event_processor *const evp, common::playable_factory *rf, common::layout_manager *lm);
 
 #ifndef AMBULANT_NO_IOSTREAMS	
 	void dump(std::ostream& os);
@@ -458,7 +452,7 @@ class active_timeline : public common::playable_notification, public lib::ref_co
 		const detail::active_dependency_vector& dependencies,
 		const detail::active_action_vector& actions,
 		int nregion,
-		common::renderer_factory *rf,
+		common::playable_factory *rf,
 		common::layout_manager *lm);
 	
 	~active_timeline() {
@@ -489,12 +483,12 @@ class active_timeline : public common::playable_notification, public lib::ref_co
   	void ext_stop(int node_index);
   	
   	lib::event_processor * const m_event_processor;
-  	common::renderer_factory *m_renderer_factory;
+  	common::playable_factory *m_playable_factory;
     passive_timeline * const m_source;
 	common::layout_manager *m_layout_manager;
 	detail::active_dependency_vector m_dependencies;
 	const detail::active_action_vector& m_actions;
-	std::vector<common::active_basic_renderer *> m_renderers;
+	std::vector<common::playable *> m_playables;
 	lib::event *m_playdone;
 };
 
