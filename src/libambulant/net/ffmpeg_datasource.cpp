@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -737,7 +737,7 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
 					
-					if(1) {
+					AM_DBG {
 						switch(frame.pict_type) {
 							case FF_B_TYPE:
 								lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %f", pts); 
