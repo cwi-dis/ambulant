@@ -81,6 +81,43 @@ class callback_event : public event,
 };
 
 
+// Apropriate for built-in types arguments (int, double, etc)
+// May be used also for simple structures like point and size.
+// May be used for built-in types arguments
+// or arguments that are references or const references to objects
+template <class T, class A>
+class scalar_arg_callback_event : public event {
+	T *m_obj;
+	void (T::*m_mf)(A a);
+	A m_arg;
+	
+  public:
+	scalar_arg_callback_event(T* obj, void (T::*mf)(A a), A arg) 
+	:	m_obj(obj), m_mf(mf), m_arg(arg) {}
+	
+	virtual void fire() { 
+		if(m_obj && m_mf)
+			(m_obj->*m_mf)(m_arg);
+	}
+};
+
+
+template <class T>
+class no_arg_callback_event : public event {
+  public:
+	T *m_obj;
+	void (T::*m_mf)();
+  
+	no_arg_callback_event(T* obj, void (T::*mf)())
+	:	m_obj(obj), m_mf(mf) {}
+		
+	virtual void fire() {
+		if(m_obj && m_mf)
+			(m_obj->*m_mf)();
+	}
+};
+
+
 ////////////////////////////
 // callback
 
@@ -103,6 +140,54 @@ class callback : public event,
 	
 	// event interface implementation
 	virtual void fire();
+};
+
+// Apropriate for built-in types arguments (int, double, etc)
+// May be used also for simple structures like point and size.
+// May be used for built-in types arguments
+// or arguments that are references or const references to objects
+template <class T, class A>
+class scalar_arg_callback : public event {
+	T *m_obj;
+	void (T::*m_mf)(A a);
+	A m_arg;
+	
+  public:
+	scalar_arg_callback(T* obj, void (T::*mf)(A a), A arg) 
+	:	m_obj(obj), m_mf(mf), m_arg(arg) {
+		if(m_obj) m_obj->add_ref();
+	}
+	~scalar_arg_callback() {
+		if(m_obj) m_obj->release();
+	}	
+	
+	virtual void fire() { 
+		if(m_obj && m_mf)
+			(m_obj->*m_mf)(m_arg);
+	}
+};
+
+
+template <class T>
+class no_arg_callback : public event {
+  public:
+	T *m_obj;
+	
+	void (T::*m_mf)();
+  
+	no_arg_callback(T* obj, void (T::*mf)())
+	:	m_obj(obj), m_mf(mf) {
+		if(m_obj) m_obj->add_ref();
+	}
+	
+	~no_arg_callback() {
+		if(m_obj) m_obj->release();
+	}	
+	
+	virtual void fire() {
+		if(m_obj && m_mf)
+			(m_obj->*m_mf)();
+	}
 };
 
 
