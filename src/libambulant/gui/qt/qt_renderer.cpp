@@ -92,8 +92,8 @@ qt_renderer::start(double where)
 			m_trans_engine->begin
 			  (m_event_processor->get_timer()->elapsed());
 	}
-	common::renderer_playable_dsall::start(where);
 	m_lock.leave();
+	common::renderer_playable_dsall::start(where);
 }
 
 void
@@ -150,7 +150,6 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 		dstrect.translate(m_dest->get_global_topleft());
 		bitBlt(surf, dstrect.left(), dstrect.top(), qpm,
 		       dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-		
 		AM_DBG logger::get_logger()->trace("qt_renderer.redraw: drawing to transition surface");
 		}
 	}

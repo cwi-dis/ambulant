@@ -143,7 +143,9 @@ class qt_gui : public QWidget {
 	void signal_player_done();
 	void signal_need_redraw(const void*, void*, const void*);
 
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   protected:
 	void unsetCursor(); //XXXX
+#endif/*QT_NO_FILEDIALOG*/
 };
 #endif/*__QT_GUI_H__*/

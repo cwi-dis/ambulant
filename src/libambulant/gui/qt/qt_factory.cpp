@@ -241,7 +241,9 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	setGeometry(bounds->left(), bounds->top(), bounds->right(), bounds->bottom());
-	setMouseTracking(true); // enable mouseMoveEvent
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
+	setMouseTracking(true); // enable mouseMoveEvent() to be called
+#endif/*QT_NO_FILEDIALOG*/
 }
 
 qt_ambulant_widget::~qt_ambulant_widget()
@@ -282,6 +284,7 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 	m_qt_window->user_event(amwhere);
 }
 
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void 
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
   int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
@@ -293,6 +296,7 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	qApp->mainWidget()->unsetCursor(); //XXXX
 	repaint();
 }
+#endif/*QT_NO_FILEDIALOG*/
 
 void 
 qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)

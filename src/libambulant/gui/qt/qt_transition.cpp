@@ -112,8 +112,8 @@ static QPixmap*
 getNewSource(bool outtrans, ambulant_qt_window *aqw, 
 	     common::surface* dst, color_t c) {
 	if (outtrans) {
-		qt_transition_debug qttDEBUG;
-		qttDEBUG.paint_rect(aqw, dst, c);
+//		qt_transition_debug qttDEBUG;
+//		qttDEBUG.paint_rect(aqw, dst, c);
 		return aqw->ambulant_pixmap();
 	} else
 		return aqw->get_ambulant_surface();

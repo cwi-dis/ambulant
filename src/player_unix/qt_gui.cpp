@@ -340,25 +340,26 @@ qt_gui::slot_quit() {
 	qApp->quit();
 }
 
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void
 qt_gui::unsetCursor() { //XXXX Hack
 	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
 	if (m_mainloop->get_cursor()) 
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 		setCursor(Qt::PointingHandCursor);
 	else
 		setCursor(Qt::ArrowCursor);
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	/* #else /*QT_NO_FILEDIALOG* /  /* Assume embedded Qt 
 		setCursor(pointingHandCursor);
 	else
 		setCursor(arrowCursor);
-#endif/*QT_NO_FILEDIALOG*/
+	*/
 	m_mainloop->set_cursor(0);
 }
+#endif/*QT_NO_FILEDIALOG*/
 
 int
 main (int argc, char*argv[]) {
-	FILE* DBG = fopen("/tmp/ambulant.dbg", "w");
+	FILE* DBG = stdout;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
