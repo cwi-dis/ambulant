@@ -110,17 +110,31 @@ class basic_point {
 		return basic_point<T>(x + o.x, y + o.y);
 	}
 	
+	basic_point<T> operator-(basic_point<T> o) {
+		return basic_point<T>(x - o.x, y - o.y);
+	}
+	
 	basic_point<T> operator-() { 
 		return basic_point<T>(-x, -y);
 	}
+	
+	basic_point<T>& operator*=(int n) {
+		x *= n; y *= n; return *this;
+	}
+	
+	basic_point<T>& operator/=(int n) {
+		x /= n; y /= n; return *this;
+	}
+	
+	basic_point<T> operator*(int n) const { 
+		basic_point<T> t(*this); t*=n; return t;
+	}
+	
+	basic_point<T> operator/(int n) const { 
+		basic_point<T> t(*this); t/=n; return t;
+	}
 };
 
-template <class T>
-double dist(const basic_point<T>& p1, const basic_point<T>& p2) {
-	double dx = double(p2.x - p1.x);
-	double dy = double(p2.y - p1.y);
-	return ::sqrt(dx*dx + dy*dy); 
-}
 
 template <class S>
 class basic_size {
@@ -157,7 +171,6 @@ class basic_size {
 	basic_size<S> operator+(basic_size<S> o) {
 		return basic_size<S>(w + o.w, h + o.h);
 	}
-
 };
 
 // a basic_rect includes the points (x, y): 
