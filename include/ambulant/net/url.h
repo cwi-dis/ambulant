@@ -139,28 +139,28 @@ class url {
 	// protocols to ports map
  	// static std::map<string, short_type > s_ports;
  
-  	typedef void (url::*HANDLER)(ambulant::lib::reg_scanner& sc, const std::string& pat);
+  	typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
 	static std::list< std::pair<std::string, HANDLER> > s_handlers;
 	
-	void set_parts(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	void set_parts(ambulant::lib::scanner& sc, const std::string& pat);
 	
 	// split url string representation
  	void set_from_spec(const string& spec);
  
 	// pat: "n://n:n/"
-	void set_from_host_port_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	void set_from_host_port_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "n://n/"
-	void set_from_host_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	void set_from_host_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "n:///"
-	void set_from_localhost_file_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	void set_from_localhost_file_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "/n"
-	void set_from_unix_path(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	void set_from_unix_path(ambulant::lib::scanner& sc, const std::string& pat);
 	
 	// pat: "n:n" or "n:/n"
-	void set_from_windows_path(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	void set_from_windows_path(ambulant::lib::scanner& sc, const std::string& pat);
 	
 };
 

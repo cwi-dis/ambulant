@@ -79,8 +79,9 @@ void net::url::init_statics() {
  }
 
 void net::url::set_from_spec(const string& spec) {
-	lib::reg_scanner sc(spec, url_delim);
-	std::string sig = sc.get_toks();
+	lib::scanner sc(spec, url_delim);
+	sc.tokenize();
+	std::string sig = sc.get_tokens();
 	std::list< std::pair<std::string, HANDLER> >::iterator it;
 	for(it=s_handlers.begin();it!=s_handlers.end();it++) {
 		if(lib::starts_with(sig, (*it).first)) {
@@ -92,7 +93,7 @@ void net::url::set_from_spec(const string& spec) {
 }
 
 // pat: "n://n:n/"
-void net::url::set_from_host_port_uri(lib::reg_scanner& sc, const std::string& pat) {
+void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) {
 	m_protocol = sc.val_at(0);
 	m_host = sc.val_at(4);
 	m_port = short_type(atoi(sc.val_at(6).c_str()));
@@ -100,7 +101,7 @@ void net::url::set_from_host_port_uri(lib::reg_scanner& sc, const std::string& p
 }
 	
 // pat: "n://n/"
-void net::url::set_from_host_uri(lib::reg_scanner& sc, const std::string& pat) {
+void net::url::set_from_host_uri(lib::scanner& sc, const std::string& pat) {
 	m_protocol = sc.val_at(0);
 	m_host = sc.val_at(4);
 	set_parts(sc, pat);
@@ -111,7 +112,7 @@ void net::url::set_from_host_uri(lib::reg_scanner& sc, const std::string& pat) {
 }
 
 // pat: "n:///" for file:///
-void net::url::set_from_localhost_file_uri(lib::reg_scanner& sc, const std::string& pat) {
+void net::url::set_from_localhost_file_uri(lib::scanner& sc, const std::string& pat) {
 	m_protocol = sc.val_at(0);
 	m_host = "localhost";
 	m_port = 0;
@@ -119,23 +120,23 @@ void net::url::set_from_localhost_file_uri(lib::reg_scanner& sc, const std::stri
 }
 
 // pat: "/n"
-void net::url::set_from_unix_path(lib::reg_scanner& sc, const std::string& pat) {
+void net::url::set_from_unix_path(lib::scanner& sc, const std::string& pat) {
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
-	m_path = sc.get_str();
+	m_path = sc.get_src();
 }
 
 // pat: "n:n" or "n:/n"
-void net::url::set_from_windows_path(lib::reg_scanner& sc, const std::string& pat) {
+void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
-	m_path = sc.get_str();
+	m_path = sc.get_src();
 }
 
-void net::url::set_parts(lib::reg_scanner& sc, const std::string& pat) {
-	const std::string& toks = sc.get_toks();
+void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
+	const std::string& toks = sc.get_tokens();
 	size_type n = toks.length();
 	size_type i1 = pat.length();
 	size_type i2 = toks.find_last_of('?');
