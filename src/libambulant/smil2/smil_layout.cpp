@@ -143,8 +143,19 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			//if (level == 0) continue; // Skip layout section itself
 			lib::node *n = pair.second;
 			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_document_layout: examining %s", n->get_qname().second.c_str());
-			// Find inheritance type
+			// Find node type
 			common::layout_type tp = m_schema->get_layout_type(n->get_qname());
+			const char *pid = n->get_attribute("id");
+			// First we handle regPoint nodes, which we only store
+			if (tp == common::l_regpoint) {
+				if (pid) {
+					std::string id = pid;
+					m_id2regpoint[id] = n;
+				} else {
+					lib::logger::get_logger()->warn("smil_layout_manager: regPoint node without id attribute");
+				}
+				continue;
+			}
 			dimension_inheritance di;
 			if (tp == common::l_rootlayout || tp == common::l_toplayout) {
 				di = di_none;
@@ -171,7 +182,6 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_document_layout: 0x%x is child of 0x%x", (void*)rn, (void*)parent);
 			}
 			// Enter the region ID into the id-mapping
-			const char *pid = n->get_attribute("id");
 			if(pid) {
 				std::string id = pid;
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: mapping id %s", pid);
@@ -432,13 +442,11 @@ smil_layout_manager::get_alignment(const lib::node *n)
 
 	if (!decode_regpoint(surface_fixpoint, regPoint) && regPoint != NULL) {
 		// Non-standard regpoint. Look it up.
-		const lib::node_context *ctx = n->get_context();
-		regpoint_node = ctx->get_node_by_id(regPoint);
-		if (regpoint_node == NULL) {
+		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
+		if (it == m_id2regpoint.end()) {
 			lib::logger::get_logger()->error("smil_alignment: unknown regPoint: %s", regPoint);
 		} else {
-			if (regpoint_node->get_local_name() != "regPoint")
-				lib::logger::get_logger()->error("smil_alignment: node with id \"%s\" is not a regPoint", regPoint);
+			regpoint_node = (*it).second;
 			// XXX Just for now:-)
 			surface_fixpoint.left = get_regiondim_attr(regpoint_node, "left");
 			surface_fixpoint.top = get_regiondim_attr(regpoint_node, "top");

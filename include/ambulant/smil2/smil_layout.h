@@ -90,6 +90,7 @@ class smil_layout_manager : public common::layout_manager {
 	
 	std::vector<common::surface_template*> m_rootsurfaces;
 	std::map<std::string, region_node*> m_id2region;
+	std::map<std::string, lib::node*> m_id2regpoint;
 	std::multimap<std::string, region_node*> m_name2region;
 	std::map<const lib::node*, region_node*> m_node2region;
 };
