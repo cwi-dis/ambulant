@@ -150,9 +150,6 @@ transition_engine_barwipe::compute()
 	int xcur = dstrect.m_left + int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
 //	int ycur = dstrect.m_top + int(m_progress*(dstrect.m_bottom - dstrect.m_top) + 0.5);
-	m_oldrect = lib::screen_rect<int>(
-		lib::point(xcur, dstrect.m_top),
-		lib::point(dstrect.m_right, dstrect.m_bottom));
 	m_newrect = lib::screen_rect<int>(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(xcur, dstrect.m_bottom));
@@ -166,7 +163,6 @@ transition_engine_boxwipe::compute()
 	int xcur = dstrect.m_left + int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 	int ycur = dstrect.m_top + int(m_progress*(dstrect.m_bottom - dstrect.m_top) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
-	m_oldrect = dstrect;
 	m_newrect = lib::screen_rect<int>(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(xcur, ycur));
@@ -183,7 +179,6 @@ transition_engine_fourboxwipe::compute()
 	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = (dstrect.m_right - dstrect.m_left)/2;
 	clear();
-	m_oldrect = dstrect;
 	m_newrectlist.push_back(lib::screen_rect<int>(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(dstrect.m_left+half_width, dstrect.m_top+half_height)));
@@ -208,7 +203,6 @@ transition_engine_barndoorwipe::compute()
 	int half_width = int(m_progress*(xmid - dstrect.m_left) + 0.5);
 //	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = (dstrect.m_right - dstrect.m_left)/2;
-	m_oldrect = dstrect;
 	m_newrect = lib::screen_rect<int>(
 		lib::point(xmid-half_width, dstrect.m_top),
 		lib::point(xmid+half_width, dstrect.m_bottom));

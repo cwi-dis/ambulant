@@ -51,7 +51,8 @@
  */
 
 
-// Environment for testing design classes
+//#define WITH_NONE_VIDEO
+//#define WITH_FFMPEG_VIDEO
 
 #include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
@@ -63,7 +64,6 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
-#define WITH_NONE_VIDEO
 #ifdef WITH_NONE_VIDEO
 #include "ambulant/gui/none/none_factory.h"
 #endif
@@ -107,8 +107,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	m_df = new net::datasource_factory();
 	
 #ifdef WITH_FFMPEG
+#ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	m_df->add_video_factory(new net::ffmpeg_video_datasource_factory());
+#endif
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	m_df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");

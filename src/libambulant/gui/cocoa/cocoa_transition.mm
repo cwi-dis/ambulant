@@ -84,34 +84,16 @@ cocoa_transition_blitclass_fade::update()
 }
 
 void
-cocoa_transition_blitclass_r1r2::update()
+cocoa_transition_blitclass_rect::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_r1r2::update(%f)", m_progress);
-	lib::screen_rect<int> oldrect_whole = m_oldrect;
 	lib::screen_rect<int> newrect_whole = m_newrect;
-	oldrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole.translate(m_dst->get_global_topleft());
-	NSRect cocoa_oldrect_whole = [view NSRectForAmbulantRect: &oldrect_whole];
 	NSRect cocoa_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
-
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
-	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
-	NSRectFill(cocoa_dstrect_whole);
-#endif
-
-	[oldsrc drawInRect: cocoa_oldrect_whole 
-		fromRect: cocoa_oldrect_whole
-		operation: NSCompositeCopy
-		fraction: 1.0];
 
 	[newsrc drawInRect: cocoa_newrect_whole 
 		fromRect: cocoa_newrect_whole
@@ -160,12 +142,11 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 }
 
 void
-cocoa_transition_blitclass_rlistr2::update()
+cocoa_transition_blitclass_rectlist::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_rlistr2::update(%f)", m_progress);
 	lib::logger::get_logger()->trace("cocoa_transition_blitclass_rlistr2: not yet implemented");
@@ -180,12 +161,11 @@ cocoa_transition_blitclass_rlistr2::update()
 }
 
 void
-cocoa_transition_blitclass_polyr2::update()
+cocoa_transition_blitclass_poly::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polyr2::update(%f)", m_progress);
 	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polyr2: not yet implemented");
@@ -200,12 +180,11 @@ cocoa_transition_blitclass_polyr2::update()
 }
 
 void
-cocoa_transition_blitclass_polylistr2::update()
+cocoa_transition_blitclass_polylist::update()
 {
 	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
-	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylistr2::update(%f)", m_progress);
 	lib::logger::get_logger()->trace("cocoa_transition_blitclass_polylistr2: not yet implemented");

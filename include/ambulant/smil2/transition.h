@@ -92,9 +92,9 @@ class transition_engine {
 	double m_time2progress;
 };
 
-class transition_blitclass_r1r2 : public transition_engine {
+class transition_blitclass_rect : public transition_engine {
   protected:
-	lib::screen_rect<int> m_oldrect, m_newrect;
+	lib::screen_rect<int> m_newrect;
 };
 
 class transition_blitclass_r1r2r3r4 : public transition_engine {
@@ -102,27 +102,25 @@ class transition_blitclass_r1r2r3r4 : public transition_engine {
 	lib::screen_rect<int> m_oldsrcrect, m_olddstrect, m_newsrcrect, m_newdstrect;
 };
 
-class transition_blitclass_rlistr2 : public transition_engine {
+class transition_blitclass_rectlist : public transition_engine {
   public:
-	~transition_blitclass_rlistr2() { clear(); }
+	~transition_blitclass_rectlist() { clear(); }
   protected:
 	void clear() { m_newrectlist.clear(); };
 	std::vector< lib::screen_rect<int> > m_newrectlist;
-	lib::screen_rect<int> m_oldrect;
 };
 
-class transition_blitclass_polyr2 : public transition_engine {
+class transition_blitclass_poly : public transition_engine {
   public:
-	~transition_blitclass_polyr2() { clear(); }
+	~transition_blitclass_poly() { clear(); }
   protected:
 	void clear() { m_newpolygon.clear(); };
 	std::vector<lib::point> m_newpolygon;
-	lib::screen_rect<int> m_oldrect;
 };
 
-class transition_blitclass_polylistr2 : public transition_engine {
+class transition_blitclass_polylist : public transition_engine {
   public:
-	~transition_blitclass_polylistr2() { clear(); }
+	~transition_blitclass_polylist() { clear(); }
   protected:
 	void clear() { m_newpolygonlist.clear(); };
 	std::vector< std::vector<lib::point> > m_newpolygonlist;
@@ -135,72 +133,72 @@ class transition_blitclass_fade : public transition_engine {
 
 /////////////////////////////
 
-class transition_engine_barwipe : virtual public transition_blitclass_r1r2 {
+class transition_engine_barwipe : virtual public transition_blitclass_rect {
   protected:
     void compute();
 };
 
-class transition_engine_boxwipe : virtual public transition_blitclass_r1r2 {
+class transition_engine_boxwipe : virtual public transition_blitclass_rect {
   protected:
     void compute();
 };
 
-class transition_engine_fourboxwipe : virtual public transition_blitclass_rlistr2 {
+class transition_engine_fourboxwipe : virtual public transition_blitclass_rectlist {
   protected:
     void compute();
 };
 
-class transition_engine_barndoorwipe : virtual public transition_blitclass_r1r2 {
+class transition_engine_barndoorwipe : virtual public transition_blitclass_rect {
   protected:
     void compute();
 };
 
-class transition_engine_diagonalwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_diagonalwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_miscdiagonalwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_miscdiagonalwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_veewipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_veewipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_barnveewipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_barnveewipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_zigzagwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_zigzagwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_barnzigzagwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_barnzigzagwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_bowtiewipe : virtual public transition_blitclass_polylistr2 {
+class transition_engine_bowtiewipe : virtual public transition_blitclass_polylist {
   protected:
     void compute();
 };
 
-class transition_engine_doublesweepwipe : virtual public transition_blitclass_polylistr2 {
+class transition_engine_doublesweepwipe : virtual public transition_blitclass_polylist {
   protected:
     void compute();
 };
 
-class transition_engine_saloondoorwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_saloondoorwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
 
-class transition_engine_windshieldwipe : virtual public transition_blitclass_polyr2 {
+class transition_engine_windshieldwipe : virtual public transition_blitclass_poly {
   protected:
     void compute();
 };
