@@ -103,7 +103,7 @@ cocoa_active_image_renderer::start_outtransition(lib::transition_info *info)
 }
 
 void
-cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
@@ -169,7 +169,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect);
+		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong

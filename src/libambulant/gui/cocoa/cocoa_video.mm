@@ -78,7 +78,7 @@ cocoa_video_renderer::cocoa_video_renderer(
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	event_processor *evp)
-:	active_basic_renderer(context, cookie, node, evp),
+:	renderer_playable(context, cookie, node, evp),
 	m_url(node->get_url("src")),
 	m_dest(NULL),
 	m_movie(NULL),
@@ -141,7 +141,7 @@ cocoa_video_renderer::stop()
 {
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	if (m_dest) m_dest->renderer_done();
+	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
 		AM_DBG logger::get_logger()->trace("cocoa_active_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
 		[m_movie_view stop: NULL];
@@ -155,7 +155,7 @@ cocoa_video_renderer::stop()
 	}
 	[pool release];
 	m_lock.leave();
-	stopped_callback();
+	m_context->stopped(m_cookie);
 }
 
 void
@@ -176,11 +176,11 @@ cocoa_video_renderer::poll_playing()
 	AM_DBG lib::logger::get_logger()->trace("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
 	m_lock.leave();
 	if (is_stopped)
-		stopped_callback();
+		m_context->stopped(m_cookie);
 }
 
 void
-cocoa_video_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
@@ -222,6 +222,14 @@ cocoa_video_renderer::redraw(const screen_rect<int> &dirty, abstract_window *win
 	}
 	
 	m_lock.leave();
+}
+
+void 
+cocoa_video_renderer::user_event(const point &where, int what)
+{
+	if (what == user_event_click) m_context->clicked(m_cookie, 0);
+	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
+	else assert(0);
 }
 
 } // namespace cocoa

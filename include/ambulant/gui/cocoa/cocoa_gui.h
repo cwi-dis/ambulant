@@ -65,21 +65,20 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_window : public common::abstract_window {
+class cocoa_window : public common::gui_window {
   public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::surface_source *region)
-  	:	common::abstract_window(region),
+  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
+  	:	common::gui_window(handler),
   		m_view(_view) {};
 	~cocoa_window();
   		
 	void need_redraw(const lib::screen_rect<int> &r);
-	void mouse_region_changed();
+	void need_events(bool want);
 	
 	void redraw(const lib::screen_rect<int> &r);
 	void user_event(const lib::point &where, int what = 0);
 
 	void *view() { return m_view; }
-	const common::gui_region &get_mouse_region() { return m_region->get_mouse_region(); }
 	
   private:
     void *m_view;
@@ -91,7 +90,7 @@ class cocoa_window_factory : public common::window_factory {
   	cocoa_window_factory(void *view)
   	:	m_defaultwindow_view(view) {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::surface_source *region);
+	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::gui_region *new_mouse_region();
 	common::renderer *new_background_renderer(const common::region_info *src);
   private:

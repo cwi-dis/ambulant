@@ -93,7 +93,7 @@ gui::none::none_playable::stop()
 }
 
 void
-gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_src, (void*)m_dst);
 }
@@ -117,9 +117,9 @@ gui::none::none_window_factory::new_background_renderer(region_info *src)
 	return new none_background_renderer(src);
 }
 
-abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
+gui_window *
+gui::none::none_window_factory::new_window(const std::string &name, size bounds, gui_events *handler)
 {
-	return new none_window(name, bounds, region);
+	return new none_window(name, bounds, handler);
 }
 

@@ -96,6 +96,7 @@ active_renderer::~active_renderer()
 	AM_DBG lib::logger::get_logger()->trace("~active_renderer(0x%x)", (void *)this);
 	if (m_intransition) delete m_intransition;
 	if (m_outtransition) delete m_outtransition;
+	if (m_alignment) delete m_alignment;
 }
 
 void
@@ -147,7 +148,7 @@ active_renderer::stop()
 {
 	// XXXX Need to handle case that no data (or not all data) has come in yet
 	if (m_dest)
-		m_dest->renderer_done();
+		m_dest->renderer_done(this);
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
 
@@ -237,7 +238,7 @@ global_playable_factory::new_playable(
     return m_default_factory->new_playable(context, cookie, node, evp);
 }
 void 
-active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window)
+active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::redraw (this = 0x%x)", (void *) this);
 }
@@ -249,6 +250,7 @@ active_video_renderer::active_video_renderer(
 	lib::event_processor * evp,
 	net::datasource_factory * df)
 :	common::active_basic_renderer (context, cookie, node, evp),
+	m_alignment(NULL),
 	m_evp (evp),
 	m_is_playing(false),
 	m_is_paused(false)

@@ -72,6 +72,7 @@ class mms_layout_manager : public common::layout_manager {
 	common::surface *get_surface(const lib::node *node);
 	common::animation_notification *get_animation_notification(const lib::node *node) { return NULL; };
 	common::animation_destination *get_animation_destination(const lib::node *node) { return NULL; };
+	common::alignment *get_alignment(const lib::node *node) { return NULL; };
   private:
   	common::surface_template *m_audio_rgn, *m_text_rgn, *m_image_rgn;
 };

@@ -69,7 +69,7 @@ namespace cocoa {
 void
 cocoa_transition_blitclass_fade::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = [view getTransitionNewSource];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_fade::update(%f)", m_progress);
@@ -86,7 +86,7 @@ cocoa_transition_blitclass_fade::update()
 void
 cocoa_transition_blitclass_r1r2::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *oldsrc = [view getTransitionOldSource];
@@ -122,7 +122,7 @@ cocoa_transition_blitclass_r1r2::update()
 void
 cocoa_transition_blitclass_r1r2r3r4::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *oldsrc = [view getTransitionOldSource];
@@ -162,7 +162,7 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 void
 cocoa_transition_blitclass_rlistr2::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *oldsrc = [view getTransitionOldSource];
@@ -182,7 +182,7 @@ cocoa_transition_blitclass_rlistr2::update()
 void
 cocoa_transition_blitclass_polyr2::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *oldsrc = [view getTransitionOldSource];
@@ -202,7 +202,7 @@ cocoa_transition_blitclass_polyr2::update()
 void
 cocoa_transition_blitclass_polylistr2::update()
 {
-	cocoa_window *window = (cocoa_window *)m_dst->get_abstract_window();
+	cocoa_window *window = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *oldsrc = [view getTransitionOldSource];

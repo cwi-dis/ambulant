@@ -67,7 +67,7 @@ namespace gui {
 namespace cocoa {
 
 class cocoa_video_renderer : 
-	public active_basic_renderer {
+	public renderer_playable {
   public:
 	cocoa_video_renderer(
 		playable_notification *context,
@@ -79,19 +79,12 @@ class cocoa_video_renderer :
 	void start(double where);
 	void freeze() {}
 	void stop();
-	void pause() {}
-	void resume() {}
 	void wantclicks(bool want) { if (m_dest) m_dest->need_events(want); }
 
 	std::pair<bool, double> get_dur();
 	
-	renderer *get_renderer() { return this; }
-	void set_surface(surface *dest) { m_dest = dest; }
-	void set_intransition(lib::transition_info *info) {  }
-	void start_outtransition(lib::transition_info *info) {  }
-	surface *get_surface() { return m_dest;}
-	void user_event(const point &where, int what = 0) { user_event_callback(what); }
-	void redraw(const screen_rect<int> &dirty, abstract_window *window);
+	void user_event(const point &where, int what = 0);
+	void redraw(const screen_rect<int> &dirty, gui_window *window);
   private:
 	void poll_playing();
 	std::string m_url;

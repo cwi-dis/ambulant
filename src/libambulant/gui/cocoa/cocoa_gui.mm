@@ -125,22 +125,20 @@ void
 cocoa_window::redraw(const screen_rect<int> &r)
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	m_region->redraw(r, this);
+	m_handler->redraw(r, this);
 }
 
 void
 cocoa_window::user_event(const point &where, int what)
 {
 	AM_DBG logger::get_logger()->trace("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
-	m_region->user_event(where, what);
+	m_handler->user_event(where, what);
 }
 
 void
-cocoa_window::mouse_region_changed()
+cocoa_window::need_events(bool want)
 {
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed(0x%x)", (void *)this);
-	bool is_empty = get_mouse_region().is_empty();
-	AM_DBG logger::get_logger()->trace("cocoa_window::mouse_region_changed: empty=%d", is_empty);
+	AM_DBG logger::get_logger()->trace("cocoa_window::need_events(0x%x, %d)", (void *)this, want);
 		
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
@@ -201,15 +199,15 @@ cocoa_renderer_factory::new_playable(
 	return rv;
 }
 
-abstract_window *
-cocoa_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
+gui_window *
+cocoa_window_factory::new_window(const std::string &name, size bounds, gui_events *handler)
 {
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it
 		logger::get_logger()->error("cocoa_window_factory: cannot open second toplevel window yet");
 		return NULL;
 	}
-	cocoa_window *window = new cocoa_window(name, bounds, m_defaultwindow_view, region);
+	cocoa_window *window = new cocoa_window(name, bounds, m_defaultwindow_view, handler);
 	// And we need to inform the object about it
 	AmbulantView *view = (AmbulantView *)window->view();
 	// And set the window size
@@ -218,10 +216,8 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, surface_s
 	NSSize cocoa_size = NSMakeSize(bounds.w + [view frame].origin.x, bounds.h + [view frame].origin.y);
 	[[view window] setContentSize: cocoa_size];
 	AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
-	AM_DBG NSLog(@"Calling mouse_region_changed");
-	window->mouse_region_changed();
 	[[view window] makeKeyAndOrderFront: view];
-	return (abstract_window *)window;
+	return (gui_window *)window;
 }
 
 gui_region *

@@ -82,7 +82,7 @@ class cocoa_active_image_renderer : public active_final_renderer {
 	~cocoa_active_image_renderer();
 
 	void start(double where);
-    void redraw(const screen_rect<int> &dirty, abstract_window *window);
+    void redraw(const screen_rect<int> &dirty, gui_window *window);
 	void start_outtransition(lib::transition_info *info);
   private:
 	void transition_step();

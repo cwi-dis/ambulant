@@ -94,7 +94,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 	void freeze() {};
     void speed_changed() {};
     void data_avail();
-    void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+    void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where, int what=0) {};
 	void playdone();
@@ -103,6 +103,7 @@ class sdl_active_audio_renderer : public common::active_basic_renderer, public l
 	common::surface *get_surface() { abort(); }
 	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
 	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
+	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 		  
 	static void sdl_callback(Uint8 *stream, int len);
   private:

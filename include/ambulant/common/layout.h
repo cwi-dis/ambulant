@@ -71,9 +71,26 @@ class region_info;
 class animation_destination;
 class renderer; // forward
 class surface; // forward
-class surface_source; // forward
+class gui_events; // forward
 
 //class mouse_region_factory; // forward
+
+// class alignment is a pure virtual baseclass used for aligning an
+// image in a region
+class alignment {
+  public:
+	virtual ~alignment() {};
+	
+	virtual lib::point get_image_fixpoint(lib::size image_size) const = 0;
+	virtual lib::point get_surface_fixpoint(lib::size surface_size) const = 0;
+};
+
+// animation_notification is where an animator will send a notification when it
+// is has changed parameters on an animation destination.
+class animation_notification {
+  public:
+	virtual void animated() = 0;
+};
 
 class gui_region {
   public:
@@ -107,67 +124,48 @@ class gui_region {
         }
 };
 
-// abstract_window is a virtual baseclass for GUI-dependent window classes.
+// gui_window is a virtual baseclass for GUI-dependent window classes.
 // It is the only interface that the ambulant core code uses to talk to the
 // GUI layer.
-class abstract_window {
+class gui_window {
   protected:
-	abstract_window(surface_source *region)
-	:   m_region(region) {};
+	gui_window(gui_events *handler)
+	:   m_handler(handler) {};
   public:
-	virtual ~abstract_window() {}
+	virtual ~gui_window() {}
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
-	virtual void mouse_region_changed() = 0;
+	virtual void need_events(bool want) = 0;
   protected:
-	surface_source *m_region;
+	gui_events *m_handler;
 };
 
 // User event types that may be used with renderer::user_event()
 enum user_event_type {user_event_click, user_event_mouse_over};
 
+// The pure virtual baseclass for both toplevel ambulant windows (as
+// seen from the GUI code) and renderers.
+// It is used to commmunicate redraw requests and mouse ckicks
+// and such from the GUI window all the way down to
+// the renderer.
+class gui_events  {
+  public:
+	virtual void redraw(const lib::screen_rect<int> &dirty, gui_window *window) = 0;
+	virtual void user_event(const lib::point &where, int what = 0) = 0;
+};
+
 // renderer is an pure virtual baseclass for renderers that
 // render to a region (as opposed to audio renderers, etc).
-class renderer {
+class renderer : public gui_events {
   public:
 	virtual ~renderer() {};
 	
 	virtual void set_surface(surface *destination) = 0;
+	virtual void set_alignment(alignment *align) = 0;
 	virtual void set_intransition(lib::transition_info *info) = 0;
 	virtual void start_outtransition(lib::transition_info *info) = 0;
-	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	// XXXX This is a hack.
 	virtual surface *get_surface() = 0;
 
-};
-
-// The pure virtual baseclassfor subregions
-// themselves. It is used to commmunicate redraw requests and mouse ckicks
-// and such from the GUI window all the way down to
-// the renderer.
-// XXX This class should go!
-class surface_source : public renderer {
-  public:
-	virtual const gui_region& get_mouse_region() const = 0;
-	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
-	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
-};
-
-// class alignment is a pure virtual baseclass used for aligning an
-// image in a region
-class alignment {
-  public:
-	virtual ~alignment() {};
-	
-	virtual lib::point get_image_fixpoint(lib::size image_size) const = 0;
-	virtual lib::point get_surface_fixpoint(lib::size surface_size) const = 0;
-};
-
-// animation_notification is where an animator will send a notification when it
-// is has changed parameters on an animation destination.
-class animation_notification {
-  public:
-	virtual void animated() = 0;
 };
 
 // surface is a pure virtual baseclass for a region of screenspace.
@@ -178,7 +176,7 @@ class surface {
 	virtual ~surface() {};
 	
 	virtual void show(renderer *renderer) = 0;
-	virtual void renderer_done() = 0;
+	virtual void renderer_done(renderer *renderer) = 0;
 
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void need_redraw() = 0;
@@ -189,15 +187,15 @@ class surface {
 	
 	// For a given image size, return portion of source image to display, and where
 	// to display it. The renderer must do the scaling.
-	virtual void set_alignment(const alignment *align) = 0;
-	virtual const alignment *get_alignment() const = 0;
-	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const = 0;
+//	virtual void set_alignment(const alignment *align) = 0;
+//	virtual const alignment *get_alignment() const = 0;
+	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, alignment *align) const = 0;
 	
 	// Get object holding SMIL region parameters for querying
 	virtual const region_info *get_info() const = 0;
 	
 	// Get the OS window for this surface
-	virtual abstract_window *get_abstract_window() = 0;
+	virtual gui_window *get_gui_window() = 0;
 };
 
 // window_factory is subclassed by the various GUI implementations.
@@ -206,7 +204,7 @@ class surface {
 class window_factory {
   public:
 	virtual ~window_factory() {}
-	virtual abstract_window *new_window(const std::string &name, lib::size bounds, surface_source *region) = 0;
+	virtual gui_window *new_window(const std::string &name, lib::size bounds, gui_events *handler) = 0;
 	virtual gui_region *new_mouse_region() = 0;
 	virtual renderer *new_background_renderer(const region_info *src) = 0;
 	virtual void window_done(const std::string &name) {} 
@@ -231,6 +229,7 @@ class layout_manager {
   public:
 	virtual ~layout_manager() {};
 	virtual surface *get_surface(const lib::node *node) = 0;
+	virtual alignment *get_alignment(const lib::node *node) = 0;
 	virtual animation_notification *get_animation_notification(const lib::node *node) = 0;
 	virtual animation_destination *get_animation_destination(const lib::node *node) = 0;
 };

@@ -79,6 +79,7 @@ class smil_layout_manager : public common::layout_manager {
 	~smil_layout_manager();
 	
 	common::surface *get_surface(const lib::node *node);
+	common::alignment *get_alignment(const lib::node *node);
 	common::animation_notification *get_animation_notification(const lib::node *node);
 	common::animation_destination *get_animation_destination(const lib::node *node);
 	common::surface_template *get_region(const lib::node *n);
@@ -95,7 +96,6 @@ class smil_layout_manager : public common::layout_manager {
 	common::surface_template *create_top_surface(common::window_factory *wf, 
 		const region_node *rn, common::renderer *bgrenderer);
 	
-	common::alignment *get_alignment(const lib::node *node);
 	
 	const common::schema *m_schema;
 	common::surface_factory *m_surface_factory;

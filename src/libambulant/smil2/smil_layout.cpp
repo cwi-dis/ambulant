@@ -459,7 +459,6 @@ smil_layout_manager::get_surface(const lib::node *n) {
 		return get_default_rendering_surface(n);
 	}
 	common::surface *surf = stemp->activate();
-	surf->set_alignment(get_alignment(n));
 	return surf;
 }
 

@@ -77,7 +77,7 @@ cocoa_active_text_renderer::~cocoa_active_text_renderer()
 }
 
 void
-cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();

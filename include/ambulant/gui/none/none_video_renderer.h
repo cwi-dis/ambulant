@@ -71,7 +71,7 @@ class none_video_renderer : public common::active_video_renderer {
 
 	void show_frame(char* frame, int size);
 		
-    void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+    void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where, int what=0) {};
 

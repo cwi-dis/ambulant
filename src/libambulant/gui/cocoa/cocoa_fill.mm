@@ -107,11 +107,11 @@ void
 cocoa_active_fill_renderer::stop()
 {
 	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.stop(0x%x)", (void *)this);
-	if (m_dest) m_dest->renderer_done();
+	if (m_dest) m_dest->renderer_done(this);
 }
 
 void
-cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
@@ -172,8 +172,16 @@ cocoa_active_fill_renderer::transition_step()
 	if (m_dest) m_dest->need_redraw();
 }
 
+void 
+cocoa_active_fill_renderer::user_event(const point &where, int what)
+{
+	if (what == user_event_click) m_context->clicked(m_cookie, 0);
+	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
+	else assert(0);
+}
+
 void
-cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window)
+cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {
 	const screen_rect<int> &r =  m_dst->get_rect();
 	AM_DBG logger::get_logger()->trace("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());

@@ -140,9 +140,10 @@ class active_renderer : public active_basic_renderer {
 	virtual void resume() {}
 	virtual void wantclicks(bool want);
 
-	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
+	virtual void redraw(const lib::screen_rect<int> &dirty, gui_window *window) = 0;
 	virtual void user_event(const lib::point &where, int what = 0) { user_event_callback(what); }
 	virtual void set_surface(surface *dest) { m_dest = dest; }
+	virtual void set_alignment(alignment *align) { m_alignment = align; }
 	virtual void set_intransition(lib::transition_info *info) { m_intransition = info; }
 	virtual void start_outtransition(lib::transition_info *info);
 	virtual surface *get_surface() { return m_dest;}
@@ -153,6 +154,7 @@ class active_renderer : public active_basic_renderer {
 
   	net::datasource *m_src;
 	surface *m_dest;
+	alignment *m_alignment;
 	lib::transition_info *m_intransition, *m_outtransition;
 //	lib::event *m_readdone;
 };
@@ -215,7 +217,7 @@ class active_video_renderer : public common::active_basic_renderer {
   	bool is_playing() { return m_is_playing; };  
 	
 	virtual void show_frame(char* frame, int size) {};
-    virtual void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+    virtual void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	virtual void wantclicks(bool want) {};
     virtual void user_event(const lib::point &where, int what=0) {};
 	
@@ -229,6 +231,7 @@ class active_video_renderer : public common::active_basic_renderer {
 	void playdone() {};
 
 	virtual void set_surface(common::surface *dest);
+	void set_alignment(alignment *align) { m_alignment = align; };
 	void set_intransition(lib::transition_info *info) {  }
 	void start_outtransition(lib::transition_info *info) {  }
 	virtual common::surface *get_surface();
@@ -236,7 +239,8 @@ class active_video_renderer : public common::active_basic_renderer {
 	
 		
   protected:
-	surface *m_dest; 
+	surface *m_dest;
+	alignment *m_alignment;
   
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
@@ -259,6 +263,7 @@ class background_renderer : public renderer {
 		m_dst(NULL) {}
 	virtual ~background_renderer() {}
 	virtual void set_surface(surface *destination) { m_dst = destination; }
+	virtual void set_alignment(alignment *align) { };
 	virtual void user_event(const lib::point &where, int what = 0) { /* Ignore, for now */ }
 	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
 	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
@@ -284,7 +289,7 @@ class renderer_playable : public playable, public renderer {
 		m_activated(false), 
 		m_wantclicks(false) {
 	}
-	
+		
 	// common::playable interface
 	void pause() {}
 	void resume() {}
@@ -296,6 +301,7 @@ class renderer_playable : public playable, public renderer {
 	
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
+	void set_alignment(common::alignment *align) {  }
 	void set_intransition(lib::transition_info *info) {  }
 	void start_outtransition(lib::transition_info *info) {  }
 	surface *get_surface() { return m_dest;}

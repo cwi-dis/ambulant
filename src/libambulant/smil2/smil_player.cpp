@@ -409,6 +409,8 @@ smil_player::new_playable(const lib::node *n) {
 		if (rend) {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
+			alignment *align = m_layout_manager->get_alignment(n);
+			rend->set_alignment(align);
 		} else {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface not set because rend == NULL");
 		}
@@ -420,6 +422,12 @@ smil_player::new_playable(const lib::node *n) {
 
 // Destroys the playable of the node (checkpoint).
 void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
+#if 1
+	std::string tag = n->get_local_name();
+	const char *pid = n->get_attribute("id");
+	
+	/*AM_DBG*/ m_logger->trace("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
+#endif
 	np->stop();
 	np->release();
 }

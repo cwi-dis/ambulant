@@ -76,7 +76,7 @@ class none_area_renderer : public common::renderer_playable {
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
   private:
 	lib::screen_rect<int> *m_rgn;
 };

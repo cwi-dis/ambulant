@@ -75,7 +75,7 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region : public surface_template, public surface_source {
+class passive_region : public surface_template, public surface, public gui_events {
 	friend class active_region;
 
   protected:
@@ -84,13 +84,12 @@ class passive_region : public surface_template, public surface_source {
   public:
 	virtual ~passive_region();
 	
-	virtual void show(active_region *cur);
-	virtual void active_region_done(active_region *cur);
-	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
-	virtual void user_event(const point &where, int what = 0);
-	virtual void mouse_region_changed();
+	void show(renderer *cur);
+	void renderer_done(renderer *renderer);
+	void redraw(const screen_rect<int> &dirty, gui_window *window);
+	void user_event(const point &where, int what = 0);
         
-	virtual common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
+	common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
 	surface *activate();
 	void animated();
 	
@@ -98,26 +97,30 @@ class passive_region : public surface_template, public surface_source {
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
 	virtual const point &get_global_topleft() const;
 	const passive_region* get_parent() const { return m_parent; }
-	const gui_region& get_mouse_region() const { return *m_mouse_region; }
+//	const gui_region& get_mouse_region() const { return *m_mouse_region; }
 	const region_info *get_info() const { return m_info; }	
-	virtual abstract_window *get_abstract_window() { return m_parent->get_abstract_window(); }
+	gui_window *get_gui_window() { return m_parent->get_gui_window(); }
+	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect, common::alignment *align) const;
+	virtual void need_redraw(const screen_rect<int> &r);
+	void need_redraw();
+	virtual void need_events(bool want);
 		
   protected:
-	virtual void need_redraw(const screen_rect<int> &r);
-	virtual void need_events(gui_region *rgn);
-	virtual void clear_cache();
+	void clear_cache();
   private:
+	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
+#if 0
 	// This is part of the surface interface that we don't export
-	void show(renderer *rend) {abort();};
-	void renderer_done() {abort();};
+	void show(renderer *rend);
 	void need_redraw() {abort();};
 	void need_events(bool want) {abort();};
 	// And some renderer interface we don't support:
 	void set_surface(surface *dest) {abort(); }
 	surface *get_surface() {abort(); return 0;}
+#endif
 
 	void need_bounds();
-	void draw_background(const screen_rect<int> &r, abstract_window *window);
+	void draw_background(const screen_rect<int> &r, gui_window *window);
   protected:
   	std::string m_name;					// for debugging
 	const char *m_name_str;					// ditto
@@ -126,18 +129,16 @@ class passive_region : public surface_template, public surface_source {
   	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
 	point m_window_topleft;				// region top-left in window coordinate space XXXX do lazy
   	passive_region *m_parent;			// parent region
-  	std::list<active_region *> m_active_regions; // active regions currently responsible for redraws
-	active_region *m_bg_active_region;  // The background
+  	std::list<renderer *> m_renderers; // active regions currently responsible for redraws
 	typedef std::list<passive_region*> children_list_t;
 	typedef std::map<zindex_t, children_list_t> children_map_t;
 	children_map_t m_active_children;	// all subregions
-	gui_region *m_mouse_region;   // The area in which we want mouse clicks
+//	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
+//	const alignment *m_alignment;
 	renderer *m_bg_renderer;  // Background renderer
-#ifndef OLD_SUBREGIONS		
 	children_map_t m_subregions;	// all active children subregions
 	children_map_t& get_subregions() { return m_subregions;}
-#endif
 };
 
 class passive_root_layout : public passive_region {
@@ -145,64 +146,11 @@ class passive_root_layout : public passive_region {
 	passive_root_layout(const region_info *info, size bounds, renderer *bgrenderer, window_factory *wf);
 	~passive_root_layout();
 	void need_redraw(const screen_rect<int> &r);
-	void mouse_region_changed();
+	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
-	abstract_window *get_abstract_window() { return m_gui_window; }
+	gui_window *get_gui_window() { return m_gui_window; }
   private:
-	abstract_window *m_gui_window;
-};
-
-
-#ifdef __OBJC__
-// This is a workaround for a problem when using gcc 3.3 to compile
-// ObjC++
-;
-#endif
-
-class active_region : public surface, public surface_source {
-  public:
-	active_region(passive_region *const source)
-	:	m_source(source),
-		m_renderer(NULL),
-		m_mouse_region(NULL),
-		m_alignment(NULL)
-        {
-			if (source->m_mouse_region) {
-				m_mouse_region = source->m_mouse_region->clone();
-				m_mouse_region->clear();
-			}
-        }
-	virtual ~active_region();
-	
-	virtual void show(renderer *rend);
-	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
-	virtual void user_event(const point &where, int what = 0);
-	virtual void need_redraw(const screen_rect<int> &r);
-	virtual void need_redraw();
-	virtual void need_events(bool want);
-
-	virtual void renderer_done();	
-	const screen_rect<int>& get_rect() const { return m_source->get_rect(); }
-	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
-	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
-	const passive_region* get_parent() const { return m_source->get_parent(); }
-	const gui_region& get_mouse_region() const { return *m_mouse_region; }
-	const region_info *get_info() const { return m_source->m_info; }
-	void set_alignment(const alignment *align) { m_alignment = align; }
-	const alignment *get_alignment() const { return m_alignment; }
-	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
-	abstract_window *get_abstract_window() { return m_source->get_abstract_window(); }
-	// And some renderer interface we don't support:
-	void set_surface(surface *dest) {abort(); }
-	surface *get_surface() {abort(); return 0;}
-
-  private:
-	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
-  protected:
-	passive_region *const m_source;
-	renderer *m_renderer;
-	gui_region *m_mouse_region;   // The area in which we want mouse clicks
-	const alignment *m_alignment;
+	gui_window *m_gui_window;
 };
 
 class smil_surface_factory : public surface_factory {

@@ -63,21 +63,20 @@ namespace gui {
 
 namespace none {
 
-class none_window : public common::abstract_window {
+class none_window : public common::gui_window {
   public:
-  	none_window(const std::string &name, lib::size bounds, common::surface_source *region)
-  	:	common::abstract_window(region) {};
+  	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
+  	:	common::gui_window(handler) {};
   		
-	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
-//	void need_events(lib::gui_region *rgn) {};
-	void mouse_region_changed() {};
+	void need_redraw(const lib::screen_rect<int> &r) { m_handler->redraw(r, this); };
+	void need_events(bool want) {};
 };
 
 class none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::surface_source *region);
+	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::gui_region *new_mouse_region() { return NULL; }
 	common::renderer *new_background_renderer(common::region_info *src);
 };
@@ -97,7 +96,7 @@ class none_playable : public common::active_playable {
 		const lib::node *node);
 	
 	void start(double where);
-	void redraw(const lib::screen_rect<int> &r, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &r, common::gui_window *window);
 	void stop();
 	void pause() {};
 	void resume() {};
@@ -111,7 +110,7 @@ class none_background_renderer : public common::background_renderer {
 	none_background_renderer(common::region_info *src)
 	:   background_renderer(src) {}
 	~none_background_renderer() {}
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 };
 
 class common::region_info;
