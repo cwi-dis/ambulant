@@ -142,7 +142,7 @@ class basic_scanner {
  	typedef CharType char_type;
  	typedef std::basic_string<char_type> string_type;
 	typedef typename string_type::size_type size_type;
-	enum {EOS = 0, NOT_DELIM = 'n'};
+	enum {EOS = 0, NUMBER = 'd', NAME = 'n', SPACE = 'w'};
 	
 	// Creates a basic_scanner for the source string 's' and delimiters 'd'.
 	basic_scanner(const string_type& s, const string_type& d)
@@ -154,9 +154,11 @@ class basic_scanner {
 	// Returns the next token or EOS if none is available.
 	// The current position is at the start of the next token or at end.
 	// The token returned is either a delimiter character
-	// or the meta-character NOT_DELIM.
-	// The NOT_DELIM token represents the occurence of a 
-	// substring matching the regex [^delim]+
+	// or the meta-character NAME, NUMBER or SPACE.
+	// The NAME token represents a sequence of one or more name characters,
+	// the NUMBER a sequence of one or more digits, and
+	// the SPACE a sequence of one or more space chars.
+	// A digit can not start a name otherwise digits are name characters.  
 	char next() {
 		tok = EOS;
 		tokval = "";
@@ -166,7 +168,14 @@ class basic_scanner {
 			tokval = tok = delims[ix];
 			pos++;
 		} else {
-			scan_not_in_set_as(delims.c_str(), NOT_DELIM);
+			if(isdigit(src[pos]))
+				scan_set_as("0123456789", NUMBER);
+			else if(isspace(src[pos])) 
+				scan_set_as(" \t\r\n", SPACE);
+			else {
+				std::string exdelims = delims + " \t\r\n";
+				scan_not_in_set_as(exdelims.c_str(), NAME);
+			}
 		}
 		toks += tok;
 		vals.push_back(tokval);
