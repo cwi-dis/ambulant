@@ -78,8 +78,11 @@ class win32_timer : public ambulant::lib::abstract_timer  {
 	// Sets the speed of this timer. 	
 	void set_speed(double speed);
 	
-	// Gets the speed of this timer.
-	// XXX: Should be called get_local_speed/get_effective_speed	
+	// Gets the speed of this timer
+	double get_speed() const { return m_speed;}
+	
+	// Gets the realtime speed of this 
+	// timer as modulated by its parent
 	double get_realtime_speed() const { return m_speed;}
 	
   private:
