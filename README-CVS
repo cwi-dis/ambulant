@@ -18,7 +18,7 @@ invocation of "autoreconf", if you have it.
    
 3. Create the autoconf helper files::
 
-	% aclocal
+	% aclocal -I m4
 
 4. Create the missing automake files and Makefile.in files::
 
