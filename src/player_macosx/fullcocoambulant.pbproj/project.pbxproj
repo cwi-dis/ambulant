@@ -113,6 +113,7 @@
 		};
 		042AF8F8053C2F020010C447 = {
 			children = (
+				04B9F60C0700511E00B78CC4,
 				04707B8806DC86B400C3B6BA,
 				04EA7C6C05D7C69600487047,
 				042AF8FA053C2F020010C447,
@@ -270,6 +271,7 @@
 				04382ABE05D7AEE600CFA029,
 				04382AC105D7AEE600CFA029,
 				04382AC205D7AEE600CFA029,
+				04B9F60A070050FB00B78CC4,
 				04382AC305D7AEE600CFA029,
 				04382AC405D7AEE600CFA029,
 				04382AC505D7AEE600CFA029,
@@ -2777,6 +2779,49 @@
 			settings = {
 			};
 		};
+		04B9F60A070050FB00B78CC4 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = plugin_engine.h;
+			path = /Users/jack/src/ambulant/include/ambulant/common/plugin_engine.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		04B9F60B070050FB00B78CC4 = {
+			fileRef = 04B9F60A070050FB00B78CC4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04B9F60C0700511E00B78CC4 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = plugin_engine.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04B9F60D0700511E00B78CC4 = {
+			fileRef = 04B9F60C0700511E00B78CC4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		04B9F6120700518600B78CC4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libltdl.a;
+			path = /usr/lib/libltdl.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		04B9F6130700518600B78CC4 = {
+			fileRef = 04B9F6120700518600B78CC4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04BF0D0D064BAE6E00D094D7 = {
 			fileRef = 32DBCF750370BD2300C91783;
 			isa = PBXBuildFile;
@@ -3646,6 +3691,7 @@
 			children = (
 				0427B2210625FD160071CD58,
 				0427B21F0625FCF20071CD58,
+				04B9F6120700518600B78CC4,
 				04508B630507E68200F0FD74,
 				048A7E3005CDB4BA003C92BF,
 				04508B3B0507E27700F0FD74,
@@ -3910,6 +3956,7 @@
 				04EA3151068AED1F00DD982C,
 				04532D9C06DCAB5400B7FC96,
 				04F545C006E4A59D0090511E,
+				04B9F60B070050FB00B78CC4,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4042,6 +4089,7 @@
 				04707B8906DC86B400C3B6BA,
 				04532D9D06DCAB5400B7FC96,
 				04F545C106E4A59D0090511E,
+				04B9F60D0700511E00B78CC4,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4069,6 +4117,7 @@
 				045BB44906258FE500A75828,
 				0427B2200625FCF20071CD58,
 				0427B2220625FD160071CD58,
+				04B9F6130700518600B78CC4,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
