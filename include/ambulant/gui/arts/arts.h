@@ -55,38 +55,35 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/gui/none/none_gui.h"
-
+#include "ambulant/net/datasource.h"
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/asb.h"
 namespace ambulant {
 using namespace lib;
     namespace gui {
-        namespace arts_renderer {
+        namespace arts {
         
-class arts_renderer_factory : public renderer_factory {
+class arts_renderer_factory : public lib::renderer_factory {
 public:
-    
     active_renderer *new_renderer(
-        event_processor *const evp,
+        lib::event_processor *const evp,
         net::passive_datasource *src,
-        const node *node);
+        lib::passive_region *dest,
+        const lib::node *node);
 
 };
 
+class arts_active_audio_renderer : public active_basic_renderer, public timer_events {
+  public:
+	arts_active_audio_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		const node *node);
+	~arts_active_audio_renderer();
 
-class arts_active_renderer : public active_renderer {
-public:
-    arts_active_renderer(
-        event_processor *const evp,
-        net::passive_datasource *src,
-        passive_region * const dest,
-        const node *node)
-        : active_renderer(evp, src, dest, node) {};
-    
-    
-    ~arts_active_renderer();
-                                            
-    
-
-private:
+	void start(double t);
+	void stop();
+	void speed_changed();
+  private:
     int arts_setup(int rate, int bits, int channels, char *name);
     int arts_play(char *data, int size);
 
@@ -95,8 +92,15 @@ private:
     int m_channels;
     int m_bits;
     char *m_name;
-
+    event *m_playdone;
+    net::active_datasource *m_ads;
+    event_processor const *m_evp;
+    net::passive_datasource *m_src;
+    lib::node const *m_node;
+	std::string m_url;
+  	
 };
+
 
 } // end namespace arts_renderer
 } // end namespace lib
