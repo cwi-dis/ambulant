@@ -36,8 +36,8 @@ To create the linux source distribution:
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
 
 
-Binary distributions:
-=====================
+Binary distribution contents
+============================
 
 All binary distribution should contain the following files:
 - README
@@ -88,3 +88,32 @@ Here are some random remarks about testing the distributions.
 - On each platform, check that the version numbers are correct in things
   like the about dialog, Get Info (Properties) in the Finder (Explorer), etc.
   
+Uploading the distributions
+===========================
+
+To be supplied.
+- Don't forget to use different filenames (so SF stats work)
+
+Updating the website
+====================
+
+To be supplied. Here are some random thoughts:
+- The design and API docs need to be uploaded
+- The SMIL documents need to be uploaded (if changed)
+
+Advertising the distributions
+=============================
+
+To be supplied. Some ideas:
+- ambulant-announce
+- ambulant-users
+- www-smil
+- W3C
+-   http://guide.apple.com/usindex.lasso
+-   http://www.apple.com/downloads/macosx/submit
+-   http://www.versiontracker.com/ (userid Jack.Jansen@oratrix.com)
+-   http://www.macshareware.net (userid jackjansen)
+-   archivist@info-mac.org
+-   adcnews@apple.com?
+-   news@macnn.com
+-   http://www.macupdate.com
