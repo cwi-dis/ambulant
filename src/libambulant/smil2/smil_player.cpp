@@ -224,6 +224,8 @@ void smil_player::started_playback() {
 void smil_player::done_playback() {
 	m_state = common::ps_done;
 	m_timer->pause();
+	if(m_system) 
+		m_system->done(this);
 }
 
 // Request to create a playable for the node.
