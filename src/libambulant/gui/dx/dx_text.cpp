@@ -94,7 +94,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 	// Prepare dx-region's pixel map
 	m_region->set_rendering_surface(m_dest);
 	m_region->set_rendering_info(ri);
-	m_region->set_background(ri->get_bgcolor());
+	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	m_region->clear();
 	
 	if(!m_src->exists()) {

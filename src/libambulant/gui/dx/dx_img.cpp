@@ -137,7 +137,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	
 	m_region->set_rendering_surface(m_dest);
 	m_region->set_rendering_info(ri);
-	m_region->set_background(ri?ri->get_bgcolor():0);
+	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	m_region->clear();
 	
 	if(!m_src->exists()) {

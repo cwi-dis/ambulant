@@ -58,6 +58,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/test_attrs.h"
 
 #include "ambulant/common/smil_player.h"
 #include "ambulant/common/mms_player.h"
@@ -77,6 +78,7 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	m_wf(0), 
 	m_rf(0),
 	m_smil_player(0),
+	m_playing(false),
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -104,6 +106,11 @@ gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
     delete m_viewport;
 }
 
+void gui::dx::dx_smil_player_impl::load_tests_filter(const std::string& url) {
+	lib::test_attrs::load_test_attrs(url);
+	m_smil_player->build_timegraph();
+}
+
 gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
 	m_logger->trace("dx_smil_player_impl::create_viewport(%d, %d)", w, h);
 	if(m_create_viewport_fn)
@@ -113,15 +120,18 @@ gui::dx::viewport* gui::dx::dx_smil_player_impl::create_viewport(int w, int h) {
 	return m_viewport;
 }
 
-bool gui::dx::dx_smil_player_impl::is_done() const { 
-	if(!m_smil_player) return true;
-	return m_smil_player->is_done();
+bool gui::dx::dx_smil_player_impl::is_done() const {
+	return m_smil_player && m_playing && m_smil_player->is_done();
+}
+
+void gui::dx::dx_smil_player_impl::update_status() {
 }
 
 bool gui::dx::dx_smil_player_impl::start() {
 	if(m_smil_player) {
 		m_logger->trace("Started playing");
 		m_smil_player->start();
+		m_playing = true;
 		return  true;
 	}
 	return false;
@@ -133,6 +143,7 @@ void gui::dx::dx_smil_player_impl::stop() {
 		m_smil_player->stop();
 		delete m_smil_player;
 		m_smil_player = 0;
+		m_playing = false;
 	}
 }
 

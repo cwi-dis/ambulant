@@ -257,6 +257,8 @@ seterror(const char *funcname, HRESULT hr){
 	LocalFree(pszmsg);
 }
 
+const lib::color_t CLR_DEFAULT = RGB(255, 255, 255);
+
 gui::dx::viewport::viewport(int width, int height, HWND hwnd) 
 :	m_width(width), m_height(height),
 	m_direct_draw(NULL),
@@ -267,7 +269,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	red_bits(8), green_bits(8), blue_bits(8),
 	lo_red_bit(16), lo_green_bit(8), lo_blue_bit(0),
 	palette_entries(0),
-	m_bgd(0) {
+	m_bgd(CLR_DEFAULT) {
 	
 	viewport_logger = lib::logger::get_logger();
 	
@@ -360,6 +362,13 @@ RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 	r.top += pt.y;
 	r.bottom += pt.y;
 	return &r;
+}
+
+void gui::dx::viewport::set_background(lib::color_t color) {
+	m_bgd = (color == CLR_INVALID)?CLR_DEFAULT:color;
+}
+void gui::dx::viewport::set_background(const char *name) {
+	m_bgd = lib::to_color(name);
 }
 
 void gui::dx::viewport::redraw() {
@@ -556,12 +565,7 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 	RECT src_rc_clip = {dst_rc.left - src_rc.left, dst_rc.top - src_rc.top, 
 		dst_rc.right - src_rc.left, dst_rc.bottom - src_rc.top};
 	
-	DWORD flags = DDBLT_WAIT;
-	//if(r->is_transparent()) flags |= DDBLT_KEYSRC;
-	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc_clip, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
-	}
+	r->draw_on(m_surface, &dst_rc, &src_rc_clip);
 }
 
 gui::dx::region::region(gui::dx::viewport *v, 
@@ -580,6 +584,10 @@ gui::dx::region::region(gui::dx::viewport *v,
 gui::dx::region::~region() {
 	RELEASE(m_imgsurf);
 	RELEASE(m_surface);
+}
+
+void gui::dx::region::set_background(lib::color_t color) {
+	m_bgd = (color==CLR_INVALID)?m_viewport->get_bgcolor():color;
 }
 
 void gui::dx::region::clear() {
@@ -608,8 +616,59 @@ void gui::dx::region::clear() {
 	}	
 }
 
+// Temporary fix for transparent regions
+void gui::dx::region::draw_on(IDirectDrawSurface* surf, RECT *dst, RECT *src) {
+	DWORD flags = DDBLT_WAIT;
+	HRESULT hr;
+	if(is_transparent()) {
+		if(m_imgsurf) {
+			// draw image only
+			draw_img_on(surf, dst, src);
+		} else if(m_video_p) {
+			hr = surf->Blt(dst, m_surface, src, flags, NULL);
+		} else {
+			// 
+			flags |= DDBLT_KEYSRC;
+			hr = surf->Blt(dst, m_surface, src, flags, NULL);
+		}
+	} else {
+		hr = surf->Blt(dst, m_surface, src, flags, NULL);
+	}
+}
+
+
+// Temporary fix for transparent regions
+//
+// dst refers to the surf
+// src to this region
+void gui::dx::region::draw_img_on(IDirectDrawSurface* surf, RECT *dst, RECT *src) {
+	lib::size img_size(m_img_width, m_img_height);
+	lib::rect img_src;
+	lib::screen_rect<int> region_dst = m_rsurf->get_fit_rect(img_size, &img_src);
+	RECT img_srcRECT = {img_src.x, img_src.y, img_src.x + img_src.w, img_src.y + img_src.h};
+	
+	RECT img_rgnDEST = {m_rc.left() + region_dst.left(), 
+		m_rc.top() + region_dst.top(), 
+		m_rc.left() + region_dst.right(), 
+		m_rc.top() + region_dst.bottom()};
+	DWORD flags = DDBLT_WAIT;
+	if(m_img_transp) flags |= DDBLT_KEYSRC;
+	HRESULT hr = surf->Blt(&img_rgnDEST, m_imgsurf, &img_srcRECT, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
+	}
+
+}
+
 void gui::dx::region::set_text(const char *p, int size) {
 	if(!m_surface) return;
+	
+	// FIX BLACK ON BLACK TEXT
+	if(m_bgd == 0) {
+		m_bgd = RGB(255, 255, 255);
+		clear();
+	}
+	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -620,7 +679,7 @@ void gui::dx::region::set_text(const char *p, int size) {
 	COLORREF crTextColor = ::GetSysColor(COLOR_WINDOWTEXT);
 	::SetTextColor(hdc, crTextColor);
 	RECT dst_rc = {1, 1,  m_rc.width()-1,  m_rc.height()-1};
-	UINT uFormat = DT_CENTER;
+	UINT uFormat = DT_CENTER | DT_WORDBREAK;
 	int res = ::DrawText(hdc, p, size, &dst_rc, uFormat); 
 	if(res == 0)
 		win_report_last_error("DrawText()");
@@ -635,6 +694,10 @@ void gui::dx::region::set_text(const std::string& what) {
 void gui::dx::region::set_bmp(HBITMAP hbmp, int w, int h, 
 	bool transp, lib::color_t tarnsp_color) {
 	if(!m_surface) return;
+	
+	m_img_width = w;
+	m_img_height = h;
+	m_img_transp = transp;
 	
 	//////////////
 	// Create image surface 
