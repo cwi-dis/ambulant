@@ -104,7 +104,7 @@ INCLUDES = \
 	$(artsincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
-	$(LTDLINCL)
+	$(INCLDTL)
 
 lib_LTLIBRARIES = \
 	libambulant.la \
