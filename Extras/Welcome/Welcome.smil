@@ -32,7 +32,7 @@
       	<img src="data/portable.png" begin="3s" region="line2"/>
       	<img src="data/opensource.png" begin="3.5s" region="line3"/>
       	<img src="data/visit.png" begin="4s" region="info">
-      	  <area href="http://www.ambulantplayer.org" show="new"/>
+      	  <area href="http://www.ambulantplayer.org" show="new" external="true"/>
       	</img>
       </par>
     </par>
