@@ -62,19 +62,22 @@ namespace gui {
 
 namespace dx {
 
-class dx_area_renderer : public common::renderer_playable {
+class dx_gui_region;
+
+class dx_area : public common::renderer_playable {
   public:
-	dx_area_renderer(
+	dx_area (
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::abstract_window *window); 
-	~dx_area_renderer();
+	~dx_area();
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	dx_gui_region *m_rgn;
 };
 
 

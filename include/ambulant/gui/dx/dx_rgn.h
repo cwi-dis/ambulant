@@ -79,7 +79,7 @@ class dx_gui_region : public common::gui_region {
 	:	m_hrgn(CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom())) { 
 		s_counter++;
 	}
-		
+			
 	// Creates a region that is equal in size and shape to the provided region
 	dx_gui_region(const gui_region& rgn) 
 	:	m_hrgn(CreateRectRgn(0, 0, 0, 0)) {
