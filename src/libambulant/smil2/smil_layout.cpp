@@ -60,6 +60,7 @@
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/region_node.h"
 #include "ambulant/smil2/smil_layout.h"
+#include "ambulant/smil2/test_attrs.h"
 #include <stack>
 
 #ifndef AM_DBG
@@ -81,12 +82,12 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 	m_surface_factory(common::create_smil_surface_factory()),
 	m_layout_tree(NULL)
 {
-	// XXXX Note: the logic here is not 100% correct in case of empty layout
-	// and/or missing layout.
-	
-	// First scan the DOM tree and create our own tree of region_node objects
-	get_document_layout(doc);
+	// First find the correct layout section to use.
+	lib::node *layout_section = get_document_layout(doc);
 
+	// Then scan the DOM tree and create our own tree of region_node objects
+	build_layout_tree(layout_section);
+	
 	// Next we create the region_nodes for body nodes that need one (subregion
 	// positioning, etc)
 	build_body_regions(doc);
@@ -111,22 +112,64 @@ smil_layout_manager::~smil_layout_manager()
 	// XXX Delete m_layout_tree tree
 }
 
-void
+lib::node *
 smil_layout_manager::get_document_layout(lib::document *doc)
 {
-	std::stack<region_node *> stack;
 	// We first have to find the layout section in the tree
 	lib::node *doc_root = doc->get_root();
 	lib::node *head = doc_root->get_first_child("head");
 	if (!head) {
 		lib::logger::get_logger()->warn("smil_layout_manager: no <head> section");
-		return;
+		return NULL;
 	}
 	lib::node *layout_root = head->get_first_child("layout");
-	if (!layout_root) {
-		lib::logger::get_logger()->trace("smil_layout_manager: no <layout> section");
-		return;
+	if (layout_root) {
+		// Check that the type is supported
+		const char *layout_type = layout_root->get_attribute("type");
+		if (layout_type && strcmp(layout_type, "text/smil-basic-layout") != 0 ) {
+			lib::logger::get_logger()->error("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
+			return NULL;
+		}
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: returning node 0x%x", layout_root);
+		return layout_root;
 	}
+	// Otherwise check for a switch
+	lib::node *layout_switch = head->get_first_child("switch");
+	AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: examining <switch>");
+	if (layout_switch) {
+		layout_root = layout_switch->down();
+		while (layout_root) {
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: examining node 0x%x", layout_root);
+			// Check that it is indeed a <layout> node
+			if (m_schema->get_layout_type((layout_root)->get_qname()) != common::l_layout) {
+				lib::logger::get_logger()->error("smil_layout_manager: <switch> in <head> should contain only <layout>s");
+				continue;
+			}
+			// Check that the type is supported
+			const char *layout_type = layout_root->get_attribute("type");
+			if (layout_type && strcmp(layout_type, "text/smil-basic-layout") != 0 ) {
+				lib::logger::get_logger()->warn("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
+				continue;
+			}
+			test_attrs *tester = new test_attrs(layout_root);
+			if (tester->selected()) {
+				delete tester;
+				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: returning node 0x%x", layout_root);
+				return layout_root;
+			}
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping layout section due to test attributes");
+			delete tester;
+			layout_root = layout_root->next();
+		}
+	}
+	lib::logger::get_logger()->trace("smil_layout_manager: no supported <layout> section");
+	return NULL;
+}
+
+void
+smil_layout_manager::build_layout_tree(lib::node *layout_root)
+{
+	std::stack<region_node *> stack;
 	// Now we iterate over all the elements, set their dimensions
 	// from the attributes and determine their inheritance
 	lib::node::iterator it;
@@ -266,16 +309,18 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			if(tag == common::l_rootlayout) {
 				continue;
 			}
-			if(tag == common::l_none ) {
+			if (tag == common::l_layout)
+				continue;
+			if (tag == common::l_none ) {
 				// XXXX Will need to handle switch here too
 				// Assume subregion positioning.
-				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping %s", n->get_qname().second.c_str());
+				AM_DBG lib::logger::get_logger()->warn("smil_layout_manager: skipping <%s> in layout", n->get_qname().second.c_str());
 				continue;
 			}
 			if (tag == common::l_media) {
 				tag = common::l_region;
 			}
-			if(pair.first) {
+			if (pair.first) {
 				// On the way down we create the regions and remember
 				// them
 				common::renderer *bgrenderer = wf->new_background_renderer(rn);
@@ -352,7 +397,7 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 	if (nodeoverride) {
 		std::map<const lib::node*, region_node*>::size_type count = m_node2region.count(n);
 		if (count) {
-			/*AM_DBG*/ lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): per-node override");
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_surface(): per-node override");
 			return (*m_node2region.find(n)).second;
 		}
 	}

@@ -527,12 +527,12 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 	const int y_region_top = xy_region.y;
 	const int y_region_bottom = region_height - xy_region.y;
 	
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image size=(%d, %d)", image_width, image_height);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region size=(%d, %d)", region_width, region_height);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image fixpoint=(%d, %d)", xy_image.x, xy_image.y);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region fixpoint=(%d, %d)", xy_region.x, xy_region.y);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image delta fixpoint to ltrb=(%d, %d, %d, %d)", x_image_left, y_image_top, x_image_right, y_image_bottom);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region delta fixpoint to ltrb=(%d, %d, %d, %d)", x_region_left, y_region_top, x_region_right, y_region_bottom);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: image size=(%d, %d)", image_width, image_height);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: region size=(%d, %d)", region_width, region_height);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: image fixpoint=(%d, %d)", xy_image.x, xy_image.y);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: region fixpoint=(%d, %d)", xy_region.x, xy_region.y);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: image delta fixpoint to ltrb=(%d, %d, %d, %d)", x_image_left, y_image_top, x_image_right, y_image_bottom);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: region delta fixpoint to ltrb=(%d, %d, %d, %d)", x_region_left, y_region_top, x_region_right, y_region_bottom);
 	
 	double scale_min_horizontal, scale_max_horizontal, scale_min_vertical, scale_max_vertical;
 	
@@ -585,7 +585,7 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
 		break;
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scale_hor=%f, scale_vert=%f", scale_horizontal, scale_vertical);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: scale_hor=%f, scale_vert=%f", scale_horizontal, scale_vertical);
 	if (scale_horizontal == 0 || scale_vertical == 0) {
 		*out_src_rect = lib::rect(point(0,0), size(0,0));
 		return lib::screen_rect<int>(point(0,0), point(0,0));
@@ -593,7 +593,7 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 	// Convert the image fixpoint to scaled coordinates
 	int x_image_scaled = (int)((xy_image.x * scale_horizontal) + 0.5);
 	int y_image_scaled = (int)((xy_image.y * scale_vertical) + 0.5);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: scaled image fixpoint=(%d, %d)", x_image_scaled, y_image_scaled);
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: scaled image fixpoint=(%d, %d)", x_image_scaled, y_image_scaled);
 	// Find out where image (0, 0) would end up, and similarly for other
 	// corners. At this point we still allow negative values or values > max
 	int x_region_for_image_left = xy_region.x - x_image_scaled;
@@ -604,7 +604,7 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 	int x_image_for_region_right = image_width;
 	int y_image_for_region_top = 0;
 	int y_image_for_region_bottom = image_height;
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	// Finally clamp all values
 	if (x_region_for_image_left < 0) {
@@ -625,9 +625,9 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 		y_region_for_image_bottom = region_height;
 		y_image_for_region_bottom = y_image_for_region_bottom - (int)((overshoot / scale_vertical) + 0.5);
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
 		x_image_for_region_left, y_image_for_region_top, x_image_for_region_right, y_image_for_region_bottom);
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->trace("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	*out_src_rect = lib::rect(
 		point(x_image_for_region_left, y_image_for_region_top),

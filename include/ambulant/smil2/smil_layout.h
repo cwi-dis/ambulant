@@ -71,7 +71,8 @@ class smil_layout_manager : public common::layout_manager {
 	
 	common::surface *get_surface(const lib::node *node);
   private:
-	void get_document_layout(lib::document *doc);
+	lib::node *get_document_layout(lib::document *doc);
+	void build_layout_tree(lib::node *layout_root);
 	
 	region_node *get_region_node_for(const lib::node *n, bool nodeoverride);
 	common::surface *get_default_rendering_surface(const lib::node *n);

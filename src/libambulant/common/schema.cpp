@@ -149,7 +149,8 @@ ambulant::common::time_container_type_as_str(time_container_type t) {
 layout_type 
 schema::get_layout_type(const lib::q_name_pair& qname) const {
 	layout_type type = l_none;
-	if(qname.second == "root-layout" ) type = l_rootlayout;
+	if(qname.second == "layout" ) type = l_layout;
+	else if(qname.second == "root-layout" ) type = l_rootlayout;
 	else if(qname.second == "topLayout") type = l_toplayout;
 	else if(qname.second == "region") type = l_region;
 	else if(qname.second == "regPoint") type = l_regpoint;
@@ -161,6 +162,7 @@ schema::get_layout_type(const lib::q_name_pair& qname) const {
 const char* 
 layout_type_as_str(layout_type t) {
 	switch(t) {
+		case l_layout: return "layout";
 		case l_rootlayout: return "root-layout";
 		case l_toplayout: return "topLayout";
 		case l_region: return "region";
