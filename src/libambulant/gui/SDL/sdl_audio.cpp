@@ -186,8 +186,10 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
 	m_static_lock.enter();
 	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
-	if (m_renderers.size() == 1 && (*first)->m_volcount == 0) {
-		// Exactly one active stream, no volume/pan processing: use simple copy
+	if (m_renderers.size() == 1 && (*first)->m_volcount == 0
+	    && ! ((*first)->m_intransition || (*first)->m_outtransition)) {
+		// Exactly one active stream, no volume/pan processing,
+		// no transitions: use simple copy
 		Uint8 *single_data;
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
@@ -228,6 +230,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	lib::event_processor *evp,
 	common::factories *factory)
 :	common::renderer_playable(context, cookie, node, evp),
+#ifdef USE_SMIL21
+	m_intransition(NULL),
+	m_outtransition(NULL),
+	m_transition_engine(NULL),
+#endif                                   
 	m_audio_src(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -258,6 +265,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::factories* factory,
 	net::audio_datasource *ds)
 :	common::renderer_playable(context, cookie, node, evp),
+#ifdef USE_SMIL21
+	m_intransition(NULL),
+	m_outtransition(NULL),
+	m_transition_engine(NULL),
+#endif                                   
 	m_audio_src(ds),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -283,7 +295,6 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	}
 }
 
-
 gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
 	m_lock.enter();
@@ -299,9 +310,35 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 		m_audio_src = NULL;
 	}
 	
+#ifdef USE_SMIL21
+	if (m_transition_engine) {
+		delete m_transition_engine;
+		m_transition_engine = NULL;
+	}
+#endif                                   
 	m_is_playing = false;
 	m_lock.leave();
 }
+#ifdef USE_SMIL21
+
+void
+gui::sdl::sdl_active_audio_renderer::set_intransition(const lib::transition_info* info) {
+ 	if (m_transition_engine)
+		delete m_transition_engine;
+	m_intransition = info;
+	m_transition_engine = new smil2::audio_transition_engine();
+	m_transition_engine->init(m_event_processor, false, info);
+}
+
+void
+gui::sdl::sdl_active_audio_renderer::start_outtransition(const lib::transition_info* info) {
+ 	if (m_transition_engine)
+		delete m_transition_engine;
+	m_outtransition = info;
+	m_transition_engine = new smil2::audio_transition_engine();
+	m_transition_engine->init(m_event_processor, true, info);
+}
+#endif
 
 int
 gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
@@ -324,9 +361,15 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		// Also set volume(s)
 		m_volcount = 0;
 		if (m_dest) {
-			double leftlevel = 1.0, rightlevel = 1.0;
 			const common::region_info *info = m_dest->get_info();
-			if (info) leftlevel = rightlevel = info->get_soundlevel();
+			double level = info ? info->get_soundlevel() : 1.0;
+#ifdef USE_SMIL21
+			if (m_intransition || m_outtransition) {
+				level = m_transition_engine->get_volume(level);
+			}
+#endif                                   
+			double leftlevel, rightlevel;
+			leftlevel = rightlevel = level;
 #ifdef USE_SMIL21
 			if (info) {
 				common::sound_alignment align = info->get_soundalign();
@@ -351,6 +394,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		}
 	}
 	m_lock.leave();
+	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data(0x%x) return rv=%d, m_volcount=%d, m_volumes=[%f,%f]",this,rv,m_volcount,m_volcount>=1?m_volumes[0]:1,m_volcount==2?m_volumes[1]:m_volcount==1?0:1);
 	return rv;
 }
 
@@ -519,6 +563,12 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		m_is_paused = false;
 		m_lock.leave();
 		register_renderer(this);
+#ifdef USE_SMIL21
+		if (m_intransition && ! m_transition_engine) {
+			m_transition_engine = new smil2::audio_transition_engine();
+			m_transition_engine->init(m_event_processor, false, m_intransition);
+		}
+#endif                                   
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.start: no datasource");
 		m_lock.leave();

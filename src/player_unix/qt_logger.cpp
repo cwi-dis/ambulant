@@ -113,7 +113,9 @@ qt_logger* qt_logger::s_qt_logger = 0;
 
 qt_logger::qt_logger() 
   : 	m_log_FILE(NULL),
+#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	m_logger_window( NULL),
+#endif/*QT_NO_FILEDIALOG*/
 	m_gui(NULL) 
 {
 	common::preferences* prefs = 

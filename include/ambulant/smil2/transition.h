@@ -53,6 +53,9 @@
 #ifndef AMBULANT_SMIL2_TRANSITION_H
 #define AMBULANT_SMIL2_TRANSITION_H
 
+#ifdef USE_SMIL21
+#include "ambulant/lib/event_processor.h"
+#endif                                   
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/transition_info.h"
@@ -378,6 +381,33 @@ class transition_engine_fade : virtual public transition_blitclass_fade {
   protected:
 	void compute();
 };
+#ifdef USE_SMIL21
+
+class abstract_audio_transition_engine {
+  public:
+	virtual void init(const lib::event_processor* evp, bool outtrans, const lib::transition_info* info) = 0;
+	virtual const double get_volume(const double soundlevel) = 0;
+	virtual const bool is_done(lib::transition_info::time_type now) = 0;
+};
+
+class audio_transition_engine :  virtual public abstract_audio_transition_engine {
+  public:
+	audio_transition_engine();
+	void init(const lib::event_processor* evp, bool outtrans, const lib::transition_info* info);
+	const double get_volume(const double soundlevel);
+	const bool is_done(lib::transition_info::time_type now);
+
+  protected:
+	lib::transition_info::time_type m_start_time;
+	lib::transition_info::time_type m_dur;
+	lib::transition_info::progress_type m_startProgress;
+	lib::transition_info::progress_type m_endProgress;
+	bool m_outtrans;
+
+  private:
+	const lib::event_processor* m_event_processor;
+};
+#endif                                   
 
 } // namespace smil2
  

@@ -97,7 +97,11 @@ enum transition_type {
 	waterfallWipe,
 	pushWipe,
 	slideWipe,
-	fade
+	fade,
+#ifdef USE_SMIL21
+	audioFade,
+	audioVisualFade,
+#endif
 };
 
 #ifdef USE_SMIL21

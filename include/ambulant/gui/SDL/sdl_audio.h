@@ -60,6 +60,10 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/event_processor.h"
+#ifdef USE_SMIL21
+#include "ambulant/smil2/transition.h"
+#include "ambulant/lib/transition_info.h"
+#endif
 #include "ambulant/lib/asb.h"
 
 
@@ -73,52 +77,54 @@ namespace gui {
 namespace sdl {	  
 
 class sdl_active_audio_renderer : public common::renderer_playable {
+
   public:
-    sdl_active_audio_renderer(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
+	sdl_active_audio_renderer(
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
 	common::factories *factory);
 
-  	sdl_active_audio_renderer(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
-  	common::factories *factory,
+	sdl_active_audio_renderer(
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
+	common::factories *factory,
 	net::audio_datasource *ds);
   
-  	~sdl_active_audio_renderer();
+	~sdl_active_audio_renderer();
 
-      
-  	bool is_paused();
-  	bool is_stopped();
-  	bool is_playing();
-  
+	  
+	bool is_paused();
+	bool is_stopped();
+	bool is_playing();
+	
 	std::pair<bool, double> get_dur();
-    void start(double where);
-    void stop();
+	void start(double where);
+	void stop();
 	void seek(double t);
-    void pause();
-    void resume();
+	void pause();
+	void resume();
 //	void freeze() {};
-//    void speed_changed() {};
+//	void speed_changed() {};
 
 //	void set_surface(common::surface *dest) { abort(); }
 //	common::surface *get_surface() { abort(); }
-void set_intransition(const lib::transition_info *info) { /* Ignore, for now */ }
-void start_outtransition(const lib::transition_info *info) { /* Ignore, for now */ }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 //	void transition_freeze_end(lib::screen_rect<int> area) {}		  
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
 	static void sdl_callback(Uint8 *stream, int len);
+#ifdef USE_SMIL21
+	void set_intransition(const lib::transition_info* info);
+	void start_outtransition(const lib::transition_info* info);
+#endif
   private:
-    void data_avail();
+   	void data_avail();
 	bool restart_audio_input();
 	int get_data(int bytes_wanted, Uint8 **ptr);
 	void get_data_done(int size);
-	
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
 	
@@ -128,7 +134,12 @@ void start_outtransition(const lib::transition_info *info) { /* Ignore, for now 
 	bool m_audio_started;
 	int m_volcount;
 	float m_volumes[AMBULANT_MAX_CHANNELS];
-  	// class methods and attributes:
+#ifdef USE_SMIL21
+	const lib::transition_info* m_intransition;
+	const lib::transition_info* m_outtransition;
+	smil2::audio_transition_engine* m_transition_engine;
+#endif
+	// class methods and attributes:
 	static int init();
  	static void register_renderer(sdl_active_audio_renderer *rnd);
  	static void unregister_renderer(sdl_active_audio_renderer *rnd);

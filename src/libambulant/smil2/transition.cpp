@@ -733,3 +733,54 @@ transition_engine_fade::compute()
 {
 	m_stepcount = 256;
 }
+
+#ifdef USE_SMIL21
+
+audio_transition_engine::audio_transition_engine()
+  :	m_event_processor(NULL),
+	m_start_time(0),
+	m_startProgress(0),
+	m_endProgress(1),
+	m_dur(0),
+	m_outtrans(false) {
+}
+
+void audio_transition_engine::init(const lib::event_processor* evp,bool outtrans, const lib::transition_info* info) {
+	m_event_processor = evp;
+	m_outtrans	= outtrans;
+	m_start_time	= m_event_processor->get_timer()->elapsed();
+	m_dur		= info->m_dur;
+	m_startProgress = info->m_startProgress;
+	m_endProgress = info->m_endProgress;
+	AM_DBG lib::logger::get_logger()->debug("audio_transition_engine::audio_transition_engine(0x%x): m_start_time=%d  m_dur=%d m_startProgress=%f m_endProgress=%f",this,m_start_time,m_dur,m_startProgress,m_endProgress);
+}
+
+const double
+audio_transition_engine::get_volume(const double soundlevel) {
+	double progress;
+	lib::transition_info::time_type now;
+	now = m_event_processor->get_timer()->elapsed();
+	if (m_dur == 0 || is_done(now))
+		// no transition or transition finished
+		return soundlevel;
+	progress = ((double) (now - m_start_time) / m_dur)
+		* (m_endProgress - m_startProgress);
+	
+	progress += m_startProgress;
+	if (progress > m_endProgress) progress = m_endProgress;
+	if (progress < m_startProgress) progress = m_startProgress;
+	AM_DBG lib::logger::get_logger()->debug("audio_transition_engine::get_transition_volume(0x%x): soundlevel=%f m_outtrans=%d now=%d dur=%d progress=%f",this,soundlevel,m_outtrans,now,m_dur,progress);
+	double level = soundlevel;
+	if (m_outtrans)
+		level *= (1.0 - progress);
+	else
+		level *= progress;
+	return level;
+}
+
+
+const bool
+audio_transition_engine::is_done(lib::transition_info::time_type now) {
+	return now >= m_start_time + m_dur;
+}
+#endif                                   

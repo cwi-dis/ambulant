@@ -72,7 +72,7 @@
 class qt_gui;	// forward declaration
 
 class qt_logger {
- public:
+  public:
 	enum custom_events {
 		CUSTOM_OFFSET=10000,
 		CUSTOM_LOGMESSAGE=-1,
@@ -86,9 +86,9 @@ class qt_logger {
 	static void set_qt_logger_gui(qt_gui*);
 	void log(QString logstring);
 	~qt_logger();
- protected:
+  protected:
 	qt_logger();
- private:
+  private:
 	static qt_logger* s_qt_logger;  // singleton
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* m_logger_window;
@@ -98,7 +98,7 @@ class qt_logger {
 };
 
 class qt_logger_ostream : public ambulant::lib::ostream {
- public:
+  public:
 	qt_logger_ostream();
 	bool is_open() const;
 	void close();
@@ -107,12 +107,12 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 	int  write(std::string s);
 	void write(ambulant::lib::byte_buffer& bb);
 	void flush();
- private:
+  private:
 	QString m_qstring;
 };
 
 class qt_message_event : public QCustomEvent {
- public:
+  public:
 	qt_message_event(int type, char* message); 
 };
 #endif/*__QT_LOGGER_H__*/

@@ -61,7 +61,6 @@ namespace gui {
 
 using namespace common;
 using namespace lib;
-//JNK using namespace net;
 
 namespace qt {
 
@@ -107,9 +106,11 @@ void
 qt_transition_renderer::stop()
 {
 	// private method - no locking
-	delete m_trans_engine;
-	m_trans_engine = NULL;
-	m_dest->transition_done();
+	if (m_trans_engine) {
+		delete m_trans_engine;
+		m_trans_engine = NULL;
+	}
+	if (m_dest) m_dest->transition_done();
 }
 
 void

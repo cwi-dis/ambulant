@@ -70,11 +70,11 @@ namespace qt {
 class qt_active_video_renderer : public common::active_video_renderer {
   public:
 	qt_active_video_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *const evp,
-    	common::factories *factory);
+				 common::playable_notification *context,
+				 common::playable_notification::cookie_type cookie,
+				 const lib::node *node,
+				 lib::event_processor *const evp,
+				 common::factories *factory);
 	
 	~qt_active_video_renderer();
     void show_frame(char* frame, int size);
