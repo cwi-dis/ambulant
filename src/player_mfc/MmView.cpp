@@ -252,6 +252,9 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
+	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
+		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
 	
 
 	PostMessage(WM_SET_CLIENT_RECT, 
@@ -262,10 +265,8 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if(amver.IsEmpty() || amver != get_version()) {
 		// first time; write the string and play welcome
 		pApp->WriteProfileString("AmbulantPlayer", "Version",  get_version());
-		if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
-			LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
-			LocateWelcomeDoc(TEXT("Welcome.smil")))
-		PostMessage(WM_COMMAND, ID_HELP_WELCOME);
+		if(!m_welcomeDocFilename.IsEmpty())
+			PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 	}
 
 	return 0;
