@@ -78,8 +78,10 @@ gui::dg::audio_player::audio_player(const std::string& url)
 	m_ifs.read(m_bbuf);
 	m_bbuf.flip();
 	m_decoder.get_wave_format(m_bbuf, m_wfx);
-	s_renderer.open(m_wfx);
-	update();
+	if(s_renderer.can_play(m_wfx)) {
+		if(s_renderer.open(m_wfx))
+			update();
+	}
 }
 
 gui::dg::audio_player::~audio_player() {

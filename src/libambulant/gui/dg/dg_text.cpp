@@ -61,6 +61,8 @@
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/textptr.h"
 
+//#define AM_DBG if(1)
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -127,7 +129,6 @@ void gui::dg::dg_text_renderer::stop() {
 	m_text = text_str("");
 	m_dest->renderer_done();
 	m_activated = false;
-	
 }
 
 void gui::dg::dg_text_renderer::user_event(const lib::point& pt, int what) {

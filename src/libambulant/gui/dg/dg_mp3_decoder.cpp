@@ -144,7 +144,9 @@ void gui::dg::mp3_decoder::decode(lib::byte_buffer& bbuf, std::basic_string<char
 		status = mp3_lib_decode_buffer(m_mp3lib_inst, NULL, 0,
 			m_dec_buf, dec_buf_size, &produced, &inputpos);
 		//AM_DBG lib::logger::get_logger()->trace("produced: %d, position: %d, status: %d", produced, inputpos, status);
-		if(produced > 0) decbuf->append(m_dec_buf, produced);
+		if(produced > 0) {
+			decbuf->append(m_dec_buf, produced);
+		}
 	}
 	AM_DBG lib::logger::get_logger()->trace("Total bytes produced: %d", decbuf->length());
 	// mp3lib conventions: 

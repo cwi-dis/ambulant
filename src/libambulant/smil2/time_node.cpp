@@ -925,6 +925,13 @@ void time_node::timer_event_callback(const timer_event *e) {
 	
 	// the following should be true
 	assert(timestamp.first == sync_node());
+	
+	// Check for the EOI event
+	if(is_active() && timestamp.second >= m_interval.end) {
+		qtime_type qt(sync_node(), m_interval.end);
+		set_state_ex(ts_postactive, qt);
+		return;
+	} 
 
 	// The AD offset of this node
 	time_type ad_offset = timestamp.second - m_interval.begin;
@@ -941,12 +948,6 @@ void time_node::timer_event_callback(const timer_event *e) {
 		sd_offset = timestamp.second - m_rad_offset;
 	}
 	
-	// Check for the EOI event
-	if(is_active() && timestamp.second >= m_interval.end) {
-		qtime_type qt(sync_node(), m_interval.end);
-		set_state_ex(ts_postactive, qt);
-		return;
-	} 
 	
 	// Check for the EOSD event
 	if(m_last_cdur.is_definite() && m_last_cdur != 0 && sd_offset >= m_last_cdur) {
@@ -999,10 +1000,11 @@ void time_node::schedule_next_timer_event(qtime_type timestamp) {
 	if(m_last_cdur.is_definite() && m_last_cdur != 0 && m_last_cdur > sd_offset) {
 		sd_rest = m_last_cdur - sd_offset;
 	}
-	
+
 	// The next notification should not come later than min(ad_rest, sd_rest)
 	time_type next = std::min(time_type(sampling_delta), std::min(ad_rest, sd_rest));
 	assert (next() <= sampling_delta);
+	if(next() <=0) next = 0;
 	m_pending_event = new timer_event(this, timestamp + next);
 	m_context->schedule_event(m_pending_event, next());
 }

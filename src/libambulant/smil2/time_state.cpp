@@ -257,7 +257,7 @@ void active_state::enter(qtime_type timestamp) {
 		 time_node *prev = m_self->previous();
 		 if(prev) {
 			const time_attrs* ta = prev->get_time_attrs();
-			if(ta->get_fill() == fill_freeze)
+			if(ta->get_fill() != fill_hold)
 				prev->remove(timestamp);
 		 }
 	}

@@ -117,8 +117,7 @@ void gui::dg::dg_audio_renderer::start(double t) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
 		// And the user
-		lib::logger::get_logger()->error("Unsupported audio format %s", 
-			m_node->get_url("src").c_str());
+		lib::logger::get_logger()->show("Unsupported audio format");
 		return;
 	}
 	

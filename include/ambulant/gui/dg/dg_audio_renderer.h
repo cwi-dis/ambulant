@@ -84,7 +84,7 @@ class audio_renderer {
 	
 	static bool can_play(WAVEFORMATEX& wfx);
 	
-	bool open(int nSamplesPerSec, int nChannels);
+	bool open(int nSamplesPerSec, int nChannels, int depth);
 
 	bool open(WAVEFORMATEX& wfx);
 

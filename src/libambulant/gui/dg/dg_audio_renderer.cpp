@@ -81,8 +81,8 @@ bool gui::dg::audio_renderer::can_play(WAVEFORMATEX& wfx) {
 	return true;
 }
 
-bool gui::dg::audio_renderer::open(int nSamplesPerSec, int nChannels) {
-	int wBitsPerSample = 16; 
+bool gui::dg::audio_renderer::open(int nSamplesPerSec, int nChannels, int depth) {
+	int wBitsPerSample = depth; 
 	int nBlockAlign = nChannels*wBitsPerSample/8; 
 	long nAvgBytesPerSec = nBlockAlign*nSamplesPerSec;
 	WAVEFORMATEX wfx = {WAVE_FORMAT_PCM, // format type
