@@ -74,7 +74,7 @@ class params {
 	float get_float(const char *paramname, float dft);
 	float get_float(const std::string &paramname, float dft);
   private:
-	addparamnodes(const lib::node *n);
+	void addparamnodes(const lib::node *n);
 	
 	std::map<std::string, const char *> m_params;
 	// Add more as needed

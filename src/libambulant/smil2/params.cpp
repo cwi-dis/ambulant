@@ -66,7 +66,7 @@ using namespace smil2;
 params *
 params::for_node(const lib::node *n)
 {
-	lib::node *paramchild = n->get_first_child("param");
+	const lib::node *paramchild = n->get_first_child("param");
 	lib::node *paramcontainerchild = NULL;
 #ifdef USE_SMIL21
 	const char *pname = n->get_attribute("paramGroup");
@@ -89,6 +89,7 @@ params::for_node(const lib::node *n)
 	return NULL;
 }
 
+void
 params::addparamnodes(const lib::node *pnode)
 {
 	while (pnode) {
