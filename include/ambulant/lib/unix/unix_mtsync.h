@@ -19,7 +19,7 @@
 namespace ambulant {
 
 namespace lib {
-
+#undef unix
 namespace unix {
 
 class critical_section : public ambulant::lib::critical_section {
