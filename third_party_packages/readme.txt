@@ -41,8 +41,8 @@ xerces-unix:
 	use a pre-installed xerces.
 	
 	Download xerces-C++ Version 2.5.0 Source Release from
-	<http://xml.apache.org> and extract xerces-c-src_2_5_0 in
-	the directory .../ambulant/third_party_packages/xerces-unix.
+	<http://xml.apache.org> and extract xerces-c-src_2_5_0 and put its 
+	content in the directory .../ambulant/third_party_packages/xerces-unix.
 	
 	Next, follow the instructions for building xerces, open Readme.html
 	and navigate to "Building". You really want to do this, as they have
@@ -58,6 +58,8 @@ xerces-unix:
 	configure: it will normally only look in third_party_packages/xerces-unix.
 	And note that the --with-xerces pathname should refer to the base of a
 	xerces source distribution, not to the installation prefix location.
+	
+	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to the directory containing libxerces-c.so.
 
 ffmpeg:
 	Linux and Mac OS X.
