@@ -89,19 +89,19 @@ namespace net
 class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
   public:
 	~ffmpeg_audio_datasource_factory() {};
-	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmts);
+	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts);
 };
 
 class ffmpeg_video_datasource_factory : public video_datasource_factory {
   public:
 	~ffmpeg_video_datasource_factory() {};
-	video_datasource* new_video_datasource(const std::string& url);
+	video_datasource* new_video_datasource(const net::url& url);
 };
 
 class ffmpeg_audio_parser_finder : public audio_parser_finder {
   public:
 	~ffmpeg_audio_parser_finder() {};
-	audio_datasource* new_audio_parser(const std::string& url, audio_format_choices hint, datasource *src);
+	audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, datasource *src);
 };
 
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
@@ -130,7 +130,7 @@ class ffmpeg_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	ffmpeg_demux(AVFormatContext *con);
 	~ffmpeg_demux();
 	
-	static AVFormatContext *supported(const std::string& url);
+	static AVFormatContext *supported(const net::url& url);
 	  
 	void add_datasink(datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
@@ -152,12 +152,12 @@ class ffmpeg_audio_datasource:
 {
   public:
 	 static ffmpeg_audio_datasource *new_ffmpeg_audio_datasource(
-  		const std::string& url, 
+  		const net::url& url, 
   		AVFormatContext *context,
 		detail::ffmpeg_demux *thread);
   	
   	ffmpeg_audio_datasource(
-  		const std::string& url, 
+  		const net::url& url, 
   		AVFormatContext *context,
 		detail::ffmpeg_demux *thread, 
   		int stream_index);
@@ -178,7 +178,7 @@ class ffmpeg_audio_datasource:
 
   private:
     bool _end_of_file();
-	const std::string m_url;
+	const net::url m_url;
 	AVFormatContext *m_con;
 	int m_stream_index;
 	audio_format m_fmt;
@@ -198,10 +198,10 @@ class ffmpeg_video_datasource:
 	virtual public lib::ref_counted_obj {
   public:
 	 static ffmpeg_video_datasource *new_ffmpeg_video_datasource(
-		const std::string& url, AVFormatContext *context,
+		const net::url& url, AVFormatContext *context,
 		detail::ffmpeg_demux *thread);
 
-	 ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+	 ffmpeg_video_datasource(const net::url& url, AVFormatContext *context,
 		detail::ffmpeg_demux *thread, int stream_index);
     ~ffmpeg_video_datasource();
 
@@ -223,7 +223,7 @@ class ffmpeg_video_datasource:
   private:
 	int get_audio_stream_nr();
     bool _end_of_file();
-	const std::string m_url;
+	const net::url m_url;
 	AVFormatContext *m_con;
 	int m_stream_index;
 	bool m_src_end_of_file;
@@ -244,7 +244,7 @@ class ffmpeg_video_datasource:
 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_decoder_datasource(const std::string& url, datasource *src);
+	 ffmpeg_decoder_datasource(const net::url& url, datasource *src);
 	 ffmpeg_decoder_datasource(audio_datasource *src);
     ~ffmpeg_decoder_datasource();
      
@@ -265,7 +265,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool select_decoder(const char* file_ext);
 	bool select_decoder(audio_format &fmt);
 	
-	static bool supported(const std::string& url);
+	static bool supported(const net::url& url);
   protected:
   	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
 	  

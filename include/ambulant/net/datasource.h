@@ -55,8 +55,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
-
-
+#include "ambulant/net/url.h"
 
 namespace ambulant {
 
@@ -194,7 +193,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 class raw_datasource_factory {
   public: 
     virtual ~raw_datasource_factory() {}; 	
-  	virtual datasource* new_raw_datasource(const std::string& url) = 0;
+  	virtual datasource* new_raw_datasource(const net::url& url) = 0;
 };
 
 // This class is the client API used to create an audio_datasource for
@@ -204,7 +203,7 @@ class raw_datasource_factory {
 class audio_datasource_factory  {
   public: 
     virtual ~audio_datasource_factory() {}; 	
-  	virtual audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt) = 0;
+  	virtual audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt) = 0;
 };
 
 // Finder for implementations where the audio_datasource
@@ -214,7 +213,7 @@ class audio_datasource_factory  {
 class audio_parser_finder {
   public:
 	virtual ~audio_parser_finder() {};
-	virtual audio_datasource* new_audio_parser(const std::string& url, audio_format_choices hint, datasource *src) = 0;
+	virtual audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, datasource *src) = 0;
 };
 
 // Finder for implementations where the audio_datasource
@@ -231,7 +230,7 @@ class audio_filter_finder  {
 class video_datasource_factory  {
   public: 
     virtual ~video_datasource_factory() {}; 	
-  	virtual video_datasource* new_video_datasource(const std::string& url) = 0;
+  	virtual video_datasource* new_video_datasource(const net::url& url) = 0;
 };
 
 class datasource_factory :
@@ -243,11 +242,11 @@ class datasource_factory :
 	datasource_factory() {};
   	~datasource_factory();
   
-  	datasource* new_raw_datasource(const std::string& url);
-	audio_datasource* new_audio_datasource(const std::string& url, audio_format_choices fmt);
-  	video_datasource* new_video_datasource(const std::string& url);
+  	datasource* new_raw_datasource(const net::url& url);
+	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt);
+  	video_datasource* new_video_datasource(const net::url& url);
 	
-	audio_datasource* new_filter_datasource(const std::string& url, audio_format_choices fmt, audio_datasource* ds);
+	audio_datasource* new_filter_datasource(const net::url& url, audio_format_choices fmt, audio_datasource* ds);
 	
   	void add_raw_factory(raw_datasource_factory *df);
 	void add_audio_factory(audio_datasource_factory *df);
@@ -264,7 +263,7 @@ class datasource_factory :
 };
 
 // convenience function: read a whole document through any raw datasource
-int read_data_from_url(const std::string &url, datasource_factory *df, char **result);
+int read_data_from_url(const net::url &url, datasource_factory *df, char **result);
 
 } // end namespace net
 

@@ -93,11 +93,13 @@
     NSString *filename = [self fileName];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
     myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms);
+#if 0
 	uitimer = [NSTimer timerWithTimeInterval: 0.5
 		target:self selector:SEL("validateButtons:") userInfo:nil 
 		repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer: uitimer forMode: NSDefaultRunLoopMode];
 	// XXXX Need to call invalidate when document closes
+#endif
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType

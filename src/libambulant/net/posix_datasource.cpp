@@ -69,12 +69,12 @@ using namespace ambulant;
 using namespace net;
 
 datasource* 
-posix_datasource_factory::new_raw_datasource(const std::string& url)
+posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", url.c_str());
-	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
-	if (url != "") {
-		passive_datasource *pds = new passive_datasource(url);
+	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
+	if (url.is_local_file()) {
+
+		passive_datasource *pds = new passive_datasource(url.get_file());
 		return pds->activate();
 	} else {
 		return NULL;
@@ -92,11 +92,11 @@ passive_datasource::activate()
 {
 	int in;
 	
-	in = open(m_url.c_str(), O_RDONLY);
+	in = open(m_filename.c_str(), O_RDONLY);
 	if (in >= 0) {
 		return new active_datasource(this, in);
 	} else {
-		lib::logger::get_logger()->error("passive_datasource.activate(url=\"%s\"): %s",  m_url.c_str(), strerror(errno));
+		lib::logger::get_logger()->error("passive_datasource.activate(filename=\"%s\"): %s",  m_filename.c_str(), strerror(errno));
 	}
 	return NULL;
 		

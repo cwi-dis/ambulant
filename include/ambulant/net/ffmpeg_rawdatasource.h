@@ -86,7 +86,7 @@ namespace net
 class ffmpeg_raw_datasource_factory : public raw_datasource_factory {
   public:
 	~ffmpeg_raw_datasource_factory() {};
-	datasource* new_raw_datasource(const std::string& url);
+	datasource* new_raw_datasource(const net::url& url);
 };
 
 namespace detail {
@@ -105,7 +105,7 @@ class ffmpeg_rawreader : public lib::unix::thread, public lib::ref_counted_obj {
 	ffmpeg_rawreader(URLContext *con);
 	~ffmpeg_rawreader();
 	
-	static URLContext *supported(const std::string& url);
+	static URLContext *supported(const net::url& url);
 	
 	void set_datasink(rawdatasink *parent);
 	void cancel();
@@ -124,7 +124,7 @@ class ffmpeg_raw_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	 ffmpeg_raw_datasource(const std::string& url, URLContext *context,
+	 ffmpeg_raw_datasource(const net::url& url, URLContext *context,
 		detail::ffmpeg_rawreader *thread);
     ~ffmpeg_raw_datasource();
 
@@ -141,7 +141,7 @@ class ffmpeg_raw_datasource:
 
   private:
     bool _end_of_file();
-	const std::string m_url;
+	const net::url m_url;
 	URLContext *m_con;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;

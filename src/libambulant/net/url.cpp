@@ -216,6 +216,18 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	m_ref = sc.join(i3+1);
 }
 
+bool is_local_file() const
+{
+	if (m_protocol == "file" && m_host == "localhost")
+		return true;
+	if (!m_absolute) {
+		// We're not sure.
+		lib::logger::get_logger()->warn("url::is_local_file: assume True for relative url: \"%s\"", repr(*this).c_str);
+		return true;
+	}
+	return false;
+}
+	
 std::string net::url::get_url() const
 {
 	std::string rv = repr(*this);

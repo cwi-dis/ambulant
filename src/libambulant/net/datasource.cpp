@@ -49,7 +49,7 @@
 
 #include "ambulant/net/datasource.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -183,7 +183,7 @@ datasource_factory::add_video_factory(video_datasource_factory *df)
 
 
 datasource*
-datasource_factory::new_raw_datasource(const std::string &url)
+datasource_factory::new_raw_datasource(const net::url &url)
 {
     std::vector<raw_datasource_factory *>::iterator i;
     datasource *src;
@@ -193,12 +193,12 @@ datasource_factory::new_raw_datasource(const std::string &url)
 		AM_DBG lib::logger::get_logger()->trace("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
-	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for %s\n", url.c_str());
+	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for %s\n", repr(url).c_str());
     return NULL;
 }
 
 audio_datasource*
-datasource_factory::new_audio_datasource(const std::string &url, audio_format_choices fmts)
+datasource_factory::new_audio_datasource(const net::url &url, audio_format_choices fmts)
 {
     audio_datasource *src = NULL;
 
@@ -222,7 +222,7 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 	if (src == NULL) {
 		int rem = rawsrc->release();
 		assert(rem == 0);
-		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", url.c_str());
+		lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no parser for %s\n", repr(url).c_str());
 		return NULL;
 	}
 	// Check whether the format happens to match already.
@@ -241,12 +241,12 @@ datasource_factory::new_audio_datasource(const std::string &url, audio_format_ch
 	// Failed to find a filter. Clean up.
 	int rem = src->release(); // This will also release rawsrc
 	assert(rem == 0);
-	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
+	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", repr(url).c_str());
     return NULL;
 }
 
 audio_datasource*
-datasource_factory::new_filter_datasource(const std::string& url, audio_format_choices fmts, audio_datasource* ds)
+datasource_factory::new_filter_datasource(const net::url& url, audio_format_choices fmts, audio_datasource* ds)
 {
 	if (!ds) 
 		return NULL;
@@ -266,12 +266,12 @@ datasource_factory::new_filter_datasource(const std::string& url, audio_format_c
 	}
 	
 	// Failed to find a filter. Clean up.
-	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", url.c_str());
+	lib::logger::get_logger()->warn("datasource_factory::new_audio_datasource: no filter for %s\n", repr(url).c_str());
     return NULL;
 }
 
 video_datasource*
-datasource_factory::new_video_datasource(const std::string &url)
+datasource_factory::new_video_datasource(const net::url &url)
 {
     std::vector<video_datasource_factory *>::iterator i;
     video_datasource *src;
@@ -281,12 +281,12 @@ datasource_factory::new_video_datasource(const std::string &url)
 		AM_DBG lib::logger::get_logger()->trace("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
-	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", url.c_str());
+	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", repr(url).c_str());
     return NULL;
 }
 
 int
-ambulant::net::read_data_from_url(const std::string &url, datasource_factory *df, char **result)
+ambulant::net::read_data_from_url(const net::url &url, datasource_factory *df, char **result)
 {
 	*result = NULL;
 	return 0;

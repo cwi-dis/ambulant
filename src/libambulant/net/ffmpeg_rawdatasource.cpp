@@ -73,14 +73,13 @@ ffmpeg_init()
 }
 
 datasource* 
-ffmpeg_raw_datasource_factory::new_raw_datasource(const std::string& url)
+ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	net::url   loc(url);
 	
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", url.c_str());
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", repr(url).c_str());
 	URLContext *context = detail::ffmpeg_rawreader::supported(url);
 	if (!context) {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", url.c_str());
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
 	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context);
@@ -111,14 +110,14 @@ detail::ffmpeg_rawreader::~ffmpeg_rawreader()
 }
 
 URLContext *
-detail::ffmpeg_rawreader::supported(const std::string& url)
+detail::ffmpeg_rawreader::supported(const net::url& url)
 {
 	ffmpeg_init();
 	// Setup struct to allow ffmpeg to determine whether it supports this
 	URLContext *ic = NULL;
-	int err = url_open(&ic, url.c_str(), URL_RDONLY);
+	int err = url_open(&ic, url.get_url().c_str(), URL_RDONLY);
 	if (err) {
-		lib::logger::get_logger()->warn("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
+		lib::logger::get_logger()->warn("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) url_close(ic);
 	}
 	return ic;
@@ -168,7 +167,7 @@ detail::ffmpeg_rawreader::run()
 		
 // **************************** ffmpeg_raw_datasource *****************************
 
-ffmpeg_raw_datasource::ffmpeg_raw_datasource(const std::string& url, URLContext *context,
+ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *context,
 	detail::ffmpeg_rawreader *thread)
 :	m_url(url),
 	m_con(context),

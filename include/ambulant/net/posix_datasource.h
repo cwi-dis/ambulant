@@ -87,7 +87,7 @@ namespace net {
 class posix_datasource_factory : public raw_datasource_factory {
   public:
 	~posix_datasource_factory() {};
-	datasource* new_raw_datasource(const std::string& url);
+	datasource* new_raw_datasource(const net::url& url);
 };
 
   
@@ -97,24 +97,23 @@ class passive_datasource : public ambulant::lib::ref_counted_obj
 public:
 	
 	// constructor 
-	passive_datasource(const std::string& url)
-	:   m_url(url) {}
+	passive_datasource(const std::string filename)
+	:   m_filename(filename) {}
 	
 	// copy constructor
 	//	passive_datasource(passive_datasource& ds);
 
 	~passive_datasource();
 	
-	const std::string& get_url() const { return m_url; }
 	datasource *activate();
 	
 	friend inline std::ostream& operator<<(std::ostream& os, const passive_datasource& n) {
-		os << "passive_datasource(" << (void *)&n << ", url=\"" << n.m_url << "\")";
+		os << "passive_datasource(" << (void *)&n << ", filename=\"" << n.m_filename << "\")";
 		return os;
 	}
 	
 private:
-	const std::string m_url;
+	const std::string m_filename;
 };
 
 	

@@ -144,6 +144,8 @@ class url {
 		return m_absolute;
 	}
 	
+	bool is_local_file() const;
+	
 	string get_file() const;
 	
 	string get_url() const;
