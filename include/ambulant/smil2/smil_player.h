@@ -77,7 +77,7 @@ class timer;
 } // namespace lib
 
 namespace common {
-class abstract_player;
+class player;
 class window_factory;
 class playable_factory;
 } // namespace common
