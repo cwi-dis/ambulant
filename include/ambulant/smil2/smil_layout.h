@@ -87,6 +87,7 @@ class smil_layout_manager : public common::layout_manager {
 	common::surface_factory *m_surface_factory;
 	
 	region_node *m_layout_tree;
+	std::vector<region_node *>m_default_region_subregions;
 	
 	std::vector<common::surface_template*> m_rootsurfaces;
 	std::map<std::string, region_node*> m_id2region;

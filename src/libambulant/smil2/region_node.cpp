@@ -234,13 +234,12 @@ region_node::get_rect() const {
 	  case di_none:
 		break;
 	}
+	lib::basic_rect<int> rc;
 	if(inherit_region == NULL) {
-		int w = m_rds.width.get_as_int();
-		int h = m_rds.height.get_as_int();
-		
-		return lib::basic_rect<int, int>(lib::basic_size<int>(w, h)); 
+		rc = lib::basic_rect<int, int>(lib::basic_size<int>(200, 200)); 
+	} else {
+		rc = inherit_region->get_rect();
 	}
-	lib::basic_rect<int> rc = inherit_region->get_rect();
 	common::region_evaluator re(rc.w, rc.h);
 	re.set(m_rds);
 	return re.get_rect();

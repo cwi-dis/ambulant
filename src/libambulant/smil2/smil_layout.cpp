@@ -92,11 +92,7 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 	build_body_regions(doc);
 
 	// Next, create the surfaces that correspond to this tree
-	if (m_layout_tree) {
-		build_surfaces(wf);
-	} else {
-		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: no layout section");
-	}
+	build_surfaces(wf);
 	
 	// Now we make sure there is at least one root-layout. This allows us
 	// to use this as the default region. XXXX Should be auto-show eventually.
@@ -231,12 +227,11 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		
 		region_node *parent = get_region_node_for(n, false);
 		if (!parent) {
-			lib::logger::get_logger()->error("smil_layout_manager: subregion positioning on default region not implemented");
-			delete rn;
-			continue;
+			lib::logger::get_logger()->trace("smil_layout_manager: subregion positioning on default region, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
+			m_default_region_subregions.push_back(rn);
+		} else {
+			parent->append_child(rn);
 		}
-		parent->append_child(rn);
-		
 		m_node2region.insert(std::pair<lib::node *, region_node*>(n, rn));
 	}
 }
@@ -252,7 +247,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 	// of toplevel region nodes. If there is no root-layout but there are
 	// toplevel region nodes we will create it later.
 	common::surface_template *root_surface = NULL;
-	region_node *first_root_layout = m_layout_tree->get_first_child("root-layout");
+	region_node *first_root_layout = m_layout_tree ? m_layout_tree->get_first_child("root-layout") : NULL;
 	if (first_root_layout) {
 		common::renderer *bgrenderer = wf->new_background_renderer(first_root_layout);
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create root_layout");
@@ -261,67 +256,84 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 		
 	// Loop over all the layout elements, create the regions and root_layouts,
 	// and keep a stack to tie everything together.
-	for(it = m_layout_tree->begin(); it != end; it++) {
-		std::pair<bool, region_node*> pair = *it;
-		region_node *rn = pair.second;
-		const lib::node *n = rn->dom_node();
-		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: examining %s node 0x%x", n->get_qname().second.c_str(), rn);
-		common::layout_type tag = m_schema->get_layout_type(n->get_qname());
-		if(tag == common::l_rootlayout) {
-			continue;
-		}
-		if(tag == common::l_none ) {
-			// XXXX Will need to handle switch here too
-			// Assume subregion positioning.
-			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping %s", n->get_qname().second.c_str());
-			continue;
-		}
-		if (tag == common::l_media) {
-			tag = common::l_region;
-		}
-		if(pair.first) {
-			// On the way down we create the regions and remember
-			// them
-			common::renderer *bgrenderer = wf->new_background_renderer(rn);
-			common::surface_template *surf;
-			const char *pid = n->get_attribute("id");
-			std::string ident = "<unnamed>";
-			if(pid) {
-				ident = pid;
+	if (m_layout_tree) {
+		for(it = m_layout_tree->begin(); it != end; it++) {
+			std::pair<bool, region_node*> pair = *it;
+			region_node *rn = pair.second;
+			const lib::node *n = rn->dom_node();
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: examining %s node 0x%x", n->get_qname().second.c_str(), rn);
+			common::layout_type tag = m_schema->get_layout_type(n->get_qname());
+			if(tag == common::l_rootlayout) {
+				continue;
 			}
-			// Test that rootlayouts are correctly nested.
-			if (!stack.empty()) {
-				if (tag != common::l_region) {
-					lib::logger::get_logger()->error("topLayout element inside other element: %s", ident.c_str());
-					tag = common::l_region;
-				}
+			if(tag == common::l_none ) {
+				// XXXX Will need to handle switch here too
+				// Assume subregion positioning.
+				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping %s", n->get_qname().second.c_str());
+				continue;
 			}
-			// Create the region or the root-layout
-			if (tag == common::l_toplayout) {	
-				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create topLayout");
-				surf = create_top_surface(wf, rn, bgrenderer);
-			} else if (tag == common::l_region && !stack.empty()) {
-				common::surface_template *parent = stack.top();
-				surf = parent->new_subsurface(rn, bgrenderer);
-			} else if (tag == common::l_region && stack.empty()) {
-				// Create root-layout if it doesn't exist yet
-				if (root_surface == NULL) {
-					AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create default root-layout");
-					root_surface = create_top_surface(wf, NULL, NULL);
+			if (tag == common::l_media) {
+				tag = common::l_region;
+			}
+			if(pair.first) {
+				// On the way down we create the regions and remember
+				// them
+				common::renderer *bgrenderer = wf->new_background_renderer(rn);
+				common::surface_template *surf;
+				const char *pid = n->get_attribute("id");
+				std::string ident = "<unnamed>";
+				if(pid) {
+					ident = pid;
 				}
-				surf = root_surface->new_subsurface(rn, bgrenderer);
+				// Test that rootlayouts are correctly nested.
+				if (!stack.empty()) {
+					if (tag != common::l_region) {
+						lib::logger::get_logger()->error("topLayout element inside other element: %s", ident.c_str());
+						tag = common::l_region;
+					}
+				}
+				// Create the region or the root-layout
+				if (tag == common::l_toplayout) {	
+					AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create topLayout");
+					surf = create_top_surface(wf, rn, bgrenderer);
+				} else if (tag == common::l_region && !stack.empty()) {
+					common::surface_template *parent = stack.top();
+					surf = parent->new_subsurface(rn, bgrenderer);
+				} else if (tag == common::l_region && stack.empty()) {
+					// Create root-layout if it doesn't exist yet
+					if (root_surface == NULL) {
+						AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create default root-layout");
+						root_surface = create_top_surface(wf, NULL, NULL);
+					}
+					surf = root_surface->new_subsurface(rn, bgrenderer);
+				} else {
+					assert(0);
+				}
+				// Store in the region_node
+				rn->set_surface_template(surf);
+				
+				// Finally push on to the stack for reference by child nodes
+				stack.push(surf);
 			} else {
-				assert(0);
+				// On the way back up we only need to pop the stack
+				stack.pop();
 			}
-			// Store in the region_node
-			rn->set_surface_template(surf);
-			
-			// Finally push on to the stack for reference by child nodes
-			stack.push(surf);
-		} else {
-			// On the way back up we only need to pop the stack
-			stack.pop();
 		}
+	}
+	// Finally we create the regions for body regions that use subregion
+	// positioning on the default region
+	std::vector<region_node *>::iterator bit;
+	std::vector<region_node *>::const_iterator bend = m_default_region_subregions.end();
+	for (bit = m_default_region_subregions.begin(); bit != bend; bit++) {
+		region_node *rn = *bit;
+		common::renderer *bgrenderer = wf->new_background_renderer(rn);
+		if (root_surface == NULL) {
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create default root-layout for subregion positioning");
+			root_surface = create_top_surface(wf, NULL, NULL);
+		}
+		common::surface_template *surf = root_surface->new_subsurface(rn, bgrenderer);
+		rn->set_surface_template(surf);
+		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: subregion 0x%x surface 0x%x", (void*)rn, (void*)surf);
 	}
 }
 
@@ -373,12 +385,12 @@ common::surface *
 smil_layout_manager::get_surface(const lib::node *n) {
 	region_node *rn = get_region_node_for(n, true);
 	if (rn == NULL) {
-		lib::logger::get_logger()->error("get_surface: subregion positioning on default region not implemented");
+		lib::logger::get_logger()->trace("get_surface: returning default region for 0x%x", (void*)n);
 		return get_default_rendering_surface(n);
 	}
 	common::surface_template *stemp = rn->get_surface_template();
 	if (stemp == NULL) {
-		lib::logger::get_logger()->error("get_surface: region found, but no surface");
+		lib::logger::get_logger()->error("get_surface: region found, but no surface, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
 		return get_default_rendering_surface(n);
 	}
 	common::surface *surf = stemp->activate();
