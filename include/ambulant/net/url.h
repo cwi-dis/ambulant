@@ -9,17 +9,13 @@
  *
  */
 
-/* 
- * A url class represents a Uniform Resource
- * Locator, a pointer to a "resource" on the World
- * Wide Web.
- *
- */
- 
 #ifndef AMBULANT_NET_URL_H
 #define AMBULANT_NET_URL_H
 
 #include <string>
+#include <list>
+
+#include "ambulant/lib/string_util.h"
 
 namespace ambulant {
 
@@ -28,59 +24,48 @@ namespace net {
 class url {
 
 	// String type used by this impplementation
-	typedef std::basic_string<char> string_type;
+	typedef std::basic_string<char> string;
+	
+	// Size type
+	typedef std::basic_string<char>::size_type size_type;
 	
 	// Short type representing a protocol port.
 	typedef unsigned short short_type;
 	
     // The protocol to use (ftp, http, nntp, ... etc.) 
-    string_type m_protocol;
+    string m_protocol;
 
     // The host name to connect to.
-    string_type m_host;
+    string m_host;
 
     // The protocol port to connect to.
     short_type m_port;
 
-	// The specified file name on the host.
-    string_type m_file;
-
-	// The ref segment.
-    string_type m_ref;
+	// The path part of this url.
+    string m_path;
+    
+	// The ref or fragment.
+    string m_ref;
     
 	// The query part of this url.
-    string_type m_query;
-
-	// The authority part of this url.
-    string_type m_authority;
-
-	// The path part of this url.
-    string_type m_path;
+    string m_query;
 
   public:
   
-	url(string_type spec) 
-	:	m_port(-1) {
-		// split parts of the spec
-	}
+	url(const string& spec); 
+	url(const string& protocol, const string& host, const string& path); 
 		
-	url(string_type protocol, string_type host, int port, string_type file) 
-	:	m_protocol(protocol),
-		m_host(host),
-		m_port(static_cast<short_type>(port)),
-		m_file(file) {
-	}
+	url(const string& protocol, const string& host, int port, 
+		const string& path); 
 	
-	// Returns true when this url is valid.
-	bool is_good() const {
-		return false;
-	}
-	
-	const string_type& get_protocol() const {
+	url(const string& protocol, const string& host, int port, 
+		const string& path, const string& query, const string& ref); 
+		
+	const string& get_protocol() const {
 		return m_protocol;
 	}
 	
-	const string_type& get_host() const {
+	const string& get_host() const {
 		return m_host;
 	}
 	
@@ -88,29 +73,94 @@ class url {
 		return m_port;
 	}
 	
-	const string_type& get_file() const {
-		return m_file;
-	}
-	
-	const string_type& get_ref() const {
+	const string& get_ref() const {
 		return m_ref;
 	}
 	
-	const string_type& get_query() const {
+	const string& get_query() const {
 		return m_query;
 	}
 	
-	const string_type& get_authority() const {
-		return m_authority;
-	}
-	
-	const string_type& get_path() const {
+	const string& get_path() const {
 		return m_path;
 	}
 	
+	string get_file() const;
+	
+	std::string url::repr() const;
+	
+ 	static void init_statics();
+ 	
+  private:
+	// protocols to ports map
+ 	// static std::map<string, short_type > s_ports;
+ 
+  	typedef void (url::*HANDLER)(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	static std::list< std::pair<std::string, HANDLER> > s_handlers;
+	
+	void set_parts(ambulant::lib::reg_scanner& sc, const std::string& pat);
+	
+	// split url string representation
+ 	void set_from_spec(const string& spec);
+ 
+	// pat: "n://n:n/"
+	void set_from_host_port_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	
+	// pat: "n://n/"
+	void set_from_host_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
+	
+	// pat: "n:///"
+	void set_from_localhost_file_uri(ambulant::lib::reg_scanner& sc, const std::string& pat); 
 };
- 
- 
+
+/////////////////////////
+// inline implementation
+
+inline 
+url::url(const string& spec) 
+:	m_port(-1) {
+	set_from_spec(spec);
+}
+	
+inline 
+url::url(const string& protocol, const string& host, 
+	const string& path) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(-1),
+	m_path(path) {
+}
+
+inline		
+url::url(const string& protocol, const string& host, int port, 
+	const string& path) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(short_type(port)),
+	m_path(path) {
+}
+
+inline
+url::url(const string& protocol, const string& host, int port, 
+	const string& path, const string& query, const string& ref) 
+:	m_protocol(protocol),
+	m_host(host),
+	m_port(short_type(port)),
+	m_path(path), 
+	m_query(query), 
+	m_ref(ref) {
+}
+
+inline 
+url::string url::get_file() const {
+	std::string file = get_path();
+	if(!m_query.empty()) {
+		file += '?';
+		file += m_query;
+	}
+	return file;
+}
+
 } // namespace net
  
 } // namespace ambulant
