@@ -135,7 +135,8 @@ class renderer {
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	// XXXX This is a hack.
-	virtual const gui_region& get_mouse_region() const { abort(); };
+	// XXXX: OK, hack but you must return a reference to a gui_region
+	//virtual const gui_region& get_mouse_region() const { abort();};
 	// XXXX And this is another hack
 	virtual surface *get_surface() = 0;
 
