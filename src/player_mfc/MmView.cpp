@@ -337,15 +337,15 @@ void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 
 void MmView::OnFileStop()
 {
+
 	if(player) {
+		net::url u = player->get_url();
 		gui_player *dummy = player;
 		player = 0;
 		if(dummy) {
 			dummy->stop();
 			delete dummy;
 		}
-		std::string ustr = LPCTSTR(m_curDocFilename);
-		net::url u(ustr);
 		dummy = create_player_instance(u);
 		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0);

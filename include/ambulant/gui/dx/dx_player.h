@@ -169,6 +169,7 @@ class dx_player :
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
+	const net::url& get_url() const { return m_url;}
 	
 	common::window_factory *get_window_factory() { return this;}
 	common::playable_factory *get_playable_factory() {return this;}
