@@ -304,7 +304,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 	common::surface_template *root_surface = NULL;
 	region_node *first_root_layout = m_layout_tree ? m_layout_tree->get_first_child("root-layout") : NULL;
 	if (first_root_layout) {
-		common::renderer *bgrenderer = wf->new_background_renderer(first_root_layout);
+		common::bgrenderer *bgrenderer = wf->new_background_renderer(first_root_layout);
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create root_layout");
 		root_surface = create_top_surface(wf, first_root_layout, bgrenderer);
 	}
@@ -335,7 +335,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			if (pair.first) {
 				// On the way down we create the regions and remember
 				// them
-				common::renderer *bgrenderer = wf->new_background_renderer(rn);
+				common::bgrenderer *bgrenderer = wf->new_background_renderer(rn);
 				common::surface_template *surf;
 				const char *pid = n->get_attribute("id");
 				std::string ident = "<unnamed>";
@@ -383,7 +383,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 	std::vector<region_node *>::const_iterator bend = m_default_region_subregions.end();
 	for (bit = m_default_region_subregions.begin(); bit != bend; bit++) {
 		region_node *rn = *bit;
-		common::renderer *bgrenderer = wf->new_background_renderer(rn);
+		common::bgrenderer *bgrenderer = wf->new_background_renderer(rn);
 		if (root_surface == NULL) {
 			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_surfaces: create default root-layout for subregion positioning");
 			root_surface = create_top_surface(wf, NULL, NULL);
@@ -395,7 +395,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 }
 
 common::surface_template *
-smil_layout_manager::create_top_surface(common::window_factory *wf, const region_node *rn, common::renderer *bgrenderer)
+smil_layout_manager::create_top_surface(common::window_factory *wf, const region_node *rn, common::bgrenderer *bgrenderer)
 {
 	common::surface_template *rootrgn;
 	rootrgn = m_surface_factory->new_topsurface(rn, bgrenderer, wf);

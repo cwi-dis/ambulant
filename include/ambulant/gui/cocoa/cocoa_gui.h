@@ -91,7 +91,7 @@ class cocoa_window_factory : public common::window_factory {
   	:	m_defaultwindow_view(view) {}
   	
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
-	common::renderer *new_background_renderer(const common::region_info *src);
+	common::bgrenderer *new_background_renderer(const common::region_info *src);
   private:
     void *m_defaultwindow_view;
 };

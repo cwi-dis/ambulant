@@ -72,7 +72,7 @@ common::create_smil_surface_factory()
 common::surface_template *
 smil_surface_factory::new_topsurface(
 	const common::region_info *info,
-	common::renderer *bgrend,
+	common::bgrenderer *bgrend,
 	common::window_factory *wf)
 {
 	lib::size bounds = lib::size(common::default_layout_width, common::default_layout_height);
@@ -85,7 +85,7 @@ smil_surface_factory::new_topsurface(
 
 
 passive_region::passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-	const region_info *info, renderer *bgrenderer)
+	const region_info *info, bgrenderer *bgrenderer)
 :	m_name(name),
 	m_bounds_inited(true),
 	m_inner_bounds(bounds.innercoordinates(bounds)),
@@ -122,7 +122,7 @@ passive_region::~passive_region()
 }
 
 common::surface_template *
-passive_region::new_subsurface(const region_info *info, renderer *bgrenderer)
+passive_region::new_subsurface(const region_info *info, bgrenderer *bgrenderer)
 {
 	screen_rect<int> bounds = info->get_screen_rect();
 	zindex_t z = info->get_zindex();
@@ -534,7 +534,7 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 		point(x_region_for_image_right, y_region_for_image_bottom));
 }
 
-passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, renderer *bgrenderer, window_factory *wf)
+passive_root_layout::passive_root_layout(const region_info *info, lib::size bounds, bgrenderer *bgrenderer, window_factory *wf)
 :   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info, bgrenderer)
 {
 	m_gui_window = wf->new_window(m_name, bounds, this);

@@ -256,18 +256,14 @@ class active_video_renderer : public common::active_basic_renderer {
 
 // background_renderer is a convenience class: it implements some of the
 // methods for a renderer that are applicable to background renderers
-class background_renderer : public renderer {
+class background_renderer : public bgrenderer {
   public:
 	background_renderer(const region_info *src)
 	:   m_src(src),
 		m_dst(NULL) {}
 	virtual ~background_renderer() {}
-	virtual void set_surface(surface *destination) { m_dst = destination; }
-	virtual void set_alignment(alignment *align) { };
-	virtual void user_event(const lib::point &where, int what = 0) { /* Ignore, for now */ }
-	void set_intransition(lib::transition_info *info) { /* Ignore, for now */ }
-	void start_outtransition(lib::transition_info *info) { /* Ignore, for now */ }
-	virtual surface *get_surface() { return m_dst; }
+	void set_surface(surface *destination) { m_dst = destination; }
+	void user_event(const lib::point &where, int what = 0) {};
   protected:
 	const region_info *m_src;
 	surface *m_dst;

@@ -203,7 +203,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, gui_event
 	return (gui_window *)window;
 }
 
-common::renderer *
+common::bgrenderer *
 cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	return new cocoa_background_renderer(src);

@@ -77,7 +77,7 @@ class none_window_factory : public common::window_factory {
   	none_window_factory() {}
   	
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
-	common::renderer *new_background_renderer(common::region_info *src);
+	common::bgrenderer *new_background_renderer(common::region_info *src);
 };
 
 class none_playable : public common::active_playable {

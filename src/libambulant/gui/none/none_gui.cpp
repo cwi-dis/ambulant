@@ -111,7 +111,7 @@ gui::none::none_playable_factory::new_playable(
 	return new none_playable(context, cookie, node);
 }
 
-renderer *
+bgrenderer *
 gui::none::none_window_factory::new_background_renderer(region_info *src)
 {
 	return new none_background_renderer(src);

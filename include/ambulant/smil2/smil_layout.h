@@ -94,7 +94,7 @@ class smil_layout_manager : public common::layout_manager {
 	void build_surfaces(common::window_factory *wf);
 	void build_body_regions(lib::document *doc);
 	common::surface_template *create_top_surface(common::window_factory *wf, 
-		const region_node *rn, common::renderer *bgrenderer);
+		const region_node *rn, common::bgrenderer *bgrenderer);
 	
 	
 	const common::schema *m_schema;

@@ -73,8 +73,6 @@ class renderer; // forward
 class surface; // forward
 class gui_events; // forward
 
-//class mouse_region_factory; // forward
-
 // class alignment is a pure virtual baseclass used for aligning an
 // image in a region
 class alignment {
@@ -136,6 +134,14 @@ class renderer : public gui_events {
 
 };
 
+// bgrenderer is a pure virtual baseclass for background renderers
+class bgrenderer : public gui_events {
+  public:
+	virtual ~bgrenderer() {};
+	
+	virtual void set_surface(surface *destination) = 0;
+};
+
 // surface is a pure virtual baseclass for a region of screenspace.
 // It is the only interface that renderers use when talking to regions, and regions
 // use when talking to their parent regions.
@@ -173,7 +179,7 @@ class window_factory {
   public:
 	virtual ~window_factory() {}
 	virtual gui_window *new_window(const std::string &name, lib::size bounds, gui_events *handler) = 0;
-	virtual renderer *new_background_renderer(const region_info *src) = 0;
+	virtual bgrenderer *new_background_renderer(const region_info *src) = 0;
 	virtual void window_done(const std::string &name) {} 
 };
 
@@ -182,14 +188,14 @@ class window_factory {
 class surface_template : public animation_notification {
   public:
 	virtual ~surface_template() {}
-	virtual surface_template *new_subsurface(const region_info *info, renderer *bgrend) = 0;
+	virtual surface_template *new_subsurface(const region_info *info, bgrenderer *bgrend) = 0;
 	virtual surface *activate() = 0;
 };
 
 class surface_factory {
   public:
 	virtual ~surface_factory() {}
-	virtual surface_template *new_topsurface(const region_info *info, renderer *bgrend, window_factory *wf) = 0;
+	virtual surface_template *new_topsurface(const region_info *info, bgrenderer *bgrend, window_factory *wf) = 0;
 };
 
 class layout_manager {

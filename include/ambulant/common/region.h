@@ -71,12 +71,12 @@ class passive_region : public surface_template, public surface, public gui_event
   // The only constructor is protected: 
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
-		const region_info *info, renderer *bgrenderer);
+		const region_info *info, bgrenderer *bgrenderer);
   public:
 	virtual ~passive_region();
 	
 	// The surface_template interface:
-	common::surface_template *new_subsurface(const region_info *info, renderer *bgrenderer);
+	common::surface_template *new_subsurface(const region_info *info, bgrenderer *bgrenderer);
 	surface *activate();
 	void animated();
 
@@ -122,12 +122,12 @@ class passive_region : public surface_template, public surface, public gui_event
 	children_map_t& get_subregions() { return m_subregions;}
 
 	const region_info *m_info;			// Information such as z-order, etc.
-	renderer *m_bg_renderer;			// Background renderer
+	bgrenderer *m_bg_renderer;			// Background renderer
 };
 
 class passive_root_layout : public passive_region {
   public:
-	passive_root_layout(const region_info *info, size bounds, renderer *bgrenderer, window_factory *wf);
+	passive_root_layout(const region_info *info, size bounds, bgrenderer *bgrenderer, window_factory *wf);
 	~passive_root_layout();
 	
 	void need_redraw(const screen_rect<int> &r);
@@ -140,7 +140,7 @@ class passive_root_layout : public passive_region {
 
 class smil_surface_factory : public surface_factory {
   public:
-	surface_template *new_topsurface(const region_info *info, renderer *bgrend, window_factory *wf);
+	surface_template *new_topsurface(const region_info *info, bgrenderer *bgrend, window_factory *wf);
 };
 
 } // namespace common
