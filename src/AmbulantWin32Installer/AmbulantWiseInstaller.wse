@@ -15,7 +15,7 @@ item: Global
   Log Pathname=%MAINDIR%\INSTALL.LOG
   Message Font=MS Sans Serif
   Font Size=8
-  Pages Modified=00011000010100000001011000000011
+  Pages Modified=10011000010100000001011000000011
   Extra Pages=00000000000000000000000010110000
   Disk Label=Default
   Disk Filename=SETUP
@@ -1706,6 +1706,11 @@ item: If/While Statement
   Variable=COMPONENTS
   Value=A
   Flags=00001010
+end
+item: Install File
+  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
+  Destination=%MAINDIR%\msvcr71.dll
+  Flags=0000000010000011
 end
 item: Install File
   Source=..\..\Readme
