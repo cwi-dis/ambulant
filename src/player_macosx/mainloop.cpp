@@ -78,6 +78,7 @@
 #include "ambulant/net/ffmpeg_rawdatasource.h"
 #endif
 #include "ambulant/smil2/test_attrs.h"
+#include "ambulant/common/plugin_engine.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -144,6 +145,9 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
 	m_rf->add_factory( new gui::sdl::sdl_renderer_factory(m_df) );      
 #endif
+
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
+	plugin::plugin_engine *pf = new plugin::plugin_engine(m_rf,m_df);
 
 	m_doc = create_document(filename);
 	if (!m_doc) {

@@ -55,12 +55,12 @@
 #include<string.h>
 #include <ltdl.h>
 
-
-
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+
+#define PLUGIN_PREFIX "libamplugin_"
 
 using namespace ambulant;
 
@@ -76,9 +76,6 @@ int filter(const struct dirent* filen)
 	}
 	return 0;
 }
-
-
-
 
 plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::datasource_factory* df)
 {
@@ -97,12 +94,12 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 	errors = lt_dlinit ();
 	
 	
-	AM_DBG lib::logger::get_logger()->debug("plugin_engine::Scanning plugin directory: %s", m_plugindir);
+	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", m_plugindir);
 
 	if (m_plugindir != NULL) {
 		nr_of_files = scandir(m_plugindir, &namelist, &filter , NULL);
 		if (nr_of_files < 0) {
-			lib::logger::get_logger()->error("plugin_playable_factory::Error reading plugin directory");
+			lib::logger::get_logger()->error("plugin_engine: Error reading plugin directory");
 		} else {
 			while (nr_of_files--)
    			{
@@ -110,20 +107,26 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
       			if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
 	          		strcmp(namelist[nr_of_files]->d_name, "..")) { 
 					strcpy(filename,m_plugindir);
-					strcat(filename,namelist[nr_of_files]->d_name);
+					char *pluginname = namelist[nr_of_files]->d_name;
+					strcat(filename, pluginname);
+					if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
+						lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
+						continue;
+					}
+					lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
 					handle = lt_dlopen(filename);
 				  	if (handle) {
-  						AM_DBG lib::logger::get_logger()->debug("plugin_playable_factory::reading plugin SUCCES [ %s ]",filename);
+  						AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
 						AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
 						init = (initfunctype) lt_dlsym(handle,"initialize");
 						if (!init) {
-							lib::logger::get_logger()->error("plugin_playable_factory: no initialize routine");
+							lib::logger::get_logger()->error("plugin_engine: no initialize routine");
 						} else {
 							(*init)(rf,df);
 						}
 		  			} else {
-						lib::logger::get_logger()->error("plugin_playable_factory::Error reading plugin %s",filename);
-						lib::logger::get_logger()->error("Reading plugin failed because : %s\n\n", lt_dlerror());
+						lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
+						lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
 					}
 			}
 			free(namelist[nr_of_files]);
