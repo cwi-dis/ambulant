@@ -234,6 +234,8 @@ class node {
 	const node_context* get_context() const { return m_context;}
 	void set_context(node_context *c) { m_context = c;}
 	
+	static int get_node_counter() {return node_counter;}
+
   /////////////
   protected:
 	// node data 
@@ -258,6 +260,9 @@ class node {
 	node *m_parent;
 	node *m_next;
 	node *m_child;
+	
+	// verifier
+	static int node_counter;
 };
 
 
