@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -271,7 +271,7 @@ net::ffmpeg_audio_datasource::init()
 }
 
 
-net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(datasource *const src, lib::event_processor *const evp) 
+net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp) 
 :	m_src(src),
 	m_context_set(false),
 	m_resample_context(NULL),
@@ -281,6 +281,7 @@ net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(datasource *const sr
 	m_event_processor(evp),
 	m_client_callback(NULL)
 {
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : constructor");
 	m_in_fmt.sample_rate = 0;
 	m_in_fmt.channels = 0;
 	m_in_fmt.bits = 0;
@@ -292,9 +293,8 @@ net::ffmpeg_resample_datasource::ffmpeg_resample_datasource(datasource *const sr
 
 net::ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
 {
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::~ffmpeg_resample_datasource() : destructor");
 }
-
-
 
 
 void
@@ -328,7 +328,7 @@ net::ffmpeg_resample_datasource::data_avail()
 	   m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
 	   m_client_callback = NULL;
    	} else {
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::callback(): No client callback!");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::callback(): No client callback!");
 	}
 
   } else {
@@ -388,8 +388,51 @@ net::ffmpeg_resample_datasource::get_output_format(net::audio_context &fmt)
 	fmt.bits = m_out_fmt.bits;
 }
 
+int
+net::ffmpeg_resample_datasource::get_nchannels()
+{
+	return m_out_fmt.channels;
+}
+
+int
+net::ffmpeg_resample_datasource::get_nbits()
+{
+	return m_out_fmt.bits;
+}
+
+int
+net::ffmpeg_resample_datasource::get_samplerate()
+{
+	return m_out_fmt.sample_rate;
+}
+
 
 
 void 
 net::ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
-{}
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::start(): start(0x%x) called", this);
+	if (m_client_callback != NULL)
+		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
+	
+	if (m_buffer.buffer_not_empty() || m_src->end_of_file() ) {
+		// We have data (or EOF) available. Don't bother starting up our source again, in stead
+		// immedeately signal our client again
+		if (evp && callbackk) {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start: trigger client callback");
+			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
+		} else {
+			AM_DBG lib::logger::get_logger()->error("ffmpeg_resample_datasource::start(): no client callback!");
+		}
+	} else {
+		// We have no data available. Start our source, and in our data available callback we
+		// will signal the client.
+		m_client_callback = callbackk; 
+		lib::event *e = new resample_callback(this, &net::ffmpeg_resample_datasource::data_avail);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
+		m_src->start(m_event_processor,  e);
+	}
+	
+	m_lock.leave();
+}

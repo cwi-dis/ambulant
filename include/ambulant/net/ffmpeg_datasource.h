@@ -92,7 +92,7 @@ class ffmpeg_datasource_factory : public audio_filter_datasource_factory {
 
 class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_audio_datasource(datasource *const src, lib::event_processor *const evp);
+	 ffmpeg_audio_datasource(net::datasource *src, lib::event_processor *evp);
     ~ffmpeg_audio_datasource();
      
 		  
@@ -139,10 +139,9 @@ class ffmpeg_audio_datasource: virtual public audio_datasource, virtual public l
 
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-     ffmpeg_resample_datasource(datasource *const src, lib::event_processor *const evp);
+     ffmpeg_resample_datasource(net::audio_datasource *src, lib::event_processor *evp);
     ~ffmpeg_resample_datasource();
-     
-		  
+   
     void start(lib::event_processor *evp, lib::event *callback);  
 
     void readdone(int len);
@@ -158,11 +157,10 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
    
     void get_input_format(net::audio_context &fmt);  
     void get_output_format(net::audio_context &fmt);
-  
-  	//XXXX I put these here just to make it compile again, it has to be replaced by something that makes sense !
-	//long add_ref() {};
-	//long release() {};	
-	//long get_ref_count() const {};
+ 	int get_nchannels();
+  	int get_nbits();
+	int get_samplerate();
+  	
 		
   protected:
     int init(); 
