@@ -115,7 +115,7 @@ class textptr {
 #ifdef AMBULANT_PLATFORM_WIN32
 		WideCharToMultiByte(CP_ACP, 0, m_pcw, n, m_pb, n, NULL, NULL);
 #else
-		wctomb(m_pb, m_pcw);
+		wcstombs(m_pb, m_pcw, n);
 
 #endif
 		return m_pb;
