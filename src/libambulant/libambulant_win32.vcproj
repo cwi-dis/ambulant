@@ -129,6 +129,9 @@
 						RelativePath=".\gui\dx\dx_audio_player.cpp">
 					</File>
 					<File
+						RelativePath=".\gui\dx\dx_brush.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dx\dx_gui.cpp">
 					</File>
 					<File
@@ -186,6 +189,9 @@
 				</File>
 				<File
 					RelativePath=".\lib\sync_rule.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\test_attrs.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\time_attrs.cpp">
@@ -291,10 +297,19 @@
 						Name="dx"
 						Filter="">
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\bmp_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_area.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_audio.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_audio_player.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_brush.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_gui.h">
@@ -324,10 +339,16 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_viewport.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\gif_decoder.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\img_decoder.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\jpg_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\png_decoder.h">
 						</File>
 					</Filter>
 				</Filter>
@@ -420,6 +441,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\sync_rule.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\test_attrs.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\thread.h">
