@@ -205,6 +205,5 @@ EXTRA_DIST= \
 	gui/cocoa \
 	gui/dg \
 	gui/dx \
-	gui/qsound \
 	gui/qt \
 	lib/win32
