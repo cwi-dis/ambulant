@@ -80,7 +80,7 @@ class ambulant_qt_window : public common::abstract_window {
   public:
 	ambulant_qt_window(const std::string &name,
 			   lib::screen_rect<int>* bounds,
-			   common::renderer *region);
+			   common::surface_source *region);
 	~ambulant_qt_window();
 			   
 	void set_ambulant_widget(qt_ambulant_widget* qaw);
@@ -122,7 +122,7 @@ class qt_window_factory : public common::window_factory {
 		common::abstract_window* new_window(
 			const std::string &name,
 			lib::size bounds,
-			common::renderer *region);
+			common::surface_source *region);
 		common::gui_region *new_mouse_region();
 		common::renderer *new_background_renderer(const common::region_info *src);
   private:

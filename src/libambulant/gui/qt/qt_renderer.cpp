@@ -63,7 +63,7 @@ using namespace gui::qt;
   
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   lib::screen_rect<int>* bounds,
-	   common::renderer *region)
+	   common::surface_source *region)
 :	common::abstract_window(region),
 	m_ambulant_widget(NULL)
 {
@@ -227,7 +227,7 @@ qt_renderer_factory::new_playable (
 common::abstract_window *
 qt_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
-			       common::renderer *region)
+			       common::surface_source *region)
 {
 	lib::screen_rect<int> * r = new lib::screen_rect<int>(m_p, bounds);
 	AM_DBG lib::logger::get_logger()->trace(
