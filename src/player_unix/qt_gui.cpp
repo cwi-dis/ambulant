@@ -59,6 +59,7 @@
 #include <fcntl.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
+#include "qt_logger.h"
 #include "qt_renderer.h"
 #if 1
 #include "ambulant/config/config.h"
@@ -148,6 +149,8 @@ qt_gui::qt_gui(const char* title,
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
 		filemenu->insertItem("&Settings", this,
 				     SLOT(slot_settings_select()));
+		filemenu->insertItem("&Logger", this,
+				     SLOT(slot_logger_window()));
   //		filemenu->insertItem("&Quit", qApp, SLOT(quit()));
 		filemenu->insertItem("&Quit", this, SLOT(slot_quit()));
 		m_menubar->insertItem("&File", filemenu);
@@ -208,6 +211,17 @@ qt_gui::slot_about() {
 	} else if (but == 2) {
 		// Do nothing
 	}
+}
+
+void
+qt_gui::slot_logger_window() {
+	printf("slot_logger_window()\n");
+	QTextView* logger_window =
+		qt_logger::get_qt_logger()->get_logger_window();
+	if (logger_window->isHidden())
+		logger_window->show();
+	else
+		logger_window->hide();
 }
 
 bool 
@@ -357,15 +371,6 @@ qt_gui::slot_pause() {
 }
 
 void 
-qt_gui::slot_stop() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
-	m_mainloop->stop();
-	m_playmenu->setItemEnabled(m_pause_id, false);
-	m_playmenu->setItemEnabled(m_play_id, true);
-	m_playing = false;
-}
-
-void 
 qt_gui::slot_settings_select() {
 	printf("slot_settings\n");
 	m_settings = new qt_settings();
@@ -394,6 +399,15 @@ qt_gui::slot_settings_cancel() {
 	m_settings->settings_finish();
 	delete m_settings;
 	m_settings = NULL;
+}
+
+void 
+qt_gui::slot_stop() {
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
+	m_mainloop->stop();
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
+	m_playing = false;
 }
 
 void
@@ -433,27 +447,35 @@ qt_gui::unsetCursor() { //XXXX Hack
 
 int
 main (int argc, char*argv[]) {
-#if 1
-    bindtextdomain (PACKAGE, LOCALEDIR);
-    textdomain (PACKAGE);
+#define USE_GETTEXT
+#ifdef	USE_GETTEXT
+	bindtextdomain (PACKAGE, LOCALEDIR);
+	textdomain (PACKAGE);
+#endif/*USE_GETTEXT*/
+	unix_preferences unix_prefs;
+	unix_prefs.load_preferences();
+	FILE* DBG = stdout;
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
+	QApplication myapp(argc, argv);
+	// take log level from preferences
+	qt_logger* qt_logger = qt_logger::get_qt_logger();
+	lib::logger::get_logger()->debug("Ambulant Player: %s",
+					 "now logging to a window");
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	QPEApplication myapp(argc, argv);
+#endif/*QT_NO_FILEDIALOG*/
+
+#ifdef	USE_GETTEXT
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/Qt"), __DATE__);
 #if USE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
-#endif
-	unix_preferences unix_prefs;
-	unix_prefs.load_preferences();
-
-	FILE* DBG = stdout;
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
-	QApplication myapp(argc, argv);
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	QPEApplication myapp(argc, argv);
-#endif/*QT_NO_FILEDIALOG*/
+#endif/*USE_GETTEXT*/
 
 	/* Setup widget */
-	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
+	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
+				      : "AmbulantPlayer");
 
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);

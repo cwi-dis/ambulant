@@ -49,63 +49,119 @@
 /* 
  * @$Id$ 
  */
-#ifndef __QT_SETTINGS_H__
-#define __QT_SETTINGS_H__
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qhbox.h>
-#include <qhbuttongroup.h>
-#include <qhgroupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <qpopupmenu.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qvbuttongroup.h>
-#include <qvbox.h>
-#include <qvgroupbox.h>
+#include "qt_logger.h"
 
-class qt_settings
+qt_logger_ostream::qt_logger_ostream()
+  :		buf_len(1024),
+		buf_idx(0) {
+	buf = (char*) malloc(buf_len);
+}
+bool 
+qt_logger_ostream::is_open() const {
+	std::string id("qt_logger_ostream:::is_open() const");
+	return true;
+}
+
+int
+qt_logger_ostream::write(const unsigned char *buffer, int nbytes)
 {
- public:
-	void settings_finish();
-	void settings_ok();
-	QWidget* settings_select();
+	std::string id("qt_logger_ostream::write(const unsigned char *buffer, int nbytes)");
+	write(id+" not implemented for Qt");
+}
 
- private:
-	// settings
-	QVGroupBox*	m_settings_vg;
-	// Log level:
-	QHBox*		m_loglevel_hb;
-	QLabel*		m_loglevel_lb;
-	QComboBox*	m_loglevel_co;
+int
+qt_logger_ostream::write(const char *cstr)
+{
+//	std::string id("qt_logger_ostream::write(const char *cstr)");
 
-	// XML parser:
-	QHBox*		m_parser_hb;
-	QLabel*		m_parser_lb;
-	QComboBox*	m_parser_co;
+        int cstr_len = strlen(cstr), i, line_len;
+	bool found = false;
+	// glue strings to lines
+	for (i=0; i < cstr_len; i++) {
+		if (cstr[i] =='\n') {
+			found = true;
+			break;
+		}
+	}
+	if (found) {
+		// optimization for complete lines
+		if (buf_idx == 0) {
+			qt_logger::get_qt_logger()->
+				get_logger_window()->append(cstr);
+			return 1;
+		}
+	}
+	line_len = i;
+	strncpy(&buf[buf_idx], cstr, line_len);
+	buf_idx += line_len;
+	if (found) {
+		buf[buf_idx] = '\0';
+		qt_logger::get_qt_logger()->
+			get_logger_window()->append(buf);
+		buf_idx = 0;
+		write(&cstr[line_len]);
+	}
+	return 1;
+}
 
-	// xerces options:
-	QVGroupBox*	m_xerces_vg;
-	QCheckBox*	m_namespace_cb;	// Enable XML namespace support
-	bool		m_namespace_val;
-	QCheckBox*	m_validation_cb;// Enable XML validation:
-	bool		m_validation_val;
-	QVBox*		m_validation_vb;
-	QHButtonGroup*	m_declaration_bg;
-	QRadioButton* 	m_schema_rb;	// Using Schema
-	bool		m_schema_val;
-	QRadioButton*	m_dtd_rb;	// Using DTD
-	bool		m_dtd_val;
-	QCheckBox*	m_full_check_cb;// Validation Schema full checking
-	bool		m_full_check_val;
-	QHBox*		m_finish_hb;
-	QPushButton*	m_ok_pb;	// OK
-	QPushButton*	m_cancel_pb;	// Cancel
+int
+qt_logger_ostream::write(std::string s)
+{
+//	std::string id("qt_logger_ostream::write(string s)");
+	return  write(s.data());
+}
 
-	int index_in_string_array(const char* s, const char* sa[]);
-};
-#endif/*__QT_SETTINGS_H__*/
+void
+qt_logger_ostream::write(ambulant::lib::byte_buffer& bb)
+{
+	std::string id("qt_logger_ostream::write(ambulant::lib::byte_buffer& bb)");
+	write(id+" not implemented for Qt");
+}
+
+void
+qt_logger_ostream::close() {
+	std::string id("qt_logger_ostream::close()");
+}
+
+void
+qt_logger_ostream::flush() {
+	std::string id("qt_logger_ostream::flush()");
+}
+
+qt_logger* qt_logger::s_qt_logger = 0;
+
+qt_logger::
+qt_logger::qt_logger()
+{
+	ambulant::lib::logger* logger =
+		ambulant::lib::logger::get_logger();
+	// Connect logger to our message displayer and output processor
+	logger->set_show_message(show_message);
+	logger->set_ostream(new qt_logger_ostream);
+	// Tell the logger about the output level preference
+	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+	logger->set_level(level);
+	logger_window = new QTextView();
+	logger_window->setCaption("Ambulant`Logger");
+	logger_window->setTextFormat(Qt::PlainText);
+}
+
+qt_logger*
+qt_logger::get_qt_logger() {
+	if (s_qt_logger == 0) {
+		s_qt_logger = new qt_logger();
+	}
+	return s_qt_logger;
+}
+
+void
+qt_logger::show_message(const char *format,...)
+{
+}
+
+QTextView*
+qt_logger::get_logger_window()
+{
+	return logger_window;
+}
