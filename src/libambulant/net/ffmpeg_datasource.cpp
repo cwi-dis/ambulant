@@ -57,6 +57,8 @@
 #define AM_DBG if(0)
 #endif 
 
+//#define WITH_FFMPEG_0_4_9					
+
 // How many video frames we would like to buffer at most
 #define MAX_VIDEO_FRAMES 25
 
@@ -70,6 +72,7 @@ typedef lib::no_arg_callback<ffmpeg_decoder_datasource> readdone_callback;
 typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
+
 
 // Static initializer function shared among ffmpeg classes
 static void 
@@ -827,10 +830,6 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
 					img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
 					
-//#define WITH_FFMPEG_0_4_9					
-#ifdef	WITH_FFMPEG_0_4_9					
-#else /*WITH_FFMPEG_0_4_9*/
-#endif/*WITH_FFMPEG_0_4_9*/
 					// And convert the timestamp
 #ifdef	WITH_FFMPEG_0_4_9					
 					num = m_con->streams[m_stream_index]->time_base.num;
@@ -1114,14 +1113,17 @@ ffmpeg_decoder_datasource::data_avail()
 				AM_DBG lib::logger::get_logger()->trace("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 				// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
 				int cursz = sz;
-				if (cursz > 4096) cursz = 4096;
+				if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
-				if (outsize <= 0) {
+#ifdef	WITH_FFMPEG_0_4_9					
+				if (outsize < 0) {
+		lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::data_avail: avcodec_decode_audio sets \"outsize\" to %d", outsize);
 					m_lock.leave();
 					return;
 				}
+#endif/*WITH_FFMPEG_0_4_9*/
 				m_buffer.pushdata(outsize);
 				m_src->readdone(decoded);
 			} else {
@@ -1353,8 +1355,8 @@ ffmpeg_resample_datasource::data_avail()
 	
 			cursize = sz;
 			// Don't feed to much data to the resampler, it doesn't like to do lists ;-)
-			if (cursize > 4096) 
-				cursize = 4096;
+			if (cursize > INBUF_SIZE) 
+				cursize = INBUF_SIZE;
 			int insamples = cursize / (m_in_fmt.channels * sizeof(short));	
 			if (insamples * m_in_fmt.channels * sizeof(short) != cursize) {
 				lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: incmplete samples: %d", cursize);
