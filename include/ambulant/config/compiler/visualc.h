@@ -18,6 +18,9 @@
 // turn off the warnings before we #include anything
 #pragma warning( disable : 4503 ) // warning: decorated name length exceeded
 
+// turn off the warnings for virtuals 
+#pragma warning( disable: 4250) // xxx : inherits yyy::function via dominance
+
 #if _MSC_VER <= 1200  // 1200 == VC++ 6.0
 #pragma warning( disable : 4786 ) // ident trunc to '255' chars in debug info
 #  define AMBULANT_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS
