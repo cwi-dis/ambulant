@@ -459,7 +459,7 @@ void gui::dg::dg_player::schedule_update() {
 	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dg_player>(this, 
 		&dg_player::update_callback);
-	m_worker_processor->add_event(m_update_event, 50);
+	m_worker_processor->add_event(m_update_event, 50, lib::event_processor::low);
 }
 
 ////////////////////////

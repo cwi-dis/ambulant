@@ -522,7 +522,7 @@ void gui::dx::dx_player::schedule_update() {
 	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
 		&dx_player::update_callback);
-	m_player->schedule_event(m_update_event, 50);
+	m_player->schedule_event(m_update_event, 50, ep_high);
 }
 
 ////////////////////////

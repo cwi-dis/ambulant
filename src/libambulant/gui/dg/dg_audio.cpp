@@ -195,5 +195,5 @@ void gui::dg::dg_audio_renderer::update_callback() {
 void gui::dg::dg_audio_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dg_audio_renderer>(this, 
 		&dg_audio_renderer::update_callback);
-	m_worker->add_event(m_update_event, 100);
+	m_worker->add_event(m_update_event, 100, lib::event_processor::high);
 }
