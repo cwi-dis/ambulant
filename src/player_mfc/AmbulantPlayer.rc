@@ -195,14 +195,32 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,242,42,50,14
 END
 
-IDD_PREFERENCES DIALOGEX 0, 0, 186, 95
+IDD_PREFERENCES DIALOGEX 0, 0, 175, 193
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "AmbulantPlayer Preferences"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,118,172,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,59,172,50,14
+    COMBOBOX        IDC_PARSER_ID,63,30,105,63,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "XML Parser:",IDC_STATIC,7,33,39,8
+    LTEXT           "Log level:",IDC_STATIC,7,7,32,8
+    COMBOBOX        IDC_LOG_LEVEL,63,7,105,84,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Xerces options:",IDC_STATIC,7,54,161,107
+    CONTROL         "Enable XML namespace support",IDC_DO_NAMESPACES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,71,117,10
+    CONTROL         "Enable XML validation:",IDC_DO_VALIDATION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,89,87,10
+    CONTROL         "Using Schema",IDC_DO_SCHEMA,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,31,111,60,10
+    CONTROL         "Using DTD",IDC_DO_DTD,"Button",BS_AUTORADIOBUTTON,101,
+                    111,49,10
+    CONTROL         "Validation Schema full checking",
+                    IDC_VALIDATION_SCHEMA_FULL_CHECKING,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,31,130,114,10
 END
 
 
@@ -272,9 +290,9 @@ BEGIN
     IDD_PREFERENCES, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 168
         TOPMARGIN, 7
-        BOTTOMMARGIN, 88
+        BOTTOMMARGIN, 186
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -286,6 +304,35 @@ END
 //
 
 IDC_CURSOR_HAND         CURSOR                  "res\\hand.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_PREFERENCES DLGINIT
+BEGIN
+    IDC_PARSER_ID, 0x403, 4, 0
+0x6e61, 0x0079, 
+    IDC_PARSER_ID, 0x403, 6, 0
+0x7865, 0x6170, 0x0074, 
+    IDC_PARSER_ID, 0x403, 7, 0
+0x6578, 0x6372, 0x7365, "\000" 
+    IDC_LOG_LEVEL, 0x403, 6, 0
+0x6544, 0x7562, 0x0067, 
+    IDC_LOG_LEVEL, 0x403, 6, 0
+0x7254, 0x6361, 0x0065, 
+    IDC_LOG_LEVEL, 0x403, 5, 0
+0x6853, 0x776f, "\000" 
+    IDC_LOG_LEVEL, 0x403, 8, 0
+0x6157, 0x6e72, 0x6e69, 0x0067, 
+    IDC_LOG_LEVEL, 0x403, 6, 0
+0x7245, 0x6f72, 0x0072, 
+    IDC_LOG_LEVEL, 0x403, 6, 0
+0x6146, 0x6174, 0x006c, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

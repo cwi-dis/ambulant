@@ -13,6 +13,14 @@
 #define IDC_EDIT_URL                    1001
 #define IDC_BUTTON1                     1002
 #define IDC_BUTTON_BROWSE               1002
+#define IDC_PARSER_ID                   1003
+#define IDC_LOG_LEVEL                   1004
+#define IDC_DO_NAMESPACES               1005
+#define IDC_DO_VALIDATION               1006
+#define IDC_DO_SCHEMA                   1007
+#define IDC_DO_DTD                      1008
+#define IDC_CHECK3                      1009
+#define IDC_VALIDATION_SCHEMA_FULL_CHECKING 1009
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773
@@ -29,9 +37,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32787
-#define _APS_NEXT_CONTROL_VALUE         1003
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
