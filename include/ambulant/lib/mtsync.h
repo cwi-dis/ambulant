@@ -85,6 +85,9 @@ class AMBULANTAPI critical_section : public win32::critical_section {
 #else
 class AMBULANTAPI critical_section : public unix::critical_section {
 };
+
+class AMBULANTAPI condition : public unix::condition {
+};
 #endif
 
 } // namespace lib

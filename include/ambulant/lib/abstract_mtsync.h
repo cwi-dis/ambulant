@@ -72,6 +72,16 @@ class AMBULANTAPI abstract_critical_section {
 	/// Leave a critical section.
 	virtual void leave() = 0;
 };
+
+class AMBULANTAPI abstract_condition {
+  public:
+	virtual ~abstract_condition() {}
+	
+	virtual void signal() = 0;
+	virtual void signal_all() = 0;
+	// virtual bool wait(int microseconds, abstract_critical_section &cs) = 0;
+};
+
 } // namespace lib
 
 } // namespace ambulant

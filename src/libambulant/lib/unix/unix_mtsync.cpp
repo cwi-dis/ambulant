@@ -87,6 +87,61 @@ lib::unix::critical_section::leave()
 	}
 }
 
+lib::unix::condition::condition()
+{
+	if (pthread_cond_init(&m_condition, NULL) < 0) {
+		lib::logger::get_logger()->fatal("lib::unix::condition(): pthread_cond_init failed: %s", strerror(errno));
+	}
+}
+
+lib::unix::condition::~condition()
+{
+}
+
+void
+lib::unix::condition::signal()
+{
+	if (pthread_cond_signal(&m_condition) < 0) {
+		lib::logger::get_logger()->fatal("lib::unix::condition::signal(): pthread_cond_signal failed: %s", strerror(errno));
+	}
+}
+
+void
+lib::unix::condition::signal_all()
+{
+	if (pthread_cond_broadcast(&m_condition) < 0) {
+		lib::logger::get_logger()->fatal("lib::unix::condition::signal_all(): pthread_cond_broadcast failed: %s", strerror(errno));
+	}
+}
+
+bool
+lib::unix::condition::wait(int microseconds, critical_section &cs)
+{
+	int rv;
+	
+	if (microseconds >= 0) {
+		struct timespec ts;
+		struct timeval tv;
+		int dummy;
+		dummy = gettimeofday(&tv,NULL);
+		ts.tv_sec = tv.tv_sec;
+		ts.tv_nsec = (tv.tv_usec + microseconds)* 1000;
+		if (ts.tv_nsec > 1000000000) {
+			ts.tv_sec += 1;
+			ts.tv_nsec -= 1000000000;
+		}
+		rv = pthread_cond_timedwait(&m_condition, &cs.m_cs, &ts);
+	} else {
+		rv = pthread_cond_timedwait(&m_condition, &cs.m_cs, NULL);
+	}
+	if (rv < 0) {
+		if (errno != ETIMEDOUT)
+			lib::logger::get_logger()->fatal("lib::unix::condition::wait(): pthread_cond_wait failed: %s", strerror(errno));
+		return false;
+	}
+	return true;
+}
+
 #if 0
 lib::unix::counting_semaphore::counting_semaphore()
 :	m_lock(critical_section()),
