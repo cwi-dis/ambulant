@@ -923,6 +923,7 @@
 				04AE676D05E55CC300023FEA,
 				04382B8005D7AEE600CFA029,
 				04382B8105D7AEE600CFA029,
+				049580ED0652C21F00CDAB3B,
 				04AE676E05E55CC300023FEA,
 				04382B8405D7AEE600CFA029,
 				0478D955060B382C004224C0,
@@ -1740,6 +1741,7 @@
 				04AE677105E55CEC00023FEA,
 				0444D34E051F2EF00010C447,
 				047FC13505CEA111003C9A89,
+				049580EF0652C23300CDAB3B,
 				04AE677205E55CEC00023FEA,
 				0478D957060B383E004224C0,
 				0444D34F051F2EF00010C447,
@@ -2389,6 +2391,34 @@
 		};
 		049580EC0652BBF000CDAB3B = {
 			fileRef = 049580EA0652BBF000CDAB3B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		049580ED0652C21F00CDAB3B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ffmpeg_rawdatasource.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		049580EE0652C21F00CDAB3B = {
+			fileRef = 049580ED0652C21F00CDAB3B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		049580EF0652C23300CDAB3B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = ffmpeg_rawdatasource.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		049580F00652C23300CDAB3B = {
+			fileRef = 049580EF0652C23300CDAB3B;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3631,6 +3661,7 @@
 				04E6A8AD064A863F00763D79,
 				049580EB0652BBF000CDAB3B,
 				049580EC0652BBF000CDAB3B,
+				049580EE0652C21F00CDAB3B,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3755,6 +3786,7 @@
 				04E6A8AA064A863000763D79,
 				04E6A8AB064A863000763D79,
 				049580E80652BBD500CDAB3B,
+				049580F00652C23300CDAB3B,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

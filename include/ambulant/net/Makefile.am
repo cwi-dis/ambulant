@@ -8,4 +8,5 @@ library_include_HEADERS= \
 	stdio_datasource.h \
 	url.h \
 	ffmpeg_datasource.h \
+	ffmpeg_rawdatasource.h \
 	raw_video_datasource.h
