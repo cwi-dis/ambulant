@@ -129,7 +129,8 @@ class ffmpeg_raw_datasource:
     ~ffmpeg_raw_datasource();
 
     void start(lib::event_processor *evp, lib::event *callback);  
-
+	void stop();
+	
 	char* get_read_ptr();
     void readdone(int len);
     bool end_of_file();

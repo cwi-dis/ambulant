@@ -150,6 +150,7 @@ class datasource : virtual public ambulant::lib::ref_counted {
 
 	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
     virtual void readdone(int len) = 0;
+	virtual void stop() = 0;
 
     virtual bool end_of_file() = 0;
 	virtual char* get_read_ptr() = 0;
@@ -180,7 +181,8 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual int height() = 0;
 	
 	virtual void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp) = 0;
-  	
+  	virtual void stop() = 0;
+	
   	virtual bool end_of_file() = 0;
   	
   	virtual char* get_frame(double *timestamp, int *size) = 0; 

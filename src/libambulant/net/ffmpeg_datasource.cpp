@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -396,16 +396,25 @@ ffmpeg_audio_datasource::ffmpeg_audio_datasource(const std::string& url, AVForma
 
 ffmpeg_audio_datasource::~ffmpeg_audio_datasource()
 {
-	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource(0x%x)", (void*)this);
+	stop();
+}
+
+void
+ffmpeg_audio_datasource::stop()
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
 		m_thread->remove_datasink(m_stream_index);
 		m_thread = NULL;
 	}
 	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::~ffmpeg_audio_datasource: thread stopped");
-	if (m_con) delete m_con;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource::stop: thread stopped");
+	//if (m_con) delete m_con;
 	m_con = NULL; // owned by the thread
+	if (m_client_callback) delete m_client_callback;
+	m_client_callback = NULL;
 	m_lock.leave();
 }	
 
@@ -596,16 +605,25 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 
 ffmpeg_video_datasource::~ffmpeg_video_datasource()
 {
-	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::~ffmpeg_video_datasource(0x%x)", (void*)this);
+	stop();
+}
+
+void
+ffmpeg_video_datasource::stop()
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
 		m_thread->remove_datasink(m_stream_index);
 		m_thread = NULL;
 	}
 	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::~ffmpeg_video_datasource: thread stopped");
-	if (m_con) delete m_con;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::stop: thread stopped");
+	//if (m_con) delete m_con;
 	m_con = NULL; // owned by the thread
+	if (m_client_callback) delete m_client_callback;
+	m_client_callback = NULL;
 	m_lock.leave();
 }	
 
@@ -927,7 +945,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const std::string& url, dat
 	m_src(src),
 	m_client_callback(NULL)
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
 	const char *ext = getext(url);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: Selecting \"%s\" decoder", ext);
@@ -942,7 +960,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_src(src),
 	m_client_callback(NULL)
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
 	audio_format fmt = src->get_audio_format();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
@@ -953,10 +971,24 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource(0x%x)", (void*)this);
+	stop();
+}
+
+void
+ffmpeg_decoder_datasource::stop()
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::stop(0x%x)", (void*)this);
 	if (m_con) avcodec_close(m_con);
 	m_con = NULL;
-	if (m_src) m_src->release();
+	if (m_src) {
+		m_src->stop();
+		m_src->release();
+	}
 	m_src = NULL;
+	if (m_client_callback) delete m_client_callback;
+	m_client_callback = NULL;
+	m_lock.leave();
 }	
 
 int
@@ -1186,7 +1218,7 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 	m_out_fmt(fmts.best())
 {
 	ffmpeg_init();
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource() : constructor");
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource()->0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 #ifdef RESAMPLE_READ_ALL
 	m_buffer.set_max_size(0);
 #endif
@@ -1194,17 +1226,36 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 
 ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::~ffmpeg_resample_datasource() : destructor");
-	if (m_src) m_src->release();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::~ffmpeg_resample_datasource(0x%x)", (void*)this);
+	stop();
+}
+
+void
+ffmpeg_resample_datasource::stop() 
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::stop(0x%x)", (void*)this);
+	if (m_src) {
+		m_src->stop();
+		m_src->release();
+	}
 	m_src = NULL;
 	if (m_resample_context) audio_resample_close(m_resample_context);
 	m_resample_context = NULL;
+	if (m_client_callback) delete m_client_callback;
+	m_client_callback = NULL;
+	m_lock.leave();
 }
 
 void
 ffmpeg_resample_datasource::data_avail()
 {
 	m_lock.enter();
+	if (!m_src) {
+		lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
+		m_lock.leave();			
+		return;
+	}
 	// We now have enough information to determine the resample parameters
 	if (!m_context_set) {
 		m_in_fmt = m_src->get_audio_format();
@@ -1230,9 +1281,8 @@ ffmpeg_resample_datasource::data_avail()
 		// DBG
 		//outsz = 20 * sz;
 		if (!sz && !m_src->end_of_file()) {
-			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: no data available, not end-of-file!");
-			m_lock.leave();
-			
+			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
+			m_lock.leave();			
 			return;
 		}
 		assert( sz || m_src->end_of_file());

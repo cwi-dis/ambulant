@@ -161,8 +161,9 @@ active_datasource::_end_of_file()
 
 active_datasource::~active_datasource()
 {
+	stop();
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("active_datasource::~active_datasource(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("active_datasource::stop(0x%x)", (void*)this);
 	if (m_buffer) {
 		delete m_buffer;
 		m_buffer = NULL;
@@ -171,6 +172,11 @@ active_datasource::~active_datasource()
 	m_source = NULL;
 	close(m_stream);
 	m_lock.leave();
+}
+
+void
+active_datasource::stop()
+{
 }
 
 int

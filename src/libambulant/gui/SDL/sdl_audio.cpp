@@ -80,7 +80,6 @@ add_samples(short *outbuf, short *inbuf, int size)
 }
 
 typedef lib::no_arg_callback<gui::sdl::sdl_active_audio_renderer> readdone_callback;
-typedef lib::no_arg_callback<gui::sdl::sdl_active_audio_renderer> stop_callback;
 	
 // ************************************************************
 
@@ -213,7 +212,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_is_playing(false),
 	m_is_paused(false)
 {
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() -> 0x%x",  this);
 	if (init() != 0)
 		return;
 		
@@ -232,7 +231,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::~sdl_active_audio_renderer() this=(x%x)",  this);		
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::~sdl_active_audio_renderer(0x%x) m_audio_src=0x%x",  this, m_audio_src);		
 	if (m_audio_src) m_audio_src->release();
 	m_audio_src = NULL;
 	if (m_is_playing) {
@@ -250,7 +249,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	m_lock.enter();
 	assert(m_is_playing);
 	int rv;
-	if (m_is_paused) {
+	if (m_is_paused||!m_audio_src) {
 		rv = 0;
 	} else {
 		*ptr = (Uint8 *)m_audio_src->get_read_ptr();
@@ -282,6 +281,9 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 		// we use the event processor to unregister ourselves later.
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::stop);
 		m_event_processor->add_event(e, 0, ambulant::lib::event_processor::high);
+		m_audio_src->stop();
+		m_audio_src->release();
+		m_audio_src = NULL;
 		m_lock.leave();
 		stopped_callback();
 		return;
@@ -351,6 +353,7 @@ void
 gui::sdl::sdl_active_audio_renderer::stop()
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::stop()");
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
@@ -358,6 +361,11 @@ gui::sdl::sdl_active_audio_renderer::stop()
 		m_lock.enter();
 	}
 	m_is_playing = false;
+	if (m_audio_src) {
+		m_audio_src->stop();
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
 	m_lock.leave();
 }
 

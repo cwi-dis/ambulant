@@ -150,6 +150,8 @@ active_renderer::stop()
 	// XXXX Need to handle case that no data (or not all data) has come in yet
 	if (m_dest)
 		m_dest->renderer_done(this);
+	if (m_src)
+		m_src->stop();
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
 
@@ -194,6 +196,7 @@ active_final_renderer::readdone()
 		AM_DBG lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
 		if (m_dest)
 			m_dest->need_redraw();
+		m_src->stop();
 		stopped_callback();
 	} else {
 		// Continue reading

@@ -128,6 +128,7 @@ stdio_datasource::_end_of_file()
 
 stdio_datasource::~stdio_datasource()
 {
+	stop();
 	m_lock.enter();
 	if (m_buffer) {
 		delete m_buffer;
@@ -135,6 +136,11 @@ stdio_datasource::~stdio_datasource()
 	}
 	fclose(m_stream);
 	m_lock.leave();
+}
+
+void
+stdio_datasource::stop()
+{
 }
 
 int

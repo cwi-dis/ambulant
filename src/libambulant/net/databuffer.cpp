@@ -77,6 +77,7 @@ using namespace net;
 
 databuffer::databuffer()
 {
+	AM_DBG lib::logger::get_logger()->trace("databuffer::databuffer() -> 0x%x", (void*)this);
 	m_size = 0;
     m_used = 0;
     m_rear = 0;
@@ -107,6 +108,7 @@ databuffer::buffer_not_empty()
 
 databuffer::databuffer(int max_size)
 {
+	AM_DBG lib::logger::get_logger()->trace("databuffer::databuffer(max_size=%d) -> 0x%x", max_size, (void*)this);
     m_used = 0;
     m_size = 0;
     m_rear = 0;
@@ -133,6 +135,7 @@ databuffer::set_max_size(int max_size)
 databuffer::~databuffer()
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("databuffer::~databuffer(0x%x)", (void*)this);
 	if (m_buffer) {
 		free(m_buffer);
 		m_used = 0;

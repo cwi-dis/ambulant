@@ -187,14 +187,23 @@ ffmpeg_raw_datasource::ffmpeg_raw_datasource(const std::string& url, URLContext 
 
 ffmpeg_raw_datasource::~ffmpeg_raw_datasource()
 {
-	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::~ffmpeg_raw_datasource(0x%x)", (void*)this);
+	stop();
+}
+
+void
+ffmpeg_raw_datasource::stop()
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop(0x%x)", (void*)this);
 	if (m_thread) {
 		m_thread->cancel();
 	}
 	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::~ffmpeg_raw_datasource: thread stopped");
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_raw_datasource::stop: thread stopped");
 	m_con = NULL; // owned by the thread
+	if (m_client_callback) delete m_client_callback;
+	m_client_callback = NULL;
 	m_lock.leave();
 }	
 

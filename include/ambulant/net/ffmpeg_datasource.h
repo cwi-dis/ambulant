@@ -164,7 +164,8 @@ class ffmpeg_audio_datasource:
   
     ~ffmpeg_audio_datasource();
 
-    void start(lib::event_processor *evp, lib::event *callback);  
+    void start(lib::event_processor *evp, lib::event *callback);
+	void stop();  
 
     void readdone(int len);
     void data_avail(int64_t pts, uint8_t *data, int size);
@@ -210,6 +211,7 @@ class ffmpeg_video_datasource:
 	audio_datasource *get_audio_datasource();
 
     void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);  
+	void stop();  
 
     bool end_of_file();
 	char* get_frame(double *timestamp, int *size);
@@ -248,6 +250,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
      
 		  
     void start(lib::event_processor *evp, lib::event *callback);  
+	void stop();  
 
     void readdone(int len);
     void data_avail();
@@ -286,6 +289,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     ~ffmpeg_resample_datasource();
     
     void start(lib::event_processor *evp, lib::event *callback);  
+	void stop();  
 
     void readdone(int len);
     void data_avail();
