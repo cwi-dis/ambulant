@@ -1,40 +1,40 @@
 ========================================================================
-     Microsoft Foundation Class Library for Windows CE: player_wince
+     Microsoft Foundation Class Library for Windows CE: AmbulantPlayer
 ========================================================================
 
 
-AppWizard has created this player_wince application for you.  This application
+AppWizard has created this AmbulantPlayer application for you.  This application
 not only demonstrates the basics of using the Microsoft Foundation classes
 but is also a starting point for writing your application.
 
 This file contains a summary of what you will find in each of the files that
-make up your player_wince application.
+make up your AmbulantPlayer application.
 
-player_wince.h
+AmbulantPlayer.h
     This is the main header file for the application.  It includes other
     project specific headers (including Resource.h) and declares the
-    CPlayer_winceApp application class.
+    CAmbulantPlayerApp application class.
 
-player_wince.cpp
+AmbulantPlayer.cpp
     This is the main application source file that contains the application
-    class CPlayer_winceApp.
+    class CAmbulantPlayerApp.
 
-player_wince.rc
+AmbulantPlayer.rc
     This is a listing of all of the Microsoft Windows CE resources that the
     program uses.  It includes the icons, bitmaps, and cursors that are stored
     in the RES subdirectory.  This file can be directly edited in Microsoft
 	eMbedded Visual C++.
 
-res\player_wince.ico
+res\AmbulantPlayer.ico
     This is an icon file, which is used as the application's icon.  This
-    icon is included by the main resource file player_wince.rc.
+    icon is included by the main resource file AmbulantPlayer.rc.
 
-res\player_wince.rc2
+res\AmbulantPlayer.rc2
     This file contains resources that are not edited by Microsoft 
 	eMbedded Visual C++.  You should place all resources not
 	editable by the resource editor in this file.
 
-player_wince.vcc
+AmbulantPlayer.vcc
     This file contains information used by ClassWizard to edit existing
     classes or add new classes.  ClassWizard also uses this file to store
     information needed to create and edit message maps and dialog data
@@ -59,14 +59,14 @@ res\Cmdbar.bmp
 
 AppWizard creates one document type and one view:
 
-player_winceDoc.h, player_winceDoc.cpp - the document
-    These files contain your CPlayer_winceDoc class.  Edit these files to
+AmbulantPlayerDoc.h, AmbulantPlayerDoc.cpp - the document
+    These files contain your CAmbulantPlayerDoc class.  Edit these files to
     add your special document data and to implement file saving and loading
-    (via CPlayer_winceDoc::Serialize).
+    (via CAmbulantPlayerDoc::Serialize).
 
-player_winceView.h, player_winceView.cpp - the view of the document
-    These files contain your CPlayer_winceView class.
-    CPlayer_winceView objects are used to view CPlayer_winceDoc objects.
+AmbulantPlayerView.h, AmbulantPlayerView.cpp - the view of the document
+    These files contain your CAmbulantPlayerView class.
+    CAmbulantPlayerView objects are used to view CAmbulantPlayerDoc objects.
 
 
 
@@ -75,7 +75,7 @@ Other standard files:
 
 StdAfx.h, StdAfx.cpp
     These files are used to build a precompiled header (PCH) file
-    named player_wince.pch and a precompiled types file named StdAfx.obj.
+    named AmbulantPlayer.pch and a precompiled types file named StdAfx.obj.
 
 Resource.h
     This is the standard header file, which defines new resource IDs.

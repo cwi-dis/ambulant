@@ -1,19 +1,20 @@
-// MainFrm.h : interface of the CMainFrame class
+// AmbulantPlayerDoc.h : interface of the CAmbulantPlayerDoc class
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_MAINFRM_H__CD90A3D5_2FE2_4874_AF09_B36D75006901__INCLUDED_)
-#define AFX_MAINFRM_H__CD90A3D5_2FE2_4874_AF09_B36D75006901__INCLUDED_
+#if !defined(AFX_AMBULANTPLAYERDOC_H__020B0BA9_65B1_4E4D_BA2F_E1EC9A189E7C__INCLUDED_)
+#define AFX_AMBULANTPLAYERDOC_H__020B0BA9_65B1_4E4D_BA2F_E1EC9A189E7C__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
 
-class CMainFrame : public CFrameWnd
+
+class CAmbulantPlayerDoc : public CDocument
 {
 protected: // create from serialization only
-	CMainFrame();
-	DECLARE_DYNCREATE(CMainFrame)
+	CAmbulantPlayerDoc();
+	DECLARE_DYNCREATE(CAmbulantPlayerDoc)
 
 // Attributes
 public:
@@ -23,26 +24,28 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CMainFrame)
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	//{{AFX_VIRTUAL(CAmbulantPlayerDoc)
+	public:
+	virtual BOOL OnNewDocument();
+	virtual void Serialize(CArchive& ar);
+	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CMainFrame();
+	virtual ~CAmbulantPlayerDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:  // control bar embedded members
+protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CMainFrame)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	//{{AFX_MSG(CAmbulantPlayerDoc)
 		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
+		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
@@ -52,4 +55,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft eMbedded Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_MAINFRM_H__CD90A3D5_2FE2_4874_AF09_B36D75006901__INCLUDED_)
+#endif // !defined(AFX_AMBULANTPLAYERDOC_H__020B0BA9_65B1_4E4D_BA2F_E1EC9A189E7C__INCLUDED_)
