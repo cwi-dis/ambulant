@@ -66,11 +66,6 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/basic_types.h"
 
-
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
-
 using ambulant::lib::uchar;
 
 namespace ambulant {
