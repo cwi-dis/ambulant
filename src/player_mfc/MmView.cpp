@@ -304,7 +304,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	dummy = create_player_instance(u);
 	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
-	if(autostart)
+	if(autostart || m_autoplay)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
 }
 
