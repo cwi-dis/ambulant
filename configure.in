@@ -70,8 +70,20 @@ OBJC=$CC
 OBJCDEPMODE=$CCDEPMODE
 OBJCFLAGS=-ObjC++
 AC_SUBST(OBJC)
-AC_SUBST(OBJCDEPMODE)
+#KB automake complains AC_SUBST(OBJCDEPMODE)
 AC_SUBST(OBJCFLAGS)
+
+
+AC_MSG_CHECKING(for --with-qt)
+AC_ARG_WITH(qt,
+     [  --with-qt    Turn on Qt support],
+     [case "${withval}" in
+       yes) qt=true ;;
+       no)  qt=false ;;
+       *) AC_MSG_ERROR(bad value ${withval} for --with-qt) ;;
+     esac],[qt=false])
+AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
+AC_MSG_RESULT($qt)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
