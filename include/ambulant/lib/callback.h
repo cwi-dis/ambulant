@@ -159,6 +159,19 @@ class no_arg_callback_event : public event {
 };
 
 
+template <class T, class E = event >
+class event_callback : public event {
+	T *m_obj;
+	void (T::*m_mf)(E *e);	
+  public:
+	event_callback(T* obj, void (T::*mf)(E *e)) 
+	:	m_obj(obj), m_mf(mf) {}
+	
+	virtual void fire() { 
+		if(m_obj) (m_obj->*m_mf)((E)this);
+	}
+};
+
 ////////////////////////////
 // callback
 
