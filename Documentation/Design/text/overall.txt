@@ -98,9 +98,22 @@ to use:
 - Everything goes into namespace "ambulant", with sub-namespaces "lib",
   "net", etc. Machine-dependent code goes into it's own "unix", "win32", etc
   subnamespace of those.
-- Source files have "using namespace ambulant;" at the top, with fully
-  qualified declarations. Within bodies you use "using namespace lib::unix"
-  whenever needed.
+- Source files have ``using namespace ambulant;`` at the top. In addition,
+  there's a using namespace for your own namespace, i.e. ``using namespace common;``
+  for source files in common. Normally, there are no other global ``using namespace``
+  declarations, i.e. everything outside of your own namespace is used qualified.
+- Header files that declare abstract interfaces try to include as few other
+  header files as possible. In other words, if you need a ``lib::node *`` in an
+  abstract header file it is better not to include ``ambulant/lib/node.h``,
+  but instead to add a construct::
+  
+	namespace ambulant {
+	namespace lib {
+	class node;
+	}
+	}
+  
+  
 	
 - We need to define which preprocessor defines we are going to
   switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in

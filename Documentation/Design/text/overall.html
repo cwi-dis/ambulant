@@ -108,9 +108,22 @@ path, as in:</p>
 &quot;net&quot;, etc. Machine-dependent code goes into it's own &quot;unix&quot;, &quot;win32&quot;, etc
 subnamespace of those.</p>
 </li>
-<li><p class="first">Source files have &quot;using namespace ambulant;&quot; at the top, with fully
-qualified declarations. Within bodies you use &quot;using namespace lib::unix&quot;
-whenever needed.</p>
+<li><p class="first">Source files have <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">ambulant;</span></tt> at the top. In addition,
+there's a using namespace for your own namespace, i.e. <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">common;</span></tt>
+for source files in common. Normally, there are no other global <tt class="literal"><span class="pre">using</span> <span class="pre">namespace</span></tt>
+declarations, i.e. everything outside of your own namespace is used qualified.</p>
+</li>
+<li><p class="first">Header files that declare abstract interfaces try to include as few other
+header files as possible. In other words, if you need a <tt class="literal"><span class="pre">lib::node</span> <span class="pre">*</span></tt> in an
+abstract header file it is better not to include <tt class="literal"><span class="pre">ambulant/lib/node.h</span></tt>,
+but instead to add a construct:</p>
+<pre class="literal-block">
+namespace ambulant {
+namespace lib {
+class node;
+}
+}
+</pre>
 </li>
 <li><p class="first">We need to define which preprocessor defines we are going to
 switch on for platform-dependent code, so we don't get <cite>#ifdef _WIN32</cite> in
