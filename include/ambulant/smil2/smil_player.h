@@ -53,12 +53,6 @@
 #ifndef AMBULANT_SMIL2_SMIL_PLAYER_H
 #define AMBULANT_SMIL2_SMIL_PLAYER_H
 
-//////////////////////////////////////////////
-//
-// EXPERIMENTAL TEST IMPLEMENTATION
-// 
-//////////////////////////////////////////////
-
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
@@ -93,20 +87,6 @@ class smil_player : public common::player, public time_node_context, public comm
 	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf);
 	~smil_player();
 		
-	lib::timer* get_timer() { return m_timer;}
-	lib::event_processor* get_evp() { return m_event_processor;}
-	
-	// Builds or re-builds the layout
-	// The layout may need to be rebuild when the
-	// user changes custom test preferences. 
-	void build_layout();
-	
-	// Builds or re-builds the timegraph
-	// The timegraph may need to be rebuild when the
-	// user changes custom test preferences. 
-	void build_timegraph();
-	
-	
 	///////////////////
 	// UI commands
 	
@@ -118,21 +98,16 @@ class smil_player : public common::player, public time_node_context, public comm
 	bool is_playing() const { return m_state == common::ps_playing;}
 	bool is_pausing() const { return m_state == common::ps_pausing;}
 	bool is_done() const { return m_state == common::ps_done;}
+	
 	common::play_state get_state() const {return m_state;}
 	
-	
-	//////////////////////
-	// Time node context: Services
-	
-	virtual time_traits::value_type elapsed() const { return m_timer->elapsed();}
-	virtual void schedule_event(lib::event *ev, time_type t, lib::event_priority ep = ep_low);
-	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
-		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
-	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
-	
+	void set_cursor(int cursorid) { m_cursorid = cursorid;}
+	int get_cursor() const { return m_cursorid;}
+		
 	//////////////////////
 	// Time node context: Playable commands
 	
+	virtual void create_playable(const lib::node *n);
 	virtual void start_playable(const lib::node *n, double t);
 	virtual void stop_playable(const lib::node *n);
 	virtual void pause_playable(const lib::node *n, pause_display d = display_show);
@@ -140,7 +115,21 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual void wantclicks_playable(const lib::node *n, bool want);
 	
 	//////////////////////
+	// raw notifications from the UI
+	
+	virtual void on_char(int ch);
+	
+	///////////////////
+	// playable_notification interface
+	
+	virtual void started(int n, double t);
+	virtual void stopped(int n, double t);
+	virtual void clicked(int n, double t);	
+	virtual void pointed(int n, double t);	
+	
+	//////////////////////
 	// Time node context: Playable queries
+	
 	virtual std::pair<bool, double> get_dur(const lib::node *n);
 	
 	//////////////////
@@ -148,25 +137,40 @@ class smil_player : public common::player, public time_node_context, public comm
 	
 	virtual void started_playback();
 	virtual void done_playback();
-	///////////////////
-	// playable_notification interface
 	
-	virtual void started(int n, double t);
-	virtual void stopped(int n, double t);
-	virtual void clicked(int n, double t);	
+	//////////////////////
+	// Time node context: Services
 	
-	// raw notifications from the UI
-	virtual void on_char(int ch);
-	virtual void on_click(int x, int y, common::abstract_window *w);
-	virtual int get_cursor(int x, int y, common::abstract_window *w);
-
+	lib::timer* get_timer() { return m_timer;}
+	lib::event_processor* get_evp() { return m_event_processor;}	
+	virtual time_value_type elapsed() const { return m_timer->elapsed();}
+	virtual void schedule_event(lib::event *ev, time_type t, lib::event_priority ep = ep_low);
+	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
+		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
+	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
+	
 	// Export the layout functionality for those who need it
 	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
 	
-  private:
-	common::playable *create_playable(const lib::node *n); 
+ 	// Builds or re-builds the layout
+	// The layout may need to be rebuild when the
+	// user changes custom test preferences. 
+	void build_layout();
+	
+	// Builds or re-builds the timegraph
+	// The timegraph may need to be rebuild when the
+	// user changes custom test preferences. 
+	void build_timegraph();
+	
+ private:
+	common::playable *new_playable(const lib::node *n); 
 	void destroy_playable(common::playable *r, const lib::node *n); 
-	common::playable *get_playable(const lib::node *n);
+	common::playable* get_playable(const lib::node *n) {
+		std::map<const lib::node*, common::playable *>::iterator it = 
+			m_playables.find(n);
+		return (it != m_playables.end())?(*it).second:0;
+	}
+	
 	lib::document *m_doc;
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
@@ -176,6 +180,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;	
 	common::play_state m_state;
+	int m_cursorid;
 	std::map<const lib::node*, common::playable *> m_playables;
 	critical_section m_playables_cs;
 	lib::logger *m_logger;
@@ -185,4 +190,4 @@ class smil_player : public common::player, public time_node_context, public comm
  
 } // namespace ambulant
 
-#endif // AMBULANT_SMIL2_REGION_H
+#endif // AMBULANT_SMIL2_SMIL_PLAYER_H
