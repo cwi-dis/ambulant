@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "mainloop.h"
+#include "ambulant/gui/none/none_gui.h"
 
 void
 usage()
@@ -24,7 +25,9 @@ mainloop::run(char *filename)
 	lib::passive_player *p = new lib::passive_player(filename);
 	if (!p) return;
 
-	lib::active_player *a = p->activate();
+	lib::active_player *a = p->activate(
+		(lib::window_factory *)new gui::none::none_window_factory(),
+		(lib::renderer_factory *)new ambulant::gui::none::none_renderer_factory());
 	if (!a) return;
 	
 	lib::event_processor *processor = lib::event_processor_factory();
