@@ -39,7 +39,7 @@ lib::active_renderer::start(lib::event *playdone)
 	std::ostringstream os;
 	os << *m_node;
 	lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s, playdone=0x%x)", (void *)this, os.str().c_str(), (void *)playdone);
-	m_dest->show();
+	m_dest->show(this);
 	if (m_src) {
 		m_src->start(m_event_processor, m_readdone);
 	} else {
@@ -53,6 +53,7 @@ void
 lib::active_renderer::readdone(lib::detail::readdone_callback_arg *dummy)
 {
 	lib::logger::get_logger()->trace("active_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
+	m_dest->need_redraw();
 	if (m_playdone)
 		m_event_processor->add_event(m_playdone, 0, event_processor::low);
 }
