@@ -6,4 +6,5 @@ library_include_HEADERS= \
 	cocoa_image.h \
 	cocoa_mouse.h \
 	cocoa_text.h \
+	cocoa_transition.h \
 	cocoa_video.h

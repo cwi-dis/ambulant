@@ -11,6 +11,7 @@ library_include_HEADERS= \
 	sync_rule.h \
 	test_attrs.h \
 	time_attrs.h \
+	time_calc.h \
 	time_node.h \
 	time_state.h \
 	timegraph.h \

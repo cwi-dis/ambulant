@@ -7,6 +7,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_image.m \
 	gui/cocoa/cocoa_mouse.m \
 	gui/cocoa/cocoa_text.m \
+	gui/cocoa/cocoa_transition.m \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m
 else
@@ -129,6 +130,7 @@ libambulant_la_SOURCES = \
 	smil2/sync_rule.cpp \
 	smil2/test_attrs.cpp \
 	smil2/time_attrs.cpp \
+	smil2/time_calc.cpp \
 	smil2/time_node.cpp \
 	smil2/time_state.cpp \
 	smil2/timegraph.cpp \
