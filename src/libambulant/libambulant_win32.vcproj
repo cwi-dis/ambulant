@@ -164,6 +164,9 @@
 					RelativePath=".\lib\node.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\parselets.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\schema.cpp">
 				</File>
 				<File
@@ -186,6 +189,9 @@
 				</File>
 				<File
 					RelativePath=".\lib\timer.cpp">
+				</File>
+				<File
+					RelativePath=".\lib\trace_player.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\tree_builder.cpp">
@@ -368,6 +374,9 @@
 						RelativePath="..\..\include\ambulant\lib\nscontext.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\lib\parselets.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\lib\playable.h">
 					</File>
 					<File
@@ -408,6 +417,12 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\trace_playable.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\trace_player.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
