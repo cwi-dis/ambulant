@@ -192,10 +192,10 @@ passive_datasource::passive_datasource(char *url)
 
 active_datasource *passive_datasource::activate()
 {
-	std::FILE *in;
+	int in;
 	
-	in = fopen(m_url,"rb");
-	if (in) {
+	in = open(m_url,O_RDONLY);
+	if (in >= 0) {
 		return new active_datasource(this,in);
 	}
 	else
@@ -217,7 +217,7 @@ passive_datasource::~passive_datasource()
 // *********************** active_datasource ***********************************************
 
 
-active_datasource::active_datasource(passive_datasource *const source,FILE *file)
+active_datasource::active_datasource(passive_datasource *const source,int file)
 :	m_source(source),
 	m_refcount(1)
 {
@@ -243,22 +243,20 @@ active_datasource::~active_datasource()
 	buffer=NULL;
 	}
 	m_source->release();
-	fclose(m_stream);
+	close(m_stream);
 }
 
 
 void active_datasource::filesize()
  	{
  		using namespace std;
-		
+		int dummy;
 		
 		if(m_stream)
 		{
-			// Seek to the end of the file.
-			fseek(m_stream,0,SEEK_END); 		
-			// Get file size.
-	 		m_filesize=ftell(m_stream);
-	 		rewind(m_stream); 							
+			// Seek to the end of the file, and get the filesize
+			m_filesize=lseek(m_stream,0,SEEK_END); 		
+	 		dummy=lseek(m_stream,0,SEEK_SET);						
 		}
 		else
 		{
@@ -271,19 +269,21 @@ void active_datasource::filesize()
   {
 
   	char ch;
+  	int result;
+  	
   	 if(m_stream)
 		{
-			std::rewind(m_stream);
+			
 			
 			do
 			{
-				ch=std::getc(m_stream);
-				if (!feof(m_stream) )buffer->put_data(&ch,1); 
-			} while(!feof(m_stream));
+				result=read(m_stream,&ch,1);
+				if (result >0 )buffer->put_data(&ch,1); 
+			} while(result > 0);
 		}
 		else
 		{
-			std::cout << "Failed to open file in datasource::read_file" << std::endl;
+			std::cout << "Error reading  file in datasource::read_file" << std::endl;
 		}
   }
   
@@ -298,7 +298,7 @@ void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulan
 	}
  }
  
- void  active_datasource::read(char *data, int size)
+ void  active_datasource::read_data(char *data, int size)
  {
  	buffer->get_data(data,size);
  }
