@@ -8,7 +8,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm mainloop.cpp MyAppDelegate.mm main.m 
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags= `sdl-config --libs`
+extra_sdl_ldflags=-static `sdl-config --libs` -framework Carbon -framework IOKit
 else
 extra_sdl_ldflags=
 extra_sdl_DEFINES=
@@ -17,7 +17,7 @@ endif
 if WITH_FFMPEG
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
 	-L$(FFMPEG_CODEC_LIB)  -lavcodec \
-	-L$(FFMPEG_FORMAT_LIB) -lavformat
+	-L$(FFMPEG_FORMAT_LIB) -lavformat -lz
 extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_FORMAT
@@ -62,7 +62,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_ffmpeg_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a -lstdc++
-AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa
+AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(EXPAT_PREFIX)/include \
 	$(extra_sdl_DEFINES) \
