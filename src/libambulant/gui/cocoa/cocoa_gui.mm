@@ -105,9 +105,8 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 		rv = (active_renderer *)new cocoa_active_audio_renderer(evp, src, node);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
-		logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
-		rv = new gui::none::none_active_renderer(evp, src, dest, node);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning none_active_renderer 0x%x", (void *)node, (void *)rv);
+		// logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
+                return NULL;
 	}
 	return rv;
 }

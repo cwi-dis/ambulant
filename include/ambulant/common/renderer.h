@@ -160,6 +160,23 @@ class renderer_factory {
 		const node *node) = 0;
 };
 
+class global_renderer_factory : public renderer_factory {
+  public:
+    global_renderer_factory();
+    ~global_renderer_factory();
+    
+    void add_factory(renderer_factory *rf);
+    
+    active_renderer *new_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		passive_region *const dest,
+		const node *node);
+  private:
+    std::vector<renderer_factory *> m_factories;
+    renderer_factory *m_default_factory;
+};
+
+
 } // namespace lib
  
 } // namespace ambulant

@@ -73,10 +73,10 @@ mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 	
 	lib::passive_player *p = new lib::passive_player(filename);
 	if (!p) return;
-
-	m_active_player = p->activate(
-		wf,
-		(lib::renderer_factory *)new ambulant::gui::cocoa::cocoa_renderer_factory());
+        
+        lib::global_renderer_factory *rf = new lib::global_renderer_factory();
+        rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
+	m_active_player = p->activate(wf, rf);
 	if (!m_active_player) return;
 	lib::timer *our_timer = new lib::timer(lib::realtime_timer_factory());
 	lib::event_processor *processor = lib::event_processor_factory(our_timer);

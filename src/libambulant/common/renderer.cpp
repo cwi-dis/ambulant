@@ -52,6 +52,7 @@
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/gui/none/none_gui.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -129,4 +130,36 @@ lib::active_final_renderer::readdone()
 		m_event_processor->add_event(m_playdone, 0, event_processor::low);
 }
 
+lib::global_renderer_factory::global_renderer_factory()
+:   m_default_factory(new gui::none::none_renderer_factory())
+{
+}
 
+lib::global_renderer_factory::~global_renderer_factory()
+{
+    // XXXX Should I delete the factories in m_factories? I think
+    // so, but I'm not sure...
+    delete m_default_factory;
+}
+    
+void
+lib::global_renderer_factory::add_factory(renderer_factory *rf)
+{
+    m_factories.push_back(rf);
+}
+    
+lib::active_renderer *
+lib::global_renderer_factory::new_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		passive_region *const dest,
+		const node *node)
+{
+    std::vector<renderer_factory *>::iterator i;
+    lib::active_renderer *rv;
+    
+    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+        rv = (*i)->new_renderer(evp, src, dest, node);
+        if (rv) return rv;
+    }
+    return m_default_factory->new_renderer(evp, src, dest, node);
+}
