@@ -24,6 +24,8 @@ class critical_section {
 	virtual void leave() = 0;
 };
 
+// Machine-dependent factory function
+critical_section *critical_section_factory();
 
 } // namespace lib
 

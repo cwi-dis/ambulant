@@ -12,6 +12,8 @@
 #define AMBULANT_LIB_UNIX_EVENT_PROCESSOR_H
 
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/unix/unix_thread.h"
+#include "ambulant/lib/mtsync.h"
 
 #include "unix_thread.h"
 #include "unix_mtsync.h"
@@ -30,33 +32,15 @@ class event_processor :
   public ambulant::lib::unix::thread {
 
   public:
-	event_processor() 
-	:   abstract_event_processor(new os_timer(), new unix_cs()) {
-	}
-	
-	~event_processor() {
-	}
+	event_processor();
+	~event_processor();
   
   protected:
-	virtual unsigned long run() {
-		log_trace_event("event_processor started");
-		while(!exit_requested()) {	
-			serve_events();		
-			wait_event();
-		}
-		log_trace_event("event_processor stopped");
-		return 0;
-	}
+	virtual unsigned long run();
 	
   private:
-	void wait_event() {
-		m_event_sema.down();
-	}
-	
-	void wakeup() {
-		m_event_sema.up();
-	}
-		
+	void wait_event();
+	void wakeup();
 	counting_semaphore m_event_sema;
 	
 };

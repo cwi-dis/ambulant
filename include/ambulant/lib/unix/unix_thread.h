@@ -11,6 +11,7 @@
 #ifndef AMBULANT_LIB_UNIX_THREAD_H
 #define AMBULANT_LIB_UNIX_THREAD_H
 
+#include "ambulant/lib/thread.h"
 #include <pthread.h>
 
 namespace ambulant {
@@ -19,51 +20,26 @@ namespace lib {
 
 namespace unix {
 
-class thread {
+class thread : public ambulant::lib::thread {
   public:
-	thread()
-	:	m_thread(NULL),
-		m_exit_requested(false),
-		m_running(false) {}
+	thread();
+	virtual ~thread();
 
-	virtual ~thread() {}
-
-	virtual bool start() {
-		if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
-			perror("pthread_create");
-		}
-	}
-
-	virtual void stop(){
-		m_exit_requested = true;
-		/* TODO: wake thread up */
-	}
+	virtual bool start();
+	virtual void stop();
+	bool terminate();
 		
-	bool exit_requested() {
-		return m_exit_requested; 
-	}
-	
-	bool is_running() const {
-		return m_running;
-	}
+	bool exit_requested() const;
+	bool is_running() const;
 		
   protected:
 	virtual unsigned long run() = 0;
 	
-	virtual void signal_exit_thread(){
-		abort();
-	}
+	virtual void signal_exit_thread();
 
   private:
-	static void *threadproc(void *pParam) {
-		thread* p = static_cast<thread*>(pParam);
-		p->m_running = 1;
-		unsigned long rv = p->run();
-		p->m_running = 0;
-		pthread_exit(NULL);
-		return NULL;
-	}
-
+	static void *threadproc(void *pParam);
+	
 	pthread_t m_thread;
 	bool m_exit_requested;
 	bool m_running;

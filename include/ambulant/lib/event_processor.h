@@ -146,6 +146,9 @@ class abstract_event_processor : public event_processor {
 	critical_section *m_delta_timer_cs;  
 };
 
+// Machine-dependent factory function
+event_processor *event_processor_factory();
+
 } // namespace lib
 
 } // namespace ambulant

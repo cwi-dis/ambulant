@@ -13,12 +13,8 @@
 #ifndef AMBULANT_LIB_UNIX_TIMER_H
 #define AMBULANT_LIB_UNIX_TIMER_H
 
-#ifndef AMBULANT_LIB_TIMER_H
-#include "lib/timer.h"
-#endif
-
-#include <sys/time.h>
-
+#include "ambulant/lib/timer.h"
+#undef unix
 namespace ambulant {
 
 namespace lib {
@@ -30,16 +26,11 @@ namespace unix {
 // simple unix os timer
 class os_timer : public ambulant::lib::timer  {
   public:
-	os_timer() : m_start_time(millitime()) {}
-	virtual time_type elapsed() const { return millitime()-m_start_time;}
-	virtual void restart() { m_start_time = millitime();}
+	os_timer();
+	time_type elapsed() const;
+	void restart();
 	
-	static inline time_type millitime() {
-		struct timeval tv;
-		
-		if (gettimeofday(&tv, NULL) < 0) return 0;
-		return (tv.tv_sec*1000 + tv.tv_usec / 1000);
-	}
+	static time_type millitime() ;
   private:
 	time_type m_start_time;
 };

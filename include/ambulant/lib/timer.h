@@ -34,6 +34,9 @@ class timer {
 	//virtual void set_speed(double speed) = 0;
 };
 
+// A (machine-dependent) routine to create a timer object
+timer *timer_factory();
+
 } // namespace lib
  
 } // namespace ambulant
