@@ -70,6 +70,7 @@ gui::dx::dx_window::dx_window(const std::string& name,
 :	common::abstract_window(rgn),
 	m_rgn(rgn),
 	m_name(name),
+	m_viewrc(point(0, 0), point(bounds.w, bounds.h)),
 	m_wf(wf),
 	m_viewport(v) {
 	AM_DBG lib::logger::get_logger()->trace_stream() 
@@ -83,9 +84,12 @@ gui::dx::dx_window::~dx_window() {
   		
 void gui::dx::dx_window::need_redraw(const lib::screen_rect<int> &r) {
 	AM_DBG lib::logger::get_logger()->trace_stream()
-		<< "dx_window::need_redraw" << r << lib::endl;
-	m_rgn->redraw(r, this);
-	m_viewport->redraw(r);
+		<< "dx_window::need_redraw" << r << lib::endl;	
+	// clip rect to this window since the layout does not do this
+	lib::screen_rect<int> rc = r;
+	rc &= m_viewrc;
+	m_rgn->redraw(rc, this);
+	m_viewport->redraw(rc);
 }
 
 void gui::dx::dx_window::mouse_region_changed() {
