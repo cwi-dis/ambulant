@@ -87,6 +87,25 @@ std::string lib::tokens_vector::join(size_type i, char sep) {
 	return s;
 }
 
+// Splits the list, trims white space, skips any empty strings 
+void lib::split_trim_list(const std::string& s, 
+	std::list<std::string>& c, char ch) {
+	typedef std::string::size_type size_type;
+	size_type offset = 0;
+	while(offset != std::string::npos) {
+		size_type i = s.find_first_of(ch, offset);
+		if(i != std::string::npos) {
+			std::string entry = trim(std::string(s.c_str() + offset, i-offset));
+			if(!entry.empty()) c.push_back(entry);
+			offset = i+1;
+		} else {
+			std::string entry = trim(std::string(s.c_str() + offset));
+			if(!entry.empty()) c.push_back(entry);
+			offset = std::string::npos;
+		}
+	}	
+}
+
 
 
 

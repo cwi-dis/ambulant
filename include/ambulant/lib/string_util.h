@@ -57,6 +57,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <ctype.h>
 #include <assert.h>
 #include <stdio.h>
@@ -175,6 +176,8 @@ inline bool ends_with(const std::string& s, const char *p) {
 inline bool ends_with(const std::string& s, const std::string& e) {
 	return ends_with(s, e.c_str());
 }
+
+void split_trim_list(const std::string& s, std::list<std::string>& c, char ch = ';');
 
 ///////////////////////////
 // A generic string scanner/tokenizer
