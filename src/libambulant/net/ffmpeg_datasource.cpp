@@ -239,6 +239,7 @@ ffmpeg_parser_datasource::ffmpeg_parser_datasource(const std::string& url, AVFor
 		lib::logger::get_logger()->error("ffmpeg_parser_datasource::ffmpeg_parser_datasource: cannot start thread");
 		m_src_end_of_file = true;
 	}
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::ffmpeg_parser_datasource: rate=%d, channels=%d", context->streams[stream_index]->codec.sample_rate, context->streams[stream_index]->codec.channels);
 	m_thread->add_datasink(this, stream_index);
 	m_thread->start();
 }
@@ -398,6 +399,13 @@ ffmpeg_parser_datasource::supported(const std::string& url)
 		lib::logger::get_logger()->warn("ffmpeg_parser_datasource::supported(%s): av_open_input_file returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
 	}
+	err = av_find_stream_info(ic);
+	if (err < 0) {
+		lib::logger::get_logger()->warn("ffmpeg_parser_datasource::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url.c_str(), err, (void*)ic);
+		if (ic) av_close_input_file(ic);
+	}
+	AM_DBG dump_format(ic, 0, url.c_str(), 0);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
 	return ic;
 }
 
@@ -602,6 +610,10 @@ ffmpeg_decoder_datasource::select_decoder(audio_format &fmt)
 				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				return false;
 		}
+		if (enc->codec_type != CODEC_TYPE_AUDIO) {
+				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
+				return false;
+		}
 		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
 		if (codec == NULL) {
 				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
@@ -613,6 +625,8 @@ ffmpeg_decoder_datasource::select_decoder(audio_format &fmt)
 				lib::logger::get_logger()->error("ffmpeg_decoder_datasource.select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				return false;
 		}
+		
+		m_fmt = audio_format(enc->sample_rate, enc->channels, 16);
 		return true;
 	}
 	// Could add support here for raw mp3, etc.
@@ -622,21 +636,23 @@ ffmpeg_decoder_datasource::select_decoder(audio_format &fmt)
 audio_format&
 ffmpeg_decoder_datasource::get_audio_format()
 {
+#if 0
 	if (m_con) {
 		// Refresh info on audio format
 		m_fmt.samplerate = m_con->sample_rate;
 		m_fmt.bits = 16; // XXXX
 		m_fmt.channels = m_con->channels;
-		if (m_fmt.samplerate == 0) {
-			lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, guessing 44100");
-			m_fmt.samplerate = 44100;
-		}
-		if (m_fmt.channels == 0) {
-			lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: channels not set, guessing 2");
-			m_fmt.channels = 2;
-		}
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	}
+#endif
+	if (m_fmt.samplerate == 0) {
+		lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, guessing 44100");
+		m_fmt.samplerate = 44100;
+	}
+	if (m_fmt.channels == 0) {
+		lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: channels not set, guessing 2");
+		m_fmt.channels = 2;
+	}
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	return m_fmt;
 }
 

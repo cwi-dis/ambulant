@@ -484,7 +484,6 @@
 		04382B0605D7AEE600CFA029 = {
 			children = (
 				04382B0F05D7AEE600CFA029,
-				04382B1905D7AEE600CFA029,
 				04382B3005D7AEE600CFA029,
 				04382B4305D7AEE600CFA029,
 			);
@@ -553,23 +552,6 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = cocoa_text.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		04382B1905D7AEE600CFA029 = {
-			children = (
-				04382B1A05D7AEE600CFA029,
-			);
-			isa = PBXGroup;
-			path = codec;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		04382B1A05D7AEE600CFA029 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = decoder_skeleton.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1264,12 +1246,6 @@
 		};
 		04382BE805D7AEE700CFA029 = {
 			fileRef = 04382B1605D7AEE600CFA029;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		04382BEB05D7AEE700CFA029 = {
-			fileRef = 04382B1A05D7AEE600CFA029;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3346,7 +3322,6 @@
 				04382BE605D7AEE700CFA029,
 				04382BE705D7AEE700CFA029,
 				04382BE805D7AEE700CFA029,
-				04382BEB05D7AEE700CFA029,
 				04382C0305D7AEE700CFA029,
 				04382C1205D7AEE700CFA029,
 				04382C1305D7AEE700CFA029,

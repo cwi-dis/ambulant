@@ -122,10 +122,10 @@ none_area_renderer::user_event(const lib::point& pt, int what) {
 		return;
 	}
 	if(what == common::user_event_click) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): clicked", (void*)this, pt.x, pt.y, what);
+		AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): clicked", (void*)this, pt.x, pt.y, what);
 		m_context->clicked(m_cookie);
 	} else if(what == common::user_event_mouse_over) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): pointed", (void*)this, pt.x, pt.y, what);
+		AM_DBG lib::logger::get_logger()->trace("none_area_renderer(0x%x)::user_event((%d,%d), %d): pointed", (void*)this, pt.x, pt.y, what);
 		m_context->pointed(m_cookie);
 	}
 }
