@@ -1,0 +1,11 @@
+
+Where next?
+-----------
+
+If you haven't already done so, a good place to continue reading is the
+`Overall design`_ document, which gives an overview of the design principles
+and explains some of the choices made. Then continue
+with the `objects`_ document which describes the main objects in more detail.
+Or go back to the `main documentation index`_.
+
+

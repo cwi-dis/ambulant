@@ -1,0 +1,9 @@
+
+
+Where next?
+-----------
+
+A good place to continue reading is the `walkthrough`_ document, which gives a terse
+description of how a SMIL document is opened, parsed and played. Then continue
+with the `objects`_ document which describes the main objects in more detail.
+Or go back to the `main documentation index`_.

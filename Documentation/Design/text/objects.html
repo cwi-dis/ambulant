@@ -4,13 +4,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
-<title>Ambulant design, main objects</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document" id="ambulant-design-main-objects">
-<h1 class="title">Ambulant design, main objects</h1>
+<div class="document">
+<!-- This document is prepended when we generate HTML. It contains the links
+used by the other documents, implemented as hyperlinks. An alternative
+head document is available for LaTeX generation. -->
+<a class="target" id="objects-section" name="objects-section"></a><div class="section" id="ambulant-design-main-objects">
+<h1><a name="ambulant-design-main-objects">Ambulant design, main objects</a></h1>
 <p>Last updated for Ambulant version 1.1.</p>
+<div class="section" id="introduction">
+<h2><a name="introduction">Introduction</a></h2>
 <p>This document describes the function of various of the more important
 objects and interfaces in the Ambulant Player. If you haven't already done
 so it is probably a good idea to first read the <a class="reference" href="overall.html">Overall design</a> and 
@@ -21,8 +26,9 @@ player loads, parses and plays a SMIL document.</p>
 developers, are available too, in the <a class="reference" href="../../API/html/index.html">API documentation</a>. This document
 may need to be regenerated, see the README file in the <a class="reference" href="../..">documentation
 directory</a> if it doesn't seem to exist.</p>
+</div>
 <div class="section" id="ambulantplayer-interfaces">
-<h1><a name="ambulantplayer-interfaces">AmbulantPlayer interfaces</a></h1>
+<h2><a name="ambulantplayer-interfaces">AmbulantPlayer interfaces</a></h2>
 <ul class="simple">
 <li><a class="reference" href="#refcounting-protocol">Refcounting protocol</a>. A lowlevel interface shared by many objects.</li>
 <li><a class="reference" href="#player-interface">Player Interface</a>. This is the toplevel object.</li>
@@ -36,7 +42,7 @@ items show up.</li>
 </ul>
 </div>
 <div class="section" id="ambulantplayer-objects">
-<h1><a name="ambulantplayer-objects">AmbulantPlayer Objects</a></h1>
+<h2><a name="ambulantplayer-objects">AmbulantPlayer Objects</a></h2>
 <ul class="simple">
 <li><a class="reference" href="#clocks">Clocks</a>. These advance a virtual time.</li>
 <li><a class="reference" href="#event-processor">Event processor</a>. This is the mainloop plus the event/callback mechanism.</li>
@@ -52,7 +58,7 @@ mentioned here. Unfortunately it is not documented yet.</p>
 that are not described here. See the <a class="reference" href="../../API/html/index.html">API documentation</a> for details.</p>
 </div>
 <div class="section" id="refcounting-protocol">
-<h1><a name="refcounting-protocol">Refcounting protocol</a></h1>
+<h2><a name="refcounting-protocol">Refcounting protocol</a></h2>
 <p>The <cite>refcounting protocol</cite> is contained in the file <tt class="literal"><span class="pre">lib/refcount.h</span></tt>. It needs to
 be implemented only by objects that are truly shared, i.e. any object whose
 lifetime is not predetermined by some other object. New instances of refcounted
@@ -62,7 +68,7 @@ of the refcounted object and any sharer are responsible to call the <tt class="l
 method of the object when they don't need the object any more.</p>
 </div>
 <div class="section" id="player-interface">
-<h1><a name="player-interface">Player Interface</a></h1>
+<h2><a name="player-interface">Player Interface</a></h2>
 <p>The player is the top-level object. When it is created you pass a DOM tree,
 a <tt class="literal"><span class="pre">factories</span></tt> structure containing references to the <tt class="literal"><span class="pre">playable_factory</span></tt>,
 <tt class="literal"><span class="pre">datasource_factory</span></tt> and <tt class="literal"><span class="pre">window_factory</span></tt> and an embedder object used for
@@ -70,7 +76,7 @@ callbacks to the GUI (on state changes, opening of external documents, etc).</p>
 <p>There is a <a class="reference" href="../models/player.pdf">UML diagram for player</a> showing how the player relates to various other objects.</p>
 </div>
 <div class="section" id="player-implementations">
-<h1><a name="player-implementations">Player implementations</a></h1>
+<h2><a name="player-implementations">Player implementations</a></h2>
 <p>There are currently two implementations of the player interface: <tt class="literal"><span class="pre">smil_player</span></tt> and
 <tt class="literal"><span class="pre">mms_player</span></tt>. The first one is the all-singing-all-dancing SMIL 2.0 player,
 the second one can play MMS documents, which use a very restricted subset of SMIL 1.0.</p>
@@ -78,14 +84,14 @@ the second one can play MMS documents, which use a very restricted subset of SMI
 document.</p>
 </div>
 <div class="section" id="parser-interface">
-<h1><a name="parser-interface">Parser interface</a></h1>
+<h2><a name="parser-interface">Parser interface</a></h2>
 <p>The XML parser roughly follows a SAX interface. To use it you provide it with objects
 having the <tt class="literal"><span class="pre">sax_content_handler</span></tt> and <tt class="literal"><span class="pre">sax_error_handler</span></tt> interfaces. You then
 feed your document to the parser and it will call back through those interfaces.</p>
 <p>There is a <a class="reference" href="../models/parser.pdf">UML diagram for parser</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="parser-implementations">
-<h1><a name="parser-implementations">Parser implementations</a></h1>
+<h2><a name="parser-implementations">Parser implementations</a></h2>
 <p>There are currently two parser implementations, <tt class="literal"><span class="pre">expat_parser</span></tt> uses James Clark's
 <cite>expat</cite> parser, which is a fast and lean no-frills parser. <tt class="literal"><span class="pre">xerces_parser</span></tt> uses
 the Apache <cite>Xerces</cite> library, which is at the other extreme of the spectrum: it can do
@@ -93,7 +99,7 @@ document validation with both DTDs and Schemas and lots of other wonderful thing
 this comes at the price of a rather hefty memory footprint.</p>
 </div>
 <div class="section" id="datasource-interface">
-<h1><a name="datasource-interface">Datasource interface</a></h1>
+<h2><a name="datasource-interface">Datasource interface</a></h2>
 <p>There are actually a couple of these interfaces, but they are similar. Their function
 is to implement URL retrieval schemes or file I/O and get external data to media
 handlers and other modules requiring data access.</p>
@@ -112,7 +118,7 @@ stream.</p>
 datasource should adhere to.</p>
 </div>
 <div class="section" id="playable-interface">
-<h1><a name="playable-interface">Playable interface</a></h1>
+<h2><a name="playable-interface">Playable interface</a></h2>
 <p>The <tt class="literal"><span class="pre">playable</span></tt> interface is implemented by what are usually called a media handlers
 or media renderers: it is this interface the scheduler uses to make things appear
 on the screen (or sound out of the speakers, or otherwise do their thing).</p>
@@ -131,7 +137,7 @@ to this rule).</p>
 playable should adhere to.</p>
 </div>
 <div class="section" id="playable-implementations">
-<h1><a name="playable-implementations">Playable implementations</a></h1>
+<h2><a name="playable-implementations">Playable implementations</a></h2>
 <p>While some media handlers implement the playable from scratch (an example is the
 aforementioned SMIL animation handler) there are a number of convenience classes
 that implement functionality shared by many media handlers. These are:</p>
@@ -147,7 +153,7 @@ requiring further action.</li>
 <p>There is a <a class="reference" href="../models/renderer.pdf">UML diagram for renderer_playable</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="layout-interface">
-<h1><a name="layout-interface">Layout interface</a></h1>
+<h2><a name="layout-interface">Layout interface</a></h2>
 <p>The layout manager determines where media items appear, and also governs things like
 z-ordering, background colors for regions and such.</p>
 <p>The central interface is the <tt class="literal"><span class="pre">surface</span></tt>, which is the object passed to a <tt class="literal"><span class="pre">renderer</span></tt>.
@@ -163,30 +169,30 @@ windows, respectively.</p>
 <p>There is a <a class="reference" href="../models/layout.pdf">UML diagram for layout</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="layout-implementation">
-<h1><a name="layout-implementation">Layout implementation</a></h1>
+<h2><a name="layout-implementation">Layout implementation</a></h2>
 <p>The SMIL 2.0 implementation of <tt class="literal"><span class="pre">surface</span></tt>, <tt class="literal"><span class="pre">surface_template</span></tt> and <tt class="literal"><span class="pre">surface_factory</span></tt>
 are the classes <tt class="literal"><span class="pre">passive_region</span></tt> and <tt class="literal"><span class="pre">passive_root_layout</span></tt>.</p>
 <p>There is a <a class="reference" href="../models/region.pdf">UML diagram for region</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="gui-window-interface">
-<h1><a name="gui-window-interface">GUI window interface</a></h1>
+<h2><a name="gui-window-interface">GUI window interface</a></h2>
 <p>This is the abstract interface used to create new windows and tie them to the
 layout implementation. The implementation is machine-dependent, obviously, and usually
 supplied by the hosting application.</p>
 <p>In addition there is the <tt class="literal"><span class="pre">gui_events</span></tt> interface which goes the other way:
 it is exposed by the layout implementation, and used by the machine dependent
 window implementation to communicate things like redraw requests.</p>
-<p>There is a <a class="reference" href="../models/window.pdf">UML diagram for window</a> showing how these classes relates to each other.</p>
+<p>There is a <a class="reference" href="../models/windows.pdf">UML diagram for window</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="animation-interface">
-<h1><a name="animation-interface">Animation interface</a></h1>
+<h2><a name="animation-interface">Animation interface</a></h2>
 <p>The animation interfaces are <tt class="literal"><span class="pre">animation_destination</span></tt> and <tt class="literal"><span class="pre">animation_notification</span></tt>.
 The SMIL 2.0 playable uses these interfaces to change parameters and send notification
 of those changes, respectively.</p>
 <p>There is a <a class="reference" href="../models/animation.pdf">UML diagram for animation</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="clocks">
-<h1><a name="clocks">Clocks</a></h1>
+<h2><a name="clocks">Clocks</a></h2>
 <p>All clocks adhere to the <tt class="literal"><span class="pre">abstract_timer</span></tt> interface. This interface
 allows you to get the current time and set the speed of the clock.</p>
 <p>There is a companion interface <tt class="literal"><span class="pre">abstract_timer_client</span></tt> (which is actually
@@ -203,14 +209,14 @@ semantics as required by SMIL.</p>
 <p>There is a <a class="reference" href="../models/clocks.pdf">UML diagram for clocks</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="event-processor">
-<h1><a name="event-processor">Event processor</a></h1>
+<h2><a name="event-processor">Event processor</a></h2>
 <p>The <tt class="literal"><span class="pre">event_processor</span></tt> is the low-level scheduler of the system. It is a
 priority runqueue with methods to add callbacks, with an optional delay until
 the callback becomes elegible.</p>
 <p>There is a <a class="reference" href="../models/event_processor.pdf">UML diagram for event processor</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="document">
-<h1><a name="document">Document</a></h1>
+<h2><a name="document">Document</a></h2>
 <p>The <tt class="literal"><span class="pre">document</span></tt> class contains the DOM tree and some auxiliary data:</p>
 <ul class="simple">
 <li>the <tt class="literal"><span class="pre">node_context</span></tt> which can be used to lookup nodes by XML ID and to
@@ -220,7 +226,7 @@ resolve relative URLs, and</li>
 <p>There is a <a class="reference" href="../models/document.pdf">UML diagram for document</a> showing how the document class relates to various other objects.</p>
 </div>
 <div class="section" id="node">
-<h1><a name="node">Node</a></h1>
+<h2><a name="node">Node</a></h2>
 <p>The <tt class="literal"><span class="pre">node</span></tt> class represents a node in the DOM tree. Actually, our tree isn't
 100% compatible with DOM, but close enough. The <tt class="literal"><span class="pre">node</span></tt> objects store the tag,
 attributes and data pertaining to the XML node. There are basic methods
@@ -236,7 +242,7 @@ build more complex navigation.</li>
 <p>There is a <a class="reference" href="../models/node.pdf">UML diagram for node</a> showing how these classes relates to each other.</p>
 </div>
 <div class="section" id="transitions">
-<h1><a name="transitions">Transitions</a></h1>
+<h2><a name="transitions">Transitions</a></h2>
 <p>The implementation of SMIL transitions is fairly complex, because there are very
 many transition types and they also need to be implemented efficiently on
 multiple platforms. The current implementation is fully based on inheritance,
@@ -252,7 +258,8 @@ The other leg is machine independent, but dependent on the actual transition typ
 and computes the parameters for the bitblit. These two then come together in a stub
 class that has all the functionality for a specific transition type on a specific
 platform.</p>
-<p>There is a <a class="reference" href="../models/transitions.pdf">UML diagram for transitions</a> showing how these classes relates to each other.</p>
+<p>There is a <a class="reference" href="../models/transition.pdf">UML diagram for transitions</a> showing how these classes relates to each other.</p>
+</div>
 </div>
 </div>
 </body>

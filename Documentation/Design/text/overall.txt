@@ -1,3 +1,6 @@
+
+.. _Overall-design-section:
+
 Ambulant design, overall
 ========================
 
@@ -173,8 +176,6 @@ to be used. This also means we don't have to handle firewalls and what more.
 An informal `dataflow diagram`_ is available showing the various ways in
 which media bits can go from their source (far away on the net) to the screen.
 
-.. _dataflow diagram: ../models/dataflow.pdf
-
 We would like to be able to re-use existing (Explorer, Netscape) plugins
 when applicable, but no work on this has been done yet.
 
@@ -184,15 +185,3 @@ Other languages
 It is our intention to eventually allow bridging of Ambulant Player to other languages
 such as Python or Java. An effort has been made to keep the APIs clean enough
 to allow this, but no actual work has been done on it yet.
-
-Where next?
------------
-
-A good place to continue reading is the `walkthrough`_ document, which gives a terse
-description of how a SMIL document is opened, parsed and played. Then continue
-with the `objects`_ document which describes the main objects in more detail.
-Or go back to the `main documentation index`_.
-
-.. _walkthrough: walkthrough.html
-.. _objects: objects.html
-.. _main documentation index: ../index.html

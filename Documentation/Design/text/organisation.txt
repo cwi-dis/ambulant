@@ -1,11 +1,14 @@
+
+.. _organisation-section:
+
 Ambulant source code organisation
 =================================
 
 Last updated for Ambulant version 1.1.
 
 
-Source code organisation
-------------------------
+directory organisation
+----------------------
 
 Everything is kept under CVS, on sourceforge. On Unix we use the standard *automake*,
 *autoconf*, *configure* and *gcc* (version 3.2 or later) toolset to
@@ -80,8 +83,6 @@ to use:
 	class node;
 	}
 	}
-  
-  
 	
 - We need to define which preprocessor defines we are going to
   switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in

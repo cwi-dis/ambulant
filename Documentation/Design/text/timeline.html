@@ -4,21 +4,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
-<title>Timelines</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document" id="timelines">
-<h1 class="title">Timelines</h1>
+<div class="document">
+<!-- This document is prepended when we generate HTML. It contains the links
+used by the other documents, implemented as hyperlinks. An alternative
+head document is available for LaTeX generation. -->
+<div class="section" id="timelines">
+<h1><a name="timelines">Timelines</a></h1>
 <p><em>Warning</em>: this document does not describe the SMIL 2.0 scheduler. It describes
 the MMS scheduler, which handles a subset of SMIL 1 (as used by MMS documents).</p>
+<div class="section" id="introduction">
+<h2><a name="introduction">Introduction</a></h2>
 <p>This document gives an overview of what is in a timeline object. It is
 loosely based on what the old CMIF scheduler looked like. There are some
 simplifications, because I think that some of the extra states and transitions
 that the CMIF scheduler had are no longer needed because a timeline is only
 supposed to schedule self-contained pieces.</p>
+</div>
 <div class="section" id="conceptual-design">
-<h1><a name="conceptual-design">Conceptual design</a></h1>
+<h2><a name="conceptual-design">Conceptual design</a></h2>
 <p>The sample SMIL document that I use to clarify this is the following:</p>
 <pre class="literal-block">
 &lt;seq id=&quot;outerseq&quot;&gt;
@@ -113,7 +119,7 @@ righthandside rule as <tt class="literal"><span class="pre">DELAY(delayobj)</spa
 finishes the event <tt class="literal"><span class="pre">DELAY(delayobj)</span></tt> fires on the lefthandside.</p>
 </div>
 <div class="section" id="design-issues-still-to-be-handled">
-<h1><a name="design-issues-still-to-be-handled">Design issues still to be handled</a></h1>
+<h2><a name="design-issues-still-to-be-handled">Design issues still to be handled</a></h2>
 <p>A bit that is still incomplete is region control. The <tt class="literal"><span class="pre">passive_region</span></tt> is implied
 by the node, and <tt class="literal"><span class="pre">START_PREROLL_RENDERER</span></tt>  creates the corresponding <tt class="literal"><span class="pre">active_region</span></tt>
 that does the rendering. Implications of (SMIL-) transitions and fill behaviour
@@ -129,8 +135,8 @@ picks up the clock to use from the node), but I think they probably need to be
 explicit. This would mean that the <tt class="literal"><span class="pre">DELAY</span></tt> and all the <tt class="literal"><span class="pre">xxx_RENDERER</span></tt> state transitions 
 get a clock parameter.</p>
 </div>
-<div class="section" id="objects">
-<h1><a name="objects">Objects</a></h1>
+<div class="section" id="id1">
+<h2><a name="id1">Objects</a></h2>
 <p>The three main objects are <tt class="literal"><span class="pre">timeline_builder</span></tt>, <tt class="literal"><span class="pre">passive_timeline</span></tt> 
 and <tt class="literal"><span class="pre">active_timeline</span></tt>.</p>
 <p><tt class="literal"><span class="pre">timeline_builder</span></tt> is a temporary object you use to build a <tt class="literal"><span class="pre">passive_timeline</span></tt>
@@ -180,6 +186,7 @@ more elaborate: the <tt class="literal"><span class="pre">fire()</span></tt> met
 This roundabout way ensures that all internal events scheduled for a certain point in
 time are processed before all external events, which should make the system
 snappier.</p>
+</div>
 </div>
 </div>
 </body>

@@ -1,0 +1,33 @@
+.. This document is prepended when we generate HTML. It contains the links
+   used by the other documents, implemented as hyperlinks. An alternative
+   head document is available for LaTeX generation.
+   
+.. _documentation directory: ../..
+.. _main documentation index: ../index.html
+.. _API documentation: ../../API/html/index.html
+
+.. _Timeline: timeline.html
+.. _Overall design: overall.html
+.. _walkthrough: walkthrough.html
+.. _objects: objects.html
+.. _organisation: organisation.html
+
+.. _overall structure diagram: ../models/overall.pdf
+.. _dataflow diagram: ../models/dataflow.pdf
+.. _UML diagram for player: ../models/player.pdf
+.. _UML diagram for parser: ../models/parser.pdf
+.. _UML diagram for datasource: ../models/datasource.pdf
+.. _UML state diagram for datasource: ../models/datasource_state.pdf
+.. _UML diagram for playable: ../models/playable.pdf
+.. _UML state diagram for playable: ../models/playable_state.pdf
+.. _UML diagram for renderer_playable: ../models/renderer.pdf
+.. _UML diagram for layout: ../models/layout.pdf
+.. _UML diagram for region: ../models/region.pdf
+.. _UML diagram for window: ../models/windows.pdf
+.. _UML diagram for animation: ../models/animation.pdf
+.. _UML diagram for clocks: ../models/clocks.pdf
+.. _UML diagram for event processor: ../models/event_processor.pdf
+.. _UML diagram for document: ../models/document.pdf
+.. _UML diagram for node: ../models/node.pdf
+.. _UML diagram for transitions: ../models/transition.pdf
+

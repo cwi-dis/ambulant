@@ -1,0 +1,64 @@
+.. This document is prepended when we generate laTeX. It contains the links
+   used by the other documents, implemented as hyperlinks. An alternative
+   head document is available for LaTeX generation.
+ 
+.. raw:: latex
+
+   \begin{titlepage}
+   \vspace*{7cm}
+   \begin{center}
+   {\Large AmbulantPlayer - Design Documentation}
+   
+   \vspace*{1cm}
+   {\large Version 1.1, 10-Oct-04}
+   
+   \vspace*{1cm}
+   
+   This document contains various bits and pieces of ambulant design documentation:
+   a breakdown of the important objects, UML diagrams explaining how they relate to
+   each other, a walkthrough explaining how Ambulant Player plays a SMIL document,
+   an explanation of the source code organization and a list of source code conventions
+   used.
+
+   A companion document API documentation explains low-level details of
+   the various objects and other API issues.
+   \end{center}
+   \end{titlepage}
+   
+   \tableofcontents
+   %
+   
+.. silly comment to make raw latex work.
+
+.. _documentation directory: ../..
+.. _main documentation index: ../index.html
+.. _API documentation: ../../API/latex/refman.pdf
+
+.. _Timeline: timeline.html
+.. _Overall design: Overall-design-section_
+.. _walkthrough: walkthrough-section_
+.. _objects: objects-section_
+.. _organisation: organisation-section_
+
+
+.. _overall structure diagram: overall-structure-diagram-section_
+.. _dataflow diagram: dataflow-diagram-section_
+.. _UML diagram for player: UML-diagram-for-player-section_
+.. _UML diagram for parser: UML-diagram-for-parser-section_
+.. _UML diagram for datasource: UML-diagram-for-datasource-section_
+.. _UML state diagram for datasource: UML-state-diagram-for-datasource-section_
+.. _UML diagram for playable: UML-diagram-for-playable-section_
+.. _UML state diagram for playable: UML-state-diagram-for-playable-section
+.. _UML diagram for renderer_playable: UML-diagram-for-renderer_playable-section_
+.. _UML diagram for layout: UML-diagram-for-layout-section_
+.. _UML diagram for region: UML-diagram-for-region-section_
+.. _UML diagram for window: UML-diagram-for-window-section_
+.. _UML diagram for animation: UML-diagram-for-animation-section_
+.. _UML diagram for clocks: UML-diagram-for-clocks-section_
+.. _UML diagram for event processor: UML-diagram-for-event-processor-section_
+.. _UML diagram for document: UML-diagram-for-document-section_
+.. _UML diagram for node: UML-diagram-for-node-section_
+.. _UML diagram for transitions: UML-diagram-for-transitions-section_
+
+
+

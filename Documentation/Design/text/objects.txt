@@ -1,7 +1,13 @@
+
+.. _objects-section:
+
 Ambulant design, main objects 
 =============================
 
 Last updated for Ambulant version 1.1.
+
+Introduction
+------------
 
 This document describes the function of various of the more important
 objects and interfaces in the Ambulant Player. If you haven't already done
@@ -14,11 +20,6 @@ The nitty-gritty details of these objects, on a level interesting to
 developers, are available too, in the `API documentation`_. This document
 may need to be regenerated, see the README file in the `documentation
 directory`_ if it doesn't seem to exist.
-
-.. _Overall design: overall.html
-.. _walkthrough: walkthrough.html
-.. _API documentation: ../../API/html/index.html
-.. _documentation directory: ../..
 
 AmbulantPlayer interfaces
 -------------------------
@@ -43,15 +44,12 @@ AmbulantPlayer Objects
 - `Transitions`_. Classes to do visual transitions.
 - `Timeline`_. This is a description of another scheduler: the MMS scheduler.
   This scheduler has a much simpler structure than the SMIL 2.0 scheduler.
-
-.. _Timeline: timeline.html
   
 You may notice that the core of the player, the SMIL 2.0 scheduler, is not
 mentioned here. Unfortunately it is not documented yet.
 
 There are also additional low-level objects like ``thread`` and ``critical_section``
 that are not described here. See the `API documentation`_ for details.
-
 
 Refcounting protocol
 --------------------
@@ -74,8 +72,6 @@ callbacks to the GUI (on state changes, opening of external documents, etc).
 
 There is a `UML diagram for player`_ showing how the player relates to various other objects.
 
-.. _UML diagram for player: ../models/player.pdf
-
 Player implementations
 ----------------------
 
@@ -86,8 +82,6 @@ the second one can play MMS documents, which use a very restricted subset of SMI
 A concise walkthrough of how the ``smil_player`` operates is given in the `walkthrough`_
 document.
 
-.. _walkthrough: walkthrough.html
-
 
 Parser interface
 ----------------
@@ -97,8 +91,6 @@ having the ``sax_content_handler`` and ``sax_error_handler`` interfaces. You the
 feed your document to the parser and it will call back through those interfaces.
 
 There is a `UML diagram for parser`_ showing how these classes relates to each other.
-
-.. _UML diagram for parser: ../models/parser.pdf
 
 Parser implementations
 ----------------------
@@ -130,12 +122,8 @@ stream.
 
 There is a `UML diagram for datasource`_ showing how these classes relates to each other.
 
-.. _UML diagram for datasource: ../models/datasource.pdf
-
 There is also a `UML state diagram for datasource`_ showing the state machine that a
 datasource should adhere to.
-
-.. _UML state diagram for datasource: ../models/datasource_state.pdf
 
 Playable interface
 ------------------
@@ -159,12 +147,8 @@ to this rule).
 
 There is a `UML diagram for playable`_ showing how these classes relates to each other.
 
-.. _UML diagram for playable: ../models/playable.pdf
-
 There is also a `UML state diagram for playable`_ showing the state machine that a
 playable should adhere to.
-
-.. _UML state diagram for playable: ../models/playable_state.pdf
 
 Playable implementations
 ------------------------
@@ -182,8 +166,6 @@ that implement functionality shared by many media handlers. These are:
   requiring further action.
   
 There is a `UML diagram for renderer_playable`_ showing how these classes relates to each other.
-
-.. _UML diagram for renderer_playable: ../models/renderer.pdf
 
 Layout interface
 ----------------
@@ -206,8 +188,6 @@ windows, respectively.
 
 There is a `UML diagram for layout`_ showing how these classes relates to each other.
 
-.. _UML diagram for layout: ../models/layout.pdf
-
 Layout implementation
 ---------------------
 
@@ -215,8 +195,6 @@ The SMIL 2.0 implementation of ``surface``, ``surface_template`` and ``surface_f
 are the classes ``passive_region`` and ``passive_root_layout``.
 
 There is a `UML diagram for region`_ showing how these classes relates to each other.
-
-.. _UML diagram for region: ../models/region.pdf
 
 GUI window interface
 --------------------
@@ -231,9 +209,6 @@ window implementation to communicate things like redraw requests.
 
 There is a `UML diagram for window`_ showing how these classes relates to each other.
 
-.. _UML diagram for window: ../models/window.pdf
-
-
 Animation interface
 -------------------
 
@@ -242,8 +217,6 @@ The SMIL 2.0 playable uses these interfaces to change parameters and send notifi
 of those changes, respectively.
 
 There is a `UML diagram for animation`_ showing how these classes relates to each other.
-
-.. _UML diagram for animation: ../models/animation.pdf
 
 Clocks
 ------
@@ -267,8 +240,6 @@ semantics as required by SMIL.
 
 There is a `UML diagram for clocks`_ showing how these classes relates to each other.
 
-.. _UML diagram for clocks: ../models/clocks.pdf
-
 Event processor
 ---------------
 
@@ -277,9 +248,6 @@ priority runqueue with methods to add callbacks, with an optional delay until
 the callback becomes elegible. 
 
 There is a `UML diagram for event processor`_ showing how these classes relates to each other.
-
-.. _UML diagram for event processor: ../models/event_processor.pdf
-
 
 Document
 --------
@@ -291,8 +259,6 @@ The ``document`` class contains the DOM tree and some auxiliary data:
 - the ``nscontext`` which stores information on the use of XML namespaces.
 
 There is a `UML diagram for document`_ showing how the document class relates to various other objects.
-
-.. _UML diagram for document: ../models/document.pdf
 
 Node
 ----
@@ -311,8 +277,6 @@ these interfaces:
 - ``node_iterator`` is an iterator that allows you to iterate over a subtree.
 
 There is a `UML diagram for node`_ showing how these classes relates to each other.
-
-.. _UML diagram for node: ../models/node.pdf
 
 Transitions
 -----------
@@ -336,5 +300,3 @@ class that has all the functionality for a specific transition type on a specifi
 platform.
 
 There is a `UML diagram for transitions`_ showing how these classes relates to each other.
-
-.. _UML diagram for transitions: ../models/transitions.pdf

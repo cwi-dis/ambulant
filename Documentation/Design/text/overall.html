@@ -4,15 +4,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
-<title>Ambulant design, overall</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document" id="ambulant-design-overall">
-<h1 class="title">Ambulant design, overall</h1>
+<div class="document">
+<!-- This document is prepended when we generate HTML. It contains the links
+used by the other documents, implemented as hyperlinks. An alternative
+head document is available for LaTeX generation. -->
+<a class="target" id="overall-design-section" name="overall-design-section"></a><div class="section" id="ambulant-design-overall">
+<h1><a name="ambulant-design-overall">Ambulant design, overall</a></h1>
 <p>Last updated for Ambulant version 1.1.</p>
 <div class="section" id="design-process">
-<h1><a name="design-process">Design process</a></h1>
+<h2><a name="design-process">Design process</a></h2>
 <p>The design consists of a mixed bag of technologies:</p>
 <ul class="simple">
 <li>Text files such as this one for informal descriptions. They are marked
@@ -26,7 +29,7 @@ which version of Ambulant they were last updated, so it is relatively
 easy to spot outdated (or potentially outdated) documents.</p>
 </div>
 <div class="section" id="global-structure">
-<h1><a name="global-structure">Global structure</a></h1>
+<h2><a name="global-structure">Global structure</a></h2>
 <p>To be able to use the code
 to create, say, a plugin SMIL renderer for use in a browser we need a global
 &quot;playback engine&quot; object that has all the others hanging off it (plus factory
@@ -45,7 +48,7 @@ render anything, but only prints on stdout what should happen at what time, or
 any other form of symbolic execution.</p>
 </div>
 <div class="section" id="replaceable-components">
-<h1><a name="replaceable-components">Replaceable components</a></h1>
+<h2><a name="replaceable-components">Replaceable components</a></h2>
 <p>AmbulantPlayer is intended to be a research system, and therefore all components
 should be easy to replace with interfering with the rest of the system. This
 allows a researcher to concentrate on one issue, such as network protocols or
@@ -61,7 +64,7 @@ this will be done at a later stage. All other functionality (media playback,
 data retrieval, parsing, layout, scheduling) does follow this pattern.</p>
 </div>
 <div class="section" id="run-time-system">
-<h1><a name="run-time-system">run-time system</a></h1>
+<h2><a name="run-time-system">run-time system</a></h2>
 <p>Because we have a C++ implementation
 we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that is used for
@@ -80,7 +83,7 @@ schedules and ending these to a low level scheduler, isn't going to work
 for SMIL without putting almost all SMIL complexity in the low-level scheduler.</p>
 </div>
 <div class="section" id="main-loop">
-<h1><a name="main-loop">main loop</a></h1>
+<h2><a name="main-loop">main loop</a></h2>
 <p>The basic architecture is event-driven, with a small
 number of worker threads picking up events from the event queue. The alternative
 is to use multiple threads all over, but it seems event-driven is the better
@@ -110,7 +113,7 @@ enough that the best execution order of things that happen &quot;at the same tim
 is automatic.</p>
 </div>
 <div class="section" id="factory-pattern">
-<h1><a name="factory-pattern">Factory pattern</a></h1>
+<h2><a name="factory-pattern">Factory pattern</a></h2>
 <p>There are various factories that follow a common pattern. There is a client
 interface, called something like <tt class="literal"><span class="pre">playable_factory</span></tt>, that can be used to create
 <tt class="literal"><span class="pre">playable</span></tt> objects. If the factory cannot create the object it returns <tt class="literal"><span class="pre">NULL</span></tt>.</p>
@@ -129,7 +132,7 @@ current implementation this isn't always true. Also, the <tt class="literal"><sp
 convention isn't strictly followed for all factories.</p>
 </div>
 <div class="section" id="machine-dependent-code">
-<h1><a name="machine-dependent-code">Machine-dependent code</a></h1>
+<h2><a name="machine-dependent-code">Machine-dependent code</a></h2>
 <p>The general way to handle machine-dependency is to create a machine-independent
 abstract base class, plus machine-dependent subclasses. Then there is a factory
 function that creates a machine-dependent instance and returns it casted
@@ -147,7 +150,7 @@ conditionally include that in <tt class="literal"><span class="pre">lib/mtsync.h
 <tt class="literal"><span class="pre">critical_section</span></tt> of it.</p>
 </div>
 <div class="section" id="integrating-third-party-tools">
-<h1><a name="integrating-third-party-tools">integrating third-party tools</a></h1>
+<h2><a name="integrating-third-party-tools">integrating third-party tools</a></h2>
 <p>We need to be able to use existing toolkits that take work out of our hands.
 Think of QuickTime and DirectX, where you basically pass a URL and say &quot;play&quot; and
 have nothing to worry about anymore. Also, existing URL access libraries (such
@@ -159,17 +162,18 @@ which media bits can go from their source (far away on the net) to the screen.</
 when applicable, but no work on this has been done yet.</p>
 </div>
 <div class="section" id="other-languages">
-<h1><a name="other-languages">Other languages</a></h1>
+<h2><a name="other-languages">Other languages</a></h2>
 <p>It is our intention to eventually allow bridging of Ambulant Player to other languages
 such as Python or Java. An effort has been made to keep the APIs clean enough
 to allow this, but no actual work has been done on it yet.</p>
 </div>
 <div class="section" id="where-next">
-<h1><a name="where-next">Where next?</a></h1>
+<h2><a name="where-next">Where next?</a></h2>
 <p>A good place to continue reading is the <a class="reference" href="walkthrough.html">walkthrough</a> document, which gives a terse
 description of how a SMIL document is opened, parsed and played. Then continue
 with the <a class="reference" href="objects.html">objects</a> document which describes the main objects in more detail.
 Or go back to the <a class="reference" href="../index.html">main documentation index</a>.</p>
+</div>
 </div>
 </div>
 </body>

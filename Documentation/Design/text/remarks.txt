@@ -1,6 +1,8 @@
 Remarks
 =======
 
+Note: this document is outdated.
+
 Code Organization
 -----------------
 
