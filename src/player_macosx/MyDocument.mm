@@ -55,8 +55,10 @@
 
 - (IBAction)play:(id)sender
 {
-	mainloop *ml = new mainloop();
-	ml->run("nonexistent.smil");
+    NSString *filename = [self fileName];
+    
+    mainloop *ml = new mainloop();
+    ml->run([filename UTF8String]);
 }
 
 - (IBAction)stop:(id)sender
