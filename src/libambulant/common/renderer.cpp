@@ -172,6 +172,7 @@ renderer_playable_dsall::~renderer_playable_dsall()
 void
 renderer_playable_dsall::readdone()
 {
+	if (!m_src) return;	
 	unsigned cur_size = m_src->size();
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d)", (void *)this, cur_size);
 	
