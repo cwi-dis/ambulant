@@ -103,9 +103,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
 template<class T>
 class smil_time {
 	

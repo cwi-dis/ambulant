@@ -66,9 +66,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
 // Time node and global "happenings" that may be used for synchronization.
 enum sync_event {
 	// Model abstract events raised by a time node.

@@ -57,38 +57,37 @@
 
 #include "ambulant/lib/node.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/common/region.h"
+#include "ambulant/common/region_node.h"
 
 namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
+class common::passive_region;
+class common::passive_root_layout;
+class common::schema;
+class lib::document;
+class common::region_node;
 
-class passive_region;
-class passive_root_layout;
-class schema;
-class document;
-class region_node;
-
-class smil_layout_manager : public layout_manager {
+class smil_layout_manager : public common::layout_manager {
   public:
-	smil_layout_manager(window_factory *wf, document *doc);
+	smil_layout_manager(common::window_factory *wf, lib::document *doc);
 	~smil_layout_manager();
 	
-	abstract_rendering_surface *get_rendering_surface(const node *node);
+	common::abstract_rendering_surface *get_rendering_surface(const lib::node *node);
   private:
-	void fix_document_layout(document *doc);
+	void fix_document_layout(lib::document *doc);
 	
-	abstract_rendering_surface *get_default_rendering_surface(const node *n);
-	void build_layout_tree(window_factory *wf, const node *layout_root);
+	common::abstract_rendering_surface *get_default_rendering_surface(const lib::node *n);
+	void build_layout_tree(common::window_factory *wf, const lib::node *layout_root);
 
-	passive_root_layout *create_top_region(window_factory *wf, const region_node *rn);
+	common::passive_root_layout *create_top_region(common::window_factory *wf, const common::region_node *rn);
 	
-	const schema *m_schema;
-	std::vector<passive_root_layout*> m_rootlayouts;
-	std::map<std::string, passive_region*> m_id2region;
-	std::multimap<std::string, passive_region*> m_name2region;
+	const common::schema *m_schema;
+	std::vector<common::passive_root_layout*> m_rootlayouts;
+	std::map<std::string, common::passive_region*> m_id2region;
+	std::multimap<std::string, common::passive_region*> m_name2region;
 };
 
 } // namespace smil2

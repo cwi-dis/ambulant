@@ -71,14 +71,12 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
 
-class document;
-class schema;
-class node;
+class lib::document;
+class common::schema;
+class lib::node;
 template <class N>
-class node_navigator;
+class lib::node_navigator;
 
 // Builds the time tree and the time graph.
 // Wraps the time root.
@@ -86,7 +84,7 @@ class node_navigator;
 class timegraph : public time_traits {
   public:
  public:
-	timegraph(time_node::context_type *ctx, const document *doc, const schema *sch);
+	timegraph(time_node::context_type *ctx, const lib::document *doc, const common::schema *sch);
 	~timegraph();
 	
 	time_node* get_root() { return m_root;}
@@ -100,10 +98,10 @@ class timegraph : public time_traits {
 #endif
 
   private:
-    typedef node_navigator<const node> const_nnhelper;
-	time_node* build_time_tree(const node *root);
+    typedef node_navigator<const lib::node> const_nnhelper;
+	time_node* build_time_tree(const lib::node *root);
 	void build_time_graph();
-	time_node* create_time_node(const node *n) const;
+	time_node* create_time_node(const lib::node *n) const;
 	time_node *get_node_with_id(const std::string& ident) const;
 	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
 	
@@ -113,10 +111,10 @@ class timegraph : public time_traits {
 	sync_rule* create_impl_syncbase_begin_rule(time_node *tn);
 	sync_rule* create_impl_syncbase_rule(time_node *tn, time_type offset);
 
-	const node* select_switch_child(const node* sn) const;
+	const lib::node* select_switch_child(const node* sn) const;
 	
 	time_node::context_type *m_context;
-	const schema *m_schema;
+	const common::schema *m_schema;
 	time_node* m_root;
 	std::map<std::string, time_node*> m_id2tn;
 	std::map<int, time_node*> *m_dom2tn;

@@ -59,20 +59,21 @@
 #include "ambulant/smil2/test_attrs.h"
 
 using namespace ambulant;
+using namespace smil2;
 
 static std::map<std::string, std::string> tests_attrs_map;
 
 static 
-std::map<std::string, lib::custom_test> custom_tests_map;
+std::map<std::string, custom_test> custom_tests_map;
 
 inline std::string get_test_attribute(const std::string& attr) {
 	std::map<std::string, std::string>::iterator it = tests_attrs_map.find(attr);
 	return (it != tests_attrs_map.end())?(*it).second:"";
 }
 
-lib::test_attrs::test_attrs(const node *n) 
+test_attrs::test_attrs(const lib::node *n) 
 :	m_node(n) {
-	m_logger = logger::get_logger();
+	m_logger = lib::logger::get_logger();
 	
 	if(tests_attrs_map.empty())
 		set_default_tests_attrs();
@@ -84,7 +85,7 @@ lib::test_attrs::test_attrs(const node *n)
 }
 
 // Returns true when this node should be included
-bool lib::test_attrs::selected() const {
+bool test_attrs::selected() const {
 	const char *value = 0;
 	
 	// systemLanguage
@@ -147,23 +148,23 @@ bool lib::test_attrs::selected() const {
 
 // systemLanguage ::= (languageTag (S? ',' S? languageTag)*)?
 // return true when any in the list stars with the argument
-bool lib::test_attrs::test_system_language(const char *value) const {
+bool test_attrs::test_system_language(const char *value) const {
 	std::string langs = get_test_attribute("systemLanguage");
 	if(langs.empty()) return false;
 	std::list<std::string> list;
-	split_trim_list(langs, list);
+	lib::split_trim_list(langs, list);
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
-		if(starts_with(*it, value)) return true;
+		if(lib::starts_with(*it, value)) return true;
 	}
 	return false;
 }
 
-bool lib::test_attrs::test_system_component(const char *value) const {
+bool test_attrs::test_system_component(const char *value) const {
 	std::string s = get_test_attribute("systemComponent");
 	if(s.empty()) return false;
 	std::list<std::string> list;
-	split_trim_list(s, list, ' ');
+	lib::split_trim_list(s, list, ' ');
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
 		if((*it) == value) return true;
@@ -171,7 +172,7 @@ bool lib::test_attrs::test_system_component(const char *value) const {
 	return false;
 }
 
-bool lib::test_attrs::test_system_bitrate(const char *value) const {
+bool test_attrs::test_system_bitrate(const char *value) const {
 	std::string s = get_test_attribute("systemBitrate");
 	if(s.empty()) return false;
 	int sys_bitrate = atoi(s.c_str());
@@ -179,21 +180,21 @@ bool lib::test_attrs::test_system_bitrate(const char *value) const {
 	return sys_bitrate >= sel_value;
 }
 
-bool lib::test_attrs::test_on_off_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_on_off_attr(const std::string& attr,const char *value) const {
 	std::string s = get_test_attribute(attr);
 	return (s.empty() || (s != "on" && s != "off"))?false:(s == value);
 }
 
-bool lib::test_attrs::test_exact_str_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_exact_str_attr(const std::string& attr,const char *value) const {
 	std::string s = get_test_attribute(attr);
 	return s.empty()?false:(s == value);
 }
 
-bool lib::test_attrs::test_exact_str_list_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_exact_str_list_attr(const std::string& attr,const char *value) const {
 	std::string s = get_test_attribute(attr);
 	if(s.empty()) return false;
 	std::list<std::string> list;
-	split_trim_list(s, list, ' ');
+	lib::split_trim_list(s, list, ' ');
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
 		if((*it) == value) return true;
@@ -202,7 +203,7 @@ bool lib::test_attrs::test_exact_str_list_attr(const std::string& attr,const cha
 }
 
 // systemScreenDepth
-bool lib::test_attrs::test_system_screen_depth(const char *value) const {
+bool test_attrs::test_system_screen_depth(const char *value) const {
 	std::string s = get_test_attribute("systemScreenDepth");
 	if(s.empty()) return false;
 	int sys_bpp = atoi(s.c_str());
@@ -210,25 +211,25 @@ bool lib::test_attrs::test_system_screen_depth(const char *value) const {
 	return sys_bpp >= sel_bpp;
 }
 
-bool lib::test_attrs::test_system_screen_size(const char *value) const {
+bool test_attrs::test_system_screen_size(const char *value) const {
 	std::string s = get_test_attribute("systemScreenSize");
 	if(s.empty()) return false;
-	tokens_vector sys_v(s.c_str(), "Xx");
-	tokens_vector sel_v(s.c_str(), "Xx");
+	lib::tokens_vector sys_v(s.c_str(), "Xx");
+	lib::tokens_vector sel_v(s.c_str(), "Xx");
 	if(sys_v.size() != 2 || sel_v.size() != 2) 
 		return false;
 	return (atoi(sys_v[0].c_str())>atoi(sel_v[0].c_str())) && 
 		(atoi(sys_v[1].c_str())>atoi(sel_v[1].c_str()));
 }
 
-bool lib::test_attrs::test_custom_attribute(const char *value) const {
-	std::string s = trim(value);
+bool test_attrs::test_custom_attribute(const char *value) const {
+	std::string s = lib::trim(value);
 	if(s.empty()) return true;
 	std::list<std::string> list;
-	split_trim_list(s, list, ' ');
+	lib::split_trim_list(s, list, ' ');
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
-		std::map<std::string, lib::custom_test>::const_iterator cit =
+		std::map<std::string, custom_test>::const_iterator cit =
 			custom_tests_map.find(*it);
 		// if missing default to false
 		if(cit == custom_tests_map.end()) return false;
@@ -245,17 +246,17 @@ bool lib::test_attrs::test_custom_attribute(const char *value) const {
 //
 
 // static
-bool lib::test_attrs::load_test_attrs(const std::string& filename) {
-	tree_builder builder;
+bool test_attrs::load_test_attrs(const std::string& filename) {
+	lib::tree_builder builder;
 	if(!builder.build_tree_from_file(filename.c_str())) {
-		logger::get_logger()->error(
+		lib::logger::get_logger()->error(
 			"Could not build tree for file: %s", filename.c_str());
 		return false;
 	}
 	
 	tests_attrs_map.clear();
 	
-	const node* root = builder.get_tree();
+	const lib::node* root = builder.get_tree();
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = root->end();
 	for(it = root->begin(); it != end; it++) {
@@ -271,10 +272,10 @@ bool lib::test_attrs::load_test_attrs(const std::string& filename) {
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
 			const char *value = n->get_attribute("value");
-			std::string sn = trim(name);
-			std::string sv = trim(value);
+			std::string sn = lib::trim(name);
+			std::string sv = lib::trim(value);
 			if(!sn.empty() && !sv.empty()) {
-				std::map<std::string, lib::custom_test>::iterator cit =
+				std::map<std::string, custom_test>::iterator cit =
 					custom_tests_map.find(sn);
 				if(cit != custom_tests_map.end())
 					(*cit).second.state = (sv == "true")?true:false;
@@ -285,7 +286,7 @@ bool lib::test_attrs::load_test_attrs(const std::string& filename) {
 }
 
 // static
-void lib::test_attrs::set_default_tests_attrs() {
+void test_attrs::set_default_tests_attrs() {
 	tests_attrs_map["systemAudioDesc"] = "on";
 	tests_attrs_map["systemBitrate"] = "56000";
 	tests_attrs_map["systemCaptions"] = "on";
@@ -299,13 +300,13 @@ void lib::test_attrs::set_default_tests_attrs() {
 ////////////////////////////////////////
 
 //static
-void lib::test_attrs::read_custom_attributes(const document *doc) {
-	const node* ca = doc->locate_node("/smil/head/customAttributes");
+void test_attrs::read_custom_attributes(const lib::document *doc) {
+	const lib::node* ca = doc->locate_node("/smil/head/customAttributes");
 	if(!ca) return;
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = ca->end();
 	for(it = ca->begin(); it != end; it++) {
-		std::pair<bool, const node*> pair = *it;
+		std::pair<bool, const lib::node*> pair = *it;
 		bool start_element = pair.first;
 		const lib::node *n = pair.second;
 		const std::string& tag = n->get_local_name();

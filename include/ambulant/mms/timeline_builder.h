@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/region.h"
 #include "ambulant/mms/timelines.h"
@@ -63,8 +64,6 @@
 namespace ambulant {
 
 namespace mms {
-
-class document;
 
 class mms_layout_manager : public common::layout_manager {
   public:

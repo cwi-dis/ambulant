@@ -67,6 +67,7 @@
 #endif
 
 using namespace ambulant;
+using namespace mms;
 
 typedef enum {
 	PAR,
@@ -101,19 +102,19 @@ get_node_type(const lib::node& n)
 	return IGNORE_RECURSIVE;
 }
 
-lib::mms_layout_manager::mms_layout_manager(window_factory *wf, const document *doc)
+mms_layout_manager::mms_layout_manager(common::window_factory *wf, const lib::document *doc)
 {
 	AM_DBG lib::logger::get_logger()->trace("mms_layout_manager()->0x%x", (void *)this);
-	const screen_rect<int> image_rect = screen_rect<int>(point(0, 0), size(176, 144));
-	const screen_rect<int> text_rect = screen_rect<int>(point(0, 144), size(176, 72));
-	passive_root_layout *root_layout = new passive_root_layout("root_layout", size(176, 216), wf);
+	const lib::screen_rect<int> image_rect = lib::screen_rect<int>(lib::point(0, 0), lib::size(176, 144));
+	const lib::screen_rect<int> text_rect = lib::screen_rect<int>(lib::point(0, 144), lib::size(176, 72));
+	common::passive_root_layout *root_layout = new common::passive_root_layout("root_layout", lib::size(176, 216), wf);
 	
-	m_audio_rgn = new lib::passive_region("Audio");
+	m_audio_rgn = new common::passive_region("Audio");
 	m_text_rgn = root_layout->subregion("Text", text_rect);
 	m_image_rgn = root_layout->subregion("Image", image_rect);
 }
 
-lib::mms_layout_manager::~mms_layout_manager()
+mms_layout_manager::~mms_layout_manager()
 {
 	AM_DBG lib::logger::get_logger()->trace("~mms_layout_manager(0x%x)", (void *)this);
 	delete m_image_rgn;
@@ -124,11 +125,11 @@ lib::mms_layout_manager::~mms_layout_manager()
 	m_audio_rgn = NULL;
 }
 
-lib::abstract_rendering_surface *
-lib::mms_layout_manager::get_rendering_surface(const node *node)
+common::abstract_rendering_surface *
+mms_layout_manager::get_rendering_surface(const lib::node *node)
 {
-	lib::abstract_rendering_surface *rgn;
-	xml_string tag = node->get_qname().second;
+	common::abstract_rendering_surface *rgn;
+	lib::xml_string tag = node->get_qname().second;
 	if (tag == "img" || tag == "video") rgn = m_image_rgn->activate(node);
 	else if ( tag == "text") rgn = m_text_rgn->activate(node);
 	else if ( tag == "audio") rgn = m_audio_rgn->activate(node);
@@ -140,23 +141,23 @@ lib::mms_layout_manager::get_rendering_surface(const node *node)
 }
 
 
-lib::timeline_builder::timeline_builder(window_factory *wf, lib::node& root)
+timeline_builder::timeline_builder(common::window_factory *wf, lib::node& root)
 :	m_root(root),
-	m_timeline(new lib::passive_timeline(&root))
+	m_timeline(new passive_timeline(&root))
 {
 }
 
-lib::timeline_builder::~timeline_builder()
+timeline_builder::~timeline_builder()
 {
 	if (m_timeline)
 		delete m_timeline;
 	m_timeline = NULL;
 }
 
-lib::passive_timeline *
-lib::timeline_builder::build()
+passive_timeline *
+timeline_builder::build()
 {
-	lib::passive_timeline *rv;
+	passive_timeline *rv;
 	
 	build_node(m_root);
 	m_timeline->build();
@@ -166,7 +167,7 @@ lib::timeline_builder::build()
 }
 
 void
-lib::timeline_builder::build_node(const lib::node& n)
+timeline_builder::build_node(const lib::node& n)
 {
 	node_type tp = get_node_type(n);
 	
@@ -181,12 +182,12 @@ lib::timeline_builder::build_node(const lib::node& n)
 	} else if (tp == PAR) {
 		build_par(n);
 	} else if (tp == IGNORE) {
-		std::list<const node*> children;
-		std::list<const node*>::iterator ch;
+		std::list<const lib::node*> children;
+		std::list<const lib::node*>::iterator ch;
 		
 		n.get_children(children);
 		for (ch = children.begin(); ch != children.end(); ch++)
-			build_node((const node&)**ch);
+			build_node((const lib::node&)**ch);
 		
 	} else if (tp == IGNORE_RECURSIVE) {
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -198,15 +199,15 @@ lib::timeline_builder::build_node(const lib::node& n)
 }
 
 void
-lib::timeline_builder::build_leaf(const lib::node& n)
+timeline_builder::build_leaf(const lib::node& n)
 {
 	// For now we create a region per node
 	net::passive_datasource *src = NULL;
 	std::string url = n.get_url("src");
 	if (url != "")
 		src = new net::passive_datasource(url.c_str());
-	lib::timeline_node *transitions = m_timeline->add_node(&n, src);
-	lib::timeline_node_transition *tmp;
+	timeline_node *transitions = m_timeline->add_node(&n, src);
+	timeline_node_transition *tmp;
 	
 	// This code is valid for leafs without explicit or implicit
 	// timing.
@@ -228,26 +229,26 @@ lib::timeline_builder::build_leaf(const lib::node& n)
 }
 
 void
-lib::timeline_builder::build_seq(const lib::node& n)
+timeline_builder::build_seq(const lib::node& n)
 {
 	// This code is valid for a <seq> with at least one child,
 	// no explicit timing and an untimed parent (if any).
-	std::list<const node*> children;
+	std::list<const lib::node*> children;
 	n.get_children(children);
 	if (children.size() < 1) {
 		lib::logger::get_logger()->error("timeline_builder.build_par: empty seq not allowed in MMS");
 		return;
 	}
 	
-	lib::timeline_node *transitions = m_timeline->add_node(&n);
-	lib::timeline_node_transition *preroll = transitions->add_transition();
-	lib::timeline_node_transition *play = transitions->add_transition();
-	lib::timeline_node_transition *next = play;
+	timeline_node *transitions = m_timeline->add_node(&n);
+	timeline_node_transition *preroll = transitions->add_transition();
+	timeline_node_transition *play = transitions->add_transition();
+	timeline_node_transition *next = play;
 	
 	preroll->add_lhs(START_PREROLL, &n);
 	play->add_lhs(START_PLAY, &n);
 
-	std::list<const node*>::iterator ch;
+	std::list<const lib::node*>::iterator ch;
 	for (ch = children.begin(); ch != children.end(); ch++) {
 
 		preroll->add_rhs(START_PREROLL, *ch);
@@ -264,11 +265,11 @@ lib::timeline_builder::build_seq(const lib::node& n)
 }
 
 void
-lib::timeline_builder::build_par(const lib::node& n)
+timeline_builder::build_par(const lib::node& n)
 {
 	// This code is valid for a <par> with explicit timing with at least one
 	// child and a parent without explicit timing.
-	std::list<const node*> children;
+	std::list<const lib::node*> children;
 	n.get_children(children);
 	if (children.size() < 1) {
 		lib::logger::get_logger()->error("timeline_builder.build_par: empty par not allowed in MMS");
@@ -300,7 +301,7 @@ lib::timeline_builder::build_par(const lib::node& n)
 	play->add_rhs(DELAY, delay);
 	stop->add_lhs(DELAY, delay);
 
-	std::list<const node*>::iterator ch;
+	std::list<const lib::node*>::iterator ch;
 	for (ch = children.begin(); ch != children.end(); ch++) {
 
 		preroll->add_rhs(START_PREROLL, *ch);

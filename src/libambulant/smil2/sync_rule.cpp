@@ -64,12 +64,13 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
 
 //////////////////////////////////
 // abstract_sync_rule implementation
 
-lib::abstract_sync_rule::abstract_sync_rule(time_node *syncbase, sync_event se) 
+abstract_sync_rule::abstract_sync_rule(time_node *syncbase, sync_event se) 
 :	m_target(0),
 	m_target_attr(rt_begin),
 	m_syncbase(syncbase),
@@ -78,36 +79,36 @@ lib::abstract_sync_rule::abstract_sync_rule(time_node *syncbase, sync_event se)
 	m_locked(false),
 	m_trace(false) {}
 
-void lib::abstract_sync_rule::set_target(time_node *tn, rule_type rt) { 
+void abstract_sync_rule::set_target(time_node *tn, rule_type rt) { 
 	m_target = tn; 
 	m_target_attr = rt; 
 	eval_refnode();
 }
 
-void lib::abstract_sync_rule::set_syncbase(time_node *tn, sync_event se) { 
+void abstract_sync_rule::set_syncbase(time_node *tn, sync_event se) { 
 	m_syncbase = tn; 
 	m_syncbase_event = se;
 	eval_refnode();
 }	
 
-void lib::abstract_sync_rule::eval_refnode() { 
+void abstract_sync_rule::eval_refnode() { 
 	if(!m_refnode && m_target && m_syncbase) {
-		typedef lib::node_navigator<lib::time_node> nnhelper;
+		typedef lib::node_navigator<time_node> nnhelper;
 		m_refnode = nnhelper::get_common_ancestor(m_target->sync_node(), 
 			m_syncbase->sync_node());
 	}
 }
 
-lib::sync_rule::time_type 
-lib::abstract_sync_rule::to_ref(time_type instance) const {
+sync_rule::time_type 
+abstract_sync_rule::to_ref(time_type instance) const {
 	if(!instance.is_definite()) return instance;
 	assert(m_syncbase && m_refnode);
 	qtime_type tc(m_syncbase->sync_node(), instance);
 	return tc.to_ancestor(m_refnode);
 }
 
-lib::sync_rule::time_type 
-lib::abstract_sync_rule::from_ref(time_type instance) const {
+sync_rule::time_type 
+abstract_sync_rule::from_ref(time_type instance) const {
 	assert(m_target && m_refnode);
 	if(!instance.is_definite()) return instance;
 	qtime_type tc(m_refnode, instance);
@@ -115,7 +116,7 @@ lib::abstract_sync_rule::from_ref(time_type instance) const {
 }
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-std::string lib::abstract_sync_rule::to_string() {
+std::string abstract_sync_rule::to_string() {
 	std::ostringstream os;
 	os << m_target->to_string() << "."  << rule_type_str(m_target_attr);
 	os << "=";
@@ -138,18 +139,18 @@ std::string lib::abstract_sync_rule::to_string() {
 //////////////////////////////////
 // model_rule implementation
 
-void lib::model_rule::get_instance_times(time_mset& s) const {
+void model_rule::get_instance_times(time_mset& s) const {
 	for(time_list::const_iterator it = m_instances.begin();it!=m_instances.end();it++)
 		s.insert(from_ref(*it) + m_offset);
 }
 
-void lib::model_rule::reset(time_node *src) {
+void model_rule::reset(time_node *src) {
 	// !src means a document reset.
 	if(!src || m_refnode->is_descendent_of(src))
 		m_instances.clear();
 }
 
-void lib::model_rule::new_instance(qtime_type timestamp, time_type instance) {
+void model_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
@@ -159,7 +160,7 @@ void lib::model_rule::new_instance(qtime_type timestamp, time_type instance) {
 	unlock();
 }
 
-void lib::model_rule::cancel_instance(qtime_type timestamp, time_type instance) {
+void model_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
@@ -179,7 +180,7 @@ void lib::model_rule::cancel_instance(qtime_type timestamp, time_type instance) 
 	unlock();
 }
 
-void lib::model_rule::update_instance(qtime_type timestamp, time_type instance, time_type old_instance) {
+void model_rule::update_instance(qtime_type timestamp, time_type instance, time_type old_instance) {
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
@@ -202,18 +203,18 @@ void lib::model_rule::update_instance(qtime_type timestamp, time_type instance, 
 //////////////////////////////////
 // event_rule implementation
 
-void lib::event_rule::get_instance_times(time_mset& s) const {
+void event_rule::get_instance_times(time_mset& s) const {
 	for(time_list::const_iterator it = m_instances.begin();it!=m_instances.end();it++)
 		s.insert(from_ref(*it) + m_offset);
 }
 
-void lib::event_rule::reset(time_node *src) {
+void event_rule::reset(time_node *src) {
 	// XXX: Consider exception: 
 	// do not remove event instances that created the 'current' interval
 	m_instances.clear();
 }
 
-void lib::event_rule::add_instance(qtime_type timestamp, time_type instance, int data) {
+void event_rule::add_instance(qtime_type timestamp, time_type instance, int data) {
 	if(m_selector != data) return;
 	if(locked()) return;
 	lock();
@@ -224,7 +225,7 @@ void lib::event_rule::add_instance(qtime_type timestamp, time_type instance, int
 	unlock();
 }
 
-void lib::event_rule::add_instance(qtime_type timestamp, time_type instance, const std::string& data) {
+void event_rule::add_instance(qtime_type timestamp, time_type instance, const std::string& data) {
 	if(m_str_selector != data) return;
 	if(locked()) return;
 	lock();
@@ -238,60 +239,60 @@ void lib::event_rule::add_instance(qtime_type timestamp, time_type instance, con
 //////////////////////////////////
 // trigger_rule implementation
 
-void lib::trigger_rule::new_instance(qtime_type timestamp, time_type instance) {
+void trigger_rule::new_instance(qtime_type timestamp, time_type instance) {
 	m_target->sync_update(timestamp);
 }
 
-void lib::trigger_rule::cancel_instance(qtime_type timestamp, time_type instance) {
+void trigger_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	m_target->sync_update(timestamp);
 }
 
-void lib::trigger_rule::update_instance(qtime_type timestamp, time_type instance, time_type old_instance) {
+void trigger_rule::update_instance(qtime_type timestamp, time_type instance, time_type old_instance) {
 	m_target->sync_update(timestamp);
 }
 ////////////////////////////
 
-lib::sync_event lib::sync_event_from_str(const std::string& s) {
+sync_event sync_event_from_str(const std::string& s) {
 	static std::map<std::string, sync_event> events;
 	typedef std::string st;
 	if(events.empty()) {
-		events[st("begin")] = lib::tn_begin;
-		events[st("end")] = lib::tn_end;
-		events[st("beginEvent")] = lib::tn_begin_event;
-		events[st("endEvent")] = lib::tn_end_event;
-		events[st("repeat")] = lib::tn_repeat_event;
-		events[st("activateEvent")] = lib::tn_activate_event;
-		events[st("click")] = lib::tn_activate_event;
-		events[st("marker")] = lib::tn_marker_event;
-		events[st("accesskey")] = lib::accesskey_event;
+		events[st("begin")] = tn_begin;
+		events[st("end")] = tn_end;
+		events[st("beginEvent")] = tn_begin_event;
+		events[st("endEvent")] = tn_end_event;
+		events[st("repeat")] = tn_repeat_event;
+		events[st("activateEvent")] = tn_activate_event;
+		events[st("click")] = tn_activate_event;
+		events[st("marker")] = tn_marker_event;
+		events[st("accesskey")] = accesskey_event;
 	}
 	std::map<std::string, sync_event>::iterator it = events.find(s);
-	return (it != events.end())?(*it).second:lib::tn_unknown_event;
+	return (it != events.end())?(*it).second:tn_unknown_event;
 }
 
 ////////////////////////////
 // tracing helpers
 
-const char* lib::sync_event_str(lib::sync_event ev) {
+const char* sync_event_str(sync_event ev) {
 	switch(ev) {
-		case lib::tn_begin: return "begin";
-		case lib::tn_repeat: return "repeat";
-		case lib::tn_end: return "end";
-		case lib::tn_begin_event: return "beginEvent";
-		case lib::tn_repeat_event: return "repeat(.)";
-		case lib::tn_end_event: return "endEvent";
-		case lib::tn_activate_event: return "activateEvent";
-		case lib::tn_marker_event: return "marker";
-		case lib::accesskey_event: return "accesskey";
-		case lib::tn_dom_call: return "beginElement()";
+		case tn_begin: return "begin";
+		case tn_repeat: return "repeat";
+		case tn_end: return "end";
+		case tn_begin_event: return "beginEvent";
+		case tn_repeat_event: return "repeat(.)";
+		case tn_end_event: return "endEvent";
+		case tn_activate_event: return "activateEvent";
+		case tn_marker_event: return "marker";
+		case accesskey_event: return "accesskey";
+		case tn_dom_call: return "beginElement()";
 	}
 	return "unknownEvent";
 }
 
-const char* lib::rule_type_str(lib::rule_type rt) {
+const char* rule_type_str(rule_type rt) {
 	switch(rt) {
-		case lib::rt_begin: return "begin";
-		case lib::rt_end: return "end";
+		case rt_begin: return "begin";
+		case rt_end: return "end";
 	}
 	return "unknown";
 }

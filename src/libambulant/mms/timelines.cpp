@@ -57,22 +57,21 @@
 #endif
 
 namespace ambulant {
+namespace mms {
 
-namespace lib {
-
-class dead_renderer_class : public active_basic_renderer {
+class dead_renderer_class : public common::active_basic_renderer {
   public:
   	dead_renderer_class()
   	:	active_basic_renderer() {}
   	
-	void redraw(const screen_rect<int> &dirty, abstract_window *window) {}
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
 	void stop() {}
 	void start(double t) {};
 	void pause() {};
 	void resume() {};
 	void seek(double t) {};
 	void wantclicks(bool want) {};
-	void user_event(const point &where) {};
+	void user_event(const lib::point &where) {};
 };
 
 dead_renderer_class dead_renderer;
@@ -121,7 +120,7 @@ active_int_action::fire(active_timeline * const parent) const
 	
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(parent, &active_timeline::dependency_callback, m_dependency);
-	parent->m_event_processor->add_event(e, m_timeout, event_processor::high);
+	parent->m_event_processor->add_event(e, m_timeout, lib::event_processor::high);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -163,7 +162,7 @@ active_ext_action::fire(active_timeline * const parent) const
 	
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(parent, &active_timeline::ext_dependency_callback, m_action_index);
-	parent->m_event_processor->add_event(e, 0, event_processor::low);
+	parent->m_event_processor->add_event(e, 0, lib::event_processor::low);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -289,11 +288,11 @@ detail::dependency_index_generator::get_index(detail::timeline_event &ev)
 void 
 timeline_node_transition::add_lhs(timeline_event_class what)
 {
-	m_lhs.push_back(detail::timeline_event(what, (node *)NULL));
+	m_lhs.push_back(detail::timeline_event(what, (lib::node *)NULL));
 }
 
 void 
-timeline_node_transition::add_lhs(timeline_event_class what, const node *direct_object)
+timeline_node_transition::add_lhs(timeline_event_class what, const lib::node *direct_object)
 {
 	m_lhs.push_back(detail::timeline_event(what, direct_object));
 }
@@ -305,7 +304,7 @@ timeline_node_transition::add_lhs(timeline_event_class what, const timeline_dela
 }
 
 void 
-timeline_node_transition::add_rhs(timeline_event_class what, const node *direct_object)
+timeline_node_transition::add_rhs(timeline_event_class what, const lib::node *direct_object)
 {
 	m_rhs.push_back(detail::timeline_rhs_event(what, direct_object));
 }
@@ -456,7 +455,7 @@ const int START_PREROLL_TIMELINE_INDEX = 0;
 const int START_PLAY_TIMELINE_INDEX = 1;
 const int DONE_PLAY_TIMELINE_INDEX = 2;
 
-passive_timeline::passive_timeline(node *rootnode)
+passive_timeline::passive_timeline(lib::node *rootnode)
 :	m_rootnode(rootnode),
 	m_is_built(0),
 	m_playdone_indices(NULL)
@@ -491,7 +490,7 @@ passive_timeline::~passive_timeline()
 }
 
 timeline_node *
-passive_timeline::add_node(const node *the_node)
+passive_timeline::add_node(const lib::node *the_node)
 {
 	timeline_node *rv = new timeline_node(the_node);
 	m_timeline_nodes.push_back(rv);
@@ -499,7 +498,7 @@ passive_timeline::add_node(const node *the_node)
 }
 
 timeline_node *
-passive_timeline::add_node(const node *the_node, net::passive_datasource *the_datasource)
+passive_timeline::add_node(const lib::node *the_node, net::passive_datasource *the_datasource)
 {
 	timeline_node *rv = new timeline_node(the_node, the_datasource);
 	m_timeline_nodes.push_back(rv);
@@ -547,7 +546,7 @@ passive_timeline::build()
 }
 
 active_timeline *
-passive_timeline::activate(event_processor *const evp, renderer_factory *rf, layout_manager *lm)
+passive_timeline::activate(lib::event_processor *const evp, common::renderer_factory *rf, common::layout_manager *lm)
 {
 #ifndef AMBULANT_NO_IOSTREAMS
 	AM_DBG std::cout << "activate(), #dep=" << m_dependencies.size() << " #act=" << m_actions.size() << std::endl;
@@ -574,20 +573,20 @@ passive_timeline::dump(std::ostream& os)
 #endif
 
 /* ---------------- */
-active_timeline::active_timeline(event_processor *const evp,
+active_timeline::active_timeline(lib::event_processor *const evp,
 	passive_timeline *const source, 
 	const detail::active_dependency_vector& dependencies,
 	const detail::active_action_vector& actions,
 	int nregion,
-	renderer_factory *rf,
-	layout_manager *lm)
+	common::renderer_factory *rf,
+	common::layout_manager *lm)
 :	m_event_processor(evp),
 	m_renderer_factory(rf),
 	m_source(source),
 	m_layout_manager(lm),
 	m_dependencies(dependencies),
 	m_actions(actions),
-	m_renderers(std::vector<active_basic_renderer *>(nregion, (active_basic_renderer *)NULL)),
+	m_renderers(std::vector<common::active_basic_renderer *>(nregion, (common::active_basic_renderer *)NULL)),
 	m_playdone(NULL)
 {
 	m_source->add_ref();
@@ -611,7 +610,7 @@ active_timeline::preroll()
 }
 
 void
-active_timeline::start(event *playdone)
+active_timeline::start(lib::event *playdone)
 {
 	detail::active_dependency& dep = m_dependencies[START_PLAY_TIMELINE_INDEX];
 	int i;
@@ -631,7 +630,7 @@ active_timeline::start(event *playdone)
 void
 active_timeline::stop()
 {
-	std::vector<active_basic_renderer *>::iterator it;
+	std::vector<common::active_basic_renderer *>::iterator it;
 	for(it = m_renderers.begin();it != m_renderers.end();it++) {
 		if(*it != 0 && *it != &dead_renderer) {
 			(*it)->stop();
@@ -644,7 +643,7 @@ active_timeline::stop()
 void
 active_timeline::pause()
 {
-	std::vector<active_basic_renderer *>::iterator it;
+	std::vector<common::active_basic_renderer *>::iterator it;
 	for(it = m_renderers.begin();it != m_renderers.end();it++) {
 		if(*it != 0 && *it != &dead_renderer) {
 			(*it)->pause();
@@ -655,7 +654,7 @@ active_timeline::pause()
 void
 active_timeline::resume()
 {
-	std::vector<active_basic_renderer *>::iterator it;
+	std::vector<common::active_basic_renderer *>::iterator it;
 	for(it = m_renderers.begin();it != m_renderers.end();it++) {
 		if(*it != 0 && *it != &dead_renderer) {
 			(*it)->resume();
@@ -687,7 +686,7 @@ active_timeline::dependency_callback(detail::dependency_callback_arg arg)
 #ifndef AMBULANT_NO_IOSTREAMS
 			AM_DBG std::cout << "firing playdone event to parent" << std::endl;
 #endif
-			m_event_processor->add_event(m_playdone, 0, event_processor::low);
+			m_event_processor->add_event(m_playdone, 0, lib::event_processor::low);
 		}
 		// Other cleanup
 	}
@@ -709,7 +708,7 @@ active_timeline::ext_preroll(int node_index)
 	}
 	timeline_node *tln = m_source->m_timeline_nodes[node_index];
 	net::passive_datasource *the_datasource = tln->m_datasource;
-	const node *the_node = tln->m_node;
+	const lib::node *the_node = tln->m_node;
 	m_renderers[node_index] = m_renderer_factory->new_renderer(
 		this, node_index, the_node, m_event_processor, the_datasource, 
 		m_layout_manager->get_rendering_surface(the_node));
@@ -781,7 +780,7 @@ active_timeline::stopped(int n, double t)
 		lib::logger::get_logger()->fatal("active_timeline::stopped(node %d): playdone_index=%d", n, playdone_index);
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(this, &active_timeline::dependency_callback, playdone_index);
-	m_event_processor->add_event(e, 0, event_processor::high);
+	m_event_processor->add_event(e, 0, lib::event_processor::high);
 }
 
 void 
@@ -790,6 +789,5 @@ active_timeline::clicked(int n, double t)
 	/*AM_DBG*/ lib::logger::get_logger()->trace("active_timeline::clicked(%d)", n);
 }
 
-} // namespace lib
- 
+} // namespace mms
 } // namespace ambulant

@@ -65,12 +65,13 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
 // create an instance of this type
 // force all compilers to create code for this.
-static lib::smil_time<double> dummy;
+static smil_time<double> dummy;
 
-lib::time_attrs::time_attrs(const node *n) 
+time_attrs::time_attrs(const node *n) 
 :	m_node(n), 
 	m_spflags(0) {
 	m_logger = logger::get_logger();
@@ -80,7 +81,7 @@ lib::time_attrs::time_attrs(const node *n)
 	parse_time_attrs();
 }
 
-void lib::time_attrs::parse_time_attrs() {
+void time_attrs::parse_time_attrs() {
 	parse_dur();
 	parse_rcount();
 	parse_rdur();
@@ -93,11 +94,11 @@ void lib::time_attrs::parse_time_attrs() {
 	parse_restart();
 }
 
-bool lib::time_attrs::end_is_indefinite() const {
+bool time_attrs::end_is_indefinite() const {
 	return m_elist.size() == 1 && m_elist.front().type == sv_indefinite;
 }
 
-bool lib::time_attrs::end_has_event_conditions() const {
+bool time_attrs::end_has_event_conditions() const {
 	sync_list::const_iterator it;
 	for(it=m_elist.begin();it!=m_elist.end();it++) {
 		sync_value_type t = (*it).type;
@@ -107,14 +108,14 @@ bool lib::time_attrs::end_has_event_conditions() const {
 	return false;
 }
 
-bool lib::time_attrs::has_dur_specifier() const {
+bool time_attrs::has_dur_specifier() const {
 	return specified_dur() || specified_rdur() || specified_rcount();
 }
 
 // dur ::= Clock-value | "media" | "indefinite"
 // struct dur_t { dur_type type; time_type value;} m_dur;
 // enum dur_type {dt_unspecified, dt_definite, dt_indefinite, dt_media};
-void lib::time_attrs::parse_dur() {
+void time_attrs::parse_dur() {
 	m_dur.type = dt_unspecified;
 	m_dur.value = time_type::unspecified;
 	const char *p = m_node->get_attribute("dur");
@@ -147,7 +148,7 @@ void lib::time_attrs::parse_dur() {
 }
 
 // repeatCount ::= floating_point | "indefinite"
-void lib::time_attrs::parse_rcount() {
+void time_attrs::parse_rcount() {
 	const char *p = m_node->get_attribute("repeatCount");
 	if(!p) return;
 	set_specified(SP_RCOUNT);
@@ -171,7 +172,7 @@ void lib::time_attrs::parse_rcount() {
 }
 
 // repeatDur ::= Clock-value | "indefinite"
-void lib::time_attrs::parse_rdur() {
+void time_attrs::parse_rdur() {
 	const char *p = m_node->get_attribute("repeatDur");
 	if(!p) return;
 	set_specified(SP_RDUR);
@@ -195,7 +196,7 @@ void lib::time_attrs::parse_rdur() {
 }
 
 // min ::= Clock-value | "media" 
-void lib::time_attrs::parse_min() {
+void time_attrs::parse_min() {
 	const char *p = m_node->get_attribute("min");
 	if(!p) return;
 	set_specified(SP_MIN);
@@ -219,7 +220,7 @@ void lib::time_attrs::parse_min() {
 }
 
 // max ::= Clock-value | "media" | "indefinite" 
-void lib::time_attrs::parse_max() {
+void time_attrs::parse_max() {
 	const char *p = m_node->get_attribute("max");
 	if(!p) return;
 	set_specified(SP_MAX);
@@ -246,7 +247,7 @@ void lib::time_attrs::parse_max() {
 	m_max.value = parser.m_result;
 }
 
-void lib::time_attrs::parse_begin() {
+void time_attrs::parse_begin() {
 	const char *p = m_node->get_attribute("begin");
 	if(!p) return;
 	set_specified(SP_BEGIN);
@@ -256,7 +257,7 @@ void lib::time_attrs::parse_begin() {
 	parse_sync_list(strlist, m_blist);
 }
 
-void lib::time_attrs::parse_end() {
+void time_attrs::parse_end() {
 	const char *p = m_node->get_attribute("end");
 	if(!p) return;
 	set_specified(SP_END);
@@ -266,7 +267,7 @@ void lib::time_attrs::parse_end() {
 	parse_sync_list(strlist, m_elist);
 }
 
-void lib::time_attrs::parse_sync_list(
+void time_attrs::parse_sync_list(
 	const std::list<std::string>& strlist, sync_list& svslist) {
 	std::list<std::string>::const_iterator it;
 	for(it = strlist.begin(); it!=strlist.end();it++) {
@@ -290,7 +291,7 @@ void lib::time_attrs::parse_sync_list(
 	}
 }
 
-void lib::time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
+void time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
 	svs.type = sv_offset;
 	offset_value_p parser;
 	if(!parser.matches(s)) {
@@ -304,14 +305,14 @@ void lib::time_attrs::parse_plain_offset(const std::string& s, sync_value_struct
 		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
 }
 
-void lib::time_attrs::parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl) {
+void time_attrs::parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl) {
 	svs.type = sv_wallclock;
 	m_logger->warn("ignoring wallclock");
 	//sl.push_back(svs);	
 }
 
 // Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )? 
-void lib::time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl) {
+void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl) {
 	svs.type = sv_accesskey;
 	size_type open_par_ix = s.find('(');
 	if(open_par_ix == std::string::npos) {
@@ -347,7 +348,7 @@ void lib::time_attrs::parse_accesskey(const std::string& s, sync_value_struct& s
 		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.iparam);
 }
 
-void lib::time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
+void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
 	std::string::const_iterator b;
 	std::string::const_iterator e;
 	std::ptrdiff_t d;
@@ -463,7 +464,7 @@ void lib::time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_stru
 }
 
 // endsync ::= first | last | all | media | Id-value | smil1.0-Id-value
-void lib::time_attrs::parse_endsync() {
+void time_attrs::parse_endsync() {
 	m_endsync.rule = esr_last;
 	const char *p = m_node->get_attribute("endsync");
 	if(!p) return;
@@ -489,7 +490,7 @@ void lib::time_attrs::parse_endsync() {
 }
 
 // fill ::= remove | freeze | hold | transition | auto | default
-void lib::time_attrs::parse_fill() {
+void time_attrs::parse_fill() {
 	m_fill = modulated_fill(get_default_fill());
 	const char *p = m_node->get_attribute("fill");
 	if(!p) {
@@ -511,7 +512,7 @@ void lib::time_attrs::parse_fill() {
 	
 }
 
-lib::fill_behavior lib::time_attrs::modulated_fill(fill_behavior fb) {
+fill_behavior time_attrs::modulated_fill(fill_behavior fb) {
 	if(fb != fill_auto) return fb;
 	bool dv = (specified_dur() || specified_rdur() || specified_rcount() ||
 		specified_end());
@@ -521,7 +522,7 @@ lib::fill_behavior lib::time_attrs::modulated_fill(fill_behavior fb) {
 // Returns the fillDefault attribute active for this. 
 // fillDefault ::= remove | freeze | hold | transition | auto | inherit
 // Applicable for an element and all descendents
-lib::fill_behavior lib::time_attrs::get_default_fill() {
+fill_behavior time_attrs::get_default_fill() {
 	fill_behavior retfb = fill_auto;
 	const node *curr = m_node;
 	while(curr) {
@@ -542,7 +543,7 @@ lib::fill_behavior lib::time_attrs::get_default_fill() {
 }
 
 // restart ::= always | whenNotActive | never | default
-void lib::time_attrs::parse_restart() {
+void time_attrs::parse_restart() {
 	m_restart = get_default_restart();
 	const char *p = m_node->get_attribute("restart");
 	if(!p) return;
@@ -560,7 +561,7 @@ void lib::time_attrs::parse_restart() {
 // restartDefault := always | whenNotActive | never | inherit 
 // Applicable for an element and all descendents
 // Returns one of : always | whenNotActive | never
-lib::restart_behavior lib::time_attrs::get_default_restart() {
+restart_behavior time_attrs::get_default_restart() {
 	restart_behavior rb = restart_always;
 	const node *curr = m_node;
 	while(curr) {
@@ -583,22 +584,22 @@ lib::restart_behavior lib::time_attrs::get_default_restart() {
 ///////////////////////
 // Tracing
 
-std::string lib::repr(lib::sync_value_type sv) {
+std::string repr(sync_value_type sv) {
 	switch(sv) {
-		case lib::sv_offset: return "offset";
-		case lib::sv_syncbase: return "syncbase";
-		case lib::sv_event: return "event";
-		case lib::sv_repeat: return "repeat";
-		case lib::sv_accesskey: return "accesskey";
-		case lib::sv_media_marker: return "marker";
-		case lib::sv_wallclock: return "wallclock";
-		case lib::sv_indefinite: return "indefinite";
+		case sv_offset: return "offset";
+		case sv_syncbase: return "syncbase";
+		case sv_event: return "event";
+		case sv_repeat: return "repeat";
+		case sv_accesskey: return "accesskey";
+		case sv_media_marker: return "marker";
+		case sv_wallclock: return "wallclock";
+		case sv_indefinite: return "indefinite";
 	}
 	assert(false);
 	return "";
 }
 
-std::string lib::repr(const sync_value_struct& svs) {
+std::string repr(const sync_value_struct& svs) {
 	std::string os;
 	if(svs.type == sv_offset) {
 		os << svs.offset;
@@ -621,28 +622,28 @@ std::string lib::repr(const sync_value_struct& svs) {
 	return os;
 }
 
-std::string lib::repr(lib::fill_behavior f) {
+std::string repr(fill_behavior f) {
 	switch(f) {
-		case lib::fill_remove: return "remove";
-		case lib::fill_freeze: return "freeze";
-		case lib::fill_hold: return "hold";
-		case lib::fill_transition: return "transition";
-		case lib::fill_auto: return "auto";
-		case lib::fill_default: return "default";
-		case lib::fill_inherit: return "inherit";
+		case fill_remove: return "remove";
+		case fill_freeze: return "freeze";
+		case fill_hold: return "hold";
+		case fill_transition: return "transition";
+		case fill_auto: return "auto";
+		case fill_default: return "default";
+		case fill_inherit: return "inherit";
 	}
 	assert(false);
 	return "";
 
 }
 
-std::string lib::repr(lib::restart_behavior f) {
+std::string repr(restart_behavior f) {
 	switch(f) {
-		case lib::restart_always: return "always";
-		case lib::restart_when_not_active: return "whenNotActive";
-		case lib::restart_never: return "never";
-		case lib::restart_default: return "default";
-		case lib::restart_inherit: return "inherit";
+		case restart_always: return "always";
+		case restart_when_not_active: return "whenNotActive";
+		case restart_never: return "never";
+		case restart_default: return "default";
+		case restart_inherit: return "inherit";
 	}
 	assert(false);
 	return "";
@@ -652,8 +653,8 @@ std::string lib::repr(lib::restart_behavior f) {
 // priority_attrs implementation
 
 // static
-lib::priority_attrs* 
-lib::priority_attrs::create_instance(const lib::node *n) {
+priority_attrs* 
+priority_attrs::create_instance(const lib::node *n) {
 	assert(n->get_local_name() == "priorityClass");
 	priority_attrs *pa = new priority_attrs();
 	const char *p;
@@ -683,8 +684,8 @@ lib::priority_attrs::create_instance(const lib::node *n) {
 }
 
 // static 
-lib::interrupt_type 
-lib::priority_attrs::interrupt_from_str(const std::string& spec) {
+interrupt_type 
+priority_attrs::interrupt_from_str(const std::string& spec) {
 	if(spec == "stop") return int_stop;
 	else if(spec == "pause") return int_pause;
 	else if(spec == "defer") return int_defer;
@@ -693,8 +694,8 @@ lib::priority_attrs::interrupt_from_str(const std::string& spec) {
 }
 
 //static 
-lib::pause_display 
-lib::priority_attrs::display_from_str(const std::string& spec) {
+pause_display 
+priority_attrs::display_from_str(const std::string& spec) {
 	if(spec == "disable") return display_disable;
 	else if(spec == "hide") return display_hide;
 	else if(spec == "show") return display_show;

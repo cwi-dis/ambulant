@@ -54,6 +54,7 @@
 #include "ambulant/smil2/time_node.h"
 
 using namespace ambulant;
+using namespace smil2;
 
 ////////////////////////////
 // q_smil_time implementation
@@ -63,7 +64,7 @@ using namespace ambulant;
 // a) the accumulated synchronization offset 
 // b) time manipulations effects
 
-lib::q_smil_time::time_type lib::q_smil_time::to_ancestor(const lib::time_node *a) {
+q_smil_time::time_type q_smil_time::to_ancestor(const time_node *a) {
 	while(first != a && first->up()) up();
 	if(first != a) 
 		logger::get_logger()->error("q_smil_time::convert_to_ancestor(%s) failed", 
@@ -71,12 +72,12 @@ lib::q_smil_time::time_type lib::q_smil_time::to_ancestor(const lib::time_node *
 	return second;
 }
 
-lib::q_smil_time::time_type lib::q_smil_time::to_descendent(const lib::time_node *d) {
-	const lib::time_node *a = first;
-	std::list<const lib::time_node*> path;
-	typedef lib::node_navigator<const lib::time_node> const_nnhelper;
+q_smil_time::time_type q_smil_time::to_descendent(const time_node *d) {
+	const time_node *a = first;
+	std::list<const time_node*> path;
+	typedef lib::node_navigator<const time_node> const_nnhelper;
 	const_nnhelper::get_path(d, path);
-	std::list<const lib::time_node*>::iterator it = 
+	std::list<const time_node*>::iterator it = 
 		std::find(path.begin(), path.end(), a);
 	if(it == path.end()) {
 		logger::get_logger()->error("q_smil_time::convert_to_descendent(%s) failed", 
@@ -87,19 +88,19 @@ lib::q_smil_time::time_type lib::q_smil_time::to_descendent(const lib::time_node
 	return second;
 }
 
-lib::q_smil_time::time_type lib::q_smil_time::to_node(const lib::time_node *n) {
-	typedef lib::node_navigator<const lib::time_node> const_nnhelper;
-	const lib::time_node *ca = const_nnhelper::get_common_ancestor(n, first);
+q_smil_time::time_type q_smil_time::to_node(const time_node *n) {
+	typedef lib::node_navigator<const time_node> const_nnhelper;
+	const time_node *ca = const_nnhelper::get_common_ancestor(n, first);
 	to_ancestor(ca);
 	return to_descendent(n);
 }
 
-lib::q_smil_time::time_type lib::q_smil_time::to_doc() {
+q_smil_time::time_type q_smil_time::to_doc() {
 	while(up());
 	return second;
 }
 
-bool lib::q_smil_time::up() {
+bool q_smil_time::up() {
 	if(first->up()) {
 		second += time_type(first->get_rad()) + first->get_interval().begin;
 		first = first->up();
@@ -107,25 +108,25 @@ bool lib::q_smil_time::up() {
 	return first->up() != 0;
 }
 	
-void lib::q_smil_time::down(const lib::time_node *child) {
+void q_smil_time::down(const time_node *child) {
 	first = child;
 	second -= time_type(first->get_rad()) + first->get_interval().begin;
 }
 
-lib::q_smil_time::time_type 
-lib::q_smil_time::as_node_time(const time_node *n) const {
+q_smil_time::time_type 
+q_smil_time::as_node_time(const time_node *n) const {
 	q_smil_time qt = *this;
 	return qt.to_node(n);
 }
 
-lib::q_smil_time::time_type 
-lib::q_smil_time::as_doc_time() const {
+q_smil_time::time_type 
+q_smil_time::as_doc_time() const {
 	q_smil_time qt = *this;
 	return qt.to_doc();
 }
 
-lib::q_smil_time::time_type 
-lib::q_smil_time::as_time_down_to(const time_node *n) const {
+q_smil_time::time_type 
+q_smil_time::as_time_down_to(const time_node *n) const {
 	if(first == n->up()) {
 		// down from parent
 		return second - time_type(n->get_rad()) - n->get_interval().begin;
@@ -137,14 +138,14 @@ lib::q_smil_time::as_time_down_to(const time_node *n) const {
 	return qt.to_descendent(n);
 }
 
-lib::q_smil_time 
-lib::q_smil_time::as_qtime_down_to(const time_node *n) const {
+q_smil_time 
+q_smil_time::as_qtime_down_to(const time_node *n) const {
 	time_type t = as_time_down_to(n);
 	return q_smil_time(n, t);
 }
 
 //static 
-lib::q_smil_time::time_type 
-lib::q_smil_time::to_sync_time(const time_node *n, const time_type& n_simple) {
+q_smil_time::time_type 
+q_smil_time::to_sync_time(const time_node *n, const time_type& n_simple) {
 	return n_simple + time_type(n->get_rad()) + n->get_interval().begin;
 }

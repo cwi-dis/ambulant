@@ -71,9 +71,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
 class lib::document;
 class lib::node;
 class lib::logger;
@@ -82,15 +79,15 @@ class common::renderer_factory;
 class common::active_basic_renderer;
 class common::layout_manager;
 
-class smil_player : public abstract_player, public time_node_context, public playable_events {
+class smil_player : public common::abstract_player, public time_node_context, public common::playable_events {
   public:
 	typedef time_traits::value_type time_value_type;
 	
 	smil_player(lib::document *doc, common::window_factory *wf, common::renderer_factory *rf);
 	~smil_player();
 		
-	timer* get_timer() { return m_timer;}
-	event_processor* get_evp() { return m_event_processor;}
+	lib::timer* get_timer() { return m_timer;}
+	lib::event_processor* get_evp() { return m_event_processor;}
 	
 	// Builds or re-builds the layout
 	// The layout may need to be rebuild when the
@@ -115,9 +112,9 @@ class smil_player : public abstract_player, public time_node_context, public pla
 	// Time node context: Services
 	
 	virtual time_traits::value_type elapsed() const { return m_timer->elapsed();}
-	virtual void schedule_event(event *ev, time_type t, event_priority ep = ep_low);
-	virtual void cancel_event(event *ev, event_priority ep = ep_low) 
-		{ m_event_processor->cancel_event(ev, (event_processor::event_priority)ep);}
+	virtual void schedule_event(lib::event *ev, time_type t, lib::event_priority ep = ep_low);
+	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
+		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
 	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
 	
 	//////////////////////
@@ -150,19 +147,19 @@ class smil_player : public abstract_player, public time_node_context, public pla
 	virtual void on_char(int ch);
 	
   private:
-	active_basic_renderer *create_renderer(const lib::node *n); 
-	void destroy_renderer(active_basic_renderer *r, const lib::node *n); 
-	active_basic_renderer *get_renderer(const lib::node *n);
-	document *m_doc;
-	window_factory *m_wf;
-	renderer_factory *m_rf;
+	common::active_basic_renderer *create_renderer(const lib::node *n); 
+	void destroy_renderer(common::active_basic_renderer *r, const lib::node *n); 
+	common::active_basic_renderer *get_renderer(const lib::node *n);
+	lib::document *m_doc;
+	common::window_factory *m_wf;
+	common::renderer_factory *m_rf;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
-	layout_manager *m_layout_manager;
-	timer *m_timer;
-	event_processor *m_event_processor;	
-	std::map<const lib::node*, active_basic_renderer *> m_renderers;
-	logger *m_logger;
+	common::layout_manager *m_layout_manager;
+	lib::timer *m_timer;
+	lib::event_processor *m_event_processor;	
+	std::map<const lib::node*, common::active_basic_renderer *> m_renderers;
+	lib::logger *m_logger;
 };
 
 } // namespace smil2

@@ -61,12 +61,9 @@ namespace ambulant {
 
 namespace smil2 {
 
-using namespace lib;
-using namespace common;
-
-class node;
-class logger;
-class document;
+class lib::node;
+class lib::logger;
+class lib::document;
 
 struct custom_test {
 	std::string id;
@@ -78,14 +75,14 @@ struct custom_test {
 
 class test_attrs {
   public:
-	test_attrs(const node *n);
+	test_attrs(const lib::node *n);
 	
 	// Returns true when the target node is selected.
 	bool selected() const;
 	
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
-	static void read_custom_attributes(const document *doc);
+	static void read_custom_attributes(const lib::document *doc);
 	
   private:
 	typedef std::string::size_type size_type;
@@ -101,12 +98,12 @@ class test_attrs {
 	bool test_custom_attribute(const char *value) const;
 	
 	// the target node
-	const node *m_node;
+	const lib::node *m_node;
 	
 	// tracing
 	std::string m_id;
 	std::string m_tag;
-	logger *m_logger;
+	lib::logger *m_logger;
 };
 
 } // namespace smil2

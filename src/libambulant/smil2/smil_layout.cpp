@@ -67,13 +67,14 @@
 #endif
 
 using namespace ambulant;
+using namespace smil2;
 
 // Helper function: get region_dim value from an attribute
-static lib::region_dim
-get_regiondim_attr(const lib::region_node *rn, char *attrname)
+static common::region_dim
+get_regiondim_attr(const common::region_node *rn, char *attrname)
 {
 	const char *attrvalue = rn->get_attribute(attrname);
-	lib::region_dim rd;
+	common::region_dim rd;
 	if (attrvalue == NULL || *attrvalue == '\0') {
 		// pass: region_dim are initialized as auto
 	} else {
@@ -93,8 +94,8 @@ get_regiondim_attr(const lib::region_node *rn, char *attrname)
 	return rd;
 }
 
-lib::smil_layout_manager::smil_layout_manager(window_factory *wf,lib::document *doc)
-:   m_schema(lib::schema::get_instance())
+smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::document *doc)
+:   m_schema(common::schema::get_instance())
 {
 	fix_document_layout(doc);
 	const lib::node *layout_root = doc->get_layout();
@@ -112,16 +113,16 @@ lib::smil_layout_manager::smil_layout_manager(window_factory *wf,lib::document *
 	}
 }
 
-lib::smil_layout_manager::~smil_layout_manager()
+smil_layout_manager::~smil_layout_manager()
 {
 	m_schema = NULL;
-	std::vector<passive_root_layout*>::iterator i;
+	std::vector<common::passive_root_layout*>::iterator i;
 	for (i=m_rootlayouts.begin(); i != m_rootlayouts.end(); i++)
 		delete (*i);
 }
 
 void
-lib::smil_layout_manager::fix_document_layout(lib::document *doc)
+smil_layout_manager::fix_document_layout(lib::document *doc)
 {
 	// If we have a layout section already we're done
 	if (doc->get_layout()) {
@@ -151,10 +152,10 @@ lib::smil_layout_manager::fix_document_layout(lib::document *doc)
 			level++;
 			if (level == 0) continue; // Skip layout section itself
 			assert(pair.second->is_region_node());
-			lib::region_node *rn = static_cast<lib::region_node *>(pair.second);
+			common::region_node *rn = static_cast<common::region_node *>(pair.second);
 			// For every node in the layout section we fill in the dimensions
 			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: adjusting %s %s", rn->get_local_name().c_str(), rn->get_attribute("id"));
-			region_dim_spec& rds = rn->rds();
+			common::region_dim_spec& rds = rn->rds();
 			rds.left = get_regiondim_attr(rn, "left");
 			rds.width = get_regiondim_attr(rn, "width");
 			rds.right = get_regiondim_attr(rn, "right");
@@ -172,27 +173,27 @@ lib::smil_layout_manager::fix_document_layout(lib::document *doc)
 #endif
 			
 			// Next, we set the inheritance
-			layout_type tp = m_schema->get_layout_type(rn->get_qname());
-			if (tp == l_rootlayout || tp == l_toplayout) {
-				rn->set_dimension_inheritance(di_none);
+			common::layout_type tp = m_schema->get_layout_type(rn->get_qname());
+			if (tp == common::l_rootlayout || tp == common::l_toplayout) {
+				rn->set_dimension_inheritance(common::di_none);
 			} else if (level == 1) {
 				// Toplevel region node
-				rn->set_dimension_inheritance(di_rootlayout);
+				rn->set_dimension_inheritance(common::di_rootlayout);
 			} else {
 				// lower-level region node
-				rn->set_dimension_inheritance(di_parent);
+				rn->set_dimension_inheritance(common::di_parent);
 			}
 			// Next we set background color
 			const char *bgcolor_attr = rn->get_attribute("backgroundColor");
 			if (bgcolor_attr == NULL) bgcolor_attr = rn->get_attribute("background-color");
 			if (bgcolor_attr == NULL) bgcolor_attr = "transparent";
-			color_t bgcolor = to_color(0, 0, 0);
+			lib::color_t bgcolor = lib::to_color(0, 0, 0);
 			bool transparent = true, inherit = false;
 			if (strcmp(bgcolor_attr, "transparent") == 0) transparent = true;
 			else if (strcmp(bgcolor_attr, "inherit") == 0) inherit = true;
-			else if (!is_color(bgcolor_attr)) lib::logger::get_logger()->error("Invalid color: %s", bgcolor_attr);
+			else if (!lib::is_color(bgcolor_attr)) lib::logger::get_logger()->error("Invalid color: %s", bgcolor_attr);
 			else {
-				bgcolor = to_color(bgcolor_attr);
+				bgcolor = lib::to_color(bgcolor_attr);
 				transparent = false;
 			}
 			AM_DBG lib::logger::get_logger()->trace("Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
@@ -206,13 +207,13 @@ lib::smil_layout_manager::fix_document_layout(lib::document *doc)
 			}
 			// And fit
 			const char *fit_attr = rn->get_attribute("fit");
-			fit_t fit = fit_hidden;
+			common::fit_t fit = common::fit_hidden;
 			if (fit_attr) {
-				if (strcmp(fit_attr, "fill") == 0) fit = fit_fill;
-				else if (strcmp(fit_attr, "hidden") == 0) fit = fit_hidden;
-				else if (strcmp(fit_attr, "meet") == 0) fit = fit_meet;
-				else if (strcmp(fit_attr, "scroll") == 0) fit = fit_scroll;
-				else if (strcmp(fit_attr, "slice") == 0) fit = fit_slice;
+				if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
+				else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;
+				else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
+				else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
+				else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
 				else lib::logger::get_logger()->error("Invalid fit value: %s", fit_attr);
 			}
 			rn->set_fit(fit);
@@ -221,7 +222,7 @@ lib::smil_layout_manager::fix_document_layout(lib::document *doc)
 			// we interpret missing z-index as zero, but the standard says "auto" which is
 			// slightly different.
 			const char *z_attr = rn->get_attribute("z-index");
-			zindex_t z = 0;
+			common::zindex_t z = 0;
 			if (z_attr) z = strtol(z_attr, NULL, 10);
 			AM_DBG lib::logger::get_logger()->trace("z-index=%d", z);
 			rn->set_zindex(z);
@@ -237,8 +238,8 @@ lib::smil_layout_manager::fix_document_layout(lib::document *doc)
 }
 
 void
-lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node *layout_root) {
-	std::stack<lib::passive_region*> stack;
+smil_layout_manager::build_layout_tree(common::window_factory *wf, const lib::node *layout_root) {
+	std::stack<common::passive_region*> stack;
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = layout_root->end();
 	
@@ -246,11 +247,11 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 	// First we check for a root-layout node. This will be used as the parent
 	// of toplevel region nodes. If there is no root-layout but there are
 	// toplevel region nodes we will create it later.
-	lib::passive_root_layout *root_layout = NULL;
+	common::passive_root_layout *root_layout = NULL;
 	const lib::node *rlnode = layout_root->get_first_child("root-layout");
 	if (rlnode) {
 		assert(rlnode->is_region_node());
-		const lib::region_node *rrlnode = static_cast<const lib::region_node *>(rlnode);
+		const common::region_node *rrlnode = static_cast<const common::region_node *>(rlnode);
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create root_layout");
 		root_layout = create_top_region(wf, rrlnode);
 	}
@@ -261,8 +262,8 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 		std::pair<bool, const lib::node*> pair = *it;
 		const lib::node *n = pair.second;
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: examining %s node", n->get_qname().second.c_str());
-		lib::layout_type tag = m_schema->get_layout_type(n->get_qname());
-		if(tag == l_none || tag == l_rootlayout) {
+		common::layout_type tag = m_schema->get_layout_type(n->get_qname());
+		if(tag == common::l_none || tag == common::l_rootlayout) {
 			// XXXX Will need to handle switch here
 			continue;
 		}
@@ -270,8 +271,8 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 			// On the way down we create the regions and remember
 			// them
 			assert(n->is_region_node());
-			const lib::region_node *rn = static_cast<const lib::region_node *>(n);
-			lib::passive_region *rgn;
+			const common::region_node *rn = static_cast<const common::region_node *>(n);
+			common::passive_region *rgn;
 			const char *pid = n->get_attribute("id");
 			std::string ident = "<unnamed>";
 			if(pid) {
@@ -279,20 +280,20 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 			}
 			// Test that rootlayouts are correctly nested.
 			if (!stack.empty()) {
-				if (tag != l_region) {
+				if (tag != common::l_region) {
 					lib::logger::get_logger()->error("topLayout element inside other element: %s", ident.c_str());
-					tag = l_region;
+					tag = common::l_region;
 				}
 			}
 			// Create the region or the root-layout
-			if (tag == l_toplayout) {	
+			if (tag == common::l_toplayout) {	
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create topLayout");
-				lib::passive_root_layout *rootrgn = create_top_region(wf, rn);
+				common::passive_root_layout *rootrgn = create_top_region(wf, rn);
 				rgn = rootrgn;
-			} else if (tag == l_region && !stack.empty()) {
-				lib::passive_region *parent = stack.top();
+			} else if (tag == common::l_region && !stack.empty()) {
+				common::passive_region *parent = stack.top();
 				rgn = parent->subregion(rn);
-			} else if (tag == l_region && stack.empty()) {
+			} else if (tag == common::l_region && stack.empty()) {
 				// Create root-layout if it doesn't exist yet
 				if (root_layout == NULL) {
 					AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::build_layout_tree: create default root-layout");
@@ -315,7 +316,7 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: mapping regionName %s", pname);
 				std::string name;
 				name = pname;
-				m_name2region.insert(std::pair<std::string, passive_region*>(name, rgn));
+				m_name2region.insert(std::pair<std::string, common::passive_region*>(name, rgn));
 			}
 			// Finally push on to the stack for reference by child nodes
 			stack.push(rgn);
@@ -326,23 +327,23 @@ lib::smil_layout_manager::build_layout_tree(window_factory *wf, const lib::node 
 	}
 }
 
-lib::passive_root_layout *
-lib::smil_layout_manager::create_top_region(window_factory *wf, const lib::region_node *rn)
+common::passive_root_layout *
+smil_layout_manager::create_top_region(common::window_factory *wf, const common::region_node *rn)
 {
-	lib::size size = lib::size(lib::default_layout_width, lib::default_layout_height);
+	lib::size size = lib::size(common::default_layout_width, common::default_layout_height);
 	if (rn) {
-		screen_rect<int> bounds = rn->get_screen_rect();
+		lib::screen_rect<int> bounds = rn->get_screen_rect();
 		size = lib::size(bounds.right(), bounds.bottom());
 	}
 	AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::create_top_region: size=(%d, %d)", size.w, size.h);
-	lib::passive_root_layout *rootrgn;
-	rootrgn = new passive_root_layout(rn, size, wf);
+	common::passive_root_layout *rootrgn;
+	rootrgn = new common::passive_root_layout(rn, size, wf);
 	m_rootlayouts.push_back(rootrgn);
 	return rootrgn;
 }
 
-lib::abstract_rendering_surface *
-lib::smil_layout_manager::get_rendering_surface(const node *n) {
+common::abstract_rendering_surface *
+smil_layout_manager::get_rendering_surface(const lib::node *n) {
 	// XXXX This code is blissfully unaware of subregion positioning right now.
 	const char *prname = n->get_attribute("region");
 	const char *nid = n->get_attribute("id");
@@ -353,14 +354,14 @@ lib::smil_layout_manager::get_rendering_surface(const node *n) {
 		return get_default_rendering_surface(n);
 	}
 	std::string rname = prname;
-	std::map<std::string, passive_region*>::size_type namecount = m_name2region.count(rname);
+	std::map<std::string, common::passive_region*>::size_type namecount = m_name2region.count(rname);
 	if (namecount > 1)
 		lib::logger::get_logger()->warn("smil_layout_manager::get_rendering_surface(): Using first region %s only", prname);
 	if (namecount > 0) {
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_rendering_surface(): matched %s by regionName", prname);
 		return (*m_name2region.find(rname)).second->activate(n);
 	}
-	std::multimap<std::string, passive_region*>::size_type idcount = m_id2region.count(rname);
+	std::multimap<std::string, common::passive_region*>::size_type idcount = m_id2region.count(rname);
 	if (idcount > 0) {
 		AM_DBG lib::logger::get_logger()->trace("smil_layout_manager::get_rendering_surface(): matched %s by id", prname);
 		return m_id2region[rname]->activate(n);
@@ -369,8 +370,8 @@ lib::smil_layout_manager::get_rendering_surface(const node *n) {
 	return get_default_rendering_surface(n);
 }
 
-lib::abstract_rendering_surface *
-lib::smil_layout_manager::get_default_rendering_surface(const node *n) {
+common::abstract_rendering_surface *
+smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	const char *nid = n->get_attribute("id");
 	lib::logger::get_logger()->warn("Returning default rendering surface for node %s", (nid?nid:""));
 	return m_rootlayouts[0]->activate(n);
