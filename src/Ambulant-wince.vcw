@@ -1,5 +1,20 @@
-Microsoft eMbedded Visual Tools Workspace File, Format Version 4.00
+Microsoft eMbedded Visual Tools Workspace File, Format Version 3.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "AmbulantPlayer"=.\player_wince\AmbulantPlayer.vcp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libambulant_wince
+    End Project Dependency
+}}}
 
 ###############################################################################
 
@@ -11,21 +26,6 @@ Package=<5>
 
 Package=<4>
 {{{
-}}}
-
-###############################################################################
-
-Project: "player_wince"=.\player_wince\player_wince.vcp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libambulant_wince
-    End Project Dependency
 }}}
 
 ###############################################################################
