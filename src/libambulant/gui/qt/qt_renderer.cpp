@@ -51,6 +51,7 @@
 #include "ambulant/gui/qt/qt_fill.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/gui/none/none_mouse.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -169,7 +170,7 @@ qt_window_factory::new_mouse_region() {
 	lib::logger::get_logger()->error(
 		"qt_window_factory::new_mouse_region"
 		" needs to be implemented");
-	return NULL;
+	return new gui::none::none_mouse_region();
 }
 
 common::renderer *
