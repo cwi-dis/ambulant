@@ -106,7 +106,7 @@ void lib::show_message(const char *format, ...) {
 	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	va_end(args);
-	MessageBox(NULL, textptr(buf), textptr("AmbulantPlayer"), MB_OK);
+	MessageBox(NULL, textptr(buf), text_str("AmbulantPlayer"), MB_OK);
 	delete[] buf;
 }
 #endif
@@ -115,7 +115,8 @@ bool lib::win32::file_exists(const std::string& fn) {
 	WIN32_FIND_DATA fd;
 	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
 	bool exists = false;
-	HANDLE hFind = FindFirstFile(fn.c_str(), &fd); 
+	textptr tp(fn.c_str());
+	HANDLE hFind = FindFirstFile(tp, &fd); 
 	if(hFind != INVALID_HANDLE_VALUE){
 		FindClose(hFind);
 		hFind = INVALID_HANDLE_VALUE;

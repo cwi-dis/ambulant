@@ -66,15 +66,20 @@ lib::win32::memfile::~memfile() {
 // static 
 bool lib::win32::memfile::exists(const net::url& u) {
 	if(!u.is_local_file()) return true;
-	HANDLE hf = CreateFile(u.get_file().c_str(),  
+	std::string file = u.get_file();
+	textptr tp(file.c_str());
+	HANDLE hf = CreateFile(tp,  
 		GENERIC_READ,  
 		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
 		0,  // lpSecurityAttributes 
 		OPEN_EXISTING,  
 		FILE_ATTRIBUTE_READONLY,  
 		NULL); 
-	if(hf == INVALID_HANDLE_VALUE)
+	if(hf == INVALID_HANDLE_VALUE) {
+		lib::logger::get_logger()->show("Failed to open file %s", 
+			u.get_file().c_str());
 		return false;
+	}
 	CloseHandle(hf);
 	return true;
 }
@@ -85,7 +90,8 @@ bool lib::win32::memfile::read() {
 }
 
 bool lib::win32::memfile::read_local(const std::string& fn) {
-	HANDLE hf = CreateFile(fn.c_str(),  
+	textptr tp(fn.c_str());
+	HANDLE hf = CreateFile(tp,  
 		GENERIC_READ,  
 		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
 		0,  // lpSecurityAttributes 
@@ -93,7 +99,7 @@ bool lib::win32::memfile::read_local(const std::string& fn) {
 		FILE_ATTRIBUTE_READONLY,  
 		NULL); 
 	if(hf == INVALID_HANDLE_VALUE) {
-		lib::logger::get_logger()->show("Failed to open file %s", textptr(fn.c_str()));
+		lib::logger::get_logger()->show("Failed to open file %s", fn.c_str());
 		return false;
 	}
 	const int buf_size = 1024;
@@ -109,16 +115,18 @@ bool lib::win32::memfile::read_local(const std::string& fn) {
 }
 
 bool lib::win32::memfile::read_remote(const std::string& urlstr) {
-	HINTERNET hinet = InternetOpen("AmbulantPlayer", 
+	HINTERNET hinet = InternetOpen(text_str("AmbulantPlayer"), 
 		INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
 	if(!hinet) {
 		win_report_last_error("InternetOpen()");
 		return false;
 	}
 	
-	char urlbuf[512];
+	text_char urlbuf[512];
 	DWORD nch = 512;
-	BOOL bres = InternetCanonicalizeUrl(urlstr.c_str(), urlbuf , &nch, ICU_BROWSER_MODE);
+	
+	textptr tp(urlstr.c_str());
+	BOOL bres = InternetCanonicalizeUrl(tp, urlbuf , &nch, ICU_BROWSER_MODE);
 	if(!bres) {
 		win_report_last_error("InternetCanonicalizeUrl()");
 		InternetCloseHandle(hinet); 

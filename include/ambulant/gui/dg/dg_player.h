@@ -105,7 +105,7 @@ class dg_player :
 	public common::embedder {
 	
   public:
-	dg_player(const char *url);
+	dg_player(const net::url& u);
 	~dg_player();
 	
 	////////////////////
@@ -160,6 +160,7 @@ class dg_player :
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
+	const net::url& get_url() const { return m_url;}
 	
 	common::window_factory *get_window_factory() { return this;}
 	common::playable_factory *get_playable_factory() {return this;}
@@ -171,7 +172,7 @@ class dg_player :
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 
-	std::basic_string<char> m_url;
+	net::url m_url;
 	smil2::smil_player *m_player;
 	
 	lib::timer *m_timer;

@@ -140,7 +140,6 @@ class memfile {
   private:	
 	bool read_local(const std::string& fn);
 	bool read_remote(const std::string& urlstr);
-	bool read_remote();
 	void throw_range_error();
 	net::url m_url;
 	databuffer m_buffer;

@@ -82,18 +82,21 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	m_image(0), m_window(window) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::ctr(0x%x)", this);
-	std::string rurl = m_node->get_url("src");
-	const lib::node_context *doc = m_node->get_context();
-	std::string url = doc->resolve_url(m_node, rurl);
+	net::url url = m_node->get_url("src");
+	if(!window) {
+		lib::logger::get_logger()->show("get_window() failed. [%s]",
+			url.get_url().c_str());
+		return;
+	}
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();
-	if(lib::memfile::exists(url)) {
-		//lib::logger::get_logger()->show("Reading image: [%s]", url.c_str());
-		m_image = new image_renderer(url, v);
-	} else {
+	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
-			url.c_str());
+			url.get_url().c_str());
+		return;
 	}
+	m_image = new image_renderer(url, v);
+	
 }
 
 gui::dg::dg_img_renderer::~dg_img_renderer() {

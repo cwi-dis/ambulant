@@ -82,14 +82,12 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 	m_worker(worker) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_audio_renderer(0x%x)", this);
-	std::string rurl = m_node->get_url("src");
-	const lib::node_context *doc = m_node->get_context();
-	std::string url = doc->resolve_url(m_node, rurl);
-	if(lib::starts_with(url, "http://") || lib::memfile::exists(url))
-		m_player = new gui::dg::audio_player(url);
+	net::url url = m_node->get_url("src");
+	if(url.is_local_file() && lib::win32::file_exists(url.get_file()))
+		m_player = new gui::dg::audio_player(url.get_file());
 	else {
-		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
-			url.c_str());
+		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
+			url.get_url().c_str());
 	}
 }
 

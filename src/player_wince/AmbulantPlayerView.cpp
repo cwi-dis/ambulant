@@ -17,8 +17,8 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/win32/win32_fstream.h"
 #include "ambulant/smil2/test_attrs.h"
+#include "ambulant/net/url.h"
 
-#pragma comment (lib,"mp3lib.lib")
 #pragma comment (lib,"mp3lib.lib")
 
 #ifdef _DEBUG
@@ -47,8 +47,8 @@ using namespace ambulant;
 typedef gui::dg::dg_player gui_player;
 
 static gui_player* 
-create_player_instance(const TCHAR *url) {
-	return new gui_player(lib::textptr(url).str());
+create_player_instance(const net::url& u) {
+	return new gui_player(u);
 }
 
 void lib::show_message(const char *format, ...) {
@@ -58,7 +58,7 @@ void lib::show_message(const char *format, ...) {
 	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	va_end(args);
-	MessageBox(s_hwnd, textptr(buf), textptr("AmbulantPlayer"), MB_OK);
+	MessageBox(s_hwnd, textptr(buf), text_str("AmbulantPlayer"), MB_OK);
 	delete[] buf;
 }
 
@@ -171,7 +171,10 @@ void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
 		dummy->stop();
 		delete dummy;
 	}
-	dummy = create_player_instance(lib::textptr(lpszPathName));
+	lib::textptr tp(lpszPathName);
+	net::url u;
+	set_url_from_spec(u, (const char*) tp);
+	dummy = create_player_instance(u);
 	m_curDocFilename = lpszPathName;
 	player = dummy;
 	if(m_autoplay)
@@ -211,13 +214,14 @@ void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI)
 void CAmbulantPlayerView::OnStop() 
 {
 	if(player) {
+		net::url u = player->get_url();
 		gui_player *dummy = player;
 		player = 0;
 		if(dummy) {
 			dummy->stop();
 			delete dummy;
 		}
-		dummy = create_player_instance(lib::textptr(LPCTSTR(m_curDocFilename)));
+		dummy = create_player_instance(u);
 		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0); 
 		InvalidateRect(NULL);
