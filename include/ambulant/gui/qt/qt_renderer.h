@@ -81,7 +81,7 @@ class ambulant_qt_window : public common::abstract_window {
 	~ambulant_qt_window();
 			   
 	void set_ambulant_widget(qt_ambulant_widget* qaw);
-	qt_ambulant_widget* ambulant_widget();
+	QPixmap* ambulant_pixmap();
 
 	void need_redraw(const lib::screen_rect<int> &r);
 	void redraw(const lib::screen_rect<int> &r);
@@ -90,6 +90,7 @@ class ambulant_qt_window : public common::abstract_window {
 
   private:
 	qt_ambulant_widget* m_ambulant_widget;
+	QPixmap* m_pixmap;
 };  // class ambulant_qt_window
 
 class qt_ambulant_widget : public QWidget {

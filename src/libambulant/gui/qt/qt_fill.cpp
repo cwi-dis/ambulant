@@ -68,7 +68,7 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPainter paint;
-	paint.begin(aqw->ambulant_widget());
+	paint.begin(aqw->ambulant_pixmap());
 	// background drawing
 	if (info && !info->get_transparent()) {
 	// First find our whole area to be cleared to background color
@@ -109,7 +109,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
-		paint.begin(aqw->ambulant_widget());
+		paint.begin(aqw->ambulant_pixmap());
 		lib::screen_rect<int> dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),

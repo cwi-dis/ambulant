@@ -59,6 +59,8 @@
 #else /*QT_NO_FILEDIALOG*/
   /* Assume embedded Qt */
 #include <qpe/qpeapplication.h>
+#include <qpe/applnk.h>
+#include <qpe/filemanager.h>
 #endif/*QT_NO_FILEDIALOG*/
 #include <qdial.h>
 #include <qfiledialog.h>
@@ -122,6 +124,8 @@ class qt_gui : public QWidget {
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	QString      m_smilfilename;
+
+	void	     fileError(QString smilfilename);
 
 public slots:
 	void slot_play();

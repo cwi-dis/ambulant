@@ -77,20 +77,23 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   lib::screen_rect<int>* bounds,
 	   common::surface_source *region)
 :	common::abstract_window(region),
-	m_ambulant_widget(NULL)
+	m_ambulant_widget(NULL),
+	m_pixmap(NULL)
 {
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
 }
 
 ambulant_qt_window::~ambulant_qt_window()
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window(0x%x): m_ambulant_widget=0x%x",this,m_ambulant_widget);
+	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window(0x%x): m_ambulant_widget=0x%x, m_pixmap=0x%x",this,m_ambulant_widget, m_pixmap);
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
 		m_ambulant_widget->set_qt_window(NULL);
 		delete m_ambulant_widget;
 		m_ambulant_widget = NULL;
+		delete m_pixmap;
+		m_pixmap = NULL;
 	}
 }
 	
@@ -102,13 +105,16 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = qaw;
+	QSize size = qaw->frameSize();
+	m_pixmap = new QPixmap(size.width(), size.height());
 }
 
-qt_ambulant_widget*
-ambulant_qt_window::ambulant_widget()
+QPixmap*
+ambulant_qt_window::ambulant_pixmap()
 {
-	//AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_widget(0x%x)",(void *)m_ambulant_widget);
-	return m_ambulant_widget;
+	//AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x)",(void *)m_ambulant_widget);
+//	return m_ambulant_widget;
+        return m_pixmap;
 }
 
 void
@@ -119,12 +125,11 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 		lib::logger::get_logger()->error("ambulant_qt_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
-#if 1
-	m_ambulant_widget->repaint(r.left(), r.top(), 
-				   r.width(), r.height(),
-				   false);
+#if 0
+	m_ambulant_widget->repaint(r.left(), r.top(), r.width(), r.height(), false);
 #else
 	m_ambulant_widget->update(r.left(), r.top(),  r.width(), r.height());
+	qApp->processEvents();
 #endif
 }
   
@@ -140,6 +145,7 @@ ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_region->redraw(r, this);
+	bitBlt(m_ambulant_widget, 0, 0, m_pixmap);
 }
 
 void
@@ -258,6 +264,7 @@ qt_window_factory::new_window (const std::string &name,
  	ambulant_qt_window * aqw = new ambulant_qt_window(name, r, region);
 	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, r, m_parent_widget);
 #ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
+	qaw->setBackgroundMode(Qt::NoBackground);
 	if (qApp == NULL || qApp->mainWidget() == NULL) {
 		lib::logger::get_logger()->error("qt_window_factory::new_window (0x%x) %s",
 			(void*) this,
@@ -265,6 +272,7 @@ qt_window_factory::new_window (const std::string &name,
 	}
 	qApp->mainWidget()->resize(bounds.w + m_p.x, bounds.h + m_p.y);
 #else	/*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
+	qaw->setBackgroundMode(QWidget::NoBackground);
 	/* No resize implemented for embedded Qt */
 #endif	/*QT_NO_FILEDIALOG*/
 	aqw->set_ambulant_widget(qaw);

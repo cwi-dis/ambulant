@@ -121,7 +121,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw: info=0x%x", info);
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
-	paint.begin(aqw->ambulant_widget());
+	paint.begin(aqw->ambulant_pixmap());
 	// background drawing
 	//if (0) {
 	if (info && !info->get_transparent()) {
@@ -146,7 +146,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	}
 //} // if(0)
 	if (m_image_loaded) {
-		QSize qsize = aqw->ambulant_widget()->frameSize();
+		QSize qsize = aqw->ambulant_pixmap()->size();
 		lib::size srcsize = lib::size(qsize.width(), qsize.height());
 		lib::rect srcrect = lib::rect(lib::size(0,0));
 		lib::screen_rect<int> dstrect = m_dest->get_fit_rect(

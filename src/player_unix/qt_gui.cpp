@@ -137,25 +137,33 @@ qt_gui::~qt_gui() {
 	setCaption(QString::null);
 }
 
-void qt_gui::slot_about() {
+void 
+qt_gui::slot_about() {
 	QMessageBox::information(this, m_programfilename, about_text,
 				 QMessageBox::Ok | QMessageBox::Default
 				 );
 }
 
-bool checkFilename(QString filename, int mode) {
+bool 
+checkFilename(QString filename, int mode) {
 	QFile* file = new QFile(filename);
 	return file->open(mode);
 }
 
-bool qt_gui::openSMILfile(QString smilfilename, int mode) {
+void
+qt_gui::fileError(QString smilfilename) {
+ 	char buf[1024];
+	sprintf(buf, "Cannot open file \"%s\":\n%s\n",
+		(const char*) smilfilename, strerror(errno));
+	QMessageBox::information(this, m_programfilename, buf);
+}
+
+bool 
+qt_gui::openSMILfile(QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
 	if (! checkFilename(smilfilename, mode)) {
-		char buf[1024];
-		sprintf(buf, "Cannot open file \"%s\":\n%s\n",
-			(const char*) smilfilename, strerror(errno));
-		QMessageBox::information(this, m_programfilename, buf);
+		fileError(smilfilename);
 		return false;
 	}
 	char* filename = strdup(smilfilename);
@@ -183,7 +191,8 @@ bool qt_gui::openSMILfile(QString smilfilename, int mode) {
 	return true;
 }
 
-void qt_gui::slot_open() {
+void 
+qt_gui::slot_open() {
 	QString smilfilename =
 #ifndef QT_NO_FILEDIALOG
 		QFileDialog::getOpenFileName(
@@ -199,7 +208,8 @@ void qt_gui::slot_open() {
 	openSMILfile(smilfilename, IO_ReadOnly);
 }
 
-void qt_gui::slot_player_done() {
+void 
+qt_gui::slot_player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_player_done");
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
@@ -208,17 +218,20 @@ void qt_gui::slot_player_done() {
 			    this, SLOT(slot_player_done()));
 }
 
-void qt_gui::need_redraw (const void* r, void* w, const void* pt) {
+void 
+qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
 	(void *)this,r);
 }
 
-void qt_gui::player_done() {
+void 
+qt_gui::player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "player_done");
 	emit signal_player_done();
 }
 
-void qt_gui::slot_play() {
+void 
+qt_gui::slot_play() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
 	if (m_smilfilename == NULL || m_mainloop == NULL) {
 		QMessageBox::information(
@@ -249,7 +262,8 @@ void qt_gui::slot_play() {
 	}
 }
 
-void qt_gui::slot_pause() {
+void 
+qt_gui::slot_pause() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_pause");
 	if (! m_pausing) {
 		m_pausing = true;
@@ -259,7 +273,8 @@ void qt_gui::slot_pause() {
 	}
 }
 
-void qt_gui::slot_stop() {
+void 
+qt_gui::slot_stop() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
 	m_mainloop->stop();
 	m_playmenu->setItemEnabled(m_pause_id, false);
@@ -267,7 +282,8 @@ void qt_gui::slot_stop() {
 	m_playing = false;
 }
 
-void qt_gui::slot_quit() {
+void
+qt_gui::slot_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
 	if (m_mainloop)	{
 	  m_mainloop->stop();
@@ -278,7 +294,9 @@ void qt_gui::slot_quit() {
 	qApp->quit();
 }
 
-int main (int argc, char*argv[]) {
+int
+main (int argc, char*argv[]) {
+	FILE* DBG = fopen("/tmp/ambulant.dbg", "w");
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
@@ -289,17 +307,27 @@ int main (int argc, char*argv[]) {
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);
-//	mywidget->setBackgroundMode(Qt::NoBackground);
-	/* Fire */
+	mywidget->setBackgroundMode(Qt::NoBackground);
 	myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
+//	mywidget->setBackgroundMode(QWidget::NoBackground);
 	myapp.showMainWidget(mywidget);
 #endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
-	myapp.processEvents();
+	
+	fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
 	if (argc > 1) {
-	    mywidget->openSMILfile(argv[1], IO_ReadOnly);
+	  char last[6];
+	  char*str = argv[argc-1];
+	  int len = strlen(str);
+	  strcpy(last, &str[len-5]);
+	  fprintf(DBG, "%s %s %d\n", str, last, strcpy(last, ".smil"));
+	  if (strcmp(last, ".smil") == 0
+	      || strcmp(&last[1], ".smi") == 0
+	      || strcmp(&last[1], ".sml") == 0) {
+	    mywidget->openSMILfile(argv[argc-1], IO_ReadOnly);
 	    mywidget->slot_play();
+	  }
 	}
 	myapp.exec();
 	std::cout << "Exiting program" << std::endl;
