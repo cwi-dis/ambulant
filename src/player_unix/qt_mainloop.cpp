@@ -50,6 +50,9 @@
 #ifdef WITH_ARTS
 #include <ambulant/gui/arts/arts.h>
 #endif
+#ifdef WITH_QSOUND
+#include <ambulant/gui/qsound/qsound_factory.h>
+#endif
 
 using namespace ambulant;
 using namespace lib;
@@ -68,6 +71,9 @@ qt_mainloop::run(void* view)
 #ifdef WITH_ARTS
     rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
 #endif    
+#ifdef WITH_QSOUND
+    rf->add_factory(new ambulant::gui::qsound::qsound_renderer_factory());
+#endif
     rf->add_factory(new qt_renderer_factory());
     wf = new qt_window_factory(qt_view);
  
