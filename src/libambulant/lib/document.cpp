@@ -137,13 +137,22 @@ lib::document::resolve_url(const node *n, const std::string& rurl) const {
 	// urls (with scheme and all) and relative urls if the document is
 	// a local file. 
 	net::url loc(rurl);
-	if (loc.get_protocol() != "") {
+	if (!loc.get_protocol().empty()) {
 		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", rurl.c_str());
 		return rurl;
 	}
 	if(m_src_base.get_protocol() == "file") {
 		std::string base_path = m_src_base.get_path();
+		
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+		// convert slash to backslash
+		std::list<std::string> c;
+		filesys::split(rurl, c, "/");
+		std::string nrurl = filesys::join(c, "\\");
+		return filesys::join(base_path, nrurl, file_separator.c_str());
+#else		
 		return filesys::join(base_path, rurl, file_separator.c_str());
+#endif
 	}
 		
 	return filesys::join(m_src_base.get_path(), rurl); 
@@ -161,9 +170,8 @@ void lib::document::build_id2node_map() {
 	lib::node::iterator it;
 	lib::node::iterator end = m_root->end();
 	for(it = m_root->begin(); it != end; it++) {
-		std::pair<bool, const lib::node*> pair = *it;
-		bool start_element = pair.first;
-		const lib::node *n = pair.second;
+		bool start_element = (*it).first;
+		const lib::node *n = (*it).second;
 		if(start_element) {
 			const char *pid = n->get_attribute("id");
 			if(pid) {
