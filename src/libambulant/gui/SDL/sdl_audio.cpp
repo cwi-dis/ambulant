@@ -232,13 +232,13 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::~sdl_active_audio_renderer(0x%x) m_audio_src=0x%x",  this, m_audio_src);		
-	if (m_audio_src) m_audio_src->release();
-	m_audio_src = NULL;
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
 		m_lock.enter();
 	}
+	if (m_audio_src) m_audio_src->release();
+	m_audio_src = NULL;
 	m_is_playing = false;
 	m_lock.leave();
 }
@@ -295,7 +295,7 @@ bool
 gui::sdl::sdl_active_audio_renderer::restart_audio_input()
 {
 	// private method - no need to lock.
-	if (m_audio_src->end_of_file()) {
+	if (!m_audio_src || m_audio_src->end_of_file()) {
 		// No more data.
 		return false;
 	}
