@@ -106,7 +106,7 @@ passive_region::~passive_region()
 {
 	AM_DBG lib::logger::get_logger()->trace("~passive_region(0x%x)", (void*)this);
 	m_parent = NULL;
-	std::list<renderer*>::reverse_iterator ari;
+	std::list<gui_events*>::reverse_iterator ari;
 	for(ari=m_renderers.rbegin(); ari!=m_renderers.rend(); ari++) {
 		delete (*ari);
 	}
@@ -150,7 +150,7 @@ passive_region::animated()
 }
 
 void
-passive_region::show(renderer *cur)
+passive_region::show(gui_events *cur)
 {
 
 	m_renderers.push_back(cur);
@@ -166,11 +166,11 @@ passive_region::show(renderer *cur)
 }
 
 void
-passive_region::renderer_done(renderer *cur)
+passive_region::renderer_done(gui_events *cur)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.renderer_done(0x%x, cur=0x%x)", (void *)this, (void*)cur);
 	
-	std::list<renderer*>::iterator i = m_renderers.end();
+	std::list<gui_events*>::iterator i = m_renderers.end();
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
 		if ((*i) == cur) break;
 	if (i == m_renderers.end()) {
@@ -210,7 +210,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
 	assert(m_renderers.size()<=1);
-	std::list<renderer*>::iterator ar;
+	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->redraw(our_rect, window);
@@ -284,7 +284,7 @@ passive_region::user_event(const lib::point &where, int what)
 	point our_point = where;
 	our_point -= m_outer_bounds.left_top();
 	
-	std::list<renderer*>::reverse_iterator ari;
+	std::list<gui_events*>::reverse_iterator ari;
 	for (ari=m_renderers.rbegin(); ari!=m_renderers.rend(); ari++) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
 		(*ari)->user_event(our_point, what);

@@ -149,8 +149,8 @@ class surface {
   public:
 	virtual ~surface() {};
 	
-	virtual void show(renderer *renderer) = 0;
-	virtual void renderer_done(renderer *renderer) = 0;
+	virtual void show(gui_events *renderer) = 0;
+	virtual void renderer_done(gui_events *renderer) = 0;
 
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void need_redraw() = 0;

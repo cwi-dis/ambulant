@@ -81,8 +81,8 @@ class passive_region : public surface_template, public surface, public gui_event
 	void animated();
 
 	// The surface interface:
-	void show(renderer *cur);
-	void renderer_done(renderer *renderer);
+	void show(gui_events *cur);
+	void renderer_done(gui_events *renderer);
 	virtual void need_redraw(const screen_rect<int> &r);
 	void need_redraw();
 	virtual void need_events(bool want);
@@ -113,7 +113,7 @@ class passive_region : public surface_template, public surface, public gui_event
 
   	passive_region *m_parent;			// parent region
 
-  	std::list<renderer *> m_renderers; // active regions currently responsible for redraws
+  	std::list<gui_events *> m_renderers; // active regions currently responsible for redraws
 
 	typedef std::list<passive_region*> children_list_t;
 	typedef std::map<zindex_t, children_list_t> children_map_t;
