@@ -193,17 +193,20 @@ databuffer::get_write_ptr(int sz)
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x).get_write_ptr(%d): start ", (void*)this, sz);
 	
     if(!m_buffer_full) {
-        m_buffer = (char*) realloc(m_buffer, m_size + sz);
-		AM_DBG lib::logger::get_logger()->debug("databuffer::get_write_ptr: buffer realloc done (%x)",m_buffer);
-        if (!m_buffer) {
-            lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size+sz);
-        }
+		assert(sz > 0);
+        	m_buffer = (char*) realloc(m_buffer, m_size + sz);
+			AM_DBG lib::logger::get_logger()->debug("databuffer::get_write_ptr: buffer realloc to from %d to %d bytes",m_size, m_size + sz);
+			AM_DBG lib::logger::get_logger()->debug("databuffer::get_write_ptr: buffer realloc done (%x)",m_buffer);
+        	if (!m_buffer) {
+	            lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size+sz);
+			}
 #ifdef RANDOM_BYTES
-		unsigned int i;
-		for(i=m_size; i<m_size+sz; i++) m_buffer[i] = (char) rand();
+			unsigned int i;
+			for(i=m_size; i<m_size+sz; i++) m_buffer[i] = (char) rand();
 #endif
-		//AM_DBG lib::logger::get_logger()->debug("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
-		rv = m_buffer + m_size;
+			//AM_DBG lib::logger::get_logger()->debug("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
+			rv = m_buffer + m_size;
+		
     } else {
         lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
 		rv = NULL;
@@ -219,14 +222,19 @@ void databuffer::pushdata(int sz)
 	if (m_buffer_full) {
         lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
-	m_size += sz;
-	//AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata:size = %d ",sz);
-	m_used = m_size - m_rear;
-	if (sz < 0 || m_size <= 0) { // cannot realloc XXXX Is this OK ?
+	
+	if (sz < 0 || m_size < 0) { // cannot realloc XXXX Is this OK ?
 	  m_lock.leave();
 	  return;
 	}
-	m_buffer = (char*) realloc(m_buffer, m_size);
+	
+	
+	m_buffer = (char*) realloc(m_buffer, m_size + sz);
+	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::pushdata(%d) realloc m_buffer=x%x, from %d bytes to %d bytes", (void*)this, sz, (void*) m_buffer, m_size, m_size + sz);
+
+	m_size += sz;
+	//AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata:size = %d ",sz);
+	m_used = m_size - m_rear;
 	 if (!m_buffer) {
 		 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
 	 }
@@ -243,7 +251,9 @@ databuffer::get_read_ptr()
 {
 	m_lock.enter();
 	char *rv = (m_buffer + m_rear);
-	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x", (void*)this, (void*)rv);
+	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
+	//assert (rv);
+	
 	m_lock.leave();
 	return rv;
 }
@@ -266,10 +276,12 @@ databuffer::readdone(int sz)
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
 	if (m_used == 0 || (m_max_unused_size > 0 && m_rear > m_max_unused_size)) {
 		 // Free the unused space in the buffer
+		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) resizing buffer (cur. size = %d)", (void*)this, sz, m_size);
 		 if (m_used) memcpy(m_buffer, m_buffer+m_rear, m_used);
 		 m_buffer = (char *)realloc(m_buffer, m_used);
 		 m_size = m_used;
 		 m_rear = 0;
+		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) (m_buffer=x%x) resized to %d",  (void*)this, (void*)m_buffer, m_size);
 		 if (m_buffer == NULL && m_used > 0) {
 			 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
 		 }

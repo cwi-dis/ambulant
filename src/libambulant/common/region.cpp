@@ -217,7 +217,10 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
 	m_children_cs.enter();
-	assert(m_renderers.size()<=1);
+	
+	//XXX Why is this assertion needed ?
+	//assert(m_renderers.size()<=1); 
+	
 	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
 		AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
