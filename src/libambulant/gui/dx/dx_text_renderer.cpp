@@ -88,7 +88,7 @@ void gui::dx::text_renderer::open(const std::string& url, viewport* v) {
 	lib::memfile mf(url);
 	mf.read();
 	lib::databuffer& db = mf.get_databuffer();
-	std::string text;
+	std::basic_string<text_char> text;
 	text.assign(db.begin(), db.end());
 		
 	m_ddsurf = v->create_surface(m_size);

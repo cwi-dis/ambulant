@@ -83,12 +83,16 @@ class png_decoder : public img_decoder<DataSource, ColorType> {
 	virtual dib_surface<ColorType>* decode();
 	static void png_read_mem_data(png_structp png_ptr, png_bytep data, png_uint_32 length);
   private:
+	png_color m_bgrclr;
+	bool m_has_bgr;
+  
 	lib::logger *m_logger;
 };
 
 template <class DataSource, class ColorType>
 png_decoder<DataSource, ColorType>::png_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+:	img_decoder<DataSource, ColorType>(src, hdc),
+	m_has_bgr(false),
 	m_logger(lib::logger::get_logger()) {
 }
 
@@ -160,14 +164,12 @@ png_decoder<DataSource, ColorType>::decode() {
         
 	// set the background color to draw transparent and alpha images over.
 	png_color_16 *pbgr;
-	png_color bgrclr;
-	bool has_bgr = false;
 	if(png_get_bKGD(png_ptr, info_ptr, &pbgr)) {
 		png_set_background(png_ptr, pbgr, PNG_BACKGROUND_GAMMA_FILE, 1, 1.0);
-		bgrclr.red   = (byte) pbgr->red;
-		bgrclr.green = (byte) pbgr->green;
-		bgrclr.blue  = (byte) pbgr->blue;
-		has_bgr = true;
+		m_bgrclr.red   = (byte) pbgr->red;
+		m_bgrclr.green = (byte) pbgr->green;
+		m_bgrclr.blue  = (byte) pbgr->blue;
+		m_has_bgr = true;
 	}
         
 	// if required set gamma conversion
@@ -196,7 +198,7 @@ png_decoder<DataSource, ColorType>::decode() {
 	// create a bmp surface
 	ColorType *pBits = NULL;
 	BITMAPINFO *pbmpi = get_bmp_info(width, height, ColorType::get_bits_size());
-	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	HBITMAP bmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
 		return 0; // failed

@@ -55,6 +55,7 @@
 #include <windows.h>
 
 #include "ambulant/lib/win32/win32_asb.h"
+#include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
 
 #include <string>
@@ -69,28 +70,38 @@ void lib::win32::sleep_msec(unsigned long msecs) {
 	Sleep(msecs);
 }
 
-std::string lib::win32::getcwd() {
-	char buf[MAX_PATH];
-	char *pFilePart = 0;	
-	GetFullPathName(".", MAX_PATH, buf, &pFilePart);
+std::basic_string<text_char> lib::win32::getcwd() {
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+	text_char buf[MAX_PATH];
+	text_char *pFilePart = 0;	
+	GetFullPathName(text_str("."), MAX_PATH, buf, &pFilePart);
 	return buf;
+#endif
+	return text_str(".");
 }
 
-std::string lib::win32::resolve_path(const char *s) {
-	char buf[MAX_PATH];
-	char *pFilePart = 0;	
+std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+	text_char buf[MAX_PATH];
+	text_char *pFilePart = 0;	
 	GetFullPathName(s, MAX_PATH, buf, &pFilePart);
 	return buf;
+#endif
+	return s;
 }
 
 void lib::show_message(const char *format, ...) {
 	va_list	args;
 	va_start(args, format);
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	int size = _vscprintf(format, args) + 1;
+#else
+	int size = 2048;
+#endif
 	char *buf = new char[size];
 	vsprintf(buf, format, args);
 	va_end(args);
-	MessageBox(NULL, buf, "DemoPlayer", MB_OK);
+	MessageBox(NULL, textptr(buf), textptr("DemoPlayer"), MB_OK);
 	delete[] buf;
 }
 

@@ -66,6 +66,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/lib/system.h"
 
 // Global functions provided by the hosting application.
 extern HWND new_os_window();
@@ -98,7 +99,8 @@ class dx_window;
 class dx_player : 
 	public common::player, 
 	public common::window_factory, 
-	public common::playable_factory {
+	public common::playable_factory,
+	public lib::system {
 	
   public:
 	dx_player(const std::string& url);
@@ -144,6 +146,11 @@ class dx_player :
 		const ambulant::lib::node *node,
 		lib::event_processor * evp);
 
+	
+	////////////////////
+	// lib::system implementation
+	void show_file(const std::string& href);
+	
 	////////////////////
 	// Implementation specific artifacts
 	

@@ -176,7 +176,7 @@ jpg_decoder<DataSource, ColorType>::decode() {
 	// create a bmp surface
 	ColorType *pBits = NULL;
 	BITMAPINFO *pbmpi = get_bmp_info(width, height, ColorType::get_bits_size());
-	HBITMAP bmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	HBITMAP bmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
 		jpeg_destroy_decompress(&cinfo);

@@ -525,7 +525,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 }
 
 // Paints the provided string
-void gui::dx::viewport::draw(const std::string& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
+void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
 	if(!m_surface || text.empty()) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -542,6 +542,23 @@ void gui::dx::viewport::draw(const std::string& text, const lib::screen_rect<int
 	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
 	if(res == 0)
 		win_report_last_error("DrawText()");
+	m_surface->ReleaseDC(hdc);
+}
+
+// Frames the provided rect
+void gui::dx::viewport::frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr) {
+	if(!m_surface) return;	
+	HDC hdc;
+	HRESULT hr = m_surface->GetDC(&hdc);
+	if (FAILED(hr)) {
+		seterror("DirectDrawSurface::GetDC()", hr);
+		return;
+	}
+	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	HBRUSH hbr = CreateSolidBrush(clr);
+	if(FrameRect(hdc, &RC, hbr) == 0)
+		win_report_last_error("FrameRect()");
+	DeleteObject((HGDIOBJ) hbr);
 	m_surface->ReleaseDC(hdc);
 }
 

@@ -166,7 +166,7 @@ void gui::dx::dx_video_renderer::stop() {
 		viewport *v = dxwindow->get_viewport();
 		if(v) {
 			if(!m_msg_rect.empty()) {
-				v->draw("STOPPED", m_msg_rect, lib::to_color("red"));
+				v->draw(text_str("STOPPED"), m_msg_rect, lib::to_color("red"));
 				v->redraw(m_msg_rect);
 			}
 		}

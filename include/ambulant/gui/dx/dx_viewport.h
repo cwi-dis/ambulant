@@ -122,7 +122,10 @@ class viewport {
 	
 
 	// Draw the text to the back buffer within destination rectangle
-	void draw(const std::string& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	
+	// Paints the provided rect
+	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
 	
 	// Helper, that returns the size of a DD surface 
 	static lib::size get_size(IDirectDrawSurface *p);

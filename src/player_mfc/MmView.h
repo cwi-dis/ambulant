@@ -62,11 +62,11 @@ protected: // create from serialization only
 // Attributes
 public:
 	MmDoc* GetDocument() const;
-	UINT_PTR m_timer_id;
 	
 // Operations
 public:
 	void SetMMDocument(LPCTSTR lpszPathName);
+	UINT_PTR m_timer_id;
 	CString m_curPathName;
 	CString m_curFilter;
 	UINT m_cursor_id;

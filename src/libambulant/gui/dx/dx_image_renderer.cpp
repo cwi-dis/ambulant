@@ -56,6 +56,12 @@
 
 #include "ambulant/gui/dx/dx_image_renderer.h"
 
+#define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 #include "ambulant/gui/dx/jpg_decoder.h"
 #include "ambulant/gui/dx/gif_decoder.h"
 #include "ambulant/gui/dx/png_decoder.h"

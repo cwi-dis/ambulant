@@ -60,6 +60,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/document.h"
+#include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
 
 // Players
@@ -85,7 +86,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/smil2/smil_layout.h"
 
-//#define AM_DBG
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -110,7 +111,7 @@ gui::dx::dx_player::dx_player(const std::string& url)
 	
 	// Create a player instance
 	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_player = new smil2::smil_player(doc, this, this);	
+	m_player = new smil2::smil_player(doc, this, this, this);	
 }
 
 gui::dx::dx_player::~dx_player() {
@@ -301,6 +302,7 @@ gui::dx::dx_player::new_playable(
 	common::abstract_window *window = get_window(node);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
+	AM_DBG m_logger->trace("dx_player::new_playable: %s", tag.c_str());
 	if(tag == "text") {
 		p = new dx_text_renderer(context, cookie, node, evp, window);
 	} else if(tag == "img") {
@@ -359,6 +361,9 @@ gui::dx::dx_player::get_window(const lib::node* n) {
 	return winfo->w;
 }
 
+void gui::dx::dx_player::show_file(const std::string& href) {
+	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.c_str()), NULL, NULL, SW_SHOWNORMAL);
+}
 
 
 

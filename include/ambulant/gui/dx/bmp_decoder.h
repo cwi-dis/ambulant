@@ -143,7 +143,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 
 	ColorType *pBits = NULL;
 	BITMAPINFO *pbmpi = get_bmp_info(width, height, (int) ColorType::get_bits_size());
-	HBITMAP hBmp = CreateDIBSection(m_hdc, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+	HBITMAP hBmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(hBmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
 		return NULL;

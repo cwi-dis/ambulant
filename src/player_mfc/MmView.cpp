@@ -56,6 +56,7 @@
 #include "MmDoc.h"
 #include "MmView.h"
 
+
 #include <fstream>
 #include <string>
 
@@ -69,22 +70,27 @@
 
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/textptr.h"
 #include ".\mmview.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+const TCHAR log_name[] = "amlog.txt";
+
 static std::string get_log_filename() {
-	char buf[_MAX_PATH];
+	TCHAR buf[_MAX_PATH];
 	GetModuleFileName(NULL, buf, _MAX_PATH);
-	char *p1 = strrchr(buf,'\\');
+	TCHAR *p1 = text_strrchr(buf,'\\');
 	if(p1 != NULL) *p1='\0';
-	strcat(buf, "\\log.txt");
-	return buf;
+	text_strcat(buf, TEXT("\\"));
+	text_strcat(buf, log_name);
+	return std::string(ambulant::lib::textptr(buf).str());
 }
 
-std::ofstream log_os(get_log_filename().c_str());
+std::ofstream 
+log_os(get_log_filename().c_str());
 
 // The handle of the single instance
 static HWND s_hwnd;
@@ -106,6 +112,8 @@ using namespace ambulant;
 
 #ifdef AM_PLAYER_DG
 typedef gui::dg::dg_player gui_player;
+#pragma comment (lib,"mp3lib.lib")
+#pragma comment (lib,"libpng13.lib")
 #else 
 typedef gui::dx::dx_player gui_player;
 #endif
@@ -144,7 +152,6 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_FILTER, OnUpdateViewFilter)
 	ON_WM_MOUSEMOVE()
 	ON_UPDATE_COMMAND_UI(ID_VIEW_TESTS, OnUpdateViewTests)
-//	ON_WM_DROPFILES()
 ON_COMMAND(ID_VIEW_AUTOPLAY, OnViewAutoplay)
 ON_UPDATE_COMMAND_UI(ID_VIEW_AUTOPLAY, OnUpdateViewAutoplay)
 END_MESSAGE_MAP()
@@ -158,7 +165,7 @@ MmView::MmView()
 	m_timer_id = 0;
 	m_cursor_id = 0;
 	m_autoplay = true;
-	lib::logger::get_logger()->set_ostream(&log_os);
+	lib::logger::get_logger()->set_std_ostream(log_os);
 }
 
 MmView::~MmView()
@@ -252,7 +259,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName) {
 		dummy->stop();
 		delete dummy;
 	}
-	dummy = create_player_instance(lpszPathName);
+	dummy = create_player_instance(lib::textptr(lpszPathName));
 	m_curPathName = lpszPathName;
 	player = dummy;
 	if(m_autoplay)
@@ -345,8 +352,9 @@ void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 
 void MmView::OnViewSource() {
-	//ShellExecute(GetSafeHwnd(), "open", m_curPathName, NULL, NULL, SW_SHOW);
-	WinExec(CString("Notepad.exe ") + m_curPathName, SW_SHOW);	
+	CString cmd = TEXT("Notepad.exe ");
+	cmd += m_curPathName;
+	WinExec(cmd, SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
@@ -354,12 +362,15 @@ void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
 }
 
 void MmView::OnViewLog() {
-	char buf[_MAX_PATH];
+	TCHAR buf[_MAX_PATH];
 	GetModuleFileName(NULL, buf, _MAX_PATH);
-	char *p1 = strrchr(buf,'\\');
-	if(p1 != NULL) *p1='\0';
-	strcat(buf, "\\log.txt");
-	WinExec(CString("Notepad.exe ") + buf, SW_SHOW);
+	TCHAR *p1 = text_strrchr(buf,TCHAR('\\'));
+	if(p1 != NULL) *p1= TCHAR('\0');
+	text_strcat(buf, TEXT("\\"));
+	text_strcat(buf, log_name);
+	CString cmd = TEXT("Notepad.exe ");
+	cmd += buf;
+	WinExec(cmd, SW_SHOW);
 }
 
 void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {
@@ -388,13 +399,13 @@ LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 
 void MmView::OnViewTests() {
 	BOOL bOpenFileDialog = TRUE;
-	char lpszDefExt[] = "*.xml";
+	TCHAR lpszDefExt[] = TEXT("*.xml");
 	LPCTSTR lpszFileName = NULL; // no initial fn
 	DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-	char lpszFilter[] = "Filter Files (*.xml)|*.xml|All Files (*.*)|*.*||";
+	TCHAR lpszFilter[] = TEXT("Filter Files (*.xml)|*.xml|All Files (*.*)|*.*||");
 	CWnd* pParentWnd = this;
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
-	dlg.m_ofn.lpstrTitle = "Select SMIL tests filter file";
+	dlg.m_ofn.lpstrTitle = TEXT("Select SMIL tests filter file");
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
 		if(player) player->set_preferences(LPCTSTR(str));
@@ -410,7 +421,9 @@ void MmView::OnUpdateViewTests(CCmdUI *pCmdUI)
 void MmView::OnViewFilter()
 {
 	if(!m_curFilter.IsEmpty()) {
-		WinExec(CString("Notepad.exe ") + m_curFilter, SW_SHOW);
+		CString cmd = TEXT("Notepad.exe ");
+		cmd += m_curFilter;
+		WinExec((LPCSTR)cmd, SW_SHOW);
 	}
 }
 
