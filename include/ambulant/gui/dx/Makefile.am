@@ -8,11 +8,13 @@ library_include_HEADERS= \
 	dx_brush.h \
 	dx_image_renderer.h \
 	dx_img.h \
+	dx_playable.h \
 	dx_player.h \
 	dx_rgn.h \
 	dx_surface.h \
 	dx_text.h \
 	dx_text_renderer.h \
+	dx_transition.h \
 	dx_video.h \
 	dx_video_player.h \
 	dx_viewport.h \
