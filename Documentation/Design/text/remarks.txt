@@ -1,14 +1,6 @@
 Remarks
 =======
 
-Design entities documentation
------------------------------
-TBD (be based on a custom view of the related IEEE std, indicates UML usage)
-
-Software Design Document contents
----------------------------------
-TBD
-
 Code Organization
 -----------------
 
