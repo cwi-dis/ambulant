@@ -51,9 +51,9 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"
 #include "ambulant/common/region_info.h"
+#include <stdlib.h>
 
-
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -68,7 +68,7 @@ qt_active_video_renderer::~qt_active_video_renderer()
 void 
 qt_active_video_renderer::show_frame(char* frame, int size)
 {
-//	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 	m_lock.enter();
 	if (m_data == NULL) {
 			m_data = (char*) malloc(size);
@@ -104,16 +104,25 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 void
 qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 				 common::gui_window* w) {
-	//m_lock.enter();	
+	
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): ltrb=(%d,%d,%d,%d), p=(%d,%d)",(void *)this,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
 		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
+		if (!m_image_loaded) {
+			int width = std::abs(r.right() - r.left());
+			int height = std::abs(r.top() - r.bottom());
+			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): width = %d, height = %d",(void *)this, width, height);
+
+			QImage  tmp_img((uchar*) m_data, width, height, 32, NULL, 32767, QImage::IgnoreEndian);
+			m_image = tmp_img.copy();
+			m_image_loaded = true;
+		}
 		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_image_loaded=%d (this=0x%x)",m_image_loaded, (void *)this);
 	} else {
-		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_image_loaded=%d, m_data=0x%x (this=0x%x)",m_image_loaded,(void*) m_data, (void *)this);
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_inodemage_loaded=%d, m_data=0x%x (this=0x%x)",m_image_loaded,(void*) m_data, (void *)this);
 	}
 
 	// XXXX WRONG! This is the info for the region, not for the node!
@@ -123,7 +132,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
 	// background drawing
-	//if (0) {
+
 	if (info && !info->get_transparent()) {
 	// First find our whole area (which we have to clear to 
 	// background color)
@@ -144,7 +153,6 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		paint.setBrush(*bgc);
 		paint.drawRect(L,T,W,H);
 	}
-//} // if(0)
 	if (m_image_loaded) {
 		QSize qsize = aqw->ambulant_pixmap()->size();
 		lib::size srcsize = lib::size(qsize.width(), qsize.height());
@@ -156,20 +164,12 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		    T = dstrect.top(),
 		    W = dstrect.width(),
 		    H = dstrect.height();
-		AM_DBG lib::logger::get_logger()->trace(
-			" qt_active_video_renderer.redraw(0x%x):"
-			" drawImage at (L=%d,T=%d,W=%d,H=%d)",
-			(void *)this,L,T,W,H);
+		AM_DBG lib::logger::get_logger()->trace(" qt_active_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
 		paint.drawImage(L,T,m_image,0,0,W,H);
-	}
-	else {
-		AM_DBG lib::logger::get_logger()->error(
-			"qt_active_video_renderer.redraw(0x%x):"
-			" no m_image",
-			(void *)this
-		);
+	} else {
+		AM_DBG lib::logger::get_logger()->error("qt_active_video_renderer.redraw(0x%x): no m_image", (void *) this);
 	}
 	paint.flush();
 	paint.end();
-//m_lock.leave();
+
 }

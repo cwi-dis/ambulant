@@ -64,7 +64,7 @@ inline double round(double v) {return floor(v+0.5);}
 #define round(v) ((int)(v+0.5))
 #endif
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -109,8 +109,9 @@ active_renderer::start(double t)
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::ostringstream os;
 	os << *m_node;
+#endif	
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
-#endif
+
 	if (!m_dest) {
 		lib::logger::get_logger()->error("active_renderer.start: no destination surface");
 		stopped_callback();
@@ -263,6 +264,7 @@ active_video_renderer::active_video_renderer(
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): PLACEHOLDER VIDEO: The path to the video files is fixed. (/ufs/dbenden/testmovie) FIXME");
 		m_src = new net::raw_video_datasource ("/ufs/dbenden/testmovie");
 	}
+	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
 
 }
 
@@ -283,6 +285,7 @@ active_video_renderer::start (double where = 1)
 		AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
 	}
 	m_src->start_frame (m_evp, e, w);
+	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_src(0x%x)->start called", w, (void *) this, (void*) m_src);
 	m_lock.leave();
 }
 
@@ -340,7 +343,7 @@ active_video_renderer::data_avail()
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
 		if (ts <= now()) {
-			lib::logger::get_logger()->trace("**** (this = 0x%x) Display frame with timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
+			lib::logger::get_logger()->trace("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) ", (void *) this, ts, now(), (void *) buf);
 			show_frame(buf, size);
 			displayed = true;
 			m_src->frame_done(ts);

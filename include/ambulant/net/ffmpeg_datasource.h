@@ -191,6 +191,8 @@ class ffmpeg_video_datasource:
     ~ffmpeg_video_datasource();
 
 	bool has_audio();
+    int width();
+  	int height();
 	audio_datasource *get_audio_datasource();
 
     void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);  
@@ -217,7 +219,8 @@ class ffmpeg_video_datasource:
 //	databuffer m_buffer;
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
-	lib::critical_section m_lock;
+  	bool m_thread_started;
+    lib::critical_section m_lock;
 };
 
 #endif // WITH_FFMPEG_AVFORMAT

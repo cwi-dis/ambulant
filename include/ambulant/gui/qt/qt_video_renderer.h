@@ -84,6 +84,7 @@ class qt_active_video_renderer : public common::active_video_renderer {
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
  private:
 	QImage m_image;
+ 	
  	char* m_data;
  	int m_data_size;
 	bool m_image_loaded;

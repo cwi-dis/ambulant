@@ -125,7 +125,7 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 
 	m_rf->add_factory(new qt_renderer_factory(m_df));
 	
-	lib::logger::get_logger()->trace("mainloop::mainloop: added qt_video_factory");		
+    lib::logger::get_logger()->trace("mainloop::mainloop: added qt_video_factory");		
  	m_rf->add_factory(new qt_video_factory(m_df));
 		AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: added none_video_factory");		
 
