@@ -17,6 +17,20 @@ building from source.
 Ambulant is Open Source: the license is modified GPL. See the file
 COPYING for details.
 
+What's new?
+-----------
+
+Complete details are in ChangeLog, but here is a quick summary of the
+changes between 1.0 and 1.2:
+- Help files and man pages added
+- Log window added for diagnostic output
+- Preferences dialog added
+- Localization possible (on Mac/Unix)
+- Xerces XML parser support, which enables rigorous syntax checking of
+  your SMIL document (Mac/Windows/Unix)
+- Plugin support (Mac/Unix)
+- The developer API has been rationalized and fully documented
+
 Feedback
 --------
 
