@@ -217,6 +217,8 @@ void timegraph::build_time_graph() {
 		time_node *tn = (*it).second;
 		add_begin_sync_rules(tn);
 		add_end_sync_rules(tn);
+		if(tn->get_time_attrs()->get_tag()=="area")
+			tn->set_want_activate_event(true);
 	}
 }
 
@@ -237,8 +239,6 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 		// add implicit begin rule
 		sync_rule *sr = create_impl_syncbase_begin_rule(tn);
 		tn->add_begin_rule(sr);
-		if(tn->get_time_attrs()->get_tag()=="area")
-			tn->set_want_activate_event(true);
 		return;
 	}
 	
