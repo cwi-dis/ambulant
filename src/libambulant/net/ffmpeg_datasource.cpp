@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -298,7 +298,7 @@ detail::ffmpeg_demux::run()
 			// Wait until there is room in the buffer
 			while (sink->buffer_full() && !exit_requested())
 				sleep(1);   // This is overdoing it
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(0x%x, %d)", pkt->stream_index, pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
 			sink->data_avail(pkt->pts, pkt->data, pkt->size);
 		}
 		av_free_packet(pkt);
@@ -598,7 +598,9 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		m_size = sz;
 		num = m_con->pts_num;
 		den = m_con->pts_den;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
 		m_timestamp = (double) pts * num / den;
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_timestamp=%f",m_timestamp);
 	}
 
 	if ( m_client_callback && (m_frame || m_src_end_of_file ) ) {
