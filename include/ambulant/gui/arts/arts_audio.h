@@ -73,7 +73,8 @@ class arts_active_audio_renderer : public common::active_renderer, public lib::t
       common::playable_notification *context,
       common::playable_notification::cookie_type cookie,
       const lib::node *node,
-      lib::event_processor *const evp);
+      lib::event_processor *const evp,
+      net::datasource_factory *df);
 
       ~arts_active_audio_renderer();
 

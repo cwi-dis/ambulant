@@ -183,15 +183,19 @@ class qt_window_factory : public common::window_factory {
 
 class qt_renderer_factory : public common::playable_factory {
   public:
-	qt_renderer_factory() {
+	qt_renderer_factory(net::datasource_factory *df)
+	:	m_datasource_factory(df)
+	{
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer factory (0x%x)", (void*) this);
-		}
+	}
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp);
+  private:
+  	net::datasource_factory *m_datasource_factory;
 
 };  // class qt_renderer_factory
 

@@ -79,8 +79,9 @@ class qt_active_image_renderer : public common::active_final_renderer {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp)
-:	 common::active_final_renderer(context, cookie, node, evp),
+		lib::event_processor *const evp,
+    	net::datasource_factory *df)
+:	 common::active_final_renderer(context, cookie, node, evp, df),
  	m_image(NULL),
 	m_image_loaded(false) {
 	};

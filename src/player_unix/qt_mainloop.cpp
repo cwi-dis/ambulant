@@ -54,6 +54,19 @@
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
 #include "ambulant/lib/document.h"
+#include "ambulant/net/datasource.h"
+#include "ambulant/net/posix_datasource.h"
+//#define WITH_STDIO_DATASOURCE
+#ifdef WITH_STDIO_DATASOURCE
+#include "ambulant/net/stdio_datasource.h"
+#endif
+#ifdef WITH_FFMPEG
+#include "ambulant/net/ffmpeg_datasource.h"
+#endif
+#define WITH_RAW_AUDIO
+#ifdef WITH_RAW_AUDIO
+#include "ambulant/net/raw_audio_datasource.h"
+#endif
 
 using namespace ambulant;
 using namespace lib;
@@ -64,6 +77,7 @@ void*
 qt_mainloop::run(void* view) {
 	qt_gui* qt_view = (qt_gui*) view;
 	qt_window_factory *wf;
+	net::datasource_factory *df;
 
 	AM_DBG logger::get_logger()->trace(
 		"qt_mainloop::run(qt_gui=0x%x)",
@@ -73,17 +87,42 @@ qt_mainloop::run(void* view) {
 	bool is_mms = strcmp(".mms", filename + strlen(filename) - 4) == 0;
 	document *doc = document::create_from_file(filename);
 
+	// First create the datasource factory and populate it too.
+	df = new net::datasource_factory();
+#ifdef WITH_STDIO_DATASOURCE
+	// This is for debugging only, really: the posix datasource
+	// should always perform better, and is always available on OSX.
+	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
+	// however.
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add stdio_datasource_factory");
+	df->add_raw_factory(new net::stdio_datasource_factory());
+#endif
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add posix_datasource_factory");
+	df->add_raw_factory(new net::posix_datasource_factory());
+	
+#ifdef WITH_FFMPEG
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");
+	df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");
+	df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
+#endif
+#ifdef WITH_RAW_AUDIO
+	// This is for debugging only
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_audio_parser_finder");
+	df->add_audio_parser_finder(new net::raw_audio_parser_finder());
+#endif
+
 	common::global_playable_factory *rf =
 		new common::global_playable_factory(); 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->trace("add factory for SDL");
-	rf->add_factory( new sdl::sdl_renderer_factory() );
+	rf->add_factory( new sdl::sdl_renderer_factory(df) );
 AM_DBG logger::get_logger()->trace("add factory for SDL done");
 #endif
 #ifdef WITH_ARTS
-	rf->add_factory(new arts::arts_renderer_factory());
+	rf->add_factory(new arts::arts_renderer_factory(df));
 #endif 
-	rf->add_factory(new qt_renderer_factory());
+	rf->add_factory(new qt_renderer_factory(df));
  
 	wf = new qt_window_factory(qt_view, 
 				   qt_view->get_o_x(),

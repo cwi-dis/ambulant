@@ -65,12 +65,17 @@ namespace gui {
 namespace arts {
           
 class arts_renderer_factory : public common::playable_factory {
-public:
+  public:
+	arts_renderer_factory(net::datasource_factory *df)
+	:	m_datasource_factory(df) {}
+	
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp);
+  private:
+  	net::datasource_factory *m_datasource_factory;
 
 };
 

@@ -109,13 +109,15 @@ qt_renderer_factory::new_playable (
 	lib::xml_string tag = node->get_qname().second;
 	common::playable* rv;
 	if (tag == "img") {
- 		rv = new qt_active_image_renderer(context, cookie, node, evp);
+ 		rv = new qt_active_image_renderer(context, cookie, node, evp, 
+ 			m_datasource_factory);
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 			"returning qt_active_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
-		rv = new qt_active_text_renderer(context, cookie, node, evp);
+		rv = new qt_active_text_renderer(context, cookie, node, evp,
+			m_datasource_factory);
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt_renderer_factory: node 0x%x: "
 	 		"returning qt_active_text_renderer 0x%x",
