@@ -103,7 +103,11 @@ class document : public node_context {
   public:
 	// A document factory function.
 	// Creates documents from local files.
-	static document* create_from_file(const std::string& str);
+	static document* create_from_file(const std::string& filename);
+	
+	// A document factory function.
+	// Creates documents from source strings.
+	static document* create_from_string(const std::string& smil_src);
 	
 	// This class maybe extented to more specific documents.
 	// Therfore, use the virtual table to invoke the destructor.
@@ -182,20 +186,34 @@ document::get_root() const {
 
 //static 
 inline document* 
-document::create_from_file(const std::string& str) {
+document::create_from_file(const std::string& filename) {
 	document *d = new document();
 	tree_builder builder(d);
-	if(!builder.build_tree_from_file(str.c_str())) {
+	if(!builder.build_tree_from_file(filename.c_str())) {
 		logger::get_logger()->error(
-			"Could not build tree for file: %s", str.c_str());
+			"Could not build tree for file: %s", filename.c_str());
 		return 0;
 	}
 	d->m_root = builder.detach();
-	d->m_src_url = ambulant::net::url(str);
+	d->m_src_url = ambulant::net::url(filename);
 	
-	std::string base = filesys::get_base(str, file_separator.c_str());
+	std::string base = filesys::get_base(filename, file_separator.c_str());
 	d->m_src_base = ambulant::net::url(base);
 	
+	return d;
+}
+
+//static 
+inline document* 
+document::create_from_string(const std::string& smil_src) {
+	document *d = new document();
+	tree_builder builder(d);
+	if(!builder.build_tree_from_str(smil_src)) {
+		logger::get_logger()->error(
+			"Could not build tree for the provided string");
+		return 0;
+	}
+	d->m_root = builder.detach();
 	return d;
 }
 
