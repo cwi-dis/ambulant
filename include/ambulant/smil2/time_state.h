@@ -87,7 +87,7 @@ class time_state : public time_traits {
 
   protected:
 	void report_state(qtime_type timestamp);
-	
+	void report_state();
 	time_node *m_self;
 	
 	// store refs to simplify code layout
@@ -163,6 +163,8 @@ class dead_state : public time_state {
 	dead_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual void enter(qtime_type timestamp);
+	virtual void kill(qtime_type timestamp, time_node *oproot);
+	virtual void reset(qtime_type timestamp, time_node *oproot);	 
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_dead;}
 	virtual const char* name() const { return "dead";}
