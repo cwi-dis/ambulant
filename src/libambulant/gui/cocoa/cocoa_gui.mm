@@ -54,6 +54,7 @@
 #include "ambulant/gui/cocoa/cocoa_audio.h"
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
+#include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_mouse.h"
 #include "ambulant/lib/mtsync.h"
 
@@ -150,6 +151,11 @@ cocoa_renderer_factory::new_renderer(
 	} else if ( tag == "text") {
 		rv = new cocoa_active_text_renderer(context, cookie, node, evp, src, dest);
 		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
+#if 0
+	} else if ( tag == "fill") { // XXXX Is that the right name?
+		rv = new cocoa_active_fill_renderer(context, cookie, node, evp, src, dest);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_fill_renderer 0x%x", (void *)node, (void *)rv);
+#endif
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
 		rv = (active_renderer *)new cocoa_active_audio_renderer(context, cookie, node, evp, src);

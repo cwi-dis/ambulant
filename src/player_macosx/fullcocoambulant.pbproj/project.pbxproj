@@ -472,6 +472,7 @@
 		};
 		0444D324051F2EEF0010C447 = {
 			children = (
+				0491CB7705B5ABAE007105A3,
 				0444D325051F2EEF0010C447,
 				042239CB0536F48E0010C447,
 				042239CC0536F48E0010C447,
@@ -1128,6 +1129,34 @@
 			settings = {
 			};
 		};
+		0491CB7705B5ABAE007105A3 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.objcpp;
+			path = cocoa_fill.mm;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0491CB7805B5ABAF007105A3 = {
+			fileRef = 0491CB7705B5ABAE007105A3;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0491CB7B05B5ABEA007105A3 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = cocoa_fill.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0491CB7C05B5ABEA007105A3 = {
+			fileRef = 0491CB7B05B5ABEA007105A3;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		04984765058DE42400D855A9 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1275,6 +1304,7 @@
 		};
 		04AF0ADB05205DB00010C447 = {
 			children = (
+				0491CB7B05B5ABEA007105A3,
 				04AF0ADD05205DB00010C447,
 				042239C30536F4760010C447,
 				042239C40536F4760010C447,
@@ -2358,6 +2388,7 @@
 				044C07A405987A2300592A78,
 				04C641B205AAFB2600250A48,
 				04A70D5805B4463E00EE7D2C,
+				0491CB7C05B5ABEA007105A3,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2452,6 +2483,7 @@
 				041E39A305A083A2009C0962,
 				04C641BC05AAFB3D00250A48,
 				04D59EF805AE0C5E0045E53C,
+				0491CB7805B5ABAF007105A3,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
