@@ -392,22 +392,19 @@ void gui::dx::viewport::redraw() {
 	DWORD flags = DDBLT_WAIT;
 	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("viewport::redraw/DirectDrawSurface::Blt()", hr);
+		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 	}
 }
 
 void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
-	RECT RC;
-	set_rect(rc, &RC);
-	redraw(&RC);
-}
-
-void gui::dx::viewport::redraw(RECT *prc) {
+	if(!m_primary_surface || !m_surface)
+		return;
+	RECT src_rc = {0, 0, m_width, m_height};
+	RECT dst_rc = {0, 0, m_width, m_height};
 	DWORD flags = DDBLT_WAIT;
-	RECT scr_rc = *prc;
-	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(scr_rc), m_surface, prc, flags, NULL);
+	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("viewport::redraw/DirectDrawSurface::Blt()", hr);
+		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -463,8 +460,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	if(keysrc) flags |= DDBLT_KEYSRC;
 	RECT srcRC;
 	set_rect(src, &srcRC);
-	RECT dstRC;
-	set_rect(dst_rc, &dstRC);
+	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
@@ -477,16 +473,12 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	if(!m_surface || !src) return;
 	DWORD flags = DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
-	
-	RECT srcRC;
-	set_rect(src_rc, &srcRC);
-	
-	RECT dstRC;
-	set_rect(dst_rc, &dstRC);
-	
+	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
+	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
 	}
 }
 
@@ -598,12 +590,14 @@ uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 // Internal function
 // Converts the provided rect to OS screen coordinates
 RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
-	POINT pt = {0, 0}; // margins
-	::ClientToScreen(m_hwnd, &pt);
-	r.left += pt.x;
-	r.right += pt.x;
-	r.top += pt.y;
-	r.bottom += pt.y;
+	POINT pt = {r.left, r.top};
+	int w = r.right - r.left;
+	int h = r.bottom - r.top;
+	ClientToScreen(m_hwnd, &pt);
+	r.left = pt.x;
+	r.top = pt.y;
+	r.right = pt.x + w;
+	r.bottom = pt.y + h;
 	return &r;
 }
 
