@@ -67,12 +67,12 @@ params *
 params::for_node(const lib::node *n)
 {
 	const lib::node *paramchild = n->get_first_child("param");
-	lib::node *paramcontainerchild = NULL;
+	const lib::node *paramcontainerchild = NULL;
 #ifdef USE_SMIL21
 	const char *pname = n->get_attribute("paramGroup");
 	if (pname) {
-		lib::node_context *ctx = n->get_context();
-		lib::node *pcontainer = ctx->get_node(pname);
+		const lib::node_context *ctx = n->get_context();
+		const lib::node *pcontainer = ctx->get_node(pname);
 		if (pcontainer) {
 			paramcontainerchild = pcontainer->down();
 		} else {

@@ -269,7 +269,7 @@ region_node::fix_from_dom_node()
 	
 	if (soundalign_attr == NULL)
 		sa = common::sa_default;
-	if (strcmp(soundalign_attr, "both") == 0)
+	else if (strcmp(soundalign_attr, "both") == 0)
 		sa = common::sa_both;
 	else if (strcmp(soundalign_attr, "left") == 0)
 		sa = common::sa_left;
