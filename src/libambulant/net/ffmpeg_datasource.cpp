@@ -189,7 +189,7 @@ net::ffmpeg_audio_datasource::get_nbits ()
 }
 
 int 
-net::ffmpeg_audio_datasource::get_bitrate ()
+net::ffmpeg_audio_datasource::get_samplerate ()
 {
 	m_con->sample_rate;
 }

@@ -103,11 +103,12 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
     void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
 	void wantclicks(bool want) {};
     void user_event(const point &where) {};
-  	void callback(void *userdata, Uint8 *stream, int len);
 	void playdone();
 		  
   private:
+#ifdef WITH_FFMPEG
 	net::ffmpeg_audio_datasource *m_audio_src;
+#endif
  	int inc_channels();
 	int init(int rate, int bits, int channels);
     static bool m_sdl_init;

@@ -166,7 +166,7 @@ class abstract_audio_datasource : public abstract_active_datasource {
 	
 	virtual int get_nchannels () = 0;
   	virtual int get_nbits () = 0;
-	virtual int get_bitrate () = 0;
+	virtual int get_samplerate () = 0;
 	virtual int select_decoder(char* file_ext) = 0;
   protected:
     virtual void callback() = 0 ;

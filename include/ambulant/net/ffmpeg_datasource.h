@@ -101,7 +101,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
  
 	int get_nchannels();
   	int get_nbits ();
-	int get_bitrate ();
+	int get_samplerate ();
 	int select_decoder(char* file_ext);
   	
   protected:
