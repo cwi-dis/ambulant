@@ -439,8 +439,8 @@ void gui::dx::dx_player::schedule_update() {
 	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
 		&dx_player::update_callback);
-	//m_worker_processor->add_event(m_update_event, 50);
-	m_player->schedule_event(m_update_event, 50);
+	m_worker_processor->add_event(m_update_event, 50);
+	//m_player->schedule_event(m_update_event, 50);
 }
 
 ////////////////////////
@@ -492,5 +492,15 @@ void gui::dx::dx_player::close(player *p) {
 }
 
 void gui::dx::dx_player::open(net::url newdoc, bool start, player *old) {
-	m_logger->show("dx_player: not implemented: open \"%s\"", newdoc.get_url().c_str());
+	// For the register application we could use here:
+	// ShellExecute(GetDesktopWindow(), text_str("open"), textptr(newdoc.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
+	
+	// But better not use the registry here.
+	// The user may have register the Real player but since he uses Ambulant,
+	// lets open the document with Ambulant also
+	// Here we create always a new app
+	std::string this_exe = lib::win32::get_module_filename();
+	std::string cmd = this_exe + " " + newdoc.get_url();
+	if(start) cmd += " /start";
+	WinExec(cmd.c_str(), SW_SHOW);
 }
