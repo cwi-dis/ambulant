@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="player_wincon"
 	ProjectGUID="{8749F21C-BA5F-44D0-A1F0-0FF8CD81A6A5}"
+	RootNamespace="player_wincon"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -32,11 +33,14 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/player_wincon.exe"
+				AdditionalDependencies="libexpat.lib"
+				OutputFile="../../bin/win32/player_wincon_d.exe"
+				Version="0.0"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/player_wincon.pdb"
 				SubSystem="1"
+				ImportLibrary=""
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -67,6 +71,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
@@ -77,12 +82,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/player_wincon.exe"
+				AdditionalOptions="libexpat.lib"
+				AdditionalDependencies="libexpat.lib"
+				OutputFile="../../bin/win32/player_wincon.exe"
+				Version="0.0"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary=""
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
