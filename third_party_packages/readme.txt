@@ -15,7 +15,7 @@ expat-unix:
 	<http://expat.sourceforge.net> and extract into
 	expat-1.95.7 in this directory (.../ambulant/third_party_packages).
 	The do the following:
-		$ tppdir=`pwd`
+		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
 		$ cd expat-1.95.7
 		$ ./configure --prefix=$tppdir/expat-unix
 		$ make

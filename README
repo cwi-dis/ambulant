@@ -133,8 +133,8 @@ Building for Mac OS X
 First make sure you install the third party packages on which Ambulant
 depends, see third_party_packages/readme.txt.
 
-Then the normal "configure"/"make"/"make install" combo can be used here
-in the toplevel directory to create the player.
+Then the normal "configure"/"make"/"sudo make install" combo can be used
+here in the toplevel directory to create the player.
 
 "make install" installs the shared libraries and such into the path
 specified with the --prefix configure option, but the application,
@@ -143,6 +143,11 @@ specified with the --prefix configure option, but the application,
 An XCode project is also available, mainly for debugging purposes, but
 this needs some handcrafting to get it to work (it contains absolute
 pathnames to include directories to work around an XCode bug).
+
+You need about 600MB of free diskspace to do the build. After build and
+install you can remove everything but the resultant application, including
+the ambulant and SDL installations in /usr/local, and the application
+is only a few megabytes.
 
 Building for Windows
 --------------------
