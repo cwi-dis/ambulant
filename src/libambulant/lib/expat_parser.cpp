@@ -51,6 +51,7 @@
  */
 
 #include "ambulant/lib/expat_parser.h"
+#include "ambulant/lib/textptr.h"
 
 using namespace ambulant;
 
@@ -60,9 +61,18 @@ lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler,
 	m_expatParser(0),
 	m_error_handler(error_handler),
 	m_parsing(false) {
+#ifdef UNICODE
+	m_expatParser = XML_ParserCreateNS(0, wchar_t(NS_SEP));
+#else
 	m_expatParser = XML_ParserCreateNS(0, char(NS_SEP));
+#endif
+
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3	
 	if(m_expatParser == 0) 
 		throw std::runtime_error("XML_ParserCreateNS() failed");
+#else
+	assert(m_expatParser != 0);
+#endif 
 	XML_SetUserData(m_expatParser, this);
 	XML_SetElementHandler(m_expatParser, expat_parser::start_element, expat_parser::end_element);
 	XML_SetCharacterDataHandler(m_expatParser, expat_parser::characters);
@@ -82,7 +92,7 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 		m_parsing = true;
 		m_content_handler->start_document();
 	}
-	if(XML_Parse(m_expatParser, buf, int(len), (final?1:0)) != XML_STATUS_OK)  {
+	if(XML_Parse(m_expatParser, buf, int(len), (final?1:0)) != 1)  {
 		sax_error e(XML_ErrorString(XML_GetErrorCode(m_expatParser)), 
 			XML_GetCurrentLineNumber(m_expatParser),
 			XML_GetCurrentColumnNumber(m_expatParser)
@@ -90,7 +100,11 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 		if(m_error_handler != 0)
 			m_error_handler->error(e);
 		else
+#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 			throw e;
+#else 
+			assert(false);
+#endif
 		return false;
 	}
 	if(m_parsing && final) {
@@ -150,12 +164,13 @@ lib::q_name_pair
 lib::expat_parser::to_q_name_pair(const char *name) {
 	const char *p = name;
 	const char ns_sep = char(NS_SEP);
-	while(*p && *p != ns_sep) p++;
+	while(*p != 0 && *p != ns_sep) p++;
 	q_name_pair qn;
 	if(*p == ns_sep) { 
 		qn.first = std::string(name, int(p-name));
 		qn.second = std::string(p+1);
 	} else {
+		qn.first = "";
 		qn.second = name;
 	}
 	return  qn;
