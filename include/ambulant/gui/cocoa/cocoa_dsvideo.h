@@ -74,9 +74,7 @@ class cocoa_dsvideo_renderer :
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-    	common::factories *factory)
-	:	 common::active_video_renderer(context, cookie, node, evp, factory),
-		m_image(NULL) {};
+    	common::factories *factory);
 	~cocoa_dsvideo_renderer();
 
 	

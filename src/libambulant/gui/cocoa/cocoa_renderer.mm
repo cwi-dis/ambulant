@@ -96,9 +96,9 @@ cocoa_transition_renderer::start(double where)
 void
 cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
+	if (m_trans_engine) stop_transition();
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start_outtransition(0x%x)", (void *)this);
-	if (m_trans_engine) stop_transition();
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
 	if (m_trans_engine)
@@ -111,10 +111,14 @@ void
 cocoa_transition_renderer::stop_transition()
 {
 	m_lock.enter();
+	if (m_trans_engine == NULL) {
+		m_lock.leave();
+		return;
+	}
 	delete m_trans_engine;
 	m_trans_engine = NULL;
-	if (m_dest) m_dest->transition_done();
 	m_lock.leave();
+	if (m_dest) m_dest->transition_done();
 }
 
 void

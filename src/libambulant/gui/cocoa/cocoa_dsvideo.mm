@@ -68,6 +68,37 @@ namespace gui {
 
 namespace cocoa {
 
+cocoa_dsvideo_renderer::cocoa_dsvideo_renderer(
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
+	const lib::node *node,
+	event_processor *evp,
+	common::factories *factory)
+:	common::active_video_renderer(context, cookie, node, evp, factory),
+	m_image(NULL)
+{
+	if (!m_src) {
+		lib::logger::get_logger()->error("qt_active_video_renderer::qt_active_video_renderer: no datasource");
+		//m_context->stopped(m_cookie, 0);
+		return;
+	}
+	if (m_src->has_audio()) {
+		m_audio_ds = m_src->get_audio_datasource();
+	
+		if (m_audio_ds) {
+			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: creating audio renderer !");
+			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
+			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
+			//m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
+			//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
+		} else {
+			m_audio_renderer = NULL;
+		}
+		
+		//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
+	}
+}
+
 cocoa_dsvideo_renderer::~cocoa_dsvideo_renderer()
 {
 	m_lock.enter();
