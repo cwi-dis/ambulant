@@ -193,7 +193,7 @@ template <typename CharType, typename IsNameStartCh, typename IsNameCh >
 class name_p :  public basic_parselet<CharType> {
   public:
 	typedef name_p<CharType, IsNameStartCh, IsNameCh> self_type;
-	typedef string_type result_type;
+	typedef typename basic_parselet<CharType>::string_type result_type;
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		if(it == end || !IsNameStartCh()(*it)) return -1;
