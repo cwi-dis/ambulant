@@ -7,8 +7,7 @@ else
 build_player_unix=
 endif
 if WITH_COCOA
-# Cannot built Cocoa player with automake yet
-build_player_macosx=
+build_player_macosx=player_macosx
 else
 build_player_macosx=
 endif
