@@ -355,6 +355,20 @@ lib::node::get_url(const char *attrname) const {
 	return m_context?m_context->resolve_url(this, rurl):rurl;
 }
 
+const char *
+lib::node::get_container_attribute(const char *name) const {
+	if(!name || !name[0]) return 0;
+	const node *n = this;
+	const char *p = 0;
+	while(n->up()) {
+		n = n->up();
+		p = n->get_attribute(name);
+		if(p) break;
+	}
+	return p;
+
+}
+
 /////////////////////
 // string repr
 
