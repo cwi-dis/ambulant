@@ -162,20 +162,24 @@ class scanner {
 	char get_tok() const { return tok;}
 	const std::string& get_tokval() const { return tokval;}
 	const std::string& get_sig() const { return sig;}
+	const std::string& get_str() const { return s;}
 };
 
 class reg_scanner {
   public:
 	typedef std::vector<std::string>::size_type size_type;
+	std::string str;
 	std::vector<std::string> vals;
 	std::string toks;
 	
-	reg_scanner(const std::string& sa, const char *d) {
+	reg_scanner(const std::string& sa, const char *d) 
+	:	str(sa) {
 		scanner sc(sa, d);
 		reg(sc);
 	}
 	
-	reg_scanner(const std::string& sa, const std::string& d) {
+	reg_scanner(const std::string& sa, const std::string& d) 
+	:	str(sa) {
 		scanner sc(sa, d);
 		reg(sc);
 	}
@@ -201,6 +205,8 @@ class reg_scanner {
 	std::string join(size_type b) const {
 		return join(b, vals.size());
 	}
+	
+	const std::string& get_str() const { return str;}
 	
   private:
 	void reg(scanner& sc) {
