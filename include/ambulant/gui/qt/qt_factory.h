@@ -111,7 +111,7 @@ class qt_ambulant_widget : public QWidget {
   private:
 	ambulant_qt_window* m_qt_window;
 
-#ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   protected:
 	void mouseMoveEvent(QMouseEvent* e);
 #endif/*QT_NO_FILEDIALOG*/

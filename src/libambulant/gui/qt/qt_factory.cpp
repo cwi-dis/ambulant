@@ -287,14 +287,13 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void 
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
-  int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
+	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
 	AM_DBG lib::logger::get_logger()->trace("%s:(%d,%d)\n",
 	       "qt_ambulant_widget::mouseMoveEvent", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x()-m_o_x,
 						       e->y()-m_o_y);
 	m_qt_window->user_event(ap, 1);
 	qApp->mainWidget()->unsetCursor(); //XXXX
-	repaint();
 }
 #endif/*QT_NO_FILEDIALOG*/
 

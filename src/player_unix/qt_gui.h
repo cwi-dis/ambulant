@@ -125,7 +125,11 @@ class qt_gui : public QWidget {
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	QString      m_smilfilename;
-
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
+	Qt::CursorShape m_cursor_shape;
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+	bool         m_pointinghand_cursor; //XXXX
+#endif/*QT_NO_FILEDIALOG*/
 	void	     fileError(QString smilfilename);
 
   public slots:

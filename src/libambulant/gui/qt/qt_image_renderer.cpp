@@ -138,8 +138,12 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 			" intermediate (L=%d,T=%d,W=%d,H=%d)",
 			(void *)this, O_W, O_H, fact_W, fact_H,
 			N_L, N_T, N_W, N_H);
+#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 		QImage scaledimage = m_image.smoothScale(N_W, N_H,
 							 QImage::ScaleFree);
+#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
+		QImage scaledimage = m_image.smoothScale(N_W, N_H);
+#endif/*QT_NO_FILEDIALOG*/
 		paint.drawImage(D_L,D_T,scaledimage,N_L, N_T, D_W,D_H);
 	}
 	else {

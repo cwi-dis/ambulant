@@ -344,15 +344,21 @@ qt_gui::slot_quit() {
 void
 qt_gui::unsetCursor() { //XXXX Hack
 	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
-	if (m_mainloop->get_cursor()) 
-		setCursor(Qt::PointingHandCursor);
-	else
-		setCursor(Qt::ArrowCursor);
-	/* #else /*QT_NO_FILEDIALOG* /  /* Assume embedded Qt 
-		setCursor(pointingHandCursor);
-	else
-		setCursor(arrowCursor);
-	*/
+	Qt::CursorShape cursor_shape = m_mainloop->get_cursor() ?
+		Qt::PointingHandCursor : Qt::ArrowCursor;
+	if (cursor_shape != m_cursor_shape) {
+		m_cursor_shape = cursor_shape;
+		setCursor(cursor_shape);
+	}
+#ifdef	QCURSOR_ON_ZAURUS
+	bool pointinghand_cursor = m_mainloop->get_cursor();
+	QCursor cursor_shape = pointinghand_cursor ?
+		pointingHandCursor : arrowCursor;
+	if (m_pointinghand_cursor != pointinghand_cursor) {
+		m_pointinghand_cursor = pointinghand_cursor;
+		setCursor(cursor_shape);
+	}
+#endif/*QCURSOR_ON_ZAURUS*/
 	m_mainloop->set_cursor(0);
 }
 #endif/*QT_NO_FILEDIALOG*/
@@ -370,8 +376,8 @@ main (int argc, char*argv[]) {
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);
-	QCursor* qcursor = new QCursor(Qt::ArrowCursor);
-	mywidget->setCursor(*qcursor);
+	QCursor qcursor(Qt::ArrowCursor);
+	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
 	myapp.showMainWidget(mywidget);
