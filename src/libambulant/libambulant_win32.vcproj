@@ -170,6 +170,9 @@
 					Name="dg"
 					Filter="">
 					<File
+						RelativePath=".\gui\dg\dg_area.cpp">
+					</File>
+					<File
 						RelativePath=".\gui\dg\dg_audio.cpp">
 					</File>
 					<File
