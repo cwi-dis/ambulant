@@ -433,6 +433,11 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (NSImage *)getTransitionSurface
 {
+	// XXX Need to rethink: we want to 
+	if (transition_surface) {
+		[transition_surface release];
+		transition_surface = NULL;
+	}
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
 		transition_surface = [self getTransitionOldSource];
@@ -457,11 +462,11 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	NSRect bounds = [self bounds];
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
-	[rv setFlipped: YES];
 	[self lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
 	[self unlockFocus];
 	[rv addRepresentation: bits];
+	[rv setFlipped: YES];
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "oldsrc"];
 #endif
