@@ -144,12 +144,15 @@ void linear_values_animation<F, T>::prepare_interval() {
 	const time_attrs* ta = get_time_attrs();
 	if(dur.is_definite() && ta->auto_reverse()) sfdur /= 2;
 	if(m_aattrs->get_calc_mode() == "paced") {
+		// ignore key times
 		m_simple_f.paced_init(sfdur(), m_values);
 	} else {
+		// use key times when valid and when not ignorable
 		std::vector<double> keyTimes;
 		m_aattrs->get_key_times(keyTimes);
 		bool keyTimesValid = keyTimes.empty() || verify_key_times(keyTimes);
-		if(!keyTimes.empty() && keyTimesValid) {
+		if(!keyTimes.empty() && keyTimesValid && 
+			(dur.is_definite() || m_aattrs->get_calc_mode() == "discrete")) {
 			m_simple_f.init(sfdur(), m_values, keyTimes);
 		} else	
 			m_simple_f.init(sfdur(), m_values);
