@@ -14,32 +14,45 @@ Currently we have support for:
 - Linux
 - MacOSX
 - Windows
-- Zaurus.
+- Zaurus (Sharp SL-5600 PDA).
 
-Media support is spotty. All platforms support text and images,
-but the exact imge file types supported may differ. JPEG is supported
-on all platforms, however. Audio is supported on Windows through
-the DirectX layer, so any audio file type DirectX supports should work.
-On Linux audio playback is supported if you have either SDL or
-aRts installed. By themselves these only give you raw audio
-playback. To get support for more audio file types you need libffmpeg
-installed. On MacOSX audio is only supported if SDL is installed,
-and again only raw audio. Whether libffmpeg availability gives
-you support for more filetypes is not clear.
+Media support varies on different platforms.
+On all platforms text and images is supported,
+but the exact image file types supported may differ.
+JPEG is supported on all platforms, however.
+
+Audio is supported on Windows through the DirectX layer,
+so any audio file type DirectX supports should work.
+
+On Linux mp3 audio playback is supported if you have
+SDL and ffmpeg installed.
+
+On MacOSX raw audio is supported if SDL is installed.
+Whether libffmpeg availability gives you support for more filetypes
+is not clear.
+
 In this release we support on MacOSX and on Linux only mp3s of the 
-format 22050 Hz mono. 
+format 44100 Hz mono. 
+For more details on compiling ambulant with ffmpeg
+read the third_party_packages/readme.txt
 
-Documentation of the overall design and the class relationships
-can be found in: Documentation/Design. However, some of 
-
-Various example SMIL 2.0 documents can be found in Extras/*.
-Not all of them are known to work on all platforms yet.
-
-You need to have "expat 1.95.7" installed before building ambulant;
-"expat" is used for XML-paring of .smil input files. Previous
-versions of "expat" will not work with ambulant.
+Furthermore, you need to have "expat 1.95.7" installed before
+building ambulant; "expat" is used for XML-paring of .smil input files
+Previous versions of "expat" will not work with ambulant.
 For more details read the third_party_packages/readme.txt
 
+On Linux, the aRts implementation is currently not working, use
+./configure --without-arts --with-ffmpeg[=<your libavcodec>];
+make;make install
+
+Documentation of the overall design and the class relationships
+can be found in: Documentation/Design.
+
+Various example SMIL 2.0 documents can be found in Extras/*.
+More  SMIL 2.0 documents can be found in a seperate repository
+ambulant-documents, or as a tar ball at www.sourceforge.com.
+Note that not all of these examples are known to work
+on all platforms yet.
 
 A linux GUI player (build with Qt) will be available
 in src/player-unix/qt_player.
@@ -50,8 +63,3 @@ it is deposited in /Applications/cocoambulant.app.
 For Windows, see instructions in bin/win32.
 
 For Zaurus, see detailed instructions in README-ZAURUS.
-
-Various SMIL 2.0 documents can be found in a seperate repostory ambulant-documents, or as a tar ball at sourceforge.
-Note that not all of them are known to work on all platforms yet.
-
-
