@@ -16,7 +16,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/timelines.h"
-#include "ambulant/lib/unix/unix_event_processor.h"
+#include "ambulant/lib/event_processor.h"
 
 namespace ambulant {
 
@@ -83,7 +83,7 @@ class active_player : public ref_counted {
 
   private:
   	passive_timeline *build_timeline();
-  	unix::event_processor *const m_event_processor;
+  	event_processor *const m_event_processor;
 	passive_player *const m_source;
 	node *m_tree;
 	bool m_playing;

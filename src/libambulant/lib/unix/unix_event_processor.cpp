@@ -16,6 +16,7 @@ using namespace lib;
 unix::event_processor::event_processor() 
 :   abstract_event_processor(timer_factory(), critical_section_factory())
 {
+	start();
 }
 
 unix::event_processor::~event_processor()
