@@ -120,13 +120,14 @@ class passive_region : public surface_template, public surface, public gui_event
   	passive_region *m_parent;			// parent region
 
   	std::list<gui_events *> m_renderers; // active regions currently responsible for redraws
-	lib::critical_section m_renderers_cs;
+	lib::critical_section m_children_cs; // Protects m_renderers, m_active_children, m_subregions
 
 	typedef std::list<passive_region*> children_list_t;
 	typedef std::map<zindex_t, children_list_t> children_map_t;
 	children_map_t m_active_children;	// all child regions
 	children_map_t m_subregions;		// all active children that are subregions
-	children_map_t& get_subregions() { return m_subregions;}
+	void add_subregion(zindex_t z, passive_region *rgn);
+	void del_subregion(zindex_t z, passive_region *rgn);
 
 	const region_info *m_info;			// Information such as z-order, etc.
 	bgrenderer *m_bg_renderer;			// Background renderer
