@@ -75,7 +75,7 @@ namespace ambulant {
 
 namespace lib {
 
-template <typename CharType>
+template <class CharType>
 class basic_parselet {
   public:
  	typedef CharType char_type;
@@ -189,11 +189,11 @@ class dec_p : public parselet {
 	}
 };
 
-template <typename CharType, typename IsNameStartCh, typename IsNameCh >
+template <class CharType, class IsNameStartCh, class IsNameCh >
 class name_p :  public basic_parselet<CharType> {
   public:
 	typedef name_p<CharType, IsNameStartCh, IsNameCh> self_type;
-	typedef typename basic_parselet<CharType>::string_type result_type;
+	typedef basic_parselet<CharType>::string_type result_type;
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		if(it == end || !IsNameStartCh()(*it)) return -1;
@@ -259,18 +259,18 @@ class delimiter_p : public parselet {
 };
 
 // Parses: FirstType SecondType
-template<typename FirstType, typename SecondType>
+template<class FirstType, class SecondType>
 class cat_pair_p  : public parselet {
   public:
 	typedef FirstType first_type;
 	typedef SecondType second_type;
 	typedef typename FirstType::result_type first_result_type;
 	typedef typename SecondType::result_type second_result_type;
-	typedef cat_pair_p<FirstType, SecondType> self_type;
+	typedef typename cat_pair_p<FirstType, SecondType> self_type;
 	typedef std::pair<typename FirstType::result_type,
 		typename SecondType::result_type> result_type;
 
-	cat_pair_p(const first_type& f, const second_type& s) : m_first(f), m_second(s) {}
+	cat_pair_p(const FirstType& f, const SecondType& s) : m_first(f), m_second(s) {}
 	
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		const_iterator it_test = it;
@@ -292,7 +292,7 @@ class cat_pair_p  : public parselet {
 };
 
 // Parses: FirstType | SecondType
-template<typename FirstType, typename SecondType>
+template<class FirstType, class SecondType>
 class or_pair_p : public parselet {
   public:
 	typedef FirstType first_type;
@@ -337,17 +337,17 @@ class or_pair_p : public parselet {
 	second_result_type get_second_result() const { return m_result.second.second;}
 };
 
-template<typename FirstType, typename SecondType>
+template<class FirstType, class SecondType>
 cat_pair_p<FirstType, SecondType> make_cat_p(const FirstType& f, const SecondType& s) {
 	return cat_pair_p<FirstType, SecondType>(f, s);
 }
-template<typename FirstType, typename SecondType>
+template<class FirstType, class SecondType>
 or_pair_p<FirstType, SecondType> make_or_p(const FirstType& f, const SecondType& s) {
 	return or_pair_p<FirstType, SecondType>(f, s);
 }
 
 // Parses: P?
-template<typename P>
+template<class P>
 class optional_p : public or_pair_p<P, epsilon_p> {
   public:
 	optional_p(const P& p) : or_pair_p<P, epsilon_p>(p, epsilon_p()) {}
@@ -355,13 +355,13 @@ class optional_p : public or_pair_p<P, epsilon_p> {
 	first_result_type get_result() const { return get_first_result();}
 };
 
-template<typename P>
+template<class P>
 optional_p<P> make_optional(const P& p) {
 	return optional_p<P>(p);
 }
 
 // Parses: P+
-template<typename P>
+template<class P>
 class plus_p : public parselet {
   public:
 	typedef plus_p<P> self_type;
@@ -387,13 +387,13 @@ class plus_p : public parselet {
 	}
 };
 
-template<typename P>
+template<class P>
 plus_p<P> make_plus(const P& p) {
 	return plus_p<P>(p);
 }
 
 // Parses: P*
-template<typename P>
+template<class P>
 class star_p : public parselet {
   public:
 	typedef star_p<P> self_type;
@@ -419,13 +419,13 @@ class star_p : public parselet {
 	}
 };
 
-template<typename P>
+template<class P>
 star_p<P> make_star(const P& p) {
 	return star_p<P>(p);
 }
 
 // Parses: FirstType | SecondType | ThirdType
-template<typename FirstType, typename SecondType, typename ThirdType>
+template<class FirstType, class SecondType, class ThirdType>
 class or_trio_p : public parselet {
   public:
 	typedef FirstType first_type;
@@ -492,7 +492,7 @@ class or_trio_p : public parselet {
 };
 
 // let the compiler deduce the type from the args
-template<typename T1, typename T2, typename T3>
+template<class T1, class T2, class T3>
 or_trio_p<T1, T2, T3> make_or_trio_p(const T1& t1, const T2& t2, const T3& t3) {
 	return or_trio_p<T1, T2, T3>(t1, t2, t3);
 }
@@ -528,14 +528,14 @@ class options_p : public parselet {
 // to use std::isalpha and std::isdigit
 
 // NameStartChar ::= (Letter | '_' | ':') 
-template <typename CharType>
+template <class CharType>
 struct xml_name_start_ch {
 	bool operator()(CharType ch) {
 		return isalpha(ch) || ch == '_' || ch == ':';
 	}
 };
 
-template <typename CharType>
+template <class CharType>
 struct xml_ncname_start_ch {
 	bool operator()(CharType ch) {
 		return xml_name_start_ch<CharType>()(ch) && ch != ':';
@@ -543,7 +543,7 @@ struct xml_ncname_start_ch {
 };
 
 // NameChar ::= Letter | Digit | '.' | '-' | '_' | ':'
-template <typename CharType>
+template <class CharType>
 struct xml_name_ch {
 	bool operator()(CharType ch) {
 		return isalpha(ch) || isdigit(ch) || 
@@ -551,7 +551,7 @@ struct xml_name_ch {
 	}
 };
 
-template <typename CharType>
+template <class CharType>
 struct xml_ncname_ch {
 	bool operator()(char ch) {
 		return xml_name_ch<CharType>()(ch) && ch != ':';
@@ -559,7 +559,7 @@ struct xml_ncname_ch {
 };
 
 // Space ::= #x20 | #x9 | #xD | #xA
-template <typename CharType>
+template <class CharType>
 struct xml_space_ch {
 	bool operator()(CharType ch) {
 		return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
