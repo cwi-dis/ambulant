@@ -267,6 +267,13 @@ AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
 if test x$qt = xtrue -a x$QT_PREFIX = x; then
 	AC_MSG_ERROR(--with-qt without valid QT_PREFIX directory)
 fi
+if test x$qt = xtrue; then
+#  Test for QT_THREAD_SUPPORT
+   AC_TRY_LINK([#include <qthread.h>], [QThread::postEvent(NULL,NULL)], xQThread_ok=true)
+   if test xQThread_ok=xtrue; then
+      CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
+   fi
+fi
 AC_SUBST(QT_PREFIX)
 AC_MSG_RESULT($qt)
 
