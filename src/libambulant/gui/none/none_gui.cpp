@@ -104,7 +104,7 @@ gui::none::none_renderer_factory::new_renderer(
 }
 
 lib::abstract_bg_rendering_source *
-gui::none::none_renderer_factory::new_background_renderer()
+gui::none::none_window_factory::new_background_renderer()
 {
 	return new none_background_renderer();
 }

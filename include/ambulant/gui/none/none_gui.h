@@ -79,6 +79,7 @@ class none_window_factory : public lib::window_factory {
   	
 	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
 	lib::abstract_mouse_region *new_mouse_region() { return NULL; }
+	lib::abstract_bg_rendering_source *new_background_renderer();
 };
 
 class none_active_renderer : public lib::active_renderer {
@@ -125,7 +126,6 @@ class none_renderer_factory : public lib::renderer_factory {
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		lib::abstract_rendering_surface *const dest);
-	lib::abstract_bg_rendering_source *new_background_renderer();
 };
 
 } // namespace none
