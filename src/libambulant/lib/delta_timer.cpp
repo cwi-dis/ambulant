@@ -30,7 +30,8 @@ using namespace ambulant;
 // Uses delta timer pattern
 
 lib::delta_timer::delta_timer(timer *t)
-:	m_timer(t), m_last_run(t->elapsed()) {}
+:   m_last_run(t->elapsed()),
+    m_timer(t) {}
 	
 lib::delta_timer::~delta_timer() {
 	std::list<timeout_event>::iterator it;

@@ -51,6 +51,7 @@ inline std::string trim(const std::string& s) {
 	size_t i1 = s.find_first_not_of(" \r\n\t\v");
 	if(i1==std::string::npos) return "";
 
+	// XXXX Need a signed type here...
 	size_t i2 = s.length()-1;
 	while(i2>=0 && isspace(s[i2])) i2--;
 	if(i2==-1) return "";

@@ -33,6 +33,7 @@ lib::unix::thread::start()
 	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
 		perror("pthread_create");
 	}
+	return false;
 }
 
 void
@@ -73,7 +74,7 @@ lib::unix::thread::threadproc(void *pParam)
 {
 	thread* p = static_cast<thread*>(pParam);
 	p->m_running = 1;
-	unsigned long rv = p->run();
+	(void)p->run();
 	p->m_running = 0;
 	pthread_exit(NULL);
 	return NULL;

@@ -16,8 +16,8 @@ using namespace ambulant;
 lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler, 
 	lib::sax_error_handler *error_handler)
 :	m_content_handler(content_handler),
-	m_error_handler(error_handler),
 	m_expatParser(0),
+	m_error_handler(error_handler),
 	m_parsing(false) {
 	m_expatParser = XML_ParserCreateNS(0, char(NS_SEP));
 	if(m_expatParser == 0) 

@@ -52,8 +52,8 @@ class expat_parser {
 	static void to_qattrs(const char **attrs, q_attributes_list& list); 
 	static q_name_pair to_q_name_pair(const char *name);
 	
-	XML_Parser m_expatParser;
 	sax_content_handler *m_content_handler;
+	XML_Parser m_expatParser;
 	sax_error_handler *m_error_handler;
 	bool m_parsing;
 };

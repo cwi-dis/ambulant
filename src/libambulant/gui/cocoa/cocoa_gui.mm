@@ -73,7 +73,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
 {
 	logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left, r.top, r.right, r.bottom);
         if (m_data && !m_text_storage) {
-			NSString *the_string = [NSString stringWithCString: m_data length: m_data_size];
+			NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
             m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
             m_layout_manager = [[NSLayoutManager alloc] init];
             m_text_container = [[NSTextContainer alloc] init];
@@ -83,14 +83,15 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
             [m_layout_manager release];	// The textStorage will retain the layoutManager
         }
 
-	[[NSColor redColor] set];
-	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
         if (m_text_storage && m_layout_manager) {
             NSPoint origin = NSMakePoint(r.top, r.left);
             NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
             [m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
             [m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
-        }
+        } else {
+			[[NSColor greyColor] set];
+			NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
+		}
             
 }
 
@@ -117,14 +118,15 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &r)
 			logger::get_logger()->error("cocoa_active_image_renderer.redraw: could not create image");
 		// XXXX Could free data and m_data again here...
 	}
-	[[NSColor blueColor] set];
 	NSRect dstrect = NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top);
-	NSRectFill(dstrect);
 	if (m_image) {
 		NSSize srcsize = [m_image size];
 		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
 		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f", srcsize.width, srcsize.height);
                 [m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
+	} else {
+		[[NSColor blueColor] set];
+		NSRectFill(dstrect);
 	}
 }
 

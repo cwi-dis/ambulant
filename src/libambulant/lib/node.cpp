@@ -104,7 +104,7 @@ template <class Node>
 class attr_collector {
   public:
 	attr_collector(std::map<std::string, Node*>& m, const char *attr = "id") : 
-		m_map(m), m_attr(attr) {}
+		m_attr(attr), m_map(m) {}
 		
 	void operator()(std::pair<bool, const Node*> x) {
 		if(x.first) {
@@ -129,31 +129,31 @@ class attr_collector {
 // e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 
 lib::node::node(const char *local_name, const char **attrs, const node_context *ctx)
-:	m_parent(0), m_next(0), m_child(0), 
-	m_qname("",(local_name?local_name:"error")),
-	m_context(ctx) {
+:	m_qname("",(local_name?local_name:"error")),
+	m_context(ctx),
+	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
 }
 
 lib::node::node(const xml_string& local_name, const char **attrs, const node_context *ctx)
-:	m_parent(0), m_next(0), m_child(0), 
-	m_qname("", local_name),
-	m_context(ctx) {
+:   m_qname("", local_name),
+	m_context(ctx),
+	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
 }
 
 lib::node::node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
-:	m_parent(0), m_next(0), m_child(0), 
-	m_qname(qn), m_qattrs(qattrs), m_context(ctx) {
+:	m_qname(qn), m_qattrs(qattrs), m_context(ctx),
+	m_parent(0), m_next(0), m_child(0){
 }
 
 // shallow copy from other
 lib::node::node(const node* other)
-:	m_parent(0), m_next(0), m_child(0), 
-	m_qname(other->get_qname()),
-	m_data(other->get_data()),
+:   m_qname(other->get_qname()),
 	m_qattrs(other->get_attrs()),
-	m_context(other->get_context()) {
+	m_data(other->get_data()),
+	m_context(other->get_context()),
+	m_parent(0), m_next(0), m_child(0) {
 }
 
 //////////////////////

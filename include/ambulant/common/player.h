@@ -69,9 +69,9 @@ class active_player : public ref_counted_obj {
 	
   private:
   	passive_timeline *build_timeline();
+	node *m_tree;
   	event_processor *const m_event_processor;
 	passive_player *const m_source;
-	node *m_tree;
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
