@@ -98,6 +98,7 @@ class time_node_context : public event_scheduler<time_traits::value_type> {
 	virtual timer* get_timer() = 0;
 	
 	// Playable commands
+	virtual void create_playable(const lib::node *n) = 0;
 	virtual void start_playable(const node *n, double t) = 0;
 	virtual void stop_playable(const node *n) = 0;
 	virtual void pause_playable(const node *n, pause_display d = display_show) = 0;
