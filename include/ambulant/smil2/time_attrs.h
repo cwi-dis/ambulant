@@ -212,6 +212,18 @@ class time_attrs : public time_traits {
 	restart_behavior get_default_restart();
 	restart_behavior get_restart() const { return m_restart;}
 	
+	// Time manipulations
+	double m_speed;
+	double m_accelerate;
+	double m_decelerate;
+	bool m_auto_reverse;
+	void parse_time_manipulations();
+	bool has_time_manipulations() const;
+	double get_speed() const { return m_speed;}
+	double get_accelerate() const { return m_accelerate;}
+	double get_decelerate() const { return m_decelerate;}
+	bool auto_reverse() const { return m_auto_reverse;}
+	
   private:
 	void parse_sync_list(const std::list<std::string>& strlist, sync_list& svslist);
 
