@@ -129,6 +129,10 @@ class smil_time {
 	// and 0*unresolved to be unresolved.	
 	smil_time& operator*=(const smil_time& rhs);
 	
+	// scaling
+	smil_time& operator*=(int n) {m_val*=n; return *this;}
+	smil_time& operator/=(int n) {m_val/=n; return *this;}
+	
 	// Time type indicators
 	bool is_unresolved() const { return m_val == unresolved();}
 	bool is_indefinite() const { return m_val == indefinite();}
@@ -151,6 +155,7 @@ class smil_time {
 	smil_time operator+(const smil_time& rhs) const { smil_time t(this->m_val); t+= rhs; return t;}
 	smil_time operator-(const smil_time& rhs) const { smil_time t(this->m_val); t-= rhs; return t;}
 	smil_time operator*(const smil_time& rhs) const { smil_time t(this->m_val); t*= rhs; return t;}
+	smil_time operator/(const smil_time& rhs) const { smil_time t(this->m_val); t/= rhs; return t;}
 	
 	smil_time i_rem(const smil_time& m) const { 
 		if(!m.is_definite()) return m_val;
@@ -351,6 +356,7 @@ class q_smil_time : public std::pair<const time_node*, smil_time<long> > {
 struct time_traits {
 	// The selected underlying type for time
 	typedef long value_type;
+	typedef unsigned long u_value_type;
 	
 	// The smil time class type for the selected value_type
 	// Specifies an instance in the model 
