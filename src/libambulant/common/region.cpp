@@ -116,9 +116,9 @@ lib::passive_region::need_redraw(const screen_rect<int> &r)
 }
 
 lib::passive_root_layout::passive_root_layout(const std::string &name, size bounds, window_factory *wf)
-:   passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0)),
-	m_gui_window(wf->new_window(name, bounds, this))
+:   passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0))
 {
+	m_gui_window = wf->new_window(name, bounds, this);
 }
 		
 lib::passive_root_layout::~passive_root_layout()
