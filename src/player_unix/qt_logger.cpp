@@ -130,7 +130,7 @@ qt_logger::qt_logger()
 	logger->set_show_message(show_message);
 	// Because QT_THREAD_SUPPORT is off by default, logging is
 	// in a terminal window on Linux.
-	//logger->set_ostream(new qt_logger_ostream);
+	logger->set_ostream(new qt_logger_ostream);
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
