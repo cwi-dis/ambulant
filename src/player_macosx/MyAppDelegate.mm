@@ -53,6 +53,34 @@
 #define AM_DBG if(0)
 #endif
 
+// XXXX Should go elsewhere
+#include "ambulant/lib/amstream.h"
+#include "ambulant/lib/byte_buffer.h"
+#include "ambulant/lib/logger.h"
+#include <stdarg.h>
+
+class nslog_ostream : public ambulant::lib::ostream {
+	bool is_open() const {return true;}
+	void close() {}
+	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa");}
+	int write(const char *cstr) {NSLog(@"%s", cstr);}
+	void write(ambulant::lib::byte_buffer& bb) {NSLog(@"ostream use of byte_buffer not implemented for Cocoa");}
+	void flush() {}
+};
+
+void
+show_message(const char *format, va_list args)
+{
+	NSLog(@"show_message: %s\n", format);
+}
+
+void
+initialize_logger()
+{
+	ambulant::lib::logger::get_logger()->set_show_message(show_message);
+//	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+}
+
 @implementation MyAppDelegate
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
@@ -61,7 +89,7 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-
+	initialize_logger();
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
 	if (systemTestSettingsPath) {

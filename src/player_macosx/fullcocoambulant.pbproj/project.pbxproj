@@ -2166,7 +2166,7 @@
 		045F4C6D0609E00D0061DCA5 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = text.plist.xml;
+			lastKnownFileType = text.xml;
 			path = Welcome.smil;
 			refType = 4;
 			sourceTree = "<group>";
@@ -2311,7 +2311,7 @@
 		04878D3C061AB9A5008573FA = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = text.plist.xml;
+			lastKnownFileType = text.xml;
 			path = systemTestSettings.xml;
 			refType = 4;
 			sourceTree = "<group>";
@@ -3304,8 +3304,7 @@
 			sourceTree = "<group>";
 		};
 		1058C7A7FEA54F5311CA2CBB = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
@@ -3518,8 +3517,7 @@
 			sourceTree = "<group>";
 		};
 		2A37F4C4FDCFA73011CA2CEA = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
@@ -3527,8 +3525,7 @@
 			sourceTree = "<absolute>";
 		};
 		2A37F4C5FDCFA73011CA2CEA = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
@@ -3564,8 +3561,6 @@
 //4A3
 //4A4
 		4A9504D0FFE6A4CB11CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
@@ -3594,8 +3589,6 @@
 			name = Development;
 		};
 		4A9504D1FFE6A4CB11CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -3630,7 +3623,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "XMLCALL= WITH_SDL= WITH_FFMPEG= WITH_FFMPEG_AVFORMAT=";
+				GCC_PREPROCESSOR_DEFINITIONS = "WITH_SDL= WITH_FFMPEG= WITH_EXPAT= WITH_FFMPEG_AVFORMAT=";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;

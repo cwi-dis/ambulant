@@ -158,6 +158,7 @@ lib::logger::logger(const std::string& name)
 #else // AMBULANT_NO_IOSTREAMS
 	m_pos(0),
 #endif
+	m_show_message(0),
 	m_level(logger::default_level) {
 }
 
@@ -168,9 +169,13 @@ lib::logger::~logger() {
 #ifndef AMBULANT_NO_IOSTREAMS
 void lib::logger::set_std_ostream(std::ostream& os) {
 	if(m_pos) delete m_pos; 
-	m_pos = new std_ostream(os); 
+	m_pos = new std_ostream(os);
 }
 #endif // AMBULANT_NO_IOSTREAMS
+
+void lib::logger::set_show_message(show_message_type handler) {
+	m_show_message = handler;
+}
 
 // static 
 void lib::logger::set_loggers_level(int level) {
@@ -268,7 +273,10 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		return;
 		
 	if(level == LEVEL_SHOW) {
-		show_message(buf);
+		if (m_show_message)
+			(*m_show_message)(buf);
+		else
+			show_message(buf);
 		return;
 	} 
 	if(m_pos == 0) {
@@ -310,6 +318,12 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	os << hbuf;
 	os.flush();
 	m_cs.leave();
+	if (level >= LEVEL_ERROR) {
+		if (m_show_message)
+			(*m_show_message)(buf);
+		else
+			show_message(buf);
+	}
 }
 
 // static

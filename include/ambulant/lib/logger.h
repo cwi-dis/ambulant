@@ -82,6 +82,8 @@ namespace ambulant {
 
 namespace lib {
 
+typedef void (*show_message_type)(char *format, ...);
+
 class logger {
   public:
 	// known log levels
@@ -173,6 +175,7 @@ class logger {
 #ifndef AMBULANT_NO_IOSTREAMS
 	void set_std_ostream(std::ostream& os); 
 #endif
+	void set_show_message(show_message_type handler);
 	
 	// This becomes the owner of pos
 	// When this is deleted will delete pos.
@@ -188,6 +191,7 @@ class logger {
 	critical_section m_cs;
 	std::string m_name;	
 	ostream* m_pos;
+	show_message_type m_show_message;
 	int m_level;
 	
 	// configuration and output format
