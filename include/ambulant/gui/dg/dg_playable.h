@@ -50,12 +50,11 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DG_IMG_H
-#define AMBULANT_GUI_DG_IMG_H
+#ifndef AMBULANT_GUI_DG_PLAYABLE_H
+#define AMBULANT_GUI_DG_PLAYABLE_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/gui/dg/dg_playable.h"
 
 namespace ambulant {
 
@@ -63,27 +62,42 @@ namespace gui {
 
 namespace dg {
 
-class image_renderer;
-class dg_gui_region;
+class dg_transition;
 
-class dg_img_renderer : public dg_renderer_playable {
+class dg_playables_context {
   public:
-	dg_img_renderer(
+	virtual void stopped(common::playable *p) = 0;
+	virtual void paused(common::playable *p) = 0;
+	virtual void resumed(common::playable *p) = 0;
+	virtual void set_intransition(common::playable *p, lib::transition_info *info) = 0;
+	virtual void start_outtransition(common::playable *p, lib::transition_info *info) = 0; 
+	virtual dg_transition *get_transition(common::playable *p) = 0;
+};
+
+class dg_renderer_playable : public common::renderer_playable {
+  public:
+	dg_renderer_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::gui_window *window, 
-		dg_playables_context *dgplayer);
-	~dg_img_renderer();
-	void start(double t);
-	void stop();
-	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
-  private:
-	image_renderer *m_image;
-	lib::screen_rect<int> m_msg_rect;
-	dg_gui_region *m_rgn;
+		dg_playables_context *dgplayer) 
+	:	common::renderer_playable(context, cookie, node, evp), 
+		m_window(window), m_dgplayer(dgplayer), m_transitioning(false) {}
+	
+	void set_intransition(lib::transition_info *info) {
+		//m_transitioning = true; 
+		//m_dgplayer->set_intransition(this, info);
+	}
+	void start_outtransition(lib::transition_info *info) {  
+		//m_transitioning = true; 
+		//m_dgplayer->start_outtransition(this, info);
+	}
+  protected:
+	common::gui_window *m_window;
+	dg_playables_context *m_dgplayer;
+	bool m_transitioning;
 };
 
 } // namespace dg
@@ -92,4 +106,4 @@ class dg_img_renderer : public dg_renderer_playable {
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_DG_IMG_H
+#endif // AMBULANT_GUI_DG_PLAYABLE_H

@@ -65,6 +65,7 @@ protected:
 	afx_msg void OnHelpWelcome();
 	afx_msg void OnFileSelect();
 	afx_msg void OnFileLoadSettings();
+	afx_msg LPARAM OnReplaceDoc(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -62,6 +62,7 @@
 #include "ambulant/gui/dg/dg_window.h"
 #include "ambulant/gui/dg/dg_wmuser.h"
 #include "ambulant/gui/dg/dg_rgn.h"
+#include "ambulant/gui/dg/dg_transition.h"
 
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/event_processor.h"
@@ -69,6 +70,9 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
+#include "ambulant/lib/transition_info.h"
+
+#include "ambulant/smil2/transition.h"
 
 // Players
 #include "ambulant/smil2/smil_player.h"
@@ -99,6 +103,7 @@ gui::dg::dg_player::dg_player(const net::url& u)
 	m_player(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
+	m_update_event(0),	
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
@@ -120,8 +125,18 @@ gui::dg::dg_player::dg_player(const net::url& u)
 gui::dg::dg_player::~dg_player() {
 	if(m_player) stop();
 	delete m_player;
+	while(!m_frames.empty()) {
+		frame *pf = m_frames.top();
+		m_frames.pop();
+		m_windows = pf->windows;
+		m_player = pf->player;
+		delete pf;
+		stop();
+		delete m_player;
+	}
 	m_timer->pause();
-	m_worker_processor->cancel_all_events();
+	if(m_worker_processor)
+		m_worker_processor->cancel_all_events();
 	delete m_worker_processor;
 	delete m_timer;
 	assert(m_windows.empty());
@@ -168,7 +183,7 @@ void gui::dg::dg_player::resume() {
 }
 
 bool gui::dg::dg_player::is_playing() const {
-	return m_player && m_player->is_playing();
+	return (m_player && m_player->is_playing()) || !m_frames.empty();
 }
 
 bool gui::dg::dg_player::is_pausing() const {
@@ -176,7 +191,7 @@ bool gui::dg::dg_player::is_pausing() const {
 }
 
 bool gui::dg::dg_player::is_done() const {
-	return m_player && m_player->is_done();
+	return m_player && m_player->is_done() && m_frames.empty();
 }
 
 void gui::dg::dg_player::on_click(int x, int y, HWND hwnd) {
@@ -228,8 +243,8 @@ common::gui_window *
 gui::dg::dg_player::new_window(const std::string &name, 
 	lib::size bounds, common::gui_events *src) {
 	
-	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
-		name.c_str(), repr(bounds).c_str());
+	AM_DBG lib::logger::get_logger()->trace("dg_window_factory::new_window(%s): %s", 
+		name.c_str(), ::repr(bounds).c_str());
 	
 	// wininfo struct that will hold the associated objects
 	wininfo *winfo = new wininfo;
@@ -321,7 +336,7 @@ gui::dg::dg_player::new_playable(
 	if(tag == "text") {
 		p = new dg_text_renderer(context, cookie, node, evp, window);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, window);
+		p = new dg_img_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "audio") {
 		p = new dg_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
@@ -334,6 +349,96 @@ gui::dg::dg_player::new_playable(
 		p = new dg_area(context, cookie, node, evp, window);
 	}
 	return p;
+}
+
+void gui::dg::dg_player::set_intransition(common::playable *p, lib::transition_info *info) { 
+	lib::logger::get_logger()->trace("set_intransition : %s", repr(info->m_type).c_str());
+	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	dg_transition *tr = make_transition(info->m_type, p, timer);
+	m_trmap[p] = tr;
+	tr->init(p->get_renderer()->get_surface(), false, info);
+	tr->first_step();
+	if(!m_update_event) schedule_update();
+}
+
+void gui::dg::dg_player::start_outtransition(common::playable *p, lib::transition_info *info) {  
+	lib::logger::get_logger()->trace("start_outtransition : %s", repr(info->m_type).c_str());
+	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	dg_transition *tr = make_transition(info->m_type, p, timer);
+	m_trmap[p] = tr;
+	tr->init(p->get_renderer()->get_surface(), true, info);
+	tr->first_step();
+	if(!m_update_event) schedule_update();
+}
+
+bool gui::dg::dg_player::has_transitions() const {
+	return !m_trmap.empty();
+}
+
+void gui::dg::dg_player::update_transitions() {
+	m_trmap_cs.enter();
+	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
+		if(!(*it).second->next_step()) {
+			delete (*it).second;
+			m_trmap.erase(it);
+			break;
+		}
+	}
+	m_trmap_cs.leave();
+}
+
+void gui::dg::dg_player::clear_transitions() {
+	m_trmap_cs.enter();
+	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++)
+		delete (*it).second;
+	m_trmap.clear();
+	m_trmap_cs.leave();
+}
+
+gui::dg::dg_transition *gui::dg::dg_player::get_transition(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	return (it != m_trmap.end())?(*it).second:0;
+}
+
+void gui::dg::dg_player::stopped(common::playable *p) {
+	m_trmap_cs.enter();
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		delete (*it).second;
+		m_trmap.erase(it);
+	}
+	m_trmap_cs.leave();
+}
+
+void gui::dg::dg_player::paused(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		(*it).second->pause();
+	}
+}
+
+void gui::dg::dg_player::resumed(common::playable *p) {
+	trmap_t::iterator it = m_trmap.find(p);
+	if(it != m_trmap.end()) {
+		(*it).second->resume();
+	}
+}
+
+void gui::dg::dg_player::update_callback() {
+	if(!m_update_event) return;
+	if(has_transitions()) {
+		update_transitions();
+		schedule_update();
+	} else {
+		m_update_event = 0;
+	}
+}
+
+void gui::dg::dg_player::schedule_update() {
+	if(!m_player) return;
+	m_update_event = new lib::no_arg_callback_event<dg_player>(this, 
+		&dg_player::update_callback);
+	m_worker_processor->add_event(m_update_event, 50);
 }
 
 ////////////////////////
@@ -391,10 +496,58 @@ void gui::dg::dg_player::show_file(const net::url& href) {
 	ShellExecuteEx(&si);
 #endif
 }
-void gui::dg::dg_player::close(common::player *p) {
-	m_logger->warn("dg_player: not implemented: close document");
+
+void gui::dg::dg_player::done(common::player *p) {
+	m_timer->pause();
+	m_update_event = 0;
+	clear_transitions();
+	if(!m_frames.empty()) {
+		frame *pf = m_frames.top();
+		m_frames.pop();
+		m_windows = pf->windows;
+		m_player = pf->player;
+		delete pf;
+		resume();
+		std::map<std::string, wininfo*>::iterator it;
+		for(it=m_windows.begin();it!=m_windows.end();it++) {
+			dg_window *dgwin = (dg_window *)(*it).second->w;
+			dgwin->need_redraw();
+		}		
+	}
 }
 
-void gui::dg::dg_player::open(net::url newdoc, bool start, common::player *old) {
-	m_logger->show("dg_player: not implemented: open \"%s\"", newdoc.get_url().c_str());
+void gui::dg::dg_player::close(common::player *p) {
+	PostMessage(get_main_window(), WM_CLOSE, 0, 0);
+}
+
+void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player *old) {
+	if(old) {
+		// Replace the current document
+		PostMessage(get_main_window(), WM_REPLACE_DOC, 
+			startnewdoc?1:0, LPARAM(new std::string(newdoc.get_url()))); 
+		return;
+	}
+	
+	// Parse the provided URL. 
+	lib::document *doc = lib::document::create_from_url(newdoc);
+	if(!doc) {
+		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
+		return;
+	}
+	
+	// Push the old frame on the stack
+	if(m_player) {
+		pause();
+		frame *pf = new frame();
+		pf->windows = m_windows;
+		pf->player = m_player;
+		m_windows.clear();
+		m_player = 0;
+		m_frames.push(pf);
+	}
+	
+	// Create a player instance
+	AM_DBG m_logger->trace("Creating player instance for: %s", newdoc.get_url().c_str());
+	m_player = new smil2::smil_player(doc, this, this, this);
+	if(startnewdoc) start();
 }

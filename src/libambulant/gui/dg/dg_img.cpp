@@ -77,9 +77,10 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window)
-:   common::renderer_playable(context, cookie, node, evp),
-	m_image(0), m_window(window) {
+	common::gui_window *window,
+	dg_playables_context *dgplayer)
+:   dg_renderer_playable(context, cookie, node, evp, window, dgplayer),
+	m_image(0) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dg_img_renderer::ctr(0x%x)", this);
 	net::url url = m_node->get_url("src");

@@ -61,26 +61,34 @@
 
 #include <string>
 #include <map>
+#include <stack>
 
 // The interfaces implemented by dx_player
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/net/url.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/gui/dg/dg_playable.h"
+
 
 // Global functions provided by the hosting application.
 extern HWND new_os_window();
 extern void destroy_os_window(HWND hwnd);
+extern HWND get_main_window();
 
 namespace ambulant {
 
-// classes used by dx_player
+// classes used by dg_player
 
 namespace lib {
 	class event_processor;
 	class logger;
+	class transition_info;
+	class event;
+	
 }
 
 namespace mms {
@@ -97,11 +105,13 @@ namespace dg {
 
 class viewport;
 class dg_window;
+class dg_transition;
 
 class dg_player : 
 	public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
+	public dg_playables_context,
 	public common::embedder {
 	
   public:
@@ -152,7 +162,8 @@ class dg_player :
 	void show_file(const net::url& href);
 	void close(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL);
-
+	void done(common::player *p);
+	
 	////////////////////
 	// Implementation specific artifacts
 	
@@ -168,19 +179,46 @@ class dg_player :
 	void redraw(HWND hwnd, HDC hdc);
 	void on_done();
 	
+	// Timeslices services and transitions
+	void update_callback();
+	void schedule_update();
+	void update_transitions();
+	void clear_transitions();
+	bool has_transitions() const;
+	void stopped(common::playable *p);
+	void paused(common::playable *p);
+	void resumed(common::playable *p);
+	void set_intransition(common::playable *p, lib::transition_info *info);
+	void start_outtransition(common::playable *p, lib::transition_info *info);
+	dg_transition *get_transition(common::playable *p);
+	
   private:
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 
+	// The current document URL
 	net::url m_url;
+	
+	// The current SMIL2 player
 	smil2::smil_player *m_player;
 	
-	lib::timer *m_timer;
-	lib::event_processor *m_worker_processor;	
-	
+	// The current view	
 	struct wininfo {HWND h; viewport *v; dg_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	
 	wininfo* get_wininfo(HWND hwnd);
+	
+	// The frames stack
+	struct frame {std::map<std::string, wininfo*> windows; smil2::smil_player* player;};
+	std::stack<frame*> m_frames;
+	
+	// The secondary timer and processor
+	lib::timer *m_timer;
+	lib::event_processor *m_worker_processor;	
+		
+	lib::event *m_update_event;
+	typedef std::map<common::playable *, dg_transition*> trmap_t;
+	trmap_t m_trmap;
+	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
 };

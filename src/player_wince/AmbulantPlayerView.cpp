@@ -42,6 +42,10 @@ void destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
 }
 
+HWND get_main_window() {
+	return AfxGetMainWnd()->GetSafeHwnd();
+}
+
 using namespace ambulant;
 
 typedef gui::dg::dg_player gui_player;
@@ -86,6 +90,7 @@ BEGIN_MESSAGE_MAP(CAmbulantPlayerView, CView)
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
 	ON_COMMAND(ID_FILE_SELECT, OnFileSelect)
 	ON_COMMAND(ID_FILE_LOADSETTINGS, OnFileLoadSettings)
+	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -309,4 +314,12 @@ void CAmbulantPlayerView::OnFileLoadSettings()
 			SetMMDocument(m_curDocFilename);
 		}
 	}
+}
+
+LPARAM CAmbulantPlayerView::OnReplaceDoc(WPARAM wParam, LPARAM lParam) {
+	if(lParam == 0) return 0;
+	std::string *purlstr = (std::string *)lParam;
+	SetMMDocument(lib::textptr(purlstr->c_str()).c_wstr());
+	delete purlstr;
+	return 0;
 }

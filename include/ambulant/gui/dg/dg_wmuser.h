@@ -3,5 +3,6 @@
 
 #define WM_SET_CLIENT_RECT WM_USER+1
 #define WM_UPDATE_VIEWPORT WM_USER+2
+#define WM_REPLACE_DOC WM_USER+3
 
 #endif
