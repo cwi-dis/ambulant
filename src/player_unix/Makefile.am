@@ -22,8 +22,8 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	-L$(QT_PREFIX)/lib -lqt-mt
 AM_LDFLAGS=$(extra_arts_ldflags)
  
-DEFINES=$(extra_arts_DEFINES)
-INCLUDES = -I$(top_builddir)/include				\
+AM_CPPFLAGS = $(extra_arts_DEFINES) \
+	   -I$(top_builddir)/include				\
 	   -I$(top_srcdir)/include				\
 	   -I$(top_builddir)/include/ambulant/gui/qt		\
 	   -I$(top_srcdir)/include/ambulant/gui/qt		\
