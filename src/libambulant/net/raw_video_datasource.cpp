@@ -54,7 +54,7 @@
 
 #include <unistd.h>
 
-
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -82,9 +82,10 @@ void
 raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent, int timestamp)
 {
 	bool dummy;
-	
+	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x)", (void*) this);
 	dummy = read_next_frame();
-	if (dummy) {
+	AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start (0x%x): read_next_frame returned %d", (void*) this, dummy);
+	if (1) {
     	if (evp && cbevent) {
 			AM_DBG lib::logger::get_logger()->trace("raw_video_datasource.start: trigger readdone callback (x%x)", cbevent);
 			evp->add_event(cbevent, 0, ambulant::lib::event_processor::high);
@@ -95,7 +96,7 @@ raw_video_datasource::start_frame(lib::event_processor *evp, lib::event *cbevent
 char*
 raw_video_datasource::get_frame(int *timestamp)
 {
-	m_filenr = *timestamp;
+	*timestamp = m_filenr;
 	return m_buffer;
 }
 
@@ -105,8 +106,10 @@ raw_video_datasource::frame_done(int timestamp)
 	if (timestamp > m_filenr) {
 		m_filenr = timestamp;
 	}
-	free (m_buffer);
-	m_buffer = NULL;
+	if (m_buffer) {
+		free (m_buffer);
+		m_buffer = NULL;
+	}
 }
 
 
@@ -134,32 +137,34 @@ raw_video_datasource::read_next_frame()
 	int file;
 	int sz;
 	int nb_read;
-	char* buf_ptr;
-
-	m_filenr++;
-
-	sprintf(filename, "%s/%08d.jpg", m_directory.c_str(),m_filenr);
 	
+	m_filenr++;
+	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): framenr : %d", m_filenr);
+	
+	sprintf(filename, "%s/0%07i.jpg", m_directory.c_str(), m_filenr);
+	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): Opening %s", filename);
 	file = open(filename, O_RDONLY); 
 
 	if (file < 0 ) {
 			AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): Unable to open file");
 			m_eof = true;
+			m_buffer = NULL;
 			return false;
 	}
 
 	sz = filesize(file);
 	m_size = sz;
 	m_buffer = (char*) malloc(sz);
-	buf_ptr = m_buffer;
+	AM_DBG lib::logger::get_logger()->trace("active_datasource.read_next_frame(): m_buffer = 0x%x", (void*) m_buffer);
+
 	do {
-		nb_read = read(file, buf_ptr, sz);
+		nb_read = read(file, m_buffer, sz);
 		if (nb_read != sz) {
-				lib::logger::get_logger()->fatal("raw_video_datasource.filesize(): Read error");
+			lib::logger::get_logger()->fatal("raw_video_datasource.filesize(): Read error");
 		}
 	} while (nb_read < 1);
 	close(file);
-	buf_ptr = NULL;		
+		
 	
 	return true;
 }
