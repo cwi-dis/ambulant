@@ -68,7 +68,7 @@ qt_active_video_renderer::~qt_active_video_renderer()
 void 
 qt_active_video_renderer::show_frame(char* frame, int size)
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d", frame, size);
+//	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 	m_lock.enter();
 	if (m_data == NULL) {
 			m_data = (char*) malloc(size);
@@ -83,8 +83,10 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 		memcpy(m_data, frame, size);
 		m_data_size = size;
 		if (m_dest) {
-			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw");
-				m_dest->need_redraw();
+			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
+			// XXX Not sure about this, but i gues it is the right place to set m_image_loaded false.
+			m_image_loaded = false; 
+			m_dest->need_redraw();	
 			AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame: need_redraw called");
 		} else {
 			lib::logger::get_logger()->error("qt_active_video_renderer.show_frame: m_dest is NULL !");
@@ -102,13 +104,18 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 void
 qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 				 common::abstract_window* w) {
-	m_lock.enter();
+	//m_lock.enter();	
+	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x): ltrb=(%d,%d,%d,%d), p=(%d,%d)",(void *)this,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
 		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_image_loaded=%d (this=0x%x)",m_image_loaded, (void *)this);
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.m_image_loaded=%d, m_data=0x%x (this=0x%x)",m_image_loaded,(void*) m_data, (void *)this);
 	}
+
 	// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw: info=0x%x", info);
@@ -162,5 +169,5 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 	}
 	paint.flush();
 	paint.end();
-	m_lock.leave();
+//m_lock.leave();
 }

@@ -220,6 +220,11 @@ global_playable_factory::new_playable(
     }
     return m_default_factory->new_playable(context, cookie, node, evp);
 }
+void 
+active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window)
+{
+	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::redraw (this = 0x%x)", (void *) this);
+}
 
 active_video_renderer::active_video_renderer(
 	common::playable_notification *context,
@@ -254,6 +259,11 @@ active_video_renderer::start (double where = 1)
 	w = (int) round (where);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) ", w, (void *) this);
+	if (m_dest) {
+		m_dest->show(this);
+	} else {
+		AM_DBG lib::logger::get_logger ()->trace ("active_video_renderer::start(%d) (this = 0x%x) m_dest == NULL", w, (void *) this);
+	}
 	m_src->start_frame (m_evp, e, w);
 	m_lock.leave();
 }
@@ -347,3 +357,10 @@ active_video_renderer::set_surface(common::surface *dest)
 
 surface*
 active_video_renderer::get_surface() { return m_dest;}
+
+renderer* 
+active_video_renderer::get_renderer() 
+{
+	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::get_renderer() (this = 0x%x)", (void *) this);
+	return this;
+}

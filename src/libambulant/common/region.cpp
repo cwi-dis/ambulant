@@ -724,5 +724,3 @@ active_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) 
 		point(x_region_for_image_left, y_region_for_image_top),
 		point(x_region_for_image_right, y_region_for_image_bottom));
 }
-
-

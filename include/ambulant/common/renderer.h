@@ -212,7 +212,7 @@ class active_video_renderer : public common::active_basic_renderer {
   	bool is_playing() { return m_is_playing; };  
 	
 	virtual void show_frame(char* frame, int size) {};
-    virtual void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+    virtual void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
 	virtual void wantclicks(bool want) {};
     virtual void user_event(const lib::point &where, int what=0) {};
 	
@@ -227,7 +227,7 @@ class active_video_renderer : public common::active_basic_renderer {
 
 	virtual void set_surface(common::surface *dest);
 	virtual common::surface *get_surface();
-	virtual renderer *get_renderer() { return this; }
+	virtual renderer *get_renderer();
 	
 		
   protected:

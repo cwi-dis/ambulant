@@ -354,7 +354,9 @@ smil_player::new_playable(const lib::node *n) {
 	// And connect it to the rendering surface
 	if (np) {
 		common::renderer *rend = np->get_renderer();
+		
 		if (rend) {
+			AM_DBG m_logger->trace("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
 		} else {
 			AM_DBG m_logger->trace("smil_player::new_playable: surface not set becasue rend == NULL");
