@@ -81,7 +81,7 @@ class dg_img_renderer : public dg_renderer_playable {
 	void seek(double t) {}
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
-  private:
+ private:
 	image_renderer *m_image;
 	lib::screen_rect<int> m_msg_rect;
 	dg_gui_region *m_rgn;

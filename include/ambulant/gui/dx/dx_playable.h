@@ -69,8 +69,8 @@ class dx_playables_context {
 	virtual void stopped(common::playable *p) = 0;
 	virtual void paused(common::playable *p) = 0;
 	virtual void resumed(common::playable *p) = 0;
-	virtual void set_intransition(common::playable *p, lib::transition_info *info) = 0;
-	virtual void start_outtransition(common::playable *p, lib::transition_info *info) = 0; 
+	virtual void set_intransition(common::playable *p, const lib::transition_info *info) = 0;
+	virtual void start_outtransition(common::playable *p, const lib::transition_info *info) = 0; 
 	virtual dx_transition *get_transition(common::playable *p) = 0;
 };
 
@@ -86,11 +86,11 @@ class dx_renderer_playable : public common::renderer_playable {
 	:	common::renderer_playable(context, cookie, node, evp), 
 		m_window(window), m_dxplayer(dxplayer), m_transitioning(false) {}
 	
-	void set_intransition(lib::transition_info *info) {
+	void set_intransition(const lib::transition_info *info) {
 		m_transitioning = true; 
 		m_dxplayer->set_intransition(this, info);
 	}
-	void start_outtransition(lib::transition_info *info) {  
+	void start_outtransition(const lib::transition_info *info) {  
 		m_transitioning = true; 
 		m_dxplayer->start_outtransition(this, info);
 	}

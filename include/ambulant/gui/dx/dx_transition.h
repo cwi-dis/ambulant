@@ -76,7 +76,7 @@ namespace dx {
 class dx_transition {
   public:
 	virtual ~dx_transition(){}
-	virtual void init(common::surface *dst, bool is_outtrans, lib::transition_info *info) = 0;
+	virtual void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info) = 0;
 	virtual void first_step() = 0;
 	virtual bool next_step() = 0;
 	virtual bool next_step(lib::timer::time_type pt) = 0;
@@ -143,7 +143,7 @@ class dx_transition_engine : public dx_transition {
 		return !m_engine->is_done();
 	}
 	
-	void init(common::surface *dst, bool is_outtrans, lib::transition_info *info)
+	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 		{m_engine->init(dst, is_outtrans, info);}
 		
 	void pause() {m_timer->pause();}

@@ -88,7 +88,7 @@ transition_engine::~transition_engine()
 }
 
 void
-transition_engine::init(common::surface *dst, bool outtrans, lib::transition_info *info)
+transition_engine::init(common::surface *dst, bool outtrans, const lib::transition_info *info)
 {
 	m_dst = dst;
 	m_outtrans = outtrans;

@@ -76,7 +76,7 @@ namespace dg {
 class dg_transition {
   public:
 	virtual ~dg_transition(){}
-	virtual void init(common::surface *dst, bool is_outtrans, lib::transition_info *info) = 0;
+	virtual void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info) = 0;
 	virtual void first_step() = 0;
 	virtual bool next_step() = 0;
 	virtual void pause() = 0;
@@ -137,7 +137,7 @@ class dg_transition_engine : public dg_transition {
 		return !m_engine->is_done();
 	}
 	
-	void init(common::surface *dst, bool is_outtrans, lib::transition_info *info)
+	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 		{m_engine->init(dst, is_outtrans, info);}
 		
 	void pause() {m_timer->pause();}

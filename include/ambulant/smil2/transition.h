@@ -70,7 +70,7 @@ class transition_engine {
   public:
 	transition_engine();
 	virtual ~transition_engine();
-	void init(common::surface *dst, bool is_outtrans, lib::transition_info *info);
+	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info);
 	
 	void begin(lib::transition_info::time_type now);
 	void end();
@@ -85,7 +85,7 @@ class transition_engine {
 
 	common::surface *m_dst;
 	bool m_outtrans;
-	lib::transition_info *m_info;
+	const lib::transition_info *m_info;
 	lib::transition_info::time_type m_begin_time;
 	int m_stepcount;
 	double m_progress;

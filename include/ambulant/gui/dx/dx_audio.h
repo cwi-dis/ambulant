@@ -82,6 +82,8 @@ class dx_audio_renderer : public common::renderer_playable {
 	void pause();
 	void resume();
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void set_intransition(const lib::transition_info *info) {};
+	void start_outtransition(const lib::transition_info *info) {};
 	std::pair<bool, double> get_dur();
   private:
 	void update_callback();

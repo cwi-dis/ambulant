@@ -372,7 +372,7 @@ gui::dg::dg_player::new_playable(
 	return p;
 }
 
-void gui::dg::dg_player::set_intransition(common::playable *p, lib::transition_info *info) { 
+void gui::dg::dg_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);
@@ -382,7 +382,7 @@ void gui::dg::dg_player::set_intransition(common::playable *p, lib::transition_i
 	if(!m_update_event) schedule_update();
 }
 
-void gui::dg::dg_player::start_outtransition(common::playable *p, lib::transition_info *info) {  
+void gui::dg::dg_player::start_outtransition(common::playable *p, const lib::transition_info *info) {  
 	lib::logger::get_logger()->debug("start_outtransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);

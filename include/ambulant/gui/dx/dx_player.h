@@ -190,8 +190,8 @@ class AMBULANTAPI dx_player :
 	void stopped(common::playable *p);
 	void paused(common::playable *p);
 	void resumed(common::playable *p);
-	void set_intransition(common::playable *p, lib::transition_info *info);
-	void start_outtransition(common::playable *p, lib::transition_info *info);
+	void set_intransition(common::playable *p, const lib::transition_info *info);
+	void start_outtransition(common::playable *p, const lib::transition_info *info);
 	dx_transition *get_transition(common::playable *p);
 	
   private:
