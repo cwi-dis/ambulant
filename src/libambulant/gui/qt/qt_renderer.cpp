@@ -77,6 +77,14 @@ qt_renderer::~qt_renderer()
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
+void 
+qt_renderer::set_intransition(const lib::transition_info *info)
+{
+	if (m_intransition == NULL)
+		m_intransition = new transition_info();
+	*m_intransition = *info;
+}
+//void start_outtransition(const lib::transition_info *info);
 	
 void
 qt_renderer::start(double where)
@@ -97,13 +105,16 @@ qt_renderer::start(double where)
 }
 
 void
-qt_renderer::start_outtransition(lib::transition_info *info)
+qt_renderer::start_outtransition(const lib::transition_info *info)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug
 	  ("qt_renderer.start_outtransition(0x%x)", (void *)this);
 	if (m_trans_engine) stop_transition();
-	m_outtransition = info;
+	if (m_outtransition == NULL) {
+		m_outtransition = new transition_info();
+	}
+	*m_outtransition = *info;
 	m_trans_engine = qt_transition_engine(m_dest, true, 
 					      m_outtransition);
 	if (m_trans_engine)

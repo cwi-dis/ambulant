@@ -128,8 +128,8 @@ class renderer_playable : public playable_imp, public renderer {
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
 	void set_alignment(common::alignment *align) { m_alignment = align; }
-	void set_intransition(lib::transition_info *info) {  }
-	void start_outtransition(lib::transition_info *info) {  }
+	void set_intransition(const lib::transition_info *info) {  }
+	void start_outtransition(const lib::transition_info *info) {  }
 	surface *get_surface() { return m_dest;}
 	void user_event(const lib::point &where, int what) {}
 	renderer *get_renderer() { return this; }

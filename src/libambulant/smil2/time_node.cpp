@@ -733,7 +733,7 @@ void time_node::start_playable(time_type offset) {
 	m_eom_flag = false;
 	common::playable *np = create_playable();
 	if(np) np->wantclicks(m_want_activate_events);
-	const lib::node *trans_in = m_attrs.get_trans_in();
+	const lib::transition_info *trans_in = m_attrs.get_trans_in();
 	if(np) {
 		if(trans_in) {
 			m_context->start_playable(m_node, time_type_to_secs(offset()), trans_in);
@@ -894,7 +894,7 @@ void time_node::exec(qtime_type timestamp) {
 				AM_DBG m_logger->debug("%s[%s].start_transition() at %ld (end:%ld)", 
 					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
 					ts.second(),  m_interval.end());
-				const lib::node *trans_out = m_attrs.get_trans_out();
+				const lib::transition_info *trans_out = m_attrs.get_trans_out();
 				m_context->start_transition(m_node, trans_out, false);
 				m_transout_sr->reset(0);
 			}

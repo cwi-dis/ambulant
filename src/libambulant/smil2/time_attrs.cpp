@@ -618,7 +618,7 @@ void time_attrs::parse_transitions() {
 	const char *p = m_node->get_attribute("transIn");
 	m_trans_in = 0;
 	if(p) {
-		m_trans_in = nctx->get_node(p);
+		m_trans_in = transition_info::from_node(nctx->get_node(p));
 		if(!m_trans_in) {
 			m_logger->trace("%s[%s] failed to locate transIn element: [%s]", 
 				m_tag.c_str(), m_id.c_str(), p);		
@@ -635,7 +635,7 @@ void time_attrs::parse_transitions() {
 	p = m_node->get_attribute("transOut");
 	m_trans_out = 0;
 	if(p) {
-		m_trans_out = nctx->get_node(p);
+		m_trans_out = transition_info::from_node(nctx->get_node(p));
 		if(!m_trans_out) {
 			m_logger->trace("%s[%s] failed to locate transOut element: [%s]", 
 				m_tag.c_str(), m_id.c_str(), p);		
@@ -649,36 +649,6 @@ void time_attrs::parse_transitions() {
 			}
 		}
 	}
-}
-
-smil2::time_attrs::time_type time_attrs::get_trans_in_dur() const {
-	if(!m_trans_in) return 0;
-	const char *p = m_trans_in->get_attribute("dur");
-	if(!p) return 1000;  // XXX What is the correct way to say "1 second"?
-	std::string sdur = trim(p);
-	clock_value_p pl;
-	std::string::const_iterator b = sdur.begin();
-	std::string::const_iterator e = sdur.end();
-	std::ptrdiff_t d = pl.parse(b, e);
-	if(d == -1) {
-		return 0;
-	}
-	return pl.m_result;
-}
-
-smil2::time_attrs::time_type time_attrs::get_trans_out_dur() const {
-	if(!m_trans_out) return 0;
-	const char *p = m_trans_out->get_attribute("dur");
-	if(!p) return 1000;  // XXX What is the correct way to say "1 second"?
-	std::string sdur = trim(p);
-	clock_value_p pl;
-	std::string::const_iterator b = sdur.begin();
-	std::string::const_iterator e = sdur.end();
-	std::ptrdiff_t d = pl.parse(b, e);
-	if(d == -1) {
-		return 0;
-	}
-	return pl.m_result;
 }
 
 void time_attrs::parse_time_manipulations() {

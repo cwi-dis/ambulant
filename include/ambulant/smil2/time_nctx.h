@@ -89,13 +89,13 @@ class time_node_context {
 	
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) = 0;
-	virtual void start_playable(const lib::node *n, double t, const lib::node *trans = 0) = 0;
+	virtual void start_playable(const lib::node *n, double t, const lib::transition_info *trans = 0) = 0;
 	virtual void stop_playable(const lib::node *n) = 0;
 	virtual void pause_playable(const lib::node *n, common::pause_display d = common::display_show) = 0;
 	virtual void resume_playable(const lib::node *n) = 0;
 	virtual void seek_playable(const lib::node *n, double t) = 0;
 	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
-	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in) = 0;
+	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) = 0;
 	
 	// Playable queries
 	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
@@ -134,13 +134,13 @@ class dummy_time_node_context : public time_node_context {
 	
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) { return 0;}
-	virtual void start_playable(const lib::node *n, double t, const lib::node *trans = 0) {}
+	virtual void start_playable(const lib::node *n, double t, const lib::transition_info *trans = 0) {}
 	virtual void stop_playable(const lib::node *n) {}
 	virtual void pause_playable(const lib::node *n, common::pause_display d = common::display_show) {}
 	virtual void resume_playable(const lib::node *n) {}
 	virtual void seek_playable(const lib::node *n, double t) {}
 	virtual void wantclicks_playable(const lib::node *n, bool want) {}
-	virtual void start_transition(const lib::node *n, const lib::node *trans, bool in) {}
+	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) {}
 	
 	// Playable queries
 	virtual std::pair<bool, double> get_dur(const lib::node *n) { 

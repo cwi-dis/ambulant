@@ -155,10 +155,10 @@ class renderer : public gui_events {
 	virtual void set_alignment(alignment *align) = 0;
 	
 	/// Apply an inTransition when starting playback.
-	virtual void set_intransition(lib::transition_info *info) = 0;
+	virtual void set_intransition(const lib::transition_info *info) = 0;
 	
 	/// Start an outTransition now.
-	virtual void start_outtransition(lib::transition_info *info) = 0;
+	virtual void start_outtransition(const lib::transition_info *info) = 0;
 	
 	// XXXX This is a hack.
 	virtual surface *get_surface() = 0;

@@ -105,18 +105,27 @@ std::string repr(transition_type t);
 class transition_info {
   public:
 	typedef int time_type;
+	typedef double progress_type;
 	
 	transition_type m_type;
 	std::string m_subtype;
 	time_type m_dur; // XXX Time value
-	double m_startProgress;
-	double m_endProgress;
+	progress_type m_startProgress;
+	progress_type m_endProgress;
 	bool m_reverse;
 	lib::color_t m_color;
 	// We should also have the <param> contents here
+
+	transition_info() { }
+	transition_info(transition_info* info) { *this = *info; }
 	
 	static transition_info *from_node(const node *n);
+
+ private:
+	static time_type get_trans_dur(const node *n);
+	static progress_type get_progress(const node *n, const char* progress, progress_type default_value);
 };
+
 } // namespace lib
  
 } // namespace ambulant

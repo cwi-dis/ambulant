@@ -90,7 +90,7 @@ class transition_engine {
 	int m_stepcount;
 	double m_progress;
 	double m_old_progress;
-	double m_time2progress;
+	double m_progress_per_milli;
 };
 
 class transition_blitclass_rect : public transition_engine {

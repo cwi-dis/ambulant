@@ -85,7 +85,6 @@ transition_engine::transition_engine()
 transition_engine::~transition_engine()
 {
 	AM_DBG lib::logger::get_logger()->debug("transition_engine::~transition_engine()");
-	// XXX Free m_info?
 }
 
 void
@@ -101,7 +100,7 @@ transition_engine::init(common::surface *dst, bool outtrans, lib::transition_inf
 		lib::logger::get_logger()->trace("transition: duration %f, should be greater than zero", float(dur));
 		dur = 1;
 	}
-	m_time2progress = (m_info->m_endProgress - m_info->m_startProgress) / dur;
+	m_progress_per_milli = (m_info->m_endProgress - m_info->m_startProgress) / dur;
 }
 
 void
@@ -124,7 +123,7 @@ transition_engine::step(lib::transition_info::time_type now)
 {
 	AM_DBG lib::logger::get_logger()->debug("transition_engine::step(%d)", now);
 	assert(m_info);
-	m_progress = (now-m_begin_time) * m_time2progress;
+	m_progress = (now-m_begin_time) * m_progress_per_milli + m_info->m_startProgress;
 	if (m_progress <= m_old_progress)
 		m_progress = m_old_progress;
 	else
@@ -147,7 +146,7 @@ transition_engine::next_step_delay()
 {
 	assert(m_info);
 	if (m_stepcount) {
-		double dt = 1.0 / (m_stepcount*m_time2progress);
+		double dt = m_info->m_dur / m_stepcount;
 		AM_DBG lib::logger::get_logger()->debug("transition_engine::next_step_delay: m_stepcount=%d, dt=%f", m_stepcount, dt);
 		return (lib::transition_info::time_type)dt;
 	}
