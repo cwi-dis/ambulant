@@ -113,6 +113,19 @@ fi
 AC_SUBST(QT_PREFIX)
 AC_MSG_RESULT($qt)
 
+AC_MSG_CHECKING(for --with-arts)
+AC_ARG_WITH(arts,
+     [  --with-arts    Turn on aRts support],
+     [case "${withval}" in
+       yes) arts=true
+                ;;
+       no)  arts=false
+                ;;
+       *)   arts=true
+                ;;
+     esac])
+AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
+AC_MSG_RESULT($arts)
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
