@@ -55,6 +55,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/region_dim.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -118,6 +119,7 @@ none_area_renderer::user_event(const lib::point& pt, int what) {
 	}
 	if(!m_rgn->contains(pt)) {
 		AM_DBG lib::logger::get_logger()->trace("none_area_renderer: not in our region");
+		return;
 	}
 	if(what == common::user_event_click) {
 		m_context->clicked(m_cookie);
