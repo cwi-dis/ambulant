@@ -80,6 +80,7 @@ void
 gui::none::none_active_renderer::stop()
 {
 	lib::logger::get_logger()->trace("none_active_renderer.stop(0x%x)", (void *)this);
+	active_renderer::stop();
 }
 
 void

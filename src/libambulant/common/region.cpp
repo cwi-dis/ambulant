@@ -54,6 +54,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -107,6 +108,7 @@ lib::active_region *
 lib::passive_region::activate(const node *node)
 {
 	active_region *rv = new lib::active_region(this, node);
+	AM_DBG lib::logger::get_logger()->trace("passive_region::activate(%s, 0x%x) -> 0x%x", m_name.c_str(), (void*)this, (void*)rv);
 	return rv;
 }
 
@@ -242,7 +244,7 @@ lib::passive_region::get_global_topleft() const
 }
 
 
-const lib::screen_rect<int>& 
+lib::screen_rect<int> 
 lib::passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const
 {
 	// XXXX For now we implement fit=fill only
@@ -373,6 +375,13 @@ lib::passive_root_layout::mouse_region_changed()
 		lib::logger::get_logger()->error("passive_root_layout::mouse_region_changed: m_gui_window == NULL");
 }
 
+lib::active_region::~active_region()
+{
+	AM_DBG lib::logger::get_logger()->trace("active_region::~active_region(0x%x)", (void*)this);
+	if (m_mouse_region) delete m_mouse_region;
+	if (m_renderer) lib::logger::get_logger()->warn("active_region::~active_region(0x%x): m_renderer=0x%x", (void*)this, (void*)m_renderer);
+}
+
 void
 lib::active_region::show(abstract_rendering_source *renderer)
 {
@@ -440,8 +449,7 @@ lib::active_region::renderer_done()
 {
 	m_renderer = NULL;
 	AM_DBG lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());
-	need_redraw();
 	need_events(false);
+	need_redraw();	
 	m_source->active_region_done();
-	
 }

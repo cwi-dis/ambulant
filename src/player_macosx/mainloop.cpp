@@ -59,7 +59,6 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
-#define WITH_MMS_PLAYER
 #ifdef WITH_MMS_PLAYER
 #include "ambulant/common/mms_player.h"
 #else

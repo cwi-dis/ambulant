@@ -79,6 +79,7 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	
 	passive_region() 
 	:	m_name("unnamed"),
+		m_name_str("unnamed"),
 		m_bounds_inited(true),
 		m_inner_bounds(screen_rect<int>()),
 		m_outer_bounds(screen_rect<int>()),
@@ -89,6 +90,7 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 		m_info(NULL) {}
 	passive_region(const std::string &name)
 	:	m_name(name),
+		m_name_str(name.c_str()),
 		m_bounds_inited(true),
 		m_inner_bounds(screen_rect<int>()),
 		m_outer_bounds(screen_rect<int>()),
@@ -116,11 +118,12 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
 	const abstract_smil_region_info *get_info() const { return m_info; }	
 		
-	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const;
+	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const;
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
 		const abstract_smil_region_info *info)
 	:	m_name(name),
+		m_name_str(name.c_str()),
 		m_bounds_inited(true),
 		m_inner_bounds(bounds.innercoordinates(bounds)),
 		m_outer_bounds(bounds),
@@ -152,6 +155,7 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	abstract_bg_rendering_source *get_bg_renderer();
   protected:
   	std::string m_name;					// for debugging
+	char *m_name_str;					// ditto
 	bool m_bounds_inited;					// True if bounds and topleft initialized
   	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based XXXX do lazy
   	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
@@ -197,7 +201,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 				m_mouse_region->clear();
 			}
         }
-	virtual ~active_region() {}
+	virtual ~active_region();
 	
 	virtual void show(abstract_rendering_source *renderer);
 	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
@@ -213,7 +217,7 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	const passive_region* get_parent() const { return m_source->get_parent(); }
 	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
 	const abstract_smil_region_info *get_info() const { return m_source->m_info; }	
-	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const
+	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect) const
 	{
 		return m_source->get_fit_rect(src_size, out_src_rect);
 	}
