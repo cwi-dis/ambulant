@@ -50,6 +50,7 @@ libambulant_la_SOURCES = \
 	lib/delta_timer.cpp \
 	lib/expat_parser.cpp \
 	lib/logger.cpp \
+	lib/nfa.cpp \
 	lib/node.cpp \
 	lib/string_util.cpp \
 	lib/timer.cpp \

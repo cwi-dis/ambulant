@@ -16,6 +16,7 @@ library_include_HEADERS= \
 	layout.h \
 	logger.h \
 	mtsync.h \
+	nfa.h \
 	node_iterator.h \
 	node_navigator.h \
 	node.h \
