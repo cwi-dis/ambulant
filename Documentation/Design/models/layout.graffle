@@ -16,15 +16,56 @@
 	<key>GraphicsList</key>
 	<array>
 		<dict>
+			<key>Bounds</key>
+			<string>{{372, 15.125}, {159, 28}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>ID</key>
+			<integer>24</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
+
+\f0\fs24 \cf0 This document last updated\
+for Ambulant version 0.3}</string>
+			</dict>
+		</dict>
+		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>32</integer>
+				<integer>22</integer>
 			</dict>
 			<key>ID</key>
-			<integer>33</integer>
+			<integer>23</integer>
 			<key>Points</key>
 			<array>
 				<string>{338.028, 539.625}</string>
@@ -45,7 +86,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -56,7 +97,7 @@
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>32</integer>
+			<integer>22</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -111,10 +152,10 @@ get_bgcolor()\
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>30</integer>
+				<integer>20</integer>
 			</dict>
 			<key>ID</key>
-			<integer>31</integer>
+			<integer>21</integer>
 			<key>Points</key>
 			<array>
 				<string>{338.266, 457.625}</string>
@@ -135,7 +176,7 @@ get_bgcolor()\
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -146,7 +187,7 @@ get_bgcolor()\
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>30</integer>
+			<integer>20</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -202,10 +243,10 @@ operators &amp;, |, -, &amp;=, |=, -=, etc}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>28</integer>
+				<integer>18</integer>
 			</dict>
 			<key>ID</key>
-			<integer>29</integer>
+			<integer>19</integer>
 			<key>Points</key>
 			<array>
 				<string>{229.015, 457.625}</string>
@@ -226,7 +267,7 @@ operators &amp;, |, -, &amp;=, |=, -=, etc}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -237,7 +278,7 @@ operators &amp;, |, -, &amp;=, |=, -=, etc}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>28</integer>
+			<integer>18</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -289,14 +330,14 @@ abstract_bg_rendering_source}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>12</integer>
+				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>27</integer>
+			<integer>17</integer>
 			<key>Points</key>
 			<array>
-				<string>{133.174, 105.5}</string>
-				<string>{133.224, 133.275}</string>
+				<string>{133.176, 105.5}</string>
+				<string>{133.229, 133.275}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -313,7 +354,7 @@ abstract_bg_rendering_source}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>26</integer>
+				<integer>16</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -324,7 +365,7 @@ abstract_bg_rendering_source}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>26</integer>
+			<integer>16</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -376,10 +417,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>13</integer>
+				<integer>3</integer>
 			</dict>
 			<key>ID</key>
-			<integer>25</integer>
+			<integer>15</integer>
 			<key>Points</key>
 			<array>
 				<string>{428.337, 253.675}</string>
@@ -400,7 +441,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>14</integer>
+				<integer>4</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -409,10 +450,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>19</integer>
+				<integer>9</integer>
 			</dict>
 			<key>ID</key>
-			<integer>24</integer>
+			<integer>14</integer>
 			<key>Points</key>
 			<array>
 				<string>{414.25, 737.94}</string>
@@ -433,7 +474,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>23</integer>
+				<integer>13</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -442,7 +483,7 @@ layout_manager}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>23</integer>
+			<integer>13</integer>
 			<key>Shape</key>
 			<string>NoteShape</string>
 			<key>Text</key>
@@ -462,10 +503,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>6</integer>
 			</dict>
 			<key>ID</key>
-			<integer>22</integer>
+			<integer>12</integer>
 			<key>Points</key>
 			<array>
 				<string>{297.333, 717.8}</string>
@@ -486,7 +527,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>19</integer>
+				<integer>9</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -495,10 +536,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>15</integer>
+				<integer>5</integer>
 			</dict>
 			<key>ID</key>
-			<integer>21</integer>
+			<integer>11</integer>
 			<key>Points</key>
 			<array>
 				<string>{99.7484, 717.625}</string>
@@ -519,7 +560,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>18</integer>
+				<integer>8</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -528,10 +569,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>18</integer>
+				<integer>8</integer>
 			</dict>
 			<key>ID</key>
-			<integer>20</integer>
+			<integer>10</integer>
 			<key>Points</key>
 			<array>
 				<string>{226.039, 737.737}</string>
@@ -552,7 +593,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>19</integer>
+				<integer>9</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -563,7 +604,7 @@ layout_manager}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>19</integer>
+			<integer>9</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -616,7 +657,7 @@ layout_manager}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>18</integer>
+			<integer>8</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -667,10 +708,10 @@ layout_manager}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>15</integer>
+				<integer>5</integer>
 			</dict>
 			<key>ID</key>
-			<integer>17</integer>
+			<integer>7</integer>
 			<key>Points</key>
 			<array>
 				<string>{234.64, 539.625}</string>
@@ -691,7 +732,7 @@ layout_manager}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -702,7 +743,7 @@ layout_manager}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>16</integer>
+			<integer>6</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -758,7 +799,7 @@ new_background_renderer()}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>15</integer>
+			<integer>5</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -811,7 +852,7 @@ mouse_region_changed()}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>14</integer>
+			<integer>4</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -840,7 +881,7 @@ mouse_region_changed()}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>13</integer>
+			<integer>3</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -889,13 +930,13 @@ user_event(point)}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{24.825, 133.275}, {217.175, 208}}</string>
+			<string>{{24.825, 133.275}, {217.175, 194}}</string>
 			<key>Class</key>
 			<string>MultiTextGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>12</integer>
+			<integer>2</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -959,7 +1000,7 @@ abstract_smil_region_info *get_info()}</string>
 			<key>FitText</key>
 			<string>YES</string>
 			<key>ID</key>
-			<integer>11</integer>
+			<integer>1</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -1119,7 +1160,7 @@ abstract_smil_region_info *get_info()}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxMjo1NToyMFo8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxNDo0NjoxN1o8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -1133,7 +1174,7 @@ abstract_smil_region_info *get_info()}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDQtMDEtMjdUMTI6NTU6MjBaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDQtMDEtMjdUMTQ6NDY6MTdaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1227,13 +1268,13 @@ abstract_smil_region_info *get_info()}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{605, 126}, {574, 698}}</string>
+		<string>{{115, 201}, {574, 698}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>
 		<true/>
 		<key>VisibleRegion</key>
-		<string>{{0, 183}, {559, 600}}</string>
+		<string>{{0, 0}, {559, 600}}</string>
 		<key>Zoom</key>
 		<string>1</string>
 	</dict>
