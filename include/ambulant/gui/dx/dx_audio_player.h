@@ -62,7 +62,7 @@
 #include <strmif.h>
 #include <control.h>
 
-#include "ambulant/lib/playable.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 

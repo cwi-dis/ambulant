@@ -64,7 +64,7 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/layout.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/common/region.h"
 
 #include "ambulant/common/preferences.h"

@@ -179,31 +179,7 @@
 					RelativePath=".\lib\parselets.cpp">
 				</File>
 				<File
-					RelativePath=".\lib\schema.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\smil_time.cpp">
-				</File>
-				<File
 					RelativePath=".\lib\string_util.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\sync_rule.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\test_attrs.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\time_attrs.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\time_node.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\time_state.cpp">
-				</File>
-				<File
-					RelativePath=".\lib\timegraph.cpp">
 				</File>
 				<File
 					RelativePath=".\lib\timer.cpp">
@@ -245,9 +221,6 @@
 				Name="common"
 				Filter="">
 				<File
-					RelativePath=".\common\mms_player.cpp">
-				</File>
-				<File
 					RelativePath=".\common\region.cpp">
 				</File>
 				<File
@@ -257,22 +230,57 @@
 					RelativePath=".\common\renderer.cpp">
 				</File>
 				<File
-					RelativePath=".\common\skeleton.cpp">
+					RelativePath=".\common\schema.cpp">
 				</File>
 				<File
 					RelativePath=".\common\smil_handler.cpp">
 				</File>
 				<File
-					RelativePath=".\common\smil_layout.cpp">
+					RelativePath=".\common\trace_player.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="smil2"
+				Filter="">
+				<File
+					RelativePath=".\smil2\smil_layout.cpp">
 				</File>
 				<File
-					RelativePath=".\common\smil_player.cpp">
+					RelativePath=".\smil2\smil_player.cpp">
 				</File>
 				<File
-					RelativePath=".\common\timeline_builder.cpp">
+					RelativePath=".\smil2\smil_time.cpp">
 				</File>
 				<File
-					RelativePath=".\common\timelines.cpp">
+					RelativePath=".\smil2\sync_rule.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\test_attrs.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\time_attrs.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\time_node.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\time_state.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\timegraph.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="mms"
+				Filter="">
+				<File
+					RelativePath=".\mms\mms_player.cpp">
+				</File>
+				<File
+					RelativePath=".\mms\timeline_builder.cpp">
+				</File>
+				<File
+					RelativePath=".\mms\timelines.cpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -431,34 +439,10 @@
 						RelativePath="..\..\include\ambulant\lib\sax_types.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\schema.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\smil_time.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\string_util.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\sync_rule.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\test_attrs.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\thread.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\time_attrs.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\time_node.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\time_state.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\lib\timegraph.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
@@ -512,9 +496,6 @@
 					Name="common"
 					Filter="">
 					<File
-						RelativePath="..\..\include\ambulant\common\parse_attrs.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\common\player.h">
 					</File>
 					<File
@@ -539,22 +520,7 @@
 						RelativePath="..\..\include\ambulant\common\renderer.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\skeleton.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\common\smil_layout.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\common\smil_player.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\common\timeline_builder.h">
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\common\timelines.h">
 					</File>
 				</Filter>
 				<Filter
@@ -698,6 +664,50 @@
 							RelativePath="..\..\include\ambulant\config\stdlib\vacpp.h">
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="smil2"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\smil2\smil_layout.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\smil_player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\smil_time.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\sync_rule.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\test_attrs.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\time_attrs.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\time_node.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\time_state.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\timegraph.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="mms"
+					Filter="">
+					<File
+						RelativePath="..\..\include\ambulant\mms\mms_player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\mms\timeline_builder.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\mms\timelines.h">
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

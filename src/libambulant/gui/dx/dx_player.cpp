@@ -58,10 +58,10 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/test_attrs.h"
 
-#include "ambulant/common/smil_player.h"
-#include "ambulant/common/mms_player.h"
+#include "ambulant/smil2/test_attrs.h"
+#include "ambulant/smil2/smil_player.h"
+#include "ambulant/mms/mms_player.h"
 
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"

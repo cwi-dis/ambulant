@@ -61,7 +61,7 @@
 #include ".\mmview.h"
 
 #include "ambulant/common/preferences.h"
-#include "ambulant/lib/test_attrs.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

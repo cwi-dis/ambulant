@@ -60,7 +60,7 @@
 #include "ambulant/gui/dx/bmp_decoder.h"
 
 #include "ambulant/common/region.h"
-#include "ambulant/lib/layout.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 

@@ -57,7 +57,7 @@
 
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region.h"
-#include "ambulant/lib/playable.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/lib/event.h"
 
 namespace ambulant {

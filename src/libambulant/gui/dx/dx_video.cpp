@@ -50,18 +50,17 @@
  * @$Id$ 
  */
 
-#include "ambulant/gui/dx/dx_video.h"
-
-#include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/layout.h"
+#include "ambulant/lib/logger.h"
 
+#include "ambulant/common/region.h"
+#include "ambulant/common/layout.h"
+
+#include "ambulant/gui/dx/dx_video.h"
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_video_player.h"
-
-#include "ambulant/lib/logger.h"
 
 using namespace ambulant;
 
