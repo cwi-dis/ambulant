@@ -224,6 +224,10 @@ qt_mainloop::~qt_mainloop()
 void
 qt_mainloop::play()
 {
+	if (!m_player) {
+		ambulant::lib::logger::get_logger()->error("qt_mainloop::run: no player");
+		return;
+	}
 	m_running = true;
 	m_player->start();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
@@ -232,6 +236,10 @@ qt_mainloop::play()
 void
 qt_mainloop::stop()
 {
+	if (!m_player) {
+		ambulant::lib::logger::get_logger()->error("qt_mainloop::stop: no player");
+		return;
+	}
 	m_player->stop();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
 }
