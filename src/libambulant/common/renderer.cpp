@@ -76,6 +76,22 @@ using namespace common;
 
 typedef lib::no_arg_callback<renderer_playable_ds> readdone_callback;
 
+renderer_playable::renderer_playable(
+	playable_notification *context,
+	cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor* evp) 
+:	playable_imp(context, cookie, node, evp),
+	m_dest(0),
+	m_alignment(0),
+	m_activated(false),
+	m_erase_never(false)
+{
+	const char *erase = m_node->get_attribute("erase");
+	if (erase && strcmp(erase, "never") == 0)
+		m_erase_never = true;
+}
+
 void
 renderer_playable::start(double t)
 {

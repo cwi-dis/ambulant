@@ -101,6 +101,7 @@ passive_region::passive_region(const std::string &name, passive_region *parent, 
 	if (m_bg_renderer) {
 		m_bg_renderer->set_surface(this);
 	}
+	if (!m_info) lib::logger::get_logger()->debug("passive_region(): m_info==NULL for \"%s\"", name.c_str());
 }
 
 passive_region::~passive_region()
@@ -195,6 +196,15 @@ passive_region::renderer_done(gui_events *cur)
 }
 
 void
+passive_region::keep_as_background()
+{
+	if (m_info->is_subregion())
+		m_parent->keep_as_background();
+	else if (m_bg_renderer)
+		m_bg_renderer->keep_as_background();
+}
+
+void
 passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 {
 	AM_DBG lib::logger::get_logger()->debug("passive_region.redraw(0x%x %s, ltrb=(%d, %d, %d, %d))", (void *)this, m_name.c_str(), r.left(), r.top(), r.right(), r.bottom());
@@ -261,6 +271,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 void
 passive_region::draw_background(const lib::screen_rect<int> &r, gui_window *window)
 {
+#if 0
 	// Do a quick return if we have nothing to draw
 	if (m_info == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("draw_background %s: no m_info", m_name.c_str());
@@ -276,6 +287,7 @@ passive_region::draw_background(const lib::screen_rect<int> &r, gui_window *wind
 		AM_DBG lib::logger::get_logger()->debug("draw_background %s: showbackground is false", m_name.c_str());
 		return;
 	}
+#endif
 	// Now we should make sure we have a background renderer
 	if (!m_bg_renderer) {
 		AM_DBG lib::logger::get_logger()->debug("draw_background %s: no m_bg_renderer", m_name.c_str());

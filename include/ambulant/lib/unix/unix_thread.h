@@ -87,6 +87,7 @@ class thread : public ambulant::lib::thread {
 	bool m_exit_requested;
 	bool m_exit_done;
 	bool m_running;
+	bool m_starting;
 };
 
 } // namespace unix

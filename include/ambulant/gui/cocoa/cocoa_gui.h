@@ -190,6 +190,9 @@ class cocoa_renderer_factory : public common::playable_factory {
 // Return the current on-screen image
 - (NSImage *)_getOnScreenImage;
 
+// Return part of the onscreen image
+- (NSImage *)getOnScreenImageForRect: (NSRect)bounds;
+
 #ifdef USE_SMIL21
 - (void) startScreenTransition;
 - (void) endScreenTransition;

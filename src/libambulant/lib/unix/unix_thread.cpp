@@ -61,7 +61,8 @@ using namespace ambulant;
 lib::unix::thread::thread()
 :	m_thread(NULL),
 	m_exit_requested(false),
-	m_running(false)
+	m_running(false),
+	m_starting(false)
 {
 }
 
@@ -74,8 +75,10 @@ lib::unix::thread::~thread()
 bool 
 lib::unix::thread::start()
 {
+	m_starting = true;
 	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
 		perror("pthread_create");
+		m_starting = false;
 	}
 	return false;
 }
@@ -105,7 +108,7 @@ lib::unix::thread::exit_requested() const
 bool
 lib::unix::thread::is_running() const
 {
-	return m_running;
+	return m_running || m_starting;
 }
 	
 void
@@ -118,9 +121,10 @@ void *
 lib::unix::thread::threadproc(void *pParam)
 {
 	thread* p = static_cast<thread*>(pParam);
-	p->m_running = 1;
+	p->m_running = true;
+	p->m_starting = false;
 	(void)p->run();
-	p->m_running = 0;
+	p->m_running = false;
 	pthread_exit(NULL);
 	return NULL;
 }

@@ -174,6 +174,9 @@ class bgrenderer : public gui_events {
 	
 	/// Render to a specific surface.
 	virtual void set_surface(surface *destination) = 0;
+	
+	/// Keep current onscreen bits as background
+	virtual void keep_as_background() = 0;
 };
 
 /// Pure virtual baseclass for a region of screenspace.
@@ -201,6 +204,9 @@ class surface {
 	/// Signals that a transition has finished.
 	virtual void transition_done() = 0;
 
+	/// Signals that the current on-screen bits should be kept as background
+	virtual void keep_as_background() = 0;
+	
 	/// Returns the region rectangle, (0, 0) based.
 	virtual const lib::screen_rect<int>& get_rect() const = 0;
 	

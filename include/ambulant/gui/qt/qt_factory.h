@@ -84,10 +84,11 @@ class ambulant_qt_window : public common::gui_window {
 	QPixmap* new_ambulant_surface();
 	QPixmap* get_ambulant_surface();
 	QPixmap* get_ambulant_oldpixmap();
+	QPixmap* get_pixmap_from_screen(const lib::screen_rect<int> &r);
 	void reset_ambulant_surface(void);
 	void set_ambulant_surface(QPixmap* surf);
 	void delete_ambulant_surface();
-
+	
   private:
 	qt_ambulant_widget* m_ambulant_widget;
 	QPixmap* m_pixmap;

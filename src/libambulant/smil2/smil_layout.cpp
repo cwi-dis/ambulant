@@ -83,6 +83,9 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 :   m_schema(common::schema::get_instance()),
 	m_surface_factory(common::create_smil_surface_factory()),
 	m_layout_tree(NULL)
+#ifdef USE_SMIL21
+	,m_uses_bgimages(false)
+#endif USE_SMIL21
 {
 	// First find the correct layout section to use.
 	lib::node *layout_section = get_document_layout(doc);
@@ -103,6 +106,11 @@ smil_layout_manager::smil_layout_manager(common::window_factory *wf,lib::documen
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: no rootLayouts, creating one");
 		create_top_surface(wf, NULL, NULL);
 	}
+	
+#ifdef USE_SMIL21
+	if (m_uses_bgimages)
+		load_bgimages(layout_section);
+#endif
 }
 
 smil_layout_manager::~smil_layout_manager()
@@ -240,6 +248,10 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 				m_name2region[pname].push_back(rn);
 			}
 			
+#ifdef USE_SMIL21
+			// See if the node uses background images
+			if (n->get_attribute("backgroundImage")) m_uses_bgimages = true;
+#endif
 			// And finally into the node->region mapping (for animate)
 			m_node2region[n] = rn;
 
@@ -251,6 +263,21 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 	}
 }
 
+#ifdef USE_SMIL21
+void
+smil_layout_manager::load_bgimages(const lib::node *layout_root)
+{
+	lib::logger::get_logger()->debug("load_bgimages: loading background images");
+	lib::node::const_iterator it;
+	lib::node::const_iterator end = layout_root->end();
+	for(it = layout_root->begin(); it != end; it++) {
+		if (!(*it).first) continue;
+		const char *bgimage = (*it).second->get_attribute("backgroundImage");
+		if (bgimage == NULL) continue;
+		lib::logger::get_logger()->debug("load_bgimages: should load bgimage %s", bgimage);
+	}
+}
+#endif 
 
 void
 smil_layout_manager::build_body_regions(lib::document *doc) {

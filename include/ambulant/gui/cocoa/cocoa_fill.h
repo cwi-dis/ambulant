@@ -90,10 +90,13 @@ class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
 class cocoa_background_renderer : public background_renderer {
   public:
     cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src) {}
+	:   background_renderer(src),
+		m_bgimage(NULL) {}
+	~cocoa_background_renderer();
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void keep_as_background();
   private:
-	
+	NSImage *m_bgimage;
 };
 
 } // namespace cocoa

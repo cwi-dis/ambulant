@@ -70,6 +70,10 @@ gui::dx::dx_bgrenderer::dx_bgrenderer(const common::region_info *src)
 gui::dx::dx_bgrenderer::~dx_bgrenderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_bgrenderer(0x%x)", this);
 }
+
+void gui::dx::dx_bgrenderer::keep_as_background() {
+	AM_DBG lib::logger::get_logger()->debug("xg_bgrenderer::keep_as_background(0x%x)", this);
+}
 	
 void gui::dx::dx_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
 	AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw(%s)",repr(dirty).c_str());

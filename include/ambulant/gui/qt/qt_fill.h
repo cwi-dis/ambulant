@@ -118,9 +118,13 @@ class qt_fill_renderer : public  renderer_playable {
 class qt_background_renderer : public common::background_renderer {
   public:
   	qt_background_renderer(const common::region_info *src)
-  	:	common::background_renderer(src) {}
+  	:	common::background_renderer(src),
+  		m_background_pixmap(NULL) {}
   	
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *windo);
+	void keep_as_background();
+  private:
+  	QPixmap *m_background_pixmap;
 };
 
 } // namespace qt

@@ -97,6 +97,8 @@ class passive_region : public surface_template, public surface, public gui_event
 
 	void transition_done() { transition_done(m_inner_bounds); }
 
+	void keep_as_background();
+	
 	// The gui_events interface:
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
 	void user_event(const point &where, int what = 0);

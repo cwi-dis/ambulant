@@ -118,12 +118,7 @@ class renderer_playable : public playable_imp, public renderer {
 		playable_notification *context,
 		cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp) 
-	:	playable_imp(context, cookie, node, evp),
-		m_dest(0),
-		m_alignment(0),
-		m_activated(false) {
-	}
+		lib::event_processor* evp);
 			
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
@@ -139,6 +134,7 @@ class renderer_playable : public playable_imp, public renderer {
 	surface *m_dest;		///< The surface we should render to.
 	alignment *m_alignment;	///< The image alignment to use when rendering.
 	bool m_activated;		///< True when playing
+	bool m_erase_never;		///< True if erase="never" is specified on the node
 };
 
 
@@ -318,6 +314,7 @@ class active_video_renderer : public common::renderer_playable {
 /// It implements some of the methods for a renderer that are applicable 
 /// to background renderers. Subclasses only need to implement
 /// the redraw method.
+/// Additionally, they should override the keep_as_background method.
 class background_renderer : public bgrenderer {
   public:
 	background_renderer(const region_info *src)

@@ -79,6 +79,9 @@ namespace ambulant {
 namespace smil2 {
 
 enum dimension_inheritance { di_none, di_parent, di_rootlayout };
+#ifdef USE_SMIL21
+typedef std::pair<bool, bool> repeat_xy;
+#endif
 
 class region_node : public common::animation_destination {
   public:
@@ -132,6 +135,8 @@ class region_node : public common::animation_destination {
 	double get_soundlevel() const { return m_display_soundlevel; }
 #ifdef USE_SMIL21
 	common::sound_alignment get_soundalign() const { return m_soundalign; }
+	const char *get_bgimage() const { return m_bgimage; }
+	repeat_xy get_bgrepeat() const;
 #endif
 
 	// And corresponding setting interface
@@ -218,6 +223,9 @@ class region_node : public common::animation_destination {
 	double m_soundlevel;
 #ifdef USE_SMIL21
 	common::sound_alignment m_soundalign;
+	const char *m_bgimage;
+	repeat_xy m_bgrepeat;
+	bool m_inherit_bgrepeat;
 #endif // USE_SMIL21
 	bool m_transparent;
 	bool m_showbackground;

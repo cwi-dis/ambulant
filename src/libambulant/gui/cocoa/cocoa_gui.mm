@@ -490,6 +490,22 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	return rv;
 }
 
+- (NSImage *)getOnScreenImageForRect: (NSRect)bounds
+{
+	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
+	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	[self lockFocus];
+	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
+	[self unlockFocus];
+	[rv addRepresentation: [bits autorelease]];
+	[rv setFlipped: YES];
+#ifdef DUMP_TRANSITION
+	[self dump: rv toImageID: "oldsrc"];
+#endif
+	rv = [rv autorelease];
+	return rv;
+}
+
 - (NSImage *)getTransitionOldSource
 {
 #ifdef USE_SMIL21

@@ -140,6 +140,14 @@ ambulant_qt_window::get_ambulant_pixmap()
 	return m_pixmap;
 }
 
+QPixmap*
+ambulant_qt_window::get_pixmap_from_screen(const lib::screen_rect<int> &r)
+{
+	QPixmap *rv = new QPixmap(r.width(), r.height());
+	bitBlt(rv, 0, 0, m_pixmap, r.left(), r.top(), r.width(), r.height());
+	return rv;
+}
+
 qt_ambulant_widget*
 ambulant_qt_window::get_ambulant_widget()
 {

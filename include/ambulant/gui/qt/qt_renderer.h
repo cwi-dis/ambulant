@@ -142,6 +142,7 @@ class qt_renderer : public RP_Base {
 		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window);
 		m_transition_renderer->redraw_post(window);
+		if (m_erase_never) m_dest->keep_as_background();
 	}
 
 	void set_intransition(const lib::transition_info *info) {

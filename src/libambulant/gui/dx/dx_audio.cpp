@@ -128,11 +128,11 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	// And set volume(s)
 	if (m_dest) {
 		const common::region_info *info = m_dest->get_info();
-		double level = info->get_soundlevel();
+		double level = info ? info->get_soundlevel() : 1;
 		if (level != 1)
 			m_player->set_volume((long)(level*100));
 #ifdef USE_SMIL21
-		common::sound_alignment align = info->get_soundalign();
+		common::sound_alignment align = info ? info->get_soundalign() : common::sa_default;
 		if (align == common::sa_left) {
 			m_player->set_balance(-100);
 		} else if (align == common::sa_right) {

@@ -126,6 +126,13 @@ cocoa_fill_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *wind
 	m_lock.leave();
 }
 
+cocoa_background_renderer::~cocoa_background_renderer()
+{
+	if (m_bgimage)
+		[m_bgimage release];
+	m_bgimage = NULL;
+}
+
 void
 cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
 {
@@ -135,11 +142,11 @@ cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gu
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: %d clearing to 0x%x", !m_src->get_transparent(), (long)m_src->get_bgcolor());
+	screen_rect<int> dstrect_whole = r;
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 	if (m_src && !m_src->get_transparent()) {
 		// First find our whole area (which we have to clear to background color)
-		screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(m_dst->get_global_topleft());
-		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 		// XXXX Fill with background color
 		color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x", (long)bgcolor);
@@ -149,7 +156,32 @@ cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gu
 					alpha:1.0];
 		[cocoa_bgcolor set];
 		NSRectFill(cocoa_dstrect_whole);
-	}	
+	}
+	if (m_bgimage) {
+		AM_DBG lib::logger::get_logger()->debug("cocoa_background_renderer::redraw(): drawing image");
+		NSSize srcsize = [m_bgimage size];
+		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
+		[m_bgimage drawInRect: cocoa_dstrect_whole fromRect: srcrect
+			operation: NSCompositeSourceAtop fraction: 1.0];
+	}
+}
+
+void
+cocoa_background_renderer::keep_as_background()
+{
+	AM_DBG lib::logger::get_logger()->debug("cocoa_background_renderer::keep_as_background() called");
+	if (m_bgimage) {
+		AM_DBG lib::logger::get_logger()->debug("cocoa_background_renderer::keep_as_background: delete old m_image");
+		[m_bgimage release];
+		m_bgimage = NULL;
+	}
+	cocoa_window *cwindow = (cocoa_window *)m_dst->get_gui_window();
+	AmbulantView *view = (AmbulantView *)cwindow->view();
+	screen_rect<int> dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];	
+	
+	m_bgimage = [[view getOnScreenImageForRect: cocoa_dstrect_whole] retain];
 }
 
 } // namespace cocoa
