@@ -55,22 +55,24 @@
 using namespace ambulant;
 using namespace gui::arts;
 
-typedef lib::no_arg_callback<common::active_renderer> readdone_callback;
+typedef lib::no_arg_callback<common::playable_imp> readdone_callback;
 
 bool arts_active_audio_renderer::m_arts_init = false;
-
+ 
 arts_active_audio_renderer::arts_active_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::datasource_factory *df)
-:	common::active_renderer(context, cookie, node, evp, df)
+:	common::playable_imp(context, cookie, node, evp),
+	m_rate(44100),
+	m_channels(1),
+	m_bits(16),
+	m_stream(NULL),
+	m_audio_src(NULL)
 {
-    m_rate = 44100;
-    m_channels = 1;
-    m_bits=16;
-    m_stream=NULL;
+init();
 }
 
 int

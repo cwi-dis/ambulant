@@ -69,35 +69,37 @@ namespace arts {
 
 class arts_active_audio_renderer : public common::playable_imp {
   public:
-      arts_active_audio_renderer(
+	arts_active_audio_renderer(
       common::playable_notification *context,
       common::playable_notification::cookie_type cookie,
       const lib::node *node,
       lib::event_processor *const evp,
       net::datasource_factory *df);
 
-      ~arts_active_audio_renderer();
+    ~arts_active_audio_renderer();
 
-      int init();
-      void start(double where);
-      void stop() {};
-      void pause() {};
-      void resume() {};
-      void speed_changed() {};
-      void readdone();
-      void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
+    int init();
+    void start(double where);
+    void stop() {};
+    void pause() {};
+    void resume() {};
+    void speed_changed() {};
+    void readdone();
+    void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
+		
   private:
-
-      static bool m_arts_init;
-      int arts_setup(int rate, int bits, int channels, char *name);
-      int arts_play(char *data, int size);
-      arts_stream_t m_stream;
-      int m_rate;
-      int m_channels;
-      int m_bits;
-      char *m_name;
-      lib::event *m_playdone;
-
+    int arts_setup(int rate, int bits, int channels, char *name);
+    int arts_play(char *data, int size);
+    
+    int m_rate;
+    int m_channels;
+    int m_bits;
+  	arts_stream_t m_stream;
+  	net::audio_datasource *m_audio_src;
+    char *m_name;
+  	arts_stream_t m_stream;
+	static bool m_arts_init;
+    lib::event *m_playdone;
 
 };
 
