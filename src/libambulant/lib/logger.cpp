@@ -44,7 +44,7 @@ bool lib::logger::logdate = false;
 
 // Output logging time as xx:xx:xx
 //static 
-bool lib::logger::logtime = false;
+bool lib::logger::logtime = true;
 
 // Output logger name as [name]
 // static 
@@ -53,7 +53,7 @@ bool lib::logger::logname = false;
 // Output level name 
 // Level name is one of (DEBUG, TRACE, WARN, ERROR, FATAL, UNKNOWN)
 // static 
-bool lib::logger::loglevel = false;
+bool lib::logger::loglevel = true;
 
 ////////////////////////////////
 // Module private bracket
