@@ -69,7 +69,6 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/win32/win32_error.h"
-#include "ambulant/gui/dx/dx_video_player.h"
 
 #include <algorithm>
 #include <cassert>
@@ -82,7 +81,7 @@ using lib::uchar;
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_report_last_error;
 
-struct error {
+static struct error {
 	HRESULT hr;
 	char *name;
 } errorlist [] = {
@@ -354,8 +353,7 @@ gui::dx::viewport::~viewport() {
 	RELEASE(m_direct_draw);
 	if(palette_entries != 0)
 		delete[] palette_entries;
-	if(!m_hwnd)
-		RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
+	RedrawWindow(m_hwnd, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN);
 }
 
 // Sets the background color of this viewport

@@ -102,6 +102,7 @@ gui::dx::dx_img_renderer::~dx_img_renderer() {
 	delete m_image;
 }
 
+
 void gui::dx::dx_img_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::start(0x%x)", this);
 	if(!m_image) {
@@ -127,6 +128,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
+	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 		
 	// Request a redraw
@@ -150,8 +152,15 @@ void gui::dx::dx_img_renderer::stop() {
 				v->draw("STOPPED", m_msg_rect, lib::to_color("red"));
 				v->redraw(m_msg_rect);
 			}
-			dxwindow->need_redraw(m_msg_rect);
 		}
+	}
+}
+
+void gui::dx::dx_img_renderer::user_event(const lib::point& pt, int what) {
+	if(what == common::user_event_click)
+		m_context->clicked(m_cookie);
+	else if(what == common::user_event_mouse_over) {
+		m_context->pointed(m_cookie);
 	}
 }
 

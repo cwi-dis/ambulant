@@ -52,6 +52,7 @@
 
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/common/region.h"
 
 #include "ambulant/lib/logger.h"
 
@@ -63,10 +64,12 @@ using namespace ambulant;
 
 gui::dx::dx_window::dx_window(const std::string& name, 
   	lib::size bounds,
-  	common::renderer *region,
+  	region *rgn,
   	common::window_factory *wf,
   	viewport* v)
-:	common::abstract_window(region),
+:	common::abstract_window(rgn),
+	m_rgn(rgn),
+	m_name(name),
 	m_wf(wf),
 	m_viewport(v) {
 	AM_DBG lib::logger::get_logger()->trace_stream() 
@@ -75,13 +78,13 @@ gui::dx::dx_window::dx_window(const std::string& name,
 
 gui::dx::dx_window::~dx_window() {
 	AM_DBG lib::logger::get_logger()->trace("~dx_window()");
-	m_wf->window_done(this);
+	m_wf->window_done(m_name);
 }
   		
 void gui::dx::dx_window::need_redraw(const lib::screen_rect<int> &r) {
 	AM_DBG lib::logger::get_logger()->trace_stream()
 		<< "dx_window::need_redraw" << r << lib::endl;
-	m_region->redraw(r, this);
+	m_rgn->redraw(r, this);
 	m_viewport->redraw(r);
 }
 

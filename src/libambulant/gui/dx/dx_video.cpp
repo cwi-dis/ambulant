@@ -175,14 +175,20 @@ void gui::dx::dx_video_renderer::stop() {
 
 void gui::dx::dx_video_renderer::pause() {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
-	if(m_player) 
-		m_player->pause();
+	if(m_player) m_player->pause();
 }
 
 void gui::dx::dx_video_renderer::resume() {
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
-	if(m_player)
-		m_player->resume();
+	if(m_player) m_player->resume();
+}
+
+void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
+	if(what == common::user_event_click)
+		m_context->clicked(m_cookie);
+	else if(what == common::user_event_mouse_over) {
+		m_context->pointed(m_cookie);
+	}
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {

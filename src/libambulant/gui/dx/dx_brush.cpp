@@ -107,6 +107,14 @@ void gui::dx::dx_brush::stop() {
 	m_activated = false;
 }
 
+void gui::dx::dx_brush::user_event(const lib::point& pt, int what) {
+	if(what == common::user_event_click)
+		m_context->clicked(m_cookie);
+	else if(what == common::user_event_mouse_over) {
+		m_context->pointed(m_cookie);
+	}
+}
+
 void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);

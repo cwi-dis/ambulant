@@ -54,16 +54,13 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
+#include "ambulant/gui/dx/dx_rgn.h"
 
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
-#include "ambulant/lib/logger.h"
 #include "ambulant/lib/document.h"
-
-#include "ambulant/common/region.h"
-#include "ambulant/smil2/smil_layout.h"
-#include "ambulant/smil2/region_node.h"
+#include "ambulant/lib/logger.h"
 
 // Players
 #include "ambulant/smil2/smil_player.h"
@@ -84,6 +81,10 @@
 // Playables
 #include "ambulant/gui/dx/dx_area.h"
 
+// Layout
+#include "ambulant/common/region.h"
+#include "ambulant/smil2/smil_layout.h"
+
 //#define AM_DBG
 
 #ifndef AM_DBG
@@ -92,6 +93,7 @@
 
 using namespace ambulant;
 
+int gui::dx::dx_gui_region::s_counter = 0;
 
 gui::dx::dx_player::dx_player(const std::string& url) 
 :	m_url(url),
@@ -114,6 +116,9 @@ gui::dx::dx_player::dx_player(const std::string& url)
 gui::dx::dx_player::~dx_player() {
 	if(m_player) stop();
 	delete m_player;
+	assert(m_windows.empty());
+	if(dx_gui_region::s_counter != 0) 
+		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
 }
 
 void gui::dx::dx_player::start() {
@@ -137,7 +142,6 @@ void gui::dx::dx_player::pause() {
 }
 
 void gui::dx::dx_player::resume() {
-	m_logger->trace("Attempting to resume: %s", m_url.c_str());
 	if(m_player) m_player->resume();
 }
 
@@ -155,36 +159,46 @@ bool gui::dx::dx_player::is_done() const {
 
 void gui::dx::dx_player::set_preferences(const std::string& url) {
 	smil2::test_attrs::load_test_attrs(url);
-	m_player->build_timegraph();
+	if(is_playing()) stop();
+	if(m_player) m_player->build_timegraph();
 }
 
 void gui::dx::dx_player::on_click(int x, int y, HWND hwnd) {
-	// locate common::abstract_window from hwnd
-	POINT pt = {0, 0}; // margins
-	if(m_player) m_player->on_click(x-pt.x, y-pt.y, 0);
+	if(!m_player || !is_playing()) return;
+	lib::point pt(x, y);
+	dx_window *dxwin = (dx_window *) get_window(hwnd);
+	if(!dxwin) return;
+	region *r = dxwin->get_region();
+	if(r)
+		r->user_event(pt, common::user_event_click);
 }
 
 int gui::dx::dx_player::get_cursor(int x, int y, HWND hwnd) {
-	// locate common::abstract_window from hwnd
 	if(!m_player || !is_playing()) return 0;
-	return m_player->get_cursor(x, y, 0);
+	lib::point pt(x, y);
+	dx_window *dxwin = (dx_window *) get_window(hwnd);
+	if(!dxwin) return 0;
+	region *r = dxwin->get_region();
+	m_player->set_cursor(0);
+	if(r) r->user_event(pt, common::user_event_mouse_over);
+	return m_player->get_cursor();
 }
 	
 void gui::dx::dx_player::on_char(int ch) {
 	if(m_player) m_player->on_char(ch);
 }
 
-
-void gui::dx::dx_player::redraw() {
-	//if(m_viewport) m_viewport->redraw();
+void gui::dx::dx_player::redraw(HWND hwnd, HDC hdc) {
+	wininfo *wi = get_wininfo(hwnd);
+	if(wi) wi->v->redraw(hdc);
 }
 
 void gui::dx::dx_player::on_done() {
-	/*
-	if(m_viewport) {
-		m_viewport->clear();
-		m_viewport->redraw();
-	}*/
+	std::map<std::string, wininfo*>::iterator it;
+	for(it=m_windows.begin();it!=m_windows.end();it++) {
+		(*it).second->v->clear();
+		(*it).second->v->redraw();
+	}
 }
 
 ////////////////////
@@ -192,7 +206,7 @@ void gui::dx::dx_player::on_done() {
 
 common::abstract_window *
 gui::dx::dx_player::new_window(const std::string &name, 
-	lib::size bounds, common::renderer *region) {
+	lib::size bounds, common::renderer *renderer) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
 		name.c_str(), repr(bounds).c_str());
@@ -207,32 +221,41 @@ gui::dx::dx_player::new_window(const std::string &name,
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
 	
 	// XXX: Wrong arg in new_window() interface!
-	common::passive_region *rl = (common::passive_region *) region;
+	region *rgn = (region *) renderer;
 	
 	// Clear the viewport
-	const common::region_info *ri = rl->get_info();
+	const common::region_info *ri = rgn->get_info();
 	winfo->v->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	winfo->v->clear();
 	
 	// Create a concrete abstract_window
-	winfo->w = new dx_window(name, bounds, region, this, winfo->v);
+	winfo->w = new dx_window(name, bounds, rgn, this, winfo->v);
 	winfo->f = 0;
 	
 	// Store the wininfo struct
-	m_windows[winfo->w] = winfo;
+	m_windows[name] = winfo;
+	AM_DBG m_logger->trace("windows: %d", m_windows.size());
 	
 	// Return abstract_window
 	return winfo->w;
 }
 
 void 
-gui::dx::dx_player::window_done(common::abstract_window *w) {
-	// called when the window is destructed
+gui::dx::dx_player::window_done(const std::string &name) {
+	// called when the window is destructed (wi->w)
+	std::map<std::string, wininfo*>::iterator it = m_windows.find(name);
+	assert(it != m_windows.end());
+	wininfo *wi = (*it).second;
+	m_windows.erase(it);
+	delete wi->v;
+	destroy_os_window(wi->h);
+	delete wi;
+	AM_DBG m_logger->trace("windows: %d", m_windows.size());
 }
 
 common::gui_region*
 gui::dx::dx_player::new_mouse_region() {
-	return 0;
+	return new dx_gui_region();
 }
 
 common::renderer*
@@ -248,6 +271,23 @@ gui::dx::viewport* gui::dx::dx_player::create_viewport(int w, int h, HWND hwnd) 
 	return v;
 }
 
+gui::dx::dx_player::wininfo*
+gui::dx::dx_player::get_wininfo(HWND hwnd) {
+	wininfo *winfo = 0;
+	std::map<std::string, wininfo*>::iterator it;
+	for(it=m_windows.begin();it!=m_windows.end();it++) {
+		wininfo *wi = (*it).second;
+		if(wi->h = hwnd) {winfo = wi;break;}
+	}
+	return winfo;
+}
+
+common::abstract_window *
+gui::dx::dx_player::get_window(HWND hwnd) {
+	wininfo *wi = get_wininfo(hwnd);
+	return wi?wi->w:0;
+}
+
 ////////////////////
 // common::playable_factory implementation
 
@@ -258,12 +298,7 @@ gui::dx::dx_player::new_playable(
 	const lib::node *node,
 	lib::event_processor *const evp) {
 	
-	AM_DBG lib::logger::get_logger()->trace_stream() 
-		<< "dx_playable_factory::new_renderer "  
-		<< node->get_qname().second << lib::endl;
-	
 	common::abstract_window *window = get_window(node);
-	
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
@@ -285,15 +320,48 @@ gui::dx::dx_player::new_playable(
 }
 
 ////////////////////////
-// Helper function we need and is not to be available by the current interface
+// Layout helpers with a lot of hacks
 
-// The region stuff is too complex and convoluted to get this implemented without hacks
+typedef common::surface_template iregion;
+typedef common::passive_region region;
+
+static const region* 
+get_top_layout(smil2::smil_layout_manager *layout, const lib::node* n) {
+	iregion *ir = layout->get_region(n);
+	if(!ir) return 0;
+	const region *r = (const region*) ir;
+	while(r->get_parent()) r = r->get_parent();
+	return r;
+}
+
+static const char*
+get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
+	const region* r = get_top_layout(layout, n);
+	if(!r) return 0;
+	const common::region_info *ri = r->get_info();
+	return ri?ri->get_name().c_str():0;
+}
+
 common::abstract_window *
 gui::dx::dx_player::get_window(const lib::node* n) {
-	std::map<dx_window *, wininfo*>::iterator it = m_windows.begin();
+	typedef common::surface_template region;
+	smil2::smil_layout_manager *layout = m_player->get_layout();
+	const char *tlname = get_top_layout_name(layout, n);
+	if(tlname) {
+		std::map<std::string, wininfo*>::iterator it;
+		it = m_windows.find(tlname);
+		if(it != m_windows.end())
+			return (*it).second->w;
+	}
+	std::map<std::string, wininfo*>::iterator it = m_windows.begin();
 	assert(it != m_windows.end());
 	wininfo* winfo = (*it).second;
 	return winfo->w;
 }
+
+
+
+
+
 
 
