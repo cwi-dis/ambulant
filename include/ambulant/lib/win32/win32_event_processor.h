@@ -87,6 +87,10 @@ class event_processor :
 	event_processor(timer *t);	
 	~event_processor();
     
+    virtual void stop() {
+		ambulant::lib::win32::thread::stop();
+    }
+    
   protected:
 	virtual unsigned long run(); 
 	
