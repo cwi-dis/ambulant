@@ -9,7 +9,7 @@ if WITH_SDL
 extra_sdl_DEFINES=-DWITH_SDL
 extra_sdl_ldflags= `sdl-config --libs`
 else
-extra_arts_ldflags=
+extra_sdl_ldflags=
 extra_sdl_DEFINES=
 endif
 

@@ -67,7 +67,11 @@ using namespace lib;
           
 class arts_renderer_factory : public lib::renderer_factory {
 public:
-    
+    active_renderer *new_renderer(
+        lib::event_processor *const evp,
+        net::passive_datasource *src,
+        lib::passive_region *dest,
+        const lib::node *node);
 
      active_renderer *new_renderer(
 		active_playable_events *context,
