@@ -16,18 +16,58 @@
 	<key>GraphicsList</key>
 	<array>
 		<dict>
+			<key>Bounds</key>
+			<string>{{221, 50.125}, {117, 14}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>ID</key>
+			<integer>20</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;\red180\green41\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
+
+\f0\b\fs24 \cf2 Warning: outdated}</string>
+			</dict>
+		</dict>
+		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>6</integer>
+				<integer>3</integer>
 			</dict>
 			<key>ID</key>
-			<integer>22</integer>
+			<integer>19</integer>
 			<key>Points</key>
 			<array>
-				<string>{203.689, 264.618}</string>
+				<string>{203.67, 264.606}</string>
 				<string>{249.411, 293.725}</string>
 			</array>
 			<key>Style</key>
@@ -45,98 +85,12 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>21</integer>
+				<integer>18</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
 			<string>{{104.689, 201.606}, {99, 63}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>ID</key>
-			<integer>21</integer>
-			<key>Shape</key>
-			<string>NoteShape</string>
-			<key>Text</key>
-			<dict>
-				<key>Text</key>
-				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\fs24 \cf0 Implements lib::ref_counted protocol}</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>10</integer>
-			</dict>
-			<key>ID</key>
-			<integer>20</integer>
-			<key>Points</key>
-			<array>
-				<string>{391.848, 84.431}</string>
-				<string>{333.014, 129.45}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>0</string>
-					<key>Pattern</key>
-					<integer>1</integer>
-					<key>TailArrow</key>
-					<string>0</string>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>18</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>18</integer>
-			</dict>
-			<key>ID</key>
-			<integer>19</integer>
-			<key>Points</key>
-			<array>
-				<string>{433.014, 52.931}</string>
-				<string>{433.014, 52.931}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>0</string>
-					<key>Pattern</key>
-					<integer>1</integer>
-					<key>TailArrow</key>
-					<string>0</string>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>18</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{383.514, 21.431}, {99, 63}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -160,10 +114,96 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>10</integer>
+				<integer>7</integer>
 			</dict>
 			<key>ID</key>
 			<integer>17</integer>
+			<key>Points</key>
+			<array>
+				<string>{391.848, 84.431}</string>
+				<string>{333.014, 129.45}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Pattern</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>15</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>15</integer>
+			</dict>
+			<key>ID</key>
+			<integer>16</integer>
+			<key>Points</key>
+			<array>
+				<string>{433.014, 52.931}</string>
+				<string>{433.014, 52.931}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Pattern</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>15</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{383.514, 21.431}, {99, 63}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>15</integer>
+			<key>Shape</key>
+			<string>NoteShape</string>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
+
+\f0\fs24 \cf0 Implements lib::ref_counted protocol}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>7</integer>
+			</dict>
+			<key>ID</key>
+			<integer>14</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -233,7 +273,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>16</integer>
+				<integer>13</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -244,7 +284,7 @@
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>16</integer>
+			<integer>13</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -288,10 +328,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>6</integer>
+				<integer>3</integer>
 			</dict>
 			<key>ID</key>
-			<integer>15</integer>
+			<integer>12</integer>
 			<key>Points</key>
 			<array>
 				<string>{385.689, 313.152}</string>
@@ -312,7 +352,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>12</integer>
+				<integer>9</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -323,7 +363,7 @@
 			<key>FitText</key>
 			<string>YES</string>
 			<key>ID</key>
-			<integer>14</integer>
+			<integer>11</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -361,10 +401,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>10</integer>
+				<integer>7</integer>
 			</dict>
 			<key>ID</key>
-			<integer>13</integer>
+			<integer>10</integer>
 			<key>Points</key>
 			<array>
 				<string>{434.612, 293.45}</string>
@@ -390,7 +430,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>12</integer>
+				<integer>9</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -401,7 +441,7 @@
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>12</integer>
+			<integer>9</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -460,10 +500,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>10</integer>
+				<integer>7</integer>
 			</dict>
 			<key>ID</key>
-			<integer>11</integer>
+			<integer>8</integer>
 			<key>Points</key>
 			<array>
 				<string>{279.28, 293.725}</string>
@@ -484,7 +524,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>6</integer>
+				<integer>3</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -495,7 +535,7 @@
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>10</integer>
+			<integer>7</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -556,10 +596,10 @@ read()}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>8</integer>
+				<integer>5</integer>
 			</dict>
 			<key>ID</key>
-			<integer>9</integer>
+			<integer>6</integer>
 			<key>Points</key>
 			<array>
 				<string>{346.175, 170.382}</string>
@@ -580,7 +620,7 @@ read()}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>10</integer>
+				<integer>7</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -589,7 +629,7 @@ read()}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>8</integer>
+			<integer>5</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -617,10 +657,10 @@ read()}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>6</integer>
+				<integer>3</integer>
 			</dict>
 			<key>ID</key>
-			<integer>7</integer>
+			<integer>4</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -690,7 +730,7 @@ read()}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>5</integer>
+				<integer>2</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -701,7 +741,7 @@ read()}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>6</integer>
+			<integer>3</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -747,7 +787,7 @@ read()}</string>
 			<key>FitText</key>
 			<string>Vertical</string>
 			<key>ID</key>
-			<integer>5</integer>
+			<integer>2</integer>
 			<key>ListOrientation</key>
 			<string>Vertical</string>
 			<key>Style</key>
@@ -926,7 +966,7 @@ activate()}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwMy0wOS0zMFQyMDo0MjowMFo8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxNDoxMToyNFo8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -940,7 +980,7 @@ activate()}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDMtMDktMzBUMjA6NDI6MDBaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDQtMDEtMjdUMTQ6MTE6MjRaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1006,12 +1046,12 @@ activate()}</string>
 	dD4KPC9wbGlzdD4KhpKEmZkPTlNQcmludEFsbFBhZ2VzhpKckoSZmRVOU0hvcml6b25h
 	bFBhZ2luYXRpb26GkoSdnJ+XAIaShJmZCE5TQ29waWVzhpKEnZyflwGGkoSZmRZOU0hv
 	cml6b250YWxseUNlbnRlcmVkhpKmkoSZmQlOU1ByaW50ZXKGkoSEhAlOU1ByaW50ZXIA
-	lJKEmZkQU3R5bHVzIENPTE9SIDc2MIaGkoSZmQtOU1BhcGVyTmFtZYaShJmZBmlzby1h
-	NIaShJmZD05TU2NhbGluZ0ZhY3RvcoaShJ2chIQBZqEBhpKEmZkNTlNSaWdodE1hcmdp
-	boaShJ2cu6EAhpKEmZkNTlNKb2JGZWF0dXJlc4aShJaXAIaShJmZDE5TTGVmdE1hcmdp
-	boaShJ2cu6EAhpKEmZkOTlNCb3R0b21NYXJnaW6GkoSdnLuhAIaShJmZC05TVG9wTWFy
-	Z2luhpKEnZy7oQCGkoSZmQpOU0xhc3RQYWdlhpKEnZyfl4J/////hpKEmZkLTlNGaXJz
-	dFBhZ2WGkoSdnJ+XAYaShJmZDU5TT3JpZW50YXRpb26GkoSdnJ+XAIaGhg==
+	lJKEmZkXY3VjdXRhcyBvbiBzcG9vbC5jd2kubmyGhpKEmZkLTlNQYXBlck5hbWWGkoSZ
+	mQJBNIaShJmZD05TU2NhbGluZ0ZhY3RvcoaShJ2chIQBZqEBhpKEmZkNTlNSaWdodE1h
+	cmdpboaShJ2cu6EAhpKEmZkNTlNKb2JGZWF0dXJlc4aShJaXAIaShJmZDE5TTGVmdE1h
+	cmdpboaShJ2cu6EAhpKEmZkOTlNCb3R0b21NYXJnaW6GkoSdnLuhAIaShJmZC05TVG9w
+	TWFyZ2luhpKEnZy7oQCGkoSZmQpOU0xhc3RQYWdlhpKEnZyfl4J/////hpKEmZkLTlNG
+	aXJzdFBhZ2WGkoSdnJ+XAYaShJmZDU5TT3JpZW50YXRpb26GkoSdnJ+XAIaGhg==
 	</data>
 	<key>ReadOnly</key>
 	<string>NO</string>
@@ -1034,7 +1074,7 @@ activate()}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{21, 48}, {574, 698}}</string>
+		<string>{{105, 212}, {574, 698}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>
