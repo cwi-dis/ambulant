@@ -64,7 +64,7 @@ using namespace ambulant;
 using namespace lib;
 
 transition_info *
-transition_info::from_node(node *n)
+transition_info::from_node(const node *n)
 {
 	// Placeholder
 	transition_info *rv = new transition_info();

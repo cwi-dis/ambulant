@@ -62,7 +62,7 @@ using namespace gui::qt;
 
 void
 qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
-				common::abstract_window *window) {
+				common::gui_window *window) {
 	m_lock.enter();
 	const common::region_info *info = m_dest->get_info();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
@@ -100,7 +100,7 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 
 void
 qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
-	common::abstract_window *window)
+	common::gui_window *window)
 {	
 	const lib::screen_rect<int> &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->trace

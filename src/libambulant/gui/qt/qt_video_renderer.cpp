@@ -103,7 +103,7 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 
 void
 qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
-				 common::abstract_window* w) {
+				 common::gui_window* w) {
 	//m_lock.enter();	
 	AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.redraw(0x%x)",(void*) this);
 	const lib::point p = m_dest->get_global_topleft();
@@ -150,7 +150,7 @@ qt_active_video_renderer::redraw(const lib::screen_rect<int> &dirty,
 		lib::size srcsize = lib::size(qsize.width(), qsize.height());
 		lib::rect srcrect = lib::rect(lib::size(0,0));
 		lib::screen_rect<int> dstrect = m_dest->get_fit_rect(
-			srcsize, &srcrect);
+			srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		int L = dstrect.left(), 
 		    T = dstrect.top(),

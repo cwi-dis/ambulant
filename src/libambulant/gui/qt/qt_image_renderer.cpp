@@ -71,7 +71,7 @@ qt_active_image_renderer::~qt_active_image_renderer() {
 
 void
 qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
-				 common::abstract_window* w) {
+				 common::gui_window* w) {
 	m_lock.enter();
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::screen_rect<int> &r = m_dest->get_rect();
@@ -118,7 +118,7 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 		lib::size srcsize = lib::size(qsize.width(), qsize.height());
 		lib::rect srcrect = lib::rect(lib::size(0,0));
 		lib::screen_rect<int> dstrect = m_dest->get_fit_rect(
-			srcsize, &srcrect);
+			srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		int L = dstrect.left(), 
 		    T = dstrect.top(),

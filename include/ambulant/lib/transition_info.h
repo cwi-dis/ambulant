@@ -115,7 +115,7 @@ class transition_info {
 	lib::color_t m_color;
 	// We should also have the <param> contents here
 	
-	static transition_info *from_node(node *n);
+	static transition_info *from_node(const node *n);
 };
 } // namespace lib
  

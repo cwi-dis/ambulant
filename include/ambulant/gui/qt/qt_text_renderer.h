@@ -83,7 +83,7 @@ class qt_active_text_renderer : public common::active_final_renderer {
 	}
 	~qt_active_text_renderer();
 
- 	void redraw(const lib::screen_rect<int> &r, common::abstract_window* w);
+ 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
 
   private:
 	char* m_text_storage;

@@ -75,8 +75,8 @@ qt_window_factory::qt_window_factory( QWidget* parent_widget, int x, int y)
   
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   lib::screen_rect<int>* bounds,
-	   common::surface_source *region)
-:	common::abstract_window(region),
+	   common::gui_events *region)
+:	common::gui_window(region),
 	m_ambulant_widget(NULL),
 	m_pixmap(NULL)
 {
@@ -144,14 +144,19 @@ ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 {
 	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom());
-	m_region->redraw(r, this);
+	m_handler->redraw(r, this);
 	bitBlt(m_ambulant_widget, 0, 0, m_pixmap);
 }
 
 void
 ambulant_qt_window::user_event(const lib::point &where) 
 {
-	m_region->user_event(where);
+	m_handler->user_event(where);
+}
+void
+ambulant_qt_window::need_events(bool want) 
+{
+  AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::need_events(0x%x): want=", this, want);
 }
 
 // XXXX
@@ -253,10 +258,10 @@ qt_renderer_factory::new_playable
     return rv;
 }
   
-common::abstract_window *
+common::gui_window *
 qt_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
-			       common::surface_source *region)
+			       common::gui_events *region)
 {
 	lib::screen_rect<int>* r = new lib::screen_rect<int>(m_p, bounds);
 	AM_DBG lib::logger::get_logger()->trace("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",

@@ -71,7 +71,7 @@ qt_active_text_renderer::~qt_active_text_renderer() {
 
 void
 qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
-				common::abstract_window* w) {
+				common::gui_window* w) {
 	m_lock.enter();
 	const lib::point p = m_dest->get_global_topleft();
 	AM_DBG lib::logger::get_logger()->trace(

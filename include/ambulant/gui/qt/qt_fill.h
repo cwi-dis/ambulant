@@ -107,7 +107,7 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 		clicked_callback();
 	}
 	void redraw(const lib::screen_rect<int> &dirty, 
-		    common::abstract_window *window);
+		    common::gui_window *window);
   private:
 	common::surface *const m_dest;
 	bool m_playing;
@@ -119,7 +119,7 @@ class qt_background_renderer : public common::background_renderer {
   	qt_background_renderer(const common::region_info *src)
   	:	common::background_renderer(src) {}
   	
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *windo);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *windo);
 };
 
 } // namespace qt

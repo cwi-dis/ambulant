@@ -84,7 +84,7 @@ class qt_active_image_renderer : public common::active_final_renderer {
 	};
 	~qt_active_image_renderer();
     
-	void redraw(const lib::screen_rect<int> &r, common::abstract_window* w);
+	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
  private:
 	QImage m_image;
 	bool m_image_loaded;
