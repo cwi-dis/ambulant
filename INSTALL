@@ -4,6 +4,11 @@ Inc.
    This file is free documentation; the Free Software Foundation gives
 unlimited permission to copy, distribute and modify it.
 
+Note that this file contains generic installation instructions
+for unix, for specific instructions on installing AmbulantPlayer please
+see the file README. That file also contains instructions for installing
+on Windows and other platforms.
+
 Basic Installation
 ==================
 
