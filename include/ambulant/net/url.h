@@ -218,7 +218,7 @@ inline std::string repr(const ambulant::net::url& u) {
 			os << u.get_protocol() << "://" << 
 				((u.get_host()=="localhost")?"":u.get_host()) << "/";
 		} else if (u.get_protocol() == "data") {
-			os << "data:," << u.get_path();
+			os << "data:,";
 		} else {
 			os << u.get_protocol() << "://" << u.get_host();
 			if(u.get_port() != 0) os << ":" << int(u.get_port());
