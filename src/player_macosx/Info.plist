@@ -9,10 +9,14 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>????</string>
+				<string>smil</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/smil</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>DocumentType</string>
 			<key>CFBundleTypeOSTypes</key>
@@ -29,8 +33,8 @@
 	<string>cocoambulant</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
-        <key>CFBundleIdentifier</key>
-	<string>com.apple.yourCocoaDocApp</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.ambulantplayer.ambulantplayer</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
