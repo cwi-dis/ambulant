@@ -7,27 +7,27 @@
 <UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Ambulant Player Preferences">
-		<param name="Local" value="..\user\preferences.html">
+		<param name="Local" value="preferences.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Submitting feedback on Ambulant Player">
-		<param name="Local" value="..\user\feedback.html">
+		<param name="Local" value="feedback.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Ambulant Player Help">
-		<param name="Local" value="..\user\index.html">
+		<param name="Local" value="developer.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Ambulant Player Introduction">
-		<param name="Local" value="..\user\intro.html">
+		<param name="Local" value="intro.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Using Ambulant Player">
-		<param name="Local" value="..\user\playback.html">
+		<param name="Local" value="playback.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Using Ambulant Player in your own software">
-		<param name="Local" value="..\user\developer.html">
+		<param name="Local" value="developer.html">
 		</OBJECT>
 </UL>
 </BODY></HTML>

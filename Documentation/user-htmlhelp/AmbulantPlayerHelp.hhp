@@ -3,11 +3,15 @@ Auto Index=Yes
 Compatibility=1.1 or later
 Compiled file=AmbulantPlayerHelp.chm
 Contents file=AmbulantPlayerHelp.hhc
+Default Window=Ambulant Player Help
 Default topic=..\user\index.html
 Display compile progress=No
 Index file=AmbulantPlayerHelp.hhk
 Language=0x409 English (United States)
 Title=Ambulant Player Help
+
+[WINDOWS]
+Ambulant Player Help="Ambulant Player Help","AmbulantPlayerHelp.hhc","AmbulantPlayerHelp.hhk","index.html","index.html",,,,,0x42120,,0x3046,[271,372,871,872],,,,1,,,0
 
 
 [FILES]
