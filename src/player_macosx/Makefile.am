@@ -95,3 +95,7 @@ install-exec-hook: cocoambulant_bundle
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
 	mkdir -p $(DESTDIR)/Applications/$(APPNAME).app
 	cp -r $(APPNAME).app $(DESTDIR)/Applications
+
+uninstall-hook:
+	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
+	
