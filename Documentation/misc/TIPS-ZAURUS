@@ -40,6 +40,18 @@ B. /ufs/kees/Work/Ambulant/Zaurus/ipkg-build.sh
 
 Kees Blom, 28 mei 2004.
 
+How to create a Zaurus installer (ipk file)
+-------------------------------------------
+
+1. Build ambulantplayer for zaurus, see toplevel INSTALL
+   file for details.
+2. Unpack ambulantplayer-ipk.tgz, which has the skeleton
+   directory structure.
+3. Copy src/player_unix/AmbulantPlayer from the build directory
+   to ambulantplayer/opt/Qtopia/bin/ambulantplayer in the skeleton
+   directory.
+4. Run ipkg-build.sh to create the ipk file.
+
 A. HOWTO ----------------------------------------------------------
 
 HOWTO work with the Zaurus SL-5600 PDA .
@@ -50,8 +62,8 @@ Look for <inet_addr> on the PDA by typing:
 zaurus PDA>  ifconfig
 
 From apps.cwi.nl  you can login on the zaurus:
-apps>  ssh zaurus@<inet_addr>
-Password: ambulant
+apps>  ssh XXXXX@<inet_addr>
+Password: XXXXX
 $ PS1="zaurus window>"
 # Next set the following environment variables:
 zaurus window> export QTDIR=/opt/QtPalmtop
