@@ -57,7 +57,7 @@ using namespace ambulant;
 
 
 
-lib::::expat_parser*
+lib::xml_parser*
 lib::expat_factory::new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler) 

@@ -143,6 +143,7 @@ libambulant_la_SOURCES = \
 	common/smil_alignment.cpp \
 	common/smil_handler.cpp \
 	common/plugin_engine.cpp \
+	common/parser_factory.h\
 	\
 	smil2/animate_a.cpp \
 	smil2/animate_e.cpp \

@@ -14,6 +14,7 @@ library_include_HEADERS= \
 	smil_alignment.h \
 	smil_handler.h \
 	embedder.h \
+	parser_factory.h\
 	plugin_engine.h \
 	trace_playable.h
 	

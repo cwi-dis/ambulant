@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 
 #include "ambulant/lib/sax_handler.h"
+#include "ambulant/common/parser_factory.h"
 
 #include "expat.h"
 
@@ -76,7 +77,7 @@ class expat_factory : public common::parser_factory {
   		sax_error_handler* error_handler) {};
 	~expat_factory() {};
 		
-	common::expat_parser *new_parser(
+	lib::xml_parser* new_parser(
 		sax_content_handler* content_handler, 
 		sax_error_handler* error_handler);
 };
