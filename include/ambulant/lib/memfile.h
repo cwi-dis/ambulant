@@ -53,8 +53,13 @@
 #include "ambulant/config/config.h"
 
 #include <string>
+
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 #include <sstream>
 #include <fstream>
+#elif defined(AMBULANT_PLATFORM_WIN32) 
+#include "ambulant/lib/win32/win32_memfile.h"
+#endif
 
 // debug
 #include "ambulant/lib/logger.h"
@@ -65,8 +70,9 @@ namespace lib {
 
 typedef unsigned char byte;
 typedef  std::basic_string<byte> databuffer;
-
 using ambulant::lib::logger;
+
+#if !defined(AMBULANT_NO_IOSTREAMS_HEADERS) && !defined(AMBULANT_PLATFORM_WIN32)
 
 class memfile {
   public:
@@ -119,6 +125,8 @@ class memfile {
 	void seekg(size_type pos) { m_gptr = pos;}
 	
 	const byte* data() const { return  m_buffer.data();}
+	const byte* begin() const { return  m_buffer.data();}
+	const byte* end() const { return  m_buffer.data() + size();}
 	
 	const byte* gdata() { return m_buffer.data() + m_gptr;}
 	
@@ -179,6 +187,10 @@ class memfile {
 	size_type m_gptr;
   
 };
+
+#elif defined(AMBULANT_PLATFORM_WIN32)
+using ambulant::lib::win32::memfile;
+#endif
 
 } // end namespace lib
 
