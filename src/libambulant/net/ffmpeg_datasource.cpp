@@ -608,7 +608,15 @@ ffmpeg_decoder_datasource::get_audio_format()
 		m_fmt.samplerate = m_con->sample_rate;
 		m_fmt.bits = 16; // XXXX
 		m_fmt.channels = m_con->channels;
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::select_decoder: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
+		if (m_fmt.samplerate == 0) {
+			lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, guessing 44100");
+			m_fmt.samplerate = 44100;
+		}
+		if (m_fmt.channels == 0) {
+			lib::logger::get_logger()->warn("ffmpeg_decoder_datasource::get_audio_format: channels not set, guessing 2");
+			m_fmt.channels = 2;
+		}
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	}
 	return m_fmt;
 }
