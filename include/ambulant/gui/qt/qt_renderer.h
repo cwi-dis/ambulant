@@ -60,10 +60,10 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 
-#include "qt_fill.h"
 #include "qt_includes.h"
+#include "qt_fill.h"
 
-//#define AM_DBG
+// #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -126,7 +126,8 @@ class qt_window_factory : public common::window_factory {
 			lib::size bounds,
 			common::surface_source *region);
 		common::gui_region *new_mouse_region();
-		common::renderer *new_background_renderer(const common::region_info *src);
+		common::renderer *new_background_renderer(
+			const common::region_info *src);
   private:
 	QWidget* m_parent_widget;
 	lib::point m_p;

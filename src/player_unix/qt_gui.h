@@ -82,7 +82,7 @@
 
 using namespace ambulant::gui::qt;
 
-class qt_mainloop;;
+class qt_mainloop;
 
 class qt_gui : public QWidget {
 

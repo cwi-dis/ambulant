@@ -171,13 +171,17 @@ bool qt_gui::openSMILfile(QString smilfilename, int mode) {
 		 strcpy(pathname, workdir);
 		 strcpy(&pathname[workdirlen], "/");
 		 strcpy(&pathname[workdirlen+1], smilfilename);
-		 strcpy(&pathname[pathnamelen], "\0");
 		 smilfilename = pathname;
 	} else   smilfilename = strdup(smilfilename);
 	        
-//      if (m_smilfilename != NULL)
-//	         free(m_smilfilename);
+//KB	if (m_smilfilename != NULL)
+//	         delete m_smilfilename;
 	m_smilfilename = smilfilename;
+//	if (m_mainloop != NULL) {
+//	  delete m_mainloop;
+//	  m_mainloop = NULL;
+//	  m_playing = false;
+//	}
 	return true;
 }
 
@@ -198,7 +202,7 @@ void qt_gui::slot_open() {
 }
 
 void qt_gui::slot_player_done() {
-	printf("%s-%s\n", m_programfilename, "slot_player_done");
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_player_done");
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
 	m_playing = false;
@@ -207,12 +211,12 @@ void qt_gui::slot_player_done() {
 }
 
 void qt_gui::need_redraw (const void* r, void* w, const void* pt) {
-	printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
+	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
 	(void *)this,r);
 }
 
 void qt_gui::player_done() {
-	printf("%s-%s\n", m_programfilename, "player_done");
+	AM_DBG printf("%s-%s\n", m_programfilename, "player_done");
 	emit signal_player_done();
 }
 
@@ -247,7 +251,7 @@ void qt_gui::slot_play() {
 }
 
 void qt_gui::slot_pause() {
-	printf("%s-%s\n", m_programfilename, "slot_pause");
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_pause");
 	if (! m_pausing) {
 		m_pausing = true;
 		m_playmenu->setItemEnabled(m_pause_id, false);
@@ -257,12 +261,15 @@ void qt_gui::slot_pause() {
 }
 
 void qt_gui::slot_stop() {
-	printf("%s-%s\n", m_programfilename, "slot_stop");
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
 	m_mainloop->stop();
+	m_playmenu->setItemEnabled(m_pause_id, false);
+	m_playmenu->setItemEnabled(m_play_id, true);
+	m_playing = false;
 }
 
 void qt_gui::slot_quit() {
-	printf("%s-%s\n", m_programfilename, "slot_quit");
+	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
 	delete m_mainloop;
 	m_mainloop = NULL;
 	m_busy = false;

@@ -53,4 +53,5 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qwidget.h>
+//#define AM_DBG
 #endif/*AMBULANT_GUI_QT_QT_INCLUDES_H */
