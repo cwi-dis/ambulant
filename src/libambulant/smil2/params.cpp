@@ -50,45 +50,82 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_TEXT_H
-#define AMBULANT_GUI_COCOA_COCOA_TEXT_H
+#include "ambulant/lib/logger.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/smil2/params.h"
+#include <math.h>
 
-#include "ambulant/gui/cocoa/cocoa_renderer.h"
-#include "ambulant/lib/mtsync.h"
-#include <Cocoa/Cocoa.h>
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
-namespace ambulant {
+using namespace ambulant;
+using namespace smil2;
 
-using namespace lib;
-using namespace common;
+params *
+params::for_node(const lib::node *n)
+{
+	bool has_params = n->get_first_child("param");
+#ifdef SMIL_21
+	const char *indir_params = n->get_attribute("param");
+	if (indir_params) abort();
+#endif
+	if (has_params) return new params(n);
+	return NULL;
+}
 
-namespace gui {
+params::params(const lib::node *n)
+{
+#ifdef SMIL_21
+	const char *indir_params = n->get_attribute("param");
+	if (indir_params) abort();
+#endif
+	const lib::node *pnode = n->get_first_child("param");
+	while (pnode && pnode->get_local_name() == "param") {
+		const char *cname = pnode->get_attribute("name");
+		const char *cvalue = pnode->get_attribute("value");
+		
+		if (cname == NULL) {
+			lib::logger::get_logger()->trace("<param> missed \"name\" attribute");
+		} else if (cvalue == NULL) {
+			lib::logger::get_logger()->trace("<param> missed \"value\" attribute");
+		} else {
+			std::string name(cname);
+			m_params[name] = cvalue;
+		}
+		
+		pnode = pnode->next();
+	}
+}
 
-namespace cocoa {
+const char *
+params::get_str(const char *paramname)
+{
+	std::string pname(paramname);
+	return get_str(pname);
+}
 
-class cocoa_text_renderer : public cocoa_renderer {
-  public:
-	cocoa_text_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *factory);
-        ~cocoa_text_renderer();
-	
-    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
-  private:
-    NSTextStorage *m_text_storage;
-	NSLayoutManager *m_layout_manager;
-	NSTextContainer *m_text_container;
-	NSColor *m_text_color;
-	critical_section m_lock;
-};
+const char *
+params::get_str(const std::string &paramname)
+{
+	std::map<std::string, const char *>::const_iterator i = m_params.find(paramname);
+	if (i == m_params.end()) return NULL;
+	return (*i).second;
+}
 
-} // namespace cocoa
+lib::color_t
+params::get_color(const char *paramname, lib::color_t dft)
+{
+	std::string pname(paramname);
+	return get_color(pname, dft);
+}
 
-} // namespace gui
- 
-} // namespace ambulant
+lib::color_t
+params::get_color(const std::string &paramname, lib::color_t dft)
+{
+	char *s_color = get_str(paramname);
+	if (s_color == NULL) return dft;
+	return lib::to_color(s_color);
+}
 
-#endif // AMBULANT_GUI_COCOA_COCOA_TEXT_H
+

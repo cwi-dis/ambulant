@@ -53,6 +53,7 @@
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/params.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -67,6 +68,28 @@ using namespace lib;
 namespace gui {
 
 namespace cocoa {
+
+cocoa_text_renderer::cocoa_text_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		event_processor *evp,
+		common::factories *factory)
+:	cocoa_renderer(context, cookie, node, evp, factory),
+	m_text_storage(NULL)
+{
+	smil2::params *params = smil2::params::for_node(node);
+	color_t *text_color = lib::to_color(0, 0, 0);
+	if (params) {
+		text_color = params->get_color("fontColor", text_color);
+		NSLog(@"params found, fontColor=(%d, %d, %d)", redc(text_color), greenc(text_color), bluec(text_color));
+		delete params;
+	}
+	m_text_color = [NSColor colorWithCalibratedRed:redf(text_color)
+					green:greenf(text_color)
+					blue:bluef(text_color)
+					alpha:1.0];
+}
 
 cocoa_text_renderer::~cocoa_text_renderer()
 {
@@ -86,6 +109,7 @@ cocoa_text_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *wind
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
+		[m_text_storage setForegroundColor: m_text_color];
 		m_layout_manager = [[NSLayoutManager alloc] init];
 		m_text_container = [[NSTextContainer alloc] init];
 		[m_layout_manager addTextContainer:m_text_container];

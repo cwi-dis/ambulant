@@ -50,45 +50,36 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_TEXT_H
-#define AMBULANT_GUI_COCOA_COCOA_TEXT_H
+#ifndef AMBULANT_SMIL2_PARAMS_H
+#define AMBULANT_SMIL2_PARAMS_H
 
-#include "ambulant/gui/cocoa/cocoa_renderer.h"
-#include "ambulant/lib/mtsync.h"
-#include <Cocoa/Cocoa.h>
+#include "ambulant/config/config.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/lib/colors.h"
+#include <map>
+#include <string>
 
 namespace ambulant {
-
-using namespace lib;
-using namespace common;
-
-namespace gui {
-
-namespace cocoa {
-
-class cocoa_text_renderer : public cocoa_renderer {
-  public:
-	cocoa_text_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *factory);
-        ~cocoa_text_renderer();
 	
-    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
+namespace smil2 {
+
+class params {
+  public:
+	static params *for_node(const lib::node *n);
+	
+	const char *get_str(const char *paramname);
+	const char *get_str(const std::string &paramname);
+	lib::color_t get_color(const char *paramname, lib::color_t dft);
+	lib::color_t get_color(const std::string &paramname, lib::color_t dft);
   private:
-    NSTextStorage *m_text_storage;
-	NSLayoutManager *m_layout_manager;
-	NSTextContainer *m_text_container;
-	NSColor *m_text_color;
-	critical_section m_lock;
+	params(const lib::node *n);
+	
+	std::map<std::string, const char *> m_params;
+	// Add more as needed
 };
 
-} // namespace cocoa
-
-} // namespace gui
+} // namespace smil2
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_COCOA_COCOA_TEXT_H
+#endif // AMBULANT_SMIL2_PARAMS_H
