@@ -56,6 +56,7 @@
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif
+#include "ambulant/config/config.h"
 
 #include "ambulant/gui/dx/img_decoder.h"
 #include "ambulant/lib/logger.h"

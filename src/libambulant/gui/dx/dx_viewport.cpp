@@ -55,11 +55,11 @@
 #include <objbase.h>
 #include <ddrawex.h>
 #include <uuids.h>
+#include <windows.h>
+#include <mmsystem.h>
 
 #include "ambulant/gui/dx/dx_viewport.h"
 
-#include <windows.h>
-#include <mmsystem.h>
 
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"ddraw.lib")

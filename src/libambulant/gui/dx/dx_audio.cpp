@@ -60,11 +60,15 @@
 using namespace ambulant;
 
 gui::dx::dx_audio_renderer::dx_audio_renderer(
-	lib::event_processor *const evp,
+	lib::active_playable_events *context,
+	lib::active_playable_events::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor* evp,
 	net::passive_datasource *src,
-	lib::passive_region *const dest,
-	const lib::node *node)
-:   lib::active_renderer(evp, src, dest, node), 
+	lib::abstract_rendering_surface *const dest,
+	lib::abstract_window *window)
+:   lib::active_renderer(context, cookie, node, evp, src, dest), 
+	m_window(window),
 	m_player(0) {
 }
 
@@ -73,14 +77,13 @@ gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	delete m_player;
 }
 
-void gui::dx::dx_audio_renderer::start(lib::event *playdone) {
+void gui::dx::dx_audio_renderer::start(double t) {
 	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
 	// This renderer will read/decode its data directly from the url.
 	if(!m_node || !m_src) abort();
-	m_playdone = playdone;
 	if(!m_src->exists()) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
-		m_event_processor->add_event(playdone, 0, lib::event_processor::low);
+		stopped_callback();
 		return;
 	}
 	m_dest->show(this);
@@ -108,9 +111,7 @@ void gui::dx::dx_audio_renderer::resume() {
 		m_player->play();
 	}
 }
-
-void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, lib::passive_window *window, 
-	const lib::point &window_topleft) {
+void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
 	// we don't need to do anything for audio
 }
 

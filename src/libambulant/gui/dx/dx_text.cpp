@@ -61,22 +61,28 @@
 using namespace ambulant;
 
 gui::dx::dx_text_renderer::dx_text_renderer(
-	lib::event_processor *const evp,
+	lib::active_playable_events *context,
+	lib::active_playable_events::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor* evp,
 	net::passive_datasource *src,
-	lib::passive_region *const dest,
-	const lib::node *node)
-:   lib::active_renderer(evp, src, dest, node) {
+	lib::abstract_rendering_surface *const dest,
+	lib::abstract_window *window)
+:   lib::active_renderer(context, cookie, node, evp, src, dest),
+	m_window(window) { 
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
 }
 
-void gui::dx::dx_text_renderer::start(lib::event *playdone) {
+void gui::dx::dx_text_renderer::start(double t) {
 	if(!m_node || !m_src) abort();
-	m_playdone = playdone;
 	// Create a dx-region
 	viewport *v = get_viewport();
-	m_region = v->create_region(m_dest->get_rect_outer(), m_dest->get_parent()->get_rect_outer());
+	const lib::screen_rect<int>& rc = m_dest->get_rect();
+	lib::screen_rect<int> rcv(rc);
+	rcv.translate(m_dest->get_global_topleft());
+	m_region = v->create_region(rcv, rc);
 	
 	// Prepare dx-region's pixel map
 	m_region->set_background("teal");
@@ -86,7 +92,7 @@ void gui::dx::dx_text_renderer::start(lib::event *playdone) {
 	
 	if(!m_src->exists()) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
-		m_event_processor->add_event(playdone, 0, lib::event_processor::low);
+		stopped_callback();
 		return;
 	}
 	m_src->start(m_event_processor, m_readdone);
@@ -101,8 +107,7 @@ void gui::dx::dx_text_renderer::readdone() {
 	m_region->set_text((const char*) db.data(), int(db.size()));
 	
 	m_dest->need_redraw();
-	if(m_playdone)
-		m_event_processor->add_event(m_playdone, 0, lib::event_processor::low);
+	stopped_callback();
 }
 
 void gui::dx::dx_text_renderer::stop() {
@@ -112,24 +117,16 @@ void gui::dx::dx_text_renderer::stop() {
 	lib::active_renderer::stop();
 }
 
-void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, 
-	lib::passive_window *window, const lib::point &window_topleft) {
+void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
 	viewport *v = get_viewport(window);
 	v->redraw();
 }
 
 gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport() {
-	const lib::passive_region *top = 0;
-	const lib::passive_region *p = m_dest->get_parent();
-	while(p != 0) {
-		top = p;
-		p = p->get_parent();
-	}
-	dx_window *dxwindow = (dx_window *) top;
-	return dxwindow->get_viewport();
+	return get_viewport(m_window);
 }
 
-gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport(lib::passive_window *window) {
+gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport(lib::abstract_window *window) {
 	dx_window *dxwindow = (dx_window *) window;
 	return dxwindow->get_viewport();
 }

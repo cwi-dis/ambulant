@@ -55,6 +55,7 @@
 
 #include <string>
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/region.h"
 
 namespace ambulant {
 
@@ -67,18 +68,24 @@ class region;
 
 class dx_text_renderer : public lib::active_renderer {
   public:
-	dx_text_renderer(lib::event_processor *evp, net::passive_datasource *src, 
-		lib::passive_region *dest, const lib::node *node);
+	dx_text_renderer(
+		lib::active_playable_events *context,
+		lib::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp,
+		net::passive_datasource *src,
+		lib::abstract_rendering_surface *const dest,
+		lib::abstract_window *window);
 	~dx_text_renderer();
-	void start(lib::event *playdone);
+	void start(double t);
 	void readdone();
 	void stop();
-	void redraw(const lib::screen_rect<int> &dirty, lib::passive_window *window, 
-		const lib::point &window_topleft); 
+	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
   private:
-	viewport* get_viewport(lib::passive_window *window);
+	viewport* get_viewport(lib::abstract_window *window);
 	viewport* get_viewport();
 	region* m_region;
+	lib::abstract_window *m_window;
 };
 
 } // namespace dx

@@ -54,6 +54,8 @@
 #define AMBULANT_GUI_DX_AUDIO_H
 
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/region.h"
+#include "ambulant/lib/playable.h"
 #include "ambulant/gui/dx/dx_audio_player.h"
 
 namespace ambulant {
@@ -62,19 +64,26 @@ namespace gui {
 
 namespace dx {
 
+
 class dx_audio_renderer : public lib::active_renderer {
   public:
-	dx_audio_renderer(lib::event_processor *evp, net::passive_datasource *src, 
-		lib::passive_region *dest, const lib::node *node);
+	dx_audio_renderer(
+		lib::active_playable_events *context,
+		lib::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp,
+		net::passive_datasource *src,
+		lib::abstract_rendering_surface *const dest,
+		lib::abstract_window *window);
 	~dx_audio_renderer();
-	void start(lib::event *playdone);
+	void start(double t);
 	void stop();
 	void pause();
 	void resume();
-	void redraw(const lib::screen_rect<int> &dirty, lib::passive_window *window, 
-		const lib::point &window_topleft); 
+	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
   private:
 	audio_player<net::active_datasource> *m_player;
+	lib::abstract_window *m_window;
 };
 
 } // namespace dx

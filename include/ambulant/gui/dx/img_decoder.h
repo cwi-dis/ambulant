@@ -55,7 +55,10 @@
 
 #ifndef _WINDOWS_
 #include <windows.h>
+#include "ambulant/config/visualc.h"
 #endif
+
+#include "ambulant/config/config.h"
 
 #include "ambulant/gui/dx/dx_surface.h"
 

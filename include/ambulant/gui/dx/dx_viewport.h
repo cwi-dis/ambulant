@@ -53,6 +53,13 @@
 #ifndef AMBULANT_LIB_DX_VIEWPORT_H
 #define AMBULANT_LIB_DX_VIEWPORT_H
 
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#include "ambulant/config/visualc.h"
+#endif
+
+#include "ambulant/config/config.h"
+
 #include <string>
 #include <list>
 #include "ambulant/lib/colors.h"
@@ -62,9 +69,6 @@
 struct IDirectDraw;
 struct IDirectDrawSurface;
 struct tagPALETTEENTRY;
-
-#include <windows.h>
-
 namespace ambulant {
 
 namespace gui {
