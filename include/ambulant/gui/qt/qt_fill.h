@@ -104,6 +104,8 @@ class qt_fill_renderer : public  renderer_playable {
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
 	void redraw_body(const lib::screen_rect<int> &dirty, 
 			 common::gui_window *window);
+	void set_intransition(const lib::transition_info *info) {};
+	void start_outtransition(const lib::transition_info *info) {};
   private:
 	void transition_step();
 	
