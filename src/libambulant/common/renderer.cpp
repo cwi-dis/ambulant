@@ -232,9 +232,10 @@ m_is_paused(false)
 	std::string url = node->get_url("src");
 	m_src = df->new_video_datasource(url);
 	if (m_src == NULL) {
-		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): PLACEHOLDER VIDEO: The path to the video files is fixed. (/Users/jack/tmp/testmovie) FIXME");
-		m_src = new net::raw_video_datasource ("/Users/jack/tmp/testmovie");
+		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): PLACEHOLDER VIDEO: The path to the video files is fixed. (/ufs/dbenden/testmovie) FIXME");
+		m_src = new net::raw_video_datasource ("/ufs/dbenden/testmovie");
 	}
+
 }
 
 

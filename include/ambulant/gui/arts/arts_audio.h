@@ -48,7 +48,7 @@
  #ifndef __ARTS_AUDIO__
 #define __ARTS_AUDIO__
 
-#define __cplusplus
+
 #include <artsc.h>
 #include <iostream>
 
