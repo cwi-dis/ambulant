@@ -101,23 +101,20 @@ cocoa_active_fill_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	const region_info *info = m_dest->get_info();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: %d clearing to 0x%x", !info->get_transparent(), (long)info->get_bgcolor());
-	if (info && !info->get_transparent()) {
-		// First find our whole area (which we have to clear to background color)
-		screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(m_dest->get_global_topleft());
-		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-		// XXXX Fill with background color
-		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
-					green:greenf(bgcolor)
-					blue:bluef(bgcolor)
-					alpha:1.0];
-		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect_whole);
-	}	
+	// First find our whole area (which we have to clear to background color)
+	screen_rect<int> dstrect_whole = r;
+	dstrect_whole.translate(m_dest->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	// Fill with  color
+	const char *color_attr = m_node->get_attribute("color");
+	color_t color = lib::to_color(color_attr);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: clearing to 0x%x", (long)color);
+	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(color)
+				green:greenf(color)
+				blue:bluef(color)
+				alpha:1.0];
+	[cocoa_bgcolor set];
+	NSRectFill(cocoa_dstrect_whole);
 	m_lock.leave();
 }
 
