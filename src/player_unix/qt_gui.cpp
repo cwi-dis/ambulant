@@ -690,8 +690,11 @@ main (int argc, char*argv[]) {
 	}
 	if (exec_flag)
 		myapp.exec();
+	else if (argc > 1)
+		std::cerr << "Cannot open \"" << (const char*)argv[1]
+			  << "\""<<std::endl;
 	delete mywidget;
 	unix_prefs.save_preferences();
 	std::cout << "Exiting program" << std::endl;
-	return 0;
+	return exec_flag ? 0 : -1;
 }
