@@ -78,7 +78,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	std::string url = m_node->get_url("src");
-	if(lib::memfile::exists(url))
+	if(lib::starts_with(url, "http://") || lib::memfile::exists(url))
 		m_player = new gui::dx::audio_player(url);
 	else {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",

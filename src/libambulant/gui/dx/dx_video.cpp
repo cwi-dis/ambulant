@@ -85,7 +85,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	std::string url = m_node->get_url("src");
-	if(lib::memfile::exists(url)) {
+	if(lib::starts_with(url, "http://") || lib::memfile::exists(url)) {
 		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
