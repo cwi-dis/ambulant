@@ -54,7 +54,7 @@
 #include <artsc.h>
 
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -229,6 +229,7 @@ arts_plugin::restart_audio_input()
  	// private method - no need to lock.
 	if (!m_audio_src || m_audio_src->end_of_file()) {
 		// No more data.
+		AM_DBG lib::logger::get_logger()->debug("arts_plugin::restart_audio_input(0x%x): no more data",(void*) this);
 		return false;
 	}
 	if (m_audio_src->size() == 0) {
@@ -249,6 +250,12 @@ arts_plugin::arts_play(char *data, int size)
             AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): %s", (void *)this, arts_error_text(err));
 			return 0;
             }
+		if (err < size) {
+		    AM_DBG lib::logger::get_logger()->debug("arts_plugin::arts_play(0x%x): aRts buffer full", (void *)this);
+			lib::event *e = new readdone_callback(this, &arts_plugin::data_avail);
+			m_event_processor->add_event(e,15,ambulant::lib::event_processor::high);
+
+		}
         } else {
         AM_DBG lib::logger::get_logger()->error("arts_plugin::arts_play(0x%x): No aRts stream opened", (void *)this);        
 		return 0;	
