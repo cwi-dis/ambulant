@@ -60,6 +60,7 @@
 #define AMBULANT_LIB_GTYPES_H
 
 #include "ambulant/config/config.h"
+#include <math.h>
 
 namespace ambulant {
 
@@ -425,6 +426,15 @@ class screen_rect {
 		set_coord(lmin(m_left, m_right), lmin(m_top, m_bottom), lmax(m_left, m_right), lmax(m_top, m_bottom));
 	}
 	
+	bool operator==(const screen_rect<T> o) const {
+		return m_left == o.left() && m_top == o.top() &&
+			m_right == o.right() && m_bottom == o.bottom();
+	}
+	
+	bool operator!=(const screen_rect<T> o) const {
+		return !(o == (*this));
+	}
+
 	void operator+=(basic_point<T> p) {
 		translate(p);
 	}
@@ -472,6 +482,74 @@ class screen_rect {
 	}
 	
 };
+
+// Returns the coord where the arguement 'x' is mapped using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (x -> x_p)
+// xp = ( (x_2^p-x_1^p)*(x-x_1) + (x_2 - x_1)*x_1_p )/(x_2 - x_1)
+inline int tf_x(int x, const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst) {
+	double x1 = src->left(), x2 = src->right();
+	double x1p = dst->left(), x2p = dst->right();
+	double xp = ((x2p-x1p)*(x-x1) + (x2-x1)*x1p)/(x2-x1);
+	return int(floor(xp+0.5));
+}
+
+// Returns the x coord mapped to the destination 'xp' using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (x -> x_p)
+// x = ((x_2 - x_1)*x^p + (x_1*x_2^p-x_2*x_1^p))/(x_2^p-x_1^p)
+inline int reverse_tf_x(int xp, const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst) {
+	double x1 = src->left(), x2 = src->right();
+	double x1p = dst->left(), x2p = dst->right();
+	double x = ((x2-x1)*xp + (x1*x2p-x2*x1p))/(x2p-x1p);
+	return (int)floor(x+0.5);
+}
+
+// Returns the coord where the arguement 'y' is mapped using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (y -> y_p)
+// yp = ( (y_2^p-y_1^p)*(y-y_1) + (y_2 - y_1)*y_1_p )/(y_2 - y_1)
+inline int tf_y(int y, const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst) {
+	double y1 = src->top(), y2 = src->bottom();
+	double y1p = dst->top(), y2p = dst->bottom();
+	double yp = ((y2p-y1p)*(y-y1) + (y2-y1)*y1p)/(y2-y1);
+	return (int)floor(yp+0.5);
+}
+
+// Returns the y coord mapped to the destination (yp) using the same
+// transform that mapped src argument to dst argument.
+// In the following primes represent dest coordinates (y -> y_p)
+// y = ((y_2 - y_1)*y^p + (y_1*y_2^p-y_2*y_1^p))/(y_2^p-y_1^p)
+inline int reverse_tf_y(int yp, const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst){
+	double y1 = src->top(), y2 = src->bottom();
+	double y1p = dst->top(), y2p = dst->bottom();
+	double y = ((y2-y1)*yp + (y1*y2p-y2*y1p))/(y2p-y1p);
+	return (int)floor(y+0.5);
+}
+
+// Returns the rect where 'psrc' is mapped using the same
+// transform that mapped 'src' argument to 'dst' argument.
+inline lib::screen_rect<int> transform( const lib::screen_rect<int> *psrc, 
+	const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst) {
+	lib::screen_rect<int> rc;
+	rc.set_coord(tf_x(psrc->left(), src, dst),
+		tf_y(psrc->top(), src, dst),
+		tf_x(psrc->right(), src, dst),
+		tf_y(psrc->bottom(), src, dst));
+	return rc;
+}
+
+// Returns the source rect mapped to the destination (pdst) using the same
+// transform that mapped 'src' argument to 'dst' argument.
+inline lib::screen_rect<int> reverse_transform(const lib::screen_rect<int> *pdst, 
+	const lib::screen_rect<int> *src, const lib::screen_rect<int> *dst){
+	lib::screen_rect<int> rc;
+	rc.set_coord(reverse_tf_x(pdst->left(), src, dst),
+		reverse_tf_y(pdst->top(), src, dst),
+		reverse_tf_x(pdst->right(), src, dst),
+		reverse_tf_y(pdst->bottom(), src, dst));
+	return rc;
+}
 
 // short names for the common cases
 
