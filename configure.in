@@ -43,23 +43,32 @@ AC_ARG_WITH([expat],[
 	AC_HELP_STRING([--with-expat],
                    [Location expat is installed (default is third_party_packages/expat-unix)])
     ],[
-    if test x"$withval" != x; then
-	    EXPAT_PREFIX=$withval
+    case "${withval}" in    
+     yes) expat=true;
+          EXPAT_PREFIX=third_party_packages/expat-unix ;;
+     no)  expat=false ;;
+     *)   expat=true;
+          EXPAT_PREFIX=${withval};;
+	esac])
+if test x$expat = xtrue; then
+	if test  -f $EXPAT_PREFIX/include/expat.h; then
+		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
+		EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
+		EXPAT_INCLUDES=-I$EXPAT_PREFIX/include
+	else
+		AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
+		expat=false
+		unset EXPAT_PREFIX
 	fi
-	])
-	
-if test ! -f $EXPAT_PREFIX/include/expat.h; then
-	AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
+else
+	unset EXPAT_PREFIX
 fi
 
-EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
-EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
-EXPAT_INCLUDES=-I$EXPAT_PREFIX/include
 AC_SUBST(EXPAT_PREFIX)
 AC_SUBST(EXPAT_LIBS)
 AC_SUBST(EXPAT_INCLUDES)
-
-AC_MSG_RESULT($EXPAT_PREFIX)
+AM_CONDITIONAL(WITH_EXPAT, test x$xexpat = xtrue)
+AC_MSG_RESULT($expat)
 
 #
 # Find xerces
@@ -79,7 +88,7 @@ AC_ARG_WITH([xerces],[
           XERCES_PREFIX=${withval};;
      esac])
 	
-if test $xerces = true;
+if test x$xerces = xtrue;
 then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
      then
      	XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
@@ -95,7 +104,14 @@ AC_SUBST(XERCES_LIBS)
 AC_SUBST(XERCES_INCLUDES)
 AM_CONDITIONAL(WITH_XERCES, test x$xerces = xtrue)
 AC_MSG_RESULT($xerces)
+#
+# Test that we have at least one XML parser available
+#
+if test x$expat = xfalse -a x$xerces = xfalse; then
+	AC_MSG_ERROR([No XML parser configured - Use at least one of --with-expat or --with-xerces])
+fi
 
+#
 AC_MSG_CHECKING(for --with-cocoa)
 AC_ARG_WITH(cocoa,
      [  --with-cocoa    Turn on Cocoa support],
