@@ -1,0 +1,7 @@
+#ifndef INC_WMUSER
+#define INC_WMUSER
+
+#define WM_SET_CLIENT_RECT WM_USER+1
+#define WM_UPDATE_VIEWPORT WM_USER+2
+
+#endif
