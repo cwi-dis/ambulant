@@ -115,7 +115,8 @@ class timegraph : public time_traits {
 	time_node* build_time_tree(const lib::node *root);
 	void build_priorities();
 	void build_time_graph();
-	time_node* create_time_node(const lib::node *n) const;
+	void build_timers_graph();
+	time_node* create_time_node(const lib::node *n, time_node* tparent) const;
 	time_node *get_node_with_id(const std::string& ident) const;
 	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
 	

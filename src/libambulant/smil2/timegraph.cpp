@@ -56,6 +56,7 @@
 #include "ambulant/common/schema.h"
 #include "ambulant/smil2/timegraph.h"
 #include "ambulant/smil2/time_node.h"
+#include "ambulant/smil2/animate_n.h"
 #include "ambulant/smil2/time_attrs.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/sync_rule.h"
@@ -63,7 +64,7 @@
 #include <stack>
 #include <cstdlib>
 
-//#define AM_DBG
+//#define AM_DBG if(0)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -85,6 +86,7 @@ timegraph::timegraph(time_node::context_type *ctx, const document *doc, const sc
 	AM_DBG m_logger->trace("Time nodes created: %d", time_node::get_node_counter());
 	build_priorities();
 	build_time_graph();
+	build_timers_graph();
 }
 
 timegraph::~timegraph() {
@@ -161,7 +163,7 @@ timegraph::build_time_tree(const lib::node *root) {
 		
 		if(start_element) {
 			// create a time node for each start element
-			time_node *tn = create_time_node(n);
+			time_node *tn = create_time_node(n, stack.empty()?0:stack.top());
 			
 			// read or create node id and add it the map
 			std::string ident;
@@ -190,7 +192,7 @@ timegraph::build_time_tree(const lib::node *root) {
 }
 
 time_node* 
-timegraph::create_time_node(const node* n) const {
+timegraph::create_time_node(const node* n, time_node* tparent) const {
 	time_node *tn = 0;
 	time_container_type tct =
 		m_schema->get_time_type(n->get_qname());
@@ -200,6 +202,8 @@ timegraph::create_time_node(const node* n) const {
 		tn = new par(m_context, n);
 	else if(tct == tc_excl) 
 		tn = new excl(m_context, n);
+	else if(m_schema->is_animation(n->get_qname())) 
+		tn = animate_node::new_instance(m_context, n, tparent->dom_node());
 	else 
 		tn = new time_node(m_context, n, tc_none, m_schema->is_discrete(n->get_qname()));
 	(*m_dom2tn)[n->get_numid()] = tn;
@@ -229,6 +233,22 @@ void timegraph::build_priorities() {
 			excl *e = qualify<excl*>(tn);
 			e->built_priorities();
 		}
+	}
+}
+
+// Builds the network of timers based on the sync behavior declared in the document
+// The spec allows many aspects to be implementation specific  
+// XXX: for now assume always "can slip sync behavior".
+void timegraph::build_timers_graph() {
+	time_node::iterator it;
+	time_node::iterator end = m_root->end();
+	for(it = m_root->begin(); it != end; it++) {
+		if(!(*it).first) continue;
+		time_node *tn = (*it).second;
+		lib::timer *timer = 0;
+		if(tn->is_root()) timer = new lib::timer(m_context->get_timer(), 1.0, false);
+		else timer = new lib::timer(tn->up()->get_timer(), 1.0, false);
+		tn->set_timer(timer);
 	}
 }
 
