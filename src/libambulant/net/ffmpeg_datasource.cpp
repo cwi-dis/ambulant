@@ -729,8 +729,22 @@ ffmpeg_video_datasource::data_avail(int64_t ipts, uint8_t *inbuf, int sz)
 					}
 					
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
-
-
+					
+					if(1) {
+						switch(frame.pict_type) {
+							case FF_B_TYPE:
+								AM_DBG lib::logger::get_logger()->trace("BBBBB ffmpeg_video_datasource.data_avail: B-frame, timestamp = %d", pts); 
+								break;
+							case FF_P_TYPE:
+								AM_DBG lib::logger::get_logger()->trace("PPPPP ffmpeg_video_datasource.data_avail: P-frame, timestamp = %d", pts); 
+								break;
+							case FF_I_TYPE:
+								AM_DBG lib::logger::get_logger()->trace("IIIII ffmpeg_video_datasource.data_avail: I-frame, timestamp = %d", pts); 
+								break;
+							default:
+								AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: I-frame, timestamp = %d", pts); 
+						}
+					}
 					// And store the data.
 					std::pair<double, char*> element(pts, framedata);
 					m_frames.push(element);
