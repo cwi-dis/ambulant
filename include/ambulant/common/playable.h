@@ -59,8 +59,6 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
-
 // Display mode when the playable is paused.
 enum pause_display {display_disable, display_hide, display_show};
 

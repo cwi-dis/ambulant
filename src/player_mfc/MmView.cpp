@@ -176,7 +176,7 @@ void MmView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	SendMessage(WM_SET_CLIENT_RECT, 
-		ambulant::lib::default_layout_width, ambulant::lib::default_layout_height);
+		ambulant::common::default_layout_width, ambulant::common::default_layout_height);
 	if(player) player->redraw();
 
 }

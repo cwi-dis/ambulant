@@ -55,20 +55,23 @@
 
 #include "ambulant/config/config.h"
 
-#include "ambulant/lib/event_processor.h"
+//#include "ambulant/lib/event_processor.h"
 
 namespace ambulant {
 
-namespace common {
+namespace lib {
+	class timer;
+	class event_processor;
+}
 
-using namespace lib;
+namespace common {
 
 class abstract_player {
   public:
 	virtual ~abstract_player() {};
 	
-	virtual timer* get_timer() = 0;
-	virtual event_processor* get_evp() = 0;
+	virtual lib::timer* get_timer() = 0;
+	virtual lib::event_processor* get_evp() = 0;
 
 	virtual void start() = 0;
 	virtual void stop() = 0;

@@ -67,16 +67,14 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
-
 class trace_playable : public playable {
 
   public:
   	
-	trace_playable(const node* n, cookie_type c) 
+	  trace_playable(const lib::node* n, cookie_type c) 
 	:	m_node(n),
 		m_cookie(c) {
-		m_logger = logger::get_logger();
+			m_logger = lib::logger::get_logger();
 		const char *pid = m_node->get_attribute("id");
 		m_id = (pid?pid:"no-id");
 		m_tag = m_node->get_local_name();
@@ -111,11 +109,11 @@ class trace_playable : public playable {
 	const cookie_type& get_cookie() const { return m_cookie; }
 
   private:
-	const node *m_node;
+	const lib::node *m_node;
 	const cookie_type m_cookie;
 	std::string m_tag;
 	std::string m_id;
-	logger *m_logger;
+	lib::logger *m_logger;
 		
 	void trace_call(const char *mfn) {
 		m_logger->trace("PLAYABLE: %s[%s].%s()", m_tag.c_str(), m_id.c_str(), mfn);	

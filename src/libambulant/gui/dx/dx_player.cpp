@@ -95,7 +95,7 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	
 	// Create a player instance
 	m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_smil_player = new lib::smil_player(doc, m_wf, m_rf);	
+	m_smil_player = new smil2::smil_player(doc, m_wf, m_rf);	
 }
 
 gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
@@ -107,7 +107,7 @@ gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
 }
 
 void gui::dx::dx_smil_player_impl::load_tests_filter(const std::string& url) {
-	lib::test_attrs::load_test_attrs(url);
+	smil2::test_attrs::load_test_attrs(url);
 	m_smil_player->build_timegraph();
 }
 
@@ -237,7 +237,7 @@ bool gui::dx::dx_mms_player_impl::start() {
 	m_wf = new gui::dx::dx_window_factory(this);
 	m_rf = new gui::dx::dx_renderer_factory(this);
 	
-	m_mms_player = new lib::mms_player(doc, m_wf, m_rf);
+	m_mms_player = new mms::mms_player(doc, m_wf, m_rf);
 	m_mms_player->start();
 
 	m_logger->trace("Started playing");

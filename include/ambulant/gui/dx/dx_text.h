@@ -68,26 +68,26 @@ namespace dx {
 class viewport;
 class region;
 
-class dx_text_renderer : public lib::active_renderer {
+class dx_text_renderer : public common::active_renderer {
   public:
 	dx_text_renderer(
-		lib::active_playable_events *context,
-		lib::active_playable_events::cookie_type cookie,
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest,
-		lib::abstract_window *window);
+		common::abstract_rendering_surface *const dest,
+		common::abstract_window *window);
 	~dx_text_renderer();
 	void start(double t);
 	void readdone();
 	void stop();
-	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
-	viewport* get_viewport(lib::abstract_window *window);
+	viewport* get_viewport(common::abstract_window *window);
 	viewport* get_viewport();
 	region* m_region;
-	lib::abstract_window *m_window;
+	common::abstract_window *m_window;
 };
 
 } // namespace dx

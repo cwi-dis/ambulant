@@ -69,14 +69,15 @@
 
 namespace ambulant {
 
+template <class N>
+class lib::node_navigator;
+
 namespace smil2 {
 
 
 class lib::document;
 class common::schema;
 class lib::node;
-template <class N>
-class lib::node_navigator;
 
 // Builds the time tree and the time graph.
 // Wraps the time root.

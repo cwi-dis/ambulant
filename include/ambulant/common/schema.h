@@ -72,8 +72,6 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
-
 // An enumeration representing the time container type
 // range of values : par | seq | excl | none  
 enum time_container_type {tc_par, tc_seq, tc_excl, tc_none};

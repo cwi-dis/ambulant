@@ -235,9 +235,6 @@
 				<File
 					RelativePath=".\common\smil_handler.cpp">
 				</File>
-				<File
-					RelativePath=".\common\trace_player.cpp">
-				</File>
 			</Filter>
 			<Filter
 				Name="smil2"
@@ -268,6 +265,9 @@
 				</File>
 				<File
 					RelativePath=".\smil2\timegraph.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\trace_player.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -496,6 +496,12 @@
 					Name="common"
 					Filter="">
 					<File
+						RelativePath="..\..\include\ambulant\common\layout.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\playable.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\common\player.h">
 					</File>
 					<File
@@ -520,7 +526,13 @@
 						RelativePath="..\..\include\ambulant\common\renderer.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\common\schema.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\trace_playable.h">
 					</File>
 				</Filter>
 				<Filter
@@ -694,6 +706,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\timegraph.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\trace_player.h">
 					</File>
 				</Filter>
 				<Filter

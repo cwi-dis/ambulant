@@ -67,7 +67,7 @@ active_renderer::active_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
 	const lib::node *node,
-	event_processor *const evp,
+	lib::event_processor *const evp,
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
 :	active_basic_renderer(context, cookie, node, evp),
@@ -164,7 +164,7 @@ global_renderer_factory::new_renderer(
 	active_playable_events *context,
 	active_playable_events::cookie_type cookie,
 	const lib::node *node,
-	event_processor *const evp,
+	lib::event_processor *const evp,
 	net::passive_datasource *src,
 	abstract_rendering_surface *const dest)
 {

@@ -83,7 +83,7 @@ common::passive_region::~passive_region()
 }
 	
 common::passive_region *
-common::passive_region::subregion(const std::string &name, screen_rect<int> bounds)
+common::passive_region::subregion(const std::string &name, lib::screen_rect<int> bounds)
 {
 	AM_DBG lib::logger::get_logger()->trace("subbregion NO-INFO: ltrb=(%d, %d, %d, %d)", bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
 	passive_region *rv = new passive_region(name, this, bounds, NULL);
@@ -104,7 +104,7 @@ common::passive_region::subregion(const abstract_smil_region_info *info)
 }
 
 common::active_region *
-common::passive_region::activate(const node *node)
+common::passive_region::activate(const lib::node *node)
 {
 	active_region *rv = new common::active_region(this, node);
 	AM_DBG lib::logger::get_logger()->trace("passive_region::activate(%s, 0x%x) -> 0x%x", m_name.c_str(), (void*)this, (void*)rv);
@@ -134,7 +134,7 @@ common::passive_region::active_region_done()
 }
 
 void
-common::passive_region::redraw(const screen_rect<int> &r, abstract_window *window)
+common::passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	screen_rect<int> our_outer_rect = r & m_outer_bounds;
@@ -159,7 +159,7 @@ common::passive_region::redraw(const screen_rect<int> &r, abstract_window *windo
 }
 
 void
-common::passive_region::draw_background(const screen_rect<int> &r, abstract_window *window)
+common::passive_region::draw_background(const lib::screen_rect<int> &r, abstract_window *window)
 {
 	// Do a quick return if we have nothing to draw
 	if (m_info == NULL) return;
@@ -182,7 +182,7 @@ common::passive_region::get_bg_renderer()
 }
 
 void
-common::passive_region::user_event(const point &where)
+common::passive_region::user_event(const lib::point &where)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x, (%d, %d))", (void *)this, where.x, where.y);
 	// Test that it is in our area
@@ -213,7 +213,7 @@ common::passive_region::user_event(const point &where)
 }
 
 void
-common::passive_region::need_redraw(const screen_rect<int> &r)
+common::passive_region::need_redraw(const lib::screen_rect<int> &r)
 {
 	if (!m_parent)
 		return;   // Audio region or some such
@@ -326,7 +326,7 @@ common::passive_region::mouse_region_changed()
     if (m_parent) m_parent->mouse_region_changed();
 }
 
-common::passive_root_layout::passive_root_layout(const std::string &name, size bounds, window_factory *wf)
+common::passive_root_layout::passive_root_layout(const std::string &name, lib::size bounds, window_factory *wf)
 :   passive_region(name, NULL, screen_rect<int>(point(0, 0), bounds), NULL)
 {
 	m_mouse_region = wf->new_mouse_region();
@@ -335,7 +335,7 @@ common::passive_root_layout::passive_root_layout(const std::string &name, size b
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x, bgrenderer=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region, (void *)m_bg_renderer);
 }
 		
-common::passive_root_layout::passive_root_layout(const abstract_smil_region_info *info, size bounds, window_factory *wf)
+common::passive_root_layout::passive_root_layout(const abstract_smil_region_info *info, lib::size bounds, window_factory *wf)
 :   passive_region(info?info->get_name():"topLayout", NULL, screen_rect<int>(point(0, 0), bounds), info)
 {
 	m_mouse_region = wf->new_mouse_region();
@@ -356,7 +356,7 @@ common::passive_root_layout::~passive_root_layout()
 }
 
 void
-common::passive_root_layout::need_redraw(const screen_rect<int> &r)
+common::passive_root_layout::need_redraw(const lib::screen_rect<int> &r)
 {
 	if (m_gui_window)
 		m_gui_window->need_redraw(r);
@@ -391,7 +391,7 @@ common::active_region::show(abstract_rendering_source *renderer)
 }
 
 void
-common::active_region::redraw(const screen_rect<int> &r, abstract_window *window)
+common::active_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 {
 	if (m_renderer) {
 		AM_DBG lib::logger::get_logger()->trace("active_region.redraw(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
@@ -404,7 +404,7 @@ common::active_region::redraw(const screen_rect<int> &r, abstract_window *window
 }
 
 void
-common::active_region::user_event(const point &where)
+common::active_region::user_event(const lib::point &where)
 {
 	if (m_renderer) {
 		AM_DBG lib::logger::get_logger()->trace("active_region.user_event(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
@@ -417,7 +417,7 @@ common::active_region::user_event(const point &where)
 }
 
 void
-common::active_region::need_redraw(const screen_rect<int> &r)
+common::active_region::need_redraw(const lib::screen_rect<int> &r)
 {
 	m_source->need_redraw(r);
 }

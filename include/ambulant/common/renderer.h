@@ -68,9 +68,7 @@ namespace ambulant {
 
 namespace common {
 
-using namespace lib;
-
-class active_basic_renderer : public active_playable, public abstract_rendering_source, public ref_counted_obj {
+	class active_basic_renderer : public active_playable, public abstract_rendering_source, public lib::ref_counted_obj {
   public:
   	active_basic_renderer()
   	:	active_playable((active_playable_events *)NULL, 0),
@@ -84,7 +82,7 @@ class active_basic_renderer : public active_playable, public abstract_rendering_
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp)
+		lib::event_processor *const evp)
 	:   active_playable(context, cookie),
 		m_node(node),
 		m_event_processor(evp) {};
@@ -93,7 +91,7 @@ class active_basic_renderer : public active_playable, public abstract_rendering_
 	
   protected:
 	const lib::node *m_node;
-  	event_processor *const m_event_processor;
+	lib::event_processor *const m_event_processor;
 };
 
 #if 0
@@ -122,7 +120,7 @@ class active_renderer : public active_basic_renderer {
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest);
 		
@@ -135,8 +133,8 @@ class active_renderer : public active_basic_renderer {
 	virtual void resume() {}
 	virtual void wantclicks(bool want);
 
-	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const point &where) { clicked_callback(); }
+	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
+	virtual void user_event(const lib::point &where) { clicked_callback(); }
 	virtual abstract_rendering_surface *get_rendering_surface() { return m_dest;}
 	
   protected:
@@ -157,7 +155,7 @@ class active_final_renderer : public active_renderer {
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest)
 	:	active_renderer(context, cookie, node, evp, src, dest),
@@ -183,7 +181,7 @@ class renderer_factory {
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest) = 0;
 };
@@ -199,7 +197,7 @@ class global_renderer_factory : public renderer_factory {
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const lib::node *node,
-		event_processor *const evp,
+		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		abstract_rendering_surface *const dest);
   private:

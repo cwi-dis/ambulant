@@ -62,14 +62,14 @@
 using namespace ambulant;
 
 gui::dx::dx_text_renderer::dx_text_renderer(
-	lib::active_playable_events *context,
-	lib::active_playable_events::cookie_type cookie,
+	common::active_playable_events *context,
+	common::active_playable_events::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
 	net::passive_datasource *src,
-	lib::abstract_rendering_surface *const dest,
-	lib::abstract_window *window)
-:   lib::active_renderer(context, cookie, node, evp, src, dest),
+	common::abstract_rendering_surface *const dest,
+	common::abstract_window *window)
+:   common::active_renderer(context, cookie, node, evp, src, dest),
 	m_window(window), m_region(0) { 
 }
 
@@ -82,7 +82,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 
 	if(!m_node || !m_src) abort();
 	
-	const lib::abstract_smil_region_info *ri = m_dest->get_info();
+	const common::abstract_smil_region_info *ri = m_dest->get_info();
 	
 	// Create a dx-region
 	viewport *v = get_viewport();
@@ -126,10 +126,10 @@ void gui::dx::dx_text_renderer::stop() {
 		m_region = 0;
 		v->redraw();
 	}
-	lib::active_renderer::stop();
+	common::active_renderer::stop();
 }
 
-void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {
+void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
 	viewport *v = get_viewport(window);
 	v->redraw();
 }
@@ -138,7 +138,7 @@ gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport() {
 	return get_viewport(m_window);
 }
 
-gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport(lib::abstract_window *window) {
+gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport(common::abstract_window *window) {
 	dx_window *dxwindow = (dx_window *) window;
 	return dxwindow->get_viewport();
 }

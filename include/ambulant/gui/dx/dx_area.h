@@ -64,24 +64,24 @@ namespace gui {
 
 namespace dx {
 
-class dx_area_renderer : public lib::active_renderer {
+class dx_area_renderer : public common::active_renderer {
   public:
 	dx_area_renderer(
-		lib::active_playable_events *context,
-		lib::active_playable_events::cookie_type cookie,
+		common::active_playable_events *context,
+		common::active_playable_events::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		net::passive_datasource *src,
-		lib::abstract_rendering_surface *const dest,
-		lib::abstract_window *window) 
-	: lib::active_renderer(context, cookie, node, evp, src, dest) {
+		common::abstract_rendering_surface *const dest,
+		common::abstract_window *window) 
+	: common::active_renderer(context, cookie, node, evp, src, dest) {
 	}
 	~dx_area_renderer() {}
 	void start(double t) {}
 	void stop() {}
-	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window) {}
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
   private:
-	lib::abstract_window *m_window;
+	common::abstract_window *m_window;
 };
 
 } // namespace dx

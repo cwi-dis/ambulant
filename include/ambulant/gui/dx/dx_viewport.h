@@ -88,8 +88,8 @@ class video_player;
 
 class viewport {
   public:
-	viewport(int width = lib::default_layout_width, 
-		int height = lib::default_layout_height, HWND hwnd = NULL);
+	viewport(int width = common::default_layout_width, 
+		int height = common::default_layout_height, HWND hwnd = NULL);
 	~viewport();
 	
 	// Shows what has been drawn
@@ -130,7 +130,7 @@ class viewport {
 	int get_width() const { return m_width;}
 	int get_height() const { return m_height;}
 	
-	void set_layout(const lib::passive_region *layout) { m_layout = layout; }
+	void set_layout(const common::passive_region *layout) { m_layout = layout; }
 	
   private:	
  	void add_region(region *r);
@@ -145,7 +145,7 @@ class viewport {
 	uint16 high_bit_pos(uint32 dword);
 
 	// link to the layout
-	const lib::passive_region *m_layout;
+	const common::passive_region *m_layout;
 	
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
@@ -196,11 +196,11 @@ class region {
 	void set_bmp(HBITMAP hbmp, int width, int height, bool transp, lib::color_t tarnsp_color);
 	void set_video(video_player *player);
 	
-	void set_rendering_surface(const lib::abstract_rendering_surface *rsurf) { m_rsurf = rsurf;}
-	void set_rendering_info(const lib::abstract_smil_region_info *rinfo) { m_rinfo = rinfo;}
+	void set_rendering_surface(const common::abstract_rendering_surface *rsurf) { m_rsurf = rsurf;}
+	void set_rendering_info(const common::abstract_smil_region_info *rinfo) { m_rinfo = rinfo;}
 	
-	const lib::abstract_rendering_surface* get_rsurf() const { return m_rsurf;}
-	const lib::abstract_smil_region_info* get_rinfo() const { return m_rinfo;}
+	const common::abstract_rendering_surface* get_rsurf() const { return m_rsurf;}
+	const common::abstract_smil_region_info* get_rinfo() const { return m_rinfo;}
 	
 	bool is_transparent() const { 
 		return m_rinfo?m_rinfo->get_transparent():false;
@@ -214,8 +214,8 @@ class region {
 	viewport *m_viewport;	
 	
 	// links to the layout
-	const lib::abstract_rendering_surface *m_rsurf;
-	const lib::abstract_smil_region_info *m_rinfo;
+	const common::abstract_rendering_surface *m_rsurf;
+	const common::abstract_smil_region_info *m_rinfo;
 	
 	// The coordinates of this region 
 	// relative to the viewport

@@ -59,11 +59,13 @@
 
 namespace ambulant {
 
-namespace smil2 {
+namespace lib {
+class node;
+class logger;
+class document;
+} // namespace lib
 
-class lib::node;
-class lib::logger;
-class lib::document;
+namespace smil2 {
 
 struct custom_test {
 	std::string id;
