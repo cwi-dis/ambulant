@@ -132,6 +132,9 @@ class timer : public abstract_timer, public timer_events {
 	// Returns the speed of this timer.
 	double get_speed() const { return m_speed;}
 	
+	// Returns true when this timer is running.
+	bool running() const { return m_running;}
+	
 	// Returns the realtime speed of this timer 
 	// as modulated by its parent.
 	double get_realtime_speed() const;
