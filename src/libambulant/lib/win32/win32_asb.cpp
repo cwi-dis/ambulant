@@ -55,6 +55,7 @@
 #include <windows.h>
 
 #include "ambulant/lib/win32/win32_asb.h"
+#include "ambulant/lib/logger.h"
 
 #include <string>
 
@@ -81,4 +82,14 @@ std::string lib::win32::resolve_path(const char *s) {
 	GetFullPathName(s, MAX_PATH, buf, &pFilePart);
 	return buf;
 }
+
+void lib::show_message(const char *format, ...) {
+	va_list	args;
+	va_start(args, format);
+	char buf[2048] = "";
+	vsprintf(buf, format, args);
+	va_end(args);
+	MessageBox(NULL, buf, "DemoPlayer", MB_OK);
+}
+
 
