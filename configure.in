@@ -17,6 +17,34 @@ AC_CONFIG_FILES([Makefile
 	Test/Makefile
 	Test/designtests/Makefile])
 #
+# Find expat
+#
+EXPAT_PREFIX=third_party_packages/expat-unix
+AC_ARG_WITH([expat],[
+	AC_HELP_STRING([--with-expat],
+                   [Location expat is installed (default is third_party_packages/expat-unix)])
+    ],[
+    if test x"$withval" != x; then
+	    EXPAT_PREFIX=$withval
+	fi
+	])
+	
+if test ! -f $EXPAT_PREFIX/include/expat.h; then
+	set
+	AC_MSG_ERROR([expat not found in $EXPAT_PREFIX])
+fi
+
+EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
+
+EXPAT_LIBS=-L$EXPAT_PREFIX/lib -lexpat
+EXPAT_INCLUDES=-I$EXPAT_PREFIX/include
+AC_SUBST(EXPAT_PREFIX)
+AC_SUBST(EXPAT_LIBS)
+AC_SUBST(EXPAT_INCLUDES)
+
+AC_MSG_RESULT($EXPAT_PREFIX)
+
+#
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
 AC_DEFUN([ACX_PTHREAD], [
