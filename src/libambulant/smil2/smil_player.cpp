@@ -422,11 +422,11 @@ smil_player::new_playable(const lib::node *n) {
 
 // Destroys the playable of the node (checkpoint).
 void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
-#if 1
+#if 0
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
 	
-	/*AM_DBG*/ m_logger->trace("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
+	AM_DBG m_logger->trace("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 #endif
 	np->stop();
 	np->release();

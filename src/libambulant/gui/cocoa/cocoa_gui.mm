@@ -379,7 +379,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	NSString *filename = [NSString stringWithFormat: DUMP_IMAGES_FORMAT, seqnum++, ident];
 	NSData *tiffrep = [image TIFFRepresentation];
 	[tiffrep writeToFile: filename atomically: NO];
-	/*AM_DBG*/ NSLog(@"dump:toImageFile: created %@", filename);
+	AM_DBG NSLog(@"dump:toImageFile: created %@", filename);
 }
 
 - (BOOL)wantsDefaultClipping
@@ -394,14 +394,14 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 - (void) incrementTransitionCount
 {
 	transition_count++;
-	/*AM_DBG*/ NSLog(@"incrementTransitionCount: count=%d", transition_count);
+	AM_DBG NSLog(@"incrementTransitionCount: count=%d", transition_count);
 }
 
 - (void) decrementTransitionCount
 {
 	assert(transition_count > 0);
 	transition_count--;
-	/*AM_DBG*/ NSLog(@"decrementTransitionCount: count=%d", transition_count);
+	AM_DBG NSLog(@"decrementTransitionCount: count=%d", transition_count);
 	// XXXX Should we delete transition_surface?
 }
 

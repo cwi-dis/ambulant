@@ -54,7 +54,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/preferences.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -143,7 +143,7 @@ passive_region::activate()
 void
 passive_region::animated()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
+	AM_DBG lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
 	clear_cache();
 	need_redraw(m_inner_bounds);
 	
@@ -190,15 +190,19 @@ passive_region::renderer_done(renderer *cur)
 void
 passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 {
-	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s, ltrb=(%d, %d, %d, %d))", (void *)this, m_name.c_str(), r.left(), r.top(), r.right(), r.bottom());
 	screen_rect<int> our_outer_rect = r & m_outer_bounds;
 	screen_rect<int> our_rect = m_outer_bounds.innercoordinates(our_outer_rect);
-	if (our_rect.empty())
+	if (our_rect.empty()) {
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) returning: nothing to draw", (void *)this, m_name.c_str());
 		return;
-		
+	}
+	// For now: if we are going to redraw anything we have to redraw everything (sigh).
+	our_rect = m_inner_bounds;
 	
 	////////////////
 	// Draw the content of this
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s, our_ltrb=(%d, %d, %d, %d)) ->draw_background", (void *)this, m_name.c_str(), our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
 	
 	// First the background
 	draw_background(our_rect, window);	
@@ -206,10 +210,9 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
 	assert(m_renderers.size()<=1);
-	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
 	std::list<renderer*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)(*ar));
+		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->redraw(our_rect, window);
 	}
 		
@@ -218,6 +221,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
 			
+			AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
 			if (!(*it2)->get_info()->is_subregion()) {
 				AM_DBG lib::logger::get_logger()->warn("passive_region.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
 			}
@@ -228,12 +232,16 @@ passive_region::redraw(const lib::screen_rect<int> &r, gui_window *window)
 	// Finally the children regions of this
 	// XXXX Should go per z-order value
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
 		children_list_t& cl = (*it2).second;
-		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++)
-			//AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) -> child 0x%x, z=%d", (void *)this, (void *)(*i).second, (*i).first);
-			if(!(*it3)->get_info()->is_subregion())
+		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++) {
+			if(!(*it3)->get_info()->is_subregion()) {
+				AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) -> child 0x%x", (void *)this, m_name.c_str(), (void *)(*it3));
 				(*it3)->redraw(our_rect, window);
+			}
+		}
 	}
+	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x %s) returning", (void*)this, m_name.c_str());
 }
 
 void
@@ -259,6 +267,7 @@ passive_region::draw_background(const lib::screen_rect<int> &r, gui_window *wind
 		AM_DBG lib::logger::get_logger()->trace("draw_background %s: no m_bg_renderer", m_name.c_str());
 		return;
 	}
+	AM_DBG lib::logger::get_logger()->trace("draw_background(0x%x %s): drawing background", (void*)this, m_name.c_str());
 	m_bg_renderer->redraw(r, window);
 }
 
