@@ -78,7 +78,7 @@ void net::url::set_from_unix_path(lib::reg_scanner& sc, const std::string& pat) 
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
-	m_path = sc.join(1);
+	m_path = sc.get_str();
 }
 
 // pat: "n:n" or "n:/n"

@@ -170,11 +170,6 @@ document::resolve_url(const node *n, const std::string& rurl) const {
 	
 	if(m_src_base.get_protocol() == "file") {
 		std::string base_path = m_src_base.get_path();
-		
-		// if not a windows path assume unix
-		if(base_path.find_first_of(":\\") == std::string::npos)
-			base_path.insert(0, "/");
-			
 		return filesys::join(base_path, rurl, file_separator.c_str());
 	}
 		
