@@ -173,7 +173,7 @@ databuffer::get_write_ptr(int sz)
 		//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
 		return (m_buffer + m_size);
     } else {
-        lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to fill it ");
+        lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
 		return NULL;
     }
     
@@ -181,21 +181,20 @@ databuffer::get_write_ptr(int sz)
 
 void databuffer::pushdata(int sz)
 {
-    if(!m_buffer_full) {
-        m_size += sz;
-		//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",sz);
-        m_used = m_size - m_rear;
-        m_buffer = (char*) realloc(m_buffer, m_size);
-         if (!m_buffer) {
-             lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
-         }
-        if(m_max_size > 0 && m_size > m_max_size) {
-			AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
-            m_buffer_full = true;
-        }
-    } else {
+	if (m_buffer_full) {
         lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
+	m_size += sz;
+	//AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata:size = %d ",sz);
+	m_used = m_size - m_rear;
+	m_buffer = (char*) realloc(m_buffer, m_size);
+	 if (!m_buffer) {
+		 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
+	 }
+	if(m_max_size > 0 && m_size > m_max_size) {
+		AM_DBG lib::logger::get_logger()->trace("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
+		m_buffer_full = true;
+	}
 }
 
 
@@ -212,4 +211,5 @@ databuffer::readdone(int sz)
         m_rear += sz;
         m_used = m_size - m_rear;
     }
+	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
 }
