@@ -123,7 +123,13 @@ two sets of parameters (XYWH, color, etc): the default set and the animated
 set. An "animation is active" bit will decide which set to use.
 
 Whenever any of the parameters is animated the region will have to
-communicate this to 
+communicate this to its data sinks, which may in turn need to communicate it
+to its renderer or transition.
+
+Subregion position, and especially animation thereof, creates more
+issues. It may be a good idea to simply state that every node renders
+to a subregion, but with that subragion being simply a transparent
+(0, 0, 100%, 100%) subregion for most nodes. 
 
 
 Data sink
@@ -157,7 +163,8 @@ Renderers
 
 A renderer is called with a data source, region and a few other
 parameters (such as "ignore implicit repeat in media item"). It returns
-a renderer object. 
+a renderer object. The renderer is the representation in a timeline
+object of the node in the SMIL document.
 
 When the renderer is activated it activates the data source and region,
 and starts rendering.
@@ -171,7 +178,7 @@ MIME type and such at low cost. On the other hand doing it statically means
 we don't have to do it all again when we play the same media again later.
 Maybe a caching scheme is in order again here? Then the question also
 arises where to cache: at the data source is probably a good candidate.
-	
+
 The renderer activates the region to a data sink, it cannot be called
 with a data sink as parameter (as it was in earlier versions of this document)
 because renderer objects are stateless.

@@ -117,7 +117,12 @@ this reason I now think it's best to have the region object store
 two sets of parameters (XYWH, color, etc): the default set and the animated
 set. An &quot;animation is active&quot; bit will decide which set to use.</p>
 <p>Whenever any of the parameters is animated the region will have to
-communicate this to</p>
+communicate this to its data sinks, which may in turn need to communicate it
+to its renderer or transition.</p>
+<p>Subregion position, and especially animation thereof, creates more
+issues. It may be a good idea to simply state that every node renders
+to a subregion, but with that subragion being simply a transparent
+(0, 0, 100%, 100%) subregion for most nodes.</p>
 </div>
 <div class="section" id="data-sink">
 <h1><a name="data-sink">Data sink</a></h1>
@@ -146,7 +151,8 @@ with two data sinks as sources and a third, new, one as destination).</p>
 <h1><a name="renderers">Renderers</a></h1>
 <p>A renderer is called with a data source, region and a few other
 parameters (such as &quot;ignore implicit repeat in media item&quot;). It returns
-a renderer object.</p>
+a renderer object. The renderer is the representation in a timeline
+object of the node in the SMIL document.</p>
 <p>When the renderer is activated it activates the data source and region,
 and starts rendering.</p>
 <p><em>QUESTION</em>: at some point someone has to decide which (active) renderer
