@@ -53,7 +53,7 @@
 #ifndef AMBULANT_LIB_MTSYNC_H
 #define AMBULANT_LIB_MTSYNC_H
 
-#ifdef AMBULANT_PLATFORM_WIN32
+#if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
 #include "ambulant/lib/win32/win32_mtsync.h"
 #else
 #include "ambulant/lib/unix/unix_mtsync.h"

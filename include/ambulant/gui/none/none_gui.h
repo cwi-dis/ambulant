@@ -81,7 +81,14 @@ class none_active_renderer : public lib::active_renderer {
   public:
 	none_active_renderer(
 		lib::active_playable_events *context,
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+		// Workaround for bug in emVC 4.0: it gets confused
+		// when getting a subtype from a class within a function
+		// signature, or something like that
+		int cookie,
+#else
 		lib::active_playable_events::cookie_type cookie,
+#endif
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,

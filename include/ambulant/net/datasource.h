@@ -73,7 +73,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #include <unistd.h>
+#endif
 
 
 namespace ambulant {
