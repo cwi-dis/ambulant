@@ -1448,6 +1448,19 @@
 			settings = {
 			};
 		};
+		04D10D0A054E9D800010C447 = {
+			expectedFileType = image.icns;
+			isa = PBXFileReference;
+			path = cocoambulant.icns;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04D10D0B054E9D800010C447 = {
+			fileRef = 04D10D0A054E9D800010C447;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //040
 //041
 //042
@@ -1544,8 +1557,6 @@
 //2A3
 //2A4
 		2A37F4A9FDCFA73011CA2CEA = {
-			buildSettings = {
-			};
 			buildStyles = (
 				4A9504D0FFE6A4CB11CA0CBA,
 				4A9504D1FFE6A4CB11CA0CBA,
@@ -1654,6 +1665,7 @@
 		};
 		2A37F4B8FDCFA73011CA2CEA = {
 			children = (
+				04D10D0A054E9D800010C447,
 				2A37F4B9FDCFA73011CA2CEA,
 				2A37F4B6FDCFA73011CA2CEA,
 				2A37F4B4FDCFA73011CA2CEA,
@@ -1916,6 +1928,7 @@
 				8D15AC2D0486D014006FF6A4,
 				8D15AC2E0486D014006FF6A4,
 				8D15AC2F0486D014006FF6A4,
+				04D10D0B054E9D800010C447,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

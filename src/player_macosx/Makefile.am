@@ -21,6 +21,7 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) Info.plist cocoambulant.app/Contents/Info.plist
 	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MainMenu.nib
 	mkdir -p cocoambulant.app/Contents/Resources/English.lproj/MyDocument.nib
+	$(INSTALL_DATA) cocoambulant.icns cocoambulant.app/Contents/Resources
 	$(INSTALL_DATA) English.lproj/Credits.rtf cocoambulant.app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) English.lproj/InfoPlist.strings cocoambulant.app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) English.lproj/locversion.plist cocoambulant.app/Contents/Resources/English.lproj
