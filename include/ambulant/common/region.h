@@ -13,6 +13,7 @@
 #ifndef AMBULANT_LIB_REGION_H
 #define AMBULANT_LIB_REGION_H
 
+#include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
@@ -49,8 +50,9 @@ class active_region {
 		m_node(node) {}
 	~active_region() {}
 	
-	void show();
-	void done();	
+	virtual void show();
+	virtual void redraw(const screen_rect<int> &r);
+	virtual void done();	
 
   private:
   	event_processor *const m_event_processor;

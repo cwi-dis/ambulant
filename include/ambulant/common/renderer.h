@@ -13,6 +13,7 @@
 #ifndef AMBULANT_LIB_RENDERER_H
 #define AMBULANT_LIB_RENDERER_H
 
+#include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/region.h"
 #include "ambulant/lib/callback.h"
@@ -54,8 +55,9 @@ class active_renderer : public ref_counted {
 		
 	~active_renderer() {}
 	
-	void start(event *playdone);
-	void stop();
+	virtual void start(event *playdone);
+	virtual void redraw(const screen_rect<int> &r);
+	virtual void stop();
 	
 	////////////////////////
 	// lib::ref_counted interface implementation
@@ -72,8 +74,8 @@ class active_renderer : public ref_counted {
 
 	long get_ref_count() const {return m_refcount;}
 
-  private:
-	void readdone(detail::readdone_callback_arg *dummy);
+  protected:
+	virtual void readdone(detail::readdone_callback_arg *dummy);
 
   	event_processor *const m_event_processor;
   	net::active_datasource *m_src;
@@ -83,6 +85,13 @@ class active_renderer : public ref_counted {
 	lib::event *m_playdone;
 	basic_atomic_count<critical_section> m_refcount;
 };
+
+// Foctory function for renderers. Will eventually become a
+// method of the player object.
+active_renderer * renderer_factory(event_processor *const evp,
+	net::passive_datasource *src,
+	passive_region *const dest,
+	const node *node);
 
 } // namespace lib
  

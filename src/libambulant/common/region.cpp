@@ -26,6 +26,12 @@ lib::active_region::show()
 }
 
 void
+lib::active_region::redraw(const screen_rect<int> &r)
+{
+	lib::logger::get_logger()->trace("active_region.redraw(0x%x)", (void *)this);
+}
+
+void
 lib::active_region::done()
 {
 	lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name);

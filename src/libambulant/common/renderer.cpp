@@ -58,6 +58,12 @@ lib::active_renderer::readdone(lib::detail::readdone_callback_arg *dummy)
 }
 
 void
+lib::active_renderer::redraw(const screen_rect<int> &r)
+{
+	lib::logger::get_logger()->trace("active_renderer.redraw(0x%x)", (void *)this);
+}
+
+void
 lib::active_renderer::stop()
 {
 	// XXXX Need to handle case that no data (or not all data) has come in yet
