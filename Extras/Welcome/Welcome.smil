@@ -15,14 +15,15 @@
       <region id="line2" width="160" height="25" left="40" top="111" z-index="2"/>
       <region id="line3" width="160" height="25" left="50" top="131" z-index="2"/>
       <region id="info" width="160" height="50" left="30" top="166" z-index="2"/>
+      <region id="audio"/>
     </layout>
   </head>
   <body>
     <par dur="16s">
-      <img src="data/background.png"/>
+      <img src="data/background.png" region="background"/>
       <switch>
-	    <audio systemOperatingSystem="macos" src="data/AmbulantTune.aif"/>
-        <audio src="data/AmbulantTune.mp3"/>
+	    <audio systemOperatingSystem="macos" src="data/AmbulantTune.aif" region="audio"/>
+        <audio src="data/AmbulantTune.mp3" region="audio"/>
       </switch>
       <par>
       	<img src="data/ambulant.png" begin="0s" region="title"/>
@@ -30,7 +31,9 @@
       	<img src="data/fast.png" begin="prev.begin+0.5s" region="line1"/>
       	<img src="data/portable.png" begin="prev.begin+0.5s" region="line2"/>
       	<img src="data/opensource.png" begin="prev.begin+0.5s" region="line3"/>
-      	<img src="data/visit.png" begin="prev.begin+0.5s" region="info"/>
+      	<img src="data/visit.png" begin="prev.begin+0.5s" region="info">
+      	  <area href="http://www.ambulantplayer.org" show="new"/>
+      	</img>
       </par>
     </par>
   </body>
