@@ -76,7 +76,12 @@ qt_active_video_renderer::qt_active_video_renderer(
  	m_image(NULL),
   	m_data(NULL)
 {
-if (m_src->has_audio()) {
+	if (!m_src) {
+		lib::logger::get_logger()->error("qt_active_video_renderer::qt_active_video_renderer: no datasource");
+		//m_context->stopped(m_cookie, 0);
+		return;
+	}
+	if (m_src->has_audio()) {
 		m_audio_ds = m_src->get_audio_datasource();
 		//XXXX This is wrong
 		if (m_audio_ds) {

@@ -1072,17 +1072,13 @@ void
 ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
-	if (m_src == NULL) {
-		m_lock.leave();
-		AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): m_src already NULL", (void*)this);
-		return;
-	}
-	int sz = m_src->size();
 
 	if (m_con) {
-		uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
-		if(!m_buffer.buffer_full()){
+		int sz = m_src->size();
+		//while (sz && !m_buffer.buffer_full()) {
+			uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
+			if(!m_buffer.buffer_full()){
 			// Note: outsize is only written by avcodec_decode_audio, not read!
 			// You must always supply a buffer that is AVCODEC_MAX_AUDIO_FRAME_SIZE
 			// bytes big!
@@ -1090,7 +1086,9 @@ ffmpeg_decoder_datasource::data_avail()
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
 				AM_DBG lib::logger::get_logger()->trace("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
-				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, sz);
+				int cursz = sz;
+				if (cursz > 4096) cursz = 4096;
+				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 				m_buffer.pushdata(outsize);
@@ -1098,6 +1096,7 @@ ffmpeg_decoder_datasource::data_avail()
 			} else {
 				lib::logger::get_logger()->error("ffmpeg_decoder_datasource::data_avail: no room in output buffer");
 			}
+		//	sz = m_src->size();
 		}
 		// Restart reading if we still have room to accomodate more data
 		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
@@ -1120,7 +1119,7 @@ ffmpeg_decoder_datasource::data_avail()
 		}
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource::data_avail(): No decoder, flushing available data");
-		m_src->readdone(sz);
+		m_src->readdone(m_src->size());
 	}
 	m_lock.leave();
 }
@@ -1298,8 +1297,8 @@ ffmpeg_resample_datasource::stop()
 void
 ffmpeg_resample_datasource::data_avail()
 {
-	
 	m_lock.enter();
+	int cursize = 0;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
 		lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): already stopping", (void*)this);
@@ -1315,42 +1314,52 @@ ffmpeg_resample_datasource::data_avail()
 		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
 		m_context_set = true;
 	}
-	int sz = m_src->size();
-	if (m_resample_context) {
+	
+		int sz = m_src->size();
+		if (m_resample_context) {
 		// Convert all the input data we have available. We make an educated guess at the number of bytes
 		// this will produce on output.
-		int insamples = sz / (m_in_fmt.channels * sizeof(short));
-		if (insamples * m_in_fmt.channels * sizeof(short) != sz) {
-			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: incmplete samples: %d", sz);
-		}
-		
-		long long tmp = (long long)insamples * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate;
-		long outsz = tmp + 8;
-		
-		if (!sz && !m_src->end_of_file()) {
-			AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
-			m_lock.leave();			
-			return;
-		}
-		assert( sz || m_src->end_of_file());
-		//if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
-		if (!m_buffer.buffer_full()) {
-			short int *inbuf = (short int*) m_src->get_read_ptr();
-			short int *outbuf = (short int*) m_buffer.get_write_ptr(outsz);
-			if (!outbuf) {
-				lib::logger::get_logger()->error("ffmpeg_audio_datasource::data_avail: no room in output buffer");
+		//while (sz > 0) {
+			cursize = sz;
+			if (cursize > 4096) 
+				cursize = 4096;
+			int insamples = cursize / (m_in_fmt.channels * sizeof(short));	
+			if (insamples * m_in_fmt.channels * sizeof(short) != cursize) {
+				lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: incmplete samples: %d", cursize);
 			}
-			if (inbuf && outbuf && insamples > 0) {
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", sz, insamples, outsz, inbuf, outbuf);
-				int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
-				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
-//lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(): Possible bufferoverflow here ! REMOVE comments to fix");
-			assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
-				m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
-				m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
+			
+			long long tmp = (long long)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
+			long outsz = tmp;
+			int outsamples_est = outsz /(m_out_fmt.channels * sizeof(short));
+			//outsz = (long) tmp *1.1;
+			if (!cursize && !m_src->end_of_file()) {
+				AM_DBG lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);
+				m_lock.leave();			
+				return;
 			}
-		}
+			assert( cursize || m_src->end_of_file());
+			//if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
+			if (!m_buffer.buffer_full()) {
+				short int *inbuf = (short int*) m_src->get_read_ptr();
+				short int *outbuf = (short int*) m_buffer.get_write_ptr(outsz);
+				if (!outbuf) {
+					lib::logger::get_logger()->error("ffmpeg_audio_datasource::data_avail: no room in output buffer");
+				}
+				if (inbuf && outbuf && insamples > 0) {
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", cursize, insamples, outsz, inbuf, outbuf);
+					int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
+					if (outsamples != outsamples_est) {
+						/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): outsamples: %d,  estimated outsamples from %d", outsamples, outsamples_est);	
+					}
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
+					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
+					assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
+					m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
+					m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
+//					sz = m_src->size();
+				}
+			}
+		//}
 		// Restart reading if we still have room to accomodate more data
 		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
 			lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);

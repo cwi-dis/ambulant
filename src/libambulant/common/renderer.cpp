@@ -245,6 +245,7 @@ active_video_renderer::active_video_renderer(
 	m_is_paused(false)
 	
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!
 	net::url url = node->get_url("src");
@@ -254,13 +255,17 @@ active_video_renderer::active_video_renderer(
 	}
 
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() leaving Constructor !(m_src = 0x%x)", (void *) m_src);
+	m_lock.leave();
 }
+
 void
 active_video_renderer::stop()
 { 
+	m_lock.enter();
 	m_is_playing = false; 
 	if (m_audio_renderer) 
 		m_audio_renderer->stop();
+	m_lock.leave();
 }
 
 
@@ -346,6 +351,14 @@ active_video_renderer::data_avail()
 	int size;
 	unsigned long int event_time;
 	bool displayed;
+	
+	if (!m_src) {
+		lib::logger::get_logger()->error("active_video_renderer.data_avail: no datasource");
+		m_context->stopped(m_cookie, 0);
+		m_lock.leave();
+		return;
+	}
+	
 	AM_DBG lib::logger::get_logger()->trace("active_video_renderer::data_avail(this = 0x%x):", (void *) this);
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
