@@ -50,10 +50,12 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_PLAYER_H
-#define AMBULANT_GUI_DX_PLAYER_H
+#ifndef AMBULANT_GUI_DX_VIDEO_H
+#define AMBULANT_GUI_DX_VIDEO_H
 
-#include <string>
+#include "ambulant/common/renderer.h"
+#include "ambulant/common/region.h"
+#include "ambulant/lib/playable.h"
 
 namespace ambulant {
 
@@ -62,22 +64,35 @@ namespace gui {
 namespace dx {
 
 class viewport;
+class region;
+class video_player;
 
-typedef viewport* (*VCF)(int w, int h);
-
-class dx_player {
+class dx_video_renderer : public lib::active_renderer {
   public:
-	virtual ~dx_player() {}
-	virtual bool start() = 0;
-	virtual void stop() = 0;
-	virtual void pause() = 0;
-	virtual void resume() = 0;
-	virtual bool is_done() const = 0;
-	virtual viewport* create_viewport(int w, int h) = 0;
-	virtual void on_click(int x, int y) = 0;
-	virtual void on_char(int ch) = 0;
-	static dx_player* create_player(const std::string& url); 
-	static dx_player* create_player(const std::string& url, VCF f);
+	dx_video_renderer(
+		lib::active_playable_events *context,
+		lib::active_playable_events::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp,
+		net::passive_datasource *src,
+		lib::abstract_rendering_surface *const dest,
+		lib::abstract_window *window);
+	~dx_video_renderer();
+	void start(double t);
+	void stop();
+	void pause();
+	void resume();
+	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
+	std::pair<bool, double> get_dur();
+	
+  private:
+	video_player *m_player;
+	viewport* get_viewport(lib::abstract_window *window);
+	viewport* get_viewport();
+	region* m_region;
+	lib::abstract_window *m_window;
+	bool m_player_initialized;
+	
 };
 
 } // namespace dx
@@ -86,4 +101,4 @@ class dx_player {
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_PLAYER_H
+#endif // AMBULANT_GUI_DX_VIDEO_H

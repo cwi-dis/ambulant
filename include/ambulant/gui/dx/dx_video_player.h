@@ -50,10 +50,37 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_PLAYER_H
-#define AMBULANT_GUI_DX_PLAYER_H
+#ifndef AMBULANT_GUI_DX_VIDEO_PLAYER_H
+#define AMBULANT_GUI_DX_VIDEO_PLAYER_H
 
 #include <string>
+
+#include <objbase.h>
+#include <strmif.h>
+#include <control.h>
+#include <mmstream.h>
+#include <amstream.h>
+#include <ddstream.h>
+
+#include "ambulant/lib/playable.h"
+#include "ambulant/lib/win32/win32_error.h"
+#include "ambulant/lib/logger.h"
+
+// CLSID_FilterGraph
+#include <uuids.h>
+
+#pragma comment (lib,"winmm.lib")
+#pragma comment (lib,"amstrmid.lib")
+
+#pragma comment (lib,"uuid.lib")
+#pragma comment (lib,"strmiids.lib")
+
+namespace ambulant {
+	namespace lib { 
+		class event_processor;
+		class event;
+	}
+}
 
 namespace ambulant {
 
@@ -63,27 +90,59 @@ namespace dx {
 
 class viewport;
 
-typedef viewport* (*VCF)(int w, int h);
-
-class dx_player {
+class video_player : public lib::playable {
   public:
-	virtual ~dx_player() {}
-	virtual bool start() = 0;
-	virtual void stop() = 0;
-	virtual void pause() = 0;
-	virtual void resume() = 0;
-	virtual bool is_done() const = 0;
-	virtual viewport* create_viewport(int w, int h) = 0;
-	virtual void on_click(int x, int y) = 0;
-	virtual void on_char(int ch) = 0;
-	static dx_player* create_player(const std::string& url); 
-	static dx_player* create_player(const std::string& url, VCF f);
+	video_player(const std::string& url, viewport *v, lib::event_processor* evp);
+	~video_player();
+	
+	void start(double t);
+	void stop();
+	void pause();
+	void resume();
+	void seek(double t);
+	std::pair<bool, double> get_dur();
+	void wantclicks(bool want) { m_wantclicks = want;}
+	void preroll(double when, double where, double how_much) {}
+	const cookie_type& get_cookie() const { return m_cookie;}
+	
+	bool can_play();
+	bool is_playing();
+	double get_position();
+	const std::string& get_url() const { return m_url;}
+	
+	// dx implementation artifacts
+	bool update();
+ 	IDirectDrawSurface *getDDSurf() { return m_ddsurf;}
+	RECT *getDDSurfRect() { return &m_rcsurf;}
+	
+ private:
+	bool open(const std::string& url, IDirectDraw* dd);
+ 	void release();
+	void update_callback();
+	void schedule_update();
+	void cancel_update();
+ 	lib::event *m_update_event;
+ 	
+	std::string m_url;
+	viewport *m_viewport;
+	lib::event_processor* m_evp;
+	cookie_type m_cookie;
+	
+	IMultiMediaStream *m_mmstream;
+    IMediaStream *m_vidstream;
+    IDirectDrawMediaStream *m_ddstream;
+    IDirectDrawStreamSample *m_ddsample;
+    IDirectDrawSurface* m_ddsurf;
+    RECT m_rcsurf;
+    bool m_wantclicks;
+	
 };
-
+	
 } // namespace dx
 
 } // namespace gui
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_PLAYER_H
+#endif // AMBULANT_GUI_DX_VIDEO_PLAYER_H
+

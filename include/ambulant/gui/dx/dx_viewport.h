@@ -116,6 +116,8 @@ class viewport {
 	uint32 convert(lib::color_t color);
 	uint32 convert(uchar r, uchar g, uchar b);
 	
+	IDirectDraw* get_direct_draw() { return m_direct_draw;}
+	
   private:	
  	void add_region(region *r);
  
@@ -172,10 +174,12 @@ class region {
 	}
 	
 	void clear();
+	void update();
 	
 	void set_text(const char *p, int size);
 	void set_text(const std::string& what);
 	void set_bmp(HBITMAP hbmp);
+	void set_video(IDirectDrawSurface* vidsurf, RECT *vidrc);
 	
   private:
 	// The viewport of this region.
@@ -195,6 +199,11 @@ class region {
 	
 	// The background color of this region.
 	lib::color_t m_bgd;	
+	
+	// xxx: temp
+	IDirectDrawSurface* m_vidsurf;
+	RECT* m_vidrc;
+	
 };
 
 } // namespace dx
