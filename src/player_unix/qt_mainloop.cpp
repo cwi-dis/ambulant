@@ -126,7 +126,7 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	if (is_mms) {
 		m_player = create_mms_player(m_doc, m_wf, m_rf);
 	} else {
-		m_player = create_smil2_player(m_doc, m_wf, m_rf);
+		m_player = create_smil2_player(m_doc, m_wf, m_rf, this);
 	}
 
 }
@@ -211,3 +211,11 @@ qt_mainloop::set_preferences(std::string &url)
 {
 //	ambulant::smil2::test_attrs::load_test_attrs(url);
 }
+
+void
+qt_mainloop::show_file(const std::string &href)
+{
+	lib::logger::get_logger()->error("This implementation cannot open <%s> in a webbrowser yet", href.c_str());
+}
+
+	

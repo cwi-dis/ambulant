@@ -60,6 +60,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+#include "ambulant/lib/system.h"
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"
@@ -80,7 +81,7 @@ class qt_mainloop_callback_arg {
 };
 class qt_gui;
 
-class qt_mainloop : public ambulant::lib::ref_counted {
+class qt_mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted {
   //  static bool m_done;
   public:
         qt_mainloop(qt_gui* parent);
@@ -96,6 +97,8 @@ class qt_mainloop : public ambulant::lib::ref_counted {
 	void set_speed(double speed);
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
+	
+	void show_file(const std::string &href);
 	
 	static void set_preferences(std::string &path);
  	
