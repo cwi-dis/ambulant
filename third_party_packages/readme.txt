@@ -32,7 +32,7 @@ ffmpeg:
 	from ffmpeg (it should do no harm applying the patch for other Unix systems
 	bt I don't think it is needed). Then build ffmpeg (there is no need to install):
 		$ cd ffmpeg-0.4.8
-		$ patch < ../ffmpeg-macosx-patch    # For Mac OS X only
+		$ patch -p0 < ../ffmpeg-macosx-patch    # For Mac OS X only
 		$ ./configure
 		$ make
 
