@@ -223,6 +223,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	[super initWithFrame: frameRect];
 	ambulant_window = NULL;
 	transition_surface = NULL;
+	transition_tmpsurface = NULL;
 	transition_count = 0;
 	return self;
 }
@@ -380,6 +381,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	transition_count--;
 	AM_DBG NSLog(@"decrementTransitionCount: count=%d", transition_count);
 	// XXXX Should we delete transition_surface?
+	// XXXX Should we delete transition_tmpsurface?
 }
 
 - (NSImage *)getTransitionSurface
@@ -389,6 +391,15 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		transition_surface = [self getTransitionOldSource];
 	}
 	return transition_surface;
+}
+
+- (NSImage *)getTransitionTmpSurface
+{
+	if (!transition_tmpsurface) {
+		// It does not exist yet. Create it.
+		transition_tmpsurface = [self getTransitionOldSource];
+	}
+	return transition_tmpsurface;
 }
 
 - (NSImage *)getTransitionOldSource

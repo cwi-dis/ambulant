@@ -169,8 +169,10 @@ cocoa_transition_blitclass_poly::update()
 	AmbulantView *view = (AmbulantView *)window->view();
 
 	NSImage *newsrc = [view getTransitionNewSource];
+	NSImage *tmpsrc = [view getTransitionTmpSurface];
 	AM_DBG lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly::update(%f)", m_progress);
 	lib::logger::get_logger()->trace("cocoa_transition_blitclass_poly: not yet implemented");
+	// First we create the path
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	std::vector<lib::point>::iterator newpoint;
 	bool first = true;
@@ -186,16 +188,30 @@ cocoa_transition_blitclass_poly::update()
 		}
 	}
 	[path closePath];
-#ifdef FILL_PURPLE
-	// Debug: fill with purple
+	// Next, we fill the temporary bitmap with transparent white
+	[tmpsrc lockFocus];
 	lib::screen_rect<int> dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[[NSColor purpleColor] set];
+	[[NSColor colorWithDeviceWhite: 1.0 alpha: 0.0] set];
 	NSRectFill(cocoa_dstrect_whole);
-#endif
-	[[NSColor greenColor] set];
+	// Now we fill draw the path on the temp bitmap, with opaque white
+	[[NSColor colorWithDeviceWhite: 1.0 alpha: 1.0] set];
 	[path fill];
+	// Next we composit the source image onto the temp bitmap, but only where
+	// the temp bitmap is opaque (the path we just painted there)
+	[newsrc drawInRect: cocoa_dstrect_whole 
+		fromRect: cocoa_dstrect_whole
+		operation: NSCompositeSourceIn
+		fraction: 1.0];
+	// Finally we put the opaque bits of the temp image onto the destination
+	// image
+	[tmpsrc unlockFocus];
+	[tmpsrc drawInRect: cocoa_dstrect_whole 
+		fromRect: cocoa_dstrect_whole
+		operation: NSCompositeSourceOver
+		fraction: 1.0];
+	
 }
 
 void

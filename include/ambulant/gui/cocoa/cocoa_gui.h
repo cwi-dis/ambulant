@@ -121,6 +121,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 {
     ambulant::gui::cocoa::cocoa_window *ambulant_window;
 	NSImage *transition_surface;
+	NSImage *transition_tmpsurface;
 	int transition_count;
 }
 
@@ -144,6 +145,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (void) incrementTransitionCount;
 - (void) decrementTransitionCount;
 - (NSImage *)getTransitionSurface;
+- (NSImage *)getTransitionTmpSurface;
 - (NSImage *)getTransitionOldSource;
 - (NSImage *)getTransitionNewSource;
 @end
