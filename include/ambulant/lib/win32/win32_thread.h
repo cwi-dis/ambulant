@@ -11,9 +11,9 @@
 #ifndef AMBULANT_LIB_WIN32_THREAD_H
 #define AMBULANT_LIB_WIN32_THREAD_H
 
-#ifndef AMBULANT_LIB_WIN32_ERROR_H
+#include "ambulant/lib/thread.h"
+
 #include "win32_error.h"
-#endif
 
 #ifndef _INC_WINDOWS
 #include <windows.h>
@@ -25,7 +25,7 @@ namespace lib {
 
 namespace win32 {
 
-class thread {
+class thread : public ambulant::lib::thread {
   public:
 	thread()
 	:	m_stop_event(NULL),
@@ -82,10 +82,6 @@ class thread {
 		return true;
 	}
 	
-	bool exit_requested() {
-		return WaitForSingleObject(get_stop_handle(), 0) == WAIT_OBJECT_0; 
-	}
-	
 	bool relax(DWORD millis) {
 		return WaitForSingleObject(get_stop_handle(), millis) != WAIT_OBJECT_0;
 	}
@@ -97,18 +93,22 @@ class thread {
 	}
 		
   protected:
-	virtual DWORD run() = 0;
+	virtual unsigned long run() = 0;
 	
 	virtual void signal_exit_thread(){
 		SetEvent(get_stop_handle());
 		if(m_wnd != NULL)
 			PostMessage(m_wnd, m_winui_exit_msg, 0, 0);
 	}
+	
+	bool exit_requested() const {
+		return WaitForSingleObject(get_stop_handle(), 0) == WAIT_OBJECT_0; 
+	}
 
   private:
 	static DWORD __stdcall threadproc(LPVOID pParam) {
 		thread* p = static_cast<thread*>(pParam);
-		DWORD dw = p->run();
+		unsigned long dw = p->run();
 		ExitThread(dw);
 		return dw;
 	}
@@ -119,7 +119,7 @@ class thread {
 	DWORD m_parent_id;
 	HWND m_wnd;
 	UINT m_winui_exit_msg;
-	};
+};
 
 } // namespace win32
 

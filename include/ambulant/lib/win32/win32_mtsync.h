@@ -16,13 +16,15 @@
 #include <windows.h>
 #endif
 
+#include "ambulant/lib/mtsync.h"
+
 namespace ambulant {
 
 namespace lib {
 
 namespace win32 {
 
-class critical_section {
+class critical_section : public ambulant::lib::critical_section {
   public:
 	critical_section() { InitializeCriticalSection(&m_cs);}
 	~critical_section() { DeleteCriticalSection(&m_cs);}
