@@ -8,6 +8,11 @@ AC_CONFIG_FILES([Makefile
 	src/Makefile 
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
+	include/Makefile
+	include/ambulant/Makefile
+	include/ambulant/lib/Makefile
+	include/ambulant/lib/unix/Makefile
+	include/ambulant/net/Makefile
 	Test/Makefile
 	Test/designtests/Makefile])
 #
