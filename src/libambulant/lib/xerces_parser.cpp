@@ -196,15 +196,6 @@ xerces_sax_parser::fatalError(const SAXParseException& exception)  {
 }
 	
 void
-xerces_sax_parser::endElement(const XMLCh* const name) {
-	char *cname = XMLString::transcode(name);
-	AM_DBG m_logger->trace("*** endElement %s", cname);
-	q_name_pair qname = to_q_name_pair(name);
-	m_content_handler->end_element(qname);
-	XMLString::release(&cname);
-}
-
-void
 xerces_sax_parser::to_qattrs(AttributeList& attrs, 
 			     q_attributes_list& list) {
 	if (attrs.getLength() == 0) return;
