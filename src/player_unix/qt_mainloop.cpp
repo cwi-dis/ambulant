@@ -223,5 +223,20 @@ qt_mainloop::set_preferences(std::string &url)
 void
 qt_mainloop::show_file(const std::string &href)
 {
-	lib::logger::get_logger()->error("This implementation cannot open <%s> in a webbrowser yet", href.c_str());
+	// The only standard I could find (sigh): use the $BROWSER variable.
+	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
+	char *browserlist = getenv("BROWSER");
+	if (browserlist == NULL) {
+		lib::logger::get_logger()->error("$BROWSER not set: cannot open webpage <%s>", href.c_str());
+		return;
+	}
+	char *colon = index(browserlist, ':');
+	if (colon) *colon = 0; // Brrrr...
+	char cmdbuf[2048];
+	snprintf(cmdbuf, sizeof(cmdbuf), "%s %s &", browserlist, href.c_str());
+	lib::logger::get_logger()->trace("Starting command: %s", cmdbuf);
+	int rv = ::system(cmdbuf);
+	if (rv) {
+		lib::logger::get_logger()->error("Attempt to start browser returned status %d. Command: %s", rv, cmdbuf);
+	}
 }
