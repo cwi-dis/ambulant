@@ -55,11 +55,11 @@
 
 #include "ambulant/config/config.h"
 
-// tree iterators
-#include "ambulant/lib/node_iterator.h" 
-
 // q_name_pair and qattr
 #include "ambulant/lib/sax_types.h"
+
+// tree iterators
+#include "ambulant/lib/node_iterator.h" 
 
 // attribute pair
 #include <utility>
