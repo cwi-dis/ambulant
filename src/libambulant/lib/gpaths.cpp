@@ -100,13 +100,31 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 		size_t numbers_expected = gpath_seg_cmds_size[ix];
 		if(numbers_expected>0) {
 			// The cmd requires a set of numbers
-			if(!parser.matches(args) || parser.size() != numbers_expected) {
+			bool matches = parser.matches(args);
+			size_t nc = parser.size()/numbers_expected;
+			size_t nr = parser.size()%numbers_expected;
+			if(!matches || nr != 0 || nc == 0) {
 				lib::logger::get_logger()->warn("Illegal path segment %c %s", cmd, args.c_str());
 				for(size_t i=0;i<numbers_expected;i++)
 					m_args.push_back(0);
 				m_errors++;
 			} else {
-				m_args.insert(m_args.end(), parser.begin(), parser.end());
+				if(nc == 1)
+					m_args.insert(m_args.end(), parser.begin(), parser.end());
+				else {
+					// multiple commands
+					const std::vector<double>& argsv =  parser.get_result();
+					std::vector<double>::const_iterator bit = parser.begin();
+					std::vector<double>::const_iterator eit = bit;
+					eit += numbers_expected;
+					m_args.insert(m_args.end(), bit, eit);
+					for(size_t i=1;i<nc;i++) {
+						m_cmds += cmd;
+						bit += numbers_expected;
+						eit += numbers_expected;
+						m_args.insert(m_args.end(), bit, eit);
+					}
+				}
 			}
 		} else {
 			// The cmd does not require any arguments
@@ -119,6 +137,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 		// Update start of next command
 		it = next;
 	}
+	AM_DBG lib::logger::get_logger()->trace("%s --> %s", strpath.c_str(), m_cmds.c_str());
 }
 
 
@@ -435,4 +454,10 @@ void lib::polyline_path::translate(const lib::point& pt) {
 	map_type::iterator it;
 	for(it = m_curve.begin();it!=m_curve.end();it++)
 		(*it).second += pt;
+}
+
+void lib::polyline_path::get_pivot_points(std::vector<lib::point>& v) {
+	map_type::iterator it;
+	for(it = m_curve.begin();it!=m_curve.end();it++)
+		v.push_back((*it).second);
 }
