@@ -65,6 +65,10 @@ void win_report_error(const char *func, unsigned long  err);
 
 void win_report_last_error(const char *func);
 
+void win_show_error(const char *func, unsigned long  err); 
+
+void win_show_last_error(const char *func);
+
 
 } // namespace win32
 
