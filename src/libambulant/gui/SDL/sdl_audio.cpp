@@ -187,6 +187,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			memset(stream+single_len, 0, (len-single_len));
 		/*AM_DBG*/ if (single_len == 0) total = 0; else total += single_len;
 		/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_callback: 1 source wanted %d got %d total %d", len, single_len, total);
+		/*AM_DBG*/ static int fd = -1; if (fd < 0) fd = creat("/tmp/audiodata.raw", 0666); write(fd, stream, len);
 	} else {
 		// No streams, or more than one: use an accumulation buffer
 		memset(stream, 0, len);
