@@ -81,7 +81,7 @@ class test_attrs {
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
 	
-	static void test_attrs::read_custom_attributes(const lib::document *doc, 
+	static void read_custom_attributes(const lib::document *doc, 
 		std::map<std::string, custom_test>& custom_tests);
 	
 	static void read_custom_attributes(const lib::document *doc);
@@ -117,5 +117,6 @@ class test_attrs {
  
 } // namespace ambulant
 
+bool load_test_attrs(const char *filename);
 
 #endif // AMBULANT_SMIL2_TEST_ATTRS_H

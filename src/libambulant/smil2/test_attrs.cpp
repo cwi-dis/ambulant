@@ -333,6 +333,10 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 	return true;
 }
 
+bool load_test_attrs(const char *filename) {
+	return test_attrs::load_test_attrs(filename);
+}
+
 // static
 void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemAudioDesc"] = "on";
