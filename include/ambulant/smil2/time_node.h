@@ -109,7 +109,15 @@ class time_node : public schedulable {
 	
 	// Timegarph configuration
 	void set_want_activate_event(bool want) { m_want_activate_events = want;}
+	void set_want_inbounds_event(bool want) { m_want_inbounds_events = want;}
+	void set_want_outofbounds_event(bool want) { m_want_outofbounds_events = want;}
+	void set_want_focusin_event(bool want) { m_want_focusin_events = want;}
+	void set_want_focusout_event(bool want) { m_want_focusout_events = want;}
 	bool wants_activate_event() const { return m_want_activate_events;}
+	bool wants_inbounds_event() const { return m_want_inbounds_events;}
+	bool wants_outofbounds_event() const { return m_want_outofbounds_events;}
+	bool wants_focusin_event() const { return m_want_focusin_events;}
+	bool wants_focusout_event() const { return m_want_focusout_events;}
 	void want_accesskey(bool want) { m_want_accesskey = want;}
 	bool want_accesskey() const { return m_want_accesskey;}
 
@@ -157,6 +165,10 @@ class time_node : public schedulable {
 	virtual void raise_repeat_event(qtime_type timestamp);
 	virtual void raise_end_event(qtime_type timestamp, time_node *oproot);
 	virtual void raise_activate_event(qtime_type timestamp);
+	virtual void raise_inbounds_event(qtime_type timestamp);
+	virtual void raise_outofbounds_event(qtime_type timestamp);
+	virtual void raise_focusin_event(qtime_type timestamp);
+	virtual void raise_focusout_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
 	virtual void raise_update_event(qtime_type timestamp);
 	
@@ -504,8 +516,12 @@ class time_node : public schedulable {
 	void unlock() { m_locked = false;}
 	bool locked() const { return m_locked;}
 	
-	// when set the associated renderer should notify for activate events
+	// when set the associated renderer should notify for DOM events
 	bool m_want_activate_events;
+	bool m_want_focusin_events;
+	bool m_want_focusout_events;
+	bool m_want_inbounds_events;
+	bool m_want_outofbounds_events;
 	
 	// when set the associated UI should notify for accesskey events
 	bool m_want_accesskey;

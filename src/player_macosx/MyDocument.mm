@@ -100,6 +100,7 @@
 	[[NSRunLoop currentRunLoop] addTimer: uitimer forMode: NSDefaultRunLoopMode];
 	// XXXX Need to call invalidate when document closes
 #endif
+	[self play: self];
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType

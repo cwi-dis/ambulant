@@ -345,11 +345,11 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 // Playable notification for a click event.
 void smil_player::clicked(int n, double t) {
 	AM_DBG m_logger->trace("smil_player::clicked(%d, %f)", n, t);
-	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
-		activate_event_cb *cb = new activate_event_cb((*it).second, 
+		dom_event_cb *cb = new dom_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
 		schedule_event(cb, 0);
 		m_scheduler->exec();
@@ -359,12 +359,55 @@ void smil_player::clicked(int n, double t) {
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
 	AM_DBG m_logger->trace("smil_player::pointed(%d, %f)", n, t);
-	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
+		if (m_pointed_node) {
+			if (m_pointed_node->wants_outofbounds_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_outofbounds_event, timestamp);
+				schedule_event(cb, 0);
+			}
+			if (m_pointed_node->wants_focusout_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_focusout_event, timestamp);
+				schedule_event(cb, 0);
+			}
+			m_pointed_node = NULL;
+		}
 		m_pointed_node = (*it).second;
 		if((*it).second->wants_activate_event())
 			m_cursorid = 1;
+		if (m_pointed_node->wants_inbounds_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_inbounds_event, timestamp);
+				schedule_event(cb, 0);
+		}
+		if (m_pointed_node->wants_focusin_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_focusin_event, timestamp);
+				schedule_event(cb, 0);
+		}
+	} else {
+		if (m_pointed_node) {
+			if (m_pointed_node->wants_outofbounds_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_outofbounds_event, timestamp);
+				schedule_event(cb, 0);
+			}
+			if (m_pointed_node->wants_focusout_event()) {
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb((*it).second, 
+					&time_node::raise_focusout_event, timestamp);
+				schedule_event(cb, 0);
+			}
+			m_pointed_node = NULL;
+		}
 	}
 }
 

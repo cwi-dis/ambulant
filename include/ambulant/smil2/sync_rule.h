@@ -80,6 +80,10 @@ enum sync_event {
 	
 	// DOM events raised by a time node.
 	tn_activate_event,
+	tn_focusin_event,
+	tn_focusout_event,
+	tn_inbounds_event,
+	tn_outofbounds_event,
 	
 	// DOM events raised globally and may affect a time node.
 	accesskey_event,

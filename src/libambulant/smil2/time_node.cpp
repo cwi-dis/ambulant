@@ -101,6 +101,10 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_domcall_rule(0),
 	m_locked(false),
 	m_want_activate_events(false),
+	m_want_focusin_events(false),
+	m_want_focusout_events(false),
+	m_want_inbounds_events(false),
+	m_want_outofbounds_events(false),
 	m_want_accesskey(false),
 	m_impldur(time_type::unresolved),
 	m_last_cdur(time_type::unresolved),
@@ -1432,6 +1436,46 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 	if(is_area()) {
 		follow_link(timestamp);
 	} 
+}
+
+void time_node::raise_inbounds_event(qtime_type timestamp) {
+	timestamp.to_descendent(sync_node());
+	AM_DBG m_logger->trace("%s[%s].raise_inbounds_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, tn_inbounds_event, timestamp.second);
+}
+
+void time_node::raise_outofbounds_event(qtime_type timestamp) {
+	timestamp.to_descendent(sync_node());
+	AM_DBG m_logger->trace("%s[%s].raise_outofbounds_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, tn_outofbounds_event, timestamp.second);
+}
+
+void time_node::raise_focusin_event(qtime_type timestamp) {
+	timestamp.to_descendent(sync_node());
+	AM_DBG m_logger->trace("%s[%s].raise_focusin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, tn_focusin_event, timestamp.second);
+}
+
+void time_node::raise_focusout_event(qtime_type timestamp) {
+	timestamp.to_descendent(sync_node());
+	AM_DBG m_logger->trace("%s[%s].raise_focusout_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, tn_focusout_event, timestamp.second);
 }
 
 void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {

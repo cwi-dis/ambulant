@@ -324,6 +324,10 @@ ambulant::smil2::sync_event_from_str(const std::string& s) {
 		events[st("endEvent")] = tn_end_event;
 		events[st("repeat")] = tn_repeat_event;
 		events[st("activateEvent")] = tn_activate_event;
+		events[st("focusInEvent")] = tn_focusin_event;
+		events[st("focusOutEvent")] = tn_focusout_event;
+		events[st("inBoundsEvent")] = tn_inbounds_event;
+		events[st("outOfBoundsEvent")] = tn_outofbounds_event;
 		events[st("click")] = tn_activate_event;
 		events[st("marker")] = tn_marker_event;
 		events[st("accesskey")] = accesskey_event;
@@ -345,6 +349,10 @@ ambulant::smil2::sync_event_str(sync_event ev) {
 		case tn_repeat_event: return "repeat(.)";
 		case tn_end_event: return "endEvent";
 		case tn_activate_event: return "activateEvent";
+		case tn_focusin_event: return "focusInEvent";
+		case tn_focusout_event: return "focusOutEvent";
+		case tn_inbounds_event: return "inBoundsEvent";
+		case tn_outofbounds_event: return "outOfBoundsEvent";
 		case tn_marker_event: return "marker";
 		case accesskey_event: return "accesskey";
 		case tn_dom_call: return "beginElement()";
