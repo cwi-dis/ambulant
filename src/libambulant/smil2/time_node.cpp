@@ -1289,7 +1289,8 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	
 	// 1. add event to not active
 	// 1.1 begin
-	for(rule_list::iterator it=p->begin();it!=p->end();it++) {
+	rule_list::iterator it;
+	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
 		rule_type rt = (*it)->get_target_attr();
 		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
