@@ -2045,7 +2045,8 @@ seq::get_implicit_dur() {
 // Assumes that end sync cond is applicable
 // When this returns true the seq should be deactivated
 bool seq::end_sync_cond() const {
-	return last_child()->played();
+	const time_node* tn = last_child();
+	return tn == NULL || tn->played();
 }
 
 ///////////////////////////////

@@ -60,7 +60,6 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-#include "/ufs/kees/Work/Ambulant/sandbox/qt-exp/Pixmap/Pixmap_dbg.h"
 
 namespace ambulant {
 
