@@ -87,7 +87,7 @@ nslog_ostream::write(const char *cstr)
 }
 
 void
-show_message(const char *format)
+show_message(int level, const char *format)
 {
 	NSString *message = [[NSString stringWithCString: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
