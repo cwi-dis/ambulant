@@ -41,7 +41,8 @@ class event_processor :
   private:
 	void wait_event();
 	void wakeup();
-	counting_semaphore m_event_sema;
+	pthread_cond_t m_queue_condition;
+	pthread_mutex_t m_queue_mutex;
 	
 };
 

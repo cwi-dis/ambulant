@@ -18,26 +18,35 @@ using namespace ambulant;
 
 lib::unix::critical_section::critical_section()
 {
-	if (pthread_mutex_init(&m_cs, NULL) < 0) abort();
+	if (pthread_mutex_init(&m_cs, NULL) < 0) {
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_init failed: %s", strerror(errno));
+	}
 }
 
 lib::unix::critical_section::~critical_section()
 {
-	if (pthread_mutex_destroy(&m_cs) < 0) abort();
+	if (pthread_mutex_destroy(&m_cs) < 0) {
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_destroy failed: %s", strerror(errno));
+	}
 }
 
 void
 lib::unix::critical_section::enter()
 {
-	if (pthread_mutex_lock(&m_cs) < 0) abort();
+	if (pthread_mutex_lock(&m_cs) < 0) {
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_lock failed: %s", strerror(errno));
+	}
 }
 
 void
 lib::unix::critical_section::leave()
 {
-	if (pthread_mutex_unlock(&m_cs) < 0) abort();
+	if (pthread_mutex_unlock(&m_cs) < 0) {
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_unlock failed: %s", strerror(errno));
+	}
 }
 
+#if 0
 lib::unix::counting_semaphore::counting_semaphore()
 :	m_lock(critical_section()),
 	m_wait(critical_section()),
@@ -83,3 +92,4 @@ lib::unix::counting_semaphore::count()
 	m_lock.leave();
 	return rv;
 }
+#endif
