@@ -10,28 +10,34 @@
 
 #include "ambulant/lib/unix/unix_event_processor.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 using namespace lib;
 
 unix::event_processor::event_processor() 
 :   abstract_event_processor(timer_factory(), critical_section_factory())
 {
+	AM_DBG log_trace_event("event_processor 0x%x created", (void *)this);
 	start();
 }
 
 unix::event_processor::~event_processor()
 {
+	AM_DBG log_trace_event("event_processor 0x%x deleted", (void *)this);
 }
 
 unsigned long
 unix::event_processor::run()
 {
-	log_trace_event("event_processor started");
+	AM_DBG log_trace_event("event_processor 0x%x started", (void *)this);
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
-	log_trace_event("event_processor stopped");
+	AM_DBG log_trace_event("event_processor 0x%x stopped", (void *)this);
 	return 0;
 }
 
@@ -44,6 +50,7 @@ unix::event_processor::wait_event()
 void
 unix::event_processor::wakeup()
 {
+	AM_DBG log_trace_event("event_processor 0x%x sema-value=%d", (void *)this, m_event_sema.count());
 	m_event_sema.up();
 }
 
