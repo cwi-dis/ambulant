@@ -21,7 +21,7 @@ public:
 
 	void SetMMDocument(LPCTSTR lpszPathName);
 	UINT_PTR m_timer_id;
-	CString m_curPathName;
+	CString m_curDocFilename;
 	CString m_curFilter;
 	UINT m_cursor_id;
 	bool m_autoplay;
@@ -63,6 +63,8 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnHelpWelcome();
+	afx_msg void OnFileSelect();
+	afx_msg void OnFileLoadSettings();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

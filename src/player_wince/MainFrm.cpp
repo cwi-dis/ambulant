@@ -36,9 +36,8 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	//{{AFX_MSG_MAP(CMainFrame)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
 	ON_WM_CREATE()
+	ON_WM_ACTIVATE()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -101,3 +100,11 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers
+
+void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized) 
+{
+	CFrameWnd::OnActivate(nState, pWndOther, bMinimized);
+	CWnd* otherOwner = pWndOther?pWndOther->GetTopLevelOwner():0;
+	if(nState == WA_INACTIVE && otherOwner && otherOwner != this) 
+		PostMessage(WM_CLOSE);
+}

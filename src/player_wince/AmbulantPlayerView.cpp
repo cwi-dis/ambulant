@@ -6,6 +6,7 @@
 
 #include "AmbulantPlayerDoc.h"
 #include "AmbulantPlayerView.h"
+#include "SelectDlg.h"
 
 // DG Player
 #include "ambulant/gui/dg/dg_player.h"
@@ -15,7 +16,9 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/win32/win32_fstream.h"
+#include "ambulant/smil2/test_attrs.h"
 
+#pragma comment (lib,"mp3lib.lib")
 #pragma comment (lib,"mp3lib.lib")
 
 #ifdef _DEBUG
@@ -48,6 +51,17 @@ create_player_instance(const TCHAR *url) {
 	return new gui_player(lib::textptr(url).str());
 }
 
+void lib::show_message(const char *format, ...) {
+	va_list	args;
+	va_start(args, format);
+	int size = 2048;
+	char *buf = new char[size];
+	vsprintf(buf, format, args);
+	va_end(args);
+	MessageBox(s_hwnd, textptr(buf), textptr("AmbulantPlayer"), MB_OK);
+	delete[] buf;
+}
+
 static  gui_player *player = 0;
 static needs_done_redraw = false;
 
@@ -70,6 +84,8 @@ BEGIN_MESSAGE_MAP(CAmbulantPlayerView, CView)
 	ON_WM_CREATE()
 	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
+	ON_COMMAND(ID_FILE_SELECT, OnFileSelect)
+	ON_COMMAND(ID_FILE_LOADSETTINGS, OnFileLoadSettings)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -80,7 +96,7 @@ CAmbulantPlayerView::CAmbulantPlayerView()
 {
 	m_timer_id = 0;
 	m_cursor_id = 0;
-	m_autoplay = false;
+	m_autoplay = true;
 }
 
 CAmbulantPlayerView::~CAmbulantPlayerView()
@@ -156,7 +172,7 @@ void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
 		delete dummy;
 	}
 	dummy = create_player_instance(lib::textptr(lpszPathName));
-	m_curPathName = lpszPathName;
+	m_curDocFilename = lpszPathName;
 	player = dummy;
 	if(m_autoplay)
 		PostMessage(WM_COMMAND, ID_PLAY);
@@ -195,13 +211,18 @@ void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI)
 void CAmbulantPlayerView::OnStop() 
 {
 	if(player) {
-		player->stop();
-		player->on_done();
-		InvalidateRect(NULL);
+		gui_player *dummy = player;
+		player = 0;
+		if(dummy) {
+			dummy->stop();
+			delete dummy;
+		}
+		dummy = create_player_instance(lib::textptr(LPCTSTR(m_curDocFilename)));
+		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		InvalidateRect(NULL);
 		needs_done_redraw = false;
 	}
-	
 }
 
 void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI) 
@@ -240,10 +261,7 @@ void CAmbulantPlayerView::OnLButtonDown(UINT nFlags, CPoint point)
 void CAmbulantPlayerView::OnTimer(UINT nIDEvent) 
 {
 	if(player && needs_done_redraw && player->is_done()) {
-		player->on_done();
-		InvalidateRect(NULL);
-		PostMessage(WM_INITMENUPOPUP,0, 0); 
-		needs_done_redraw = false;
+		OnStop();
 	}
 	
 	CView::OnTimer(nIDEvent);
@@ -256,4 +274,35 @@ void CAmbulantPlayerView::OnHelpWelcome()
 	if(!m_autoplay)
 		PostMessage(WM_COMMAND, ID_PLAY);
 
+}
+
+void CAmbulantPlayerView::OnFileSelect() 
+{
+	CSelectDlg dlg(this);
+	if(dlg.DoModal() == IDOK) {
+		CString fileName = dlg.GetPathName();
+		if(!fileName.IsEmpty()) {
+			SetMMDocument(fileName);
+			if(!m_autoplay)
+				PostMessage(WM_COMMAND, ID_PLAY);
+		}
+	}
+}
+
+void CAmbulantPlayerView::OnFileLoadSettings() 
+{
+	BOOL bOpenFileDialog = TRUE;
+	CString strDefExt = TEXT("*.xml");
+	DWORD flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
+	CString strFilter = TEXT("Settings Files (*.xml)|*.xml|All Files (*.*)|*.*||");
+	CFileDialog dlg(TRUE, strDefExt, NULL, flags, strFilter, this);
+	dlg.m_ofn.lpstrTitle = TEXT("Select settings file");
+	if(dlg.DoModal() == IDOK) {
+		m_curFilter = dlg.GetPathName();
+		const char *fn = lib::textptr(LPCTSTR(m_curFilter)).c_str();
+		load_test_attrs(fn);
+		if(player && !m_curDocFilename.IsEmpty()) {
+			SetMMDocument(m_curDocFilename);
+		}
+	}
 }

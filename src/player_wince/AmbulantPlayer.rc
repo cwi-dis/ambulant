@@ -105,6 +105,9 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "Select...",                   ID_FILE_SELECT
+        MENUITEM SEPARATOR
+        MENUITEM "Load settings...",            ID_FILE_LOADSETTINGS
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
@@ -160,6 +163,19 @@ BEGIN
     LTEXT           "AmbulantPlayer Version 1.0",IDC_STATIC,40,10,65,8,
                     SS_NOPREFIX
     LTEXT           "Copyright (C) 2004",IDC_STATIC,40,25,65,8
+END
+
+IDD_SELECT DIALOG DISCARDABLE  0, 0, 142, 154
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select presentation"
+FONT 8, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,6,130,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,81,129,50,14
+    LISTBOX         IDC_FILE_LIST,6,33,126,91,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_DIR_COMBO,6,7,126,30,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -221,6 +237,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END
+
+    IDD_SELECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 135
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -232,7 +256,7 @@ END
 
 STRINGTABLE PRELOAD DISCARDABLE 
 BEGIN
-    IDR_MAINFRAME           "AmbulantPlayer\n\nAmbulantPlayer\n\n\nAmbulantPlayer.Document\nAmbulantPlayer Document"
+    IDR_MAINFRAME           "AmbulantPlayer\n\nAmbulantPlayer\nSMIL documents\n.smil,.grins\nAmbulantPlayer.Document\nAmbulantPlayer Document"
 END
 
 STRINGTABLE PRELOAD DISCARDABLE 
@@ -322,6 +346,8 @@ BEGIN
     ID_PAUSE                "Pause playback\nPause"
     ID_STOP                 "Stop playback\nStop"
     ID_HELP_WELCOME         "Playback welcome\nWelcome"
+    ID_FILE_SELECT          "Select a document\nSelect"
+    ID_FILE_LOADSETTINGS    "Load settings\nLoad settings"
 END
 
 #endif    // English (U.S.) resources

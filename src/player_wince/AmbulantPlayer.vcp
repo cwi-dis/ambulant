@@ -329,6 +329,7 @@ DEP_CPP_AMBULAN=\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\refcount.h"\
 	{$(INCLUDE)}"ambulant\lib\string_util.h"\
+	{$(INCLUDE)}"ambulant\lib\system.h"\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
@@ -414,6 +415,41 @@ DEP_CPP_MAINF=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\SelectDlg.cpp
+
+!IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
+
+DEP_CPP_SELEC=\
+	".\SelectDlg.h"\
+	".\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
+
+DEP_CPP_SELEC=\
+	".\SelectDlg.h"\
+	".\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
+
+DEP_CPP_SELEC=\
+	".\SelectDlg.h"\
+	".\StdAfx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
+
+DEP_CPP_SELEC=\
+	".\SelectDlg.h"\
+	".\StdAfx.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
@@ -478,6 +514,10 @@ SOURCE=.\newres.h
 # Begin Source File
 
 SOURCE=.\Resource.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SelectDlg.h
 # End Source File
 # Begin Source File
 

@@ -57,7 +57,7 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	// Change the registry key under which our settings are stored.
 	// You should modify this string to be something appropriate
 	// such as the name of your company or organization.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("Ambulant"));
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
@@ -70,7 +70,8 @@ BOOL CAmbulantPlayerApp::InitInstance()
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CAmbulantPlayerDoc),
 		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
-		RUNTIME_CLASS(CAmbulantPlayerView));
+		RUNTIME_CLASS(CAmbulantPlayerView)
+		);
 	AddDocTemplate(pDocTemplate);
 
 	// Parse command line for standard shell commands, DDE, file open
@@ -87,7 +88,6 @@ BOOL CAmbulantPlayerApp::InitInstance()
 
 	return TRUE;
 }
-
 
 
 /////////////////////////////////////////////////////////////////////////////
