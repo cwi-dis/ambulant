@@ -68,6 +68,9 @@
 #include "ambulant/version.h"
 #endif
 
+#ifdef	TRY_LOCKING
+#endif/*TRY_LOCKING*/
+
 // #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -140,10 +143,18 @@ qt_gui::qt_gui(const char* title,
 	m_playing(),
 	m_playmenu(),
 	m_programfilename(),
+#ifdef	TRY_LOCKING
+	m_lock(NULL),
+	m_gui_thread(0),
+#endif/*TRY_LOCKING*/
 	m_smilfilename(NULL)
 {
 
 	m_programfilename = title;
+#ifdef	TRY_LOCKING
+	m_lock = new critical_section();
+	m_gui_thread = pthread_self();
+#endif/*TRY_LOCKING*/
 	if (initfile != NULL && initfile != "")
 		m_smilfilename = QString(initfile);
 #ifdef  QT_NO_FILEDIALOG
@@ -236,6 +247,7 @@ qt_gui::~qt_gui() {
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
+	delete m_lock;
 }
 
 void 
@@ -557,7 +569,8 @@ qt_gui::customEvent(QCustomEvent* e) {
 //	std::string id("qt_gui::customEvent");
 //	std::cerr<<id<<std::endl;
 //	std::cerr<<id+" type: "<<e->type()<<" msg:"<<msg<<std::endl;
-	switch (e->type()-qt_logger::CUSTOM_OFFSET) {
+	int level = e->type() - qt_logger::CUSTOM_OFFSET;
+	switch (level) {
 	case qt_logger::CUSTOM_NEW_DOCUMENT:
 		if (m_mainloop) {
 			bool start = msg[0] == 'S' ? true : false;
@@ -584,6 +597,12 @@ qt_gui::customEvent(QCustomEvent* e) {
 		QMessageBox::information(NULL, "AmbulantPlayer", msg);
 		break;
 	}
+#ifdef	TRY_LOCKING
+	if (level >= ambulant::lib::logger::LEVEL_WARN) {
+		// this function is always executed by m_gui_thread
+		m_lock->leave(); // unlock the thread generating the message
+	}
+#endif/*TRY_LOCKING*/
 	free(msg);
 }
 
@@ -591,11 +610,25 @@ void
 qt_gui::internal_message(int level, char* msg) {
 	int msg_id = level+qt_logger::CUSTOM_OFFSET;
   	qt_message_event* qme = new qt_message_event(msg_id, msg);
+#ifdef	TRY_LOCKING
+	if (level >= ambulant::lib::logger::LEVEL_WARN
+	    && pthread_self() != m_gui_thread) {
+		m_lock->enter(); // acquire lock for calling thread
+				 // it will be released by m_gui_thread
+	}
+#endif/*TRY_LOCKING*/
 #ifdef	QT_THREAD_SUPPORT
 	QThread::postEvent(this, qme);
 #else /*QT_THREAD_SUPPORT*/
 	QApplication::postEvent(this, qme);
 #endif/*QT_THREAD_SUPPORT*/
+#ifdef	TRY_LOCKING
+	if (level >= ambulant::lib::logger::LEVEL_WARN
+	    && pthread_self() != m_gui_thread) {
+		m_lock->enter(); // block calling thread
+		m_lock->leave(); // release lock for calling thread
+	}
+#endif/*TRY_LOCKING*/
 }
 
 int

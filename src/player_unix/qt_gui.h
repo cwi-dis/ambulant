@@ -137,6 +137,11 @@ class qt_gui : public QWidget {
 	const char*  m_programfilename;
 	qt_settings* m_settings; // the Settings window
 	QString      m_smilfilename;
+#define	TRY_LOCKING
+#ifdef	TRY_LOCKING
+	ambulant::lib::critical_section* m_lock;
+	unsigned long int m_gui_thread;;
+#endif/*TRY_LOCKING*/
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */

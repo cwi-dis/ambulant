@@ -224,8 +224,9 @@ qt_mainloop::create_document(const char *filename)
 		AM_DBG m_logger->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
 	int size = net::read_data_from_url(url, m_factory->df, &data);
-	if (size < 0) {
-		m_logger->error("Cannot open %s", filename);
+	if (size <= 0) {
+// No error message needed, has been done by passive_datasoure::activate()
+//		m_logger->error("Cannot open %s", filename);
 		return NULL;
 	}
 	std::string docdata(data, size);
