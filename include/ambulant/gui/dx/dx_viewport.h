@@ -64,6 +64,7 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/preferences.h"
 
 struct IDirectDraw;
 struct IDirectDrawSurface;
@@ -83,7 +84,8 @@ class region;
 
 class viewport {
   public:
-	viewport(int width = 320, int height = 240, HWND hwnd = NULL);
+	viewport(int width = lib::default_layout_width, 
+		int height = lib::default_layout_height, HWND hwnd = NULL);
 	~viewport();
 	
 	// Shows what has been drawn
@@ -118,6 +120,11 @@ class viewport {
 	
 	IDirectDraw* get_direct_draw() { return m_direct_draw;}
 	
+	lib::screen_rect<int> get_rc() const { 
+		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
+	lib::screen_rect<int> get_clip_rc() const { 
+		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
+
   private:	
  	void add_region(region *r);
  
