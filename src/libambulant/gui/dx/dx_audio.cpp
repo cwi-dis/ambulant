@@ -112,6 +112,7 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	if(m_activated) {
 		// repeat
 		m_player->start(t);
+		schedule_update();
 		return;	
 	}
 	
