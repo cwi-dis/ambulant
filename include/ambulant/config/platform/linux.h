@@ -14,6 +14,8 @@
 //  linux specific config options:
 
 #define AMBULANT_PLATFORM "linux"
+#define AMBULANT_PLATFORM_LINUX
+#define AMBULANT_PLATFORM_UNIX
 
 // make sure we have __GLIBC_PREREQ if available at all
 #include <cstdlib>

@@ -292,7 +292,17 @@ void test_attrs::set_default_tests_attrs() {
 	tests_attrs_map["systemCaptions"] = "on";
 	tests_attrs_map["systemCPU"] = "unknown";
 	tests_attrs_map["systemLanguage"] = "en";
+#if defined(AMBULANT_PLATFORM_MACOS)
+	tests_attrs_map["systemOperatingSystem"] = "macos";
+#elif defined(AMBULANT_PLATFORM_WIN32)
+	tests_attrs_map["systemOperatingSystem"] = "win32";
+#elif defined(AMBULANT_PLATFORM_WIN32_WCE)
+	tests_attrs_map["systemOperatingSystem"] = "wince";
+#elif defined(AMBULANT_PLATFORM_LINUX)
+	tests_attrs_map["systemOperatingSystem"] = "linux";
+#else
 	tests_attrs_map["systemOperatingSystem"] = "unknown";
+#endif
 	tests_attrs_map["systemScreenSize"] = "1024X1280";
 	tests_attrs_map["systemScreenDepth"] = "32";
 }

@@ -18,6 +18,8 @@
 #if __MACH__ && !defined(_MSL_USING_MSL_C)
 
 // Using the Mac OS X system BSD-style C library.
+#define AMBULANT_PLATFORM_MACOS
+#define AMBULANT_PLATFORM_UNIX
 
 #  define AMBULANT_NO_CTYPE_FUNCTIONS
 #  define AMBULANT_NO_CWCHAR
