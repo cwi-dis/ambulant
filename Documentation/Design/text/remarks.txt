@@ -1,6 +1,14 @@
 Remarks
 =======
 
+Design entities documentation
+-----------------------------
+TBD (be based on a custom view of the related IEEE std, indicates UML usage)
+
+Software Design Document contents
+---------------------------------
+TBD
+
 Code Organization
 -----------------
 
@@ -9,7 +17,7 @@ namespace ambulant and further divided into packages using sub-namespaces.
 The GRiNS organization of the code was good enough and 
 we should try keeping it but not blindly.
 
-Concerning dependencies, the code may be organized as a set of layers as shown below
+Concerning dependencies, the code may be organized as a set of layers as shown below:
 
 Layer 0:
 Std C++ library
@@ -38,3 +46,33 @@ Layer 3 (application layer):
 Ambulant player
 Namespace: ambulant
 May depend on any of the layers below.
+
+
+Exceptions and assertions
+-------------------------
+
+Assert usage is clean:  during development we use assert to check preconditions
+and post conditions and it’s a sort of documentation. 
+For C and C++ it’s a macro often disabled in not debug builds. 
+Can be defined to do whatever. Its default implementation when it fails 
+is to point out the condition, the line and the source file. I think 
+we should use them extensively as a means for both testing and documentation.
+ 
+Concerning exceptions every language has its own semantics and culture for them. 
+Exceptions are an integral part of the C++ standard. They are used at the 
+correct weight in the STD C++ library.
+ 
+Having an exceptions mechanism it is important since it solves a recurring problem: 
+a piece of code cannot do what it was asked for and no meaningful action can 
+be taken locally. Somebody can always design custom solutions to solve this 
+problem but having a standard mechanism is important.
+
+Though some C++ compilers (the old WinCE MS compiler for example) may not support 
+exceptions I think that we should use them in our code. The mainstream 
+compilers do support them and are part of the standard. 
+If we choose not to use them then we will have to invent our own mechanism, 
+which is not a so good idea. 
+Using exceptions will make our code more clean, robust and easier to test. 
+If it is needed and when it is needed a porting for compilers 
+that do not support exceptions may be made.
+
