@@ -229,7 +229,10 @@ class node {
 	// fills in a map with node ids
 	// the map may be used for retreiving nodes from their id
 	void create_idmap(std::map<std::string, node*>& m) const; 
-		
+	
+	// returns a "friendly" path desription of this node
+	std::string get_path_display_desc() const;
+	
 	/////////////////////
 	// string repr
 	

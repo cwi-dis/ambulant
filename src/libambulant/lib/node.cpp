@@ -297,6 +297,31 @@ lib::node::get_root() {
 	return node_navigator<node>::get_root(this); 
 }
 
+inline std::string get_path_desc_comp(const lib::node *n) {
+	std::string sbuf;
+	const char *pid = n->get_attribute("id");
+	sbuf += n->get_local_name();
+	if(pid) {sbuf += ":"; sbuf += pid;}
+	return sbuf;
+}
+
+std::string lib::node::get_path_display_desc() const {
+	std::string sbuf;
+	std::list<const node*> path;
+	node_navigator<const node>::get_path(this, path);
+	int nc = 0;
+	std::list<const node*>::reverse_iterator it = path.rbegin();
+	sbuf += get_path_desc_comp(this);it++;nc++;
+	for(;it != path.rend() && nc<3;it++) {
+		std::string ln = (*it)->get_local_name();
+		if(ln != "priorityClass" && ln != "switch") {
+			sbuf.insert(0, "/");
+			sbuf.insert(0, get_path_desc_comp(*it));
+			nc++;
+		}
+	}
+	return sbuf;
+}
 ///////////////////////////////
 // iterators
 // inline
