@@ -89,17 +89,11 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	net::url url = m_node->get_url("src");
 	dx_window *dxwindow = static_cast<dx_window*>(m_window);
 	viewport *v = dxwindow->get_viewport();
-	if(url.is_local_file() && lib::memfile::exists(url.get_file())) {
-		lib::logger::get_logger()->show("Render text from file [%s]",
-			url.get_file().c_str());
-		m_text = new text_renderer(url.get_file(), bounds, v);
-	} else if(url.is_absolute()) {
-		m_text = new text_renderer(url.get_url(), bounds, v);
-	} else {
+	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());
 	}
-	
+	m_text = new text_renderer(url, bounds, v);
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {

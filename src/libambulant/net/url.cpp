@@ -82,10 +82,10 @@ std::list< net::url::handler_pair* > net::url::s_handlers;
 void net::url::init_statics() {
 
 	// workaround for g++ 2.95
-	static handler_pair h1 = {"n://n:n/", &url::set_from_host_port_uri};
+	static handler_pair h1 = {"n://n:d/", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1);
  	
-	static handler_pair h1a = {"n://n:n", &url::set_from_host_port_uri};
+	static handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
  	s_handlers.push_back(&h1a);
  	
 	static handler_pair h2 = {"n://n/", &url::set_from_host_uri};
@@ -204,7 +204,7 @@ void net::url::set_from_spec(const string& spec) {
 	lib::logger::get_logger()->error("url::set_from_spec: Cannot parse \"%s\"", spec.c_str());
 }
 
-// pat: "n://n:n/"
+// pat: "n://n:d/"
 void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) {
 	m_absolute = true;
 	m_protocol = sc.val_at(0);
@@ -349,7 +349,6 @@ bool net::url::same_document(const net::url &base) const
 		m_path == base.m_path &&
 		m_query == base.m_query);
 }
-
 
 ///////////////
 // module private static initializer

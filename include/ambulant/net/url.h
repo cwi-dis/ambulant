@@ -160,7 +160,7 @@ class url {
 	bool same_document(const url &base) const;
 		
  	static void init_statics();
- 	
+
   private:
 	// protocols to ports map
  	// static std::map<string, short_type > s_ports;
@@ -220,7 +220,9 @@ inline std::string repr(const ambulant::net::url& u) {
 		} else if (u.get_protocol() == "data") {
 			os << "data:," << u.get_path();
 		} else {
-			os << u.get_protocol() << "://" << u.get_host() << "/";
+			os << u.get_protocol() << "://" << u.get_host();
+			if(u.get_port() != 0) os << ":" << int(u.get_port());
+			os <<  "/";
 		}
 	}
 	os << u.get_path();

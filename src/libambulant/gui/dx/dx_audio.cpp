@@ -56,7 +56,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/memfile.h"
+#include "ambulant/lib/win32/win32_asb.h"
 
 #include "ambulant/common/region.h"
 
@@ -80,7 +80,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	net::url url = m_node->get_url("src");
-	if(url.is_local_file() && lib::memfile::exists(url.get_file()))
+	if(url.is_local_file() && lib::win32::file_exists(url.get_file()))
 		m_player = new gui::dx::audio_player(url.get_file());
 	else if(url.is_absolute())
 		m_player = new gui::dx::audio_player(url);

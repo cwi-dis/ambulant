@@ -71,30 +71,28 @@ using ambulant::lib::logger;
 
 // XXX: We need to pass the color as read from the text param.
 
-gui::dx::text_renderer::text_renderer(const std::string& url, const lib::size& bounds, viewport* v)
+gui::dx::text_renderer::text_renderer(const net::url& u, const lib::size& bounds, viewport* v)
 :	m_size(bounds),
 	m_ddsurf(0){
-	open(url, v);
+	open(u, v);
 }
 
 gui::dx::text_renderer::~text_renderer() {
 	if(m_ddsurf) m_ddsurf->Release();
 }
 
-void gui::dx::text_renderer::open(const std::string& url, viewport* v) {
+void gui::dx::text_renderer::open(const net::url& u, viewport* v) {
 	std::basic_string<text_char> text;
-	if(!lib::starts_with(url, "data:")) {
-		if(!lib::memfile::exists(url)) {
-			lib::logger::get_logger()->warn("Failed to locate text file %s.", url.c_str());
+	std::string ustr = ::repr(u);
+	if(!lib::starts_with(ustr, "data:")) {
+		lib::memfile mf(u);
+		if(!mf.read())
 			return;
-		}
-		lib::memfile mf(url);
-		mf.read();
 		lib::databuffer& db = mf.get_databuffer();
 		std::basic_string<text_char> text;
 		text.assign(db.begin(), db.end());
 	} else {
-		text.assign(url.begin()+6, url.end());
+		text.assign(ustr.begin()+6, ustr.end());
 	}
 		
 	m_ddsurf = v->create_surface(m_size);

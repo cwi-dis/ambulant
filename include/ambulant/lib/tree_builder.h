@@ -63,6 +63,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/expat_parser.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/net/url.h"
 
 #include <string>
 
@@ -86,6 +87,7 @@ class tree_builder :
 	bool build_tree_from_file(const char *filename);
 	bool build_tree_from_str(const std::string& str);
 	bool build_tree_from_str(const char *begin, const char *end);
+	bool build_tree_from_url(const net::url& u);
 	
 	// check result of build tree functions
 	bool was_well_formed() const {return m_well_formed;}

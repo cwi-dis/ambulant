@@ -54,6 +54,7 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/memfile.h"
+#include "ambulant/net/url.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>
@@ -107,9 +108,25 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	ifs.close();
 	return m_well_formed;
 #elif defined(AMBULANT_PLATFORM_WIN32)
-	memfile mf(filename);
+	net::url u(filename);
+	memfile mf(u);
 	if(!mf.read()) {
 		lib::logger::get_logger()->show("Failed to read file: %s", filename);
+		return false;
+	}
+	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);
+	return m_well_formed;
+#else
+	return false;
+#endif
+}
+
+bool lib::tree_builder::build_tree_from_url(const net::url& u) {
+	if(!m_xmlparser) return false;
+#if defined(AMBULANT_PLATFORM_WIN32)
+	memfile mf(u);
+	if(!mf.read()) {
+		lib::logger::get_logger()->show("Failed to read file: %s", u.get_url().c_str());
 		return false;
 	}
 	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);

@@ -134,8 +134,8 @@ typedef gui::dx::dx_player gui_player;
 #endif
 
 static gui_player* 
-create_player_instance(const char *url) {
-	return new gui_player(url);
+create_player_instance(const net::url& u) {
+	return new gui_player(u);
 }
 
 static gui_player *player = 0;
@@ -286,21 +286,9 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		dummy->stop();
 		delete dummy;
 	}
-	
-	std::string docurl = lpszPathName;
-	std::string docpath = lpszPathName;
-	if(docurl.find("://") != std::string::npos) {
-		//seems a URL
-		net::url u(docurl);
-		if(u.is_local_file()) {
-			docpath = u.get_file();
-		} else {
-			AfxMessageBox(CString("Cannot read URL: ") + lpszPathName);
-			return;
-		}
-	}
-	dummy = create_player_instance(lib::textptr(docpath.c_str()));
-	m_curDocFilename = docpath.c_str();
+	net::url u(lpszPathName);
+	dummy = create_player_instance(u);
+	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
 	if(autostart)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
@@ -342,7 +330,9 @@ void MmView::OnFileStop()
 			dummy->stop();
 			delete dummy;
 		}
-		dummy = create_player_instance(lib::textptr(LPCTSTR(m_curDocFilename)));
+		std::string ustr = LPCTSTR(m_curDocFilename);
+		net::url u(ustr);
+		dummy = create_player_instance(u);
 		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0);
 		InvalidateRect(NULL); 
@@ -401,12 +391,15 @@ void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 void MmView::OnViewSource() {
 	CString cmd = TEXT("Notepad.exe ");
-	cmd += m_curDocFilename;
+	std::string ustr = LPCTSTR(m_curDocFilename);
+	net::url u(ustr);
+	cmd += u.get_file().c_str();
 	WinExec(cmd, SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
-	pCmdUI->Enable((player && !m_curDocFilename.IsEmpty())?TRUE:FALSE);
+	bool b = player && !m_curDocFilename.IsEmpty() && net::url(LPCTSTR(m_curDocFilename)).is_local_file();
+	pCmdUI->Enable(b?TRUE:FALSE);
 }
 
 void MmView::OnViewLog() {

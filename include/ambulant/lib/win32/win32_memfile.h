@@ -55,6 +55,8 @@
 #endif
 
 #include "ambulant/config/config.h"
+#include "ambulant/net/url.h"
+
 #include <string>
 
 namespace ambulant {
@@ -74,16 +76,14 @@ class memfile {
 	typedef buffer_type::const_pointer const_pointer;
 	typedef buffer_type::size_type size_type;
 
-	memfile(const std::basic_string<char>& url);
-	memfile(const std::basic_string<wchar_t>& url);
-	memfile(const text_char *url);
+	memfile(const net::url& u);
 	~memfile();
 	
-	bool exists() const { return exists(m_url);}
+	bool exists() const { return memfile::exists(m_url);}
 	
 	databuffer& get_databuffer() { return m_buffer;}
 	
-	const std::basic_string<text_char>& get_url() const { return m_url;}
+	const net::url& get_url() const { return m_url;}
 	
 	bool read();
 
@@ -135,18 +135,16 @@ class memfile {
 	size_type read(char *b, size_type nb) {
 		return read((byte*)b, nb);
 	}
-	static bool exists(const std::basic_string<char>& url);
-	static bool exists(const std::basic_string<wchar_t>& url);
+	static bool exists(const net::url& url);
 	
   private:	
-	bool open();
-	void close();
-	static bool iexists(const text_char *url);
+	bool read_local(const std::string& fn);
+	bool read_remote(const std::string& urlstr);
+	bool read_remote();
 	void throw_range_error();
-	std::basic_string<text_char> m_url;
+	net::url m_url;
 	databuffer m_buffer;
 	size_type m_gptr;
-	HANDLE m_hf;
 };
 
 

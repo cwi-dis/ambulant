@@ -54,6 +54,7 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_image_renderer.h"
+#include "ambulant/gui/dx/dx_transition.h"
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
@@ -90,16 +91,11 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	}
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	if (!url.is_local_file()) {
-		lib::logger::get_logger()->show("dx_img_handler can only handle local files. [%s]",
-			url.get_url().c_str());
-		m_image = NULL;
-	} else if(lib::memfile::exists(url.get_file())) {
-		m_image = new image_renderer(url.get_file(), v);
-	} else {
+	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());
 	}
+	m_image = new image_renderer(url, v);
 }
 
 gui::dx::dx_img_renderer::~dx_img_renderer() {
@@ -142,7 +138,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 }
 
 void gui::dx::dx_img_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->show("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
 	m_dest->renderer_done(this);
@@ -221,8 +217,19 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	if(m_transitioning) {
 		tr = m_dxplayer->get_transition(this);
 		m_transitioning = tr?true:false;
+		//if(tr && tr->is_outtrans()) {
+		//	const common::region_info *ri = m_dest->get_info();
+		//	if(ri) v->clear(img_reg_rc_dirty,ri->get_bgcolor(), (dx_transition*)0);
+		//}
 	}
-	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+	if(tr && tr->is_outtrans()) {
+		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
+		const common::region_info *ri = m_dest->get_info();
+		if(ri) v->clear(img_reg_rc_dirty,ri->get_bgcolor(), tr);
+	} else {
+		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+	}
+	
 }
 
 

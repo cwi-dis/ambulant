@@ -64,6 +64,7 @@ namespace gui {
 namespace dx {
 
 class image_renderer;
+class dx_gui_region;
 
 class dx_img_renderer : public dx_renderer_playable {
   public:
@@ -82,6 +83,7 @@ class dx_img_renderer : public dx_renderer_playable {
   private:
 	image_renderer *m_image;
 	lib::screen_rect<int> m_msg_rect;
+	dx_gui_region *m_rgn;
 };
 
 } // namespace dx

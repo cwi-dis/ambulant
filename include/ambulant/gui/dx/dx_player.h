@@ -69,6 +69,7 @@
 #include "ambulant/common/embedder.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/net/url.h"
 #include "ambulant/gui/dx/dx_playable.h"
 
 // Global functions provided by the hosting application.
@@ -110,7 +111,7 @@ class dx_player :
 	public common::embedder {
 	
   public:
-	dx_player(const std::string& url);
+	dx_player(const net::url& u);
 	~dx_player();
 	
 	////////////////////
@@ -190,7 +191,7 @@ class dx_player :
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 
-	std::string m_url;
+	net::url m_url;
 	smil2::smil_player *m_player;
 	
 	lib::timer *m_timer;

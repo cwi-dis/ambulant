@@ -59,6 +59,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/net/url.h"
 
 #include <string>
 
@@ -74,7 +75,7 @@ class viewport;
 
 class text_renderer {
   public:
-	text_renderer(const std::string& url, const lib::size& bounds, viewport* v);
+	text_renderer(const net::url& u, const lib::size& bounds, viewport* v);
 	~text_renderer();
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return true;}
@@ -82,7 +83,7 @@ class text_renderer {
 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
 	
   private:
-	void open(const std::string& url, viewport* v);
+	void open(const net::url& u, viewport* v);
 	lib::size m_size;
 	IDirectDrawSurface *m_ddsurf;
 };

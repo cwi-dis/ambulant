@@ -100,8 +100,8 @@ using namespace ambulant;
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
-gui::dx::dx_player::dx_player(const std::string& url) 
-:	m_url(url),
+gui::dx::dx_player::dx_player(const net::url& u) 
+:	m_url(u),
 	m_player(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
@@ -109,15 +109,15 @@ gui::dx::dx_player::dx_player(const std::string& url)
 	m_logger(lib::logger::get_logger()) {
 	
 	// Parse the provided URL. 
-	AM_DBG m_logger->trace("Parsing: %s", m_url.c_str());	
-	lib::document *doc = lib::document::create_from_file(m_url);
+	AM_DBG m_logger->trace("Parsing: %s", u.get_url().c_str());	
+	lib::document *doc = lib::document::create_from_url(u);
 	if(!doc) {
-		m_logger->show("Failed to parse document %s", m_url.c_str());
+		m_logger->show("Failed to parse document %s", u.get_url().c_str());
 		return;
 	}
 	
 	// Create a player instance
-	AM_DBG m_logger->trace("Creating player instance for: %s", m_url.c_str());	
+	AM_DBG m_logger->trace("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(doc, this, this, this);	
 	
 	// Create a worker processor instance

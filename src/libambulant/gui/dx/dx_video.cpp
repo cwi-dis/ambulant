@@ -58,7 +58,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/memfile.h"
+#include "ambulant/lib/win32/win32_asb.h"
 #include "ambulant/lib/textptr.h"
 
 #include "ambulant/common/region_info.h"
@@ -85,7 +85,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
-	if(url.is_local_file() || lib::memfile::exists(url.get_file())) {
+	if(url.is_local_file() || lib::win32::file_exists(url.get_file())) {
 		m_player = new gui::dx::video_player(url.get_file(), v->get_direct_draw());
 	} else if(url.is_absolute()) {
 		m_player = new gui::dx::video_player(url.get_url(), v->get_direct_draw());

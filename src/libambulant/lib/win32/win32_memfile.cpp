@@ -47,45 +47,45 @@
  */
 
 #include "ambulant/lib/win32/win32_memfile.h"
+#include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
+#include <wininet.h>
+
+#pragma comment (lib,"wininet.lib")
 
 using namespace ambulant;
 
-lib::win32::memfile::memfile(const std::basic_string<char>& url)
-:	m_url(lib::textptr(url.c_str()) ), m_gptr(0) {
-}
-
-lib::win32::memfile::memfile(const std::basic_string<wchar_t>& url)
-:	m_url(lib::textptr(url.c_str())), m_gptr(0) {
-}
-	
-lib::win32::memfile::memfile(const text_char *url)
-:	m_url(url?url:text_str("")), m_gptr(0) {
+lib::win32::memfile::memfile(const net::url& u)
+:	m_url(u), m_gptr(0) {
 }
 	
 lib::win32::memfile::~memfile() {
 }
 
 // static 
-bool lib::win32::memfile::exists(const std::basic_string<char>& url) {
-	return iexists(lib::textptr(url.c_str()));
-}
-
-// static 
-bool lib::win32::memfile::exists(const std::basic_string<wchar_t>& url) {
-	return iexists(textptr(url.c_str()));
-}
-
-bool lib::win32::memfile::iexists(const text_char *url) {
-	memfile mf(url);
-	if(!mf.open()) return false;
-	mf.close();
+bool lib::win32::memfile::exists(const net::url& u) {
+	if(!u.is_local_file()) return true;
+	HANDLE hf = CreateFile(u.get_file().c_str(),  
+		GENERIC_READ,  
+		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
+		0,  // lpSecurityAttributes 
+		OPEN_EXISTING,  
+		FILE_ATTRIBUTE_READONLY,  
+		NULL); 
+	if(hf == INVALID_HANDLE_VALUE)
+		return false;
+	CloseHandle(hf);
 	return true;
 }
 
-bool lib::win32::memfile::open() {
-	HANDLE hf = CreateFile(m_url.c_str(),  
+bool lib::win32::memfile::read() {
+	return m_url.is_local_file()?read_local(m_url.get_file()):
+		read_remote(m_url.get_url());	
+}
+
+bool lib::win32::memfile::read_local(const std::string& fn) {
+	HANDLE hf = CreateFile(fn.c_str(),  
 		GENERIC_READ,  
 		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
 		0,  // lpSecurityAttributes 
@@ -93,34 +93,64 @@ bool lib::win32::memfile::open() {
 		FILE_ATTRIBUTE_READONLY,  
 		NULL); 
 	if(hf == INVALID_HANDLE_VALUE) {
-		lib::logger::get_logger()->show("Failed to open file %s", textptr(m_url.c_str()));
-		return false;
-	}
-	m_hf = hf;
-	return true;
-}
-
-bool lib::win32::memfile::read() {
-	if(!open()) {
-		lib::logger::get_logger()->show("Failed to open file");
+		lib::logger::get_logger()->show("Failed to open file %s", textptr(fn.c_str()));
 		return false;
 	}
 	const int buf_size = 1024;
 	byte *buf = new byte[buf_size];
 	DWORD nread = 0;
-	while(ReadFile(m_hf, buf, buf_size, &nread, 0) && nread>0){
+	while(ReadFile(hf, buf, buf_size, &nread, 0) && nread>0){
 		m_buffer.append(buf, nread);
 	}
 	delete[] buf;
 	m_gptr = 0;
-	close();
+	CloseHandle(hf);
 	return true;
 }
 
-void lib::win32::memfile::close() {
-	if(m_hf != INVALID_HANDLE_VALUE) 
-		CloseHandle(m_hf);
+bool lib::win32::memfile::read_remote(const std::string& urlstr) {
+	HINTERNET hinet = InternetOpen("AmbulantPlayer", 
+		INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+	if(!hinet) {
+		win_report_last_error("InternetOpen()");
+		return false;
+	}
+	
+	char urlbuf[512];
+	DWORD nch = 512;
+	BOOL bres = InternetCanonicalizeUrl(urlstr.c_str(), urlbuf , &nch, ICU_BROWSER_MODE);
+	if(!bres) {
+		win_report_last_error("InternetCanonicalizeUrl()");
+		InternetCloseHandle(hinet); 
+		return false;
+	}
+	
+	HINTERNET hf = InternetOpenUrl(hinet, urlbuf,  NULL, 0, INTERNET_FLAG_RAW_DATA, 0);
+	if(!hf) {
+		win_report_last_error("InternetOpenUrl()");
+		InternetCloseHandle(hinet); 
+		return false;
+	}
+	const int buf_size = 1024;
+	byte *buf = new byte[buf_size];
+	DWORD nread = 0;
+	bool succeeded = true;
+	do {
+		bres = InternetReadFile(hf, buf, buf_size, &nread);
+		if(!bres) {
+			win_report_last_error("InternetReadFile()");
+			succeeded = false;
+			break;
+		} else {
+			m_buffer.append(buf, nread);
+		}
+	} while(nread > 0);
+	delete[] buf;	
+	InternetCloseHandle(hf); 
+	InternetCloseHandle(hinet); 
+	return succeeded;
 }
+
 
 void lib::win32::memfile::throw_range_error() {
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3

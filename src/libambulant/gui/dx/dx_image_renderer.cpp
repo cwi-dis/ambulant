@@ -113,8 +113,8 @@ create_img_decoder(lib::memfile *src, HDC hdc) {
 	return 0;
 }
 
-gui::dx::image_renderer::image_renderer(const std::string& url, viewport* v)
-:	m_url(url),
+gui::dx::image_renderer::image_renderer(const net::url& u, viewport* v)
+:	m_url(u),
 	m_ddsurf(0),
 	m_transparent(false) {
 	open(m_url, v);
@@ -124,26 +124,23 @@ gui::dx::image_renderer::~image_renderer() {
 	if(m_ddsurf) m_ddsurf->Release();
 }
 
-void gui::dx::image_renderer::open(const std::string& url, viewport* v) {
-	if(!lib::memfile::exists(url)) {
-		lib::logger::get_logger()->warn("Failed to locate image file %s.", url.c_str());
+void gui::dx::image_renderer::open(const net::url& u, viewport* v) {
+	lib::memfile mf(u);
+	if(!mf.read())
 		return;
-	}
-	lib::memfile mf(url);
-	mf.read();
-	
+		
 	// Decode the image
 	HDC hdc = ::GetDC(NULL);
 	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
 	::DeleteDC(hdc);
 	if(!decoder) {
-		lib::logger::get_logger()->show("Failed to create decoder for image %s", url.c_str());
+		lib::logger::get_logger()->show("Failed to create decoder for image %s", ::repr(u).c_str());
 		return;
 	}
 	
 	dib_surface<lib::color_trible>* dibsurf = decoder->decode();
 	if(!dibsurf) {
-		lib::logger::get_logger()->warn("Failed to decode image %s", url.c_str());
+		lib::logger::get_logger()->warn("Failed to decode image %s", ::repr(u).c_str());
 		delete decoder;
 		return;
 	}
