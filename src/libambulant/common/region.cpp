@@ -92,9 +92,7 @@ passive_region::passive_region(const std::string &name, passive_region *parent, 
 	m_outer_bounds(bounds),
 	m_window_topleft(bounds.left_top()),
 	m_parent(parent),
-	m_cur_active_region(NULL),
 	m_bg_active_region(NULL),
-	m_old_active_region(NULL),
 	m_mouse_region(NULL),
 	m_info(info),
 	m_bg_renderer(bgrenderer)
@@ -114,9 +112,9 @@ passive_region::~passive_region()
 {
 	AM_DBG lib::logger::get_logger()->trace("~passive_region(0x%x)", (void*)this);
 	m_parent = NULL;
-	if (m_cur_active_region) {
-		lib::logger::get_logger()->error("~passive_region(0x%x): m_cur_active_region = 0x%x", (void *)this, (void *)m_cur_active_region);
-		delete m_cur_active_region;
+	std::list<active_region*>::reverse_iterator ari;
+	for(ari=m_active_regions.rbegin(); ari!=m_active_regions.rend(); ari++) {
+		delete (*ari);
 	}
 	if (m_bg_renderer)
 		delete m_bg_renderer;
@@ -158,17 +156,13 @@ void
 passive_region::show(active_region *cur)
 {
 	bool need_mr_update = false;
-	if (m_cur_active_region) {
-		lib::logger::get_logger()->error("passive_region(0x%x).show(0x%x) but m_cur_active_region=0x%x!", (void*)this, (void*)cur, (void*)m_cur_active_region);
-		if (!m_cur_active_region->get_mouse_region().is_empty())
+
+	// First check whether this region has any mousing enabled so we
+	// need to update that later
+	if (!cur->get_mouse_region().is_empty())
 			need_mr_update = true;
-	}
-//	if (m_cur_active_region)
-//		delete m_cur_active_region;
-	m_cur_active_region = cur;
-	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)m_cur_active_region);
-	if (!m_cur_active_region->get_mouse_region().is_empty())
-		need_mr_update = true;
+	m_active_regions.push_back(cur);
+	AM_DBG lib::logger::get_logger()->trace("passive_region.show(0x%x, active=0x%x)", (void *)this, (void *)cur);
 	if (need_mr_update)
 		mouse_region_changed();
 	// We don't schedule a redraw here, assuming it will come shortly.
@@ -178,18 +172,25 @@ passive_region::show(active_region *cur)
 void
 passive_region::active_region_done(active_region *cur)
 {
-	AM_DBG lib::logger::get_logger()->trace("passive_region.active_region_done(0x%x, cur=0x%x), m_cur_active_region=0x%x", (void *)this, (void*)cur, (void *)m_cur_active_region);
-	if (cur == m_cur_active_region) {
-		bool need_mr_update = false;
-		if (!m_cur_active_region->get_mouse_region().is_empty())
-			need_mr_update = true;
-		m_cur_active_region = NULL;
-		if (need_mr_update)
-			mouse_region_changed();
+	AM_DBG lib::logger::get_logger()->trace("passive_region.active_region_done(0x%x, cur=0x%x)", (void *)this, (void*)cur);
+	
+	// First test to see whether we need to do a mouse region update later
+	bool need_mr_update = false;
+	if (!cur->get_mouse_region().is_empty())
+		need_mr_update = true;
+
+	std::list<active_region*>::iterator i = m_active_regions.end();
+	for(i=m_active_regions.begin(); i!=m_active_regions.end(); i++)
+		if ((*i) == cur) break;
+	if (i == m_active_regions.end()) {
+		lib::logger::get_logger()->error("passive_region.active_region_done(0x%x, 0x%x): not active!", (void *)this, (void*)cur);
 	} else {
-		lib::logger::get_logger()->error("passive_region(0x%x, \"%s\").active_region_done(0x%x) but m_cur_active_region=0x%x!", (void*)this, m_name.c_str(), (void*)cur, (void*)m_cur_active_region);
+		m_active_regions.erase(i);
 	}
 	delete cur;
+
+	if (need_mr_update)
+		mouse_region_changed();
 	need_redraw(m_inner_bounds);
 }
 
@@ -202,13 +203,10 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 	if (our_rect.empty())
 		return;
 	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, our_ltrb=(%d, %d, %d, %d))", (void *)this, our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
-		
-	if (m_cur_active_region) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)m_cur_active_region);
-		m_cur_active_region->redraw(our_rect, window);
-	} else {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) no active region", (void *)this);
-		draw_background(our_rect, window);
+	std::list<active_region*>::iterator ar;
+	for (ar=m_active_regions.begin(); ar!=m_active_regions.end(); ar++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)(*ar));
+		(*ar)->redraw(our_rect, window);
 	}
 	// XXXX Should go per z-order value
 	std::multimap<zindex_t,passive_region *>::iterator i;
@@ -262,11 +260,10 @@ passive_region::user_event(const lib::point &where, int what)
 	point our_point = where;
 	our_point -= m_outer_bounds.left_top();
 	
-	if (m_cur_active_region) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)m_cur_active_region);
-		m_cur_active_region->user_event(our_point, what);
-	} else {
-		AM_DBG lib::logger::get_logger()->error("passive_region.user_event(0x%x) no active region", (void *)this);
+	std::list<active_region*>::reverse_iterator ari;
+	for (ari=m_active_regions.rbegin(); ari!=m_active_regions.rend(); ari++) {
+		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
+		(*ari)->user_event(our_point, what);
 	}
 	std::multimap<zindex_t,passive_region *>::iterator i;
 	for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
@@ -333,8 +330,10 @@ passive_region::mouse_region_changed()
     // Clear the mouse region
     m_mouse_region->clear();
     // Fill with the union of the regions of all our children
-    if (m_cur_active_region)
-        *m_mouse_region |= m_cur_active_region->get_mouse_region();
+	std::list<active_region*>::iterator ari;
+    for (ari=m_active_regions.begin(); ari!=m_active_regions.end(); ari++) {
+        *m_mouse_region |= (*ari)->get_mouse_region();
+	}
     std::multimap<zindex_t,passive_region *>::iterator i;
     for(i=m_active_children.begin(); i != m_active_children.end(); i++) {
         *m_mouse_region |= (*i).second->get_mouse_region();

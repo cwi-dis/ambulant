@@ -124,9 +124,8 @@ class passive_region : public surface_template, public renderer {
   	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space XXXX do lazy
 	point m_window_topleft;				// region top-left in window coordinate space XXXX do lazy
   	passive_region *m_parent;			// parent region
-  	active_region *m_cur_active_region; // active region currently responsible for redraws
-  	active_region *m_bg_active_region; // active region responsible for background redraws
-	active_region *m_old_active_region; // previous active region (for transitions)
+  	std::list<active_region *> m_active_regions; // active regions currently responsible for redraws
+	active_region *m_bg_active_region;  // The background
   	std::multimap<zindex_t,passive_region*>m_active_children;	// all subregions
 	gui_region *m_mouse_region;   // The area in which we want mouse clicks
 	const region_info *m_info;	// Information such as z-order, etc.
