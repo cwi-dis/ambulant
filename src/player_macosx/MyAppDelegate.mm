@@ -109,7 +109,8 @@ initialize_logger()
 	ambulant::lib::logger::get_logger()->set_level(level);
 	// And tell the UI too
 	LogController *log = [LogController sharedLogController];
-	if (log) [log setLogLevelUI: level];	
+	if (log) [log setLogLevelUI: level];
+	return level;	
 }
 
 @implementation MyAppDelegate
@@ -127,7 +128,7 @@ initialize_logger()
 	mypreferences::install_singleton();
 	
 	// Install our logger
-	if (initialize_logger() ) {
+	if (initialize_logger() == 0) {
 		// Show the logger window immedeately if log level is DEBUG
 		[self showLogWindow: self];
 	}
