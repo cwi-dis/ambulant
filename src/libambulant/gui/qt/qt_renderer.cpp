@@ -139,16 +139,17 @@ qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 	}
 	// See whether we're in a transition
 	if (m_trans_engine) {
+		QPixmap *qpm = aqw->ambulant_pixmap();
 		surf = aqw->get_ambulant_surface();
 		if (surf == NULL)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);
 		// Copy the background pixels
-		QPixmap *qpm = aqw->ambulant_pixmap();
 		screen_rect<int> dstrect = r;
 		dstrect.translate(m_dest->get_global_topleft());
-		bitBlt(surf, r.left(), r.top(), qpm, r.left(), r.top(), r.width(), r.height());
+		bitBlt(surf, dstrect.left(), dstrect.top(), qpm,
+		       dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 		
 		AM_DBG logger::get_logger()->trace("qt_renderer.redraw: drawing to transition surface");
 		}
