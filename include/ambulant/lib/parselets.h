@@ -459,7 +459,6 @@ class or_trio_p : public parselet {
 				dmax = d[i];
 			}
 		}
-		std::cout << "dmax=" << int(dmax) << std::endl;
 		if(dmax == -1) return -1;
 		if(d[0] == dmax) {
 			it = ita[0];
