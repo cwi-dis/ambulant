@@ -212,8 +212,10 @@ AC_MSG_RESULT($arts)
 # the includes are in /usr/include/ffmpeg, the library in /usr/lib.
 #
 # The only workaround I can think of is:
-# a) use "--with-ffpmpeg" only on RH9
-# b) for self-installed ffpmeg pass the path to ffmpeg-0.4.8/libavcodec
+# a) for "--with-ffpmpeg" we first test for an ffmpeg installed in
+#    third_party_packages, otherwise we try and make do with the
+#    one installed in RedHat 9.
+# b) for self-installed ffpmeg pass the path to ffmpeg-0.4.8
 #    to configure
 AC_MSG_CHECKING(for --with-ffmpeg)
 FFMPEG_INCLUDE=
@@ -222,21 +224,44 @@ AC_ARG_WITH(ffmpeg,
 	[  --with-ffmpeg Turn on ffmpeg audio decoders],
 	[case "${withval}" in
 	  yes) ffmpeg=true
-	  	FFMPEG_CODEC_INCLUDE=/usr/include/ffmpeg
-	  	FFMPEG_FORMAT_INCLUDE=/usr/include/ffmpeg
-	  	FFMPEG_CODEC_LIB=/usr/lib
-	  	FFMPEG_FORMAT_LIB=/usr/lib
+	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
+			# Prefer an fmpeg in third_party_packages
+			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
+			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
+			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
+			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
+	  	else
+	  		# If that doesn't exist assume RH9-style
+	  	    withvalabs="RH9-style"
+		  	FFMPEG_CODEC_INCLUDE=/usr/include/ffmpeg
+		  	FFMPEG_FORMAT_INCLUDE=/usr/include/ffmpeg
+		  	FFMPEG_CODEC_LIB=/usr/lib
+		  	FFMPEG_FORMAT_LIB=/usr/lib
+		fi
 	  	;;
 	  no)  ffmpeg=false
 	  	;;
 	  *) ffmpeg=true
-	     FFMPEG_CODEC_INCLUDE=`cd ${withval}; pwd`
-	     FFMPEG_FORMAT_INCLUDE=`cd ${withval}/../libavformat; pwd`	     
-	     FFMPEG_CODEC_LIB=${withval}
+	     # Turn into absolute path
+	     withvalabs=`cd ${withval}; pwd`
+	     FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
+	     FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+	     FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
 	     FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
 	     ;;
 	 esac],[
-	 ffmpeg=false
+	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
+			# Prefer an fmpeg in third_party_packages
+			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
+			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
+			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
+			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
+		else
+			withvalabs=false
+			ffmpeg=false
+		fi
 	 ])
 if test $ffmpeg = true; then
 	# Test for consistency
@@ -250,7 +275,7 @@ AC_SUBST(FFMPEG_CODEC_INCLUDE)
 AC_SUBST(FFMPEG_CODEC_LIB)
 AC_SUBST(FFMPEG_FORMAT_INCLUDE)
 AC_SUBST(FFMPEG_FORMAT_LIB)
-AC_MSG_RESULT($ffmpeg)
+AC_MSG_RESULT($withvalabs)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
