@@ -71,3 +71,25 @@ lib::active_renderer::stop()
 	m_dest->done();
 	lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
+
+lib::active_final_renderer::~active_final_renderer()
+{
+	if (m_data) free(m_data);
+}
+
+void
+lib::active_final_renderer::readdone(lib::detail::readdone_callback_arg *dummy)
+{
+	lib::logger::get_logger()->trace("active_final_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
+	m_data_size = m_src->size();
+	if ((m_data = malloc(m_data_size)) == NULL) {
+		lib::logger::get_logger()->error("active_final_renderer.readdone: cannot allocate %d bytes", m_data_size);
+		abort();
+	}
+	m_src->read((char *)m_data, m_data_size);
+	m_dest->need_redraw();
+	if (m_playdone)
+		m_event_processor->add_event(m_playdone, 0, event_processor::low);
+}
+
+

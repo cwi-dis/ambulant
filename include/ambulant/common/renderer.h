@@ -86,6 +86,29 @@ class active_renderer : public ref_counted {
 	basic_atomic_count<critical_section> m_refcount;
 };
 
+// active_final_renderer is a handy subclass of active_renderer:
+// it waits until all data is available, reads it, and then calls
+// need_redraw on the region. If you subclass this you only
+// need to add a redraw method.
+class active_final_renderer : active_renderer {
+  public:
+	active_final_renderer(event_processor *const evp,
+		net::passive_datasource *src,
+		passive_region *const dest,
+		const node *node)
+	:	active_renderer(evp, src, dest, node),
+		m_data(NULL),
+		m_data_size(0) {};
+	virtual ~active_final_renderer();
+	
+  protected:
+	void readdone(detail::readdone_callback_arg *dummy);
+	void *m_data;
+	unsigned m_data_size;
+};
+
+
+
 // Foctory class for renderers.
 class renderer_factory {
   public:

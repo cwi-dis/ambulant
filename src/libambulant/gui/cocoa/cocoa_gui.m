@@ -16,26 +16,30 @@ using namespace lib;
 namespace gui {
 namespace cocoa {
 
-class cocoa_active_text_renderer : active_renderer {
+class cocoa_active_text_renderer : active_final_renderer {
   public:
 	cocoa_active_text_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		passive_region *const dest,
 		const node *node)
-	: active_renderer(evp, src, dest, node) {};
+	:	active_final_renderer(evp, src, dest, node) {};
 	
     void redraw(const screen_rect<int> &r);
 };
 
-class cocoa_active_image_renderer : active_renderer {
+class cocoa_active_image_renderer : active_final_renderer {
   public:
 	cocoa_active_image_renderer(event_processor *const evp,
 		net::passive_datasource *src,
 		passive_region *const dest,
 		const node *node)
-	: active_renderer(evp, src, dest, node) {};
+	:	active_final_renderer(evp, src, dest, node),
+		m_image(NULL) {};
+	~cocoa_active_image_renderer();
 
     void redraw(const screen_rect<int> &r);
+  private:
+  	NSImage *m_image;
 };
 
 void
@@ -59,12 +63,27 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &r)
 	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
 }
 
+cocoa_active_image_renderer::~cocoa_active_image_renderer()
+{
+	if (m_image)
+		[m_image dealloc];
+}
+	
 void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &r)
 {
 	logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left, r.top, r.right, r.bottom);
+	if (m_data && !m_image) {
+		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
+		NSData *data = [NSData dataWithBytesNoCopy: m_data length: m_data_size];
+		m_image = [[NSImage alloc] initWithData: data];
+		// XXXX Could free data and m_data again here...
+	}
 	[[NSColor blueColor] set];
 	NSRectFill(NSMakeRect(r.left, r.top, r.right-r.left, r.bottom-r.top));
+	if (m_image) {
+		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image");
+	}
 }
 
 active_renderer *
