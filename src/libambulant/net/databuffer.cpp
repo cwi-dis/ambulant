@@ -199,7 +199,7 @@ databuffer::get_write_ptr(int sz)
 			AM_DBG lib::logger::get_logger()->debug("databuffer::get_write_ptr: buffer realloc to from %d to %d bytes",m_size, m_size + sz);
 			AM_DBG lib::logger::get_logger()->debug("databuffer::get_write_ptr: buffer realloc done (%x)",m_buffer);
         	if (!m_buffer) {
-	            lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size+sz);
+	            lib::logger::get_logger()->fatal("databuffer::get_write_ptr(size=%d): out of memory", m_size+sz);
 			}
 #ifdef RANDOM_BYTES
 			unsigned int i;
@@ -229,15 +229,17 @@ void databuffer::pushdata(int sz)
 	  return;
 	}
 	
-	
-	m_buffer = (char*) realloc(m_buffer, m_size + sz);
+	if (sz > 0) {
+		m_buffer = (char*) realloc(m_buffer, m_size + sz);
+	}
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::pushdata(%d) realloc m_buffer=x%x, from %d bytes to %d bytes", (void*)this, sz, (void*) m_buffer, m_size, m_size + sz);
 
 	m_size += sz;
 	//AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata:size = %d ",sz);
 	m_used = m_size - m_rear;
-	 if (!m_buffer) {
-		 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
+	 if (!m_buffer && (sz > 0)) {
+		 lib::logger::get_logger()->fatal("databuffer::pushdata(size=%d): out of memory", m_size);
+		 abort();
 	 }
 	if(m_max_size > 0 && m_used > m_max_size) {
 		AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
@@ -296,7 +298,7 @@ databuffer::readdone(int sz)
 		 m_rear = 0;
 		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) (m_buffer=x%x) resized to %d",  (void*)this, (void*)m_buffer, m_size);
 		 if (m_buffer == NULL && m_used > 0) {
-			 lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
+			 lib::logger::get_logger()->fatal("databuffer::readdone(size=%d): out of memory", m_size);
 		 }
 	}
 	m_lock.leave();
