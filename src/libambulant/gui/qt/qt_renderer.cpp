@@ -94,11 +94,9 @@ qt_renderer::start(double where)
 	  ("qt_renderer.start(0x%x, \"%s\")", (void *)this, 
 	   m_node->get_url("src").get_url().c_str());
 	if (m_intransition) {
-		m_trans_engine = qt_transition_engine(m_dest, false, 
-						      m_intransition);
+		m_trans_engine = qt_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
-			m_trans_engine->begin
-			  (m_event_processor->get_timer()->elapsed());
+			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_lock.leave();
 	common::renderer_playable_dsall::start(where);
@@ -115,11 +113,9 @@ qt_renderer::start_outtransition(const lib::transition_info *info)
 		m_outtransition = new transition_info();
 	}
 	*m_outtransition = *info;
-	m_trans_engine = qt_transition_engine(m_dest, true, 
-					      m_outtransition);
+	m_trans_engine = qt_transition_engine(m_dest, true, m_outtransition);
 	if (m_trans_engine)
-		m_trans_engine->begin
-		  (m_event_processor->get_timer()->elapsed());
+		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	m_lock.leave();
 	if (m_dest) m_dest->need_redraw();
 }

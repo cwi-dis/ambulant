@@ -54,6 +54,7 @@
 #include <cmath>
 
 #define AM_DBG if(0)
+//#define AM_DBG if(1)
 
 using namespace ambulant;
 using namespace smil2;

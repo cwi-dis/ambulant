@@ -93,6 +93,9 @@ class ambulant_qt_window : public common::gui_window {
 	QPixmap* m_pixmap;
 	QPixmap* m_oldpixmap;
 	QPixmap* m_surface;
+
+ public:
+	QPixmap* m_tmppixmap;
 };  // class ambulant_qt_window
 
 class qt_ambulant_widget : public QWidget {

@@ -85,6 +85,7 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	m_ambulant_widget(NULL),
 	m_pixmap(NULL),
 	m_oldpixmap(NULL),
+	m_tmppixmap(NULL),
 	m_surface(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
@@ -101,6 +102,10 @@ ambulant_qt_window::~ambulant_qt_window()
 		m_ambulant_widget = NULL;
 		delete m_pixmap;
 		m_pixmap = NULL;
+		if (m_tmppixmap != NULL) {
+			delete m_tmppixmap;
+			m_tmppixmap = NULL;
+		}
 	}
 }
 	

@@ -290,6 +290,11 @@ void timegraph::build_trans_out_graph() {
 		if(ta->get_fill() == fill_remove) {
 			sync_rule *sr = new transout_rule(tn, tn_end, offset);
 			tn->set_transout_rule(sr);
+		} else if(ta->get_fill() == fill_freeze) {
+			// XXXX This is a hack to make the default work, at least
+			// What really should happen depends on the parent, etc.
+			sync_rule *sr = new transout_rule(tn, tn_end, offset);
+			tn->set_transout_rule(sr);
 		} // else not implemented yet
 	}
 }

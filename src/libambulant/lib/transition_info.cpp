@@ -185,14 +185,15 @@ transition_info::get_trans_dur(const node *n)
 {
 	if(!n) return 0;
 	const char *p = n->get_attribute("dur");
-	if(!p) return 1000;  // XXX What is the correct way to say "1 second"?
+	if(!p) return 1000;  // 1 second
 	std::string sdur = trim(p);
 	clock_value_p pl;
 	std::string::const_iterator b = sdur.begin();
 	std::string::const_iterator e = sdur.end();
 	std::ptrdiff_t d = pl.parse(b, e);
 	if(d == -1) {
-		return 0;
+		lib::logger::get_logger()->error(gettext("transition: illegal value for ""%s"" attribute (""%s"")"), "dur", p);
+		return 1000;
 	}
 	return pl.m_result;
 }
@@ -209,7 +210,8 @@ transition_info::get_progress(const node *n, const char* progress, progress_type
 	std::string::const_iterator e = sdur.end();
 	std::ptrdiff_t d = np.parse(b, e);
 	if(d == -1) {
-		return -1;
+		lib::logger::get_logger()->error(gettext("transition: illegal value for ""%s"" attribute (""%s"")"), progress, p);
+		return default_value;
 	}
 	return np.m_result;
 }
