@@ -507,6 +507,9 @@ ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVForma
 		if (context->streams[m_stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
 			break;
 	}
+	
+	// XXX Hier moet de codec nog gezet worden !
+	
 	if (m_stream_index >= context->nb_streams) {
 		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no audio streams");
 		m_src_end_of_file = true;
@@ -598,7 +601,7 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 	AVPicture picture;
 	AVCodecContext *context;
 	AVCodec codec;
-	int dummy, dummy2;
+	int len, dummy2;
 	int pic_fmt, dst_pic_fmt;
 	int width,height;
 	int num, den;
@@ -609,16 +612,18 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		//if (m_frame)
 			
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail:start decoding (0x%x) ", m_con->streams[m_stream_index]->codec);
-		dummy = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
-		sz -= dummy;
+		assert(&m_con->streams[m_stream_index]->codec == NULL);
+		len = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
+		sz -= len;
 		if (got_pic) {
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: decode returned %d (bytes ??)", m_size);
 			pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
 			width = m_con->streams[m_stream_index]->codec.width;
 			height = m_con->streams[m_stream_index]->codec.height;
 			m_size = width * height * 4;
-			m_frame = (char*) malloc(m_size);
-			dummy2 = avpicture_fill(&picture, (uint8_t*) m_frame, pic_fmt, width, height);
+			m_frame = (char*) malloc(m_size);	
+			dst_pic_fmt = PIX_FMT_RGBA32;
+			dummy2 = avpicture_fill(&picture, (uint8_t*) m_frame, dst_pic_fmt, width, height);
 			dst_pic_fmt = PIX_FMT_RGBA32;
 			img_convert(&picture, dst_pic_fmt, (AVPicture*) &frame, pic_fmt, width, height);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: avpicture_fill returned %d (bytes ??)", m_size);
