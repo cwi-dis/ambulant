@@ -67,7 +67,6 @@
 using namespace ambulant;
 using namespace smil2;
 
-
 animate_attrs::animate_attrs(const lib::node *n, const lib::node* tparent)
 :	m_node(n),
 	m_tparent(tparent), 
@@ -388,7 +387,6 @@ common::region_dim animate_attrs::to_region_dim(const std::string& s) {
 		return common::region_dim(parser.get_relative_val());
 	return common::region_dim(parser.get_px_val());
 }
-
 void animate_attrs::get_values(std::vector<common::region_dim>& v) {
 	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
@@ -415,7 +413,7 @@ void animate_attrs::get_values(std::vector<common::region_dim>& v) {
 		v.push_back(to_region_dim(pto));
 	} else if(m_animtype == "by") {
 		const char *pby = m_node->get_attribute("by");
-		v.push_back(to_region_dim(0));
+		v.push_back(common::region_dim(0));
 		v.push_back(to_region_dim(pby));
 	} else {
 		assert(false);
