@@ -125,7 +125,7 @@ class region_dim {
 		if(other.absolute())
 			m_holder.int_val = other.get_as_int();
 		else if(other.relative())
- 			m_holder.int_val = other.get_as_int();
+ 			m_holder.dbl_val = other.get_as_dbl();
    } 
      
      
