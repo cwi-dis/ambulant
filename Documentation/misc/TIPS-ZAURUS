@@ -46,11 +46,17 @@ How to create a Zaurus installer (ipk file)
 1. Build ambulantplayer for zaurus, see toplevel INSTALL
    file for details.
 2. Unpack ambulantplayer-ipk.tgz, which has the skeleton
-   directory structure.
+   directory structure. It creates a directory ambulantplayer.
 3. Copy src/player_unix/AmbulantPlayer from the build directory
    to ambulantplayer/opt/Qtopia/bin/ambulantplayer in the skeleton
    directory.
-4. Run ipkg-build.sh to create the ipk file.
+4. Adapt the version number in ambulantplayer/CONTROL/control
+5. Run "ipkg-build.sh "ambulantplayer" to create the ipk file.
+6. Copy the ipk file to the Zaurus in: /home/zaurus/Documents/Install_Files
+7. On the Zaurus, Tap the Qtopia icon (left under) and select
+   Settings->Add/Remove Software. Follow its instructions, when done
+   Tap its Close buttons (upper right, marked X), otherwise nothing
+   happens.
 
 A. HOWTO ----------------------------------------------------------
 

@@ -40,7 +40,8 @@ by:
     
 configure was done on a Linux-PC box as follows:
 ./configure --prefix=`pwd` --build=i686-pc-linux-gnu --host=arm-linux \
---with-qt  --with-qtopia --without-arts 
+--with-qt  --with-qtopia --without-arts --with-ltdl-plugins \
+--without-xerces --with-included-ltdl
 
 File transfer was done using the wireless connection.
 To make the connection active, stay close to a transmitter.
