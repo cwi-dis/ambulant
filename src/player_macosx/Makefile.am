@@ -59,7 +59,7 @@ cocoambulant_bundle: cocoambulant_executable
 	mkdir -p $(APPNAME).app/Contents/Resources/data
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(APPNAME).app/Contents/Resources/data
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(APPNAME).app/Contents/MacOS/cocoambulant
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) -s cocoambulant_executable `pwd`/$(APPNAME).app/Contents/MacOS/cocoambulant
 	
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(extra_sdl_LDADD) \
