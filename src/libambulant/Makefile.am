@@ -5,7 +5,6 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_fill.m \
 	gui/cocoa/cocoa_gui.m \
 	gui/cocoa/cocoa_image.m \
-	gui/cocoa/cocoa_mouse.m \
 	gui/cocoa/cocoa_text.m \
 	gui/cocoa/cocoa_transition.m \
 	gui/cocoa/cocoa_audio.m \
