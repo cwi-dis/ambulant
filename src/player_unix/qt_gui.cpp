@@ -215,8 +215,8 @@ int main (int argc, char*argv[]) {
                 = new qt_gui(argv[0],
 		  argc > 1 ? argv[1] : "");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-//  mywidget->setGeometry(750, 50, 320, 240);
-  mywidget->setGeometry(750, 50, 1024, 768);
+  mywidget->setGeometry(750, 50, 320, 240);
+// mywidget->setGeometry(750, 50, 1024, 768);
   /* Fire */
   myapp.setMainWidget(mywidget);
 #else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */

@@ -128,7 +128,6 @@ namespace qt_renderer {
 	 bounds->right(),bounds->bottom());
      setGeometry(bounds->left(), bounds->top(),
 		 bounds->right(),bounds->bottom());
-/*TMP*/setBackgroundMode (QWidget::PaletteLight);
      this->show();
     }
     void paintEvent(QPaintEvent* e) {

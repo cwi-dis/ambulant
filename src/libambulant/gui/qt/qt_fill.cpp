@@ -70,32 +70,33 @@ namespace qt_renderer {
 				  abstract_window *window)
   {
     m_lock.enter();
+    const abstract_smil_region_info *info = m_dest->get_info();
     const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("qt_active_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
-#ifdef JNK
-	cocoa_window *cwindow = (cocoa_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	const abstract_smil_region_info *info = m_dest->get_info();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: %d clearing to 0x%x", !info->get_transparent(), (long)info->get_bgcolor());
-	if (info && !info->get_transparent()) {
-		// First find our whole area (which we have to clear to background color)
-		screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(m_dest->get_global_topleft());
-		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-		// XXXX Fill with background color
-		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_active_fill_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
-					green:greenf(bgcolor)
-					blue:bluef(bgcolor)
-					alpha:1.0];
-		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect_whole);
-	}	
-#endif/*JNK*/
-
-     m_lock.leave();
+    ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+    QPainter paint;
+    paint.begin(aqw->ambulant_widget());
+    // background drawing
+    if (info && !info->get_transparent()) {
+      // First find our whole area (which we have to clear to background color)
+      screen_rect<int> dstrect_whole = r;
+      dstrect_whole.translate(m_dest->get_global_topleft());
+      int L = dstrect_whole.left(), T = dstrect_whole.top(),
+	W = dstrect_whole.width(), H = dstrect_whole.height();
+      // XXXX Fill with background color
+      color_t bgcolor = info->get_bgcolor();
+      AM_DBG lib::logger::get_logger()->trace
+	("qt_active_fill_renderer.redraw: clearing to 0x%x", (long)bgcolor);
+      QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
+ 	AM_DBG logger::get_logger()->trace
+	  ("qt_active_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",
+	   (void *)this, L,T,W,H);
+      paint.eraseRect(L,T,W,H);
+      paint.setBrush(*bgc);
+      paint.drawRect(L,T,W,H);
+    }
+    paint.flush();
+    paint.end();
+    m_lock.leave();
   }
 
   void
@@ -105,28 +106,29 @@ namespace qt_renderer {
 					 abstract_window *window)
   {
     const screen_rect<int> &r = dst->get_rect();
-    AM_DBG logger::get_logger()->trace("qt_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-    
-#ifdef JNK
-    qt_window *cwindow = (qt_window *)window;
-    AmbulantView *view = (AmbulantView *)cwindow->view();
-    AM_DBG lib::logger::get_logger()->trace("qt_bg_renderer::drawbackground: %d clearing to 0x%x", !src->get_transparent(), (long)src->get_bgcolor());
-	if (src && !src->get_transparent()) {
-		// First find our whole area (which we have to clear to background color)
-		screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(dst->get_global_topleft());
-		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-		// XXXX Fill with background color
-		color_t bgcolor = src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace("cocoa_bg_renderer::drawbackground: clearing to 0x%x", (long)bgcolor);
-		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
-					green:greenf(bgcolor)
-					blue:bluef(bgcolor)
-					alpha:1.0];
-		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect_whole);
-	}	
-#endif/*JNK*/
+    AM_DBG logger::get_logger()->trace
+      ("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
+    if (src && !src->get_transparent()) {
+      // First find our whole area (which we have to clear to background color)
+      ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+      QPainter paint;
+      paint.begin(aqw->ambulant_widget());
+      screen_rect<int> dstrect_whole = r;
+      dstrect_whole.translate(dst->get_global_topleft());
+      int L = dstrect_whole.left(), T = dstrect_whole.top(),
+	W = dstrect_whole.width(), H = dstrect_whole.height();
+      // XXXX Fill with background color
+      color_t bgcolor = src->get_bgcolor();
+      AM_DBG lib::logger::get_logger()->trace
+	("qt__background_renderer::drawbackground:%s0x%x,%s(%d,%d,%d,%d)",
+	" clearing to ", (long)bgcolor, " local_ltwh=",L,T,W,H);
+      QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
+      paint.eraseRect(L,T,W,H);
+      paint.setBrush(*bgc);
+      paint.drawRect(L,T,W,H);
+      paint.flush();
+      paint.end();
+    }
   }
   
 } // namespace qt_renderer

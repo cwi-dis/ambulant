@@ -150,6 +150,7 @@ namespace qt_renderer {
 	= new ambulant_qt_window(name, r, region);
       qt_ambulant_widget * qaw
 	= new qt_ambulant_widget(name, r, m_parent_widget);
+      qApp->mainWidget()->resize(bounds.h, bounds.h);
       aqw->set_ambulant_widget(qaw);
       qaw->set_qt_window(aqw);
       AM_DBG logger::get_logger()->trace

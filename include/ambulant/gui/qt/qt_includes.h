@@ -49,6 +49,7 @@
 /* Necessary QT files for the renderers */
 #ifndef __AMBULANT_QT_H__ 
 #define __AMBULANT_QT_H__ 
+#include <qapplication.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qwidget.h>
