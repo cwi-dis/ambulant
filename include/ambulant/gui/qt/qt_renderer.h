@@ -175,7 +175,7 @@ class qt_window_factory : public common::window_factory {
 			lib::size bounds,
 			common::renderer *region);
 		common::gui_region *new_mouse_region();
-		common::abstract_bg_rendering_source *new_background_renderer();
+		common::renderer *new_background_renderer(const common::region_info *src);
   private:
 	QWidget* m_parent_widget;
 	lib::point m_p;

@@ -99,27 +99,25 @@ qt_active_fill_renderer::redraw(const lib::screen_rect<int> &dirty,
 }
 
 void
-qt_background_renderer::drawbackground(
-	const common::region_info *src,
-	const lib::screen_rect<int> &dirty,
-	common::surface *dst,
-	common::abstract_window *window) {
-	const lib::screen_rect<int> &r = dst->get_rect();
+qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
+	common::abstract_window *window)
+{	
+	const lib::screen_rect<int> &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->trace
 		("qt_bg_renderer::drawbackground(0x%x)", (void *)this);
-	if (src && !src->get_transparent()) {
+	if (m_src && !m_src->get_transparent()) {
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
 		paint.begin(aqw->ambulant_widget());
 		lib::screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(dst->get_global_topleft());
+		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
 		    T = dstrect_whole.top(),
 		    W = dstrect_whole.width(),
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
-		lib::color_t bgcolor = src->get_bgcolor();
+		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->trace(
 			"qt__background_renderer::drawbackground:"
 			 " %s0x%x,%s(%d,%d,%d,%d)",

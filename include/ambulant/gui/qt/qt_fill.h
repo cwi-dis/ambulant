@@ -108,13 +108,12 @@ class qt_active_fill_renderer : public common::active_basic_renderer {
 	lib::critical_section m_lock;
 };
 
-class qt_background_renderer : public common::abstract_bg_rendering_source {
+class qt_background_renderer : public common::background_renderer {
   public:
-	void drawbackground(
-		const common::region_info *src,
-		const lib::screen_rect<int> &dirty,
-		common::surface *dst,
-		common::abstract_window *windo);
+  	qt_background_renderer(const common::region_info *src)
+  	:	common::background_renderer(src) {}
+  	
+	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *windo);
 };
 
 } // namespace qt

@@ -169,10 +169,10 @@ qt_window_factory::new_mouse_region() {
 		" needs to be implemented");
 }
 
-common::abstract_bg_rendering_source *
-qt_window_factory::new_background_renderer() {
+common::renderer *
+qt_window_factory::new_background_renderer(const common::region_info *src) {
 	lib::logger::get_logger()->trace(
 		"qt_window_factory::new_background_renderer(0x%x): TBD",
 		(void*) this);
-	return new qt_background_renderer();
+	return new qt_background_renderer(src);
 }

@@ -177,7 +177,7 @@ class window_factory {
 	virtual ~window_factory() {}
 	virtual abstract_window *new_window(const std::string &name, lib::size bounds, renderer *region) = 0;
 	virtual gui_region *new_mouse_region() = 0;
-	virtual renderer *new_background_renderer(region_info *src) = 0;
+	virtual renderer *new_background_renderer(const region_info *src) = 0;
 };
 
 #if 0
