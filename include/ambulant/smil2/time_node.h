@@ -280,6 +280,9 @@ class time_node : public schedulable {
 	// the node that this rule depends on.
 	void add_end_rule(sync_rule *sr);
 	
+	// Sets the transOut rule for this node.
+	void set_transout_rule(sync_rule *sr);
+	
 	// Adds a rule that dependents on this time node.
 	// The rule will get a timestamped notification from this
 	// node when the real or model event specified by the ev
@@ -452,6 +455,7 @@ class time_node : public schedulable {
 	
 	// Paused flag
 	bool m_paused;
+	time_type m_paused_sync_time;
 	
 	// Defered flag
 	bool m_deferred;
@@ -470,6 +474,9 @@ class time_node : public schedulable {
 	
 	// The end sync rules of this node.
 	rule_list m_end_list;
+	
+	// The transOut sync rule of this node.
+	sync_rule *m_transout_sr;
 	
 	// On reset all event instances are cleared. 
 	// Keep a register for holding one such instance

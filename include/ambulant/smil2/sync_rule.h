@@ -98,6 +98,7 @@ sync_event sync_event_from_str(const std::string& s);
 
 const char* sync_event_str(sync_event ev);
 
+
 // A sync rule is a condition associated with a timing node
 // that specifies directly or indirectly within the context 
 // of the model, when the node should begin or end.
@@ -129,7 +130,8 @@ const char* sync_event_str(sync_event ev);
 class time_node;
 
 // Rule types
-enum rule_type { rt_begin, rt_end};
+enum rule_type { rt_begin, rt_end, rt_transout};
+
 const char* rule_type_str(rule_type rt);
 
 class sync_rule : public time_traits {
@@ -272,6 +274,22 @@ class offset_rule : public abstract_sync_rule {
 	time_type m_offset;
 };
 
+// A special model rule for transOut
+class transout_rule : public abstract_sync_rule {
+  public:
+	transout_rule(time_node *sb, sync_event se, time_type offset) 
+	:	abstract_sync_rule(sb, se),
+		m_offset(offset)  {}
+	virtual void get_instance_times(time_mset& s) const;
+	virtual void reset(time_node *src);
+	virtual void new_instance(qtime_type timestamp, time_type instance);
+	virtual void cancel_instance(qtime_type timestamp, time_type instance);
+	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);
+ protected:	
+	time_type m_offset;
+	time_list m_instances;
+};
+
 // A trigger rule is a special model rule that differs 
 // from the rest, in that it does not contribute to the 
 // model through its instance times. 
@@ -284,11 +302,13 @@ class offset_rule : public abstract_sync_rule {
 // of the newly acquired info at the syncbase. 
 class trigger_rule : public abstract_sync_rule {
   public:
-	trigger_rule(time_node *sb, sync_event se = tn_begin) 
-	:	abstract_sync_rule(sb, se) {}
+	trigger_rule(time_node *sb, sync_event se, time_type offset) 
+	:	abstract_sync_rule(sb, se), m_offset(offset) {}
 	virtual void new_instance(qtime_type timestamp, time_type instance);
 	virtual void cancel_instance(qtime_type timestamp, time_type instance);
 	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);
+ protected:	
+	time_type m_offset;
 };
 
 // Sync rules context interface.

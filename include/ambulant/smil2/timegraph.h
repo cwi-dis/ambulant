@@ -99,6 +99,7 @@ class timegraph : public time_traits {
 	void build_priorities();
 	void build_time_graph();
 	void build_timers_graph();
+	void build_trans_out_graph();
 	time_node* create_time_node(const lib::node *n, time_node* tparent) const;
 	time_node *get_node_with_id(const std::string& ident) const;
 	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;

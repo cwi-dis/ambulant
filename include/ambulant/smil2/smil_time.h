@@ -135,6 +135,9 @@ class smil_time {
 	smil_time& operator*=(int n) {m_val*=n; return *this;}
 	smil_time& operator/=(int n) {m_val/=n; return *this;}
 	
+	// negation
+	smil_time& operator-() {m_val = -m_val; return *this;}
+	
 	// Time type indicators
 	bool is_unresolved() const { return m_val == unresolved();}
 	bool is_indefinite() const { return m_val == indefinite();}
