@@ -244,6 +244,9 @@
 					RelativePath=".\lib\parselets.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\parser_factory.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\string_util.cpp">
 				</File>
 				<File
@@ -626,6 +629,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\parselets.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\parser_factory.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\refcount.h">
