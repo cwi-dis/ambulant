@@ -69,6 +69,13 @@
 using namespace ambulant;
 using namespace gui::qt;
 
+
+ 
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df(NULL),
 	m_doc(NULL),
@@ -114,8 +121,10 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 #ifdef WITH_ARTS
 	m_rf->add_factory(new arts::arts_renderer_factory(m_df));
 #endif 
+
 	m_rf->add_factory(new qt_renderer_factory(m_df));
-	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: added qt_video_factory");		
+	
+	lib::logger::get_logger()->trace("mainloop::mainloop: added qt_video_factory");		
  	m_rf->add_factory(new qt_video_factory(m_df));
 		AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: added none_video_factory");		
 

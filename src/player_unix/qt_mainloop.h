@@ -71,11 +71,7 @@ using namespace common;
 using namespace lib;
 using namespace gui;
 using namespace qt;
- 
-#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+
 
 class qt_mainloop_callback_arg {
 };

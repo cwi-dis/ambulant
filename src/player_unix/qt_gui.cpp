@@ -60,6 +60,10 @@
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
 
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 const QString about_text = "This is the Qt GUI for Ambulant.\n"
 			   "Work in  progress by Kees Blom (C) 2004";
