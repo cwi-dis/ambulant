@@ -69,6 +69,7 @@ class event_processor {
 	
 	// schedule an event to fire at time t at the provided priority
 	virtual void add_event(event *pe, time_type t, event_priority priority = low) = 0;
+	virtual void cancel_all_events() = 0;
 	
 	// serves waiting events 
 	virtual void serve_events() = 0;
@@ -129,6 +130,14 @@ class abstract_event_processor : public event_processor {
 				break;
 		}
 		wakeup();
+ 		m_delta_timer_cs.leave();
+	}
+	
+	void cancel_all_events() {
+		m_delta_timer_cs.enter();
+		m_high_delta_timer.clear();
+		m_med_delta_timer.clear();
+		m_low_delta_timer.clear();
  		m_delta_timer_cs.leave();
 	}
 	
