@@ -71,9 +71,7 @@
 // Build-in types should be defined explicitly here.
 //
 template<class T>
-inline std::string& operator<<(std::string& s, T& c) { s += repr(c); return s;}
-template<class T>
-inline std::string& operator<<(std::string& s, T c) { s += repr(c); return s;}
+inline std::string& operator<<(std::string& s, const T& c) { s += repr(c); return s;}
 inline std::string& operator<<(std::string& s, const std::string& c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, char c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, int c) { char sz[32];sprintf(sz,"%d",c); s+=sz; return s;}
