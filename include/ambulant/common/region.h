@@ -90,6 +90,9 @@ class passive_region : public surface_template, public surface, public gui_event
 	virtual const point &get_global_topleft() const;
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect, common::alignment *align) const;
 	const region_info *get_info() const { return m_info; }	
+#ifdef USE_SMIL21
+	surface *get_top_surface() { return m_parent->get_top_surface(); }
+#endif
 	gui_window *get_gui_window() { return m_parent->get_gui_window(); }
 
 	void transition_done() { transition_done(m_inner_bounds); }
@@ -141,6 +144,9 @@ class passive_root_layout : public passive_region {
 	void need_redraw(const screen_rect<int> &r);
 	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
+#ifdef USE_SMIL21
+	surface *get_top_surface() { return this; }
+#endif
 	gui_window *get_gui_window() { return m_gui_window; }
   protected:
 	void transition_done(lib::screen_rect<int> area) { transition_freeze_end(area); }

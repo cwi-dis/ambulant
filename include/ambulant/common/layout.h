@@ -215,6 +215,11 @@ class surface {
 	/// Get object holding SMIL region parameters for querying.
 	virtual const region_info *get_info() const = 0;
 	
+#ifdef USE_SMIL21
+	/// Get the outermost surface for this surface.
+	virtual surface *get_top_surface() = 0;
+#endif
+	
 	/// Get the OS window for this surface.
 	virtual gui_window *get_gui_window() = 0;
 };

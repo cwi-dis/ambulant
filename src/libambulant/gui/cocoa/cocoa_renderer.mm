@@ -81,12 +81,31 @@ cocoa_transition_renderer::~cocoa_transition_renderer()
 }
 	
 void
+cocoa_transition_renderer::set_surface(common::surface *dest)
+{
+	m_transition_dest = dest;
+#ifdef USE_SMIL21
+	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
+		m_transition_dest = m_transition_dest->get_top_surface();
+#endif
+}
+
+void
+cocoa_transition_renderer::set_intransition(const lib::transition_info *info) {
+	m_intransition = info;
+#ifdef USE_SMIL21
+	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
+		m_transition_dest = m_transition_dest->get_top_surface();
+#endif
+}
+
+void
 cocoa_transition_renderer::start(double where)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start()");
 	if (m_intransition) {
-		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
+		m_trans_engine = cocoa_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
@@ -104,7 +123,7 @@ cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start_outtransition(0x%x)", (void *)this);
 	m_outtransition = info;
-	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
+	m_trans_engine = cocoa_transition_engine(m_transition_dest, true, m_outtransition);
 	if (m_trans_engine)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
@@ -112,7 +131,7 @@ cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 		lib::logger::get_logger()->trace("cocoa_transition_renderer: scope=screen not implemented, default to region");
 #endif
 	m_lock.leave();
-	if (m_dest) m_dest->need_redraw();
+	if (m_transition_dest) m_transition_dest->need_redraw();
 }
 
 void
@@ -126,15 +145,14 @@ cocoa_transition_renderer::stop_transition()
 	delete m_trans_engine;
 	m_trans_engine = NULL;
 	m_lock.leave();
-	if (m_dest) m_dest->transition_done();
+	if (m_transition_dest) m_transition_dest->transition_done();
 }
 
 void
 cocoa_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw(0x%x)", (void *)this);
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
@@ -194,7 +212,7 @@ cocoa_transition_renderer::transition_step()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
-	if (m_dest) m_dest->need_redraw();
+	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
 }
 
