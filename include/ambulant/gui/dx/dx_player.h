@@ -53,17 +53,36 @@
 #ifndef AMBULANT_GUI_DX_PLAYER_H
 #define AMBULANT_GUI_DX_PLAYER_H
 
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#endif
+
 #include "ambulant/config/config.h"
+#include "ambulant/common/player.h"
 
 #include <string>
 
-namespace ambulant { namespace common {
-	class window_factory;
-	class playable_factory;
-}}
-
 
 namespace ambulant {
+
+// classes used by dx_player
+namespace lib {
+	class event_processor;
+	class logger;
+}
+
+namespace common {
+	class window_factory;
+	class playable_factory;
+}
+
+namespace mms {
+	class mms_player;
+}
+
+namespace smil2 {
+	class smil_player;
+}
 
 namespace gui {
 
@@ -71,26 +90,42 @@ namespace dx {
 
 class viewport;
 
-typedef viewport* (*VCF)(int w, int h);
-
 class dx_player {
   public:
-	virtual ~dx_player() {}
-	virtual bool start() = 0;
-	virtual void stop() = 0;
-	virtual void pause() = 0;
-	virtual void resume() = 0;
-	virtual bool is_done() const = 0;
-	virtual viewport* create_viewport(int w, int h) = 0;
-	virtual void on_click(int x, int y) = 0;
-	virtual void on_char(int ch) = 0;
-	virtual int get_cursor(int x, int y) = 0;
-	virtual void set_preferences(const std::string& url) = 0;
-	virtual void update_status() = 0;
-	virtual common::window_factory *get_window_factory() = 0;
-	virtual common::playable_factory *get_playable_factory() = 0;
-	static dx_player* create_player(const std::string& url); 
-	static dx_player* create_player(const std::string& url, VCF f);
+	dx_player(const std::string& url, HWND hwnd);
+	~dx_player();
+	
+	void start();
+	void stop();
+	void pause();
+	void resume();
+	void on_click(int x, int y);
+	void on_char(int ch);
+	int get_cursor(int x, int y);
+	
+	bool is_playing() const;
+	bool is_pausing() const;
+	bool is_done() const;
+
+	void set_preferences(const std::string& url);
+	
+	// Implementation specific
+	common::window_factory *get_window_factory() { return m_wf;}
+	common::playable_factory *get_playable_factory() {return m_pf;}
+	viewport* create_viewport(int w, int h);
+	void redraw();
+	void on_done();
+	
+  private:
+	std::string m_url;
+	HWND m_hwnd;
+	viewport* m_viewport;
+	common::window_factory *m_wf;
+	common::playable_factory *m_pf;
+	smil2::smil_player *m_player;
+	lib::event_processor *m_processor;
+	lib::logger *m_logger;
+	
 };
 
 } // namespace dx
