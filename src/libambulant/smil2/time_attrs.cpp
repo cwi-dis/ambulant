@@ -619,7 +619,7 @@ void time_attrs::parse_transitions() {
 smil2::time_attrs::time_type time_attrs::get_trans_in_dur() const {
 	if(!m_trans_in) return 0;
 	const char *p = m_trans_in->get_attribute("dur");
-	if(!p) return 0;
+	if(!p) return 1000;  // XXX What is the correct way to say "1 second"?
 	std::string sdur = trim(p);
 	clock_value_p pl;
 	std::string::const_iterator b = sdur.begin();
@@ -634,7 +634,7 @@ smil2::time_attrs::time_type time_attrs::get_trans_in_dur() const {
 smil2::time_attrs::time_type time_attrs::get_trans_out_dur() const {
 	if(!m_trans_out) return 0;
 	const char *p = m_trans_out->get_attribute("dur");
-	if(!p) return 0;
+	if(!p) return 1000;  // XXX What is the correct way to say "1 second"?
 	std::string sdur = trim(p);
 	clock_value_p pl;
 	std::string::const_iterator b = sdur.begin();
