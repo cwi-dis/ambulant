@@ -58,7 +58,7 @@
 #include "ambulant/lib/logger.h"
 
 #define FILL_PURPLE
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -101,29 +101,47 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 void
 qt_transition_blitclass_fade::update()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) -- being implemented", m_progress);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
-	QImage img2 = qpm->convertToImage();
-	QImage img1 = npm->convertToImage();
+	QImage img1 = qpm->convertToImage();
+	QImage img2 = npm->convertToImage();
 	QImage res = img1.copy();
 	int i, j, iw = res.width(), ih = res.height();
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
 	// Following code From: Qt-interest Archive, July 2002
 	// blending of qpixmaps, Sebastian Loebbert 
-	double fac1 = m_progress;
+#define	OPTIM
+#ifndef	OPTIM
+	double fac1 = 1.0 - m_progress;
 	double fac2 = 1.0 - fac1;
+#else /*OPTIM*/
+	u_int mul1 = 255 - (u_int) (m_progress * 255);
+	u_int mul2 = 255 - mul1;
+#endif/*OPTIM*/
 	for(int i = 0;i < iw;i++){
-	  for(int j = 0; j < ih;j++){
-	    QRgb p1 = img1.pixel(i,j);
-	    QRgb p2 = img2.pixel(i,j);
-	    res.setPixel(i,j,
-			 qRgb ( (int)( qRed(p1)*fac1 + qRed(p2)*fac2  ),
-				(int)( qGreen(p1)*fac1 + qGreen(p2)*fac2  ),
-				(int)( qBlue(p1)*fac1 + qBlue(p2)*fac2  ) )
+		for(int j = 0; j < ih;j++){
+	    		QRgb p1 = img1.pixel(i,j);
+	    		QRgb p2 = img2.pixel(i,j);
+	    		res.setPixel(i,j,
+#ifndef	OPTIM
+				     qRgb ( (int)( qRed(p1)*fac1 + 
+						   qRed(p2)*fac2  ),
+					    (int)( qGreen(p1)*fac1 + 
+						   qGreen(p2)*fac2  ),
+					    (int)( qBlue(p1)*fac1 + 
+						   qBlue(p2)*fac2  ) )
+#else /*OPTIM*/
+				     qRgb ( ( qRed(p1)*mul1 + 
+					      qRed(p2)*mul2  ) >> 8,
+					    ( qGreen(p1)*mul1 +
+					      qGreen(p2)*mul2  ) >> 8,
+					    ( qBlue(p1)*mul1 +
+					      qBlue(p2)*mul2  ) >> 8 )
+#endif/*OPTIM*/
 			 );
-//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
+//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) /* AM_DBG */ lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
 	  }
 	}
 	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();

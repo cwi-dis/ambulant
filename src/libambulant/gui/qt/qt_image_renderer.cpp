@@ -57,7 +57,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
