@@ -7,7 +7,7 @@ Also, only local media files are supported, no networking yet.
 
 Ambulant consists of a core library implementing the engine, a number
 of GUI-toolkit specific libraries implementing renderers and a number
-of player applications. Currently we have support for Gtk (on Linux),
+of player applications. Currently we have support for Qt (on Linux),
 Cocoa (on MacOSX) and DirectX (on Windows).
 
 Documentation is sparse, see Documentation/Design for some design
