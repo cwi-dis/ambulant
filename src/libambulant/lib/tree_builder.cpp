@@ -173,6 +173,7 @@ lib::tree_builder::reset() {
 	}
 	m_well_formed = false;
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
+	lib::logger::get_logger()->debug("Using parser %s", parser_id.c_str());
 #ifdef	WITH_XERCES
 	if (m_xmlparser == NULL && (parser_id == "xerces" || parser_id == "any"))
 		m_xmlparser = new xerces_sax_parser(this, this);

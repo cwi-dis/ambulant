@@ -112,7 +112,6 @@ class qt_gui : public QWidget {
 	bool openSMILfile(QString smilfilename, int mode);
 
    private:
-	unix_preferences m_preferences;
 	bool	     m_busy;
 	int	     m_o_x;	 // x coord of origin play window
 	int	     m_o_y;	 // y coord of origin play window

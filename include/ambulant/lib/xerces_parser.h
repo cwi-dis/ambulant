@@ -53,6 +53,8 @@
 #ifndef AMBULANT_LIB_XERCES_PARSER_H
 #define AMBULANT_LIB_XERCES_PARSER_H
 
+#include <string>
+
 #include "ambulant/config/config.h"
 
 #include "ambulant/common/preferences.h"
@@ -123,7 +125,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
 	static q_name_pair to_q_name_pair(const XMLCh* name);
 
-	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(char* v);
+	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(std::string v);
 
 	SAXParser *m_saxparser;  
 	lib::logger *m_logger;

@@ -213,15 +213,16 @@ xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
 }
 
 SAXParser::ValSchemes
-xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(char* v) {
+xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(std::string v) {
 	SAXParser::ValSchemes rv = SAXParser::Val_Never;
 
-	if (strcasecmp(v, "never"))
+	if (v == "never")
 		rv = SAXParser::Val_Never;
-	else if (strcasecmp(v, "always"))
+	else if (v == "always")
 		rv = SAXParser::Val_Always;
-	else if (strcasecmp(v, "auto"))
+	else if (v == "auto")
 		rv = SAXParser::Val_Auto;
+
 	return rv;
 }
 #endif/*WITH_XERCES*/
