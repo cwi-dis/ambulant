@@ -95,8 +95,15 @@ void animation_engine::stopped(animate_node *anode) {
 	attribute_animators_t& aa = na[aattr];
 	aa.remove(anode);
 	m_counter--;
-	// reset node attr if needed
-	// if(aa.empty()) set_dom_value() 
+	
+	// XXX: reset node attr if needed
+	// XXX: the interface should allow attr reset not node reset
+	if(aa.empty()) {
+		common::animation_destination *dst = m_layout->get_animation_destination(target);
+		dst->reset(); // this should specify what
+		common::animation_notification *anotif = m_layout->get_animation_notification(target);
+		if(anotif) anotif->animated();
+	}
 }
 
 void animation_engine::update() {

@@ -127,7 +127,7 @@ void animate_attrs::locate_target_attr() {
 	}
 	if(!m_attrtype.empty()) return;
 	if(m_attrname == "backgroundColor") {
-		m_attrtype = "bgcolor";
+		m_attrtype = "color";
 	} else if(m_attrname == "z-index") {
 		m_attrtype = "int";
 	} else if(m_attrname == "soundLevel") {

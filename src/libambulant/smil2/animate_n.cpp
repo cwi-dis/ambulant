@@ -82,13 +82,6 @@ void animate_node::prepare_interval() {
 }
 
 bool animate_node::apply_value(common::animation_destination *dst) {
-	// Verify against the only attribute that is implemented currently by the layout
-	lib::color_t oldcolor = dst->get_bgcolor();
-	lib::color_t newcolor = 0xff;
-	if(oldcolor != newcolor) {
-		dst->set_bgcolor(0xFF);
-		return true;
-	}
 	return false;
 }
 
@@ -107,8 +100,6 @@ class animate_reg_dim_node : public animate_node {
 	bool apply_value(common::animation_destination *dst);
 	
   private:
-	//linear_map_f<common::region_dim> m_simple_f;
-	//animate_f<linear_map_f<common::region_dim> > *m_animate_f;
 	F m_simple_f;
 	animate_f<F> *m_animate_f;
 };
@@ -140,22 +131,22 @@ template <class F>
 bool animate_reg_dim_node<F>::apply_value(common::animation_destination *dst) {
 	if(!m_animate_f) return false;
 	lib::timer::time_type t = m_timer->elapsed();
-	lib::logger::get_logger()->trace("%s(%ld) -> %s", 
-		m_aattrs->get_target_attr().c_str(), t, ::repr(m_animate_f->at(t)).c_str());
-		
-	/*
-	if(m_aattrs->is_additive() && !is_effvalue_animation())
-		add_value();
-	else
-		set_value();
-	*/
+	common::region_dim rd = m_animate_f->at(t);
 	
-	// return true when attr has changed else false
+	lib::logger::get_logger()->trace("%s(%ld) -> %s", 
+		m_aattrs->get_target_attr().c_str(), t, ::repr(rd).c_str());
+	
+	// XXX: check for additivity
+	// XXX: dst->set_region_dim(m_aattrs->get_target_attr(), rd);
+	
+	
+	// XXX: return true when attr has changed else false
 	return false;
 }
 
 ////////////////////////////////////
 // animate_bgcolor_node
+// backgroundColor value animations
 
 template <class F>
 class animate_bgcolor_node : public animate_node {
@@ -199,10 +190,14 @@ bool animate_bgcolor_node<F>::apply_value(common::animation_destination *dst) {
 	if(!m_animate_f) return false;
 	lib::timer::time_type t = m_timer->elapsed();
 	lib::color_t newcolor = m_animate_f->at(t);
-	dst->set_bgcolor(newcolor);
+	lib::color_t oldcolor = dst->get_bgcolor();
 	// XXX: check for additivity
-	// XXX: return true when attr has changed else false
-	return true;
+	// ...
+	if(newcolor != oldcolor) {
+		dst->set_bgcolor(newcolor);
+		return true;
+	}
+	return false;
 }
 
 ////////////////////////////////////
@@ -218,7 +213,7 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 			typedef linear_map_f<common::region_dim> F;
 			return new animate_reg_dim_node<F>(ctx, n, aattrs);
 		}
-	} else if(aattrs->get_target_attr_type() == "bgcolor") {
+	} else if(aattrs->get_target_attr() == "backgroundColor") {
 		if(aattrs->get_calc_mode() == "discrete") {
 			typedef discrete_map_f<lib::color_t> F;
 			return new animate_bgcolor_node<F>(ctx, n, aattrs);
