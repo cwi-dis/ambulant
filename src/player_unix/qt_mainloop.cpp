@@ -161,7 +161,7 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 				     parent->get_o_y());
 
 	const char *filename = parent->filename();
-	m_doc = document::create_from_file(filename);
+	m_doc = create_document(filename);
 	if (!m_doc) {
 		logger::get_logger()->error("Could not build tree for file: %s", filename);
 		return;
@@ -174,37 +174,24 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 	}
 
 }
-#if 0
-void*
-qt_mainloop::run(void* ml)
+
+ambulant::lib::document *
+qt_mainloop::create_document(const char *filename)
 {
-
-	net::datasource_factory*df;
-	if (ml == NULL)
-		return (void*) 0;
-
-        qt_mainloop*		mainloop = (qt_mainloop*) ml;
-	qt_gui*			qt_view = mainloop->m_parent;
-	qt_window_factory*	wf;
-
-	AM_DBG logger::get_logger()->trace(
-		"qt_mainloop::run(qt_mainloop=0x%x)",
-		mainloop);
-
-	player** player = &mainloop->m_player;
-	if (player == NULL || *player == NULL)
-		return (void*) 0;
-	
-	(*player)->start();
-
-	while(!(*player)->is_done())
-		sleep(1);
-
-	// XXXX Should we call a callback in the parent?
-
-	return (void*) 1;
-}
-#endif
+	char *data;
+	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::create_document(\"%s\")", filename);
+	std::string url(filename);
+	int size = ambulant::net::read_data_from_url(url, m_df, &data);
+	if (size < 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
+		return NULL;
+	}
+	std::string docdata(data, size);
+	free(data);
+	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(docdata);
+	if (rv) rv->set_src_url(url);
+	return rv;
+}	
 
 qt_mainloop::~qt_mainloop()
 {
@@ -224,10 +211,6 @@ qt_mainloop::~qt_mainloop()
 void
 qt_mainloop::play()
 {
-	if (!m_player) {
-		ambulant::lib::logger::get_logger()->error("qt_mainloop::run: no player");
-		return;
-	}
 	m_running = true;
 	m_player->start();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
@@ -236,10 +219,6 @@ qt_mainloop::play()
 void
 qt_mainloop::stop()
 {
-	if (!m_player) {
-		ambulant::lib::logger::get_logger()->error("qt_mainloop::stop: no player");
-		return;
-	}
 	m_player->stop();
 	AM_DBG ambulant::lib::logger::get_logger()->trace("qt_mainloop::run(): returning");
 }

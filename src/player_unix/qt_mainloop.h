@@ -120,6 +120,7 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	}
 	
  private: 
+	ambulant::lib::document *create_document(const char *filename);
 	// sorted alphabetically on member name
 	net::datasource_factory*		m_df;
 	document*				m_doc;

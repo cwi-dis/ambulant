@@ -202,15 +202,18 @@ bool
 qt_gui::openSMILfile(QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
+#if 0
 	if (! checkFilename(smilfilename, mode)) {
 		fileError(smilfilename);
 		return false;
 	}
+#endif
 	char* filename = strdup(smilfilename);
 	setCaption(basename(filename));
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);
+#if 0
 	if ( ! (*smilfilename == '/')) {
  	         char* workdir = getcwd(NULL, 0);
 		 int workdirlen = strlen(workdir);
@@ -221,7 +224,9 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 		 strcpy(&pathname[workdirlen+1], smilfilename);
 		 smilfilename = pathname;
 		 free(workdir);
-	} else   smilfilename = strdup(smilfilename);
+	} else
+ #endif
+		smilfilename = strdup(smilfilename);
 	        
 	m_smilfilename = smilfilename;
 	if (m_mainloop != NULL)
