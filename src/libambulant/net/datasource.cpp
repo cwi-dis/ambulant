@@ -49,6 +49,7 @@
 
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/databuffer.h"
+#include "ambulant/lib/asb.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -357,7 +358,7 @@ datasource_reader::run()
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);
 	while (!m_src->end_of_file()) {
-		sleep(1); // XXXX should be woken by readdone()
+		ambulant::lib::sleep(1); // XXXX should be woken by readdone()
 	}
 }
 
