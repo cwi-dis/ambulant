@@ -42,12 +42,10 @@ namespace lib {
 // This callback becomes the owner of the argument 
 // (e.g. it is responsible to delete arg) 
 
-template <class T, class A, typename time_type = unsigned long>
-class callback : public timeout_event<time_type> {
+template <class T, class A>
+class callback : public event {
 
   public:
-	typedef time_type self_time_type;
-
 	// Callback member function signature
 	typedef void (T::*MF)(A *a);
   
@@ -62,13 +60,10 @@ class callback : public timeout_event<time_type> {
 	// This object is the owner of the argument object.
 	A *m_arg;
   	
-  	// relative time remaining
-  	self_time_type m_timeout;
-  	
   public:
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
-	callback(T* obj, MF mf, A* arg, self_time_type timeout = 0)
-	: m_obj(obj), m_mf(mf), m_arg(arg), m_timeout(timeout) {
+	callback(T* obj, MF mf, A* arg)
+	: m_obj(obj), m_mf(mf), m_arg(arg) {
 		if(obj != 0) obj->add_ref();
 	}
 	
@@ -82,15 +77,7 @@ class callback : public timeout_event<time_type> {
 		if(m_mf != 0 && m_obj != 0)
 			(m_obj->*m_mf)(m_arg);
 		release_target();
-	}
-	
-	// timeout_event interface implementation
-	virtual self_time_type get_time() { return m_timeout;}
-	virtual void incr(self_time_type dt) { m_timeout += dt;}
-	virtual void decr(self_time_type dt) 
-		{ m_timeout = (dt>m_timeout)?0:(m_timeout - dt);}
-	virtual void set_timeout(self_time_type t) { m_timeout = t;}
-	
+	}	
   private:
 	void release_target() {
 		if(m_obj != 0) {
