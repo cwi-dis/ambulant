@@ -182,8 +182,8 @@ bool qt_gui::openSMILfile(QString smilfilename, int mode) {
 }
 
 void qt_gui::slot_open() {
-#ifndef QT_NO_FILEDIALOG
 	QString smilfilename =
+#ifndef QT_NO_FILEDIALOG
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
 				 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)", // file types
@@ -191,7 +191,9 @@ void qt_gui::slot_open() {
 				 "open file dialog",
 				 "Double Click a file to open"
 				 );
-#endif/*QT_NO_FILEDIALOG*/
+#else	/*QT_NO_FILEDIALOG*/	
+		m_smilfilename;
+#endif	/*QT_NO_FILEDIALOG*/
 	openSMILfile(smilfilename, IO_ReadOnly);
 }
 

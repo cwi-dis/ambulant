@@ -60,6 +60,9 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+#ifndef round
+#define round(v) ((int)(v+0.5))
+#endif
 
 #define FRAME_RATE 15
 

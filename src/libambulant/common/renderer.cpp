@@ -59,6 +59,9 @@
 #include "ambulant/net/stdio_datasource.h"
 inline double round(double v) {return floor(v+0.5);}
 #endif
+#ifndef round
+#define round(v) ((int)(v+0.5))
+#endif
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

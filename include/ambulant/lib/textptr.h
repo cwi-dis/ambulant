@@ -59,6 +59,7 @@
 	#endif
 #else 
 	#include <stdio.h>
+	#include <wchar.h>
 #endif 
 
 #include "ambulant/config/config.h"

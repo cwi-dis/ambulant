@@ -48,6 +48,7 @@
 #ifndef QT_FACTORY_H
 #define QT_FACTORY_H
 
+//#include "qt_includes.h"
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
