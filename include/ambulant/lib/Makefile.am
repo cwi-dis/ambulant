@@ -1,8 +1,0 @@
-SUBDIRS=unix
-library_includedir=$(includedir)/ambulant/lib
-library_include_HEADERS=abstract_mtsync.h asb.h callback.h colors.h delta_timer.h \
-	event.h event_processor.h expat_parser.h gtypes.h logger.h mtsync.h node.h \
-	node_iterator.h node_navigator.h nscontext.h parse_attrs.h player.h \
-	refcount.h region.h region_dim.h region_eval.h region_node.h sax_handler.h \
-	sax_types.h skeleton.h smil_handler.h string_util.h thread.h \
-	timeline_builder.h timelines.h timer.h tree_builder.h vnode.h
