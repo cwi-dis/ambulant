@@ -75,6 +75,8 @@ class cocoa_active_fill_renderer : public renderer_playable {
 		const lib::node *node,
 		event_processor *evp)
 	:	renderer_playable(context, cookie, node, evp),
+		m_intransition(NULL),
+		m_outtransition(NULL),
 		m_trans_engine(NULL) {};
 	~cocoa_active_fill_renderer();
 

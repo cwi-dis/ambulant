@@ -143,7 +143,7 @@ passive_region::activate()
 void
 passive_region::animated()
 {
-	AM_DBG lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
 	clear_cache();
 	need_redraw(m_inner_bounds);
 	
@@ -335,7 +335,10 @@ void
 passive_region::need_bounds()
 {
 	if (m_bounds_inited) return;
+	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::need_bounds(%s, 0x%x)", m_name.c_str(), (void*)this);
 	if (m_info) m_outer_bounds = m_info->get_screen_rect();
+	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::need_bounds: %d %d %d %d", 
+		m_outer_bounds.m_left, m_outer_bounds.m_top, m_outer_bounds.m_right, m_outer_bounds.m_bottom);
 	m_inner_bounds = m_outer_bounds.innercoordinates(m_outer_bounds);
 	m_window_topleft = m_outer_bounds.left_top();
 	if (m_parent) m_window_topleft += m_parent->get_global_topleft();
@@ -345,6 +348,7 @@ passive_region::need_bounds()
 void
 passive_region::clear_cache()
 {
+	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::clear_cache(%s, 0x%x)", m_name.c_str(), (void*)this);
 	m_bounds_inited = false;
 	// Better be safe than sorry: clear caches for all child regions
 	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
