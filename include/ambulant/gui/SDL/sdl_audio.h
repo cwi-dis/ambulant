@@ -45,10 +45,11 @@
  * which carries forward this exception.
  *
  */
- #ifndef __SDL_AUDIO__
+#ifndef __SDL_AUDIO__
 #define __SDL_AUDIO__
 
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <iostream>
 
 #include "ambulant/common/region.h"
@@ -59,13 +60,20 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 
-
+ 
 namespace ambulant {
 using namespace lib;
     namespace gui {
         namespace sdl {
 
-//bool m_sdl_init = false;
+ 
+ 
+ 
+ 
+ 
+
+
+	  
 
 class sdl_active_audio_renderer : public active_renderer, public timer_events {
   public:
@@ -85,9 +93,9 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
   
  
       void start(double where);
-      void stop() {};
-      void pause() {};
-      void resume() {};
+      void stop();
+      void pause();
+      void resume();
 	  void freeze() {};
       void speed_changed() {};
       void readdone();
@@ -95,15 +103,21 @@ class sdl_active_audio_renderer : public active_renderer, public timer_events {
 	  void wantclicks(bool want) {};
       void user_event(const point &where) {};
   	  void callback(void *userdata, Uint8 *stream, int len);
+	  void playdone();
 		  
 	private:
-	
+	  int inc_channels();
+	  int init(int rate, int bits, int channels);
       static bool m_sdl_init;
-  	  int init(int rate, int bits, int channels);
-      SDL_AudioSpec *m_audiospec;
+	  static int m_mixed_channels;
+      Mix_Chunk m_audio_chunck;
+	  int m_use_channel;
       int m_rate;
+	  int m_bits;
       int m_channels;
-      int m_bits;
+      int m_buffer_size;
+	  int m_channel_used;
+	  Uint16 m_audio_format;
       event *m_playdone;
 };
 
