@@ -49,29 +49,121 @@
 #define QT_FACTORY_H
 
 #include "ambulant/common/playable.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/renderer.h"
+#include "ambulant/gui/none/none_gui.h"
+
+#include "qt_includes.h"
+#include "qt_fill.h"
 
 namespace ambulant {
+
 namespace gui {
+
 namespace qt {
 
+class qt_ambulant_widget;
+
+class ambulant_qt_window : public common::gui_window {
+  public:
+	ambulant_qt_window(const std::string &name,
+			   lib::screen_rect<int>* bounds,
+			   common::gui_events *region);
+	~ambulant_qt_window();
+			   
+	void set_ambulant_widget(qt_ambulant_widget* qaw);
+	QPixmap* ambulant_pixmap();
+	qt_ambulant_widget* get_ambulant_widget();
+
+	void need_redraw(const lib::screen_rect<int> &r);
+	void redraw(const lib::screen_rect<int> &r);
+	void mouse_region_changed();
+	void user_event(const lib::point &where);
+	void need_events(bool want);
+	QPixmap* new_ambulant_surface();
+	QPixmap* get_ambulant_surface();
+	void reset_ambulant_surface(void);
+	void set_ambulant_surface(QPixmap* surf);
+	void delete_ambulant_surface();
+
+  private:
+	qt_ambulant_widget* m_ambulant_widget;
+	QPixmap* m_pixmap;
+	QPixmap* m_oldmap;
+	QPixmap* m_surface;
+};  // class ambulant_qt_window
+
+class qt_ambulant_widget : public QWidget {
+  public:
+	qt_ambulant_widget(const std::string &name,
+			   lib::screen_rect<int>* bounds,
+			   QWidget* parent_widget);
+	~qt_ambulant_widget();
+	
+	void set_qt_window( ambulant_qt_window* aqw);
+	ambulant_qt_window* qt_window();
+	
+	void paintEvent(QPaintEvent* e);
+	void mouseReleaseEvent(QMouseEvent* e);
+
+  private:
+	ambulant_qt_window* m_qt_window;
+
+};  // class qt_ambulant_widget
+
+class qt_window_factory : public common::window_factory {
+  public:
+	qt_window_factory( QWidget* parent_widget, int x, int y);
+		
+		common::gui_window* new_window(
+			const std::string &name,
+			lib::size bounds,
+			common::gui_events *region);
+		common::bgrenderer *new_background_renderer(
+			const common::region_info *src);
+  private:
+	QWidget* m_parent_widget;
+	lib::point m_p;
+};  // class qt_window_factory
+
+class qt_renderer_factory : public common::playable_factory {
+  public:
+	qt_renderer_factory(net::datasource_factory *df);
+	
+	common::playable *new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp);
+  protected:
+  	net::datasource_factory *m_datasource_factory;
+
+};  // class qt_renderer_factory
+
+//class qt_video_factory : qt_renderer_factory {
 class qt_video_factory : public common::playable_factory {
   public:
   
 	qt_video_factory(net::datasource_factory *df)
 	:   m_datasource_factory(df) {}
 	~qt_video_factory();
-		
-	common::playable *new_playable(
+
+	common::playable *
+	  qt_video_factory::new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
-  private:
-	net::datasource_factory *m_datasource_factory;
-	
-};
+ private:
+        net::datasource_factory *m_datasource_factory;
+			
+}; // class qt_video_factory 
 
-}
-}
-}
+} // namespace qt
+
+} // namespace gui
+
+} // namespace ambulant
+
 #endif // qt_FACTORY_H

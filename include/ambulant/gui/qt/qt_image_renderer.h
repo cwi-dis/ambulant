@@ -62,49 +62,39 @@
 #include "ambulant/smil2/transition.h"
 #include "ambulant/gui/none/none_gui.h"
 
-
+#include "ambulant/gui/qt/qt_renderer.h"
 
 namespace ambulant {
 
 namespace gui {
 
-using namespace lib;
 using namespace common;
+using namespace lib;
+using namespace net;
 
 namespace qt {
 
-class qt_active_image_renderer : public common::renderer_playable_dsall {
+class qt_active_image_renderer : public qt_renderer {
 
   public:
 	qt_active_image_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *const evp,
-		net::datasource_factory *df)
-	:	common::renderer_playable_dsall(context, cookie, node, evp, df),
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const node *node,
+		event_processor *const evp,
+		datasource_factory *df)
+	:	qt_renderer(context, cookie, node, evp, df),
 	 	m_image(NULL),
-	 	m_image_loaded(false),
-	 	m_intransition(NULL),
-	 	m_outtransition(NULL),
-	 	m_trans_engine(NULL) 
+		m_image_loaded(false)
 	 	{};
 	~qt_active_image_renderer();
+
+	void redraw_body(const screen_rect<int> &dirty,
+			 gui_window *window);
     
-	void start(double where);
-	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
-	void set_intransition(lib::transition_info *info) { m_intransition = info; };
-	void start_outtransition(lib::transition_info *info);
-
  private:
-	void transition_step();
-
 	QImage m_image;
 	bool m_image_loaded;
-	lib::transition_info *m_intransition;
-	lib::transition_info *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
-	critical_section m_lock;
 };
 
 } // namespace qt

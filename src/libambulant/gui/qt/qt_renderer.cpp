@@ -48,302 +48,147 @@
 
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
-#include "ambulant/gui/qt/qt_fill.h"
-#include "ambulant/gui/qt/qt_image_renderer.h"
-#include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/gui/qt/qt_transition.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-using namespace ambulant; 
-using namespace gui::qt;
+namespace ambulant {
 
-qt_renderer_factory::qt_renderer_factory(net::datasource_factory *df)
-:	m_datasource_factory(df)
-	{
-	AM_DBG lib::logger::get_logger()->trace("qt_renderer factory (0x%x)", (void*) this);
-	}
-	
-qt_window_factory::qt_window_factory( QWidget* parent_widget, int x, int y)
-:	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
-	{
-	AM_DBG lib::logger::get_logger()->trace("qt_window_factory (0x%x)", (void*) this);
-	}	
-  
-ambulant_qt_window::ambulant_qt_window(const std::string &name,
-	   lib::screen_rect<int>* bounds,
-	   common::gui_events *region)
-:	common::gui_window(region),
-	m_ambulant_widget(NULL),
-	m_pixmap(NULL),
-	m_oldmap(NULL),
-	m_surface(NULL)
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
-}
+namespace gui {
 
-ambulant_qt_window::~ambulant_qt_window()
+using namespace common;
+using namespace lib;
+using namespace net;
+
+namespace qt {
+qt_renderer::~qt_renderer()
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window(0x%x): m_ambulant_widget=0x%x, m_pixmap=0x%x",this,m_ambulant_widget, m_pixmap);
-	// Note that we don't destroy the widget, only sver the connection.
-	// the widget itself is destroyed independently.
-	if (m_ambulant_widget ) {
-		m_ambulant_widget->set_qt_window(NULL);
-		delete m_ambulant_widget;
-		m_ambulant_widget = NULL;
-		delete m_pixmap;
-		m_pixmap = NULL;
-	}
+	m_lock.enter();
+	AM_DBG logger::get_logger()->trace
+	  ("~qt_renderer(0x%x)", (void *)this);
+	if (m_intransition) delete m_intransition;
+	m_intransition = NULL;
+	if (m_outtransition) delete m_outtransition;
+	m_outtransition = NULL;
+	if (m_trans_engine) delete m_trans_engine;
+	m_trans_engine = NULL;
+	m_lock.leave();
 }
 	
 void
-ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
+qt_renderer::start(double where)
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::set_ambulant_widget(0x%x)",(void *)qaw);
-	// Don't destroy!
-	//if (m_ambulant_widget != NULL)
-	//	delete m_ambulant_widget;
-	m_ambulant_widget = qaw;
-	QSize size = qaw->frameSize();
-	m_pixmap = new QPixmap(size.width(), size.height());
-}
-
-QPixmap*
-ambulant_qt_window::ambulant_pixmap()
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::ambulant_pixmap(0x%x)",(void *)m_pixmap);
-//	return m_ambulant_widget;
-        return m_pixmap;
-}
-
-qt_ambulant_widget*
-ambulant_qt_window::get_ambulant_widget()
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::get_ambulant_widget(0x%x)",(void *)m_ambulant_widget);
-	return m_ambulant_widget;
-//       return m_pixmap;
-}
-
-QPixmap*
-ambulant_qt_window::new_ambulant_surface()
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
-//	return m_ambulant_widget;
-	QSize size = m_pixmap->size();
-	m_surface = new QPixmap(size.width(), size.height());
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
-        return m_surface;
-}
-QPixmap*
-ambulant_qt_window::get_ambulant_surface()
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
-        return m_surface;
-}
-
-void
-ambulant_qt_window::reset_ambulant_surface(void)
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::reset_ambulant_surface(0x%x) m_oldmap = 0x%x",(void *)this,(void *)m_oldmap);
-	if (m_oldmap != NULL) m_pixmap = m_oldmap;
-}
-
-void
-ambulant_qt_window::set_ambulant_surface(QPixmap* surf)
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
-	m_oldmap = m_pixmap;
-	if (surf != NULL) m_pixmap = surf;
-}
-
-void
-ambulant_qt_window::delete_ambulant_surface()
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::delete_ambulant_surface(0x%x) m_surface = 0x%x",(void *)this, (void *)m_surface);
-	delete m_surface;
-	m_surface = NULL;
-}
-
-void
-ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
-{
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	if (m_ambulant_widget == NULL) {
-		lib::logger::get_logger()->error("ambulant_qt_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
-		return;
+	m_lock.enter();
+	AM_DBG logger::get_logger()->trace
+	  ("qt_renderer.start(0x%x, \"%s\")", (void *)this, 
+	   m_node->get_url("src").get_url().c_str());
+	if (m_intransition) {
+		m_trans_engine = qt_transition_engine(m_dest, false, 
+						      m_intransition);
+		if (m_trans_engine)
+			m_trans_engine->begin
+			  (m_event_processor->get_timer()->elapsed());
 	}
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	m_ambulant_widget->repaint(r.left(), r.top(), r.width(), r.height(), false);
-	qApp->wakeUpGuiThread();
-//	qApp->processEvents();
-#else	/*QT_NO_FILEDIALOG*/	/* Assume plain Qt */
-	m_ambulant_widget->update(r.left(), r.top(), r.width(), r.height());
-	qApp->wakeUpGuiThread();
-#endif	/*QT_NO_FILEDIALOG*/
-}
-  
-void
-ambulant_qt_window::mouse_region_changed()
-{
-	lib::logger::get_logger()->trace("ambulant_qt_window::mouse_region_changed needs to be implemented");
+	common::renderer_playable_dsall::start(where);
+	m_lock.leave();
 }
 
 void
-ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
+qt_renderer::start_outtransition(lib::transition_info *info)
 {
-	AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",
-		(void *)this, r.left(), r.top(), r.right(), r.bottom());
-	m_handler->redraw(r, this);
-	bitBlt(m_ambulant_widget, 0, 0, m_pixmap);
+	m_lock.enter();
+	AM_DBG logger::get_logger()->trace
+	  ("qt_renderer.start_outtransition(0x%x)", (void *)this);
+	if (m_trans_engine) stop_transition();
+	m_outtransition = info;
+	m_trans_engine = qt_transition_engine(m_dest, true, 
+					      m_outtransition);
+	if (m_trans_engine)
+		m_trans_engine->begin
+		  (m_event_processor->get_timer()->elapsed());
+	m_lock.leave();
+	if (m_dest) m_dest->need_redraw();
 }
 
 void
-ambulant_qt_window::user_event(const lib::point &where) 
+qt_renderer::stop_transition()
 {
-	m_handler->user_event(where);
+	// private method - no locking
+	delete m_trans_engine;
+	m_trans_engine = NULL;
+	m_dest->transition_done();
 }
+
 void
-ambulant_qt_window::need_events(bool want) 
+qt_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
 {
-  AM_DBG lib::logger::get_logger()->trace("ambulant_qt_window::need_events(0x%x): want=", this, want);
-}
-
-// XXXX
-qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
-	lib::screen_rect<int>* bounds,
-	QWidget* parent_widget)
-:	QWidget(parent_widget,"qt_ambulant_widget",0),
-	m_qt_window(NULL)
-{
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",
-		(void *)this,
-		(void*)  parent_widget,
-		bounds->left(),
-		bounds->top(),
-		bounds->right(),
-		bounds->bottom());
-	setGeometry(bounds->left(), bounds->top(), bounds->right(), bounds->bottom());
-}
-
-qt_ambulant_widget::~qt_ambulant_widget()
-{
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::~qt_ambulant_widget(0x%x): m_qt_window=0x%x", (void*)this, m_qt_window);
-	if (m_qt_window) {
-		m_qt_window->set_ambulant_widget(NULL);
-		m_qt_window = NULL;
-	}
-}
+	m_lock.enter();
+	const screen_rect<int> &r = m_dest->get_rect();
+	AM_DBG logger::get_logger()->trace
+	  ("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", 
+	   (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
+	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
+	QPixmap *surf = NULL;
+	if (m_trans_engine && m_trans_engine->is_done()) {
+		delete m_trans_engine;
+		m_trans_engine = NULL;
+	}
+	// See whether we're in a transition
+	if (m_trans_engine) {
+		surf = aqw->get_ambulant_surface();
+		if (surf == NULL)
+			surf = aqw->new_ambulant_surface();
+		if (surf != NULL) {
+			aqw->set_ambulant_surface(surf);	
+		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to transition surface");
+		}
+	}
+
+	redraw_body(dirty, window);
+	
+	if (surf != NULL) {
+		aqw->reset_ambulant_surface();
+	}
+	if (m_trans_engine && surf) {
+		AM_DBG logger::get_logger()->trace
+		  ("qt_renderer.redraw: drawing to view");
+		m_trans_engine->step
+		  (m_event_processor->get_timer()->elapsed());
+		typedef no_arg_callback<qt_renderer>transition_callback;
+		event *ev = new transition_callback
+		  (this, &qt_renderer::transition_step);
+		transition_info::time_type delay
+		  = m_trans_engine->next_step_delay();
+		if (delay < 33) delay = 33; // XXX band-aid
+		AM_DBG logger::get_logger()->trace
+		  ("qt_renderer.redraw: now=%d, schedule step for %d",
+		   m_event_processor->get_timer()->elapsed(), 
+		   m_event_processor->get_timer()->elapsed()+delay);
+		m_event_processor->add_event(ev, delay);
+	}
+	m_lock.leave();
+}
+
 void
-qt_ambulant_widget::paintEvent(QPaintEvent* e)
+qt_renderer::transition_step()
 {
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::paintEvent(0x%x): e=0x%x)",
-		(void*) this, (void*) e);
-	QRect qr = e->rect();
-	lib::screen_rect<int> r =  lib::screen_rect<int>(
-		lib::point(qr.left(),qr.top()),
-		lib::point(qr.right(),qr.bottom()));
-	if (m_qt_window == NULL) {
-		lib::logger::get_logger()->trace("qt_ambulant_widget::paintEvent(0x%x): e=0x%x m_qt_window==NULL",
-			(void*) this, (void*) e);
-		return;
-	}
-	m_qt_window->redraw(r);
+//	m_lock.enter();
+	AM_DBG logger::get_logger()->trace
+	  ("qt_renderer.transition_step: now=%d",
+	   m_event_processor->get_timer()->elapsed());
+	if (m_dest) m_dest->need_redraw();
+//	m_lock.leave();
 }
 
-void
-qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::mouseReleaseEvxent(0x%x): e=0x%x, position=(%d, %d))",
-		(void*) this, (void*) e, e->x(), e->y());
-	if (m_qt_window == NULL) {
-		lib::logger::get_logger()->trace("qt_ambulant_widget::mouseReleaseEvent(0x%x): e=0x%x  position=(%d, %d) m_qt_window==NULL",
-			(void*) this, (void*) e, e->x(), e->y());
-		return;
-	}
-	lib::point amwhere = lib::point(e->x(), e->y());
-	m_qt_window->user_event(amwhere);
-}
+} // namespace qt
 
-void 
-qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)
-{
-	// Note: the window and widget are destucted independently.
-	//	if (m_qt_window != NULL)
-	//	  delete m_qt_window;
-	m_qt_window = aqw;
-	AM_DBG lib::logger::get_logger()->trace("qt_ambulant_widget::set_qt_window(0x%x): m_qt_window==0x%x)",
-		(void*) this, (void*) m_qt_window);
-}
+} // namespace gui
 
-ambulant_qt_window* 
-qt_ambulant_widget::qt_window() {
-	return m_qt_window;
-}
+} // namespace ambulant
 
-// XXXX
-common::playable *
-qt_renderer_factory::new_playable
-(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor *const evp) {
-
-	lib::xml_string tag = node->get_qname().second;
-	common::playable* rv;
-	if (tag == "img") {
- 		rv = new qt_active_image_renderer(context, cookie, node,
-			 evp, m_datasource_factory);
-		AM_DBG lib::logger::get_logger()->trace("qt_renderer_factory: node 0x%x: returning qt_active_image_renderer 0x%x", 
-			(void*) node, (void*) rv);
-	} else if ( tag == "text") {
-		rv = new qt_active_text_renderer(context, cookie, node,
-			evp, m_datasource_factory);
-		AM_DBG lib::logger::get_logger()->trace("qt_renderer_factory: node 0x%x: returning qt_active_text_renderer 0x%x",
-			(void*) node, (void*) rv);
-	} else {
-		return NULL;
-	}
-    return rv;
-}
-  
-common::gui_window *
-qt_window_factory::new_window (const std::string &name,
-			       lib::size bounds,
-			       common::gui_events *region)
-{
-	lib::screen_rect<int>* r = new lib::screen_rect<int>(m_p, bounds);
-	AM_DBG lib::logger::get_logger()->trace("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
-		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
- 	ambulant_qt_window * aqw = new ambulant_qt_window(name, r, region);
-	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, r, m_parent_widget);
-#ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
-	qaw->setBackgroundMode(Qt::NoBackground);
-	if (qApp == NULL || qApp->mainWidget() == NULL) {
-		lib::logger::get_logger()->error("qt_window_factory::new_window (0x%x) %s",
-			(void*) this,
-	   		"qApp == NULL || qApp->mainWidget() == NULL");
-	}
-	qApp->mainWidget()->resize(bounds.w + m_p.x, bounds.h + m_p.y);
-#else	/*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
-	qaw->setBackgroundMode(QWidget::NoBackground);
-	/* No resize implemented for embedded Qt */
-#endif	/*QT_NO_FILEDIALOG*/
-	aqw->set_ambulant_widget(qaw);
-	qaw->set_qt_window(aqw);
- 	AM_DBG lib::logger::get_logger()->trace("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x",
-		(void*) this, (void*) qaw, (void*) aqw);
-	qaw->show();
-	return aqw;
-}
-
-common::bgrenderer *
-qt_window_factory::new_background_renderer(const common::region_info 
-					   *src)
-{
-	AM_DBG lib::logger::get_logger()->trace("qt_window_factory::new_background_renderer(0x%x): src=0x%x",
-		(void*) this, src);
-	return new qt_background_renderer(src);
-}
+#ifdef	JUNK
+#endif/*JUNK*/

@@ -55,103 +55,56 @@
 #ifndef AMBULANT_GUI_QT_QT_RENDERER_H
 #define AMBULANT_GUI_QT_QT_RENDERER_H
 
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/gui/none/none_gui.h"
-
-#include "qt_includes.h"
-#include "qt_fill.h"
-
-
+#include "ambulant/smil2/transition.h"
+#include "ambulant/lib/mtsync.h"
 
 namespace ambulant {
+
+using namespace lib;
+using namespace net;
+using namespace common;
 
 namespace gui {
 
 namespace qt {
 
-class qt_ambulant_widget;
-
-class ambulant_qt_window : public common::gui_window {
+class qt_renderer : public renderer_playable_dsall {
   public:
-	ambulant_qt_window(const std::string &name,
-			   lib::screen_rect<int>* bounds,
-			   common::gui_events *region);
-	~ambulant_qt_window();
-			   
-	void set_ambulant_widget(qt_ambulant_widget* qaw);
-	QPixmap* ambulant_pixmap();
-	qt_ambulant_widget* get_ambulant_widget();
+	qt_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const node *node,
+		event_processor *evp,
+		datasource_factory *df)
+	:	renderer_playable_dsall(context, cookie, node, evp, df),
+		m_intransition(NULL),
+		m_outtransition(NULL),
+		m_trans_engine(NULL) {};
+	~qt_renderer();
 
-	void need_redraw(const lib::screen_rect<int> &r);
-	void redraw(const lib::screen_rect<int> &r);
-	void mouse_region_changed();
-	void user_event(const lib::point &where);
-	void need_events(bool want);
-	QPixmap* new_ambulant_surface();
-	QPixmap* get_ambulant_surface();
-	void reset_ambulant_surface(void);
-	void set_ambulant_surface(QPixmap* surf);
-	void delete_ambulant_surface();
+	void start(double where);
+        void redraw(const screen_rect<int> &dirty, gui_window *window);
+	virtual void redraw_body(const screen_rect<int> &dirty,
+				 gui_window *window) = 0;
+	void set_intransition(lib::transition_info *info) {
+		m_intransition = info; }
+	void start_outtransition(lib::transition_info *info);
 
+  protected:
+	lib::transition_info *m_intransition;
+	lib::transition_info *m_outtransition;
+	smil2::transition_engine *m_trans_engine;
+	critical_section m_lock;
   private:
-	qt_ambulant_widget* m_ambulant_widget;
-	QPixmap* m_pixmap;
-	QPixmap* m_oldmap;
-	QPixmap* m_surface;
-};  // class ambulant_qt_window
-
-class qt_ambulant_widget : public QWidget {
-  public:
-	qt_ambulant_widget(const std::string &name,
-			   lib::screen_rect<int>* bounds,
-			   QWidget* parent_widget);
-	~qt_ambulant_widget();
-	
-	void set_qt_window( ambulant_qt_window* aqw);
-	ambulant_qt_window* qt_window();
-	
-	void paintEvent(QPaintEvent* e);
-	void mouseReleaseEvent(QMouseEvent* e);
-
-  private:
-	ambulant_qt_window* m_qt_window;
-
-};  // class qt_ambulant_widget
-
-class qt_window_factory : public common::window_factory {
-  public:
-	qt_window_factory( QWidget* parent_widget, int x, int y);
-		
-		common::gui_window* new_window(
-			const std::string &name,
-			lib::size bounds,
-			common::gui_events *region);
-		common::bgrenderer *new_background_renderer(
-			const common::region_info *src);
-  private:
-	QWidget* m_parent_widget;
-	lib::point m_p;
-};  // class qt_window_factory
-
-class qt_renderer_factory : public common::playable_factory {
-  public:
-	qt_renderer_factory(net::datasource_factory *df);
-	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *const evp);
-  private:
-  	net::datasource_factory *m_datasource_factory;
-
-};  // class qt_renderer_factory
+	void transition_step();
+	void stop_transition();
+};
 
 } // namespace qt
 
 } // namespace gui
 
 } // namespace ambulant
+
 #endif  /*AMBULANT_GUI_QT_QT_RENDERER_H*/

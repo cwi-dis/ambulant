@@ -51,115 +51,58 @@
  */
 
 #include "ambulant/gui/qt/qt_includes.h"
-#include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_transition.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
+using namespace common;
+using namespace lib;
 using namespace gui::qt;
 
 qt_active_image_renderer::~qt_active_image_renderer() {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace(
-		"qt_active_image_renderer::~qt_active_image_renderer(0x%x)",this);
-	if (m_trans_engine) delete m_trans_engine;
+	AM_DBG lib::logger::get_logger()->trace
+	  ("qt_active_image_renderer::~qt_active_image_renderer(0x%x)",
+	   this);
 	m_lock.leave();
 }
 	
-void
-qt_active_image_renderer::start(double where)
-{
-	AM_DBG logger::get_logger()->trace("qt_active_image_renderer.start(0x%x) m_dest=0x%x", (void *)this, (void*)m_dest);
-	if (m_intransition) {
-		m_trans_engine = qt_transition_engine(m_dest, false, m_intransition);
-		if (m_trans_engine)
-			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-	}
-	if (m_outtransition) {
-		// XXX Schedule beginning of out transition
-		//lib::event *ev = new transition_callback(this, &transition_outbegin);
-		//m_event_processor->add_event(ev, XXXX);
-	}
-	common::renderer_playable_dsall::start(where);
-}
 
 void
-qt_active_image_renderer::start_outtransition(lib::transition_info *info)
-{
-}
-
-void
-qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
-				 common::gui_window* w) {
-	m_lock.enter();
-	const lib::point p = m_dest->get_global_topleft();
-	const lib::screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->trace
-		("qt_active_image_renderer.redraw(0x%x):"
+qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
+				      gui_window* w) {
+	const point             p = m_dest->get_global_topleft();
+	const screen_rect<int> &r = m_dest->get_rect();
+	AM_DBG logger::get_logger()->trace
+		("qt_active_image_renderer.redraw_body(0x%x):"
 		" ltrb=(%d,%d,%d,%d), p=(%d,%d)",
 		(void *)this,
 		r.left(), r.top(), r.right(), r.bottom(),
 		p.x,p.y);
 	if (m_data && !m_image_loaded) {
-		m_image_loaded = m_image.loadFromData(
-			(const uchar*)m_data, m_data_size);
+		m_image_loaded = m_image.loadFromData
+		  ((const uchar*)m_data, m_data_size);
 	}
-	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
-	QPixmap *surf = NULL;
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		delete m_trans_engine;
-		m_trans_engine = NULL;
-	}
-	// See whether we're in a transition
-	if (m_trans_engine) {
-		surf = aqw->get_ambulant_surface();
-		if (surf == NULL)
-			surf = aqw->new_ambulant_surface();
-		if (surf != NULL) {
-			aqw->set_ambulant_surface(surf);	
-		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to transition surface");
-		}
-	}
-	// XXXX WRONG! This is the info for the region, not for the node!
+// XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG lib::logger::get_logger()->trace(
+	AM_DBG logger::get_logger()->trace(
 		"qt_active_image_renderer.redraw: info=0x%x", info);
+	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
-	// background drawing
-	if (info && !info->get_transparent()) {
-	// First find our whole area (which we have to clear to 
-	// background color)
-		lib::screen_rect<int> dstrect_whole = r;
-		dstrect_whole.translate(m_dest->get_global_topleft());
-		int L = dstrect_whole.left(),
-		    T = dstrect_whole.top(),
-		    W = dstrect_whole.width(),
-		    H = dstrect_whole.height();
-		// XXXX Fill with background color
-		lib::color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->trace(
-			"qt_active_image_renderer.redraw:"
-			" clearing to 0x%x", (long)bgcolor);
-		QColor bgc = QColor(lib::redc(bgcolor),
-				    lib::greenc(bgcolor),
-				    lib::bluec(bgcolor));
-		paint.setBrush(bgc);
-		paint.drawRect(L,T,W,H);
-	}
 	if (m_image_loaded) {
 		QSize qsize = aqw->ambulant_pixmap()->size();
-		lib::size srcsize = lib::size(qsize.width(), qsize.height());
-		lib::rect srcrect = lib::rect(lib::size(0,0));
-		lib::screen_rect<int> dstrect = m_dest->get_fit_rect(
-			srcsize, &srcrect, m_alignment);
+		size srcsize = size(qsize.width(), qsize.height());
+		rect srcrect = rect(size(0,0));
+		screen_rect<int> dstrect =
+		  m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		int L = dstrect.left(), 
 		    T = dstrect.top(),
@@ -178,27 +121,6 @@ qt_active_image_renderer::redraw(const lib::screen_rect<int> &dirty,
 			(void *)this
 		);
 	}
-#ifdef	JUNK
-#endif/*JUNK*/
-	if (surf != NULL) {
-		aqw->reset_ambulant_surface();
-	}
 	paint.flush();
 	paint.end();
-	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->trace("qt_active_image_renderer.redraw: drawing to view");
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<qt_active_image_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &qt_active_image_renderer::transition_step);
-		m_event_processor->add_event(ev, m_trans_engine->next_step_delay());
-	}
-	m_lock.leave();
-
-}
-
-void
-qt_active_image_renderer::transition_step()
-{
-  AM_DBG logger::get_logger()->trace("qt_active_image_renderer::transition_step(0x%x) m_dest=0x%x",(void*)this, (void*) m_dest);
-	if (m_dest) m_dest->need_redraw();
 }

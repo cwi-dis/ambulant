@@ -62,6 +62,7 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/gui/none/none_gui.h"
 
 namespace ambulant {
@@ -70,7 +71,7 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_text_renderer : public common::renderer_playable_dsall {
+class qt_active_text_renderer : public qt_renderer {
   public:
 	qt_active_text_renderer(
 		common::playable_notification *context,
@@ -78,12 +79,13 @@ class qt_active_text_renderer : public common::renderer_playable_dsall {
 		const lib::node *node,
     	lib::event_processor *const evp,
     	net::datasource_factory *df)
-:	common::renderer_playable_dsall(context, cookie, node, evp, df),
+:	qt_renderer(context, cookie, node, evp, df),
  	m_text_storage(NULL){
 	}
 	~qt_active_text_renderer();
 
- 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
+ 	void redraw_body(const lib::screen_rect<int> &r,
+			 common::gui_window* w);
 
   private:
 	char* m_text_storage;

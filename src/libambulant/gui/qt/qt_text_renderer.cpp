@@ -51,10 +51,11 @@
  */
 
 #include "ambulant/gui/qt/qt_includes.h"
+#include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -63,16 +64,18 @@ using namespace ambulant;
 using namespace gui::qt;
 
 qt_active_text_renderer::~qt_active_text_renderer() {
+	m_lock.enter();
 	if (m_text_storage != NULL) {
 		free(m_text_storage);
 		m_text_storage =  NULL;
 	}
+	m_lock.leave();
 }
 
 void
-qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
-				common::gui_window* w) {
-	m_lock.enter();
+qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
+				     common::gui_window* w) {
+// No m_lock needed, protected by base class
 	const lib::point p = m_dest->get_global_topleft();
 	AM_DBG lib::logger::get_logger()->trace(
 		"qt_active_text_renderer.redraw(0x%x):"
@@ -95,7 +98,6 @@ qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
 		ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 		QPainter paint;
 		paint.begin(aqw->ambulant_pixmap());
-//		paint.eraseRect(L,T,W,H);
 // QtE		paint.drawText(L,T,W,H, Qt::AlignAuto, m_text_storage);
 		paint.setPen(Qt::black);
 		paint.drawText(L,T,W,H,
@@ -104,5 +106,4 @@ qt_active_text_renderer::redraw(const lib::screen_rect<int> &r,
 		paint.flush();
 		paint.end();
 	}
-	m_lock.leave();
 }

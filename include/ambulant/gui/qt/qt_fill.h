@@ -69,6 +69,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
+#include "qt_renderer.h"
 
 namespace ambulant {
 
@@ -76,14 +77,14 @@ namespace gui {
 
 namespace qt {
 
-class qt_active_fill_renderer : public common::renderer_playable {
+class qt_active_fill_renderer : public qt_renderer {
   public:
 	qt_active_fill_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp)
-: common::renderer_playable(context, cookie, node, evp),
+  :     qt_renderer(context, cookie, node, evp, NULL),
 	m_playing(false) {
 };
 	~qt_active_fill_renderer();

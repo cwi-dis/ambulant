@@ -53,7 +53,6 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_transition.h"
-// #include "ambulant/gui/qt/qt_gui.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/logger.h"
 
@@ -152,14 +151,8 @@ qt_transition_blitclass_fade::update()
 	AM_DBG lib::logger::get_logger()->trace(
 				  "qt_transition_blitclass_fade::update(): "
 				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
-/*
-	QPainter paint;
-	paint.begin(qpm);
-	paint.drawImage(0,0,res,0,0,W,H);
-	paint.flush();
-	paint.end();
-*/
-	QPixmap rpm(res);
+	QPixmap rpm(W,H);
+	rpm.convertFromImage(res);
 	bitBlt(qpm, L, T, &rpm, L, T, W, H);	
 }
 
