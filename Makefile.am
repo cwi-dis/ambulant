@@ -3,3 +3,16 @@ EXTRA_DIST = Documentation Extras
 
 dist-hook:
 	rm -rf `find $(distdir)/Documentation -name CVS`
+
+# Special rule for building MacOSX binary installer.
+# Will only work on OSX 10.3 or later
+MACOS_INSTALLDIR=AmbulantPlayer
+MACOS_DMGNAME=AmbulantPlayer-$(VERSION)
+macosbininstaller:
+	-rmdir dist/$(MACOS_INSTALLDIR)
+	mkdir -p dist/$(MACOS_INSTALLDIR)
+	cp -R $(DESTDIR)/Applications/"Ambulant Player".app dist/$(MACOS_INSTALLDIR)
+	cp -R $(srcdir)/Extras/DemoPresentation dist/$(MACOS_INSTALLDIR)
+	rm -rf `find dist -name CVS`
+	hdiutil create -srcfolder dist/$(MACOS_INSTALLDIR) dist/$(MACOS_DMGNAME).dmg
+	

@@ -54,7 +54,7 @@
 #include "ambulant/smil2/time_state.h"
 #include "ambulant/smil2/time_node.h"
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

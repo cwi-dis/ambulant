@@ -250,7 +250,7 @@ AC_ARG_WITH(ffmpeg,
 	     ;;
 	 esac],[
 	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
-			# Prefer an fmpeg in third_party_packages
+			ffmpeg=true
 			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
 			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
 			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
@@ -261,7 +261,7 @@ AC_ARG_WITH(ffmpeg,
 			ffmpeg=false
 		fi
 	 ])
-if test $ffmpeg = true; then
+if test x$ffmpeg = xtrue; then
 	# Test for consistency
 	if test ! -f $FFMPEG_CODEC_INCLUDE/avcodec.h -o ! -f $FFMPEG_CODEC_LIB/libavcodec.a \
 		 -o ! -f $FFMPEG_FORMAT_INCLUDE/avformat.h -o ! -f $FFMPEG_FORMAT_LIB/libavformat.a; then
@@ -273,7 +273,7 @@ AC_SUBST(FFMPEG_CODEC_INCLUDE)
 AC_SUBST(FFMPEG_CODEC_LIB)
 AC_SUBST(FFMPEG_FORMAT_INCLUDE)
 AC_SUBST(FFMPEG_FORMAT_LIB)
-AC_MSG_RESULT($withvalabs)
+AC_MSG_RESULT($ffmpeg - $withvalabs)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html

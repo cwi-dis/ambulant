@@ -168,7 +168,7 @@ passive_region::show(active_region *cur)
 	// We don't schedule a redraw here, assuming it will come shortly.
 	// is that correct?
 	
-#ifdef AMBULANT_PLATFORM_WIN32			
+#ifndef OLD_SUBREGIONS		
 	if(m_parent) {
 		children_map_t& subregions =  m_parent->get_subregions();
 		subregions[m_info->get_zindex()].push_back(this);
@@ -197,7 +197,7 @@ passive_region::active_region_done(active_region *cur)
 	}
 	delete cur;
 	
-#ifdef AMBULANT_PLATFORM_WIN32			
+#ifndef OLD_SUBREGIONS			
 	if(m_parent) {
 		children_map_t& subregions =  m_parent->get_subregions();
 		subregions[m_info->get_zindex()].remove(this);
@@ -209,7 +209,7 @@ passive_region::active_region_done(active_region *cur)
 	need_redraw(m_inner_bounds);
 }
 
-#ifndef AMBULANT_PLATFORM_WIN32
+#ifdef OLD_SUBREGIONS
 void
 passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 {
@@ -265,7 +265,10 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 	for(children_map_t::iterator it1=m_subregions.begin();it1!=m_subregions.end();it1++) {
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
-			assert((*it2)->get_info()->is_subregion());
+			
+			if (!(*it2)->get_info()->is_subregion()) {
+				AM_DBG lib::logger::get_logger()->warn("passive_region.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
+			}
 			(*it2)->redraw(our_rect, window);
 		}
 	}
@@ -281,7 +284,7 @@ passive_region::redraw(const lib::screen_rect<int> &r, abstract_window *window)
 	}
 }
 
-#endif // AMBULANT_PLATFORM_WIN32
+#endif // OLD_SUBREGIONS
 
 void
 passive_region::draw_background(const lib::screen_rect<int> &r, abstract_window *window)

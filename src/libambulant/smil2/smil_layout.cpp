@@ -264,7 +264,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		std::pair<bool, const lib::node*> pair = *it;
 		if (!pair.first) continue;
 		const lib::node *n = pair.second;
-#ifndef AMBULANT_PLATFORM_WIN32		
+#ifdef OLD_SUBREGIONS		
 		if (!region_node::needs_region_node(n)) continue;
 #else
 		if(!test_attrs(n).selected()) continue;
