@@ -97,16 +97,13 @@ class viewport {
 	void redraw();
 		
 	// Sets the background color (to be used by clear)
-	void set_background(lib::color_t color) {
-		m_bgd = color;
-	}
+	void set_background(lib::color_t color);
 	template <class T>
 	void set_background(T r, T g, T b) {
 		m_bgd = lib::to_color(r, g, b);
 	}
-	void set_background(const char *name) {
-		m_bgd = lib::to_color(name);
-	}
+	void set_background(const char *name);
+	lib::color_t get_bgcolor() const { return m_bgd;}
 	
 	// fills the drawing surface 
 	// with the current background color
@@ -181,9 +178,7 @@ class region {
 	IDirectDrawSurface* get_surface() { return m_surface;}
 	
 	// Sets the background color (to be used by clear)
-	void set_background(lib::color_t color) {
-		m_bgd = color;
-	}
+	void set_background(lib::color_t color);
 	template <class T>
 	void set_background(T r, T g, T b) {
 		m_bgd = lib::to_color(r, g, b);
@@ -191,6 +186,7 @@ class region {
 	void set_background(const char *name) {
 		m_bgd = lib::to_color(name);
 	}
+	lib::color_t get_bgcolor() const { return m_bgd;}
 	
 	void clear();
 	void update();
@@ -209,6 +205,9 @@ class region {
 	bool is_transparent() const { 
 		return m_rinfo?m_rinfo->get_transparent():false;
 	}
+	
+	void draw_on(IDirectDrawSurface* surf, RECT *dst, RECT *src);
+	void draw_img_on(IDirectDrawSurface* surf, RECT *dst, RECT *src);
 	
   private:
 	// The viewport of this region.
@@ -235,6 +234,9 @@ class region {
 	
 	// image
 	IDirectDrawSurface* m_imgsurf;
+	int m_img_width;
+	int m_img_height;
+	bool m_img_transp;
 	
 	// video
 	video_player *m_video_p;

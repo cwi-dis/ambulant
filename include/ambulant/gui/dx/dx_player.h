@@ -78,6 +78,8 @@ class dx_player {
 	virtual viewport* create_viewport(int w, int h) = 0;
 	virtual void on_click(int x, int y) = 0;
 	virtual void on_char(int ch) = 0;
+	virtual void load_tests_filter(const std::string& url) = 0;
+	virtual void update_status() = 0;
 	static dx_player* create_player(const std::string& url); 
 	static dx_player* create_player(const std::string& url, VCF f);
 };
