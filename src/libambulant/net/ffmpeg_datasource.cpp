@@ -57,6 +57,7 @@
 #define AM_DBG if(0)
 #endif 
 
+
 // Bug workaround: define RESAMPLE_READ_ALL to let the resampler
 // collect all data before calling the client callback
 //#define RESAMPLE_READ_ALL
@@ -278,13 +279,16 @@ detail::ffmpeg_demux::remove_datasink(int stream_index)
 	m_nstream--;
 	if (m_nstream <= 0) cancel();
 }
-
+#undef AM_DBG
+#define AM_DBG
 unsigned long
 detail::ffmpeg_demux::run()
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: started");
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;
+		
+		pkt->pts = 0;
 		// Read a packet
 		int ret = av_read_packet(m_con, pkt);
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: av_read_packet returned %d", ret);
@@ -311,6 +315,10 @@ detail::ffmpeg_demux::run()
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: returning");
 	return 0;
 }
+#undef AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif 
 		
 // **************************** ffmpeg_audio_datasource *****************************
 
@@ -588,18 +596,37 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 {
 	// XXX timestamp is ignored, for now
 	m_lock.enter();
+	int got_pic;
+	AVFrame frame;
+	AVPicture picture;
+	int pic_fmt;
+	int width,height;
 	int num, den;
 	m_src_end_of_file = (sz == 0);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: %d bytes available", sz);
 	if(sz && !m_frame) {
-		m_frame = (char*)malloc(sz);
-		if (m_frame)
-			memcpy(m_frame, inbuf, sz);
-		m_size = sz;
+		// m_frame = (char*)malloc(sz);
+		//if (m_frame)
+		m_size = avcodec_decode_video(&m_con->streams[m_stream_index]->codec, &frame, &got_pic, inbuf, sz);
+		picture.data[0] = frame.data[0];
+		picture.data[1] = frame.data[1];
+		picture.data[2] = frame.data[2];
+		picture.data[3] = frame.data[3];
+		picture.linesize[0] = frame.linesize[0];
+		picture.linesize[1] = frame.linesize[1];
+		picture.linesize[2] = frame.linesize[2];
+		picture.linesize[3] = frame.linesize[3];
+		pic_fmt = m_con->streams[m_stream_index]->codec.pix_fmt;
+		width = m_con->streams[m_stream_index]->codec.width;
+		height = m_con->streams[m_stream_index]->codec.height;
+		m_size = avpicture_fill(&picture, (uint8_t*) m_frame, pic_fmt, width, height );
+		
+		//memcpy(m_frame, frame.base, sz);
+		//m_size = sz;
 		num = m_con->pts_num;
 		den = m_con->pts_den;
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
-		m_timestamp = (double) pts * num / den;
+		m_timestamp = ((double) pts * num) / den;
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: m_timestamp=%f",m_timestamp);
 	}
 
