@@ -530,7 +530,7 @@ class options_p : public parselet {
 template <typename CharType>
 struct xml_name_start_ch {
 	bool operator()(CharType ch) {
-		return ::isalpha(ch) || ch == '_' || ch == ':';
+		return isalpha(ch) || ch == '_' || ch == ':';
 	}
 };
 
@@ -545,7 +545,7 @@ struct xml_ncname_start_ch {
 template <typename CharType>
 struct xml_name_ch {
 	bool operator()(CharType ch) {
-		return ::isalpha(ch) || ::isdigit(ch) || 
+		return isalpha(ch) || isdigit(ch) || 
 			ch == '.' || ch == '-' || ch == '_' || ch == ':';
 	}
 };

@@ -77,13 +77,13 @@ gui::sdl::sdl_renderer_factory::new_renderer(
 {
 	active_renderer *rv;
 	xml_string tag = node->get_qname().second;
-     AM_DBG logger::get_logger()->trace("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+    AM_DBG logger::get_logger()->trace("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
 		rv = (active_renderer *) new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, src);
 		AM_DBG logger::get_logger()->trace("sdl_renderer_factory: node 0x%x: returning sdl_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
-	AM_DBG logger::get_logger()->error("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-                return NULL;
+		AM_DBG logger::get_logger()->error("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
+        return NULL;
 	}
 	return rv;
 }

@@ -60,12 +60,9 @@ using namespace lib;
 extern "C" {
 	void cllback(void *userdata, Uint8 *stream, int len)
 	{
-		
-     std::cout <<"callback " << userdata << std::endl;  		
-	gui::sdl::sdl_active_audio_renderer* dummy;
-	dummy = (gui::sdl::sdl_active_audio_renderer*) userdata; 
-	dummy->callback(userdata, stream, len);
-		std::cout <<"callback done" << userdata << std::endl;
+		gui::sdl::sdl_active_audio_renderer* dummy;
+		dummy = (gui::sdl::sdl_active_audio_renderer*) userdata; 
+		dummy->callback(userdata, stream, len);	
 	};
 }
 	
@@ -92,41 +89,42 @@ gui::sdl::sdl_active_audio_renderer::init(int rate, int bits, int channels)
 	
 	SDL_AudioSpec *audiospec;
     int err = 0;
-	
     if (!m_sdl_init) {	
-  	err = SDL_Init(SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE*/);
-	if (err < 0) {
-        AM_DBG lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL init failed", (void *)this);
-       	return err;
-    	} 
-	m_audiospec = (SDL_AudioSpec*) malloc(sizeof(SDL_AudioSpec));
-	audiospec = (SDL_AudioSpec*) malloc(sizeof(SDL_AudioSpec));
-	audiospec->freq = rate;
-	// X : Audio format should be configurable	
-	audiospec->format = AUDIO_S16;
-	audiospec->userdata = this;
-	if (channels == 1) {
-		audiospec->channels = 1;
-	} else { // default is stereo
-		audiospec->channels = 2;
-	}
-	audiospec->samples = 8192;
-	audiospec->callback = cllback;   
-	
-    err = SDL_OpenAudio(audiospec, m_audiospec);
-    if (err < 0) {
-		AM_DBG lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL open failed", (void *)this);
-        return err;
-    }
-	
-    m_rate = rate;
-    m_channels = channels;
-    m_bits = bits;
-	m_audiospec->userdata = this;
-	free(audiospec);
+  		err = SDL_Init(SDL_INIT_AUDIO /*| SDL_INIT_NOPARACHUTE*/);
+		if (err < 0) {
+        	AM_DBG lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL init failed", (void *)this);
+       		return err;
+    		} 
+		AM_DBG lib::logger::get_logger()->trace("sdl_active_renderer.init(0x%x): SDL init succes", (void *)this);	
+		m_audiospec = (SDL_AudioSpec*) malloc(sizeof(SDL_AudioSpec));
+		audiospec = (SDL_AudioSpec*) malloc(sizeof(SDL_AudioSpec));
+		audiospec->freq = rate;
+		// X : Audio format should be configurable	
+		audiospec->format = AUDIO_S16;
+		audiospec->userdata = this;
+		if (channels == 1) {
+			audiospec->channels = 1;
+		} else { // default is stereo
+			audiospec->channels = 2;
+		}
+		audiospec->samples = 8192;
+		audiospec->callback = cllback;   
+		
+    	err = SDL_OpenAudio(audiospec, m_audiospec);
+    	if (err < 0) {
+			AM_DBG lib::logger::get_logger()->error("sdl_active_renderer.init(0x%x): SDL open failed", (void *)this);
+        	return err;
+    	}
+		m_sdl_init = true;
+    	m_rate = rate;
+    	m_channels = channels;
+    	m_bits = bits;
+		m_audiospec->userdata = this;
+		free(audiospec);
     } else {
         err = 0;
     }
+	
     return err;
 }
 
@@ -168,7 +166,10 @@ gui::sdl::sdl_active_audio_renderer::callback(void *userdata, Uint8 *stream, int
 			memcpy(stream, in_ptr, size);
 			m_src->readdone(size);
 		}	
+	} else {
+		
 	}
+	
 }
 
 
@@ -177,13 +178,15 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 {
 
     if (!m_node) abort();
-
+	init(m_rate, m_bits, m_channels);
+	
 	std::ostringstream os;
 	os << *m_node;
-
+	
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_src) {
 		m_src->start(m_event_processor, m_readdone);
+		SDL_PauseAudio(0);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		if (m_playdone) {

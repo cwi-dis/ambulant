@@ -6,6 +6,7 @@ qt_player_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h
 
 # Conditionals for ARTS audio support
 if WITH_SDL
+extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
 extra_sdl_ldflags= `sdl-config --libs`
 else
@@ -30,6 +31,7 @@ endif
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
 	$(extra_arts_LDADD) \
+	$(extra_sdl_LDADD) \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a \
 	$(qt_libs)

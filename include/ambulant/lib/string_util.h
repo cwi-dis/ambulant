@@ -59,6 +59,7 @@
 #include <vector>
 #include <ctype.h>
 #include <assert.h>
+#include <stdio.h>
 
 namespace ambulant {
 

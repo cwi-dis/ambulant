@@ -72,9 +72,9 @@ qt_mainloop::run(void* view)
     rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
 #endif    
 #ifdef WITH_SDL
-		logger::get_logger()->trace("add factory for SDL");
-    	rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );     
-		logger::get_logger()->trace("add factory for SDL done");
+	logger::get_logger()->trace("add factory for SDL");
+    rf->add_factory( new ambulant::gui::sdl::sdl_renderer_factory() );      
+	logger::get_logger()->trace("add factory for SDL done");
 #endif
     rf->add_factory(new qt_renderer_factory());
     wf = new qt_window_factory(qt_view);
