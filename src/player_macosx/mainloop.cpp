@@ -75,10 +75,6 @@
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_datasource.h"
 #endif
-#define WITH_RAW_AUDIO
-#ifdef WITH_RAW_AUDIO
-#include "ambulant/net/raw_audio_datasource.h"
-#endif
 #include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
@@ -125,11 +121,6 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
-#endif
-#ifdef WITH_RAW_AUDIO
-	// This is for debugging only
-    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_audio_parser_finder");
-	m_df->add_audio_parser_finder(new net::raw_audio_parser_finder());
 #endif
 	
 	// Next create the playable factory and populate it.

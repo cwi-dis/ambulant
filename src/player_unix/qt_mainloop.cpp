@@ -63,10 +63,6 @@
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_datasource.h"
 #endif
-#define WITH_RAW_AUDIO
-#ifdef WITH_RAW_AUDIO
-#include "ambulant/net/raw_audio_datasource.h"
-#endif
 #include "ambulant/gui/none/none_factory.h"
 
 qt_mainloop::qt_mainloop(qt_gui* parent) :
@@ -100,11 +96,7 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
 
 #endif
-#ifdef WITH_RAW_AUDIO
-	// This is for debugging only
-    AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add raw_audio_parser_finder");
-	m_df->add_audio_parser_finder(new net::raw_audio_parser_finder());
-#endif
+
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *m_rf =
 		new common::global_playable_factory(); 
