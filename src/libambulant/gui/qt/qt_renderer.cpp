@@ -70,6 +70,12 @@ namespace qt_renderer {
       ("ambulant_qt_window::need_redraw(0x%x), "
        "ltrb=(%d,%d,%d,%d)",
        (void *)this, r.left(), r.top(), r.right(), r.bottom());
+    if (ambulant_widget() == NULL) {
+      logger::get_logger()->error
+	("ambulant_qt_window::need_redraw(0x%x):ambulant_widget() == NULL !!!",
+	 (void*) this);
+      return;
+    }
     ambulant_widget()->repaint(r.left(), r.top(), 
 			       r.width(), r.height(),
 			       true);
@@ -145,7 +151,9 @@ namespace qt_renderer {
 	= new qt_ambulant_widget(name, r, m_parent_widget);
       aqw->set_ambulant_widget(qaw);
       qaw->set_qt_window(aqw);
-
+      AM_DBG logger::get_logger()->trace
+	("qt_window_factory::new_window(0x%x) ambulant_widget=0x%x qt_window=0x%x",
+	 (void*) this, (void*) qaw, (void*) aqw);
       return aqw;
   }
   abstract_mouse_region *

@@ -87,7 +87,8 @@ namespace qt_renderer {
     ambulant_qt_window(const std::string &name, 
 		       screen_rect<int>* bounds,
 		       abstract_rendering_source *region) 
-      : abstract_window(region) {
+      : abstract_window(region) ,
+      m_ambulant_widget(NULL) {
       AM_DBG logger::get_logger()->trace
 	("ambulant_qt_window::ambulant_qt_window(0x%x)", (void *)this);
     }
@@ -118,7 +119,8 @@ namespace qt_renderer {
     qt_ambulant_widget(const std::string &name,
 		       lib::screen_rect<int>* bounds,
 		       QWidget* parent_widget)
-      : QWidget(parent_widget,"qt_ambulant_widget",0)  {
+      : QWidget(parent_widget,"qt_ambulant_widget",0),
+      m_qt_window(NULL) {
      AM_DBG logger::get_logger()->trace
 	("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))", 
 	 (void *)this, (void*)  parent_widget,
