@@ -71,11 +71,6 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	m_window(window),
 	m_player(0) {
 	
-	// this renderer does not obey active_renderer assumptions 
-	// If this cb is not deleted then this has an extra add_ref()
-	delete m_readdone;
-	m_readdone = 0;
-	
 	// create player so that get_dur() succeeds
 	if(m_src->exists())
 		m_player = new gui::dx::audio_player(m_src->get_url());

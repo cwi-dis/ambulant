@@ -81,12 +81,6 @@ gui::dx::dx_brush::dx_brush(
 	lib::abstract_window *window)
 :   lib::active_renderer(context, cookie, node, evp, src, dest),
 	m_window(window), m_region(0) { 
-	
-	// this renderer does not obey active_renderer assumptions 
-	// If this cb is not deleted then this has an extra add_ref()
-	delete m_readdone;
-	m_readdone = 0;
-	
 }
 
 gui::dx::dx_brush::~dx_brush() {

@@ -75,12 +75,6 @@ class dx_area_renderer : public lib::active_renderer {
 		lib::abstract_rendering_surface *const dest,
 		lib::abstract_window *window) 
 	: lib::active_renderer(context, cookie, node, evp, src, dest) {
-	
-		// this renderer does not obey active_renderer assumptions 
-		// If this cb is not deleted then this has an extra add_ref()
-		delete m_readdone;
-		m_readdone = false;
-		
 	}
 	~dx_area_renderer() {}
 	void start(double t) {}

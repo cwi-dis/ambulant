@@ -103,7 +103,9 @@ void gui::dx::dx_text_renderer::start(double t) {
 		stopped_callback();
 		return;
 	}
-	m_src->start(m_event_processor, m_readdone);
+	typedef lib::no_arg_callback<dx_text_renderer> callback_t;
+	lib::event *e = new callback_t(this, &dx_text_renderer::readdone);
+	m_src->start(m_event_processor, e);
 }
 
 void gui::dx::dx_text_renderer::readdone() {

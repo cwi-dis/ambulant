@@ -79,12 +79,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	m_update_event(0) {
 	
 	lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
-	
-	// this renderer does not obey active_renderer assumptions 
-	// If this cb is not deleted then this has an extra add_ref()
-	delete m_readdone;
-	m_readdone = 0;
-	
+		
 	// create player so that get_dur() succeeds
 	viewport *v = get_viewport();
 	if(m_src->exists()) {
