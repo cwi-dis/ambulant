@@ -1,4 +1,4 @@
-This directory contains version 0.4 of Ambulant,
+This directory contains version 0.3 of Ambulant,
 a playback engine for SMIL documents. 
 The ambulant homepage is at <http://www.ambulantplayer.org>.
 
@@ -14,7 +14,7 @@ Currently we have support for:
 - Linux
 - MacOSX
 - Windows
-?? - Zaurus.
+- Zaurus.
 
 Media support is spotty. All platforms support text and images,
 but the exact imge file types supported may differ. JPEG is supported
@@ -36,12 +36,11 @@ Not all of them are known to work on all platforms yet.
 You need to have "expat 1.95.7" installed before building ambulant;
 "expat" is used for XML-paring of .smil input files. Previous
 versions of "expat" will not work with ambulant.
+For more details read the third_party_packages/readme.txt
 
-For installation on Linux/Unix follow the detailed instructions 
-in README-CVS. A GUI player (build with Qt) will be available
-in src/player-unix/qt_player. It will play .smil documents
-found in Extras/* (first select the .smil document with "File->Open",
-then select "Play->Play"). Stop, Pause and re-Open do not work yet.
+
+A linux GUI player (build with Qt) will be available
+in src/player-unix/qt_player.
 
 For MacOSX, the cocoa player only gets built when you do "make install",
 it is deposited in /Applications/cocoambulant.app.
@@ -50,7 +49,7 @@ For Windows, see instructions in bin/win32.
 
 For Zaurus, see detailed instructions in README-ZAURUS.
 
-Various SMIL 2.0 documents can be found in Extras.
-Not all of them are known to work on all platforms yet.
+Various SMIL 2.0 documents can be found in a seperate repostory ambulant-documents, or as a tar ball at sourceforge.
+Note that not all of them are known to work on all platforms yet.
 
 
