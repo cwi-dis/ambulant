@@ -16,7 +16,7 @@ namespace lib {
 
 
 active_region *
-passive_region::activate(event_processor *const evp, node *node)
+passive_region::activate(event_processor *const evp, const node *node)
 {
 	return new active_region(evp, this, node);
 }

@@ -34,7 +34,7 @@ class passive_region {
 	:	m_name(name) {}
 	~passive_region() {}
 	
-	active_region *activate(event_processor *const evp, node *node);
+	active_region *activate(event_processor *const evp, const node *node);
   private:
   	char *m_name; // for debugging
 };
@@ -43,7 +43,7 @@ class active_region {
   public:
 	active_region(event_processor *const evp,
 		passive_region *const source,
-		node *node)
+		const node *node)
 	:	m_event_processor(evp),
 		m_source(source),
 		m_node(node) {}
@@ -56,7 +56,7 @@ class active_region {
   private:
   	event_processor *const m_event_processor;
 	passive_region *const m_source;
-	node *m_node;
+	const node *m_node;
 };
 
 } // namespace lib
