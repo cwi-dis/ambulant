@@ -95,10 +95,12 @@ class time_calc : public time_traits {
 	
 	void set_paused_mode(bool b) { m_paused = b;}
 	
+	bool uses_dur() const { return m_uses_dur;}
   private:
 	schedulable *m_tn;
 	const time_attrs& m_attrs;
 	bool m_paused;
+	bool m_uses_dur;
 	static lib::logger *clogger;
 };
 

@@ -256,11 +256,12 @@ class time_node : public schedulable {
 	// Could be the time root always (document time).
 	const time_node* sync_node() const { return up()?up():this;}
 	time_node* sync_node() { return up()?up():this;}
-	value_type get_sync_simple_time() const;
-	value_type get_simple_time() const;
 	time_type get_rad() const { return m_rad;}
-	time_type get_pad() const { return m_pad();}
-
+	time_type get_pad() const { return m_pad;}
+	value_type get_simple_time() const;
+	time_type get_interval_end() const;
+	value_type get_time() const;
+	
 	// Time type queries and classification
 	time_container_type get_type() const { return m_type;}
 	const char* get_type_as_str() const { return time_container_type_as_str(m_type);}
@@ -447,18 +448,10 @@ class time_node : public schedulable {
 	// == this has to call stop() against its peer playable.
 	bool m_needs_remove;
 	
-	// The following 3 state variables are incemented when the node is active  
-	// and it repeats: 
-	// m_rad += m_last_cdur; m_rad_offset calc, m_precounter++;
-	
 	// Accumulated repeat duration
 	// Incremented after the completion of a simple dur
+	// Last begin or repeat instance as measured by the AD timer of this node.
 	time_type m_rad;
-	
-	// Last begin or repeat instance in parent simple time.
-	// e.g. the accumulated repeat duration (rad) as a parent simple time instance
-	// Therefore: simple_dur_offset = parent_simple_time - m_rad_offset;
-	value_type m_rad_offset;
 	
 	// Number of completed repeat counts
 	// e.g. the current zero-based repeat index

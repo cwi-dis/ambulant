@@ -89,7 +89,6 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_active(false),
 	m_needs_remove(false),
 	m_rad(0),
-	m_rad_offset(0),
 	m_precounter(0),
 	m_priority(0),
 	m_paused(false), 
@@ -634,7 +633,7 @@ void time_node::activate(qtime_type timestamp) {
 		sd_offset = ad_offset.rem(cdur);
 		
 		// In this case we need to update the values of the repeat registers.
-		// Previous values: m_rad(0), m_rad_offset(0), m_precounter(0)
+		// Previous values: m_rad(0), m_precounter(0)
 		
 		// The current repeat index
 		m_precounter = ad_offset.mod(cdur);
@@ -642,8 +641,6 @@ void time_node::activate(qtime_type timestamp) {
 		// The accumulated repeat interval.
 		m_rad = m_precounter*cdur();
 		
-		// The accumulated repeat interval as a parent simple time instance
-		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
 	}
 	
 	AM_DBG m_logger->trace("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
@@ -653,15 +650,15 @@ void time_node::activate(qtime_type timestamp) {
 		
 	// Adjust timer
 	if(m_timer) {
-		m_timer->set_time(sd_offset());
+		m_timer->set_time(ad_offset());
 		m_timer->set_speed(m_attrs.get_speed());
 	}
 	
 	// Start node
 	if(!paused()) {
-		if(m_timer) m_timer->resume();
 		if(is_animation()) start_animation(sd_offset);
 		else start_playable(sd_offset);
+		if(m_timer) m_timer->resume();
 	}
 }
 
@@ -793,11 +790,12 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			events[timestamp.to_doc()].push_back(this);
 		} else if(m_interval.end.is_definite()) {
 			// XXX: check for repeat (or leave it to sampling)
-			qtime_type timestamp(sync_node(), m_interval.end + m_pad);
+			qtime_type timestamp(sync_node(), get_interval_end());
 			time_type doctime = timestamp.to_doc();
 			events[doctime].push_back(this);
 		}
 	}
+	
 	if(m_update_event.first) {
 		qtime_type timestamp = m_update_event.second;
 		events[timestamp.to_doc()].push_back(this);
@@ -811,6 +809,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			events[ts.to_doc()].push_back(this);
 		}
 	}
+	
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
@@ -854,8 +853,7 @@ void time_node::exec(qtime_type timestamp) {
 			qtime_type ts(sync_node(), *set.begin());
 			if(timestamp.second >= ts.second) {
 				// start trasnition
-				AM_DBG 
-				m_logger->trace("%s[%s].start_transition() at %ld (end:%ld)", 
+				AM_DBG m_logger->trace("%s[%s].start_transition() at %ld (end:%ld)", 
 					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
 					ts.second(),  m_interval.end());
 				const lib::node *trans_out = m_attrs.get_trans_out();
@@ -876,29 +874,9 @@ void time_node::exec(qtime_type timestamp) {
 		return;
 	}
 	
-	// The AD offset of this node
-	time_type ad_offset = timestamp.second - m_interval.begin - m_pad;
-	
-	// The SD offset of this node
-	time_type sd_offset;
-	if(ad_offset == 0) {
-		sd_offset = 0;
-	} else if(!m_last_cdur.is_definite()) {
-		sd_offset = ad_offset;
-	} else if(m_last_cdur == 0) {
-		sd_offset = 0;
-	} else {
-		sd_offset = timestamp.second - m_rad_offset;
-	}
-	
 	// Check for the EOSD event
-	if(timestamp.as_time_value_down_to(this) >= m_last_cdur())
+	if(m_last_cdur.is_definite() && m_last_cdur != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
 		on_eosd(timestamp);
-	/*
-	if(m_last_cdur.is_definite() && m_last_cdur != 0 && sd_offset >= m_last_cdur) {
-		// may call repeat
-		on_eosd(timestamp);
-	}*/
 }
 
 // Returns true when the end conditions of this node evaluate to true
@@ -908,7 +886,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 	assert(timestamp.first == sync_node());
 	assert(is_active());
 	bool ec = end_sync_cond_applicable() && end_sync_cond();
-	bool tc = !end_sync_cond_applicable() && timestamp.second >= (m_interval.end + m_pad);
+	bool tc = !end_sync_cond_applicable() && timestamp.second >= get_interval_end();
 	
 	if(is_time_container() && (ec || tc)) {
 		AM_DBG m_logger->trace("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(), 
@@ -965,10 +943,8 @@ void time_node::on_eosd(qtime_type timestamp) {
 	// update repeat registers
 	m_rad += m_last_cdur();
 	m_precounter++;	
-	m_rad_offset = timestamp.second();
 	
 	// Should this node repeat?
-	
 	if(m_attrs.specified_rdur()) {
 		time_type rdur = m_attrs.get_rdur();
 		if(rdur == time_type::indefinite || rdur > m_rad) {
@@ -1117,6 +1093,7 @@ void time_node::resume(qtime_type timestamp) {
 	time_type iend = calc_current_interval_end();
 	time_type resumed_sync_time = timestamp.as_time_down_to(sync_node());
 	time_type pauseoffset = resumed_sync_time - m_paused_sync_time;
+	
 	m_pad += pauseoffset;
 	if(iend != m_interval.end) {
 		update_interval_end(timestamp, iend);
@@ -1658,21 +1635,16 @@ void time_node::reset() {
 	// bool m_needs_remove;
 	m_needs_remove = false;
 	
-	// The following 3 state variables are incemented when the node is active  
+	// The following 2 state variables are incemented when the node is active  
 	// and it repeats: 
-	// m_rad += m_last_cdur; m_rad_offset calc, m_precounter++;
+	// m_rad += m_last_cdur; m_precounter++;
 	
 	// Accumulated repeat duration
 	// Incremented after the completion of a simple dur
-	// value_type m_rad;
+	// Last begin or repeat instance as measured by the AD timer of this node.
+	// time_type m_rad;
 	m_rad = 0;
-	
-	// Last begin or repeat instance in parent simple time.
-	// e.g. the accumulated repeat duration (rad) as a parent simple time instance
-	// Therefore: simple_dur_offset = parent_simple_time - m_rad_offset;
-	// value_type m_rad_offset;
-	m_rad_offset = 0;
-	
+		
 	// Number of completed repeat counts
 	// e.g. the current zero-based repeat index
 	// long m_precounter;
@@ -1769,18 +1741,44 @@ void time_node::reset() {
 }
 
 ///////////////////////////////
-// Timing operations
-// XXX: Revisit and elaborate on these
+// Timing measurements
 
-// Returns the simple time of this sync node (parent).
-time_node::value_type time_node::get_sync_simple_time() const {
-	return is_root()?m_context->elapsed():sync_node()->get_simple_time();
-}
+// Currently the timer:
+// Starts ticking at the active duration offset when the node is activated
+// Progress while this node is active and playing
+// Is paused when the the node or an ancestor is paused while active 
+// Pauses or stops when the node is deactivated 
 
 // Returns the simple time of this node.
 time_node::value_type time_node::get_simple_time() const {
-	return get_sync_simple_time() - m_rad_offset;
+	if(!m_timer) return 0;
+	
+	// The AD offset of this node
+	// Any pause intervals are not included (see accumulated pause dur: pad)
+	// The total time this node has been active is: ad_offset + m_pad
+	time_type ad_offset = m_timer->elapsed();
+	
+	// The SD offset of this node
+	time_type sd_offset = ad_offset - m_rad;
+	return sd_offset();
 }
+
+// Returns the current interval end taking into account pausing
+time_node::time_type time_node::get_interval_end() const {
+	if(m_time_calc->uses_dur())
+		return m_interval.end + m_pad;
+	return m_interval.end;
+}
+
+// Returns the time elapsed since the beginning of 
+// the interval taking into account pausing.
+// The node should be active and playing.
+// When paused the value returned will not take into acount the paused period
+time_node::value_type time_node::get_time() const {
+	if(!m_timer) return 0;
+	return m_timer->elapsed() + m_pad();
+}
+
 
 /////////////////////////////////////////////////////
 // time_container overrides
@@ -1827,7 +1825,7 @@ time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl)
 		const time_node *c = *it;
 		const interval_type& i = c->get_first_interval();
 		if(i.is_valid())
-			idur = std::min(idur, i.end);
+			idur = std::min(idur, c->get_interval_end());
 	}
 	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_first(): %s", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), ::repr(idur).c_str());		
@@ -1845,7 +1843,7 @@ time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 		const time_node *c = *it;
 		if(endsync_id == c->get_time_attrs()->get_id()) {
 			const interval_type& i = c->get_first_interval();
-			if(i.is_valid()) idur = i.end + c->get_pad();
+			if(i.is_valid()) idur = c->get_interval_end();
 			break;
 		}
 	}
@@ -1871,7 +1869,7 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 			idur = time_type::unresolved;
 			break; 
 		} else if(i.is_valid()) {
-			idur = std::max(idur, i.end + c->get_pad());
+			idur = std::max(idur, c->get_interval_end());
 		}
 	}
 	AM_DBG m_logger->trace("%s[%s].calc_implicit_dur_for_esr_last(): %s", m_attrs.get_tag().c_str(), 
@@ -1889,7 +1887,7 @@ time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 		const time_node *c = *it;
 		const interval_type& i = c->get_last_interval();
 		if(i.is_valid())
-			idur = std::max(idur, i.end);
+			idur = std::max(idur, c->get_interval_end());
 		else if(!c->played()) {
 			idur = time_type::unresolved;
 			break;

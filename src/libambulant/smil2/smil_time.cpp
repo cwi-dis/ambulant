@@ -103,7 +103,13 @@ q_smil_time::time_type q_smil_time::to_doc() {
 
 bool q_smil_time::up() {
 	if(first->up()) {
-		second += first->get_rad() + first->get_pad() + first->get_last_interval().begin;
+		// The time elapsed since the interval begin of node first
+		second += first->get_rad() + first->get_pad();
+		
+		// The same time instance with respect to parent begin
+		second +=  first->get_last_interval().begin;
+		
+		// The time instance reference is now the parent
 		first = first->up();
 	}
 	return first->up() != 0;
@@ -111,7 +117,12 @@ bool q_smil_time::up() {
 	
 void q_smil_time::down(const time_node *child) {
 	first = child;
-	second -= first->get_rad() + first->get_pad() + first->get_last_interval().begin;
+	
+	// The time instance translated to child begin
+	second -= first->get_last_interval().begin;
+	
+	// A q_smil_time holds simple times; do the convertion 
+	second -= first->get_rad() + first->get_pad();
 }
 
 q_smil_time::time_type 
@@ -145,9 +156,4 @@ q_smil_time::as_qtime_down_to(const time_node *n) const {
 	return q_smil_time(n, t);
 }
 
-//static 
-q_smil_time::time_type 
-q_smil_time::to_sync_time(const time_node *n, const time_type& n_simple) {
-	return n_simple + n->get_rad() + n->get_pad() + n->get_last_interval().begin;
-}
 

@@ -344,7 +344,6 @@ class q_smil_time : public std::pair<const time_node*, smil_time<long> > {
 	value_type as_time_value_down_to(const time_node *n) const { return as_time_down_to(n)();}
 	
 	q_smil_time as_qtime_down_to(const time_node *n) const;
-	static time_type to_sync_time(const time_node *n, const time_type& self_simple);
 	
 	q_smil_time& operator+(time_type rhs) { 
 		this->second += rhs;
