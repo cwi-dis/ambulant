@@ -11,6 +11,7 @@ MACOS_DMGNAME=AmbulantPlayer-$(VERSION)
 macosbininstaller:
 	-rmdir dist/$(MACOS_INSTALLDIR)
 	mkdir -p dist/$(MACOS_INSTALLDIR)
+	cp $(srcdir)/README dist/$(MACOS_INSTALLDIR)
 	cp -R $(DESTDIR)/Applications/"Ambulant Player".app dist/$(MACOS_INSTALLDIR)
 	cp -R $(srcdir)/Extras/DemoPresentation dist/$(MACOS_INSTALLDIR)
 	rm -rf `find dist -name CVS`

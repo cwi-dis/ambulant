@@ -25,17 +25,20 @@ expat-unix:
 ffmpeg:
 	Linux and Mac OS X.
 	
-	You need ffmpeg 0.4.8. Download from <http://ffmpeg.sourceforge.net/>.
-	Note that as of this writing you cannot use an ffmpeg installation as
-	comes pre-installed with some RedHat distributions: not all libraries and
-	include files seem to be installed.
+	You need ffmpeg 0.4.8. Download from <http://ffmpeg.sourceforge.net/> and
+	unpack into ffmpeg-0.4.8 in this directory (.../ambulant/third_party_packages).
 	
 	After downloading and unpacking, for MacOSX you must apply the patch
-	from ffmpeg. Then build ffmpeg (there is no need to install):
+	from ffmpeg (it should do no harm applying the patch for other Unix systems
+	bt I don't think it is needed). Then build ffmpeg (there is no need to install):
 		$ cd ffmpeg-0.4.8
 		$ patch < ../ffmpeg-macosx-patch    # For Mac OS X only
 		$ ./configure
 		$ make
+
+	Note that as of this writing you cannot use an ffmpeg installation as
+	comes pre-installed with some RedHat distributions: not all libraries and
+	include files seem to be installed.
 
 	In principle the ffmpeg package is optional, but failing to supply it will
 	result in an ambulant player that can play no audio (Mac OS X) or
@@ -49,6 +52,6 @@ sdl:
 arts:
 	Linux only.
 	
-	At some point Ambulant was also able to use Arts audio library in stead of
+	At some point Ambulant was also able to use Arts audio library instead of
 	SDL, but for this release that support is untested, and believed to be
 	broken.

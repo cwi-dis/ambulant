@@ -72,15 +72,6 @@ exceptions:
 - No support for SMIL animation in this release.
 - tag names must match media type, and no support for mimetypes
 
-Furthermore, you need to have "expat 1.95.7" installed before
-building ambulant; "expat" is used for XML-paring of .smil input files
-Previous versions of "expat" will not work with Ambulant.
-For more details read the third_party_packages/readme.txt
-
-On Linux, the aRts implementation is currently not working, use
-./configure --without-arts --with-ffmpeg[=<your libavcodec>];
-make;make install
-
 Documentation
 -------------
 
@@ -110,10 +101,10 @@ Prerequisites
 -------------
 
 Obviously you will need a compiler/linker/development environment.
-For Windows you need Microsoft Visual Studio .NET version XXXX.
+For Windows you need Microsoft Visual Studio .NET version 7.1.
 For Linux desktop and MacOSX you need GNU gcc, at least version 3.2.
-For Windows CE you need Microsoft Embedded Visual C++ version XXXX.
-For Zuarus you need XXXX.
+For Windows CE you need Microsoft Embedded Visual C++ version 3.0.
+For Zaurus you need qtopia 1.5 with gcc 2.95.2.
 
 You also need to build and install several third party packages
 that Ambulant depends on. All these are supplied in the third_party_packages
@@ -130,25 +121,65 @@ details.
 Building for Linux
 ------------------
 
-The normal "configure"/"make"/"make install" combo should work.
-"
+First make sure you install the third party packages on which Ambulant
+depends, see third_party_packages/readme.txt.
+Then the normal "configure"/"make"/"make install" combo should work.
+
 Building for Mac OS X
 ---------------------
 
+First make sure you install the third party packages on which Ambulant
+depends, see third_party_packages/readme.txt.
 The normal "configure"/"make"/"make install" combo should work.
+
+"make install" installs the shared libraries and such into the path
+specified with the --prefix configure option, but the application,
+"Ambulant Player.app" is always installed into /Applications.
+
+An XCode project is also available, mainly for debugging purposes, but
+this needs some handcrafting to get it to work (it contains absolute
+pathnames to include directories to work around an XCode bug).
 
 Building for Windows
 --------------------
 
-For Windows, see instructions in bin/win32.
+Installing and building the third party packages on Windows is more of a
+pain than it is on unix. We hope these instructions are complete, otherwise
+please report back.
+
+Install the following distributions into directories in third_party_packages:
+- expat: XXXX
+- jpeg: XXXX
+- lpng125: XXXX
+- mp3lib: XXXX
+- zlib: XXXX
+
+Next, build these by opening
+third_party_packages\third_party_packages.sln in Visual Studio,
+selecting the "Release" configuration and doing Build->Build Solution.
+
+When this succeeds double-click the batchfile
+third_party_packages\copy_tpp_win32.bat, which copies the various
+libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
+lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
+copied to bin\win32 in the toplevel directory.
+NOTE: if this step fails please inspect the script and do the
+needed copies by hand.
+
+After these steps you are ready to build AmbulantPlayer itself: open
+src\Ambulant-win32.sln in Visual Studio, select the Release configuration
+and do Build->Build Solution.
+
+The resulting application is deposited in bin\win32 in the toplevel
+directory.
 
 Building for Zaurus
-
 -------------------
+
 For Zaurus, see detailed instructions in README-ZAURUS.
 
 Building for Windows CE
 -----------------------
 
-For Windows, see instructions in bin/wince.
+To be provided.
 
