@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+<!DOCTYPE filter [
+	<!ELEMENT filter (systemTest|customTest)* >
+	<!ELEMENT systemTest EMPTY>
+	<!ATTLIST systemTest name ID #REQUIRED>
+	<!ATTLIST systemTest value CDATA #REQUIRED>
+	<!ELEMENT customTest EMPTY>
+	<!ATTLIST customTest name ID #REQUIRED>
+	<!ATTLIST customTest value CDATA #REQUIRED>
+]>
 <filter>
 	<systemTest name="systemAudioDesc" value="on" />
 	<systemTest name="systemBitrate" value="10000000" />
