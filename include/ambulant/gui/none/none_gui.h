@@ -65,7 +65,7 @@ namespace none {
 
 class none_window : public common::abstract_window {
   public:
-  	none_window(const std::string &name, lib::size bounds, common::renderer *region)
+  	none_window(const std::string &name, lib::size bounds, common::surface_source *region)
   	:	common::abstract_window(region) {};
   		
 	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
@@ -77,7 +77,7 @@ class none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::renderer *region);
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::surface_source *region);
 	common::gui_region *new_mouse_region() { return NULL; }
 	common::renderer *new_background_renderer(common::region_info *src);
 };

@@ -179,7 +179,7 @@ cocoa_renderer_factory::new_playable(
 }
 
 abstract_window *
-cocoa_window_factory::new_window(const std::string &name, size bounds, renderer *region)
+cocoa_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
 {
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it

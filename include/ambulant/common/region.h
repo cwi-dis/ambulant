@@ -75,7 +75,7 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region : public surface_template, public renderer {
+class passive_region : public surface_template, public surface_source {
 	friend class active_region;
 
   protected:
@@ -152,7 +152,7 @@ class passive_root_layout : public passive_region {
 ;
 #endif
 
-class active_region : public surface, public renderer {
+class active_region : public surface, public surface_source {
   public:
 	active_region(passive_region *const source)
 	:	m_source(source),

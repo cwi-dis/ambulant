@@ -67,7 +67,7 @@ namespace cocoa {
 
 class cocoa_window : public common::abstract_window {
   public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::renderer *region)
+  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::surface_source *region)
   	:	common::abstract_window(region),
   		m_view(_view) {};
 	~cocoa_window();
@@ -90,7 +90,7 @@ class cocoa_window_factory : public common::window_factory {
   	cocoa_window_factory(void *view)
   	:	m_defaultwindow_view(view) {}
   	
-	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::renderer *region);
+	common::abstract_window *new_window(const std::string &name, lib::size bounds, common::surface_source *region);
 	common::gui_region *new_mouse_region();
 	common::renderer *new_background_renderer(const common::region_info *src);
   private:

@@ -62,12 +62,7 @@ using namespace common;
 void
 gui::none::none_playable::start(double where)
 {
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
-	lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
-	os << "none_playable.start(" << (void *)this;
-	os << ", node=" << *m_node;
-	os << ")" << lib::endl;
-#endif
+	lib::logger::get_logger()->trace("none_playable.start(0x%x)", m_node);
 	stopped_callback();
 }
 
@@ -100,7 +95,7 @@ gui::none::none_window_factory::new_background_renderer(region_info *src)
 }
 
 abstract_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds, renderer *region)
+gui::none::none_window_factory::new_window(const std::string &name, size bounds, surface_source *region)
 {
 	return new none_window(name, bounds, region);
 }
