@@ -118,7 +118,7 @@ int region_node::node_counter = 0;
 region_node::region_node(const lib::node *n, dimension_inheritance di)
 :	m_node(n),
 	m_dim_inherit(di),
-	m_fit(common::fit_hidden),
+	m_fit(common::fit_default),
 	m_zindex(0),
 	m_bgcolor(lib::to_color(0,0,0)),
 	m_transparent(true),
@@ -142,7 +142,7 @@ region_node::fix_from_dom_node()
 	bool changed = false;
 	
 	// For every node in the layout section we fill in the dimensions
-	AM_DBG lib::logger::get_logger()->trace("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
+	/*AM_DBG*/ lib::logger::get_logger()->trace("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
 	common::region_dim_spec rdspec;
 	rdspec.left = get_regiondim_attr(m_node, "left");
 	rdspec.width = get_regiondim_attr(m_node, "width");
@@ -199,7 +199,7 @@ region_node::fix_from_dom_node()
 	
 	// And fit
 	const char *fit_attr = m_node->get_attribute("fit");
-	common::fit_t fit = common::fit_hidden;
+	common::fit_t fit = common::fit_default;
 	if (fit_attr) {
 		if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
 		else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;

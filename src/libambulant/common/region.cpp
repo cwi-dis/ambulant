@@ -389,13 +389,18 @@ passive_region::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_s
 	const double scale_height = (double)region_height / std::max((double)image_height, 0.1);
 	double scale;
 	
-	const fit_t fit = (m_info == NULL?fit_hidden : m_info->get_fit());
+	fit_t fit = (m_info == NULL?fit_default : m_info->get_fit());
+	// This is a bit of a hack: if no fit value is specified we pick it up
+	// from our parent. This is needed for subregions (nodes).
+	if (fit == fit_default && m_parent && m_parent->m_info)
+		fit = m_parent->m_info->get_fit();
 	switch (fit) {
 	  case fit_fill:
 		// Fill the area with the image, ignore aspect ration
 		*out_src_rect = lib::rect(lib::point(0, 0), src_size);
 		return m_inner_bounds;
 	  case fit_scroll:
+	  case fit_default:
 	  case fit_hidden:
 		// Don't scale at all
 		*out_src_rect = lib::rect(lib::point(0, 0), lib::size(min_width, min_height));
@@ -478,7 +483,11 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 	}
 	double scale_horizontal, scale_vertical;
 	
-	const fit_t fit = (m_info == NULL?fit_hidden : m_info->get_fit());
+	fit_t fit = (m_info == NULL?fit_default : m_info->get_fit());
+	// This is a bit of a hack: if no fit value is specified we pick it up
+	// from our parent. This is needed for subregions (nodes).
+	if (fit == fit_default && m_parent && m_parent->m_info)
+		fit = m_parent->m_info->get_fit();
 	switch (fit) {
 	  case fit_fill:
 		// Fill the area with the image, ignore aspect ration
@@ -487,6 +496,7 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 		scale_vertical = scale_min_vertical;
 		break;
 	  case fit_scroll:		// XXXX incorrect
+	  case fit_default:
 	  case fit_hidden:
 		scale_horizontal = scale_vertical = 1.0;
 		break;
