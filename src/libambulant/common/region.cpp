@@ -20,15 +20,13 @@ lib::passive_region::activate(event_processor *const evp, const node *node)
 }
 
 void
-lib::active_region::start(event *playdone)
+lib::active_region::show()
 {
-	lib::logger::get_logger()->trace("active_region.start(0x%x, \"%s\", playdone=0x%x)", (void *)this, m_source->m_name, (void *)playdone);
-	if (playdone)
-		m_event_processor->add_event(playdone, 0, event_processor::low);
+	lib::logger::get_logger()->trace("active_region.show(0x%x, \"%s\")", (void *)this, m_source->m_name);
 }
 
 void
-lib::active_region::stop()
+lib::active_region::done()
 {
-	lib::logger::get_logger()->trace("active_region.stop(0x%x, \"%s\")", (void *)this, m_source->m_name);
+	lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name);
 }

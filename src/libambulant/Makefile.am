@@ -12,6 +12,7 @@ libambulant_la_SOURCES = \
 	lib/node.cpp \
 	lib/player.cpp \
 	lib/region.cpp \
+	lib/renderer.cpp \
 	lib/skeleton.cpp \
 	lib/smil_handler.cpp \
 	lib/timeline_builder.cpp \

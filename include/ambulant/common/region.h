@@ -49,9 +49,8 @@ class active_region {
 		m_node(node) {}
 	~active_region() {}
 	
-	void start(event *playdone);
-	void stop();
-	
+	void show();
+	void done();	
 
   private:
   	event_processor *const m_event_processor;
