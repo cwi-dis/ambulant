@@ -1,0 +1,6 @@
+This directory contains a skeleton tree for ambulant. It creates
+a static library libambulant (from src/libambulant) that contains
+one call: get_version(), which returns "0.0".
+
+A sample main program for unix is also included, Windows stuff will
+follow.
