@@ -350,6 +350,14 @@ bool net::url::same_document(const net::url &base) const
 		m_query == base.m_query);
 }
 
+#if defined(AMBULANT_PLATFORM_WIN32_WCE)
+void set_url_from_spec(net::url& u, const char *spec) {
+	net::url dummy(spec);
+	u = dummy;
+}
+
+#endif
+
 ///////////////
 // module private static initializer
 

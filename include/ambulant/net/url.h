@@ -241,6 +241,10 @@ inline std::string repr(const ambulant::net::url& u) {
 		os += u.get_path();
 	return os;
 }
+
+void set_url_from_spec(ambulant::net::url& u, const char *spec);
+
+
 #endif
 
 
