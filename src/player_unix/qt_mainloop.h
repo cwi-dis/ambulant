@@ -100,8 +100,6 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	void close(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL);
 	
-	static void set_preferences(std::string &path);
- 	
 	static void* run(void* qt_mainloop);
 
 	long add_ref() {

@@ -67,7 +67,6 @@ class preferences {
 
 	enum parser_id {ANY = 0, EXPAT, XERCES};
 
-#ifdef	WITH_XERCES
 	enum val_scheme {NEVER = 0, ALWAYS, AUTO};
 
 	val_scheme m_validation_scheme;
@@ -79,12 +78,12 @@ class preferences {
 	bool m_do_validation;
 
 	bool m_validation_schema_full_checking;
-#endif/*WITH_XERCES*/
+
 	int m_log_level;
 
-	static preferences* get_preferences();
+	parser_id m_parser_id;
 
-	parser_id get_parser_id();
+	static preferences* get_preferences();
 
 	virtual bool load_preferences();
 
@@ -94,7 +93,6 @@ class preferences {
 	static void set_preferences_singleton(preferences *prefs);
   private:
 	static preferences* s_preferences; // singleton
-	parser_id m_parser_id;
 
 };// class preferences
 

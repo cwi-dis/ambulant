@@ -273,12 +273,6 @@ qt_mainloop::is_open() const
 }
 
 void
-qt_mainloop::set_preferences(std::string &url)
-{
-//	smil2::test_attrs::load_test_attrs(url);
-}
-
-void
 qt_mainloop::show_file(const net::url &url)
 {
 	open_web_browser(url.get_url());
