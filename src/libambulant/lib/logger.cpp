@@ -9,76 +9,242 @@
  */
 
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/mtsync.h"
 
-////////////////////////////
-// module private part
+#include <map>
+
+#include <time.h>
+#include <stdarg.h>
 
 using namespace ambulant;
 
+// Options:
+// One global logger configured appropriately.
+// A set of named global loggers configured appropriately.
+// A logger per file as: lib::logger::get_logger(__FILE__);
+
+
+// Set default_level to a higher level than debug 
+// to suppress output at levels below
+
+// static
+int lib::logger::default_level = lib::logger::LEVEL_DEBUG;
+
+
+// Set the fefault loggers ostream
+// Set this std::cout, to a file or socket ostream or whatever
+// This is the default, each specific named logger may 
+// be configured sepaately
+
+// static
+std::ostream* lib::logger::default_pos = &std::cout;
+
+// Output logging date as xx/xx/xx
+//static 
+bool lib::logger::logdate = false;
+
+// Output logging time as xx:xx:xx
+//static 
+bool lib::logger::logtime = false;
+
+// Output logger name as [name]
+// static 
+bool lib::logger::logname = false;
+
+// Output level name 
+// Level name is one of (DEBUG, TRACE, WARN, ERROR, FATAL, UNKNOWN)
+// static 
+bool lib::logger::loglevel = false;
+
+////////////////////////////////
+// Module private bracket
+
 // Manages init/free app logger
-class logger_wrapper {
+class loggers_manager {
   public:
-  typedef lib::stdout_logger<lib::critical_section> stdout_logger;
-  
-	logger_wrapper() :	m_logger(new stdout_logger()){}
-	~logger_wrapper()
-		{ if(m_logger != 0) delete m_logger;}
-		
-	lib::logger* get_logger() { return m_logger;}
-	void set_logger(lib::logger *p) {
-		if(m_logger != 0) delete m_logger; 
-		m_logger = p;
-	}
+	~loggers_manager();
 
-	lib::logger* operator->() { return m_logger;}
-
-  private:
-	lib::logger *m_logger;
+	// loggers repository
+	std::map<std::string, lib::logger*> loggers;	
 };
 
-static logger_wrapper wrapper;
-
-
-////////////////////////////
-// public logging functions
-
-void ambulant::set_app_logger(lib::logger *p) {
-	wrapper.set_logger(p);
+// free all loggers
+// loggers should no be used in the destructors
+// of objects that will be detroyed after the appl 'exits'.
+loggers_manager::~loggers_manager() {
+	std::map<std::string, lib::logger*>::iterator it;
+	for(it=loggers.begin();it!=loggers.end();it++)
+		delete (*it).second;
 }
 
+static 
+loggers_manager loggers_singleton;
+
+////////////////////////////////
+
+const std::string app_logger_name = "app_logger";
+
+// one usage: lib::logger::get_logger(__FILE__);
+// if used this way we should remove critical section
+//static 
+lib::logger* lib::logger::get_logger(const char *name) {
+	std::string lname = (name==NULL || name[0]==0)?app_logger_name:name;
+	std::map<std::string, logger*>::iterator it;
+	it = loggers_singleton.loggers.find(lname);
+	if(it != loggers_singleton.loggers.end()) {
+		return (*it).second;
+	}
+	logger *nl = new logger(lname);
+	loggers_singleton.loggers[lname] = nl;
+	return nl;
+}
+
+// one usage: lib::logger::get_logger(__FILE__, __LINE__);
+// if used this way we should remove critical section
+//static 
+lib::logger* lib::logger::get_logger(const char *name, int pos) {
+	std::string lname = (name==NULL || name[0]==0)?app_logger_name:name;
+	char sz[16];sprintf(sz, ":%d", pos);
+	lname += sz;
+	return get_logger(lname.c_str());
+}
+
+// static 
+void lib::logger::set_loggers_level(int level) {
+	logger::default_level = level;
+}
+
+void lib::logger::debug(const char *format, ...) {
+	if(suppressed(LEVEL_DEBUG))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_DEBUG, format, args);
+	va_end(args);
+}
+
+void lib::logger::trace(const char *format, ...) {
+	if(suppressed(LEVEL_TRACE))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_TRACE, format, args);
+	va_end(args);
+}
+
+void lib::logger::warn(const char *format, ...) {
+	if(suppressed(LEVEL_WARN))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_WARN, format, args);
+	va_end(args);
+}
+
+void lib::logger::error(const char *format, ...) {
+	if(suppressed(LEVEL_ERROR))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_ERROR, format, args);
+	va_end(args);
+}
+
+void lib::logger::fatal(const char *format, ...) {
+	if(suppressed(LEVEL_FATAL))
+		return;
+	va_list	args;
+	va_start(args, format);
+	log_va_list(LEVEL_FATAL, format, args);
+	va_end(args);
+}
+
+void lib::logger::log_va_list(int level, const char *format, va_list args) {
+	char buf[2048] = "";
+	vsprintf(buf, format, args);
+	log_cstr(level, buf);
+}
+
+// Output format/hook
+void lib::logger::log_cstr(int level, const char *buf) {
+	if(suppressed(level))
+		return;
+	struct tm *lt = NULL;
+	if(logger::logdate || logger::logtime) {
+		time_t t = time(NULL);
+		lt = localtime(&t);
+	}
+	std::ostream& os = *m_pos;
+	m_cs.enter();
+	if(logger::logdate)
+		os << (1900 + lt->tm_year) << "/" << (1 + lt->tm_mon) << "/" << lt->tm_mday << " ";
+	if(logger::logtime)
+		os << lt->tm_hour << ":" << lt->tm_min << ":" << lt->tm_sec << " ";
+	if(loglevel)
+		os << get_level_name(level) << "\t";
+		
+	os << buf;
+	
+	if(logger::logname)
+		os << " [" <<  m_name << "]" ;
+		
+	os << std::endl;
+	os.flush();
+	m_cs.leave();
+}
+
+// static
+const char* 
+lib::logger::get_level_name(int level) {
+	switch(level) {
+		case LEVEL_DEBUG: return "DEBUG";
+		case LEVEL_TRACE: return "TRACE";
+		case LEVEL_WARN: return "WARN";
+		case LEVEL_ERROR: return "ERROR";
+		case LEVEL_FATAL: return "FATAL";
+		default: return "UNKNOWN";
+	}
+}
+////////////////////////////
+// public logging functions
+// The following lobal functions use the 
+// global logger "app_logger" for logging.
 
 void ambulant::log_error_event(const char *format, ...) {
-	if(wrapper.get_logger() == 0) return;
-	char buf[2048] = "";
-	va_list	pArg;
-	va_start(pArg, format);
-	vsprintf(buf, format, pArg);
-	va_end(pArg);
-	wrapper->log_error_event(buf);
+	lib::logger *logger = lib::logger::get_logger();
+	if(!logger->suppressed(lib::logger::LEVEL_ERROR)) {
+		va_list	args;
+		va_start(args, format);
+		logger->log_va_list(lib::logger::LEVEL_ERROR, format, args);
+		va_end(args);
+	}
 }
 
 void ambulant::log_warning_event(const char *format, ...) {
-	if(wrapper.get_logger() == 0) return;
-	char buf[2048] = "";
-	va_list	pArg;
-	va_start(pArg, format);
-	vsprintf(buf, format, pArg);
-	va_end(pArg);
-	wrapper->log_warning_event(buf);
+	lib::logger *logger = lib::logger::get_logger();
+	if(!logger->suppressed(lib::logger::LEVEL_WARN)) {
+		va_list	args;
+		va_start(args, format);
+		logger->log_va_list(lib::logger::LEVEL_WARN, format, args);
+		va_end(args);
+	}
 }
 
 void ambulant::log_trace_event(const char *format, ...) {
-	if(wrapper.get_logger() == 0) return;
-	char buf[2048] = "";
-	va_list	pArg;
-	va_start(pArg, format);
-	vsprintf(buf, format, pArg);
-	va_end(pArg);
-	wrapper->log_trace_event(buf);
+	lib::logger *logger = lib::logger::get_logger();
+	if(!logger->suppressed(lib::logger::LEVEL_TRACE)) {
+		va_list	args;
+		va_start(args, format);
+		logger->log_va_list(lib::logger::LEVEL_TRACE, format, args);
+		va_end(args);
+	}
 }
 
-void ambulant::log_trace_event(const std::string& str) {
-	wrapper->log_trace_event(str.c_str());
+template<class T>
+void ambulant::log_trace_event(const T& obj) {
+	lib::logger *logger = lib::logger::get_logger();
+	if(!logger->suppressed(lib::logger::LEVEL_TRACE))
+		logger->log_obj(lib::logger::LEVEL_TRACE, obj);
 }
+
+
 

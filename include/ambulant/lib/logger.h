@@ -11,76 +11,112 @@
 #ifndef AMBULANT_LIB_LOGGER_H
 #define AMBULANT_LIB_LOGGER_H
 
-#ifndef _IOSTREAM_
 #include <iostream>
-#endif
-
 #include <string>
+#include <sstream>
+
+#include "ambulant/lib/mtsync.h"
 
 namespace ambulant {
 
-// forward declaration
-namespace lib { class logger;}
-
 // public ambulant logging functions
-extern void set_app_logger(lib::logger *p);
 extern void log_error_event(const char *format, ...);
 extern void log_warning_event(const char *format, ...);
 extern void log_trace_event(const char *format, ...);
 
-extern void log_trace_event(const std::string& str);
+template<class T>
+void log_trace_event(const T& obj);
 
 namespace lib {
 
-// simple logger interface (no message ids, categories etc)
-class logger
-	{
-	public:
-	virtual ~logger(){}
-	virtual void log_error_event(const char *sz) = 0;
-	virtual void log_warning_event(const char *sz) = 0;
-	virtual void log_trace_event(const char *sz) = 0;
-	};
-
-// a stdout simple logger implementation
-template <class T>
-class stdout_logger : public logger {
+class logger {
   public:
-	virtual void log_error_event(const char *buf) { log(buf);}
-	virtual void log_warning_event(const char *buf) { log(buf);}
-	virtual void log_trace_event(const char *buf) { log(buf);}
+	// known log levels
+	enum log_level { LEVEL_DEBUG, LEVEL_TRACE, 
+		LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL };
+		
+	logger(const std::string& name);
+	
+	// static factory function to create loggers
+	static logger* get_logger(const char *name = NULL);
+	static logger* get_logger(const char *name, int pos);
+	
+	// static config function
+	static void set_loggers_level(int level);
+	
+	// logging functions at various levels
+ 	void debug(const char *format, ...);
+ 	void trace(const char *format, ...);
+  	void warn(const char *format, ...);
+  	void error(const char *format, ...);
+  	void fatal(const char *format, ...);
+	
+	// core logging function
+	void log_cstr(int level, const char *buf);
+	
+	// Logs any object defining the operator<<
+	template <class T>
+	void log_obj(int level, const T& obj);
+
+	// helper logging function
+	void log_va_list(int level, const char *format, va_list argList);
+	
+	// Is output for this level suppressed?
+	bool suppressed(int level);
+	
+	// config
+	void set_level(int level); 
+	void set_ostream(std::ostream* pos); 
 	
   private:
-	void log(const char *sz) {
-		m_cs.enter();
-		std::cout << sz << std::endl;
-		m_cs.leave();
-	}
-	T m_cs;
+	static const char* get_level_name(int level);
+	
+	// this logger members
+	critical_section m_cs;
+	std::string m_name;	
+	std::ostream* m_pos;
+	int m_level;
+	
+	// configuration and output format
+	static int default_level;
+	static std::ostream* default_pos; 
+	static bool logdate;
+	static bool logtime;
+	static bool logname;
+	static bool loglevel;
+	
 };
 
-// an ofstrean simple logger implementation
+//////////////////////////////
+// Inline part of the implementation
+
+inline logger::logger(const std::string& name) 
+:	m_name(name),
+	m_pos(logger::default_pos),
+	m_level(logger::default_level) {
+}
+
 template <class T>
-class ofstream_logger : public logger {
-	public:
-	ofstream_logger(const char* szName, int nMode = std::ios::out) 
-	:	m_ofs(szName, nMode) {}
-	
-	~ofstream_logger() { m_ofs.close();}
+inline void logger::log_obj(int level, const T& obj) {
+	if(suppressed(level))
+		return;
+	std::ostringstream os;
+	os << obj << std::endl;
+	log_cstr(level, os.str().c_str());
+}
 
-	virtual void log_error_event(const char *buf) { log(buf);}
-	virtual void log_warning_event(const char *buf) { log(buf);}
-	virtual void log_trace_event(const char *buf) { log(buf);}
-	
-	private:
-	void log(const char *sz) {
-		m_cs.enter();
-		m_ofs << sz << std::endl;
-		m_cs.leave();
-	}
-	T m_cs;
-	std::ofstream m_ofs;
-};
+inline void logger::set_level(int level) { 
+	m_level = level; 
+}
+
+inline void logger::set_ostream(std::ostream* pos) { 
+	m_pos = pos; 
+}
+
+inline bool logger::suppressed(int level) {
+	return level < m_level;
+}
+
 
 } // namespace lib
 
