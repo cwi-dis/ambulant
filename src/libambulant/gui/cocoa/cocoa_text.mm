@@ -52,9 +52,11 @@
 
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/common/region_info.h"
 
 #include <Cocoa/Cocoa.h>
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -95,14 +97,25 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, abstract_windo
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> window_rect = r;
-	window_rect.translate(m_dest->get_global_topleft());
-	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
+	const abstract_smil_region_info *info = m_dest->get_info();
+	// First find our whole area
+	screen_rect<int> dstrect = r;
+	dstrect.translate(m_dest->get_global_topleft());
+	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
+	if (info && !info->get_transparent()) {
+		// XXXX Fill with background color
+		color_t bgcolor = info->get_bgcolor();
+		AM_DBG lib::logger::get_logger()->trace("cocoa_active_text_renderer.redraw: clearing to 0x%x", (long)bgcolor);
+		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
+					green:greenf(bgcolor)
+					blue:bluef(bgcolor)
+					alpha:1.0];
+		[cocoa_bgcolor set];
+		NSRectFill(cocoa_dstrect);
+	}
 	
 	if (m_text_storage && m_layout_manager) {
-		[[NSColor whiteColor] set];
-		NSRectFill(dstrect);
-		NSPoint origin = NSMakePoint(NSMinX(dstrect), NSMinY(dstrect));
+		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
 		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
 		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];

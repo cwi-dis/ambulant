@@ -52,7 +52,9 @@
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
+#include "ambulant/common/region_info.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -93,11 +95,23 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	// First find our whole area (which we have to clear to background color)
-	screen_rect<int> dstrect_whole = r;
-	dstrect_whole.translate(m_dest->get_global_topleft());
-	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	// XXXX Fill with background color
+	const abstract_smil_region_info *info = m_dest->get_info();
+	AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: %d clearing to 0x%x", !info->get_transparent(), (long)info->get_bgcolor());
+	if (info && !info->get_transparent()) {
+		// First find our whole area (which we have to clear to background color)
+		screen_rect<int> dstrect_whole = r;
+		dstrect_whole.translate(m_dest->get_global_topleft());
+		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+		// XXXX Fill with background color
+		color_t bgcolor = info->get_bgcolor();
+		AM_DBG lib::logger::get_logger()->trace("cocoa_active_image_renderer.redraw: clearing to 0x%x", (long)bgcolor);
+		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
+					green:greenf(bgcolor)
+					blue:bluef(bgcolor)
+					alpha:1.0];
+		[cocoa_bgcolor set];
+		NSRectFill(cocoa_dstrect_whole);
+	}
 
 	if (m_image) {
 		// Now find both source and destination area for the bitblit.
