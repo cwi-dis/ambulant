@@ -1258,7 +1258,9 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_in_fmt(src->get_audio_format()),
-	m_out_fmt(fmts.best())
+	m_out_fmt(fmts.best()),
+	m_in_total(0),
+	m_out_total(0)
 {
 	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::ffmpeg_resample_datasource()->0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
@@ -1269,7 +1271,7 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 
 ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
 {
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::~ffmpeg_resample_datasource(0x%x)", (void*)this);
+	lib::logger::get_logger()->trace("ffmpeg_resample_datasource::~ffmpeg_resample_datasource(0x%x)in %d, out %d", (void*)this, m_in_total, m_out_total);
 	stop();
 }
 
@@ -1344,6 +1346,8 @@ ffmpeg_resample_datasource::data_avail()
 			if (inbuf && outbuf && insamples > 0) {
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", sz, insamples, outsz, inbuf, outbuf);
 				int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
+				m_out_total += outsamples*m_out_fmt.channels*sizeof(short);
+				m_in_total += insamples*m_in_fmt.channels*sizeof(short);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
 //lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail(): Possible bufferoverflow here ! REMOVE comments to fix");
