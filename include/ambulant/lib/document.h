@@ -95,6 +95,9 @@ class node_context {
 	
 	virtual const std::map<std::string, custom_test>* 
 	get_custom_tests() const = 0;
+	
+	virtual const node* 
+	get_node(const std::string& idd) const = 0;
 };
 
 
