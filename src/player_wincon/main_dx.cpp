@@ -13,6 +13,9 @@
 
 #include "ambulant/gui/dx/dx_gui.h"
 
+#pragma comment (lib,"libjpeg.lib")
+#pragma comment (lib,"libexpat.lib")
+
 using namespace ambulant;
 
 int
