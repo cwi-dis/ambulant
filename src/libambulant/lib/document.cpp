@@ -133,13 +133,12 @@ lib::document::get_namespace_prefix(const xml_string& uri) const {
 
 std::string 
 lib::document::resolve_url(const node *n, const std::string& rurl) const {
-	// locate node context xml:base
-	// const char *p = n->get_container_attribute("base");
-	// ...
-	// if none is found use source.
+	// XXX This code is incomplete. It currently handles only full absolute
+	// urls (with scheme and all) and relative urls if the document is
+	// a local file. 
 	net::url loc(rurl);
 	if (loc.get_protocol() != "") {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", rurl.c_str());
+		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", rurl.c_str());
 		return rurl;
 	}
 	if(m_src_base.get_protocol() == "file") {
