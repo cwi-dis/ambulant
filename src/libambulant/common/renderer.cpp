@@ -72,7 +72,7 @@ active_renderer::active_renderer(
 	m_src(NULL),
 	m_dest(NULL)
 {
-	net::datasource_factory src_factory;
+	net::posix_datasource_factory src_factory;
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	std::string url = node->get_url("src");
 	m_src = src_factory.new_datasource(url);	

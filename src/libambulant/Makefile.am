@@ -88,7 +88,9 @@ libambulant_la_SOURCES = \
 	lib/unix/unix_thread.cpp \
 	lib/unix/unix_timer.cpp \
 	\
+	net/posix_datasource.cpp \
 	net/datasource.cpp \
+	net/databuffer.cpp \
 	net/url.cpp \
 	\
 	common/region.cpp \

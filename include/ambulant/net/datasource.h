@@ -88,10 +88,10 @@ class audio_datasource : virtual public datasource {
 
 class datasource_factory {
   public: 
-	datasource_factory(){};
-    ~datasource_factory(){};
+
+    virtual ~datasource_factory() {}; 
   
-  	datasource* new_datasource(const std::string& url);
+  	virtual datasource* new_datasource(const std::string& url) = 0;
 };
 
 
@@ -101,8 +101,9 @@ class global_datasource_factory : public datasource_factory  {
   	: m_default_factory(NULL) {};
   	~global_datasource_factory() {};
   
-  	void  add_factory(datasource_factory *df);
+  	void add_factory(datasource_factory *df);
 	datasource* new_datasource(const std::string& url);
+		
   private:
 	std::vector<datasource_factory*> m_factories;
   	datasource_factory *m_default_factory;

@@ -85,7 +85,12 @@ namespace ambulant {
 
 namespace net {
 
-	
+
+class posix_datasource_factory : public datasource_factory {
+  public:
+	~posix_datasource_factory() {};
+	datasource* new_datasource(const std::string& url);
+};
 
   
 

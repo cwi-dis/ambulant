@@ -170,6 +170,7 @@ net::ffmpeg_audio_datasource::callback()
 				blocksize = size;
 			}
 			decoded = avcodec_decode_audio(m_con, (short*) m_outbuf, &outsize, m_inbuf, blocksize);
+			lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bps",m_con->sample_rate);
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback : %d bytes decoded  to %d bytes", decoded,outsize );
 			m_buffer.pushdata(outsize);
 			m_src->readdone(decoded);
