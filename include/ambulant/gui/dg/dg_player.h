@@ -133,7 +133,7 @@ class dg_player :
 	common::gui_window *new_window(const std::string& name, 
 		lib::size bounds, common::gui_events *src);
 			
-	common::renderer *new_background_renderer(const common::region_info *src);
+	common::bgrenderer *new_background_renderer(const common::region_info *src);
 	
 	void window_done(const std::string& name);
 	

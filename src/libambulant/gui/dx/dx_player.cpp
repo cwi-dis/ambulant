@@ -285,7 +285,7 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	AM_DBG m_logger->trace("windows: %d", m_windows.size());
 }
 
-common::renderer*
+common::bgrenderer*
 gui::dx::dx_player::new_background_renderer(const common::region_info *src) {
 	return new dx_bgrenderer(src);
 }
