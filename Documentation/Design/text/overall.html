@@ -10,9 +10,21 @@
 <body>
 <div class="document" id="ambulant-design-overall">
 <h1 class="title">Ambulant design, overall</h1>
-<div class="section" id="jack-jansen-01-jul-03">
-<h1><a name="jack-jansen-01-jul-03">Jack Jansen, 01-Jul-03</a></h1>
-<p>Here are some general (unstructured) thoughts on the Ambulant design.</p>
+<div class="section" id="jack-jansen-04-jul-03">
+<h1><a name="jack-jansen-04-jul-03">Jack Jansen, 04-Jul-03</a></h1>
+<p>This document contains some general thoughts on the Ambulant design. Accompanying
+it we have the following documents:</p>
+<ul class="simple">
+<li>objects.txt (or objects.html) has a quick description of the main classes.</li>
+<li>timelines.txt (or .html) has a preliminary description of how a timeline
+object works</li>
+<li>datasource.graffle, renderer.graffle and timeline.graffle (or .pdf)
+have a UML view of the relationships between the classes.</li>
+</ul>
+<p>There are a few more text files and C++ .h header files, but these
+are currently not fully up-to-date. Remarks.txt contains, among other things,
+a list of solutions we found for various toolkits we need, such as XML
+processing.</p>
 </div>
 <div class="section" id="design-process">
 <h1><a name="design-process">Design process</a></h1>
@@ -21,9 +33,16 @@
 <li>Text files such as this one for informal descriptions.</li>
 <li>C++ header files for class definitions and such.</li>
 <li>Image files for UML pictures.</li>
-<li>XXXX (Kleanthis: please check this sentence) more formal text documents
-as explained in sdd-schema.txt.</li>
+<li>Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
+and explained in sdd-schema.txt.</li>
 </ul>
+<p>When still applicable design choices that were tried and rejected will
+remain listed, with the reason for their rejection. This within the limits or
+reasonbility:-).</p>
+<p>Open issues and discussion points are indented paragraphs starting with
+an emphasized upper case word, as in</p>
+<blockquote>
+<em>QUESTION</em>: explanation of an issue that needs to be resolved.</blockquote>
 <p>The design is going to be done in C++, but we will try to keep it compatible
 with Java or Python, and if possible keep cross-language implementations
 possible.  This would not
@@ -40,7 +59,11 @@ are various terms (&quot;event&quot; and &quot;scheduler&quot; come to mind) tha
 or more different things in our context.</p>
 <p>We need a term for &quot;stateless from an external point of view&quot;. There are
 various objects such as data sources that do have lots of internal state
-(such as caching information) but appear immutable/stateless from the outside.</p>
+(such as caching information) but appear immutable/stateless from the outside.
+For the time being we use the term &quot;passive&quot; for this. The companion &quot;active&quot;
+objects are instantiated through the <cite>activate()</cite> call of the passive
+objects, at which point they start to do their thing (push data through,
+render things, etc).</p>
 </div>
 <div class="section" id="source-code-conventions">
 <h1><a name="source-code-conventions">Source code conventions</a></h1>
@@ -73,21 +96,39 @@ subclass all the children of this object from a common base class that handles
 the global administration, and the global object could hold things like
 memory allocators, stderr, etc.</p>
 <blockquote>
-<em>QUESTION</em>: is there a way we could handle the memory allocator transparently?
+<p><em>QUESTION</em>: is there a way we could handle the memory allocator transparently?
 With things like stdout I think we can (put a member &quot;cout&quot; in our object
 base class, make it always refer to the &quot;cout&quot; in the playback engine), but
 for memory allocators I don't know whether we can break into C++'s new operator.
 This may be important if we want to embed our player, as the embedder may
-hand us a memory allocator to use.</blockquote>
+hand us a memory allocator to use.</p>
+<p><em>COMMENT by KK</em> I don't see anything special concerning the task of building a plugin 
+SMIL renderer and resource handling. You always have a hierarchy of objects (owners-owned). 
+Each object may own other objects and be responsible for their lifetime 
+(call their constructor and destructor or just assign the job to an auto pointer). 
+You can always make one global root object, the plugin for example; 
+whose destructor will indirectly invoke the destructors of the whole hierarchy.
+Concerning the new operator a) can be overwritten or fully customized if needed 
+b) one may use the placement new operator that re-uses pre-allocated memory.  
+But I think we should do so only if it is really needed (something I cannot see
+from the given reasoning).</p>
+</blockquote>
 <p>With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
 &quot;create window&quot; and such.</p>
 <blockquote>
-<em>QUESTION</em>: As we have a number of objects that come in active and passive
+<p><em>QUESTION</em>: As we have a number of objects that come in active and passive
 flavors (data sources, data sinks) I am tempted to create a baseclass for
 active and passive containers. On the other hand: it could be seen as
-over-generalization.</blockquote>
+over-generalization.</p>
+<p><em>COMMENT by KK</em>: I think you should create a base class only if you want
+these objects to be managed by an entity in a uniform way and independent
+from their actual type. Otherwise, I think documentation is enough. 
+(Inheritance in most of the cases means a virtual table. 
+There is not any serious cost on this for gross grained objects except 
+that it violates the C++ culture principle of paying for what you use.)</p>
+</blockquote>
 </div>
 <div class="section" id="run-time-system">
 <h1><a name="run-time-system">run-time system</a></h1>
@@ -208,7 +249,7 @@ to the clock in another timeline).</p>
 i.e. stop everything, tell the highlevel scheduler where we are and let it re-create
 the lowlevel schedules to put us back where we were before the restart (but respecting
 the new situation that caused the restart). Situations that come to mind are a resize
-of the playback window, UI changes like turing on subtitles or other system-test
+of the playback window, UI changes like turning on subtitles or other system-test
 attributes, etc. We could probably solve each of these cases without restarting,
 but if we have the mechanism to do a restart (and do it without too much impact
 on the user experience) it can be used as a fallback mechanism, and speed up

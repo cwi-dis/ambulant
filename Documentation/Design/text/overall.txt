@@ -1,9 +1,21 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 01-Jul-03
+Jack Jansen, 04-Jul-03
 ----------------------
 
-Here are some general (unstructured) thoughts on the Ambulant design.
+This document contains some general thoughts on the Ambulant design. Accompanying
+it we have the following documents:
+
+- objects.txt (or objects.html) has a quick description of the main classes.
+- timelines.txt (or .html) has a preliminary description of how a timeline
+  object works
+- datasource.graffle, renderer.graffle and timeline.graffle (or .pdf)
+  have a UML view of the relationships between the classes.
+  
+There are a few more text files and C++ .h header files, but these
+are currently not fully up-to-date. Remarks.txt contains, among other things,
+a list of solutions we found for various toolkits we need, such as XML
+processing.
 
 Design process
 --------------
@@ -15,6 +27,15 @@ The design is going to consist of a mixed bag of technologies:
 - Image files for UML pictures.
 - Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
   and explained in sdd-schema.txt.
+  
+When still applicable design choices that were tried and rejected will
+remain listed, with the reason for their rejection. This within the limits or
+reasonbility:-).
+
+Open issues and discussion points are indented paragraphs starting with
+an emphasized upper case word, as in
+
+	*QUESTION*: explanation of an issue that needs to be resolved.
   
 The design is going to be done in C++, but we will try to keep it compatible
 with Java or Python, and if possible keep cross-language implementations
@@ -36,6 +57,10 @@ or more different things in our context.
 We need a term for "stateless from an external point of view". There are
 various objects such as data sources that do have lots of internal state
 (such as caching information) but appear immutable/stateless from the outside.
+For the time being we use the term "passive" for this. The companion "active"
+objects are instantiated through the `activate()` call of the passive
+objects, at which point they start to do their thing (push data through,
+render things, etc).
 
 Source code conventions
 -----------------------
@@ -240,7 +265,7 @@ I think there are always going to be situations where we want to "restart the wo
 i.e. stop everything, tell the highlevel scheduler where we are and let it re-create
 the lowlevel schedules to put us back where we were before the restart (but respecting
 the new situation that caused the restart). Situations that come to mind are a resize
-of the playback window, UI changes like turing on subtitles or other system-test
+of the playback window, UI changes like turning on subtitles or other system-test
 attributes, etc. We could probably solve each of these cases without restarting,
 but if we have the mechanism to do a restart (and do it without too much impact
 on the user experience) it can be used as a fallback mechanism, and speed up

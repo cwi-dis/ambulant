@@ -10,8 +10,8 @@
 <body>
 <div class="document" id="ambulant-design-objects">
 <h1 class="title">Ambulant design, objects</h1>
-<div class="section" id="jack-jansen-01-jul-03">
-<h1><a name="jack-jansen-01-jul-03">Jack Jansen, 01-Jul-03.</a></h1>
+<div class="section" id="jack-jansen-04-jul-03">
+<h1><a name="jack-jansen-04-jul-03">Jack Jansen, 04-Jul-03.</a></h1>
 <p>Objects we need:</p>
 <ul class="simple">
 <li>Event processor. This is the mainloop plus the event/callback mechanism.</li>
@@ -20,7 +20,7 @@ or part of a multiplexed stream or so, and provide data to renderers and
 to the parser.</li>
 <li>Decoders. It may be a good idea to have a decoder class that has the
 same interface as a data source and is stacked on a real data source.</li>
-<li>Region. This is an area of screen space (or a speaker). It is &quot;what
+<li>Passive Region. This is an area of screen space (or a speaker). It is &quot;what
 the user sees&quot;.</li>
 <li>Active region. This is where renderers send their data.</li>
 <li>Renderers. These decode data streams, handle timing and do bitblitting
@@ -48,6 +48,21 @@ or it has to be passed explicitly to constructor methods or when setting the
 callback to call. And, if the event processor is a global object, we have the
 problem that the HL scheduler also wants to use the data source, but it lives
 in a different thread. Is this a problem?</p>
+<p><em>COMMENT by kk</em> Yes, I agree with the reasoning. The event processor may be 
+a global object or be passed explicitly to constructors. 
+Objects that schedule events will be probably gross grained
+and they will probably need context info beyond the event processor.
+I think that it would be better instead of polluting the global namespace
+create one context object that will be passed explicitly to constructor methods.
+The context object will provide access to the event processor and to what other 
+else is proven to be needed. Concerning multiple threads: The event processor's 
+queue should be made thread safe so that it can be used by multiple threads. 
+I don't think that this is a serious overhead since we will have to make 
+thread safe, only the operation of en-queueing an event. I would suggest
+using a thread for the event processor loop instead of the underlying
+OS event loop. This way we will have a clean engine independent from 
+the underlying OS. Interactions with the OS event loop for drawing may 
+require some more work but I think can be handled.</p>
 <p>The event processor object is created when the application starts, and it
 is set running its mainloop. If it is not implemented using the underlying OS
 event loop it needs either some way to interact with that mainloop or it needs
@@ -157,13 +172,13 @@ parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
 graphics APIs. A active region can send a callback to the renderer for
-&quot;redraw&quot; and &quot;reinit&quot;. The latter is redraw on steriods: the underlying
+&quot;redraw&quot; and &quot;reinit&quot;. The latter is redraw on steroids: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.</p>
 <blockquote>
 An active region used to be called a data sink. The name active region is
 more in line with the other active/passive class names.</blockquote>
-<p>In case of fill=hold or fill=transition someone has to be responsible
+<p>In case of <cite>fill=hold</cite> or <cite>fill=transition</cite> someone has to be responsible
 for holding on to the active region and its contents. I think the best solution
 is to give this responsibility to the region, i.e. in these cases
 ownership of the active region is passed back to the region (in stead of
@@ -173,6 +188,17 @@ That call should probably return a active region initialized to the background
 if there isn't a fill=transition in effect, to simplify the transition
 code (it will always transition between two data sinks, or maybe even
 with two data sinks as sources and a third, new, one as destination).</p>
+<blockquote>
+<em>QUESTION</em>: when does something finally get shown on the screen?
+The answer to this is important for the design of what preloading
+a timeline does. If instantiating the active region makes it appear
+on the screen then preloading the timeline cannot activate the region.
+It may be better to have a <cite>show()</cite> method on the active renderer and
+active region objects, so we can create all the objects while preloading
+a timeline. Ideally, then, by the time the timeline object is starting
+playback it sends <cite>show()</cite> to the active renderers, which send <cite>show()</cite>
+to their active regions, which have already loaded the relevant data into
+offscreen bitmaps and need only push them on-screen.</blockquote>
 </div>
 <div class="section" id="renderers">
 <h1><a name="renderers">Renderers</a></h1>
@@ -227,6 +253,13 @@ API as a normal clock, from the renderer point of view, but it does not
 give callbacks and it <em>does</em> listen when the renderer tells it what time
 it is (and updates its dependent slave clock). The scheduler assigns a
 master clock for the SMIL syncMaster attribute.</p>
+<blockquote>
+<em>NOTE</em> I am rethinking this section. The fact that some times a clock
+is slaved to another clock and sometimes it is slaved to a renderer needs
+to be exploited, probably through an interface for any object that can
+be master to a clock. Then all clocks will be slaved to such a clock
+master, either another clock, a renderer or the &quot;realtime master clock&quot;
+object.</blockquote>
 </div>
 <div class="section" id="smil-document-tree">
 <h1><a name="smil-document-tree">SMIL Document tree</a></h1>

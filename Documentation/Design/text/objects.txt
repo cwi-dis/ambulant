@@ -1,6 +1,6 @@
 Ambulant design, objects 
 ========================
-Jack Jansen, 01-Jul-03.
+Jack Jansen, 04-Jul-03.
 -----------------------
 
 Objects we need:
@@ -11,7 +11,7 @@ Objects we need:
   to the parser.
 - Decoders. It may be a good idea to have a decoder class that has the
   same interface as a data source and is stacked on a real data source.
-- Region. This is an area of screen space (or a speaker). It is "what
+- Passive Region. This is an area of screen space (or a speaker). It is "what
   the user sees".
 - Active region. This is where renderers send their data.
 - Renderers. These decode data streams, handle timing and do bitblitting
@@ -187,14 +187,14 @@ parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
 graphics APIs. A active region can send a callback to the renderer for
-"redraw" and "reinit". The latter is redraw on steriods: the underlying
+"redraw" and "reinit". The latter is redraw on steroids: the underlying
 OS window may have changed (end of transition, resize). Probably user
 interaction (clicking the mouse) also needs to follow this paradigm.
 
 	An active region used to be called a data sink. The name active region is
 	more in line with the other active/passive class names.
 	
-In case of fill=hold or fill=transition someone has to be responsible
+In case of `fill=hold` or `fill=transition` someone has to be responsible
 for holding on to the active region and its contents. I think the best solution
 is to give this responsibility to the region, i.e. in these cases
 ownership of the active region is passed back to the region (in stead of
@@ -204,6 +204,17 @@ That call should probably return a active region initialized to the background
 if there isn't a fill=transition in effect, to simplify the transition
 code (it will always transition between two data sinks, or maybe even
 with two data sinks as sources and a third, new, one as destination).
+
+	*QUESTION*: when does something finally get shown on the screen?
+	The answer to this is important for the design of what preloading
+	a timeline does. If instantiating the active region makes it appear
+	on the screen then preloading the timeline cannot activate the region.
+	It may be better to have a `show()` method on the active renderer and
+	active region objects, so we can create all the objects while preloading
+	a timeline. Ideally, then, by the time the timeline object is starting
+	playback it sends `show()` to the active renderers, which send `show()`
+	to their active regions, which have already loaded the relevant data into
+	offscreen bitmaps and need only push them on-screen. 
 
 Renderers
 ---------
@@ -265,6 +276,13 @@ API as a normal clock, from the renderer point of view, but it does not
 give callbacks and it *does* listen when the renderer tells it what time
 it is (and updates its dependent slave clock). The scheduler assigns a
 master clock for the SMIL syncMaster attribute.
+
+	*NOTE* I am rethinking this section. The fact that some times a clock
+	is slaved to another clock and sometimes it is slaved to a renderer needs
+	to be exploited, probably through an interface for any object that can
+	be master to a clock. Then all clocks will be slaved to such a clock
+	master, either another clock, a renderer or the "realtime master clock"
+	object.
 
 SMIL Document tree
 ------------------
