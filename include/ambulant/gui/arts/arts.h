@@ -73,20 +73,20 @@ public:
         lib::passive_region *dest,
         const lib::node *node);
 
-        active_renderer *new_renderer(
+     active_renderer *new_renderer(
 		active_playable_events *context,
 		active_playable_events::cookie_type cookie,
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest);
+		lib::abstract_rendering_surface *const dest);
 
 };
 
 
 
-} // end namespace arts_renderer
-} // end namespace lib
+} // end namespace arts
+} // end namespace gui
 } // end namespace ambulant
 
 

@@ -48,6 +48,7 @@
  #ifndef __ARTS_AUDIO__
 #define __ARTS_AUDIO__
 
+#define __cplusplus
 #include <artsc.h>
 #include <iostream>
 
@@ -77,13 +78,12 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
       ~arts_active_audio_renderer();
 
       void start(double where);
-      void stop();
-      void pause();
-      void resume();
-      void speed_changed();
+      void stop() {};
+      void pause() {};
+      void resume() {};
+      void speed_changed() {};
       void readdone();
-
-      void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) {};
+      void redraw(const screen_rect<int> &dirty, abstract_window *window) {};
   private:
 
     int arts_setup(int rate, int bits, int channels, char *name);
@@ -99,8 +99,8 @@ class arts_active_audio_renderer : public active_renderer, public timer_events {
 
 };
 
-} // end namespace arts_renderer
-} // end namespace lib
+} // end namespace arts
+} // end namespace gui
 } // end namespace ambulant
 
 
