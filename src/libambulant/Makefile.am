@@ -1,8 +1,8 @@
-lib_LIBRARIES = libambulant.a
+lib_LTLIBRARIES = libambulant.la
 expat_dir = $(top_builddir)/third_party_packages/expat-unix
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include
 
-libambulant_a_SOURCES = \
+libambulant_la_SOURCES = \
 	get_version.cpp \
 	\
 	lib/colors.cpp \
