@@ -83,7 +83,7 @@ class tokens_vector : public std::vector<std::string> {
 	std::string join(size_type i, char sep) {
 		std::string s;
 		size_type n = size();
-		if(i<n) s +=  (*this)[i++]; // this->at(i) seems is missing from gcc 2.95
+		if(i<n) s +=  (*this)[i++]; // this->at(i) seems missing from gcc 2.95
 		for(;i<n;i++) {
 			s += sep;
 			s += (*this)[i];
@@ -159,108 +159,141 @@ inline bool ends_with(const std::string& s, const std::string& e) {
 // A generic string scanner/tokenizer
 // May be used to tokenize URLs when we pass ":/?#" as delimiters.
 
-class scanner {
-  private:
-	typedef std::string::size_type size_type;
-	std::string s;
-	size_type i, end;
-	char tok;
-	std::string tokval;
-	std::string sig;
-	std::string delims;
-	
+template <class CharType>
+class basic_scanner {
   public:
-	scanner(const std::string& sa, const char *d)
-	:	s(sa), i(0),end(sa.length()),tok(0), 
-		delims(d?d:"") {}
-		
-	scanner(const std::string& sa, const std::string& d)
-	:	s(sa), i(0),end(sa.length()),tok(0), 
-		delims(d) {}
+ 	typedef CharType char_type;
+ 	typedef std::basic_string<char_type> string_type;
+	typedef typename string_type::size_type size_type;
+	enum {EOS = 0, NOT_DELIM = 'n'};
 	
+	// Creates a basic_scanner for the source string 's' and delimiters 'd'.
+	basic_scanner(const string_type& s, const string_type& d)
+	:	src(s), 
+		delims(d), 
+		end(s.length()),
+		pos(0), tok(0) {}
+	
+	// Returns the next token or EOS if none is available.
+	// The current position is at the start of the next token or at end.
+	// The token returned is either a delimiter character
+	// or the meta-character NOT_DELIM.
+	// The NOT_DELIM token represents the occurence of a 
+	// substring matching the regex [^delim]+
 	char next() {
+		tok = EOS;
 		tokval = "";
-		if(i == end) return 0;
-		size_type ix = delims.find_first_of(s[i]);
-		if(ix != std::string::npos) {
+		if(pos == end) return tok;
+		size_type ix = delims.find_first_of(src[pos]);
+		if(vpos(ix)) {
 			tokval = tok = delims[ix];
-			i++;
+			pos++;
 		} else {
-			tok = 'n'; 
 			scan_part_not_of(delims.c_str());
 		}
-		sig += tok;
+		toks += tok;
+		vals.push_back(tokval);
 		return tok;
 	}
+		
+	// Returns true when there are more tokens
+	bool has_more() const { return pos != end;}
 	
-	void scan_part_not_of(const char *delim) {
-		size_type ni = s.find_first_of(delim, i);
-		if(ni != std::string::npos) {
-			tokval = std::string(s.c_str() + i, ni-i);
-			i = ni;
-		} else {
-			tokval = std::string(s.c_str() + i);
-			i = end;
-		}
-	}
-	bool has_tok() const { return i != end;}
+	// Returns the current token
 	char get_tok() const { return tok;}
-	const std::string& get_tokval() const { return tokval;}
-	const std::string& get_sig() const { return sig;}
-	const std::string& get_str() const { return s;}
-};
-
-class reg_scanner {
-  public:
-	typedef std::vector<std::string>::size_type size_type;
-	std::string str;
-	std::vector<std::string> vals;
-	std::string toks;
 	
-	reg_scanner(const std::string& sa, const char *d) 
-	:	str(sa) {
-		scanner sc(sa, d);
-		reg(sc);
+	// Returns the current token value
+	const string_type& get_tokval() const { return tokval;}
+	
+	// Returns the src string 
+	const string_type& get_src() const { return src;}
+	
+	// Returns the tokens seen
+	const string_type& get_tokens() const { return toks;}
+	
+	// Returns the token values seen.
+	const std::vector<string_type>& get_values() const { return vals;}
+		
+	// Tokenizes the source string.
+	void tokenize() {
+		if(pos>0) reset();
+		while(next());
 	}
 	
-	reg_scanner(const std::string& sa, const std::string& d) 
-	:	str(sa) {
-		scanner sc(sa, d);
-		reg(sc);
-	}
-	
-	const std::vector<std::string>& get_vals() const {
-		return vals;
-	}
-	
-	const std::string& get_toks() const {
-		return toks;
-	}
-	
-	std::string val_at(size_type i) const {
+	// Returns the i_th token value.
+	string_type val_at(size_type i) const {
 		return (i<vals.size())?vals[i]:"";
 	}
 	
-	std::string join(size_type b, size_type e) const {
-		std::string s;
-		for(size_type i = b; i<e && i< vals.size();i++)
-			s += vals[i];
+	// Joins token values with indices in [b,e).
+	string_type join(size_type b, size_type e) const {
+		string_type s;
+		for(size_type ix = b; ix<e && ix<vals.size();ix++)
+			s += vals[ix];
 		return s;
 	}
-	std::string join(size_type b) const {
+	
+	// Joins token values with indices >= b.
+	string_type join(size_type b) const {
 		return join(b, vals.size());
 	}
 	
-	const std::string& get_str() const { return str;}
-	
-  private:
-	void reg(scanner& sc) {
-		while(sc.next()) {
-			vals.push_back(sc.get_tokval());
-			toks += sc.get_tok();
+  protected:
+  
+	// Scans the non interesting part of the source string
+	void scan_part_not_of(const char *delim) {
+		tok = NOT_DELIM; 
+		size_type ni = src.find_first_of(delim, pos);
+		if(vpos(ni)) {
+			tokval = string_type(src.c_str() + pos, ni-pos);
+			pos = ni;
+		} else {
+			tokval = string_type(src.c_str() + pos);
+			pos = end;
 		}
 	}
+	
+	// Resets this scanner; erases its memory
+	void reset() {
+		pos = 0;
+		tok = 0;
+		toks = "";
+		vals.clear();
+	}
+	
+	bool vpos(size_type ix)  const { 
+		return ix != std::basic_string<char_type>::npos;}
+
+  private:
+	
+	// The source of this scanner
+	const string_type src;
+	
+	// The tokens to recognize
+	const string_type delims;
+	
+	// Source end position 
+	const size_type end;
+	
+	// Current pos
+	size_type pos;
+	
+	// Current token
+	char tok;
+	
+	// Current token value
+	string_type tokval;
+	
+	// The tokens seen
+	string_type toks;
+	
+	// The tokens values seen
+	std::vector<string_type> vals;
+	
 };
+
+typedef basic_scanner<char> scanner;
+typedef basic_scanner<wchar_t> wscanner;
 
 } // namespace lib
  
