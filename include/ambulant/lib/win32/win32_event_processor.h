@@ -12,6 +12,7 @@
 #define AMBULANT_LIB_WIN32_EVENT_PROCESSOR_H
 
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/timer.h"
 
 #include "win32_thread.h"
 
@@ -30,7 +31,7 @@ class event_processor :
   public ambulant::lib::win32::thread {
   
   public:
-	event_processor();	
+	event_processor(abstract_timer *t);	
 	~event_processor();
     
   protected:

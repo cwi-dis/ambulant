@@ -18,8 +18,8 @@
 
 using namespace ambulant;
 
-lib::win32::event_processor::event_processor() 
-:   lib::abstract_event_processor(new os_timer(), new lib::critical_section()),
+lib::win32::event_processor::event_processor(abstract_timer *t) 
+:   lib::abstract_event_processor(t, new lib::critical_section()),
 	m_wait_event(0) {
 	m_wait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 	if(m_wait_event == 0)
