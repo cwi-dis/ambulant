@@ -128,7 +128,7 @@ AM_DBG logger::get_logger()->trace("add factory for SDL done");
 				   qt_view->get_o_x(),
 			 	   qt_view->get_o_y());
 			 
-	common::abstract_player *a;
+	common::player *a;
 	if (is_mms) {
 		a = common::create_mms_player(doc, wf, rf);
 	} else {
