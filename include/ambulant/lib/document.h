@@ -138,10 +138,10 @@ class document : public node_context {
 	std::string resolve_url(const node *n, const std::string& rurl) const;
 	
 	// Returns the node with the provided id or null on none
-	const node* get_node(const std::string& id) const {
-		if(id.empty()) return 0;
+	const node* get_node(const std::string& idd) const {
+		if(idd.empty()) return 0;
 		std::map<std::string, const node*>::const_iterator it
-			= m_id2node.find(id);
+			= m_id2node.find(idd);
 		return (it != m_id2node.end())?(*it).second:0;
 	}
 	
