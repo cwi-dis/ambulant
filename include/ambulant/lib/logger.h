@@ -53,6 +53,26 @@ class logger {
   	void error(const char *format, ...);
   	void fatal(const char *format, ...);
 	
+  	// templates for objects defining the operator<<
+	template <class T>
+ 	void debug(const T& obj) { 
+ 		log_obj(LEVEL_DEBUG, obj);
+ 	}
+ 	template <class T>
+ 	void trace(const T& obj) { 
+ 		log_obj(LEVEL_TRACE, obj);
+ 	}
+ 	
+ 	// specialization for strings
+ 	template <>
+ 	void debug(const std::string& s) {
+ 		log_cstr(LEVEL_DEBUG, s.c_str());
+  	} 
+ 	template <>
+  	void trace(const std::string& s) {
+ 		log_cstr(LEVEL_TRACE, s.c_str());
+  	} 
+ 	
 	// core logging function
 	void log_cstr(int level, const char *buf);
 	

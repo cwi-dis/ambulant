@@ -134,5 +134,5 @@ lib::tree_builder::end_prefix_mapping(const std::string& prefix) {
 void 
 lib::tree_builder::error(const sax_error& error) {
 	m_well_formed = false;
-	log_error_event("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
+	app_logger->error("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
 }

@@ -28,7 +28,7 @@ void lib::win32::win_report_error(const char *func, unsigned long  err) {
 		 0,
 		 NULL 
 		);	
-	log_error_event("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
+	app_logger->error("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
 	LocalFree(pMsgBuf);
 }
 

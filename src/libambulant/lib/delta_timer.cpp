@@ -110,6 +110,6 @@ void lib::delta_timer::write_trace() {
 	for(; it != m_events.end(); it++)
 		os << ", " << (*it).second;
 	os << ")";
-	log_trace_event(os.str());
+	app_logger->trace(os.str());
 }
 
