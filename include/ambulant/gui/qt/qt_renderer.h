@@ -120,7 +120,7 @@ class qt_window_factory : public common::window_factory {
 			const std::string &name,
 			lib::size bounds,
 			common::gui_events *region);
-		common::renderer *new_background_renderer(
+		common::bgrenderer *new_background_renderer(
 			const common::region_info *src);
   private:
 	QWidget* m_parent_widget;

@@ -287,7 +287,7 @@ qt_window_factory::new_window (const std::string &name,
 	return aqw;
 }
 
-common::renderer *
+common::bgrenderer *
 qt_window_factory::new_background_renderer(const common::region_info 
 					   *src)
 {
