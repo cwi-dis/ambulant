@@ -680,7 +680,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 		return;
 	} else if(is_empty_region(hrgn)) {
 		// nothing to paint
-		viewport_logger->warn("%s: Region is empty for transition", 
+		viewport_logger->trace("%s: Region is empty for transition", 
 			tr->get_type_str().c_str());
 		DeleteObject((HGDIOBJ)hrgn);
 		return;

@@ -426,7 +426,7 @@ gui::dx::dx_player::new_playable(
 }
 
 void gui::dx::dx_player::set_intransition(common::playable *p, lib::transition_info *info) { 
-	lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
+	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;

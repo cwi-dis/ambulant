@@ -61,10 +61,8 @@
 #ifdef	WITH_XERCES
 #include <xercesc/framework/MemBufInputSource.hpp>
 
-
-#define AM_DBG
 #ifndef AM_DBG
-#define AM_DB if(0)
+#define AM_DBG if(0)
 #endif
 
 using namespace ambulant;

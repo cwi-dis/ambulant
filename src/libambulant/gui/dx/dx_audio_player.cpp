@@ -100,7 +100,7 @@ void gui::dx::audio_player::pause() {
 
 void gui::dx::audio_player::resume() {
 	if(m_media_control == 0) {
-		logger::get_logger()->warn("Invalid call to audio_player::run");
+		logger::get_logger()->debug("Invalid call to audio_player::run");
 		return;
 	}
 	HRESULT hr = m_media_control->Run();
@@ -118,7 +118,7 @@ void gui::dx::audio_player::seek(double t) {
 
 std::pair<bool, double> gui::dx::audio_player::get_dur() {
 	if(m_media_position == 0) {
-		logger::get_logger()->warn("Invalid call to audio_player::get_duration");
+		logger::get_logger()->debug("Invalid call to audio_player::get_duration");
 		return std::pair<bool, double>(false, 0);
 	}
 	REFTIME dur = 0.0;
@@ -154,7 +154,7 @@ bool gui::dx::audio_player::is_playing() {
 
 double gui::dx::audio_player::get_position() {
 	if(m_media_position == 0) {
-		logger::get_logger()->warn("Invalid call to audio_player::get_current_position");
+		logger::get_logger()->debug("Invalid call to audio_player::get_current_position");
 		return 0.0;
 	}
 	REFTIME pos = 0.0;

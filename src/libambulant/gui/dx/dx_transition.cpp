@@ -166,7 +166,7 @@ gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id,
 		transition_factories_inst.trfactmap;
 	std::map<lib::transition_type, transition_factory*>::iterator it = m.find(id);
 	if(it == m.end()) {
-		lib::logger::get_logger()->warn("Missing transition factory for type %d. Returning default", id);
+		lib::logger::get_logger()->trace("Missing transition factory for type %d. Returning default", id);
 		return m[lib::clockWipe]->new_transition(playable, timer);
 	}
 	return (*it).second->new_transition(playable, timer);
@@ -246,7 +246,7 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	rectlist_adapter *dummy = (rectlist_adapter*)p;
 	std::vector< lib::screen_rect<int> >& v = dummy->get_rectlist();
 	if(v.empty()) {
-		lib::logger::get_logger()->warn("%s: Returning empty region. Rectlist is empty!", 
+		lib::logger::get_logger()->trace("%s: Returning empty region. Rectlist is empty!", 
 			tr->get_type_str().c_str());
 		return empty_region();
 	}
@@ -259,7 +259,7 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 		DeleteObject((HGDIOBJ)next); 
 		if(!hrgn) {
 			win_report_last_error("CombineRgn()");
-			lib::logger::get_logger()->warn("%s: Returning empty region due to a fault", 
+			lib::logger::get_logger()->trace("%s: Returning empty region due to a fault", 
 				tr->get_type_str().c_str());
 			return empty_region();
 		}
