@@ -9,3 +9,4 @@ expat-unix:
 	Ditto, but built from source. Download the expat source into, say,
 	expat-1.95.6, do "./configure --prefix=.../ambulant/third_party_packages/expat-unix"
 	and then "make && make install".
+	NOTE: on MacOSX you need to apply expat.h.patch.
