@@ -158,7 +158,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 	tree_iterator(Node *p) : const_tree_iterator<Node>(p){}
 
 	// pre-increment
-	tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}
+	tree_iterator& operator++() { if(this->m_cur)(this->*const_tree_iterator<Node>::m_move)(); return *this;}
 	
 	// post-increment
 	tree_iterator operator++(int) 
@@ -166,7 +166,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	// dereferencing this returns a pair of deref_type
 	deref_type operator*() 
-		{ return deref_type( (m_move == &tree_iterator::down), const_cast<Node*>(m_cur));}
+		{ return deref_type( (this->m_move == &tree_iterator::down), const_cast<Node*>(this->m_cur));}
 
 	// an instance of this object acts like a pointer to a deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'

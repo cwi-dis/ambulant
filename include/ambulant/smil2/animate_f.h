@@ -155,11 +155,12 @@ class linear_map_f : public simple_animation_f {
   public:
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
+	typedef typename map_type::const_iterator const_map_iterator;
 	
 	value_type at(time_type t) const {
 		t = manipulated(t);
-		map_type::const_iterator eit = m_ktv.upper_bound(t);
-		map_type::const_iterator bit = eit;bit--;
+		const_map_iterator eit = m_ktv.upper_bound(t);
+		const_map_iterator bit = eit;bit--;
 		if(eit == m_ktv.end()) return (*bit).second;
 		time_type dt = t - (*bit).first;
 		time_type dd = (*eit).first - (*bit).first;
@@ -267,12 +268,13 @@ class discrete_map_f : public simple_animation_f {
   public:
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
-	
+	typedef typename map_type::const_iterator const_map_iterator;
+  
 	value_type at(time_type t) const {
 		assert(!m_ktv.empty());
 		t = manipulated(t);
-		map_type::const_iterator eit = m_ktv.upper_bound(t);
-		map_type::const_iterator bit = eit;bit--;
+		const_map_iterator eit = m_ktv.upper_bound(t);
+		const_map_iterator bit = eit;bit--;
 		return (*bit).second;
 	}
 	

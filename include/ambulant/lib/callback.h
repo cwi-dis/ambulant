@@ -104,14 +104,14 @@ struct callback_struct {
 
 template <class T, class A>
 class callback_event : public event, 
-	private callback_struct<T, A> {
+	protected callback_struct<T, A> {
   public:
 	// 'obj' is the target object having a member function 'mf' accepting 'arg' 
 	callback_event(T* obj, void (T::*mf)(A *a), A* arg);
 	
 	/// delete callback_event and arg.	
 	~callback_event();
-
+	
 	/// event interface implementation.
 	virtual void fire();
 };
@@ -276,14 +276,14 @@ inline callback_event<T, A>::callback_event(T* obj, void (T::*mf)(A *a), A* arg)
 // deletes arg, releases target ref	
 template <class T, class A>
 inline callback_event<T, A>::~callback_event() {
-	delete m_arg;
+	delete this->m_arg;
 }
 
 // event interface implementation
 template <class T, class A>
 inline void callback_event<T, A>::fire() {
-	if(m_mf != 0 && m_obj != 0)
-		(m_obj->*m_mf)(m_arg);
+	if(this->m_mf != 0 && this->m_obj != 0)
+		(*this->m_obj->m_mf)(this->m_arg);
 }
 
 //////////////////////
@@ -297,15 +297,15 @@ inline callback<T, A>::callback(T* obj, void (T::*mf)(A *a), A* arg)
 
 template <class T, class A>
 inline callback<T, A>::~callback() {
-	delete m_arg;
-	if(m_obj != 0) m_obj->release();
+	delete this->m_arg;
+	if(this->m_obj != 0) this->m_obj->release();
 }
 
 // event interface implementation
 template <class T, class A>
 inline void callback<T, A>::fire() {
-	if(m_mf != 0 && m_obj != 0)
-		(m_obj->*m_mf)(m_arg);
+	if(this->m_mf != 0 && this->m_obj != 0)
+		(*this->m_obj->m_mf)(this->m_arg);
 }	
 
 } // namespace lib

@@ -258,28 +258,28 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
 	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.rd = dst->get_region_dim(m_aattrs->get_target_attr(), true);
+		regs.rd = dst->get_region_dim(this->m_aattrs->get_target_attr(), true);
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		common::region_dim rd = dst->get_region_dim(m_aattrs->get_target_attr(), false);
+		common::region_dim rd = dst->get_region_dim(this->m_aattrs->get_target_attr(), false);
 		if(rd != regs.rd || IGNORE_ATTR_COMP) {
 			AM_DBG {
-				lib::timer::time_type t = m_timer->elapsed();
+				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
-					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
+					this->m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
 			}
-			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
+			dst->set_region_dim(this->m_aattrs->get_target_attr(), regs.rd);
 			return true;
 		}
 		return false;
 	}
 
 	void apply_self_effect(animate_registers& regs) const {
-		if(!m_animate_f) return;
-		lib::timer::time_type t = m_timer->elapsed();
-		common::region_dim rd = m_animate_f->at(t);
-		if(m_aattrs->is_additive())
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		common::region_dim rd = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
 			regs.rd += rd; // add
 			
 		else
@@ -333,28 +333,28 @@ class color_animation : public linear_values_animation<F, lib::color_t> {
 	:	linear_values_animation<F, lib::color_t>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.cl = dst->get_region_color(m_aattrs->get_target_attr(), true);
+		regs.cl = dst->get_region_color(this->m_aattrs->get_target_attr(), true);
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		lib::color_t cl = dst->get_region_color(m_aattrs->get_target_attr(), false);
+		lib::color_t cl = dst->get_region_color(this->m_aattrs->get_target_attr(), false);
 		if(cl != regs.cl || IGNORE_ATTR_COMP) {
 			AM_DBG {
-				lib::timer::time_type t = m_timer->elapsed();
+				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x", 
-					m_aattrs->get_target_attr().c_str(), t, regs.cl);
+					this->m_aattrs->get_target_attr().c_str(), t, regs.cl);
 			}				
-			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
+			dst->set_region_color(this->m_aattrs->get_target_attr(), regs.cl);
 			return true;
 		}
 		return false;
 	}
 	
 	void apply_self_effect(animate_registers& regs) const {
-		if(!m_animate_f) return;
-		lib::timer::time_type t = m_timer->elapsed();
-		lib::color_t cl = m_animate_f->at(t);
-		if(m_aattrs->is_additive())
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		lib::color_t cl = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
 			regs.cl += cl; // add
 		else
 			regs.cl = cl; // override
@@ -407,9 +407,9 @@ class zindex_animation : public linear_values_animation<F, common::zindex_t> {
 		common::zindex_t zi = dst->get_region_zindex(false);
 		if(zi != regs.zi || IGNORE_ATTR_COMP) {
 			AM_DBG {
-				lib::timer::time_type t = m_timer->elapsed();
+				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %d", 
-					m_aattrs->get_target_attr().c_str(), t, regs.zi);
+					this->m_aattrs->get_target_attr().c_str(), t, regs.zi);
 			}				
 			dst->set_region_zindex(regs.zi);
 			return true;
@@ -418,10 +418,10 @@ class zindex_animation : public linear_values_animation<F, common::zindex_t> {
 	}
 	
 	void apply_self_effect(animate_registers& regs) const {
-		if(!m_animate_f) return;
-		lib::timer::time_type t = m_timer->elapsed();
-		common::zindex_t zi = m_animate_f->at(t);
-		if(m_aattrs->is_additive())
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		common::zindex_t zi = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
 			regs.zi += zi; // add
 		else
 			regs.zi = zi; // override
@@ -484,9 +484,9 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
 		lib::point pt(left.get_as_int(), top.get_as_int());
 		if(pt != regs.pt || IGNORE_ATTR_COMP) {
 			AM_DBG {
-				lib::timer::time_type t = m_timer->elapsed();
+				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
-					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
+					this->m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
 			}			
 			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
 			dst->set_region_dim("top", common::region_dim(regs.pt.y));			
@@ -496,10 +496,10 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
 	}
 
 	void apply_self_effect(animate_registers& regs) const {
-		if(!m_animate_f) return;
-		lib::timer::time_type t = m_timer->elapsed();
-		lib::point pt = m_animate_f->at(t);
-		if(m_aattrs->is_additive())
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		lib::point pt = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
 			regs.pt += pt; // add
 		else
 			regs.pt = pt; // override
@@ -620,7 +620,3 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 	// Not implemented
 	return new animate_node(ctx, n, aattrs);
 }
-
-
-
-

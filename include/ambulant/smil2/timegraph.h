@@ -65,8 +65,10 @@
 
 namespace ambulant {
 
-template <class N>
-class lib::node_navigator;
+// gcc 3.4 complains about this, since it does not seems to be used i uncommented it.
+	
+//template <class N>
+//class lib::node_navigator;
 
 namespace smil2 {
 

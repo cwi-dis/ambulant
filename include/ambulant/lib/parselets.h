@@ -188,7 +188,8 @@ template <class CharType, class IsNameStartCh, class IsNameCh >
 class name_p :  public basic_parselet<CharType> {
   public:
 	typedef name_p<CharType, IsNameStartCh, IsNameCh> self_type;
-	typedef basic_parselet<CharType>::string_type result_type;
+	typedef typename basic_parselet<CharType>::string_type result_type;
+	typedef typename basic_parselet<CharType>::const_iterator const_iterator;
 	result_type m_result;
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		if(it == end || !IsNameStartCh()(*it)) return -1;
@@ -324,9 +325,10 @@ or_pair_p<FirstType, SecondType> make_or_p(const FirstType& f, const SecondType&
 template<class P>
 class optional_p : public or_pair_p<P, epsilon_p> {
   public:
+	typedef typename or_pair_p<P, epsilon_p>::first_result_type first_result_type;
 	optional_p(const P& p) : or_pair_p<P, epsilon_p>(p, epsilon_p()) {}
-	bool occured() const { return matched_first();}
-	first_result_type get_result() const { return get_first_result();}
+	bool occured() const { return or_pair_p<P, epsilon_p>::matched_first();}
+	first_result_type get_result() const { return or_pair_p<P, epsilon_p>::get_first_result();}
 };
 
 template<class P>
