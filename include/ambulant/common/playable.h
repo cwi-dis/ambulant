@@ -163,6 +163,7 @@ class playable : public lib::ref_counted_obj {
 	// known std::pair<true, dur>.
 	virtual std::pair<bool, double> get_dur() = 0;
 	
+	
 	// Returns the cookie identifying this playable to the client code.
 	// The cookie was provided to this playable when it was constructed.
 	virtual const cookie_type& get_cookie() const = 0;
@@ -191,6 +192,8 @@ class playable_notification {
 	// Playables nodifications 
 	virtual void started(cookie_type n, double t = 0) = 0;
 	virtual void stopped(cookie_type n, double t = 0) = 0;
+	virtual void paused(cookie_type n, double t = 0) = 0;
+	virtual void resumed(cookie_type n, double t = 0) = 0;
 	virtual void clicked(cookie_type n, double t = 0) = 0;
 	virtual void pointed(cookie_type n, double t = 0) = 0; // mouse over
 };

@@ -131,6 +131,8 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual void stopped(int n, double t);
 	virtual void clicked(int n, double t);	
 	virtual void pointed(int n, double t);	
+	virtual void paused(int n, double t) {}
+	virtual void resumed(int n, double t) {}
 	
 	//////////////////////
 	// Time node context: Playable queries
