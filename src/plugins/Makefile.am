@@ -1,9 +1,13 @@
 EXTRA_DIST=plugin.cpp artsplugin.cpp xercesplugin.cpp
-# The default (no-op) plugin. Always build
+# The default (no-op) plugin. only build when asked to buid
 
+if WITH_DUMMY_PLUGIN
 dummy_plugin = libamplugin_dummy.la
 libamplugin_dummy_la_SOURCES = plugin.cpp
 libamplugin_dummy_la_LDFLAGS = -module
+else
+dummy_plugin=
+endif
 
 # The arts plugin
 if WITH_ARTS
