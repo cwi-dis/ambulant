@@ -22,14 +22,14 @@ namespace gui {
 
 namespace none {
 
-class none_window_factory : lib::window_factory {
+class none_window_factory : public lib::window_factory {
   public:
   	none_window_factory() {}
   	
 	lib::passive_window *new_window(const std::string &name, lib::size bounds);
 };
 
-class none_renderer_factory : lib::renderer_factory {
+class none_renderer_factory : public lib::renderer_factory {
   public:
   	none_renderer_factory() {}
   	
