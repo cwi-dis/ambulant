@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=9.02
-  Title=Ambulant/O Player for SMIL 2.0 Installation
+  Title=Ambulant Player for SMIL 2.0 Installation
   Title French= Installation
   Flags=00000100
   Languages=65 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -9,13 +9,13 @@ item: Global
   Japanese Font Name=MS Gothic
   Japanese Font Size=9
   Progress Bar DLL=%_WISE_%\Progress\WizWin32a.DLL
-  Start Gradient=0 0 255
-  End Gradient=0 0 0
+  Start Gradient=255 128 0
+  End Gradient=128 128 64
   Windows Flags=00000100000000110010110000001000
   Log Pathname=%MAINDIR%\INSTALL.LOG
   Message Font=MS Sans Serif
   Font Size=8
-  Pages Modified=10011000010100000001011000000011
+  Pages Modified=10011000011100000001011000000011
   Extra Pages=00000000000000000000000010110000
   Disk Label=Default
   Disk Filename=SETUP
@@ -28,8 +28,8 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=0.7
-  Version Description=Ambulant/O Player for SMIL 2.0
+  Version File=1.0
+  Version Description=Ambulant Player for SMIL 2.0
   Version Copyright=Copyright (c) 2004
   Version Company=CWI
   Crystal Format=10111100101100000010001001001001
@@ -85,7 +85,7 @@ item: Remark
 end
 item: Set Variable
   Variable=APPTITLE
-  Value=Ambulant/O Player for SMIL 2.0
+  Value=Ambulant Player for SMIL 2.0
   Flags=10000000
 end
 item: Remark
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=AmbulantPlayer\Ambulant-O
+  Value=AmbulantPlayer\Ambulant
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer\Ambulant-O
+  Value=AmbulantPlayer\Ambulant-1.0
   Flags=10000000
 end
 item: Remark
@@ -1101,21 +1101,6 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=..\..\Extras\Welcome\src\image.psd
-  Destination=%MAINDIR%\Extras\Welcome\src\image.psd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=..\..\Extras\Welcome\src\AmbulantTune.band\Media\Recording#07.aif
-  Destination=%MAINDIR%\Extras\Welcome\src\AmbulantTune.band\Media\Recording#07.aif
-  Flags=0000000010000010
-end
-item: Install File
-  Source=..\..\Extras\Welcome\src\AmbulantTune.band\Media\Recording#02.aif
-  Destination=%MAINDIR%\Extras\Welcome\src\AmbulantTune.band\Media\Recording#02.aif
-  Flags=0000000010000010
-end
-item: Install File
   Source=..\..\Extras\Welcome\data\visit.png
   Destination=%MAINDIR%\Extras\Welcome\data\visit.png
   Flags=0000000010000010
@@ -1708,11 +1693,6 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
-  Destination=%MAINDIR%\msvcr71.dll
-  Flags=0000000010000011
-end
-item: Install File
   Source=..\..\Readme
   Destination=%MAINDIR%\Readme.txt
   Flags=0000000010000010
@@ -1728,19 +1708,9 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\bin\win32\libpng13.dll
-  Destination=%MAINDIR%\libpng13.dll
-  Flags=0000000010000011
-end
-item: Install File
   Source=..\..\bin\win32\settings.xml
   Destination=%MAINDIR%\settings.xml
   Flags=0000000010000010
-end
-item: Install File
-  Source=..\..\bin\win32\zlib.dll
-  Destination=%MAINDIR%\zlib.dll
-  Flags=0001000010000011
 end
 item: End Block
 end
@@ -2144,7 +2114,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=0.7
+  New Value=1.0
   Value Name=DisplayVersion
   Root=2
 end
