@@ -64,6 +64,7 @@ audio_format_choices::audio_format_choices(audio_format &fmt)
 	add_channels(fmt.channels);
 	add_bits(fmt.bits);
 }
+
 audio_format_choices::audio_format_choices(int samplerate, int channels, int bits)
 :   m_best(audio_format(samplerate, channels, bits))
 {
@@ -71,6 +72,13 @@ audio_format_choices::audio_format_choices(int samplerate, int channels, int bit
 	add_channels(channels);
 	add_bits(bits);
 };
+
+audio_format_choices::audio_format_choices(std::string &name)
+:   m_best(audio_format(name))
+{
+	add_named_format(name);
+}
+
 
 const audio_format& 
 audio_format_choices::best() const
@@ -95,12 +103,21 @@ audio_format_choices::add_bits(int bits)
 	m_bits.insert(bits);
 }
 
+void
+audio_format_choices::add_named_format(std::string &name)
+{
+	m_named_formats.insert(name);
+}
+
 bool audio_format_choices::contains(audio_format& fmt) const
 {
-	return (
-		m_samplerate.count(fmt.samplerate) &&
-		m_channels.count(fmt.channels) &&
-		m_bits.count(fmt.bits));
+	if (fmt.name != "")
+		return m_named_formats.count(fmt.name);
+	else
+		return (
+			m_samplerate.count(fmt.samplerate) &&
+			m_channels.count(fmt.channels) &&
+			m_bits.count(fmt.bits));
 }
 
 // *********************** datasource_factory ***********************************************

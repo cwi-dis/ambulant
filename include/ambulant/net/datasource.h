@@ -63,19 +63,45 @@ namespace ambulant {
 namespace net {
 	
 // This struct completely describes an audio format.
+// If name is "" the format is linear samples encoded
+// in host order, and samplerate, channels and bits
+// are meaningful. If name is nonempty it is some encoded
+// format, parameters points to format-specific data
+// and samplerate/channels/bits are not meaningful.
 struct audio_format {
-//	std::string format;
+	std::string name;
+	void *parameters;
 	int samplerate;
 	int channels;
 	int bits;
-	// XXXX Endian-ness should be in here too. And
-	// maybe signed/excess/uLaw too?
 	
+	audio_format()
+	:   name("unknown"),
+		parameters(NULL),
+		samplerate(0),
+		channels(0),
+		bits(0) {};
+		
 	audio_format(int s, int c, int b)
-	:   samplerate(s),
+	:   name(""),
+		parameters(NULL),
+		samplerate(s),
 		channels(c),
 		bits(b) {};
+	
+	audio_format(std::string &n, void *p=(void *)0)
+	:   name(n),
+		parameters(p),
+		samplerate(0),
+		channels(0),
+		bits(0) {};
 };
+
+#ifdef __OBJC__
+// This is a workaround for a problem when using gcc 3.3 to compile
+// ObjC++
+;
+#endif
 
 // This class describes the range of audio formats supported by a consumer.
 // It always contains at least one supported format.
@@ -86,12 +112,14 @@ class audio_format_choices {
 	// Must always have at least one supported format
 	audio_format_choices(audio_format &fmt);
 	audio_format_choices(int samplerate, int channels, int bits);
+	audio_format_choices(std::string &name);
 	
 	const audio_format& best() const;
 	
 	void add_samplerate(int samplerate);
 	void add_channels(int channels);
 	void add_bits(int bits);
+	void add_named_format(std::string &name);
 	
 	bool contains(audio_format& fmt) const;
 	
@@ -100,6 +128,7 @@ class audio_format_choices {
 	std::set<int> m_samplerate;
 	std::set<int> m_channels;
 	std::set<int> m_bits;
+	std::set<std::string> m_named_formats;
 };
 
 // A datasource is the interface to an object that supplies data
@@ -141,6 +170,7 @@ class raw_datasource_factory {
 // This class is the client API used to create an audio_datasource for
 // a given URL, with an extra parameter specifying which audio encodings
 // the client is able to handle.
+// Note: the client should check that the format actually matches!
 class audio_datasource_factory  {
   public: 
     virtual ~audio_datasource_factory() {}; 	
