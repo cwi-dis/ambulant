@@ -485,6 +485,7 @@ ffmpeg_audio_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_audio_datasource::data_avail: no room in output buffer");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+			m_buffer.pushdata(0);
 		}
 	}
 
@@ -1142,15 +1143,13 @@ ffmpeg_decoder_datasource::data_avail()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 
-				if (outsize > 0) { 
-					m_buffer.pushdata(outsize);
-				}
-				if (decoded > 0) {
-					m_src->readdone(decoded);
-				}
+				m_buffer.pushdata(outsize);
+				m_src->readdone(decoded);
 			} else {
 				lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: no room in output buffer");
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+				m_buffer.pushdata(0);
+				m_src->readdone(0);
 			}
 		//	sz = m_src->size();
 		}
@@ -1418,6 +1417,9 @@ ffmpeg_resample_datasource::data_avail()
 					m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
 					m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
 
+				} else {
+					m_src->readdone(0);
+					m_buffer.pushdata(0);
 				}
 			}
 		// Restart reading if we still have room to accomodate more data
