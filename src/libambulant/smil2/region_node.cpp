@@ -71,9 +71,9 @@ static char *subregionattrs[] = {
 	"backgroundColor", "background-color",
 	"transparent",
 	"fit",
-	"shape", "coords",
 	NULL
 };
+
 
 // Helper function: get region_dim value from an attribute
 static common::region_dim
@@ -99,6 +99,7 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 	}
 	return rd;
 }
+
 
 bool 
 region_node::needs_region_node(const lib::node *n) {
