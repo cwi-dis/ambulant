@@ -50,8 +50,6 @@
  * $Id$
  */
 
-/* from: renderer.h,v 1.1 2003/09/15 10:36:17 jack Exp */
-
 #ifndef AMBULANT_GUI_QT_QT_RENDERER_H
 #define AMBULANT_GUI_QT_QT_RENDERER_H
 
