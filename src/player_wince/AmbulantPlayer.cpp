@@ -9,6 +9,9 @@
 #include "AmbulantPlayerDoc.h"
 #include "AmbulantPlayerView.h"
 
+#include "ambulant/version.h"
+#include "ambulant/lib/textptr.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -109,6 +112,9 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
+public:
+	CString m_version;	
+
 // Implementation
 protected:
 	//{{AFX_MSG(CAboutDlg)
@@ -126,6 +132,7 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_AM_VERSION, m_version);
 	//{{AFX_DATA_MAP(CAboutDlg)
 	//}}AFX_DATA_MAP
 }
@@ -140,6 +147,9 @@ END_MESSAGE_MAP()
 void CAmbulantPlayerApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
+	ambulant::lib::textptr tp(ambulant::get_version());
+	aboutDlg.m_version = TEXT("Ambulant version ");
+	aboutDlg.m_version += tp.c_wstr();
 	aboutDlg.DoModal();
 }
 
