@@ -22,8 +22,6 @@ extern "C" {
 }
 #endif
 
-#pragma comment (lib,"libjpeg.lib")
-
 namespace ambulant {
 
 namespace gui {

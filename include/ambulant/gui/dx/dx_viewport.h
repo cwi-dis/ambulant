@@ -15,6 +15,7 @@ struct IDirectDraw;
 struct IDirectDrawSurface;
 struct tagPALETTEENTRY;
 
+#include <windows.h>
 
 namespace ambulant {
 
@@ -31,7 +32,7 @@ class region;
 
 class viewport {
   public:
-	viewport(int width = 320, int height = 240);
+	viewport(int width = 320, int height = 240, HWND hwnd = NULL);
 	~viewport();
 	
 	// Shows what has been drawn
@@ -67,6 +68,8 @@ class viewport {
   private:	
  	void add_region(region *r);
  
+	RECT* to_screen_rc_ptr(RECT& r);
+	
 	// Draw the region.
 	void draw(region *r);
 	
@@ -74,6 +77,8 @@ class viewport {
 	uint16 low_bit_pos(uint32 dword);
 	uint16 high_bit_pos(uint32 dword);
 
+	
+	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
 	IDirectDrawSurface* m_primary_surface;
 	IDirectDrawSurface* m_surface;

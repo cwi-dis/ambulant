@@ -3,6 +3,7 @@
  * @$Id$ 
  */
 
+
 #define INITGUID
 #include <objbase.h>
 #include <ddrawex.h>
@@ -206,11 +207,12 @@ seterror(const char *funcname, HRESULT hr){
 	LocalFree(pszmsg);
 }
 
-gui::dx::viewport::viewport(int width, int height) 
+gui::dx::viewport::viewport(int width, int height, HWND hwnd) 
 :	m_width(width), m_height(height),
 	m_direct_draw(NULL),
 	m_primary_surface(NULL),
 	m_surface(NULL),
+	m_hwnd(hwnd?hwnd:GetDesktopWindow()),
 	bits_size(24),
 	red_bits(8), green_bits(8), blue_bits(8),
 	lo_red_bit(16), lo_green_bit(8), lo_blue_bit(0),
@@ -227,15 +229,15 @@ gui::dx::viewport::viewport(int width, int height)
 	if (FAILED(hr)){
 		seterror("CoCreateInstance(CLSID_DirectDrawFactory, ...)", hr);
 		return;
-	}
+	}	
 	IDirectDraw  *pDD1=NULL;
-	hr = pDDF->CreateDirectDraw(NULL, GetDesktopWindow(), DDSCL_NORMAL ,0,NULL,&pDD1);
+	hr = pDDF->CreateDirectDraw(NULL, m_hwnd, DDSCL_NORMAL , 0, NULL, &pDD1);
 	pDDF->Release();
 	if (FAILED(hr)){
 		seterror("CreateDirectDraw()", hr);
 		return;
 	}
-	hr = pDD1->QueryInterface(IID_IDirectDraw2,(void**)&m_direct_draw);
+	hr = pDD1->QueryInterface(IID_IDirectDraw2, (void**)&m_direct_draw);
 	if (FAILED(hr)){
 		seterror("QueryInterface(IID_IDirectDraw2,...)", hr);
 		pDD1->Release();
@@ -243,7 +245,7 @@ gui::dx::viewport::viewport(int width, int height)
 	}
 	pDD1->Release();
 	DWORD flags = DDSCL_NORMAL;
-	hr = m_direct_draw->SetCooperativeLevel(GetDesktopWindow(), flags);
+	hr = m_direct_draw->SetCooperativeLevel(m_hwnd, flags);
 	if (FAILED(hr)) {
 		seterror("SetCooperativeLevel()", hr);
 		return;
@@ -262,6 +264,7 @@ gui::dx::viewport::viewport(int width, int height)
 	}
 	
 	// fill primary surface with black
+	/*
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
@@ -272,6 +275,7 @@ gui::dx::viewport::viewport(int width, int height)
 		seterror("DirectDrawSurface::Blt()", hr);
 		return;
 	}
+	*/
 	get_pixel_format();
 	
 	// create drawing surface
@@ -297,6 +301,16 @@ gui::dx::viewport::~viewport() {
 	RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
 }
 
+RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
+	POINT pt = {8, 8};
+	::ClientToScreen(m_hwnd, &pt);
+	r.left += pt.x;
+	r.right += pt.x;
+	r.top += pt.y;
+	r.bottom += pt.y;
+	return &r;
+}
+
 void gui::dx::viewport::redraw() {
 	if(!m_primary_surface || !m_surface)
 		return;
@@ -306,12 +320,12 @@ void gui::dx::viewport::redraw() {
 	for(it = m_regions.begin(); it != m_regions.end(); it++)
 		draw(*it);
 	m_regions_cs.leave();
-	RECT dst_rc = {0, 0, m_width, m_height};
 	RECT src_rc = {0, 0, m_width, m_height};
+	RECT dst_rc = {0, 0, m_width, m_height};
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
+	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::Blt()", hr);
+		seterror("viewport::redraw/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -324,7 +338,7 @@ void gui::dx::viewport::clear() {
 	RECT dst_rc = {0, 0, m_width, m_height};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::Blt()", hr);
+		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -458,7 +472,7 @@ void gui::dx::viewport::draw(gui::dx::region *r) {
 	DWORD flags = DDBLT_WAIT;
 	HRESULT hr = m_surface->Blt(&dst_rc, r->get_surface(), &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::Blt()", hr);
+		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -485,7 +499,7 @@ void gui::dx::region::clear() {
 	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::Blt()", hr);
+		seterror("region::clear/DirectDrawSurface::Blt()", hr);
 	}
 }
 
