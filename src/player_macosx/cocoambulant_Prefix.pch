@@ -2,6 +2,57 @@
 // Prefix header for all source files of the 'cocoambulant' target in the 'cocoambulant' project
 //
 
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
+
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <math.h>
+#include <pthread.h>
+#include <standards.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+#include <wchar.h>
+
+#ifdef __cplusplus
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <list>
+#include <map>
+#include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <strstream>
+#include <utility>
+#include <vector>
 #endif
+
+#define CodecType AppleCodecType
+#include <ApplicationServices/ApplicationServices.h>
+#include <QuickTime/QuickTime.h>
+#ifdef __OBJC__
+#include <Cocoa/Cocoa.h>
+#endif
+#undef CodecType
+
+
+
