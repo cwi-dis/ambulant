@@ -129,10 +129,10 @@
 						RelativePath=".\gui\dx\dx_audio_player.cpp">
 					</File>
 					<File
-						RelativePath=".\gui\dx\dx_brush.cpp">
+						RelativePath=".\gui\dx\dx_bgrenderer.cpp">
 					</File>
 					<File
-						RelativePath=".\gui\dx\dx_gui.cpp">
+						RelativePath=".\gui\dx\dx_brush.cpp">
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_image_renderer.cpp">
@@ -154,6 +154,37 @@
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_viewport.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_window.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="dg"
+					Filter="">
+					<File
+						RelativePath=".\gui\dg\dg_bgrenderer.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_brush.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_image_renderer.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_img.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_player.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_text.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_viewport.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dg\dg_window.cpp">
 					</File>
 				</Filter>
 			</Filter>
@@ -219,9 +250,6 @@
 			<Filter
 				Name="net"
 				Filter="">
-				<File
-					RelativePath=".\net\databuffer.cpp">
-				</File>
 				<File
 					RelativePath=".\net\datasource.cpp">
 				</File>
@@ -332,10 +360,10 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_audio_player.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_brush.h">
+							RelativePath="..\..\include\ambulant\gui\dx\dx_bgrenderer.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_gui.h">
+							RelativePath="..\..\include\ambulant\gui\dx\dx_brush.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_image_renderer.h">
@@ -350,7 +378,7 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_player_control.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_player_impl.h">
+							RelativePath="..\..\include\ambulant\gui\dx\dx_rgn.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_surface.h">
@@ -368,6 +396,9 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_viewport.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_window.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\gif_decoder.h">
 						</File>
 						<File
@@ -378,6 +409,64 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\png_decoder.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="dg"
+						Filter="">
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\bmp_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_area.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_bgrenderer.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_brush.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_dib_surface.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_image_renderer.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_img.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_player.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_rgn.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_surface.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_text.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_viewport.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_window.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\dg_wmuser.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\gif_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\img_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\jpg_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dg\png_decoder.h">
 						</File>
 					</Filter>
 				</Filter>
