@@ -170,13 +170,13 @@ databuffer::get_write_ptr(int sz)
 {
 	m_lock.enter();
 	char *rv = NULL;
-	//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: start BUFSIZ = %d", BUFSIZ);
+	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x).get_write_ptr(%d): start ", (void*)this, sz);
 	
     if(!m_buffer_full) {
         m_buffer = (char*) realloc(m_buffer, m_size + sz);
-		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: buffer realloc done (%x)",m_buffer);
+		AM_DBG lib::logger::get_logger()->trace("databuffer::get_write_ptr: buffer realloc done (%x)",m_buffer);
         if (!m_buffer) {
-            lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
+            lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size+sz);
         }
 		//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
 		rv = m_buffer + m_size;
@@ -191,6 +191,7 @@ databuffer::get_write_ptr(int sz)
 void databuffer::pushdata(int sz)
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x)::pushdata(%d)", (void*)this, sz);
 	if (m_buffer_full) {
         lib::logger::get_logger()->warn("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
@@ -214,6 +215,7 @@ databuffer::get_read_ptr()
 {
 	m_lock.enter();
 	char *rv = (m_buffer + m_rear);
+	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x)::get_read_ptr(): returning 0x%x", (void*)this, (void*)rv);
 	m_lock.leave();
 	return rv;
 }
@@ -222,6 +224,7 @@ void
 databuffer::readdone(int sz)
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
     if ((unsigned long int)sz > m_used) {
 		lib::logger::get_logger()->error("databuffer::readdone(%d), but m_used=%d", sz, m_used);
 		sz = m_used;

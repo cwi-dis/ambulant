@@ -52,7 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -667,20 +667,26 @@ ffmpeg_resample_datasource::data_avail()
 	if (m_resample_context) {
 		// Convert all the input data we have available. We make an educated guess at the number of bytes
 		// this will produce on output.
+		int insamples = sz / (m_in_fmt.channels * sizeof(short));
+		if (insamples * m_in_fmt.channels * sizeof(short) != sz) {
+			lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: incmplete samples: %d", sz);
+		}
 		int outsz = sz + 4;
-		if (m_in_fmt.channels && m_in_fmt.samplerate) 
-			outsz = (sz + 4) * (m_out_fmt.channels*m_out_fmt.samplerate) / (m_in_fmt.channels*m_in_fmt.samplerate);
+		if (m_in_fmt.channels && m_in_fmt.samplerate) {
+			long long tmp = (long long)insamples * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate;
+			outsz = tmp;
+		}
 		// DBG
-		outsz = 20 * sz;
+		//outsz = 20 * sz;
 		assert( sz || m_src->end_of_file());
-		if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
+		//if (sz & 1) lib::logger::get_logger()->warn("ffmpeg_resample_datasource::data_avail: warning: oddsized datasize %d", sz);
 		short int *inbuf = (short int*) m_src->get_read_ptr();
 		short int *outbuf = (short int*) m_buffer.get_write_ptr(outsz);
 		if (inbuf && outbuf) {
-			int resampled = audio_resample(m_resample_context, outbuf, inbuf, sz / 2);
-			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", resampled, sz/2);
-			m_buffer.pushdata(resampled*2);
-			//XXXX : daniel wonders if audio_resample resamples everything that's in m_inbuf ?
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", sz, insamples, outsz, inbuf, outbuf);
+			int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
+			m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));
 			m_src->readdone(sz);
 		}
 		// Restart reading if we still have room to accomodate more data
