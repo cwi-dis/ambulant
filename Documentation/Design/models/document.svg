@@ -11,7 +11,7 @@
 	<!ENTITY st7 "fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;">
 	<!ENTITY st8 "stroke:none;">
 ]>
-<svg  width="339.427pt" height="271.721pt" viewBox="0 0 339.427 271.721" xml:space="preserve">
+<svg  width="558.99pt" height="269.729pt" viewBox="0 0 558.99 269.729" xml:space="preserve">
 	<style type="text/css">
 	<![CDATA[
 @font-face{font-family:'BookAntiqua-Bold';src:url("data:;base64,\
@@ -52,95 +52,107 @@ TlKJh1Yfgp2OrI7AjtIZTVlPVFFPCHZcXIFdG05Vl6ReH16kaat2swh1soDD0xqN9wEFjc6MwrUa\
 9wuJ0oaiHoiahJaAkoCRYo9DjAgOHATjFPqMFQAAAAAAAQAAAAMAAAAMAAQAQAAAAAwACAACAAQA\
 RABjAGUAbwB1//8AAABEAGMAZQBtAHT///+9/5//nv+X/5MAAQAAAAAAAAAAAAAAAA==")}
 @font-face{font-family:'ArialMT';src:url("data:;base64,\
-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\
+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\
-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\
-DQAA")}
+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")}
 	]]>
 	</style>
 	<g id="Layer_x0020_1" style="&st7; &st3; &st5;">
-		<path style="&st0;" d="M141.017,125.227H0.875V52.178h140.142v73.049z"/>
-		<text transform="matrix(1 0 0 1 27.4453 80.8872)"><tspan x="0" y="0" style="&st8;">lib::node_context</tspan></text>
-		<path style="&st0;" d="M63.784,136.045l6.473-9.96l6.381,9.817l-12.854,0.143z"/>
-		<path style="&st4;" d="M69.933,136.301v30.823"/>
-		<text transform="matrix(1 0 0 1 35.585 64.5039)"><tspan x="0" y="0" style="&st8;">&lt;&lt;interface&gt;&gt;</tspan></text>
-		<path style="&st1;" d="M0.613,86.12h139.82"/>
-		<path style="&st1;" d="M0.946,90.119h140.487"/>
-		<text transform="matrix(1 0 0 1 7.2788 102.4526)"><tspan x="0" y="0" style="&st8;">get_namespace_prefix()</tspan></text>
-		<text transform="matrix(1 0 0 1 89.3306 18)"><tspan x="0" y="0" style="&st8; &st2; &st6;">Document</tspan></text>
-		<text transform="matrix(1 0 0 1 6.9331 117.3013)" style="&st8;"><tspan x="0" y="0">resolve_url</tspan><tspan x="58.693" y="0">()</tspan></text>
-		<path style="&st0;" d="M140.642,240.427H0.5v-73.049h140.142v73.049z"/>
-		<text transform="matrix(1 0 0 1 35.5703 182.0874)"><tspan x="0" y="0" style="&st8;">lib::document</tspan></text>
-		<path style="&st1;" d="M0.238,188.32h139.82"/>
-		<path style="&st1;" d="M0.571,192.319h140.487"/>
-		<path style="&st0;" d="M338.927,271.221H198.785V169.172h140.143v102.049z"/>
-		<text transform="matrix(1 0 0 1 246.855 183.8813)"><tspan x="0" y="0" style="&st8;">lib::node</tspan></text>
-		<path style="&st1;" d="M198.523,190.114h139.82"/>
-		<path style="&st1;" d="M198.857,194.113h140.486"/>
-		<path style="&st0;" d="M147.892,209.916l-6.471-3.75l6.471-3.75l6.109,3.543l-6.109,3.957z"/>
-		<path style="&st0;" d="M154.001,205.958h44.441"/>
-		<text transform="matrix(1 0 0 1 187.0962 200.5513)"><tspan x="0" y="0" style="&st8;">1</tspan></text>
-		<text transform="matrix(1 0 0 1 174.4331 218.3013)"><tspan x="0" y="0" style="&st8;">root</tspan></text>
-		<text transform="matrix(1 0 0 1 6.9331 205.3013)"><tspan x="0" y="0" style="&st8;">get_root()</tspan></text>
-		<text transform="matrix(1 0 0 1 6.9331 220.0513)"><tspan x="0" y="0" style="&st8;">locate_node()</tspan></text>
-		<path style="&st4;" d="M-19.067,386.301"/>
-		<text transform="matrix(1 0 0 1 6.9331 234.8013)"><tspan x="0" y="0" style="&st8;">get_src_url()</tspan></text>
-		<text transform="matrix(1 0 0 1 206.9331 208.3013)"><tspan x="0" y="0" style="&st8;">get_name()</tspan></text>
-		<text transform="matrix(1 0 0 1 206.9331 222.5015)"><tspan x="0" y="0" style="&st8;">get_attribute()</tspan></text>
-		<text transform="matrix(1 0 0 1 206.9331 236.7021)"><tspan x="0" y="0" style="&st8;">get_data()</tspan></text>
-		<text transform="matrix(1 0 0 1 206.9331 250.9028)"><tspan x="0" y="0" style="&st8;">get_url()</tspan></text>
-		<path style="&st4;" d="M268.433,168.801v-82H144.349"/>
-		<path style="&st1;" d="M149.933,82.551l-9,4.25l9,4.25"/>
-		<text transform="matrix(1 0 0 1 206.9331 265.103)"><tspan x="0" y="0" style="&st8;">locate_node()</tspan></text>
+		<path style="&st0;" d="M360.58,122.37H220.438V49.321H360.58v73.049z"/>
+		<text transform="matrix(1 0 0 1 247.0078 78.0303)"><tspan x="0" y="0" style="&st8;">lib::node_context</tspan></text>
+		<path style="&st0;" d="M283.346,133.188l6.473-9.96l6.381,9.817l-12.854,0.143z"/>
+		<path style="&st4;" d="M289.496,133.444v30.823"/>
+		<text transform="matrix(1 0 0 1 255.1475 61.647)"><tspan x="0" y="0" style="&st8;">&lt;&lt;interface&gt;&gt;</tspan></text>
+		<path style="&st1;" d="M220.175,83.263h139.821"/>
+		<path style="&st1;" d="M220.509,87.262h140.487"/>
+		<text transform="matrix(1 0 0 1 226.8413 99.5957)"><tspan x="0" y="0" style="&st8;">get_namespace_prefix()</tspan></text>
+		<text transform="matrix(1 0 0 1 237.4639 18)"><tspan x="0" y="0" style="&st8; &st2; &st6;">Document</tspan></text>
+		<text transform="matrix(1 0 0 1 226.4956 114.4443)"><tspan x="0" y="0" style="&st8;">resolve_url()</tspan></text>
+		<path style="&st0;" d="M360.205,237.57H220.063v-73.049h140.143v73.049z"/>
+		<text transform="matrix(1 0 0 1 255.1328 179.2305)"><tspan x="0" y="0" style="&st8;">lib::document</tspan></text>
+		<path style="&st1;" d="M219.8,185.463h139.821"/>
+		<path style="&st1;" d="M220.134,189.462h140.487"/>
+		<path style="&st0;" d="M558.49,268.364H418.348V166.315H558.49v102.049z"/>
+		<text transform="matrix(1 0 0 1 466.418 181.0244)"><tspan x="0" y="0" style="&st8;">lib::node</tspan></text>
+		<path style="&st1;" d="M418.086,187.257h139.82"/>
+		<path style="&st1;" d="M418.42,191.256h140.486"/>
+		<path style="&st0;" d="M367.455,207.059l-6.471-3.75l6.471-3.75l6.109,3.543l-6.109,3.957z"/>
+		<path style="&st0;" d="M373.564,203.102h44.441"/>
+		<text transform="matrix(1 0 0 1 406.6582 197.6943)"><tspan x="0" y="0" style="&st8;">1</tspan></text>
+		<text transform="matrix(1 0 0 1 393.9961 215.4443)"><tspan x="0" y="0" style="&st8;">root</tspan></text>
+		<text transform="matrix(1 0 0 1 226.4956 202.4443)"><tspan x="0" y="0" style="&st8;">get_root()</tspan></text>
+		<text transform="matrix(1 0 0 1 226.4956 217.1943)"><tspan x="0" y="0" style="&st8;">locate_node()</tspan></text>
+		<path style="&st4;" d="M108.406,503.444"/>
+		<text transform="matrix(1 0 0 1 226.4956 231.9443)"><tspan x="0" y="0" style="&st8;">get_src_url()</tspan></text>
+		<text transform="matrix(1 0 0 1 426.4961 205.4443)"><tspan x="0" y="0" style="&st8;">get_name()</tspan></text>
+		<text transform="matrix(1 0 0 1 426.4961 219.6445)"><tspan x="0" y="0" style="&st8;">get_attribute()</tspan></text>
+		<text transform="matrix(1 0 0 1 426.4961 233.8452)"><tspan x="0" y="0" style="&st8;">get_data()</tspan></text>
+		<text transform="matrix(1 0 0 1 426.4961 248.0459)"><tspan x="0" y="0" style="&st8;">get_url()</tspan></text>
+		<path style="&st4;" d="M487.996,165.944v-82H363.912"/>
+		<path style="&st1;" d="M369.496,79.694l-9,4.25l9,4.25"/>
+		<text transform="matrix(1 0 0 1 426.4961 262.2461)"><tspan x="0" y="0" style="&st8;">locate_node()</tspan></text>
+		<path style="&st0;" d="M212.536,206.944l6.471-3.75l-6.471-3.75l-6.109,3.543l6.109,3.957z"/>
+		<path style="&st0;" d="M206.496,202.987h-66.011"/>
+		<path style="&st0;" d="M140.642,269.229H0.5V165.68h140.142v103.548z"/>
+		<text transform="matrix(1 0 0 1 35.5703 180.3892)"><tspan x="0" y="0" style="&st8;">lib::nscontext</tspan></text>
+		<path style="&st1;" d="M0.238,186.622h139.82"/>
+		<path style="&st1;" d="M0.571,190.621h140.487"/>
+		<text transform="matrix(1 0 0 1 6.4956 203.4443)" style="&st8;"><tspan x="0" y="0">set_prefix_mapping()</tspan><tspan x="0" y="14.5">get_namespace()</tspan><tspan x="0" y="29">get_namespace_prefix()</tspan><tspan x="0" y="43.5">is_known_namespace()</tspan><tspan x="0" y="58">is_known_prefix()</tspan></text>
+		<text transform="matrix(1 0 0 1 144.1587 199.2461)"><tspan x="0" y="0" style="&st8;">1</tspan></text>
+		<text transform="matrix(1 0 0 1 142.4956 216.4443)" style="&st8;"><tspan x="0" y="0">namespace</tspan><tspan x="0" y="14.5">registry</tspan></text>
 	</g>
 </svg>
