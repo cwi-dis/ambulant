@@ -60,6 +60,7 @@
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
+#include <qinputdialog.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -128,6 +129,7 @@ qt_gui::qt_gui(const char* title,
 		QPopupMenu* filemenu = new QPopupMenu (this);
 		assert(filemenu);
 		filemenu->insertItem("&Open", this, SLOT(slot_open()));
+		filemenu->insertItem("Open &URL", this, SLOT(slot_open_url()));
 		filemenu->insertItem("&Full Screen", this,
 				     SLOT(showFullScreen()));
 		filemenu->insertItem("&Normal", this,SLOT(showNormal()));
@@ -252,6 +254,25 @@ qt_gui::slot_open() {
 		m_smilfilename;
 #endif	/*QT_NO_FILEDIALOG*/
 	openSMILfile(smilfilename, IO_ReadOnly);
+	slot_play();
+}
+
+void 
+qt_gui::slot_open_url() {
+  	bool ok;
+	QString smilfilename =
+		QInputDialog::getText(
+				      "AmbulantPlayer",
+				      "URL to open:",
+				      QLineEdit::Normal,
+				      QString::null,
+				      &ok,
+				      this
+				 );
+	if (ok && !smilfilename.isEmpty()) {
+	    openSMILfile(smilfilename, IO_ReadOnly);
+	    slot_play();
+	}
 }
 
 void 

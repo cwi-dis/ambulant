@@ -138,6 +138,7 @@ class qt_gui : public QWidget {
   private slots:
 	void slot_about();
 	void slot_open();
+	void slot_open_url();
 	void slot_pause();
 	void slot_player_done();
 	void slot_quit();
