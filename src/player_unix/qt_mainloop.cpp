@@ -53,6 +53,7 @@
 #ifdef WITH_SDL
 #include <ambulant/gui/SDL/sdl.h>
 #endif
+#include "ambulant/lib/document.h"
 
 using namespace ambulant;
 using namespace lib;
@@ -67,8 +68,9 @@ qt_mainloop::run(void* view)
   
   AM_DBG logger::get_logger()->trace("qt_mainloop::run(qt_gui=0x%x)",
 				     view);
-  passive_player *p = new passive_player(qt_view->filename());
-  if (!p) return NULL;
+
+  document *doc = document::create_from_file(qt_view->filename());
+
   lib::global_renderer_factory *rf = new lib::global_renderer_factory();
 #ifdef WITH_ARTS
   rf->add_factory(new ambulant::gui::arts::arts_renderer_factory());
@@ -83,23 +85,20 @@ qt_mainloop::run(void* view)
   wf = new qt_window_factory(qt_view, 
 			     qt_view->get_o_x(),
 			     qt_view->get_o_y());
-  
-  active_player *a = p->activate((window_factory *) wf,
-				 (renderer_factory *) rf);
-  if (!a) return NULL;
-  
-  timer *our_timer = new timer(realtime_timer_factory());
-  event_processor *processor
-    = event_processor_factory(our_timer);
-    
-  typedef callback<qt_mainloop,qt_mainloop_callback_arg> callback;
-  event *ev = new callback(NULL,  //this
-			   &qt_mainloop::player_done_callback, 
-			   new qt_mainloop_callback_arg());
-  
-  a->start(processor, ev);
-//while (!done())
-  while(true)
+			     
+  abstract_player *a;
+#ifdef WITH_MMS_PLAYER
+  a = new mms_player(doc, wf, rf);
+#else
+  a = new smil_player(doc, wf, rf);
+#endif
+				
+  a->start();
+
+  while(!a->is_done())
     sleep(1);
+
+  // XXXX Should we call a callback in the parent?
+  
   return (void*) 1;
 }

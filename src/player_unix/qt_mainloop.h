@@ -58,7 +58,12 @@
 #include <iostream>
 #include <ambulant/version.h>
 #include <ambulant/lib/logger.h>
-#include <ambulant/common/player.h>
+#define WITH_MMS_PLAYER
+#ifdef WITH_MMS_PLAYER
+#include <ambulant/common/mms_player.h>
+#else
+#include <ambulant/common/smil_player.h>
+#endif
 #include <ambulant/lib/event_processor.h>
 #include <ambulant/lib/asb.h>
 #include <qt_gui.h>
@@ -78,14 +83,7 @@ class qt_mainloop : public ambulant::lib::ref_counted {
   qt_mainloop(qt_gui* parent)
     :	m_refcount(1),
     m_parent(parent) {}
-//  m_done(false),
 	
-  // The callback member function.
-  void player_done_callback(qt_mainloop_callback_arg *p) {
-//  m_done = true;
-    m_parent->player_done();
-  }
-  
   static void* run(void* qt_gui);
   long add_ref() {return ++m_refcount;}
   
@@ -99,9 +97,7 @@ class qt_mainloop : public ambulant::lib::ref_counted {
   
   long get_ref_count() const {return m_refcount;}
 	
-//static bool done() {return m_done;}
  private:
-//bool m_done;
   qt_gui* m_parent;
   ambulant::lib::basic_atomic_count<ambulant::lib::critical_section>
           m_refcount;
