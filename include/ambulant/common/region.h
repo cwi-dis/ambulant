@@ -55,6 +55,11 @@ class passive_region {
 
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
 	active_region *activate(event_processor *const evp, const node *node);
+	
+	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
+	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
+	const passive_region* get_parent() const { return m_parent; }
+	
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
 		point window_topleft)
@@ -65,7 +70,6 @@ class passive_region {
 		m_parent(parent),
 		m_cur_active_region(NULL) {}
 	virtual void need_redraw(const screen_rect<int> &r);
-	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 
   	std::string m_name;					// for debugging
   	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based
@@ -100,6 +104,7 @@ class passive_window : public passive_region {
 
 class window_factory {
   public:
+	virtual ~window_factory() {}
 	virtual passive_window *new_window(const std::string &name, size bounds) = 0;
 };
 
@@ -120,7 +125,9 @@ class active_region {
 	virtual void need_redraw();
 	virtual void done();	
 	const screen_rect<int>& get_rect() const { return m_source->get_rect(); }
-
+	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
+	const passive_region* get_parent() const { return m_source->get_parent(); }
+	
   protected:
   	event_processor *const m_event_processor;
 	passive_region *const m_source;
