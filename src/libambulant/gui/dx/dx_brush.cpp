@@ -74,8 +74,7 @@ gui::dx::dx_brush::dx_brush(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::active_renderer(context, cookie, node, evp),
-	m_activated(false) { 
+:   common::renderer_playable(context, cookie, node, evp) { 
 	lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
 }
 

@@ -54,11 +54,7 @@
 #define AMBULANT_GUI_DX_IMG_H
 
 #include "ambulant/config/config.h"
-
-#include <string>
-
 #include "ambulant/common/renderer.h"
-#include "ambulant/gui/dx/img_decoder.h"
 
 namespace ambulant {
 
@@ -68,7 +64,7 @@ namespace dx {
 
 class image_renderer;
 
-class dx_img_renderer : public common::active_renderer {
+class dx_img_renderer : public common::renderer_playable {
   public:
 	dx_img_renderer(
 		common::playable_notification *context,
@@ -82,7 +78,6 @@ class dx_img_renderer : public common::active_renderer {
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
 	image_renderer *m_image;
-	bool m_activated;
 };
 
 } // namespace dx

@@ -54,10 +54,9 @@
 #define AMBULANT_GUI_DX_TEXT_H
 
 #include "ambulant/config/config.h"
-
 #include <string>
+
 #include "ambulant/common/renderer.h"
-#include "ambulant/common/region.h"
 
 namespace ambulant {
 
@@ -65,10 +64,7 @@ namespace gui {
 
 namespace dx {
 
-class viewport;
-class region;
-
-class dx_text_renderer : public common::active_renderer {
+class dx_text_renderer : public common::renderer_playable {
   public:
 	dx_text_renderer(
 		common::playable_notification *context,
@@ -82,7 +78,6 @@ class dx_text_renderer : public common::active_renderer {
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
 	std::string m_text;
-	bool m_activated;
 };
 
 } // namespace dx

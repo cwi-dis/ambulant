@@ -75,9 +75,8 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::active_renderer(context, cookie, node, evp),
-	m_image(0), 
-	m_activated(false) {
+:   common::renderer_playable(context, cookie, node, evp),
+	m_image(0) {
 	
 	lib::logger::get_logger()->trace("dx_img_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
@@ -100,14 +99,14 @@ void gui::dx::dx_img_renderer::start(double t) {
 	lib::logger::get_logger()->trace("dx_img_renderer::start(0x%x)", this);
 	if(!m_image) {
 		// Notify scheduler
-		stopped_callback();
+		m_context->stopped(m_cookie);
 		return;
 	}
 	
 	// Does the renderer have all the resources to play?
 	if(!m_image->can_play()) {
 		// Notify scheduler
-		stopped_callback();
+		m_context->stopped(m_cookie);
 		return;
 	}
 	

@@ -54,11 +54,8 @@
 #define AMBULANT_GUI_DX_VIDEO_H
 
 #include "ambulant/config/config.h"
-
-#include "ambulant/common/renderer.h"
-#include "ambulant/common/region.h"
-#include "ambulant/common/playable.h"
 #include "ambulant/lib/event.h"
+#include "ambulant/common/renderer.h"
 
 namespace ambulant {
 
@@ -68,7 +65,7 @@ namespace dx {
 
 class video_player;
 
-class dx_video_renderer : public common::active_renderer {
+class dx_video_renderer : public common::renderer_playable {
   public:
 	dx_video_renderer(
 		common::playable_notification *context,
@@ -89,7 +86,6 @@ class dx_video_renderer : public common::active_renderer {
 	void schedule_update();
  	video_player *m_player;
 	lib::event *m_update_event;
-	bool m_activated;
 };
 
 } // namespace dx

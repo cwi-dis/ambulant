@@ -54,8 +54,6 @@
 #define AMBULANT_GUI_DX_AREA_H
 
 #include "ambulant/config/config.h"
-
-#include <string>
 #include "ambulant/common/renderer.h"
 
 namespace ambulant {
@@ -64,7 +62,7 @@ namespace gui {
 
 namespace dx {
 
-class dx_area_renderer : public common::active_renderer {
+class dx_area_renderer : public common::renderer_playable {
   public:
 	dx_area_renderer(
 		common::playable_notification *context,
@@ -72,7 +70,7 @@ class dx_area_renderer : public common::active_renderer {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::abstract_window *window) 
-	: common::active_renderer(context, cookie, node, evp) {
+	: common::renderer_playable(context, cookie, node, evp) {
 	}
 	~dx_area_renderer() {}
 	void start(double t) {}

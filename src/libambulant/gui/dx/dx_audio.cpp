@@ -67,10 +67,9 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::abstract_window *window)
-:   common::active_renderer(context, cookie, node, evp), 
+:   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
-	m_update_event(0), 
-	m_activated(false) {
+	m_update_event(0) {
 	
 	lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	std::string url = m_node->get_url("src");
@@ -94,14 +93,14 @@ void gui::dx::dx_audio_renderer::start(double t) {
 		// Not created or stopped (gone)
 		
 		// Notify scheduler
-		stopped_callback();
+		m_context->stopped(m_cookie);
 		return;
 	}
 	
 	// Does it have all the resources to play?
 	if(!m_player->can_play()) {
 		// Notify scheduler
-		stopped_callback();
+		m_context->stopped(m_cookie);
 		return;
 	}
 	
@@ -119,7 +118,7 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	m_player->start(t);
 		
 	// Notify the scheduler; may take benefit
-	started_callback();
+	m_context->started(m_cookie);
 		
 	// Schedule a self-update
 	schedule_update();
@@ -160,7 +159,7 @@ void gui::dx::dx_audio_renderer::update_callback() {
 		schedule_update();
 	} else {
 		m_update_event = 0;
-		stopped_callback();
+		m_context->stopped(m_cookie);
 	}
 }
 

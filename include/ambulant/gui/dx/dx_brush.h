@@ -54,8 +54,6 @@
 #define AMBULANT_GUI_DX_BRUSH_H
 
 #include "ambulant/config/config.h"
-
-#include <string>
 #include "ambulant/common/renderer.h"
 
 namespace ambulant {
@@ -64,10 +62,7 @@ namespace gui {
 
 namespace dx {
 
-class viewport;
-class region;
-
-class dx_brush : public common::active_renderer {
+class dx_brush : public common::renderer_playable {
   public:
 	dx_brush (
 		common::playable_notification *context,
@@ -79,8 +74,6 @@ class dx_brush : public common::active_renderer {
 	void start(double t);
 	void stop();
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
-  private:
-	bool m_activated;
 };
 
 } // namespace dx
