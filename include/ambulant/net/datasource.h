@@ -191,16 +191,16 @@ class passive_datasource : public ambulant::lib::ref_counted_obj {
   public:
 	passive_datasource(const char *url)
 	:	m_url(url?url:"") {
-		logger::get_logger()->debug(repr() + "::cstr()");
+		//logger::get_logger()->debug(repr() + "::cstr()");
 	}
 	
 	passive_datasource(const std::string& url)
 	:	 m_url(url) {
-		logger::get_logger()->debug(repr() + "::cstr()");
+		//logger::get_logger()->debug(repr() + "::cstr()");
 	}
 	
 	~passive_datasource() {
-		logger::get_logger()->debug(repr() + "::dstr()");
+		//logger::get_logger()->debug(repr() + "::dstr()");
 	}
 	
 	active_datasource *activate();
@@ -226,42 +226,85 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 	typedef buffer_type::size_type size_type;
 
 	active_datasource() 
-	:	m_source(0) {
-		logger::get_logger()->debug(repr() + "::cstr()");
+	:	m_source(0), m_gptr(0) {
 	}
 	
 	active_datasource(passive_datasource *source) 
-	:	m_source(source) {
-		logger::get_logger()->debug(repr() + "::cstr()");
+	:	m_source(source), m_gptr(0) {
 	}
 	
 	~active_datasource() {
-		logger::get_logger()->debug(repr() + "::dstr()");
 	}
 	
-	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone) {
-		logger::get_logger()->trace(repr() + "::start()");
+	bool exists() const { 
 		std::ifstream ifs(m_source->get_url().c_str());
+		bool exists = ifs && ifs.good();
+		ifs.close();
+		return exists;
+	}
+	
+	databuffer& get_databuffer() { return m_buffer;}
+	
+	const std::string& get_url() const { return m_source->get_url();}
+	
+	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone) {
+		std::ifstream ifs(m_source->get_url().c_str(), std::ios::in | std::ios::binary);
 		if(!ifs) {
 			logger::get_logger()->error(repr() + "::read() failed");
+			evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
 			return;
 		}
 		const size_t buf_size = 1024;
-		char *buf = new char[buf_size];
+		byte *buf = new byte[buf_size];
 		while(!ifs.eof() && ifs.good()){
-			ifs.read(buf, buf_size);
-			m_buffer.append((byte*)buf, ifs.gcount());
+			ifs.read((char*)buf, buf_size);
+			m_buffer.append(buf, ifs.gcount());
 		}
 		delete[] buf;
+		m_gptr = 0;
 		evp->add_event(readdone, 0, ambulant::lib::event_processor::high);
 	}
 
-	void read(char *data, int size) {
-		logger::get_logger()->trace(repr() + "::read()");
-		data = (char*)m_buffer.data();
-	}
-
 	size_type size() const { return m_buffer.size();}
+	
+	size_type available() const { return m_buffer.size() - m_gptr;}
+	
+	void seekg(size_type pos) { m_gptr = pos;}
+	
+	const byte* data() const { return  m_buffer.data();}
+	
+	const byte* gdata() { return m_buffer.data() + m_gptr;}
+	
+	byte get() { 
+		if(!available()) throw_range_error();
+		byte b = *gdata(); 
+		m_gptr++; 
+		return b;
+	}
+	
+	size_type read(byte *b, size_type nb) {
+		logger::get_logger()->debug("READ %u", m_gptr);
+		size_type nr = available();
+		size_type nt = (nr>=nb)?nb:nr;
+		if(nt>0) {
+			memcpy(b, gdata(), nt);
+			m_gptr += nt;
+		}
+		return nt;
+	}
+	
+	size_type skip(size_type nb) {
+		size_type nr = available();
+		size_type nt = (nr>=nb)?nb:nr;
+		if(nt>0) m_gptr += nt;
+		return nt;
+	}
+	
+	unsigned short get_be_ushort() {
+		byte b[2];
+		if(read(b, 2) != 2) throw_range_error();
+		return (b[1]<<8)| b[0];
+	}
 	
 	std::string repr() {
 		std::ostringstream os;
@@ -269,13 +312,23 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 		return os.str();
 	};
 	
+	size_type read(char *b, size_type nb) {
+		return read((byte*)b, nb);
+	}
+	
 	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
 		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
 		return os;
 	}
-  private:
+	
+  private:	
+	void throw_range_error() {
+		throw std::range_error("index out of range");
+	}
+	
 	passive_datasource *m_source;
 	databuffer m_buffer;
+	size_type m_gptr;
   
 };
 
@@ -283,7 +336,6 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 // Inline implemetation
 
 inline active_datasource *passive_datasource::activate() { 
-	ambulant::lib::logger::get_logger()->trace(repr() + "::activate()");
 	return new active_datasource(this);
 }
 
