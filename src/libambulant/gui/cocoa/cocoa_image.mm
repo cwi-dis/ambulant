@@ -93,16 +93,27 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_wind
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> window_rect = r;
-	window_rect.translate(m_dest->get_global_topleft());
-	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
+	// First find our whole area (which we have to clear to background color)
+	screen_rect<int> dstrect_whole = r;
+	dstrect_whole.translate(m_dest->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	// XXXX Fill with background color
 
 	if (m_image) {
-		NSSize srcsize = [m_image size];
-		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
-		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", srcsize.width, srcsize.height, NSMinX(dstrect), NSMinY(dstrect), NSMaxX(dstrect), NSMaxY(dstrect));
-		[m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
+		// Now find both source and destination area for the bitblit.
+		NSSize cocoa_srcsize = [m_image size];
+		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
+		rect srcrect = rect(size(0, 0));
+		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect);
+		dstrect.translate(m_dest->get_global_topleft());
+		
+		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
+		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
+		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeCopy fraction: 1.0];
+	} else {
 	}
+	
 	m_lock.leave();
 }
 

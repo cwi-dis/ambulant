@@ -160,6 +160,15 @@ lib::passive_region::need_events(abstract_mouse_region *rgn)
         m_parent->mouse_region_changed();
 }
 
+const lib::screen_rect<int>& 
+lib::passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect) const
+{
+	// XXXX For now we implement fit=fill only
+	*out_src_rect = lib::rect(lib::point(0,0), 
+		lib::size(m_inner_bounds.width(), m_inner_bounds.height()));
+	return m_inner_bounds;
+}
+
 void
 lib::passive_region::mouse_region_changed()
 {

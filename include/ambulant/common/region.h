@@ -106,7 +106,9 @@ class passive_region : public abstract_rendering_source {
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
 	const point &get_global_topleft() const { return m_window_topleft; }
 	const passive_region* get_parent() const { return m_parent; }
-        const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+		
+	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const;
 	
   protected:
 	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
@@ -182,7 +184,11 @@ class active_region : public abstract_rendering_surface, public abstract_renderi
 	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
 	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
-        const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+	const abstract_mouse_region& get_mouse_region() const { return *m_mouse_region; }
+	const screen_rect<int>& get_fit_rect(const size& src_size, rect* out_src_rect) const
+	{
+		return m_source->get_fit_rect(src_size, out_src_rect);
+	}
 	
   protected:
 	passive_region *const m_source;
