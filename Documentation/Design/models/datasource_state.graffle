@@ -21,12 +21,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
-				<integer>11</integer>
+				<integer>8</integer>
 			</dict>
 			<key>ID</key>
-			<integer>74</integer>
+			<integer>31</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -49,16 +49,16 @@
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>-40</real>
+					<real>-24.375</real>
 					<key>Position</key>
-					<real>0.2109375</real>
+					<real>0.0703125</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{337.898, 513.768}</string>
-				<string>{376, 446}</string>
-				<string>{306.888, 374.294}</string>
+				<string>{247.897, 524.768}</string>
+				<string>{152, 487}</string>
+				<string>{148.558, 375.043}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -75,9 +75,9 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>63</integer>
+				<integer>20</integer>
 				<key>Info</key>
-				<integer>3</integer>
+				<integer>4</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -86,10 +86,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>72</integer>
+				<integer>29</integer>
 			</dict>
 			<key>ID</key>
-			<integer>73</integer>
+			<integer>30</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -135,7 +135,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>67</integer>
+				<integer>24</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -151,7 +151,7 @@
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>71</integer>
+					<integer>28</integer>
 					<key>Shape</key>
 					<string>Circle</string>
 					<key>Style</key>
@@ -177,13 +177,13 @@
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>72</integer>
+					<integer>29</integer>
 					<key>Shape</key>
 					<string>Circle</string>
 				</dict>
 			</array>
 			<key>ID</key>
-			<integer>70</integer>
+			<integer>27</integer>
 		</dict>
 		<dict>
 			<key>Class</key>
@@ -191,12 +191,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>64</integer>
+				<integer>21</integer>
 				<key>Info</key>
 				<integer>5</integer>
 			</dict>
 			<key>ID</key>
-			<integer>69</integer>
+			<integer>26</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -225,7 +225,7 @@
 			<key>Points</key>
 			<array>
 				<string>{465.897, 638.768}</string>
-				<string>{364.934, 637.786}</string>
+				<string>{364.934, 637.787}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -242,7 +242,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>67</integer>
+				<integer>24</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -251,12 +251,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>67</integer>
+				<integer>24</integer>
 				<key>Info</key>
 				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>68</integer>
+			<integer>25</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -305,7 +305,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>64</integer>
+				<integer>21</integer>
 				<key>Info</key>
 				<integer>3</integer>
 			</dict>
@@ -316,7 +316,7 @@
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>67</integer>
+			<integer>24</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -333,12 +333,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>64</integer>
+				<integer>21</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
 			<key>ID</key>
-			<integer>66</integer>
+			<integer>23</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -389,7 +389,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>64</integer>
+				<integer>21</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -400,10 +400,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>64</integer>
+				<integer>21</integer>
 			</dict>
 			<key>ID</key>
-			<integer>65</integer>
+			<integer>22</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -424,14 +424,14 @@
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>-19.375</real>
+					<real>24.375</real>
 					<key>Position</key>
 					<real>0.51602268218994141</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{292.897, 540.768}</string>
+				<string>{292.897, 551.768}</string>
 				<string>{292.934, 576.014}</string>
 			</array>
 			<key>Style</key>
@@ -449,7 +449,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>63</integer>
+				<integer>20</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -460,7 +460,7 @@
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>64</integer>
+			<integer>21</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -486,11 +486,11 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{247.897, 486.768}, {90, 54}}</string>
+			<string>{{247.897, 497.768}, {90, 54}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>63</integer>
+			<integer>20</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -507,12 +507,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>63</integer>
+				<integer>20</integer>
 				<key>Info</key>
 				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>62</integer>
+			<integer>19</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -535,15 +535,15 @@
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>21.875</real>
+					<real>-40</real>
 					<key>Position</key>
-					<real>0.3828125</real>
+					<real>0.3046875</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{182.897, 446.768}</string>
-				<string>{292.897, 486.768}</string>
+				<string>{292.897, 463.768}</string>
+				<string>{292.897, 497.768}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -560,7 +560,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>60</integer>
+				<integer>17</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -569,12 +569,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>47</integer>
+				<integer>4</integer>
 				<key>Info</key>
 				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>61</integer>
+			<integer>18</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -595,14 +595,14 @@
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>-35.625</real>
+					<real>31.875</real>
 					<key>Position</key>
-					<real>0.1640625</real>
+					<real>0.1953125</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{137.897, 473.768}</string>
+				<string>{247.897, 436.768}</string>
 				<string>{137.759, 575.839}</string>
 			</array>
 			<key>Style</key>
@@ -620,18 +620,18 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>60</integer>
+				<integer>17</integer>
 				<key>Info</key>
-				<integer>1</integer>
+				<integer>4</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{92.8975, 419.768}, {90, 54}}</string>
+			<string>{{247.897, 409.768}, {90, 54}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>60</integer>
+			<integer>17</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -648,12 +648,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>17</integer>
 				<key>Info</key>
-				<integer>10</integer>
+				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>59</integer>
+			<integer>16</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -676,15 +676,15 @@
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>-21.875</real>
+					<real>26.875</real>
 					<key>Position</key>
-					<real>0.3984375</real>
+					<real>0.2734375</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
 				<string>{405.759, 334.339}</string>
-				<string>{308, 334.486}</string>
+				<string>{292.897, 409.768}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -701,7 +701,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>49</integer>
+				<integer>6</integer>
 				<key>Info</key>
 				<integer>4</integer>
 			</dict>
@@ -712,10 +712,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>58</integer>
+			<integer>15</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -746,7 +746,7 @@
 			<key>Points</key>
 			<array>
 				<string>{413.723, 240.592}</string>
-				<string>{308, 241.426}</string>
+				<string>{308, 241.427}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -763,7 +763,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>55</integer>
+				<integer>12</integer>
 				<key>Info</key>
 				<integer>4</integer>
 			</dict>
@@ -774,12 +774,12 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>55</integer>
+				<integer>12</integer>
 				<key>Info</key>
 				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>57</integer>
+			<integer>14</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -809,7 +809,7 @@
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{308, 203.034}</string>
+				<string>{308, 203.035}</string>
 				<string>{402, 179}</string>
 				<string>{458.723, 213.592}</string>
 			</array>
@@ -828,7 +828,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
 				<integer>9</integer>
 			</dict>
@@ -839,10 +839,10 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>49</integer>
+				<integer>6</integer>
 			</dict>
 			<key>ID</key>
-			<integer>56</integer>
+			<integer>13</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -888,7 +888,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>55</integer>
+				<integer>12</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -897,7 +897,7 @@
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>55</integer>
+			<integer>12</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -916,7 +916,7 @@
 			<key>FitText</key>
 			<string>YES</string>
 			<key>ID</key>
-			<integer>54</integer>
+			<integer>11</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -958,7 +958,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>FitText</key>
 			<string>YES</string>
 			<key>ID</key>
-			<integer>53</integer>
+			<integer>10</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -996,12 +996,12 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
 				<integer>6</integer>
 			</dict>
 			<key>ID</key>
-			<integer>52</integer>
+			<integer>9</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1052,7 +1052,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
 				<integer>6</integer>
 			</dict>
@@ -1063,12 +1063,12 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
 				<integer>7</integer>
 			</dict>
 			<key>ID</key>
-			<integer>51</integer>
+			<integer>8</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1100,7 +1100,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<array>
 				<string>{65.7591, 616.339}</string>
 				<string>{21, 491}</string>
-				<string>{100.964, 335.402}</string>
+				<string>{100.964, 335.403}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1117,7 +1117,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>47</integer>
+				<integer>4</integer>
 				<key>Info</key>
 				<integer>4</integer>
 			</dict>
@@ -1128,12 +1128,12 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>47</integer>
+				<integer>4</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
 			<key>ID</key>
-			<integer>50</integer>
+			<integer>7</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1184,7 +1184,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>47</integer>
+				<integer>4</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -1195,7 +1195,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>49</integer>
+			<integer>6</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -1224,10 +1224,12 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>60</integer>
+				<integer>17</integer>
+				<key>Info</key>
+				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>48</integer>
+			<integer>5</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1250,15 +1252,15 @@ readDone is the client call to signal it has consumed data.}</string>
 					<key>LabelVisible</key>
 					<string>YES</string>
 					<key>Offset</key>
-					<real>-35.625</real>
+					<real>-16.875</real>
 					<key>Position</key>
-					<real>0.3203125</real>
+					<real>0.0390625</real>
 				</dict>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{203.292, 376.15}</string>
-				<string>{137.897, 419.768}</string>
+				<string>{203.292, 376.151}</string>
+				<string>{292.897, 409.768}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1275,7 +1277,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -1286,7 +1288,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>47</integer>
+			<integer>4</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -1315,10 +1317,10 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>45</integer>
+				<integer>2</integer>
 			</dict>
 			<key>ID</key>
-			<integer>46</integer>
+			<integer>3</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1366,7 +1368,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>44</integer>
+				<integer>1</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -1375,7 +1377,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>45</integer>
+			<integer>2</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -1411,7 +1413,7 @@ readDone is the client call to signal it has consumed data.}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>44</integer>
+			<integer>1</integer>
 			<key>Shape</key>
 			<string>Circle</string>
 			<key>Style</key>
@@ -1559,7 +1561,7 @@ readDone is the client call to signal it has consumed data.}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwMy0xMi0wNVQxMTo0MTo1MFo8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwMy0xMi0wNVQxMjo1OTo0MFo8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -1573,7 +1575,7 @@ readDone is the client call to signal it has consumed data.}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDMtMTItMDVUMTE6NDE6NTBaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDMtMTItMDVUMTI6NTk6NDBaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1673,7 +1675,7 @@ readDone is the client call to signal it has consumed data.}</string>
 		<key>ShowStatusBar</key>
 		<true/>
 		<key>VisibleRegion</key>
-		<string>{{0, 0}, {559, 600}}</string>
+		<string>{{0, 74}, {559, 600}}</string>
 		<key>Zoom</key>
 		<string>1</string>
 	</dict>
