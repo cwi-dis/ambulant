@@ -128,7 +128,7 @@ std::pair<bool, double> gui::dx::video_player::get_dur() {
 	HRESULT hr;
 	hr = m_mmstream->GetDuration(&stdur);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::SetState()", hr);	
+		win_report_error("IMultiMediaStream::GetDuration()", hr);	
 		return std::pair<bool, double>(false, 0);
 	}
 	double dur = 0.001*double(stdur / MILLIS_FACT);
@@ -147,7 +147,23 @@ bool gui::dx::video_player::is_playing() {
 		win_report_error("IMultiMediaStream::GetState()", hr);	
 		return false;
 	}
-	return state == STREAMSTATE_RUN;
+	if(state != STREAMSTATE_RUN)
+		return false;
+		
+	STREAM_TIME stdur;
+	hr = m_mmstream->GetDuration(&stdur);
+	if(FAILED(hr)) {
+		win_report_error("IMultiMediaStream::GetDuration()", hr);	
+		return false;
+	}
+	
+	STREAM_TIME st;
+	hr = m_mmstream->GetTime(&st);
+	if(FAILED(hr)) {
+		win_report_error("IMultiMediaStream::GetTime()", hr);	
+		return false;
+	}
+	return st<stdur;
 }
 
 double gui::dx::video_player::get_position() {
@@ -158,7 +174,7 @@ double gui::dx::video_player::get_position() {
 		win_report_error("IMultiMediaStream::GetTime()", hr);	
 		return 0.0;
 	}
-	return  0.001*double(st / MILLIS_FACT);
+	return  0.001*double(__int64(st / MILLIS_FACT));
 }
 
 ////////////////

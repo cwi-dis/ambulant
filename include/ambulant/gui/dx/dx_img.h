@@ -77,7 +77,6 @@ class dx_img_renderer : public common::active_renderer {
 		common::abstract_window *window);
 	~dx_img_renderer();
 	void start(double t);
-	void readdone();
 	void stop();
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:

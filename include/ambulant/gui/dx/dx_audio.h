@@ -83,9 +83,12 @@ class dx_audio_renderer : public common::active_renderer {
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
 	std::pair<bool, double> get_dur();
   private:
-	audio_player *m_player;
+	void update_callback();
+	void schedule_update();
+	
 	common::abstract_window *m_window;
-	bool m_player_initialized;
+	audio_player *m_player;
+ 	lib::event *m_update_event;
 };
 
 } // namespace dx

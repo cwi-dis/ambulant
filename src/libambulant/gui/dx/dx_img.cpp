@@ -62,6 +62,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
 
 #include "jpeglib.h"
@@ -71,14 +72,14 @@ using namespace ambulant;
 ////////////////////////
 // img_decoder factory function
 
-typedef gui::dx::img_decoder<net::active_datasource, lib::color_trible> img_decoder_class;
+typedef gui::dx::img_decoder<lib::memfile, lib::color_trible> img_decoder_class;
 
 static img_decoder_class*
-create_img_decoder(net::active_datasource *src, HDC hdc) {
-	typedef gui::dx::jpg_decoder<net::active_datasource, lib::color_trible> jpg_decoder_class;
-	typedef gui::dx::gif_decoder<net::active_datasource, lib::color_trible> gif_decoder_class;
-	typedef gui::dx::png_decoder<net::active_datasource, lib::color_trible> png_decoder_class;
-	typedef gui::dx::bmp_decoder<net::active_datasource, lib::color_trible> bmp_decoder_class;
+create_img_decoder(lib::memfile *src, HDC hdc) {
+	typedef gui::dx::jpg_decoder<lib::memfile, lib::color_trible> jpg_decoder_class;
+	typedef gui::dx::gif_decoder<lib::memfile, lib::color_trible> gif_decoder_class;
+	typedef gui::dx::png_decoder<lib::memfile, lib::color_trible> png_decoder_class;
+	typedef gui::dx::bmp_decoder<lib::memfile, lib::color_trible> bmp_decoder_class;
 	
 	img_decoder_class* decoder = 0;
 	
@@ -122,7 +123,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	// On repeat this will be called again
 	if(m_region != 0) return;
 	
-	if(!m_node || !m_src) abort();
+	if(!m_node) abort();
 	
 	const common::region_info *ri = m_dest->get_info();
 	
@@ -138,23 +139,18 @@ void gui::dx::dx_img_renderer::start(double t) {
 	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	m_region->clear();
 	
-	if(!m_src->exists()) {
+	lib::memfile mf(m_node->get_url("src"));
+	if(!mf.exists()) {
 		m_dest->show(this);
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
 		return;
 	}
-	typedef lib::no_arg_callback<dx_img_renderer> callback_t;
-	lib::event *e = new callback_t(this, &dx_img_renderer::readdone);
-	m_src->start(m_event_processor, e);
-}
-
-void gui::dx::dx_img_renderer::readdone() {
-	lib::logger::get_logger()->trace("dx_img_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
+	mf.read();
 	
 	// Prepare dx-region's pixel map
 	HDC hdc = ::GetDC(NULL);
-	img_decoder_class* decoder = create_img_decoder(m_src, hdc);
+	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
 	::DeleteDC(hdc);
 	if(decoder) {
 		dib_surface<lib::color_trible> *ds = decoder->decode();
@@ -169,7 +165,6 @@ void gui::dx::dx_img_renderer::readdone() {
 	m_dest->need_redraw();
 	stopped_callback();
 }
-
 
 void gui::dx::dx_img_renderer::stop() {
 	viewport *v = get_viewport();

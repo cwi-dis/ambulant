@@ -58,6 +58,7 @@
 #include "ambulant/common/layout.h"
 
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/memfile.h"
 
 using namespace ambulant;
 
@@ -78,7 +79,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 	// On repeat this will be called again
 	if(m_region != 0) return;
 
-	if(!m_node || !m_src) abort();
+	if(!m_node) abort();
 	
 	const common::region_info *ri = m_dest->get_info();
 	
@@ -95,23 +96,16 @@ void gui::dx::dx_text_renderer::start(double t) {
 	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	m_region->clear();
 	
-	if(!m_src->exists()) {
+	lib::memfile mf(m_node->get_url("src"));
+	if(!mf.exists()) {
 		m_dest->show(this);
 		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
 		stopped_callback();
 		return;
 	}
-	typedef lib::no_arg_callback<dx_text_renderer> callback_t;
-	lib::event *e = new callback_t(this, &dx_text_renderer::readdone);
-	m_src->start(m_event_processor, e);
-}
-
-void gui::dx::dx_text_renderer::readdone() {
-	lib::logger::get_logger()->trace("dx_text_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
-	lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
-	
+	mf.read();
 	// Prepare dx-region's pixel map
-	net::databuffer& db = m_src->get_databuffer();
+	lib::databuffer& db = mf.get_databuffer();
 	m_region->set_text((const char*) db.data(), int(db.size()));
 	m_dest->need_redraw();
 	stopped_callback();

@@ -87,7 +87,7 @@ namespace gui {
 
 namespace dx {
 
-	class video_player : virtual public common::playable, virtual public lib::ref_counted_obj {
+class video_player : public common::playable {
   public:
 	video_player(const std::string& url, IDirectDraw* ddraw);
 	~video_player();

@@ -78,7 +78,6 @@ class dx_text_renderer : public common::active_renderer {
 		common::abstract_window *window);
 	~dx_text_renderer();
 	void start(double t);
-	void readdone();
 	void stop();
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:

@@ -56,6 +56,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/memfile.h"
 
 using namespace ambulant;
 
@@ -67,14 +68,16 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	common::abstract_window *window)
 :   common::active_renderer(context, cookie, node, evp), 
 	m_window(window),
-	m_player(0) {
+	m_player(0), 
+	m_update_event(0) {
 	
 	// create player so that get_dur() succeeds
-	if(m_src->exists())
-		m_player = new gui::dx::audio_player(m_src->get_url());
+	std::string url = m_node->get_url("src");
+	if(lib::memfile::exists(url))
+		m_player = new gui::dx::audio_player(url);
 	else {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			m_src->get_url().c_str());
+			url.c_str());
 	}
 }
 
@@ -83,12 +86,16 @@ gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	if(m_player) stop();
 }
 
+
 void gui::dx::dx_audio_renderer::start(double t) {
-	if(!m_src->exists()) {
+	std::string url = m_node->get_url("src");
+	if(!memfile::exists(url)) {
 		stopped_callback();
 	} else if(m_player) {
 		//lib::show_message("Starting audio %s at %f", m_src->get_url().c_str(), t);
 		m_player->start(t);
+		started_callback();
+		schedule_update();
 	}
 }
 
@@ -109,11 +116,28 @@ void gui::dx::dx_audio_renderer::pause() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
 }
+
 void gui::dx::dx_audio_renderer::resume() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.resume(0x%x)", this);
 	if(m_player) m_player->resume();
 }
+
 void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
 	// we don't need to do anything for audio
 }
 
+void gui::dx::dx_audio_renderer::update_callback() {
+	if(!m_update_event || !m_player) return;
+	if(m_player->is_playing()) {
+		schedule_update();
+	} else {
+		m_update_event = 0;
+		stopped_callback();
+	}
+}
+
+void gui::dx::dx_audio_renderer::schedule_update() {
+	m_update_event = new lib::no_arg_callback<dx_audio_renderer>(this, 
+		&dx_audio_renderer::update_callback);
+	m_event_processor->add_event(m_update_event, 100);
+}

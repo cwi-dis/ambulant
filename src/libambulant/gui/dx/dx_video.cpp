@@ -53,6 +53,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/memfile.h"
 
 #include "ambulant/common/region.h"
 #include "ambulant/common/layout.h"
@@ -79,11 +80,12 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 		
 	// create player so that get_dur() succeeds
 	viewport *v = get_viewport();
-	if(m_src->exists()) {
-		m_player = new gui::dx::video_player(m_src->get_url(), v->get_direct_draw());
+	std::string url = m_node->get_url("src");
+	if(lib::memfile::exists(url)) {
+		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
 	} else {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			m_src->get_url().c_str());
+			m_node->get_url("src").c_str());
 	}
 
 }
@@ -116,21 +118,21 @@ void gui::dx::dx_video_renderer::start(double t) {
 	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	m_region->clear();
 	
-	if(!m_src->exists()) {
+	std::string url = m_node->get_url("src");
+	if(!memfile::exists(url)) {
 		stopped_callback();
 		return;
 	}
-	
 	if(!m_player)
-		m_player = new gui::dx::video_player(m_src->get_url(), v->get_direct_draw());
+		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
 	if(m_player->can_play()) {
 		m_player->start(t);
 		m_player->update();
 		m_region->set_video(m_player);
+		started_callback();
 		schedule_update();
 		m_dest->show(this);
 	}
-	
 }
 
 std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
@@ -185,11 +187,13 @@ gui::dx::viewport* gui::dx::dx_video_renderer::get_viewport(common::abstract_win
 
 void gui::dx::dx_video_renderer::update_callback() {
 	if(!m_update_event || !m_player) return;
-	viewport *v = get_viewport();
-	v->redraw();
-	m_update_event = new lib::no_arg_callback<dx_video_renderer>(this, 
-		&dx_video_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 50);
+	m_dest->need_redraw();
+	if(m_player->is_playing()) {
+		schedule_update();
+	} else {
+		m_update_event = 0;
+		stopped_callback();
+	}
 }
 
 void gui::dx::dx_video_renderer::schedule_update() {
