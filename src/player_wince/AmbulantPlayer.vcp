@@ -61,7 +61,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"D:\ufs\ambulant\lib\wince" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"D:\ufs\ambulant\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
@@ -93,7 +93,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"D:\ufs\ambulant\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
@@ -125,7 +125,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /windowsce:emulation /MACHINE:IX86
-# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /windowsce:emulation /MACHINE:IX86
+# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /libpath:"D:\ufs\ambulant\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
@@ -157,7 +157,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /windowsce:emulation /MACHINE:IX86
-# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /windowsce:emulation /MACHINE:IX86
+# ADD LINK32 /nologo /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /debug /libpath:"D:\ufs\ambulant\lib\wince-emu" /windowsce:emulation /MACHINE:IX86
 
 !ENDIF 
 
@@ -176,6 +176,7 @@ SOURCE=.\AmbulantPlayer.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -186,6 +187,7 @@ DEP_CPP_AMBUL=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -196,6 +198,7 @@ DEP_CPP_AMBUL=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -206,6 +209,7 @@ DEP_CPP_AMBUL=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBUL=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -223,11 +227,27 @@ SOURCE=.\AmbulantPlayer.rc
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
+
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
+
+# PROP Intermediate_Dir ".\..\..\include"
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
+
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
+
+# PROP Intermediate_Dir ".\..\..\include"
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 
 !ENDIF 
 
@@ -238,6 +258,7 @@ SOURCE=.\AmbulantPlayerDoc.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULA=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -247,6 +268,7 @@ DEP_CPP_AMBULA=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULA=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -255,6 +277,7 @@ DEP_CPP_AMBULA=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULA=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -263,6 +286,7 @@ DEP_CPP_AMBULA=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULA=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -278,6 +302,7 @@ SOURCE=.\AmbulantPlayerView.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -296,7 +321,9 @@ DEP_CPP_AMBULAN=\
 	{$(INCLUDE)}"ambulant\gui\dg\dg_player.h"\
 	{$(INCLUDE)}"ambulant\gui\dg\dg_wmuser.h"\
 	{$(INCLUDE)}"ambulant\lib\abstract_mtsync.h"\
+	{$(INCLUDE)}"ambulant\lib\amstream.h"\
 	{$(INCLUDE)}"ambulant\lib\asb.h"\
+	{$(INCLUDE)}"ambulant\lib\byte_buffer.h"\
 	{$(INCLUDE)}"ambulant\lib\gtypes.h"\
 	{$(INCLUDE)}"ambulant\lib\logger.h"\
 	{$(INCLUDE)}"ambulant\lib\mtsync.h"\
@@ -305,11 +332,13 @@ DEP_CPP_AMBULAN=\
 	{$(INCLUDE)}"ambulant\lib\textptr.h"\
 	{$(INCLUDE)}"ambulant\lib\unix\unix_mtsync.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_asb.h"\
+	{$(INCLUDE)}"ambulant\lib\win32\win32_fstream.h"\
 	{$(INCLUDE)}"ambulant\lib\win32\win32_mtsync.h"\
 	
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -319,6 +348,7 @@ DEP_CPP_AMBULAN=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -328,6 +358,7 @@ DEP_CPP_AMBULAN=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_AMBULAN=\
 	".\AmbulantPlayer.h"\
 	".\AmbulantPlayerDoc.h"\
@@ -344,6 +375,7 @@ SOURCE=.\MainFrm.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_MAINF=\
 	".\AmbulantPlayer.h"\
 	".\MainFrm.h"\
@@ -352,6 +384,7 @@ DEP_CPP_MAINF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_MAINF=\
 	".\AmbulantPlayer.h"\
 	".\MainFrm.h"\
@@ -360,6 +393,7 @@ DEP_CPP_MAINF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_MAINF=\
 	".\AmbulantPlayer.h"\
 	".\MainFrm.h"\
@@ -368,6 +402,7 @@ DEP_CPP_MAINF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_MAINF=\
 	".\AmbulantPlayer.h"\
 	".\MainFrm.h"\
@@ -383,6 +418,7 @@ SOURCE=.\StdAfx.cpp
 
 !IF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_STDAF=\
 	".\StdAfx.h"\
 	
@@ -390,6 +426,7 @@ DEP_CPP_STDAF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_STDAF=\
 	".\StdAfx.h"\
 	
@@ -397,6 +434,7 @@ DEP_CPP_STDAF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Release"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_STDAF=\
 	".\StdAfx.h"\
 	
@@ -404,6 +442,7 @@ DEP_CPP_STDAF=\
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE x86em) Debug"
 
+# PROP Intermediate_Dir ".\..\..\include"
 DEP_CPP_STDAF=\
 	".\StdAfx.h"\
 	
