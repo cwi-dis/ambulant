@@ -50,34 +50,43 @@
  * @$Id$ 
  */
 
+#include "ambulant/smil2/test_attrs.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/parselets.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/smil2/test_attrs.h"
 
 using namespace ambulant;
 using namespace smil2;
 
-static std::map<std::string, std::string> tests_attrs_map;
-
+// The currently active tests attributes.
+// Some values as set by default 
+// The map is updated when the user selects a new filter file
 static 
-std::map<std::string, custom_test> custom_tests_map;
+std::map<std::string, std::string> active_tests_attrs_map;
+
+// The currently active custom tests attributes.
+// The map is filled when the user selects a new filter file
+static 
+std::map<std::string, bool> active_custom_tests_attrs_map;
+
 
 inline std::string get_test_attribute(const std::string& attr) {
-	std::map<std::string, std::string>::iterator it = tests_attrs_map.find(attr);
-	return (it != tests_attrs_map.end())?(*it).second:"";
+	std::map<std::string, std::string>::iterator it = active_tests_attrs_map.find(attr);
+	return (it != active_tests_attrs_map.end())?(*it).second:"";
 }
 
-test_attrs::test_attrs(const lib::node *n) 
-:	m_node(n) {
+// Create a tests helper for the provided node and for the document custom tests
+test_attrs::test_attrs(const lib::node *n,
+	const std::map<std::string, custom_test>* custom_tests) 
+:	m_node(n), m_custom_tests(custom_tests) {
 	m_logger = lib::logger::get_logger();
 	
-	if(tests_attrs_map.empty())
+	if(active_tests_attrs_map.empty())
 		set_default_tests_attrs();
-		
+	
 	// debug statements
 	const char *pid = m_node->get_attribute("id");
 	m_id = (pid?pid:"no-id");
@@ -223,6 +232,7 @@ bool test_attrs::test_system_screen_size(const char *value) const {
 }
 
 bool test_attrs::test_custom_attribute(const char *value) const {
+	if(!m_custom_tests) return false;
 	std::string s = lib::trim(value);
 	if(s.empty()) return true;
 	std::list<std::string> list;
@@ -230,13 +240,23 @@ bool test_attrs::test_custom_attribute(const char *value) const {
 	std::list<std::string>::const_iterator it;
 	for(it = list.begin(); it!=list.end();it++) {
 		std::map<std::string, custom_test>::const_iterator cit =
-			custom_tests_map.find(*it);
+			m_custom_tests->find(*it);
 		// if missing default to false
-		if(cit == custom_tests_map.end()) return false;
+		if(cit == m_custom_tests->end()) return false;
 		
 		// if state is false return false
 		const custom_test& ct = (*cit).second;
-		if(!ct.state) return false;
+		
+		// do we have an active value for this?
+		std::map<std::string, bool>::const_iterator oit;
+		oit = active_custom_tests_attrs_map.find(*it);
+		if(oit != active_custom_tests_attrs_map.end()) {
+			// yes we have a value
+			if(!(*oit).second) return false;
+		} else {
+			// no value provided, use default
+			if(!ct.state) return false;
+		}
 	}
 	// all present and evaluated to true
 	return true;
@@ -254,31 +274,32 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 		return false;
 	}
 	
-	tests_attrs_map.clear();
+	// Clear maps
+	active_tests_attrs_map.clear();
+	active_custom_tests_attrs_map.clear();
+	
+	// load default first; some will be overriden below
+	set_default_tests_attrs();
 	
 	const lib::node* root = builder.get_tree();
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = root->end();
 	for(it = root->begin(); it != end; it++) {
 		std::pair<bool, const lib::node*> pair = *it;
-//		bool start_element = pair.first;
 		const lib::node *n = pair.second;
 		const std::string& tag = n->get_local_name();
 		if(tag == "systemTest" || tag == "property") {
 			const char *name = n->get_attribute("name");
 			const char *value = n->get_attribute("value");
 			if(name && value)
-				tests_attrs_map[name] = value;
+				active_tests_attrs_map[name] = value;
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
 			const char *value = n->get_attribute("value");
 			std::string sn = lib::trim(name);
 			std::string sv = lib::trim(value);
 			if(!sn.empty() && !sv.empty()) {
-				std::map<std::string, custom_test>::iterator cit =
-					custom_tests_map.find(sn);
-				if(cit != custom_tests_map.end())
-					(*cit).second.state = (sv == "true")?true:false;
+				active_custom_tests_attrs_map[sn] = (sv == "true")?true:false;
 			}
 		}
 	}	
@@ -287,30 +308,31 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 
 // static
 void test_attrs::set_default_tests_attrs() {
-	tests_attrs_map["systemAudioDesc"] = "on";
-	tests_attrs_map["systemBitrate"] = "56000";
-	tests_attrs_map["systemCaptions"] = "on";
-	tests_attrs_map["systemCPU"] = "unknown";
-	tests_attrs_map["systemLanguage"] = "en";
+	active_tests_attrs_map["systemAudioDesc"] = "on";
+	active_tests_attrs_map["systemBitrate"] = "56000";
+	active_tests_attrs_map["systemCaptions"] = "on";
+	active_tests_attrs_map["systemCPU"] = "unknown";
+	active_tests_attrs_map["systemLanguage"] = "en";
 #if defined(AMBULANT_PLATFORM_MACOS)
-	tests_attrs_map["systemOperatingSystem"] = "macos";
+	active_tests_attrs_map["systemOperatingSystem"] = "macos";
 #elif defined(AMBULANT_PLATFORM_WIN32)
-	tests_attrs_map["systemOperatingSystem"] = "win32";
+	active_tests_attrs_map["systemOperatingSystem"] = "win32";
 #elif defined(AMBULANT_PLATFORM_WIN32_WCE)
-	tests_attrs_map["systemOperatingSystem"] = "wince";
+	active_tests_attrs_map["systemOperatingSystem"] = "wince";
 #elif defined(AMBULANT_PLATFORM_LINUX)
-	tests_attrs_map["systemOperatingSystem"] = "linux";
+	active_tests_attrs_map["systemOperatingSystem"] = "linux";
 #else
-	tests_attrs_map["systemOperatingSystem"] = "unknown";
+	active_tests_attrs_map["systemOperatingSystem"] = "unknown";
 #endif
-	tests_attrs_map["systemScreenSize"] = "1024X1280";
-	tests_attrs_map["systemScreenDepth"] = "32";
+	active_tests_attrs_map["systemScreenSize"] = "1024X1280";
+	active_tests_attrs_map["systemScreenDepth"] = "32";
 }
 
 ////////////////////////////////////////
 
 //static
-void test_attrs::read_custom_attributes(const lib::document *doc) {
+void test_attrs::read_custom_attributes(const lib::document *doc, 
+	std::map<std::string, custom_test>& custom_tests) {
 	const lib::node* ca = doc->locate_node("/smil/head/customAttributes");
 	if(!ca) return;
 	lib::node::const_iterator it;
@@ -335,9 +357,23 @@ void test_attrs::read_custom_attributes(const lib::document *doc) {
 			t.override = (s=="visible")?true:false;
 			p = n->get_attribute("uid");
 			t.uid = p?p:""; 
-			custom_tests_map[t.id] = t;
+			custom_tests[t.id] = t;
 		}
 	}
 }
+
+// static
+void test_attrs::update_doc_custom_attributes(std::map<std::string, custom_test>& custom_tests) {
+	std::map<std::string, custom_test>::iterator it;
+	std::map<std::string, bool>::const_iterator oit; 
+	for(it = custom_tests.begin();it!=custom_tests.end();it++) {
+		// check if we have a value
+		oit = active_custom_tests_attrs_map.find((*it).first);
+		if(oit != active_custom_tests_attrs_map.end()) {
+			// update value
+			(*it).second.state = (*oit).second;
+		}
+	}
+} 
 
 

@@ -57,6 +57,7 @@
 
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/time_node.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #include <string>
 #include <map>
@@ -94,7 +95,10 @@ class lib::logger;
 class timegraph : public time_traits {
   public:
  public:
-	timegraph(time_node::context_type *ctx, const lib::document *doc, const common::schema *sch);
+	timegraph(time_node::context_type *ctx, 
+		const lib::document *doc, 
+		const common::schema *sch, 
+		const std::map<std::string, custom_test> *custom_tests = 0);
 	~timegraph();
 	
 	time_node* get_root() { return m_root;}
@@ -125,6 +129,7 @@ class timegraph : public time_traits {
 	
 	time_node::context_type *m_context;
 	const common::schema *m_schema;
+	const std::map<std::string, custom_test>* m_custom_tests;
 	time_node* m_root;
 	std::map<std::string, time_node*> m_id2tn;
 	std::map<int, time_node*> *m_dom2tn;

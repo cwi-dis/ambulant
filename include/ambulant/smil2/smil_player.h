@@ -59,9 +59,11 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/smil2/time_node.h"
+#include "ambulant/smil2/test_attrs.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
+
 #include <map>
 
 namespace ambulant {
@@ -174,6 +176,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	}
 	
 	lib::document *m_doc;
+	std::map<std::string, custom_test> m_custom_tests;
 	common::window_factory *m_wf;
 	common::playable_factory *m_pf;
 	lib::system *m_system;

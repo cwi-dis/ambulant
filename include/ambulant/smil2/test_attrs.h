@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 
 #include <string>
+#include <map>
 
 namespace ambulant {
 
@@ -77,15 +78,20 @@ struct custom_test {
 
 class test_attrs {
   public:
-	test_attrs(const lib::node *n);
+	test_attrs(const lib::node *n, const std::map<std::string, custom_test>* custom_tests = 0);
 	
 	// Returns true when the target node is selected.
 	bool selected() const;
 	
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
-	static void read_custom_attributes(const lib::document *doc);
 	
+	static void test_attrs::read_custom_attributes(const lib::document *doc, 
+		std::map<std::string, custom_test>& custom_tests);
+	
+	static void read_custom_attributes(const lib::document *doc);
+	static void update_doc_custom_attributes(std::map<std::string, custom_test>& custom_tests);
+
   private:
 	typedef std::string::size_type size_type;
 	bool test_on_off_attr(const std::string& attr,const char *value) const;
@@ -101,6 +107,7 @@ class test_attrs {
 	
 	// the target node
 	const lib::node *m_node;
+	const std::map<std::string, custom_test>* m_custom_tests;
 	
 	// tracing
 	std::string m_id;

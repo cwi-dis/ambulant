@@ -101,14 +101,14 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_event_processor = event_processor_factory(m_timer);
 	
 	// build DOM level objects
-	test_attrs::read_custom_attributes(m_doc);
+	test_attrs::read_custom_attributes(m_doc, m_custom_tests);
 	
 		
 	// build the layout (we need the top-level layout)
 	build_layout();
 	
-	// Do not build the timegraph yet (test attrs)
-	// build_timegraph()
+	// Build the timegraph using the current filter
+	build_timegraph();
 }
 
 smil_player::~smil_player() {
@@ -143,7 +143,7 @@ void smil_player::build_timegraph() {
 		delete m_root;
 		delete m_dom2tn;
 	}
-	timegraph tg(this, m_doc, schema::get_instance());
+	timegraph tg(this, m_doc, schema::get_instance(), &m_custom_tests);
 	m_root = tg.detach_root();
 	m_dom2tn = tg.detach_dom2tn();
 }
