@@ -69,9 +69,9 @@ class playable_factory;
 
 enum play_state {ps_idle, ps_playing, ps_pausing, ps_done};
 
-class abstract_player {
+class player {
   public:
-	virtual ~abstract_player() {};
+	virtual ~player() {};
 	
 	virtual lib::timer* get_timer() = 0;
 	virtual lib::event_processor* get_evp() = 0;
@@ -90,8 +90,8 @@ class abstract_player {
 };
 
 // Factory functions - should these be here?
-abstract_player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
-abstract_player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf);
+player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
+player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf);
 
 } // namespace common
  
