@@ -315,4 +315,4 @@ int
 ffmpeg_raw_datasource::size() const
 {
 		return m_buffer.size();
-}	
+}

@@ -241,6 +241,8 @@ arts_active_audio_renderer::data_avail()
 		AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail():(this=0x%x)  played %d bytes", (void *)this, played);
     	AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): m_audio_src->readdone(%d) called", size);
 		m_audio_src->readdone(played);
+	} else {
+		if (m_audio_src) m_audio_src->readdone(0);
 	}
 	restart_audio_input();
     //m_context->stopped(m_cookie, 0);

@@ -1116,9 +1116,15 @@ void
 ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
-
+	int sz;
 	if (m_con) {
-		int sz = m_src->size();
+		if (m_src) {
+			sz = m_src->size();
+		} else {
+			lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No datasource !");
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+			return;
+		}	
 		if (sz && !m_buffer.buffer_full()) {
 		    AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_src->get_read_ptr() m_src=0x%x, this=0x%x", (void*) m_src, (void*) this);		
 			uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
@@ -1129,23 +1135,29 @@ ffmpeg_decoder_datasource::data_avail()
 			int outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
-				// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
-				int cursz = sz;
-				//if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
-				
-				//XXX Ugly hack, but it doesn't work  :-(
-				// Someone kicks away the buffer while we still need it.
-				uint8_t *tmpptr = (uint8_t*) malloc(cursz);
-				memcpy(tmpptr, inbuf, cursz);
-				//XXX end hack
-				AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x as 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, tmpptr, sz);
-				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, tmpptr, cursz);
-				free(tmpptr);
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
-
-				m_buffer.pushdata(outsize);
-				m_src->readdone(decoded);
+				if(inbuf) {
+					// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
+					int cursz = sz;
+					//if (cursz > INBUF_SIZE) cursz = INBUF_SIZE;
+					
+					//XXX Ugly hack, but it doesn't work  :-(
+					// Someone kicks away the buffer while we still need it.
+					//uint8_t *tmpptr = (uint8_t*) malloc(cursz);
+					//memcpy(tmpptr, inbuf, cursz);
+					//XXX end hack
+					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
+					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+					//free(tmpptr);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
+	
+					m_buffer.pushdata(outsize);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
+					m_src->readdone(decoded);
+				} else {
+					m_buffer.pushdata(0);
+					m_src->readdone(0);
+				}
 			} else {
 				lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: no room in output buffer");
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
@@ -1177,6 +1189,7 @@ ffmpeg_decoder_datasource::data_avail()
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No decoder, flushing available data");
 		if (m_src) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): m_src->readdone(%d) called m_src=0x%x, this=0x%x",m_src->size(), (void*) m_src, (void*) this );
 			m_src->readdone(m_src->size());
 		}
 	}
@@ -1363,6 +1376,8 @@ void
 ffmpeg_resample_datasource::data_avail()
 {
 	m_lock.enter();
+	int sz;
+	
 	int cursize = 0;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x) refcount is %d", (void*)this, get_ref_count());
 	if (!m_src) {
@@ -1379,8 +1394,14 @@ ffmpeg_resample_datasource::data_avail()
 		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
 		m_context_set = true;
 	}
-	
-		int sz = m_src->size();
+		if(m_src) {
+			sz = m_src->size();
+		} else {
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_audio_datasource::data_avail: No datasource");
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+			return;
+		}
+		
 		if (m_resample_context) {
 		// Convert all the input data we have available. We make an educated guess at the number of bytes
 		// this will produce on output.
@@ -1412,6 +1433,8 @@ ffmpeg_resample_datasource::data_avail()
 				if (!outbuf) {
 					lib::logger::get_logger()->debug("Internal error: ffmpeg_audio_datasource::data_avail: no room in output buffer");
 					lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+					m_src->readdone(0);
+					m_buffer.pushdata(0);
 				}
 				if (inbuf && outbuf && insamples > 0) {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", cursize, insamples, outsz, inbuf, outbuf);
@@ -1422,7 +1445,8 @@ ffmpeg_resample_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): calling m_src->readdone(%d) this=0x%x", insamples*m_in_fmt.channels*sizeof(short), (void*) this);
 					m_src->readdone(insamples*m_in_fmt.channels*sizeof(short));
 
-				} else {
+				} else {					
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): calling m_src->readdone(0) m_src=0x%x, this=0x%x",  (void*) m_src, (void*) this);
 					m_src->readdone(0);
 					m_buffer.pushdata(0);
 				}
@@ -1457,6 +1481,7 @@ ffmpeg_resample_datasource::data_avail()
 		// Something went wrong during initialization, we just drop the data
 		// on the floor.
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): No resample context, flushing data");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): m_src->readdone(%d) called m_src=0x%x, this=0x%x", sz, (void*) m_src, (void*) this);
 		m_src->readdone(sz);
 	}
 	m_lock.leave();
