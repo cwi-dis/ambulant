@@ -52,6 +52,9 @@
 
 #ifndef __QT_GUI_H__
 #define __QT_GUI_H__
+
+#include "unix_preferences.h"
+
 #include <qfeatures.h>
 #ifndef QT_NO_FILEDIALOG
   /* Assume plain Qt */
@@ -109,6 +112,7 @@ class qt_gui : public QWidget {
 	bool openSMILfile(QString smilfilename, int mode);
 
    private:
+	unix_preferences m_preferences;
 	bool	     m_busy;
 	int	     m_o_x;	 // x coord of origin play window
 	int	     m_o_y;	 // y coord of origin play window

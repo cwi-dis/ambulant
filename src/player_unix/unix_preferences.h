@@ -45,63 +45,21 @@
  * which carries forward this exception. 
  * 
  */
-#include <stdlib.h>
-#include "ambulant/lib/logger.h"
+
+/* 
+ * @$Id$ 
+ */
+
+#ifndef __UNIX_PREFERENCES_H__
+#define __UNIX_PREFERENCES_H__
 #include "ambulant/common/preferences.h"
 
-#ifdef	WITH_XERCES
-#include <xercesc/parsers/SAXParser.hpp>
-#endif/*WITH_XERCES*/
+class unix_preferences : ambulant::common::preferences {
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+ public:
+	bool load_preferences();
 
-using namespace ambulant;
+	bool save_preferences();
+};
 
-using namespace common;
-
-preferences::preferences()
-  :	m_parser_id(ANY),
-	m_validation_scheme(AUTO),
-	m_do_namespaces(false),
-	m_do_schema(false),
-	m_do_validation(false),
-	m_validation_schema_full_checking(false)
-{
-	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
-	load_preferences();
-}
-	
-preferences::~preferences()
-	{}
-
-preferences*  ambulant::common::preferences::s_preferences = 0;
-
-void
-ambulant::common::preferences::set_preferences_singleton(preferences *prefs) {
-	if (s_preferences != 0) {
-		ambulant::lib::logger::get_logger()->error("Programmer error: preferences singleton already set");
-		return;
-	}
-	s_preferences = prefs;
-}
-
-preferences* 
-ambulant::common::preferences::get_preferences() {
-	if (s_preferences == 0) {
-		s_preferences =  new preferences;
-	}
-	return s_preferences;
-}
-
-bool 
-preferences::load_preferences() {
-	return false;
-}
-
-bool 
-preferences::save_preferences() {
-	return false;
-}
+#endif/*__UNIX_PREFERENCES_H__*/

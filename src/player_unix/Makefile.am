@@ -2,7 +2,7 @@ qt_gui-moc.cpp: qt_gui.h qt_gui.cpp
 	$(QT_PREFIX)/bin/moc -o $@ $<
 
 bin_PROGRAMS = AmbulantPlayer
-AmbulantPlayer_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h qt_gui.h
+AmbulantPlayer_SOURCES = qt_gui.cpp qt_mainloop.cpp qt_mainloop.h qt_gui.h unix_preferences.h unix_preferences.cpp
 
 # Conditionals for linux audio support
 if WITH_SDL

@@ -60,7 +60,6 @@
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_renderer.h"
-//#include "ambulant/common/preferences.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -393,6 +392,9 @@ qt_gui::unsetCursor() { //XXXX Hack
 
 int
 main (int argc, char*argv[]) {
+	unix_preferences unix_prefs;
+	unix_prefs.load_preferences();
+
 	FILE* DBG = stdout;
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
@@ -402,6 +404,7 @@ main (int argc, char*argv[]) {
 
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] : "");
+
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 	mywidget->setGeometry(750, 50, 320, 240);
 	QCursor qcursor(Qt::ArrowCursor);
@@ -416,6 +419,7 @@ main (int argc, char*argv[]) {
 	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
 
 	bool exec_flag = false;
+
 	if (argc > 1) {
 		char last[6];
 		char* str = argv[argc-1];
