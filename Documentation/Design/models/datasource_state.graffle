@@ -12,7 +12,7 @@
 	<key>ColumnSpacing</key>
 	<real>36</real>
 	<key>GraphDocumentVersion</key>
-	<integer>3</integer>
+	<integer>4</integer>
 	<key>GraphicsList</key>
 	<array>
 		<dict>
@@ -289,7 +289,11 @@
 						<dict>
 							<key>Color</key>
 							<dict>
-								<key>w</key>
+								<key>b</key>
+								<string>0</string>
+								<key>g</key>
+								<string>0</string>
+								<key>r</key>
 								<string>0</string>
 							</dict>
 						</dict>
@@ -913,11 +917,13 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{45, 38.125}, {468, 42}}</string>
+			<string>{{45, 38.125}, {464, 56}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
 			<integer>11</integer>
 			<key>Shape</key>
@@ -951,10 +957,13 @@
 \f0\i\fs24 \cf0 startRead
 \f1\i0  and 
 \f0\i dataAvail
-\f1\i0  are call and return for this data source requesting more input.\
+\f1\i0  are call and return for this data source requesting more input\
+from its source.\
 start() and callback() are call and return for the client requesting more data.\
 readdone() is the client call to signal it has consumed data.}</string>
 			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
@@ -963,6 +972,8 @@ readdone() is the client call to signal it has consumed data.}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
 			<integer>10</integer>
 			<key>Shape</key>
@@ -995,6 +1006,8 @@ readdone() is the client call to signal it has consumed data.}</string>
 
 \f0\b\fs30 \cf0 Data Source state diagram}</string>
 			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Class</key>
@@ -1356,7 +1369,7 @@ readdone() is the client call to signal it has consumed data.}</string>
 			</array>
 			<key>Points</key>
 			<array>
-				<string>{279.352, 117.549}</string>
+				<string>{279.354, 132.549}</string>
 				<string>{279.5, 183.664}</string>
 			</array>
 			<key>Style</key>
@@ -1414,7 +1427,7 @@ readdone() is the client call to signal it has consumed data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{268.841, 96.5487}, {21, 21}}</string>
+			<string>{{268.841, 111.549}, {21, 21}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1427,7 +1440,11 @@ readdone() is the client call to signal it has consumed data.}</string>
 				<dict>
 					<key>Color</key>
 					<dict>
-						<key>w</key>
+						<key>b</key>
+						<string>0</string>
+						<key>g</key>
+						<string>0</string>
+						<key>r</key>
 						<string>0</string>
 					</dict>
 				</dict>
@@ -1446,6 +1463,8 @@ readdone() is the client call to signal it has consumed data.}</string>
 		<key>MajorGridSpacing</key>
 		<integer>10</integer>
 	</dict>
+	<key>GuidesLocked</key>
+	<string>NO</string>
 	<key>GuidesVisible</key>
 	<string>YES</string>
 	<key>HPages</key>
@@ -1469,12 +1488,8 @@ readdone() is the client call to signal it has consumed data.}</string>
 	</array>
 	<key>LayoutInfo</key>
 	<dict>
-		<key>AutoAdjust</key>
-		<string>YES</string>
 		<key>ChildOrdering</key>
 		<integer>2</integer>
-		<key>MagneticFieldCenter</key>
-		<string>{0, 0}</string>
 	</dict>
 	<key>LinksVisible</key>
 	<string>NO</string>
@@ -1566,7 +1581,7 @@ readdone() is the client call to signal it has consumed data.}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wMS0yN1QxNToxMTo0M1o8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wOS0xOVQxOTo0NjowMVo8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -1580,7 +1595,7 @@ readdone() is the client call to signal it has consumed data.}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDQtMDEtMjdUMTU6MTE6NDNaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDQtMDktMTlUMTk6NDY6MDFaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1646,12 +1661,12 @@ readdone() is the client call to signal it has consumed data.}</string>
 	dD4KPC9wbGlzdD4KhpKEmZkPTlNQcmludEFsbFBhZ2VzhpKckoSZmRVOU0hvcml6b25h
 	bFBhZ2luYXRpb26GkoSdnJ+XAIaShJmZCE5TQ29waWVzhpKEnZyflwGGkoSZmRZOU0hv
 	cml6b250YWxseUNlbnRlcmVkhpKmkoSZmQlOU1ByaW50ZXKGkoSEhAlOU1ByaW50ZXIA
-	lJKEmZkXY3VjdXRhcyBvbiBzcG9vbC5jd2kubmyGhpKEmZkLTlNQYXBlck5hbWWGkoSZ
-	mQJBNIaShJmZD05TU2NhbGluZ0ZhY3RvcoaShJ2chIQBZqEBhpKEmZkNTlNSaWdodE1h
-	cmdpboaShJ2cu6EAhpKEmZkNTlNKb2JGZWF0dXJlc4aShJaXAIaShJmZDE5TTGVmdE1h
-	cmdpboaShJ2cu6EAhpKEmZkOTlNCb3R0b21NYXJnaW6GkoSdnLuhAIaShJmZC05TVG9w
-	TWFyZ2luhpKEnZy7oQCGkoSZmQpOU0xhc3RQYWdlhpKEnZyfl4J/////hpKEmZkLTlNG
-	aXJzdFBhZ2WGkoSdnJ+XAYaShJmZDU5TT3JpZW50YXRpb26GkoSdnJ+XAIaGhg==
+	lJKEmZkQU3R5bHVzIENPTE9SIDc2MIaGkoSZmQtOU1BhcGVyTmFtZYaShJmZBmlzby1h
+	NIaShJmZD05TU2NhbGluZ0ZhY3RvcoaShJ2chIQBZqEBhpKEmZkNTlNSaWdodE1hcmdp
+	boaShJ2cu6EAhpKEmZkNTlNKb2JGZWF0dXJlc4aShJaXAIaShJmZDE5TTGVmdE1hcmdp
+	boaShJ2cu6EAhpKEmZkOTlNCb3R0b21NYXJnaW6GkoSdnLuhAIaShJmZC05TVG9wTWFy
+	Z2luhpKEnZy7oQCGkoSZmQpOU0xhc3RQYWdlhpKEnZyfl4J/////hpKEmZkLTlNGaXJz
+	dFBhZ2WGkoSdnJ+XAYaShJmZDU5TT3JpZW50YXRpb26GkoSdnJ+XAIaGhg==
 	</data>
 	<key>ReadOnly</key>
 	<string>NO</string>
@@ -1674,7 +1689,7 @@ readdone() is the client call to signal it has consumed data.}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{135, 201}, {574, 698}}</string>
+		<string>{{344, 48}, {574, 698}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>

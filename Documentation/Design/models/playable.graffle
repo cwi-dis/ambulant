@@ -22,7 +22,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{405.875, 624}, {68, 14}}</string>
+					<string>{{405.875, 689}, {68, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -66,7 +66,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{383.341, 641.875}, {20.2444, 20.2444}}</string>
+					<string>{{383.341, 706.875}, {20.2444, 20.2444}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -92,7 +92,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{405.7, 582.825}, {95, 14}}</string>
+					<string>{{405.7, 647.825}, {95, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -136,7 +136,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{383.166, 600.7}, {20.2444, 20.2444}}</string>
+					<string>{{383.166, 665.7}, {20.2444, 20.2444}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -162,7 +162,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{406.05, 664.175}, {54, 14}}</string>
+					<string>{{406.05, 729.175}, {54, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -206,7 +206,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{383.516, 682.05}, {20.2444, 20.2444}}</string>
+					<string>{{383.516, 747.05}, {20.2444, 20.2444}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -239,8 +239,8 @@
 			<integer>25</integer>
 			<key>Points</key>
 			<array>
-				<string>{418.067, 556.9}</string>
-				<string>{393.638, 682.05}</string>
+				<string>{418.067, 621.9}</string>
+				<string>{393.638, 747.05}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -274,8 +274,8 @@
 			<integer>24</integer>
 			<key>Points</key>
 			<array>
-				<string>{415.345, 556.9}</string>
-				<string>{393.463, 641.875}</string>
+				<string>{415.345, 621.9}</string>
+				<string>{393.463, 706.875}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -307,8 +307,8 @@
 			<integer>23</integer>
 			<key>Points</key>
 			<array>
-				<string>{410.472, 556.9}</string>
-				<string>{393.288, 600.7}</string>
+				<string>{410.472, 621.9}</string>
+				<string>{393.288, 665.7}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -342,8 +342,8 @@
 			<integer>22</integer>
 			<key>Points</key>
 			<array>
-				<string>{427.242, 446.9}</string>
-				<string>{426.639, 413.294}</string>
+				<string>{428.895, 511.9}</string>
+				<string>{429.639, 476.294}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -370,7 +370,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{439.051, 375.175}, {74, 14}}</string>
+					<string>{{442.051, 438.175}, {74, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -414,7 +414,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{416.517, 393.05}, {20.2444, 20.2444}}</string>
+					<string>{{419.517, 456.05}, {20.2444, 20.2444}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -435,7 +435,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{324, 446.9}, {208, 110}}</string>
+			<string>{{324, 511.9}, {208, 110}}</string>
 			<key>Class</key>
 			<string>MultiTextGraphic</string>
 			<key>FitText</key>
@@ -468,7 +468,7 @@
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\b\fs24 \cf0 &lt;&lt;interface&gt;&gt;\
-renderer}</string>
+common::renderer}</string>
 				</dict>
 				<dict>
 					<key>Align</key>
@@ -525,7 +525,7 @@ start_outtransition(transition_class tr)}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>2</integer>
+				<integer>3</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -604,14 +604,14 @@ start_outtransition(transition_class tr)}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>2</integer>
+				<integer>3</integer>
 			</dict>
 			<key>ID</key>
 			<integer>13</integer>
 			<key>Points</key>
 			<array>
-				<string>{157.962, 563.5}</string>
-				<string>{157.901, 510.275}</string>
+				<string>{157.964, 628.5}</string>
+				<string>{157.863, 510.275}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -633,7 +633,7 @@ start_outtransition(transition_class tr)}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{35.25, 563.5}, {245.486, 54}}</string>
+			<string>{{35.25, 628.5}, {245.486, 68}}</string>
 			<key>Class</key>
 			<string>MultiTextGraphic</string>
 			<key>FitText</key>
@@ -666,7 +666,7 @@ start_outtransition(transition_class tr)}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\b\fs24 \cf0 &lt;&lt;interface&gt;&gt;\
-playable_factory}</string>
+common::playable_factory}</string>
 				</dict>
 				<dict>
 					<key>Align</key>
@@ -681,7 +681,8 @@ playable_factory}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f0\fs24 \cf0 new_playable()}</string>
+\f0\fs24 \cf0 new_playable(playable_notification,\
+          cookie_type, node, event_processor)}</string>
 				</dict>
 			</array>
 			<key>TextPlacement</key>
@@ -699,8 +700,8 @@ playable_factory}</string>
 			<integer>11</integer>
 			<key>Points</key>
 			<array>
-				<string>{291, 442.777}</string>
-				<string>{324, 457.018}</string>
+				<string>{291, 474.825}</string>
+				<string>{346.164, 511.9}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -717,7 +718,7 @@ playable_factory}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>2</integer>
+				<integer>3</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -760,7 +761,7 @@ playable_factory}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\fs24 \cf0 This document last updated\
-for Ambulant version 0.7}</string>
+for Ambulant version 1.1}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -771,7 +772,7 @@ for Ambulant version 0.7}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>5</integer>
+				<integer>6</integer>
 			</dict>
 			<key>ID</key>
 			<integer>9</integer>
@@ -824,7 +825,7 @@ for Ambulant version 0.7}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>5</integer>
+				<integer>6</integer>
 				<key>Info</key>
 				<integer>1</integer>
 			</dict>
@@ -832,7 +833,7 @@ for Ambulant version 0.7}</string>
 			<integer>7</integer>
 			<key>Points</key>
 			<array>
-				<string>{427.728, 279.45}</string>
+				<string>{427.122, 280.45}</string>
 				<string>{427.25, 225.5}</string>
 			</array>
 			<key>Style</key>
@@ -850,40 +851,7 @@ for Ambulant version 0.7}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>3</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>5</integer>
-			</dict>
-			<key>ID</key>
-			<integer>6</integer>
-			<key>Points</key>
-			<array>
-				<string>{291, 297.379}</string>
-				<string>{382.25, 207.5}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>Pattern</key>
-					<integer>1</integer>
-					<key>TailArrow</key>
-					<string>0</string>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>2</integer>
+				<integer>4</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -892,7 +860,7 @@ for Ambulant version 0.7}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>5</integer>
+			<integer>6</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -919,14 +887,14 @@ for Ambulant version 0.7}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>3</integer>
+				<integer>4</integer>
 			</dict>
 			<key>ID</key>
-			<integer>4</integer>
+			<integer>5</integer>
 			<key>Points</key>
 			<array>
-				<string>{291, 353.313}</string>
-				<string>{324, 345.397}</string>
+				<string>{291, 367.546}</string>
+				<string>{323, 363.288}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -943,12 +911,74 @@ for Ambulant version 0.7}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>2</integer>
+				<integer>3</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{324, 279.45}, {208, 82}}</string>
+			<string>{{323, 280.45}, {208, 138}}</string>
+			<key>Class</key>
+			<string>MultiTextGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>4</integer>
+			<key>ListOrientation</key>
+			<string>Vertical</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>GradientAngle</key>
+					<real>304</real>
+					<key>GradientCenter</key>
+					<string>{-0.294118, -0.264706}</string>
+				</dict>
+			</dict>
+			<key>TextList</key>
+			<array>
+				<dict>
+					<key>Align</key>
+					<integer>0</integer>
+					<key>Text</key>
+					<string>{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
+
+\f0\b\fs24 \cf0 &lt;&lt;interface&gt;&gt;\
+common::playable_notification}</string>
+				</dict>
+				<dict>
+					<key>Align</key>
+					<integer>0</integer>
+				</dict>
+				<dict>
+					<key>Align</key>
+					<integer>0</integer>
+					<key>Text</key>
+					<string>{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 started(cookie_type, time)\
+stopped(cookie_type, time)\
+clicked(cookie_type, time)\
+pointed(cookie_type, time)\
+stalled(cookie_type, time)\
+unstalled(cookie_type, time)\
+transitioned(cookie_type, time)}</string>
+				</dict>
+			</array>
+			<key>TextPlacement</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{24.514, 260.275}, {266.486, 250}}</string>
 			<key>Class</key>
 			<string>MultiTextGraphic</string>
 			<key>FitText</key>
@@ -981,65 +1011,7 @@ for Ambulant version 0.7}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\b\fs24 \cf0 &lt;&lt;interface&gt;&gt;\
-playable_notification}</string>
-				</dict>
-				<dict>
-					<key>Align</key>
-					<integer>0</integer>
-				</dict>
-				<dict>
-					<key>Align</key>
-					<integer>0</integer>
-					<key>Text</key>
-					<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
-
-\f0\fs24 \cf0 started(cookie_type, time)\
-stopped(cookie_type, time)\
-clicked(cookie_type, time)}</string>
-				</dict>
-			</array>
-			<key>TextPlacement</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{24.514, 260.275}, {266.486, 250}}</string>
-			<key>Class</key>
-			<string>MultiTextGraphic</string>
-			<key>FitText</key>
-			<string>Vertical</string>
-			<key>Flow</key>
-			<string>Resize</string>
-			<key>ID</key>
-			<integer>2</integer>
-			<key>ListOrientation</key>
-			<string>Vertical</string>
-			<key>Style</key>
-			<dict>
-				<key>fill</key>
-				<dict>
-					<key>GradientAngle</key>
-					<real>304</real>
-					<key>GradientCenter</key>
-					<string>{-0.294118, -0.264706}</string>
-				</dict>
-			</dict>
-			<key>TextList</key>
-			<array>
-				<dict>
-					<key>Align</key>
-					<integer>0</integer>
-					<key>Text</key>
-					<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\b\fs24 \cf0 &lt;&lt;interface&gt;&gt;\
-playable}</string>
+common::playable}</string>
 				</dict>
 				<dict>
 					<key>Align</key>
@@ -1084,7 +1056,7 @@ renderer *get_renderer()}</string>
 			<key>Flow</key>
 			<string>Resize</string>
 			<key>ID</key>
-			<integer>1</integer>
+			<integer>2</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -1117,6 +1089,39 @@ renderer *get_renderer()}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>6</integer>
+			</dict>
+			<key>ID</key>
+			<integer>1</integer>
+			<key>Points</key>
+			<array>
+				<string>{291, 297.379}</string>
+				<string>{382.25, 207.5}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>StickArrow</string>
+					<key>Pattern</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>3</integer>
+			</dict>
 		</dict>
 	</array>
 	<key>GridInfo</key>
@@ -1244,7 +1249,7 @@ renderer *get_renderer()}</string>
 	PC9yZWFsPgoJCQkJCTwvYXJyYXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlj
 	a2V0LmNsaWVudDwva2V5PgoJCQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFu
 	YWdlcjwvc3RyaW5nPgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2RE
-	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wNi0wOFQxMjo1NDozNFo8L2RhdGU+CgkJ
+	YXRlPC9rZXk+CgkJCQkJPGRhdGU+MjAwNC0wOS0xOVQxOTo0NjowNVo8L2RhdGU+CgkJ
 	CQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJ
 	CTxpbnRlZ2VyPjA8L2ludGVnZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9k
 	aWN0PgoJCTxrZXk+Y29tLmFwcGxlLnByaW50LlBhZ2VGb3JtYXQuUE1BZGp1c3RlZFBh
@@ -1258,7 +1263,7 @@ renderer *get_renderer()}</string>
 	L2FycmF5PgoJCQkJCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5jbGllbnQ8L2tl
 	eT4KCQkJCQk8c3RyaW5nPmNvbS5hcHBsZS5wcmludGluZ21hbmFnZXI8L3N0cmluZz4K
 	CQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQubW9kRGF0ZTwva2V5PgoJCQkJ
-	CTxkYXRlPjIwMDQtMDYtMDhUMTI6NTQ6MzRaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
+	CTxkYXRlPjIwMDQtMDktMTlUMTk6NDY6MDVaPC9kYXRlPgoJCQkJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LnRpY2tldC5zdGF0ZUZsYWc8L2tleT4KCQkJCQk8aW50ZWdlcj4wPC9p
 	bnRlZ2VyPgoJCQkJPC9kaWN0PgoJCQk8L2FycmF5PgoJCTwvZGljdD4KCQk8a2V5PmNv
 	bS5hcHBsZS5wcmludC5QYXBlckluZm8uUE1QYXBlck5hbWU8L2tleT4KCQk8ZGljdD4K
@@ -1352,7 +1357,7 @@ renderer *get_renderer()}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{108, 48}, {574, 698}}</string>
+		<string>{{350, 42}, {574, 698}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>

@@ -12,7 +12,7 @@
 	<key>ColumnSpacing</key>
 	<real>36</real>
 	<key>GraphDocumentVersion</key>
-	<integer>3</integer>
+	<integer>4</integer>
 	<key>GraphicsList</key>
 	<array>
 		<dict>
@@ -22,8 +22,10 @@
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>41</integer>
+			<integer>33</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -53,8 +55,10 @@
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
 \f0\fs24 \cf0 This document last updated\
-for Ambulant version 0.3}</string>
+for Ambulant version 1.1}</string>
 			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Class</key>
@@ -62,14 +66,14 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>39</integer>
+				<integer>31</integer>
 			</dict>
 			<key>ID</key>
-			<integer>40</integer>
+			<integer>32</integer>
 			<key>Points</key>
 			<array>
-				<string>{220.21, 685}</string>
-				<string>{234.334, 634}</string>
+				<string>{220.953, 667}</string>
+				<string>{233.591, 634}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -90,7 +94,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>37</integer>
+				<integer>29</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -100,8 +104,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>39</integer>
+			<integer>31</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -112,7 +118,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 decoder_data_source}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 raw_datasource}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -121,10 +127,10 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>30</integer>
+				<integer>24</integer>
 			</dict>
 			<key>ID</key>
-			<integer>38</integer>
+			<integer>30</integer>
 			<key>Points</key>
 			<array>
 				<string>{239.18, 620}</string>
@@ -149,18 +155,20 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>39</integer>
+				<integer>31</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{144, 685}, {148.544, 14}}</string>
+			<string>{{144, 667}, {148.544, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>37</integer>
+			<integer>29</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -171,7 +179,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 active_data_source}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 raw_datasource}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -180,82 +188,10 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>32</integer>
-				<key>Info</key>
-				<integer>2</integer>
+				<integer>25</integer>
 			</dict>
 			<key>ID</key>
-			<integer>36</integer>
-			<key>Points</key>
-			<array>
-				<string>{81.2848, 574}</string>
-				<string>{81.5, 665}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>HeadScale</key>
-					<real>1.4285709857940674</real>
-					<key>TailArrow</key>
-					<string>0</string>
-					<key>TailScale</key>
-					<real>0.5</real>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>28</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>28</integer>
-			</dict>
-			<key>ID</key>
-			<integer>35</integer>
-			<key>Points</key>
-			<array>
-				<string>{189, 564.04}</string>
-				<string>{155.544, 564.96}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>HeadScale</key>
-					<real>1.4285709857940674</real>
-					<key>TailArrow</key>
-					<string>0</string>
-					<key>TailScale</key>
-					<real>0.5</real>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>30</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>31</integer>
-			</dict>
-			<key>ID</key>
-			<integer>34</integer>
+			<integer>28</integer>
 			<key>Points</key>
 			<array>
 				<string>{276.683, 569}</string>
@@ -280,7 +216,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>30</integer>
+				<integer>24</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -289,14 +225,14 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>37</integer>
+				<integer>29</integer>
 			</dict>
 			<key>ID</key>
-			<integer>33</integer>
+			<integer>27</integer>
 			<key>Points</key>
 			<array>
-				<string>{109, 692}</string>
-				<string>{144, 692}</string>
+				<string>{109, 674}</string>
+				<string>{144, 674}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -317,16 +253,16 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>32</integer>
+				<integer>26</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{54, 665}, {55, 54}}</string>
+			<string>{{54, 647}, {55, 54}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>32</integer>
+			<integer>26</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -354,8 +290,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>31</integer>
+			<integer>25</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -366,7 +304,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 abstract_rendering_surface}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 surface}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -376,8 +314,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>30</integer>
+			<integer>24</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -388,18 +328,20 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 active_renderer}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 ds_renderer_playable}</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{182, 520}, {162, 14}}</string>
+			<string>{{182, 520}, {162, 28}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>29</integer>
+			<integer>23</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -428,30 +370,11 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs24 \cf0 3. With decoder data source}</string>
+\f0\fs24 \cf0 3. With decoder data source\
+(not used, currently)}</string>
 			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{7, 560}, {148.544, 14}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>FitText</key>
-			<string>Vertical</string>
-			<key>ID</key>
-			<integer>28</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Text</key>
-			<dict>
-				<key>Text</key>
-				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\b\fs24 \cf0 \ul \ulc0 passive_data_source}</string>
-			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Class</key>
@@ -459,14 +382,14 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>19</integer>
+				<integer>16</integer>
 			</dict>
 			<key>ID</key>
-			<integer>27</integer>
+			<integer>22</integer>
 			<key>Points</key>
 			<array>
-				<string>{195.458, 396}</string>
-				<string>{250.086, 367}</string>
+				<string>{211.432, 396}</string>
+				<string>{253.192, 367}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -487,18 +410,20 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>26</integer>
+				<integer>21</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{108, 396}, {148.544, 14}}</string>
+			<string>{{117, 396}, {148.544, 28}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>26</integer>
+			<integer>21</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -509,44 +434,8 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 active_data_source}</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>21</integer>
-				<key>Info</key>
-				<integer>2</integer>
-			</dict>
-			<key>ID</key>
-			<integer>25</integer>
-			<key>Points</key>
-			<array>
-				<string>{81.2886, 372}</string>
-				<string>{81.5, 434}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>HeadScale</key>
-					<real>1.4285709857940674</real>
-					<key>TailArrow</key>
-					<string>0</string>
-					<key>TailScale</key>
-					<real>0.5</real>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>17</integer>
+\f0\b\fs24 \cf0 \ul \ulc0 raw_datasource\
+(or video_datasource)}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -558,42 +447,7 @@ for Ambulant version 0.3}</string>
 				<integer>17</integer>
 			</dict>
 			<key>ID</key>
-			<integer>24</integer>
-			<key>Points</key>
-			<array>
-				<string>{189, 362.04}</string>
-				<string>{155.544, 362.96}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>HeadScale</key>
-					<real>1.4285709857940674</real>
-					<key>TailArrow</key>
-					<string>0</string>
-					<key>TailScale</key>
-					<real>0.5</real>
-				</dict>
-			</dict>
-			<key>Tail</key>
-			<dict>
-				<key>ID</key>
-				<integer>19</integer>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>20</integer>
-			</dict>
-			<key>ID</key>
-			<integer>23</integer>
+			<integer>20</integer>
 			<key>Points</key>
 			<array>
 				<string>{276.683, 367}</string>
@@ -618,7 +472,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>19</integer>
+				<integer>16</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -627,14 +481,14 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>26</integer>
+				<integer>21</integer>
 			</dict>
 			<key>ID</key>
-			<integer>22</integer>
+			<integer>19</integer>
 			<key>Points</key>
 			<array>
 				<string>{109, 461}</string>
-				<string>{173.429, 410}</string>
+				<string>{168.688, 424}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -655,7 +509,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>21</integer>
+				<integer>18</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -664,7 +518,7 @@ for Ambulant version 0.3}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>21</integer>
+			<integer>18</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -692,8 +546,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>20</integer>
+			<integer>17</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -704,7 +560,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 abstract_rendering_surface}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 surface}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -714,8 +570,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>19</integer>
+			<integer>16</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -726,7 +584,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 active_renderer}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 ds_renderer_playable}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -736,8 +594,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>18</integer>
+			<integer>15</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -768,45 +628,18 @@ for Ambulant version 0.3}</string>
 
 \f0\fs24 \cf0 2. With gui toolkit API that understands data format natively}</string>
 			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{7, 358}, {148.544, 14}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>FitText</key>
-			<string>Vertical</string>
-			<key>ID</key>
-			<integer>17</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Text</key>
-			<dict>
-				<key>Text</key>
-				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\b\fs24 \cf0 \ul \ulc0 passive_data_source}</string>
-			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>10</integer>
-				<key>Info</key>
-				<integer>2</integer>
-			</dict>
 			<key>ID</key>
-			<integer>16</integer>
+			<integer>14</integer>
 			<key>Points</key>
 			<array>
-				<string>{128.185, 209}</string>
-				<string>{72.5, 237}</string>
+				<string>{245.179, 167}</string>
+				<string>{72, 234}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -825,54 +658,19 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>1</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>1</integer>
-			</dict>
-			<key>ID</key>
-			<integer>15</integer>
-			<key>Points</key>
-			<array>
-				<string>{241.939, 167}</string>
-				<string>{156.605, 195}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>StickArrow</string>
-					<key>HeadScale</key>
-					<real>1.4285709857940674</real>
-					<key>TailArrow</key>
-					<string>0</string>
-					<key>TailScale</key>
-					<real>0.5</real>
-				</dict>
-			</dict>
-			<key>Tail</key>
 			<dict>
 				<key>ID</key>
 				<integer>7</integer>
 			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>Head</key>
-			<dict>
-				<key>ID</key>
-				<integer>8</integer>
-			</dict>
 			<key>ID</key>
-			<integer>14</integer>
+			<integer>13</integer>
 			<key>Points</key>
 			<array>
 				<string>{263.272, 167}</string>
@@ -895,7 +693,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>7</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -904,10 +702,10 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>9</integer>
+				<integer>8</integer>
 			</dict>
 			<key>ID</key>
-			<integer>13</integer>
+			<integer>12</integer>
 			<key>Points</key>
 			<array>
 				<string>{276.296, 167}</string>
@@ -930,7 +728,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>7</integer>
+				<integer>6</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -939,10 +737,10 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>9</integer>
+				<integer>8</integer>
 			</dict>
 			<key>ID</key>
-			<integer>12</integer>
+			<integer>11</integer>
 			<key>Points</key>
 			<array>
 				<string>{337.544, 264}</string>
@@ -967,7 +765,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>8</integer>
+				<integer>7</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -976,10 +774,10 @@ for Ambulant version 0.3}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>8</integer>
+				<integer>7</integer>
 			</dict>
 			<key>ID</key>
-			<integer>11</integer>
+			<integer>10</integer>
 			<key>Points</key>
 			<array>
 				<string>{100, 264}</string>
@@ -1004,7 +802,7 @@ for Ambulant version 0.3}</string>
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>10</integer>
+				<integer>9</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -1013,7 +811,7 @@ for Ambulant version 0.3}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
-			<integer>10</integer>
+			<integer>9</integer>
 			<key>Magnets</key>
 			<array>
 				<string>{0, 1}</string>
@@ -1041,8 +839,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>9</integer>
+			<integer>8</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -1053,7 +853,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 abstract_rendering_surface}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 surface}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -1063,8 +863,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>8</integer>
+			<integer>7</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -1085,8 +887,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>7</integer>
+			<integer>6</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Text</key>
@@ -1097,7 +901,7 @@ for Ambulant version 0.3}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\b\fs24 \cf0 \ul \ulc0 active_basic_renderer}</string>
+\f0\b\fs24 \cf0 \ul \ulc0 playable}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -1107,8 +911,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>6</integer>
+			<integer>5</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -1139,12 +945,14 @@ for Ambulant version 0.3}</string>
 
 \f0\fs24 \cf0 Legend:}</string>
 			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>ID</key>
-			<integer>5</integer>
+			<integer>4</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1194,7 +1002,7 @@ for Ambulant version 0.3}</string>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>ID</key>
-			<integer>4</integer>
+			<integer>3</integer>
 			<key>Labels</key>
 			<array>
 				<dict>
@@ -1245,8 +1053,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>3</integer>
+			<integer>2</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -1277,6 +1087,8 @@ for Ambulant version 0.3}</string>
 
 \f0\fs24 \cf0 1. With third-party rendering toolkit that does I/O independently}</string>
 			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
@@ -1285,8 +1097,10 @@ for Ambulant version 0.3}</string>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
 			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
 			<key>ID</key>
-			<integer>2</integer>
+			<integer>1</integer>
 			<key>Shape</key>
 			<string>Rectangle</string>
 			<key>Style</key>
@@ -1317,28 +1131,8 @@ for Ambulant version 0.3}</string>
 
 \f0\b\fs36 \cf0 Data Flow}</string>
 			</dict>
-		</dict>
-		<dict>
-			<key>Bounds</key>
-			<string>{{61, 195}, {148.544, 14}}</string>
-			<key>Class</key>
-			<string>ShapedGraphic</string>
-			<key>FitText</key>
-			<string>Vertical</string>
-			<key>ID</key>
-			<integer>1</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
-			<key>Text</key>
-			<dict>
-				<key>Text</key>
-				<string>{\rtf1\mac\ansicpg10000\cocoartf102
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
-
-\f0\b\fs24 \cf0 \ul \ulc0 passive_data_source}</string>
-			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
 		</dict>
 	</array>
 	<key>GridInfo</key>
@@ -1346,6 +1140,8 @@ for Ambulant version 0.3}</string>
 		<key>SnapsToGrid</key>
 		<string>YES</string>
 	</dict>
+	<key>GuidesLocked</key>
+	<string>NO</string>
 	<key>GuidesVisible</key>
 	<string>YES</string>
 	<key>HPages</key>
@@ -1369,12 +1165,8 @@ for Ambulant version 0.3}</string>
 	</array>
 	<key>LayoutInfo</key>
 	<dict>
-		<key>AutoAdjust</key>
-		<string>YES</string>
 		<key>ChildOrdering</key>
 		<integer>2</integer>
-		<key>MagneticFieldCenter</key>
-		<string>{0, 0}</string>
 	</dict>
 	<key>LinksVisible</key>
 	<string>NO</string>
@@ -1465,7 +1257,7 @@ for Ambulant version 0.3}</string>
 	YWw+CgkJCQkJPC9hcnJheT4KCQkJCQk8a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQu
 	Y2xpZW50PC9rZXk+CgkJCQkJPHN0cmluZz5jb20uYXBwbGUucHJpbnRpbmdtYW5hZ2Vy
 	PC9zdHJpbmc+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0Lm1vZERhdGU8
-	L2tleT4KCQkJCQk8ZGF0ZT4yMDA0LTAxLTI3VDE0OjQ2OjE1WjwvZGF0ZT4KCQkJCQk8
+	L2tleT4KCQkJCQk8ZGF0ZT4yMDA0LTA5LTE5VDE5OjQ1OjU3WjwvZGF0ZT4KCQkJCQk8
 	a2V5PmNvbS5hcHBsZS5wcmludC50aWNrZXQuc3RhdGVGbGFnPC9rZXk+CgkJCQkJPGlu
 	dGVnZXI+MDwvaW50ZWdlcj4KCQkJCTwvZGljdD4KCQkJPC9hcnJheT4KCQk8L2RpY3Q+
 	CgkJPGtleT5jb20uYXBwbGUucHJpbnQuUGFnZUZvcm1hdC5QTUFkanVzdGVkUGFwZXJS
@@ -1479,7 +1271,7 @@ for Ambulant version 0.3}</string>
 	YXk+CgkJCQkJPGtleT5jb20uYXBwbGUucHJpbnQudGlja2V0LmNsaWVudDwva2V5PgoJ
 	CQkJCTxzdHJpbmc+Y29tLmFwcGxlLnByaW50aW5nbWFuYWdlcjwvc3RyaW5nPgoJCQkJ
 	CTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC5tb2REYXRlPC9rZXk+CgkJCQkJPGRh
-	dGU+MjAwNC0wMS0yN1QxNDo0NjoxNVo8L2RhdGU+CgkJCQkJPGtleT5jb20uYXBwbGUu
+	dGU+MjAwNC0wOS0xOVQxOTo0NTo1N1o8L2RhdGU+CgkJCQkJPGtleT5jb20uYXBwbGUu
 	cHJpbnQudGlja2V0LnN0YXRlRmxhZzwva2V5PgoJCQkJCTxpbnRlZ2VyPjA8L2ludGVn
 	ZXI+CgkJCQk8L2RpY3Q+CgkJCTwvYXJyYXk+CgkJPC9kaWN0PgoJCTxrZXk+Y29tLmFw
 	cGxlLnByaW50LlBhcGVySW5mby5QTVBhcGVyTmFtZTwva2V5PgoJCTxkaWN0PgoJCQk8
@@ -1543,14 +1335,14 @@ for Ambulant version 0.3}</string>
 	PGZhbHNlLz4KCTxrZXk+Y29tLmFwcGxlLnByaW50LnRpY2tldC50eXBlPC9rZXk+Cgk8
 	c3RyaW5nPmNvbS5hcHBsZS5wcmludC5QYWdlRm9ybWF0VGlja2V0PC9zdHJpbmc+Cjwv
 	ZGljdD4KPC9wbGlzdD4KhpKEmZkPTlNQcmludEFsbFBhZ2VzhpKgkoSZmQtOU1BhcGVy
-	TmFtZYaShJmZBkxldHRlcoaShJmZFU5TSG9yaXpvbmFsUGFnaW5hdGlvboaShKGbopcA
-	hpKEmZkWTlNIb3Jpem9udGFsbHlDZW50ZXJlZIaSppKEmZkJTlNQcmludGVyhpKEhIQJ
-	TlNQcmludGVyAJSShJmZF2N1Y3V0YXMgb24gc3Bvb2wuY3dpLm5shoaShJmZCE5TQ29w
-	aWVzhpKEoZuilwGGkoSZmQ9OU1NjYWxpbmdGYWN0b3KGkoShm4SEAWahAYaShJmZDU5T
-	UmlnaHRNYXJnaW6GkoShm7ihAIaShJmZDk5TQm90dG9tTWFyZ2luhpKEoZu4oQCGkoSZ
-	mQxOU0xlZnRNYXJnaW6GkoShm7ihAIaShJmZC05TVG9wTWFyZ2luhpKEoZu4oQCGkoSZ
-	mQpOU0xhc3RQYWdlhpKEoZuil4J/////hpKEmZkLTlNGaXJzdFBhZ2WGkoShm6KXAYaS
-	hJmZDU5TT3JpZW50YXRpb26GkoShm6KXAIaGhg==
+	TmFtZYaShJmZCW5hLWxldHRlcoaShJmZFU5TSG9yaXpvbmFsUGFnaW5hdGlvboaShKGb
+	opcAhpKEmZkWTlNIb3Jpem9udGFsbHlDZW50ZXJlZIaSppKEmZkJTlNQcmludGVyhpKE
+	hIQJTlNQcmludGVyAJSShJmZEFN0eWx1cyBDT0xPUiA3NjCGhpKEmZkITlNDb3BpZXOG
+	koShm6KXAYaShJmZD05TU2NhbGluZ0ZhY3RvcoaShKGbhIQBZqEBhpKEmZkNTlNSaWdo
+	dE1hcmdpboaShKGbuKEAhpKEmZkOTlNCb3R0b21NYXJnaW6GkoShm7ihAIaShJmZDE5T
+	TGVmdE1hcmdpboaShKGbuKEAhpKEmZkLTlNUb3BNYXJnaW6GkoShm7ihAIaShJmZCk5T
+	TGFzdFBhZ2WGkoShm6KXgn////+GkoSZmQtOU0ZpcnN0UGFnZYaShKGbopcBhpKEmZkN
+	TlNPcmllbnRhdGlvboaShKGbopcAhoaG
 	</data>
 	<key>ReadOnly</key>
 	<string>NO</string>
@@ -1573,13 +1365,13 @@ for Ambulant version 0.3}</string>
 		<key>CurrentSheet</key>
 		<string>0</string>
 		<key>Frame</key>
-		<string>{{52, 136}, {591, 832}}</string>
+		<string>{{331, 35}, {591, 711}}</string>
 		<key>ShowRuler</key>
 		<false/>
 		<key>ShowStatusBar</key>
 		<true/>
 		<key>VisibleRegion</key>
-		<string>{{0, 0}, {576, 734}}</string>
+		<string>{{0, 0}, {576, 613}}</string>
 		<key>Zoom</key>
 		<string>1</string>
 	</dict>
