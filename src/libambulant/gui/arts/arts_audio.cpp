@@ -231,14 +231,16 @@ arts_active_audio_renderer::data_avail()
     int err;
     
     AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): (this=0x%x)", (void *)this);
-    data = m_audio_src->get_read_ptr();
+    AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): m_audio_src->get_read_ptr() m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void *)this);
+	data = m_audio_src->get_read_ptr();
 	size = m_audio_src->size();
     AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): (this=0x%x) strarting to play %d bytes", (void *)this, size);
 	
 	if (!m_is_paused || m_audio_src) {
 		played=arts_play(data,size);
 		AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail():(this=0x%x)  played %d bytes", (void *)this, played);
-    	m_audio_src->readdone(played);
+    	AM_DBG lib::logger::get_logger()->debug("arts_plugin::data_avail(): m_audio_src->readdone(%d) called", size);
+		m_audio_src->readdone(played);
 	}
 	restart_audio_input();
     //m_context->stopped(m_cookie, 0);

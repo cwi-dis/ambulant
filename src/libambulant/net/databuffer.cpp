@@ -102,6 +102,7 @@ databuffer::databuffer()
 	//AM_DBG lib::logger::get_logger()->debug("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
 	m_buffer = NULL;
 	m_read_data_ptr = NULL;
+	m_reading = false;
     m_buffer_full = false;
 }
 
@@ -255,7 +256,11 @@ databuffer::get_read_ptr()
 	m_lock.enter();
 	const char *rv = (m_buffer + m_rear);
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
-	assert(!m_read_data_ptr);
+	// @Ambulant developpers: DON"T TURN OFF THIS ASSERT !
+	// If it ever occurs please let me know about it.
+	// Daniel
+	assert(!m_reading);
+	m_reading = true;
 	if (rv) {
 		m_read_data_ptr = (char*) malloc(m_used);
 		memcpy(m_read_data_ptr, rv, m_used);
@@ -270,6 +275,11 @@ void
 databuffer::readdone(int sz)
 {
 	m_lock.enter();
+	// @Ambulant developpers: DON"T TURN OFF THIS ASSERT !
+	// If it ever occurs please let me know about it.
+	// Daniel
+	assert(m_reading);
+	m_reading = false;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
     if ((unsigned long int)sz > m_used) {
 		lib::logger::get_logger()->trace("Internal error: databuffer::readdone(%d), but m_used=%d", sz, m_used);
@@ -283,7 +293,7 @@ databuffer::readdone(int sz)
 	m_rear += sz;
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
-//	assert(m_read_data_ptr);
+	
 	if (m_read_data_ptr) {
 			free(m_read_data_ptr);
 			m_read_data_ptr = NULL;

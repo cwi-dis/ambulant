@@ -46,6 +46,7 @@
  *
  */
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -286,12 +287,15 @@ int
 gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 {
 	m_lock.enter();
-	assert(m_is_playing);
+	
+	// turned this of because I think here also happends a get_read_ptr when it should not
+	// assert(m_is_playing);
 	int rv;
 	if (m_is_paused||!m_audio_src) {
 		rv = 0;
 	} else {
-		*ptr = (Uint8 *)m_audio_src->get_read_ptr();
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
+		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
 		rv = m_audio_src->size();
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
@@ -306,9 +310,11 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	m_lock.enter();
 	// Acknowledge that we are ready with the data provided to us
 	// at the previous callback time
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
-	if (size)
+	//AM_DBG if (m_audio_src) lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
+	//if (size) {
+		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
 		m_audio_src->readdone(size);
+	//}
 	bool still_busy;
 	still_busy = (size != 0);
 	still_busy |= restart_audio_input();
@@ -342,7 +348,7 @@ bool
 gui::sdl::sdl_active_audio_renderer::restart_audio_input()
 {
 	// private method - no need to lock.
-	if (!m_audio_src || m_audio_src->end_of_file()) {
+	if (!m_audio_src || m_audio_src->end_of_file() || !m_is_playing) {
 		// No more data.
 		return false;
 	}
@@ -364,7 +370,9 @@ gui::sdl::sdl_active_audio_renderer::data_avail()
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail: %d bytes available", m_audio_src->size());
+	
 	restart_audio_input();
+	
 	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail: done");
 }	

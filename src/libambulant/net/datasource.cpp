@@ -386,9 +386,10 @@ datasource_reader::readdone()
 		return;
 	}
 	char* dataptr = m_src->get_read_ptr();
-		memcpy(m_data+m_size, dataptr, newsize);
-		m_size += newsize;
-		m_src->readdone(newsize);
+	
+	memcpy(m_data+m_size, dataptr, newsize);
+	m_size += newsize;
+	m_src->readdone(newsize);
 
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);

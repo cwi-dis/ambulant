@@ -186,8 +186,9 @@ renderer_playable_dsall::readdone()
 		// What else can we do...
 		m_context->stopped(m_cookie, 0);
 	}
-	
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->get_read_ptr() m_src=0x%x", (void *)this,m_src);
 	char *cur_data = m_src->get_read_ptr();
+
 	memcpy((char *)m_data + m_data_size, cur_data, cur_size);
 	m_data_size += cur_size;
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);

@@ -136,6 +136,7 @@ class databuffer
   private:
     char* m_buffer;
   	char* m_read_data_ptr;
+    bool m_reading;
 	unsigned long int m_rear;
 	unsigned long int m_size;
  	unsigned long int m_max_size;
