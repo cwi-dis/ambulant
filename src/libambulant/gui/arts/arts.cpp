@@ -52,6 +52,8 @@
 #endif
  
 #include "ambulant/gui/arts/arts.h"
+#include "ambulant/gui/arts/arts_audio.h"
+
 
 namespace ambulant {
 
@@ -73,89 +75,12 @@ gui::arts::arts_renderer_factory::new_renderer(
 	xml_string tag = node->get_qname().second;
 	if ( tag == "audio") {
 		rv = (active_renderer *) new arts_active_audio_renderer(context, cookie, node, evp, src);
-		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_audio_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->trace("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 	// logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
                 return NULL;
 	}
 	return rv;
-}
-
-gui::arts::arts_active_audio_renderer::arts_active_audio_renderer(
-	active_playable_events *context,
-	active_playable_events::cookie_type cookie,
-	const node *node,
-	event_processor *const evp,
-	net::passive_datasource *src)
-:	active_renderer(context, cookie, node, evp, src, NULL)
-{
-
-}
-
-int
-gui::arts::arts_active_audio_renderer::arts_setup(int rate, int bits, int channels, char *name)
-{
-    int err;
-    if (!m_stream) {
-    err = arts_init();
-    if (err < 0) {
-        return err;
-    }
-
-    m_stream = arts_play_stream(rate, bits, channels, name);
-    return 0;
-    }
-}
-
-
-
-gui::arts::arts_active_audio_renderer::~arts_active_audio_renderer()
-{
-    arts_close_stream(m_stream);
-    arts_free();
-}
-
-int
-gui::arts::arts_active_audio_renderer::arts_play(char *data, int size)
-{
-    return ::arts_write(m_stream, data, size);
-}
-
-void
-gui::arts::arts_active_audio_renderer::readdone()
-{
-    char *data;
-    int size;
-    AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
-    size = m_src->size();
-    data = new char[size];
-    m_src->read(data,size);
-    arts_setup(44100,16,2,"arts_audio");
-    arts_play(data,size);
-    stopped_callback();
-}
-
-
-
-void
-gui::arts::arts_active_audio_renderer::start(double where)
-{
-
-    if (!m_node) abort();
-	
-	std::ostringstream os;
-	os << *m_node;
-    
-	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
-	if (m_src) {
-		m_src->start(m_event_processor, m_readdone);    
-	} else {
-		lib::logger::get_logger()->error("active_renderer.start: no datasource");
-		if (m_playdone) {
-            stopped_callback();
-        }
-	}
-    
 }
 
 
