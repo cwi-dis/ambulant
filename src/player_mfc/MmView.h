@@ -123,6 +123,7 @@ public:
 	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
 	afx_msg void OnHelpWelcome();
 	afx_msg void OnUpdateHelpWelcome(CCmdUI *pCmdUI);
+	afx_msg LRESULT OnReplaceDoc(WPARAM wParam, LPARAM lParam);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

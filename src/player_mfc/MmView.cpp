@@ -122,6 +122,10 @@ void destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
 }
 
+HWND get_main_window() {
+	return AfxGetMainWnd()->GetSafeHwnd();
+}
+
 using namespace ambulant;
 
 //#define AM_PLAYER_DG
@@ -174,6 +178,7 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipNotify)
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
 	ON_UPDATE_COMMAND_UI(ID_HELP_WELCOME, OnUpdateHelpWelcome)
+	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
 END_MESSAGE_MAP()
 
 
@@ -445,6 +450,14 @@ LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 	
 	UINT flags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE;
 	mainWnd->SetWindowPos(&wndTop, 0, 0, size.cx, size.cy, flags);
+	return 0;
+}
+
+LPARAM MmView::OnReplaceDoc(WPARAM wParam, LPARAM lParam) {
+	if(lParam == 0) return 0;
+	std::string *purlstr = (std::string *)lParam;
+	SetMMDocument(purlstr->c_str(), wParam?true:false);
+	delete purlstr;
 	return 0;
 }
 
