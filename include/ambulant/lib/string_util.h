@@ -79,6 +79,8 @@ inline std::string& operator<<(std::string& s, unsigned int c) { char sz[32];spr
 inline std::string& operator<<(std::string& s, long c) { char sz[32];sprintf(sz,"%ld",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, double c) { char sz[32];sprintf(sz,"%.3f",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, const char *c) { s+=c; return s;}
+template <class T>
+inline std::string& operator<<(std::string& s, const T *p) { char sz[32];sprintf(sz,"0x%p", p); s+=sz; return s;}
 
 namespace ambulant {
 
