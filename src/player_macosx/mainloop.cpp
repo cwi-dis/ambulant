@@ -67,38 +67,82 @@ usage()
 	exit(1);
 }
 
-void
-mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
+mainloop::mainloop(const char *filename, ambulant::lib::window_factory *wf)
+:   m_running(false),
+	m_speed(1.0),
+#ifdef WITH_MMS_PLAYER
+	m_passive_player(NULL),
+	m_active_player(NULL),
+#else
+	m_doc(NULL),
+	m_smil_player(NULL),
+#endif
+	m_rf(NULL),
+	m_wf(wf)
 {
 	using namespace ambulant;
 	
-	lib::global_renderer_factory *rf = new lib::global_renderer_factory();
-	rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
+	m_rf = new lib::global_renderer_factory();
+	m_rf->add_factory(new ambulant::gui::cocoa::cocoa_renderer_factory());
 #ifdef WITH_MMS_PLAYER
-	lib::passive_player *p = new lib::passive_player(filename);
+	m_passive_player = new lib::passive_player(filename);
 	if (!p) return;
-	m_active_player = p->activate(wf, rf);
+
+#else
+	m_doc = lib::document::create_from_file(filename);
+	if (!m_doc) {
+		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
+		return;
+	}
+	m_smil_player = new lib::smil_player(m_doc, m_wf, m_rf);
+#endif
+}
+
+mainloop::~mainloop()
+{
+#ifdef WITH_MMS_PLAYER
+	if (m_active_player) delete m_active_player;
+	m_active_player = NULL;
+	if (m_evp) delete m_evp;
+	m_evp = NULL;
+	if (m_timer) delete m_timer;
+	m_timer = NULL;
+#else
+//  m_doc will be cleaned up by the smil_player.
+//	if (m_doc) delete m_doc;
+//	m_doc = NULL;
+	if (m_smil_player) delete m_smil_player;
+	m_smil_player = NULL;
+#endif
+	if (m_rf) delete m_rf;
+	m_rf = NULL;
+	// m_wf Window factory is owned by caller
+}
+
+void
+mainloop::run()
+{
+#ifdef WITH_MMS_PLAYER
+	m_active_player = m_passive_player->activate(wf, rf);
 	if (!m_active_player) return;
-	lib::timer *our_timer = new lib::timer(lib::realtime_timer_factory());
-	lib::event_processor *processor = lib::event_processor_factory(our_timer);
+	m_timer = new lib::timer(lib::realtime_timer_factory());
+	m_evp = lib::event_processor_factory(our_timer);
 
 	typedef lib::no_arg_callback<mainloop> callback;
 	lib::event *ev = new callback(this, &mainloop::player_done_callback);
-
 	m_running = true;
 	m_active_player->start(processor, ev);
 
 	while (m_running)
 		sleep(1);
 //	delete m_active_player;
+	delete m_active_player;
 	m_active_player = NULL;
+	delete m_evp;
+	m_evp = NULL;
+	delete m_timer;
+	m_timer = NULL;
 #else
-	lib::document *doc = lib::document::create_from_file(filename);
-	if (!doc) {
-		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
-		return;
-	}
-	m_smil_player = new lib::smil_player(doc, wf, rf);
 	m_smil_player->start();
 	while (!m_smil_player->is_done())
 		sleep(1);

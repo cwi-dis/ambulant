@@ -82,7 +82,8 @@
     [super windowControllerDidLoadNib:aController];
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
-    myMainloop = new mainloop();
+    NSString *filename = [self fileName];
+    myMainloop = new mainloop([filename UTF8String], myWindowFactory);
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType
@@ -138,12 +139,11 @@
 - (void)startPlay: (id)dummy
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *filename = [self fileName];
     
     if (![NSThread isMultiThreaded]) {
         NSLog(@"startPlay: still not multi-threaded!");
     }
-    myMainloop->run([filename UTF8String], myWindowFactory);
+    myMainloop->run();
     [pool release];
 }
 
