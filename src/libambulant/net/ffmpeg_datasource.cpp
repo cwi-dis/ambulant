@@ -1076,7 +1076,7 @@ ffmpeg_decoder_datasource::data_avail()
 {
 	m_lock.enter();
 	int sz = m_src->size();
-	m_in_total +=sz;
+
 	if (m_con) {
 		uint8_t *inbuf = (uint8_t*) m_src->get_read_ptr();
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
@@ -1090,6 +1090,7 @@ ffmpeg_decoder_datasource::data_avail()
 				AM_DBG lib::logger::get_logger()->trace("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 				int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, sz);
 				m_out_total += outsize;
+				m_in_total += decoded;
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 				AM_DBG lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 				m_buffer.pushdata(outsize);
