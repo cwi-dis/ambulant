@@ -6,7 +6,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 AM_PROG_LIBTOOL
 AM_GNU_GETTEXT([external])
-AC_CONFIG_FILES([Makefile po/Makefile.in m4/Makefile 
+AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/Makefile 
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
@@ -58,14 +58,14 @@ AC_ARG_WITH([expat],[
 	AC_TRY_RUN(
 	    [#include <expat.h>
 	    main() { 
-	        return (XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7);
+	        return !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7);
 	    }],
 	    [expat=true
 	    EXPAT_PREFIX=/usr],
 	    [expat=true
 	    EXPAT_PREFIX=third_party_packages/expat-unix])
 	])
-	LIBS=ambulant_save_LIBS
+	LIBS="$ambulant_save_LIBS"
 if test x$expat = xtrue; then
 	if test  -f $EXPAT_PREFIX/include/expat.h; then
 		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
