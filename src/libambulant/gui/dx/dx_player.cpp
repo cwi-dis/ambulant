@@ -72,18 +72,16 @@ gui::dx::dx_player_impl::dx_player_impl(const std::string& url, VCF f)
 	m_rf(0),
 	m_pplayer(0), 
 	m_aplayer(0),
-	m_processor(0),
 	m_logger(lib::logger::get_logger()) {
 		
 }
 
 gui::dx::dx_player_impl::~dx_player_impl() {
-	delete m_processor;
-	delete m_pplayer;
 	m_aplayer = lib::release(m_aplayer);
 	// verify:
 	if(m_aplayer != 0)
-		m_logger->warn("active_player ref_count: " + m_aplayer->get_ref_count());
+		m_logger->warn("active_player ref_count: %ld" + m_aplayer->get_ref_count());
+	delete m_pplayer;
 	delete m_rf;
 	delete m_wf;
 	delete m_viewport;
@@ -131,15 +129,19 @@ bool gui::dx::dx_player_impl::start() {
 void gui::dx::dx_player_impl::stop() {
 	m_logger->trace("Attempting to stop: %s", m_url.c_str());
 	if(m_aplayer) m_aplayer->stop();
+	if(m_viewport) m_viewport->redraw();
 }
+
 void gui::dx::dx_player_impl::pause() {
 	m_logger->trace("Attempting to pause: %s", m_url.c_str());
-	if(m_aplayer) {
-		if(m_aplayer->get_speed() == 0)
-			m_aplayer->set_speed(1.0);
-		else
-			m_aplayer->set_speed(0);
-	}
+	if(m_aplayer)
+		m_aplayer->pause();
+}
+
+void gui::dx::dx_player_impl::resume() {
+	m_logger->trace("Attempting to resume: %s", m_url.c_str());
+	if(m_aplayer)
+		m_aplayer->resume();
 }
 
 // static 
