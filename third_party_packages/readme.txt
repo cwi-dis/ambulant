@@ -7,10 +7,12 @@ expat-win32:
 	James Clark's expat XML parser library, version 1.95.7. Download 
 	via <http://expat.sourceforge.net>. Installed with the win32 binary installer 
 	(it seems to be difficult to build from the source).
+	
 expat-unix:
 	Linux and Mac OS X.
 	
-	Ditto, but built from source. Download the expat source into
+	Ditto, but built from source. Download the expat source via 
+	<http://expat.sourceforge.net> and extract into
 	expat-1.95.7 in this directory (.../ambulant/third_party_packages).
 	The do the following:
 		$ tppdir=`pwd`
@@ -22,6 +24,12 @@ expat-unix:
 	Note that you really want expat-1.95.7, not 1.95.6: the older version
 	has a bug in the expat.h header file that causes compile time errors for
 	Ambulant.
+	
+	Note that if you want to install expat 1.95.7 somewhere else (or you have
+	already installed it) you should specify the location to the --with-expat
+	option on the main ambulant configure: it will normally only look in
+	third_party_packages/expat-unix.
+	
 ffmpeg:
 	Linux and Mac OS X.
 	
@@ -35,20 +43,29 @@ ffmpeg:
 		$ patch -p0 < ../ffmpeg-macosx-patch    # For Mac OS X only
 		$ ./configure
 		$ make
+		
+	Note that there is no reason to install ffmpeg (and it may actually fail to
+	install cleanly on some systems): Ambulant Player links against the static
+	libraries in the build directory.
 
-	Note that as of this writing you cannot use an ffmpeg installation as
+	Also note that as of this writing you cannot use an ffmpeg installation as
 	comes pre-installed with some RedHat distributions: not all libraries and
 	include files seem to be installed.
 
 	In principle the ffmpeg package is optional, but failing to supply it will
 	result in an ambulant player that can play no audio (Mac OS X) or
 	no audio and video (Linux).
+	
 sdl:
 	Linux and Mac OS X.
 	
-	Ambulant has been tested with sdl 1.2.6. You find this at
+	Ambulant has been tested with sdl 1.2.6 or 1.2.7. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure the
 	sdl-config utility is on your $PATH when running the configure for Ambulant.
+	
+	Note for MacOSX: the SDL install will fail if there are spaces in the pathname
+	*of the source directory pathname*.
+	
 arts:
 	Linux only.
 	

@@ -123,14 +123,18 @@ Building for Linux
 
 First make sure you install the third party packages on which Ambulant
 depends, see third_party_packages/readme.txt.
-Then the normal "configure"/"make"/"make install" combo should work.
+
+Then the normal "configure"/"make"/"make install" combo can be used here
+in the toplevel directory to create the player.
 
 Building for Mac OS X
 ---------------------
 
 First make sure you install the third party packages on which Ambulant
 depends, see third_party_packages/readme.txt.
-The normal "configure"/"make"/"make install" combo should work.
+
+Then the normal "configure"/"make"/"make install" combo can be used here
+in the toplevel directory to create the player.
 
 "make install" installs the shared libraries and such into the path
 specified with the --prefix configure option, but the application,

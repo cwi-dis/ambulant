@@ -18,7 +18,9 @@ extra_sdl_ldflags=-static `sdl-config --libs` \
 	-framework Carbon \
 	-framework IOKit \
 	-framework QuickTime \
-	-framework OpenGL
+	-framework OpenGL \
+	-framework AudioUnit \
+	-framework AudioToolbox
 else
 extra_sdl_ldflags=
 extra_sdl_DEFINES=
