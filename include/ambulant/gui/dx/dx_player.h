@@ -68,6 +68,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
@@ -223,6 +224,7 @@ class dx_player :
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
+	common::factories m_factory;
 };
 
 } // namespace dx

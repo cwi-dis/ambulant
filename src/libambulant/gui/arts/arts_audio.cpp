@@ -66,7 +66,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
-	net::datasource_factory *df)
+	common::factories *factory)
 :	common::playable_imp(context, cookie, node, evp),
 	m_rate(44100),
 	m_channels(1),
@@ -79,7 +79,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	arts_setup(44100,16,2,"arts_audio");
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
-	m_audio_src = df->new_audio_datasource(url, supported);
+	m_audio_src = factory->df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {

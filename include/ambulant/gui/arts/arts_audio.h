@@ -52,6 +52,8 @@
 #include <artsc.h>
 #include <iostream>
 
+
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
@@ -76,7 +78,7 @@ class arts_active_audio_renderer : public common::playable_imp {
       common::playable_notification::cookie_type cookie,
       const lib::node *node,
       lib::event_processor *const evp,
-      net::datasource_factory *df);
+      common::factories *factory);
 
     ~arts_active_audio_renderer();
 

@@ -47,6 +47,7 @@
  * 
  */
 
+#include "ambulant/common/factory.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/databuffer.h"
 #include "ambulant/lib/asb.h"

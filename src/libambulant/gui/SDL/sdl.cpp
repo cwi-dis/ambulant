@@ -73,7 +73,7 @@ sdl_renderer_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
-		rv = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, m_datasource_factory);
+		rv = new gui::sdl::sdl_active_audio_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());

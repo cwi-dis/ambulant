@@ -50,6 +50,7 @@
  * @$Id$ 
  */
 
+
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
@@ -63,19 +64,18 @@
 using namespace ambulant;
 using namespace mms;
 
-common::player *
-common::create_mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
+common::player*
+common::create_mms_player(lib::document *doc, common::factories* factory)
 {
-	return new mms_player(doc, wf, rf);
+	return new mms_player(doc, factory);
 }
 
-mms_player::mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf)
+mms_player::mms_player(lib::document *doc, common::factories* factory)
 :	m_doc(doc),
 	m_tree(doc->get_root()),
 	m_timer(new lib::timer(lib::realtime_timer_factory(), 0.0)),
 	m_event_processor(lib::event_processor_factory(m_timer)),
-	m_window_factory(wf),
-	m_playable_factory(rf)
+	m_factory(factory)
 {
 }
 
@@ -90,13 +90,13 @@ mms_player::start()
 {
 	m_done = false;
 	passive_timeline *ptl = build_timeline();
-	common::layout_manager *layoutmgr = new mms_layout_manager(m_window_factory, m_doc);
+	common::layout_manager *layoutmgr = new mms_layout_manager(m_factory->wf, m_doc);
 	if (ptl) {
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: passive_timeline:" << std::endl;
 		AM_DBG ptl->dump(std::cout);
 #endif
-		active_timeline *atl = ptl->activate(m_event_processor, m_playable_factory, layoutmgr);
+		active_timeline *atl = ptl->activate(m_event_processor, (common::playable_factory*) m_factory->rf, layoutmgr);
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: active_timeline:" << std::endl;
 		AM_DBG atl->dump(std::cout);
@@ -160,7 +160,6 @@ mms_player::build_timeline()
 	lib::node *playroot = m_tree->get_first_child("body");
 	if (playroot == NULL)
 		playroot = m_tree;
-	timeline_builder builder = timeline_builder(m_window_factory, *playroot);
+	timeline_builder builder = timeline_builder(m_factory->wf, *playroot);
 	return builder.build();
 }
-

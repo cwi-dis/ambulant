@@ -47,8 +47,7 @@
  */
 
 /* 
- * @$Id$ 
- */
+
 
 // Define this to prefer QuickTime-based video over datasource-based video
 #define AM_PREFER_QUICKTIME
@@ -163,10 +162,10 @@ cocoa_renderer_factory::new_playable(
 	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
-		rv = new cocoa_image_renderer(context, cookie, node, evp, m_datasource_factory);
+		rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
-		rv = new cocoa_text_renderer(context, cookie, node, evp, m_datasource_factory);
+		rv = new cocoa_text_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "brush") {
 		rv = new cocoa_fill_renderer(context, cookie, node, evp);
@@ -182,11 +181,11 @@ cocoa_renderer_factory::new_playable(
 		if (rv) {
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
-			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
+			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 		}
 #else
-		rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_datasource_factory);
+		rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
 		if (rv) {
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
@@ -493,4 +492,3 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 @end
 #endif // __OBJC__
-

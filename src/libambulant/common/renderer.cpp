@@ -81,13 +81,13 @@ renderer_playable_ds::renderer_playable_ds(
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	net::datasource_factory *df)
+	common::factories *factory)
 :	renderer_playable(context, cookie, node, evp),
 	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	net::url url = node->get_url("src");
-	m_src = df->new_raw_datasource(url);	
+	m_src = factory->df->new_raw_datasource(url);	
 }
 
 renderer_playable_ds::~renderer_playable_ds()
@@ -236,7 +236,7 @@ active_video_renderer::active_video_renderer(
 	playable_notification::cookie_type cookie,
 	const lib::node * node,
 	lib::event_processor * evp,
-	net::datasource_factory * df)
+	common::factories *factory)
 :	renderer_playable (context, cookie, node, evp),
 	m_src(NULL),
 	m_audio_ds(NULL),
@@ -249,7 +249,7 @@ active_video_renderer::active_video_renderer(
 	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!
 	net::url url = node->get_url("src");
-	m_src = df->new_video_datasource(url);
+	m_src = factory->df->new_video_datasource(url);
 	if (m_src == NULL) {
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");
 	}

@@ -111,6 +111,12 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
 	lib::document *doc = lib::document::create_from_url(u);
+	
+	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
+	m_factory.df = NULL;
+	
+	m_factory.wf = this->get_window_factory(); 
+	
 	if(!doc) {
 		// message already logged
 		return;
@@ -118,7 +124,7 @@ gui::dx::dx_player::dx_player(const net::url& u)
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
-	m_player = new smil2::smil_player(doc, this, this, this);	
+	m_player = new smil2::smil_player(doc, &m_factory, this);	
 	
 	// Create a worker processor instance
 	m_worker_processor = event_processor_factory(m_timer);	
@@ -207,7 +213,7 @@ void gui::dx::dx_player::restart() {
 		return;
 	}
 	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());	
-	m_player = new smil2::smil_player(doc, this, this, this);	
+	m_player = new smil2::smil_player(doc, &m_factory, this);	
 	
 	if(playing) start();	
 }
@@ -602,7 +608,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, player *old) {
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
-	m_player = new smil2::smil_player(doc, this, this, this);
+	m_player = new smil2::smil_player(doc, &m_factory, this);
 	if(startnewdoc) start();
 }
 

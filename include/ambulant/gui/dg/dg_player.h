@@ -68,6 +68,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/common/factory.h"
 #include "ambulant/net/url.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
@@ -221,6 +222,7 @@ class dg_player :
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
+	common::factories m_factory;
 };
 
 } // namespace dg

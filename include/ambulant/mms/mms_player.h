@@ -54,7 +54,7 @@
 #define AMBULANT_MMS_MMS_PLAYER_H
 
 #include "ambulant/config/config.h"
-
+#include "ambulant/common/factory.h"
 #include "ambulant/common/player.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
@@ -72,7 +72,7 @@ class lib::document;
 
 class mms_player : public common::player, public lib::ref_counted_obj {
   public:
-	mms_player(lib::document *doc, common::window_factory *wf, common::playable_factory *rf);
+	mms_player(lib::document *doc, common::factories* factory);
 	~mms_player();
 	
 	virtual lib::timer* get_timer() { return m_event_processor->get_timer(); }
@@ -101,9 +101,8 @@ class mms_player : public common::player, public lib::ref_counted_obj {
 	bool m_playing;
 	std::vector<active_timeline *> m_active_timelines;
 	bool m_done;
-	common::window_factory *m_window_factory;
-	common::playable_factory *m_playable_factory;
-};
+	common::factories* m_factory;
+	};
 
 } // namespace mms
  

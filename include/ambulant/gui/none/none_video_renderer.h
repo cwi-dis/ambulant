@@ -62,8 +62,8 @@ class none_video_renderer : public common::active_video_renderer {
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	net::datasource_factory *df)
-	:   common::active_video_renderer(context, cookie, node, evp, df)
+	common::factories *factory)
+	:   common::active_video_renderer(context, cookie, node, evp, factory)
 	{ }
 
   	~none_video_renderer() {};

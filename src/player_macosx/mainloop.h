@@ -45,6 +45,10 @@
  * which carries forward this exception. 
  * 
  */
+ 
+
+#include "ambulant/common/factory.h"
+
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/refcount.h"
@@ -84,8 +88,6 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	double m_speed;
 	ambulant::lib::document *m_doc;
 	ambulant::common::player *m_player;
-	ambulant::common::global_playable_factory *m_rf;
-	ambulant::common::window_factory *m_wf;
-	ambulant::net::datasource_factory *m_df;
+  	ambulant::common::factories *m_factory;
 	ambulant::common::embedder *m_embedder;
 };

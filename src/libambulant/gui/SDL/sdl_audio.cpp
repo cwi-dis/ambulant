@@ -209,7 +209,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	net::datasource_factory *df)
+	common::factories *factory)
 :	common::playable_imp(context, cookie, node, evp),
 	m_audio_src(NULL),
 	m_is_playing(false),
@@ -221,7 +221,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
-	m_audio_src = df->new_audio_datasource(url, supported);
+	m_audio_src = factory->df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
@@ -236,7 +236,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	net::datasource_factory *df,
+	common::factories* factory,
 	net::audio_datasource *ds)
 :	common::playable_imp(context, cookie, node, evp),
 	m_audio_src(ds),
@@ -254,7 +254,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {
-		net::audio_datasource *resample_ds = df->new_filter_datasource(url, supported, ds);
+		net::audio_datasource *resample_ds = factory->df->new_filter_datasource(url, supported, ds);
 		AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
 		if (resample_ds) {
 			m_audio_src = resample_ds;

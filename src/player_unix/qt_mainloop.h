@@ -56,6 +56,9 @@
 // Environment for testing design classes
 
 #include <iostream>
+
+
+#include "ambulant/common/factory.h"
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/event_processor.h"
@@ -128,12 +131,12 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
  private: 
 	ambulant::lib::document *create_document(const char *filename);
 	// sorted alphabetically on member name
-	net::datasource_factory*		m_df;
+ 	common::factories* m_factory;
 	document*				m_doc;
 	qt_gui*					m_parent;
 	player*					m_player;
 	basic_atomic_count<critical_section>	m_refcount;
-	global_playable_factory*		m_rf;
+	
  	bool					m_running;
 	double					m_speed;
 	window_factory* 			m_wf;

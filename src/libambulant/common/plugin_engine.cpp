@@ -161,13 +161,13 @@ plugin_engine::load_plugins(std::string dirname)
 }
 
 void
-plugin_engine::add_plugins(common::global_playable_factory* rf, net::datasource_factory *df)
+plugin_engine::add_plugins(common::factories* factory)
 {
     std::vector< initfuncptr >::iterator i;
     for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
         initfuncptr init;
         init = *i;
-        (init)(rf, df);
+        (init)(factory);
     }
 }
 
@@ -217,7 +217,7 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 						if (!init) {
 							lib::logger::get_logger()->error("plugin_engine: no initialize routine");
 						} else {
-							(*init)(rf,df);
+							(*init)(factory);
 						}
 		  			} else {
 						lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);

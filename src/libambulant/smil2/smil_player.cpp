@@ -47,8 +47,7 @@
  */
 
 /* 
- * @$Id$ 
- */
+
  
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
@@ -59,6 +58,7 @@
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/transition_info.h"
 
+#include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
 
@@ -82,17 +82,15 @@ using namespace smil2;
 common::player *
 common::create_smil2_player(
 	lib::document *doc,
-	common::window_factory *wf,
-	common::playable_factory *pf,
+	common::factories* factory,
 	common::embedder *sys)
 {
-	return new smil_player(doc, wf, pf, sys);
+	return new smil_player(doc, factory, sys);
 }
 
-smil_player::smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, common::embedder *sys)
+smil_player::smil_player(lib::document *doc, common::factories *factory, common::embedder *sys)
 :	m_doc(doc),
-	m_wf(wf),
-	m_pf(pf),
+	m_factory(factory),
 	m_system(sys),
 	m_animation_engine(0),
 	m_root(0),
@@ -148,7 +146,7 @@ void smil_player::build_layout() {
 		delete m_layout_manager;
 		delete m_animation_engine;
 	}
-	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
+	m_layout_manager = new smil_layout_manager(m_factory->wf, m_doc);
 	m_animation_engine = new animation_engine(m_event_processor, m_layout_manager);
 }
 
@@ -500,8 +498,8 @@ smil_player::new_playable(const lib::node *n) {
 		(void*)n, nid,
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
-		
-	common::playable *np = m_pf->new_playable(this, nid, n, m_event_processor);
+	common::playable_factory *pf = (playable_factory*) m_factory->rf;
+	common::playable *np = pf->new_playable(this, nid, n, m_event_processor);
 	// And connect it to the rendering surface
 	if (np) {
 		common::renderer *rend = np->get_renderer();

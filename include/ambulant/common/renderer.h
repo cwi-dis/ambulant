@@ -54,7 +54,7 @@
 #define AMBULANT_COMMON_RENDERER_H
 
 #include "ambulant/config/config.h"
-
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
@@ -70,6 +70,8 @@ namespace ambulant {
 
 namespace common {
 
+	class global_playable_factory;
+		
 // A helper class implementing some of the common code for playables
 class playable_imp : public playable {
   public:
@@ -138,7 +140,7 @@ class renderer_playable_ds : public renderer_playable {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		net::datasource_factory *df);
+		common::factories* factory);
 		
 	virtual ~renderer_playable_ds();
 	
@@ -173,8 +175,8 @@ class renderer_playable_dsall : public renderer_playable_ds {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		net::datasource_factory *df)
-	:	renderer_playable_ds(context, cookie, node, evp, df),
+		common::factories *factory)
+	:	renderer_playable_ds(context, cookie, node, evp, factory),
 		m_data(NULL),
 		m_data_size(0) {};
 	virtual ~renderer_playable_dsall();
@@ -221,7 +223,7 @@ class active_video_renderer : public common::renderer_playable {
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	net::datasource_factory *df);
+	common::factories *factory);
 
   	virtual ~active_video_renderer() {};
 	

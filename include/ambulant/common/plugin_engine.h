@@ -52,7 +52,7 @@
 #ifndef PLUGIN_FACTORY_H
 #define PLUGIN_FACTORY_H
 
-
+#include "ambulant/common/factory.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer.h"
 
@@ -68,16 +68,18 @@ class global_playable_factory;
 
 class plugin_engine {
   public:
+
     static plugin_engine *get_plugin_engine();
-    void add_plugins(common::global_playable_factory* rf, net::datasource_factory *df);
+    void add_plugins(common::factories *factory);
     
   private:
     
     plugin_engine();
     void collect_plugin_directories();
     void load_plugins(std::string dirname);
+
 	
-	typedef void (*initfuncptr)(ambulant::common::global_playable_factory* rf, ambulant::net::datasource_factory* df);
+	typedef void (*initfuncptr)(common::factories* factory);
 
   	std::vector< std::string > m_plugindirs;
   	std::vector< initfuncptr > m_initfuncs;

@@ -74,8 +74,8 @@ class cocoa_renderer : public renderer_playable_dsall {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		net::datasource_factory *df)
-	:	renderer_playable_dsall(context, cookie, node, evp, df),
+		common::factories *factory)
+	:	renderer_playable_dsall(context, cookie, node, evp, factory),
 		m_intransition(NULL),
 		m_outtransition(NULL),
 		m_trans_engine(NULL) {};

@@ -72,7 +72,7 @@ none_video_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-		rv = new gui::none::none_video_renderer(context, cookie, node, evp, m_datasource_factory);
+		rv = new gui::none::none_video_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x: returning none_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("none_video_factory: no renderer for tag \"%s\"", tag.c_str());

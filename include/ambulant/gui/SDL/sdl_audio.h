@@ -51,7 +51,9 @@
 #include <SDL.h>
 #include <iostream>
 
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
@@ -77,14 +79,14 @@ class sdl_active_audio_renderer : public common::playable_imp /*, public lib::ti
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	net::datasource_factory *df);
+	common::factories *factory);
 
   	sdl_active_audio_renderer(
     common::playable_notification *context,
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-  	net::datasource_factory *df,
+  	common::factories *factory,
 	net::audio_datasource *ds);
   
   	~sdl_active_audio_renderer();

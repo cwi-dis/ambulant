@@ -49,6 +49,10 @@
 #define __SDL__
 
 #include <iostream>
+
+
+#include "ambulant/common/factory.h"
+
 #include "ambulant/common/playable.h"
 
 namespace ambulant {
@@ -58,8 +62,8 @@ namespace sdl {
 class sdl_renderer_factory : public common::playable_factory {
   public:
 
-	sdl_renderer_factory(net::datasource_factory *df)
-	:   m_datasource_factory(df) {}
+	sdl_renderer_factory(common::factories *factory)
+	:   m_factory(factory) {}
 	~sdl_renderer_factory();
 		
 	common::playable *new_playable(
@@ -68,7 +72,7 @@ class sdl_renderer_factory : public common::playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp);
   private:
-	net::datasource_factory *m_datasource_factory;
+	common::factories *m_factory;
 	
 };
 

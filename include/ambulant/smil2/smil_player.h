@@ -90,7 +90,7 @@ class smil_player : public common::player, public time_node_context, public comm
   public:
 	typedef time_traits::value_type time_value_type;
 	
-	smil_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf, common::embedder *sys = 0);
+	smil_player(lib::document *doc, common::factories *factory, common::embedder *sys = 0);
 	~smil_player();
 		
 	///////////////////
@@ -191,8 +191,9 @@ class smil_player : public common::player, public time_node_context, public comm
 	void update();
 	
 	lib::document *m_doc;
-	common::window_factory *m_wf;
-	common::playable_factory *m_pf;
+	common::factories *m_factory;
+	//common::window_factory *m_wf;
+	//common::playable_factory *m_pf;
 	common::embedder *m_system;
 	animation_engine *m_animation_engine;
 	time_node* m_root;

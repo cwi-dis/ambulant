@@ -47,6 +47,7 @@
  */
 #ifndef NONE_FACTORY_H
 #define NONE_FACTORY_H
+#include "ambulant/common/factory.h"
 #include "ambulant/common/playable.h"
 namespace ambulant {
 namespace gui {
@@ -55,8 +56,8 @@ namespace none {
 class none_video_factory : public common::playable_factory {
   public:
   
-	none_video_factory(net::datasource_factory *df)
-	:   m_datasource_factory(df) {}
+	none_video_factory(common::factories *factory)
+	:   m_factory(factory) {}
 	~none_video_factory();
 		
 	common::playable *new_playable(
@@ -65,7 +66,7 @@ class none_video_factory : public common::playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp);
   private:
-	net::datasource_factory *m_datasource_factory;
+	common::factories *m_factory;
 	
 };
 

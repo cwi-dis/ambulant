@@ -55,6 +55,8 @@
 #ifndef AMBULANT_GUI_QT_QT_IMAGE_RENDERER_H
 #define AMBULANT_GUI_QT_QT_IMAGE_RENDERER_H
 
+
+#include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
@@ -82,8 +84,8 @@ class qt_active_image_renderer : public qt_renderer {
 		playable_notification::cookie_type cookie,
 		const node *node,
 		event_processor *const evp,
-		datasource_factory *df)
-	:	qt_renderer(context, cookie, node, evp, df),
+		common::factories *factory)
+	:	qt_renderer(context, cookie, node, evp, factory),
 	 	m_image(NULL),
 		m_image_loaded(false)
 	 	{};

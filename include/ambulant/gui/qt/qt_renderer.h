@@ -53,6 +53,8 @@
 #ifndef AMBULANT_GUI_QT_QT_RENDERER_H
 #define AMBULANT_GUI_QT_QT_RENDERER_H
 
+
+#include "ambulant/common/factory.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
@@ -74,8 +76,8 @@ class qt_renderer : public renderer_playable_dsall {
 		playable_notification::cookie_type cookie,
 		const node *node,
 		event_processor *evp,
-		datasource_factory *df)
-	:	renderer_playable_dsall(context, cookie, node, evp, df),
+		common::factories *factory)
+	:	renderer_playable_dsall(context, cookie, node, evp, factory),
 		m_intransition(NULL),
 		m_outtransition(NULL),
 		m_trans_engine(NULL) {};

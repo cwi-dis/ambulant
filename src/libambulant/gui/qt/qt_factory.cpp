@@ -66,8 +66,8 @@ qt_video_factory::~qt_video_factory()
 {
 }
 
-qt_renderer_factory::qt_renderer_factory(datasource_factory *df)
-:	m_datasource_factory(df)
+qt_renderer_factory::qt_renderer_factory(common::factories *factory)
+:	m_factory(factory)
 	{
 	AM_DBG lib::logger::get_logger()->debug("qt_renderer factory (0x%x)", (void*) this);
 	}
@@ -327,12 +327,12 @@ qt_renderer_factory::new_playable(
 	common::playable* rv;
 	if (tag == "img") {
  		rv = new qt_active_image_renderer(context, cookie, node,
-			 evp, m_datasource_factory);
+			 evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
 		rv = new qt_active_text_renderer(context, cookie, node,
-			evp, m_datasource_factory);
+			evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_text_renderer 0x%x",
 			(void*) node, (void*) rv);
 	} else {
@@ -392,7 +392,7 @@ qt_video_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-	  rv = new qt_active_video_renderer(context, cookie, node, evp, m_datasource_factory);
+	  rv = new qt_active_video_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x: returning qt_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: no renderer for tag \"%s\"", tag.c_str());

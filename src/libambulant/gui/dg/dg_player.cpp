@@ -113,10 +113,16 @@ gui::dg::dg_player::dg_player(const net::url& u)
 		m_logger->show("Failed to parse document %s", u.get_url().c_str());
 		return;
 	}
+
+	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
+	m_factory.df = NULL;
+	
+	m_factory.wf = this->get_window_factory(); 
+
 	
 	// Create a player instance
-	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
-	m_player = new smil2::smil_player(doc, this, this, this);
+	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
+	m_player = new smil2::smil_player(doc, &m_factory, this);
 	
 	// Create the worker processor
 	m_worker_processor = event_processor_factory(m_timer);
@@ -548,6 +554,6 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
-	m_player = new smil2::smil_player(doc, this, this, this);
+	m_player = new smil2::smil_player(doc, &m_factory, this);
 	if(startnewdoc) start();
 }

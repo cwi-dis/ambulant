@@ -1,5 +1,6 @@
 library_includedir=$(includedir)/ambulant/common
 library_include_HEADERS= \
+	factory.h \
 	layout.h \
 	playable.h \
 	player.h \

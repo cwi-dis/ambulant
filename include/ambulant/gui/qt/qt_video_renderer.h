@@ -72,7 +72,7 @@ class qt_active_video_renderer : public common::active_video_renderer {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-    	net::datasource_factory *df);
+    	common::factories *factory);
 	
 	~qt_active_video_renderer();
     void show_frame(char* frame, int size);

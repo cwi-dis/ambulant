@@ -73,8 +73,8 @@ class cocoa_text_renderer : public cocoa_renderer {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		net::datasource_factory *df)
-	:   cocoa_renderer(context, cookie, node, evp, df),
+		common::factories *factory)
+	:   cocoa_renderer(context, cookie, node, evp, factory),
             m_text_storage(NULL) {};
         ~cocoa_text_renderer();
 	

@@ -53,6 +53,7 @@
 #ifndef AMBULANT_COMMON_PLAYER_H
 #define AMBULANT_COMMON_PLAYER_H
 
+#include "ambulant/common/factory.h"
 #include "ambulant/config/config.h"
 
 namespace ambulant {
@@ -94,8 +95,8 @@ class player {
 };
 
 // Factory functions - should these be here?
-player *create_mms_player(lib::document *doc, window_factory *wf, playable_factory *rf);
-player *create_smil2_player(lib::document *doc, window_factory *wf, playable_factory *rf, common::embedder *sys);
+player *create_mms_player(lib::document *doc, common::factories* factory);
+player *create_smil2_player(lib::document *doc, common::factories* factory, common::embedder *sys);
 
 } // namespace common
  
