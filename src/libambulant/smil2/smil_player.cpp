@@ -358,5 +358,9 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 }
 
 void smil_player::show_link(const lib::node *n, const std::string& href) {
-	if(m_system) m_system->show_file(href);
+	if(m_system) {
+		m_system->show_file(href);
+	} else {
+		lib::logger::get_logger()->error("This implementation cannot open <%s> in a browser", href.c_str());
+	}
 }
