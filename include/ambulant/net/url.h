@@ -175,6 +175,9 @@ class url {
 	// pat: "n:n" or "n:/n"
 	void set_from_windows_path(ambulant::lib::scanner& sc, const std::string& pat);
 	
+	// pat: "\\n"
+	void set_from_wince_path(ambulant::lib::scanner& sc, const std::string& pat);
+	
 };
 
 /////////////////////////

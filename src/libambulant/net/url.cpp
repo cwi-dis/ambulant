@@ -62,7 +62,11 @@
 
 using namespace ambulant;
 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 const std::string url_delim = ":/?#";
+#else
+const std::string url_delim = ":/?#\\";
+#endif
 
 // static 
 //std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
@@ -93,6 +97,9 @@ void net::url::init_statics() {
  	
 	static handler_pair h7 = {"n:/n", &url::set_from_windows_path};
  	s_handlers.push_back(&h7);
+ 	
+	static handler_pair h8 = {"\\n", &url::set_from_wince_path};
+ 	s_handlers.push_back(&h8);
 	
 	/*
 	typedef std::pair<std::string, HANDLER> pair;
@@ -158,6 +165,14 @@ void net::url::set_from_unix_path(lib::scanner& sc, const std::string& pat) {
 
 // pat: "n:n" or "n:/n"
 void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
+	m_protocol = "file";
+	m_host = "localhost";
+	m_port = 0;
+	m_path = sc.get_src();
+}
+
+// pat: "\\n"
+void net::url::set_from_wince_path(lib::scanner& sc, const std::string& pat) {
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
