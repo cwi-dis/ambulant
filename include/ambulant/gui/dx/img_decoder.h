@@ -59,8 +59,10 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/colors.h"
-
 #include "ambulant/gui/dx/dx_surface.h"
+#include "ambulant/lib/basic_types.h"
+
+using ambulant::lib::uchar;
 
 namespace ambulant {
 

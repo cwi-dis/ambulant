@@ -57,6 +57,12 @@
 
 #include <string>
 
+namespace ambulant { namespace common {
+	class window_factory;
+	class playable_factory;
+}}
+
+
 namespace ambulant {
 
 namespace gui {
@@ -80,6 +86,8 @@ class dx_player {
 	virtual void on_char(int ch) = 0;
 	virtual void load_tests_filter(const std::string& url) = 0;
 	virtual void update_status() = 0;
+	virtual common::window_factory *get_window_factory() = 0;
+	virtual common::playable_factory *get_playable_factory() = 0;
 	static dx_player* create_player(const std::string& url); 
 	static dx_player* create_player(const std::string& url, VCF f);
 };

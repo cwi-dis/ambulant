@@ -50,35 +50,19 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_VIDEO_PLAYER_H
-#define AMBULANT_GUI_DX_VIDEO_PLAYER_H
+#ifndef AMBULANT_GUI_DX_IMAGE_RENDERER_H
+#define AMBULANT_GUI_DX_IMAGE_RENDERER_H
+
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#endif
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
 
 #include <string>
 
-#include <objbase.h>
-#include <strmif.h>
-#include <control.h>
-#include <mmstream.h>
-#include <amstream.h>
-#include <ddstream.h>
-
-#include "ambulant/lib/gtypes.h"
-#include "ambulant/common/playable.h"
-
-#pragma comment (lib,"winmm.lib")
-#pragma comment (lib,"amstrmid.lib")
-
-#pragma comment (lib,"uuid.lib")
-#pragma comment (lib,"strmiids.lib")
-
-namespace ambulant {
-	namespace lib { 
-		class event_processor;
-		class event;
-	}
-}
+struct IDirectDrawSurface;
 
 namespace ambulant {
 
@@ -86,55 +70,31 @@ namespace gui {
 
 namespace dx {
 
-class video_player : public common::playable {
+class viewport;
+
+class image_renderer {
   public:
-	video_player(const std::string& url, IDirectDraw* ddraw);
-	~video_player();
+	image_renderer(const std::string& url, viewport* v);
+	~image_renderer();
 	
-	void start(double t);
-	void stop();
-	void pause();
-	void resume();
-	void seek(double t);
-	std::pair<bool, double> get_dur();
-	void wantclicks(bool want) { m_wantclicks = want;}
-	void preroll(double when, double where, double how_much) {}
-	const cookie_type& get_cookie() const { return m_cookie;}
+	bool can_play() const { return m_ddsurf != 0;}
+	bool is_transparent() const { return m_transparent;}
+	const lib::size& get_size() const { return m_size;}
+	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
 	
-	bool can_play();
-	bool is_playing();
-	double get_position();
-	const std::string& get_url() const { return m_url;}
-	
-	// dx implementation artifacts
-	bool update();
- 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
-	lib::size get_size() const {
-		return lib::size(m_rcsurf.right, m_rcsurf.bottom);
-	}
-	
- private:
-	bool open(const std::string& url, IDirectDraw* dd);
- 	void release_player();
- 	
+  private:
+	void open(const std::string& url, viewport* v);
 	std::string m_url;
-	cookie_type m_cookie;
-	
-	IMultiMediaStream *m_mmstream;
-    IMediaStream *m_vidstream;
-    IDirectDrawMediaStream *m_ddstream;
-    IDirectDrawStreamSample *m_ddsample;
-    IDirectDrawSurface* m_ddsurf;
-    RECT m_rcsurf;
-    bool m_wantclicks;
-	
+	IDirectDrawSurface *m_ddsurf;
+	lib::size m_size;
+	bool m_transparent;
 };
-	
+
 } // namespace dx
 
 } // namespace gui
- 
-} // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_VIDEO_PLAYER_H
+} // namespace ambulant 
+
+#endif // AMBULANT_GUI_DX_IMAGE_RENDERER_H
 

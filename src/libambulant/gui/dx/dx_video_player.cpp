@@ -56,6 +56,7 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/win32/win32_error.h"
 
 #include "ambulant/lib/logger.h"
 

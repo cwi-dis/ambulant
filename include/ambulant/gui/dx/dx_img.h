@@ -56,7 +56,9 @@
 #include "ambulant/config/config.h"
 
 #include <string>
+
 #include "ambulant/common/renderer.h"
+#include "ambulant/gui/dx/img_decoder.h"
 
 namespace ambulant {
 
@@ -64,8 +66,7 @@ namespace gui {
 
 namespace dx {
 
-class viewport;
-class region;
+class image_renderer;
 
 class dx_img_renderer : public common::active_renderer {
   public:
@@ -80,10 +81,8 @@ class dx_img_renderer : public common::active_renderer {
 	void stop();
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
-	viewport* get_viewport(common::abstract_window *window);
-	viewport* get_viewport();
-	region* m_region;
-	common::abstract_window *m_window;
+	image_renderer *m_image;
+	bool m_activated;
 };
 
 } // namespace dx

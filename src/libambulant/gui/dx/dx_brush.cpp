@@ -54,10 +54,6 @@
 
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
-#include "ambulant/gui/dx/jpg_decoder.h"
-#include "ambulant/gui/dx/gif_decoder.h"
-#include "ambulant/gui/dx/png_decoder.h"
-#include "ambulant/gui/dx/bmp_decoder.h"
 
 #include "ambulant/common/region.h"
 #include "ambulant/common/layout.h"
@@ -79,7 +75,8 @@ gui::dx::dx_brush::dx_brush(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::active_renderer(context, cookie, node, evp),
-	m_window(window), m_region(0) { 
+	m_activated(false) { 
+	lib::logger::get_logger()->trace("dx_brush::dx_brush(0x%x)", this);
 }
 
 gui::dx::dx_brush::~dx_brush() {
@@ -87,48 +84,45 @@ gui::dx::dx_brush::~dx_brush() {
 }
 
 void gui::dx::dx_brush::start(double t) {
-	// On repeat this will be called again
-	if(m_region != 0) return;
+	lib::logger::get_logger()->trace("dx_brush::start(0x%x)", this);
 	
-	if(!m_node) abort();
+	// Has this been activated
+	if(m_activated) {
+		// repeat
+		return;	
+	}
 	
-	const common::region_info *ri = m_dest->get_info();
-	
-	// Create a dx-region
-	viewport *v = get_viewport();
-	lib::screen_rect<int> rc = m_dest->get_rect();
-	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	m_region = v->create_region(rc, v->get_rc(), ri?ri->get_zindex():0);
-	
-	m_region->set_rendering_surface(m_dest);
-	m_region->set_rendering_info(ri);
-	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
-	m_region->clear();
+	// Activate this renderer.
+	// Add this renderer to the display list of the region
+	m_dest->show(this);
+	m_activated = true;
+		
+	// Request a redraw
+	m_dest->need_redraw();
 }
 
 
 void gui::dx::dx_brush::stop() {
-	viewport *v = get_viewport();
-	if(v && m_region) {
-		v->remove_region(m_region);
-		m_region = 0;
-		v->redraw();
-	}
+	lib::logger::get_logger()->trace("dx_brush::stop(0x%x)", this);
+	m_dest->renderer_done();
+	m_activated = false;
 }
 
 void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	viewport *v = get_viewport(window);
-	if(v) v->redraw();
-}
-
-gui::dx::viewport* gui::dx::dx_brush::get_viewport() {
-	return get_viewport(m_window);
-}
-
-gui::dx::viewport* gui::dx::dx_brush::get_viewport(common::abstract_window *window) {
-	dx_window *dxwindow = (dx_window *) window;
-	return dxwindow->get_viewport();
+	// Get the top-level surface
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();
+	if(!v) return;
+	
+	// Draw the pixels of this renderer to the surface specified by m_dest.
+	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::point pt = m_dest->get_global_topleft();
+	rc.translate(pt);
+	const common::region_info *ri = m_dest->get_info();
+	if(ri) {
+		v->clear(rc, ri->get_bgcolor());
+		v->redraw();
+	}
 }
  
 

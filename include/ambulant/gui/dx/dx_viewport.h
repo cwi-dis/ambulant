@@ -50,8 +50,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_LIB_DX_VIEWPORT_H
-#define AMBULANT_LIB_DX_VIEWPORT_H
+#ifndef AMBULANT_GUI_DX_VIEWPORT_H
+#define AMBULANT_GUI_DX_VIEWPORT_H
 
 #ifndef _INC_WINDOWS
 #include <windows.h>
@@ -61,30 +61,27 @@
 
 #include <string>
 #include <list>
+
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/common/layout.h"
-#include "ambulant/common/region.h"
-
 #include "ambulant/common/preferences.h"
 
 struct IDirectDraw;
 struct IDirectDrawSurface;
 struct tagPALETTEENTRY;
+
 namespace ambulant {
 
 namespace gui {
 
 namespace dx {
 
-using namespace ambulant;
 using lib::uint16;
 using lib::uint32;
 using lib::uchar;
 
-class region;
-class video_player;
+// A viewport is a top-level DD surface.
 
 class viewport {
   public:
@@ -92,61 +89,59 @@ class viewport {
 		int height = common::default_layout_height, HWND hwnd = NULL);
 	~viewport();
 	
-	// Shows what has been drawn
-	// Blits back surface to front.
-	void redraw();
-		
-	// Sets the background color (to be used by clear)
+	// Sets the background color of this viewport
 	void set_background(lib::color_t color);
-	template <class T>
-	void set_background(T r, T g, T b) {
-		m_bgd = lib::to_color(r, g, b);
+	
+	// Creates a DD surface with the provided size.
+	// The surface is cleared using the specified color
+	IDirectDrawSurface* create_surface(DWORD w, DWORD h);
+	IDirectDrawSurface* create_surface(lib::size s) {
+		return create_surface(s.w, s.h);
 	}
-	void set_background(const char *name);
-	lib::color_t get_bgcolor() const { return m_bgd;}
 	
-	// fills the drawing surface 
-	// with the current background color
-	void clear();	
+	// Blt back buffer to primary surface
+	void redraw();
+
+	// Clears the back buffer using this viewport bgd color
+	void clear();
+
+	// Clears the specified back buffer rectangle using the provided color 
+	void clear(const lib::screen_rect<int>& rc, lib::color_t clr);
+
+	// Clears a DD surface with the provided color.
+	void clear_surface(IDirectDrawSurface* p, lib::color_t clr);
+
+	// Draw the whole DD surface to the back buffer and destination rectangle
+	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& dst_rc, bool keysrc = false);
 	
-	IDirectDrawSurface* create_surface(DWORD w, DWORD h, DWORD ddcolor = CLR_INVALID);
+	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
+	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+		const lib::screen_rect<int>& dst_rc, bool keysrc = false);
 	
-	// Creates a new region.
-	// rc: The coordinates of the region relative to this viewport
-	// crc: The coordinates of the parent or cliping region relative to this viewport
-	region* create_region(const lib::screen_rect<int>& rc, const lib::screen_rect<int>& crc, int zindex);
-	void remove_region(region *r);
+
+	// Draw the text to the back buffer within destination rectangle
+	void draw(const std::string text, const lib::screen_rect<int>& dst_rc);
 	
-	// ddraw services
-	uint32 convert(lib::color_t color);
-	uint32 convert(uchar r, uchar g, uchar b);
+	// Helper, that returns the size of a DD surface 
+	static lib::size get_size(IDirectDrawSurface *p);
 	
+	// Returns the DD object associated with this
 	IDirectDraw* get_direct_draw() { return m_direct_draw;}
 	
-	lib::screen_rect<int> get_rc() const { 
-		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
-	lib::screen_rect<int> get_clip_rc() const { 
-		return lib::screen_rect<int>(lib::point(0, 0), lib::point(m_width, m_height));}
+	// Converts lib::color_t to a DD color value.
+	uint32 convert(lib::color_t color);
+	uint32 convert(BYTE r, BYTE g, BYTE b);
+	
 	int get_width() const { return m_width;}
 	int get_height() const { return m_height;}
 	
-	void set_layout(const common::passive_region *layout) { m_layout = layout; }
+  private:
 	
-  private:	
- 	void add_region(region *r);
- 
 	RECT* to_screen_rc_ptr(RECT& r);
-	
-	// Draw the region.
-	void draw(region *r);
-	
 	void get_pixel_format();
 	uint16 low_bit_pos(uint32 dword);
 	uint16 high_bit_pos(uint32 dword);
 
-	// link to the layout
-	const common::passive_region *m_layout;
-	
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
 	IDirectDrawSurface* m_primary_surface;
@@ -154,9 +149,7 @@ class viewport {
 	
 	int m_width, m_height;
 	lib::color_t m_bgd;
-	
-	std::list<region*> m_regions;
-	lib::critical_section m_regions_cs;  
+	uint32 m_ddbgd;
 	
 	// surface pixel format
 	uint32 bits_size;
@@ -165,83 +158,19 @@ class viewport {
 	tagPALETTEENTRY* palette_entries;
 };
 
-class region {
-  public:
-	region(viewport *v, const lib::screen_rect<int>& rc, 
-		const lib::screen_rect<int>& crc, IDirectDrawSurface* surface); 
-	~region();
-	
-	viewport* get_viewport() { return m_viewport;}
-	const lib::screen_rect<int>& get_rc() const { return m_rc;}
-	const lib::screen_rect<int>& get_clip_rc() const { return m_clip_rc;}
-	
-	IDirectDrawSurface* get_surface() { return m_surface;}
-	
-	// Sets the background color (to be used by clear)
-	void set_background(lib::color_t color);
-	template <class T>
-	void set_background(T r, T g, T b) {
-		m_bgd = lib::to_color(r, g, b);
-	}
-	void set_background(const char *name) {
-		m_bgd = lib::to_color(name);
-	}
-	lib::color_t get_bgcolor() const { return m_bgd;}
-	
-	void clear();
-	void update();
-	
-	void set_text(const char *p, int size);
-	void set_text(const std::string& what);
-	void set_bmp(HBITMAP hbmp, int width, int height, bool transp, lib::color_t tarnsp_color);
-	void set_video(video_player *player);
-	
-	void set_rendering_surface(const common::surface *rsurf) { m_rsurf = rsurf;}
-	void set_rendering_info(const common::region_info *rinfo) { m_rinfo = rinfo;}
-	
-	const common::surface* get_rsurf() const { return m_rsurf;}
-	const common::region_info* get_rinfo() const { return m_rinfo;}
-	
-	bool is_transparent() const { 
-		return m_rinfo?m_rinfo->get_transparent():false;
-	}
-	
-	void draw_on(IDirectDrawSurface* surf, RECT *dst, RECT *src);
-	void draw_img_on(IDirectDrawSurface* surf, RECT *dst, RECT *src);
-	
-  private:
-	// The viewport of this region.
-	viewport *m_viewport;	
-	
-	// links to the layout
-	const common::surface *m_rsurf;
-	const common::region_info *m_rinfo;
-	
-	// The coordinates of this region 
-	// relative to the viewport
-	lib::screen_rect<int> m_rc;
-	
-	// The coordinates of the parent region 
-	// relative to the viewport
-	lib::screen_rect<int> m_clip_rc;
-	
-	// The surface of this region.
-	// m_rc.width() x m_rc.height()
-	IDirectDrawSurface* m_surface;
-	
-	// The background color of this region.
-	lib::color_t m_bgd;	
-	
-	// image
-	IDirectDrawSurface* m_imgsurf;
-	int m_img_width;
-	int m_img_height;
-	bool m_img_transp;
-	
-	// video
-	video_player *m_video_p;
-	
-};
+inline void set_rect(IDirectDrawSurface *p, RECT *r) {
+	lib::size s = viewport::get_size(p);
+	r->left = r->top = 0;
+	r->right = s.w;
+	r->bottom = s.h;
+}
+
+inline void set_rect(const lib::screen_rect<int>& rc, RECT *r) {
+	r->left = rc.left();
+	r->top = rc.top();
+	r->right = rc.right();
+	r->bottom = rc.bottom();
+}
 
 } // namespace dx
 
@@ -249,4 +178,4 @@ class region {
 
 } // namespace ambulant 
 
-#endif // AMBULANT_LIB_DX_VIEWPORT_H
+#endif // AMBULANT_GUI_DX_VIEWPORT_H

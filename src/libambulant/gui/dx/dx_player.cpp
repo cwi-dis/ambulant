@@ -76,7 +76,7 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	m_create_viewport_fn(f),
 	m_viewport(0),
 	m_wf(0), 
-	m_rf(0),
+	m_pf(0),
 	m_smil_player(0),
 	m_playing(false),
 	m_logger(lib::logger::get_logger()) {
@@ -91,17 +91,17 @@ gui::dx::dx_smil_player_impl::dx_smil_player_impl(const std::string& url, VCF f)
 	
 	// Create GUI window_factory and playable_factory
 	m_wf = new gui::dx::dx_window_factory(this);
-	m_rf = new gui::dx::dx_playable_factory(this);
+	m_pf = new gui::dx::dx_playable_factory(this);
 	
 	// Create a player instance
 	m_logger->trace("Creating player instance for: %s", m_url.c_str());	
-	m_smil_player = new smil2::smil_player(doc, m_wf, m_rf);	
+	m_smil_player = new smil2::smil_player(doc, m_wf, m_pf);	
 }
 
 gui::dx::dx_smil_player_impl::~dx_smil_player_impl() {
 	if(m_smil_player) stop();
 	delete m_smil_player;
-	delete m_rf;
+	delete m_pf;
 	delete m_wf;
     delete m_viewport;
 }

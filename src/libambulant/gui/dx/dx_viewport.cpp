@@ -341,10 +341,14 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
+	
+	m_ddbgd = convert(m_bgd);
+	
+	// clear the back buffer
+	clear();
 }
 
 gui::dx::viewport::~viewport() {
-	assert(m_regions.empty());
 	RELEASE(m_surface);
 	RELEASE(m_primary_surface);
 	RELEASE(m_direct_draw);
@@ -354,33 +358,37 @@ gui::dx::viewport::~viewport() {
 		RedrawWindow(GetDesktopWindow(), NULL, NULL, RDW_INVALIDATE |RDW_ERASE | RDW_ALLCHILDREN);
 }
 
-RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
-	POINT pt = {0, 0}; // margins
-	::ClientToScreen(m_hwnd, &pt);
-	r.left += pt.x;
-	r.right += pt.x;
-	r.top += pt.y;
-	r.bottom += pt.y;
-	return &r;
-}
-
+// Sets the background color of this viewport
 void gui::dx::viewport::set_background(lib::color_t color) {
 	m_bgd = (color == CLR_INVALID)?CLR_DEFAULT:color;
-}
-void gui::dx::viewport::set_background(const char *name) {
-	m_bgd = lib::to_color(name);
+	m_ddbgd = convert(m_bgd);
 }
 
+// Creates a DD surface with the provided size.
+// The surface is cleared using the specified color
+IDirectDrawSurface* 
+gui::dx::viewport::create_surface(DWORD w, DWORD h) {
+	IDirectDrawSurface* surface = 0;
+	DDSURFACEDESC sd;
+	memset(&sd, 0, sizeof(DDSURFACEDESC));
+	sd.dwSize = sizeof(DDSURFACEDESC);
+	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = w;
+	sd.dwHeight = h;
+	HRESULT hr = m_direct_draw->CreateSurface(&sd, &surface, NULL);
+	if (FAILED(hr)){
+		seterror("DirectDraw::CreateSurface()", hr);
+		return 0;
+	}	
+	return surface;
+}
+
+
+// Blt back buffer to primary surface
 void gui::dx::viewport::redraw() {
 	if(!m_primary_surface || !m_surface)
 		return;
-	clear();
-	
-	std::list<region*>::iterator it;
-	m_regions_cs.enter();
-	for(it = m_regions.begin(); it != m_regions.end(); it++)
-		draw(*it);
-	m_regions_cs.leave();
 	RECT src_rc = {0, 0, m_width, m_height};
 	RECT dst_rc = {0, 0, m_width, m_height};
 	DWORD flags = DDBLT_WAIT;
@@ -390,12 +398,13 @@ void gui::dx::viewport::redraw() {
 	}
 }
 
+// Clears the back buffer using this viewport bgd color
 void gui::dx::viewport::clear() {
 	if(!m_surface) return;
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = convert(m_bgd); 
+	bltfx.dwFillColor = m_ddbgd; 
 	RECT dst_rc = {0, 0, m_width, m_height};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
@@ -403,8 +412,107 @@ void gui::dx::viewport::clear() {
 	}
 }
 
+// Clears the specified back buffer rectangle using the provided color 
+void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr) {
+	if(!m_surface) return;
+	DDBLTFX bltfx;
+	memset(&bltfx, 0, sizeof(DDBLTFX));
+	bltfx.dwSize = sizeof(bltfx);
+	bltfx.dwFillColor = convert(clr); 
+	RECT dst_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	if (FAILED(hr)) {
+		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+	}
+}
+
+// Clears a DD surface with the provided color.
+void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr) {
+	DDSURFACEDESC sd;
+	memset(&sd, 0, sizeof(DDSURFACEDESC));
+	sd.dwSize = sizeof(DDSURFACEDESC);
+	DDBLTFX bltfx;
+	memset(&bltfx, 0, sizeof(DDBLTFX));
+	bltfx.dwSize = sizeof(bltfx);
+	bltfx.dwFillColor = (clr == CLR_INVALID)?m_ddbgd:convert(clr);
+	RECT dst_rc;
+	set_rect(p, &dst_rc);	
+	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	if (FAILED(hr)) {
+		seterror("DirectDrawSurface::Blt()", hr);
+	}
+}
+
+// Draw the whole DD surface to the back buffer and destination rectangle
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& dst_rc, bool keysrc) {
+	if(!m_surface || !src) return;
+	DWORD flags = DDBLT_WAIT;
+	if(keysrc) flags |= DDBLT_KEYSRC;
+	RECT srcRC;
+	set_rect(src, &srcRC);
+	RECT dstRC;
+	set_rect(dst_rc, &dstRC);
+	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (FAILED(hr)) {
+		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+	}
+}
+
+// Draw the src_rc of the DD surface to the back buffer and destination rectangle
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
+	const lib::screen_rect<int>& dst_rc, bool keysrc) {
+	if(!m_surface || !src) return;
+	DWORD flags = DDBLT_WAIT;
+	if(keysrc) flags |= DDBLT_KEYSRC;
+	
+	RECT srcRC;
+	set_rect(src_rc, &srcRC);
+	
+	RECT dstRC;
+	set_rect(dst_rc, &dstRC);
+	
+	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (FAILED(hr)) {
+		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+	}
+}
+
+// Paints the provided string
+void gui::dx::viewport::draw(const std::string text, const lib::screen_rect<int>& dst_rc) {
+	if(!m_surface || text.empty()) return;	
+	HDC hdc;
+	HRESULT hr = m_surface->GetDC(&hdc);
+	if (FAILED(hr)) {
+		seterror("DirectDrawSurface::GetDC()", hr);
+		return;
+	}
+	SetBkMode(hdc, TRANSPARENT);
+	COLORREF crTextColor = ::GetSysColor(COLOR_WINDOWTEXT);
+	::SetTextColor(hdc, crTextColor);	
+	RECT dstRC;
+	set_rect(dst_rc, &dstRC);
+	UINT uFormat = DT_CENTER | DT_WORDBREAK;
+	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
+	if(res == 0)
+		win_report_last_error("DrawText()");
+	m_surface->ReleaseDC(hdc);
+}
+
+// Helper, that returns the size of a DD surface 
+// static
+lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
+	assert(p);
+	DDSURFACEDESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.dwSize = sizeof(desc);
+	desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
+	HRESULT hr = p->GetSurfaceDesc(&desc);
+	assert(SUCCEEDED(hr));
+	return lib::size(desc.dwWidth, desc.dwHeight);
+}
+
 ////////////////////////
-// Pixel format
+// Internal pixel format related functions
 
 uint16 gui::dx::viewport::low_bit_pos(uint32 dword) {
 	uint32 test = 1;
@@ -452,10 +560,12 @@ void gui::dx::viewport::get_pixel_format() {
 	blue_bits=(uint16)(hi_blue_bit-lo_blue_bit+1);
 }
 
+// Converts a lib::color_t to a DD color
 uint32 gui::dx::viewport::convert(lib::color_t color) {
 	return convert(lib::redc(color), lib::greenc(color), lib::bluec(color));
 }
 
+// Converts the RGB tuple to a DD color
 uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 	uint32 ddcolor = 0;
 	if(bits_size == 8){
@@ -472,300 +582,16 @@ uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 	return ddcolor;
 }
 
-IDirectDrawSurface* gui::dx::viewport::create_surface(DWORD w, DWORD h, DWORD ddcolor) {
-	IDirectDrawSurface* surface = 0;
-	DDSURFACEDESC sd;
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
-	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	sd.dwWidth = w;
-	sd.dwHeight = h;
-	HRESULT hr = m_direct_draw->CreateSurface(&sd, &surface, NULL);
-	if (FAILED(hr)){
-		seterror("DirectDraw::CreateSurface()", hr);
-		return 0;
-	}
-	
-	// clear with black
-	DDBLTFX bltfx;
-	memset(&bltfx, 0, sizeof(DDBLTFX));
-	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = (ddcolor == CLR_INVALID)?convert(m_bgd):ddcolor; 	
-	RECT dst_rc = {0, 0, w, h};
-	hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
-	if (FAILED(hr)) {
-		seterror("create_surface::clear/DirectDrawSurface::Blt()", hr);
-	}
-	return surface;
-}
-
-////////////////////////////////////////
-// region
-
-// Creates a new region.
-// rc: The coordinates of the region relative to this viewport
-// crc: The coordinates of the parent or cliping region relative to this viewport
-gui::dx::region* gui::dx::viewport::create_region(const lib::screen_rect<int>& rc, 
-	const lib::screen_rect<int>& crc, int zindex) {
-	IDirectDrawSurface* surface = create_surface(rc.width(), rc.height());
-	if(!surface) return 0;
-	
-	region* r = new region(this, rc, crc, surface);
-	
-	// insert region after lower zindex
-	std::list<region*>::iterator it = m_regions.begin();
-	while(it != m_regions.end() && 
-		zindex >= ((*it)->get_rinfo()?(*it)->get_rinfo()->get_zindex():0)) it++;
-	m_regions.insert(it, r);
-	return r;
-}
-
-void gui::dx::viewport::add_region(region *r) {
-	m_regions_cs.enter();
-	m_regions.push_back(r);
-	m_regions_cs.leave();
-}
-
-void gui::dx::viewport::remove_region(region *r) {
-	m_regions_cs.enter();
-	std::list<region*>::iterator it = 
-		std::find(m_regions.begin(), m_regions.end(), r);
-	if(it != m_regions.end()) {
-		viewport_logger->trace("Remove region");
-		m_regions.erase(it);
-		delete r;
-	}
-	m_regions_cs.leave();
-}
-
-void gui::dx::viewport::draw(gui::dx::region *r) {
-	if(!m_surface || !r || !r->get_surface())
-		return;
-	r->update();
-
-	// We should compute the visible part of the area
-	// This requires traversing the hierachy of clipping rects.
-	const lib::screen_rect<int>& rc = r->get_rc();
-	
-	RECT src_surf_rc = {0, 0, rc.width(), rc.height()};
-	RECT dst_surf_rc = {0, 0, m_width, m_height};
-	
-	// The source rect in viewport coord
-	RECT src_rc = {rc.m_left, rc.m_top, rc.m_right, rc.m_bottom};
-	
-	// Calc intersection
-	RECT dst_rc;
-	if(IntersectRect(&dst_rc, &dst_surf_rc, &src_rc) == 0) {
-		// nothing to draw
-		return;
-	}
-	// dst_rc is now filled with the intersection rect in viewport coord
-	// we need now to find the src surf rect that is mapped to this
-	RECT src_rc_clip = {dst_rc.left - src_rc.left, dst_rc.top - src_rc.top, 
-		dst_rc.right - src_rc.left, dst_rc.bottom - src_rc.top};
-	
-	r->draw_on(m_surface, &dst_rc, &src_rc_clip);
-}
-
-gui::dx::region::region(gui::dx::viewport *v, 
-	const lib::screen_rect<int>& rc, const lib::screen_rect<int>& crc, 
-	IDirectDrawSurface* surface) 
-:	m_viewport(v), 
-	m_rsurf(0), m_rinfo(0),
-	m_rc(rc),
-	m_clip_rc(crc),
-	m_surface(surface),
-	m_bgd(0), 
-	m_imgsurf(0), 
-	m_video_p(0) {
-	}
-	
-gui::dx::region::~region() {
-	RELEASE(m_imgsurf);
-	RELEASE(m_surface);
-}
-
-void gui::dx::region::set_background(lib::color_t color) {
-	m_bgd = (color==CLR_INVALID)?m_viewport->get_bgcolor():color;
-}
-
-void gui::dx::region::clear() {
-	if(!m_surface) return;
-	DWORD ddbgd = m_viewport->convert(m_bgd);
-	
-	DDBLTFX bltfx;
-	memset(&bltfx, 0, sizeof(DDBLTFX));
-	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = ddbgd; 
-	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
-	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
-	if (FAILED(hr)) {
-		seterror("region::clear/DirectDrawSurface::Blt()", hr);
-		return;
-	}
-	if(is_transparent()) {
-		DWORD dwFlags = DDCKEY_SRCBLT;
-		DDCOLORKEY ck;
-		ck.dwColorSpaceLowValue = ddbgd;
-		ck.dwColorSpaceHighValue = ddbgd;
-		hr = m_surface->SetColorKey(dwFlags, &ck);
-		if (FAILED(hr)) {
-			seterror("SetColorKey()", hr);
-		}
-	}	
-}
-
-// Temporary fix for transparent regions
-void gui::dx::region::draw_on(IDirectDrawSurface* surf, RECT *dst, RECT *src) {
-	DWORD flags = DDBLT_WAIT;
-	HRESULT hr;
-	if(is_transparent()) {
-		if(m_imgsurf) {
-			// draw image only
-			draw_img_on(surf, dst, src);
-		} else if(m_video_p) {
-			hr = surf->Blt(dst, m_surface, src, flags, NULL);
-		} else {
-			// 
-			flags |= DDBLT_KEYSRC;
-			hr = surf->Blt(dst, m_surface, src, flags, NULL);
-		}
-	} else {
-		hr = surf->Blt(dst, m_surface, src, flags, NULL);
-	}
-}
-
-
-// Temporary fix for transparent regions
-//
-// dst refers to the surf
-// src to this region
-void gui::dx::region::draw_img_on(IDirectDrawSurface* surf, RECT *dst, RECT *src) {
-	lib::size img_size(m_img_width, m_img_height);
-	lib::rect img_src;
-	lib::screen_rect<int> region_dst = m_rsurf->get_fit_rect(img_size, &img_src);
-	RECT img_srcRECT = {img_src.x, img_src.y, img_src.x + img_src.w, img_src.y + img_src.h};
-	
-	RECT img_rgnDEST = {m_rc.left() + region_dst.left(), 
-		m_rc.top() + region_dst.top(), 
-		m_rc.left() + region_dst.right(), 
-		m_rc.top() + region_dst.bottom()};
-	DWORD flags = DDBLT_WAIT;
-	if(m_img_transp) flags |= DDBLT_KEYSRC;
-	HRESULT hr = surf->Blt(&img_rgnDEST, m_imgsurf, &img_srcRECT, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
-	}
-
-}
-
-void gui::dx::region::set_text(const char *p, int size) {
-	if(!m_surface) return;
-	
-	// FIX BLACK ON BLACK TEXT
-	if(m_bgd == 0) {
-		m_bgd = RGB(255, 255, 255);
-		clear();
-	}
-	
-	HDC hdc;
-	HRESULT hr = m_surface->GetDC(&hdc);
-	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::GetDC()", hr);
-		return;
-	}
-	SetBkMode(hdc, TRANSPARENT);
-	COLORREF crTextColor = ::GetSysColor(COLOR_WINDOWTEXT);
-	::SetTextColor(hdc, crTextColor);
-	RECT dst_rc = {1, 1,  m_rc.width()-1,  m_rc.height()-1};
-	UINT uFormat = DT_CENTER | DT_WORDBREAK;
-	int res = ::DrawText(hdc, p, size, &dst_rc, uFormat); 
-	if(res == 0)
-		win_report_last_error("DrawText()");
-	m_surface->ReleaseDC(hdc);
-
-}
-
-void gui::dx::region::set_text(const std::string& what) {
-	set_text(what.c_str(), int(what.length()));
-}
-
-void gui::dx::region::set_bmp(HBITMAP hbmp, int w, int h, 
-	bool transp, lib::color_t tarnsp_color) {
-	if(!m_surface) return;
-	
-	m_img_width = w;
-	m_img_height = h;
-	m_img_transp = transp;
-	
-	//////////////
-	// Create image surface 
-	m_imgsurf = m_viewport->create_surface(w, h);
-	if(!m_imgsurf) return;
-	HRESULT hr;
-	HDC hdc;
-	hr = m_imgsurf->GetDC(&hdc);
-	if (FAILED(hr)) {
-		seterror("DirectDrawSurface::GetDC()", hr);
-		return;
-	}
-	HDC bmp_hdc = CreateCompatibleDC(hdc);
-	HBITMAP hbmp_old = (HBITMAP) SelectObject(bmp_hdc, hbmp);
-	::BitBlt(hdc, 0, 0, w, h, bmp_hdc, 0, 0, SRCCOPY);
-	SelectObject(bmp_hdc, hbmp_old);
-	DeleteDC(bmp_hdc);
-	m_imgsurf->ReleaseDC(hdc);
-	
-	//////////////
-	// If the image is transparent set the color
-	if(transp) {
-		DWORD ddTranspColor = m_viewport->convert(tarnsp_color);
-		DWORD dwFlags = DDCKEY_SRCBLT;
-		DDCOLORKEY ck;
-		ck.dwColorSpaceLowValue = ddTranspColor;
-		ck.dwColorSpaceHighValue = ddTranspColor;
-		hr = m_imgsurf->SetColorKey(dwFlags, &ck);
-		if (FAILED(hr)) {
-			seterror("SetColorKey()", hr);
-		}
-	}
-	
-	//////////////
-	// Draw img surface on this region
-	// This region has been cleared
-	// Take into account image transparency for the Blt() operation
-	
-	lib::size src_size(w, h);
-	lib::rect src;
-	lib::screen_rect<int> dst = m_rsurf->get_fit_rect(src_size, &src);
-	
-	RECT srcRECT = {src.x, src.y, src.x + src.w, src.y + src.h};
-	RECT dstRECT = {dst.left(), dst.top(), dst.right(), dst.bottom()};
-	DWORD flags = DDBLT_WAIT;
-	if(transp) flags |= DDBLT_KEYSRC;
-	hr = m_surface->Blt(&dstRECT, m_imgsurf, &srcRECT, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::draw/DirectDrawSurface::Blt()", hr);
-	}
-}
-
-
-void gui::dx::region::set_video(video_player *player) {
-	if(!m_surface) return;
-	m_video_p = player;
-}
-
-void gui::dx::region::update() {
-	if(!m_surface || !m_video_p) return;
-	if(!m_video_p->update()) return;
-	RECT dst_rc = {0, 0, m_rc.width(), m_rc.height()};
-	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_surface->Blt(&dst_rc, m_video_p->getDDSurf(), 
-		m_video_p->getDDSurfRect(), flags, NULL);
-	if (FAILED(hr)) {
-		seterror("region::set_video/DirectDrawSurface::Blt()", hr);
-	}
+// Internal function
+// Converts the provided rect to OS screen coordinates
+RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
+	POINT pt = {0, 0}; // margins
+	::ClientToScreen(m_hwnd, &pt);
+	r.left += pt.x;
+	r.right += pt.x;
+	r.top += pt.y;
+	r.bottom += pt.y;
+	return &r;
 }
 
 

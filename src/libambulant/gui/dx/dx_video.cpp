@@ -72,14 +72,13 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::active_renderer(context, cookie, node, evp), 
-	m_window(window),
-	m_player(0), m_region(0), 
-	m_update_event(0) {
+	m_player(0), 
+	m_update_event(0), 
+	m_activated(false) {
 	
 	lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
-		
-	// create player so that get_dur() succeeds
-	viewport *v = get_viewport();
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();	
 	std::string url = m_node->get_url("src");
 	if(lib::memfile::exists(url)) {
 		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
@@ -87,7 +86,6 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
 			m_node->get_url("src").c_str());
 	}
-
 }
 
 gui::dx::dx_video_renderer::~dx_video_renderer() {
@@ -96,43 +94,47 @@ gui::dx::dx_video_renderer::~dx_video_renderer() {
 }
 
 void gui::dx::dx_video_renderer::start(double t) {
-	// XXX: do not call the base lib::active_renderer::start(playdone) as we should.
-	// This renderer will read/decode its data directly from the url.
-	lib::logger::get_logger()->trace("dx_video_renderer::start(0x%x)", this);	
-	if(m_player && m_region) {
+	lib::logger::get_logger()->trace("dx_video_renderer::start(0x%x)", this);
+	
+	if(!m_player) {
+		// Not created or stopped (gone)
+		
+		// Notify scheduler
+		stopped_callback();
+		return;
+	}
+	
+	// Does it have all the resources to play?
+	if(!m_player->can_play()) {
+		// Notify scheduler
+		stopped_callback();
+		return;
+	}
+	
+	// // Has this been activated
+	if(m_activated) {
 		// repeat
 		m_player->start(t);
 		return;	
 	}
 	
-	const common::region_info *ri = m_dest->get_info();
-	
-	// Create a dx-region
-	viewport *v = get_viewport();
-	lib::screen_rect<int> rc = m_dest->get_rect();
-	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	m_region = v->create_region(rc, v->get_rc(), ri?ri->get_zindex():0);
-	m_region->set_rendering_surface(m_dest);
-	m_region->set_rendering_info(ri);
-	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
-	m_region->clear();
-	
-	std::string url = m_node->get_url("src");
-	if(!memfile::exists(url)) {
-		stopped_callback();
-		return;
-	}
-	if(!m_player)
-		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
-	if(m_player->can_play()) {
-		m_player->start(t);
-		m_player->update();
-		m_region->set_video(m_player);
-		started_callback();
-		schedule_update();
-		m_dest->show(this);
-	}
+	// Activate this renderer.
+	// Add this renderer to the display list of the region
+	m_dest->show(this);
+	m_activated = true;
+		
+	// Start the underlying player
+	m_player->start(t);
+	m_player->update();
+		
+	// Request a redraw
+	m_dest->need_redraw();
+		
+	// Notify the scheduler; may take benefit
+	started_callback();
+		
+	// Schedule a self-update
+	schedule_update();
 }
 
 std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
@@ -143,51 +145,57 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 void gui::dx::dx_video_renderer::stop() {
 	lib::logger::get_logger()->trace("dx_video_renderer.stop(0x%x)", this);
 	if(!m_player) return;
-	
 	m_update_event = 0;
-	
-	viewport *v = get_viewport();
-	v->remove_region(m_region);
-	m_region = 0;
-	
 	m_player->stop();
 	delete m_player;
 	m_player = 0;
-	
-	v->redraw();
+	m_dest->renderer_done();
+	m_activated = false;
 }
 
 void gui::dx::dx_video_renderer::pause() {
 	lib::logger::get_logger()->trace("dx_video_renderer.pause(0x%x)", this);
-	if(!m_player) return;
-	m_player->pause();
+	if(m_player) 
+		m_player->pause();
 }
 
 void gui::dx::dx_video_renderer::resume() {
 	lib::logger::get_logger()->trace("dx_video_renderer.resume(0x%x)", this);
-	if(!m_player) return;
-	m_player->resume();
+	if(m_player)
+		m_player->resume();
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	lib::logger::get_logger()->trace("dx_video_renderer.redraw(0x%x)", this);
-	if(!m_player) return;
-	viewport *v = get_viewport(window);
-	if(v) v->redraw();
-}
-
-gui::dx::viewport* gui::dx::dx_video_renderer::get_viewport() {
-	return get_viewport(m_window);
-}
-
-gui::dx::viewport* gui::dx::dx_video_renderer::get_viewport(common::abstract_window *window) {
-	dx_window *dxwindow = (dx_window *) window;
-	return dxwindow->get_viewport();
+	if(!m_player) {
+		// No bits available
+		return;
+	}
+	
+	// Get the top-level surface
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();
+	if(!v) return;
+	
+	// Draw the pixels of this renderer to the surface specified by m_dest.
+	if(!m_player->update()) {
+		// next time please...
+		return;
+	}
+	lib::rect vid_src_rect;
+	lib::screen_rect<int> rc = m_dest->get_fit_rect(m_player->get_size(), &vid_src_rect);
+	lib::point pt = m_dest->get_global_topleft();
+	rc.translate(pt);
+	lib::screen_rect<int> vid_src(vid_src_rect); 
+	v->draw(m_player->get_ddsurf(), vid_src, rc);
+	v->redraw();
 }
 
 void gui::dx::dx_video_renderer::update_callback() {
 	if(!m_update_event || !m_player) return;
+	
+	// Schedule a redraw callback 
 	m_dest->need_redraw();
+	
 	if(m_player->is_playing()) {
 		schedule_update();
 	} else {

@@ -57,6 +57,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/memfile.h"
+#include "ambulant/gui/dx/dx_audio_player.h"
 
 using namespace ambulant;
 
@@ -67,11 +68,11 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::active_renderer(context, cookie, node, evp), 
-	m_window(window),
 	m_player(0), 
-	m_update_event(0) {
+	m_update_event(0), 
+	m_activated(false) {
 	
-	// create player so that get_dur() succeeds
+	lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
 	std::string url = m_node->get_url("src");
 	if(lib::memfile::exists(url))
 		m_player = new gui::dx::audio_player(url);
@@ -86,17 +87,42 @@ gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	if(m_player) stop();
 }
 
-
 void gui::dx::dx_audio_renderer::start(double t) {
-	std::string url = m_node->get_url("src");
-	if(!memfile::exists(url)) {
+	lib::logger::get_logger()->trace("dx_audio_renderer::start(0x%x)", this);
+	
+	if(!m_player) {
+		// Not created or stopped (gone)
+		
+		// Notify scheduler
 		stopped_callback();
-	} else if(m_player) {
-		//lib::show_message("Starting audio %s at %f", m_src->get_url().c_str(), t);
-		m_player->start(t);
-		started_callback();
-		schedule_update();
+		return;
 	}
+	
+	// Does it have all the resources to play?
+	if(!m_player->can_play()) {
+		// Notify scheduler
+		stopped_callback();
+		return;
+	}
+	
+	// Already activated
+	if(m_activated) {
+		// repeat
+		m_player->start(t);
+		return;	
+	}
+	
+	// Activate this renderer.
+	m_activated = true;
+		
+	// Start the underlying player
+	m_player->start(t);
+		
+	// Notify the scheduler; may take benefit
+	started_callback();
+		
+	// Schedule a self-update
+	schedule_update();
 }
 
 std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
@@ -106,12 +132,14 @@ std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
 
 void gui::dx::dx_audio_renderer::stop() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
-	if(m_player) {
-		m_player->stop();
-		delete m_player;
-		m_player = 0;
-	}
+	if(!m_player) return;
+	m_update_event = 0;
+	m_player->stop();
+	delete m_player;
+	m_player = 0;
+	m_activated = false;
 }
+
 void gui::dx::dx_audio_renderer::pause() {
 	lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
@@ -123,7 +151,7 @@ void gui::dx::dx_audio_renderer::resume() {
 }
 
 void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	// we don't need to do anything for audio
+	// we don't have any bits to blit for audio
 }
 
 void gui::dx::dx_audio_renderer::update_callback() {

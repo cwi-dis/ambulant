@@ -64,6 +64,9 @@
 
 #include "ambulant/gui/dx/img_decoder.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/basic_types.h"
+
+using ambulant::lib::uchar;
 
 namespace ambulant {
 

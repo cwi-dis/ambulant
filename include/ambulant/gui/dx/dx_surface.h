@@ -178,7 +178,6 @@ class surface {
 	}
 
   private:
-  
 	uchar_t blend(int w, uchar_t c1, uchar_t c2) {
 		return (uchar_t)(c1==c2)?c1:(c1 + w*(c2-c1)/256);
 	}

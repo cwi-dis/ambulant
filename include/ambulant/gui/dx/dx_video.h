@@ -66,8 +66,6 @@ namespace gui {
 
 namespace dx {
 
-class viewport;
-class region;
 class video_player;
 
 class dx_video_renderer : public common::active_renderer {
@@ -89,14 +87,9 @@ class dx_video_renderer : public common::active_renderer {
   private:
 	void update_callback();
 	void schedule_update();
- 	lib::event *m_update_event;
-  
-	video_player *m_player;
-	viewport* get_viewport(common::abstract_window *window);
-	viewport* get_viewport();
-	region* m_region;
-	common::abstract_window *m_window;
-	
+ 	video_player *m_player;
+	lib::event *m_update_event;
+	bool m_activated;
 };
 
 } // namespace dx

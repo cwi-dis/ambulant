@@ -54,11 +54,9 @@
 #define AMBULANT_GUI_DX_AUDIO_H
 
 #include "ambulant/config/config.h"
-
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region.h"
 #include "ambulant/common/playable.h"
-#include "ambulant/gui/dx/dx_audio_player.h"
 
 namespace ambulant {
 
@@ -66,6 +64,7 @@ namespace gui {
 
 namespace dx {
 
+class audio_player;
 
 class dx_audio_renderer : public common::active_renderer {
   public:
@@ -85,10 +84,9 @@ class dx_audio_renderer : public common::active_renderer {
   private:
 	void update_callback();
 	void schedule_update();
-	
-	common::abstract_window *m_window;
 	audio_player *m_player;
  	lib::event *m_update_event;
+ 	bool m_activated;
 };
 
 } // namespace dx

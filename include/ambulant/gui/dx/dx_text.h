@@ -81,10 +81,8 @@ class dx_text_renderer : public common::active_renderer {
 	void stop();
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
   private:
-	viewport* get_viewport(common::abstract_window *window);
-	viewport* get_viewport();
-	region* m_region;
-	common::abstract_window *m_window;
+	std::string m_text;
+	bool m_activated;
 };
 
 } // namespace dx

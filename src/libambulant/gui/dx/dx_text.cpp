@@ -69,70 +69,68 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	lib::event_processor* evp,
 	common::abstract_window *window)
 :   common::active_renderer(context, cookie, node, evp),
-	m_window(window), m_region(0) { 
+	m_activated(false) { 
+	
+	lib::logger::get_logger()->trace("dx_text_renderer(0x%x)", this);
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();	
+	std::string url = m_node->get_url("src");
+	if(!lib::memfile::exists(url)) {
+		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
+			m_node->get_url("src").c_str());
+		return;
+	}
+	lib::memfile mf(url);
+	mf.read();
+	lib::databuffer& db = mf.get_databuffer();
+	m_text.assign(db.begin(), db.end());
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {
+	lib::logger::get_logger()->trace("~dx_text_renderer(0x%x)", this);
 }
 
 void gui::dx::dx_text_renderer::start(double t) {
-	// On repeat this will be called again
-	if(m_region != 0) return;
-
-	if(!m_node) abort();
-	
-	const common::region_info *ri = m_dest->get_info();
-	
-	// Create a dx-region
-	viewport *v = get_viewport();
-	lib::screen_rect<int> rc = m_dest->get_rect();
-	lib::point pt = m_dest->get_global_topleft();
-	rc.translate(pt);
-	m_region = v->create_region(rc, v->get_rc(), ri->get_zindex());
-	
-	// Prepare dx-region's pixel map
-	m_region->set_rendering_surface(m_dest);
-	m_region->set_rendering_info(ri);
-	m_region->set_background(ri?ri->get_bgcolor():CLR_INVALID);
-	m_region->clear();
-	
-	lib::memfile mf(m_node->get_url("src"));
-	if(!mf.exists()) {
-		m_dest->show(this);
-		lib::logger::get_logger()->error("The location specified for the data source does not exist.");
-		stopped_callback();
-		return;
+	lib::logger::get_logger()->trace("dx_text_renderer::start(0x%x)", this);
+		
+	// Has this been activated
+	if(m_activated) {
+		// repeat
+		return;	
 	}
-	mf.read();
-	// Prepare dx-region's pixel map
-	lib::databuffer& db = mf.get_databuffer();
-	m_region->set_text((const char*) db.data(), int(db.size()));
+	
+	// Activate this renderer.
+	// Add this renderer to the display list of the region
+	m_dest->show(this);
+	m_activated = true;
+		
+	// Request a redraw
 	m_dest->need_redraw();
-	stopped_callback();
 }
 
 void gui::dx::dx_text_renderer::stop() {
-	viewport *v = get_viewport();
-	if(v && m_region) {
-		v->remove_region(m_region);
-		m_region = 0;
-		v->redraw();
-	}
-	common::active_renderer::stop();
+	lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
+	m_dest->renderer_done();
+	m_activated = false;
+	m_text = "";
 }
 
 void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
-	viewport *v = get_viewport(window);
-	v->redraw();
+	// Get the top-level surface
+	dx_window *dxwindow = static_cast<dx_window*>(window);
+	viewport *v = dxwindow->get_viewport();
+	if(!v) return;
+	
+	// Draw the pixels of this renderer to the surface specified by m_dest.
+	lib::screen_rect<int> rc = m_dest->get_rect();
+	lib::point pt = m_dest->get_global_topleft();
+	rc.translate(pt);
+	//const common::region_info *ri = m_dest->get_info();
+	if(!m_text.empty()) {
+		v->draw(m_text, rc);
+		v->redraw();
+	}
 }
 
-gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport() {
-	return get_viewport(m_window);
-}
-
-gui::dx::viewport* gui::dx::dx_text_renderer::get_viewport(common::abstract_window *window) {
-	dx_window *dxwindow = (dx_window *) window;
-	return dxwindow->get_viewport();
-}
  
 

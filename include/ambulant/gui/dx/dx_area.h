@@ -78,8 +78,6 @@ class dx_area_renderer : public common::active_renderer {
 	void start(double t) {}
 	void stop() {}
 	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {}
-  private:
-	common::abstract_window *m_window;
 };
 
 } // namespace dx
