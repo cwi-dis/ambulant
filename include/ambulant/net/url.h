@@ -183,6 +183,3 @@ std::ostream& operator<<(std::ostream& os, const ambulant::net::url& u) {
 }
 
 #endif // AMBULANT_NET_URL_H
-
- 
- 
