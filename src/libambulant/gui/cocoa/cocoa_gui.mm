@@ -68,6 +68,7 @@
 //#define DUMP_REDRAW
 //#define DUMP_TRANSITION
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -257,6 +258,11 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	transition_surface = NULL;
 	transition_tmpsurface = NULL;
 	transition_count = 0;
+#ifdef USE_SMIL21
+	fullscreen_count = 0;
+	fullscreen_oldimage = NULL;
+	fullscreen_engine = NULL;
+#endif
 	return self;
 }
 
@@ -310,12 +316,18 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 		// If we have seen transitions we always redraw the whole view
 		if (transition_count) rect = [self bounds];
         ambulant::lib::screen_rect<int> arect = [self ambulantRectForNSRect: &rect];
+#ifdef USE_SMIL21
+		[self _screenTransitionPreRedraw];
+#endif
         ambulant_window->redraw(arect);
+#ifdef USE_SMIL21
+		[self _screenTransitionPostRedraw];
+#endif
 #ifdef DUMP_REDRAW
 		// Debug code: dump the contents of the view into an image
 		[self dumpToImageID: "redraw"];
 #endif
-		[self releaseTransitionSurface];
+		[self _releaseTransitionSurface];
     }
 //	redraw_lock.leave();
 }
@@ -433,20 +445,18 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (NSImage *)getTransitionSurface
 {
-//	// XXX Need to rethink: we want to 
-//	if (transition_surface) {
-//		[transition_surface release];
-//		transition_surface = NULL;
-//	}
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
+		// Note that calling getTransitionOldSource here does not
+		// follow the definition of what getTransitionOldSource
+		// does, it just happens to work.
 		transition_surface = [self getTransitionOldSource];
 		[transition_surface retain];
 	}
 	return transition_surface;
 }
 
-- (void)releaseTransitionSurface
+- (void)_releaseTransitionSurface
 {
 	if (transition_surface) {
 		[transition_surface release];
@@ -458,6 +468,9 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 {
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
+		// Note that calling getTransitionOldSource here does not
+		// follow the definition of what getTransitionOldSource
+		// does, it just happens to work.
 		transition_tmpsurface = [self getTransitionOldSource];
 		[transition_tmpsurface retain];
 		[transition_tmpsurface setFlipped: NO];
@@ -502,18 +515,70 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #ifdef USE_SMIL21
 - (void) startScreenTransition
 {
-	NSLog(@"startScreenTransition");
+	AM_DBG NSLog(@"startScreenTransition");
+	if (fullscreen_count)
+		NSLog(@"Warning: multiple Screen transitions in progress");
+	fullscreen_count++;
 }
 
 - (void) endScreenTransition
 {
-	NSLog(@"endScreenTransition");
+	AM_DBG NSLog(@"endScreenTransition");
+	assert(fullscreen_count > 0);
+	fullscreen_count--;
 }
 
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now
 {
-	NSLog(@"screenTransitionStep %d", (int)now);
+	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
+	fullscreen_engine = engine;
+	fullscreen_now = now;
+}
+
+- (void) _screenTransitionPreRedraw
+{
+	if (fullscreen_count == 0) return;
+	// XXX setup drawing to transition surface
+	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
+	if (fullscreen_oldimage == 0) {
+		// Just starting a new fullscreen transition
+		AM_DBG NSLog(@"_screenTransitionPreRedraw: no oldimage: save old bits");
+		fullscreen_oldimage = [[self getTransitionOldSource] retain];
+	}
+	[[self getTransitionSurface] lockFocus];
+}
+
+- (void) _screenTransitionPostRedraw
+{
+	if (fullscreen_count == 0 && fullscreen_oldimage == NULL)
+		return;
+	if (fullscreen_oldimage == 0) {
+		// Just starting a new fullscreen transition
+		AM_DBG NSLog(@"_screenTransitionPostRedraw: save old bits");
+		fullscreen_oldimage = [self getTransitionOldSource];
+	} else {
+		// Fullscreen transition in progress or finishing
+		AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
+		[[self getTransitionSurface] unlockFocus];
+		if (fullscreen_engine) {
+			fullscreen_engine->step(fullscreen_now);
+		} else {
+			AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
+			NSRect bounds = [self bounds];
+			[[self getTransitionNewSource] drawInRect: bounds
+				fromRect: bounds
+				operation: NSCompositeSourceOver
+				fraction: 1.0];
+		}
+	}
+	if (fullscreen_count == 0) {
+		// Finishing a fullscreen transition.
+		AM_DBG NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
+		[fullscreen_oldimage release];
+		fullscreen_oldimage = NULL;
+		fullscreen_engine = NULL;
+	}
 }
 
 #endif

@@ -137,6 +137,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 	NSImage *transition_tmpsurface;
 	int transition_count;
 #ifdef USE_SMIL21
+	int fullscreen_count;
 	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
@@ -165,10 +166,24 @@ class cocoa_renderer_factory : public common::playable_factory {
 
 - (void) incrementTransitionCount;
 - (void) decrementTransitionCount;
+
+// while in a transition, getTransitionSurface returns the surface that the
+// transitioning element should be drawn to.
 - (NSImage *)getTransitionSurface;
-- (void)releaseTransitionSurface;
+
+// internal: release the transition surface when we're done with it.
+- (void)_releaseTransitionSurface;
+
+// while in a transition, if we need an auxiliary surface (to draw a clipping
+// path or something like that) getTransitionTmpSurface will return one.
 - (NSImage *)getTransitionTmpSurface;
+
+// while in a transition, getTransitionOldSource will return the old pixels,
+// i.e. the pixels "behind" the transitioning element.
 - (NSImage *)getTransitionOldSource;
+
+// while in a transition, getTransitionNewSource will return the new pixels,
+// i.e. the pixels the transitioning element drew into getTransitionSurface.
 - (NSImage *)getTransitionNewSource;
 
 #ifdef USE_SMIL21
@@ -176,6 +191,9 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now;
+		
+- (void) _screenTransitionPreRedraw;
+- (void) _screenTransitionPostRedraw;
 #endif
 @end
 

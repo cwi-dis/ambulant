@@ -106,13 +106,14 @@ cocoa_transition_renderer::start(double where)
 	if (m_intransition && m_transition_dest) {
 		m_trans_engine = cocoa_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine) {
+			gui_window *window = m_transition_dest->get_gui_window();
+			cocoa_window *cwindow = (cocoa_window *)window;
+			AmbulantView *view = (AmbulantView *)cwindow->view();
+			[view incrementTransitionCount];
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
-				gui_window *window = m_transition_dest->get_gui_window();
-				cocoa_window *cwindow = (cocoa_window *)window;
-				AmbulantView *view = (AmbulantView *)cwindow->view();
 				[view startScreenTransition];
 			}
 #endif
@@ -130,13 +131,14 @@ cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 	m_outtransition = info;
 	m_trans_engine = cocoa_transition_engine(m_transition_dest, true, m_outtransition);
 	if (m_transition_dest && m_trans_engine) {
+		gui_window *window = m_transition_dest->get_gui_window();
+		cocoa_window *cwindow = (cocoa_window *)window;
+		AmbulantView *view = (AmbulantView *)cwindow->view();
+		[view incrementTransitionCount];
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 #ifdef USE_SMIL21
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
-			gui_window *window = m_transition_dest->get_gui_window();
-			cocoa_window *cwindow = (cocoa_window *)window;
-			AmbulantView *view = (AmbulantView *)cwindow->view();
 			[view startScreenTransition];
 		}
 #endif
@@ -155,11 +157,12 @@ cocoa_transition_renderer::stop()
 	}
 	delete m_trans_engine;
 	m_trans_engine = NULL;
+	gui_window *window = m_transition_dest->get_gui_window();
+	cocoa_window *cwindow = (cocoa_window *)window;
+	AmbulantView *view = (AmbulantView *)cwindow->view();
+	[view decrementTransitionCount];
 #ifdef USE_SMIL21
 	if (m_fullscreen) {
-		gui_window *window = m_transition_dest->get_gui_window();
-		cocoa_window *cwindow = (cocoa_window *)window;
-		AmbulantView *view = (AmbulantView *)cwindow->view();
 		[view endScreenTransition];
 	}
 #endif
@@ -229,7 +232,10 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 		typedef lib::no_arg_callback<cocoa_transition_renderer> stop_transition_callback;
 		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::event_processor::med);
-
+#ifdef USE_SMIL21
+		if (m_fullscreen)
+			[view screenTransitionStep: NULL elapsed: 0];
+#endif
 	}
 	m_lock.leave();
 }
