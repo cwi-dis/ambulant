@@ -256,6 +256,9 @@ class datasource_factory :
 	std::vector<video_datasource_factory*> m_video_factories;
 };
 
+// convenience function: read a whole document through any raw datasource
+int read_data_from_url(const std::string &url, datasource_factory *df, char **result);
+
 } // end namespace net
 
 } //end namespace ambulant

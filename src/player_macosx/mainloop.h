@@ -79,6 +79,7 @@ class mainloop : public ambulant::lib::system, public ambulant::lib::ref_counted
 	
 	static void set_preferences(std::string &path);
   private:
+	ambulant::lib::document *create_document(const char *filename);
   	bool m_running;
 	double m_speed;
 	ambulant::lib::document *m_doc;

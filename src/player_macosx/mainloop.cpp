@@ -141,7 +141,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	m_rf->add_factory( new gui::sdl::sdl_renderer_factory(m_df) );      
 #endif
 
-	m_doc = lib::document::create_from_file(filename);
+	m_doc = create_document(filename);
 	if (!m_doc) {
 		lib::logger::get_logger()->error("Could not build tree for file: %s", filename);
 		return;
@@ -151,6 +151,25 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	else
 		m_player = common::create_smil2_player(m_doc, m_wf, m_rf, this);
 }
+
+ambulant::lib::document *
+mainloop::create_document(const char *filename)
+{
+#if 1
+	return ambulant::lib::document::create_from_file(filename);
+#else
+	char *data;
+	std::string url(filename);
+	int size = ambulant::net::read_data_from_url(url, m_df, &data);
+	if (size < 0) {
+		ambulant::lib::logger::get_logger()->error("Cannot open %s", filename);
+		return NULL;
+	}
+	std::string docdata(data);
+	free(data);
+	return ambulant::lib::document::create_from_string(docdata);
+#endif
+}	
 
 mainloop::~mainloop()
 {

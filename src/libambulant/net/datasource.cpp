@@ -257,3 +257,10 @@ datasource_factory::new_video_datasource(const std::string &url)
 	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", url.c_str());
     return NULL;
 }
+
+int
+ambulant::net::read_data_from_url(const std::string &url, datasource_factory *df, char **result)
+{
+	*result = NULL;
+	return 0;
+}
