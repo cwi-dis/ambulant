@@ -9,7 +9,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ e
  * Ambulant Player is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -55,6 +55,8 @@
 namespace ambulant {
 
 using namespace lib;
+
+typedef lib::no_arg_callback<lib::active_renderer> readdone_callback;
 
 bool gui::arts::arts_active_audio_renderer::m_arts_init = false;
 
@@ -159,7 +161,8 @@ gui::arts::arts_active_audio_renderer::start(double where)
 
 	AM_DBG lib::logger::get_logger()->trace("arts_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
 	if (m_src) {
-		m_src->start(m_event_processor, m_readdone);
+		lib::event *e = new readdone_callback(this, &lib::active_renderer::readdone);
+		m_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->error("active_renderer.start: no datasource");
 		if (m_playdone) {
