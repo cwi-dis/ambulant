@@ -102,8 +102,8 @@ by clicking on the icon left-down, select settings
 and click Add/Remove Software. This launches the Zaurus
 Software Installer. First, select "Uninstall packages"
 to remove the previous version of "ambulantplayer".
-The close the  Zaurus Software Installer completely.
-Only the is the Uninstallation really effectuated.
+Then close the  Zaurus Software Installer completely.
+Only then is the Uninstallation really effectuated.
 Then, re-launch the  Zaurus Software Installer and 
 select "Install packages" and click "ambulantplayer".
 Again, close the  Zaurus Software Installer completely.

@@ -97,6 +97,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 	QPainter paint;
 	paint.begin(aqw->ambulant_pixmap());
+
 	if (m_image_loaded) {
 		QSize qsize = aqw->ambulant_pixmap()->size();
 		size srcsize = size(qsize.width(), qsize.height());

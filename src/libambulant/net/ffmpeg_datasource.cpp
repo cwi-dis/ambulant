@@ -1358,7 +1358,6 @@ ffmpeg_resample_datasource::data_avail()
 				if (inbuf && outbuf && insamples > 0) {
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", cursize, insamples, outsz, inbuf, outbuf);
 					int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
-					
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): resampled %d samples from %d", outsamples, insamples);
 					AM_DBG lib::logger::get_logger()->trace("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
 					assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
