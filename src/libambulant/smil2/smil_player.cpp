@@ -54,8 +54,10 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/gtypes.h"
+
 #include "ambulant/common/layout.h"
 #include "ambulant/common/schema.h"
+
 #include "ambulant/smil2/smil_time.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/smil_player.h"
@@ -70,8 +72,7 @@ using namespace ambulant;
 using namespace smil2;
 
 common::player *
-common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf)
-{
+common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf){
 	return new smil_player(doc, wf, pf);
 }
 
@@ -84,23 +85,32 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_layout_manager(0),
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_event_processor(0),
-	m_state(common::ps_idle)
-{
+	m_state(common::ps_idle),
+	m_cursorid(0) {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->trace("smil_player::smil_player()");
 	m_event_processor = event_processor_factory(m_timer);
 	
-	// build DOM lebel objects
+	// build DOM level objects
 	test_attrs::read_custom_attributes(m_doc);
 	
-	// though we need only the top level windows at this moment
-	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
+	// build the layout (we need the top-level layout)
+	build_layout();
 	
+	// Do not build the timegraph yet (test attrs)
+	// build_timegraph()
 }
 
 smil_player::~smil_player() {
 	AM_DBG m_logger->trace("smil_player::~smil_player()");
-	stop();
+	
+	// sync destruction
+	m_timer->pause();
+	cancel_all_events();
+	std::map<const lib::node*, common::playable *>::iterator it;
+	for(it = m_playables.begin();it!=m_playables.end();it++)
+		(*it).second->release();
+		
 	delete m_event_processor;
 	delete m_timer;
 	delete m_dom2tn;
@@ -110,11 +120,15 @@ smil_player::~smil_player() {
 }
 
 void smil_player::build_layout() {
+	if(m_state != common::ps_idle && m_state != common::ps_done)
+		return;
 	if(m_layout_manager) delete m_layout_manager;
 	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
 }
 
 void smil_player::build_timegraph() {
+	if(m_state != common::ps_idle && m_state != common::ps_done)
+		return;
 	if(m_root) {
 		delete m_root;
 		delete m_dom2tn;
@@ -128,56 +142,27 @@ void smil_player::schedule_event(lib::event *ev, time_type t, event_priority ep)
 	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
 }
 
+// Command to start playback
 void smil_player::start() {
 	if(m_state == common::ps_pausing) {
 		resume();
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
-		if(m_state == common::ps_done || !m_root) {
-			build_timegraph();
-		} 
+		if(!m_root) build_timegraph();
 		m_timer->resume();
 		if(m_root) m_root->start();
 	}
 }
 
-// Started playback
-void smil_player::started_playback() {
-	m_state = common::ps_playing;
-}
-
-// Done playback callback
-void smil_player::done_playback() {
-	m_state = common::ps_done;
-	m_timer->pause();
-	m_event_processor->cancel_all_events();
-	m_playables_cs.enter();
-	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++)
-		destroy_playable((*it).second, (*it).first);
-	m_playables.clear();
-	m_playables_cs.leave();
-}
-
+// Command to stop playback
 void smil_player::stop() {
 	if(m_state != common::ps_pausing && m_state != common::ps_playing)
 		return;
-	m_state = common::ps_done;	
-	m_timer->pause();
-	
-	// The following operation deletes all the waiting events
-	// Deleting an event that uses ref-counted objects calls release()
-	m_event_processor->cancel_all_events();
-	
-	if(m_root) m_root->stop();
-	
-	m_playables_cs.enter();
-	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++)
-		destroy_playable((*it).second, (*it).first);
-	m_playables.clear();
-	m_playables_cs.leave();
+	if(m_state == common::ps_pausing) 
+		m_timer->resume();
+	m_root->stop();
 }
 
+// Command to pause playback
 void smil_player::pause() {
 	if(m_state != common::ps_playing)
 		return;	
@@ -188,16 +173,41 @@ void smil_player::pause() {
 		(*it).second->pause();
 }
 
+// Command to resume playback
 void smil_player::resume() {
 	if(m_state != common::ps_pausing)
 		return;	
 	m_state = common::ps_playing;
-	m_timer->resume();
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++)
 		(*it).second->resume();
+	m_timer->resume();
 }
 
+// Started callback from the scheduler
+void smil_player::started_playback() {
+	m_state = common::ps_playing;
+}
+
+// Done callback from the scheduler
+void smil_player::done_playback() {
+	m_state = common::ps_done;
+	m_timer->pause();
+}
+
+// Request to create a playable for the node.
+void smil_player::create_playable(const lib::node *n) {
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	common::playable *np = (it != m_playables.end())?(*it).second:0;
+	if(np) return;
+	np = new_playable(n);
+	m_playables_cs.enter();
+	m_playables[n] = np;
+	m_playables_cs.leave();
+}
+
+// Request to start the playable of the node.
 void smil_player::start_playable(const lib::node *n, double t) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
@@ -206,39 +216,38 @@ void smil_player::start_playable(const lib::node *n, double t) {
 		np->start(t);
 		return;
 	}
-	np = create_playable(n);
+	np = new_playable(n);
 	m_playables_cs.enter();
 	m_playables[n] = np;
 	m_playables_cs.leave();
 	np->start(t);	
 }
 
+// Request to stop the playable of the node.
 void smil_player::stop_playable(const lib::node *n) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
 		destroy_playable((*it).second, (*it).first);
+		m_playables_cs.enter();
 		m_playables.erase(it);
+		m_playables_cs.leave();
 	}
 }
 
+// Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
 	common::playable *np = get_playable(n);
 	if(np) np->pause();
 }
 
+// Request to resume the playable of the node.
 void smil_player::resume_playable(const lib::node *n) {
 	common::playable *np = get_playable(n);
 	if(np) np->resume();
 }
 
-common::playable *
-smil_player::get_playable(const lib::node *n) {
-	std::map<const lib::node*, common::playable *>::iterator it = 
-		m_playables.find(n);
-	return (it != m_playables.end())?(*it).second:0;
-}
-
+// Query the node's playable for its duration.
 std::pair<bool, double> 
 smil_player::get_dur(const lib::node *n) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
@@ -247,20 +256,22 @@ smil_player::get_dur(const lib::node *n) {
 	if(np) {
 		return np->get_dur();
 	}
-	np = create_playable(n);
+	np = new_playable(n);
 	m_playables[n] = np;
 	return np->get_dur();
 }
 
+// Notify the playable that it should update this on user events (click, point).
 void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 	common::playable *np = get_playable(n);
 	if(np) np->wantclicks(want);
 }
 
+// Playable notification for a click event.
 void smil_player::clicked(int n, double t) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end()) {
+	if(it != m_dom2tn->end() && (*it).second->want_activate_event()) {
 		q_smil_time timestamp(m_root, m_root->get_simple_time());
 		activate_event_cb *cb = new activate_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
@@ -268,6 +279,15 @@ void smil_player::clicked(int n, double t) {
 	}
 }
 
+// Playable notification for a point (mouse over) event.
+void smil_player::pointed(int n, double t) {
+	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
+	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+	if(it != m_dom2tn->end() && (*it).second->want_activate_event())
+		m_cursorid = 1;
+}
+
+// Playable notification for a start event.
 void smil_player::started(int n, double t) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
@@ -279,6 +299,7 @@ void smil_player::started(int n, double t) {
 	}
 }
 
+// Playable notification for a stop event.
 void smil_player::stopped(int n, double t) {
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
@@ -290,76 +311,7 @@ void smil_player::stopped(int n, double t) {
 	}
 }
 
-
-void smil_player::on_click(int x, int y, common::abstract_window *w) {
-
-	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
-	
-	// the event instance to propagate
-	q_smil_time timestamp(m_root, m_root->get_simple_time());
-	
-	AM_DBG m_logger->trace("smil_player::on_click(%d, %d) at %ld", x, y, timestamp.second());
-	
-	// WARNING: The following is test code
-	// Does not use mouse regions, z-index etc
-	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++) {
-		playable *pl = ((*it).second);
-		int nid = pl->get_cookie();
-		renderer *rend = pl->get_renderer();
-		if (rend == NULL) continue;
-		surface *surf = rend->get_surface();
-		if (surf == NULL) continue;
-		
-		lib::screen_rect<int> rc = surf->get_rect();
-		lib::point pt = surf->get_global_topleft();
-		rc.translate(pt);
-		std::map<int, time_node*>::iterator it2 = m_dom2tn->find(nid);
-		if(it2 != m_dom2tn->end() && 
-			(*it2).second->want_activate_event() &&
-			rc.contains(point(x, y))) {
-			// check for area elements
-			if((*it).first->get_local_name() == "area") {
-				AM_DBG m_logger->trace("***** AREA CLICK");
-			}
-			activate_event_cb *cb = new activate_event_cb((*it2).second, 
-				&time_node::raise_activate_event, timestamp);
-			schedule_event(cb, 0);
-		}
-	}
-}
-
-int smil_player::get_cursor(int x, int y, common::abstract_window *w) {
-	// WARNING: The following is test code
-	// Does not use mouse regions, z-index etc
-	int cursor_id = 0;
-	m_playables_cs.enter();
-	std::map<const lib::node*, common::playable *>::iterator it;
-	for(it = m_playables.begin();it!=m_playables.end();it++) {
-		playable *pl = ((*it).second);
-		int nid = pl->get_cookie();
-		renderer *rend = pl->get_renderer();
-		if (rend == NULL) continue;
-		surface *surf = rend->get_surface();
-		if (surf == NULL) continue;
-		lib::screen_rect<int> rc = surf->get_rect();
-		lib::point pt = surf->get_global_topleft();
-		rc.translate(pt);
-		std::map<int, time_node*>::iterator it2 = m_dom2tn->find(nid);
-		if(it2 != m_dom2tn->end() && 
-			(*it2).second->want_activate_event() &&
-			rc.contains(point(x, y))) {
-			// check for area elements
-			if((*it).first->get_local_name() == "area") {
-				AM_DBG m_logger->trace("***** AREA CLICK");
-			}
-			cursor_id = 1;
-			break;
-		}
-	}
-	m_playables_cs.leave();
-	return cursor_id;
-}
+// UI notification for a char event.
 void smil_player::on_char(int ch) {
 	typedef std::pair<q_smil_time, int> accesskey;
 	typedef scalar_arg_callback_event<time_node, accesskey> accesskey_cb;
@@ -370,8 +322,9 @@ void smil_player::on_char(int ch) {
 	schedule_event(cb, 0);
 }
 
+// Creates and returns a playable for the node.
 common::playable *
-smil_player::create_playable(const lib::node *n) {
+smil_player::new_playable(const lib::node *n) {
 	int nid = n->get_numid();
 	surface *surf = m_layout_manager->get_surface(n);
 	if(true) {
@@ -393,8 +346,9 @@ smil_player::create_playable(const lib::node *n) {
 	return np;
 }
 
-void smil_player::destroy_playable(common::playable *r, const lib::node *n) {
-	r->stop();
-	r->release();
+// Destroys the playable of the node (checkpoint).
+void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
+	np->stop();
+	np->release();
 }
 
