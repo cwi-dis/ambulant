@@ -77,7 +77,7 @@ class gui_region {
 	virtual ~gui_region() {};
 	virtual gui_region *clone() const = 0;
 	
-        virtual void clear() = 0;
+	virtual void clear() = 0;
 	virtual bool is_empty() const = 0;
 	virtual bool contains(const lib::point &p) const = 0;
 	virtual gui_region& operator =(const lib::screen_rect<int> &rect) = 0;    /* assignment */
@@ -112,12 +112,15 @@ class abstract_window {
 	abstract_window(renderer *region)
 	:   m_region(region) {};
   public:
-	virtual ~abstract_window() { m_region = NULL; }
+	virtual ~abstract_window() {}
 	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
 	virtual void mouse_region_changed() = 0;
   protected:
 	renderer *m_region;
 };
+
+// User event types that may be used with renderer::user_event()
+enum user_event_type {user_event_click, user_event_mouse_over};
 
 // renderer is an pure virtual baseclass for renderers that
 // render to a region (as opposed to audio renderers, etc) and for subregions
@@ -130,7 +133,7 @@ class renderer {
 	
 	virtual void set_surface(surface *destination) = 0;
 	virtual void redraw(const lib::screen_rect<int> &dirty, abstract_window *window) = 0;
-	virtual void user_event(const lib::point &where) = 0;
+	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	// XXXX This is a hack.
 	virtual const gui_region& get_mouse_region() const { abort(); };
 	// XXXX And this is another hack
@@ -184,6 +187,7 @@ class window_factory {
 	virtual abstract_window *new_window(const std::string &name, lib::size bounds, renderer *region) = 0;
 	virtual gui_region *new_mouse_region() = 0;
 	virtual renderer *new_background_renderer(const region_info *src) = 0;
+	virtual void window_done(const std::string &name) {} 
 };
 
 // surface_factory is an abstract baseclass used by the SMIL2 and MMS layout managers
@@ -204,7 +208,6 @@ class surface_factory {
 class layout_manager {
   public:
 	virtual ~layout_manager() {};
-	
 	virtual surface *get_surface(const lib::node *node) = 0;
 };
 
