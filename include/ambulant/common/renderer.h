@@ -70,7 +70,7 @@ namespace ambulant {
 namespace common {
 
 
-class active_playable : virtual public playable, virtual public lib::ref_counted_obj {
+class active_playable : public playable {
   public:
     active_playable(playable_notification *context, const cookie_type cookie)
     :   m_context(context),
@@ -137,9 +137,9 @@ class active_renderer : public active_basic_renderer {
 	virtual void set_surface(surface *dest) { m_dest = dest; }
 	virtual surface *get_surface() { return m_dest;}
 	virtual renderer *get_renderer() { return this; }
+	virtual void readdone() {};
 	
   protected:
-	virtual void readdone() = 0;
 
   	net::datasource *m_src;
 	surface *m_dest;

@@ -102,7 +102,7 @@ enum pause_display {display_disable, display_hide, display_show};
 // The playable interface specifies time as double.
 // This may change in future versions of the interface.
 
-class playable : virtual public lib::ref_counted {
+class playable : public lib::ref_counted_obj {
 
   public:
   
