@@ -71,7 +71,7 @@ using namespace gui::qt;
 
 
  
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -107,7 +107,8 @@ qt_mainloop::qt_mainloop(qt_gui* parent) :
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->trace("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
-
+	AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_video_datasource_factory");
+	m_df->add_video_factory(new net::ffmpeg_video_datasource_factory());
 #endif
 
 	// Next create the playable factory and populate it.

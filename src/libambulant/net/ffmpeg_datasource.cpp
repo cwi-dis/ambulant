@@ -52,6 +52,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -587,6 +588,7 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 {
 	// XXX timestamp is ignored, for now
 	m_lock.enter();
+	int num, den;
 	m_src_end_of_file = (sz == 0);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: %d bytes available", sz);
 	if(sz && !m_frame) {
@@ -594,7 +596,9 @@ ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
 		if (m_frame)
 			memcpy(m_frame, inbuf, sz);
 		m_size = sz;
-		m_timestamp = 0.0;
+		num = m_con->pts_num;
+		den = m_con->pts_den;
+		m_timestamp = (double) pts * num / den;
 	}
 
 	if ( m_client_callback && (m_frame || m_src_end_of_file ) ) {

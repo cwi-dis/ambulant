@@ -53,7 +53,7 @@
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/none/none_mouse.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

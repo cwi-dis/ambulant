@@ -49,6 +49,7 @@
 
 #include "ambulant/net/datasource.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -256,4 +257,3 @@ datasource_factory::new_video_datasource(const std::string &url)
 	lib::logger::get_logger()->warn("datasource_factory::new_video_datasource: no datasource for %s\n", url.c_str());
     return NULL;
 }
-
