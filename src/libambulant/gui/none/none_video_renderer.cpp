@@ -46,32 +46,16 @@
  * 
  */
 
-#include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/gui/none/none_video_renderer.h"
-
-#include <math.h>
-#include <string>
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-
-#include <unistd.h>
 
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-
-
 using namespace ambulant;
 using namespace gui;
 using namespace none;
-typedef
-	lib::no_arg_callback <
-	gui::none::none_video_renderer >
-	dataavail_callback;
-
 
 void 
 none_video_renderer::show_frame(char* frame)

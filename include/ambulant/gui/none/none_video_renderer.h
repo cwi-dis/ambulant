@@ -49,16 +49,7 @@
 #ifndef NONE_VIDEO_RENDERER
 #define NONE_VIDEO_RENDERER
 
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/lib/logger.h"
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/net/datasource.h"
-#include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/asb.h"
-#include "ambulant/net/raw_video_datasource.h"
-#include "ambulant/lib/timer.h"
 
 namespace ambulant {
 namespace gui {
@@ -71,47 +62,23 @@ class none_video_renderer : public common::active_video_renderer {
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	net::datasource_factory *df);
+	net::datasource_factory *df)
+	:   common::active_video_renderer(context, cookie, node, evp, df)
+	{ }
 
   	~none_video_renderer() {};
 	
-      
-  	bool is_paused() { return m_is_paused; };
-  	bool is_stopped() { return !m_is_playing;};
-  	bool is_playing() { return m_is_playing; };
- 	
 	void show_frame(char* frame);
 		
-    void start(double where);
-    void stop() { m_is_playing = false; };
-    void pause();
-    void resume();
-	void freeze() {};
-    void speed_changed() {};
-    void data_avail();
     void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
 	void wantclicks(bool want) {};
     void user_event(const lib::point &where, int what=0) {};
-	void playdone() {};
 
 	void set_surface(common::surface *dest) { abort(); }
 	common::surface *get_surface() { abort(); }
-		  
-  private:
-	  double now();
-	  lib::event_processor* m_evp;
-  	  net::raw_video_datasource* m_src; 
-  	  unsigned long int m_epoch;
-	  bool m_is_playing;
-	  bool m_is_paused;
-	  unsigned long int m_paused_epoch;
-	  lib::critical_section m_lock;
 };
 
 }
 }
 }
-
-
-
 #endif /* NONE_VIDEO_RENDERER */

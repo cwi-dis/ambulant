@@ -204,7 +204,7 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
     lib::event_processor *evp,
 	net::datasource_factory *df);
 
-  	~active_video_renderer() {};
+  	virtual ~active_video_renderer() {};
 	
       
   	bool is_paused() { return m_is_paused; };
@@ -212,6 +212,9 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
   	bool is_playing() { return m_is_playing; };  
 	
 	virtual void show_frame(char* frame) = 0;
+    virtual void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+	virtual void wantclicks(bool want) {};
+    virtual void user_event(const lib::point &where, int what=0) {};
 	
 	void start(double where);
     void stop() { m_is_playing = false; };
@@ -220,13 +223,10 @@ class active_video_renderer : public common::active_basic_renderer, public lib::
 	void freeze() {};
     void speed_changed() {};
     void data_avail();
-    void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
-	void wantclicks(bool want) {};
-    void user_event(const lib::point &where, int what=0) {};
 	void playdone() {};
 
-	void set_surface(common::surface *dest) { abort(); }
-	common::surface *get_surface() { abort(); }
+	virtual void set_surface(common::surface *dest) { abort(); }
+	virtual common::surface *get_surface() { abort(); }
 	
   private:
 	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
