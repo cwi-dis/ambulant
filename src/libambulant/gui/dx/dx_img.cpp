@@ -140,7 +140,6 @@ void gui::dx::dx_img_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
-	m_dest->need_redraw();
 	m_dest->renderer_done();
 	m_activated = false;
 	
