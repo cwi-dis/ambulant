@@ -109,18 +109,20 @@ databuffer::databuffer()
 bool
 databuffer::buffer_full()
 {
-	return m_buffer_full;
+	m_lock.enter();
+	bool rv = m_buffer_full;
+	m_lock.leave();
+	return rv;
 }
 
 
 bool
 databuffer::buffer_not_empty()
 {
-    if (m_used > 0) {
-        return true;
-    } else {
-        return false;
-    }
+	m_lock.enter();
+	bool rv = (m_used > 0);
+	m_lock.leave();
+	return rv;
 }
             
 
@@ -167,7 +169,10 @@ databuffer::~databuffer()
 
 int databuffer::size() const
 {
-	return m_used;
+	const_cast<databuffer*>(this)->m_lock.enter();
+	int rv = m_used;
+	const_cast<databuffer*>(this)->m_lock.leave();
+	return rv;
 }
 
 void databuffer::dump(std::ostream& os, bool verbose) const

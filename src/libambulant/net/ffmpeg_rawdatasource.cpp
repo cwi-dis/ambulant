@@ -104,9 +104,11 @@ detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con)
 
 detail::ffmpeg_rawreader::~ffmpeg_rawreader()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::~ffmpeg_rawreader()");
 	if (m_con) url_close(m_con);
 	m_con = NULL;
+	m_lock.leave();
 }
 
 URLContext *
@@ -134,13 +136,16 @@ detail::ffmpeg_rawreader::cancel()
 void 
 detail::ffmpeg_rawreader::set_datasink(detail::rawdatasink *parent)
 {
+	m_lock.enter();
 	assert(m_sink == 0);
 	m_sink = parent;
+	m_lock.leave();
 }
 
 unsigned long
 detail::ffmpeg_rawreader::run()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: started");
 	while (!exit_requested()) {
 		uint8_t *sinkbuffer;
@@ -148,7 +153,9 @@ detail::ffmpeg_rawreader::run()
 		
 		sinkbuffersize = m_sink->get_sinkbuffer(&sinkbuffer);
 		if (sinkbuffersize == 0) {
+			m_lock.leave();
 			sleep(1);
+			m_lock.enter();
 		} else {
 			int bytecount;
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", sinkbuffersize);
@@ -162,6 +169,7 @@ detail::ffmpeg_rawreader::run()
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: final sinkdata(0)");
 	if (m_sink) m_sink->pushdata(0);
+	m_lock.leave();
 	return 0;
 }
 		

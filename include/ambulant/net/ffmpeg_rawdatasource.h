@@ -114,6 +114,7 @@ class ffmpeg_rawreader : public lib::unix::thread, public lib::ref_counted_obj {
   private:
 	URLContext *m_con;
     rawdatasink *m_sink;
+    lib::critical_section m_lock;
 };
 
 }

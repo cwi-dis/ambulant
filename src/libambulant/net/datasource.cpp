@@ -333,6 +333,7 @@ class datasource_reader : public lib::ref_counted_obj {
 	datasource *m_src;
 	char *m_data;
 	int m_size;
+	lib::critical_section m_lock;
 };
 typedef lib::no_arg_callback<datasource_reader> readdone_callback;
 
@@ -347,10 +348,12 @@ datasource_reader::datasource_reader(datasource *src)
 
 datasource_reader::~datasource_reader()
 {
+	m_lock.enter();
 	m_src->release();
 	delete m_event_processor;
 	delete m_timer;
 	if (m_data) free(m_data);
+	m_lock.leave();
 }
 
 void
@@ -366,16 +369,21 @@ datasource_reader::run()
 int
 datasource_reader::getresult(char **result)
 {
+	m_lock.enter();
 	*result = m_data;
 	m_data = NULL;
-	return m_size;
+	int rv = m_size;
+	m_lock.leave();
+	return rv;
 }
 
 void
 datasource_reader::readdone()
 {
+	m_lock.enter();
 	if (m_src->end_of_file()) {
 		// XXX Should wake up run()
+		m_lock.leave();
 		return;
 	}
 	int newsize = m_src->size();
@@ -383,6 +391,7 @@ datasource_reader::readdone()
 	if (m_data == NULL) {
 		m_size = 0;
 		lib::logger::get_logger()->error(gettext("datasource_reader: out of memory"));
+		m_lock.leave();
 		return;
 	}
 	char* dataptr = m_src->get_read_ptr();
@@ -393,6 +402,7 @@ datasource_reader::readdone()
 
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);
+	m_lock.leave();
 }
 
 int
