@@ -79,12 +79,14 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	m_worker(worker) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_audio_renderer(0x%x)", this);
-	std::string url = m_node->get_url("src");
-	if(lib::starts_with(url, "http://") || lib::memfile::exists(url))
+	net::url url = m_node->get_url("src");
+	if(url.is_local_file() && lib::memfile::exists(url.get_file()))
+		m_player = new gui::dx::audio_player(url.get_file());
+	else if(url.is_absolute())
 		m_player = new gui::dx::audio_player(url);
 	else {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			url.c_str());
+			url.get_url().c_str());
 	}
 }
 

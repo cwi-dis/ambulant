@@ -160,7 +160,7 @@
 
 - (void) validateButtons: (id)dummy
 {
-#if 1
+	if (!play_button || !stop_button || !pause_button) return;
 	BOOL enabled;
 	enabled = [self validateUIItem: play_button];
 	[play_button setEnabled: enabled];
@@ -168,7 +168,6 @@
 	[stop_button setEnabled: enabled];
 	enabled = [self validateUIItem: pause_button];
 	[pause_button setEnabled: enabled];
-#endif
 }
 
 - (IBAction)pause:(id)sender
@@ -228,6 +227,9 @@
 {
 	AM_DBG NSLog(@"close");
 	[self stop: self];
+	play_button = nil;
+	stop_button = nil;
+	pause_button = nil;
 	if (myMainloop) myMainloop->release();
 	myMainloop = NULL;
 	[super close];

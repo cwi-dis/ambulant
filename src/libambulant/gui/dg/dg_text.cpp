@@ -81,12 +81,12 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	AM_DBG lib::logger::get_logger()->trace("dg_text_renderer(0x%x)", this);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	
-	std::string rurl = m_node->get_url("src");
+	std::string rurl = m_node->get_url("src").get_url();
 	const lib::node_context *doc = m_node->get_context();
-	std::string url = doc->resolve_url(m_node, rurl);
+	std::string url = doc->resolve_url(m_node, rurl).get_url();
 	if(!lib::memfile::exists(url)) {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
-			m_node->get_url("src").c_str());
+			m_node->get_url("src").get_url().c_str());
 		return;
 	}
 	lib::memfile mf(url);

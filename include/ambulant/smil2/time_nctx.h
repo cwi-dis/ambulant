@@ -116,7 +116,7 @@ class time_node_context {
 class dummy_time_node_context : public time_node_context {
   public:
 	dummy_time_node_context() {}
-	~dummy_time_node_context() {}
+	virtual ~dummy_time_node_context() {}
 	
 	// Services
 	virtual smil2::time_traits::value_type elapsed() const {return 0;}

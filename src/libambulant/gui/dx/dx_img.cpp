@@ -82,19 +82,23 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	m_image(0) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::ctr(0x%x)", this);
-	std::string url = m_node->get_url("src");
+	net::url url = m_node->get_url("src");
 	if(!window) {
 		lib::logger::get_logger()->show("get_window() failed. [%s]",
-			url.c_str());
+			url.get_url().c_str());
 		return;
 	}
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	if(lib::memfile::exists(url)) {
-		m_image = new image_renderer(m_node->get_url("src"), v);
+	if (!url.is_local_file()) {
+		lib::logger::get_logger()->show("dx_img_handler can only handle local files. [%s]",
+			url.get_url().c_str());
+		m_image = NULL;
+	} else if(lib::memfile::exists(url.get_file())) {
+		m_image = new image_renderer(url.get_file(), v);
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
-			url.c_str());
+			url.get_url().c_str());
 	}
 }
 
@@ -170,13 +174,13 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
 	if(!v) {
-		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").c_str());
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
 	
 	if(!m_image || !m_image->can_play()) {
 		// No bits available
-		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").c_str());
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
 	
@@ -195,7 +199,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	lib::screen_rect<int> img_reg_rc_dirty = img_reg_rc & dirty;
 	if(img_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
-		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").c_str());
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}	
 	
@@ -211,7 +215,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	m_msg_rect |= img_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").c_str());
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 	
 	dx_transition *tr = 0;
 	if(m_transitioning) {

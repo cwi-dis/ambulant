@@ -85,10 +85,10 @@ cocoa_video_renderer::cocoa_video_renderer(
 	m_movie_view(NULL)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.c_str()]];
-	NSURL *nsurl = [NSURL fileURLWithPath: [NSString stringWithCString: m_url.c_str()]];
+	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str()]];
+//	NSURL *nsurl = [NSURL fileURLWithPath: [NSString stringWithCString: m_url.get_url().c_str()]];
 	if (!nsurl) {
-		lib::logger::get_logger()->error("cocoa_video_renderer: cannot convert to URL: %s", m_url.c_str());
+		lib::logger::get_logger()->error("cocoa_video_renderer: cannot convert to URL: %s", m_url.get_url().c_str());
 		return;
 	}
 	m_movie = [[NSMovie alloc] initWithURL: nsurl byReference: YES];

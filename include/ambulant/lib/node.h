@@ -54,6 +54,7 @@
 #define AMBULANT_LIB_NODE_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/net/url.h"
 
 // q_name_pair and qattr
 #include "ambulant/lib/sax_types.h"
@@ -218,7 +219,7 @@ class node {
 	const char *get_attribute(const std::string& name) const;
 	
 	// returns the resolved url of an attribute
-	std::string get_url(const char *attrname) const;
+	net::url get_url(const char *attrname) const;
 	
 	const q_attributes_list& get_attrs() const { return m_qattrs;}
 	

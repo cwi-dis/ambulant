@@ -75,10 +75,10 @@ cocoa_audio_playable::cocoa_audio_playable(
 	m_sound(NULL)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *filename = [NSString stringWithCString: m_url.c_str()];
+	NSString *filename = [NSString stringWithCString: m_url.get_url().c_str()];
 	m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
 	if (!m_sound)
-		lib::logger::get_logger()->error("cocoa_audio_playable: cannot open soundfile: %s", m_url.c_str());
+		lib::logger::get_logger()->error("cocoa_audio_playable: cannot open soundfile: %s", m_url.get_url().c_str());
 //	m_event_processor->get_timer()->add_listener(this);
 	[pool release];
 }
@@ -101,7 +101,7 @@ cocoa_audio_playable::start(double where)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.c_str(), where);
+	AM_DBG lib::logger::get_logger()->trace("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.get_url().c_str(), where);
 	if (where != 0.0)
 		lib::logger::get_logger()->warn("cocoa_audio_playable: ignoring start time %f, starting at 0", where);
 	if (m_sound)

@@ -86,7 +86,7 @@ class cocoa_video_renderer :
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
   private:
 	void poll_playing();
-	std::string m_url;
+	net::url m_url;
 	NSMovie *m_movie;
 	NSMovieView *m_movie_view;
 	critical_section m_lock;

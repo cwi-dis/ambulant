@@ -84,12 +84,14 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	AM_DBG lib::logger::get_logger()->trace("dx_video_renderer(0x%x)", this);
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
-	std::string url = m_node->get_url("src");
-	if(lib::starts_with(url, "http://") || lib::memfile::exists(url)) {
-		m_player = new gui::dx::video_player(m_node->get_url("src"), v->get_direct_draw());
+	net::url url = m_node->get_url("src");
+	if(url.is_local_file() || lib::memfile::exists(url.get_file())) {
+		m_player = new gui::dx::video_player(url.get_file(), v->get_direct_draw());
+	} else if(url.is_absolute()) {
+		m_player = new gui::dx::video_player(url.get_url(), v->get_direct_draw());
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
-			m_node->get_url("src").c_str());
+			url.get_url().c_str());
 	}
 }
 

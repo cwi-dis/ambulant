@@ -432,11 +432,12 @@ lib::node::get_attribute(const std::string& name) const {
 }
 
 // returns the resolved url of an attribute
-std::string 
+net::url 
 lib::node::get_url(const char *attrname) const {
 	const char *rurl = get_attribute(attrname);
-	if(!rurl) return "";
-	return m_context?m_context->resolve_url(this, rurl):rurl;
+	if(!rurl) return net::url();
+	net::url url(rurl);
+	return m_context ? m_context->resolve_url(this, url) : url;
 }
 
 const char *
@@ -526,7 +527,7 @@ void lib::node::dump(std::ostream& os) const {
 #ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n) {
 	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
-	std::string url = n.get_url("src");
+	std::string url = repr(n.get_url("src"));
 	if (url != "")
 		os << ", url=\"" << url << "\"";
 	os << ")";

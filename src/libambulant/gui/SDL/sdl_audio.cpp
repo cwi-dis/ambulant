@@ -217,12 +217,12 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 		return;
 		
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
-	std::string url = node->get_url("src");
+	net::url url = node->get_url("src");
 	m_audio_src = df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
-		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
-		lib::logger::get_logger()->error("sdl_active_audio_renderer: %s: unsupported format", url.c_str());
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: %s: unsupported format", repr(url).c_str());
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
@@ -241,13 +241,13 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_is_paused(false)
 {
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
-	std::string url = node->get_url("src");
+	net::url url = node->get_url("src");
 	AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x)",  this);
 	if (init() != 0)
 		return;
 		
 	if (!m_audio_src)
-		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", url.c_str());
+		lib::logger::get_logger()->error("sdl_active_audio_renderer: cannot open %s", repr(url).c_str());
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {

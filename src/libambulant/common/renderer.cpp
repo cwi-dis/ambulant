@@ -89,7 +89,7 @@ renderer_playable_ds::renderer_playable_ds(
 	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
-	std::string url = node->get_url("src");
+	net::url url = node->get_url("src");
 	m_src = df->new_raw_datasource(url);	
 }
 
@@ -250,7 +250,7 @@ active_video_renderer::active_video_renderer(
 {
 	AM_DBG lib::logger::get_logger ()->trace("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	// XXXX FIXME : The path to the jpg's is fixed !!!!!
-	std::string url = node->get_url("src");
+	net::url url = node->get_url("src");
 	m_src = df->new_video_datasource(url);
 	if (m_src == NULL) {
 		lib::logger::get_logger ()->warn("active_video_renderer::active_video_renderer(): Cannot open video");

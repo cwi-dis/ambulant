@@ -75,7 +75,7 @@ gui::none::none_playable::none_playable(
 :	common::playable_imp(context, cookie, node, evp)
 {
 	lib::xml_string tag = node->get_qname().second;
-	std::string url = node->get_url("src");
+	std::string url = repr(node->get_url("src"));
 	lib::logger::get_logger()->warn("No renderer found for <%s src=\"%s\">, using none_playable", tag.c_str(), url.c_str());
 }
 

@@ -117,7 +117,7 @@ detail::ffmpeg_rawreader::supported(const net::url& url)
 	URLContext *ic = NULL;
 	int err = url_open(&ic, url.get_url().c_str(), URL_RDONLY);
 	if (err) {
-		lib::logger::get_logger()->warn("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) url_close(ic);
 	}
 	return ic;

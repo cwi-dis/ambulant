@@ -90,8 +90,8 @@ class node_context {
 	virtual const char* 
 	get_namespace_prefix(const xml_string& uri) const = 0;
 	
-	virtual std::string 
-	resolve_url(const node *n, const std::string& rurl) const = 0;
+	virtual net::url 
+	resolve_url(const node *n, const net::url& rurl) const = 0;
 	
 	virtual const std::map<std::string, custom_test>* 
 	get_custom_tests() const = 0;
@@ -137,7 +137,7 @@ class document : public node_context {
 	
 	const char* get_namespace_prefix(const xml_string& uri) const;
 	
-	std::string resolve_url(const node *n, const std::string& rurl) const;
+	net::url resolve_url(const node *n, const net::url& rurl) const;
 	
 	// Returns the node with the provided id or null on none
 	const node* get_node(const std::string& idd) const {

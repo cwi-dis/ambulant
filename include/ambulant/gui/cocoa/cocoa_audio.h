@@ -82,7 +82,7 @@ class cocoa_audio_playable :
 	void resume();
 //	void speed_changed();
   private:
-	std::string m_url;
+	net::url m_url;
   	NSSound *m_sound;
 	critical_section m_lock;
 };

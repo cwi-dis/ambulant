@@ -246,11 +246,13 @@ detail::ffmpeg_demux::supported(const net::url& url)
 	if (err) {
 		lib::logger::get_logger()->warn("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
+		return NULL;
 	}
 	err = av_find_stream_info(ic);
 	if (err < 0) {
 		lib::logger::get_logger()->warn("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
+		return NULL;
 	}
 	AM_DBG dump_format(ic, 0, repr(url).c_str(), 0);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);

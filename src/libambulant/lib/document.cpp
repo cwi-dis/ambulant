@@ -140,16 +140,17 @@ lib::document::get_namespace_prefix(const xml_string& uri) const {
 	return m_namespaces.get_namespace_prefix(uri);
 }
 
-std::string 
-lib::document::resolve_url(const node *n, const std::string& rurl) const {
+net::url 
+lib::document::resolve_url(const node *n, const net::url& rurl) const {
 	// XXX This code is incomplete. It currently handles only full absolute
 	// urls (with scheme and all) and relative urls if the document is
 	// a local file. 
 	net::url loc(rurl);
-	if (!loc.get_protocol().empty()) {
-		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", rurl.c_str());
+	if (loc.is_absolute()) {
+		AM_DBG lib::logger::get_logger()->trace("document::resolve_url(%s): absolute URL", repr(rurl).c_str());
 		return rurl;
 	}
+#if 0
 	if(m_src_base.get_protocol() == "file") {
 		std::string base_path = m_src_base.get_path();
 		
@@ -164,7 +165,10 @@ lib::document::resolve_url(const node *n, const std::string& rurl) const {
 #endif
 	}
 		
-	return filesys::join(m_src_base.get_path(), rurl); 
+	return filesys::join(m_src_base.get_path(), rurl);
+#else
+	return rurl.join_to_base(m_src_base);
+#endif
 }
 
 void lib::document::set_root(node* n) {

@@ -149,6 +149,10 @@ class url {
 	string get_file() const;
 	
 	string get_url() const;
+
+	operator string() const { return get_url(); }
+	
+	url join_to_base(const url &base) const;
 		
  	static void init_statics();
  	
@@ -190,6 +194,9 @@ class url {
 	
 	// pat: "n"
 	void set_from_relative_path(ambulant::lib::scanner& sc, const std::string& pat);
+
+	// pat: "n:,"
+	void set_from_data_uri(ambulant::lib::scanner& sc, const std::string& pat);
 	
 };
 
@@ -212,7 +219,9 @@ url::url(const string& protocol, const string& host,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(0),
-	m_path(path) {
+	m_path(path)
+{
+	m_absolute = (m_protocol != "");
 }
 
 inline		
@@ -221,7 +230,9 @@ url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path) {
+	m_path(path)
+{
+	m_absolute = (m_protocol != "");
 }
 
 inline
@@ -232,7 +243,9 @@ url::url(const string& protocol, const string& host, int port,
 	m_port(short_type(port)),
 	m_path(path), 
 	m_query(query), 
-	m_ref(ref) {
+	m_ref(ref)
+{
+	m_absolute = (m_protocol != "");
 }
 
 inline 
@@ -256,6 +269,8 @@ inline std::string repr(const ambulant::net::url& u) {
 	if(u.get_protocol() == "file") {
 		os << u.get_protocol() << "://" << 
 			((u.get_host()=="localhost")?"":u.get_host()) << "/" << u.get_path();
+	} else if (u.get_protocol() == "data") {
+		os << "data:," << u.get_path();
 	} else {
 		os << u.get_protocol() << "://" << u.get_host() << "/" << u.get_path();
 	}
