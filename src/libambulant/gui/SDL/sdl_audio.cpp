@@ -322,6 +322,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
 		// Also set volume(s)
+		m_volcount = 0;
 		if (m_dest) {
 			double leftlevel, rightlevel;
 			const common::region_info *info = m_dest->get_info();
