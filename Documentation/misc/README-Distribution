@@ -5,8 +5,19 @@ Before creating the distribution
 ================================
 
 - make sure your CVS tree is up to date and that there are no uncommited files
-- change the version number in configure.in, in include/ambulant/version.h
-  and src/player_macos/Info.plist.
+- change the version number in:
+  - configure.in
+  - include/ambulant/version.h
+  - src/player_macos/Info.plist
+  - src/player_wince/AmbulantPlayer.rc
+  - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
+  - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
+  	- Product Details->Default Directory
+  	- General Information->Installation Version
+  	- Shortcuts
+  - src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse
+  	- Product Details->Default Directory
+  	- General Information->Installation Version
 - check the following files for being up-to-date:
   - README
   - INSTALL
