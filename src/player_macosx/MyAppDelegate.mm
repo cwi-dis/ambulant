@@ -93,7 +93,7 @@ show_message(int level, const char *format)
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:) 
 		withObject: message waitUntilDone: YES];
-	[message release];
+//	[message release];
 }
 
 bool
@@ -274,7 +274,7 @@ initialize_logger()
 		[self showLogWindow: self];
 	}
 	[alert release];
-	[message release];
+//	[message release];
 }
 
 - (void)setLogLevel: (int)level
