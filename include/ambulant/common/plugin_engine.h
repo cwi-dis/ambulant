@@ -55,21 +55,34 @@
 
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer.h"
-#include <ltdl.h>
 
  
 namespace ambulant {
-namespace plugin {
 
+namespace net {
+class datasource_factory;
+};
 
+namespace common {
+class global_playable_factory;
 
 class plugin_engine {
   public:
-	 plugin_engine(common::global_playable_factory* rf, net::datasource_factory *df);
-	~plugin_engine() {};
-	
+    static plugin_engine *get_plugin_engine();
+    void add_plugins(common::global_playable_factory* rf, net::datasource_factory *df);
+    
   private:
-  	char *m_plugindir; 
+    
+    plugin_engine();
+    void collect_plugin_directories();
+    void load_plugins(std::string dirname);
+	
+	typedef void (*initfuncptr)(ambulant::common::global_playable_factory* rf, ambulant::net::datasource_factory* df);
+
+  	std::vector< std::string > m_plugindirs;
+  	std::vector< initfuncptr > m_initfuncs;
+
+    static plugin_engine *s_singleton;
 };
 
 }

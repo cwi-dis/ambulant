@@ -63,9 +63,39 @@
 #define PLUGIN_PREFIX "libamplugin_"
 
 using namespace ambulant;
+using namespace common;
 
+plugin_engine *ambulant::common::plugin_engine::s_singleton = NULL;
 
-int filter(const struct dirent* filen)
+plugin_engine *
+plugin_engine::get_plugin_engine()
+{
+    if (s_singleton == NULL)
+        s_singleton = new plugin_engine;
+    return s_singleton;
+}
+
+plugin_engine::plugin_engine()
+{
+    collect_plugin_directories();
+	int errors = lt_dlinit();
+	if (errors) {
+	    lib::logger::get_logger()->error("Cannot initialize plugin loader: %d error(s)", errors);
+	    return;
+	}
+    std::vector< std::string >::iterator i;
+    for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
+        load_plugins(*i);
+    }
+}
+
+void
+plugin_engine::collect_plugin_directories()
+{
+    m_plugindirs.push_back("/Users/jack/src/ambulant/build-gcc3/src/plugins/.libs/");
+}
+
+static int filter(const struct dirent* filen)
 {
 	int len;
 	len = strlen(filen->d_name);
@@ -77,15 +107,79 @@ int filter(const struct dirent* filen)
 	return 0;
 }
 
+void
+plugin_engine::load_plugins(std::string dirname)
+{
+	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
+	int errors;
+	char filename[1024];
+	dirent **namelist;
+	
+    int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
+    if (nr_of_files < 0) {
+        lib::logger::get_logger()->error("Error reading plugin directory: %s", dirname.c_str());
+        return;
+    } else {
+        while (nr_of_files--) {
+            //only normal files, not dots (. and ..)
+            if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
+                    strcmp(namelist[nr_of_files]->d_name, "..")) {
+                char *pluginname = namelist[nr_of_files]->d_name;
+                
+                // Check the name is valid
+                if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
+                    lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
+                    continue;
+                }
+                
+                // Construct the full pathname
+                strncpy(filename, dirname.c_str(), sizeof(filename));
+                strncat(filename, pluginname, sizeof(filename));
+
+                // Load the plugin
+                lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
+ 	            lt_dlhandle handle = lt_dlopen(filename);
+                if (handle) {
+                    AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
+                    AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
+                    initfuncptr init = (initfuncptr) lt_dlsym(handle,"initialize");
+                    if (!init) {
+                        lib::logger::get_logger()->error("plugin_engine: no initialize routine");
+                    } else {
+                        m_initfuncs.push_back(init);
+                    }
+                } else {
+                    lib::logger::get_logger()->error("plugin_engine: Error reading plugin %s",filename);
+                    lib::logger::get_logger()->error("plugin_engine: Reading plugin failed because : %s\n\n", lt_dlerror());
+                }
+            }
+            free(namelist[nr_of_files]);
+        }
+        free(namelist);
+    }
+	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+}
+
+void
+plugin_engine::add_plugins(common::global_playable_factory* rf, net::datasource_factory *df)
+{
+    std::vector< initfuncptr >::iterator i;
+    for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
+        initfuncptr init;
+        init = *i;
+        (init)(rf, df);
+    }
+}
+
+#if 0
 plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::datasource_factory* df)
 {
 	int nr_of_files;
 	int errors;
 	char filename[1024];
-	typedef void (*initfunctype)(ambulant::common::global_playable_factory* rf, ambulant::net::datasource_factory* df);
 	lt_dlhandle handle;
 	
-	initfunctype init;
+	initfuncptr init;
 
 	dirent **namelist;
 //	m_plugindir = getenv("AMB_PLUGIN_DIR");
@@ -119,7 +213,7 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 				  	if (handle) {
   						AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
 						AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
-						init = (initfunctype) lt_dlsym(handle,"initialize");
+						init = (initfuncptr) lt_dlsym(handle,"initialize");
 						if (!init) {
 							lib::logger::get_logger()->error("plugin_engine: no initialize routine");
 						} else {
@@ -136,3 +230,4 @@ plugin::plugin_engine::plugin_engine(common::global_playable_factory* rf, net::d
 		}
 	}
 }
+#endif
