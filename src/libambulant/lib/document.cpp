@@ -51,6 +51,10 @@
  */
 
 #include "ambulant/lib/document.h"
+#include "ambulant/lib/tree_builder.h"
+#include "ambulant/lib/logger.h"
+#include "ambulant/lib/filesys.h"
+#include "ambulant/lib/asb.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -61,12 +65,14 @@ using namespace ambulant;
 lib::document::document(node *root) 
 :	m_root(root) {
 	build_id2node_map();
+	read_custom_attributes();
 }
 
 lib::document::document(node *root, const std::string& src_url) 
 :	m_root(root),
 	m_src_url(src_url) {
 	build_id2node_map();
+	read_custom_attributes();
 }
 
 
@@ -162,6 +168,7 @@ void lib::document::set_root(node* n) {
 	if(m_root != n) delete m_root;
 	m_root = n;
 	build_id2node_map();
+	read_custom_attributes();
 }
 
 void lib::document::build_id2node_map() {
@@ -182,4 +189,37 @@ void lib::document::build_id2node_map() {
 		}
 	}
 }
+
+void lib::document::read_custom_attributes() {
+	if(!m_root) return;
+	m_custom_tests.clear();
+	const lib::node* ca = locate_node("/smil/head/customAttributes");
+	if(!ca) return;
+	lib::node::const_iterator it;
+	lib::node::const_iterator end = ca->end();
+	for(it = ca->begin(); it != end; it++) {
+		std::pair<bool, const lib::node*> pair = *it;
+		bool start_element = pair.first;
+		const lib::node *n = pair.second;
+		const std::string& tag = n->get_local_name();
+		if(tag != "customTest") continue;
+		const char *p = n->get_attribute("id");
+		if(start_element && p) {
+			custom_test t;
+			t.id = p;
+			p = n->get_attribute("defaultState");
+			std::string s = p?p:"";
+			t.state = (s == "true")?true:false;
+			p = n->get_attribute("title");
+			t.title = p?p:"";
+			p = n->get_attribute("override");
+			s = p?p:"";
+			t.override = (s=="visible")?true:false;
+			p = n->get_attribute("uid");
+			t.uid = p?p:""; 
+			m_custom_tests[t.id] = t;
+		}
+	}
+}
+
 

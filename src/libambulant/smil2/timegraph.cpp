@@ -72,12 +72,9 @@
 using namespace ambulant;
 using namespace smil2;
 
-timegraph::timegraph(time_node::context_type *ctx, 
-	const document *doc, const schema *sch, 
-	const std::map<std::string, custom_test> *custom_tests) 
+timegraph::timegraph(time_node::context_type *ctx, const document *doc, const schema *sch) 
 :	m_context(ctx),
-	m_schema(sch), 
-	m_custom_tests(custom_tests),
+	m_schema(sch),
 	m_root(0),
 	m_dom2tn(0) {
 	assert(doc!=0);
@@ -153,7 +150,7 @@ timegraph::build_time_tree(const lib::node *root) {
 			continue;
 		}
 		// support inline tests
-		test_attrs ta(n, m_custom_tests);
+		test_attrs ta(n);
 		if(!ta.selected()) {
 			// skip content
 			it++;
@@ -438,7 +435,7 @@ timegraph::select_switch_child(const node* sn) const {
 	std::list<const node*>::const_iterator it;
 	sn->get_children(cl);
 	for(it=cl.begin();it!=cl.end();it++) {
-		test_attrs ta(*it, m_custom_tests);
+		test_attrs ta(*it);
 		if(ta.selected()) return (*it);
 	}
 	return 0;

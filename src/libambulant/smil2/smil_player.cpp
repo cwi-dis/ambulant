@@ -95,15 +95,12 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_event_processor(0),
 	m_state(common::ps_idle),
-	m_cursorid(0) {
+	m_cursorid(0), 
+	m_pointed_node(0) {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->trace("smil_player::smil_player()");
 	m_event_processor = event_processor_factory(m_timer);
 	
-	// build DOM level objects
-	test_attrs::read_custom_attributes(m_doc, m_custom_tests);
-	
-		
 	// build the layout (we need the top-level layout)
 	build_layout();
 	
@@ -143,7 +140,7 @@ void smil_player::build_timegraph() {
 		delete m_root;
 		delete m_dom2tn;
 	}
-	timegraph tg(this, m_doc, schema::get_instance(), &m_custom_tests);
+	timegraph tg(this, m_doc, schema::get_instance());
 	m_root = tg.detach_root();
 	m_dom2tn = tg.detach_dom2tn();
 }
@@ -158,8 +155,8 @@ void smil_player::start() {
 		resume();
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
-		m_timer->resume();
 		if(m_root) m_root->start();
+		m_timer->resume();
 	}
 }
 
@@ -294,8 +291,11 @@ void smil_player::clicked(int n, double t) {
 void smil_player::pointed(int n, double t) {
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end() && (*it).second->wants_activate_event())
-		m_cursorid = 1;
+	if(it != m_dom2tn->end()) {
+		m_pointed_node = (*it).second;
+		if((*it).second->wants_activate_event())
+			m_cursorid = 1;
+	}
 }
 
 // Playable notification for a start event.
@@ -369,4 +369,19 @@ void smil_player::show_link(const lib::node *n, const std::string& href) {
 	} else {
 		lib::logger::get_logger()->error("This implementation cannot open <%s> in a browser", href.c_str());
 	}
+}
+
+std::string smil_player::get_pointed_node_str() const {
+	if(m_pointed_node == 0) return "";
+	const lib::node *n = m_pointed_node->dom_node();
+	const char *pid = n->get_attribute("id");
+	const char *reg = 0;
+	if(n->get_local_name() == "area" && n->up()) {
+		reg = n->up()->get_attribute("region");
+	} else {
+		reg = n->get_attribute("region");
+	}
+	char buf[256];
+	sprintf(buf, "%.32s - %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"));
+	return buf;
 }

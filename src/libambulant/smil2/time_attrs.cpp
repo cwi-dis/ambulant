@@ -496,8 +496,8 @@ void time_attrs::parse_fill() {
 	m_fill = modulated_fill(get_default_fill());
 	const char *p = m_node->get_attribute("fill");
 	if(!p) {
-		//AM_DBG m_logger->trace("%s[%s].fill = [%s]", 
-		//	m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
+		AM_DBG m_logger->trace("%s[%s].fill = [%s]", 
+			m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
 		return;
 	}
 	set_specified(SP_FILL);

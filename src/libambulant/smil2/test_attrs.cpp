@@ -79,9 +79,9 @@ inline std::string get_test_attribute(const std::string& attr) {
 }
 
 // Create a tests helper for the provided node and for the document custom tests
-test_attrs::test_attrs(const lib::node *n,
-	const std::map<std::string, custom_test>* custom_tests) 
-:	m_node(n), m_custom_tests(custom_tests) {
+test_attrs::test_attrs(const lib::node *n) 
+:	m_node(n), 
+	m_custom_tests(n->get_context()->get_custom_tests()) {
 	m_logger = lib::logger::get_logger();
 	
 	if(active_tests_attrs_map.empty())
@@ -328,52 +328,5 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemScreenDepth"] = "32";
 }
 
-////////////////////////////////////////
-
-//static
-void test_attrs::read_custom_attributes(const lib::document *doc, 
-	std::map<std::string, custom_test>& custom_tests) {
-	const lib::node* ca = doc->locate_node("/smil/head/customAttributes");
-	if(!ca) return;
-	lib::node::const_iterator it;
-	lib::node::const_iterator end = ca->end();
-	for(it = ca->begin(); it != end; it++) {
-		std::pair<bool, const lib::node*> pair = *it;
-		bool start_element = pair.first;
-		const lib::node *n = pair.second;
-		const std::string& tag = n->get_local_name();
-		if(tag != "customTest") continue;
-		const char *p = n->get_attribute("id");
-		if(start_element && p) {
-			custom_test t;
-			t.id = p;
-			p = n->get_attribute("defaultState");
-			std::string s = p?p:"";
-			t.state = (s == "true")?true:false;
-			p = n->get_attribute("title");
-			t.title = p?p:"";
-			p = n->get_attribute("override");
-			s = p?p:"";
-			t.override = (s=="visible")?true:false;
-			p = n->get_attribute("uid");
-			t.uid = p?p:""; 
-			custom_tests[t.id] = t;
-		}
-	}
-}
-
-// static
-void test_attrs::update_doc_custom_attributes(std::map<std::string, custom_test>& custom_tests) {
-	std::map<std::string, custom_test>::iterator it;
-	std::map<std::string, bool>::const_iterator oit; 
-	for(it = custom_tests.begin();it!=custom_tests.end();it++) {
-		// check if we have a value
-		oit = active_custom_tests_attrs_map.find((*it).first);
-		if(oit != active_custom_tests_attrs_map.end()) {
-			// update value
-			(*it).second.state = (*oit).second;
-		}
-	}
-} 
 
 
