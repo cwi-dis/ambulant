@@ -92,8 +92,8 @@ qt_active_video_renderer::show_frame(char* frame, int size)
 		delete m_image;
 
 	if (m_data ) {
-		int width = 176;
-		int height = 128;
+		int width = m_size.w;
+		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->trace("qt_active_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
 
 		m_image = new QImage((uchar*) m_data, width, height, 32, NULL, 0, QImage::IgnoreEndian);

@@ -85,7 +85,7 @@ class arts_active_audio_renderer : public common::active_renderer, public lib::t
       void resume() {};
       void speed_changed() {};
       void readdone();
-      void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {};
+      void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {};
   private:
 
       static bool m_arts_init;
