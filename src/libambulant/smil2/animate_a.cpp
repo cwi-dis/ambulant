@@ -58,7 +58,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/parselets.h"
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
