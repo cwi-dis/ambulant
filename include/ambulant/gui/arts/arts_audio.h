@@ -85,6 +85,7 @@ class arts_active_audio_renderer : public common::playable_imp {
       common::playable_notification::cookie_type cookie,
       const lib::node *node,
       lib::event_processor *const evp,
+  	  common::factories *factory,
       net::audio_datasource *ds);
     ~arts_active_audio_renderer();
 

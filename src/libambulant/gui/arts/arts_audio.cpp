@@ -97,6 +97,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
+	common::factories *factory,
 	net::audio_datasource *ds)
 :	common::playable_imp(context, cookie, node, evp),
 	m_rate(44100),
@@ -112,13 +113,20 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	arts_setup(m_rate,m_bits,m_channels,"arts_audio");
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
+	
 	if (!m_audio_src)
 		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
-	else if (!supported.contains(m_audio_src->get_audio_format())) {
-		lib::logger::get_logger()->error("arts_active_audio_renderer: %s: unsupported format", repr(url).c_str());
-		m_audio_src->release();
-		m_audio_src = NULL;
+	
+	// Ugly hack to get the resampler.
+	if (m_audio_src) {
+		net::audio_datasource *resample_ds = factory->df->new_filter_datasource(url, supported, ds);
+		AM_DBG lib::logger::get_logger ()->debug("arts_active_audio_renderer::arts_active_audio_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
+		if (resample_ds) {
+			m_audio_src = resample_ds;
+			AM_DBG lib::logger::get_logger()->debug("arts_active_audio_renderer: opened resample datasource !");
+		}
 	}
+	
 	m_lock.leave();
 }
 

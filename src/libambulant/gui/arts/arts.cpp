@@ -90,7 +90,8 @@ gui::arts::arts_renderer_factory::new_aux_audio_playable(
 	lib::xml_string tag = node->get_qname().second;
      AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	//if ( tag == "audio") {
-		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp, ds);
+	assert(ds);
+		rv = new gui::arts::arts_active_audio_renderer(context, cookie, node, evp, m_factory, ds);
 		AM_DBG lib::logger::get_logger()->debug("arts_renderer_factory: node 0x%x: returning arts_active_audio_renderer 0x%x", (void *)node, (void *)rv);
 	//} else {
 	//AM_DBG lib::logger::get_logger()->error("arts_renderer_factory: no aRts renderer for tag \"%s\"", tag.c_str());
