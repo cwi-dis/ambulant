@@ -1,0 +1,40 @@
+Remarks
+=======
+
+Code Organization
+-----------------
+
+I propose that all the C++ code developed for the project is placed in the 
+namespace ambulant and further divided into packages using sub-namespaces. 
+The GRiNS organization of the code was good enough and 
+we should try keeping it but not blindly.
+
+Concerning dependencies, the code may be organized as a set of layers as shown below
+
+Layer 0:
+Std C++ library
+Namespace: std
+
+We may need some Ambulant extensions to the std. 
+These extensions may form various packages named according to their purpose. 
+For example ambulant::net for networking related components. 
+Foreign endorsed libraries may exist and should be used at this level.
+For Python people: These are the modules of python/lib.
+For Java people: These are the packages starting with the "java-dot" prefix.
+Layer 0 has nothing to do with Ambulant except that the project
+happens to need these general modules.
+
+Layer 1:
+Ambulant library. 
+Namespace: ambulant::lib
+May depend on layer 0 packages.
+
+Layer 2:
+Ambulant common
+Namespace: ambulant::common
+May depend on any of the layers below.
+
+Layer 3 (application layer):
+Ambulant player
+Namespace: ambulant
+May depend on any of the layers below.
