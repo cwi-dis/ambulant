@@ -148,6 +148,7 @@ class qt_gui : public QWidget {
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	bool         m_pointinghand_cursor; //XXXX
 	FileSelector*m_fileselector;
+	FileSelector*m_settings_selector;
 	const DocLnk m_selectedDocLnk;
 #endif/*QT_NO_FILEDIALOG*/
 	void	     fileError(QString smilfilename);
@@ -163,6 +164,8 @@ class qt_gui : public QWidget {
 #endif/*QT_NO_FILEDIALOG*/
 	void slot_file_selected(const DocLnk&);
 	void slot_close_fileselector();
+	void slot_settings_selected(const DocLnk&);
+	void slot_close_settings_selector();
 	void slot_play();
 
   private slots:
@@ -170,12 +173,14 @@ class qt_gui : public QWidget {
 	void slot_homepage();
 	void slot_welcome();
 	void slot_help();
+	void slot_load_settings();
   	void slot_logger_window();
 	void slot_open();
 	void slot_open_url();
 	void slot_pause();
 	void slot_player_done();
 	void slot_quit();
+	void slot_reload();
 	void slot_settings_cancel();
 	void slot_settings_ok();
 	void slot_settings_select();

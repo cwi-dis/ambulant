@@ -120,6 +120,13 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	if (qaw != NULL) {
 		QSize size = qaw->frameSize();
 		m_pixmap = new QPixmap(size.width(), size.height());
+		QPainter paint(m_pixmap);
+		QColor bgc = QColor(255,0,255);
+		paint.setBrush(bgc);
+		paint.drawRect(0,0,size.width(),size.height());
+		paint.flush();
+		paint.end();
+		
 	}
 }
 
@@ -207,31 +214,42 @@ ambulant_qt_window::mouse_region_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::mouse_region_changed needs to be implemented");
 }
-/* dumpPixmap on file * /
+
+/* test if there is something new to see * /
 static QImage* oldImageP;
-void dumpPixmap(QPixmap* qpm, std::string filename) {
-   static int i;
-   char buf[5];
-   sprintf(buf,"%04d",i++);
-   std::string newfile = std::string(filename) + buf +".png";
-   qpm->save(newfile, "PNG");
-   AM_DBG lib::logger::get_logger()->debug("dumpPixmap(%s)", newfile.c_str());
-   QImage img = qpm->convertToImage();
-   if (oldImageP != NULL && img == *oldImageP) {
-   	AM_DBG lib::logger::get_logger()->debug("dumpPixmap: new image not different from old one");
-   } else {
-   	if (oldImageP != NULL) delete oldImageP;
-	oldImageP = new QImage(img);
-   }
+static bool isEqualToPrevious(QPixmap* qpmP) {
+	QImage img = qpmP->convertToImage();
+	if (oldImageP != NULL && img == *oldImageP) {
+		AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");
+		return true;
+	} else {
+		if (oldImageP != NULL) delete oldImageP;
+		oldImageP = new QImage(img);
+		return false;
+	}
 }
-/ **/
+/**/
+/* dumpPixmap on file * /
+void dumpPixmap(QPixmap* qpm, std::string filename) {
+	QImage img = qpm->convertToImage();
+	if ( ! isEqualToPrevious(qpm)) {
+		static int i;
+		char buf[5];
+		sprintf(buf,"%04d",i++);
+		std::string newfile = std::string(filename) + buf +".png";
+		qpm->save(newfile, "PNG");
+		AM_DBG lib::logger::get_logger()->debug("dumpPixmap(%s)", newfile.c_str());
+	}
+}
+/**/
 void
 ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_handler->redraw(r, this);
-	bitBlt(m_ambulant_widget,  r.left(), r.top(), m_pixmap, r.left(), r.top(), r.right(), r.bottom());
-//	AM_DBG	dumpPixmap(m_pixmap, "top"); //AM_DBG 
+//XXXX	if ( ! isEqualToPrevious(m_pixmap))
+	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
+//XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
 
 void
