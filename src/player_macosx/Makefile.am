@@ -69,7 +69,7 @@ noinst_PROGRAMS = cocoambulant_executable
 cocoambulant_executable_SOURCES= \
 	main.m \
 	mainloop.cpp \
-	mypreferrences.m \
+	mypreferences.m \
 	MyAmbulantView.m \
 	MyDocument.m \
 	LogController.m \

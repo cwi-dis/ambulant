@@ -47,6 +47,7 @@
  */
 
 #include "mypreferences.h"
+#import <Cocoa/Cocoa.h>
 
 void
 mypreferences::install_singleton()
