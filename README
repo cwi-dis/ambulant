@@ -31,16 +31,16 @@ Supported platforms
 -------------------
 
 Currently we have support for:
-- Linux
-- MacOSX
 - Windows
+- MacOSX
+- Linux
 - Windows CE
 - Linux for handhelds (Qtopia)
 
 The specific platforms that have been used for testing are:
-- Linux: RedHat 9 on fairly recent Intel hardware
-- MacOSX: 10.3. 10.2 or earlier will not work.
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
+- MacOSX: 10.3. 10.2 or earlier will not work.
+- Linux: RedHat 9 on fairly recent Intel hardware
 - Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
 - Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
 
