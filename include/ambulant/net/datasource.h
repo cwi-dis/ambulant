@@ -283,7 +283,6 @@ class active_datasource : public ambulant::lib::ref_counted_obj {
 	}
 	
 	size_type read(byte *b, size_type nb) {
-		logger::get_logger()->debug("READ %u", m_gptr);
 		size_type nr = available();
 		size_type nt = (nr>=nb)?nb:nr;
 		if(nt>0) {
