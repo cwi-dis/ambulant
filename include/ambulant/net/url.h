@@ -141,7 +141,7 @@ class url {
  
 	// workaround for g++ 2.95
 	struct handler_pair { 
-		std::string first; 
+		const char *first; 
 		void (url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
 	};
 	
