@@ -79,7 +79,7 @@ time_state::time_state(time_node *tn)
 	m_picounter(tn->m_picounter),
 	m_active(tn->m_active),
 	m_needs_remove(tn->m_needs_remove),
-	m_last_dur(tn->m_last_dur),
+	m_last_cdur(tn->m_last_cdur),
 	m_rad(tn->m_rad),
 	m_precounter(tn->m_precounter),
 	m_impldur(tn->m_impldur),
@@ -128,7 +128,7 @@ void reset_state::enter(qtime_type timestamp) {
 	m_picounter = 0;
 	m_active = false;
 	m_needs_remove = false;
-	m_last_dur = time_type::unresolved;
+	m_last_cdur = time_type::unresolved;
 	m_rad = 0;
 	m_precounter = 0;
 	m_impldur = time_type::unresolved;
@@ -227,7 +227,7 @@ void proactive_state::exit(qtime_type timestamp, time_node *oproot) {
 // 
 // Active enter / update state variables, raise_begin_event, peer.start(t)?
 // Active do /
-//	on repeat: m_last_dur=clock_value, m_rad += m_last_dur, m_precounter++;
+//	on repeat: m_last_cdur=clock_value, m_rad += m_last_cdur, m_precounter++;
 //	on sync update re-evaluate current interval's 'end', consider restart semantics
 // Active exit / update state variables, raise_end_event, peer.pause() or peer.stop()
 //

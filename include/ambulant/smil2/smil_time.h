@@ -332,6 +332,16 @@ class q_smil_time : public std::pair<const time_node*, smil_time<long> > {
 	q_smil_time as_qtime_down_to(const time_node *n) const;
 	static time_type to_sync_time(const time_node *n, const time_type& self_simple);
 	
+	q_smil_time& operator+(time_type rhs) { 
+		this->second += rhs;
+		return *this;
+	}
+	
+	q_smil_time& operator+(long rhs) { 
+		this->second += rhs;
+		return *this;
+	}
+
   private:
 	bool up();
 	void down(const time_node *child);

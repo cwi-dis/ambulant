@@ -108,12 +108,14 @@ class time_node_context : public event_scheduler<time_traits::value_type> {
 	virtual std::pair<bool, double> get_dur(const node *n) = 0;
 	
 	// Notifications
+	virtual void started_playback() = 0;
 	virtual void done_playback() = 0;
 };
 
 // fwd declaration.
 class transition_event;
 class repeat_event;
+class timer_event;
 
 // Represents a node in the timing model.
 
@@ -160,6 +162,9 @@ class time_node : public time_traits {
 	
 	// End of media update
 	void on_eom(qtime_type timestamp);
+	
+	// End of simple duration update
+	void on_eosd(qtime_type timestamp);
 	
 	virtual void raise_begin_event(qtime_type timestamp);
 	virtual void raise_repeat_event(qtime_type timestamp);
@@ -242,7 +247,7 @@ class time_node : public time_traits {
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
-	bool uses_media_timer() const;
+	bool needs_implicit_dur() const;
 	
 	// Time graph building functions
 	
@@ -287,6 +292,11 @@ class time_node : public time_traits {
 	bool is_alive() const {
 		time_state_type tst = m_state->ident(); 
 		return tst == ts_proactive || tst == ts_active || tst == ts_postactive;
+	}
+	
+	bool is_activateable() const {
+		time_state_type tst = m_state->ident(); 
+		return tst == ts_proactive || tst == ts_postactive;
 	}
 	
 	// this may be called by a second thread
@@ -416,20 +426,19 @@ class time_node : public time_traits {
 	
 	// The following 3 state variables are incemented when the node is active  
 	// and it repeats: 
-	// m_last_dur=clock_value; m_rad += m_last_dur; m_precounter++;
-	
-	// Most recent repeat dur
-	// Declare as time_type to allow communicating 'unresolved yet'.
-	time_type m_last_dur;
+	// m_rad += m_last_cdur; m_rad_offset calc, m_precounter++;
 	
 	// Accumulated repeat duration
+	// Incremented after the completion of a simple dur
 	value_type m_rad;
 	
-	// Last begin or repeat instance 
-	// in parent simple time.
+	// Last begin or repeat instance in parent simple time.
+	// e.g. the accumulated repeat duration (rad) as a parent simple time instance
+	// Therefore: simple_dur_offset = parent_simple_time - m_rad_offset;
 	value_type m_rad_offset;
 	
 	// Number of completed repeat counts
+	// e.g. the current zero-based repeat index
 	long m_precounter;
 	
 	// The priority of this node
@@ -475,30 +484,29 @@ class time_node : public time_traits {
 	// when set the associated UI should notify for accesskey events
 	bool m_want_accesskey;
 	
-	// Cashed implicit duration for media nodes
-	// A value of m_impldur != time_type::unresolved comes from the playable
-	// It is set by querring the playable and then refined
-	// by the EOM notification.  
+	// Cashed continous media node duration (audio, video).
+	// A value != time_type::unresolved comes from the playable
+	// It is set by querying the playable.  
+	time_type m_mediadur;
+	
+	// Cashed implicit duration of a continous media node (audio, video).
+	// It is set to m_mediadur when an EOM event is raised by the playing media node.
 	time_type m_impldur;
 	
-	// Playable timer 
-	timer *m_playable_timer;
-
 	// Last calc_dur() result
 	time_type m_last_cdur;
 	
 	// S-transitions scheduling
-	void schedule_transition(time_state_type state, qtime_type timestamp, time_type dt);
-	void transition_callback(const transition_event *e);
-	void schedule_repeat(qtime_type timestamp, time_type dt);
-	void repeat_callback(const repeat_event *e);	
+	void schedule_state_transition(time_state_type state, qtime_type timestamp, time_type dt);
+	void state_transition_callback(const transition_event *e);
+	void schedule_next_timer_event(qtime_type timestamp);
+	void timer_event_callback(const timer_event *e);	
 	void schedule_sync_update(qtime_type timestamp, time_type dt);
-	transition_event *m_begin_trevent;
-	transition_event *m_end_trevent;
-	repeat_event *m_revent;
+	event *m_pending_event;
 	friend class transition_event;
-	friend class repeat_event;
+	friend class timer_event;
 	friend class active_state;
+	enum {sampling_delta = 100};
 	
   private:
 	// Time states
@@ -587,18 +595,18 @@ class transition_event : public event_callback<time_node, const transition_event
   public:
 	typedef event_callback<time_node, const transition_event> evcb;
 	transition_event(time_node* tn, time_state_type state, time_traits::qtime_type timestamp) 
-	:	evcb(tn, &time_node::transition_callback),
+	:	evcb(tn, &time_node::state_transition_callback),
 		m_state(state), 
 		m_timestamp(timestamp) {}
 	time_state_type m_state;
 	time_traits::qtime_type m_timestamp;
 };
 
-class repeat_event : public event_callback<time_node, const repeat_event> {
+class timer_event : public event_callback<time_node, const timer_event> {
   public:
-	typedef event_callback<time_node, const repeat_event> evcb;
-	repeat_event(time_node* tn, time_traits::qtime_type timestamp) 
-	:	evcb(tn, &time_node::repeat_callback),
+	typedef event_callback<time_node, const timer_event> evcb;
+	timer_event(time_node* tn, time_traits::qtime_type timestamp) 
+	:	evcb(tn, &time_node::timer_event_callback),
 		m_timestamp(timestamp) {}
 	time_traits::qtime_type m_timestamp;
 };

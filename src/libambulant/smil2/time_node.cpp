@@ -87,22 +87,20 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_picounter(0),
 	m_active(false),
 	m_needs_remove(false),
-	m_last_dur(time_type::unresolved),
+	m_last_cdur(time_type::unresolved),
 	m_rad(0),
 	m_rad_offset(0),
 	m_precounter(0),
 	m_priority(0),
 	m_paused(false), 
 	m_deferred(false),
-	m_begin_trevent(0),
-	m_end_trevent(0),
-	m_revent(0),
+	m_pending_event(0),
 	m_domcall_rule(0),
 	m_locked(false),
 	m_want_activate_events(false),
 	m_want_accesskey(false),
+	m_mediadur(time_type::unresolved),
 	m_impldur(time_type::unresolved),
-	m_playable_timer(0),
 	m_parent(0), m_next(0), m_child(0) {
 	assert(type <= tc_none);
 	node_counter++;
@@ -130,8 +128,6 @@ time_node::~time_node() {
 	// delete this time states
 	for(int i=0;i<=ts_dead;i++)
 		delete m_time_states[i];
-	
-	delete m_playable_timer;
 	
 	// Delete recursively this branch	
 	node_navigator<time_node>::delete_tree(this); 
@@ -178,7 +174,7 @@ void time_node::start() {
 	AM_DBG tnlogger->trace("%s.startElement()", to_string().c_str());
 	qtime_type timestamp(this, 0);
 	m_domcall_rule->add_instance(timestamp, 0);
-	schedule_transition(ts_proactive, timestamp, 0);
+	schedule_state_transition(ts_proactive, timestamp, 0);
 }
 
 // DOM TimeElement::stopElement()
@@ -224,7 +220,9 @@ void time_node::add_dependent(sync_rule *sr, sync_event ev) {
 	if(it == m_dependents.end() || (*it).second == 0) {
 		p = new rule_list();
 		m_dependents[ev] = p;
-	} else p = (*it).second;
+	} else {
+		p = (*it).second;
+	}
 	sr->set_syncbase(this, ev);
 	p->push_back(sr);
 }
@@ -274,31 +272,50 @@ void time_node::dump_dependents(std::ostream& os, sync_event ev) {
 
 // Returns the implicit duration of this node. 
 // This is an implementation for a leaf-node.
-// e.g. queries playable for the implicit dur
+// e.g. queries playable for the implicit dur.
+// The last definite implicit duration returned by the 
+// playable is stored in the variable m_impldur.
+// This function is called if and only if the implicit
+// duration of a node is required by the timing model.
 // See time_container::calc_implicit_dur()
 // See seq::calc_implicit_dur()
 time_node::time_type 
 time_node::calc_implicit_dur() {
+
+	// This function is not applicable for containers.
+	// Assert this usage.
 	assert(!is_time_container());
+	
+	// If this is a discrete leaf node, we know the answer
 	if(is_discrete()) return time_type(0);
+	
+	// Was the implicit duration calculated before?
+	// If yes, avoid the overhead of querring
 	if(m_impldur != time_type::unresolved)
 		return m_impldur;	
-	std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
-	if(dur_pair.first && dur_pair.second>0) {
-		double offset_factor = 1.25;
-		m_impldur = secs_to_time_type(offset_factor*dur_pair.second)();
-		AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur(): %ld", m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str(), m_impldur());
-		return m_impldur;
-	}	
+	
+	// Can the associated playable provide us the implicit duration? 
+	// If yes, remember it in internal timing units (ms)
+	if(m_mediadur == time_type::unresolved) {
+		std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
+		if(dur_pair.first && dur_pair.second>0) {
+			m_mediadur = secs_to_time_type(dur_pair.second)();
+			AM_DBG tnlogger->trace("%s[%s].media_dur(): %ld", m_attrs.get_tag().c_str(), 
+				m_attrs.get_id().c_str(), m_mediadur());
+		}	
+	}
+	
+	// No, the playable cannot provide its implicit duration
 	AM_DBG tnlogger->trace("%s[%s].calc_implicit_dur(): unresolved", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	return time_type::unresolved;
 }
 
-// See spec: "Defining the simple duration" 
 // This function calculates the simple duration of this node.
-// The last calculated simple duration is stored in the variable m_last_cdur 
+// See spec: "Defining the simple duration" 
+// The last calculated simple duration is stored in the variable m_last_cdur.
+// This function will call the function "calc_implicit_dur()" if and only if 
+// the implicit duration of a node is required by the timing model.
 time_node::time_type 
 time_node::calc_dur() {
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
@@ -324,17 +341,19 @@ time_node::calc_dur() {
 	return cdur;
 }
 
-bool time_node::uses_media_timer() const {
-	bool media_timer = false;
+// Returns true for continous media leaf nodes for which
+// the implicit duration is required by the model for
+// timing calculations.
+bool time_node::needs_implicit_dur() const {
 	if(is_time_container() || is_discrete())
-		return media_timer;
+		return false;
 	if(!m_attrs.has_dur_specifier() && m_attrs.specified_end()) {
-		return media_timer;
+		return false;
 	}
 	dur_type dt = m_attrs.get_dur_type();
 	if(dt == dt_unspecified || dt == dt_media)
-		media_timer = true;
-	return media_timer;
+		return true;
+	return false;
 }
  
 // See spec: "Intermediate Active Duration Computation" 
@@ -379,12 +398,13 @@ time_node::calc_active_rad() {
 		else 
 			return (value_type) ::floor(rcount*idur() + 0.5);
 	}
-	// Best estimate based on previous iteration.
-	if(m_last_dur.is_definite()) {
+	
+	// Best estimate based on the previous iteration.
+	if(m_last_cdur.is_definite()) {
 		if(m_attrs.is_rcount_indefinite())
 			return time_type::indefinite;
 		else 
-			return (value_type) ::floor(rcount*m_last_dur() + 0.5);
+			return (value_type) ::floor(rcount*m_last_cdur() + 0.5);
 	}
 		
 	// Cann't be resolved yet.
@@ -392,7 +412,7 @@ time_node::calc_active_rad() {
 }
 
 // See spec: "Active duration algorithm"
-// This functions calculates the preliminary active duration of an element, 
+// This function calculates the preliminary active duration of an element, 
 // before accounting for min and max  semantics
 time_node::time_type 
 time_node::calc_preliminary_ad(time_type b, time_type e) {
@@ -413,7 +433,7 @@ time_node::calc_preliminary_ad(time_type b, time_type e) {
 }
 
 // See spec: "Active duration algorithm"
-// This functions calculates the preliminary active duration of this node, 
+// This function calculates the preliminary active duration of this node, 
 // before accounting for min and max  semantics.
 // Simplified version of the above applicable when "end" is not specified.
 time_node::time_type 
@@ -573,7 +593,6 @@ time_node::calc_first_interval() {
 // This calculation uses active and simple duration algorithms
 // and requires this node's begin and end lists, this node's
 // just ended interval, and the parent simple dur.
-
 time_node::interval_type 
 time_node::calc_next_interval() {
 	// define failure as an alias for the invalid unresolved interval.
@@ -645,6 +664,7 @@ time_node::calc_next_interval() {
 }
 
 
+// XXX: Not used currently
 // Returns the current interval as clipped by its parent simple duration.
 // This function is not used currently.
 time_node::interval_type 
@@ -669,15 +689,89 @@ void time_node::set_state(time_state_type state, qtime_type timestamp, time_node
 	m_state->enter(timestamp);
 }
 
-// Sets a new interval as current, updates dependents and schedules the interval.
+// Cancels the current interval.
+void time_node::cancel_interval(qtime_type timestamp) {
+	AM_DBG tnlogger->trace("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
+	assert(m_interval.is_valid());
+	
+	// The interval should be updated before sync_update 
+	// to make available the new info to induced calcs
+	interval_type i = m_interval;
+	m_interval = interval_type::unresolved;	
+	
+	on_cancel_instance(timestamp, tn_begin, i.begin);
+	on_cancel_instance(timestamp, tn_end, i.end);
+
+	cancel_schedule();
+}
+
+// Updates the current interval with the one provided.
+void time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
+	AM_DBG tnlogger->trace("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());	
+	assert(m_interval.is_valid());
+	assert(timestamp.first == sync_node());
+	
+	// The interval should be updated before sync_update 
+	// to make available the new info to induced calcs
+	interval_type old = m_interval;
+	m_interval = new_interval;	
+	
+	if(m_interval.begin != old.begin) {
+		time_type dt = m_interval.begin - timestamp.second;
+		qtime_type qt(sync_node(), m_interval.begin);
+		on_update_instance(timestamp, tn_begin, m_interval.begin, old.begin);
+		schedule_state_transition(ts_active, qt, dt);
+	} 
+	if(m_interval.end != old.end) {
+		time_type dt = m_interval.end - timestamp.second;
+		if(dt.is_definite()) {
+			// Sync node is probably interested for this event.
+			if(up()) up()->schedule_sync_update(timestamp, 0);
+		}
+		on_update_instance(timestamp, tn_end, m_interval.end, old.end);
+	}
+}
+
+// Updates the current interval end with the value provided.
+void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
+	AM_DBG tnlogger->trace("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld", 
+		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
+		::repr(m_interval.end).c_str(), 
+		::repr(new_end).c_str(), 
+		timestamp.second(),
+		timestamp.as_doc_time_value());	
+	assert(m_interval.is_valid());
+	
+	time_type old_end = m_interval.end;
+	
+	// The interval should be updated before sync_update 
+	// to make available the new info to induced calcs
+	m_interval.end = new_end;
+	
+	on_update_instance(timestamp, tn_end, new_end, old_end);
+	
+	// Sync node is probably interested for this event.
+	if(up()) up()->schedule_sync_update(timestamp, 0);
+}
+
+// Cancels the schedule of this node.
+void time_node::cancel_schedule() {
+	if(m_pending_event) {
+		m_context->cancel_event(m_pending_event);
+		m_pending_event = 0;
+	}
+}
+
+// Sets a new interval as current, updates dependents and schedules activation.
 // After this call the state of the node 
 // a) Remains the same (proactive or postactive) if the interval is after timestamp.
 //    In this case the interval is scheduled.
 // b) Transitions to postactive if the interval is before timestamp
 // c) Transitions to active if the interval contains timestamp
-// Transition to active is done or scheduled to be done, 
-// via time_node::activate(timestamp).
-// 
+// See active_state::enter() for the activities executed
+// when the node is activated.
 // param timestamp: "now" in parent simple time
 void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) {
 	AM_DBG tnlogger->trace("%s[%s].schedule_interval(): %s (DT=%ld)", m_attrs.get_tag().c_str(), 
@@ -713,54 +807,199 @@ void time_node::schedule_interval(qtime_type timestamp, const interval_type& i) 
 	}
 		
 	if(m_interval.after(timestamp.second)) {
-		// Schedule a timer event: 
+		// Schedule activation: 
 		// activate at m_interval.begin - timestamp
 		// remain in the proactive state waiting interval to begin
 		time_type dt = m_interval.begin - timestamp.second;
 		qtime_type qt(sync_node(), m_interval.begin);
-		schedule_transition(ts_active, qt, dt);
-		if(m_interval.end.is_definite()) {
-			time_type dt = m_interval.end - timestamp.second;
-			qtime_type qt(sync_node(), m_interval.end);
-			schedule_transition(ts_postactive, qt, dt);
-		}
+		schedule_state_transition(ts_active, qt, dt);
 		return; 
 	}
 	
 	// Else, the interval should be activated now
-	// The activate() function will determine the details (offset etc)
 	assert(m_interval.contains(timestamp.second));
-	schedule_transition(ts_active, timestamp, 0);
-	if(m_interval.end.is_definite()) {
-		time_type dt = m_interval.end - timestamp.second;
+	schedule_state_transition(ts_active, timestamp, 0);
+}
+
+// Activates the interval of this node.
+// This function is one of the activities executed when a node enters the active state.
+// See active_state::enter() function for the complete list of activities.  
+//
+// timestamp: "scheduled now" in parent simple time
+void time_node::activate(qtime_type timestamp) {
+
+	// verify the assumptions made in the following code
+	assert(timestamp.first == sync_node());
+	assert(m_interval.contains(timestamp.second));
+	assert(timestamp.second >= 0);
+		
+	// We need to convert parent's simple time to this node's simple time.
+	// For this convertion we need the dur since,
+	// t_p = t_c + rad_c + begin_c  => rad_c + t_c = t_p - begin_c
+	// => t_c = rem(t_p - begin_c, dur) and rad_c = mod(t_p - begin_c, dur)*dur
+	
+	// The offset we are now within the current interval
+	time_type ad_offset = timestamp.second - m_interval.begin;
+	
+	// The simple duration of this node
+	time_type cdur = calc_dur();
+	
+	// Calculate the offset within the simple duration
+	// that this node should start playing.
+	time_type sd_offset;
+	if(ad_offset == 0) {
+		sd_offset = 0;
+	} else if(!cdur.is_definite()) {
+		sd_offset = ad_offset;
+	} else if(cdur == 0) {
+		sd_offset = 0;
+	} else {
+		sd_offset = ad_offset.rem(cdur);
+		
+		// In this case we need to update the values of the repeat registers.
+		// Previous values: m_rad(0), m_rad_offset(0), m_precounter(0)
+		
+		// The current repeat index
+		m_precounter = ad_offset.mod(cdur);
+		
+		// The accumulated repeat interval.
+		m_rad = m_precounter*cdur();
+		
+		// The accumulated repeat interval as a parent simple time instance
+		m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
+	}
+		
+	AM_DBG tnlogger->trace("*** %s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
+		timestamp.second(),
+		timestamp.as_doc_time_value());
+	
+	// If this is a leaf node start playable at 'sd_offset' within media
+	if(!is_time_container()) {
+		m_context->start_playable(m_node, time_type_to_secs(sd_offset()));
+		m_context->wantclicks_playable(m_node, want_activate_event());
+	}
+	
+	// Schedule a check for the next S-transition e.g. repeat or end.
+	// Requires: m_interval, m_last_cdur, m_rad_offset  
+	schedule_next_timer_event(timestamp);
+}
+
+// Timer event callback for this node.
+// This callback is called while this node is active.
+// The code is responsible to check the conditions
+// and apply any S-transitions for this node.
+void time_node::timer_event_callback(const timer_event *e) {
+	// ignore canceled events
+	if(m_pending_event != e) return;
+	m_pending_event = 0;
+	
+	qtime_type timestamp =  e->m_timestamp;
+	
+	// the following should be true
+	assert(timestamp.first == sync_node());
+
+	// The AD offset of this node
+	time_type ad_offset = timestamp.second - m_interval.begin;
+	
+	// The SD offset of this node
+	time_type sd_offset;
+	if(ad_offset == 0) {
+		sd_offset = 0;
+	} else if(!m_last_cdur.is_definite()) {
+		sd_offset = ad_offset;
+	} else if(m_last_cdur == 0) {
+		sd_offset = 0;
+	} else {
+		sd_offset = timestamp.second - m_rad_offset;
+	}
+	
+	// Check for the EOI event
+	if(is_active() && timestamp.second >= m_interval.end) {
 		qtime_type qt(sync_node(), m_interval.end);
-		schedule_transition(ts_postactive, qt, dt);
+		set_state(ts_postactive, qt, this);
+		return;
+	} 
+	
+	// Check for the EOSD event
+	if(m_last_cdur.is_definite() && m_last_cdur != 0 && sd_offset >= m_last_cdur) {
+		// may call repeat
+		on_eosd(timestamp);
+	}
+	
+	// Finally:
+	if(is_active()) {
+		schedule_next_timer_event(timestamp);
 	}
 }
 
 // Schedules a state transition to happen at dt from now.
-void time_node::schedule_transition(time_state_type tst, qtime_type timestamp, time_type dt) {
+void time_node::schedule_state_transition(time_state_type tst, qtime_type timestamp, time_type dt) {
+	if(m_pending_event) m_context->cancel_event(m_pending_event);
 	assert(dt.is_definite());
-	transition_event *trevent = new transition_event(this, tst, timestamp);
-	if(tst == ts_active) {
-		m_begin_trevent = trevent;
-	} else if(tst == ts_postactive) {
-		m_end_trevent = trevent;
+	m_pending_event = new transition_event(this, tst, timestamp);
+	m_context->schedule_event(m_pending_event, dt());
+}
+
+// Schedules the next timer event for this node.
+// Requires: m_interval, m_last_cdur, m_rad_offset  
+void time_node::schedule_next_timer_event(qtime_type timestamp) {
+	if(m_pending_event) m_context->cancel_event(m_pending_event);
+	
+	// The AD offset of this node
+	time_type ad_offset = timestamp.second - m_interval.begin;
+	
+	// The SD offset of this node
+	time_type sd_offset;
+	if(ad_offset == 0) {
+		sd_offset = 0;
+	} else if(!m_last_cdur.is_definite()) {
+		sd_offset = ad_offset;
+	} else if(m_last_cdur == 0) {
+		sd_offset = 0;
+	} else {
+		sd_offset = timestamp.second - m_rad_offset;
 	}
-	m_context->schedule_event(trevent, dt());
+	
+	// Time remaining for the EOI event
+	time_type ad_rest = time_type::unresolved;
+	if(m_interval.end.is_definite() && m_interval.end > timestamp.second) {
+		ad_rest = m_interval.end - timestamp.second;
+	} 
+	
+	// Time remaining for the EOSD event
+	time_type sd_rest = time_type::unresolved;
+	if(m_last_cdur.is_definite() && m_last_cdur != 0 && m_last_cdur > sd_offset) {
+		sd_rest = m_last_cdur - sd_offset;
+	}
+	
+	// The next notification should not come later than min(ad_rest, sd_rest)
+	time_type next = std::min(time_type(sampling_delta), std::min(ad_rest, sd_rest));
+	assert (next() <= sampling_delta);
+	m_pending_event = new timer_event(this, timestamp + next);
+	m_context->schedule_event(m_pending_event, next());
+}
+
+// Schedules a sync update notification to happen at dt from now.
+void time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
+	typedef scalar_arg_callback_event<time_node, qtime_type> sync_update_cb;
+	sync_update_cb *cb = new sync_update_cb(this, &time_node::sync_update, timestamp);
+	m_context->schedule_event(cb, dt());
 }
 
 // Scheduled transition callback
-void time_node::transition_callback(const transition_event *e) {
-	time_state_type tst = e->m_state;
-	if(tst == ts_active) m_begin_trevent = 0;
-	else if(tst == ts_postactive) m_end_trevent = 0;
-	
-	if(!is_root() && (m_state->ident() == ts_reset || m_state->ident() == ts_dead))
-		return; // not an S transition
+void time_node::state_transition_callback(const transition_event *e) {
+	// ignore canceled events
+	if(m_pending_event != e) return;
+	m_pending_event = 0;
 	
 	// this should be true
 	assert(e->m_timestamp.first == sync_node());
+	
+	time_state_type tst = e->m_state;
+	
+	//if(!is_root() && !is_alive())
+		//return; // not an S transition
 	
 	if(sync_node()->is_excl()) {
 		excl *p = static_cast<excl*>(sync_node());
@@ -775,40 +1014,22 @@ void time_node::transition_callback(const transition_event *e) {
 	set_state(e->m_state, e->m_timestamp, this);
 }
 
-// Schedules a repeat notification to happen at dt from now.
-void time_node::schedule_repeat(qtime_type timestamp, time_type dt) {
-	assert(dt.is_definite());
-	m_revent = new repeat_event(this, timestamp);
-	m_context->schedule_event(m_revent, dt());
-}
-
-// Schedules a sync update notification to happen at dt from now.
-void time_node::schedule_sync_update(qtime_type timestamp, time_type dt) {
-	typedef scalar_arg_callback_event<time_node, qtime_type> sync_update_cb;
-	sync_update_cb *cb = new sync_update_cb(this, &time_node::sync_update, timestamp);
-	m_context->schedule_event(cb, dt());
-}
-
-// Scheduled repeat notification callback
-void time_node::repeat_callback(const repeat_event *e) {
-	qtime_type timestamp = e->m_timestamp;
+// Called on the end of simple duration event
+void time_node::on_eosd(qtime_type timestamp) {
+	AM_DBG tnlogger->trace("*** %s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value(),
+		m_last_cdur()
+		);
 	
-	// was too late to be canceled
-	if(m_revent == 0) return; 
-	
-	// verify assumptions
-	assert(m_state->ident() == ts_active);
-	assert(timestamp.first == sync_node());
-	m_revent = 0;
-	
-	check_repeat(timestamp);
-}
-
-void time_node::check_repeat(qtime_type timestamp) {
-	// update repeat indicators
-	m_last_dur = timestamp.second - (m_interval.begin + m_rad), 
-	m_rad += m_last_dur();
+	// update repeat registers
+	m_rad += m_last_cdur();
 	m_precounter++;	
+	m_rad_offset = timestamp.second();
+	
+	// Should this node repeat?
 	
 	if(m_attrs.specified_rdur()) {
 		time_type rdur = m_attrs.get_rdur();
@@ -817,6 +1038,7 @@ void time_node::check_repeat(qtime_type timestamp) {
 			return;
 		}
 	}
+	
 	if(m_attrs.specified_rcount()) {
 		double rcount = m_attrs.get_rcount();
 		if(m_attrs.is_rcount_indefinite() || rcount > double(m_precounter)) {
@@ -824,172 +1046,9 @@ void time_node::check_repeat(qtime_type timestamp) {
 			return;
 		}
 	}
-	if(timestamp.second > m_interval.end) {
-		schedule_transition(ts_postactive, timestamp, 0);
-	} else if(m_interval.end.is_definite()) {
-		time_type dt = m_interval.end - timestamp.second;
-		qtime_type qt(sync_node(), m_interval.end);
-		schedule_transition(ts_postactive, qt, dt);
-	} else
-		schedule_sync_update(timestamp, 0);
 }
 
-
-// Cancels the current interval.
-void time_node::cancel_interval(qtime_type timestamp) {
-	AM_DBG tnlogger->trace("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());	
-	assert(m_interval.is_valid());
-	
-	// The interval should be updated before sync_update 
-	// to make available the new info to induced calcs
-	interval_type i = m_interval;
-	m_interval = interval_type::unresolved;	
-	
-	on_cancel_instance(timestamp, tn_begin, i.begin);
-	on_cancel_instance(timestamp, tn_end, i.end);
-
-	cancel_schedule();
-}
-
-// Updates the current interval with the one provided.
-void time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
-	AM_DBG tnlogger->trace("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());	
-	assert(m_interval.is_valid());
-	assert(timestamp.first == sync_node());
-	
-	// The interval should be updated before sync_update 
-	// to make available the new info to induced calcs
-	interval_type old = m_interval;
-	m_interval = new_interval;	
-	
-	if(m_interval.begin != old.begin) {
-		if(m_begin_trevent) m_context->cancel_event(m_begin_trevent);
-		time_type dt = m_interval.begin - timestamp.second;
-		qtime_type qt(sync_node(), m_interval.begin);
-		schedule_transition(ts_active, qt, dt);
-		on_update_instance(timestamp, tn_begin, m_interval.begin, old.begin);
-	}
-	if(m_interval.end != old.end) {
-		if(m_end_trevent) m_context->cancel_event(m_end_trevent);
-		time_type dt = m_interval.end - timestamp.second;
-		if(dt.is_definite()) {
-			qtime_type qt(sync_node(), m_interval.end);
-			schedule_transition(ts_postactive, qt, dt);
-		}
-		on_update_instance(timestamp, tn_end, m_interval.end, old.end);
-	}
-}
-
-// Updates the current interval end with the value provided.
-void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
-	AM_DBG tnlogger->trace("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld", 
-		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), 
-		::repr(m_interval.end).c_str(), 
-		::repr(new_end).c_str(), timestamp.second(),
-		timestamp.as_doc_time_value());	
-	assert(m_interval.is_valid());
-	
-	time_type old_end = m_interval.end;
-	
-	// The interval should be updated before sync_update 
-	// to make available the new info to induced calcs
-	m_interval.end = new_end;
-	
-	on_update_instance(timestamp, tn_end, new_end, old_end);
-		
-	// re-schedule end
-	if(m_end_trevent) {
-		m_context->cancel_event(m_end_trevent);
-		m_end_trevent = 0;
-	}
-	
-	// this should be true for the following	
-	assert(timestamp.first == sync_node());
-	
-	time_type dt = m_interval.end - timestamp.second;
-	qtime_type qt(sync_node(), m_interval.end);
-	if(dt.is_definite())
-		schedule_transition(ts_postactive, qt, dt);
-}
-
-// Cancels the schedule of this node.
-void time_node::cancel_schedule() {
-	if(m_begin_trevent) {
-		m_context->cancel_event(m_begin_trevent);
-		m_begin_trevent = 0;
-	}
-	if(m_end_trevent) {
-		m_context->cancel_event(m_end_trevent);
-		m_end_trevent = 0;
-	}
-	if(m_revent) {
-		m_context->cancel_event(m_revent);
-		m_revent = 0;
-	}
-}
-
-// Activates the interval of this node.
-//
-// timestamp: "scheduled now" in parent simple time
-//
-void time_node::activate(qtime_type timestamp) {
-
-	// verify the assumptions made in the following code
-	assert(timestamp.first == sync_node());
-	assert(m_interval.contains(timestamp.second));
-	assert(timestamp.second >= 0);
-		
-	// We need to convert parent's simple time to this node's simple time.
-	// For this convertion we need the dur since,
-	// t_p = t_c + rad_c + begin_c  => rad_c + t_c = t_p - begin_c
-	// => t_c = rem(t_p - begin_c, dur) and rad_c = mod(t_p - begin_c, dur)*dur
-	
-	time_type offset = timestamp.second - m_interval.begin;
-	time_type cdur = calc_dur();
-	time_type dt;
-	if(offset == 0) {
-		dt = 0;
-	} else if(!cdur.is_definite()) {
-		dt = offset;
-	} else if(cdur == 0) {
-		// XXX: Need to check the spec for this
-		// The repeat behavior is undefined in this case.
-		dt = 0;
-	} else {
-		dt = offset.rem(cdur);
-		m_precounter = offset.mod(cdur);
-		m_rad = m_precounter*cdur();
-		m_last_dur = cdur;
-	}
-	m_rad_offset = qtime_type::to_sync_time(this, m_rad)();
-	
-	AM_DBG tnlogger->trace("*** %s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
-		m_attrs.get_id().c_str(),  dt(), dt(),
-		timestamp.second(),
-		timestamp.as_doc_time_value());
-		
-	if(!is_time_container()) {
-		if(!m_playable_timer) 
-			m_playable_timer = new timer(m_context->get_timer(), 1.0, false);
-		m_playable_timer->start(dt());
-		m_context->start_playable(m_node, time_type_to_secs(dt()));
-		m_context->wantclicks_playable(m_node, want_activate_event());
-	}
-	// schedule next repeat notification if needed
-	if(cdur.is_definite() && cdur != 0 && 
-		(m_attrs.specified_rdur() || m_attrs.specified_rcount())) {
-		// shedule a dur-end notification (repeat check)
-		time_type pstime = m_interval.begin + m_rad + cdur;
-		qtime_type qt(sync_node(), pstime);
-		
-		// schedule or add a code capsule to be executed on EOM
-		schedule_repeat(qt, cdur - dt);
-	}
-}
-
-// The following function is called at dur end.
+// The following function is called when the node should repeat.
 // It is responsible to execute the repeat actions for this node. 
 void time_node::repeat(qtime_type timestamp) {
 	AM_DBG tnlogger->trace("*** %s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
@@ -1007,15 +1066,7 @@ void time_node::repeat(qtime_type timestamp) {
 	} 
 	
 	if(!is_time_container()) {
-		if(m_playable_timer)
-			m_playable_timer->start(0);
 		m_context->start_playable(m_node, 0);
-	}
-	
-	time_type cdur = calc_dur();
-	if(cdur.is_definite()) {
-		qtime_type qt(sync_node(), m_interval.begin + m_rad + cdur);
-		schedule_repeat(qt, cdur);
 	}
 }
 
@@ -1221,6 +1272,7 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 		timestamp.as_doc_time_value());
 	assert(timestamp.first == sync_node());
 	on_add_instance(timestamp, tn_begin_event, timestamp.second);
+	if(is_root()) m_context->started_playback();
 	
 	// Simulate a timegraph-sampling implementation
 	// For a time container we know that more info will be available
@@ -1394,6 +1446,8 @@ void time_node::sync_update(qtime_type timestamp) {
 }
 
 // Begin of media notification
+// Currently this notification is not used.
+// Could be used to define to slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
@@ -1408,8 +1462,10 @@ void time_node::on_bom(qtime_type timestamp) {
 }
 
 // End of nedia notification
+// This notification is taken into account when this node is still active
+// and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
-	if(!is_discrete() && is_active()) {
+	if(!is_discrete() && is_active() && needs_implicit_dur()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
 		AM_DBG tnlogger->trace("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld", 
@@ -1418,11 +1474,21 @@ void time_node::on_eom(qtime_type timestamp) {
 			st.second(),
 			pt.second(),
 			timestamp.second()); 
-		if(m_playable_timer) {
-			m_impldur = m_playable_timer->elapsed();
-			m_playable_timer->pause();
-			cancel_schedule();
-			check_repeat(pt);
+		
+		// The new knowledge we have just acquired.
+		m_impldur = m_mediadur;
+		
+		// Update last_dur for any repeat
+		// calc_dur();
+		
+		// Knowing the above calc current interval
+		time_type end = calc_current_interval_end();
+		if(end != m_interval.end) {
+			// Create model instance
+			qtime_type mqt(sync_node(), qtime_type::to_sync_time(this, m_impldur));
+			
+			// Update interval refering the model instance.
+			update_interval_end(mqt, end);
 		}
 	}
 }

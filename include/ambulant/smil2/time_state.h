@@ -97,7 +97,7 @@ class time_state : public time_traits {
 	long& m_picounter;
 	bool& m_active;
 	bool& m_needs_remove;
-	time_type& m_last_dur;
+	time_type& m_last_cdur;
 	value_type& m_rad;
 	long& m_precounter;
 	time_type& m_impldur;
