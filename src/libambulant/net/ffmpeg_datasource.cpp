@@ -99,16 +99,16 @@ ffmpeg_video_datasource_factory::new_video_datasource(const std::string& url)
 #ifdef WITH_FFMPEG_AVFORMAT
 	net::url   loc(url);
 	
-	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource(%s)", url.c_str());
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource(%s)", url.c_str());
 	AVFormatContext *context = detail::ffmpeg_demux::supported(url);
 	if (!context) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: no support for %s", url.c_str());
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: no support for %s", url.c_str());
 		return NULL;
 	}
 	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
-	video_datasource *ds = NULL; /* new ffmpeg_video_datasource(url, context, thread)*/;
+	video_datasource *ds = new ffmpeg_video_datasource(url, context, thread);
 	if (ds == NULL) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
@@ -218,7 +218,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 
 detail::ffmpeg_demux::~ffmpeg_demux()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_demux::~ffmpeg_demux()");
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) av_close_input_file(m_con);
 	m_con = NULL;
 }
@@ -479,6 +479,172 @@ ffmpeg_audio_datasource::get_audio_format()
 	}
 #endif
 	return m_fmt;
+}
+
+// **************************** ffmpeg_video_datasource *****************************
+
+ffmpeg_video_datasource::ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
+	detail::ffmpeg_demux *thread)
+:	m_url(url),
+	m_con(context),
+	m_stream_index(-1),
+	m_src_end_of_file(false),
+	m_event_processor(NULL),
+	m_frame(NULL),
+	m_timestamp(0.0),
+	m_size(0),
+	m_thread(thread),
+	m_client_callback(NULL)
+{
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource() -> 0x%x", (void*)this);
+	ffmpeg_init();
+	// Find the index of the audio stream
+	for (m_stream_index=0; m_stream_index < context->nb_streams; m_stream_index++) {
+		if (context->streams[m_stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
+			break;
+	}
+	if (m_stream_index >= context->nb_streams) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource(): no audio streams");
+		m_src_end_of_file = true;
+		return;
+	}
+	if (!m_thread) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource::ffmpeg_video_datasource: cannot start thread");
+		m_src_end_of_file = true;
+	}
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::ffmpeg_video_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
+	m_thread->add_datasink(this, m_stream_index);
+}
+
+ffmpeg_video_datasource::~ffmpeg_video_datasource()
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::~ffmpeg_video_datasource(0x%x)", (void*)this);
+	if (m_thread) {
+		m_thread->remove_datasink(m_stream_index);
+		m_thread = NULL;
+	}
+	m_thread = NULL;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::~ffmpeg_video_datasource: thread stopped");
+	m_con = NULL; // owned by the thread
+	m_lock.leave();
+}	
+
+bool
+ffmpeg_video_datasource::has_audio()
+{
+	return false;
+}
+
+audio_datasource *
+ffmpeg_video_datasource::get_audio_datasource()
+{
+	return NULL;
+}
+
+void 
+ffmpeg_video_datasource::start_frame(ambulant::lib::event_processor *evp, 
+	ambulant::lib::event *callbackk, double timestamp)
+{
+	m_lock.enter();
+	
+	if (m_client_callback != NULL)
+		AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): m_client_callback already set!");
+	if (m_frame /* XXXX Check timestamp! */ || _end_of_file() ) {
+		// We have data (or EOF) available. Don't bother starting up our source again, in stead
+		// immedeately signal our client again
+		if (evp && callbackk) {
+			AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::start: trigger client callback");
+			evp->add_event(callbackk, 0, ambulant::lib::event_processor::high);
+		} else {
+			AM_DBG lib::logger::get_logger()->error("ffmpeg_video_datasource::start(): no client callback!");
+		}
+	} else {
+		// We have no data available. Start our source, and in our data available callback we
+		// will signal the client.
+		m_client_callback = callbackk;
+		m_event_processor = evp;
+	}
+	m_lock.leave();
+}
+ 
+void 
+ffmpeg_video_datasource::frame_done(double timestamp)
+{
+	m_lock.enter();
+	if (!m_frame) {
+		lib::logger::get_logger()->error("ffmpeg_video_datasource.readdone: frame_done() called with no current frame");
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.readdone : done with %d bytes", m_size);
+	free(m_frame);
+	m_frame = NULL;
+	m_size = 0;
+	m_lock.leave();
+}
+
+void 
+ffmpeg_video_datasource::data_avail(int64_t pts, uint8_t *inbuf, int sz)
+{
+	// XXX timestamp is ignored, for now
+	m_lock.enter();
+	m_src_end_of_file = (sz == 0);
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource.data_avail: %d bytes available", sz);
+	if(sz && !m_frame) {
+		m_frame = (char*)malloc(sz);
+		if (m_frame)
+			memcpy(m_frame, inbuf, sz);
+		m_size = sz;
+		m_timestamp = 0.0;
+	}
+
+	if ( m_client_callback && (m_frame || m_src_end_of_file ) ) {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::data_avail(): calling client callback (%d, %d)", m_size, m_src_end_of_file);
+		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::high);
+		m_client_callback = NULL;
+		//m_event_processor = NULL;
+	} else {
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_datasource::data_avail(): No client callback!");
+	}
+	m_lock.leave();
+}
+
+
+bool 
+ffmpeg_video_datasource::end_of_file()
+{
+	m_lock.enter();
+	bool rv = _end_of_file();
+	m_lock.leave();
+	return rv;
+}
+
+bool 
+ffmpeg_video_datasource::_end_of_file()
+{
+	// private method - no need to lock
+	if (m_frame) return false;
+	return m_src_end_of_file;
+}
+
+bool 
+ffmpeg_video_datasource::buffer_full()
+{
+	m_lock.enter();
+	bool rv = (m_frame != NULL);
+	m_lock.leave();
+	return rv;
+}	
+
+char* 
+ffmpeg_video_datasource::get_frame(double *timestamp, int *size)
+{
+	m_lock.enter();
+	char *rv = m_frame;
+	*timestamp = m_timestamp;
+	*size = m_size;
+	m_lock.leave();
+	return rv;
 }
 
 #endif // WITH_FFMPEG_AVFORMAT

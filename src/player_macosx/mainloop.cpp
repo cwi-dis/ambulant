@@ -63,7 +63,7 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
-#undef WITH_NONE_VIDEO
+#define WITH_NONE_VIDEO
 #ifdef WITH_NONE_VIDEO
 #include "ambulant/gui/none/none_factory.h"
 #endif

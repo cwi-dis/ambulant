@@ -181,23 +181,27 @@ class ffmpeg_audio_datasource:
 	lib::critical_section m_lock;
 };
 
-class ffmpeg_video_datasource: virtual public video_datasource, virtual public lib::ref_counted_obj {
+class ffmpeg_video_datasource:
+	virtual public video_datasource,
+	public detail::datasink,
+	virtual public lib::ref_counted_obj {
   public:
 	 ffmpeg_video_datasource(const std::string& url, AVFormatContext *context,
 		detail::ffmpeg_demux *thread);
     ~ffmpeg_video_datasource();
 
+	bool has_audio();
+	audio_datasource *get_audio_datasource();
+
     void start_frame(lib::event_processor *evp, lib::event *callback, double timestamp);  
 
-    void data_avail(int64_t pts, uint8_t *data, int size);
-	bool buffer_full();
-		
     bool end_of_file();
 	char* get_frame(double *timestamp, int *size);
 	void frame_done(double timestamp);
 	
-	static AVFormatContext *supported(const std::string& url);
-	  
+    void data_avail(int64_t pts, uint8_t *data, int size);
+	bool buffer_full();
+
   private:
     bool _end_of_file();
 	const std::string m_url;
@@ -205,6 +209,10 @@ class ffmpeg_video_datasource: virtual public video_datasource, virtual public l
 	int m_stream_index;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
+
+	char *m_frame;
+	double m_timestamp;
+	int m_size;
 
 //	databuffer m_buffer;
 	detail::ffmpeg_demux *m_thread;
