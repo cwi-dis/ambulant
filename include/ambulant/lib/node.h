@@ -38,6 +38,9 @@
 // return list of nodes
 #include <list>
 
+// return map of id -> nodes
+#include <map>
+
 // find_if, etc
 #include <algorithm>
 
@@ -211,12 +214,19 @@ class node {
 			if((*it).first.second == name) return (*it).second.c_str();
 		return 0;
 	}
+	const char *get_attribute(const std::string& name) const {
+		return get_attribute(name.c_str());
+	}
 
 	const q_attributes_list& get_attrs() const { return m_qattrs;}
 
 	// return the number of nodes of the xml (sub-)tree starting at this node
 	unsigned int size() const;
 
+	// fills in a map with node ids
+	// the map may be used for retreiving nodes from their id
+	void create_idmap(std::map<std::string, node*>& m) const; 
+		
 	/////////////////////
 	// string repr
 	
@@ -290,17 +300,22 @@ inline xml_string node::to_trimmed_string() const {
 }
 
 inline unsigned int node::size() const {
-	count_visitor<node> visitor;
-	const_iterator last = end();
-	for(const_iterator it = begin(); it != last; it++)
-		visitor.operator()(*it);
-	return visitor.size();
+	unsigned int count = 0;
+	count_visitor<node> visitor(count);
+	std::for_each(begin(), end(), visitor);
+	return count;
 }
 
 inline void node::find_nodes_with_name(const xml_string& name, std::list<node*>& lst) {
 	iterator last = end(); // call once
 	for(iterator it = begin(); it != last; it++)
 		if((*it).first && (*it).second->get_local_name() == name) lst.push_back((*it).second);
+}
+
+inline 
+void node::create_idmap(std::map<std::string, node*>& m) const {
+	attr_collector<node> visitor(m);
+	std::for_each(begin(), end(), visitor);
 }
 
 ///////////////////////

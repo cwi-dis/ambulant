@@ -19,6 +19,9 @@
 // output_visitor
 #include <ostream>
 
+// used by attr_collector
+#include <map>
+
 namespace ambulant {
 
 namespace lib {
@@ -262,18 +265,31 @@ class trimmed_output_visitor {
 
 template <class Node>
 class count_visitor {
-	/////////
   public:
-
-	count_visitor() : m_count(0) {}
+	count_visitor(unsigned int& count) : m_count(count) {}
 	void operator()(std::pair<bool, const Node*> x) {
 		if(x.first) m_count++;
 	}
-	unsigned int size() { return m_count;}
-
-	/////////
   private:
-	unsigned int m_count;
+	unsigned int& m_count;
+};
+
+template <class Node>
+class attr_collector {
+  public:
+	attr_collector(std::map<std::string, Node*>& m, const char *attr = "id") : 
+		m_map(m), m_attr(attr) {}
+		
+	void operator()(std::pair<bool, const Node*> x) {
+		if(x.first) {
+			const char *value = x.second->get_attribute(m_attr);
+			if(value != 0) 
+				m_map[value] = const_cast<Node*>(x.second);
+		}
+	}
+  private:
+	std::string m_attr;
+	std::map<std::string, Node*>& m_map;
 };
 
 } // namespace lib
