@@ -28,9 +28,11 @@ If you are working from a source distribution on Linux/Unix a simple
 After building you will find a text-only demo player in
 Test/designtests/demoplayer. There is a sample document too, in
 Test/designtests/mmsdoc/mmsdoc.smil.
+A more expanded demo can be found in:
+Extras/DemoPresentation/Demo.smil
 
 A GUI based on QT capable of showing images and text can be found in
-src/player-unix/qt_player. It is able to play the sample document
+src/player-unix/qt_player. It is able to play the sample documents
 mentioned above (first select the .smil document with "File->Open", then
 select "Play").
 

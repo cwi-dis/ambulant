@@ -1,1 +1,1 @@
-SUBDIRS=none cocoa
+SUBDIRS=none cocoa qt

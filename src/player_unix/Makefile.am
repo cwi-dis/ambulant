@@ -2,7 +2,7 @@ qt_gui-moc.cpp: $(top_builddir)/include/ambulant/gui/qt/qt_gui.h
 	moc -o $@ $<
 
 bin_PROGRAMS = qt_player
-qt_player_SOURCES = qt_gui.cpp  qt_gui-moc.cpp qt_mainloop.cpp
+qt_player_SOURCES = qt_gui.cpp  qt_gui-moc.cpp qt_mainloop.cpp qt_mainloop.h
 #LDADD = -L$(top_builddir)/src/libambulant -lambulant -lambulant_qt	\
 #	-L$(EXPAT_PREFIX)/lib -lexpat				\
 #	-L$(QT_PREFIX)/lib -lqt-mt
