@@ -89,6 +89,10 @@ cocoa_transition_renderer::start(double where)
 		m_trans_engine = cocoa_transition_engine(m_dest, false, m_intransition);
 		if (m_trans_engine)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
+#ifdef USE_SMIL21
+		if (m_intransition->m_scope == scope_screen)
+			lib::logger::get_logger()->trace("cocoa_transition_renderer: scope=screen not implemented, default to region");
+#endif
 	}
 	m_lock.leave();
 }
@@ -103,6 +107,10 @@ cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 	m_trans_engine = cocoa_transition_engine(m_dest, true, m_outtransition);
 	if (m_trans_engine)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
+#ifdef USE_SMIL21
+	if (m_outtransition->m_scope == scope_screen)
+		lib::logger::get_logger()->trace("cocoa_transition_renderer: scope=screen not implemented, default to region");
+#endif
 	m_lock.leave();
 	if (m_dest) m_dest->need_redraw();
 }

@@ -70,7 +70,7 @@ transition_info::from_node(const node *n)
 	// Placeholder
 	if (n == NULL) return NULL;
 	transition_info *rv = new transition_info();
-#if 1
+
 	const char *ctype = n->get_attribute("type");
 	if (!ctype) {
 		lib::logger::get_logger()->error(gettext("transition: no `type' attribute"));
@@ -120,19 +120,28 @@ transition_info::from_node(const node *n)
 		delete rv;
 		return NULL;
 	}
+
 	const char *csubtype = n->get_attribute("subtype");
 	if (csubtype)
 		rv->m_subtype = csubtype;
 	else
 		rv->m_subtype = "";
-#else
-	rv->rv->m_type = barnDoorWipe;
-	rv->m_subtype = "";
-#endif
+
 	rv->m_dur = get_trans_dur(n);
+
 	rv->m_startProgress = get_progress(n, "startProgress", 0.0);
 	rv->m_endProgress = get_progress(n, "endProgress", 1.0);
 	rv->m_reverse = false;
+
+#ifdef USE_SMIL21
+	rv->m_scope = scope_region;
+	const char *scope = n->get_attribute("scope");
+	if (scope) {
+		if (strcmp(scope, "region") == 0) rv->m_scope = scope_region;
+		else if (strcmp(scope, "screen") == 0) rv->m_scope = scope_screen;
+		else lib::logger::get_logger()->error(gettext("transition: unknown scope=\"%s\""), scope);
+	}
+#endif
 	return rv;
 }
 
