@@ -83,9 +83,12 @@ gui::none::none_active_renderer::stop()
 }
 
 void
-gui::none::none_background_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
+gui::none::none_background_renderer::drawbackground(
+	const abstract_smil_region_info *src, 
+	const screen_rect<int> &dirty, 
+	abstract_rendering_surface *dst, abstract_window *window)
 {
-	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_info, (void*)m_dest);
+	lib::logger::get_logger()->trace("none_background_renderer.redraw(0x%x) from 0x%x to 0x%x", (void *)this, (void*)src, (void*)dst);
 }
 
 active_basic_renderer *
@@ -101,11 +104,9 @@ gui::none::none_renderer_factory::new_renderer(
 }
 
 lib::abstract_bg_rendering_source *
-gui::none::none_renderer_factory::new_background_renderer(
-	const lib::abstract_smil_region_info *info,
-	lib::abstract_rendering_surface *const dest)
+gui::none::none_renderer_factory::new_background_renderer()
 {
-	return new none_background_renderer(info, dest);
+	return new none_background_renderer();
 }
 
 abstract_window *

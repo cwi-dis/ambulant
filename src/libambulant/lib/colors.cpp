@@ -64,11 +64,22 @@ typedef std::map<std::string, color_t> colors_map;
 static colors_map html4_colors_map;
 
 bool is_color(const char *name) {
+	if (name[0] == '#') {
+		char *endp;
+		long hexcolor = strtol(name+1, &endp, 16);
+		return (*endp == '\0');
+	}
 	colors_map::const_iterator it = html4_colors_map.find(name);
 	return it != html4_colors_map.end();
 }
 
 color_t to_color(const char *name) {
+	if (name[0] == '#') {
+		char *endp;
+		long hexcolor = strtol(name+1, &endp, 16);
+		if (*endp != '\0') return 0;
+		return (color_t)hexcolor;
+	}
 	colors_map::const_iterator it = html4_colors_map.find(name);
 	if(it == html4_colors_map.end()) return 0;
 	return (*it).second;

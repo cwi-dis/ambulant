@@ -94,6 +94,12 @@ class cocoa_active_fill_renderer : public active_basic_renderer {
 	critical_section m_lock;
 };
 
+class cocoa_background_renderer : public abstract_bg_rendering_source {
+  public:
+	void drawbackground(const abstract_smil_region_info *src, const screen_rect<int> &dirty, 
+		abstract_rendering_surface *dst, abstract_window *window);
+};
+
 } // namespace cocoa
 
 } // namespace gui

@@ -106,17 +106,10 @@ class none_active_renderer : public lib::active_renderer {
 
 class none_background_renderer : public lib::abstract_bg_rendering_source {
   public:
-	none_background_renderer(
-		const lib::abstract_smil_region_info *info,
-		lib::abstract_rendering_surface *const dest)
-	:   m_info(info),
-		m_dest(dest) {};
-		
-	void redraw(const lib::screen_rect<int> &dirty, lib::abstract_window *window);
-	void user_event(const lib::point &where) {};
-  private:
-	const lib::abstract_smil_region_info *m_info;
-	lib::abstract_rendering_surface *const m_dest;
+	void drawbackground(const lib::abstract_smil_region_info *src, 
+		const lib::screen_rect<int> &dirty, 
+		lib::abstract_rendering_surface *dst, 
+		lib::abstract_window *window);
 };
 
 class lib::abstract_smil_region_info;
@@ -132,9 +125,7 @@ class none_renderer_factory : public lib::renderer_factory {
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
 		lib::abstract_rendering_surface *const dest);
-	lib::abstract_bg_rendering_source *new_background_renderer(
-		const lib::abstract_smil_region_info *info,
-		lib::abstract_rendering_surface *const dest);
+	lib::abstract_bg_rendering_source *new_background_renderer();
 };
 
 } // namespace none

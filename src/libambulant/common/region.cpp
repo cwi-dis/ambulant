@@ -54,7 +54,6 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -111,7 +110,7 @@ lib::passive_region::redraw(const screen_rect<int> &r, abstract_window *window)
 		m_cur_active_region->redraw(our_rect, window);
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) no active region", (void *)this);
-		draw_background();
+		draw_background(our_rect, window);
 	}
 	// XXXX Should go per z-order value
 	std::multimap<zindex_t,passive_region *>::iterator i;
@@ -122,16 +121,25 @@ lib::passive_region::redraw(const screen_rect<int> &r, abstract_window *window)
 }
 
 void
-lib::passive_region::draw_background()
+lib::passive_region::draw_background(const screen_rect<int> &r, abstract_window *window)
 {
 	// Do a quick return if we have nothing to draw
 	if (m_info == NULL) return;
+	/*AM_DBG*/ lib::logger::get_logger()->trace("draw_background %s: color=0x%x, transparent=%x, showbg=%d, renderer=0x%x",
+		m_name.c_str(), (int)m_info->get_bgcolor(), (int)m_info->get_transparent(), (int)m_info->get_showbackground(), (int)m_bg_renderer);
 	if (m_info->get_transparent()) return;
 	if (!m_info->get_showbackground()) return;
 	// Now we should make sure we have a background renderer
-	if (!m_bg_renderer) {
-		AM_DBG lib::logger::get_logger()->trace("passive_region::draw_background(0x%x): allocate bg_renderer", (void *)this);
-	}
+	get_bg_renderer();
+	if (m_bg_renderer)
+		m_bg_renderer->drawbackground(m_info, r, this, window);
+}
+
+lib::abstract_bg_rendering_source *
+lib::passive_region::get_bg_renderer()
+{
+	if (!m_bg_renderer && m_parent)
+		m_bg_renderer = m_parent->get_bg_renderer();
 }
 
 void
@@ -284,7 +292,8 @@ lib::passive_root_layout::passive_root_layout(const std::string &name, size boun
 {
 	m_mouse_region = wf->new_mouse_region();
 	m_gui_window = wf->new_window(name, bounds, this);
-	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region);
+	m_bg_renderer = wf->new_background_renderer();
+	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x, bgrenderer=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region, (void *)m_bg_renderer);
 }
 		
 lib::passive_root_layout::passive_root_layout(const abstract_smil_region_info *info, size bounds, window_factory *wf)
@@ -292,6 +301,7 @@ lib::passive_root_layout::passive_root_layout(const abstract_smil_region_info *i
 {
 	m_mouse_region = wf->new_mouse_region();
 	m_gui_window = wf->new_window(m_name, bounds, this);
+	m_bg_renderer = wf->new_background_renderer();
 	AM_DBG lib::logger::get_logger()->trace("passive_root_layout(0x%x, \"%s\"): window=0x%x, mouse_region=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window, (void *)m_mouse_region);
 }
 		

@@ -147,7 +147,8 @@ class passive_region : public abstract_rendering_surface, public abstract_render
 	void need_events(bool want) {abort();};
 
 	void need_bounds();
-	void draw_background();
+	void draw_background(const screen_rect<int> &r, abstract_window *window);
+	abstract_bg_rendering_source *get_bg_renderer();
   protected:
   	std::string m_name;					// for debugging
 	bool m_bounds_inited;					// True if bounds and topleft initialized

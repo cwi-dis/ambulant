@@ -92,6 +92,7 @@ class cocoa_window_factory : public lib::window_factory {
   	
 	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
 	lib::abstract_mouse_region *new_mouse_region();
+	lib::abstract_bg_rendering_source *new_background_renderer();
   private:
     void *m_defaultwindow_view;
 };
