@@ -70,6 +70,26 @@ class tokens_vector : public std::vector<std::string> {
 	std::string join(size_type i, char sep);
 };
 
+// Workaround for toolsets with missing stringstream functionality.
+//
+// The convention is that objects that want to be served by this 
+// "stringstream replacement" define a repr() function that returns a string.
+// See for example smil_time and smil_interval.
+//
+// Build-in types should be defined explicitly here.
+//
+template<class T>
+inline std::string& operator<<(std::string& s, T& c) { s += repr(c); return s;}
+template<class T>
+inline std::string& operator<<(std::string& s, T c) { s += repr(c); return s;}
+inline std::string& operator<<(std::string& s, const std::string& c) { s+=c; return s;}
+inline std::string& operator<<(std::string& s, char c) { s+=c; return s;}
+inline std::string& operator<<(std::string& s, int c) { char sz[32];sprintf(sz,"%d",c); s+=sz; return s;}
+inline std::string& operator<<(std::string& s, long c) { char sz[32];sprintf(sz,"%ld",c); s+=sz; return s;}
+inline std::string& operator<<(std::string& s, double c) { char sz[32];sprintf(sz,"%.3f",c); s+=sz; return s;}
+inline std::string& operator<<(std::string& s, const char *c) { s+=c; return s;}
+
+
 const std::string space_chars = " \t\r\n";
 const std::string dec_digits = "0123456789";
 //const std::wstring wspace_chars = L" \r\n\t\v";
