@@ -101,7 +101,6 @@ void
 qt_transition_blitclass_fade::update()
 {
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(%f) -- being implemented", m_progress);
-	return; //TMP
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *qpm = aqw->ambulant_pixmap();
 	QPixmap *npm = aqw->get_ambulant_surface();
@@ -110,7 +109,7 @@ qt_transition_blitclass_fade::update()
 	QImage res = img1.copy();
 	int i, j, iw = res.width(), ih = res.height();
 	AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x. img2=0x%x, img1=0x%x, res=0x%x, iw=%d, ih=%d", qpm, npm, &img2, &img1, &res, iw, ih);
-	  // Following code From: Qt-interest Archive, July 2002
+	// Following code From: Qt-interest Archive, July 2002
 	// blending of qpixmaps, Sebastian Loebbert 
 	double fac1 = m_progress;
 	double fac2 = 1.0 - fac1;
@@ -123,14 +122,14 @@ qt_transition_blitclass_fade::update()
 				(int)( qGreen(p1)*fac1 + qGreen(p2)*fac2  ),
 				(int)( qBlue(p1)*fac1 + qBlue(p2)*fac2  ) )
 			 );
-	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
+//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG lib::logger::get_logger()->trace("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
 	  }
 	}
 	lib::screen_rect<int> newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
-#ifdef	JUNK
+#ifndef	JUNK
 	QPainter paint;
 	paint.begin(qpm);
 	// XXXX Fill with background color
@@ -141,7 +140,9 @@ qt_transition_blitclass_fade::update()
 	paint.flush();
 	paint.end();
 #else /*JUNK*/
-	QPixmap* rpm = new QPixmap(*&res);
+//	QPixmap* rpm = new QPixmap(*&res);
+	QPixmap* rpm = new QPixmap(iw, ih);
+	rpm->convertFromImage(res);
 	bitBlt(qpm, L, T, rpm, L, T, W, H);
 #endif/*JUNK*/
 #ifndef FILL_PURPLE

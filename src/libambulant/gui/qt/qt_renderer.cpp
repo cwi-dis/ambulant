@@ -174,15 +174,14 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 		lib::logger::get_logger()->error("ambulant_qt_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
-#if 0
+#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
 	m_ambulant_widget->repaint(r.left(), r.top(), r.width(), r.height(), false);
-#else
-	m_ambulant_widget->update(r.left(), r.top(),  r.width(), r.height());
-//	if (qApp->locked())
-//		return;
-	qApp->processEvents();
-//	qApp->mainWidget()-
-#endif
+	qApp->wakeUpGuiThread();
+//	qApp->processEvents();
+#else	/*QT_NO_FILEDIALOG*/	/* Assume plain Qt */
+	m_ambulant_widget->update(r.left(), r.top(), r.width(), r.height());
+	qApp->wakeUpGuiThread();
+#endif	/*QT_NO_FILEDIALOG*/
 }
   
 void
