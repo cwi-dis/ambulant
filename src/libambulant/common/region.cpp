@@ -261,7 +261,7 @@ passive_region::draw_background(const lib::screen_rect<int> &r, gui_window *wind
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->trace("draw_background %s: color=0x%x, transparent=%x, showbg=%d, renderer=0x%x",
-		m_name.c_str(), (int)m_info->get_bgcolor(), (int)m_info->get_transparent(), (int)m_info->get_showbackground(), (int)m_bg_renderer);
+		m_name.c_str(), (int)m_info->get_bgcolor(), (int)m_info->get_transparent(), (int)m_info->get_showbackground(), (void*)m_bg_renderer);
 	if (m_info->get_transparent()) {
 		AM_DBG lib::logger::get_logger()->trace("draw_background %s: transparent", m_name.c_str());
 		return;
