@@ -84,7 +84,9 @@ class playable_factory;
 
 namespace smil2 {
 
-class smil_player : public common::abstract_player, public time_node_context, public common::playable_notification {
+class smil_layout_manager;
+
+class smil_player : public common::player, public time_node_context, public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -112,7 +114,6 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	void stop();
 	void pause();
 	void resume();
-	int get_cursor(int x, int y);
 	
 	bool is_playing() const { return m_state == common::ps_playing;}
 	bool is_pausing() const { return m_state == common::ps_pausing;}
@@ -155,8 +156,12 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	virtual void clicked(int n, double t);	
 	
 	// raw notifications from the UI
-	virtual void on_click(int x, int y);
 	virtual void on_char(int ch);
+	virtual void on_click(int x, int y, common::abstract_window *w);
+	virtual int get_cursor(int x, int y, common::abstract_window *w);
+
+	// Export the layout functionality for those who need it
+	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
 	
   private:
 	common::playable *create_playable(const lib::node *n); 
@@ -167,7 +172,7 @@ class smil_player : public common::abstract_player, public time_node_context, pu
 	common::playable_factory *m_pf;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
-	common::layout_manager *m_layout_manager;
+	smil_layout_manager *m_layout_manager;
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;	
 	common::play_state m_state;

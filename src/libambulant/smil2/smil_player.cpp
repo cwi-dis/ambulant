@@ -60,6 +60,7 @@
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/smil_player.h"
 #include "ambulant/smil2/timegraph.h"
+#include "ambulant/smil2/smil_layout.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -68,7 +69,7 @@
 using namespace ambulant;
 using namespace smil2;
 
-common::abstract_player *
+common::player *
 common::create_smil2_player(lib::document *doc, common::window_factory *wf, common::playable_factory *pf)
 {
 	return new smil_player(doc, wf, pf);
@@ -93,7 +94,7 @@ smil_player::smil_player(lib::document *doc, common::window_factory *wf, common:
 	test_attrs::read_custom_attributes(m_doc);
 	
 	// though we need only the top level windows at this moment
-	m_layout_manager = common::create_smil2_layout_manager(m_wf, m_doc);
+	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
 	
 }
 
@@ -110,7 +111,7 @@ smil_player::~smil_player() {
 
 void smil_player::build_layout() {
 	if(m_layout_manager) delete m_layout_manager;
-	m_layout_manager = common::create_smil2_layout_manager(m_wf, m_doc);
+	m_layout_manager = new smil_layout_manager(m_wf, m_doc);
 }
 
 void smil_player::build_timegraph() {
@@ -290,7 +291,8 @@ void smil_player::stopped(int n, double t) {
 }
 
 
-void smil_player::on_click(int x, int y) {
+void smil_player::on_click(int x, int y, common::abstract_window *w) {
+
 	typedef scalar_arg_callback_event<time_node, q_smil_time> activate_event_cb;
 	
 	// the event instance to propagate
@@ -327,7 +329,7 @@ void smil_player::on_click(int x, int y) {
 	}
 }
 
-int smil_player::get_cursor(int x, int y) {
+int smil_player::get_cursor(int x, int y, common::abstract_window *w) {
 	// WARNING: The following is test code
 	// Does not use mouse regions, z-index etc
 	int cursor_id = 0;
