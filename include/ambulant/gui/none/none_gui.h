@@ -37,7 +37,9 @@ class none_active_renderer : public lib::active_renderer {
 		const lib::node *node)
 	:	lib::active_renderer(evp, src, dest, node) {};
 	
+	void start(lib::event *playdone);
 	void redraw(const lib::screen_rect<int> &r, lib::passive_window *window, const lib::point &window_topleft);
+	void stop();
 };
 
 class none_renderer_factory : public lib::renderer_factory {

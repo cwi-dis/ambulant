@@ -10,6 +10,10 @@
 
 #include <Cocoa/Cocoa.h>
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 namespace ambulant {
 
 using namespace lib;
@@ -54,9 +58,9 @@ class cocoa_active_image_renderer : public active_final_renderer {
 void
 cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 {
-	logger::get_logger()->trace("cocoa_passive_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (!m_view) {
-		logger::get_logger()->trace("cocoa_passive_window::need_redraw: no m_view");
+		logger::get_logger()->fatal("cocoa_passive_window::need_redraw: no m_view");
 		return;
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
@@ -74,7 +78,7 @@ void
 cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
 {
 	const screen_rect<int> &r = m_dest->get_rect();
-	logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
+	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
 
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
@@ -97,7 +101,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 		[[NSColor whiteColor] set];
 		NSRectFill(dstrect);
 		NSPoint origin = NSMakePoint(NSMinX(dstrect), NSMidY(dstrect));
-		logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
+		AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw at Cocoa-point (%f, %f)", origin.x, origin.y);
 		NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
 		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: origin];
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: origin];
@@ -110,7 +114,7 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 
 cocoa_active_image_renderer::~cocoa_active_image_renderer()
 {
-	logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->trace("~cocoa_active_image_renderer(0x%x)", (void *)this);
 	if (m_image)
 		[m_image release];
 	//if (m_nsdata)
@@ -121,10 +125,10 @@ void
 cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
 {
 	const screen_rect<int> &r = m_dest->get_rect();
-	logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), window_topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
+	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), window_topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
 	
 	if (m_data && !m_image) {
-		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
+		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
 		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
 		m_image = [[NSImage alloc] initWithData: m_nsdata];
 		if (!m_image)
@@ -141,7 +145,7 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_windo
 	if (m_image) {
 		NSSize srcsize = [m_image size];
 		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
-		logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", srcsize.width, srcsize.height, NSMinX(dstrect), NSMinY(dstrect), NSMaxX(dstrect), NSMaxY(dstrect));
+		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", srcsize.width, srcsize.height, NSMinX(dstrect), NSMinY(dstrect), NSMaxX(dstrect), NSMaxY(dstrect));
 		[m_image drawInRect: dstrect fromRect: srcrect operation: NSCompositeCopy fraction: 1.0];
 	} else {
 		[[NSColor blueColor] set];
@@ -160,14 +164,14 @@ cocoa_renderer_factory::new_renderer(event_processor *const evp,
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
 		rv = (active_renderer *)new cocoa_active_image_renderer(evp, src, dest, node);
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_image_renderer 0x%x", (void *)node, (void *)rv);
 	} else if ( tag == "text") {
 		rv = (active_renderer *)new cocoa_active_text_renderer(evp, src, dest, node);
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning cocoa_active_text_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		logger::get_logger()->error("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\"", tag.c_str());
 		rv = new gui::none::none_active_renderer(evp, src, dest, node);
-		logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning none_active_renderer 0x%x", (void *)node, (void *)rv);
+		AM_DBG logger::get_logger()->trace("cocoa_renderer_factory: node 0x%x: returning none_active_renderer 0x%x", (void *)node, (void *)rv);
 	}
 	return rv;
 }
@@ -196,7 +200,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds)
 {
     [super initWithFrame:frameRect];
     ambulant_window = NULL;
-    NSLog(@"AmbulantView.initWithFrame: self=0x%x", self);
+    AM_DBG NSLog(@"AmbulantView.initWithFrame: self=0x%x", self);
     return self;
 }
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
@@ -216,9 +220,9 @@ cocoa_window_factory::new_window(const std::string &name, size bounds)
 
 - (void)drawRect:(NSRect)rect
 {
-    NSLog(@"AmbulantView.drawRect: self=0x%x", self);
+    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x", self);
     if (!ambulant_window) {
-        NSLog(@"Redraw AmbulantView: NULL ambulant_window");
+        AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
         [[NSColor grayColor] set];
         NSRectFill([self bounds]);
     } else {

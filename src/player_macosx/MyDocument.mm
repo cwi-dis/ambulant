@@ -66,7 +66,6 @@
     if (![NSThread isMultiThreaded]) {
         NSLog(@"startPlay: still not multi-threaded!");
     }
-    NSLog(@"startPlay, self=0x%x, view=0x%x\n", self, view);
     ambulant::gui::cocoa::cocoa_window_factory *wf = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     mainloop *ml = new mainloop();
     ml->run([filename UTF8String], (ambulant::lib::window_factory *)wf);

@@ -423,8 +423,8 @@ void lib::node::dump(std::ostream& os) const {
 
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n) {
 	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
-	const char *url = n.get_attribute("src");
-	if (url)
+	std::string url = n.get_url("src");
+	if (url != "")
 		os << ", url=\"" << url << "\"";
 	os << ")";
 	return os;
