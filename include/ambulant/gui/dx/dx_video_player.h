@@ -66,8 +66,6 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
-// CLSID_FilterGraph
-#include <uuids.h>
 
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"amstrmid.lib")

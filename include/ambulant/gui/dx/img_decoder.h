@@ -138,6 +138,13 @@ struct file_reader {
 	DataSource *m_src;
 };
 
+struct color_quad {
+	uchar b;
+	uchar g;
+	uchar r;
+	uchar a;
+};
+
 } // namespace dx
 
 } // namespace gui

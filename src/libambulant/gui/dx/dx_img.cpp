@@ -55,6 +55,9 @@
 #include "ambulant/gui/dx/dx_gui.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 
+#include "ambulant/gui/dx/jpg_decoder.h"
+#include "ambulant/gui/dx/gif_decoder.h"
+
 #include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
@@ -109,15 +112,27 @@ void gui::dx::dx_img_renderer::readdone() {
 	lib::logger::get_logger()->trace("dx_img_renderer.readdone(0x%x, size=%d)", (void *)this, m_src->size());
 	
 	// Prepare dx-region's pixel map
-	typedef jpg_decoder<net::active_datasource, lib::color_trible> decoder_class;
+	typedef img_decoder<net::active_datasource, lib::color_trible> img_decoder_class;
+	typedef jpg_decoder<net::active_datasource, lib::color_trible> jpg_decoder_class;
+	typedef gif_decoder<net::active_datasource, lib::color_trible> gif_decoder_class;
 	
 	HDC hdc = ::GetDC(NULL);
-	decoder_class* decoder = new decoder_class(m_src, hdc);
+	img_decoder_class* decoder = 0;
+	
+	decoder = new jpg_decoder_class(m_src, hdc);
 	if(decoder->can_decode()) {
 		dib_surface<lib::color_trible> *ds = decoder->decode();
-		m_region->set_bmp(ds->m_hbmp);
+		if(ds) m_region->set_bmp(ds->m_hbmp);
 	}
 	delete decoder;
+	
+	decoder = new gif_decoder_class(m_src, hdc);
+	if(decoder->can_decode()) {
+		dib_surface<lib::color_trible> *ds = decoder->decode();
+		if(ds) m_region->set_bmp(ds->m_hbmp);
+	}
+	delete decoder;
+	
 	::DeleteDC(hdc);
 	
 	m_dest->need_redraw();

@@ -89,6 +89,10 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 
 	virtual bool can_decode();
 	virtual dib_surface<ColorType>* decode();
+	virtual bool is_transparent() { return false;}
+	virtual void get_transparent_color(BYTE *rgb) { 
+		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
+	}
 
 	private:
 	void write_pixel_rows(j_decompress_ptr cinfo, surface<ColorType> *psurf);
@@ -138,9 +142,7 @@ bool jpg_decoder<DataSource, ColorType>::can_decode() {
 	m_src->seekg(0);
     uchar_t b1 = m_src->get();
     uchar_t b2 = m_src->get();
-    if((b1 == 0xFF) && (b2 == 0xD8))
-		return true;
-	return false;
+    return ((b1 == 0xFF) && (b2 == 0xD8))?true:false;
 }
 
 template <class DataSource, class ColorType>

@@ -55,7 +55,6 @@
 
 #include <string>
 #include "ambulant/common/renderer.h"
-#include "ambulant/gui/dx/jpg_decoder.h"
 
 namespace ambulant {
 
