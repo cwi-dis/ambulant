@@ -321,7 +321,7 @@ gui::sdl::sdl_active_audio_renderer::readdone()
 	assert(m_audio_src);
 	m_audio_chunck.allocated = 0;
 	m_audio_chunck.volume = 128;
-	m_audio_chunck.abuf = (Uint8*) m_audio_src->read_ptr();
+	m_audio_chunck.abuf = (Uint8*) m_audio_src->get_read_ptr();
 	
 	m_audio_chunck.alen = m_audio_src->size();
 	m_rate = m_audio_src->get_samplerate();

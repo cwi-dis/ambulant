@@ -138,7 +138,7 @@ gui::arts::arts_active_audio_renderer::readdone()
     
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x)", (void *)this);
     
-    data = m_src->read_ptr();
+    data = m_src->get_read_ptr();
 	size = m_src->size();
     AM_DBG lib::logger::get_logger()->trace("active_renderer.readdone(0x%x) strarting to play %d bytes", (void *)this, size);
     arts_setup(44100,16,1,"arts_audio");

@@ -1,3 +1,4 @@
+
 /*
  * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
@@ -97,7 +98,7 @@ net::ffmpeg_audio_datasource::start(ambulant::lib::event_processor *evp, ambulan
 	
 	if (m_client_callback != NULL)
 		AM_DBG lib::logger::get_logger()->error("ffmpeg_audio_datasource::start(): m_client_callback already set!");
-	if (m_buffer.not_empty() || m_src->end_of_file() ) {
+	if (m_buffer.buffer_not_empty() || m_src->end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (evp && callbackk) {
@@ -158,10 +159,10 @@ net::ffmpeg_audio_datasource::callback()
 	if (m_con) {
 		
 		size = m_src->size();
-		while (size > 0 && !m_buffer.is_full()) {
-			m_inbuf = (uint8_t*) m_src->read_ptr();
+		while (size > 0 && !m_buffer.buffer_full()) {
+			m_inbuf = (uint8_t*) m_src->get_read_ptr();
 			AM_DBG lib::logger::get_logger()->trace("ffmpeg_audio_datasource.callback: %d bytes available", size);
-			m_outbuf = (uint8_t*) m_buffer.prepare();
+			m_outbuf = (uint8_t*) m_buffer.get_write_ptr();
 
 			if (max_block < size) {
 				blocksize = max_block;
@@ -202,18 +203,18 @@ net::ffmpeg_audio_datasource::callback()
 bool 
 net::ffmpeg_audio_datasource::end_of_file()
 {
-	if (m_buffer.not_empty()) return false;
+	if (m_buffer.buffer_not_empty()) return false;
 	return m_src->end_of_file();
 }
 
 bool 
 net::ffmpeg_audio_datasource::buffer_full()
 {
-	return m_buffer.is_full();
+	return m_buffer.buffer_full();
 }	
 
 char* 
-net::ffmpeg_audio_datasource::read_ptr()
+net::ffmpeg_audio_datasource::get_read_ptr()
 {
 	return m_buffer.get_read_ptr();
 }
@@ -221,7 +222,7 @@ net::ffmpeg_audio_datasource::read_ptr()
 int 
 net::ffmpeg_audio_datasource::size() const
 {
-		return m_buffer.used();
+		return m_buffer.size();
 }	
 
 int 

@@ -1,4 +1,4 @@
-/*
+/*get_
  * 
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  * 
@@ -70,8 +70,8 @@ using namespace ambulant;
 	
 net::databuffer::databuffer()
 {
-	m_used = 0;
-    m_size = 0;
+	m_size = 0;
+    m_used = 0;
     m_rear = 0;
     m_max_size = DEFAULT_MAX_BUF_SIZE;
 	//AM_DBG lib::logger::get_logger()->trace("active_datasource.databuffer(): [size = %d, max size = %d]",m_size, m_max_size);
@@ -80,14 +80,14 @@ net::databuffer::databuffer()
 }
 
 bool
-net::databuffer::is_full()
+net::databuffer::buffer_full()
 {
    return m_buffer_full;
 }
 
 
 bool
-net::databuffer::not_empty()
+net::databuffer::buffer_not_empty()
 {
     if (m_used > 0) {
         return true;
@@ -125,7 +125,7 @@ net::databuffer::~databuffer()
 	}
 }
 
-int net::databuffer::used() const
+int net::databuffer::size() const
 {
 	return m_used;
 }
@@ -148,20 +148,20 @@ void net::databuffer::dump(std::ostream& os, bool verbose) const
 }
 
 char *
-net::databuffer::prepare()
+net::databuffer::get_write_ptr()
 {
-	//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: start BUFSIZ = %d", BUFSIZ);
+	//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: start BUFSIZ = %d", BUFSIZ);
 	
     if(!m_buffer_full) {
         m_buffer = (char*) realloc(m_buffer, m_size + BUFSIZ);
-		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: buffer realloc done (%x)",m_buffer);
+		//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: buffer realloc done (%x)",m_buffer);
         if (!m_buffer) {
             lib::logger::get_logger()->fatal("databuffer::databuffer(size=%d): out of memory", m_size);
         }
-		//AM_DBG lib::logger::get_logger()->trace("databuffer.prepare: returning m_front (%x)",m_buffer + m_size);
+		//AM_DBG lib::logger::get_logger()->trace("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
 		return (m_buffer + m_size);
     } else {
-        lib::logger::get_logger()->warn("databuffer::databuffer::prepare : buffer full but still trying to fill it ");
+        lib::logger::get_logger()->warn("databuffer::databuffer::get_write_ptr : buffer full but still trying to fill it ");
 		return NULL;
     }
     
@@ -252,7 +252,7 @@ net::active_datasource::active_datasource(passive_datasource *const source, int 
 bool
 net::active_datasource::buffer_full()
 {
-	return m_buffer->is_full();
+	return m_buffer->buffer_full();
 }
 
 void
@@ -263,7 +263,7 @@ net::active_datasource::callback()
 bool
 net::active_datasource::end_of_file()
 {
-	if (m_buffer->not_empty()) return false;
+	if (m_buffer->buffer_not_empty()) return false;
 	return m_end_of_file;
 }
 
@@ -280,7 +280,7 @@ net::active_datasource::~active_datasource()
 int
 net::active_datasource::size() const
 {
-	return m_buffer->used();
+	return m_buffer->size();
 }
 
 void
@@ -303,7 +303,7 @@ void
 net::active_datasource::read(char *data, int size)
 {
     char* in_ptr;
-    if (size <= m_buffer->used()) {
+    if (size <= m_buffer->size()) {
     	in_ptr = m_buffer->get_read_ptr();
         memcpy(data,in_ptr,size);
         m_buffer->readdone(size);
@@ -319,7 +319,7 @@ net::active_datasource::read_file()
 	if (m_stream >= 0) {
 		do {
 		//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: getting buffer pointer");
-            buf = m_buffer->prepare();
+            buf = m_buffer->get_write_ptr();
 			//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: buffer ptr : %x", buf);
 			if (buf) {
 				//AM_DBG lib::logger::get_logger()->trace("active_datasource.readfile: start reading %d bytes", BUFSIZ);
@@ -337,7 +337,7 @@ net::active_datasource::read_file()
 }
  
 char* 
-net::active_datasource::read_ptr()
+net::active_datasource::get_read_ptr()
 {
 	return m_buffer->get_read_ptr();
 }
@@ -347,7 +347,7 @@ net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
  {
  	if (! end_of_file() ) read_file();
 	
-	if (m_buffer->used() > 0 ) {
+	if (m_buffer->size() > 0 ) {
     	if (evp && callback) {
 			AM_DBG lib::logger::get_logger()->trace("active_datasource.start: trigger readdone callback (x%x)", callback);
 			evp->add_event(callback, 0, ambulant::lib::event_processor::high);

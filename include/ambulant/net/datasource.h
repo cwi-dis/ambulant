@@ -86,19 +86,8 @@ namespace net {
 typedef char bytes; 
 
 class databuffer  
-{
- private: 
-    
-	char* m_buffer; 			
-	unsigned long int m_rear;
-	
-	unsigned long int m_size;  			
- 	unsigned long int m_max_size; 														 
-	unsigned long int m_used;							
-	
-	bool m_buffer_full;
-							
- public:
+{							
+  public:
 	// constructors
 	databuffer();				
 	databuffer(int max_size);	
@@ -117,56 +106,63 @@ class databuffer
 	//void put_data(char *data , int size);			 							 
 	
 	// returns the amount of bytes that are used.
-	int used() const;
- 	bool is_full();
-    bool not_empty();
-	void readdone(int size);
-	char * prepare();
-	void pushdata(int size);
+	int  size() const;
+ 	bool buffer_full();
+    bool buffer_not_empty();
+	// client call to tell the databuffer it is ready to with size bytes of data
+	void readdone(int size); 
+	char* get_write_ptr();
+	void  pushdata(int size);
     char* get_read_ptr();
+	
+  private: 
+    char* m_buffer; 			
+	unsigned long int m_rear;
+	unsigned long int m_size;  			
+ 	unsigned long int m_max_size; 														 
+	unsigned long int m_used;							
+	bool m_buffer_full;
+
 	
 };
 
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
-	os << "databuffer(" << (void *)&n << ", used=" << n.used() << ")";
-	return os;
-}
- 
+		os << "databuffer(" << (void *)&n << ", used=" << n.size() << ")";
+		return os;
+	}
 class abstract_active_datasource : public ambulant::lib::ref_counted_obj {  	
   public:
 	~abstract_active_datasource() {}
 
 	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
 
-        // a readdone cal is made by the client if he is ready with len bytes of data.
+    // a readdone call is made by the client if he is ready with len bytes of data.
     virtual void readdone(int len) = 0;
-//    virtual void callback() = 0 ;
-    virtual bool end_of_file() = 0;
-	virtual bool buffer_full() = 0;
-		
-	virtual char* read_ptr() = 0;
+	virtual char* get_read_ptr() = 0;
 	virtual int size() const = 0 ;
-	
+		
+    virtual bool end_of_file() = 0;
+	virtual bool buffer_full() = 0;		
 };
 
 
 class abstract_audio_datasource : virtual public abstract_active_datasource {
   public:
-	  ~abstract_audio_datasource() {};
+	~abstract_audio_datasource() {};
 		  
     virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;  
-
-        // a readdone cal is made by the client if he is ready with len bytes of data.
+    // a readdone cal is made by the client if he is ready with len bytes of data.
     virtual void readdone(int len) = 0;
     virtual bool end_of_file() = 0;
 	virtual bool buffer_full() = 0;
 		
-	virtual char* read_ptr() = 0;
+	virtual char* get_read_ptr() = 0;
 	virtual int size() const = 0;
 	
-	virtual int get_nchannels () = 0;
-  	virtual int get_nbits () = 0;
-	virtual int get_samplerate () = 0;
+	virtual int get_nchannels() = 0;
+  	virtual int get_nbits() = 0;
+	virtual int get_samplerate() = 0;
+	
 	virtual int select_decoder(char* file_ext) = 0;
   protected:
     virtual void callback() = 0 ;
@@ -216,7 +212,7 @@ class active_datasource : virtual public abstract_active_datasource {
     bool end_of_file();
 	bool buffer_full();
 		
-	char* read_ptr();
+	char* get_read_ptr();
 	int size() const;
 
   
@@ -261,7 +257,7 @@ class raw_audio_datasource : public abstract_audio_datasource {
     bool end_of_file() { return m_src->end_of_file(); }
 	bool buffer_full() { return m_src->buffer_full(); }
 		
-	char* read_ptr() { return m_src->read_ptr(); }
+	char* get_read_ptr() { return m_src->get_read_ptr(); }
 	int size() const { return m_src->size(); }
 
 	int get_nchannels () { return 1; }

@@ -95,7 +95,7 @@ class ffmpeg_audio_datasource: public abstract_audio_datasource {
     bool end_of_file();
 	bool buffer_full();
 		
-	char* read_ptr();
+	char* get_read_ptr();
 	int size() const;   
 	
  
