@@ -198,10 +198,6 @@ qt_mainloop::create_document(const char *filename)
 		url = url.join_to_base(cwd_url);
 		AM_DBG lib::logger::get_logger()->trace("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
-#define	USE_XERCES
-#ifdef	USE_XERCES
-	lib::document* rv = lib::document::create_from_file(filename);
-#else /*USE_XERCES*/
 	int size = net::read_data_from_url(url, m_df, &data);
 	if (size < 0) {
 		lib::logger::get_logger()->error("Cannot open %s", filename);
@@ -210,7 +206,6 @@ qt_mainloop::create_document(const char *filename)
 	std::string docdata(data, size);
 	free(data);
 	lib::document *rv = lib::document::create_from_string(docdata);
-#endif/*USE_XERCES*/
 	if (rv) rv->set_src_url(url);
 	return rv;
 }	

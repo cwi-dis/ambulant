@@ -86,7 +86,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	enum {NS_SEP = '|'};
 
 	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
-	~xerces_sax_parser();
+	virtual ~xerces_sax_parser();
 	
 	bool parse(const char *filename);
 	

@@ -45,47 +45,46 @@
  * which carries forward this exception. 
  * 
  */
+#include "ambulant/lib/logger.h"
+#include "ambulant/common/preferences.h"
 
-#ifndef AMBULANT_COMMON_PREFERENCES_H
-#define AMBULANT_COMMON_PREFERENCES_H
+using namespace ambulant;
 
-namespace ambulant {
+using namespace common;
 
-namespace common {
-
-const unsigned int default_layout_width = 640;
-const unsigned int default_layout_height = 480;
-
-class preferences {
-
-  protected:	
-	preferences();
+preferences::preferences()
+  :	m_parser_id(EXPAT) {
+}
 	
-	~preferences();
+preferences::~preferences()
+	{}
 
-  public:
+preferences*  ambulant::common::preferences::s_preferences = 0;
 
-	enum parser_id {EXPAT = 0, XERCES};
+preferences* 
+ambulant::common::preferences::get_preferences() {
+	if (s_preferences == 0) {
+		s_preferences =  new preferences;
+	}
+	return s_preferences;
+}
 
-	static preferences* get_preferences();
+preferences::parser_id
+preferences::get_parser_id() {
+	return m_parser_id;
+}
 
-	parser_id get_parser_id();
+bool 
+preferences::set_parser_id(parser_id parser) {
+	m_parser_id = parser;
+}
 
-	bool set_parser_id(parser_id );
+bool 
+preferences::load_preferences() {
+	return false;
+}
 
-	virtual bool load_preferences();
-
-	virtual bool save_preferences();
-
-  private:
-	static preferences* s_preferences; // singleton
-	parser_id m_parser_id;
-
-};// class preferences
-
-} // namespace common
- 
-} // namespace ambulant
-
-#endif // AMBULANT_COMMON_PREFERENCES_H
-
+bool 
+preferences::save_preferences() {
+	return false;
+}

@@ -93,28 +93,6 @@ xerces_sax_parser::~xerces_sax_parser() {
 	free (m_buf);
 }
 
-bool 
-xerces_sax_parser::parse(const char *filename) {
-	bool succeeded = false;
-	try {
-		m_saxparser->parse(filename);
-		succeeded = true;
-	} catch (const XMLException& e) {
-	  char *exceptionMessage = XMLString::transcode(e.getMessage());
-	  m_logger->error("During parsing: %s \n Exception message is: %s \n",
-			  filename, exceptionMessage);
-	  XMLString::release(&exceptionMessage);
-	} catch (const SAXParseException& e) {
-	  char *exceptionMessage = XMLString::transcode(e.getMessage());
-	  m_logger->error("During parsing: %s \n Exception message is: %s \n",
-			  filename, exceptionMessage);
-	  XMLString::release(&exceptionMessage);
-	} catch (...) {
-	  m_logger->error("Unexpected exception during parsing");
-	}
-	return succeeded;
-}
-
 bool
 xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	bool succeeded = false;

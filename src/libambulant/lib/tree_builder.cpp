@@ -47,12 +47,9 @@
  */
 
 /* 
-<<<<<<< tree_builder.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.17.2.2
  */
+#include "ambulant/common/preferences.h"
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
@@ -146,18 +143,12 @@ bool lib::tree_builder::build_tree_from_url(const net::url& u) {
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
-#ifdef	WITH_XERCES
-	assert(0); //XXXX TBD HOW?
-#endif /*WITH_XERCES*/
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
 	return m_well_formed;
 }
 
 bool 
 lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
-#ifdef	WITH_XERCES
-	assert(0); //XXXX TBD HOW?
-#endif/*WITH_XERCES*/
 	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 	return m_well_formed;
 }
@@ -175,16 +166,20 @@ lib::tree_builder::reset() {
 	}
 	m_well_formed = false;
 #ifdef	WITH_XERCES
-    // XXXX Do this only if the xerces parser is selected in the preferences
-	m_xmlparser = new xerces_sax_parser(this, this);
+	common::preferences::parser_id parser_id 
+	  = common::preferences::get_preferences()->get_parser_id();
+	if (m_xmlparser == NULL 
+	    && parser_id == common::preferences::XERCES)
+		m_xmlparser = new xerces_sax_parser(this, this);
 #endif/*WITH_XERCES*/
 #ifdef WITH_EXPAT
-    // XXXX Do this only if the expat parser is selected in the preferences
-	m_xmlparser = new expat_parser(this, this);
+	if (m_xmlparser == NULL 
+	    && parser_id == common::preferences::EXPAT)
+		m_xmlparser = new expat_parser(this, this);
 #endif /*WITH_EXPAT*/
-    if (m_xmlparser == NULL) {
-        lib::logger::get_logger()->fatal("Could not create any XML parser (configuration error?)");
-    }
+	if (m_xmlparser == NULL) {
+        	lib::logger::get_logger()->fatal("Could not create any XML parser (configuration error?)");
+	}
 }
 
 void 

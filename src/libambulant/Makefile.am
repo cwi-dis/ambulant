@@ -96,7 +96,7 @@ toolkit_ffmpeg_libraries=
 endif
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	-I$(EXPAT_PREFIX)/include $(XERCES_INCLUDES) $(qtincludes) $(artsincludes)\
+	-I$(EXPAT_INCLUDES) $(XERCES_INCLUDES) $(qtincludes) $(artsincludes)\
 	  $(sdlincludes) $(ffmpegincludes)
 
 lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries)\
@@ -134,6 +134,7 @@ libambulant_la_SOURCES = \
 	net/databuffer.cpp \
 	net/url.cpp \
 	\
+	common/preferences.cpp \
 	common/region.cpp \
 	common/renderer.cpp \
 	common/schema.cpp \

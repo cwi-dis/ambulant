@@ -57,7 +57,7 @@ if test x$expat = xtrue; then
 	if test  -f $EXPAT_PREFIX/include/expat.h; then
 		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
 		EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
-		EXPAT_INCLUDES=-I$EXPAT_PREFIX/include
+		EXPAT_INCLUDES="-I$EXPAT_PREFIX/include -DWITH_EXPAT"
 	else
 		AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
 		expat=false
