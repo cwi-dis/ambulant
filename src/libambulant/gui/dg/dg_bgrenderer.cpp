@@ -71,7 +71,7 @@ gui::dg::dg_bgrenderer::~dg_bgrenderer() {
 	AM_DBG lib::logger::get_logger()->trace("~dg_bgrenderer(0x%x)", this);
 }
 	
-void gui::dg::dg_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dg::dg_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
 	AM_DBG lib::logger::get_logger()->trace("dg_bgrenderer::redraw(%s)",repr(dirty).c_str());
 	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dst->get_global_topleft();

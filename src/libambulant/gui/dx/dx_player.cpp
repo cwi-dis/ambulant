@@ -234,9 +234,9 @@ void gui::dx::dx_player::on_done() {
 ////////////////////
 // common::window_factory implementation
 
-common::abstract_window *
+common::gui_window *
 gui::dx::dx_player::new_window(const std::string &name, 
-	lib::size bounds, common::surface_source *src) {
+	lib::size bounds, common::gui_events *src) {
 	
 	AM_DBG lib::logger::get_logger()->trace("dx_window_factory::new_window(%s): %s", 
 		name.c_str(), repr(bounds).c_str());
@@ -258,7 +258,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 	winfo->v->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	winfo->v->clear();
 	
-	// Create a concrete abstract_window
+	// Create a concrete gui_window
 	winfo->w = new dx_window(name, bounds, rgn, this, winfo->v);
 	winfo->f = 0;
 	
@@ -266,7 +266,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 	m_windows[name] = winfo;
 	AM_DBG m_logger->trace("windows: %d", m_windows.size());
 	
-	// Return abstract_window
+	// Return gui_window
 	return winfo->w;
 }
 
@@ -283,11 +283,6 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	destroy_os_window(wi->h);
 	delete wi;
 	AM_DBG m_logger->trace("windows: %d", m_windows.size());
-}
-
-common::gui_region*
-gui::dx::dx_player::new_mouse_region() {
-	return new dx_gui_region();
 }
 
 common::renderer*
@@ -314,7 +309,7 @@ gui::dx::dx_player::get_wininfo(HWND hwnd) {
 	return winfo;
 }
 
-common::abstract_window *
+common::gui_window *
 gui::dx::dx_player::get_window(HWND hwnd) {
 	wininfo *wi = get_wininfo(hwnd);
 	return wi?wi->w:0;
@@ -330,7 +325,7 @@ gui::dx::dx_player::new_playable(
 	const lib::node *node,
 	lib::event_processor *const evp) {
 	
-	common::abstract_window *window = get_window(node);
+	common::gui_window *window = get_window(node);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG m_logger->trace("dx_player::new_playable: %s", tag.c_str());
@@ -375,7 +370,7 @@ get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
 	return ri?ri->get_name().c_str():0;
 }
 
-common::abstract_window *
+common::gui_window *
 gui::dx::dx_player::get_window(const lib::node* n) {
 	typedef common::surface_template region;
 	smil2::smil_layout_manager *layout = m_player->get_layout();

@@ -73,7 +73,7 @@ gui::dg::dg_brush::dg_brush(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
 	m_color(0) { 
 	AM_DBG lib::logger::get_logger()->trace("dg_brush::dg_brush(0x%x)", this);
@@ -114,7 +114,7 @@ void gui::dg::dg_brush::start(double t) {
 
 void gui::dg::dg_brush::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dg_brush::stop(0x%x)", this);
-	m_dest->renderer_done();
+	m_dest->renderer_done(this);
 	m_activated = false;
 }
 
@@ -126,7 +126,7 @@ void gui::dg::dg_brush::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dg::dg_brush::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dg::dg_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();

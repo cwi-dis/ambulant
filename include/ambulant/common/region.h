@@ -96,6 +96,8 @@ class passive_region : public surface_template, public surface, public gui_event
 	void redraw(const screen_rect<int> &dirty, gui_window *window);
 	void user_event(const point &where, int what = 0);
 		
+	// Win32 code needs this, but I don't like it:
+	const passive_region *get_parent() const { return m_parent; }
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes

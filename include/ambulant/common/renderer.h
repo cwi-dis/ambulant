@@ -286,6 +286,7 @@ class renderer_playable : public playable, public renderer {
 		m_node(node),
 		m_event_processor(evp),
 		m_dest(0),
+		m_alignment(0),
 		m_activated(false), 
 		m_wantclicks(false) {
 	}
@@ -301,7 +302,7 @@ class renderer_playable : public playable, public renderer {
 	
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
-	void set_alignment(common::alignment *align) {  }
+	void set_alignment(common::alignment *align) { m_alignment = align; }
 	void set_intransition(lib::transition_info *info) {  }
 	void start_outtransition(lib::transition_info *info) {  }
 	surface *get_surface() { return m_dest;}
@@ -314,6 +315,7 @@ class renderer_playable : public playable, public renderer {
 	const lib::node	*m_node;
 	lib::event_processor *m_event_processor;
 	surface *m_dest;
+	alignment *m_alignment;
 	bool m_activated;
 	bool m_wantclicks;
 };

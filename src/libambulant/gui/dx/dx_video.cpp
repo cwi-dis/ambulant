@@ -76,7 +76,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window, 
+	common::gui_window *window, 
 	lib::event_processor* worker)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
@@ -162,7 +162,7 @@ void gui::dx::dx_video_renderer::stop() {
 	m_update_event = 0;
 	p->stop();
 	delete p;
-	m_dest->renderer_done();
+	m_dest->renderer_done(this);
 	m_activated = false;
 }
 
@@ -184,7 +184,7 @@ void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
 	if(!m_player || !m_player->can_play()) {
 		// No bits available
 		return;
@@ -204,7 +204,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	
 	// Get fit rectangles
 	lib::rect vid_rect1;
-	lib::screen_rect<int> vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1);
+	lib::screen_rect<int> vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1, m_alignment);
 	
 	// Use one type of rect to do op
 	lib::screen_rect<int> vid_rect(vid_rect1);

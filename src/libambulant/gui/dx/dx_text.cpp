@@ -73,7 +73,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_window(window), 
 	m_text(0) { 
@@ -132,7 +132,7 @@ void gui::dx::dx_text_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_text_renderer::stop(0x%x)", this);
 	delete m_text;
 	m_text = 0;
-	m_dest->renderer_done();
+	m_dest->renderer_done(this);
 	m_activated = false;
 }
 
@@ -144,7 +144,7 @@ void gui::dx::dx_text_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
+void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();

@@ -71,17 +71,17 @@ class dg_img_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::abstract_window *window);
+		common::gui_window *window);
 	~dg_img_renderer();
 	void start(double t);
 	void stop();
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
   private:
 	image_renderer *m_image;
 	
 	// for debugging
-	common::abstract_window *m_window;
+	common::gui_window *m_window;
 	lib::screen_rect<int> m_msg_rect;
 };
 

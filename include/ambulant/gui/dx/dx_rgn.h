@@ -66,7 +66,7 @@ namespace gui {
 
 namespace dx {
 
-class dx_gui_region : public common::gui_region {
+class dx_gui_region {
   public:
 	// Creates an empty region
 	dx_gui_region() 
@@ -80,12 +80,14 @@ class dx_gui_region : public common::gui_region {
 		s_counter++;
 	}
 			
+#if 0
 	// Creates a region that is equal in size and shape to the provided region
 	dx_gui_region(const gui_region& rgn) 
 	:	m_hrgn(CreateRectRgn(0, 0, 0, 0)) {
 		CombineRgn(m_hrgn, handle(rgn), 0, RGN_COPY);
 		s_counter++;
 	}
+#endif
 	
 	~dx_gui_region() { 
 		DeleteObject((HGDIOBJ)m_hrgn); 
@@ -93,7 +95,7 @@ class dx_gui_region : public common::gui_region {
 	}
 	
 	// Clone factory function
-	gui_region *clone() const {
+	dx_gui_region *clone() const {
 		HRGN hrgn = CreateRectRgn(0, 0, 0, 0);
 		CombineRgn(hrgn, m_hrgn, 0, RGN_COPY);
 		return new dx_gui_region(hrgn);
@@ -124,32 +126,32 @@ class dx_gui_region : public common::gui_region {
 			lib::point(rect.right, rect.bottom));
 	}
 	
-	bool operator ==(const common::gui_region& r) const {
+	bool operator ==(const dx_gui_region& r) const {
 		return EqualRgn(m_hrgn, handle(r)) != 0;
 	}
 	
 	// assignment
-	common::gui_region& operator =(const lib::screen_rect<int>& rect) {
+	dx_gui_region& operator =(const lib::screen_rect<int>& rect) {
 		SetRectRgn(m_hrgn, rect.left(), rect.top(), rect.right(), rect.bottom());
 		return *this;
 	}
 	
 	// assignment
-	common::gui_region& operator =(const common::gui_region& r) {
+	dx_gui_region& operator =(const dx_gui_region& r) {
 		if(this == &r) return *this;
 		CombineRgn(m_hrgn, handle(r), 0, RGN_COPY);
 		return *this;
 	}
 	
 	// intersection
-	common::gui_region& operator &=(const common::gui_region& r) {
+	dx_gui_region& operator &=(const dx_gui_region& r) {
 		if(this == &r) return *this;
 		CombineRgn(m_hrgn, m_hrgn, handle(r), RGN_AND);
 		return *this;
 	}
 	
 	// intersection
-	common::gui_region& operator &=(const lib::screen_rect<int>& rect) {
+	dx_gui_region& operator &=(const lib::screen_rect<int>& rect) {
 		HRGN hrgn = CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
 		CombineRgn(m_hrgn, m_hrgn, hrgn, RGN_AND);
 		DeleteObject((HGDIOBJ) hrgn);
@@ -157,28 +159,28 @@ class dx_gui_region : public common::gui_region {
 	}
 	
 	// union
-	common::gui_region& operator |=(const common::gui_region& r) {
+	dx_gui_region& operator |=(const dx_gui_region& r) {
 		if(this == &r) return *this;
 		CombineRgn(m_hrgn, m_hrgn, handle(r), RGN_OR);
 		return *this;
 	}
 	
 	// difference (this - intersection)
-	common::gui_region& operator -=(const common::gui_region& r) {
+	dx_gui_region& operator -=(const dx_gui_region& r) {
 		if(this == &r) {clear(); return *this;}
 		CombineRgn(m_hrgn, m_hrgn, handle(r), RGN_DIFF);
 		return *this;
 	}
 	
 	// xor (union - intersection)
-	common::gui_region& operator ^=(const common::gui_region& r) {
+	dx_gui_region& operator ^=(const dx_gui_region& r) {
 		if(this == &r) { clear(); return *this;}
 		CombineRgn(m_hrgn, m_hrgn, handle(r), RGN_XOR);
 		return *this;
 	}
 	
 	// translation
-	common::gui_region& operator +=(const lib::point& pt) {
+	dx_gui_region& operator +=(const lib::point& pt) {
 		OffsetRgn(m_hrgn, pt.x, pt.y);
 		return *this;
 	}
@@ -190,8 +192,8 @@ class dx_gui_region : public common::gui_region {
 	dx_gui_region(HRGN hrgn) : m_hrgn(hrgn) {s_counter++;}
 	HRGN handle() { return m_hrgn;}
 	HRGN handle() const { return m_hrgn;}
-	static HRGN handle(common::gui_region& r) { return ((dx_gui_region*)&r)->handle();}
-	static HRGN handle(const common::gui_region& r) { return ((const dx_gui_region*)&r)->handle();}
+	static HRGN handle(dx_gui_region& r) { return ((dx_gui_region*)&r)->handle();}
+	static HRGN handle(const dx_gui_region& r) { return ((const dx_gui_region*)&r)->handle();}
 	HRGN m_hrgn;
 };
 

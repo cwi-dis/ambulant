@@ -130,11 +130,9 @@ class dg_player :
 	////////////////////
 	// common::window_factory implementation
 	
-	common::abstract_window *new_window(const std::string& name, 
-		lib::size bounds, common::surface_source *src);
-		
-	common::gui_region *new_mouse_region();
-	
+	common::gui_window *new_window(const std::string& name, 
+		lib::size bounds, common::gui_events *src);
+			
 	common::renderer *new_background_renderer(const common::region_info *src);
 	
 	void window_done(const std::string& name);
@@ -167,8 +165,8 @@ class dg_player :
 	void on_done();
 	
   private:
-	common::abstract_window* get_window(const lib::node* n);
-	common::abstract_window* get_window(HWND hwnd);
+	common::gui_window* get_window(const lib::node* n);
+	common::gui_window* get_window(HWND hwnd);
 
 	std::basic_string<char> m_url;
 	smil2::smil_player *m_player;

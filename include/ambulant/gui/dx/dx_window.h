@@ -75,7 +75,7 @@ namespace dx {
 
 class viewport;
 
-class dx_window : public common::abstract_window {
+class dx_window : public common::gui_window {
   public:
   	dx_window(const std::string& name, 
   		lib::size bounds,
@@ -86,14 +86,14 @@ class dx_window : public common::abstract_window {
   	
 	void need_redraw(const lib::screen_rect<int>& r);
 	void redraw(const lib::screen_rect<int>& r);
-	void mouse_region_changed();
 	void need_redraw();
+	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
 	
 	viewport *get_viewport() { return m_viewport;}
   private:
-	// abstract_window:
+	// gui_window:
 	// passive_region *m_region;
 	region *m_rgn;
 	std::string m_name; // for easy access

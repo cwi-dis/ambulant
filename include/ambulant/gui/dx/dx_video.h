@@ -73,7 +73,7 @@ class dx_video_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::abstract_window *window,
+		common::gui_window *window,
 		lib::event_processor* worker);
 	~dx_video_renderer();
 	void start(double t);
@@ -81,7 +81,7 @@ class dx_video_renderer : public common::renderer_playable {
 	void pause();
 	void resume();
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	std::pair<bool, double> get_dur();
 	
   private:
@@ -93,7 +93,7 @@ class dx_video_renderer : public common::renderer_playable {
 	lib::critical_section m_cs;
 	
 	// for debugging
-	common::abstract_window *m_window;
+	common::gui_window *m_window;
 	lib::screen_rect<int> m_msg_rect;
 	
 };

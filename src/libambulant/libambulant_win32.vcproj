@@ -244,6 +244,9 @@
 					RelativePath=".\lib\timer.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\transition_info.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\tree_builder.cpp">
 				</File>
 				<Filter
@@ -341,6 +344,9 @@
 					RelativePath=".\smil2\time_attrs.cpp">
 				</File>
 				<File
+					RelativePath=".\smil2\time_calc.cpp">
+				</File>
+				<File
 					RelativePath=".\smil2\time_node.cpp">
 				</File>
 				<File
@@ -348,6 +354,9 @@
 				</File>
 				<File
 					RelativePath=".\smil2\timegraph.cpp">
+				</File>
+				<File
+					RelativePath=".\smil2\transition.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -461,6 +470,9 @@
 							RelativePath="..\..\include\ambulant\gui\dg\bmp_decoder.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\lib\callback.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dg\dg_area.h">
 						</File>
 						<File
@@ -544,9 +556,6 @@
 						RelativePath="..\..\include\ambulant\lib\byte_buffer.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\callback.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\colors.h">
 					</File>
 					<File
@@ -620,6 +629,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\timer.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\lib\transition_info.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\lib\tree_builder.h">
@@ -897,6 +909,9 @@
 						RelativePath="..\..\include\ambulant\smil2\time_attrs.h">
 					</File>
 					<File
+						RelativePath="..\..\include\ambulant\smil2\time_calc.h">
+					</File>
+					<File
 						RelativePath="..\..\include\ambulant\smil2\time_node.h">
 					</File>
 					<File
@@ -907,6 +922,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\trace_player.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\transition.h">
 					</File>
 				</Filter>
 				<Filter

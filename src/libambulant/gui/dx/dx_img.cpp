@@ -76,7 +76,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
 	m_image(0), m_window(window) {
 	
@@ -140,7 +140,7 @@ void gui::dx::dx_img_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
-	m_dest->renderer_done();
+	m_dest->renderer_done(this);
 	m_activated = false;
 	
 	// show debug message 'stopped'
@@ -164,20 +164,24 @@ void gui::dx::dx_img_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
+void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	if(!v) return;
+	if(!v) {
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").c_str());
+		return;
+	}
 	
 	if(!m_image || !m_image->can_play()) {
 		// No bits available
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").c_str());
 		return;
 	}
 	
 	// Get fit rectangles
 	lib::rect img_rect1;
-	lib::screen_rect<int> img_reg_rc = m_dest->get_fit_rect(m_image->get_size(), &img_rect1);
+	lib::screen_rect<int> img_reg_rc = m_dest->get_fit_rect(m_image->get_size(), &img_rect1, m_alignment);
 	
 	// Use one type of rect to do op
 	lib::screen_rect<int> img_rect(img_rect1);
@@ -190,6 +194,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	lib::screen_rect<int> img_reg_rc_dirty = img_reg_rc & dirty;
 	if(img_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
+		AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").c_str());
 		return;
 	}	
 	
@@ -205,7 +210,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	m_msg_rect |= img_reg_rc_dirty;
 	
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	//AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").c_str());
+	AM_DBG lib::logger::get_logger()->trace("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent());
 }
 

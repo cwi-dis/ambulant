@@ -77,7 +77,7 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window)
+	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
 	m_image(0), m_window(window) {
 	
@@ -140,7 +140,7 @@ void gui::dg::dg_img_renderer::stop() {
 	if(!m_activated) return;
 	delete m_image;
 	m_image = 0;
-	m_dest->renderer_done();
+	m_dest->renderer_done(this);
 	m_activated = false;
 }
 
@@ -152,7 +152,7 @@ void gui::dg::dg_img_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::abstract_window *window) {
+void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dg_window *dxwindow = static_cast<dg_window*>(window);
 	viewport *v = dxwindow->get_viewport();
@@ -165,7 +165,7 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	
 	// Get fit rectangles
 	lib::rect img_rect1;
-	lib::screen_rect<int> img_reg_rc = m_dest->get_fit_rect(m_image->get_size(), &img_rect1);
+	lib::screen_rect<int> img_reg_rc = m_dest->get_fit_rect(m_image->get_size(), &img_rect1, m_alignment);
 	
 	// Use one type of rect to do op
 	lib::screen_rect<int> img_rect(img_rect1);

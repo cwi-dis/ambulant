@@ -70,7 +70,7 @@ class dx_bgrenderer : public common::background_renderer {
   public:
 	dx_bgrenderer(const common::region_info *src);
 	~dx_bgrenderer();
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 };
 
 } // namespace dx

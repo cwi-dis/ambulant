@@ -73,14 +73,14 @@ class dg_audio_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::abstract_window *window,
+		common::gui_window *window,
 		lib::event_processor* worker);
 	~dg_audio_renderer();
 	void start(double t);
 	void stop();
 	void pause();
 	void resume();
-	void redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window);
+	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	std::pair<bool, double> get_dur();
   private:
 	void update_callback();

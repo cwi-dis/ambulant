@@ -74,7 +74,7 @@ gui::dg::dg_audio_renderer::dg_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::abstract_window *window,
+	common::gui_window *window,
 	lib::event_processor* worker)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
@@ -171,7 +171,7 @@ void gui::dg::dg_audio_renderer::resume() {
 	if(m_player) m_player->resume();
 }
 
-void gui::dg::dg_audio_renderer::redraw(const lib::screen_rect<int> &dirty, common::abstract_window *window) {
+void gui::dg::dg_audio_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
 	// we don't have any bits to blit for audio
 }
 
