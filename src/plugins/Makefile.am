@@ -20,8 +20,10 @@ endif
 if WITH_XERCES
 xerces_plugin = libamplugin_xerces.la
 xerces_includes = -I$(XERCES_PREFIX)/src/
-libamplugin_xerces_la_LDFLAGS = -module 
-libamplugin_xerces_la_SOURCES = xercesplugin.cpp 
+libamplugin_xerces_la_LDFLAGS = -module -L$(XERCES_PREFIX)/lib/ -lxerces-c 
+libamplugin_xerces_la_SOURCES = xercesplugin.cpp \
+		$(top_builddir)/src/libambulant/lib/xerces_parser.cpp
+
 else
 xerces_plugin=
 xerces_include=

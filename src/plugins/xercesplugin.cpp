@@ -50,7 +50,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/sax_handler.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
