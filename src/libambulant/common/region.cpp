@@ -145,8 +145,12 @@ passive_region::animated()
 {
 	/*AM_DBG*/ lib::logger::get_logger()->trace("passive_region::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
 	clear_cache();
+// XXX: Temporary: What should be redrawn is the union of the area before and after
+#ifndef AMBULANT_PLATFORM_WIN32
 	need_redraw(m_inner_bounds);
-	
+#else
+	m_parent->need_redraw();
+#endif
 }
 
 void
