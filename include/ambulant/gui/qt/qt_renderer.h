@@ -55,9 +55,9 @@
 #ifndef AMBULANT__QT_RENDERER_H
 #define AMBULANT__QT_RENDERER_H
 
-#include "ambulant/lib/layout.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 
 #include "qt_fill.h"

@@ -59,9 +59,9 @@
 #ifndef AMBULANT__QT_TEXT_RENDERER_H
 #define AMBULANT__QT_TEXT_RENDERER_H
 
-#include "ambulant/lib/layout.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
 
 class qt_gui;

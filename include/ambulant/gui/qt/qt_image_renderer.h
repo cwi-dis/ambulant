@@ -55,11 +55,11 @@
 #ifndef AMBULANT__QT_IMAGE_RENDERER_H
 #define AMBULANT__QT_IMAGE_RENDERER_H
 
-#include "ambulant/lib/layout.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/common/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/region_node.h"
-#include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
 
 //#define AM_DBG

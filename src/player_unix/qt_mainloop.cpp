@@ -48,10 +48,10 @@
 
 #include "qt_mainloop.h"
 #ifdef WITH_ARTS
-#include <ambulant/gui/arts/arts.h>
+#include "ambulant/gui/arts/arts.h"
 #endif
 #ifdef WITH_SDL
-#include <ambulant/gui/SDL/sdl.h>
+#include "ambulant/gui/SDL/sdl_gui.h"
 #endif
 #include "ambulant/lib/document.h"
 

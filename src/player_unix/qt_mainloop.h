@@ -58,17 +58,17 @@
 #include <iostream>
 #include "ambulant/version.h"
 #include "ambulant/lib/logger.h"
-//#define WITH_MMS_PLAYER
-#ifdef WITH_MMS_PLAYER
-#include "ambulant/common/mms_player.h"
-#else
-#include "ambulant/common/smil_player.h"
-#endif
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
-#include "qt_gui.h"
+//#define WITH_MMS_PLAYER
+#ifdef WITH_MMS_PLAYER
+#include "ambulant/mms/mms_player.h"
+#else
+#include "ambulant/smil2/smil_player.h"
+#endif
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"
+#include "qt_gui.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
