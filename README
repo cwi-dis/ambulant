@@ -1,40 +1,74 @@
-This directory contains version 0.3 of Ambulant,
+Ambulant Player README
+======================
+
+This directory contains version 0.5 of Ambulant,
 a playback engine for SMIL documents. 
 The ambulant homepage is at <http://www.ambulantplayer.org>.
-
-At the moment ambulant only supports playing back a subset of SMIL,
-more-or-less the subset as specified by the 3GPP MMS 2.0 specs
-Also, only local media files are supported, no networking yet.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers,
 and a number of player applications.
 
+Ambulant is distributed as either a source distribution or a
+binary installer for a specific platform. This README file
+is common to all distributions, see below for instructions on building 
+from source.
+
+Supported platforms
+-------------------
+
 Currently we have support for:
 - Linux
 - MacOSX
 - Windows
-- Zaurus (Sharp SL-5600 PDA).
+- Windows CE
+- Linux for handhelds (Qtopia)
 
-Media support varies on different platforms.
-On all platforms text and images is supported,
-but the exact image file types supported may differ.
-JPEG is supported on all platforms, however.
+The specific platforms that have been used for testing are:
+- Linux: RedHat 9 on fairly recent Intel hardware
+- MacOSX: 10.3
+- Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
+- Windows CE: to be provided
+- Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
 
-Audio is supported on Windows through the DirectX layer,
-so any audio file type DirectX supports should work.
+Supported media types
+---------------------
 
-On Linux mp3 audio playback is supported if you have
-SDL and ffmpeg installed.
+- Text is supported on all platforms, but on MacOSX there is
+  no word-wrap, so text can be truncated.
+- Images in PNG, JPEG and GIF formats are supported on all
+  platforms. Other formats are supported on some platforms.
+- Audio:
+  - Windows supports audio through DirectX, so all DirectX-compatible
+    formats are supported.
+  - Windows CE supports only MP3, and cannot mix multiple audio
+    streams.
+  - MacOSX and Linux support audio through FFMPEG and SDL,
+    giving support for MP3 and many other formats, but not
+    all codecs may be supported on WMA or QuickTime files.
+    Some audio files may be played back at an incorrect sample rate.
+- Video:
+  - Windows supports video through DirectX.
+  - Windows CE does not support video.
+  - MacOSX supports video through QuickTime.
+  - Linux does not support video.
 
-On MacOSX raw audio is supported if SDL is installed.
-Whether libffmpeg availability gives you support for more filetypes
-is not clear.
+Networking support
+------------------
 
-In this release we support on MacOSX and on Linux only mp3s of the 
-format 44100 Hz mono. 
-For more details on compiling ambulant with ffmpeg
-read the third_party_packages/readme.txt
+This release has limited support for networked media. The
+presentation itself must be in a local file, media items can
+be retrieved via HTTP or RTP/RTSP on some platforms.
+
+SMIL support
+------------
+
+This release supports full SMIL 2.0, with the following broad
+exceptions:
+- Limited support for linking
+- No transitions
+- No SMIL animation
+- tag names must match media type, and no support for mimetypes
 
 Furthermore, you need to have "expat 1.95.7" installed before
 building ambulant; "expat" is used for XML-paring of .smil input files
@@ -45,21 +79,74 @@ On Linux, the aRts implementation is currently not working, use
 ./configure --without-arts --with-ffmpeg[=<your libavcodec>];
 make;make install
 
+Documentation
+-------------
+
 Documentation of the overall design and the class relationships
-can be found in: Documentation/Design.
+can be found in: Documentation/Design in a source distribution.
 
-Various example SMIL 2.0 documents can be found in Extras/*.
-More  SMIL 2.0 documents can be found in a seperate repository
-ambulant-documents, or as a tar ball at www.sourceforge.com.
-Note that not all of these examples are known to work
-on all platforms yet.
+Examples
+--------
 
-A linux GUI player (build with Qt) will be available
-in src/player-unix/qt_player.
+Two example SMIL 2.0 documents are included, more are available
+at <http://www.ambulantplayer.org>. In a binary distribution the
+examples are right in the toplevel distribution directory, in a
+source distribution they are in the Extras directory.
 
-For MacOSX, the cocoa player only gets built when you do "make install",
-it is deposited in /Applications/cocoambulant.app.
+The Welcome document is played automatically the very first time you
+start the Ambulant Player on MacOSX and can be played manually on other
+platforms.
+
+The DemoPresentation document is a slightly more elaborate example with
+some variations to show off various features of SMIL, a readme
+file is included.
+
+Building from source
+====================
+
+Prerequisites
+-------------
+
+Obviously you will need a compiler/linker/development environment.
+For Windows you need Microsoft Visual Studio .NET version XXXX.
+For Linux desktop and MacOSX you need GNU gcc, at least version 3.2.
+For Windows CE you need Microsoft Embedded Visual C++ version XXXX.
+For Zuarus you need XXXX.
+
+You also need to build and install a couple of third party packages
+that Ambulant depends on. All these live in third_party_packages,
+and the readme file there contains detailed instructions on the exact
+version numbers, download instructions, etc.
+
+These packages can be built from source, but because this may be
+difficult on some platforms (especially Windows and the PDA platforms)
+we have created archives of pre-configured and pre-built
+third_party_packages for a few common platforms. See
+<http://www.ambulantplayer.org> or the sourceforge download area for
+details.
+
+Building for Linux
+------------------
+
+The normal configure/make/make install combo should do the trick.
+
+Building for Mac OS X
+---------------------
+
+The normal configure/make/make install combo should do the trick.
+
+Building for Windows
+--------------------
 
 For Windows, see instructions in bin/win32.
 
+Building for Zaurus
+
+-------------------
 For Zaurus, see detailed instructions in README-ZAURUS.
+
+Building for Windows CE
+-----------------------
+
+To be supplied.
+

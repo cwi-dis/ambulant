@@ -51,14 +51,14 @@ APPNAME="Ambulant Player"
 cocoambulant_bundle: cocoambulant_executable
 	mkdir -p $(APPNAME).app/Contents/MacOS
 	mkdir -p $(APPNAME).app/Contents/Resources
-	echo "APPL????" > $(APPNAME).app/Contents/PkgInfo
+	echo -n "APPLAmbl" > $(APPNAME).app/Contents/PkgInfo
 	$(INSTALL_DATA) $(srcdir)/Info.plist $(APPNAME).app/Contents/Info.plist
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
 	mkdir -p $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
 	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(APPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(APPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(APPNAME).app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/locversion.plist $(APPNAME).app/Contents/Resources/English.lproj
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
 	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(APPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
 	$(INSTALL_DATA) $(srcdir)/*.png $(APPNAME).app/Contents/Resources
