@@ -1,6 +1,3 @@
-AM_CXXFLAGS=-g -O0 -fno-inline $(PTHREAD_CFLAGS)
-expat_dir = $(EXPAT_PREFIX)
-
 # See which toolkit-dependent libraries we want to make
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
@@ -50,7 +47,7 @@ toolkit_qsound_libraries =
 endif
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	-I$(expat_dir)/include $(qtincludes) $(artsincludes)
+	-I$(EXPAT_PREFIX)/include $(qtincludes) $(artsincludes)
 	  $(qsoundincludes)
 
 lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries) $(toolkit_arts_libraries) $(toolkit_qsound_libraries)
@@ -65,8 +62,17 @@ libambulant_la_SOURCES = \
 	lib/logger.cpp \
 	lib/nfa.cpp \
 	lib/node.cpp \
+	lib/parselets.cpp \
+	lib/schema.cpp \
 	lib/string_util.cpp \
+	lib/smil_time.cpp \
+	lib/sync_rule.cpp \
+	lib/time_attrs.cpp \
+	lib/time_node.cpp \
+	lib/time_state.cpp \
+	lib/timegraph.cpp \
 	lib/timer.cpp \
+	lib/trace_player.cpp \
 	lib/tree_builder.cpp \
 	\
 	lib/unix/unix_event_processor.cpp \
@@ -82,6 +88,7 @@ libambulant_la_SOURCES = \
 	common/renderer.cpp \
 	common/skeleton.cpp \
 	common/smil_handler.cpp \
+	common/smil_player.cpp \
 	common/timeline_builder.cpp \
 	common/timelines.cpp \
 	\

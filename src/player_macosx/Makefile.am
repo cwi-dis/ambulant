@@ -34,7 +34,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(EXPAT_PREFIX)/lib/libexpat.a -lstdc++
 AM_LDFLAGS=-framework Cocoa
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
+INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(EXPAT_PREFIX)/include 
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`
