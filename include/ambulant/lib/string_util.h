@@ -76,6 +76,7 @@ inline std::string& operator<<(std::string& s, T c) { s += repr(c); return s;}
 inline std::string& operator<<(std::string& s, const std::string& c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, char c) { s+=c; return s;}
 inline std::string& operator<<(std::string& s, int c) { char sz[32];sprintf(sz,"%d",c); s+=sz; return s;}
+inline std::string& operator<<(std::string& s, unsigned int c) { char sz[32];sprintf(sz,"%u",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, long c) { char sz[32];sprintf(sz,"%ld",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, double c) { char sz[32];sprintf(sz,"%.3f",c); s+=sz; return s;}
 inline std::string& operator<<(std::string& s, const char *c) { s+=c; return s;}
