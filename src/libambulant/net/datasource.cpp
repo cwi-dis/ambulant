@@ -172,14 +172,22 @@ if (size  < m_used)
 
 
 // *********************** passive_datasource ***********************************************
-passive_datasource::passive_datasource()
-{
-	m_url=NULL;
-}
+
+
 
 passive_datasource::passive_datasource(char *url)
+: m_refcount(1)
 {
-	m_url=url;
+	int m_len;
+	m_len = strlen(url);
+	m_url= new char[m_len];
+	if(m_url) {
+		std::memcpy(m_url,url,m_len);
+	}
+	else
+	{
+		std::cout << " Memory allocation error in passive_datasource::passive_datasource(char *url)" << std::endl;
+	}
 }
 
 active_datasource *passive_datasource::activate()
@@ -195,10 +203,19 @@ active_datasource *passive_datasource::activate()
 		
 }
 
+passive_datasource::~passive_datasource()
+{
+	if(m_url) {
+		delete[] m_url;
+	}
+}
+
 // *********************** active_datasource ***********************************************
 
 
 active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file)
+:	m_source(source),
+	m_refcount(1)
 {
 	if (file) std::cout << " TEST" << std::endl;
     filesize(file);
@@ -209,12 +226,16 @@ active_datasource::active_datasource(passive_datasource *const source,std::ifstr
 			buffer=NULL;
 			std::cout << " Memory allocation error in active_datasource::active_datasource(passive_datasource *const source,std::ifstream &file) " << std::endl;
 		}
+		m_source->add_ref();
 }
 
 active_datasource::~active_datasource()
 {
-delete buffer;
-buffer=NULL;
+	if (buffer) {
+	delete buffer;
+	buffer=NULL;
+	}
+	m_source->release();
 
 }
 
@@ -259,6 +280,7 @@ void active_datasource::filesize(std::ifstream &file)
 void active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file(m_stream);
+ 	buffer->show(false);
 	if (evp && readdone) {
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
 		evp->add_event(readdone, 0, ambulant::lib::unix::event_processor::low);
