@@ -56,8 +56,11 @@
 #include "MmView.h"
 
 #include "MmViewPlayer.h"
+#include "wmuser.h"
 
 #include ".\mmview.h"
+
+#include "ambulant/common/preferences.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -91,7 +94,9 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_SOURCE, OnUpdateViewSource)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_LOG, OnUpdateViewLog)
 	ON_COMMAND(ID_VIEW_LOG, OnViewLog)
+	ON_MESSAGE(WM_SET_CLIENT_RECT, OnSetClientRect)
 END_MESSAGE_MAP()
+
 
 // MmView construction/destruction
 
@@ -166,8 +171,9 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void MmView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	if(player)
-		player->redraw();
+	SendMessage(WM_SET_CLIENT_RECT, 
+		ambulant::lib::default_layout_width, ambulant::lib::default_layout_height);
+	if(player) player->redraw();
 
 }
 
@@ -262,4 +268,22 @@ void MmView::OnViewLog() {
 
 void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {
 	pCmdUI->Enable((player && !m_curPathName.IsEmpty())?TRUE:FALSE);
+}
+
+LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
+	CFrameWnd *mainWnd = (CFrameWnd*) AfxGetMainWnd();
+	
+	CRect rc1;
+	mainWnd->GetWindowRect(&rc1);
+	
+	CRect rc2;
+	GetWindowRect(&rc2);
+	int dx = rc1.Width() - rc2.Width();
+	int dy = rc1.Height() - rc2.Height();
+	
+	CSize size(int(wParam) + 20 + dx, int(lParam) + 20 + dy);
+	
+	UINT flags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE;
+	mainWnd->SetWindowPos(&wndTop, 0, 0, size.cx, size.cy, flags);
+	return 0;
 }

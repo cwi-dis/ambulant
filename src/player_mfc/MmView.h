@@ -105,6 +105,7 @@ public:
 	afx_msg void OnUpdateViewSource(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateViewLog(CCmdUI *pCmdUI);
 	afx_msg void OnViewLog();
+	afx_msg LRESULT OnSetClientRect(WPARAM wParam, LPARAM lParam);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp
