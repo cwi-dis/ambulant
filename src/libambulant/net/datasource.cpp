@@ -101,11 +101,11 @@ net::databuffer::~databuffer()
 		}
 }
 
-int net::databuffer::used()
+int net::databuffer::used() const
 {
 	return(m_used);
 }
-void net::databuffer::dump(std::ostream& os, bool verbose)
+void net::databuffer::dump(std::ostream& os, bool verbose) const
 {
 int i;
 
@@ -291,13 +291,13 @@ void net::active_datasource::filesize()
   }
   
   
-void net::active_datasource::start(ambulant::lib::unix::event_processor *evp, ambulant::lib::event *readdone)
+void net::active_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *readdone)
  {
  	read_file();
  	AM_DBG buffer->dump(std::cout, false);
 	if (evp && readdone) {
 		std::cout << "active_skeleton: trigger readdone callback" << std::endl;
-		evp->add_event(readdone, 0, ambulant::lib::unix::event_processor::low);
+		evp->add_event(readdone, 0, ambulant::lib::event_processor::low);
 	}
 }
  

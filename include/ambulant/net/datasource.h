@@ -10,8 +10,8 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/unix/unix_mtsync.h"
-#include "ambulant/lib/unix/unix_event_processor.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/event_processor.h"
 
 // temporary debug messages
 #include <iostream>
@@ -59,7 +59,7 @@ class databuffer
 	void resize(int newsize);
 	
 	// show information about the buffer, if verbose is true the buffer is dumped to cout;
-	void dump(std::ostream& os, bool verbose);		
+	void dump(std::ostream& os, bool verbose) const;		
 	
 	//retrieve data from buffer,  still thinking about arguments.							
 	void get_data(char *data, int size); 				
@@ -68,8 +68,13 @@ class databuffer
 	void put_data(char *data , int size);			 							 
 	
 	// returns the amount of bytes that are used.
-	int used();
+	int used() const;
 };
+
+inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
+	os << "databuffer(" << (void *)&n << ", used=" << n.used() << ")";
+	return os;
+}
 
 
 // forward decleration
@@ -92,6 +97,10 @@ public:
 	
 	active_datasource *activate();
 	
+	friend inline std::ostream& operator<<(std::ostream& os, const passive_datasource& n) {
+		os << "passive_datasource(" << (void *)&n << ", url=\"" << n.m_url << "\")";
+		return os;
+	}
 	////////////////////////
 	// lib::ref_counted interface implementation
    long add_ref() {return ++m_refcount;}
@@ -109,9 +118,10 @@ public:
 	
 private:
 	char *m_url;
-	ambulant::lib::basic_atomic_count<ambulant::lib::unix::critical_section> m_refcount;
+	ambulant::lib::basic_atomic_count<ambulant::lib::critical_section> m_refcount;
 };
 
+	
  
 class active_datasource : public ambulant::lib::ref_counted {  	
 public:
@@ -122,15 +132,19 @@ public:
 	~active_datasource();
 
 
-	void start(ambulant::lib::unix::event_processor *evp,ambulant::lib::event *readdone);
+	void start(ambulant::lib::event_processor *evp,ambulant::lib::event *readdone);
 
 
 	//  Get data from buffer and put 'size' bytes in buffer.
 	void read(char *data, int size);
 
 	// Return the amount of data currently in buffer.
-	int size();
+	int size() const;
 	
+	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
+		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
+		return os;
+	}
 	////////////////////////
 	// lib::ref_counted interface implementation
    long add_ref() {return ++m_refcount;}
@@ -149,7 +163,7 @@ public:
 private:
     databuffer *buffer;
     passive_datasource *m_source;
-    ambulant::lib::basic_atomic_count<ambulant::lib::unix::critical_section> m_refcount;
+    ambulant::lib::basic_atomic_count<ambulant::lib::critical_section> m_refcount;
 	int m_filesize;
 	int m_stream;
 	void filesize();
