@@ -264,8 +264,7 @@ void qt_gui::slot_quit() {
 	delete m_mainloop;
 	m_mainloop = NULL;
 	m_busy = false;
-//TBD setting m_busy = false gives core dump, there is also an event thread
-	exit(0);
+	qApp->quit();
 }
 
 int main (int argc, char*argv[]) {
@@ -290,10 +289,7 @@ int main (int argc, char*argv[]) {
 	    mywidget->openSMILfile(argv[1], IO_ReadOnly);
 	    mywidget->slot_play();
 	}
-//	myapp.processEvents();
-//	myapp.exec();
-	while(mywidget->is_busy() || myapp.hasPendingEvents())
-		myapp.processEvents();
+	myapp.exec();
 	std::cout << "Exiting program" << std::endl;
 	return 0;
 }

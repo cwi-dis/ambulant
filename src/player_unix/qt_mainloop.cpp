@@ -135,6 +135,9 @@ qt_mainloop::run(void* ml)
 {
 
 	net::datasource_factory*df;
+	if (ml == NULL)
+		return (void*) 0;
+
         qt_mainloop*		mainloop = (qt_mainloop*) ml;
 	qt_gui*			qt_view = mainloop->m_parent;
 	qt_window_factory*	wf;
@@ -144,6 +147,9 @@ qt_mainloop::run(void* ml)
 		mainloop);
 
 	player** player = &mainloop->m_player;
+	if (player == NULL || *player == NULL)
+		return (void*) 0;
+	
 	(*player)->start();
 
 	while(!(*player)->is_done())

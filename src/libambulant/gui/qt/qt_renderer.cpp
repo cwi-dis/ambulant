@@ -73,7 +73,11 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 }
 
 ambulant_qt_window::~ambulant_qt_window() {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window");
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ambulant_qt_window::~ambulant_qt_window(0x%x), m_ambulant_widget=0x%x",this,m_ambulant_widget);
+	qt_ambulant_widget* maw = m_ambulant_widget;
+	m_ambulant_widget = NULL;
+ 	if (maw != NULL)
+	delete maw;
 	/* XXX Should probably delete m_ambulant_widget */
 }
 	
@@ -157,7 +161,12 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 }
 
 qt_ambulant_widget::~qt_ambulant_widget() {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_ambulant_widget::~qt_ambulant_widget");
+	/*AM_DBG*/ lib::logger::get_logger()->trace("qt_ambulant_widget::~qt_ambulant_widget, m_qt_window=0x%x",m_qt_window);
+	ambulant_qt_window* mqw = m_qt_window;
+       	m_qt_window = NULL;
+	if (mqw != NULL)
+	delete mqw;
+	/* XXX Should probably delete m_qt_window */
 }
 	
 void
@@ -237,7 +246,7 @@ qt_window_factory::new_window (const std::string &name,
 		r->left(),r->top(),r->right(),r->bottom());
  	ambulant_qt_window * aqw = new ambulant_qt_window(
 		name, r, region);
-    qt_ambulant_widget * qaw = new qt_ambulant_widget(
+	qt_ambulant_widget * qaw = new qt_ambulant_widget(
 		name, r, m_parent_widget);
 #ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
 	if (qApp == NULL || qApp->mainWidget() == NULL) {
@@ -269,9 +278,11 @@ qt_window_factory::new_mouse_region() {
 }
 
 common::renderer *
-qt_window_factory::new_background_renderer(const common::region_info *src) {
-	lib::logger::get_logger()->trace(
-		"qt_window_factory::new_background_renderer(0x%x): TBD",
-		(void*) this);
+qt_window_factory::new_background_renderer(const common::region_info 
+					   *src)
+{
+	AM_DBG lib::logger::get_logger()->trace
+	  ("qt_window_factory::new_background_renderer(0x%x): src=0x%x",
+		(void*) this, src);
 	return new qt_background_renderer(src);
 }
