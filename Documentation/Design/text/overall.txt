@@ -1,18 +1,21 @@
 Ambulant design, overall
 ========================
-Jack Jansen, 05-Aug-03
+Jack Jansen, 01-Sep-03
 ----------------------
 
 This document contains some general thoughts on the Ambulant design. Accompanying
 it we have the following documents:
 
-- objects.txt (or objects.html) has a quick description of the main classes.
-- timelines.txt (or .html) has a preliminary description of how a timeline
-  object works
+- objects.txt (or objects.html) has a breakdown of the main classes and their
+  interdependencies.
+- auxobjects.txt (or .html) has a quick description of auxiliary classes
+  and functions.
+- timelines.txt (or .html) has a description of how a timeline
+  object works.
 - datasource.graffle, renderer.graffle and timeline.graffle (or .pdf)
   have a UML view of the relationships between the classes.
   
-There are a few more text files and C++ .h header files, but these
+There are a few more text files, but these
 are currently not fully up-to-date. Remarks.txt contains, among other things,
 a list of solutions we found for various toolkits we need, such as XML
 processing.
@@ -30,7 +33,7 @@ The design is going to consist of a mixed bag of technologies:
   
 When still applicable design choices that were tried and rejected will
 remain listed, with the reason for their rejection. This within the limits or
-reasonbility:-).
+reasonability:-).
 
 Open issues and discussion points are indented paragraphs starting with
 an emphasized upper case word, as in
@@ -61,6 +64,26 @@ For the time being we use the term "passive" for this. The companion "active"
 objects are instantiated through the `activate()` call of the passive
 objects, at which point they start to do their thing (push data through,
 render things, etc).
+
+Source code organisation
+------------------------
+
+Everything is kept under CVS. On Unix we use the standard *automake*, *autoconf*
+and *configure* toolset to build things. On Windows we use Visual Studio 7 (KK?).
+
+At the toplevel we have a number of subdirectories:
+
+- ``Documentation`` will eventually contain all documentation, currently
+  it only has ``Design``, which is what you are reading now.
+- ``include`` has all the C++ header files.
+- ``src`` has all the sources, with the engine built as a library
+  from the ``libambulant`` subdirectory, and driver programs for the
+  various platforms (not in the current version).
+- ``Tests`` has test code. The only subdirectory currently in active use
+  is ``designtests`` which has a program that does minimal testing of all
+  modules.
+- ``third_party_packages`` holds the source to third party packages we use,
+  currently only James Clark's ``expat`` XML parser.
 
 Source code conventions
 -----------------------
@@ -110,6 +133,27 @@ to use (at least: Jack thinks this has been decided, please fix if you disagree)
   - `#ifdef __APPLE__` to test for MacOSX
   - something to test for 386 or other architectures?
   - something to test for Visual Studio versus gcc?
+  
+Machine-dependent code
+----------------------
+
+The general way to handle machine-dependency is to create a machine-independent
+abstract base class, plus machine-dependent subclasses. Then there is a factory
+function that creates a machine-dependent instance and returns it casted
+to its machine-independent base class.
+
+With this scheme we can handle machine-dependent extensions to the base class
+easily: modules using these extensions declare objects of the subclass and
+call the initializer directly in stead of through the factory function.
+
+The scheme does not work for all objects, however: it breaks if we want to
+create static copies of the objects. For classes for which this is the case,
+such as the ``critical_region`` object, we declare an abstract object 
+``abstract_critical_section`` in
+``lib/abstract_mtsync.h``, subclass that as ``PLATFORM::critical_section``
+in ``lib/PLATFORM/PLATFORM_mtsync.h``,
+conditionally include that in ``lib/mtsync.h`` and create an empty subclass
+``critical_section`` of it. 
 
 Global structure
 ----------------
@@ -117,46 +161,19 @@ Global structure
 The global structure needs some thought. If we want to be able to use the code
 to create, say, a plugin SMIL renderer for use in a browser we need a global
 "playback engine" object that has all the others hanging off it (plus factory
-methods to create them, etc). There will be a performance penalty to this, but
-I don't think it's too big. If we have this global object we might as well
-subclass all the children of this object from a common base class that handles
-the global administration, and the global object could hold things like
-memory allocators, stderr, etc.
-
-	*QUESTION*: is there a way we could handle the memory allocator transparently?
-	With things like stdout I think we can (put a member "cout" in our object
-	base class, make it always refer to the "cout" in the playback engine), but
-	for memory allocators I don't know whether we can break into C++'s new operator.
-	This may be important if we want to embed our player, as the embedder may
-	hand us a memory allocator to use.
-
-	*COMMENT by KK* I don't see anything special concerning the task of building a plugin 
-	SMIL renderer and resource handling. You always have a hierarchy of objects (owners-owned). 
-	Each object may own other objects and be responsible for their lifetime 
-	(call their constructor and destructor or just assign the job to an auto pointer). 
-	You can always make one global root object, the plugin for example; 
-	whose destructor will indirectly invoke the destructors of the whole hierarchy.
-	Concerning the new operator a) can be overwritten or fully customized if needed 
-	b) one may use the placement new operator that re-uses pre-allocated memory.  
-	But I think we should do so only if it is really needed (something I cannot see
-	from the given reasoning).
+methods to create them, etc).
 
 With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
 "create window" and such.
 
-	*QUESTION*: As we have a number of objects that come in active and passive
-	flavors (data sources, data sinks) I am tempted to create a baseclass for
-	active and passive containers. On the other hand: it could be seen as
-	over-generalization.
-	
-	*COMMENT by KK*: I think you should create a base class only if you want
-	these objects to be managed by an entity in a uniform way and independent
-	from their actual type. Otherwise, I think documentation is enough. 
-	(Inheritance in most of the cases means a virtual table. 
-	There is not any serious cost on this for gross grained objects except 
-	that it violates the C++ culture principle of paying for what you use.)    
+We have a number of objects that come in active and passive
+flavors (data sources, data sinks). For the time being these do not have a common
+base class but in stead follow an informal protocol, and the example objects
+``passive_skeleton`` and ``active_skeleton`` can be used as a boilerplate to implement
+new objects following this protocol. We may decide to use a common base class in
+the future.  
 
 run-time system
 ---------------
@@ -166,8 +183,6 @@ we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that we could use for
 garbage collection.
 
-	XXXX The refcounting implementation may interfere with any cross-language plans.
-	
 We need to decide on a per-case basis whether we need refcounting or whether auto_ptr
 or plain pointers are more appropriate. Here's some prose by KK that should
 be incorporated here:
@@ -188,35 +203,27 @@ be incorporated here:
 	shallow enough to make them self-contained, then you don't need
 	ref-counting.
 
-The architecture is going to be fairly tightly coupled. The original idea
+The architecture is fairly tightly coupled. The original idea
 of allowing the high-level scheduler to live on a different machine, precomputing
 schedules and ending these to a low level scheduler, isn't going to work
 for SMIL without putting almost all SMIL complexity in the low-level scheduler.
 
-	XXXX Outcome of the May 21 meeting is that we should be able to do the design
-	in such a way that we can allow for a split. For this, we need to de-couple
-	the HL-scheduler from the event processor and run it in a separate thread.
-	The only communication between HL-scheduler and the rest of the system are
-	downcalls to install timelines and upcalls to signal that user interaction has
-	happened. What we do need to investigate is whether it is then still possible
-	to use the Data Source objects from the scheduler, and/or whether special
-	measures are needed for that.
-
 main loop
 ---------
 
-The basic architecture is going to be event-driven. The alternative
+The basic architecture is going to be event-driven, with a small
+number of worker threads picking up events from the event queue. The alternative
 is to use multiple threads all over, but it seems event-driven is the better
 choice. An object that wants to use multiple threads can do so more easily
 on an event infrastructure than the other way around, but these threads are
 "somebody else's problem", as they are hidden from the rest of the architecture.
 
-We do want to allow the option (probably compile time) to allow multiple worker
+In the future, we may want to allow the option (probably compile time) to allow only a single worker
 threads to handle the events. This should be a compile time option, so we don't
 incur the overhead of locking the event mgr data structures if there's only a
-single worker thread.
+single worker thread. For now the code assumes multiple threads.
 
-Also, although it seems at first glance that some objects, such as a renderer,
+At first glance that some objects, such as a renderer,
 would benefit from a threaded architecture it turns out this isn't really so.
 The naive threaded implementation::
 
@@ -268,8 +275,11 @@ The scheduler is going to be split in two. There is a high-level language
 dependent scheduler and a low-level independent one. We will write a SMIL
 high level scheduler, other people should be able to replace that with, say,
 a QuickTime or MPEG-4 scheduler while re-using the low-level scheduler.
+For the first release we will supply a scheduler for MMS 2.0. This is a very
+small subset of SMIL 2.0, with documents following a well-defined structure
+and naming convention.
 
-The Low-level scheduler is going to be based on fixed timelines. The HL
+The Low-level scheduler is based on fixed timelines. The HL
 scheduler identifies a portion of the SMIL document that it can fit on a fixed
 timeline (at least: a fully ordered linear timeline), it creates a schedule for this
 and pushes it down. These low-level schedules look somewhat like a petri-net,

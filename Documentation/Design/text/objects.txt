@@ -1,6 +1,6 @@
-Ambulant design, objects 
-========================
-Jack Jansen, 04-Jul-03.
+Ambulant design, main objects 
+=============================
+Jack Jansen, 01-Aug-03.
 -----------------------
 
 Objects we need:
@@ -17,6 +17,8 @@ Objects we need:
 - Renderers. These decode data streams, handle timing and do bitblitting
   or push audio through.
 - Clocks. These advance a virtual time.
+- Document. The representation of a SMIL document.
+- Document Parser. The parser for a document.
 - Document Scheduler. This reads a document and runs it.
 - Timeline. This executes a single timeline.
 
@@ -24,46 +26,46 @@ Objects we may need:
 
 - Resource. Control access to scarce resources (bandwidth, number of
   open files).
+  
+In addition we have various auxiliary objects that are explained in
+``auxobjects.txt``.
+
+Common protocols
+----------------
+
+There are a number of (formal and informal) protocols that are shared among
+multiple object classes: the `refcounting protocol` and the `active/passive
+protocol`.
+
+The `refcounting protocol` is contained in the file ``lib/refcount.h``. It needs to
+be implemented only by objects that is truly shared, i.e. any object whose
+lifetime is not predetermined by some other object. KK will need to
+explain the protocol.
+
+The `active/passive protocol` is contained in the ``lib/skeleton.h``
+header. JJ will need to explain this protocol.
 
 Event processor
 ---------------
 
 The event processor is the heart of the system, and it needs to be thought
 out pretty well as the efficiency of it will in a large part determine the
-snappyness of the system. We may want to tack on
-to existing OS infrastructure (such as the Windows event loop), but that may
-be too inefficient. This should be investigated.
+snappyness of the system. We do not tack on
+to existing OS infrastructure (such as the Windows event loop) for efficiency
+reasons and easier portability, each event processor has an internal thread that
+actually executes the events.
 
-*QUESTION*: is the event processor a global object? It has to be available when
-an object wants to schedule a callback, so it either has to be a global object
-or it has to be passed explicitly to constructor methods or when setting the
-callback to call. And, if the event processor is a global object, we have the
-problem that the HL scheduler also wants to use the data source, but it lives
-in a different thread. Is this a problem?
+Event processors are passed to active objects during their creation. At the
+moment we create a new event processor object for each active object, if the
+object has something corresponding to an "internal clock", otherwise we
+share the event processor of the parent object.
 
-*COMMENT by kk* Yes, I agree with the reasoning. The event processor may be 
-a global object or be passed explicitly to constructors. 
-Objects that schedule events will be probably gross grained
-and they will probably need context info beyond the event processor.
-I think that it would be better instead of polluting the global namespace
-create one context object that will be passed explicitly to constructor methods.
-The context object will provide access to the event processor and to what other 
-else is proven to be needed. Concerning multiple threads: The event processor's 
-queue should be made thread safe so that it can be used by multiple threads. 
-I don't think that this is a serious overhead since we will have to make 
-thread safe, only the operation of en-queueing an event. I would suggest
-using a thread for the event processor loop instead of the underlying
-OS event loop. This way we will have a clean engine independent from 
-the underlying OS. Interactions with the OS event loop for drawing may 
-require some more work but I think can be handled.
+This design has the advantage that if the active object is cleaned up we
+also clean up the event processor and any outstanding events it has, but it
+could lead to an explosion of threads if there are many active objects. If this
+turns out to be a problem it can be solved by having the event processors share
+threads (transparently to their users).
    
-The event processor object is created when the application starts, and it
-is set running its mainloop. If it is not implemented using the underlying OS
-event loop it needs either some way to interact with that mainloop or it needs
-to be in a separate thread. But that may also introduce problems, as drawing
-will be done from the event processor thread, and we need to investigate that
-this is safe on all platforms.
-
 The event processor has a number of prioritized event queues. The exact priorities
 remain TBD, here it suffices to say that things like prefetching are low priority,
 drawing objects on the screen is higher, and internal scheduler activity
@@ -72,22 +74,28 @@ is higher still (because it may lead to more drawing operations that should happ
 event 2* which should conceptually happening instantanously. *Internal event 1* fires
 *external event 1*. At this point we should execute *internal event 2* before *external
 event 1*, because it may in turn give rise to more external events that should
-all happen at the same time.
+all happen at the same time).
+
+At the moment there is only a single clock in the system, the realtime clock, and
+delay values are scalar and stored in the event processor queue entries. In the future
+we will have multiple clocks, so this will need some reworking. A possible
+solution is to have the event processor store only the events that are ready, and to
+keep the delayed events in the clocks, with the clock passing it to the event
+processor when it becomes ready to run.
 
 The priorities also need some structuring: when a data source delivers a "data ready"
 event its priority depends on whether the data is just being prefetched or the
 renderer is actively waiting for it (at high priority).
 
-The event processor API is probably going to be simple: pass a callback and a priority.
+The event processor API is simple: pass a callback, a delay and a priority.
 There could be one extra argument (or another method) to state that the originating
 call does not mind if control isn't returned to it immedeately. The scheduler could
 then make a shortcut and call the callback directly (if no higher priority events
 are waiting), this could be used to reduce the latency when a data source signals
 data availability to a renderer.
 
-*QUESTION*: some object actually has to implement delays. Clock objects are one possibility,
-as delays are relative to a specific clock, but the event processor is another option.
-I'm not sure what the best place is, yet.
+The event processor and related objects are declared in the files ``lib/event_processor.h``,
+``lib/event.h`` and ``lib/callback.h``.
 
 Data source
 -----------
@@ -97,8 +105,8 @@ passive data source which is a placeholder for parameters (URL, clip-begin/clip-
 and which can hold caching information. The second class is the active data
 source which actually fetches data and pushes it to the consumer.
 
-The passive data source has a call "preroll()" which creates the active counterpart
-behind the scenes, so that a later call to activate() will return quickly.
+The passive data source has a call ``preroll()`` which creates the active counterpart
+behind the scenes, so that a later call to ``activate()`` will return quickly.
 
 Data sources are push-based: the client asks
 for data, this call returns immedeately, and when the data is available
@@ -106,7 +114,7 @@ an event is fired. There is probably also a call that says "don't
 send me the event until you have all the data that is there".
 
 *QUESTION* in addition we could have a call read_all() which does away
-with all the event processing (or at least hides it) and just dums all data into a
+with all the event processing (or at least hides it) and just dumps all data into a
 buffer. Do we need this?
 
 *QUESTION* what sort of push-based API do we want? We could have one where the
@@ -130,7 +138,7 @@ reference. Then when you start actually reading from the active data source
 you first ask for any unhandled filtering parameters and are given this list.
 you are then responsible for implementing them.
 
-*QUESTION* there
+*QUESTION*
 We need to think about how to handle multiplexed data streams such as RTSP.
 It could be that this is simply someone elses problem (the RTSP library),
 but maybe we need multiplexed data streams too.
@@ -182,7 +190,7 @@ to a subregion, but with that subragion being simply a transparent
 Active region
 -------------
 
-A active region is where data is sent. It is invoked with a SMIL region as
+A active region is a data sink, where data is sent. It is invoked with a SMIL region as
 parameter, but multiple sinks can share a region, in which case
 double-buffering for transitions and such happens there. It has no API
 for graphics or such, this is handled by the renderers using the local
@@ -218,6 +226,9 @@ with two data sinks as sources and a third, new, one as destination).
 
 Renderers
 ---------
+
+*NOTE*: in the current implementation renderers do not yet exist, and
+active regions fullfill their role too.
 
 A renderer is called with a data source, region and a few other
 parameters (such as "ignore implicit repeat in media item"). It returns
@@ -261,6 +272,10 @@ item is part of a switch, for instance.
 Clocks
 ------
 
+*NOTE*: in the current implementation clocks do not yet exist, and
+there is only the global realtime clock. The interface is in ``lib/timer.h`` and
+``lib/delta_timer.h``.
+
 Clocks come in two flavors. The normal flavor is a free-running clock, a
 renderer that is subscribed to it can access it in two modes (depending
 on what programming model it prefers): callback or polling. In callback
@@ -287,17 +302,32 @@ master clock for the SMIL syncMaster attribute.
 SMIL Document tree
 ------------------
 
-The SMIL Document Scheduler opens the document (through a data source)
+To be supplied by KK. Interface is in (I guess) ``lib/node.h``, ``lib/node_iterator.h``,
+``lib/node_navigator.h``, ``lib/region_node.h``, ``lib/region_dim.h``, ``lib/vnode.h``.
+
+SMIL Document parser
+--------------------
+
+To be supplied by KK. Interface is in (I guess) ``lib/expat_parser.h``,
+``lib/nscontext.h`` (correct?), ``lib/parse_attrs.h``, ``lib/region_eval.h``,
+``lib/sax_handler.h``, ``lib/sax_types.h`` (correct?), ``lib/smil_handler.h``.
+
+Player
+------
+
+The player is the top-level object. It opens the document (through a data source)
 and parses it into a tree. It then waits for the "play document" event.
 Upon receipt it will create the timeline schedule for the root plus anything
 that is on the same timeline.
 
-
-*This section is wrong*: It creates the data sources and renderers,
-pushes the whole timeline down and fires the event that sets the thing running.
-The timeline schedule also contains preloads for the various media items.
-Then it waits for more events (probably from the LL scheduler) and does
-what is needed for them.
+The player uses an auximilary object ``timeline_builder`` that creates
+the timelines for a given SMIL tree. In the current implementation, with
+only MMS 2 documents supported, a single timeline suffices to implement
+the schedule for a document. In the future, when we support looping
+and user interaction, this will not be the case any more, and the player
+object will become more complex. It will have to listen for
+callbacks from timeline objects (timeline finished, user interaction)
+and react by creating new timelines and starting them.
 
 *QUESTION*: who is responsible for creating regions? The HL scheduler
 seems the best candidate, but that would interfere with any decoupling
@@ -313,6 +343,9 @@ Timeline objects again come in active and passive flavors. The passive
 flavor is what is created by the SMIL document scheduler, which is then
 activated when pushed down, at which point the active timeline starts
 running.
+
+Timeline design is elaborated upon in the document ``timelines.txt``,
+and the API is in ``lib/timelines.h``. 
 
 The timelines can also be pushed down early, in which case they
 will start preloading. This can be used to do "jump optimization" on

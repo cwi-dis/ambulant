@@ -1,4 +1,4 @@
-ALL=objects.html overall.html timelines.html
+ALL=objects.html auxobjects.html overall.html timelines.html
 
 REST2HTML=/Users/jack/tmp/docutils/tools/html.py
 PYTHON=python
