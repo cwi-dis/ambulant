@@ -129,7 +129,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_bgcolor(lib::to_color(0,0,0)),
 	m_soundlevel(1.0),
 #ifdef USE_SMIL21
-	m_soundalign(common::sa_both),
+	m_soundalign(common::sa_default),
 #endif
 	m_transparent(true),
 	m_showbackground(true),
@@ -265,9 +265,11 @@ region_node::fix_from_dom_node()
 #ifdef USE_SMIL21
 	// soundAlign
 	const char *soundalign_attr = m_node->get_attribute("soundAlign");
-	common::sound_alignment sa = common::sa_both;
+	common::sound_alignment sa = common::sa_default;
 	
-	if (soundalign_attr == NULL || strcmp(soundalign_attr, "both") == 0)
+	if (soundalign_attr == NULL)
+		sa = common::sa_default;
+	if (strcmp(soundalign_attr, "both") == 0)
 		sa = common::sa_both;
 	else if (strcmp(soundalign_attr, "left") == 0)
 		sa = common::sa_left;
