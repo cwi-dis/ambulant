@@ -112,16 +112,20 @@ class ffmpeg_parser_datasource;
 
 namespace detail {
 
-class ffmpeg_parser_thread : public lib::unix::thread {
+class ffmpeg_parser_thread : public lib::unix::thread, public lib::ref_counted_obj {
   public:
-	ffmpeg_parser_thread(ffmpeg_parser_datasource *parent, AVFormatContext *con)
-	:   m_parent(parent),
-		m_con(con) {}
+	ffmpeg_parser_thread(AVFormatContext *con)
+	:   m_con(con) { memset(m_sinks, 0, sizeof m_sinks);}
 	~ffmpeg_parser_thread() {}
+	
+	void add_datasink(ffmpeg_parser_datasource *parent, int stream_index) {
+		assert(m_sinks[stream_index] == 0);
+		m_sinks[stream_index] = parent;
+	}
   protected:
 	unsigned long run();
   private:
-    ffmpeg_parser_datasource *m_parent;
+    ffmpeg_parser_datasource *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
 };
 

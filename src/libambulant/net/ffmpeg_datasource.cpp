@@ -185,15 +185,25 @@ detail::ffmpeg_parser_thread::run()
 		int ret = av_read_packet(m_con, pkt);
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: av_read_packet returned %d", ret);
 		if (ret < 0) break;
-		// Wait until there is room in the buffer
-		while (m_parent->buffer_full())
-			sleep(1);   // This is overdoing it
-		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: calling data_avail(0x%x, %d)", pkt->data, pkt->size);
-		m_parent->data_avail(pkt->pts, pkt->data, pkt->size);
+		// Find out where to send it to
+		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
+		ffmpeg_parser_datasource *sink = m_sinks[pkt->stream_index];
+		if (sink == NULL) {
+			/*AM_DBG*/lib::logger::get_logger()->trace("ffmpeg_parser::run: Drop data for stream %d", pkt->stream_index);
+		} else {
+			// Wait until there is room in the buffer
+			while (sink->buffer_full() && !exit_requested())
+				sleep(1);   // This is overdoing it
+			/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_parser::run: calling %d.data_avail(0x%x, %d)", pkt->stream_index, pkt->data, pkt->size);
+			sink->data_avail(pkt->pts, pkt->data, pkt->size);
+		}
 		av_free_packet(pkt);
 	}
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: final data_avail(0, 0)");
-	m_parent->data_avail(0, 0, 0);
+	int i;
+	for (i=0; i<MAX_STREAMS; i++)
+		if (m_sinks[i])
+			m_sinks[i]->data_avail(0, 0, 0);
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser::run: returning");
 	return 0;
 }
@@ -211,23 +221,37 @@ ffmpeg_parser_datasource::ffmpeg_parser_datasource(const std::string& url, AVFor
 {
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::ffmpeg_parser_datasource() -> 0x%x", (void*)this);
 	ffmpeg_init();
-	m_thread = new detail::ffmpeg_parser_thread(this, context);
-	if (m_thread) {
-		m_thread->start();
+	// Find the index of the audio stream
+	int stream_index;
+	for (stream_index=0; stream_index < context->nb_streams; stream_index++) {
+		if (context->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
+			break;
+	}
+	if (stream_index >= context->nb_streams) {
+		lib::logger::get_logger()->error("ffmpeg_parser_datasource::ffmpeg_parser_datasource(): no audio streams");
+		m_src_end_of_file = true;
+		return;
 	} else {
+		m_fmt.parameters = (void *)&context->streams[stream_index]->codec;
+	}
+	m_thread = new detail::ffmpeg_parser_thread(context);
+	if (!m_thread) {
 		lib::logger::get_logger()->error("ffmpeg_parser_datasource::ffmpeg_parser_datasource: cannot start thread");
 		m_src_end_of_file = true;
 	}
-	assert(context->streams[0]);
-	m_fmt.parameters = (void *)&context->streams[0]->codec;
+	m_thread->add_datasink(this, stream_index);
+	m_thread->start();
 }
 
 ffmpeg_parser_datasource::~ffmpeg_parser_datasource()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::~ffmpeg_parser_datasource(0x%x)", (void*)this);
-	if (m_thread) m_thread->stop();
-	delete m_thread;
+	if (m_thread) {
+		if (m_thread->is_running())
+			m_thread->stop();
+		m_thread->release();
+	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::~ffmpeg_parser_datasource: thread stopped");
 	if (m_con) av_close_input_file(m_con);
@@ -256,11 +280,6 @@ ffmpeg_parser_datasource::start(ambulant::lib::event_processor *evp, ambulant::l
 		// will signal the client.
 		m_client_callback = callbackk;
 		m_event_processor = evp;
-		
-		lib::logger::get_logger()->trace("ffmpeg_parser_datasource::start(): Should start reading again");
-//		lib::event *e = new readdone_callback(this, &ffmpeg_parser_datasource::data_avail);
-//		AM_DBG lib::logger::get_logger()->trace("ffmpeg_parser_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
-//		m_src->start(m_event_processor,  e);
 	}
 	m_lock.leave();
 }
