@@ -16,10 +16,14 @@
 // temporary debug messages
 #include <iostream>
 #include <ostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <iomanip>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <iomanip>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 namespace ambulant {
@@ -102,7 +106,7 @@ class active_datasource : public ambulant::lib::ref_counted {
 public:
 	// constructors 
 	active_datasource();
-	active_datasource(passive_datasource *const source,std::FILE *file);
+	active_datasource(passive_datasource *const source, int file);
 	 // destructor
 	~active_datasource();
 
@@ -111,7 +115,7 @@ public:
 
 
 	//  Get data from buffer and put 'size' bytes in buffer.
-	void read(char *data, int size);
+	void read_data(char *data, int size);
 
 	// Return the amount of data currently in buffer.
 	int size();
@@ -136,7 +140,7 @@ private:
     passive_datasource *m_source;
     ambulant::lib::basic_atomic_count<ambulant::lib::unix::critical_section> m_refcount;
 	int m_filesize;
-	FILE *m_stream;
+	int m_stream;
 	void filesize();
     void read_file();
 
