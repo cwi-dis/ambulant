@@ -13,8 +13,8 @@ The design is going to consist of a mixed bag of technologies:
 - Text files such as this one for informal descriptions.
 - C++ header files for class definitions and such.
 - Image files for UML pictures.
-- XXXX (Kleanthis: please check this sentence) more formal text documents
-  as explained in sdd-schema.txt.
+- Formal text descriptions for each design entity as prescribed by the IEEE STD 1016-1998 
+  and explained in sdd-schema.txt.
   
 The design is going to be done in C++, but we will try to keep it compatible
 with Java or Python, and if possible keep cross-language implementations
@@ -76,6 +76,17 @@ memory allocators, stderr, etc.
 	This may be important if we want to embed our player, as the embedder may
 	hand us a memory allocator to use.
 
+	*COMMENT by KK* I don't see anything special concerning the task of building a plugin 
+	SMIL renderer and resource handling. You always have a hierarchy of objects (owners-owned). 
+	Each object may own other objects and be responsible for their lifetime 
+	(call their constructor and destructor or just assign the job to an auto pointer). 
+	You can always make one global root object, the plugin for example; 
+	whose destructor will indirectly invoke the destructors of the whole hierarchy.
+	Concerning the new operator a) can be overwritten or fully customized if needed 
+	b) one may use the placement new operator that re-uses pre-allocated memory.  
+	But I think we should do so only if it is really needed (something I cannot see
+	from the given reasoning).
+
 With a structure like this the application itself becomes basically a skeleton
 embedder: it is responsible for the GUI, handling open/open URL/quit/etc, it creates
 playback engine objects when needed and has a small number of callbacks for
@@ -85,6 +96,13 @@ playback engine objects when needed and has a small number of callbacks for
 	flavors (data sources, data sinks) I am tempted to create a baseclass for
 	active and passive containers. On the other hand: it could be seen as
 	over-generalization.
+	
+	*COMMENT by KK*: I think you should create a base class only if you want
+	these objects to be managed by an entity in a uniform way and independent
+	from their actual type. Otherwise, I think documentation is enough. 
+	(Inheritance in most of the cases means a virtual table. 
+	There is not any serious cost on this for gross grained objects except 
+	that it violates the C++ culture principle of paying for what you use.)    
 
 run-time system
 ---------------
