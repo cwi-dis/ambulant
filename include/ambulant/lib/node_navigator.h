@@ -293,8 +293,9 @@ inline N* node_navigator<N>::get_common_ancestor(N *n1, N *n2) {
 	assert(n1 && n2);
 	std::list<N*> path1; get_path(n1, path1);
 	std::list<N*> path2; get_path(n2, path2);
-	for(std::list<N*>::reverse_iterator it1=path1.rbegin();it1!=path1.rend();it1++) {
-		std::list<N*>::reverse_iterator it2 = std::find(path2.rbegin(), path2.rend(), (*it1));
+	typedef typename std::list<N*>::reverse_iterator reverse_iterator;
+	for(reverse_iterator it1=path1.rbegin();it1!=path1.rend();it1++) {
+		reverse_iterator it2 = std::find(path2.rbegin(), path2.rend(), (*it1));
 		if(it2 != path2.rend() && (*it2)->down())
 			return (*it2);
 	}
