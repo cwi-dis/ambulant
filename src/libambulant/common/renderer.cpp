@@ -133,6 +133,7 @@ active_renderer::stop()
 void
 active_renderer::wantclicks(bool want)
 {
+	AM_DBG lib::logger::get_logger()->trace("active_renderer(0x%x)::wantclicks(%d)", (void*)this, want);
 	if (m_dest)
 		m_dest->need_events(want);
 }

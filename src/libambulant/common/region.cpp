@@ -138,6 +138,7 @@ passive_region::new_subsurface(const region_info *info, renderer *bgrenderer)
 	zindex_t z = info->get_zindex();
 	AM_DBG lib::logger::get_logger()->trace("subbregion %s: ltrb=(%d, %d, %d, %d), z=%d", info->get_name().c_str(), bounds.left(), bounds.top(), bounds.right(), bounds.bottom(), z);
 	passive_region *rv = new passive_region(info->get_name(), this, bounds, info, bgrenderer);
+	AM_DBG lib::logger::get_logger()->trace("subbregion: returning 0x%x", (void*)rv);
 	m_active_children[zindex_t(z)].push_back(rv);
 	need_redraw(bounds);
 	return rv;
@@ -265,11 +266,14 @@ passive_region::user_event(const lib::point &where, int what)
 		AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
 		(*ari)->user_event(our_point, what);
 	}
-	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+	children_map_t::reverse_iterator it1;
+	for(it1=m_active_children.rbegin();it1!=m_active_children.rend();it1++) {
 		children_list_t& cl = (*it1).second;
-		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++)
-			//AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*i).second, (*i).first);
-			(*it2)->user_event(our_point, what);;
+		children_list_t::iterator it2;
+		for(it2=cl.begin();it2!=cl.end();it2++) {
+			AM_DBG lib::logger::get_logger()->trace("passive_region.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*it2), (*it1).first);
+			(*it2)->user_event(our_point, what);
+		}
 	}
 }
 
@@ -418,12 +422,12 @@ void
 active_region::user_event(const lib::point &where, int what)
 {
 	if (m_renderer) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("active_region.user_event(0x%x, %d) -> renderer 0x%x", (void *)this, what, (void *)m_renderer);
+		AM_DBG lib::logger::get_logger()->trace("active_region.user_event(0x%x, %d) -> renderer 0x%x", (void *)this, what, (void *)m_renderer);
 		m_renderer->user_event(where, what);
 	} else {
 		// At this point we should have a renderer that draws the default background
 		// When that is implemented this trace message should turn into an error (or fatal).
-		/*AM_DBG*/ lib::logger::get_logger()->warn("active_region.user_event(0x%x, %d) no renderer", (void *)this, what);
+		lib::logger::get_logger()->warn("active_region.user_event(0x%x, %d) no renderer", (void *)this, what);
 	}
 }
 
