@@ -55,6 +55,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/logger.h"
 
 using namespace ambulant;
 
@@ -68,6 +69,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 }
 
 gui::dx::dx_audio_renderer::~dx_audio_renderer() {
+	lib::logger::get_logger()->trace("~dx_audio_renderer()");
 	delete m_player;
 }
 
@@ -82,14 +84,29 @@ void gui::dx::dx_audio_renderer::start(lib::event *playdone) {
 		return;
 	}
 	m_dest->show(this);
-	m_player = new gui::dx::audio_player<net::active_datasource>(m_src);
+	if(!m_player)
+		m_player = new gui::dx::audio_player<net::active_datasource>(m_src);
 	m_player->play();
 }
 
+
 void gui::dx::dx_audio_renderer::stop() {
-	lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", (void *)this);
-	m_player->stop();
-	lib::active_renderer::stop();
+	lib::logger::get_logger()->trace("dx_audio_renderer.stop(0x%x)", this);
+	if(m_player) {
+		m_player->stop();
+	}
+}
+void gui::dx::dx_audio_renderer::pause() {
+	lib::logger::get_logger()->trace("dx_audio_renderer.pause(0x%x)", this);
+	if(m_player) {
+		m_player->pause();
+	}
+}
+void gui::dx::dx_audio_renderer::resume() {
+	lib::logger::get_logger()->trace("dx_audio_renderer.resume(0x%x)", this);
+	if(m_player) {
+		m_player->play();
+	}
 }
 
 void gui::dx::dx_audio_renderer::redraw(const lib::screen_rect<int> &dirty, lib::passive_window *window, 
