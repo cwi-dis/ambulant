@@ -160,7 +160,7 @@ Install the following distributions into directories in third_party_packages:
 - zlib: XXXX
 As some of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
-INTO-third_party_packages-for-win32.zip archive, it contains versions that
+third_party_packages-WIN.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
 in your ambulant distribution.
@@ -207,10 +207,10 @@ Install the following distributions into directories in third_party_packages:
 - jpeg: XXXX
 - lpng125: XXXX
 - mp3lib: XXXX
-- zlib: XXXX
+- zlibce: XXXX
 As most of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
-INTO-third_party_packages-for-win32.zip archive, it contains versions that
+third_party_packages-WIN.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
 in your ambulant distribution.
