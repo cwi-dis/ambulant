@@ -57,6 +57,7 @@
 #include "ambulant/net/posix_datasource.h"
 #else
 #include "ambulant/net/stdio_datasource.h"
+inline double round(double v) {return floor(v+0.5);}
 #endif
 
 #ifndef AM_DBG
