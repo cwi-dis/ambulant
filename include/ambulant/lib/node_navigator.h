@@ -90,9 +90,9 @@ namespace lib {
 template <class N>
 class node_navigator {
   public:
-	static const N* previous(const N *n);
-	static const N* last_child(const N *n);
-	static void get_children(const N *n, std::list<const N*>& l);
+	static N* previous(N *n);
+	static N* last_child(N *n);
+	static void get_children(N *n, std::list<N*>& l);
 	static N* append_child(N *n, N* child);
 	static N* detach(N *n);
 	static void delete_tree(N *n);
@@ -100,15 +100,15 @@ class node_navigator {
 };
 
 template <class N>
-inline const N* node_navigator<N>::previous(const N *n) {
+inline N* node_navigator<N>::previous(N *n) {
 	assert(n != 0);
-	const N *e = n->up();
+	N *e = n->up();
 	if(!e) return 0;
 
 	e = e->down();
 	if(e == n) return 0;
 
-	const N *p = 0;
+	N *p = 0;
 	while(e->next()) {
 		p = e;
 		e = e->next();
@@ -118,11 +118,11 @@ inline const N* node_navigator<N>::previous(const N *n) {
 }
 
 template <class N>
-inline const N* node_navigator<N>::last_child(const N *n) {
+inline N* node_navigator<N>::last_child(N *n) {
 	assert(n != 0);
-	const N *e = n->down();
+	N *e = n->down();
 	if(!e) return 0;
-	const N *last = e;
+	N *last = e;
 	e = e->next();
 	while(e) {
 		last = e;
@@ -132,9 +132,9 @@ inline const N* node_navigator<N>::last_child(const N *n) {
 }
 
 template <class N>
-inline void node_navigator<N>::get_children(const N *n, std::list<const N*>& l) {
+inline void node_navigator<N>::get_children(N *n, std::list<N*>& l) {
 	assert(n != 0);
-	const N *e = n->down();
+	N *e = n->down();
 	if(!e) return;
 	l.push_back(e);
 	e = e->next();

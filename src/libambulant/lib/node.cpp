@@ -163,6 +163,9 @@ class attr_collector {
 ///////////////////////////////////////////////
 // lib::node implementation
 
+// static 
+int lib::node::node_counter = 0;
+
 //////////////////////
 // Node constructors
 
@@ -174,6 +177,7 @@ lib::node::node(const char *local_name, const char **attrs, const node_context *
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
+	node_counter++;
 }
 
 lib::node::node(const xml_string& local_name, const char **attrs, const node_context *ctx)
@@ -181,11 +185,13 @@ lib::node::node(const xml_string& local_name, const char **attrs, const node_con
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
+	node_counter++;
 }
 
 lib::node::node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
 :	m_qname(qn), m_qattrs(qattrs), m_context(ctx),
 	m_parent(0), m_next(0), m_child(0){
+	node_counter++;
 }
 
 // shallow copy from other
@@ -195,12 +201,14 @@ lib::node::node(const node* other)
 	m_data(other->get_data()),
 	m_context(other->get_context()),
 	m_parent(0), m_next(0), m_child(0) {
+	node_counter++;
 }
 
 //////////////////////
 // Node destructor
 
 lib::node::~node() { 
+	node_counter--;
 	node_navigator<node>::delete_tree(this); 
 }
 
@@ -217,16 +225,16 @@ lib::node::~node() {
 
 const lib::node* 
 lib::node::previous() const { 
-	return node_navigator<node>::previous(this); 
+	return node_navigator<const node>::previous(this); 
 }
 
 const lib::node* 
 lib::node::get_last_child() const { 
-	return node_navigator<node>::last_child(this);
+	return node_navigator<const node>::last_child(this);
 }
 
 void lib::node::get_children(std::list<const node*>& l) const {
-	node_navigator<node>::get_children(this, l);
+	node_navigator<const node>::get_children(this, l);
 }
 
 ///////////////////////////////
