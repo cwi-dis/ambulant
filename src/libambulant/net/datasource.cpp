@@ -47,10 +47,11 @@
  * 
  */
 
-
-
 #include "ambulant/net/datasource.h"
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 using namespace net;
@@ -79,24 +80,28 @@ datasource_factory::~datasource_factory()
 void
 datasource_factory::add_raw_factory(raw_datasource_factory *df)
 {
+	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_raw_factory(0x%x)", (void*)df);
 	m_raw_factories.push_back(df);
 }
 
 void
 datasource_factory::add_audio_factory(audio_datasource_factory *df)
 {
+	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_factory(0x%x)", (void*)df);
 	m_audio_factories.push_back(df);
 }
 
 void
 datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
 {
+	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_parser_finder(0x%x)", (void*)df);
 	m_audio_parser_finders.push_back(df);
 }
 
 void
 datasource_factory::add_audio_filter_finder(audio_filter_finder *df)
 {
+	AM_DBG lib::logger::get_logger()->trace("datasource_factory: add_audio_filter_finder(0x%x)", (void*)df);
 	m_audio_filter_finders.push_back(df);
 }
 
@@ -109,6 +114,7 @@ datasource_factory::new_raw_datasource(const std::string &url)
     
     for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
         src = (*i)->new_raw_datasource(url);
+		AM_DBG lib::logger::get_logger()->trace("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
 	lib::logger::get_logger()->warn("datasource_factory::new_raw_datasource: no datasource for %s\n", url.c_str());

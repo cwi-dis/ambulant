@@ -104,16 +104,21 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf, b
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add stdio_datasource_factory");
 	m_df->add_raw_factory(new net::stdio_datasource_factory());
 #endif
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add posix_datasource_factory");
 	m_df->add_raw_factory(new net::posix_datasource_factory());
 	
 #ifdef WITH_FFMPEG
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_parser_finder");
 	m_df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add ffmpeg_audio_filter_finder");
 	m_df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
 #endif
 #ifdef WITH_RAW_AUDIO
 	// This is for debugging only
+    AM_DBG lib::logger::get_logger()->trace("mainloop::mainloop: add raw_audio_parser_finder");
 	m_df->add_audio_parser_finder(new net::raw_audio_parser_finder());
 #endif
 	

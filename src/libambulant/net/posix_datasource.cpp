@@ -70,8 +70,9 @@ using namespace ambulant;
 	
 
 net::datasource* 
-net::posix_datasource_factory::new_datasource(const std::string& url)
+net::posix_datasource_factory::new_raw_datasource(const std::string& url)
 {
+	AM_DBG lib::logger::get_logger()->trace("posix_datasource_factory::new_datasource(%s)", url.c_str());
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
 	if (url != "") {
 		passive_datasource dummy(url);

@@ -83,10 +83,10 @@ namespace ambulant {
 namespace net {
 
 
-class stdio_datasource_factory : public datasource_factory {
+class stdio_datasource_factory : public raw_datasource_factory {
   public:
 	~stdio_datasource_factory() {};
-	datasource* new_datasource(const std::string& url);
+	datasource* new_raw_datasource(const std::string& url);
 };
 
   

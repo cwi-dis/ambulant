@@ -69,7 +69,7 @@ using namespace ambulant;
 	
 
 net::datasource* 
-net::stdio_datasource_factory::new_datasource(const std::string& url)
+net::stdio_datasource_factory::new_raw_datasource(const std::string& url)
 {
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
 	if (url != "") {
