@@ -1,4 +1,5 @@
 @echo off
+REM $Id$
 SETLOCAL
 
 REM Download the JPEG lib from http://www.ijg.org/files/

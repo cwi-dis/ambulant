@@ -1,4 +1,5 @@
 @echo off
+REM $Id$
 SETLOCAL
 
 REM Download expat from http://sourceforge.net/projects/expat/
