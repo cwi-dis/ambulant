@@ -25,21 +25,6 @@ qt_gui::qt_gui(const char* title,
   m_pausing = false;
   setCaption(initfile);
 
-  /* Label */
-  QLabel* mylabel = new QLabel ("Ambulant", this);
-  assert(mylabel);
-  QPixmap ambulant_pixmap("Ambulant.gif");
-  mylabel->setGeometry(0,-10,400,60);
-  mylabel->setPixmap(ambulant_pixmap);
-
-  /* Play pushbutton */
-  m_playbutton = new QPushButton("&Play", this);
-  assert(m_playbutton);
-  m_playbutton->setGeometry(10,180,72,20);
-  QObject::connect(m_playbutton, SIGNAL(released()),
-		   this, SLOT(slot_play()));
-  QToolTip::add(m_playbutton, "Play SMIL files");
-
   /* Menu bar */
   QMenuBar*  menubar = new QMenuBar(this,"MainMenu");
   {
@@ -68,71 +53,12 @@ qt_gui::qt_gui(const char* title,
     assert(helpmenu);
     helpmenu->insertItem("&About", this, SLOT(slot_about()));
     menubar->insertItem("&Help", helpmenu);
-    menubar->setGeometry(0,40,400,20);
+    menubar->setGeometry(0,0,320,20);
   }
-  /* slider */
-  int initval = 0, tickinterval = 10, min = initval, max = 100;
-  QSlider* slider = new QSlider(
-				min,
-				max,
-				tickinterval,           // step
-				initval,                // initial val
-				QSlider::Horizontal,    // orientation
-				this                    // parent
-				);
-  assert(slider);
-  slider->setTickmarks(QSlider::Both);
-  slider->setTickInterval(tickinterval);
-  slider->setGeometry(10,80,150,20);
-  QToolTip::add(slider, "QSlider");
-  /* dial */
-  QDial* dial = new QDial(
-			  min,
-			  max,
-			  1,                      // step
-			  initval,                // initial val
-			  this                    // parent
-			  );
-  assert(dial);
-  dial->setNotchesVisible(true);
-  dial->setGeometry(100,120,50,50);
-  dial->setPageStep(10);
-  QToolTip::add(dial, "QDial");
-  
-  /* LCDnumber */
-  QLCDNumber* lcdnumber = new QLCDNumber(
-					 3,             // # digits
-					 this           // parent
-					 );
-  assert(lcdnumber);
-  lcdnumber->setGeometry(10,120,72,50);
-  lcdnumber->display(initval);
-  QToolTip::add(lcdnumber, "QLCDNumber");
-  // Connect slider and numberdisplay
-  QObject::connect(slider, SIGNAL(valueChanged(int)),
-		   lcdnumber, SLOT(display(int)));
-  // Connect slider and dial
-  QObject::connect(slider, SIGNAL(valueChanged(int)),
-		   dial, SLOT(setValue(int)));
-  
-  // Connect dial and numberdisplay
-  QObject::connect(dial, SIGNAL(valueChanged(int)),
-		   lcdnumber, SLOT(display(int)));
-  // Connect dial and slider
-  QObject::connect(dial, SIGNAL(valueChanged(int)),
-		   slider, SLOT(setValue(int)));
-
-  /* Quit pushbutton */
-  QPushButton* myquitbutton = new QPushButton("&Quit", this);
-  assert(myquitbutton);
-  myquitbutton->setGeometry(10,210,72,20);
-  QObject::connect(myquitbutton, SIGNAL(clicked()),
-		   qApp, SLOT(quit()));
-  QToolTip::add(myquitbutton, "Terminate the program");
   /* Workspace */
   m_workspace = new QWidget(this);
   assert(m_workspace);
-  m_workspace->setGeometry(160,80,480,400);
+  m_workspace->setGeometry(0,20,320,220);
   //  m_workspace->setBackgroundMode (Qt::PaletteBackground);
   m_workspace->setBackgroundMode (Qt::PaletteLight);
   //  m_workspace->setScrollBarsEnabled(true);
@@ -173,7 +99,6 @@ void qt_gui::slot_open() {
 }
 void qt_gui::slot_player_done() {
   printf("%s-%s\n", m_programfilename, "slot_player_done");
-  m_playbutton->setText("Play");
   m_playmenu->setItemEnabled(m_pause_id, false);
   m_playmenu->setItemEnabled(m_play_id, true);
   m_playing = false;
@@ -207,10 +132,8 @@ void qt_gui::slot_play() {
     int rv = pthread_create(&playthread, NULL, &qt_mainloop::run, this);
   }
   if (!m_pausing) {
-     m_playbutton->setText("Pause");   
      m_pausing = true;
   } else {
-    m_playbutton->setText("Play");
     m_pausing = false;
   }
 }
@@ -247,7 +170,7 @@ int main (int argc, char*argv[]) {
   qt_gui* mywidget
                 = new qt_gui(argv[0],
 		  argc > 1 ? argv[1] : "");
-  mywidget->setGeometry(750, 50, 640, 480);
+  mywidget->setGeometry(750, 50, 320, 240);
   /* Fire */
   myapp.setMainWidget(mywidget);
   mywidget->show();

@@ -123,6 +123,3 @@ class url_static_init {
 };
 
 static url_static_init url_static_init_inst;
-
- 
- 

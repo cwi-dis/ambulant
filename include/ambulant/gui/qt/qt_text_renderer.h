@@ -1,14 +1,19 @@
 /* 
  * $Id$
  */
+/*
+ * The contents of this file are subject to the Public
+ * License XXX. 
+ *
+ */
 /* from: renderer.h,v 1.1 2003/09/15 10:36:17 jack Exp */
  
 #ifndef AMBULANT__QT_TEXT_RENDERER_H
 #define AMBULANT__QT_TEXT_RENDERER_H
 
-#include "ambulant/lib/mtsync.h"
 #include "ambulant/common/region.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
 
 class qt_gui;

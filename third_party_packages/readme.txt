@@ -6,7 +6,13 @@ expat-win32:
 	via <http://expat.sourceforge.net>. Installed with the win32 binary installer 
 	(it seems to be difficult to build from the source).
 expat-unix:
-	Ditto, but built from source. Download the expat source into, say,
-	expat-1.95.6, do "./configure --prefix=.../ambulant/third_party_packages/expat-unix"
-	and then "make && make install".
+	Ditto, but built from source. Download the expat source into
+	expat-1.95.6 in this directory (.../ambulant/third_party_packages).
+	Apply the expat.h patch:
+	(cd expat-1.95.6/include;patch < ../.../expat.h.patch)
+
+	Then do:
+	./configure --prefix=.../ambulant/third_party_packages/expat-unix
+	make; make install"
+
 	NOTE: on MacOSX you need to apply expat.h.patch.

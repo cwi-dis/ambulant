@@ -13,18 +13,20 @@ else
 toolkit_cocoa_libraries =
 endif
 if WITH_QT
-INCLUDES=-I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include \
-         -I$(top_builddir)/include/ambulant/gui/qt -I$(QTDIR)/include
 toolkit_qt_libraries = libambulant_qt.la
+qtincludes = -I$(QTDIR)/include
+
 libambulant_qt_la_SOURCES = 		\
 	gui/qt/qt_renderer.cpp		\
 	gui/qt/qt_image_renderer.cpp	\
 	gui/qt/qt_text_renderer.cpp 
 
 else
+qtincludes=
 toolkit_qt_libraries =
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include -I$(expat_dir)/include
 endif
+INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
+	-I$(expat_dir)/include $(qtincludes)
 
 lib_LTLIBRARIES = libambulant.la $(toolkit_cocoa_libraries) $(toolkit_qt_libraries)
 

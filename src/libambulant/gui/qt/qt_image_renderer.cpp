@@ -3,8 +3,9 @@
  * @$Id$ 
  */
 
-#include "qt_gui.h"
-#include "qt_image_renderer.h"
+#include "ambulant/gui/qt/qt_gui.h"
+#include "ambulant/gui/qt/qt_renderer.h"
+#include "ambulant/gui/qt/qt_image_renderer.h"
 
 namespace ambulant {
   
