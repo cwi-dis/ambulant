@@ -70,18 +70,9 @@ lib::tree_builder::tree_builder(node_context *context)
 	m_root(0),
 	m_current(0),
 	m_well_formed(false),
-	m_context(context) {
-#ifdef	WITH_XERCES
-    // XXXX Do this only if the xerces parser is selected in the preferences
-	m_xmlparser = new xerces_sax_parser(this, this);
-#endif/*WITH_XERCES*/
-#ifdef WITH_EXPAT
-    // XXXX Do this only if the expat parser is selected in the preferences
-	m_xmlparser = new expat_parser(this, this);
-#endif /*WITH_EXPAT*/
-    if (m_xmlparser == NULL) {
-        lib::logger::get_logger()->fatal("Could not create XML parser");
-    }
+	m_context(context)
+{
+	reset();
 }
 
 lib::tree_builder::~tree_builder()
@@ -157,9 +148,8 @@ bool
 lib::tree_builder::build_tree_from_str(const std::string& str) {
 #ifdef	WITH_XERCES
 	assert(0); //XXXX TBD HOW?
-#else /*WITH_XERCES*/
+#endif /*WITH_XERCES*/
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
-#endif/*WITH_XERCES*/
 	return m_well_formed;
 }
 
@@ -167,9 +157,8 @@ bool
 lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
 #ifdef	WITH_XERCES
 	assert(0); //XXXX TBD HOW?
-#else /*WITH_XERCES*/
-	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 #endif/*WITH_XERCES*/
+	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 	return m_well_formed;
 }
 
@@ -186,10 +175,16 @@ lib::tree_builder::reset() {
 	}
 	m_well_formed = false;
 #ifdef	WITH_XERCES
- 	m_xmlparser = new xerces_sax_parser(this, this);
-#else /*WITH_XERCES*/
-	m_xmlparser = new expat_parser(this, this);
+    // XXXX Do this only if the xerces parser is selected in the preferences
+	m_xmlparser = new xerces_sax_parser(this, this);
 #endif/*WITH_XERCES*/
+#ifdef WITH_EXPAT
+    // XXXX Do this only if the expat parser is selected in the preferences
+	m_xmlparser = new expat_parser(this, this);
+#endif /*WITH_EXPAT*/
+    if (m_xmlparser == NULL) {
+        lib::logger::get_logger()->fatal("Could not create any XML parser (configuration error?)");
+    }
 }
 
 void 
