@@ -57,7 +57,7 @@
 #include "ambulant/lib/logger.h"
 
 #define FILL_PURPLE
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

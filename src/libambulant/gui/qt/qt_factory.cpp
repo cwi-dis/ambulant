@@ -241,7 +241,7 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	setGeometry(bounds->left(), bounds->top(), bounds->right(), bounds->bottom());
-	setMouseTracking(true);
+	setMouseTracking(true); // enable mouseMoveEvent
 }
 
 qt_ambulant_widget::~qt_ambulant_widget()
@@ -284,8 +284,7 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 
 void 
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
-/*AM_DBG*/
-	int m_o_x = 0, m_o_y = 27; // XXXX Origin of MainWidget
+  int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
 	AM_DBG lib::logger::get_logger()->trace("%s:(%d,%d)\n",
 	       "qt_ambulant_widget::mouseMoveEvent", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x()-m_o_x,
