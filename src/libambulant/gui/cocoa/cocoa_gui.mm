@@ -492,8 +492,10 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 
 - (NSImage *)getTransitionOldSource
 {
+#ifdef USE_SMIL21
 	if (fullscreen_count && fullscreen_oldimage)
 		return fullscreen_oldimage;
+#endif
 	return [self _getOnScreenImage];
 }
 

@@ -187,10 +187,10 @@ class cocoa_renderer_factory : public common::playable_factory {
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
 - (NSImage *)getTransitionNewSource;
 
-#ifdef USE_SMIL21
 // Return the current on-screen image
 - (NSImage *)_getOnScreenImage;
 
+#ifdef USE_SMIL21
 - (void) startScreenTransition;
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
