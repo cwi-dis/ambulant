@@ -61,9 +61,16 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+
+	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
+	if (systemTestSettingsPath) {
+		std::string path([systemTestSettingsPath cString]);
+		mainloop::set_preferences(path);
+	}
+
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	if ( [defaults boolForKey: @"welcomeDocumentSeen"] ) return;
-	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 	if (welcomePath) {
 		id sender = [aNotification object];

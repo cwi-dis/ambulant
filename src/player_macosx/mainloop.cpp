@@ -75,6 +75,7 @@
 #ifdef WITH_RAW_AUDIO
 #include "ambulant/net/raw_audio_datasource.h"
 #endif
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -192,3 +193,8 @@ mainloop::is_running() const
 	return !m_player->is_done();
 }
 
+void
+mainloop::set_preferences(std::string &url)
+{
+	ambulant::smil2::test_attrs::load_test_attrs(url);
+}

@@ -2021,6 +2021,20 @@
 			settings = {
 			};
 		};
+		04878D3C061AB9A5008573FA = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = systemTestSettings.xml;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04878D3D061AB9A5008573FA = {
+			fileRef = 04878D3C061AB9A5008573FA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		048A7E1D05CDB420003C92BF = {
 			children = (
 				048A7E1E05CDB420003C92BF,
@@ -2836,6 +2850,7 @@
 		};
 		2A37F4B8FDCFA73011CA2CEA = {
 			children = (
+				04878D3C061AB9A5008573FA,
 				04AD6622060A5A9200487334,
 				04AD6623060A5A9200487334,
 				04AD6624060A5A9200487334,
@@ -3146,6 +3161,7 @@
 				04AD6627060A5A9200487334,
 				04AD6628060A5A9200487334,
 				04AD6629060A5A9200487334,
+				04878D3D061AB9A5008573FA,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

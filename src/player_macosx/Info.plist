@@ -24,7 +24,7 @@
 				<string>????</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>Viewer</string>
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>
@@ -44,7 +44,7 @@
 				<string>????</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>None</string>
+			<string>Viewer</string>
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>
@@ -64,7 +64,7 @@
 				<string>????</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>None</string>
+			<string>Viewer</string>
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>
@@ -84,7 +84,7 @@
 				<string>????</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>None</string>
+			<string>Viewer</string>
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>

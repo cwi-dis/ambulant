@@ -71,6 +71,7 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	double get_speed() const { return m_speed; }
 	bool is_running() const;
 	
+	static void set_preferences(std::string &path);
   private:
   	bool m_running;
 	double m_speed;
