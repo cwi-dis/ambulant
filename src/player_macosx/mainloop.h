@@ -3,6 +3,7 @@
 #include "ambulant/lib/player.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
+#include "ambulant/gui/cocoa/cocoa_gui.h"
 
 class mainloop_callback_arg {
 };
@@ -10,15 +11,15 @@ class mainloop_callback_arg {
 class mainloop : public ambulant::lib::ref_counted {
   public:
 	mainloop()
-	:	m_refcount(1),
-		m_done(false) {}
+	:   m_done(false),
+            m_refcount(1) {}
 	
 	// The callback member function.
 	void player_done_callback(mainloop_callback_arg *p) {
 		m_done = true;
 	}
 	
-	void run(char *filename);
+	void run(const char *filename, ambulant::lib::window_factory *wf);
 	////////////////////////
 	// lib::ref_counted interface implementation
 	

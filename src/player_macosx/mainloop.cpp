@@ -18,7 +18,7 @@ usage()
 }
 
 void
-mainloop::run(char *filename)
+mainloop::run(const char *filename, ambulant::lib::window_factory *wf)
 {
 	using namespace ambulant;
 	
@@ -26,7 +26,7 @@ mainloop::run(char *filename)
 	if (!p) return;
 
 	lib::active_player *a = p->activate(
-		(lib::window_factory *)new gui::cocoa::cocoa_window_factory(),
+		wf,
 		(lib::renderer_factory *)new ambulant::gui::cocoa::cocoa_renderer_factory());
 	if (!a) return;
 	

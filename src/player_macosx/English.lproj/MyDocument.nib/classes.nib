@@ -1,8 +1,19 @@
 {
     IBClasses = (
-        {CLASS = AmbulantView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = AmbulantView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {document = MyDocument; }; 
+            SUPERCLASS = NSView; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
+        {
+            ACTIONS = {pause = id; play = id; stop = id; }; 
+            CLASS = MyDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {view = AmbulantView; }; 
+            SUPERCLASS = NSDocument; 
+        }
     ); 
     IBVersion = 1; 
 }
