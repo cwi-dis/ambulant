@@ -90,7 +90,6 @@ namespace qt_renderer {
  	AM_DBG logger::get_logger()->trace
 	  ("qt_active_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",
 	   (void *)this, L,T,W,H);
-      paint.eraseRect(L,T,W,H);
       paint.setBrush(*bgc);
       paint.drawRect(L,T,W,H);
     }
@@ -123,7 +122,6 @@ namespace qt_renderer {
 	("qt__background_renderer::drawbackground:%s0x%x,%s(%d,%d,%d,%d)",
 	" clearing to ", (long)bgcolor, " local_ltwh=",L,T,W,H);
       QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
-      paint.eraseRect(L,T,W,H);
       paint.setBrush(*bgc);
       paint.drawRect(L,T,W,H);
       paint.flush();

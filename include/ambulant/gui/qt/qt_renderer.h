@@ -131,13 +131,18 @@ namespace qt_renderer {
      this->show();
     }
     void paintEvent(QPaintEvent* e) {
-    AM_DBG logger::get_logger()->trace
-	("qt_ambulant_widget::paintEvent(%x))", (void*) this
-	 );
-     QRect qr = e->rect();
-    screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
-					   point(qr.right(),qr.bottom()));
-     m_qt_window->redraw(r);
+      AM_DBG logger::get_logger()->trace
+	("qt_ambulant_widget::paintEvent(0x%x) e=0x%x)",
+	 (void*) this, (void*) e);
+      QRect qr = e->rect();
+      screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
+					     point(qr.right(),qr.bottom()));
+      if (m_qt_window == NULL) {
+	logger::get_logger()->trace
+	("qt_ambulant_widget::paintEvent(0x%x) e=0x%x m_qt_window==NULL",
+	 (void*) this, (void*) e);
+      }
+      m_qt_window->redraw(r);
     }
     void set_qt_window( ambulant_qt_window* aqw) {
       m_qt_window = aqw;

@@ -107,7 +107,6 @@ namespace qt_renderer {
       color_t bgcolor = info->get_bgcolor();
       AM_DBG lib::logger::get_logger()->trace("qt_active_image_renderer.redraw: clearing to 0x%x", (long)bgcolor);
       QColor* bgc = new QColor(redc(bgcolor),greenc(bgcolor),bluec(bgcolor));
-      paint.eraseRect(L,T,W,H);
       paint.setBrush(*bgc);
       paint.drawRect(L,T,W,H);
     }

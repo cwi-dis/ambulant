@@ -150,7 +150,7 @@ namespace qt_renderer {
 	= new ambulant_qt_window(name, r, region);
       qt_ambulant_widget * qaw
 	= new qt_ambulant_widget(name, r, m_parent_widget);
-      qApp->mainWidget()->resize(bounds.h, bounds.h);
+      qApp->mainWidget()->resize(bounds.w+m_p.x, bounds.h+m_p.y);
       aqw->set_ambulant_widget(qaw);
       qaw->set_qt_window(aqw);
       AM_DBG logger::get_logger()->trace
@@ -171,7 +171,6 @@ namespace qt_renderer {
 	    ("qt_window_factory::new_background_renderer(0x%x): TBD",
 	     (void*) this);
        return new qt_background_renderer();
-//JNK	   return new none::none_background_renderer();
   }
 
 } // namespace qt_renderer
