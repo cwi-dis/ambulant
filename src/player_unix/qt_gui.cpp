@@ -254,7 +254,7 @@ checkFilename(QString filename, int mode) {
 void
 qt_gui::fileError(QString smilfilename) {
  	char buf[1024];
-	sprintf(buf, gettext("Cannot open file \"%s\":\n%s\n"),
+	sprintf(buf, gettext("%s: Cannot open file: %s"),
 		(const char*) smilfilename, strerror(errno));
 	QMessageBox::information(this, m_programfilename, buf);
 }
