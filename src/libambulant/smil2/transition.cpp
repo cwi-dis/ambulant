@@ -224,6 +224,7 @@ transition_engine_diagonalwipe::compute()
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
 	int xmin = dstrect.left() - 2*dstrect.width();
 	int xcur = xmin + (int)(m_progress*2*dstrect.width());
+	m_stepcount = 2*dstrect.width();
 	
 	m_newpolygon.push_back(lib::point(xcur, dstrect.top()));
 	m_newpolygon.push_back(lib::point(xcur+2*dstrect.width(), dstrect.top()));
@@ -282,6 +283,7 @@ transition_engine__iris::compute()
 	int pointcount;
 	lib::dpoint *pointp = get_template(&pointcount);
 	clear();
+	m_stepcount = dstrect.width()/2;
 	double radius = sqrt( 
 		(0.5*dstrect.width())*(0.5*dstrect.width()) + 
 		(0.5*dstrect.height())*(0.5*dstrect.height()));
@@ -548,6 +550,7 @@ transition_engine_clockwipe::compute()
 	if (!m_angle_computer.matches(dstrect))
 		m_angle_computer = detail::angle_computer(dstrect);
 	clear();
+	m_stepcount = 2*dstrect.width() + 2*dstrect.height();
 	double angle = M_PI/2 - (m_progress*2*M_PI);
 	AM_DBG lib::logger::get_logger()->trace("transition_engine_clockwipe::compute: progress %f angle %f (%d)", m_progress, angle, (int)(angle*180/M_PI));
 	m_angle_computer.angle2poly(m_newpolygon, angle, true);
@@ -613,6 +616,7 @@ transition_engine_snakewipe::compute()
 	int vindex = index / MATRIX_HSTEPS;
 	int vindexpos = (dstrect.m_top + vindex*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
 	int vindex2pos = (dstrect.m_top + (vindex+1)*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
+	m_stepcount = MATRIX_HSTEPS*MATRIX_VSTEPS;
 	clear();
 	if (vindex)
 		m_newrectlist.push_back(lib::screen_rect<int>(
@@ -643,6 +647,7 @@ transition_engine_waterfallwipe::compute()
 	int hindexpos = (dstrect.m_left + hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
 	int hindex2pos = (dstrect.m_top + (hindex+1)*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
 	int vindexpos = (dstrect.m_top + vindex*(dstrect.m_bottom-dstrect.m_top)/MATRIX_VSTEPS);
+	m_stepcount = MATRIX_HSTEPS*MATRIX_VSTEPS;
 	clear();
 	if (hindex)
 		m_newrectlist.push_back(lib::screen_rect<int>(
