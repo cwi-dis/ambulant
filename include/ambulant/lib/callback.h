@@ -42,7 +42,7 @@ struct callback_struct {
 	// Callback member function signature
 	typedef void (T::*MF)(A *a);
 	
-	// The target object that should be ref_counted.
+	// The target object.
 	T *m_obj;
 	
 	// The taget member function.
