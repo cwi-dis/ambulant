@@ -41,7 +41,7 @@ endif
 
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  ` sdl-config --libs`
+libambulant_sdl_la_LDFLAGS =  -static ` sdl-config --libs`
 sdlincludes = `sdl-config --cflags`
 libambulant_sdl_la_SOURCES =             \
         gui/SDL/sdl.cpp \
@@ -123,6 +123,7 @@ libambulant_la_SOURCES = \
 	mms/timeline_builder.cpp \
 	mms/timelines.cpp \
 	\
+	gui/none/none_area.cpp \
 	gui/none/none_gui.cpp \
 	gui/none/none_video_renderer.cpp \
 	gui/none/none_factory.cpp
