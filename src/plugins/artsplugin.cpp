@@ -46,6 +46,7 @@
  * 
  */
 
+#include "ambulant/common/factory.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/unix/unix_mtsync.h"
@@ -66,8 +67,8 @@ using namespace ambulant;
 class arts_plugin_factory : public common::playable_factory {
   public:
 
-	arts_plugin_factory(net::datasource_factory *df)
-	:   m_datasource_factory(df) {}
+	arts_plugin_factory(common::factories* factory)
+	:   m_factory(factory) {}
 	~arts_plugin_factory() {};
 		
 	common::playable *new_playable(
@@ -76,7 +77,7 @@ class arts_plugin_factory : public common::playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp);
   private:
-	net::datasource_factory *m_datasource_factory;
+	common::factories* m_factory;
 	
 };
 
@@ -88,7 +89,7 @@ class arts_plugin : public common::playable_imp
       common::playable_notification::cookie_type cookie,
       const lib::node *node,
       lib::event_processor *const evp,
-      net::datasource_factory *df);
+      common::factories* factory);
 
     ~arts_plugin();
 
@@ -137,7 +138,7 @@ arts_plugin_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") /*or any other tag ofcourse */ {
-		rv = new arts_plugin(context, cookie, node, evp, m_datasource_factory);
+		rv = new arts_plugin(context, cookie, node, evp, m_factory);
 		//rv = NULL;
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
 	} else {
@@ -153,7 +154,7 @@ arts_plugin::arts_plugin(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp,
-	net::datasource_factory *df)
+	common::factories* factory)
 :	common::playable_imp(context, cookie, node, evp),
 	m_rate(44100),
 	m_channels(1),
@@ -169,7 +170,7 @@ arts_plugin::arts_plugin(
 	arts_setup(44100,16,2,"arts_audio");
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
-	m_audio_src = df->new_audio_datasource(url, supported);
+	m_audio_src = factory->df->new_audio_datasource(url, supported);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error("arts_plugin::arts_plugin cannot open %s", repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
@@ -364,8 +365,8 @@ arts_plugin::stop()
 
 
 
-extern "C" void initialize(ambulant::common::global_playable_factory* rf, ambulant::net::datasource_factory* df)
+extern "C" void initialize(ambulant::common::factories* factory)
 {	
 	AM_DBG lib::logger::get_logger()->debug("arts_plugin::initialize registering factory function");
-	rf->add_factory(new arts_plugin_factory(df));
+	factory->rf->add_factory(new arts_plugin_factory(factory));
 }
