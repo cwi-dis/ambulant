@@ -6,6 +6,10 @@ set AMB_HOME=..
 REM Third Party Packages home directory
 set TPP_HOME=.
 
+REM Create required directories
+if not exist %AMB_HOME%\lib md %AMB_HOME%\lib
+if not exist %AMB_HOME%\lib\win32 md %AMB_HOME%\lib\win32
+
 REM Expat DLL
 copy %TPP_HOME%\expat\lib\Release\libexpat.dll %AMB_HOME%\bin\win32\libexpat.dll
 copy %TPP_HOME%\expat\lib\Release\libexpat.lib %AMB_HOME%\lib\win32\libexpat.lib
