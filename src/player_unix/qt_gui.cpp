@@ -206,11 +206,11 @@ void qt_gui::paintEvent(QPaintEvent* e) {
   else {
     using namespace ambulant::gui::qt_renderer;
     using namespace ambulant::lib;
-    qt_passive_window* qpw = (qt_passive_window*) m_ambulant_window;
+    qt_window *qpw = (qt_window *)m_ambulant_window;
     QRect qr = e->rect();
     screen_rect<int> r =  screen_rect<int>(point(qr.left(),qr.top()),
 					   point(qr.right(),qr.bottom()));
-    qpw->redraw(r,qpw);
+    qpw->redraw(r);
   }
 }
 

@@ -13,6 +13,7 @@ library_include_HEADERS= \
 	expat_parser.h \
 	filesys.h \
 	gtypes.h \
+	layout.h \
 	logger.h \
 	mtsync.h \
 	node_iterator.h \

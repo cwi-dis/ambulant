@@ -73,10 +73,10 @@ namespace qt_renderer {
   }
   void
   qt_active_text_renderer::redraw(const screen_rect<int> &r,
-				  passive_window* w,
-				  const point& p)
+				  abstract_window* w)
   {
     m_lock.enter();
+    const point p = m_dest->get_global_topleft();
     AM_DBG logger::get_logger()->trace
       ("qt_active_text_renderer.redraw(0x%x)"
        ",\nltrb=(%d,%d,%d,%d) m_data = %s"
@@ -92,7 +92,7 @@ namespace qt_renderer {
     if (m_text_storage) {
       int L = r.left()+p.x, T = r.top()+p.y,
 	W = r.width(), H = r.height();
-      qt_passive_window* qpw = (qt_passive_window*) w;
+      qt_window* qpw = (qt_window*) w;
       QPainter paint;
       paint.begin(qpw->view()->workspace());
       paint.setPen(Qt::blue);

@@ -54,8 +54,6 @@
 #include "ambulant/gui/cocoa/cocoa_audio.h"
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
-#include "ambulant/gui/none/none_gui.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
 
 #include <Cocoa/Cocoa.h>
@@ -73,7 +71,7 @@ namespace gui {
 namespace cocoa {
 
 void
-cocoa_passive_window::need_redraw(const screen_rect<int> &r)
+cocoa_window::need_redraw(const screen_rect<int> &r)
 {
 	AM_DBG logger::get_logger()->trace("cocoa_passive_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (!m_view) {
@@ -86,6 +84,13 @@ cocoa_passive_window::need_redraw(const screen_rect<int> &r)
 	//[my_view setNeedsDisplay: YES];
 }
 
+void
+cocoa_window::redraw(const screen_rect<int> &r)
+{
+	AM_DBG logger::get_logger()->trace("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	m_region->redraw(r, this);
+}
+
 active_renderer *
 cocoa_renderer_factory::new_renderer(
 	active_playable_events *context,
@@ -93,7 +98,7 @@ cocoa_renderer_factory::new_renderer(
 	const node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
-	passive_region *const dest)
+	abstract_rendering_surface *const dest)
 {
 	active_renderer *rv;
 	
@@ -116,10 +121,10 @@ cocoa_renderer_factory::new_renderer(
 	return rv;
 }
 
-passive_window *
-cocoa_window_factory::new_window(const std::string &name, size bounds)
+abstract_window *
+cocoa_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
 {
-	passive_window *window = (passive_window *)new cocoa_passive_window(name, bounds, m_view);
+	abstract_window *window = (abstract_window *)new cocoa_window(name, bounds, m_view, region);
 	// And we need to inform the object about it
 	AmbulantView *view = (AmbulantView *)m_view;
 	[view setAmbulantWindow: window];
@@ -165,11 +170,11 @@ cocoa_window_factory::new_window(const std::string &name, size bounds)
         AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
     } else {
         ambulant::lib::screen_rect<int> arect = [self ambulantRectForNSRect: &rect];
-        ambulant_window->redraw(arect, ambulant_window);
+        ambulant_window->redraw(arect);
     }
 }
 
-- (void)setAmbulantWindow: (ambulant::lib::passive_window *)window
+- (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window
 {
     ambulant_window = window;
 }

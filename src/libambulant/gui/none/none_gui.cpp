@@ -52,7 +52,6 @@
 
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/common/renderer.h"
-#include "ambulant/common/region.h"
 #include "ambulant/lib/logger.h"
 
 using namespace ambulant;
@@ -69,7 +68,7 @@ gui::none::none_active_renderer::start(double where)
 }
 
 void
-gui::none::none_active_renderer::redraw(const screen_rect<int> &r, passive_window *window, const point &window_topleft)
+gui::none::none_active_renderer::redraw(const screen_rect<int> &r, abstract_window *window)
 {
 	lib::logger::get_logger()->trace("none_active_renderer.redraw(0x%x)", (void *)this);
 }
@@ -87,14 +86,14 @@ gui::none::none_renderer_factory::new_renderer(
 	const lib::node *node,
 	lib::event_processor *const evp,
 	net::passive_datasource *src,
-	lib::passive_region *const dest)
+	lib::abstract_rendering_surface *const dest)
 {
 	return new none_active_renderer(context, cookie, node, evp, src, dest);
 }
 
-passive_window *
-gui::none::none_window_factory::new_window(const std::string &name, size bounds)
+abstract_window *
+gui::none::none_window_factory::new_window(const std::string &name, size bounds, lib::abstract_rendering_source *region)
 {
-	return new ambulant::lib::passive_window(name, bounds);
+	return new none_window(name, bounds, region);
 }
 

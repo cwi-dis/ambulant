@@ -73,10 +73,10 @@ namespace qt_renderer {
   }
   void
   qt_active_image_renderer::redraw(const screen_rect<int> &r,
-				   passive_window* w,
-				   const point& p)
+				   abstract_window* w)
   {
     m_lock.enter();
+    const point p = m_dest->get_global_topleft();
     AM_DBG logger::get_logger()->trace
       ("qt_active_image_renderer.redraw(0x%x)"
        ", ltrb=(%d,%d,%d,%d)"
@@ -94,7 +94,7 @@ namespace qt_renderer {
 	("qt_active_image_renderer.redraw(0x%x), "
 	 "drawImage at (L=%d,T=%d,W=%d,H=%d)",
 	 (void *)this,L,T,W,H);
-      qt_passive_window* qpw = (qt_passive_window*) w;
+      qt_window* qpw = (qt_window*) w;
       QPainter paint;
       paint.begin(qpw->view()->workspace());
       paint.eraseRect(L,T,W,H);

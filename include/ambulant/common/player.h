@@ -58,7 +58,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/timelines.h"
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/common/renderer.h"
 
 namespace ambulant {

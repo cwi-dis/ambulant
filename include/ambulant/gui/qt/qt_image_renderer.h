@@ -55,7 +55,7 @@
 #ifndef AMBULANT__QT_IMAGE_RENDERER_H
 #define AMBULANT__QT_IMAGE_RENDERER_H
 
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
@@ -80,15 +80,14 @@ namespace qt_renderer {
 				 const node *node,
     			 event_processor *const evp,
 			     net::passive_datasource *src,
-			     passive_region *const dest)
+			     abstract_rendering_surface *const dest)
       : active_final_renderer(context, cookie, node, evp, src, dest),
           m_image(NULL),
           m_image_loaded(false) {};
    ~qt_active_image_renderer();
 
     void redraw(const screen_rect<int> &r,
-		passive_window* w,
-		const point &p);
+		abstract_window* w);
   private:
     QImage m_image;
     bool m_image_loaded;

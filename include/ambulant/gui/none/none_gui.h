@@ -53,7 +53,7 @@
 #ifndef AMBULANT_GUI_NONE_NONE_GUI_H
 #define AMBULANT_GUI_NONE_NONE_GUI_H
 
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/common/renderer.h"
 
 namespace ambulant {
@@ -62,11 +62,19 @@ namespace gui {
 
 namespace none {
 
+class none_window : public lib::abstract_window {
+  public:
+  	none_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region)
+  	:	lib::abstract_window(region) {};
+  		
+	void need_redraw(const lib::screen_rect<int> &r) { m_region->redraw(r, this); };
+};
+
 class none_window_factory : public lib::window_factory {
   public:
   	none_window_factory() {}
   	
-	lib::passive_window *new_window(const std::string &name, lib::size bounds);
+	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
 };
 
 class none_active_renderer : public lib::active_renderer {
@@ -77,11 +85,11 @@ class none_active_renderer : public lib::active_renderer {
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::passive_region *const dest)
+		lib::abstract_rendering_surface *const dest)
 	:	lib::active_renderer(context, cookie, node, evp, src, dest) {};
 	
 	void start(double where);
-	void redraw(const lib::screen_rect<int> &r, lib::passive_window *window, const lib::point &window_topleft);
+	void redraw(const lib::screen_rect<int> &r, lib::abstract_window *window);
 	void stop();
 };
 
@@ -95,7 +103,7 @@ class none_renderer_factory : public lib::renderer_factory {
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::passive_region *const dest);
+		lib::abstract_rendering_surface *const dest);
 };
 
 } // namespace none

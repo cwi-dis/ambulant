@@ -53,7 +53,7 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_GUI_H
 #define AMBULANT_GUI_COCOA_COCOA_GUI_H
 
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/common/renderer.h"
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
@@ -65,24 +65,26 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_passive_window : public lib::passive_window {
+class cocoa_window : public lib::abstract_window {
   public:
-  	cocoa_passive_window(const std::string &name, lib::size bounds, void *_view)
-  	:	lib::passive_window(name, bounds),
-  		m_view(_view) {}
+  	cocoa_window(const std::string &name, lib::size bounds, void *_view, lib::abstract_rendering_source *region)
+  	:	lib::abstract_window(region),
+  		m_view(_view) {};
   		
 	void need_redraw(const lib::screen_rect<int> &r);
+	void redraw(const lib::screen_rect<int> &r);
 	void *view() { return m_view; }
   private:
     void *m_view;
 };
 
+;
 class cocoa_window_factory : public lib::window_factory {
   public:
   	cocoa_window_factory(void *view)
   	:	m_view(view) {}
   	
-	lib::passive_window *new_window(const std::string &name, lib::size bounds);
+	lib::abstract_window *new_window(const std::string &name, lib::size bounds, lib::abstract_rendering_source *region);
   private:
     void *m_view;
 };
@@ -97,7 +99,7 @@ class cocoa_renderer_factory : public lib::renderer_factory {
 		const lib::node *node,
 		lib::event_processor *const evp,
 		net::passive_datasource *src,
-		lib::passive_region *const dest);
+		lib::abstract_rendering_surface *const dest);
 };
 
 } // namespace cocoa
@@ -109,10 +111,10 @@ class cocoa_renderer_factory : public lib::renderer_factory {
 #ifdef __OBJC__
 @interface AmbulantView : NSView
 {
-    ambulant::lib::passive_window *ambulant_window;
+    ambulant::gui::cocoa::cocoa_window *ambulant_window;
 }
 
-- (void)setAmbulantWindow: (ambulant::lib::passive_window *)window;
+- (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window;
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
 @end

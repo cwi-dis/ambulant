@@ -58,7 +58,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/playable.h"
 
@@ -94,7 +94,7 @@ class active_basic_renderer : public active_playable {
 
 ;
 
-class active_renderer : public active_basic_renderer, public ref_counted_obj {
+class active_renderer : public active_basic_renderer, public abstract_rendering_source, public ref_counted_obj {
   public:
   	active_renderer()
   	:	active_basic_renderer(NULL, 0, NULL, NULL),
@@ -111,7 +111,7 @@ class active_renderer : public active_basic_renderer, public ref_counted_obj {
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest);
+		abstract_rendering_surface *const dest);
 		
 	~active_renderer() {}
 	
@@ -121,13 +121,13 @@ class active_renderer : public active_basic_renderer, public ref_counted_obj {
 	virtual void pause() {}
 	virtual void resume() {}
 
-	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft) = 0;
+	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window) = 0;
 	
   protected:
 	virtual void readdone();
 
   	net::active_datasource *m_src;
-	active_region *const m_dest;
+	abstract_rendering_surface *const m_dest;
 	lib::event *m_readdone;
 };
 
@@ -143,7 +143,7 @@ class active_final_renderer : public active_renderer {
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest)
+		abstract_rendering_surface *const dest)
 	:	active_renderer(context, cookie, node, evp, src, dest),
 		m_data(NULL),
 		m_data_size(0) {};
@@ -167,7 +167,7 @@ class renderer_factory {
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest) = 0;
+		abstract_rendering_surface *const dest) = 0;
 };
 
 class global_renderer_factory : public renderer_factory {
@@ -183,7 +183,7 @@ class global_renderer_factory : public renderer_factory {
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest);
+		abstract_rendering_surface *const dest);
   private:
     std::vector<renderer_factory *> m_factories;
     renderer_factory *m_default_factory;

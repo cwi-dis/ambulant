@@ -73,12 +73,12 @@ class cocoa_active_text_renderer : public active_final_renderer {
 		const node *node,
 		event_processor *const evp,
 		net::passive_datasource *src,
-		passive_region *const dest)
+		abstract_rendering_surface *const dest)
 	:   active_final_renderer(context, cookie, node, evp, src, dest),
             m_text_storage(NULL) {};
         ~cocoa_active_text_renderer();
 	
-    void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
+    void redraw(const screen_rect<int> &dirty, abstract_window *window);
   private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;

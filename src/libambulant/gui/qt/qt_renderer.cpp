@@ -67,7 +67,7 @@ namespace gui {
 namespace qt_renderer {
   
   void
-  qt_passive_window::need_redraw(const screen_rect<int> &r)
+  qt_window::need_redraw(const screen_rect<int> &r)
   {
     AM_DBG logger::get_logger()->trace
       ("qt_passive_window::need_redraw(0x%x), "
@@ -77,6 +77,11 @@ namespace qt_renderer {
 		    r.width(), r.height(),
 		    true);
   }
+  void
+  qt_window::redraw(const screen_rect<int> &r)
+  {
+    m_region->redraw(r, this);
+  }
     active_renderer *
   qt_renderer_factory::new_renderer(
 					lib::active_playable_events *context,
@@ -84,7 +89,7 @@ namespace qt_renderer {
 					const lib::node *node,
   					event_processor *const evp,
 				    net::passive_datasource *src,
-				    passive_region *const dest)
+				    abstract_rendering_surface *const dest)
   {
     xml_string tag = node->get_qname().second;
     active_renderer* rv;
@@ -114,13 +119,13 @@ namespace qt_renderer {
     }
     return rv;
   }    
-  passive_window *
-  qt_window_factory::new_window(const std::string &name, size bounds)
+  abstract_window *
+  qt_window_factory::new_window(const std::string &name, size bounds, abstract_rendering_source *region)
   {
     AM_DBG logger::get_logger()->trace
       ("qt_window_factory::new_window (0x%x) name=%s", 
        (void*) this, name.c_str());
-      qt_passive_window * qpw = new qt_passive_window(name, bounds, m_view);
+      qt_window * qpw = new qt_window(name, bounds, m_view, region);
       m_view->set_ambulant_window((void*)qpw);
       return qpw;
   }

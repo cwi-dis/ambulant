@@ -76,11 +76,11 @@ cocoa_active_text_renderer::~cocoa_active_text_renderer()
 }
 
 void
-cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
+cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
+	AM_DBG logger::get_logger()->trace("cocoa_active_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
@@ -93,10 +93,10 @@ cocoa_active_text_renderer::redraw(const screen_rect<int> &dirty, passive_window
 		[m_layout_manager release];	// The textStorage will retain the layoutManager
 	}
 
-	cocoa_passive_window *cwindow = (cocoa_passive_window *)window;
+	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	screen_rect<int> window_rect = r;
-	window_rect.translate(window_topleft);
+	window_rect.translate(m_dest->get_global_topleft());
 	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
 	
 	if (m_text_storage && m_layout_manager) {

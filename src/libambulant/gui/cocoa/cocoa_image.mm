@@ -76,11 +76,11 @@ cocoa_active_image_renderer::~cocoa_active_image_renderer()
 }
 	
 void
-cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft)
+cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, abstract_window *window)
 {
 	m_lock.enter();
 	const screen_rect<int> &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d), window_topleft=(%d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom(), window_topleft.x, window_topleft.y);
+	AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->trace("cocoa_active_image_renderer.redraw: creating image");
@@ -91,10 +91,10 @@ cocoa_active_image_renderer::redraw(const screen_rect<int> &dirty, passive_windo
 		// XXXX Could free data and m_data again here...
 	}
 
-	cocoa_passive_window *cwindow = (cocoa_passive_window *)window;
+	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	screen_rect<int> window_rect = r;
-	window_rect.translate(window_topleft);
+	window_rect.translate(m_dest->get_global_topleft());
 	NSRect dstrect = [view NSRectForAmbulantRect: &window_rect];
 
 	if (m_image) {

@@ -55,7 +55,7 @@
 #ifndef AMBULANT__QT_RENDERER_H
 #define AMBULANT__QT_RENDERER_H
 
-#include "ambulant/common/region.h"
+#include "ambulant/lib/layout.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/none/none_gui.h"
@@ -76,17 +76,19 @@ namespace gui {
 
 namespace qt_renderer {
 
-  class qt_passive_window : public passive_window {
+  class qt_window : public abstract_window {
     
   public:
-    qt_passive_window::qt_passive_window(const std::string &name, 
-					 size bounds, qt_gui* view) 
-      : passive_window(name, bounds),
+    qt_window(const std::string &name, 
+					 size bounds, qt_gui* view,
+					 abstract_rendering_source *region) 
+      : abstract_window(region),
       m_view(view) {
       AM_DBG logger::get_logger()->trace
-	("qt_passive_window::qt_passive_window(0x%x)", (void *)this);
+	("qt_window::qt_window(0x%x)", (void *)this);
     }
     void need_redraw(const screen_rect<int> &r);
+	void redraw(const lib::screen_rect<int> &r);
     qt_gui* view() { return m_view; }
     
   private:
@@ -101,7 +103,7 @@ namespace qt_renderer {
       AM_DBG logger::get_logger()->trace
 	("qt_window_factory (0x%x)", (void*) this);
     }
-    passive_window* new_window(const std::string &name, size bounds);
+    abstract_window* new_window(const std::string &name, size bounds, abstract_rendering_source *region);
   private:
     qt_gui* m_view;
   };
@@ -119,7 +121,7 @@ namespace qt_renderer {
 				  const lib::node *node,
     			  event_processor *const evp,
 				  net::passive_datasource *src,
-				  passive_region *const dest);
+				  abstract_rendering_surface *const dest);
   };
 
 } // namespace qt_renderer

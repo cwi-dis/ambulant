@@ -144,6 +144,7 @@
 				042AF8E4053C2EBD0010C447,
 				042AF8E5053C2EBD0010C447,
 				042AF8E6053C2EBD0010C447,
+				04D12C660561138F00BD2C9D,
 			);
 			isa = PBXGroup;
 			path = common;
@@ -1536,6 +1537,20 @@
 			settings = {
 			};
 		};
+		04D12C660561138F00BD2C9D = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = layout.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		04D12C670561138F00BD2C9D = {
+			fileRef = 04D12C660561138F00BD2C9D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //040
 //041
 //042
@@ -1986,6 +2001,7 @@
 				04AECD3505568FBF0015EFFA,
 				04AECD3605568FBF0015EFFA,
 				04AECD3705568FBF0015EFFA,
+				04D12C670561138F00BD2C9D,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -68,10 +68,10 @@ lib::active_renderer::active_renderer(
 	const node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
-	passive_region *const dest)
+	abstract_rendering_surface *const dest)
 :	active_basic_renderer(context, cookie, node, evp),
 	m_src(src?src->activate():NULL),
-	m_dest(dest->activate(evp, node)),
+	m_dest(dest),
 	m_readdone(NULL)
 {
 	m_readdone = new readdone_callback(this, &lib::active_renderer::readdone);
@@ -105,7 +105,7 @@ void
 lib::active_renderer::stop()
 {
 	// XXXX Need to handle case that no data (or not all data) has come in yet
-	m_dest->done();
+	m_dest->renderer_done();
 	AM_DBG lib::logger::get_logger()->trace("active_renderer.stop(0x%x)", (void *)this);
 }
 
@@ -153,7 +153,7 @@ lib::global_renderer_factory::new_renderer(
 	const node *node,
 	event_processor *const evp,
 	net::passive_datasource *src,
-	passive_region *const dest)
+	abstract_rendering_surface *const dest)
 {
     std::vector<renderer_factory *>::iterator i;
     lib::active_renderer *rv;

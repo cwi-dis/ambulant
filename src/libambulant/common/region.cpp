@@ -70,9 +70,9 @@ lib::passive_region::subregion(const std::string &name, screen_rect<int> bounds)
 }
 
 lib::active_region *
-lib::passive_region::activate(event_processor *const evp, const node *node)
+lib::passive_region::activate(const node *node)
 {
-	active_region *rv = new lib::active_region(evp, this, node);
+	active_region *rv = new lib::active_region(this, node);
 	return rv;
 }
 
@@ -84,7 +84,7 @@ lib::passive_region::show(active_region *cur)
 }
 
 void
-lib::passive_region::redraw(const screen_rect<int> &r, passive_window *window)
+lib::passive_region::redraw(const screen_rect<int> &r, abstract_window *window)
 {
 	AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x, ltrb=(%d, %d, %d, %d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	screen_rect<int> our_outer_rect = r & m_outer_bounds;
@@ -95,7 +95,7 @@ lib::passive_region::redraw(const screen_rect<int> &r, passive_window *window)
 		
 	if (m_cur_active_region) {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) ->active 0x%x", (void *)this, (void *)m_cur_active_region);
-		m_cur_active_region->redraw(our_rect, window, m_window_topleft);
+		m_cur_active_region->redraw(our_rect, window);
 	} else {
 		AM_DBG lib::logger::get_logger()->trace("passive_region.redraw(0x%x) no active region", (void *)this);
 	}
@@ -115,18 +115,26 @@ lib::passive_region::need_redraw(const screen_rect<int> &r)
 	m_parent->need_redraw(m_outer_bounds.outercoordinates(parent_rect));
 }
 
-void
-lib::passive_window::need_redraw(const screen_rect<int> &r)
+lib::passive_root_layout::passive_root_layout(const std::string &name, size bounds, window_factory *wf)
+:   passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)), point(0, 0)),
+	m_gui_window(wf->new_window(name, bounds, this))
 {
-	AM_DBG lib::logger::get_logger()->trace("passive_window.need_redraw(0x%x)", (void *)this);
-	// XXXX This should be sent to the window interface. For now we short-circuit
-	// it ourselves.
-	screen_rect<int> redrawregion = r & m_inner_bounds;
-	redraw(redrawregion, this);
+}
+		
+lib::passive_root_layout::~passive_root_layout()
+{
+	delete m_gui_window;
+	m_gui_window = NULL;
 }
 
 void
-lib::active_region::show(active_renderer *renderer)
+lib::passive_root_layout::need_redraw(const screen_rect<int> &r)
+{
+	m_gui_window->need_redraw(r);
+}
+
+void
+lib::active_region::show(abstract_rendering_source *renderer)
 {
 	m_renderer = renderer;
 	m_source->show(this);
@@ -135,11 +143,11 @@ lib::active_region::show(active_renderer *renderer)
 }
 
 void
-lib::active_region::redraw(const screen_rect<int> &r, passive_window *window, const point &window_topleft)
+lib::active_region::redraw(const screen_rect<int> &r, abstract_window *window)
 {
 	if (m_renderer) {
 		AM_DBG lib::logger::get_logger()->trace("active_region.redraw(0x%x) -> renderer 0x%x", (void *)this, (void *)m_renderer);
-		m_renderer->redraw(r, window, window_topleft);
+		m_renderer->redraw(r, window);
 	} else {
 		// At this point we should have a renderer that draws the default background
 		// When that is implemented this trace message should turn into an error (or fatal).
@@ -160,7 +168,7 @@ lib::active_region::need_redraw()
 }
 
 void
-lib::active_region::done()
+lib::active_region::renderer_done()
 {
 	m_renderer = NULL;
 	AM_DBG lib::logger::get_logger()->trace("active_region.done(0x%x, \"%s\")", (void *)this, m_source->m_name.c_str());

@@ -49,7 +49,6 @@
 /* MyDocument */
 
 #import <Cocoa/Cocoa.h>
-#include "ambulant/common/region.h"
 #include "mainloop.h"
 
 @interface MyDocument : NSDocument

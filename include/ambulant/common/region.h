@@ -53,10 +53,10 @@
 #ifndef AMBULANT_LIB_REGION_H
 #define AMBULANT_LIB_REGION_H
 
-#include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/layout.h"
 
 namespace ambulant {
 
@@ -70,7 +70,7 @@ class passive_window;
 // NOTE: the "bounds" rectangles are currently all with respect
 // to the parent, and in a coordinate system where (0,0) is the
 // topleft point in the rectangle.
-class passive_region {
+class passive_region : public abstract_rendering_source {
   public:
 	friend class active_region;
 	
@@ -91,13 +91,14 @@ class passive_region {
 	virtual ~passive_region() {}
 	
 	virtual void show(active_region *cur);
-	virtual void redraw(const screen_rect<int> &dirty, passive_window *window);
+	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
 
 	virtual passive_region *subregion(const std::string &name, screen_rect<int> bounds);
-	active_region *activate(event_processor *const evp, const node *node);
+	active_region *activate(const node *node);
 	
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	const screen_rect<int>& get_rect_outer() const { return m_outer_bounds; }
+	const point &get_global_topleft() const { return m_window_topleft; }
 	const passive_region* get_parent() const { return m_parent; }
 	
   protected:
@@ -120,59 +121,45 @@ class passive_region {
   	std::vector<passive_region *>m_children;	// all subregions
 };
 
+class passive_root_layout : public passive_region {
+  public:
+	passive_root_layout(const std::string &name, size bounds, window_factory *wf);
+	~passive_root_layout();
+	void need_redraw(const screen_rect<int> &r);
+  private:
+	abstract_window *m_gui_window;
+};
+
+
 #ifdef __OBJC__
 // This is a workaround for a problem when using gcc 3.3 to compile
 // ObjC++
 ;
 #endif
 
-class passive_window : public passive_region {
+class active_region : public abstract_rendering_surface, public abstract_rendering_source {
   public:
-  	passive_window(const std::string &name, size bounds)
-  	:	passive_region(name, NULL, screen_rect<int>(point(0, 0), size(bounds.w, bounds.h)),
-		point(0, 0)) {}
-  	virtual ~passive_window() {}
-  	
-	virtual void need_redraw(const screen_rect<int> &r);
-};
-
-#ifdef __OBJC__
-// This is a workaround for a problem when using gcc 3.3 to compile
-// ObjC++
-;
-#endif
-
-class window_factory {
-  public:
-	virtual ~window_factory() {}
-	virtual passive_window *new_window(const std::string &name, size bounds) = 0;
-};
-
-class active_region {
-  public:
-	active_region(event_processor *const evp,
-		passive_region *const source,
+	active_region(passive_region *const source,
 		const node *node)
-	:	m_event_processor(evp),
-		m_source(source),
+	:	m_source(source),
 		m_node(node),
 		m_renderer(NULL) {}
 	virtual ~active_region() {}
 	
-	virtual void show(active_renderer *renderer);
-	virtual void redraw(const screen_rect<int> &dirty, passive_window *window, const point &window_topleft);
+	virtual void show(abstract_rendering_source *renderer);
+	virtual void redraw(const screen_rect<int> &dirty, abstract_window *window);
 	virtual void need_redraw(const screen_rect<int> &r);
 	virtual void need_redraw();
-	virtual void done();	
+	virtual void renderer_done();	
 	const screen_rect<int>& get_rect() const { return m_source->get_rect(); }
 	const screen_rect<int>& get_rect_outer() const { return m_source->get_rect_outer(); }
+	const point &get_global_topleft() const { return m_source->get_global_topleft(); }
 	const passive_region* get_parent() const { return m_source->get_parent(); }
 	
   protected:
-  	event_processor *const m_event_processor;
 	passive_region *const m_source;
 	const node *m_node;
-	active_renderer *m_renderer;
+	abstract_rendering_source *m_renderer;
 };
 
 } // namespace lib
