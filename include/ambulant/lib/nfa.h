@@ -250,13 +250,14 @@ class nfa_expr {
 	// Matches as much as possible from the input.
 	// Positions the iterator at the end of the parsed input and returns the length parsed.
 	// Returns -1 on failure to parse anything
-	std::string::iterator::difference_type 
-	parse(std::string::const_iterator& it, const std::string::const_iterator& end_it) const;
-			
+	std::ptrdiff_t
+	parse(std::string::const_iterator& it, const std::string::const_iterator& end) const;
+				
 	// Matches the argument string against the regex 
 	// that this nfa_expr represents. 
 	bool matches(const std::string& str) const {
-		return parse(str.begin(), str.end()) == str.length();
+		std::string::const_iterator b = str.begin(), e = str.end();
+		return parse(b, e) == str.length();
 	}
 	
 	// Creates a matcher for the argument string
