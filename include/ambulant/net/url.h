@@ -182,8 +182,12 @@ class AMBULANTAPI url {
 	/// Return true if two URLs refer to the same document.
 	/// In other words, if they only differ in fragment.
 	bool same_document(const url &base) const;
-		
- 	static void init_statics();
+
+	/// Return the absolute pathname of probably cached datafile
+	/// as an URL. Implementation may be platform dependent.
+	url get_local_datafile() const;
+
+	static void init_statics();
 
   private:
 	// protocols to ports map

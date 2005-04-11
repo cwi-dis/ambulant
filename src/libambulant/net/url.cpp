@@ -391,6 +391,44 @@ void set_url_from_spec(net::url& u, const char *spec) {
 
 #endif
 
+
+#if defined(AMBULANT_PLATFORM_UNIX)
+
+// Places where to look for (cached) datafiles
+const char *datafile_locations[] = {
+	"./",
+	"../",
+	"Extras/",
+	"../Extras/",
+#ifdef	AMBULANT_DATADIR
+	AMBULANT_DATADIR ,
+#else
+	"/usr/local/share/ambulant/",
+#endif
+	NULL
+};
+
+net::url net::url::get_local_datafile() const
+{
+	const char* result = NULL;
+	if (! is_absolute()) {
+		string rel_path = get_path();
+		const char **dir;
+		for(dir = datafile_locations; *dir; dir++) {
+			string abs_path(*dir);
+			abs_path += rel_path;
+			if (access(abs_path.c_str(), 0) >= 0) {
+			  	result = abs_path.c_str();
+				break;
+			}
+		}
+	} else if (is_local_file() 
+		   && access (get_path().c_str(), 0) >= 0) {
+		result = get_path().c_str();
+	}
+	return net::url("file", "", result ? result : "");
+}
+#endif
 ///////////////
 // module private static initializer
 

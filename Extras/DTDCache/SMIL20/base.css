@@ -1,0 +1,36 @@
+BODY {
+	BACKGROUND: white; COLOR: black; FONT-FAMILY: sans-serif
+}
+A:link {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #00e
+}
+A:active {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #00e
+}
+A:visited {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #529
+}
+DIV.intro {
+	MARGIN-LEFT: 5%; MARGIN-RIGHT: 5%; FONT-STYLE: italic
+}
+PRE {
+	FONT-FAMILY: monospace
+}
+A:link IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+A:visited IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+A IMG {
+	COLOR: white
+}
+UL.toc {
+	LIST-STYLE-TYPE: none
+}
+DIV.issue {
+	BORDER-RIGHT: medium none; PADDING-RIGHT: 0.5em; BORDER-TOP: medium none; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: medium none; MARGIN-RIGHT: 5%; PADDING-TOP: 0.5em; BORDER-BOTTOM: medium none
+}
+.hideme {
+	DISPLAY: none
+}

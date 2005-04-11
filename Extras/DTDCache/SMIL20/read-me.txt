@@ -1,0 +1,44 @@
+This DTD version is a revised version of SMIL 2.0.
+
+It is a W3C Proposed Edited Recommendation, a revised edition of the Synchronized Multimedia Integration Language (SMIL) 2.0.
+
+These revised DTD files incorporate the SMIL 2.0 Recommendation Errata listed at
+http://www.w3.org/2001/07/REC-SMIL20-20010731-errata
+
+The revised DTD are the following.
+other files are unchanged.
+
+
+errata E09
+updated DTD
+http://www.w3.org/2001/SMIL20/SMIL-metainformation.mod
+
+errata E10
+updated DTD
+http://www.w3.org/2001/SMIL20/SMIL-link.mod
+
+errata E36
+updated DTD
+http://www.w3.org/2001/SMIL20/SMIL-link.mod
+
+errata E37
+updated DTD
+http://www.w3.org/2001/SMIL20/SMIL-media.mod
+
+errata E45
+updated DTD
+http://www.w3.org/2001/SMIL20/smil-attribs-1.mod
+
+errata E46
+updated DTD
+http://www.w3.org/2001/SMIL20/SMIL-transition.mod
+
+errata E52
+updated DTD
+http://www.w3.org/2001/SMIL20/smil-datatypes-1.mod
+
+
+
+
+
+

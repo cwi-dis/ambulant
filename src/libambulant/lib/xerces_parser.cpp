@@ -57,10 +57,15 @@
 #include "ambulant/lib/xerces_parser.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/net/url.h"
 
 #ifdef	WITH_XERCES
 #include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
 
+#include <fstream>
+
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -99,7 +104,7 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	m_saxparser(0), m_logger(0), m_buf((char*)malloc(1)), m_size(0),
 	m_id("AmbulantXercesParser") {
 	m_logger = lib::logger::get_logger();
-        AM_DBG m_logger->debug("***  :xerces_sax_parser()");
+        AM_DBG m_logger->debug("xerces_sax_parser::xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 	
@@ -111,14 +116,14 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	m_saxparser->setDoSchema(prefs->m_do_schema);
 
 	// True to turn on full schema constraint checking
-	m_saxparser->setValidationSchemaFullChecking
-		(prefs->m_validation_schema_full_checking);
+	m_saxparser->setValidationSchemaFullChecking(prefs->m_validation_schema_full_checking);
 	
 	// true: understand namespaces; false: otherwise
 	m_saxparser->setDoNamespaces(prefs->m_do_namespaces);
 	
 	m_saxparser->setDocumentHandler(this);
 	m_saxparser->setErrorHandler(this);
+	m_saxparser->setEntityResolver(this);
 }
 
 xerces_sax_parser::~xerces_sax_parser() {
@@ -258,4 +263,72 @@ xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(std::string v) {
 
 	return rv;
 }
+#define SMIL20_SYSTEMID "http://www.w3.org/2001/SMIL20/SMIL20.dtd"
+#define SMIL21_SYSTEMID "http://www.w3.org/2001/SMIL21/SMIL21.dtd"
+
+static const char * 
+find_cachefile_dir(const char **locations)
+{
+	const char **p;
+	for(p = locations; *p; p++) {
+		if (access(*p, 0) >= 0) return *p;
+	}
+	return NULL;
+}
+
+static const char*
+find_cached_dtd(const char* url_cp) {
+	// return the cached filename for this url or NULL if not found
+	std::string url(url_cp);
+	net::url mapping("DTDCache/mapping.txt");
+	net::url mapping_filename = mapping.get_local_datafile();
+	if (mapping_filename.get_path().length() == 0) return NULL;
+	std::ifstream mapping_stream(mapping_filename.get_path().c_str());
+	if (!mapping_stream) return NULL;
+
+	std::string target, result;
+	while (! mapping_stream.eof()) {
+		char buf[1024];
+		mapping_stream.getline(buf, 1024);
+		if (mapping_stream.eof())
+			return NULL;
+		std::string line(buf);
+		if (line.length() == 0 || line[0] == '#')
+			continue;
+		if (target.length() == 0) {
+			target = line;
+			continue;
+		}
+		result = line;
+		if (url != target) {
+			// no match
+			target = "";
+			continue;
+		}
+		return (((net::url)result).get_local_datafile()).get_path().c_str();
+	}
+}
+
+
+InputSource* 
+xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* const systemId) {
+	char* publicId_ts = XMLString::transcode(publicId);
+	char* systemId_ts = XMLString::transcode(systemId);
+	XMLCh* XMLCh_local_id = NULL;
+	InputSource* local_input_source = NULL;
+	AM_DBG m_logger->debug("xerces_sax_parser::resolveEntity(%s,%s)",publicId_ts, systemId_ts);
+	const char* dtd = find_cached_dtd(systemId_ts);
+	if (dtd != NULL) {
+		XMLCh_local_id = XMLString::transcode(dtd);
+		delete dtd;
+	}
+	if (XMLCh_local_id != NULL) {
+		local_input_source = new LocalFileInputSource(XMLCh_local_id );
+		delete XMLCh_local_id;
+	}
+	XMLString::release(&publicId_ts);
+	XMLString::release(&systemId_ts);
+	return local_input_source;
+}
+
 #endif/*WITH_XERCES*/

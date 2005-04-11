@@ -132,6 +132,10 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
 	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
 	
+        // -------------------------------------------------------------
+	//  Handlers for the SAX EntityResolver interface
+	// -------------------------------------------------------------
+	InputSource* resolveEntity(const XMLCh* const publicId , const XMLCh* const systemId);
   private:
 	static void to_qattrs(AttributeList& attrs, q_attributes_list& list);
 	static q_name_pair to_q_name_pair(const XMLCh* name);

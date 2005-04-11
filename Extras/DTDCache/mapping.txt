@@ -1,0 +1,7 @@
+# odd lines are URLs as used in .smil files
+# even lines are relative pathnames of the corresponding cache
+http://www.w3.org/2001/SMIL20/SMIL20.dtd
+DTDCache/SMIL20/SMIL20.dtd
+http://www.w3.org/2001/SMIL21/SMIL21.dtd
+DTDCache/SMIL21/SMIL21LanguageProfile.dtd
+

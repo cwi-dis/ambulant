@@ -1,0 +1,33 @@
+-- SGML Open Catalog file for SMIL 2.0 
+
+   This is SMIL 2.0.
+   Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+See http://www.w3.org/Consortium/Legal/. 
+--
+
+OVERRIDE YES
+SGMLDECL "xml.dcl"
+
+-- DTD drivers --
+PUBLIC "-//W3C//DTD SMIL 1.0//EN"                               SMIL10.dtd
+PUBLIC "-//W3C//DTD SMIL 2.0//EN"                               SMIL20.dtd
+PUBLIC "-//W3C//DTD SMIL 2.0 Basic//EN"                         SMIL20Basic.dtd
+
+-- Framework utilities ---
+PUBLIC "-//W3C//ENTITIES SMIL 2.0 Modular Framework 1.0//EN"    smil-framework-1.mod
+PUBLIC "-//W3C//ENTITIES SMIL 2.0 Datatypes 1.0//EN"            smil-datatypes-1.mod
+PUBLIC "-//W3C//ENTITIES SMIL 2.0 Qualified Names 1.0//EN"      smil-qname-1.mod
+PUBLIC "-//W3C//ENTITIES SMIL 2.0 Common Attributes 1.0//EN"    smil-attribs-1.mod
+PUBLIC "-//W3C//ENTITIES SMIL 2.0 Document Model 1.0//EN"       smil-model-1.mod
+
+-- SMIL 2.0 elements from section modules ---
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Document Structure//EN"       SMIL-struct.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Animation//EN"                SMIL-anim.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Content Control//EN"          SMIL-control.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Document Metainformation//EN" SMIL-metainformation.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Layout//EN"                   SMIL-layout.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Linking//EN"                  SMIL-link.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Media Objects//EN"            SMIL-media.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Timing//EN"                   SMIL-timing.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Transition//EN"               SMIL-transition.mod
+PUBLIC "-//W3C//ELEMENTS SMIL 2.0 Integration//EN"              SMIL-integrate.mod
