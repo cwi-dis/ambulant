@@ -54,9 +54,11 @@
 #include <map>
 
 
+// temp. for debug purpose
+//#include <qimage.h>
 
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -66,7 +68,7 @@
 #endif
 
 // How many video frames we would like to buffer at most
-#define MAX_VIDEO_FRAMES 25
+#define MAX_VIDEO_FRAMES 300
 
 // Bug workaround: define RESAMPLE_READ_ALL to let the resampler
 // collect all data before calling the client callback
@@ -152,6 +154,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url)
 	}
 	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
 	video_datasource *dds = NULL;
+	
 	thread->start();
 	if (ds) {
 		 video_format fmt = thread->get_video_format();
@@ -277,7 +280,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 		m_audio_fmt.samplerate = con->streams[audio_idx]->codec.sample_rate;
 		m_audio_fmt.channels = con->streams[audio_idx]->codec.channels;
 		m_audio_fmt.bits = 16;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): samplerate=%d, channels=%d", m_audio_fmt.samplerate, m_audio_fmt.channels  );
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): samplerate=%d, channels=%d, m_con->codec (0x%x)", m_audio_fmt.samplerate, m_audio_fmt.channels, m_audio_fmt.parameters  );
 	} 
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
@@ -343,11 +346,11 @@ detail::ffmpeg_demux::cancel()
 int 
 detail::ffmpeg_demux::audio_stream_nr() 
 {
-	//~ int stream_index;
-	//~ for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		//~ if (m_con->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
-			//~ return stream_index;
-	//~ }
+	int stream_index;
+	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
+		if (m_con->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
+			return stream_index;
+	}
 	
 	return -1;
 }
@@ -427,14 +430,14 @@ detail::ffmpeg_demux::run()
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		detail::datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
 		} else {
-			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink");
+			/*AM_DBG*/ lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, 0x%x, %d)",pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
 			// Wait until there is room in the buffer
 			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink && sink->buffer_full() && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space");
-				usleep(100000);   // This is overdoing it
+				sleep(1);   // This is overdoing it
 				sink = m_sinks[pkt->stream_index];
 			}
 			if (sink && !exit_requested()) {
@@ -942,7 +945,18 @@ demux_video_datasource::has_audio()
 audio_datasource*
 demux_video_datasource::get_audio_datasource()
 {
-		return m_audio_src;
+
+	if (m_audio_src) {
+		audio_datasource *dds = new ffmpeg_decoder_datasource(m_audio_src);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
+		if (dds == NULL) {
+			int rem = m_audio_src->release();
+			assert(rem == 0);
+			return NULL;
+		}
+		return dds;
+	}
+	return NULL;
 }
 
 std::pair<bool, double>
@@ -1140,7 +1154,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 	timestamp_t ipts;
 	uint8_t *inbuf;
 	int sz;
-	
+	//~ QImage* image;
+	//~ char fn[50];
 	got_pic = 0;
 	
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts,&sz);
@@ -1231,6 +1246,9 @@ ffmpeg_video_decoder_datasource::data_avail()
 						}
 						// And store the data.
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
+						//~ sprintf(fn,"%lld.png",pts);		
+						//~ image = new QImage((uchar*) framedata, width, height, 32, NULL, 0, QImage::IgnoreEndian);
+						//~ image->save(fn,"PNG");
 						std::pair<timestamp_t, char*> element(pts, framedata);
 						m_frames.push(element);
 					} else {
@@ -1385,7 +1403,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_duration(false, 0),
 	m_client_callback(NULL)
 {
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
 	audio_format fmt = src->get_audio_format();
 	m_duration = src->get_dur();
@@ -1510,7 +1528,7 @@ ffmpeg_decoder_datasource::data_avail()
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					//free(tmpptr);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 	
 					m_buffer.pushdata(outsize);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
@@ -1885,7 +1903,10 @@ ffmpeg_resample_datasource::data_avail()
 			// Don't feed to much data to the resampler, it doesn't like to do lists ;-)
 			if (cursize > INBUF_SIZE) 
 				cursize = INBUF_SIZE;
-			int insamples = cursize / (m_in_fmt.channels * sizeof(short));	
+			
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: cursize=%d, sz=%d, in channels=%d", cursize,sz,m_in_fmt.channels);
+
+			int insamples = cursize / (m_in_fmt.channels * sizeof(short));	// integer division !!!!
 			if (insamples * m_in_fmt.channels * sizeof(short) != cursize) {
 				lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: warning: incomplete samples: %d", cursize);
 			}
