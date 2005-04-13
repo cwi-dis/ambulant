@@ -396,6 +396,48 @@ AC_ARG_WITH(arts,
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
 #
+# Test for Live
+#
+
+AC_MSG_CHECKING(for --with-live)
+FFMPEG_INCLUDE=
+FFMPEG_LIB=
+AC_ARG_WITH(live,
+	[  --with-live Turn on live.com rtsp support],
+	[case "${withval}" in
+	  yes) live=true
+	  	if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
+			# Prefer an live installation in third_party_packages
+			withvalabs=`pwd`/third_party_packages/live
+			LIVE_ROOT=${withvalabs}
+		fi
+	  	;;
+	  no)  live=false
+	  	;;
+	  *) live=true
+	     # Turn into absolute path
+	     withvalabs=`cd ${withval}; pwd`
+	     LIVE_ROOT=${withvalabs}
+	     ;;
+	 esac],[
+	  	if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
+			live=true
+			# Prefer an live installation in third_party_packages
+			withvalabs=`pwd`/third_party_packages/live
+			LIVE_ROOT=${withvalabs}
+		else
+			withvalabs=false
+			live=false		
+		fi
+	 ])
+
+AM_CONDITIONAL(WITH_LIVE, test x$live = xtrue)
+AC_SUBST(LIVE_ROOT)
+AC_MSG_RESULT($live - $withvalabs)
+
+
+
+#
 # Test for ffmpeg
 #
 # XXXX FFmpeg installation is quirky. When you build 0.4.8 from source

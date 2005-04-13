@@ -1,15 +1,24 @@
 qt_gui-moc.cpp: qt_gui.h qt_gui.cpp
 	$(QT_PREFIX)/bin/moc -o $@ $<
 
-liveincludes = -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/BasicUsageEnvironment/include \
-			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/groupsock/include \
-			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/liveMedia/include \
-			   -I/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/UsageEnvironment/include
+if WITH_LIVE
+extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
+liveincludes = -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
+			   -I$(LIVE_ROOT)/groupsock/include \
+			   -I$(LIVE_ROOT)/liveMedia/include \
+			   -I$(LIVE_ROOT)/UsageEnvironment/include
 
-livelibs	= -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/liveMedia/ -lliveMedia \
-			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
-			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/groupsock/ -lgroupsock  \
-			  -L/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/UsageEnvironment/ -lUsageEnvironment
+livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
+			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
+			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
+			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+extra_live_DEFINES=-DWITH_LIVE
+else
+extra_live_DEFINES=
+extra_live_LDADD =
+liveincludes =
+livelibs =
+endif
 
 bin_PROGRAMS = AmbulantPlayer
 AmbulantPlayer_SOURCES =					\
@@ -92,18 +101,19 @@ endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(extra_arts_LDADD)					\
 	$(extra_sdl_LDADD)					\
-	$(extra_ffmpeg_LDADD)					\
-	$(extra_xerces_LDADD)						\
+	$(extra_ffmpeg_LDADD)				\
+	$(extra_xerces_LDADD)				\
+	$(extra_live_LDADD) 				\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
 	$(EXPAT_PREFIX)/lib/libexpat.a				\
 	$(qt_libs)							\
-	$(LIBLTDL)  \
-	$(livelibs)
+	$(LIBLTDL)  
 
 AM_LDFLAGS=$(extra_arts_ldflags)				\
 	   $(extra_sdl_ldflags)					\
 	   $(extra_ffmpeg_ldflags)				\
-	   -export-dynamic	 
+	   -export-dynamic	  \
+       $(livelibs)
  
 AM_CPPFLAGS = \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
@@ -112,6 +122,7 @@ AM_CPPFLAGS = \
 		$(extra_ffmpeg_DEFINES)				\
 		$(extra_nls_DEFINES)				\
 		$(extra_xerces_DEFINES)			\
+		$(extra_live_DEFINES)	\
 		-I$(top_builddir)/include				\
 		-I$(top_srcdir)/include				\
 		-I$(top_builddir)/include/ambulant/gui/qt		\
