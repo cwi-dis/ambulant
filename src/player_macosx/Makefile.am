@@ -162,6 +162,14 @@ endif
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/Welcome.smil $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(top_srcdir)/Extras/Welcome/data/*.* $(BUILDAPPNAME).app/Contents/Resources/data
 
+#	Install DTD cache data
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL20
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL21
+	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/mapping.txt $(BUILDAPPNAME).app/Contents/Resources/DTDCache
+	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL20/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL20
+	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL21/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL21
+
 #	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant

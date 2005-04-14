@@ -395,7 +395,8 @@ void set_url_from_spec(net::url& u, const char *spec) {
 #if defined(AMBULANT_PLATFORM_UNIX)
 
 // Places where to look for (cached) datafiles
-const char *datafile_locations[] = {
+char *datafile_locations[] = {
+	"./",		// Placeholder, to be replaced by set_datafile_directory()
 	"./",
 	"../",
 	"Extras/",
@@ -408,9 +409,21 @@ const char *datafile_locations[] = {
 	NULL
 };
 
-net::url net::url::get_local_datafile() const
+std::string datafile_directory;
+
+void
+net::url::set_datafile_directory(std::string pathname)
+{
+	datafile_directory = pathname;
+	datafile_locations[0] = datafile_directory.c_str();
+}
+
+std::pair<bool, net::url>
+net::url::get_local_datafile() const
 {
 	const char* result = NULL;
+	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
+	
 	if (! is_absolute()) {
 		string rel_path = get_path();
 		const char **dir;
@@ -426,7 +439,10 @@ net::url net::url::get_local_datafile() const
 		   && access (get_path().c_str(), 0) >= 0) {
 		result = get_path().c_str();
 	}
-	return net::url("file", "", result ? result : "");
+	
+	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
+	
+	return std::pair<bool, net::url>(true, net::url("file", "", result));
 }
 
 #endif

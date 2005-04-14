@@ -190,8 +190,13 @@ class AMBULANTAPI url {
 
 	/// Return the absolute pathname of probably cached datafile
 	/// as an URL. Implementation may be platform dependent.
-	url get_local_datafile() const;
+	std::pair<bool, url> get_local_datafile() const;
 
+	/// Set the directory where datafiles (as returned by get_local_datafile())
+	/// normally reside on this platform. The argument is a platform-style
+	/// pathname, not a URL.
+	static void set_datafile_directory(std::string pathname);
+	
 	static void init_statics();
 
   private:

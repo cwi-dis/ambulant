@@ -275,9 +275,9 @@ init_dtd_cache_mapping() {
 	// the pairs <requested_URL, absolute_pathname> constitute the
 	// "dtd_cache_mapping"
 	net::url mapping("DTDCache/mapping.txt");
-	net::url mapping_filename = mapping.get_local_datafile();
-	if (mapping_filename.is_empty_path()) return;
-	std::ifstream mapping_stream(mapping_filename.get_path().c_str());
+	std::pair<bool, net::url> mapping_filename = mapping.get_local_datafile();
+	if (!mapping_filename.first) return;
+	std::ifstream mapping_stream(mapping_filename.second.get_path().c_str());
 	if (! mapping_stream) return;
 	std::string requested, relative;
 	while (! mapping_stream.eof()) {
@@ -295,10 +295,14 @@ init_dtd_cache_mapping() {
 			continue;
 		}
 		relative = line;
-		net::url absolute_url = net::url(relative).get_local_datafile();
-		std::string abs_path = absolute_url.get_path();
-		std::pair<std::string,std::string> new_map(requested, abs_path);
-		dtd_cache_mapping.insert(new_map);
+		std::pair<bool, net::url> absolute_url = net::url(relative).get_local_datafile();
+		if (absolute_url.first) {
+			std::string abs_path = absolute_url.second.get_path();
+			std::pair<std::string,std::string> new_map(requested, abs_path);
+			dtd_cache_mapping.insert(new_map);
+		} else {
+			lib::logger::get_logger()->trace("DTDCache/mapping.txt contains non-existent file: %s", relative.c_str());
+		}
 	}
 }
 
@@ -329,6 +333,7 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 		XMLCh_local_id = XMLString::transcode(dtd.c_str());
 	}
 	if (XMLCh_local_id != NULL) {
+		m_logger->trace("Using cached DTD: %s", dtd.c_str());
 		local_input_source = new LocalFileInputSource(XMLCh_local_id );
 		delete XMLCh_local_id;
 	}

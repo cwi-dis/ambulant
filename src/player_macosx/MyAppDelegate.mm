@@ -65,6 +65,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/common/plugin_engine.h"
+#include "ambulant/net/url.h"
 #include <stdarg.h>
 
 class nslog_ostream : public ambulant::lib::ostream {
@@ -177,6 +178,10 @@ initialize_logger()
 	if (systemTestSettingsPath) {
 		std::string path([systemTestSettingsPath cString]);
 		mainloop::set_preferences(path);
+		// And initialize the location where we find other datafiles (bit of a hack)
+		NSString *nsresourcedir = [systemTestSettingsPath stringByDeletingLastPathComponent];
+		std::string resourcedir([nsresourcedir cString]);
+		ambulant::net::url::set_datafile_directory(resourcedir);
 	}
 	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
