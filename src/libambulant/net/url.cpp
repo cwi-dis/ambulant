@@ -428,6 +428,7 @@ net::url net::url::get_local_datafile() const
 	}
 	return net::url("file", "", result ? result : "");
 }
+
 #endif
 ///////////////
 // module private static initializer

@@ -70,7 +70,6 @@
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
 #endif
-
 #ifdef WITH_LIVE
 #include "ambulant/net/rtsp_factory.h"
 #endif

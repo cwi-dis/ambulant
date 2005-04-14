@@ -64,8 +64,9 @@
 #include <xercesc/framework/LocalFileInputSource.hpp>
 
 #include <fstream>
+#include <map>
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -263,50 +264,56 @@ xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(std::string v) {
 
 	return rv;
 }
-#define SMIL20_SYSTEMID "http://www.w3.org/2001/SMIL20/SMIL20.dtd"
-#define SMIL21_SYSTEMID "http://www.w3.org/2001/SMIL21/SMIL21.dtd"
+static std::map<std::string, std::string> dtd_cache_mapping;
 
-static const char * 
-find_cachefile_dir(const char **locations)
-{
-	const char **p;
-	for(p = locations; *p; p++) {
-		if (access(*p, 0) >= 0) return *p;
-	}
-	return NULL;
-}
-
-static const char*
-find_cached_dtd(const char* url_cp) {
-	// return the cached filename for this url or NULL if not found
-	std::string url(url_cp);
+static void
+init_dtd_cache_mapping() {	
+	// "DTDCache/mapping.txt" defines the mapping of URLs to local files
+	// odd lines are requested URLs as used in .smil files
+	// even lines are relative pathnames of the corresponding cache
+	// net::url.get_local_datafile() returns the absolute pathname
+	// the pairs <requested_URL, absolute_pathname> constitute the
+	// "dtd_cache_mapping"
 	net::url mapping("DTDCache/mapping.txt");
 	net::url mapping_filename = mapping.get_local_datafile();
-	if (mapping_filename.get_path().length() == 0) return NULL;
+	if (mapping_filename.is_empty_path()) return;
 	std::ifstream mapping_stream(mapping_filename.get_path().c_str());
-	if (!mapping_stream) return NULL;
-
-	std::string target, result;
+	if (! mapping_stream) return;
+	std::string requested, relative;
 	while (! mapping_stream.eof()) {
 		char buf[1024];
+		// get a line, ignore empty amd comment lines
 		mapping_stream.getline(buf, 1024);
 		if (mapping_stream.eof())
-			return NULL;
+			break;
 		std::string line(buf);
-		if (line.length() == 0 || line[0] == '#')
+		if (line == "" || line[0] == '#')
 			continue;
-		if (target.length() == 0) {
-			target = line;
-			continue;
-		}
-		result = line;
-		if (url != target) {
-			// no match
-			target = "";
+		// set the requested we're looking for 
+		if (requested == "") {
+			requested = line;
 			continue;
 		}
-		return (((net::url)result).get_local_datafile()).get_path().c_str();
+		relative = line;
+		net::url absolute_url = net::url(relative).get_local_datafile();
+		std::string abs_path = absolute_url.get_path();
+		std::pair<std::string,std::string> new_map(requested, abs_path);
+		dtd_cache_mapping.insert(new_map);
 	}
+}
+
+static const std::string
+find_cached_dtd(std::string url) {
+	// return the cached absolute path for this url or "" if not found
+	std::string result;
+	if (dtd_cache_mapping.empty())
+		init_dtd_cache_mapping();
+	std::map<std::string,std::string>::iterator mi;
+	mi = dtd_cache_mapping.find(url);
+	if (mi != dtd_cache_mapping.end()) {
+		result = mi->second;
+	} 	
+	return result;
 }
 
 
@@ -317,10 +324,9 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	XMLCh* XMLCh_local_id = NULL;
 	InputSource* local_input_source = NULL;
 	AM_DBG m_logger->debug("xerces_sax_parser::resolveEntity(%s,%s)",publicId_ts, systemId_ts);
-	const char* dtd = find_cached_dtd(systemId_ts);
-	if (dtd != NULL) {
-		XMLCh_local_id = XMLString::transcode(dtd);
-		delete dtd;
+	const std::string dtd = find_cached_dtd(systemId_ts);
+	if (dtd != "") {
+		XMLCh_local_id = XMLString::transcode(dtd.c_str());
 	}
 	if (XMLCh_local_id != NULL) {
 		local_input_source = new LocalFileInputSource(XMLCh_local_id );

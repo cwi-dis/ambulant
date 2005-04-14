@@ -163,6 +163,11 @@ class AMBULANTAPI url {
 		return m_absolute;
 	}
 	
+	/// Return true if the path of this URL is empty
+	bool is_empty_path() const {
+		return m_path == "";
+	}
+	
 	/// Return true if the URL refers to a local file.
 	bool is_local_file() const;
 	

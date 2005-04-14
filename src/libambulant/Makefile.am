@@ -147,6 +147,9 @@ lib_LTLIBRARIES = \
 	$(toolkit_live_libraries)
 
 # AM_CPPFLAGS=-rdynamic
+AM_CPPFLAGS = \
+		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" 
+
 AM_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(livelibs)
