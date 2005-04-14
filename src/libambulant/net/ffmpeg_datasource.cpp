@@ -55,8 +55,7 @@
 
 
 // temp. for debug purpose
-//#include <qimage.h>
-
+#include <qimage.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -422,7 +421,7 @@ detail::ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		int ret = av_read_packet(m_con, pkt);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned %d", ret);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%lld, 0x%x, %d)", ret, pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
 		pkt_nr++;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
@@ -981,7 +980,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_pts_last_frame(0),
-	m_last_p_pts(0)
+	m_last_p_pts(0),
+	m_frame_count(0)
 {	
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
@@ -1154,8 +1154,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 	timestamp_t ipts;
 	uint8_t *inbuf;
 	int sz;
-	//~ QImage* image;
-	//~ char fn[50];
+	QImage* image;
+	char fn[50];
 	got_pic = 0;
 	
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts,&sz);
@@ -1197,12 +1197,12 @@ ffmpeg_video_decoder_datasource::data_avail()
 						framerate = m_con->frame_rate;
 						framebase = m_con->frame_rate_base;
 						
-					
-						pts = ipts;
+						
+						//~ pts = ipts;
 						
 
-						AM_DBG lib::logger::get_logger()->debug("pts seems to be : %f",pts / 1000000.0);
-						pts1 = pts;
+						//~ AM_DBG lib::logger::get_logger()->debug("pts seems to be : %f",pts / 1000000.0);
+						//~ pts1 = pts;
 						
 						if (m_con->has_b_frames && frame->pict_type != FF_B_TYPE) {
 							pts = m_last_p_pts;
@@ -1211,44 +1211,50 @@ ffmpeg_video_decoder_datasource::data_avail()
 							AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
 						}
 						
-						if (pts != 0 ) {
-							m_pts_last_frame = pts;
-						} else {
-							if (framerate != 0) {
-								frame_delay = (double) framebase/framerate;
-							} else {
-								frame_delay = 0;
-							}
-							pts = m_pts_last_frame + (timestamp_t) (round(frame_delay * 1000000));
-							m_pts_last_frame = pts;			
-							//~ if( frame.repeat_pict) {
-								//~ pts += frame.repeat_pict * (frame_delay * 0.5);
+						
+						//~ if (pts != 0 ) {
+							//~ m_pts_last_frame = pts;
+						//~ } else {
+							//~ if (framerate != 0) {
+								//~ frame_delay = (double) (framebase*1000000)/framerate;
+							//~ } else {
+								//~ frame_delay = 0;
 							//~ }
-							AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts was 0, set to %f (frame_delay = %f)", pts / 1000000.0, frame_delay);
-						}
+							//~ pts = m_pts_last_frame + (timestamp_t) round(frame_delay);
+							//~ m_pts_last_frame = pts;			
+							//~ //if( frame.repeat_pict) {
+							//~ //	pts += frame.repeat_pict * (frame_delay * 0.5);
+							//~ //}
+							//~ /*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts was 0, set to %f (frame_delay = %f)", pts / 1000000.0, round(frame_delay*1000000));
+						//~ }
 						
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
+						//~ AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: timestamp=%lld num=%d, den=%d",pts, num,den);
 						
-						AM_DBG {
-							switch(frame->pict_type) {
-								case FF_B_TYPE:
-									lib::logger::get_logger()->debug("BBBBB ffmpeg_video_decoder_datasource.data_avail: B-frame, timestamp = %ldd", pts); 
-									break;
-								case FF_P_TYPE:framebase/framerate;
-									lib::logger::get_logger()->debug("PPPPP ffmpeg_video_decoder_datasource.data_avail: P-frame, timestamp = %ldd", pts); 
-									break;
-								case FF_I_TYPE:
-									lib::logger::get_logger()->debug("IIIII ffmpeg_video_decoder_datasource.data_avail: I-frame, timestamp = %ldd", pts); 
-									break;
-								default:
-									lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: I-frame, timestamp = %ldd", pts); 
-							}
-						}
+						//~ AM_DBG {
+							//~ switch(frame->pict_type) {
+								//~ case FF_B_TYPE:
+									//~ lib::logger::get_logger()->debug("BBBBB ffmpeg_video_decoder_datasource.data_avail: B-frame(%d), pts = %lld, ipts = %lld, m_pts_last_frame = %lld",m_frame_count, pts, ipts, m_pts_last_frame); 
+									//~ break;
+								//~ case FF_P_TYPE:
+									//~ lib::logger::get_logger()->debug("PPPPP ffmpeg_video_decoder_datasource.data_avail: P-frame(%d), pts = %lld, ipts = %lld, m_pts_last_frame = %lld",m_frame_count, pts, ipts, m_pts_last_frame); 
+									//~ break;
+								//~ case FF_I_TYPE:
+									//~ lib::logger::get_logger()->debug("IIIII ffmpeg_video_decoder_datasource.data_avail: I-frame(%d), pts = %lld, ipts = %lld, m_pts_last_frame = %lld",m_frame_count, pts, ipts, m_pts_last_frame); 
+									//~ break;
+								//~ default:
+									//~ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: unkown frame(%d), pts = %lld, ipts = %lld, m_pts_last_frame = %lld",m_frame_count, pts, ipts, m_pts_last_frame); 
+							//~ }
+						//~ }
+						
+						// Stupid HAck to get the pts right, we will have to look again to this later
+						frame_delay = (double) (framebase*1000000)/framerate;
+						pts = (timestamp_t) round(frame_delay*m_frame_count);
 						// And store the data.
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
-						//~ sprintf(fn,"%lld.png",pts);		
+						//~ sprintf(fn,"%lld-%d.png",pts,m_frame_count);		
 						//~ image = new QImage((uchar*) framedata, width, height, 32, NULL, 0, QImage::IgnoreEndian);
 						//~ image->save(fn,"PNG");
+						m_frame_count++;
 						std::pair<timestamp_t, char*> element(pts, framedata);
 						m_frames.push(element);
 					} else {

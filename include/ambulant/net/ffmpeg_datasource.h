@@ -390,7 +390,9 @@ class ffmpeg_video_decoder_datasource:
   	bool m_thread_started;
   	timestamp_t m_pts_last_frame;
   	timestamp_t m_last_p_pts;
+  	int m_frame_count;
     lib::critical_section m_lock;
+  	
 };
 
 #endif // WITH_FFMPEG_AVFORMAT

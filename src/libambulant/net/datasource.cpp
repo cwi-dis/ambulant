@@ -312,7 +312,7 @@ datasource_factory::new_video_datasource(const net::url &url)
     
     for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
         src = (*i)->new_video_datasource(url);
-		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, not supported by any video datasource"), repr(url).c_str());

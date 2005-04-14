@@ -65,6 +65,12 @@ class live_audio_datasource_factory : public audio_datasource_factory {
 	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts);
 };
 
+class live_video_datasource_factory : public video_datasource_factory {
+  public:
+	~live_video_datasource_factory() {};
+	video_datasource* new_video_datasource(const net::url& url);
+};
+
 }
 } //endofnamespaces
 

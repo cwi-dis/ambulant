@@ -252,7 +252,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 		paint.setBrush(bgc);
 		paint.drawRect(L,T,W,H);
 		if (m_background_pixmap) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("qt_background_renderer::redraw: drawing pixmap");
+			AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: drawing pixmap");
 			paint.drawPixmap(L, T, *m_background_pixmap);
 		}
 		paint.flush();
@@ -263,7 +263,7 @@ qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
 void
 qt_background_renderer::keep_as_background()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("qt_background_renderer::keep_as_background() called");
+	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::keep_as_background() called");
 	const lib::screen_rect<int> &r = m_dst->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) m_dst->get_gui_window();
 	lib::screen_rect<int> dstrect_whole = r;
@@ -275,4 +275,3 @@ qt_background_renderer::keep_as_background()
 	m_background_pixmap = aqw->get_pixmap_from_screen(dstrect_whole);
 	dumpPixmap(m_background_pixmap, "/tmp/keepbg");
 }
-

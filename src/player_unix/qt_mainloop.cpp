@@ -135,6 +135,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui) :
 	m_factory->df = new net::datasource_factory();
 #ifdef WITH_LIVE	
 	AM_DBG m_logger->debug("mainloop::mainloop: add live_audio_datasource_factory");
+	m_factory->df->add_video_factory(new net::live_video_datasource_factory());
 	m_factory->df->add_audio_factory(new net::live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG

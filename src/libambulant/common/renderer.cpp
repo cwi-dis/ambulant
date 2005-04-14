@@ -309,7 +309,7 @@ active_video_renderer::active_video_renderer(
 	
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
 	m_src = factory->df->new_video_datasource(url);
 	if (m_src == NULL) {

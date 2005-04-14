@@ -264,7 +264,7 @@ static void
 after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
 
-	lib::logger::get_logger()->debug("after_reading_audio: called", data);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called", data);
 	rtsp_context_t* context = NULL;
 	if (data) {
 		context = (rtsp_context_t*) data;

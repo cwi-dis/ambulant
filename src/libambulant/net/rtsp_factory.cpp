@@ -67,7 +67,7 @@ using namespace net;
 audio_datasource* 
 live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts)
 {
-	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
+	/*AM_DBG*/ lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
 	if (!context) {
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: no support for %s", repr(url).c_str());
@@ -75,12 +75,17 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_f
 	}
 	rtsp_demux *thread = new rtsp_demux(context);
 	int i = 0;
-
+	
+	if (context->video_stream > -1) {
+		thread->cancel();
+		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: rtsp stream contains video");
+		return NULL;
+	}
 	//int stream_index;
 	
 	audio_datasource *ds = demux_audio_datasource::new_demux_audio_datasource(url, thread);
 	if (ds == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_video_datasource: could not allocate live_audio_datasource");
+		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: could not allocate live_audio_datasource");
 		thread->cancel();
 		return NULL;
 	}
@@ -118,4 +123,47 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_f
 	int rem = rds->release();
 	assert(rem == 0);
 	return NULL;	
+}
+
+
+video_datasource* 
+live_video_datasource_factory::new_video_datasource(const net::url& url)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
+	rtsp_context_t *context = rtsp_demux::supported(url);
+	if (!context) {
+		AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());
+		return NULL;
+	}
+	rtsp_demux *thread = new rtsp_demux(context);
+	int i = 0;
+
+	//int stream_index;
+	
+	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
+	if (ds == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_video_datasource: could not allocate live_audio_datasource");
+		thread->cancel();
+		return NULL;
+	}
+	video_datasource *dds = NULL;
+	thread->start();
+	
+	if (thread) {
+		 video_format fmt = thread->get_video_format();
+		 //dds = ds;
+		 dds = new ffmpeg_video_decoder_datasource(ds, fmt);
+	} else {
+		return NULL;
+	}
+	
+	
+	AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
+
+	if (dds == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource: could not allocate rtsp_video_datasource");
+		thread->cancel();
+		return NULL;
+	}
+	return dds;		
 }
