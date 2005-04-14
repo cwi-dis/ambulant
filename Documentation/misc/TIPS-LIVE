@@ -9,10 +9,15 @@ each filtype it supports a file called test.ext
 (where ext is the ext assosiated with the file type)
 
 For CWI use:
-I have testOnDemandRTSPServer running on noorwegen.cst.cwi.nl broadcasting the files :
-    /ufs/dbenden/Ambulant/ambulant/third_party_packages/live/testProgs/test.mp3
-	/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/testProgs/test.mpeg
-The directory /ufs/dbenden/testmovie contains a couple of test smil files:
+I have testOnDemandRTSPServer running on noorwegen.cst.cwi.nl (only reachable from inside CWI) 
+broadcasting the files (found in my home directory):
+    Ambulant/ambulant/third_party_packages/live/testProgs/test.mp3
+	Ambulant/ambulant/third_party_packages/live/testProgs/test.mpeg
+To play the streams use:
+	 rtsp://192.16.191.118:8554/mp3AudioTest
+	 rtsp://192.16.191.118:8554/mpeg1or2AudioVideoTest
+
+The directory testmovie (again in my home dir.) contains a couple of test smil files:
 	rtsp.smil plays test.mp3 over rtsp. (audio only)
 	rtsp_video.smil plays test.mpeg over rtsp (video & audio)
 
