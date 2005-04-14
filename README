@@ -1,8 +1,8 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.3 (intermediate) of Ambulant Player,
-a playback engine for SMIL documents. 
+This directory contains version 1.4 (intermediate) of Ambulant Player,
+a playback engine for SMIL documents. This release supports SMIL 2.1 RC.
 The Ambulant homepage is at <http://www.ambulantplayer.org>.
 
 Ambulant consists of a core library implementing the engine,
@@ -21,8 +21,9 @@ COPYING for details.
 Feedback
 --------
 
-Please let us know about any problem you encounter: there is a good
-chance we are not aware of it at this stage. Either send email to
+Please let us know about any problem you encounter: first check the FAQ
+on the Ambulant homepage. Of course, there is a good chance we are not 
+aware of your problem at this stage. In that case, either send email to:
 <Ambulant-feedback@ambulantplayer.org> or fill out a bug report at the
 sourceforge bug repository, via <http://sourceforge.net/projects/ambulant>.
 
