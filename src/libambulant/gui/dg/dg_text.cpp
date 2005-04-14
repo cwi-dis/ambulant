@@ -116,6 +116,9 @@ void gui::dg::dg_text_renderer::start(double t) {
 		
 	// Request a redraw
 	//m_dest->need_redraw();
+
+	// Notify scheduler that we're done playing
+	m_context->stopped(m_cookie);
 }
 
 void gui::dg::dg_text_renderer::stop() {
@@ -145,6 +148,8 @@ void gui::dg::dg_text_renderer::redraw(const lib::screen_rect<int> &dirty, commo
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	if(!m_text.empty()) v->draw(m_text, rc);
+
+	if (m_erase_never) m_dest->keep_as_background();
 }
 
  

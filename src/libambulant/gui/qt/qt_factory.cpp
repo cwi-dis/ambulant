@@ -220,14 +220,19 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 	qApp->wakeUpGuiThread();
 #endif	/*QT_NO_FILEDIALOG*/
 }
-  
+
+void
+ambulant_qt_window::redraw_now()
+{
+}
+
 void
 ambulant_qt_window::mouse_region_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::mouse_region_changed needs to be implemented");
 }
 
-/* test if there is something new to see * /
+/* test if there is something new to see */
 static QImage* oldImageP;
 static bool isEqualToPrevious(QPixmap* qpmP) {
 	QImage img = qpmP->convertToImage();
@@ -240,9 +245,10 @@ static bool isEqualToPrevious(QPixmap* qpmP) {
 		return false;
 	}
 }
+
 /**/
-/* dumpPixmap on file * /
-void dumpPixmap(QPixmap* qpm, std::string filename) {
+/* dumpPixmap on file */
+void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
 	QImage img = qpm->convertToImage();
 	if ( ! isEqualToPrevious(qpm)) {
 		static int i;

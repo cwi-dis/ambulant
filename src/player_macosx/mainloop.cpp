@@ -166,6 +166,9 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 		m_player = common::create_mms_player(m_doc, m_factory);
 	else
 		m_player = common::create_smil2_player(m_doc, m_factory, m_embedder);
+#ifdef USE_SMIL21
+	m_player->initialize();
+#endif
 }
 
 ambulant::lib::document *

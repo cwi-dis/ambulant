@@ -72,3 +72,5 @@ smil_alignment::get_surface_fixpoint(lib::size surface_size) const
 	int y = m_surface_fixpoint.top.get(surface_size.h);
 	return lib::point(x, y);
 }
+
+

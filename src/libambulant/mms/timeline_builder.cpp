@@ -95,6 +95,7 @@ class mms_region_info : public common::region_info {
 	double get_soundlevel() const { return 1.0; }
 #ifdef USE_SMIL21
 	common::sound_alignment get_soundalign() const { return common::sa_both; }
+	common::tiling get_tiling() const { return common::tiling_default; }
 #endif
 	bool get_showbackground() const { return false; }
 	bool is_subregion() const { return false; }

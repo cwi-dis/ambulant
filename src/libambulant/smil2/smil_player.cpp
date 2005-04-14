@@ -114,6 +114,14 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	build_timegraph();
 }
 
+#ifdef USE_SMIL21
+void
+smil_player::initialize()
+{
+	m_layout_manager->load_bgimages((common::playable_factory*)m_factory->rf);
+}
+#endif
+
 smil_player::~smil_player() {
 	AM_DBG m_logger->debug("smil_player::~smil_player()");
 	

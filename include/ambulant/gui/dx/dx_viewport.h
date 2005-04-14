@@ -167,6 +167,9 @@ class viewport {
 	// Returns the DD object associated with this
 	IDirectDraw* get_direct_draw() { return m_direct_draw;}
 	
+	// Returns the DD surface that this view uses as backbuffer
+	IDirectDrawSurface* get_surface() { return m_surface; }
+
 	// Converts lib::color_t to a DD color value.
 	uint32 convert(lib::color_t color);
 	uint32 convert(BYTE r, BYTE g, BYTE b);

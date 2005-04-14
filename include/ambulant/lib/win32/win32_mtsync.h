@@ -77,6 +77,7 @@ namespace lib {
 namespace win32 {
 
 class AMBULANTAPI critical_section : public ambulant::lib::abstract_critical_section {
+	friend class condition;
   public:
 	critical_section() { InitializeCriticalSection(&m_cs);}
 	~critical_section() { DeleteCriticalSection(&m_cs);}
@@ -88,6 +89,25 @@ class AMBULANTAPI critical_section : public ambulant::lib::abstract_critical_sec
 	CRITICAL_SECTION m_cs;
 };
 
+class AMBULANTAPI condition : public ambulant::lib::abstract_condition {
+  public:
+	  condition() { m_event = CreateEvent(NULL, TRUE, FALSE, NULL);}
+	  ~condition() { CloseHandle(m_event); }
+	
+	  void signal() { SetEvent(m_event); }
+	  void signal_all() { abort(); }
+	  bool wait(int microseconds, critical_section &cs) {
+		  DWORD timeout = microseconds < 0 ? INFINITE : microseconds/1000;
+		  bool rv = WaitForSingleObject(m_event, timeout) == WAIT_OBJECT_0;
+		  if (rv) {
+			  EnterCriticalSection(&cs.m_cs);
+			  ResetEvent(m_event);
+		  }
+		  return rv;
+	  }
+  private:
+	HANDLE m_event;
+};
 } // namespace win32
 
 } // namespace lib

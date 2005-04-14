@@ -594,6 +594,46 @@ passive_region::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect,
 		point(x_region_for_image_right, y_region_for_image_bottom));
 }
 
+#ifdef USE_SMIL21
+bool
+passive_region::is_tiled() const
+{
+	common::tiling t = m_info->get_tiling();
+	
+	return (t == common::tiling_horizontal || t == common::tiling_vertical || t == common::tiling_both);
+}
+
+tile_positions
+passive_region::get_tiles(lib::size image_size, lib::screen_rect<int> surface_rect) const
+{
+	assert(is_tiled());
+	
+	tile_positions rv;
+	
+	int x, y;
+	int width = image_size.w;
+	int height = image_size.h;
+	int max_x = surface_rect.left()+width;
+	int max_y = surface_rect.top()+height;
+	common::tiling t = m_info->get_tiling();
+	if (t == common::tiling_horizontal || t == common::tiling_both)
+		max_x = surface_rect.right();
+	if (t == common::tiling_vertical || t == common::tiling_both)
+		max_y = surface_rect.bottom();
+		
+	for (x=surface_rect.left(); x < max_x; x += width) {
+		for (y=surface_rect.top(); y < max_y; y += height) {
+			int w = std::min<int>(width, max_x-x);
+			int h = std::min<int>(height, max_y-y);
+			rect srcrect(point(0, 0), size(w, h));
+			screen_rect<int> dstrect(point(x, y), size(w, h));
+			rv.push_back(common::tile_position(srcrect, dstrect));
+		}
+	}
+	return rv;
+}
+#endif
+
 void 
 passive_region::transition_done(lib::screen_rect<int> area)
 {

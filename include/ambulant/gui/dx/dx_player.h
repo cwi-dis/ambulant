@@ -108,7 +108,7 @@ class dx_player_callbacks {
 };
 
 class AMBULANTAPI dx_player : 
-	public common::player, 
+	//public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
 	public dx_playables_context,
@@ -161,9 +161,9 @@ class AMBULANTAPI dx_player :
 	////////////////////
 	// common::embedder implementation
 	void show_file(const net::url& href);
-	void close(player *p);
-	void open(net::url newdoc, bool start, player *old=NULL);
-	void done(player *p);
+	void close(common::player *p);
+	void open(net::url newdoc, bool start, common::player *old=NULL);
+	void done(common::player *p);
 	
 	////////////////////
 	// Implementation specific artifacts

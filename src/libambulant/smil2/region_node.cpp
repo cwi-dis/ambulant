@@ -131,8 +131,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 #ifdef USE_SMIL21
 	m_soundalign(common::sa_default),
 	m_bgimage(NULL),
-	m_bgrepeat(repeat_xy(true, true)),
-	m_inherit_bgrepeat(false),
+	m_tiling(common::tiling_default),
 #endif
 	m_transparent(true),
 	m_showbackground(true),
@@ -300,17 +299,18 @@ region_node::fix_from_dom_node()
 	// backgroundRepeat
 	const char *bgrepeat_attr = m_node->get_attribute("backgroundRepeat");
 	
-	m_inherit_bgrepeat = false;
-	if (bgrepeat_attr == NULL || strcmp(bgrepeat_attr, "repeat") == 0) {
-		m_bgrepeat = repeat_xy(true, true);
+	if (bgrepeat_attr == NULL) {
+		m_tiling = common::tiling_default;
+	} else if (strcmp(bgrepeat_attr, "repeat") == 0) {
+		m_tiling = common::tiling_both;
 	} else if (strcmp(bgrepeat_attr, "repeatX") == 0) {
-		m_bgrepeat = repeat_xy(true, false);
+		m_tiling = common::tiling_horizontal;
 	} else if (strcmp(bgrepeat_attr, "repeatY") == 0) {
-		m_bgrepeat = repeat_xy(false, true);
+		m_tiling = common::tiling_vertical;
 	} else if (strcmp(bgrepeat_attr, "noRepeat") == 0) {
-		m_bgrepeat = repeat_xy(false, false);
+		m_tiling = common::tiling_none;
 	} else if (strcmp(bgrepeat_attr, "inherit") == 0) {
-		m_inherit_bgrepeat = true;
+		m_tiling = common::tiling_inherit;
 	} else {
 		lib::logger::get_logger()->trace("%s: Invalid backgroundRepeat value: %s", m_node->get_sig().c_str(), bgrepeat_attr);
 		lib::logger::get_logger()->warn(gettext("Ignoring invalid backgroundRepeat value in document"));
@@ -390,15 +390,15 @@ region_node::get_showbackground() const
 }
 
 #ifdef USE_SMIL21
-repeat_xy
-region_node::get_bgrepeat() const
+common::tiling
+region_node::get_tiling() const
 {
-	if(m_inherit_bgrepeat) {
+	if(m_tiling == common::tiling_inherit) {
 		const region_node *parent_node = up();
 		if (parent_node)
-			return parent_node->get_bgrepeat();
+			return parent_node->get_tiling();
 	}
-	return m_bgrepeat;
+	return m_tiling;
 }
 #endif // USE_SMIL21
 

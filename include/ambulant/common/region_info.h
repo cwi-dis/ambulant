@@ -77,8 +77,12 @@ typedef int zindex_t;
 
 
 #ifdef USE_SMIL21
-// Type that represents where audio is panned
+/// Type that represents where audio is panned
 enum sound_alignment {sa_default, sa_both, sa_left, sa_right};
+
+/// Type that represents image tiling
+enum tiling { tiling_default, tiling_none, tiling_inherit,
+		tiling_horizontal, tiling_vertical, tiling_both};
 #endif // USE_SMIL21
 
 
@@ -120,6 +124,9 @@ class region_info {
 #ifdef USE_SMIL21
 	/// Return audio placement
 	virtual sound_alignment get_soundalign() const = 0;
+	
+	/// Return image tiling within region
+	virtual tiling get_tiling() const = 0;
 #endif
 };
 

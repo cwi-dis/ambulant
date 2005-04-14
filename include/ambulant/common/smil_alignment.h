@@ -71,6 +71,7 @@ class smil_alignment : public alignment {
 	
 	lib::point get_image_fixpoint(lib::size image_size) const;
 	lib::point get_surface_fixpoint(lib::size surface_size) const;
+
   private:
 	regpoint_spec m_image_fixpoint;
 	regpoint_spec m_surface_fixpoint;

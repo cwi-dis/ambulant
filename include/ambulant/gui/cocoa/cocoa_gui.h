@@ -77,6 +77,7 @@ class cocoa_window : public common::gui_window {
 	~cocoa_window();
   		
 	void need_redraw(const lib::screen_rect<int> &r);
+	void redraw_now();
 	void need_events(bool want);
 	
 	void redraw(const lib::screen_rect<int> &r);
@@ -157,6 +158,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
 
 - (void) asyncRedrawForAmbulantRect: (id)arect;
+- (void) syncDisplayIfNeeded: (id) dummy;
 
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;

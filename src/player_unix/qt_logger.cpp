@@ -122,7 +122,10 @@ qt_logger::qt_logger()
 	  common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
 	if (prefs != NULL && prefs->m_log_file != "") {
-		m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
+		if (prefs->m_log_file == "-")
+			m_log_FILE = stderr;
+		else
+			m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
 		if (m_log_FILE == NULL) {
 			logger->warn(gettext("Cannot open logfile: %s"), 
 				     prefs->m_log_file.c_str());

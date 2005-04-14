@@ -78,6 +78,10 @@ class smil_layout_manager : public common::layout_manager {
 	smil_layout_manager(common::factories *factory, lib::document *doc);
 	~smil_layout_manager();
 	
+#ifdef USE_SMIL21
+	void load_bgimages(common::playable_factory *pf);
+#endif
+
 	common::surface *get_surface(const lib::node *node);
 	common::alignment *get_alignment(const lib::node *node);
 	common::animation_notification *get_animation_notification(const lib::node *node);
@@ -95,13 +99,11 @@ class smil_layout_manager : public common::layout_manager {
 	void build_body_regions(lib::document *doc);
 	common::surface_template *create_top_surface(common::window_factory *wf, 
 		const region_node *rn, common::bgrenderer *bgrenderer);
-#ifdef USE_SMIL21
-	void load_bgimages(const lib::node *layout_section, common::playable_factory *pf);
-#endif
 	
 	const common::schema *m_schema;
 	common::surface_factory *m_surface_factory;
 	
+	lib::node *m_layout_section;
 	region_node *m_layout_tree;
 	std::vector<region_node *>m_default_region_subregions;
 	

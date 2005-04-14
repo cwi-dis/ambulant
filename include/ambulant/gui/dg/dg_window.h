@@ -90,6 +90,7 @@ class dg_window : public common::gui_window {
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
 	void need_redraw();
+	void redraw_now() { /* Redraws are synchronous on Windows */ }
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	
 	viewport *get_viewport() { return m_viewport;}

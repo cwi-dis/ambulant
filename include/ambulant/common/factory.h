@@ -59,7 +59,8 @@ namespace common {
 
 class global_playable_factory;
 	
-struct factories {
+class factories {
+public:
 	factories()
 	:	rf(NULL),
 		wf(NULL),

@@ -89,6 +89,10 @@ class passive_region : public surface_template, public surface, public gui_event
 	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
 	virtual const point &get_global_topleft() const;
 	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect, common::alignment *align) const;
+#ifdef USE_SMIL21
+	bool is_tiled() const;
+	tile_positions get_tiles(lib::size image_size, lib::screen_rect<int> surface_rect) const;
+#endif
 	const region_info *get_info() const { return m_info; }	
 #ifdef USE_SMIL21
 	surface *get_top_surface() { return m_parent->get_top_surface(); }

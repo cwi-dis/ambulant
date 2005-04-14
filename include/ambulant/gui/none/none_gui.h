@@ -70,6 +70,7 @@ class none_window : public common::gui_window {
   		
 	void need_redraw(const lib::screen_rect<int> &r) { m_handler->redraw(r, this); };
 	void need_events(bool want) {};
+	void redraw_now() {};
 };
 
 class none_window_factory : public common::window_factory {

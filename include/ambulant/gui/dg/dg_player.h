@@ -111,7 +111,7 @@ class dg_window;
 class dg_transition;
 
 class dg_player : 
-	public common::player, 
+	//public common::player, 
 	public common::window_factory, 
 	public common::playable_factory,
 	public dg_playables_context,

@@ -79,6 +79,11 @@ class player {
   public:
 	virtual ~player() {};
 	
+#ifdef USE_SMIL21
+	/// Do any initializations necessary
+	virtual void initialize() = 0;
+#endif
+
 	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;
 	

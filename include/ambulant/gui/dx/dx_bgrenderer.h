@@ -59,6 +59,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
 
+struct IDirectDrawSurface;
 
 namespace ambulant {
 
@@ -72,6 +73,8 @@ class dx_bgrenderer : public common::background_renderer {
 	~dx_bgrenderer();
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	void keep_as_background();
+private:
+	IDirectDrawSurface *m_bg_image;
 };
 
 } // namespace dx

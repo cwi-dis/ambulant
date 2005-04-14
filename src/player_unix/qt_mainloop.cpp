@@ -206,6 +206,9 @@ qt_mainloop::create_player(const char* filename) {
 	} else {
 		m_player = create_smil2_player(m_doc, m_factory, this);
 	}
+#ifdef USE_SMIL21notyet
+	m_player->initialize();
+#endif
 }
 
 lib::document *
