@@ -1,0 +1,26 @@
+How to use LIVE.COM
+====================
+
+
+Live.com comes with a set small programs to test rtsp streaming with.
+To test AmbulantPlayer with rtsp use the testOnDemandRTSPServer program, 
+you can find this in .../live/testProgs. This litle test server uses for 
+each filtype it supports a file called test.ext 
+(where ext is the ext assosiated with the file type)
+
+For CWI use:
+I have testOnDemandRTSPServer running on noorwegen.cst.cwi.nl broadcasting the files :
+    /ufs/dbenden/Ambulant/ambulant/third_party_packages/live/testProgs/test.mp3
+	/ufs/dbenden/Ambulant/ambulant/third_party_packages/live/testProgs/test.mpeg
+The directory /ufs/dbenden/testmovie contains a couple of test smil files:
+	rtsp.smil plays test.mp3 over rtsp. (audio only)
+	rtsp_video.smil plays test.mpeg over rtsp (video & audio)
+
+
+
+Daniel Benden 14-apr-2005
+
+
+
+
+	
