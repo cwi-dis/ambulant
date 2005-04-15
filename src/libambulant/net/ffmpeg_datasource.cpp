@@ -54,8 +54,6 @@
 #include <map>
 
 
-// temp. for debug purpose
-#include <qimage.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -259,6 +257,10 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 	if (fmt.bits != 16) {
 		lib::logger::get_logger()->warn(gettext("No support for %d-bit audio, only 16"), fmt.bits);
 		return NULL;
+	}
+	if (fmts.contains(fmt)) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_filter_finder::new_audio_datasource: matches!");
+		return src;
 	}
 	// XXXX Check that there is at least one destination format we understand too
 	return new ffmpeg_resample_datasource(src, fmts);
@@ -1154,7 +1156,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 	timestamp_t ipts;
 	uint8_t *inbuf;
 	int sz;
-	QImage* image;
 	char fn[50];
 	got_pic = 0;
 	
@@ -1416,8 +1417,6 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
-	m_fmt = fmt;
-	
 }
 
 ffmpeg_decoder_datasource::~ffmpeg_decoder_datasource()
