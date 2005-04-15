@@ -81,9 +81,7 @@ class databuffer
 {							
   public:
 	// constructors
-	databuffer();				
-	databuffer(int max_size);	
-	
+	databuffer(int max_size=0);	
 	// destructor
 	~databuffer();
 
@@ -94,7 +92,8 @@ class databuffer
 #endif // AMBULANT_NO_IOSTREAMS_HEADERS
 	
 
-	/// Returns the numbner of bytes in the buffer.
+	/// Returns the number of bytes in the buffer.
+	/// Cannot be called between get_read_ptr/readdone.
 	int  size() const;
 	
 	/// Return true if the buffer is full.
@@ -134,9 +133,13 @@ class databuffer
 	/// Class method to set default for max_unused_size.
 	static void default_max_unused_size(int max_unused_size);
   private:
-    char* m_buffer;
-  	char* m_read_data_ptr;
-    bool m_reading;
+	// Add space to the end of the buffer
+	void _grow(int sz);
+	
+    char* m_buffer;			// Our databuffer
+    bool m_reading;			// True between get_read_ptr/readdone
+	bool m_writing;			// True between get_write_ptr/pushdata
+  	char* m_old_buffer;		// An old buffer, to be removed in readdone
 	unsigned long int m_rear;
 	unsigned long int m_size;
  	unsigned long int m_max_size;

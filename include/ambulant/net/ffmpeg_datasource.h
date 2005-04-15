@@ -367,13 +367,13 @@ class ffmpeg_video_decoder_datasource:
     void data_avail();
 	bool buffer_full();
 	std::pair<bool, double> get_dur();
-	bool select_decoder(const char* file_ext);
-	bool select_decoder(video_format &fmt);
 	
   private:
-	int get_audio_stream_nr();
+	bool _select_decoder(const char* file_ext);
+	bool _select_decoder(video_format &fmt);
     bool _end_of_file();
 	bool _buffer_full();
+	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
 	int m_stream_index;
@@ -416,12 +416,12 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	int size() const;   
 	std::pair<bool, double> get_dur();
 	audio_format& get_audio_format();
-	bool select_decoder(const char* file_ext);
-	bool select_decoder(audio_format &fmt);
 	
 	static bool supported(const net::url& url);
   protected:
-  	int decode(uint8_t* in, int size, uint8_t* out, int &outsize);
+  	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);
+	bool _select_decoder(const char* file_ext);
+	bool _select_decoder(audio_format &fmt);
 	  
   private:
     bool _end_of_file();

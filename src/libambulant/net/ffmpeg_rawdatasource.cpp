@@ -169,7 +169,7 @@ detail::ffmpeg_rawreader::run()
 		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: final sinkdata(0)");
-	if (m_sink) m_sink->pushdata(0);
+	if (m_sink) m_sink->pushdata(-1);
 	m_lock.leave();
 	return 0;
 }
@@ -280,8 +280,8 @@ void
 ffmpeg_raw_datasource::pushdata(int size)
 {
 	m_lock.enter();
-	m_buffer.pushdata(size);
-	if (size == 0)
+	if (size >= 0) m_buffer.pushdata(size);
+	if (size <= 0)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);

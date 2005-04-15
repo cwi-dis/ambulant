@@ -387,19 +387,22 @@ datasource_reader::readdone()
 		return;
 	}
 	int newsize = m_src->size();
-	m_data = (char *)realloc(m_data, m_size + newsize);
-	if (m_data == NULL) {
-		m_size = 0;
-		lib::logger::get_logger()->error(gettext("datasource_reader: out of memory"));
-		m_lock.leave();
-		return;
+	if (newsize) {
+		assert(newsize < 100000000); // TMP sanity check
+		m_data = (char *)realloc(m_data, m_size + newsize);
+		if (m_data == NULL) {
+			m_size = 0;
+			lib::logger::get_logger()->fatal(gettext("datasource_reader: out of memory"));
+			abort();
+		}
+		char* dataptr = m_src->get_read_ptr();
+		assert(dataptr);
+		memcpy(m_data+m_size, dataptr, newsize);
+		m_size += newsize;
+		m_src->readdone(newsize);
+	} else {
+		lib::logger::get_logger()->debug("datasource_readed::readdone: callback, but no data available");
 	}
-	char* dataptr = m_src->get_read_ptr();
-	
-	memcpy(m_data+m_size, dataptr, newsize);
-	m_size += newsize;
-	m_src->readdone(newsize);
-
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);
 	m_lock.leave();

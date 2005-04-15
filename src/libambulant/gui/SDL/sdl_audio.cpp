@@ -195,8 +195,11 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
 
 		int single_len = (*first)->get_data(len, &single_data);
-		if (single_len != 0)
+		assert(single_len <= len);
+		if (single_len != 0) {
+			assert(single_data);
 			memcpy(stream, single_data, std::min(len, single_len));
+		}
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
 
@@ -346,16 +349,18 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	m_lock.enter();
 	
 	// turned this of because I think here also happends a get_read_ptr when it should not
-	// assert(m_is_playing);
+	assert(m_is_playing);
 	int rv;
+	*ptr = NULL;
 	if (m_is_paused||!m_audio_src) {
 		rv = 0;
 		m_read_ptr_called = false;
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
-		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
 		m_read_ptr_called = true;
 		rv = m_audio_src->size();
+		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
+		if (rv) assert(*ptr);
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
 		// Also set volume(s)
