@@ -31,7 +31,11 @@ Before creating the distribution
   do the trick:
   
   % cvs log -b -d '>'2004-07-01 | cvs2cl.pl --stdout --stdin
+  (the perl script is on http://www.red-bean.com/cvs2cl/cvs2cl.pl).
+
 - Update the API documentation in Documentation/API by running doxygen
+  Read and check the documentation for consistency, errors and missing items.
+
 - Update the translations:
   - in po, run "make ambulant.pot-update"
   - Edit the various ".po" files. Especially check empty strings

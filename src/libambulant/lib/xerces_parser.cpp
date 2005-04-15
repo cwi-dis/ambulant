@@ -300,6 +300,7 @@ init_dtd_cache_mapping() {
 			std::string abs_path = absolute_url.second.get_path();
 			std::pair<std::string,std::string> new_map(requested, abs_path);
 			dtd_cache_mapping.insert(new_map);
+			requested = relative = ""; // reset
 		} else {
 			lib::logger::get_logger()->trace("DTDCache/mapping.txt contains non-existent file: %s", relative.c_str());
 		}

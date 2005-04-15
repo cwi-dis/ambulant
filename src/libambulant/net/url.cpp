@@ -395,7 +395,7 @@ void set_url_from_spec(net::url& u, const char *spec) {
 #if defined(AMBULANT_PLATFORM_UNIX)
 
 // Places where to look for (cached) datafiles
-char *datafile_locations[] = {
+const char *datafile_locations[] = {
 	"./",		// Placeholder, to be replaced by set_datafile_directory()
 	"./",
 	"../",

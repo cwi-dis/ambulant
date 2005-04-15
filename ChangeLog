@@ -1,3 +1,1348 @@
+2005-04-14 17:19  koelimoe
+
+	* include/ambulant/net/ffmpeg_datasource.h,
+	  include/ambulant/net/rtsp_factory.h,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/net/rtsp_datasource.cpp,
+	  src/libambulant/net/rtsp_factory.cpp,
+	  src/player_unix/qt_mainloop.cpp: fixed the shaky video with a
+	  simple hack & added a factory function for rtsp video
+
+2005-04-14 16:46  jackjansen
+
+	* Extras/Makefile.am, include/ambulant/net/url.h,
+	  src/libambulant/lib/xerces_parser.cpp,
+	  src/libambulant/net/url.cpp, src/player_macosx/Makefile.am,
+	  src/player_macosx/MyAppDelegate.mm: Got cached DTDs to work on
+	  OSX.	Slightly changed the API for finding the cached documents.
+	  Fixed the installation of the DTDs.
+
+2005-04-14 16:03  keesblom
+
+	* NEWS, README: Updated for release 1.4
+
+2005-04-14 15:35  keesblom
+
+	* include/ambulant/version.h: Reset  AMBULANT_VERSION back to 1.3,
+	  because its supposed to be the last thing to do before actually
+	  creating the distribution
+
+2005-04-14 15:17  keesblom
+
+	* include/ambulant/version.h: Updated AMBULANT_VERSION to 1.4
+
+2005-04-14 14:50  jackjansen
+
+	* include/ambulant/common/factory.h,
+	  include/ambulant/common/layout.h,
+	  include/ambulant/common/player.h,
+	  include/ambulant/common/region.h,
+	  include/ambulant/common/region_info.h,
+	  include/ambulant/common/smil_alignment.h,
+	  include/ambulant/gui/cocoa/cocoa_gui.h,
+	  include/ambulant/gui/dg/dg_player.h,
+	  include/ambulant/gui/dg/dg_window.h,
+	  include/ambulant/gui/dx/dx_bgrenderer.h,
+	  include/ambulant/gui/dx/dx_player.h,
+	  include/ambulant/gui/dx/dx_viewport.h,
+	  include/ambulant/gui/dx/dx_window.h,
+	  include/ambulant/gui/none/none_gui.h,
+	  include/ambulant/gui/qt/qt_factory.h,
+	  include/ambulant/lib/mtsync.h,
+	  include/ambulant/lib/win32/win32_mtsync.h,
+	  include/ambulant/mms/mms_player.h,
+	  include/ambulant/smil2/region_node.h,
+	  include/ambulant/smil2/smil_layout.h,
+	  include/ambulant/smil2/smil_player.h,
+	  src/libambulant/common/region.cpp,
+	  src/libambulant/common/smil_alignment.cpp,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/cocoa/cocoa_image.mm,
+	  src/libambulant/gui/dg/dg_img.cpp,
+	  src/libambulant/gui/dg/dg_text.cpp,
+	  src/libambulant/gui/dx/dx_bgrenderer.cpp,
+	  src/libambulant/gui/dx/dx_img.cpp,
+	  src/libambulant/gui/dx/dx_player.cpp,
+	  src/libambulant/gui/dx/dx_text.cpp,
+	  src/libambulant/gui/qt/qt_factory.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/lib/unix/unix_mtsync.cpp,
+	  src/libambulant/mms/timeline_builder.cpp,
+	  src/libambulant/smil2/region_node.cpp,
+	  src/libambulant/smil2/smil_layout.cpp,
+	  src/libambulant/smil2/smil_player.cpp,
+	  src/player_macosx/mainloop.cpp, src/player_unix/qt_logger.cpp,
+	  src/player_unix/qt_mainloop.cpp: Merging exp-jack-bgimage branch:
+
+	  SMIL 2.1 backgroundImage and backgroundRepeat implemented on
+	  Windows and MacOSX. On Linux things have been disabled, there are
+	  still some problems to be solved.
+
+2005-04-14 14:45  koelimoe
+
+	* Documentation/misc/TIPS-LIVE: iadded the rtsp stream adressen
+
+2005-04-14 14:35  koelimoe
+
+	* Documentation/misc/TIPS-LIVE: Usage instructions for testing
+	  ambulant with rtsp support build in
+
+2005-04-14 14:34  koelimoe
+
+	* third_party_packages/readme.txt: added instructions to use live
+	  (rtsp streaming library) with AmbulantPlayer
+
+2005-04-14 14:14  keesblom
+
+	* Extras/Makefile.am, include/ambulant/net/url.h,
+	  src/libambulant/Makefile.am,
+	  src/libambulant/lib/xerces_parser.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/net/url.cpp, src/player_unix/qt_mainloop.cpp:
+	  Optimized local datafile caching by using std::map::find(url) to
+	  get the absolute path to a local datafile for a given url.
+
+2005-04-13 13:56  koelimoe
+
+	* configure.in, src/libambulant/Makefile.am,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/player_unix/Makefile.am, src/player_unix/qt_mainloop.cpp:
+	  addapted the configure/makefile setup for the live.com media
+	  libraries. (rtsp support)
+
+2005-04-12 14:18  koelimoe
+
+	* src/libambulant/: common/renderer.cpp, net/ffmpeg_datasource.cpp:
+	  fixed the sound for video. (added code so a decoder_datasource is
+	  used for the audio)
+
+2005-04-11 17:41  keesblom
+
+	* Extras/DTDCache/mapping.txt,
+	  Extras/DTDCache/SMIL20/IPR-Notice-and-Disclaimers.htm,
+	  Extras/DTDCache/SMIL20/SMIL-anim.mod,
+	  Extras/DTDCache/SMIL20/SMIL-control.mod,
+	  Extras/DTDCache/SMIL20/SMIL-layout.mod,
+	  Extras/DTDCache/SMIL20/SMIL-link.mod,
+	  Extras/DTDCache/SMIL20/SMIL-media.mod,
+	  Extras/DTDCache/SMIL20/SMIL-metainformation.mod,
+	  Extras/DTDCache/SMIL20/SMIL-struct.mod,
+	  Extras/DTDCache/SMIL20/SMIL-timing.mod,
+	  Extras/DTDCache/SMIL20/SMIL-transition.mod,
+	  Extras/DTDCache/SMIL20/SMIL20.dtd,
+	  Extras/DTDCache/SMIL20/base.css,
+	  Extras/DTDCache/SMIL20/read-me.txt,
+	  Extras/DTDCache/SMIL20/smil-attribs-1.mod,
+	  Extras/DTDCache/SMIL20/smil-datatypes-1.mod,
+	  Extras/DTDCache/SMIL20/smil-framework-1.mod,
+	  Extras/DTDCache/SMIL20/smil-model-1.mod,
+	  Extras/DTDCache/SMIL20/smil-qname-1.mod,
+	  Extras/DTDCache/SMIL20/smil2.cat,
+	  Extras/DTDCache/SMIL20/w3c_home, Extras/DTDCache/SMIL21/DTD.zip,
+	  Extras/DTDCache/SMIL21/SMIL-anim.mod,
+	  Extras/DTDCache/SMIL21/SMIL-control.mod,
+	  Extras/DTDCache/SMIL21/SMIL-layout.mod,
+	  Extras/DTDCache/SMIL21/SMIL-link.mod,
+	  Extras/DTDCache/SMIL21/SMIL-media.mod,
+	  Extras/DTDCache/SMIL21/SMIL-metainformation.mod,
+	  Extras/DTDCache/SMIL21/SMIL-struct.mod,
+	  Extras/DTDCache/SMIL21/SMIL-timing.mod,
+	  Extras/DTDCache/SMIL21/SMIL-transition.mod,
+	  Extras/DTDCache/SMIL21/SMIL21ExtendedMobileProfile.dtd,
+	  Extras/DTDCache/SMIL21/SMIL21LanguageProfile.dtd,
+	  Extras/DTDCache/SMIL21/SMIL21MobileProfile.dtd,
+	  Extras/DTDCache/SMIL21/smil-attribs-1.mod,
+	  Extras/DTDCache/SMIL21/smil-datatypes-1.mod,
+	  Extras/DTDCache/SMIL21/smil-extended-mobile-profile-model-1.mod,
+	  Extras/DTDCache/SMIL21/smil-framework-1.mod,
+	  Extras/DTDCache/SMIL21/smil-language-profile-model-1.mod,
+	  Extras/DTDCache/SMIL21/smil-mobile-profile-model-1.mod,
+	  Extras/DTDCache/SMIL21/smil-qname-1.mod,
+	  include/ambulant/lib/xerces_parser.h, include/ambulant/net/url.h,
+	  src/libambulant/lib/xerces_parser.cpp,
+	  src/libambulant/net/url.cpp: Implemented DTD caching for Linux.
+	  Added SMIl 2.0 and SMIL 2.1 DTD files.  A file "ampping.txt"
+	  defines how the requested URLs are to be mapped to local files.
+	  Only meaningfull when using xerces parser.
+
+2005-04-05 14:08  koelimoe
+
+	* include/ambulant/net/Makefile.am,
+	  include/ambulant/net/datasource.h,
+	  include/ambulant/net/ffmpeg_datasource.h,
+	  include/ambulant/net/rtsp_datasource.h,
+	  include/ambulant/net/rtsp_factory.h, po/en.gmo, po/nl.gmo,
+	  src/libambulant/Makefile.am, src/libambulant/common/renderer.cpp,
+	  src/libambulant/lib/unix/unix_mtsync.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/net/rtsp_datasource.cpp,
+	  src/libambulant/net/rtsp_factory.cpp,
+	  src/player_unix/Makefile.am, src/player_unix/qt_mainloop.cpp:
+	  merged the rtsp brange
+
+2005-04-04 16:15  jackjansen
+
+	* include/ambulant/common/layout.h,
+	  include/ambulant/smil2/smil_layout.h,
+	  src/libambulant/smil2/smil_layout.cpp,
+	  src/libambulant/smil2/smil_player.cpp: More bits and pieces for
+	  background images.
+
+2005-04-04 16:13  jackjansen
+
+	* include/ambulant/lib/abstract_mtsync.h,
+	  include/ambulant/lib/mtsync.h,
+	  include/ambulant/lib/unix/unix_mtsync.h,
+	  src/libambulant/lib/unix/unix_mtsync.cpp: Added a new
+	  sytnchronization primitive: condition.
+
+	  Currently only implemented on Unix/MacOS.
+
+2005-04-04 11:47  jackjansen
+
+	* include/ambulant/common/layout.h,
+	  include/ambulant/common/region.h,
+	  include/ambulant/common/renderer.h,
+	  include/ambulant/gui/cocoa/cocoa_fill.h,
+	  include/ambulant/gui/cocoa/cocoa_gui.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  include/ambulant/gui/dg/dg_bgrenderer.h,
+	  include/ambulant/gui/dx/dx_bgrenderer.h,
+	  include/ambulant/gui/none/none_gui.h,
+	  include/ambulant/gui/qt/qt_factory.h,
+	  include/ambulant/gui/qt/qt_fill.h,
+	  include/ambulant/gui/qt/qt_renderer.h,
+	  include/ambulant/lib/unix/unix_thread.h,
+	  include/ambulant/smil2/region_node.h,
+	  include/ambulant/smil2/smil_layout.h,
+	  src/libambulant/common/region.cpp,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/cocoa/cocoa_fill.mm,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/dg/dg_bgrenderer.cpp,
+	  src/libambulant/gui/dx/dx_audio.cpp,
+	  src/libambulant/gui/dx/dx_bgrenderer.cpp,
+	  src/libambulant/gui/none/none_gui.cpp,
+	  src/libambulant/gui/qt/qt_factory.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/lib/unix/unix_thread.cpp,
+	  src/libambulant/smil2/region_node.cpp,
+	  src/libambulant/smil2/smil_layout.cpp: Merging
+	  exp_jack_erasenever branch: - erase=never works on Linux/Mac -
+	  Started on background images.
+
+2005-03-31 14:02  keesblom
+
+	* src/libambulant/: gui/qt/qt_transition.cpp, smil2/time_node.cpp:
+	  Repaired the empty <body> & empty <seq> bug.	Removed some
+	  debugging cruft from qt_transition.cpp
+
+2005-03-23 13:32  keesblom
+
+	* Extras/Welcome/Welcome.smil,
+	  include/ambulant/gui/SDL/sdl_audio.h,
+	  include/ambulant/gui/qt/qt_text_renderer.h,
+	  include/ambulant/gui/qt/qt_video_renderer.h,
+	  include/ambulant/lib/transition_info.h,
+	  include/ambulant/smil2/transition.h,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/lib/transition_info.cpp,
+	  src/libambulant/smil2/transition.cpp,
+	  src/player_unix/qt_logger.cpp, src/player_unix/qt_logger.h:
+	  Joined the audioFade branch with the trunk.
+
+2005-03-21 15:45  jackjansen
+
+	* src/libambulant/net/ffmpeg_datasource.cpp: std::string::c_str
+	  result is only valid for as long as the std::string exists. Cater
+	  for that.
+
+2005-03-21 15:34  jackjansen
+
+	* src/libambulant/gui/SDL/sdl_audio.cpp: Apparently region_info can
+	  be NULL (?), insulate against that.
+
+2005-03-16 14:41  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm: Added missing USE_SMIL21
+	  ifdefs.
+
+2005-03-08 11:58  keesblom
+
+	* src/: libambulant/gui/qt/qt_text_renderer.cpp,
+	  libambulant/net/ffmpeg_datasource.cpp,
+	  libambulant/net/ffmpeg_rawdatasource.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_gui.h, player_unix/qt_logger.cpp,
+	  player_unix/qt_logger.h, player_unix/qt_mainloop.cpp: Some
+	  cleanup and a few minor memory leaks
+
+2005-03-08 11:56  jackjansen
+
+	* include/ambulant/gui/qt/qt_renderer.h,
+	  src/libambulant/gui/qt/qt_renderer.cpp: Fixed a bug that
+	  (somehow?) caused fill=transition not to end.
+
+2005-03-07 16:28  jackjansen
+
+	* src/libambulant/gui/SDL/sdl_audio.cpp: Fix for #1158271: terrible
+	  hiss when playing back some audio (notably birthday).
+
+2005-03-07 15:20  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm: Fullscreen transitions
+	  are working, at the cost of taking screen snapshots at every
+	  redraw.
+
+2005-03-07 13:52  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm: Added _getOnScreenImage
+	  helper method.
+
+2005-03-04 13:21  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm: Fullscreen
+	  transitions start to do the right thing. Only, unfortunately, to
+	  the background in stead of to the "old bits".
+
+2005-03-03 16:25  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm: Fullscreen
+	  transition information/steps are now communicated to the toplevel
+	  AmbulantView.
+
+2005-03-03 15:35  jackjansen
+
+	* include/ambulant/common/layout.h,
+	  include/ambulant/common/region.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm: Something happens to
+	  all the toplevel window bits during a full screen transition. It
+	  is far from correct, but at least it is something:-)
+
+2005-03-03 13:08  jackjansen
+
+	* include/ambulant/lib/transition_info.h,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm,
+	  src/libambulant/lib/transition_info.cpp: Implemented the
+	  platform-independent part of fullScreenTransitions.
+	  Unfortunately this is the easy part:-)
+
+2005-03-02 15:30  keesblom
+
+	* src/: libambulant/common/renderer.cpp,
+	  libambulant/gui/SDL/sdl_audio.cpp,
+	  libambulant/net/datasource.cpp,
+	  libambulant/net/ffmpeg_datasource.cpp,
+	  libambulant/net/ffmpeg_rawdatasource.cpp,
+	  libambulant/net/posix_datasource.cpp,
+	  libambulant/net/raw_video_datasource.cpp,
+	  libambulant/net/stdio_datasource.cpp,
+	  libambulant/smil2/smil_player.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_gui.h: Reset event priorities to the original
+	  scheme: high - scheduler related events med  - continuous media
+	  events low  - all other events This scheme needs refinement, e.g.
+	  static media should be renderered before continuous media when
+	  scheduled simulateously, but once e.g. audio has really started,
+	  it should have fairly high priority, to avoid hick-ups, but lower
+	  priority than user events, so that the user has ultimate control.
+
+2005-03-02 14:43  jackjansen
+
+	* include/ambulant/net/ffmpeg_rawdatasource.h,
+	  src/libambulant/net/databuffer.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_rawdatasource.cpp: Fixed a couple of
+	  potential race conditions helgrind found.
+
+2005-03-02 13:48  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_dsvideo.h,
+	  src/libambulant/gui/cocoa/cocoa_dsvideo.mm,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm: Got Cocoa video
+	  transition to work (when using the datasource-based renderer, not
+	  the QuickTime renderer).
+
+2005-03-01 17:54  keesblom
+
+	* include/ambulant/gui/qt/qt_image_renderer.h,
+	  include/ambulant/gui/qt/qt_renderer.h,
+	  include/ambulant/gui/qt/qt_text_renderer.h,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/gui/qt/qt_factory.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/gui/qt/qt_image_renderer.cpp,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/gui/qt/qt_text_renderer.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/net/ffmpeg_rawdatasource.cpp,
+	  src/libambulant/net/posix_datasource.cpp,
+	  src/libambulant/net/raw_video_datasource.cpp,
+	  src/libambulant/net/stdio_datasource.cpp,
+	  src/libambulant/smil2/smil_player.cpp,
+	  src/player_unix/qt_gui.cpp: Merged with trunk: transition
+	  reorganization
+
+2005-02-28 14:23  jackjansen
+
+	* src/libambulant/gui/cocoa/cocoa_dsvideo.mm: Fixed most glaring
+	  errors in datasource-based video renderer. The colors are still
+	  of, though, because video-datasource returns them as BGRA in
+	  stead of RGBA.
+
+2005-02-25 16:35  jackjansen
+
+	* include/ambulant/common/renderer.h,
+	  include/ambulant/gui/cocoa/cocoa_fill.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  include/ambulant/gui/cocoa/cocoa_video.h,
+	  include/ambulant/gui/none/none_video_renderer.h,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/cocoa/cocoa_fill.mm,
+	  src/libambulant/gui/cocoa/cocoa_video.mm,
+	  src/libambulant/gui/none/none_area.cpp: Moved a lot more generic
+	  code into renderer_playable.	Made cocoa_fill_renderer a subclass
+	  of cocoa_renderer.  This has made cocoa_fill_renderer pretty
+	  small, and lots of methods in other renderers have gone too.
+
+2005-02-25 14:57  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_gui.h,
+	  include/ambulant/gui/cocoa/cocoa_image.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  include/ambulant/gui/cocoa/cocoa_text.h,
+	  include/ambulant/gui/cocoa/cocoa_transition.h,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm,
+	  src/libambulant/gui/cocoa/cocoa_text.mm,
+	  src/libambulant/gui/cocoa/cocoa_transition.mm: Factored
+	  cocoa_renderer so it now has a class that does the work,
+	  cocoa_transition_renderer, and a glue template class.
+
+2005-02-24 17:55  keesblom
+
+	* src/: libambulant/common/region.cpp,
+	  libambulant/gui/qt/qt_factory.cpp,
+	  libambulant/gui/qt/qt_transition.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_gui.h: Added Reload and "Load settings". Dumps
+	  core on Zaurus.
+
+2005-02-22 17:33  keesblom
+
+	* src/: libambulant/gui/qt/qt_text_renderer.cpp,
+	  player_unix/qt_gui.cpp, player_unix/qt_logger.cpp: More AM_DBG
+	  turned off, NLS turned on again
+
+2005-02-22 16:40  keesblom
+
+	* src/libambulant/gui/qt/qt_factory.cpp: Turned off AM_DBG and
+	  image dumps
+
+2005-02-22 16:11  keesblom
+
+	* include/ambulant/gui/qt/qt_factory.h,
+	  include/ambulant/gui/qt/qt_renderer.h,
+	  include/ambulant/gui/qt/qt_transition.h,
+	  src/libambulant/common/region.cpp,
+	  src/libambulant/gui/qt/qt_factory.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/gui/qt/qt_image_renderer.cpp,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/gui/qt/qt_text_renderer.cpp,
+	  src/libambulant/gui/qt/qt_transition.cpp,
+	  src/libambulant/gui/qt/qt_video_renderer.cpp,
+	  src/libambulant/smil2/animate_e.cpp, src/player_unix/qt_gui.cpp:
+	  in/out tranistions now work combined with smil animation fixed
+	  the size of video
+
+2005-02-21 14:28  jackjansen
+
+	* include/ambulant/gui/dg/dg_playable.h: Commented out unused
+	  transition support.
+
+2005-02-21 14:26  jackjansen
+
+	* src/libambulant/gui/: cocoa/cocoa_fill.mm,
+	  cocoa/cocoa_renderer.mm, qt/qt_fill.cpp, qt/qt_renderer.cpp:
+	  Silly mistake in renderer implementations: transition_info's are
+	  not owned by the renderer (they're global objects), so don't
+	  delete them on cleanup.
+
+2005-02-21 13:44  jackjansen
+
+	* include/ambulant/gui/dg/dg_playable.h,
+	  src/libambulant/gui/dx/dx_brush.cpp,
+	  src/libambulant/gui/dx/dx_img.cpp,
+	  src/libambulant/gui/dx/dx_text.cpp,
+	  src/libambulant/gui/dx/dx_video.cpp,
+	  include/ambulant/gui/dx/dx_playable.h: Fixed fill=transition
+	  behaviour.
+
+2005-02-17 16:20  keesblom
+
+	* src/libambulant/gui/qt/: qt_fill.cpp, qt_image_renderer.cpp,
+	  qt_renderer.cpp, qt_transition.cpp: Repaired a bug that caused a
+	  strange transition in Flashlight-CE The region of the image drawn
+	  was to big
+
+2005-02-17 11:37  keesblom
+
+	* src/libambulant/gui/qt/: qt_fill.cpp, qt_image_renderer.cpp,
+	  qt_renderer.cpp, qt_text_renderer.cpp, qt_transition.cpp: Made
+	  simultaneous in/out transitions work.
+
+2005-02-16 17:26  jackjansen
+
+	* src/libambulant/gui/qt/qt_transition.cpp: iFixed three bugs in
+	  polygon and polylist transitions: - Coordinates weren't converted
+	  to screenspace (from region-space) - The origin on the "new"
+	  image was not used - The "old" image was bitblitted too, which is
+	  unnecessary
+
+2005-02-16 17:13  jackjansen
+
+	* src/libambulant/gui/cocoa/cocoa_transition.mm: Polygon
+	  transitions weren't translated correctly to screen coordinates.
+
+2005-02-16 16:38  jackjansen
+
+	* include/ambulant/smil2/time_node.h,
+	  src/libambulant/common/region.cpp,
+	  src/libambulant/gui/cocoa/cocoa_fill.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm,
+	  src/libambulant/lib/transition_info.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/smil2/smil_player.cpp,
+	  src/libambulant/smil2/time_node.cpp: Fix for #1079403:
+	  fill=transition elements are never removed.  Unfortunately the
+	  fix means an incompatible change to the interface for surface: it
+	  is not allowable to call transition_done() while inside redraw().
+	  Linux and Windows need fixes for this, or they will hang on a
+	  mutex on transition end.
+
+2005-02-16 09:57  koelimoe
+
+	* Documentation/Design/models/: demux_audio_datasource.graffle,
+	  demux_video_datasource.graffle: added some methods
+
+2005-02-15 12:43  koelimoe
+
+	* Documentation/Design/models/: demux_audio_datasource.graffle,
+	  demux_video_datasource.graffle: design for the demux datasoures
+
+2005-02-14 13:34  keesblom
+
+	* src/libambulant/gui/qt/qt_text_renderer.cpp: Quick bug repair:
+	  default text didn't show if font or size was not set
+
+2005-02-11 15:28  keesblom
+
+	* include/ambulant/gui/qt/qt_factory.h,
+	  src/libambulant/gui/qt/qt_factory.cpp,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/gui/qt/qt_transition.cpp,
+	  src/libambulant/lib/transition_info.cpp,
+	  src/libambulant/smil2/time_calc.cpp,
+	  src/libambulant/smil2/timegraph.cpp,
+	  src/libambulant/smil2/transition.cpp: Merging branch containing
+	  out transitions for qt with trunk
+
+2005-02-09 16:58  jackjansen
+
+	* README, configure.in, src/player_macosx/Info.plist,
+	  src/player_macosx/Dutch.lproj/InfoPlist.strings,
+	  src/player_macosx/English.lproj/InfoPlist.strings: Upped version
+	  number to 1.3.
+
+2005-02-09 16:49  jackjansen
+
+	* include/ambulant/version.h,
+	  src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse,
+	  src/AmbulantWin32Installer/AmbulantWiseInstaller.wse,
+	  src/libambulant/libambulant_win32-noxerces.vcproj,
+	  src/player_mfc/AmbulantPlayer.rc,
+	  src/player_wince/AmbulantPlayer.rc: Upped version number to 1.3.
+
+2005-02-09 16:48  jackjansen
+
+	* include/ambulant/gui/dx/dx_audio_player.h,
+	  src/libambulant/gui/dx/dx_audio.cpp,
+	  src/libambulant/gui/dx/dx_audio_player.cpp: Implemented volume
+	  and balance.
+
+2005-02-08 15:57  jackjansen
+
+	* src/libambulant/libambulant_win32-noxerces.vcproj: Added missing
+	  file.
+
+2005-02-08 15:55  jackjansen
+
+	* include/ambulant/gui/dg/dg_area.h,
+	  include/ambulant/gui/dg/dg_audio.h,
+	  include/ambulant/gui/dg/dg_brush.h,
+	  include/ambulant/gui/dg/dg_img.h,
+	  include/ambulant/gui/dg/dg_playable.h,
+	  include/ambulant/gui/dg/dg_player.h,
+	  include/ambulant/gui/dg/dg_text.h,
+	  include/ambulant/gui/dg/dg_transition.h,
+	  include/ambulant/gui/dx/dx_area.h,
+	  include/ambulant/gui/dx/dx_audio.h,
+	  include/ambulant/gui/dx/dx_brush.h,
+	  include/ambulant/gui/dx/dx_playable.h,
+	  include/ambulant/gui/dx/dx_player.h,
+	  include/ambulant/gui/dx/dx_transition.h,
+	  include/ambulant/smil2/transition.h,
+	  src/libambulant/gui/dg/dg_player.cpp,
+	  src/libambulant/gui/dx/dx_player.cpp,
+	  src/libambulant/smil2/region_node.cpp,
+	  src/libambulant/smil2/transition.cpp: The added "const" to the
+	  transition_info caused quite a bit of havoc on windows...
+
+2005-02-08 15:05  jackjansen
+
+	* include/ambulant/gui/qt/: qt_fill.h, qt_video_renderer.h: Added
+	  explicit transition methods.
+
+2005-02-08 14:48  jackjansen
+
+	* include/ambulant/common/renderer.h,
+	  include/ambulant/gui/SDL/sdl_audio.h,
+	  include/ambulant/gui/cocoa/cocoa_dsvideo.h,
+	  include/ambulant/gui/cocoa/cocoa_fill.h,
+	  include/ambulant/gui/cocoa/cocoa_renderer.h,
+	  include/ambulant/gui/cocoa/cocoa_video.h,
+	  include/ambulant/gui/none/none_area.h,
+	  include/ambulant/gui/none/none_video_renderer.h,
+	  src/libambulant/gui/cocoa/cocoa_fill.mm,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm: Fixed broken
+	  transitions (due to a change in a method signature). Also made
+	  sure this "cannot happen" again, by getting rid of the default
+	  do-nothing implementation. The drawback is that any renderer not
+	  implementing transitions will have to provide its own do-nothing
+	  methods.
+
+2005-02-08 14:16  jackjansen
+
+	* src/libambulant/smil2/: params.cpp, region_node.cpp: More
+	  compiler nits fixed.
+
+2005-02-07 17:19  jackjansen
+
+	* src/libambulant/smil2/region_node.cpp: Make a difference between
+	  default audio placement and mid placement.
+
+2005-02-07 17:17  jackjansen
+
+	* include/ambulant/smil2/params.h,
+	  src/libambulant/mms/timeline_builder.cpp,
+	  src/libambulant/smil2/params.cpp: Fixed some compiler pickyness
+	  and other bugs in the new code.
+
+2005-02-07 17:11  jackjansen
+
+	* configure.in: Added option --enable-smil21 (default: enabled)
+	  which governs support for SMIL 2.1.
+
+2005-02-07 16:35  jackjansen
+
+	* include/ambulant/common/region_info.h,
+	  include/ambulant/smil2/region_node.h,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/mms/timeline_builder.cpp,
+	  src/libambulant/smil2/region_node.cpp: Implemented soundAlign.
+	  Works for Mac (and probably Linux) except for inheriting
+	  soundAlign from your region.
+
+2005-02-07 15:39  jackjansen
+
+	* Extras/DemoPresentation/NYC-SMIL2-params.smil,
+	  include/ambulant/common/region_info.h,
+	  include/ambulant/gui/SDL/sdl_audio.h,
+	  include/ambulant/smil2/animate_n.h,
+	  include/ambulant/smil2/region_node.h,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/mms/timeline_builder.cpp,
+	  src/libambulant/smil2/region_node.cpp: Implemented SMIL 2.0
+	  soundLevel attribute, which hadn't been done yet. Platform
+	  independent code and SDL renderer done.
+
+2005-02-07 00:03  jackjansen
+
+	* README, include/ambulant/common/region_info.h,
+	  src/libambulant/common/region.cpp,
+	  src/libambulant/smil2/region_node.cpp: Implemented meetBest.
+	  Untested.
+
+2005-02-06 23:30  jackjansen
+
+	* src/libambulant/smil2/smil_layout.cpp: - Getting default
+	  regPoint/regAlign values from the region was not implemented.
+	  Fixed.  - Implemented SMIL 2.1 mediaAlign attribute, overriding
+	  regPoint/regAlign.
+
+2005-02-04 16:36  jackjansen
+
+	* include/ambulant/smil2/params.h,
+	  src/libambulant/gui/cocoa/cocoa_renderer.mm,
+	  src/libambulant/smil2/params.cpp,
+	  src/player_macosx/fullcocoambulant.pbproj/project.pbxproj: SMIL
+	  2.1 paramGroup is starting to work, but not complete yet.
+
+2005-02-04 15:52  jackjansen
+
+	* Documentation/Design/text/walkthrough.html,
+	  include/ambulant/gui/qt/qt_text_renderer.h,
+	  include/ambulant/smil2/Makefile.am, src/libambulant/Makefile.am,
+	  src/libambulant/gui/qt/qt_text_renderer.cpp: Implemented <params>
+	  for qt text rendering.
+
+2005-02-04 14:26  jackjansen
+
+	* src/libambulant/libambulant_wince.vcp: Added params
+	  implementation, but not used yet for wince (due to code
+	  complexity).
+
+2005-02-04 14:20  jackjansen
+
+	* src/libambulant/gui/dx/dx_text.cpp,
+	  include/ambulant/gui/dx/dx_text_renderer.h,
+	  src/libambulant/gui/dx/dx_text_renderer.cpp,
+	  src/libambulant/smil2/params.cpp: Implemented <param> for text
+	  objects on Windows.
+
+2005-02-03 15:50  jackjansen
+
+	* Extras/DemoPresentation/NYC-SMIL2-params.smil,
+	  src/libambulant/gui/cocoa/cocoa_text.mm: Changed <param> names to
+	  css-compatible.
+
+2005-02-03 15:07  keesblom
+
+	* include/ambulant/common/layout.h,
+	  include/ambulant/common/renderer.h,
+	  include/ambulant/gui/qt/qt_renderer.h,
+	  include/ambulant/lib/transition_info.h,
+	  include/ambulant/smil2/smil_player.h,
+	  include/ambulant/smil2/time_attrs.h,
+	  include/ambulant/smil2/time_nctx.h,
+	  include/ambulant/smil2/transition.h,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/lib/transition_info.cpp,
+	  src/libambulant/smil2/smil_player.cpp,
+	  src/libambulant/smil2/time_attrs.cpp,
+	  src/libambulant/smil2/time_node.cpp,
+	  src/libambulant/smil2/transition.cpp: Merged with branch:
+	  dur,startProgress and endProgress now work for in-transitions.
+
+2005-02-01 16:41  jackjansen
+
+	* src/libambulant/: libambulant_win32-noxerces.vcproj,
+	  libambulant_wince.vcp, lib/xerces_parser.cpp: Fixed various
+	  issues with recent changes when building on Windows.
+
+2005-02-01 16:18  jackjansen
+
+	* include/ambulant/lib/document.h,
+	  include/ambulant/lib/tree_builder.h,
+	  src/libambulant/lib/document.cpp,
+	  src/libambulant/lib/tree_builder.cpp: Re-enabled the url- and
+	  file-based parsers: the Windows player uses them.  And it cannot
+	  be converted to do without them easily: there are not enough
+	  datasource implementations for windows yet.
+
+2005-02-01 15:55  jackjansen
+
+	* Documentation/misc/README-Distribution,
+	  include/ambulant/gui/cocoa/cocoa_text.h,
+	  include/ambulant/smil2/params.h,
+	  src/libambulant/gui/cocoa/cocoa_text.mm,
+	  src/libambulant/smil2/params.cpp: Added fontName and fontSize
+	  parameters (in addition to fontColor).
+
+2005-02-01 15:54  jackjansen
+
+	* src/player_macosx/mainloop.cpp: Adapted for new parser driver
+	  signature.
+
+2005-02-01 15:41  jackjansen
+
+	* Extras/DemoPresentation/NYC-SMIL2-params.smil: Temporary version
+	  of the demo document that uses fontColor, fontSize and fontName
+	  parameters to modify text rendering (and make it
+	  ugly/unreadable:-)
+
+2005-01-27 13:51  keesblom
+
+	* include/ambulant/lib/document.h,
+	  include/ambulant/lib/tree_builder.h,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/lib/document.cpp,
+	  src/libambulant/lib/tree_builder.cpp,
+	  src/libambulant/lib/xerces_parser.cpp,
+	  src/player_unix/qt_gui.cpp, src/player_unix/qt_mainloop.cpp,
+	  src/player_unix/qt_settings.cpp: Various refinements in parser
+	  error handling: - Made changes in log_level settings take
+	  immediate effect - Added filename in parser error messages - More
+	  uniform treatment of error messages from expat and xerces -
+	  Disabled some functions that do not work properly (e.g.
+	  build_tree_from_url)
+
+2005-01-26 16:44  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_text.h,
+	  include/ambulant/smil2/params.h,
+	  src/libambulant/gui/cocoa/cocoa_text.mm,
+	  src/libambulant/smil2/params.cpp,
+	  src/player_macosx/fullcocoambulant.pbproj/project.pbxproj: Added
+	  (minimal) support for SMIL 2.0 <param>. Only one parameter
+	  (fontColor) is implemented, and only on one platform (Mac). A few
+	  more will follow later.
+
+2005-01-17 18:26  keesblom
+
+	* Documentation/misc/TIPS-ZAURUS,
+	  Documentation/misc/ambulantplayer-ipk.tar.gz,
+	  Documentation/misc/ambulantplayer_1.2_arm.ipk,
+	  Documentation/misc/ipkg-make-index.sh,
+	  include/ambulant/lib/event_processor.h,
+	  src/libambulant/Makefile.am, src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/lib/event_processor.cpp: Merged the branch
+	  containing the new event processor with the main trunk
+
+2005-01-13 16:39  jackjansen
+
+	* src/libambulant/gui/: dg/dg_audio.cpp, dg/dg_player.cpp,
+	  dx/dx_audio.cpp, dx/dx_player.cpp, dx/dx_video.cpp: Priorities to
+	  add_event are no longer optional.
+
+2005-01-13 16:10  jackjansen
+
+	* src/AmbulantWin32Installer/: AmbulantWinCEWiseInstaller.wse,
+	  AmbulantWiseInstaller.wse: Not sure... May be last-minute fixes
+	  for the 1.2 distribution...
+
+2005-01-13 16:09  jackjansen
+
+	* src/libambulant/gui/cocoa/: cocoa_audio.mm, cocoa_fill.mm,
+	  cocoa_renderer.mm: The priority argument to add_event is no
+	  longer optional.
+
+2005-01-13 15:18  keesblom
+
+	* include/ambulant/lib/event.h,
+	  include/ambulant/lib/event_processor.h,
+	  include/ambulant/smil2/smil_player.h,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/gui/arts/arts_audio.cpp,
+	  src/libambulant/gui/qt/qt_fill.cpp,
+	  src/libambulant/gui/qt/qt_renderer.cpp,
+	  src/libambulant/net/datasource.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/libambulant/net/ffmpeg_rawdatasource.cpp,
+	  src/libambulant/net/posix_datasource.cpp,
+	  src/libambulant/net/raw_video_datasource.cpp,
+	  src/libambulant/net/stdio_datasource.cpp,
+	  src/libambulant/smil2/animate_e.cpp,
+	  src/libambulant/smil2/smil_player.cpp: Event priorities revisited
+	  (Part I). Strategies: 1. No default priorities (was: low). They
+	  need to be carefully designed.  2. For now:	     - User (mouse)
+	  & System (update) events: high   - renderer (audio, video)
+	  events: med	- all others: low 3. More elaborated strategies
+	  likely to come.
+
+2005-01-13 15:07  jackjansen
+
+	* src/libambulant/net/ffmpeg_datasource.cpp: ome codecs (pcm,
+	  notably) will convert any amount of audio you pass in and don't
+	  check AVCODEC_MAX_AUDIO_FRAME_SIZE. Cater for this by never
+	  passing in more than AVCODEC_MAX_AUDIO_FRAME_SIZE/2 bytes. It's a
+	  heuristic, but let's hope it'll work.
+
+2005-01-12 14:13  koelimoe
+
+	* include/ambulant/net/ffmpeg_datasource.h,
+	  src/libambulant/net/ffmpeg_datasource.cpp: small fixes for ffmpeg
+	  0.4.9
+
+2004-12-24 17:15  keesblom
+
+	* src/libambulant/gui/qt/qt_fill.cpp: Turned off AM_DBG
+
+2004-12-23 16:45  keesblom
+
+	* INSTALL, Documentation/misc/README-ZAURUS,
+	  Documentation/misc/TIPS-ZAURUS,
+	  Documentation/misc/ambulantplayer-ipk.tgz,
+	  Documentation/misc/ambulantplayer_1.2_arm.ipk,
+	  src/player_unix/qt_gui.cpp: Last Zaurus related changes for the
+	  1.2 release.
+
+2004-12-23 12:43  jackjansen
+
+	* src/player_macosx/: Dutch.lproj/InfoPlist.strings,
+	  English.lproj/InfoPlist.strings: Two more version strings
+
+2004-12-23 12:42  jackjansen
+
+	* src/player_macosx/Makefile.am: Use strip -x, not strip -X.
+
+2004-12-21 11:57  koelimoe
+
+	* INSTALL: mall modification to make it more clear what to do to
+	  build the win32 player with or without xerces
+
+2004-12-20 17:30  keesblom
+
+	* Documentation/misc/: HISTORY-ZAURUS, TIPS-ZAURUS: Added more
+	  complete information for installing Ambulant on Zaurus.
+
+2004-12-20 16:56  jackjansen
+
+	* Documentation/misc/README-Distribution: Don't use ".tgz" for the
+	  source distribution, winzip doesn't like it.
+
+2004-12-20 14:09  jackjansen
+
+	* Documentation/misc/README-Distribution: More files that have
+	  version information.
+
+2004-12-20 13:35  keesblom
+
+	* src/libambulant/gui/qt/qt_fill.cpp: For <brush> get the color
+	  from the attribute (bg_display_color is undefined).
+
+2004-12-20 13:11  jackjansen
+
+	* Documentation/misc/README-Distribution: Fixed some typos and
+	  reflowed.
+
+2004-12-20 12:49  jackjansen
+
+	* po/: POTFILES.in, ambulant.pot, en.gmo, en.po, nl.gmo, nl.po:
+	  Added missing files and updated.
+
+2004-12-20 12:17  keesblom
+
+	* po/en.gmo, po/en.po, po/nl.gmo, src/player_unix/qt_mainloop.cpp:
+	  Restored old version of open_web_browser() to close Bug#1087096
+
+2004-12-20 10:52  koelimoe
+
+	* INSTALL: added a remark about xerces
+
+2004-12-17 17:10  jackjansen
+
+	* src/libambulant/smil2/timegraph.cpp: <a actuate="onLoad"/>
+	  anchors should appear in the timegraph, but only those. Added a
+	  workaround to make this happen.
+
+2004-12-17 15:30  jackjansen
+
+	* src/: libambulant/common/plugin_engine.cpp,
+	  libambulant/gui/cocoa/cocoa_video.mm,
+	  libambulant/net/ffmpeg_datasource.cpp, plugins/artsplugin.cpp,
+	  plugins/plugin.cpp, plugins/xercesplugin.cpp: Squashing debug
+	  output.
+
+2004-12-17 15:30  jackjansen
+
+	* Documentation/misc/README-Distribution: More detailed information
+	  on where version numbers are to be found.
+
+2004-12-17 15:21  jackjansen
+
+	* po/: ambulant.pot, nl.po: One more string.
+
+2004-12-15 10:43  koelimoe
+
+	* Documentation/misc/README-Distribution: added some possible
+	  advertising options
+
+2004-12-14 16:47  koelimoe
+
+	* Documentation/misc/README-Distribution: small corrections
+
+2004-12-14 10:44  koelimoe
+
+	* Documentation/misc/README-Distribution: added more story about
+	  uploading new releases.
+
+2004-12-13 17:07  jackjansen
+
+	* src/player_wince/AmbulantPlayer.vcp: Put the output in the
+	  bin/wince directory.
+
+2004-12-13 17:04  jackjansen
+
+	* third_party_packages/copy_tpp_wince.bat: Copy jpeg DLL too.
+
+2004-12-13 16:50  koelimoe
+
+	* Documentation/misc/README-Distribution: started adding stuff to
+	  the upload section
+
+2004-12-13 16:30  keesblom
+
+	* po/en.gmo, po/en.po, po/nl.gmo,
+	  src/libambulant/gui/qt/qt_transition.cpp: Corrected an error in
+	  setting up clipping region for polylist
+
+2004-12-13 15:48  koelimoe
+
+	* configure.in, include/ambulant/version.h: set version number to
+	  1.2
+
+2004-12-13 14:54  jackjansen
+
+	* src/AmbulantWin32Installer/: AmbulantWinCEWiseInstaller.wse,
+	  AmbulantWiseInstaller.wse: Upped version number
+
+2004-12-13 14:45  jackjansen
+
+	* src/player_mfc/MmView.cpp, include/ambulant/gui/dg/dg_player.h,
+	  src/libambulant/gui/dg/dg_player.cpp,
+	  src/libambulant/gui/dx/dx_player.cpp,
+	  include/ambulant/gui/dx/dx_player.h: The code to get an event to
+	  the main event loop was broken, and therefore inter-document
+	  links didn't work.
+
+	  Fixed.
+
+2004-12-13 14:43  jackjansen
+
+	* src/: player_mfc/AmbulantPlayer.rc,
+	  player_wince/AmbulantPlayer.rc: Upped version number
+
+2004-12-13 13:15  koelimoe
+
+	* configure.in: removed a typo i made from the configure.in
+
+2004-12-13 13:04  koelimoe
+
+	* configure.in:  fixed bug 1082170. dummy plugin be optional
+
+2004-12-13 13:00  koelimoe
+
+	* include/ambulant/gui/arts/arts_audio.h: this time for realy,
+	  added a forgtten ;
+
+2004-12-13 12:59  koelimoe
+
+	* src/plugins/Makefile.am: added a forgotten ;
+
+2004-12-10 10:22  jackjansen
+
+	* third_party_packages/third_party_packages.sln: For zlib and
+	  libpng build the DLL versions of the library, as this is what the
+	  copy script and the Ambulant projects expect to use.
+
+2004-12-09 23:29  jackjansen
+
+	* src/libambulant/gui/none/none_gui.cpp: "a" style anchors were
+	  pretty much ignored. Make them behave more or less like "area"
+	  anchors. I'm not 100% sure this is a good idea, I seem to
+	  remember there was special-case code for "a" anchors. But then I
+	  would have expected them to be caught by the scheduler (in stead
+	  of being passed to playable_factory).
+
+2004-12-09 22:56  jackjansen
+
+	* src/libambulant/common/preferences.cpp: Set default for loglevel
+	  to SHOW.
+
+2004-12-09 22:55  jackjansen
+
+	* src/libambulant/lib/parser_factory.cpp: If the user preference
+	  for parser is "any" we use the default parser.  Usually this is
+	  the (fast) expat parser, but it has the advantage of keeping the
+	  default default at "any", which will also work if the player was
+	  configured with only xerces.
+
+2004-12-09 22:53  jackjansen
+
+	* src/player_macosx/MyAppDelegate.mm: Automatically show the log
+	  window at startup if and only if log level has been set to debug.
+
+2004-12-09 17:10  jackjansen
+
+	* Documentation/misc/README-Distribution: Notes on how to build the
+	  various installers.
+
+2004-12-09 16:33  jackjansen
+
+	* Documentation/misc/README-Distribution: More notes (on uploading,
+	  website and advertising). Unfinished.
+
+2004-12-09 16:14  jackjansen
+
+	* Documentation/misc/README-Distribution: Added a note about
+	  testing defaults.
+
+2004-12-09 16:12  jackjansen
+
+	* Documentation/misc/README-Distribution: - Added a note about
+	  localisation checking - Added a note about version number
+	  checking
+
+2004-12-09 15:53  jackjansen
+
+	* third_party_packages/readme.txt: Unified Daniel and Jack's
+	  instructions for xerces.
+
+2004-12-09 15:02  jackjansen
+
+	* INSTALL, NEWS, README, Documentation/misc/README-Distribution,
+	  po/ambulant.pot, po/nl.po, src/player_macosx/Info.plist,
+	  third_party_packages/readme.txt: Lots of fixes/additions to
+	  readme files.
+
+2004-12-09 14:28  koelimoe
+
+	* third_party_packages/readme.txt: updated the third_party_packages
+	  readme.txt
+
+2004-12-09 13:24  keesblom
+
+	* src/: libambulant/gui/qt/qt_transition.cpp,
+	  player_unix/qt_gui.cpp: During waterfallWipe transition, the
+	  picture was accidently translated twice.
+
+2004-12-08 17:19  jackjansen
+
+	* src/player_macosx/Makefile.am: Gross hack to copy libxerces into
+	  the .app bundle.
+
+2004-12-08 16:58  jackjansen
+
+	* README: Started on the "What's new" section.
+
+2004-12-08 16:04  keesblom
+
+	* src/: libambulant/lib/document.cpp,
+	  libambulant/lib/xerces_parser.cpp,
+	  libambulant/net/datasource.cpp,
+	  libambulant/net/posix_datasource.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_logger.cpp: Attempt to generate one error message
+	  in a pop-up message box for the end user, at the highest (but
+	  dumbest) level; detail information is in the trace now.
+
+2004-12-08 15:48  jackjansen
+
+	* Documentation/user-htmlhelp/: AmbulantPlayerHelp.chm,
+	  AmbulantPlayerHelp.hhc, AmbulantPlayerHelp.hhp, ambulant.gif,
+	  ambulantsmall.gif, developer.html, feedback.html, index.html,
+	  intro.html, playback.html, preferences.html: Microsoft makes lots
+	  of crappy software, but the HTML Help Workshop stands out even in
+	  that company.
+
+	  I finally got something resembling a working helpfile by copying
+	  the html pages into the dir where the HHC file is, and changing
+	  the names to local ones. Still, I can't get rid of the empty
+	  index (nor fill it with anything).
+
+2004-12-08 14:28  jackjansen
+
+	* src/libambulant/common/renderer.cpp: Removed debug.
+
+2004-12-08 14:24  keesblom
+
+	* src/libambulant/Makefile.am: Typo found and corrected by Jack on
+	  my desktop
+
+2004-12-08 14:02  jackjansen
+
+	* include/ambulant/common/renderer.h,
+	  src/libambulant/common/renderer.cpp: The scheduler can set the
+	  clock back under some circumstances, causing the video renderer
+	  to stop rendering. Fixed by having the video renderer allocate a
+	  new, private, clock.
+
+2004-12-08 13:58  jackjansen
+
+	* include/ambulant/gui/none/none_video_renderer.h: Don't hide
+	  active_video_renderer methods.
+
+2004-12-08 13:56  jackjansen
+
+	* configure.in: INCLTDL and LIBLTDL aren't automatically
+	  substituted, so use AC_SUBST().
+
+2004-12-07 23:16  keesblom
+
+	* src/: libambulant/lib/gpaths.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_gui.h: Replaced the ugly mechanism to wait for a
+	  GUI message until OK'd by the user by a pthread condition
+	  variable based implementation
+
+2004-12-07 16:20  keesblom
+
+	* src/: libambulant/lib/xerces_parser.cpp, player_unix/qt_gui.cpp,
+	  player_unix/qt_mainloop.h: Added line number to xerces error
+	  message. The format is now e.g.: Parse error line 49: Unknown
+	  element 'tex' The upper layers (gui, document handler) still
+	  produce their own error messages when no input file is available,
+	  I think they should disappear, but only if their is a guarantee
+	  that the parsers always deliver proper error messages on parse
+	  errors (no error message is worse than too many error messages).
+
+2004-12-06 17:22  keesblom
+
+	* src/player_unix/: qt_gui.cpp, qt_gui.h, qt_mainloop.cpp: Added a
+	  mechnism to avoid error messages getting stacked on top of each
+	  other.
+
+	  It works by calling m_lock->enter() before just before sending
+	  the message to the gui thread, and calling m_lock->leave() in the
+	  gui thread after the message has been displayed. Meanwhile the
+	  calling thread again calls m_lock->enter() to block himself; this
+	  lock is immediately released as soon as he gets it.  This
+	  mechanism is not used by the gui thread, so messages from this
+	  thread are still stacked.
+
+	  This mechanism has to be replaced by an implementation based on
+	  conditional variables.
+
+2004-12-06 17:12  jackjansen
+
+	* src/libambulant/common/renderer.cpp: Don't get duration of audio
+	  (which may not exist) for video datasource.
+
+2004-12-06 15:26  jackjansen
+
+	* configure.in: Added LT_AC_PROG_SED to forestall error.
+
+2004-12-06 14:41  jackjansen
+
+	* src/libambulant/smil2/time_sched.cpp: That fix wasn't good
+	  enough: we also need to refrain from calling scheduler::exec
+	  iteratively. This may have adverse consequences in other places,
+	  though...
+
+2004-12-06 14:39  jackjansen
+
+	* src/player_macosx/MyAppDelegate.mm: Re-enabled the
+	  NSAutoReleasePool in the logger output routine. This makes a lot
+	  of messages about leaking objects disappear.
+
+2004-12-06 14:22  jackjansen
+
+	* src/libambulant/smil2/time_sched.cpp: Removed debug output.
+
+2004-12-06 14:09  jackjansen
+
+	* src/libambulant/: net/ffmpeg_datasource.cpp,
+	  smil2/time_sched.cpp: The scheduler could hog the CPU while
+	  waiting for continuous media that finished later than expected.
+	  Temporarily fixed by never letting the scheduler wait for events
+	  in the past. A real fix would probably be to have a better look
+	  at the priorities.
+
+2004-12-03 23:43  keesblom
+
+	* libltdl/Makefile.in, libltdl/config-h.in,
+	  src/player_unix/qt_mainloop.cpp: Added a test m_player != NULL to
+	  prevent SEGV that occurred when quitting after a garbage URL was
+	  typed
+
+2004-12-03 16:42  keesblom
+
+	* src/player_unix/qt_gui.cpp: Resolved Bug #1037781 by printing an
+	  error message on stderr when the argument file cannot be opened,
+	  then the player terminates with exit code -1.  This indicates the
+	  calling environment (e.g. a test script) something went wrong.
+
+2004-12-03 16:22  koelimoe
+
+	* configure.in, include/ambulant/version.h,
+	  include/ambulant/common/renderer.h,
+	  include/ambulant/gui/SDL/sdl_audio.h,
+	  include/ambulant/gui/arts/arts_audio.h,
+	  include/ambulant/net/datasource.h,
+	  include/ambulant/net/ffmpeg_datasource.h, po/ambulant.pot,
+	  po/en.gmo, po/en.po, po/nl.gmo, po/nl.po,
+	  src/libambulant/common/renderer.cpp,
+	  src/libambulant/gui/SDL/sdl_audio.cpp,
+	  src/libambulant/gui/arts/arts_audio.cpp,
+	  src/libambulant/gui/cocoa/cocoa_video.mm,
+	  src/libambulant/gui/qt/qt_video_renderer.cpp,
+	  src/libambulant/net/ffmpeg_datasource.cpp,
+	  src/player_unix/qt_logger.cpp: merging the
+	  experimental_jack_get_dur branch
+
+2004-12-02 19:06  koelimoe
+
+	* configure.in: removed some plugin leftover that wasn't suppose to
+	  be there
+
+2004-12-02 16:09  jackjansen
+
+	* src/libambulant/: gui/dg/dg_player.cpp, gui/dx/dx_audio.cpp,
+	  gui/dx/dx_audio_player.cpp, gui/dx/dx_player.cpp,
+	  gui/dx/dx_transition.cpp, gui/dx/dx_viewport.cpp,
+	  lib/xerces_parser.cpp: Cleaned up some debug and error output.
+
+2004-12-02 14:24  jackjansen
+
+	* include/ambulant/gui/cocoa/cocoa_audio.h,
+	  src/libambulant/gui/cocoa/cocoa_audio.mm,
+	  src/libambulant/gui/cocoa/cocoa_gui.mm: Got cocoa_audio playable
+	  back into working order. Unfortunately it doesn't help with the
+	  navigation problems: same behaviour as theSDL and Arts playables.
+
+2004-12-02 14:23  jackjansen
+
+	* src/libambulant/lib/: expat_parser.cpp, parser_factory.cpp,
+	  tree_builder.cpp: Removed/fixed debug output.
+
+2004-12-02 14:18  koelimoe
+
+	* src/libambulant/Makefile.am: removed the qsound stuff
+
+2004-12-02 14:16  koelimoe
+
+	* include/ambulant/gui/Makefile.am: removed the qsound stuff from
+	  the make file
+
+2004-12-02 14:14  koelimoe
+
+	* src/libambulant/gui/qt/qt_video_renderer.cpp: fixed a debug msg
+
+2004-12-02 13:58  koelimoe
+
+	* include/ambulant/Makefile.am: removed the directory plugin, since
+	  it was obsolete
+
+2004-12-02 13:44  koelimoe
+
+	* src/player_unix/qt_settings.cpp: fixed bug, 1065223 Unix:
+	  preferences dialog incorrect
+
+2004-12-02 12:50  jackjansen
+
+	* src/plugins/plugin.cpp: Workaround for a bug in the OSX compiler
+	  (optimizer? linker?) that caused plugins to crash.
+
+2004-12-01 16:59  koelimoe
+
+	* ChangeLog: a new and compacter Changelog
+
 2004-11-30 17:11  jackjansen
 
 	* Makefile.am, configure.in, include/ambulant/Makefile.am,
