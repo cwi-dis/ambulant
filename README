@@ -16,7 +16,10 @@ building from source. The NEWS file has information on what is new
 in this release.
 
 Ambulant is Open Source: the license is modified GPL. See the file
-COPYING for details.
+COPYING for details. Please note that some of the packages that Ambulant
+can optionally use have their own license, so the special exceptions
+in the Ambulant license will probably not apply to those packages.
+But the bottom line is that everything is at least GPL-compatible.
 
 Feedback
 --------
