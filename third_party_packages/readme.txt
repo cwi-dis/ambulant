@@ -144,6 +144,8 @@ live.com:
 			$ cd live
 			$ ./genMakefiles linux
 			$ make
+	For MacOSX you need to supply "macosx" or "macosx-before-version-10.4"
+	to genMakefiles in stead of "linux".
 	
 	Live does not have an install procedure. If you have installed live
 	in .../ambulant/third_party_packages/live configure will detect
