@@ -81,7 +81,9 @@ Creating the MacOSX installer
 =============================
 
 - Build the whole source tree, don't forget options for
-  enabling xerces, etc.
+  enabling xerces, etc. You want to build with Xerces in a plugin,
+  i.e. with
+    configure --with-xerces --with-xerces-plugin
 - Install the player in src/player_macos.
 - Create a folder called something like "Ambulant Player 1.2", 
   and copy the items mentioned above into it.
