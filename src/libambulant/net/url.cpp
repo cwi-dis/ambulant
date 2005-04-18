@@ -469,6 +469,10 @@ net::url::set_datafile_directory(std::string pathname)
 std::pair<bool, net::url>
 net::url::get_local_datafile() const
 {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	// Too lazy to convert char to wide char right now
+	return std::pair<bool, net::url>(false, net::url(*this));
+#else
 	if (datafile_directory == "") {
 		set_datafile_directory(lib::win32::get_module_dir());
 	}
@@ -496,6 +500,7 @@ net::url::get_local_datafile() const
 	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
 	std::string *pathname = new std::string(result);
 	return std::pair<bool, net::url>(true, net::url("file", "", *pathname));
+#endif
 }
 #endif //AMBULANT_PLATFORM_UNIX
 ///////////////

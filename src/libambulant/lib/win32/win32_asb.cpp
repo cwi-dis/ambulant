@@ -101,7 +101,11 @@ std::basic_string<text_char> lib::win32::get_module_filename() {
 std::basic_string<text_char> lib::win32::get_module_dir() {
 	text_char buf[MAX_PATH];
 	GetModuleFileName(NULL, buf, MAX_PATH);
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	wchar_t *p = wcsrchr(buf, '\\');
+#else
 	char *p = strrchr(buf, '\\');
+#endif
 	if (p) p[1] = '\0';
 	return buf;
 }
