@@ -273,5 +273,5 @@ qt_background_renderer::keep_as_background()
 		m_background_pixmap = NULL;
 	}
 	m_background_pixmap = aqw->get_pixmap_from_screen(dstrect_whole);
-	dumpPixmap(m_background_pixmap, "/tmp/keepbg");
+//XXXX	dumpPixmap(m_background_pixmap, "/tmp/keepbg");
 }

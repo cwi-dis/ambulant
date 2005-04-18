@@ -246,6 +246,8 @@ static bool isEqualToPrevious(QPixmap* qpmP) {
 	}
 }
 
+#ifdef DUMPPIXMAP
+// doesn't compile on Zaurus
 /**/
 /* dumpPixmap on file */
 void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
@@ -260,6 +262,7 @@ void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
 	}
 }
 /**/
+#endif
 
 void
 ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
