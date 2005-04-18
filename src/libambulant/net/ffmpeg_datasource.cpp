@@ -1799,7 +1799,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec_id);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec_id);
 		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
 		//AVCodec *codec = avcodec_find_decoder(CODEC_ID_MPEG2VIDEO);
 		if (codec == NULL) {

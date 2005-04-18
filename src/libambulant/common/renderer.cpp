@@ -47,11 +47,7 @@
  */
 
 /* 
-<<<<<<< renderer.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.76.4.10
  */
 
 #include "ambulant/lib/logger.h"
@@ -310,7 +306,7 @@ active_video_renderer::active_video_renderer(
 	
 {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
 	m_src = factory->df->new_video_datasource(url);
 	if (m_src == NULL) {
@@ -388,7 +384,7 @@ active_video_renderer::get_dur()
 	// video is the important one so we ask the video source
 	if (m_src) {
 		rv = m_src->get_dur();
-		lib::logger::get_logger()->trace("active_video_renderer: get_dur() duration = %f", rv.second);
+		AM_DBG lib::logger::get_logger()->trace("active_video_renderer: get_dur() duration = %f", rv.second);
 
 	}
 
