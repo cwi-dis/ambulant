@@ -72,6 +72,7 @@ AMBULANTAPI std::basic_string<text_char> getcwd();
 AMBULANTAPI std::basic_string<text_char> resolve_path(const text_char *s);
 AMBULANTAPI bool file_exists(const std::string& fn);
 AMBULANTAPI std::basic_string<text_char> get_module_filename();
+AMBULANTAPI std::basic_string<text_char> get_module_dir();
 AMBULANTAPI void show_message(int level, const char *message);
 } // namespace win32
 

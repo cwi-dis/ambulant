@@ -444,8 +444,59 @@ net::url::get_local_datafile() const
 	
 	return std::pair<bool, net::url>(true, net::url("file", "", result));
 }
+#else // AMBULANT_PLATFORM_UNIX
 
-#endif
+// Hack: if it is not Unix it must be windows:-)
+
+// Places where to look for (cached) datafiles
+static const char *datafile_locations[] = {
+	"",
+	"..\\",
+	"Extras\\",
+	"..\\Extras\\",
+	"..\\..\\Extras\\",
+	NULL
+};
+
+static std::string datafile_directory;
+
+void
+net::url::set_datafile_directory(std::string pathname)
+{
+	datafile_directory = pathname;
+}
+
+std::pair<bool, net::url>
+net::url::get_local_datafile() const
+{
+	if (datafile_directory == "") {
+		set_datafile_directory(lib::win32::get_module_dir());
+	}
+	const char* result = NULL;
+	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
+	
+	if (! is_absolute()) {
+		string rel_path = datafile_directory + get_path();
+		const char **dir;
+		for(dir = datafile_locations; *dir; dir++) {
+			string abs_path(*dir);
+			abs_path += rel_path;
+			if (lib::win32::file_exists(abs_path)) {
+			  	result = abs_path.c_str();
+				break;
+			}
+		}
+	} else if (is_local_file()) {
+		string path = get_path();
+		if (lib::win32::file_exists(path))
+			result = path.c_str();
+	}
+	
+	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
+	
+	return std::pair<bool, net::url>(true, net::url("file", "", result));
+}
+#endif //AMBULANT_PLATFORM_UNIX
 ///////////////
 // module private static initializer
 

@@ -60,6 +60,7 @@
 #include "ambulant/lib/win32/win32_error.h"
 
 #include <string>
+#include <cstring>
 
 using namespace ambulant;
 
@@ -94,6 +95,14 @@ std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
 std::basic_string<text_char> lib::win32::get_module_filename() {
 	text_char buf[MAX_PATH];
 	GetModuleFileName(NULL, buf, MAX_PATH);
+	return buf;
+}
+
+std::basic_string<text_char> lib::win32::get_module_dir() {
+	text_char buf[MAX_PATH];
+	GetModuleFileName(NULL, buf, MAX_PATH);
+	char *p = strrchr(buf, '\\');
+	if (p) p[1] = '\0';
 	return buf;
 }
 
