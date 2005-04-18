@@ -211,6 +211,7 @@ class ffmpeg_demux : public abstract_demux {
     datasink *m_sinks[MAX_STREAMS];
 	AVFormatContext *m_con;
 	int m_nstream;
+	lib::critical_section m_lock;
 };
 
 } // end namespace detail

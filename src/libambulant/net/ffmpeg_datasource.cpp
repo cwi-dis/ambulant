@@ -46,12 +46,13 @@
  * 
  */
  
+#include <math.h>
+#include <map>
+
 #include "ambulant/net/ffmpeg_datasource.h" 
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
-#include <math.h>
-#include <map>
 
 
 
@@ -393,25 +394,30 @@ detail::ffmpeg_demux::get_video_format()
 void 
 detail::ffmpeg_demux::add_datasink(detail::datasink *parent, int stream_index)
 {
+	m_lock.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] == 0);
 	m_sinks[stream_index] = parent;
 	m_nstream++;
+	m_lock.leave();
 }
 
 void
 detail::ffmpeg_demux::remove_datasink(int stream_index)
 {
+	m_lock.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] != 0);
 	m_sinks[stream_index] = 0;
 	m_nstream--;
+	m_lock.leave();
 	if (m_nstream <= 0) cancel();
 }
 
 unsigned long
 detail::ffmpeg_demux::run()
 {
+	m_lock.enter();
 	int pkt_nr;
 	timestamp_t pts;
 	pkt_nr = 0;
@@ -422,7 +428,9 @@ detail::ffmpeg_demux::run()
 		pkt->pts = 0;
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
+		m_lock.leave();
 		int ret = av_read_packet(m_con, pkt);
+		m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%lld, 0x%x, %d)", ret, pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
 		pkt_nr++;
@@ -438,7 +446,9 @@ detail::ffmpeg_demux::run()
 			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink && sink->buffer_full() && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space");
+				m_lock.leave();
 				sleep(1);   // This is overdoing it
+				m_lock.enter();
 				sink = m_sinks[pkt->stream_index];
 			}
 			if (sink && !exit_requested()) {
@@ -472,6 +482,7 @@ detail::ffmpeg_demux::run()
 		if (m_sinks[i])
 			m_sinks[i]->data_avail(0, 0, 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
+	m_lock.leave();
 	return 0;
 }
 
@@ -655,9 +666,9 @@ demux_audio_datasource::get_read_ptr()
 int 
 demux_audio_datasource::size() const
 {
-	m_lock.enter();
+	const_cast <demux_audio_datasource*>(this)->m_lock.enter();
 	int rv = m_buffer.size();
-	m_lock.leave();
+	const_cast <demux_audio_datasource*>(this)->m_lock.leave();
 	return rv;
 }	
 
@@ -907,9 +918,9 @@ demux_video_datasource::get_frame(timestamp_t now,timestamp_t *timestamp, int *s
 int 
 demux_video_datasource::size() const
 {
-	m_lock.enter();
+	const_cast <demux_video_datasource*>(this)->m_lock.enter();
 	int rv = m_frames.size();
-	m_lock.leave();
+	const_cast <demux_video_datasource*>(this)->m_lock.leave();
 	return rv;
 }
 
@@ -1625,9 +1636,9 @@ ffmpeg_decoder_datasource::get_read_ptr()
 int 
 ffmpeg_decoder_datasource::size() const
 {
-	m_lock.enter();
+	const_cast <ffmpeg_decoder_datasource*>(this)->m_lock.enter();
 	int rv = m_buffer.size();
-	m_lock.leave();
+	const_cast <ffmpeg_decoder_datasource*>(this)->m_lock.leave();
 	return rv;
 }	
  
@@ -2055,9 +2066,9 @@ ffmpeg_resample_datasource::get_read_ptr()
 int 
 ffmpeg_resample_datasource::size() const
 {
-	m_lock.enter();
+	const_cast <ffmpeg_resample_datasource*>(this)->m_lock.enter();
 	int rv = m_buffer.size();
-	m_lock.leave();
+	const_cast <ffmpeg_resample_datasource*>(this)->m_lock.leave();
 	return rv;
 }	
 
