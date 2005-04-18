@@ -273,7 +273,7 @@ char *
 databuffer::get_read_ptr()
 {
 	m_lock.enter();
-	const char *rv = (m_buffer + m_rear);
+	char *rv = (m_buffer + m_rear);
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
 
 	assert(!m_reading);

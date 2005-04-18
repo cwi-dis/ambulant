@@ -1927,7 +1927,7 @@ ffmpeg_resample_datasource::data_avail()
 				lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: warning: incomplete samples: %d", cursize);
 			}
 			
-			long long tmp = (long long)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
+			timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
 			long outsz = tmp;
 			
 	

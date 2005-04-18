@@ -58,6 +58,7 @@
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/renderer.h"
 #include "ambulant/gui/none/none_gui.h"
+#include "ambulant/net/datasource.h"
 
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/net/posix_datasource.h"
@@ -339,7 +340,7 @@ void
 active_video_renderer::start (double where = 1)
 {
 	m_lock.enter();
-	long long int w;
+	net::timestamp_t w;
 
 	if (m_audio_renderer) 
 		m_audio_renderer->start(where);
@@ -351,7 +352,7 @@ active_video_renderer::start (double where = 1)
 	m_timer = lib::realtime_timer_factory();
 #endif
 	m_epoch = m_timer->elapsed();
-	w = (long long int) round (where*1000000);
+	w = (net::timestamp_t) round (where*1000000);
 	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->debug ("active_video_renderer::start(%lld) (this = 0x%x) ", w, (void *) this);
 	if (!m_src) {
@@ -443,7 +444,7 @@ void
 active_video_renderer::data_avail()
 {
 	m_lock.enter();
-	long long int ts2;
+	net::timestamp_t ts2;
 	double ts;
 	char *buf = NULL;
 	int size;
@@ -461,7 +462,7 @@ active_video_renderer::data_avail()
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
-	buf = m_src->get_frame((long long int) (round(now()*1000000)), &ts2, &size);
+	buf = m_src->get_frame((net::timestamp_t) (round(now()*1000000)), &ts2, &size);
 	ts = ts2 / 1000000.0; // ts should be in seconds now !
 	displayed = false;
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
