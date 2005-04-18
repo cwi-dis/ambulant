@@ -129,8 +129,9 @@ bool lib::win32::file_exists(const std::string& fn) {
 		exists = true;
 	} else  {
 		DWORD dw = GetLastError();
+
 		if(dw != ERROR_FILE_NOT_FOUND)
-			win_report_error("FindFirstFile()", dw);
+			/*win_report_error("FindFirstFile()", dw)*/;
 	}
 	return exists;
 }
