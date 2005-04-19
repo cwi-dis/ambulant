@@ -1095,6 +1095,9 @@ end
 item: Include Script
   Pathname=%_WISE_%\INCLUDE\uninstal.wse
 end
+item: Create Directory
+  Pathname=%MAINDIR%\Extras
+end
 item: If/While Statement
   Variable=COMPONENTS
   Value=B
@@ -1683,6 +1686,211 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-transition.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-transition.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-timing.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-timing.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-struct.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-struct.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-qname-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-qname-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-mobile-profile-model-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-mobile-profile-model-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-metainformation.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-metainformation.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-media.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-media.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-link.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-link.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-layout.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-layout.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-language-profile-model-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-language-profile-model-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-framework-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-framework-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-extended-mobile-profile-model-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-extended-mobile-profile-model-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-datatypes-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-datatypes-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-control.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-control.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-attribs-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-attribs-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL-anim.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-anim.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21MobileProfile.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21MobileProfile.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21LanguageProfile.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21LanguageProfile.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21ExtendedMobileProfile.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21ExtendedMobileProfile.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\DTD.zip
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\DTD.zip
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\w3c_home
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\w3c_home
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-transition.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-transition.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-timing.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-timing.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-struct.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-struct.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil-qname-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil-qname-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil-model-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil-model-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-metainformation.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-metainformation.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-media.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-media.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-link.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-link.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-layout.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-layout.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil-framework-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil-framework-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil-datatypes-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil-datatypes-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-control.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-control.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil-attribs-1.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil-attribs-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL-anim.mod
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL-anim.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\SMIL20.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\SMIL20.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\smil2.cat
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\smil2.cat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\read-me.txt
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\read-me.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\IPR-Notice-and-Disclaimers.htm
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\IPR-Notice-and-Disclaimers.htm
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil20\base.css
+  Destination=%MAINDIR%\Extras\DTDCache\Smil20\base.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\mapping.txt
+  Destination=%MAINDIR%\Extras\DTDCache\mapping.txt
+  Flags=0000000010000010
+end
+item: Install File
   Source=..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm
   Destination=%MAINDIR%\AmbulantPlayerHelp.chm
   Flags=0000000010000010
@@ -2203,7 +2411,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=1.2
+  New Value=1.3
   Value Name=DisplayVersion
   Root=2
 end
