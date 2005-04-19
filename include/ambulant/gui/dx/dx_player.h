@@ -195,6 +195,7 @@ class AMBULANTAPI dx_player :
 	dx_transition *get_transition(common::playable *p);
 	
   private:
+	dx_transition *set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
 	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 	HWND get_main_window();
@@ -225,6 +226,9 @@ class AMBULANTAPI dx_player :
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;
+#ifdef USE_SMIL21
+	dx_transition *m_fullscreen_transition;
+#endif
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
