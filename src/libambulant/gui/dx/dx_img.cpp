@@ -63,6 +63,7 @@
 #include "ambulant/common/region_info.h"
 
 #include <math.h>
+#include <ddraw.h>
 
 //#define AM_DBG
 
@@ -234,8 +235,8 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 		&img_rect, &img_reg_rc);
 		
 	// Translate img_reg_rc_dirty to viewport coordinates 
-	lib::point pt = m_dest->get_global_topleft();
-	img_reg_rc_dirty.translate(pt);
+	lib::point topleft = m_dest->get_global_topleft();
+	img_reg_rc_dirty.translate(topleft);
 	
 	// keep rect for debug messages
 	m_msg_rect |= img_reg_rc_dirty;
@@ -245,9 +246,23 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	
 	dx_transition *tr = get_transition();
 	if(tr && tr->is_outtrans()) {
-		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
+		// First draw the background color, if applicable
 		const common::region_info *ri = m_dest->get_info();
-		if(ri) v->clear(img_reg_rc_dirty,ri->get_bgcolor(), tr);
+		if(ri && !ri->get_transparent()) v->clear(img_reg_rc_dirty,ri->get_bgcolor());
+		// Next, take a snapshot of the relevant pixels as they are now, before we draw the image
+		lib::size image_size = m_image->get_size();
+		IDirectDrawSurface *bgimage = v->create_surface(image_size);
+		lib::screen_rect<int> dirty_screen = img_rect_dirty;
+		dirty_screen.translate(topleft);
+		RECT bgrect_image, bgrect_screen;
+		set_rect(img_rect_dirty, &bgrect_image);
+		set_rect(dirty_screen, &bgrect_screen);
+		bgimage->Blt(&bgrect_image, v->get_surface(), &bgrect_screen, DDBLT_WAIT, NULL);
+		// Then draw the image
+		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
+		// And finally transition in the background bits saved previously
+		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
+		bgimage->Release();
 	} else {
 		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 	}
