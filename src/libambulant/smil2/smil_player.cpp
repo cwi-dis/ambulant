@@ -302,10 +302,10 @@ void smil_player::stop_playable(const lib::node *n) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
-		destroy_playable((*it).second, (*it).first);
 		m_playables_cs.enter();
 		m_playables.erase(it);
 		m_playables_cs.leave();
+		destroy_playable((*it).second, (*it).first);
 	}
 }
 
