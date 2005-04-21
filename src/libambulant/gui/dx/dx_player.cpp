@@ -114,9 +114,6 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u)
 	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
 	m_update_event(0),
-#ifdef USE_SMIL21
-	m_fullscreen_transition(0),
-#endif
 	m_logger(lib::logger::get_logger()) {
 	
 	// Fill the factory object
@@ -461,27 +458,12 @@ gui::dx::dx_transition *
 gui::dx::dx_player::set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition) {  
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
-#ifdef USE_SMIL21
-	bool fullscreen = info->m_scope == scope_screen;
-	if (fullscreen && m_fullscreen_transition) {
-		lib::logger::get_logger()->trace("Handling second fullscreen transition as normal transition");
-		fullscreen = false;
-	}
-	if (fullscreen)
-		m_fullscreen_transition = tr;
-	else
-		m_trmap[p] = tr;
-#else
 	m_trmap[p] = tr;
-#endif
 	tr->init(p->get_renderer()->get_surface(), is_outtransition, info);
 	return tr;
 }
 
 bool gui::dx::dx_player::has_transitions() const {
-#ifdef USE_SMIL21
-	if (m_fullscreen_transition) return true;
-#endif
 	return !m_trmap.empty();
 }
 
@@ -497,15 +479,6 @@ void gui::dx::dx_player::update_transitions() {
 	}
 	//unlock_redraw();
 	m_trmap_cs.leave();
-#ifdef USE_SMIL21
-	if (m_fullscreen_transition) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("dx_player::update_transitions: stepping fullscreen transition");
-		if (!m_fullscreen_transition->next_step(pt)) {
-			delete m_fullscreen_transition;
-			m_fullscreen_transition = NULL;
-		}
-	}
-#endif
 }
 
 void gui::dx::dx_player::clear_transitions() {
@@ -514,9 +487,6 @@ void gui::dx::dx_player::clear_transitions() {
 		delete (*it).second;
 	m_trmap.clear();
 	m_trmap_cs.leave();
-#ifdef USE_SMIL21
-	if (m_fullscreen_transition) delete m_fullscreen_transition;
-#endif
 }
 
 gui::dx::dx_transition *gui::dx::dx_player::get_transition(common::playable *p) {

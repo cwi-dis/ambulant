@@ -54,6 +54,7 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_video_player.h"
+#include "ambulant/gui/dx/dx_transition.h"
 
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
@@ -242,7 +243,13 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	m_msg_rect |= vid_reg_rc_dirty;
 	
 	dx_transition *tr = get_transition();
-	
+#ifdef USE_SMIL21
+	if (tr && tr->is_fullscreen()) {
+		v->set_fullscreen_transition(tr);
+		tr = NULL;
+	}
+#endif // USE_SMIL21
+
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);

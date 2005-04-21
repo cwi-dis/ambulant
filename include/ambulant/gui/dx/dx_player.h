@@ -226,9 +226,6 @@ class AMBULANTAPI dx_player :
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;
-#ifdef USE_SMIL21
-	dx_transition *m_fullscreen_transition;
-#endif
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;

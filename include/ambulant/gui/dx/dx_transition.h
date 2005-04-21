@@ -84,6 +84,9 @@ class dx_transition {
 	virtual void resume() = 0;
 	virtual double get_progress() const = 0;
 	virtual bool is_outtrans() const = 0;
+#ifdef USE_SMIL21
+	virtual bool is_fullscreen() const = 0;
+#endif
 	virtual std::string get_type_str() const = 0;
 	virtual std::string get_subtype_str() const = 0;
 	virtual smil2::blitter_type get_blitter_type() const = 0;
@@ -106,6 +109,9 @@ class transition_engine_adapter : public T {
 	const lib::transition_info *get_info() const { return m_info;}	
 	double get_progress() const { return m_progress;}
 	bool is_outtrans() const { return m_outtrans;}
+#ifdef USE_SMIL21
+	bool is_fullscreen() const { return m_info->m_scope == lib::scope_screen; }
+#endif
   protected:
 	virtual void update() {
 		if(m_dst) m_dst->need_redraw();
@@ -118,7 +124,7 @@ template<class T>
 class dx_transition_engine : public dx_transition {
   public:
 	dx_transition_engine(common::playable *playable, lib::timer *timer)
-	:	m_playable(playable), m_timer(timer) {
+	:	/* m_playable(playable),*/ m_timer(timer) {
 		m_engine = new transition_engine_adapter<T>();
 	}
 	
@@ -154,6 +160,9 @@ class dx_transition_engine : public dx_transition {
 	
 	double get_progress() const { return m_engine->get_progress();};
 	bool is_outtrans() const { return m_engine->is_outtrans();}
+#ifdef USE_SMIL21
+	bool is_fullscreen() const { return m_engine->is_fullscreen(); }
+#endif
 	smil2::blitter_type get_blitter_type() const { 
 		return get_transition_blitter_type(m_engine->get_info()->m_type);
 	}
@@ -189,7 +198,7 @@ class dx_transition_engine : public dx_transition {
 	}
 		
 	transition_engine_adapter<T> *m_engine;
-	common::playable *m_playable;
+//	common::playable *m_playable;
 	lib::timer *m_timer;
 };
 

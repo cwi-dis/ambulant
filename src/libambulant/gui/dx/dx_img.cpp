@@ -245,6 +245,12 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 	
 	dx_transition *tr = get_transition();
+#ifdef USE_SMIL21
+	if (tr && tr->is_fullscreen()) {
+		v->set_fullscreen_transition(tr);
+		tr = NULL;
+	}
+#endif // USE_SMIL21
 	if(tr && tr->is_outtrans()) {
 		// First draw the background color, if applicable
 		const common::region_info *ri = m_dest->get_info();

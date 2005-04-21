@@ -53,6 +53,7 @@
 #include "ambulant/gui/dx/dx_brush.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
+#include "ambulant/gui/dx/dx_transition.h"
 
 #include "ambulant/common/region_info.h"
 
@@ -125,7 +126,7 @@ void gui::dx::dx_brush::user_event(const lib::point& pt, int what) {
 }
 
 void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
-	AM_DBG lib::logger::get_logger()->debug("dx_brush::redraw(): %s", repr(dirty).c_str());
+//	AM_DBG lib::logger::get_logger()->debug("dx_brush::redraw(): %s", repr(dirty).c_str());
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
@@ -137,6 +138,12 @@ void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_w
 	rc.translate(pt);
 	
 	dx_transition *tr = get_transition();
+#ifdef USE_SMIL21
+	if (tr && tr->is_fullscreen()) {
+		v->set_fullscreen_transition(tr);
+		tr = NULL;
+	}
+#endif // USE_SMIL21
 	v->clear(rc, m_color, tr);
 }
  
