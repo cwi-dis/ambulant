@@ -551,9 +551,18 @@ void
 transition_engine_clockwipe::compute()
 {
 	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	// First check whether we're done.
+	clear();
+	if (m_progress > 0.999) {
+		int l = dstrect.left(), r = dstrect.right(), t = dstrect.top(), b = dstrect.bottom();
+		m_newpolygon.push_back(lib::point(l, t));
+		m_newpolygon.push_back(lib::point(r, t));
+		m_newpolygon.push_back(lib::point(r, b));
+		m_newpolygon.push_back(lib::point(l, b));
+		return;
+	}
 	if (!m_angle_computer.matches(dstrect))
 		m_angle_computer = detail::angle_computer(dstrect);
-	clear();
 	m_stepcount = 2*dstrect.width() + 2*dstrect.height();
 	double angle = M_PI/2 - (m_progress*2*M_PI);
 	AM_DBG lib::logger::get_logger()->debug("transition_engine_clockwipe::compute: progress %f angle %f (%d)", m_progress, angle, (int)(angle*180/M_PI));
