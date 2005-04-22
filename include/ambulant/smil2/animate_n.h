@@ -106,7 +106,9 @@ class animate_node : public time_node {
 	static animate_node* new_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	static animate_node* new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	// XXXX Need to add soundlevel animation (similar to zindex)
-
+#ifdef USE_SMIL21notyet
+	static animate_node* new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+#endif
   protected:
 	// The set of animation related attributes of this node.
 	// Attributes parsing helper

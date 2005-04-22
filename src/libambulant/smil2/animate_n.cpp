@@ -585,6 +585,15 @@ animate_node* animate_node::new_zindex_animation(context_type *ctx, const node *
 	return new zindex_animation<F>(ctx, n, aattrs);
 }
 
+#ifdef USE_SMIL21notyet
+animate_node* animate_node::new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef common::zindex_t attr_t;
+	assert(aattrs->is_discrete();
+	typedef discrete_map_f<attr_t> F;
+	return new soundalign_animation<F>(ctx, n, aattrs);
+}
+#endif
+
 // private static 
 animate_node* animate_node::new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef lib::point attr_t;
@@ -615,6 +624,10 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_zindex_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "position") {
 		return new_position_animation(ctx, n, aattrs);
+#ifdef USE_SMIL21notyet
+	} else if(aattrs->get_target_attr() == "soundAlign") {
+		return new_soundalign_animation(ctx, n, aattrs);
+#endif
 	}
 	
 	// Not implemented

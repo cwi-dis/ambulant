@@ -114,7 +114,6 @@ void animate_attrs::locate_target_element() {
 	}
 }
 
-static char *attr_types[] = {"int", "double", "color", "reg_dim", "int_tuple"};
 
 void animate_attrs::locate_target_attr() {
 	if(m_tag == "animateMotion") {
@@ -150,6 +149,10 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "int_tuple";
 	} else if(m_attrname == "color") {
 		m_attrtype = "color";
+#ifdef USE_SMIL21notyet
+	} else if (m_attrname == "soundAlign") {
+		m_attrtype = "soundAlign";
+#endif
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
 			m_tag.c_str(), m_id.c_str(), m_attrname.c_str());
