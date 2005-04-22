@@ -76,6 +76,10 @@
 
 using namespace ambulant;
 
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using lib::uint16;
 using lib::uint32;
 using lib::uchar;
@@ -442,17 +446,97 @@ void gui::dx::viewport::redraw() {
 		return;
 	RECT src_rc = {0, 0, m_width, m_height};
 	RECT dst_rc = {0, 0, m_width, m_height};
+	lib::screen_rect<int> ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
-	}
 #ifdef USE_SMIL21
-	if (!m_fstransition) {
-		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+	if (m_fstransition) {
+		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
+		// Create a temp surface, determine bg/fg surfaces and copy the background
+		IDirectDrawSurface *tmps = create_surface();
+		clear_surface(tmps, lib::color_t(0xff0000));
+		IDirectDrawSurface *s1, *s2;
+		if (m_fstransition->is_outtrans()) {
+			s1 = m_surface;
+			s2 = m_fstr_surface;
+		} else {
+			s1 = m_fstr_surface;
+			s2 = m_surface;
+		}
+		//draw(s1, ourrect, ourrect, false, tmps);
+
+		// Determine blitter type and blend in the fg surface
+		smil2::blitter_type bt = m_fstransition->get_blitter_type();
+		if (bt == smil2::bt_r1r2r3r4) {
+			lib::screen_rect<int> src_rc_v = ourrect;
+			lib::screen_rect<int> dst_rc_v = ourrect;
+			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
+			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
+		} else if (bt == smil2::bt_fade) {
+			if (bits_size == 32)
+				blt_blend32(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else if (bits_size == 24)
+				blt_blend24(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else if (bits_size == 16)
+				blt_blend16(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else
+				draw(s2, ourrect, ourrect, false, tmps);
+		} else {
+			HRGN hrgn = NULL;
+			switch (bt) {
+				case smil2::bt_rect:
+					hrgn = create_rect_region(m_fstransition); 
+					break;
+				case smil2::bt_rectlist: 
+					hrgn = create_rectlist_region(m_fstransition); 
+					break;
+				case smil2::bt_poly: 
+					hrgn = create_poly_region(m_fstransition); 
+					break;
+				case smil2::bt_polylist: 
+					hrgn = create_polylist_region(m_fstransition); 
+					break;
+			}
+			HDC tmps_dc;
+			HRESULT hr = tmps->GetDC(&tmps_dc);
+			if (FAILED(hr)) {
+				seterror("DirectDrawSurface::GetDC()", hr);
+				return;
+			}
+			HDC s2_dc;
+			hr = s2->GetDC(&s2_dc);
+			if (FAILED(hr)) {
+				seterror("DirectDrawSurface::GetDC()", hr);
+				return;
+			}
+			if (hrgn) SelectClipRgn(tmps_dc, hrgn);
+			int w, h;
+			w = dst_rc.right - dst_rc.left;
+			h = dst_rc.bottom - dst_rc.top;
+			BitBlt(tmps_dc, dst_rc.left, dst_rc.top, w, h, s2_dc, dst_rc.left, dst_rc.top, SRCCOPY);
+			tmps->ReleaseDC(tmps_dc);
+			s2->ReleaseDC(s2_dc);
+		}
+		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 		}
+		release_surface(tmps);
+	} else {
+		// Copy to screen
+		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
+		if (FAILED(hr)) {
+			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
+		}
+		// Copy to backing store for posible fs transition later
+		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+		if (FAILED(hr)) {
+			seterror("viewport::redraw()/DirectDrawSurface::Blt() m_fstr_surface", hr);
+		}
+	}
+#else
+	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 	}
 #endif
 }
@@ -474,18 +558,97 @@ void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
 		return;
 		
 	// Blit:
+	lib::screen_rect<int> ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
-	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
-	}
 #ifdef USE_SMIL21
-	if (!m_fstransition) {
+	if (m_fstransition) {
+		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
+		// Create a temp surface, determine bg/fg surfaces and copy the background
+		IDirectDrawSurface *tmps = create_surface();
+		clear_surface(tmps, lib::color_t(0x00ff00));
+		IDirectDrawSurface *s1, *s2;
+		if (m_fstransition->is_outtrans()) {
+			s1 = m_surface;
+			s2 = m_fstr_surface;
+		} else {
+			s1 = m_fstr_surface;
+			s2 = m_surface;
+		}
+		draw(s1, ourrect, ourrect, false, tmps);
+
+		// Determine blitter type and blend in the fg surface
+		smil2::blitter_type bt = m_fstransition->get_blitter_type();
+		if (bt == smil2::bt_r1r2r3r4) {
+			lib::screen_rect<int> src_rc_v = ourrect;
+			lib::screen_rect<int> dst_rc_v = ourrect;
+			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
+			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
+		} else if (bt == smil2::bt_fade) {
+			if (bits_size == 32)
+				blt_blend32(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else if (bits_size == 24)
+				blt_blend24(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else if (bits_size == 16)
+				blt_blend16(ourrect, m_fstransition->get_progress(), s2, tmps);
+			else
+				draw(s2, ourrect, ourrect, false, tmps);
+		} else {
+			HRGN hrgn = NULL;
+			switch (bt) {
+				case smil2::bt_rect:
+					hrgn = create_rect_region(m_fstransition); 
+					break;
+				case smil2::bt_rectlist: 
+					hrgn = create_rectlist_region(m_fstransition); 
+					break;
+				case smil2::bt_poly: 
+					hrgn = create_poly_region(m_fstransition); 
+					break;
+				case smil2::bt_polylist: 
+					hrgn = create_polylist_region(m_fstransition); 
+					break;
+			}
+			HDC tmps_dc;
+			HRESULT hr = tmps->GetDC(&tmps_dc);
+			if (FAILED(hr)) {
+				seterror("DirectDrawSurface::GetDC()", hr);
+				return;
+			}
+			HDC s2_dc;
+			hr = s2->GetDC(&s2_dc);
+			if (FAILED(hr)) {
+				seterror("DirectDrawSurface::GetDC()", hr);
+				return;
+			}
+			if (hrgn) SelectClipRgn(tmps_dc, hrgn);
+			int w, h;
+			w = src_rc.right - src_rc.left;
+			h = src_rc.bottom - src_rc.top;
+			BitBlt(tmps_dc, src_rc.left, src_rc.top, w, h, s2_dc, src_rc.left, src_rc.top, SRCCOPY);
+			tmps->ReleaseDC(tmps_dc);
+			s2->ReleaseDC(s2_dc);
+		}
+		HRESULT hr = m_primary_surface->Blt(&dst_rc, tmps, &src_rc, flags, NULL);
+		if (FAILED(hr)) {
+			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
+		}
+	} else {
+		// Copy to screen
+		HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
+		if (FAILED(hr)) {
+			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
+		}
+		// Copy to backing store, for later use with transition
 		// XXX Or should we copy the whole surface?
 		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 		}
+	}
+#else
+	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
+	if (FAILED(hr)) {
+		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
 	}
 #endif
 }

@@ -283,8 +283,10 @@ HRGN create_poly_region(gui::dx::dx_transition *tr) {
 	POINT *ppt = new POINT[v.size()];
 	std::vector<lib::point>::iterator it;
 	int i = 0;
-	for(it = v.begin();it!=v.end();it++,i++) 
-		{ppt[i].x = (*it).x; ppt[i].y = (*it).y;}
+	for(it = v.begin();it!=v.end();it++,i++) {
+		ppt[i].x = (*it).x;
+		ppt[i].y = (*it).y;
+	}
 	HRGN hrgn = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
 	delete[] ppt;	
 	if(!hrgn) {
