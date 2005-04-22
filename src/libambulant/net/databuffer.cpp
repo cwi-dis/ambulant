@@ -58,7 +58,7 @@
 #include <unistd.h>
 #endif
 
-#undef AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -162,7 +162,7 @@ databuffer::~databuffer()
 int databuffer::size() const
 {
 	const_cast<databuffer*>(this)->m_lock.enter();
-	assert(!m_reading);
+//XXXX	assert(!m_reading);
 	int rv = m_used;
 	assert(rv < 10000000); // TMP sanity check
 	const_cast<databuffer*>(this)->m_lock.leave();

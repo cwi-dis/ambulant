@@ -1082,8 +1082,8 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		// immedeately signal our client again
 		if (callbackk) {
 			assert(evp);
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback");
-			evp->add_event(callbackk, 0, ambulant::lib::event_processor::med);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp=%ld", timestamp);
+			evp->add_event(callbackk, 100, ambulant::lib::event_processor::med);
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));

@@ -81,7 +81,9 @@ abstract_event_processor::get_timer() const { return m_timer; }
 void 
 abstract_event_processor::add_event(event *pe, time_type t, 
 				    event_priority priority) {
- 	m_delta_timer_cs.enter();
+
+ 	AM_DBG logger::get_logger()->debug("add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
+	m_delta_timer_cs.enter();
 	switch(priority) {
 		case high: 
 			m_high_delta_timer.insert(pe, t);
@@ -101,6 +103,7 @@ bool
 abstract_event_processor::cancel_event(event *pe, 
 				       event_priority priority) {
 	bool succeeded = false;
+ 	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
 	m_delta_timer_cs.enter();
 	switch(priority) {
 		case high: 
@@ -119,6 +122,7 @@ abstract_event_processor::cancel_event(event *pe,
 	
 void
 abstract_event_processor::cancel_all_events() {
+	AM_DBG logger::get_logger()->debug("cancel_all_events()");
 	m_delta_timer_cs.enter();
 	m_high_delta_timer.clear();
 	m_med_delta_timer.clear();
@@ -175,6 +179,7 @@ abstract_event_processor::serve_event(delta_timer& dt, std::queue<event*> *qp)
 	bool must_serve = ! qp->empty();
 	if (must_serve) {
 		event *e = qp->front();
+	 	AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
 		qp->pop();
 		e->fire();
 		delete e;
