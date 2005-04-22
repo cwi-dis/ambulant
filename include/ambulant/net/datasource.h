@@ -63,7 +63,7 @@ namespace net {
 
 	
 #ifdef AMBULANT_HAS_LONG_LONG
-typedef long long int timestamp_t;
+  typedef long long int timestamp_t; // microseconds
 #else
 typedef INT64 timestamp_t;
 #endif
