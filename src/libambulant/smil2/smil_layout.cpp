@@ -545,11 +545,13 @@ smil_layout_manager::get_alignment(const lib::node *n)
 	regAlign = n->get_attribute("regAlign");
 #ifdef USE_SMIL21
 	const char *mediaAlign = n->get_attribute("mediaAlign");
-	if (mediaAlign) {
-		// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
+	if (mediaAlign && regPoint == NULL) {
 		regPoint = mediaAlign;
+		rpname = "mediaAlign";
+	}
+	if (mediaAlign && regAlign == NULL) {
 		regAlign = mediaAlign;
-		rpname = raname = "mediaAlign";
+		raname = "mediaAlign";
 	}
 #endif // USE_SMIL21
 	if (regPoint == NULL || regAlign == NULL) {
