@@ -336,7 +336,8 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	if (XMLCh_local_id != NULL) {
 		m_logger->trace("Using cached DTD: %s", dtd.c_str());
 		local_input_source = new LocalFileInputSource(XMLCh_local_id );
-		delete XMLCh_local_id;
+		//delete XMLCh_local_id;
+		XMLString::release(&XMLCh_local_id);
 	}
 	XMLString::release(&publicId_ts);
 	XMLString::release(&systemId_ts);
