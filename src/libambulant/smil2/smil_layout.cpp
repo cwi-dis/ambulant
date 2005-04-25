@@ -652,6 +652,7 @@ smil_layout_manager::load_bgimages(common::playable_factory *pf)
 {
 //	if (!m_uses_bgimages) return;
 //	abort();
+	if (!m_layout_section || !m_uses_bgimages) return;
 	bgimage_loader *loader = new bgimage_loader(m_layout_section, pf);
 	loader->run(this);
 	loader->release();
