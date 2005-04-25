@@ -148,6 +148,13 @@ region_node::~region_node()
 	lib::node_navigator<region_node>::delete_tree(this); 	
 }
 
+void
+region_node::fix_from_region_node(const region_node *parent)
+{
+	set_soundlevel(parent->get_soundlevel());
+	set_soundalign(parent->get_soundalign());
+}
+
 bool
 region_node::fix_from_dom_node()
 {
@@ -254,7 +261,7 @@ region_node::fix_from_dom_node()
 	// we interpret missing z-index as zero, but the standard says "auto" which is
 	// slightly different.
 	const char *soundlevel_attr = m_node->get_attribute("soundLevel");
-	double sl = 1.0;
+	double sl = m_soundlevel;
 	char *lastp;
 	if (soundlevel_attr) {
 		sl = strtod(soundlevel_attr, &lastp);
@@ -269,10 +276,10 @@ region_node::fix_from_dom_node()
 #ifdef USE_SMIL21
 	// soundAlign
 	const char *soundalign_attr = m_node->get_attribute("soundAlign");
-	common::sound_alignment sa = common::sa_default;
+	common::sound_alignment sa = m_soundalign;
 	
 	if (soundalign_attr == NULL)
-		sa = common::sa_default;
+		/*do nothing*/;
 	else if (strcmp(soundalign_attr, "both") == 0)
 		sa = common::sa_both;
 	else if (strcmp(soundalign_attr, "left") == 0)
@@ -286,8 +293,8 @@ region_node::fix_from_dom_node()
 	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundAlign=%d", (int)sa);
 	if (sa != m_soundalign) {
 		changed = true;
-		set_soundalign(sa);
 	}
+	set_soundalign(sa);
 	
 	// backgroundImage
 	
@@ -469,6 +476,12 @@ double region_node::get_region_soundlevel(bool fromdom) const {
 	return fromdom?m_soundlevel:m_display_soundlevel;
 }
 
+#ifdef USE_SMIL21
+common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
+	return fromdom?m_soundalign:m_display_soundalign;
+}
+#endif
+
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_dim(\"%s\", \"%s\") to %s", m_node->get_attribute("id"), which.c_str(), repr(rd).c_str());
@@ -500,3 +513,9 @@ void region_node::set_region_soundlevel(double level) {
 	m_display_soundlevel = level;
 }
 
+#ifdef USE_SMIL21
+void region_node::set_region_soundalign(common::sound_alignment sa) {
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_soundalign()");
+	m_display_soundalign = sa;
+}
+#endif

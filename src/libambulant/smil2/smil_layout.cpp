@@ -284,11 +284,12 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 #endif
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_body_regions: region for 0x%x %s", (void*)n, n->get_local_name().c_str());
 		region_node *rn = new region_node(n, di_parent);
+		region_node *parent = get_region_node_for(n, false);
+		if (parent) rn->fix_from_region_node(parent);
 		rn->reset();
 		rn->set_showbackground(false);
 		rn->set_as_subregion(true);
 
-		region_node *parent = get_region_node_for(n, false);
 		if (!parent) {
 			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: subregion positioning on default region, node=0x%x, rn=0x%x", (void*)n, (void*)rn);
 			m_default_region_subregions.push_back(rn);

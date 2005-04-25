@@ -99,6 +99,9 @@ class region_node : public common::animation_destination {
 	region_node(const lib::node *n, dimension_inheritance di);
 	virtual ~region_node();
 	
+	// Initialize body subregion nodes from their real region node.
+	void region_node::fix_from_region_node(const region_node *parent);
+	
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();
 
@@ -131,7 +134,7 @@ class region_node : public common::animation_destination {
 	bool is_subregion() const { return m_is_subregion; }
 	double get_soundlevel() const { return m_display_soundlevel; }
 #ifdef USE_SMIL21
-	common::sound_alignment get_soundalign() const { return m_soundalign; }
+	common::sound_alignment get_soundalign() const { return m_display_soundalign; }
 	const char *get_bgimage() const { return m_bgimage; }
 	common::tiling get_tiling() const;
 #endif
@@ -145,7 +148,7 @@ class region_node : public common::animation_destination {
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
 #ifdef USE_SMIL21
-	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; }
+	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
 #endif
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
@@ -154,11 +157,17 @@ class region_node : public common::animation_destination {
 	lib::color_t get_region_color(const std::string& which, bool fromdom = false) const;
 	common::zindex_t get_region_zindex(bool fromdom = false) const;
 	double get_region_soundlevel(bool fromdom = false) const;
+#ifdef USE_SMIL21
+	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
+#endif
 	
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
 	void set_region_color(const std::string& which, lib::color_t clr);
 	void set_region_zindex(common::zindex_t z);
 	void set_region_soundlevel(double level);
+#ifdef USE_SMIL21
+	void set_region_soundalign(common::sound_alignment sa);
+#endif
 	
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
@@ -236,6 +245,9 @@ class region_node : public common::animation_destination {
 	lib::color_t m_display_bgcolor;
 	lib::color_t m_display_color;
 	double m_display_soundlevel;
+#ifdef USE_SMIL21
+	common::sound_alignment m_display_soundalign;
+#endif // USE_SMIL21
 	
 	// verifier
 	static int node_counter;
