@@ -324,7 +324,15 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		dummy->stop();
 		delete dummy;
 	}
-	net::url u(lpszPathName);
+	TCHAR path[_MAX_PATH];
+	TCHAR *pFilePart = 0;	
+	GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
+	
+	net::url u(path);
+	if (!u.is_absolute()) {
+		lib::logger::get_logger()->error("Cannot play from non-absolute pathname: %s", lpszPathName);
+		return;
+	}
 	dummy = create_player_instance(u);
 	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
