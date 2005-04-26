@@ -149,7 +149,7 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "int_tuple";
 	} else if(m_attrname == "color") {
 		m_attrtype = "color";
-#ifdef USE_SMIL21notyet
+#ifdef USE_SMIL21
 	} else if (m_attrname == "soundAlign") {
 		m_attrtype = "soundAlign";
 #endif

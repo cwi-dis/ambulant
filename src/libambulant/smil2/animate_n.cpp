@@ -543,6 +543,44 @@ class underlying_to_motion_animation : public underlying_to_animation<lib::point
 	}
 };
 
+#ifdef USE_SMIL21
+class soundalign_animation : public animate_node {
+  public:
+	soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	~soundalign_animation();
+
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const;
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const;
+	void apply_self_effect(animate_registers& regs) const;
+};
+
+
+soundalign_animation::soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+:	animate_node(ctx, n, aattrs)
+{
+}
+
+soundalign_animation::~soundalign_animation()
+{
+}
+
+void
+soundalign_animation::read_dom_value(common::animation_destination *dst, animate_registers& regs) const
+{
+}
+
+bool
+soundalign_animation::set_animated_value(common::animation_destination *dst, animate_registers& regs) const
+{
+	return false;
+}
+
+void
+soundalign_animation::apply_self_effect(animate_registers& regs) const
+{
+}
+#endif // USE_SMIL21
+
 ////////////////////////////////////
 // animate_node factory functions
 
@@ -585,12 +623,12 @@ animate_node* animate_node::new_zindex_animation(context_type *ctx, const node *
 	return new zindex_animation<F>(ctx, n, aattrs);
 }
 
-#ifdef USE_SMIL21notyet
+#ifdef USE_SMIL21
 animate_node* animate_node::new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
-	typedef common::zindex_t attr_t;
-	assert(aattrs->is_discrete();
+	typedef common::sound_alignment attr_t;
+	assert(aattrs->is_discrete());
 	typedef discrete_map_f<attr_t> F;
-	return new soundalign_animation<F>(ctx, n, aattrs);
+	return new soundalign_animation(ctx, n, aattrs);
 }
 #endif
 
@@ -624,7 +662,7 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_zindex_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "position") {
 		return new_position_animation(ctx, n, aattrs);
-#ifdef USE_SMIL21notyet
+#ifdef USE_SMIL21
 	} else if(aattrs->get_target_attr() == "soundAlign") {
 		return new_soundalign_animation(ctx, n, aattrs);
 #endif
