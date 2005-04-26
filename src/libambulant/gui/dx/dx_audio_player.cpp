@@ -53,6 +53,7 @@
 #include "ambulant/gui/dx/dx_audio_player.h"
 
 #include "ambulant/lib/logger.h"
+#include <math.h>
 
 using namespace ambulant;
 
@@ -243,9 +244,9 @@ void gui::dx::audio_player::set_progress(int p) {
 // can be 0 to 100
 void gui::dx::audio_player::set_volume(long val) {
 	if(m_basic_audio == 0) return;
-	val = (val>=0)?val:0;
-	val = (val<=100)?val:100;
-	long cdb = -(100-val)*100;
+	if (val < 0) val = 0;
+	if (val > 100) val = 100;
+	long cdb = (long)(20.0*log10((double)val/100.0)*100);
 	m_basic_audio->put_Volume(cdb);
 }
 		
