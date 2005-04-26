@@ -152,7 +152,9 @@ void
 region_node::fix_from_region_node(const region_node *parent)
 {
 	set_soundlevel(parent->get_soundlevel());
+#ifdef USE_SMIL21
 	set_soundalign(parent->get_soundalign());
+#endif
 }
 
 bool
