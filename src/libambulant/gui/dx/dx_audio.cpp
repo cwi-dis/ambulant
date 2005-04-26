@@ -60,6 +60,7 @@
 
 #include "ambulant/common/region.h"
 
+
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -77,7 +78,15 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
 	m_update_event(0), 
-	m_worker(worker) {
+	m_worker(worker),
+	m_level(1.0)
+#ifdef USE_SMIL21
+	, m_balance(0),
+	m_intransition(NULL),
+	m_outtransition(NULL),
+	m_transition_engine(NULL)
+#endif
+{
 	
 	AM_DBG lib::logger::get_logger()->debug("dx_audio_renderer(0x%x)", this);
 	net::url url = m_node->get_url("src");
@@ -94,6 +103,12 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 gui::dx::dx_audio_renderer::~dx_audio_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_audio_renderer()");
 	if(m_player) stop();
+#ifdef USE_SMIL21
+	if (m_transition_engine) {
+		delete m_transition_engine;
+		m_transition_engine = NULL;
+	}
+#endif                                   
 }
 
 void gui::dx::dx_audio_renderer::start(double t) {
@@ -125,21 +140,14 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	// Activate this renderer.
 	m_activated = true;
 		
-	// And set volume(s)
-	if (m_dest) {
-		const common::region_info *info = m_dest->get_info();
-		double level = info ? info->get_soundlevel() : 1;
-		if (level != 1)
-			m_player->set_volume((long)(level*100));
 #ifdef USE_SMIL21
-		common::sound_alignment align = info ? info->get_soundalign() : common::sa_default;
-		if (align == common::sa_left) {
-			m_player->set_balance(-100);
-		} else if (align == common::sa_right) {
-			m_player->set_balance(100);
-		}
-#endif
+	if (m_intransition && !m_transition_engine) {
+		m_transition_engine = new smil2::audio_transition_engine();
+		m_transition_engine->init(m_event_processor, false, m_intransition);
 	}
+#endif                                   
+	// And set volume(s)
+	update_levels();
 
 	// Start the underlying player
 	m_player->start(t);
@@ -149,6 +157,55 @@ void gui::dx::dx_audio_renderer::start(double t) {
 		
 	// Schedule a self-update
 	schedule_update();
+}
+
+void gui::dx::dx_audio_renderer::update_levels() {
+	if (!m_dest) return;
+	const common::region_info *info = m_dest->get_info();
+	double level = info ? info->get_soundlevel() : 1;
+#ifdef USE_SMIL21
+	if (m_intransition || m_outtransition) {
+		level = m_transition_engine->get_volume(level);
+	}
+#endif                                   
+	if (level != m_level)
+		m_player->set_volume((long)(level*100));
+	m_level = level;
+#ifdef USE_SMIL21
+	common::sound_alignment align = info ? info->get_soundalign() : common::sa_default;
+	int balance = 0;
+	
+	if (align == common::sa_left) {
+		balance = -100;
+	} else if (align == common::sa_right) {
+		balance = 100;
+	}
+	if (balance != m_balance)
+		m_player->set_balance(balance);
+	m_balance = balance;
+#endif
+}
+
+void
+gui::dx::dx_audio_renderer::set_intransition(const lib::transition_info* info) {
+#ifdef USE_SMIL21
+ 	if (m_transition_engine)
+		delete m_transition_engine;
+	m_intransition = info;
+	m_transition_engine = new smil2::audio_transition_engine();
+	m_transition_engine->init(m_event_processor, false, info);
+#endif // USE_SMIL21
+}
+
+void
+gui::dx::dx_audio_renderer::start_outtransition(const lib::transition_info* info) {
+#ifdef USE_SMIL21
+ 	if (m_transition_engine)
+		delete m_transition_engine;
+	m_outtransition = info;
+	m_transition_engine = new smil2::audio_transition_engine();
+	m_transition_engine->init(m_event_processor, true, info);
+#endif // USE_SMIL21
 }
 
 void gui::dx::dx_audio_renderer::seek(double t) {
@@ -189,6 +246,7 @@ void gui::dx::dx_audio_renderer::update_callback() {
 		return;
 	}
 	if(m_player->is_playing()) {
+		update_levels();
 		schedule_update();
 	} else {
 		m_update_event = 0;
