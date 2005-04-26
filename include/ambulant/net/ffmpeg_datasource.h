@@ -336,13 +336,13 @@ typedef std::pair<timestamp_t, char*> qelt;
 
 
 
-#if 0
-struct pts_comparison {
-	bool operator () (const std::pair<timestamp_t, video_frame> left, const std::pair<timestamp_t, video_frame> right) {
-    	return left.first > right.first;
+class sorted_frame_compare {
+ public:
+	bool operator () (const qelt left, const qelt right) {
+    		return left.first > right.first;
   	}
 };
-#endif
+typedef std::priority_queue<qelt, std::vector<qelt>, sorted_frame_compare > sorted_frames;
 
 class ffmpeg_video_decoder_datasource:
 	virtual public video_datasource,
@@ -372,17 +372,17 @@ class ffmpeg_video_decoder_datasource:
   private:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
-    bool _end_of_file();
+	bool _end_of_file();
 	bool _buffer_full();
+	void _pop_top_frame();
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
 	int m_stream_index;
   	video_format m_fmt;
  	bool m_src_end_of_file;
-    lib::event_processor *m_event_processor;
-  std::priority_queue<qelt, std::vector<qelt>, std::greater<qelt> > m_frames;
-	//std::priority_queue<qelt> m_frames;
+ 	lib::event_processor *m_event_processor;
+	sorted_frames  m_frames;
 	qelt m_old_frame;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;

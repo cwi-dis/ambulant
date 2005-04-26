@@ -151,8 +151,8 @@ qt_transition_blitclass_fade::update()
 	double fac1 = 1.0 - m_progress;
 	double fac2 = 1.0 - fac1;
 #else /*OPTIM*/
-	u_int mul1 = 255 - (u_int) (m_progress * 255);
-	u_int mul2 = 255 - mul1;
+	unsigned int mul1 = 255 - (unsigned int) (m_progress * 255);
+	unsigned int mul2 = 255 - mul1;
 #endif/*OPTIM*/
 	for(int i = 0;i < iw;i++){
 		for(int j = 0; j < ih;j++){
