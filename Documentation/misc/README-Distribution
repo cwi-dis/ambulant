@@ -5,6 +5,9 @@ Before creating the distribution
 ================================
 
 - make sure your CVS tree is up to date and that there are no uncommited files
+- make sure all /*AM_DBG*/ have been changed into AM_DBG
+- make sure all the correct renderers are configured (for example the
+  quicktime video renderer on the mac)
 - change the version number in:
   - configure.in
   - include/ambulant/version.h
