@@ -1,6 +1,29 @@
 # odd lines are URLs as used in .smil files
 # even lines are relative pathnames of the corresponding cache
+#
+# SMIL 2.0 only has one entry point:
+#
 http://www.w3.org/2001/SMIL20/SMIL20.dtd
 DTDCache/SMIL20/SMIL20.dtd
+#
+# SMIL 2.1 has 4 entry points:
+#
 http://www.w3.org/2005/SMIL21/WD/SMIL21.dtd
 DTDCache/SMIL21/SMIL21LanguageProfile.dtd
+http://www.w3.org/2005/SMIL21/WD/Language
+DTDCache/SMIL21/SMIL21LanguageProfile.dtd
+http://www.w3.org/2005/SMIL21/WD/MobileProfile
+DTDCache/SMIL21/SMIL21MobileProfile.dtd
+http://www.w3.org/2005/SMIL21/WD/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobileProfile.dtd
+#
+# SMIL 2.1 as RC 
+#
+http://www.w3.org/2005/SMIL21/RC/SMIL21.dtd
+DTDCache/SMIL21/SMIL21LanguageProfile.dtd
+http://www.w3.org/2005/SMIL21/RC/Language
+DTDCache/SMIL21/SMIL21LanguageProfile.dtd
+http://www.w3.org/2005/SMIL21/RC/MobileProfile
+DTDCache/SMIL21/SMIL21MobileProfile.dtd
+http://www.w3.org/2005/SMIL21/RC/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobileProfile.dtd
