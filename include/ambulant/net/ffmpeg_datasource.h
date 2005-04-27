@@ -374,7 +374,7 @@ class ffmpeg_video_decoder_datasource:
 	bool _select_decoder(video_format &fmt);
 	bool _end_of_file();
 	bool _buffer_full();
-	void _pop_top_frame();
+	qelt _pop_top_frame();
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;

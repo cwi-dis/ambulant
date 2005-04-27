@@ -844,7 +844,7 @@ demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
 		vframe.data = frame_data;
 		vframe.size = sz;
 		m_frames.push(std::pair<timestamp_t, video_frame>(pts,vframe));
-		AM_DBG  lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): %lld 0x%x %d", pts, vframe.data, vframe.size);
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): %lld 0x%x %d", pts, vframe.data, vframe.size);
 	}		
 	if ( m_frames.size() || m_src_end_of_file  ) {
 		if ( m_client_callback ) {
@@ -1007,7 +1007,9 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
-	m_fmt = fmt;	
+	m_fmt = fmt;
+	m_old_frame.first = 0;
+	m_old_frame.second = NULL;
 }
 
 ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
@@ -1122,12 +1124,21 @@ print_frames(sorted_frames frames) {
 	return;
 }
 
-void 
+qelt 
 ffmpeg_video_decoder_datasource::_pop_top_frame() {
-	qelt frame = m_frames.top();
+	// pop a frame, return the new top frame
+	// the old top frame is remembered in m_old_frame
+	// old data in m_old_frame is freed
+  
+	if (m_old_frame.second)
+		free (m_old_frame.second);
+	if (m_frames.empty()) {
+		m_old_frame.second = NULL;
+		return m_old_frame;
+	}
+	m_old_frame = m_frames.top();
 	m_frames.pop();
-	if (frame.second) 
-		free (frame.second);
+	return m_frames.top();
 }
 
 void 
@@ -1375,49 +1386,25 @@ ffmpeg_video_decoder_datasource::_buffer_full()
 }	
 
 
-
 char* 
-ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, int *size)
+ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timestamp_p, int *size_p)
 {
-	// here we pay attention to now, the frame that is closest to now but just before is returned.
-	qelt frame, prev_frame;
-	char *rv = NULL;
-	*timestamp = 0;
-	*size = 0;
+	// drop frames until (just before) "now"
+	qelt frame;
 	m_lock.enter();
-	if( m_frames.size() > 0 ) {
-		//assert(m_frames.size() > 0);
-		prev_frame.first = 0;
-		prev_frame.second = NULL;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: prev_frame: prev_frame.first=%lld, second==0x%x",prev_frame.first, prev_frame.second);
-		frame = m_frames.top();
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: frame: frame.first=%lld, second==0x%x",frame.first, frame.second);
-		while (frame.first < now || m_frames.size() == 0) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding frame pts=%lld, now=%lld, data ptr = 0x%x",prev_frame.first, now, prev_frame.second);		
-			if (prev_frame.second) {
-				free(prev_frame.second);
-				prev_frame.second = NULL;
-			}
-			prev_frame.first = frame.first;
-			prev_frame.second = frame.second;
-			if (m_frames.size() == 0) {
-				prev_frame.first = 0;
-				prev_frame.second = NULL;
-				break;
-			}
-			m_frames.pop();
-			frame = m_frames.top();
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next frame: frame.first=%lld, second==0x%x",frame.first, frame.second);
-		}
-		AM_DBG if (prev_frame.first != 0) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: returning frame pts=%lld, date ptr=0x%x, still %d frames in the queue",prev_frame.first, prev_frame.second, m_frames.size());
-		rv = prev_frame.second;
-		*timestamp = prev_frame.first;
-		*size = m_size;
-	}
-	m_lock.leave();
-	return rv;
-}
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%d)\n", (int) now);
 
+	while ( m_frames.size() 
+		&& (frame = _pop_top_frame(), frame.first < now)) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
+	}
+
+	frame = m_old_frame;
+	m_lock.leave();
+	if (timestamp_p) *timestamp_p = frame.first;
+	if (size_p) *size_p = m_size;
+	return frame.second;
+}
 
 std::pair<bool, double>
 ffmpeg_video_decoder_datasource::get_dur()
