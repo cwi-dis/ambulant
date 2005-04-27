@@ -78,6 +78,9 @@ struct animate_registers {
 	common::zindex_t zi;
 	int iv;
 	double dv;
+#ifdef USE_SMIL21
+	common::sound_alignment sa;
+#endif
 };
 
 // An animate_node is the base class for all animation node flavors

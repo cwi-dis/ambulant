@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/common/region_info.h"
 
 #include <string>
 #include <vector>
@@ -105,6 +106,9 @@ class animate_attrs {
 	void get_values(std::vector<common::region_dim>& v);
 	void get_values(std::vector<lib::color_t>& v);
 	void get_values(std::vector<lib::point>& v);
+#ifdef USE_SMIL21
+	void get_values(std::vector<common::sound_alignment>& v);
+#endif
 	
   private:
 	

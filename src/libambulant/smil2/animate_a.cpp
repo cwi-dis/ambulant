@@ -467,6 +467,29 @@ void animate_attrs::get_values(std::vector<lib::color_t>& v) {
 	}
 }
 
+void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
+	common::sound_alignment sa = common::sa_default;
+	if(m_animtype == "to") {
+		const char *pto = m_node->get_attribute("to");
+		assert(pto);
+		if (strcmp(pto, "left") == 0)
+			sa = common::sa_left;
+		else if (strcmp(pto, "right") == 0)
+			sa = common::sa_right;
+		else if (strcmp(pto, "both") == 0)
+			sa = common::sa_both;
+		else if (strcmp(pto, "default") == 0)
+			sa = common::sa_default;
+		else {
+			m_logger->error("<%s id=\"%s\">: invalid soundAlign \"%s\"", 
+			m_tag.c_str(), m_id.c_str(), pto);
+		}
+	} else {
+		assert(false);
+	}
+	v.push_back(sa);
+}
+
 // point := S? (? x S? , S? y S? )?
 lib::point animate_attrs::to_point(const std::string& s) {
 	lib::point_p parser;

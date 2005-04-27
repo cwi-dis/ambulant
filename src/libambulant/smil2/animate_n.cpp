@@ -552,12 +552,16 @@ class soundalign_animation : public animate_node {
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const;
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const;
 	void apply_self_effect(animate_registers& regs) const;
+  private:
+	std::vector<common::sound_alignment> m_values;
 };
 
 
 soundalign_animation::soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	animate_node(ctx, n, aattrs)
 {
+	m_aattrs->get_values(m_values);
+	assert(m_values.size() == 1);
 }
 
 soundalign_animation::~soundalign_animation()
@@ -567,17 +571,24 @@ soundalign_animation::~soundalign_animation()
 void
 soundalign_animation::read_dom_value(common::animation_destination *dst, animate_registers& regs) const
 {
+	regs.sa = dst->get_region_soundalign(true);
 }
 
 bool
 soundalign_animation::set_animated_value(common::animation_destination *dst, animate_registers& regs) const
 {
+	common::sound_alignment sa = dst->get_region_soundalign(false);
+	if (sa != regs.sa) {
+		dst->set_region_soundalign(regs.sa);
+		return true;
+	}
 	return false;
 }
 
 void
 soundalign_animation::apply_self_effect(animate_registers& regs) const
 {
+	regs.sa = m_values[0];
 }
 #endif // USE_SMIL21
 
