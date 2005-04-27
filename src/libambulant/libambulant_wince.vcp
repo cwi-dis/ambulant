@@ -48,7 +48,7 @@ CFG=libambulant_wince - Win32 (WCE ARM) Debug
 # PROP Target_Dir ""
 CPP=clarm.exe
 # ADD BASE CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT) /c
-# ADD CPP /nologo /W3 /I "..\..\include" /I "..\..\include\ce3\stl" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\jpeg" /I "..\..\third_party_packages\lpng125" /I "..\..\third_party_packages\zlib" /I "..\..\third_party_packages\mp3lib" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /D "COMPILED_FROM_DSP" /D "XML_STATIC" /YX /Oxs /M$(CECrtMT) /c
+# ADD CPP /nologo /W3 /I "..\..\include" /I "..\..\include\ce3\stl" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\jpeg" /I "..\..\third_party_packages\lpng125" /I "..\..\third_party_packages\zlib" /I "..\..\third_party_packages\mp3lib" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /D "COMPILED_FROM_DSP" /D "XML_STATIC" /D "USE_SMIL21" /YX /Oxs /M$(CECrtMT) /c
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"..\..\lib\wince-arm\libambulant_wince.lib"
