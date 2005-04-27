@@ -87,8 +87,19 @@ media items can be retrieved via HTTP on most platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support has not been tested very thoroughly, feedback is requested.
 
-SMIL support
-------------
+SMIL 2.1 support
+----------------
+
+This release includes full support for SMIL 2.1 Release Candidate.
+All new 2.1 features are implemented on all platforms, with two exceptions:
+- backgroundRepeat is not implemented in the Windows CE player
+- soundAlign is not implemented in the Windows CE player
+
+The Ambulant homepage, <http://www.ambulantplayer.org>, has more
+information on SMIL 2.1 RC, test documents, etc.
+
+SMIL 2.0 support
+----------------
 
 This release supports full SMIL 2.0, with the following broad
 exceptions:
