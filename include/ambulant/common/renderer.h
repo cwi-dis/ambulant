@@ -266,7 +266,7 @@ class active_video_renderer : public common::renderer_playable {
     lib::event_processor *evp,
 	common::factories *factory);
 
-  	virtual ~active_video_renderer() {};
+  	virtual ~active_video_renderer();
 	
 	/// Return true if video is paused.
   	bool is_paused() { return m_is_paused; };

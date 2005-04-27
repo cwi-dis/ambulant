@@ -992,6 +992,7 @@ demux_video_datasource::get_dur()
 ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt)
 :	m_src(src),
 	m_src_end_of_file(false),
+	m_thread(NULL),
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_pts_last_frame(0),

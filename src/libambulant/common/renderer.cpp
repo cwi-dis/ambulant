@@ -317,6 +317,14 @@ active_video_renderer::active_video_renderer(
 	m_lock.leave();
 }
 
+active_video_renderer::~active_video_renderer() {
+	m_lock.enter();
+	if (m_audio_renderer) m_audio_renderer->release();
+	// m_audio_ds released by audio renderer
+	if (m_src) m_src->release();
+	m_lock.leave();
+}
+
 void
 active_video_renderer::stop()
 { 
