@@ -104,9 +104,11 @@ ffmpeg:
 	no need to install):
 		$ cd ffmpeg-0.4.8
 		$ patch -p0 < ../ffmpeg-macosx-patch    # For Mac OS X only
-		$ ./configure
+		$ ./configure       (*)
 		$ make
 		
+	(*) Use configure --disable-opts if you get a lot of linker errors
+
 	Note that there is no reason to install ffmpeg (and it may actually
 	fail to install cleanly on some systems): Ambulant Player links
 	against the static libraries in the build directory.
