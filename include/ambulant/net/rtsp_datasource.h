@@ -105,7 +105,7 @@ struct rtsp_context_t {
 	bool eof;
 	const char* audio_codec_name;
 	const char* video_codec_name;
-	
+	timeval first_sync_time;
 	audio_format audio_fmt;	
 	video_format video_fmt;
 	detail::datasink *sinks[MAX_STREAMS];
