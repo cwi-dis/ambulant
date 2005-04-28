@@ -19,11 +19,11 @@ DTDCache/SMIL21/SMIL21ExtendedMobileProfile.dtd
 #
 # SMIL 2.1 as RC 
 #
-http://www.w3.org/2005/SMIL21/RC/SMIL21.dtd
+http://www.w3.org/2005/SMIL21/CR/SMIL21.dtd
 DTDCache/SMIL21/SMIL21LanguageProfile.dtd
-http://www.w3.org/2005/SMIL21/RC/Language
+http://www.w3.org/2005/SMIL21/CR/Language
 DTDCache/SMIL21/SMIL21LanguageProfile.dtd
-http://www.w3.org/2005/SMIL21/RC/MobileProfile
+http://www.w3.org/2005/SMIL21/CR/MobileProfile
 DTDCache/SMIL21/SMIL21MobileProfile.dtd
-http://www.w3.org/2005/SMIL21/RC/ExtendedMobileProfile
+http://www.w3.org/2005/SMIL21/CR/ExtendedMobileProfile
 DTDCache/SMIL21/SMIL21ExtendedMobileProfile.dtd
