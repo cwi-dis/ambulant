@@ -187,7 +187,10 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 	m_static_lock.enter();
 	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
 	if (m_renderers.size() == 1 && (*first)->m_volcount == 0
-	    && ! ((*first)->m_intransition || (*first)->m_outtransition)) {
+#ifdef USE_SMIL21
+	    && ! ((*first)->m_intransition || (*first)->m_outtransition)
+#endif
+	    ) {
 		// Exactly one active stream, no volume/pan processing,
 		// no transitions: use simple copy
 		Uint8 *single_data;

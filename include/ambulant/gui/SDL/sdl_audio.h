@@ -119,6 +119,9 @@ class sdl_active_audio_renderer : public common::renderer_playable {
 #ifdef USE_SMIL21
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
+#else
+	void set_intransition(const lib::transition_info* info) {}
+	void start_outtransition(const lib::transition_info* info) {}
 #endif
   private:
    	void data_avail();

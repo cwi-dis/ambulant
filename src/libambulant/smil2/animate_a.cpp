@@ -467,6 +467,7 @@ void animate_attrs::get_values(std::vector<lib::color_t>& v) {
 	}
 }
 
+#ifdef USE_SMIL21
 void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	common::sound_alignment sa = common::sa_default;
 	if(m_animtype == "to") {
@@ -489,6 +490,7 @@ void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	}
 	v.push_back(sa);
 }
+#endif // USE_SMIL21
 
 // point := S? (? x S? , S? y S? )?
 lib::point animate_attrs::to_point(const std::string& s) {
