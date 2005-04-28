@@ -54,6 +54,11 @@
 #include <vector>
 #include <queue>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
 #include "ambulant/config/config.h"
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
@@ -311,8 +316,7 @@ class demux_video_datasource:
 	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	audio_datasource* m_audio_src;
-	lib::critical_section m_lock;
-  
+	lib::critical_section m_lock; 
 };
 
 typedef std::pair<timestamp_t, char*> qelt;

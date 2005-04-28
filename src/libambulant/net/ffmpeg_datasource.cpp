@@ -120,6 +120,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("MPA", CODEC_ID_MP3);
 	add_codec("MPA-ROBUST", CODEC_ID_MP3);
 	add_codec("X_MP3-DRAFT-00", CODEC_ID_MP3);
+	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
 }
 
 
@@ -276,6 +277,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 	m_nstream(0)
 {
 	m_audio_fmt = audio_format("ffmpeg");
+	m_audio_fmt.bits = 16;
 	int audio_idx = audio_stream_nr();
 	if ( audio_idx >= 0) {
 		m_audio_fmt.parameters = (void *)&con->streams[audio_idx]->codec;
@@ -763,6 +765,7 @@ demux_video_datasource::stop()
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	m_lock.leave();
+	
 }	
 
 void 
@@ -828,6 +831,7 @@ demux_video_datasource::frame_done(timestamp_t pts, bool keepdata)
 	}
 	m_lock.leave();
 }
+
 
 void 
 demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
@@ -1224,14 +1228,14 @@ ffmpeg_video_decoder_datasource::data_avail()
 		ptr = inbuf;
 		
 		while (sz > 0) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 				len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video:, returned %d decoded bytes , %d left, gotpic = %d, ipts = %lld", len, sz - len, got_pic, ipts);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video:, returned %d decoded bytes , %d left, gotpic = %d, ipts = %lld", len, sz - len, got_pic, ipts);
 				if (len >= 0) {
 					assert(len <= sz);
 					ptr +=len;	
-					sz -= len;
+					sz  -= len;
 					if (got_pic) {
 						AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
@@ -1435,7 +1439,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, dataso
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src)
 :	m_con(NULL),
-	m_fmt(audio_format(0,0,0)),
+	m_fmt(src->get_audio_format()),
 	m_event_processor(NULL),
 	m_src(src),
 	m_duration(false, 0),
@@ -1747,6 +1751,7 @@ ffmpeg_decoder_datasource::get_audio_format()
 		m_fmt.channels = m_con->channels;
 	}
 #endif
+	//m_fmt.bits = 16; // XXXX
 	if (m_fmt.samplerate == 0) {
 		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, asking ffmpeg");
 		m_fmt.samplerate = m_con->sample_rate;
