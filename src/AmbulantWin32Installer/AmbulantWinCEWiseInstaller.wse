@@ -28,7 +28,7 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.3
+  Version File=1.4
   Version Description=Ambulant Player for Handheld
   Version Copyright=Copyright © 2004-2005 Stichting CWI
   Version Company=Stichting CWI
@@ -1175,7 +1175,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=Ambulant-1.3-WinCE
+  Value=Ambulant-1.4-WinCE
   Flags=10000000
 end
 item: Remark
