@@ -11,8 +11,8 @@ Before creating the distribution
 - change the version number in:
   - configure.in
   - include/ambulant/version.h
-  - src/player_macos/Info.plist
-  - src/player_macos/*.lproj/InfoPlist.strings
+  - src/player_macosx/Info.plist
+  - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_wince/AmbulantPlayer.rc
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
@@ -97,7 +97,8 @@ Creating the MacOSX installer
 Creating the Windows desktop installer
 ======================================
 
-Build the player.
+Build the player. Make sure you are building a *Release* player,
+not a *Debug* player.
 
 Open src/AmbulantWin32Installer/AmbulantWiseInstaller.wse with Wise.
 Make sure the files mentioned above are included. If you need to add more
@@ -107,14 +108,11 @@ want to turn these into relative paths.
 The installer will be deposited in bin/win32. You need to change the filename
 to include the version number.
 
-TBD: are there version numbers to be fixed?
-
-TBD: Wise version?
-
 Creating the Windows CE installer
 =================================
 
-Build the player.
+Build the player. Make sure you are building a *Release* player,
+not a *Debug* player.
 
 Open src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse with Wise.
 The procedure is pretty similar as for the desktop windows player, the
