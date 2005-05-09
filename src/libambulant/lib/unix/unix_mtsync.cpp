@@ -133,7 +133,7 @@ lib::unix::condition::wait(int microseconds, critical_section &cs)
 		}
 		rv = pthread_cond_timedwait(&m_condition, &cs.m_cs, &ts);
 	} else {
-		rv = pthread_cond_timedwait(&m_condition, &cs.m_cs, NULL);
+		rv = pthread_cond_wait(&m_condition, &cs.m_cs);
 	}
 	if (rv < 0) {
 		if (errno != ETIMEDOUT)
