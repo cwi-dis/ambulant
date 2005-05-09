@@ -58,6 +58,8 @@ using namespace net;
 #define AM_DBG if(0)
 #endif
 
+#define MIN_VIDEO_PACKET_SIZE 1024
+
 
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context)
 :	m_context(context)
@@ -100,14 +102,19 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->video_stream = -1;
 	context->nstream = 0;
 	context->blocking_flag = 0;
-	context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
-	if (!context->audio_packet) {
-		return NULL;		
-	}
-	context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
-	if (!context->video_packet) {
-		return NULL;		
-	}
+	context->audio_packet = NULL;
+	//context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
+	//if (!context->audio_packet) {
+	//	return NULL;		
+	//}
+	context->video_packet = NULL;
+	//context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
+	//if (!context->video_packet) {
+	//		return NULL;		
+	//}
+	context->video_buffer = NULL;
+	context->video_buffer_size = 0;
+	context->last_pts = 0;
 	context->audio_codec_name = NULL;
 	context->video_codec_name = NULL;
 	context->audio_fmt = audio_format("live");
@@ -214,6 +221,21 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 }
 
 
+#define CLIP_BEGIN 0;
+
+bool
+ambulant::net::rtsp_demux::set_position(timestamp_t time)
+{
+	float time_sec;
+	
+	time_sec = time / 1000000.0;
+	MediaSubsession* subsession;
+	MediaSubsessionIterator iter(*m_context->media_session);
+	while (( subsession = iter.next() ) != NULL) {
+		m_context->rtsp_client->playMediaSubsession(*subsession, time_sec);
+	}
+}
+
 
 unsigned long 
 ambulant::net::rtsp_demux::run() 
@@ -231,8 +253,9 @@ ambulant::net::rtsp_demux::run()
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
 	}
-	
+	set_position( 0 );
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
+		set_position( 60000000);
 
 	while(!m_context->eof) {
 		MediaSubsession* subsession;
@@ -241,6 +264,7 @@ ambulant::net::rtsp_demux::run()
 		while ((subsession = iter.next()) != NULL) {
 			if (strcmp(subsession->mediumName(), "audio") == 0) {
 				if(m_context->need_audio) {
+					assert(!m_context->audio_packet);
 					m_context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an audio frame");
 					m_context->need_audio = false;
@@ -248,16 +272,16 @@ ambulant::net::rtsp_demux::run()
 				}
 			} else if (strcmp(subsession->mediumName(), "video") == 0) {
 				if (m_context->need_video) {
+					assert(!m_context->video_packet);
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					//std::cout << " MAX_RTP_FRAME_SIZE = " << MAX_RTP_FRAME_SIZE;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
 					m_context->need_video = false;
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet
-					);
+					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
 					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video, m_context, on_source_close,m_context);
 				}
 			} else {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() not interested in this data");
+				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() not interested in this data");
 			}
 		}
 		
@@ -273,7 +297,7 @@ static void
 after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
 
-	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
 	rtsp_context_t* context = NULL;
 	if (data) {
 		context = (rtsp_context_t*) data;
@@ -286,7 +310,9 @@ after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval 
 			context->sinks[context->audio_stream]->data_avail(rpts, (uint8_t*) context->audio_packet, sz);
 			AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail done");
 		}
+		assert (context->audio_packet);
 		free(context->audio_packet);
+		context->audio_packet = NULL;
 		//XXX Do we need to free data here ?
 	}
 	context->blocking_flag = ~0;
@@ -296,7 +322,7 @@ after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval 
 static void 
 after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
 	rtsp_context_t* context = (rtsp_context_t*) data;
 	if (context) {
 		if (context->first_sync_time.tv_sec == 0 && context->first_sync_time.tv_usec == 0 ) {
@@ -304,13 +330,52 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 			context->first_sync_time.tv_usec = pts.tv_usec; 
 		}
 		timestamp_t rpts =  (pts.tv_sec - context->first_sync_time.tv_sec) * 1000000  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
-	
-		if(context->sinks[context->video_stream]) 
-			context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
-		context->blocking_flag = ~0;
+		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
+		
+		
+		//~ if (rpts == context->last_pts) {
+			//~ context->video_buffer = (unsigned char*) realloc(context->video_buffer, context->video_buffer_size + sz);
+			//~ if (context->video_buffer) {
+				//~ if (sz > 0)
+					//~ memcpy((context->video_buffer + context->video_buffer_size), context->video_packet, sz);
+				//~ context->video_buffer_size += sz;
+				//~ lib::logger::get_logger()->debug("after_reading_video: stored !! (I)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+			//~ } else {
+				//~ lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
+			//~ }
+		
+		//~ } else {	
+			//~ if(context->video_buffer) {			
+				//~ if(context->sinks[context->video_stream]) 
+					//~ context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_buffer , context->video_buffer_size);
+			//~ }
+			//~ if (context->video_buffer)
+				//~ free(context->video_buffer);
+			//~ context->last_pts = rpts;
+			//~ context->video_buffer = NULL;
+			//~ context->video_buffer_size = 0;
+			
+			//~ if (sz > 0 )
+				//~ context->video_buffer = (unsigned char*) malloc(sz);
+		
+			//~ if (context->video_buffer) {
+				//~ memcpy(context->video_buffer + context->video_buffer_size, context->video_packet, sz);
+				//~ context->video_buffer_size += sz;
+				//~ lib::logger::get_logger()->debug("after_reading_video: stored !! (II)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+			//~ } else {
+				//~ lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
+			//~ }
+		//~ }
+		
+		 if(context->video_packet) {			
+			if(context->sinks[context->video_stream]) 
+				context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
+		}
 		context->need_video = true;
+		assert(context->video_packet);
 		free(context->video_packet);
+		context->video_packet  = NULL;
+		context->blocking_flag = ~0;
 		//XXX Do we need to free data here ?
 	}
 }

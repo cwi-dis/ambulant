@@ -98,6 +98,9 @@ struct rtsp_context_t {
 	int video_stream;
 	unsigned char* audio_packet;
 	unsigned char* video_packet;
+	unsigned char* video_buffer;
+	int video_buffer_size;
+	timestamp_t last_pts;
 	bool need_audio;
 	bool need_video;
 	int nstream;
@@ -127,7 +130,7 @@ class rtsp_demux : public detail::abstract_demux {
 	double duration(){ return 0.0; };
 	audio_format& get_audio_format() { return m_context->audio_fmt; };
 	video_format& get_video_format() { return m_context->video_fmt; };
-
+	bool set_position(timestamp_t time);
   protected:
 	unsigned long run();
   private:	
