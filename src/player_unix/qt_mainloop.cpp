@@ -202,14 +202,16 @@ AM_DBG logger::get_logger()->debug("add factory for SDL done");
 ambulant::common::player*
 qt_mainloop::create_player(const char* filename) {
 	bool is_mms = strcmp(".mms", filename+strlen(filename)-4) == 0;
+	ambulant::common::player* player;
 	if (is_mms) {
-		m_player = create_mms_player(m_doc, m_factory);
+		player = create_mms_player(m_doc, m_factory);
 	} else {
-		m_player = create_smil2_player(m_doc, m_factory, this);
+		player = create_smil2_player(m_doc, m_factory, this);
 	}
-#ifdef USE_SMIL21notyet
-	m_player->initialize();
+#ifdef USE_SMIL21
+	player->initialize();
 #endif
+	return player;
 }
 
 lib::document *
