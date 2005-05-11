@@ -242,7 +242,7 @@ void databuffer::pushdata(int sz)
 	if (m_buffer_full) {
         lib::logger::get_logger()->trace("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
     }
-	
+	// std::cout << sz << "\n";
 	assert(sz >= 0);
 	assert(m_size >= 0);
 	

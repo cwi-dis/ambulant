@@ -62,7 +62,9 @@ using namespace net;
 
 
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context)
-:	m_context(context)
+:	m_context(context),
+	m_clip_begin(0),
+	m_clip_begin_set(false)
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
@@ -221,7 +223,12 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 }
 
 
-#define CLIP_BEGIN 0;
+void
+ambulant::net::rtsp_demux::seek(timestamp_t time)
+{
+	m_clip_begin = time;
+	m_clip_begin_set = false;
+}
 
 bool
 ambulant::net::rtsp_demux::set_position(timestamp_t time)
@@ -253,11 +260,15 @@ ambulant::net::rtsp_demux::run()
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
 	}
-	set_position( 0 );
+	
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
-		set_position( 60000000);
+	
 
 	while(!m_context->eof) {
+		if (!m_clip_begin_set) {
+			set_position(m_clip_begin);
+			m_clip_begin_set = true;
+		}
 		MediaSubsession* subsession;
 		MediaSubsessionIterator iter(*m_context->media_session);
 		// Only audio/video session need to apply for a job !

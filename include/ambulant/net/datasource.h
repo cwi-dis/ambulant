@@ -245,7 +245,8 @@ class audio_datasource : virtual public datasource {
 		  
 	/// Returns the native format of the audio data.
 	virtual audio_format& get_audio_format() = 0;
-	
+	// Tells the datasource to start reading data starting from time t.
+	virtual void read_ahead(timestamp_t time) = 0; 
 	// Return the duration of the audio data, if known.
 	virtual std::pair<bool, double> get_dur() = 0;
 };
@@ -272,8 +273,8 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// callback is scheduled through the event_processor.
 	/// The client is not interested in any frames with times earlier
 	/// than the given timestamp.
-	virtual void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp) = 0;
-
+	virtual void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t pts) = 0;
+	
 	/// Called by the client to indicate it wants no more data.
   	virtual void stop() = 0;
 	

@@ -67,7 +67,7 @@ using namespace net;
 audio_datasource* 
 live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
+	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
 	if (!context) {
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: no support for %s", repr(url).c_str());
@@ -129,7 +129,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_f
 video_datasource* 
 live_video_datasource_factory::new_video_datasource(const net::url& url)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
+	AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
 	if (!context) {
 		AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());

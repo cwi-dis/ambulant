@@ -130,11 +130,14 @@ class rtsp_demux : public detail::abstract_demux {
 	double duration(){ return 0.0; };
 	audio_format& get_audio_format() { return m_context->audio_fmt; };
 	video_format& get_video_format() { return m_context->video_fmt; };
+	void seek(timestamp_t time);
 	bool set_position(timestamp_t time);
   protected:
 	unsigned long run();
   private:	
 	rtsp_context_t* m_context;
+  	timestamp_t m_clip_begin;
+  	bool m_clip_begin_set;
 };
 
 

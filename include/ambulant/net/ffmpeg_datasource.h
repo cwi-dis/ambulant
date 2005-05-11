@@ -179,6 +179,7 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	virtual int video_stream_nr() = 0;
 	virtual int nstreams() = 0;
 	virtual double duration() = 0;
+	virtual void seek(timestamp_t time) = 0;
 	//virtual int samplerate() = 0;
 	//virtual int channels() = 0;
 	virtual audio_format& get_audio_format() = 0;
@@ -204,7 +205,7 @@ class ffmpeg_demux : public abstract_demux {
     // XXX this should also be timestamp_t instead of double
   	double duration();
   	int nstreams();
-  
+    void seek(timestamp_t time) {};
     audio_format& get_audio_format() { return m_audio_fmt; };
   	video_format& get_video_format();
 	void cancel();
@@ -239,7 +240,8 @@ class demux_audio_datasource:
 
     void start(lib::event_processor *evp, lib::event *callback);
 	void stop();  
-
+	void read_ahead(timestamp_t time);
+  
     void readdone(int len);
     void data_avail(timestamp_t pts, uint8_t *data, int size);
     bool end_of_file();
@@ -264,6 +266,8 @@ class demux_audio_datasource:
 	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
+  	bool m_thread_started;
+  	
   
 };
 
@@ -282,7 +286,7 @@ class demux_video_datasource:
   		int stream_index);
   
     ~demux_video_datasource();
-
+	void read_ahead(timestamp_t time) {};
     void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
     void stop();  
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
@@ -316,7 +320,10 @@ class demux_video_datasource:
 	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	audio_datasource* m_audio_src;
-	lib::critical_section m_lock; 
+	lib::critical_section m_lock;
+  	bool m_thread_started;
+  	//FILE *m_file;
+  
 };
 
 typedef std::pair<timestamp_t, char*> qelt;
@@ -397,6 +404,7 @@ class ffmpeg_video_decoder_datasource:
   	timestamp_t m_last_p_pts;
   	int m_frame_count;
     lib::critical_section m_lock;
+	//FILE* m_file;
   	
 };
 
@@ -416,7 +424,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
     void data_avail();
     bool end_of_file();
 	bool buffer_full();
-		
+	void read_ahead(timestamp_t time){};
+
 	char* get_read_ptr();
 	int size() const;   
 	std::pair<bool, double> get_dur();
@@ -452,6 +461,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     
     void start(lib::event_processor *evp, lib::event *callback);  
 	void stop();  
+	void read_ahead(timestamp_t time) {};
 
     void readdone(int len);
     void data_avail();

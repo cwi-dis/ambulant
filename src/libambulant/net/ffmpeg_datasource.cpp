@@ -271,11 +271,20 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 // **************************** ffmpeg_demux *****************************
 
 #ifdef WITH_FFMPEG_AVFORMAT
-
+#define CLIPBEGIN 3
 detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 :   m_con(con),
 	m_nstream(0)
 {
+#if WITH_FFMPEG_0_4_9
+	if (CLIPBEGIN > 0) {
+		assert (m_con);
+		assert (m_con->iformat);
+		std::cout << "read_seek" << "\n";
+		int seek = av_seek_frame(m_con, -1, CLIPBEGIN*1000000, 0);
+	} 
+#endif
+	
 	m_audio_fmt = audio_format("ffmpeg");
 	m_audio_fmt.bits = 16;
 	int audio_idx = audio_stream_nr();
@@ -522,7 +531,8 @@ demux_audio_datasource::demux_audio_datasource(const net::url& url, detail::abst
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
-	m_client_callback(NULL)
+	m_client_callback(NULL),
+	m_thread_started(false)
 {	
 	//AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource::ffmpeg_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	// XXX ignoring the codec for now but i'll have to look into this real soon
@@ -561,7 +571,9 @@ void
 demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
-	
+	if (!m_thread_started) {
+		m_thread->start();
+	}
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
@@ -596,6 +608,19 @@ demux_audio_datasource::readdone(int len)
 //	restart_input();
 	m_lock.leave();
 }
+
+void 
+demux_audio_datasource::read_ahead(timestamp_t time)
+{
+	if (m_thread){
+		m_thread->seek(time);
+		if (!m_thread_started) {
+			m_thread->start();
+			m_thread_started = true;
+		}
+	}
+}
+
 
 void 
 demux_audio_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
@@ -731,7 +756,8 @@ demux_video_datasource::demux_video_datasource(const net::url& url, detail::abst
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_client_callback(NULL),
-	m_audio_src(NULL)
+	m_audio_src(NULL),
+	m_thread_started(false)
 {	
 	m_thread->add_datasink(this, stream_index);
 	int audio_stream_idx = m_thread->audio_stream_nr();
@@ -772,6 +798,11 @@ void
 demux_video_datasource::start_frame(ambulant::lib::event_processor *evp, 
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
+	if(!m_thread_started) {
+		m_thread->start();
+		m_thread_started = true;
+	}
+	
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start_frame: (this = 0x%x), callback = 0x%x", (void*) this, (void*) callbackk);
 
@@ -1228,10 +1259,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		ptr = inbuf;
 		
 		while (sz > 0) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 				len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video:, returned %d decoded bytes , %d left, gotpic = %d, ipts = %lld", len, sz - len, got_pic, ipts);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video:, returned %d decoded bytes , %d left, gotpic = %d, ipts = %lld", len, sz - len, got_pic, ipts);
 				if (len >= 0) {
 					assert(len <= sz);
 					ptr +=len;	
@@ -1564,13 +1595,17 @@ ffmpeg_decoder_datasource::data_avail()
 					//uint8_t *tmpptr = (uint8_t*) malloc(cursz);
 					//memcpy(tmpptr, inbuf, cursz);
 					//XXX end hack
+					
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					//free(tmpptr);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
-	
-					m_buffer.pushdata(outsize);
+					if (outsize > 0) {
+						m_buffer.pushdata(outsize);
+					} else {
+						m_buffer.pushdata(0);
+					}
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 					m_src->readdone(decoded);
 				} else {
