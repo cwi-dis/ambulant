@@ -286,7 +286,7 @@ class demux_video_datasource:
   		int stream_index);
   
     ~demux_video_datasource();
-	void read_ahead(timestamp_t time) {};
+	void read_ahead(timestamp_t time);
     void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
     void stop();  
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);

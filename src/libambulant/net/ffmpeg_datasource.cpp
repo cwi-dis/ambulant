@@ -612,13 +612,12 @@ demux_audio_datasource::readdone(int len)
 void 
 demux_audio_datasource::read_ahead(timestamp_t time)
 {
-	if (m_thread){
-		m_thread->seek(time);
-		if (!m_thread_started) {
-			m_thread->start();
-			m_thread_started = true;
-		}
-	}
+	assert(!m_thread_started);
+	assert(m_thread);
+	
+	m_thread->seek(time);
+	m_thread->start();
+	m_thread_started = true;
 }
 
 
@@ -793,6 +792,17 @@ demux_video_datasource::stop()
 	m_lock.leave();
 	
 }	
+
+void 
+demux_video_datasource::read_ahead(timestamp_t time)
+{
+	assert(!m_thread_started);
+	assert(m_thread);
+	
+	m_thread->seek(time);
+	m_thread->start();
+	m_thread_started = true;
+}
 
 void 
 demux_video_datasource::start_frame(ambulant::lib::event_processor *evp, 
