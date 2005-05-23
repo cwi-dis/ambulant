@@ -1,3 +1,60 @@
+2005-05-23 16:15  koelimoe
+
+	* updated version numbers
+
+2005-05-23 16:14  koelimoe
+
+	* added some assertion
+
+2005-05-12 15:48  koelimoe
+
+	* added asserts and a read_ahead method for the video_demuxer
+
+2005-05-11 15:58  koelimoe
+
+	* added read_ahead methods to the audio and video datasources. the
+	  demuxers start to read data on a start(_frame) or read_ahead call
+
+2005-05-10 13:23  keesblom
+
+	* Missing return caused core dump because return value was
+	  undefined.
+
+2005-05-09 16:54  koelimoe
+
+	* added a simple seek for rtsp.
+
+2005-05-09 12:19  keesblom
+
+	* Removed NYC-SMIL2-params.smil because it is not a good enough
+	  example for the distribution
+
+2005-05-09 12:09  keesblom
+
+	* Calling pthread_cond_timedwait() with NULL pointer for the
+	  abstime parameter caused core dump, use pthread_cond_wait in that
+	  case Improved debug messages in qt_fill.cpp
+
+2005-05-04 16:52  koelimoe
+
+	* updated the cvs2cl options
+
+2005-05-02 17:40  keesblom
+
+	* Modification for Fedora Core 3 (gcc 3.4.3)
+
+2005-04-29 14:20  jackjansen
+
+	* Removing binaries
+
+2005-04-29 14:15  jackjansen
+
+	* Removed binary files.
+
+2005-04-29 13:55  koelimoe
+
+	* New Changelog (29/4/05)
+
 2005-04-29 13:37  jackjansen
 
 	* Final tweaks.
