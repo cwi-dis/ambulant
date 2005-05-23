@@ -28,7 +28,7 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.4
+  Version File=1.4.1
   Version Description=Ambulant Player for SMIL 2.0
   Version Copyright=Copyright (c) 2004-2005
   Version Company=Stichting CWI
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=Ambulant\Ambulant Player 1.4
+  Value=Ambulant\Ambulant Player 1.4.1
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer-1.4
+  Value=AmbulantPlayer-1.4.1
   Flags=10000000
 end
 item: Remark

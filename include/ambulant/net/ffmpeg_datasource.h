@@ -205,7 +205,7 @@ class ffmpeg_demux : public abstract_demux {
     // XXX this should also be timestamp_t instead of double
   	double duration();
   	int nstreams();
-    void seek(timestamp_t time) {};
+    void seek(timestamp_t time);
     audio_format& get_audio_format() { return m_audio_fmt; };
   	video_format& get_video_format();
 	void cancel();
@@ -218,6 +218,8 @@ class ffmpeg_demux : public abstract_demux {
 	AVFormatContext *m_con;
 	int m_nstream;
 	lib::critical_section m_lock;
+  	timestamp_t m_clip_begin;
+  	bool m_clip_begin_set;
 };
 
 } // end namespace detail
