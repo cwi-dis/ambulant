@@ -274,7 +274,9 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 #define CLIPBEGIN 3
 detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 :   m_con(con),
-	m_nstream(0)
+	m_nstream(0),
+	m_clip_begin(0),
+	m_clip_begin_set(false)
 {
 #if WITH_FFMPEG_0_4_9
 	if (CLIPBEGIN > 0) {
@@ -414,6 +416,13 @@ detail::ffmpeg_demux::add_datasink(detail::datasink *parent, int stream_index)
 }
 
 void
+detail::ffmpeg_demux::seek(timestamp_t time)
+{
+	m_clip_begin = time;
+	m_clip_begin_set = false;
+}
+
+void
 detail::ffmpeg_demux::remove_datasink(int stream_index)
 {
 	m_lock.enter();
@@ -481,7 +490,13 @@ detail::ffmpeg_demux::run()
 #endif/*WITH_FFMPEG_0_4_9*/
 				}
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
+#ifdef WITH_FFMPEG_0_4_9				
 				sink->data_avail(pts, pkt->data, pkt->size);
+#else
+				if(pts > m_clip_begin) {				
+					sink->data_avail(pts, pkt->data, pkt->size);
+				}
+#endif
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
@@ -607,6 +622,14 @@ demux_audio_datasource::readdone(int len)
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource.readdone : done with %d bytes", len);
 //	restart_input();
 	m_lock.leave();
+}
+
+void 
+demux_audio_datasource::seek(timestamp_t time)
+{
+	assert(m_thread_started); // the thread should be running before we can seek it
+	assert(m_thread);
+	m_thread->seek(time);
 }
 
 void 
@@ -792,6 +815,8 @@ demux_video_datasource::stop()
 	m_lock.leave();
 	
 }	
+
+
 
 void 
 demux_video_datasource::read_ahead(timestamp_t time)
