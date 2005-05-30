@@ -1,6 +1,10 @@
 
-What's new in Ambulant Player 1.4?
-----------------------------------
+What's new in Ambulant Player 1.4.1?
+------------------------------------
+
+Changes between 1.4 and 1.4.1:
+- Mac player didn't support QuickTime playback. Fixed.
+- Windows player "Open URL..." did not work. Fixed.
 
 Complete details are in ChangeLog, but here is a quick summary of the
 changes between 1.2 and 1.4:

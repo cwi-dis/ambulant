@@ -324,9 +324,23 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		dummy->stop();
 		delete dummy;
 	}
+	// Heuristic check to see whether it's a URL:
+	// - Contains a \, or
+	// - second char is :, or
+	// - contains neither : nor /
+	bool is_local_filename = false;
+
+	if (strchr(lpszPathName, '\\')) is_local_filename = true;
+	if (lpszPathName[0] && lpszPathName[1] == ':') is_local_filename = true;
+	if (strchr(lpszPathName, ':') == NULL && strchr(lpszPathName, '/') == NULL) is_local_filename = true;
+
 	TCHAR path[_MAX_PATH];
-	TCHAR *pFilePart = 0;	
-	GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
+	if (is_local_filename) {
+		TCHAR *pFilePart = 0;	
+		GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
+	} else {
+		strcpy(path, lpszPathName);
+	}
 	
 	net::url u(path);
 	if (!u.is_absolute()) {

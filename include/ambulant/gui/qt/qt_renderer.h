@@ -73,20 +73,22 @@ class qt_transition_renderer : public ref_counted_obj {
   public:
 	qt_transition_renderer(event_processor *evp)
 	:	m_event_processor(evp),
-		m_dest(NULL),
+		m_transition_dest(NULL),
+		m_view(NULL),
 		m_intransition(NULL),
 		m_outtransition(NULL),
+#ifdef USE_SMIL21
+		m_fullscreen(false),
+#endif
 		m_trans_engine(NULL) {};
 	~qt_transition_renderer();
 
-	void set_surface(common::surface *dest) { m_dest = dest;}
+	void set_surface(common::surface *dest);
 	void start(double where);
 	void stop();
 	void redraw_pre(gui_window *window);
 	void redraw_post(gui_window *window);
-	void set_intransition(const lib::transition_info *info) {
-		m_intransition = info;
-	}
+	void set_intransition(const lib::transition_info *info);
 	void start_outtransition(const lib::transition_info *info);
 
   protected:
@@ -94,9 +96,13 @@ class qt_transition_renderer : public ref_counted_obj {
 	void transition_step();
 
 	event_processor* m_event_processor;
-	surface* m_dest;
+	surface* m_transition_dest;
+	void* m_view; //ambulant_qt_window* 
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
+#ifdef USE_SMIL21
+	bool m_fullscreen;
+#endif
 	smil2::transition_engine* m_trans_engine;
 	critical_section m_lock;
 };

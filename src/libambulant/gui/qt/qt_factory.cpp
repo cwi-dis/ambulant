@@ -68,15 +68,15 @@ qt_video_factory::~qt_video_factory()
 
 qt_renderer_factory::qt_renderer_factory(common::factories *factory)
 :	m_factory(factory)
-	{
+{
 	AM_DBG lib::logger::get_logger()->debug("qt_renderer factory (0x%x)", (void*) this);
-	}
+}
 	
 qt_window_factory::qt_window_factory( QWidget* parent_widget, int x, int y)
 :	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
-	{
+{
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory (0x%x)", (void*) this);
-	}	
+}	
   
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	   lib::screen_rect<int>* bounds,
@@ -86,6 +86,13 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	m_pixmap(NULL),
 	m_oldpixmap(NULL),
 	m_tmppixmap(NULL),
+#ifdef USE_SMIL21
+	m_fullscreen_count(0),
+	m_fullscreen_prev_pixmap(NULL),
+	m_fullscreen_old_pixmap(NULL),
+	m_fullscreen_engine(NULL),
+	m_fullscreen_now(0),
+#endif
 	m_surface(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
@@ -177,6 +184,10 @@ QPixmap*
 ambulant_qt_window::get_ambulant_oldpixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
+#ifdef USE_SMIL21
+	if (m_fullscreen_count && m_fullscreen_old_pixmap)
+		return m_fullscreen_old_pixmap;
+#endif
         return m_oldpixmap;
 }
 
@@ -224,6 +235,8 @@ ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
 void
 ambulant_qt_window::redraw_now()
 {
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw_now()");
+	m_ambulant_widget->repaint(false);
 }
 
 void
@@ -235,6 +248,7 @@ ambulant_qt_window::mouse_region_changed()
 /* test if there is something new to see */
 static QImage* oldImageP;
 static bool isEqualToPrevious(QPixmap* qpmP) {
+	return false;
 	QImage img = qpmP->convertToImage();
 	if (oldImageP != NULL && img == *oldImageP) {
 		AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");
@@ -251,12 +265,13 @@ static bool isEqualToPrevious(QPixmap* qpmP) {
 /**/
 /* dumpPixmap on file */
 void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
+	if ( ! qpm) return;
 	QImage img = qpm->convertToImage();
 	if ( ! isEqualToPrevious(qpm)) {
 		static int i;
 		char buf[5];
 		sprintf(buf,"%04d",i++);
-		std::string newfile = std::string(filename) + buf +".png";
+		std::string newfile = buf + std::string(filename) +".png";
 		qpm->save(newfile, "PNG");
 		AM_DBG lib::logger::get_logger()->debug("dumpPixmap(%s)", newfile.c_str());
 	}
@@ -268,8 +283,14 @@ void
 ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
+#ifdef USE_SMIL21
+	_screenTransitionPreRedraw();
+#endif
 	m_handler->redraw(r, this);
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
+#ifdef USE_SMIL21
+	_screenTransitionPostRedraw(r);
+#endif
 	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
@@ -464,3 +485,86 @@ qt_video_factory::new_playable(
 	}
 	return rv;
 }
+#ifdef USE_SMIL21
+
+void 
+ambulant_qt_window::startScreenTransition()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::startScreenTransition()");
+	if (m_fullscreen_count)
+		logger::get_logger()->warn("ambulant_qt_window::startScreenTransition():multiple Screen transitions in progress (m_fullscreen_count=%d)",m_fullscreen_count);
+	m_fullscreen_count++;
+	if (m_fullscreen_old_pixmap) delete m_fullscreen_old_pixmap;
+	m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
+	m_fullscreen_prev_pixmap = NULL;
+}
+
+void 
+ambulant_qt_window::endScreenTransition()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::endScreenTransition()");
+	assert(m_fullscreen_count > 0);
+	m_fullscreen_count--;
+}
+
+void 
+ambulant_qt_window::screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::screenTransitionStep()");
+	assert(m_fullscreen_count > 0);
+	m_fullscreen_engine = engine;
+	m_fullscreen_now = now;
+}
+		
+void 
+ambulant_qt_window::_screenTransitionPreRedraw()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPreRedraw()");
+	if (m_fullscreen_count == 0) return;
+	// XXX setup drawing to transition surface
+//	[[self getTransitionSurface] lockFocus];
+}
+
+void 
+ambulant_qt_window::_screenTransitionPostRedraw(const lib::screen_rect<int> &r)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw()");
+	if (m_fullscreen_count == 0 && m_fullscreen_old_pixmap == NULL) {
+		// Neither in fullscreen transition nor wrapping one up.
+		// Take a snapshot of the screen and return.
+		AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw: screen snapshot");
+		if (m_fullscreen_prev_pixmap) delete m_fullscreen_prev_pixmap;
+		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
+//		dumpPixmap(m_fullscreen_prev_pixmap, "snap");
+		return;
+	}
+	if (m_fullscreen_old_pixmap == NULL) {
+		// Just starting a new fullscreen transition. Get the
+		// background bits from the snapshot saved during the previous
+		// redraw.
+		m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
+		m_fullscreen_prev_pixmap = NULL;
+	}
+	
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw: bitblit");
+	if (m_fullscreen_engine) {
+		// Do the transition step
+		QPixmap* new_src = get_ambulant_surface();
+		if ( ! new_src) new_src = new_ambulant_surface();
+		bitBlt(m_surface, 0, 0, m_pixmap);
+		bitBlt(m_pixmap, 0, 0, m_fullscreen_old_pixmap);
+//		dumpPixmap(new_src, "fnew");
+//		dumpPixmap(m_pixmap, "fold");
+		m_fullscreen_engine->step(m_fullscreen_now);
+//		dumpPixmap(m_pixmap, "fres");
+	}
+
+	if (m_fullscreen_count == 0) {
+		// Finishing a fullscreen transition.
+		AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw: cleanup after transition done");
+		if (m_fullscreen_old_pixmap) delete m_fullscreen_old_pixmap;
+		m_fullscreen_old_pixmap = NULL;
+		m_fullscreen_engine = NULL;
+	}
+}
+#endif

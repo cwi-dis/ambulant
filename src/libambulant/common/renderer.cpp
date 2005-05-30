@@ -419,7 +419,7 @@ void
 active_video_renderer::pause()
 {
 	m_lock.enter();
-	if (!m_is_paused) {
+	if (m_is_playing && !m_is_paused) {
 		if (m_audio_renderer) 
 			m_audio_renderer->pause();
 		m_is_paused = true;
@@ -432,7 +432,7 @@ void
 active_video_renderer::resume()
 {
 	m_lock.enter();
-	if (m_is_paused) {
+	if (m_is_playing && m_is_paused) {
 		if (m_audio_renderer) 
 			m_audio_renderer->resume();
 		m_is_paused = false;

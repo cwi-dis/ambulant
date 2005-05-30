@@ -977,9 +977,9 @@ demux_video_datasource::get_frame(timestamp_t now,timestamp_t *timestamp, int *s
 	// We ignore now here and always return a the oldest frame in the queue.
 	m_lock.enter();
 	if (m_frames.size() == 0) {
-		m_lock.leave();
 		*timestamp = 0;
 		*size = 0;
+		m_lock.leave();
 		return NULL;
 	}
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame() (this=0x%x, size=%d", (void*) this, m_frames.size());
@@ -1224,8 +1224,9 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t timestamp, bool keepdata
 {
 	m_lock.enter();
 	if (m_frames.size() == 0) {
-		lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource.readdone: frame_done() called with no current frames");
-		lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		// Since we remove frames from the queue in _pop_top_frame at the moment we retrieve a frame, the situation with 0 frames in our queue is legit.
+		//lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource.frame_done: frame_done() called with no current frames");
+		//lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 		m_lock.leave();
 		return;
 	}

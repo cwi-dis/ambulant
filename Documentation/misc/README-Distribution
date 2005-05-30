@@ -18,9 +18,11 @@ Before creating the distribution
   - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
   	- Product Details->Default Directory
   	- General Information->Installation Version
+  	- Add/Remove Programs -> Software Version
   	- Shortcuts
   - src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse
   	- Product Details->Default Directory
+  	- Add/Remove Programs -> Software Version
   	- General Information->Installation Version
 - check the following files for being up-to-date:
   - README
@@ -47,12 +49,17 @@ Before creating the distribution
 To create the linux source distribution
 =======================================
 
+- Check out a clean copy from CVS, follow the instructions in README-CVS
+- Make sure you configure with *all* options (--with-xerces --with-live)
+  otherwise not all sources will be included
 - Use make distcheck
 - If make distcheck complains about not being able to find expat, 
   you have to set the path to the expat library via the environment variable:
  
 
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
+- make dist
+- Check on a (preferably virgin) machine, again with all options enabled.
 
 Creating the third_party_packages-WIN32 distribution
 ====================================================

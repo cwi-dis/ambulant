@@ -156,6 +156,14 @@ gui::sdl::sdl_active_audio_renderer::register_renderer(sdl_active_audio_renderer
 {
 	m_static_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer(0x%x)", rnd);
+	std::list<sdl_active_audio_renderer *>::iterator i;
+	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
+		if ((*i) == rnd) {
+			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer() already exists !");
+			m_static_lock.leave();
+			return;
+		}
+	}
 	m_renderers.push_back(rnd);
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer: unpause SDL");
 	SDL_PauseAudio(0);
@@ -352,10 +360,11 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	m_lock.enter();
 	
 	// turned this of because I think here also happends a get_read_ptr when it should not
+	//XXXX sometimes we get this one in News when changing video itmes
 	assert(m_is_playing);
 	int rv;
 	*ptr = NULL;
-	if (m_is_paused||!m_audio_src) {
+	if (m_is_paused||!m_audio_src) { 
 		rv = 0;
 		m_read_ptr_called = false;
 	} else {
@@ -520,7 +529,7 @@ void
 gui::sdl::sdl_active_audio_renderer::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::stop()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);

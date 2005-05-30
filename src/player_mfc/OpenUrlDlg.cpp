@@ -17,7 +17,8 @@ using namespace ambulant;
 
 IMPLEMENT_DYNAMIC(COpenUrlDlg, CDialog)
 COpenUrlDlg::COpenUrlDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(COpenUrlDlg::IDD, pParent)
+	:	CDialog(COpenUrlDlg::IDD, pParent),
+		m_url("")
 {
 }
 

@@ -97,8 +97,41 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	paint.begin(aqw->get_ambulant_pixmap());
 	QSize qsize = m_image.size();
 	size srcsize = size(qsize.width(), qsize.height());
-	rect srcrect = rect(size(0,0));
-	screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+	rect srcrect;
+	screen_rect<int> dstrect;
+#ifdef USE_SMIL21
+	// While rendering background images only, check for tiling. This code is
+	// convoluted, it knows that the node and the region we're painting to are
+	// really the same node.
+	if (m_node->get_attribute("backgroundRepeat") && m_dest->is_tiled()) {
+		AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw: drawing tiled image");
+		dstrect = m_dest->get_rect();
+		dstrect.translate(m_dest->get_global_topleft());
+		common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
+		common::tile_positions::iterator it;
+		for(it=tiles.begin(); it!=tiles.end(); it++) {
+			srcrect = (*it).first;
+			dstrect = (*it).second;
+			int	S_L = srcrect.left(), 
+				S_T = srcrect.top(),
+				S_W = srcrect.width(),
+		        	S_H = srcrect.height();
+			int	D_L = dstrect.left(), 
+				D_T = dstrect.top(),
+				D_W = dstrect.width(),
+				D_H = dstrect.height();
+			AM_DBG lib::logger::get_logger()->debug("qt_active_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+			paint.drawImage(D_L,D_T, m_image, S_L,S_T, S_W,S_H);
+	
+		}
+		paint.flush();
+		paint.end();
+		m_lock.leave();
+		return;
+	}
+#endif
+	srcrect = rect(size(0,0));
+	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	dstrect.translate(m_dest->get_global_topleft());
 	// O_ for original image coordinates
 	// S_ for source image coordinates
