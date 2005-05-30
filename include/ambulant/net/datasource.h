@@ -247,8 +247,44 @@ class audio_datasource : virtual public datasource {
 	virtual audio_format& get_audio_format() = 0;
 	// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0; 
+	// At what point in time does the audio playback stop. (-1 plays the audio until the end)
+	virtual timestamp_t get_clip_end() = 0;
 	// Return the duration of the audio data, if known.
 	virtual std::pair<bool, double> get_dur() = 0;
+};
+
+class raw_audio_datasource: 
+	virtual public audio_datasource,
+	virtual public lib::ref_counted_obj
+{
+  public:
+	raw_audio_datasource(datasource* src) : 
+  		m_src(src),
+		m_fmt(audio_format(0,0,0)),
+		m_duration(false,0.0)  {};
+  	~raw_audio_datasource() {};
+  	
+
+    void start(lib::event_processor *evp, lib::event *callback) { m_src->start(evp,callback); };
+	void stop() { m_src->stop(); };  
+	void read_ahead(timestamp_t time){};
+  	void seek(timestamp_t time){};
+    void readdone(int len) { m_src->readdone(len); };
+    bool end_of_file() { return m_src->end_of_file(); };
+	bool buffer_full() { return false; };
+  	timestamp_t get_clip_end() { return -1; };
+		
+	char* get_read_ptr() { return m_src->get_read_ptr(); };
+	int size() const { return m_src->size(); };   
+	audio_format& get_audio_format() { return m_fmt; };
+
+	std::pair<bool, double> get_dur() {	return m_duration; };
+  
+  private:
+	datasource* m_src;
+  	audio_format m_fmt;
+  	std::pair<bool, double> m_duration;
+		
 };
 
 /// Interface to an object that supplies video data to a consumer.
@@ -334,7 +370,7 @@ class audio_parser_finder {
 	virtual ~audio_parser_finder() {};
 	
 	/// Create an audio parser for the given datasource.
-	virtual audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, datasource *src) = 0;
+	virtual audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, audio_datasource *src) = 0;
 };
 
 /// Factory for implementations where the audio_datasource
@@ -406,6 +442,9 @@ class datasource_factory :
 	std::vector<audio_filter_finder*> m_audio_filter_finders;
 	std::vector<video_datasource_factory*> m_video_factories;
 };
+
+
+
 
 /// convenience function: read a whole document through any raw datasource.
 int read_data_from_url(const net::url &url, datasource_factory *df, char **result);

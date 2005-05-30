@@ -234,7 +234,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio
 }
 
 audio_datasource* 
-ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, audio_format_choices fmts, datasource *src)
+ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, audio_format_choices fmts, audio_datasource *src)
 {
 	
 	audio_datasource *ds = NULL;
@@ -276,6 +276,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 :   m_con(con),
 	m_nstream(0),
 	m_clip_begin(0),
+	m_clip_end(-1),
 	m_clip_begin_set(false)
 {
 #if WITH_FFMPEG_0_4_9
@@ -283,7 +284,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
 		assert (m_con);
 		assert (m_con->iformat);
 		std::cout << "read_seek" << "\n";
-		int seek = av_seek_frame(m_con, -1, CLIPBEGIN*1000000, 0);
+		int seek = av_seek_frame(m_con, -1, CLIPBEGIN, 0);
 	} 
 #endif
 	
@@ -315,6 +316,12 @@ detail::ffmpeg_demux::~ffmpeg_demux()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) av_close_input_file(m_con);
 	m_con = NULL;
+}
+
+timestamp_t
+detail::ffmpeg_demux::get_clip_end()
+{
+		return m_clip_end;
 }
 
 AVFormatContext *
@@ -386,7 +393,7 @@ double
 detail::ffmpeg_demux::duration()
 {
 	//XXX this is a double now, later this should retrun a long long int 
- 	return (m_con->duration / (double)AV_TIME_BASE);
+ 	return (m_con->duration / (double)AV_TIME_BASE) -  (m_clip_begin / 1000000.0);
 }
 	
 int 
@@ -489,14 +496,10 @@ detail::ffmpeg_demux::run()
 					pts = (timestamp_t) round(((double) pkt->pts * (((double) num)*1000000)/den));
 #endif/*WITH_FFMPEG_0_4_9*/
 				}
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size);
-#ifdef WITH_FFMPEG_0_4_9				
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration);
+				
 				sink->data_avail(pts, pkt->data, pkt->size);
-#else
-				if(pts > m_clip_begin) {				
-					sink->data_avail(pts, pkt->data, pkt->size);
-				}
-#endif
+
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
@@ -721,6 +724,11 @@ demux_audio_datasource::size() const
 	return rv;
 }	
 
+timestamp_t
+demux_audio_datasource::get_clip_end()
+{
+	return m_thread->get_clip_end();
+}
 
 audio_format&
 demux_audio_datasource::get_audio_format()
@@ -1487,11 +1495,13 @@ ffmpeg_video_decoder_datasource::get_dur()
 
 // **************************** ffpmeg_decoder_datasource *****************************
 
-ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, audio_datasource *const src)
 :	m_con(NULL),
 	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
+	m_elapsed(0),
+	m_is_audio_ds(false),
 	m_duration(false, 0),
 	m_client_callback(NULL)
 {
@@ -1508,6 +1518,8 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_fmt(src->get_audio_format()),
 	m_event_processor(NULL),
 	m_src(src),
+	m_elapsed(0),
+	m_is_audio_ds(true),
 	m_duration(false, 0),
 	m_client_callback(NULL)
 {
@@ -1641,6 +1653,8 @@ ffmpeg_decoder_datasource::data_avail()
 					} else {
 						m_buffer.pushdata(0);
 					}
+					double duration = (double) outsize * m_fmt.samplerate / (m_fmt.channels * m_fmt.bits* 1.0);
+					m_elapsed += (timestamp_t) round(duration*1000000);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 					m_src->readdone(decoded);
 				} else {
@@ -1657,7 +1671,7 @@ ffmpeg_decoder_datasource::data_avail()
 		//	sz = m_src->size();
 		}
 		// Restart reading if we still have room to accomodate more data
-		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
+		if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full() && !_clip_end()) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): calling m_src->start() again");
 			lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
 			m_src->start(m_event_processor, e);
@@ -1666,7 +1680,7 @@ ffmpeg_decoder_datasource::data_avail()
 				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 	
-		if ( m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file()) ) {
+		if ( m_client_callback && (m_buffer.buffer_not_empty() || ( _end_of_file() && _clip_end() )) ) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
 			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::med);
@@ -1690,6 +1704,10 @@ bool
 ffmpeg_decoder_datasource::end_of_file()
 {
 	m_lock.enter();
+	if (_clip_end()) {
+		m_lock.leave();
+		return true;
+	}
 	bool rv = _end_of_file();
 	m_lock.leave();
 	return rv;
@@ -1699,9 +1717,17 @@ bool
 ffmpeg_decoder_datasource::_end_of_file()
 {
 	// private method - no need to lock
+	
 	if (m_buffer.buffer_not_empty()) return false;
 	return m_src->end_of_file();
 }
+
+bool 
+ffmpeg_decoder_datasource::_clip_end()
+{
+	return false;
+}
+
 
 bool 
 ffmpeg_decoder_datasource::buffer_full()
@@ -1729,7 +1755,18 @@ ffmpeg_decoder_datasource::size() const
 	const_cast <ffmpeg_decoder_datasource*>(this)->m_lock.leave();
 	return rv;
 }	
- 
+
+timestamp_t
+ffmpeg_decoder_datasource::get_clip_end()
+{
+	timestamp_t clip_end = -1;
+	if (m_is_audio_ds) {
+		clip_end =  m_src->get_clip_end();
+	}
+	
+	return clip_end;
+}
+
 bool 
 ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 {
@@ -2142,6 +2179,12 @@ ffmpeg_resample_datasource::buffer_full()
 	m_lock.leave();
 	return rv;
 }	
+
+timestamp_t
+ffmpeg_resample_datasource::get_clip_end()
+{
+	return m_src->get_clip_end();
+}
 
 char* 
 ffmpeg_resample_datasource::get_read_ptr()

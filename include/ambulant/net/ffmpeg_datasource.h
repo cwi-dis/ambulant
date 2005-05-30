@@ -144,7 +144,7 @@ class ffmpeg_video_datasource_factory : public video_datasource_factory {
 class ffmpeg_audio_parser_finder : public audio_parser_finder {
   public:
 	~ffmpeg_audio_parser_finder() {};
-	audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, datasource *src);
+	audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, audio_datasource *src);
 };
 
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
@@ -185,7 +185,8 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	virtual audio_format& get_audio_format() = 0;
 	virtual video_format& get_video_format() = 0;
 	//virtual bool end_of_file() =0 ;
-	
+	virtual timestamp_t get_clip_end() = 0; 
+
   protected:
 	virtual unsigned long run() = 0;
 };
@@ -209,6 +210,8 @@ class ffmpeg_demux : public abstract_demux {
     audio_format& get_audio_format() { return m_audio_fmt; };
   	video_format& get_video_format();
 	void cancel();
+	timestamp_t get_clip_end(); 
+	 
   protected:
 	unsigned long run();
   private:
@@ -219,10 +222,13 @@ class ffmpeg_demux : public abstract_demux {
 	int m_nstream;
 	lib::critical_section m_lock;
   	timestamp_t m_clip_begin;
+  	timestamp_t m_clip_end;
   	bool m_clip_begin_set;
 };
 
 } // end namespace detail
+
+
 
 class demux_audio_datasource: 
 	virtual public audio_datasource,
@@ -243,11 +249,12 @@ class demux_audio_datasource:
     void start(lib::event_processor *evp, lib::event *callback);
 	void stop();  
 	void read_ahead(timestamp_t time);
-  
+  	void seek(timestamp_t time);
     void readdone(int len);
     void data_avail(timestamp_t pts, uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
+  	timestamp_t get_clip_end();
 		
 	char* get_read_ptr();
 	int size() const;   
@@ -412,9 +419,11 @@ class ffmpeg_video_decoder_datasource:
 
 #endif // WITH_FFMPEG_AVFORMAT
 
+
+
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
-	 ffmpeg_decoder_datasource(const net::url& url, datasource *src);
+	 ffmpeg_decoder_datasource(const net::url& url, audio_datasource *src);
 	 ffmpeg_decoder_datasource(audio_datasource *src);
     ~ffmpeg_decoder_datasource();
      
@@ -432,7 +441,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	int size() const;   
 	std::pair<bool, double> get_dur();
 	audio_format& get_audio_format();
-	
+	timestamp_t get_clip_end();
 	static bool supported(const net::url& url);
   protected:
   	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);
@@ -440,12 +449,14 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool _select_decoder(audio_format &fmt);
 	  
   private:
+	bool _clip_end();
     bool _end_of_file();
     AVCodecContext *m_con;
 	audio_format m_fmt;
     lib::event_processor *m_event_processor;
-  	datasource* m_src;
-
+  	audio_datasource* m_src;
+  	timestamp_t m_elapsed;
+	bool m_is_audio_ds;
 	std::pair<bool, double> m_duration;
 	
 	databuffer m_buffer;
@@ -478,7 +489,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 //    void get_output_format(audio_context &fmt);
 	audio_format& get_audio_format() { return m_out_fmt; };
 	std::pair<bool, double> get_dur();
-		
+	timestamp_t get_clip_end();
   protected:
     int init(); 
   	

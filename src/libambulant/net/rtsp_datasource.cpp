@@ -64,6 +64,7 @@ using namespace net;
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context)
 :	m_context(context),
 	m_clip_begin(0),
+	m_clip_end(-1),
 	m_clip_begin_set(false)
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
@@ -221,11 +222,16 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	return context;
 		
 }
-
+timestamp_t
+ambulant::net::rtsp_demux::get_clip_end()
+{
+	return m_clip_end;
+}
 
 void
 ambulant::net::rtsp_demux::seek(timestamp_t time)
 {
+	
 	m_clip_begin = time;
 	m_clip_begin_set = false;
 }

@@ -247,10 +247,14 @@ datasource_factory::new_audio_datasource(const net::url &url, audio_format_choic
 	// then stack a parser and possibly a filter
 	datasource *rawsrc = new_raw_datasource(url);
 	if (rawsrc == NULL) return NULL;
+		
+    //next create a raw_audio_datasource;
+	
+	audio_datasource *raw_audio_src = new raw_audio_datasource(rawsrc);
 	
 	std::vector<audio_parser_finder*>::iterator ip;
 	for(ip=m_audio_parser_finders.begin(); ip != m_audio_parser_finders.end(); ip++) {
-		src = (*ip)->new_audio_parser(url, fmts, rawsrc);
+		src = (*ip)->new_audio_parser(url, fmts, raw_audio_src);
 		if (src) break;
 	}
 	if (src == NULL) {
