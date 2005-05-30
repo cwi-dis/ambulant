@@ -28,7 +28,7 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.4.1
+  Version File=1.5
   Version Description=Ambulant Player for Handheld
   Version Copyright=Copyright © 2004-2005 Stichting CWI
   Version Company=Stichting CWI
@@ -1175,7 +1175,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=Ambulant-1.4.1-WinCE
+  Value=Ambulant-1.5-WinCE
   Flags=10000000
 end
 item: Remark
@@ -2249,7 +2249,7 @@ item: Edit Registry
   Total Keys=3
   item: Key
     Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-    New Value=1.4.1
+    New Value=1.5
     Value Name=DisplayVersion
     Root=2
   end
