@@ -321,7 +321,7 @@ detail::ffmpeg_demux::~ffmpeg_demux()
 timestamp_t
 detail::ffmpeg_demux::get_clip_end()
 {	
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::get_clip_end(): %lld", m_clip_end);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::get_clip_end(): %lld", m_clip_end);
 	return m_clip_end;
 }
 
@@ -730,7 +730,7 @@ timestamp_t
 demux_audio_datasource::get_clip_end()
 {
 	timestamp_t clip_end = m_thread->get_clip_end();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_end: clip_end=%d", clip_end);
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_end: clip_end=%d", clip_end);
 
 	return  clip_end;
 }
@@ -1663,7 +1663,7 @@ ffmpeg_decoder_datasource::data_avail()
 					double duration = ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
 					m_elapsed += (timestamp_t) round(duration*1000000);
 					
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : sample duration = %f, m_elapsed = %d, total duration = %f ( sz(u_int8) = %d, bits = %d ) ", duration, m_elapsed, m_duration.second, sizeof(uint8_t), m_fmt.bits);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : sample duration = %f, m_elapsed = %d, total duration = %f ( sz(u_int8) = %d, bits = %d ) ", duration, m_elapsed, m_duration.second, sizeof(uint8_t), m_fmt.bits);
 
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 					m_src->readdone(decoded);
@@ -1737,8 +1737,8 @@ ffmpeg_decoder_datasource::_clip_end()
 {
 	timestamp_t clip_end = m_src->get_clip_end();
 	if (clip_end == -1) return false;
-		
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
+	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
 	if (m_elapsed > clip_end) {
 		return true;
 	}
