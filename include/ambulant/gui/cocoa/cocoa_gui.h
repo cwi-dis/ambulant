@@ -157,7 +157,7 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
 - (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
 
-- (void) asyncRedrawForAmbulantRect: (id)arect;
+- (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect;
 - (void) syncDisplayIfNeeded: (id) dummy;
 
 - (void)mouseDown: (NSEvent *)theEvent;

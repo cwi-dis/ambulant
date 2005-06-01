@@ -57,6 +57,14 @@ Building for Mac OS X
 First make sure you install the third party packages on which Ambulant
 depends, see third_party_packages/readme.txt.
 
+For Tiger (10.4), you currently need to do the following things:
+- Use gcc3, not gcc4. "sudo gcc_select 3.3" does the trick.
+- libtool 1.5 (which ships with Tiger) is broken. For the time being,
+  this can be fixed by editing the generated "libtool" script (after configure)
+  and setting the line
+    whole_archive_flag_spec=""
+  in stead of the original whole_archive_flag_spec definition.
+
 Then the normal "configure"/"make"/"sudo make install" combo can be used
 here in the toplevel directory to create the player, see further down
 in this document for details if you are not familiar with
