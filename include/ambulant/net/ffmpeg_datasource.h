@@ -132,7 +132,7 @@ class ffmpeg_codec_id {
 class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
   public:
 	~ffmpeg_audio_datasource_factory() {};
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts);
+	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end);
 };
 
 class ffmpeg_video_datasource_factory : public video_datasource_factory {
@@ -194,7 +194,7 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 
 class ffmpeg_demux : public abstract_demux {
   public:
-	ffmpeg_demux(AVFormatContext *con);
+	ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end);
 	~ffmpeg_demux();
 	
 	static AVFormatContext *supported(const net::url& url);
@@ -248,7 +248,7 @@ class demux_audio_datasource:
 
     void start(lib::event_processor *evp, lib::event *callback);
 	void stop();  
-	void read_ahead(timestamp_t time);
+	void read_ahead(timestamp_t clip_begin);
   	void seek(timestamp_t time);
     void readdone(int len);
     void data_avail(timestamp_t pts, uint8_t *data, int size);
@@ -275,9 +275,6 @@ class demux_audio_datasource:
 	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;
-  	bool m_thread_started;
-  	
-  
 };
 
 class demux_video_datasource: 
@@ -295,7 +292,7 @@ class demux_video_datasource:
   		int stream_index);
   
     ~demux_video_datasource();
-	void read_ahead(timestamp_t time);
+	void read_ahead(timestamp_t clip_end);
     void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
     void stop();  
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
@@ -330,7 +327,6 @@ class demux_video_datasource:
 	lib::event *m_client_callback;  // This is our calllback to the client
   	audio_datasource* m_audio_src;
 	lib::critical_section m_lock;
-  	bool m_thread_started;
   	//FILE *m_file;
   
 };
@@ -384,7 +380,7 @@ class ffmpeg_video_decoder_datasource:
     bool end_of_file();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
 	void frame_done(timestamp_t timestamp, bool keepdata);
-	
+	void read_ahead(timestamp_t clip_begin);
     void data_avail();
 	bool buffer_full();
 	std::pair<bool, double> get_dur();
@@ -408,7 +404,6 @@ class ffmpeg_video_decoder_datasource:
 //	databuffer m_buffer;
 	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
-  	bool m_thread_started;
   	timestamp_t m_pts_last_frame;
   	timestamp_t m_last_p_pts;
   	int m_frame_count;
@@ -435,7 +430,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
     void data_avail();
     bool end_of_file();
 	bool buffer_full();
-	void read_ahead(timestamp_t time){};
+	void read_ahead(timestamp_t clip_begin);
 
 	char* get_read_ptr();
 	int size() const;   

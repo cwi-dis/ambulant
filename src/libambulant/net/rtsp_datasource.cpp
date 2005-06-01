@@ -61,10 +61,10 @@ using namespace net;
 #define MIN_VIDEO_PACKET_SIZE 1024
 
 
-ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context)
+ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_context(context),
-	m_clip_begin(0),
-	m_clip_end(-1),
+	m_clip_begin(clip_begin),
+	m_clip_end(clip_end),
 	m_clip_begin_set(false)
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;

@@ -242,7 +242,6 @@ class datasource : virtual public ambulant::lib::ref_counted {
 class audio_datasource : virtual public datasource {
   public:
 	virtual ~audio_datasource() {};
-		  
 	/// Returns the native format of the audio data.
 	virtual audio_format& get_audio_format() = 0;
 	// Tells the datasource to start reading data starting from time t.
@@ -333,7 +332,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// timestamp match is not freed.
   	virtual void frame_done(timestamp_t timestamp, bool keepdata) = 0;
 	
-
+	virtual void read_ahead(timestamp_t time) = 0; 
 };
 
 /// Interface to create a datasource for a given URL.
@@ -358,7 +357,7 @@ class audio_datasource_factory  {
 	/// The fmt parameter describes the audio formats the client can handle,
 	/// the actual format can then be obtained from the audio_datasource returned.
 	/// Returns NULL if this factory cannot create such a datasource.
-  	virtual audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt) = 0;
+  	virtual audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Factory for implementations where the audio_datasource
@@ -412,7 +411,7 @@ class datasource_factory :
   	datasource* new_raw_datasource(const net::url& url);
 	
 	/// Client interface: obtain an audio_datasource for the given URL and format.
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt);
+	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Client interface: obtain a video datasource for the given URL.
   	video_datasource* new_video_datasource(const net::url& url);

@@ -62,7 +62,7 @@ namespace net
 class live_audio_datasource_factory : public audio_datasource_factory {
   public:
 	~live_audio_datasource_factory() {};
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts);
+	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end);
 };
 
 class live_video_datasource_factory : public video_datasource_factory {

@@ -145,7 +145,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url)
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
+	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context, 0, -1);
 	if (thread->video_stream_nr() < 0) {
 		thread->cancel();
 		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory: No video stream in %s", repr(url).c_str());
@@ -154,11 +154,11 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url)
 	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
 	video_datasource *dds = NULL;
 	
-	thread->start();
 	if (ds) {
 		 video_format fmt = thread->get_video_format();
 		 //dds = ds;
 		 dds = new ffmpeg_video_decoder_datasource(ds, fmt);
+		 ds->read_ahead(0);
 	} else {
 		return NULL;
 	}
@@ -179,7 +179,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url)
 
 
 audio_datasource* 
-ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts)
+ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
 #ifdef WITH_FFMPEG_AVFORMAT
 	
@@ -189,14 +189,14 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context);
+	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context, clip_begin, clip_end);
 	audio_datasource *ds = demux_audio_datasource::new_demux_audio_datasource(url, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("fdemux_audio_datasource_factory::new_audio_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
-	thread->start();
+	ds->read_ahead(clip_begin);
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: parser ds = 0x%x", (void*)ds);
 	// XXXX This code should become generalized in datasource_factory
@@ -272,11 +272,11 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 
 #ifdef WITH_FFMPEG_AVFORMAT
 #define CLIPBEGIN 3
-detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con)
+detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end)
 :   m_con(con),
 	m_nstream(0),
-	m_clip_begin(0),
-	m_clip_end(-1),
+	m_clip_begin(clip_begin),
+	m_clip_end(clip_end),
 	m_clip_begin_set(false)
 {
 #if WITH_FFMPEG_0_4_9
@@ -551,8 +551,7 @@ demux_audio_datasource::demux_audio_datasource(const net::url& url, detail::abst
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
-	m_client_callback(NULL),
-	m_thread_started(false)
+	m_client_callback(NULL)
 {	
 	//AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource::ffmpeg_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	// XXX ignoring the codec for now but i'll have to look into this real soon
@@ -591,7 +590,7 @@ void
 demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
-	if (!m_thread_started) {
+	if (!m_thread->is_running()) {
 		m_thread->start();
 	}
 	if (m_client_callback != NULL) {
@@ -632,7 +631,7 @@ demux_audio_datasource::readdone(int len)
 void 
 demux_audio_datasource::seek(timestamp_t time)
 {
-	assert(m_thread_started); // the thread should be running before we can seek it
+	assert(m_thread->is_running()); // the thread should be running before we can seek it
 	assert(m_thread);
 	m_thread->seek(time);
 }
@@ -640,12 +639,11 @@ demux_audio_datasource::seek(timestamp_t time)
 void 
 demux_audio_datasource::read_ahead(timestamp_t time)
 {
-	assert(!m_thread_started);
+	assert(!m_thread->is_running());
 	assert(m_thread);
 	
 	m_thread->seek(time);
 	m_thread->start();
-	m_thread_started = true;
 }
 
 
@@ -791,8 +789,7 @@ demux_video_datasource::demux_video_datasource(const net::url& url, detail::abst
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_client_callback(NULL),
-	m_audio_src(NULL),
-	m_thread_started(false)
+	m_audio_src(NULL)
 {	
 	m_thread->add_datasink(this, stream_index);
 	int audio_stream_idx = m_thread->audio_stream_nr();
@@ -834,21 +831,19 @@ demux_video_datasource::stop()
 void 
 demux_video_datasource::read_ahead(timestamp_t time)
 {
-	assert(!m_thread_started);
+	assert(!m_thread->is_running());
 	assert(m_thread);
 	
 	m_thread->seek(time);
 	m_thread->start();
-	m_thread_started = true;
 }
 
 void 
 demux_video_datasource::start_frame(ambulant::lib::event_processor *evp, 
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
-	if(!m_thread_started) {
+	if(!m_thread->is_running()) {
 		m_thread->start();
-		m_thread_started = true;
 	}
 	
 	m_lock.enter();
@@ -1188,10 +1183,6 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			m_src->start_frame(evp, e, timestamp);
 		}
 	}
-	//~ if (!m_thread_started) {
-		//~ m_thread->start();
-		//~ m_thread_started = true;
-	//~ }
 	m_lock.leave();
 }
 
@@ -1273,6 +1264,12 @@ ffmpeg_video_decoder_datasource::height()
 
 //~ #undef AM_DBG
 //~ #define AM_DBG
+
+void
+ffmpeg_video_decoder_datasource::read_ahead(timestamp_t clip_begin)
+{
+	m_src->read_ahead(clip_begin);
+}
 
 void 
 ffmpeg_video_decoder_datasource::data_avail()
@@ -1746,6 +1743,11 @@ ffmpeg_decoder_datasource::_clip_end()
 	return false;
 }
 
+void 
+ffmpeg_decoder_datasource::read_ahead(timestamp_t clip_begin)
+{
+		m_src->read_ahead(clip_begin);
+} 
 
 bool 
 ffmpeg_decoder_datasource::buffer_full()

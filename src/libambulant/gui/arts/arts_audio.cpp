@@ -81,7 +81,7 @@ arts_active_audio_renderer::arts_active_audio_renderer(
 	arts_setup(m_rate,m_bits,m_channels,"arts_audio");
 	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
 	net::url url = node->get_url("src");
-	m_audio_src = factory->df->new_audio_datasource(url, supported);
+	m_audio_src = factory->df->new_audio_datasource(url, supported, 0, -1);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error("arts_active_audio_renderer: cannot open %s", repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {

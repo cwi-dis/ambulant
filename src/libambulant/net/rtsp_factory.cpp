@@ -65,7 +65,7 @@ using namespace net;
 
 
 audio_datasource* 
-live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts)
+live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
@@ -73,7 +73,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_f
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	rtsp_demux *thread = new rtsp_demux(context);
+	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
 	int i = 0;
 	
 	if (context->video_stream > -1) {
@@ -135,7 +135,7 @@ live_video_datasource_factory::new_video_datasource(const net::url& url)
 		AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	rtsp_demux *thread = new rtsp_demux(context);
+	rtsp_demux *thread = new rtsp_demux(context, 0, -1);
 	int i = 0;
 
 	//int stream_index;

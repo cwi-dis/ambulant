@@ -106,6 +106,8 @@ struct rtsp_context_t {
 	int nstream;
 	char blocking_flag;
 	bool eof;
+	timestamp_t clip_end;
+	bool is_clip_end;
 	const char* audio_codec_name;
 	const char* video_codec_name;
 	timeval first_sync_time;
@@ -116,7 +118,7 @@ struct rtsp_context_t {
 	
 class rtsp_demux : public detail::abstract_demux {
   public:
-	rtsp_demux(rtsp_context_t* context);
+	rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end);
 	//~rtsp_demux() {};
 	
 	static rtsp_context_t* supported(const net::url& url);

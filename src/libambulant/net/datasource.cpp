@@ -232,14 +232,14 @@ datasource_factory::new_raw_datasource(const net::url &url)
 }
 
 audio_datasource*
-datasource_factory::new_audio_datasource(const net::url &url, audio_format_choices fmts)
+datasource_factory::new_audio_datasource(const net::url &url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
     audio_datasource *src = NULL;
 
 	// First try to see if anything supports the whole chain
     std::vector<audio_datasource_factory *>::iterator i;
     for(i=m_audio_factories.begin(); i != m_audio_factories.end(); i++) {
-        src = (*i)->new_audio_datasource(url, fmts);
+        src = (*i)->new_audio_datasource(url, fmts, clip_begin, clip_end);
         if (src) return src;
     }
 
