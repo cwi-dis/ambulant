@@ -186,6 +186,8 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	virtual video_format& get_video_format() = 0;
 	//virtual bool end_of_file() =0 ;
 	virtual timestamp_t get_clip_end() = 0; 
+	virtual timestamp_t get_clip_begin() = 0; 
+
 
   protected:
 	virtual unsigned long run() = 0;
@@ -211,7 +213,7 @@ class ffmpeg_demux : public abstract_demux {
   	video_format& get_video_format();
 	void cancel();
 	timestamp_t get_clip_end(); 
-	 
+	timestamp_t get_clip_begin();
   protected:
 	unsigned long run();
   private:
@@ -255,7 +257,7 @@ class demux_audio_datasource:
     bool end_of_file();
 	bool buffer_full();
   	timestamp_t get_clip_end();
-		
+	timestamp_t get_clip_begin();
 	char* get_read_ptr();
 	int size() const;   
 	audio_format& get_audio_format();
@@ -437,6 +439,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	std::pair<bool, double> get_dur();
 	audio_format& get_audio_format();
 	timestamp_t get_clip_end();
+  	timestamp_t get_clip_begin();
 	static bool supported(const net::url& url);
   protected:
   	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);
@@ -485,6 +488,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	audio_format& get_audio_format() { return m_out_fmt; };
 	std::pair<bool, double> get_dur();
 	timestamp_t get_clip_end();
+	timestamp_t get_clip_begin();
   protected:
     int init(); 
   	

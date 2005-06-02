@@ -325,6 +325,13 @@ detail::ffmpeg_demux::get_clip_end()
 	return m_clip_end;
 }
 
+timestamp_t
+detail::ffmpeg_demux::get_clip_begin()
+{	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::get_clip_begin(): %lld", m_clip_begin);
+	return m_clip_begin;
+}
+
 AVFormatContext *
 detail::ffmpeg_demux::supported(const net::url& url)
 {
@@ -733,6 +740,14 @@ demux_audio_datasource::get_clip_end()
 	return  clip_end;
 }
 
+timestamp_t
+demux_audio_datasource::get_clip_begin()
+{
+	timestamp_t clip_begin = m_thread->get_clip_begin();
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_begin: clip_begin=%d", clip_begin);
+
+	return  clip_begin;
+}
 audio_format&
 demux_audio_datasource::get_audio_format()
 {
@@ -1736,7 +1751,7 @@ ffmpeg_decoder_datasource::_clip_end()
 	if (clip_end == -1) return false;
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
-	if (m_elapsed > clip_end) {
+	if ((m_elapsed + m_src->get_clip_begin()) > clip_end) {
 		return true;
 	}
 	
@@ -1782,6 +1797,14 @@ ffmpeg_decoder_datasource::get_clip_end()
 	timestamp_t clip_end;
 	clip_end =  m_src->get_clip_end();
 	return clip_end;
+}
+
+timestamp_t
+ffmpeg_decoder_datasource::get_clip_begin()
+{
+	timestamp_t clip_begin;
+	clip_begin =  m_src->get_clip_begin();
+	return clip_begin;
 }
 
 bool 
@@ -2201,6 +2224,12 @@ timestamp_t
 ffmpeg_resample_datasource::get_clip_end()
 {
 	return m_src->get_clip_end();
+}
+
+timestamp_t
+ffmpeg_resample_datasource::get_clip_begin()
+{
+	return m_src->get_clip_begin();
 }
 
 char* 

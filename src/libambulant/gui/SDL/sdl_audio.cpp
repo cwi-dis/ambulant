@@ -264,15 +264,25 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	long long int cb = 0;
 	char *lastp;
+	
+	if (!clip_begin_attr) {
+		clip_begin_attr = m_node->get_attribute("clip-begin");
+	}
+	
 	if (clip_begin_attr) {
 		cb = strtoll(clip_begin_attr, &lastp,0);
 	}
+	
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
 	long long int ce = -1;
+	if (!clip_end_attr) {
+		clip_end_attr = m_node->get_attribute("clip-end");
+	}
 	
-	if (clip_begin_attr) {
+	if (clip_end_attr) {
 		ce = strtoll(clip_end_attr, &lastp,0);
 	}
+	
 	m_audio_src = factory->df->new_audio_datasource(url, supported, cb, ce);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());

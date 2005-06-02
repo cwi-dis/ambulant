@@ -228,6 +228,11 @@ ambulant::net::rtsp_demux::get_clip_end()
 	return m_clip_end;
 }
 
+timestamp_t
+ambulant::net::rtsp_demux::get_clip_begin()
+{
+	return m_clip_begin;
+}
 void
 ambulant::net::rtsp_demux::seek(timestamp_t time)
 {

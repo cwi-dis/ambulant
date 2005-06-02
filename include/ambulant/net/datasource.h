@@ -248,6 +248,8 @@ class audio_datasource : virtual public datasource {
 	virtual void read_ahead(timestamp_t time) = 0; 
 	// At what point in time does the audio playback stop. (-1 plays the audio until the end)
 	virtual timestamp_t get_clip_end() = 0;
+		
+	virtual timestamp_t get_clip_begin() = 0;
 	// Return the duration of the audio data, if known.
 	virtual std::pair<bool, double> get_dur() = 0;
 };
@@ -272,7 +274,7 @@ class raw_audio_datasource:
     bool end_of_file() { return m_src->end_of_file(); };
 	bool buffer_full() { return false; };
   	timestamp_t get_clip_end() { return -1; };
-		
+	timestamp_t get_clip_begin() { return 0; };
 	char* get_read_ptr() { return m_src->get_read_ptr(); };
 	int size() const { return m_src->size(); };   
 	audio_format& get_audio_format() { return m_fmt; };
