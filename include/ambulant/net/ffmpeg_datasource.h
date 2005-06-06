@@ -90,19 +90,7 @@
 #include <unistd.h>
 #include <map>
 
-static void 
-ffmpeg_init()
-{
-	static bool is_inited = false;
-	if (is_inited) return;
-	avcodec_init();
-#ifdef WITH_FFMPEG_AVFORMAT
-	av_register_all();
-#else
-	avcodec_register_all();
-#endif
-	is_inited = true;
-}
+
 
 struct video_frame {
 	char* data;
