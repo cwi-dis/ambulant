@@ -161,11 +161,12 @@ plugin_engine::collect_plugin_directories()
 }
 
 #ifdef WITH_LTDL_PLUGINS
-#if 1 // Should be mac-only
+#ifdef  AMBULANT_PLATFORM_MACOS
 #define MAYBE_CONST
 #else
 #define MAYBE_CONST const
 #endif
+
 static int filter(MAYBE_CONST struct dirent* filen)
 {
 	int len;
