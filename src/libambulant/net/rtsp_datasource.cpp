@@ -72,6 +72,7 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 }
 
 
+
 void 
 ambulant::net::rtsp_demux::add_datasink(detail::datasink *parent, int stream_index)
 {
@@ -185,7 +186,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
-				lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
+				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
 				context->audio_fmt.channels = subsession->numChannels() + 1;
 				context->audio_fmt.bits = 16;
 				//context->fmt.samplerate = subsession->rtpSource()->timestampFrequency();
@@ -196,7 +197,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			if (context->video_stream < 0) {
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
-				lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
+				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
 				context->video_fmt.framerate = subsession->videoFPS();
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
@@ -355,44 +356,44 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
 		
 		
-		//~ if (rpts == context->last_pts) {
-			//~ context->video_buffer = (unsigned char*) realloc(context->video_buffer, context->video_buffer_size + sz);
-			//~ if (context->video_buffer) {
-				//~ if (sz > 0)
-					//~ memcpy((context->video_buffer + context->video_buffer_size), context->video_packet, sz);
-				//~ context->video_buffer_size += sz;
-				//~ lib::logger::get_logger()->debug("after_reading_video: stored !! (I)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
-			//~ } else {
-				//~ lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
-			//~ }
+		if (rpts == context->last_pts) {
+			context->video_buffer = (unsigned char*) realloc(context->video_buffer, context->video_buffer_size + sz);
+			if (context->video_buffer) {
+				if (sz > 0)
+					memcpy((context->video_buffer + context->video_buffer_size), context->video_packet, sz);
+					context->video_buffer_size += sz;
+				lib::logger::get_logger()->debug("after_reading_video: stored !! (I)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+			} else {
+				lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
+			}
 		
-		//~ } else {	
-			//~ if(context->video_buffer) {			
-				//~ if(context->sinks[context->video_stream]) 
-					//~ context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_buffer , context->video_buffer_size);
-			//~ }
-			//~ if (context->video_buffer)
-				//~ free(context->video_buffer);
-			//~ context->last_pts = rpts;
-			//~ context->video_buffer = NULL;
-			//~ context->video_buffer_size = 0;
+		} else {	
+			if(context->video_buffer) {			
+				if(context->sinks[context->video_stream]) 
+					context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_buffer , context->video_buffer_size);
+			}
+			if (context->video_buffer)
+				free(context->video_buffer);
+			context->last_pts = rpts;
+			context->video_buffer = NULL;
+			context->video_buffer_size = 0;
 			
-			//~ if (sz > 0 )
-				//~ context->video_buffer = (unsigned char*) malloc(sz);
+			if (sz > 0 )
+				context->video_buffer = (unsigned char*) malloc(sz);
 		
-			//~ if (context->video_buffer) {
-				//~ memcpy(context->video_buffer + context->video_buffer_size, context->video_packet, sz);
-				//~ context->video_buffer_size += sz;
-				//~ lib::logger::get_logger()->debug("after_reading_video: stored !! (II)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
-			//~ } else {
-				//~ lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
-			//~ }
-		//~ }
-		
-		 if(context->video_packet) {			
-			if(context->sinks[context->video_stream]) 
-				context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
+			if (context->video_buffer) {
+				memcpy(context->video_buffer + context->video_buffer_size, context->video_packet, sz);
+				context->video_buffer_size += sz;
+				lib::logger::get_logger()->debug("after_reading_video: stored !! (II)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+			} else {
+				lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
+			}
 		}
+		
+		 //~ if(context->video_packet) {			
+			//~ if(context->sinks[context->video_stream]) 
+				//~ context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
+		//~ }
 		context->need_video = true;
 		assert(context->video_packet);
 		free(context->video_packet);
