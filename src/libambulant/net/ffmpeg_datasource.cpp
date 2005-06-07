@@ -284,7 +284,7 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format
 // **************************** ffmpeg_demux *****************************
 
 #ifdef WITH_FFMPEG_AVFORMAT
-#define CLIPBEGIN 3
+
 detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end)
 :   m_con(con),
 	m_nstream(0),
@@ -292,12 +292,12 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin,
 	m_clip_end(clip_end),
 	m_clip_begin_set(false)
 {
-#if WITH_FFMPEG_0_4_9
+#ifdef WITH_FFMPEG_0_4_9
 	if (m_clip_begin > 0) {
 		assert (m_con);
 		assert (m_con->iformat);
 		std::cout << "read_seek" << "\n";
-		int seek = av_seek_frame(m_con, -1, CLIPBEGIN, 0);
+		int seek = av_seek_frame(m_con, -1, m_clip_begin);
 	} 
 #endif
 	
@@ -478,7 +478,11 @@ detail::ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		m_lock.leave();
+#ifdef WITH_FFMPEG_0_4_9
+		int ret = av_read_frame(m_con, pkt);
+#else
 		int ret = av_read_packet(m_con, pkt);
+#endif
 		m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%lld, 0x%x, %d)", ret, pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
