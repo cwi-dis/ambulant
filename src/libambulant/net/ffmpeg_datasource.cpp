@@ -821,7 +821,8 @@ demux_video_datasource::demux_video_datasource(const net::url& url, detail::abst
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_client_callback(NULL),
-	m_audio_src(NULL)
+	m_audio_src(NULL),
+	m_frame_nr(0)
 {	
 	m_thread->add_datasink(this, stream_index);
 	int audio_stream_idx = m_thread->audio_stream_nr();
@@ -938,6 +939,19 @@ demux_video_datasource::frame_done(timestamp_t pts, bool keepdata)
 	m_lock.leave();
 }
 
+void
+write_data(long long int frame_nr, char* data, int sz)
+{
+	char filename[50];
+	int r=sprintf(filename,"%3.8lld.frm",frame_nr);
+	AM_DBG lib::logger::get_logger()->debug("write_data: filename : %s", filename);
+	FILE* out = fopen(filename,"w+");
+	if (out) {
+		fwrite(data,sz,1,out);
+		fclose(out);
+	}
+}
+
 
 void 
 demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
@@ -945,8 +959,10 @@ demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
 	m_lock.enter();
 
 	m_src_end_of_file = (sz == 0);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
+		m_frame_nr++;
+		write_data(m_frame_nr, (char*) inbuf, sz);
 		char* frame_data = (char*) malloc(sz+1);
 		assert(frame_data);
 		memcpy(frame_data, inbuf, sz);
@@ -1284,13 +1300,19 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t timestamp, bool keepdata
 
 int 
 ffmpeg_video_decoder_datasource::width()
-{
+{	
+	if (m_fmt.width == 0) {
+			m_fmt.width = m_con->width;
+	}
 	return m_fmt.width;
 }
 
 int 
 ffmpeg_video_decoder_datasource::height()
 {
+	if (m_fmt.height == 0) {
+			m_fmt.height = m_con->height;
+	}
 	return m_fmt.height;
 }
 
@@ -2007,7 +2029,8 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
 		m_con = avcodec_alloc_context();	
-		
+		//m_con->width=176;
+		//m_con->height=128;
 		if( !codec) {
 			//lib::logger::get_logger()->error(gettext("%s: Audio codec %d(%s) not supported"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
@@ -2022,7 +2045,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
 		}
 		
-		m_con->codec_type = CODEC_TYPE_AUDIO;
+		m_con->codec_type = CODEC_TYPE_VIDEO;
 		return true;
 	}
 	// Could add support here for raw mp3, etc.

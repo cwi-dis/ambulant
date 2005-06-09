@@ -318,6 +318,7 @@ class demux_video_datasource:
   	audio_datasource* m_audio_src;
 	lib::critical_section m_lock;
   	//FILE *m_file;
+  	long long int m_frame_nr;
   
 };
 

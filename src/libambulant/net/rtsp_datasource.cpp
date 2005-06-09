@@ -180,10 +180,14 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	MediaSubsessionIterator iter(*context->media_session);
 	// Only audio/video session need to apply for a job !
 	while ((subsession = iter.next()) != NULL) {
+		if (!subsession->initiate()) {
+			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to initiate subsession");
+			//lib::logger::get_logger()->error("RTSP Connection Failed");
+			return NULL;
+		}
 		if (strcmp(subsession->mediumName(), "audio") == 0) {
 			desired_buf_size = 100000;
 			if (context->audio_stream < 0) {
-				
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
@@ -201,14 +205,12 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_fmt.framerate = subsession->videoFPS();
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
+				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %d",context->video_fmt.width, context->video_fmt.height, context->video_fmt.framerate);
+
 			}
 		}
 		context->nstream++;
-		if (!subsession->initiate()) {
-			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to initiate subsession");
-			//lib::logger::get_logger()->error("RTSP Connection Failed");
-			return NULL;
-		}
+		
 		
 		int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 		int buf_size = increaseReceiveBufferTo(*env, rtp_sock_num, desired_buf_size);
