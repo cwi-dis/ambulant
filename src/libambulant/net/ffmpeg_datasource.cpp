@@ -961,8 +961,8 @@ demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
 	m_src_end_of_file = (sz == 0);
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
-		m_frame_nr++;
-		write_data(m_frame_nr, (char*) inbuf, sz);
+		//m_frame_nr++;
+		//write_data(m_frame_nr, (char*) inbuf, sz);
 		char* frame_data = (char*) malloc(sz+1);
 		assert(frame_data);
 		memcpy(frame_data, inbuf, sz);
@@ -1017,6 +1017,24 @@ demux_video_datasource::buffer_full()
 	m_lock.leave();
 	return rv;
 }	
+
+timestamp_t
+demux_video_datasource::get_clip_end()
+{
+	timestamp_t clip_end = m_thread->get_clip_end();
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_end: clip_end=%d", clip_end);
+
+	return  clip_end;
+}
+
+timestamp_t
+demux_video_datasource::get_clip_begin()
+{
+	timestamp_t clip_begin = m_thread->get_clip_begin();
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_begin: clip_begin=%d", clip_begin);
+
+	return  clip_begin;
+}
 
 char*
 demux_video_datasource::get_frame(timestamp_t now,timestamp_t *timestamp, int *size)
@@ -1123,7 +1141,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_client_callback(NULL),
 	m_pts_last_frame(0),
 	m_last_p_pts(0),
-	m_frame_count(0)
+	m_frame_count(0),
+	m_elapsed(0)
 {	
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
@@ -1448,6 +1467,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 						m_frame_count++;
 						std::pair<timestamp_t, char*> element(pts, framedata);
 						m_frames.push(element);
+						m_elapsed = pts;
 					} else {
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 					}
@@ -1460,7 +1480,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 		m_src->frame_done(0, false);
   	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
-	if ( m_frames.size() || m_src->end_of_file()  ) {
+	if ( m_frames.size() || m_src->end_of_file() && !_clip_end()  ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
 	  if ( m_client_callback ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
@@ -1485,6 +1505,10 @@ bool
 ffmpeg_video_decoder_datasource::end_of_file()
 {
 	m_lock.enter();
+	if (_clip_end()) {
+		m_lock.leave();
+		return true;
+	}
 	bool rv = _end_of_file();
 	m_lock.leave();
 	return rv;
@@ -1499,6 +1523,20 @@ ffmpeg_video_decoder_datasource::_end_of_file()
 			return false;
 	}
 	return m_src->end_of_file();
+}
+
+bool 
+ffmpeg_video_decoder_datasource::_clip_end()
+{
+	timestamp_t clip_end = m_src->get_clip_end();
+	if (clip_end == -1) return false;
+	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
+	if ((m_elapsed + m_src->get_clip_begin()) > clip_end) {
+		return true;
+	}
+	
+	return false;
 }
 
 bool 

@@ -290,6 +290,8 @@ class demux_video_datasource:
     void data_avail(timestamp_t pts, uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
+  	timestamp_t get_clip_end();
+	timestamp_t get_clip_begin();
   	int width();
   	int height();
   
@@ -374,12 +376,15 @@ class ffmpeg_video_decoder_datasource:
 	void read_ahead(timestamp_t clip_begin);
     void data_avail();
 	bool buffer_full();
+  	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
+  	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
 	std::pair<bool, double> get_dur();
 	
   private:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
 	bool _end_of_file();
+  	bool _clip_end();
 	bool _buffer_full();
 	qelt _pop_top_frame();
 	
@@ -399,6 +404,7 @@ class ffmpeg_video_decoder_datasource:
   	timestamp_t m_last_p_pts;
   	int m_frame_count;
     lib::critical_section m_lock;
+	timestamp_t m_elapsed;
 	//FILE* m_file;
   	
 };

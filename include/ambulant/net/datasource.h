@@ -335,6 +335,9 @@ class video_datasource : virtual public lib::ref_counted_obj {
   	virtual void frame_done(timestamp_t timestamp, bool keepdata) = 0;
 	
 	virtual void read_ahead(timestamp_t time) = 0; 
+	virtual timestamp_t get_clip_end() = 0;
+	virtual timestamp_t get_clip_begin() = 0;
+
 };
 
 /// Interface to create a datasource for a given URL.
