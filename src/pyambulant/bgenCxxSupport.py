@@ -215,5 +215,5 @@ class CxxScanner(Scanner):
             classname = self.pythonizename(classname)
             if classname in self.blacklisttypes:
                 return None, None
-            return "CxxMethodGenerator", "methods_%s" % classname
-        return "FunctionGenerator", "functions"
+            return "Method", "methods_%s" % classname
+        return "Function", "functions"
