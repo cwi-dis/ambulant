@@ -113,8 +113,8 @@ class sdl_active_audio_renderer : public common::renderer_playable {
 //	void set_surface(common::surface *dest) { abort(); }
 //	common::surface *get_surface() { abort(); }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
-//	void transition_freeze_end(lib::screen_rect<int> area) {}		  
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
+//	void transition_freeze_end(lib::screen_rect_int area) {}		  
+	void redraw(const lib::screen_rect_int &dirty, common::gui_window *window) {}
 	static void sdl_callback(Uint8 *stream, int len);
 #ifdef USE_SMIL21
 	void set_intransition(const lib::transition_info* info);

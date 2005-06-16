@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 namespace common {
@@ -63,7 +64,6 @@ class schema;
 
 namespace ambulant {
 namespace lib {
-class node;
 class document;
 }}
 

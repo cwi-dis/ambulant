@@ -24,7 +24,7 @@
 				<string>.SMI</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Editor</string>
 			<key>NSDocumentClass</key>
 			<string>MyDocument</string>
 		</dict>

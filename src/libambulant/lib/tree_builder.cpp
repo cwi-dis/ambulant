@@ -201,10 +201,10 @@ lib::tree_builder::end_document() {
 void 
 lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
-		m_root = m_current = new node(qn, qattrs, m_context);
+		m_root = m_current = node_factory(qn, qattrs, m_context);
 	} else if(m_current != 0) {
 		node *p;
-		p = new node(qn, qattrs, m_context);
+		p = node_factory(qn, qattrs, m_context);
 		m_current->append_child(p);
 		m_current = p;
 	} else

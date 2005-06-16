@@ -56,11 +56,11 @@
 #include <utility>
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/refcount.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 
 namespace lib {
-class node;
 class event_processor;
 } // namespace lib
 

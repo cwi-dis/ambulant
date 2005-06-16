@@ -20,6 +20,7 @@ library_include_HEADERS= \
 	memfile.h \
 	mtsync.h \
 	nfa.h \
+	node_impl.h \
 	node_iterator.h \
 	node_navigator.h \
 	node.h \

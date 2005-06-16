@@ -93,7 +93,7 @@ cocoa_window::~cocoa_window()
 }
 	
 void
-cocoa_window::need_redraw(const screen_rect<int> &r)
+cocoa_window::need_redraw(const screen_rect_int &r)
 {
 	AM_DBG logger::get_logger()->debug("cocoa_cocoa_window::need_redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (!m_view) {
@@ -117,7 +117,7 @@ cocoa_window::redraw_now()
 }
 
 void
-cocoa_window::redraw(const screen_rect<int> &r)
+cocoa_window::redraw(const screen_rect_int &r)
 {
 	AM_DBG logger::get_logger()->debug("cocoa_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	m_handler->redraw(r, this);
@@ -282,7 +282,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 	transition_tmpsurface = NULL;
     [super dealloc];
 
-}- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect
+}- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect_int *)arect
 {
 #ifdef USE_COCOA_BOTLEFT
 	float bot_delta = NSMaxY([self bounds]) - arect->bottom();
@@ -292,15 +292,15 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
 #endif
 }
 
-- (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect
+- (ambulant::lib::screen_rect_int) ambulantRectForNSRect: (const NSRect *)nsrect
 {
 #ifdef USE_COCOA_BOTLEFT
 	float top_delta = NSMaxY([self bounds]) - NSMaxY(*nsrect);
-	ambulant::lib::screen_rect<int> arect = ambulant::lib::screen_rect<int>(
+	ambulant::lib::screen_rect_int arect = ambulant::lib::screen_rect_int(
                 ambulant::lib::point(int(NSMinX(*nsrect)), int(top_delta)),
 				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
 #else
-	ambulant::lib::screen_rect<int> arect = ambulant::lib::screen_rect<int>(
+	ambulant::lib::screen_rect_int arect = ambulant::lib::screen_rect_int(
                 ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
 				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
 	 
@@ -330,7 +330,7 @@ cocoa_window_factory::new_background_renderer(const common::region_info *src)
     } else {
 		// If we have seen transitions we always redraw the whole view
 		if (transition_count) rect = [self bounds];
-        ambulant::lib::screen_rect<int> arect = [self ambulantRectForNSRect: &rect];
+        ambulant::lib::screen_rect_int arect = [self ambulantRectForNSRect: &rect];
 #ifdef USE_SMIL21
 		[self _screenTransitionPreRedraw];
 #endif

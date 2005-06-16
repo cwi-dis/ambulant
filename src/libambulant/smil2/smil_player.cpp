@@ -92,6 +92,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 :	m_doc(doc),
 	m_factory(factory),
 	m_system(sys),
+	m_feedback_handler(0),
 	m_animation_engine(0),
 	m_root(0),
 	m_dom2tn(0),
@@ -521,7 +522,7 @@ smil_player::new_playable(const lib::node *n) {
 		if (rend) {
 			AM_DBG m_logger->debug("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
-			alignment *align = m_layout_manager->get_alignment(n);
+			const alignment *align = m_layout_manager->get_alignment(n);
 			rend->set_alignment(align);
 		} else {
 			AM_DBG m_logger->debug("smil_player::new_playable: surface not set because rend == NULL");
@@ -554,10 +555,7 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 		std::string anchor = href.get_ref();
 		const lib::node *target = m_doc->get_node(anchor);
 		if(target) {
-			std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
-			if(it != m_dom2tn->end()) {
-				m_scheduler->start((*it).second);
-			}
+			goto_node(target);
 		} else {
 			m_logger->error(gettext("Link destination not found: %s"), href.get_url().c_str());
 		}
@@ -586,6 +584,16 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 	} else {
 		m_system->open(href, dststate == dst_play, to_replace);
 	}
+}
+
+bool smil_player::goto_node(const lib::node *target)
+{
+	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
+	if(it != m_dom2tn->end()) {
+		m_scheduler->start((*it).second);
+		return true;
+	}
+	return false;
 }
 
 std::string smil_player::get_pointed_node_str() const {

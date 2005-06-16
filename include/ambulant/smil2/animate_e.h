@@ -54,6 +54,7 @@
 #define AMBULANT_SMIL2_ANIMATE_E_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/node.h"
 
 #include <string>
 #include <map>
@@ -62,7 +63,6 @@
 namespace ambulant {
 
 namespace lib {
-	class node;
 	class event;
 	class event_processor;
 }

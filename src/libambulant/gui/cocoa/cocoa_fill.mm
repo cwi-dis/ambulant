@@ -95,17 +95,17 @@ cocoa_fill_renderer::start(double where)
 }
 
 void
-cocoa_fill_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *window)
+cocoa_fill_renderer::redraw_body(const screen_rect_int &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
+	const screen_rect_int &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
 	// First find our whole area (which we have to clear to background color)
-	screen_rect<int> dstrect_whole = r;
+	screen_rect_int dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 	// Fill with  color
@@ -134,15 +134,15 @@ cocoa_background_renderer::~cocoa_background_renderer()
 }
 
 void
-cocoa_background_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
+cocoa_background_renderer::redraw(const lib::screen_rect_int &dirty, common::gui_window *window)
 {
-	const screen_rect<int> &r =  m_dst->get_rect();
+	const screen_rect_int &r =  m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: %d clearing to 0x%x", !m_src->get_transparent(), (long)m_src->get_bgcolor());
-	screen_rect<int> dstrect_whole = r;
+	screen_rect_int dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 	if (m_src && !m_src->get_transparent()) {
@@ -177,7 +177,7 @@ cocoa_background_renderer::keep_as_background()
 	}
 	cocoa_window *cwindow = (cocoa_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> dstrect_whole = m_dst->get_rect();
+	screen_rect_int dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];	
 	

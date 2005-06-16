@@ -589,11 +589,8 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 {
 	m_lock.enter();
     if (!m_node) abort();
-	
-	std::ostringstream os;
-	os << *m_node;
-	
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.start(0x%x, %s)", (void *)this, os.str().c_str());
+		
+	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.start(0x%x)", (void *)this);
 	if (m_audio_src) {
 		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);

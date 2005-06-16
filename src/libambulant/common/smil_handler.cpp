@@ -209,9 +209,9 @@ void smil_handler::end_area(const q_name_pair& qn) {
 
 void smil_handler::default_start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
-		m_root = m_current = new node(qn, qattrs);
+		m_root = m_current = node_factory(qn, qattrs);
 	} else if(m_current != 0) {
-		node *p = new node(qn, qattrs);
+		node *p = node_factory(qn, qattrs);
 		m_current->append_child(p);
 		m_current = p;
 	}
@@ -224,9 +224,9 @@ void smil_handler::default_end_element(const q_name_pair& qn) {
 
 void smil_handler::unknown_start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
-		m_root = m_current = new node(qn, qattrs);
+		m_root = m_current = node_factory(qn, qattrs);
 	} else if(m_current != 0) {
-		node *p = new node(qn, qattrs);
+		node *p = node_factory(qn, qattrs);
 		m_current->append_child(p);
 		m_current = p;
 	}

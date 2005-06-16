@@ -65,8 +65,10 @@
 
 using namespace ambulant;
 
-lib::document::document(node *root) 
-:	m_root(root) {
+lib::document::document(node *root, bool owned) 
+:	m_root(root),
+	m_root_owned(owned)
+{
 	build_id2node_map();
 	read_custom_attributes();
 }
@@ -80,7 +82,7 @@ lib::document::document(node *root, const std::string& src_url)
 
 
 lib::document::~document() {
-	delete m_root;
+	if (m_root_owned) delete m_root;
 }
 
 lib::node* 
@@ -140,6 +142,15 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 	return d;
 }
 
+//static 
+lib::document* 
+lib::document::create_from_tree(common::factories* factory, lib::node *root, const net::url& u) {
+	document *d = new document(root, false);
+	d->set_root(root); // This fills the id2node map and such
+	d->set_src_url(u);
+	return d;
+}
+
 void 
 lib::document::set_prefix_mapping(const std::string& prefix, const std::string& uri) {
 	m_namespaces.set_prefix_mapping(prefix, uri);
@@ -163,7 +174,8 @@ lib::document::resolve_url(const net::url& rurl) const {
 }
 
 void lib::document::set_root(node* n) {
-	if(m_root != n) delete m_root;
+	if(m_root_owned && m_root != n) delete m_root;
+	// XXX Should we reset m_root_owned??
 	m_root = n;
 	build_id2node_map();
 	read_custom_attributes();

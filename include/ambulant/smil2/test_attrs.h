@@ -55,6 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/document.h"
+#include "ambulant/lib/node.h"
 
 #include <string>
 #include <map>
@@ -62,7 +63,6 @@
 namespace ambulant {
 
 namespace lib {
-class node;
 class logger;
 class document;
 } // namespace lib

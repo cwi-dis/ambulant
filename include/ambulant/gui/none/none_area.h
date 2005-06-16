@@ -77,11 +77,11 @@ class none_area_renderer : public common::renderer_playable {
 	void stop();
 	void seek(double t) {}
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {}
+	void redraw(const lib::screen_rect_int &dirty, common::gui_window *window) {}
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   private:
-	lib::screen_rect<int> *m_rgn;
+	lib::screen_rect_int *m_rgn;
 };
 } // namespace none
 

@@ -49,6 +49,7 @@
 
 //#define WITH_NONE_VIDEO
 //#define WITH_FFMPEG_VIDEO
+//#define TEST_PLAYBACK_FEEDBACK
 
 #include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
@@ -91,6 +92,24 @@ usage()
 	std::cerr << "Options: --version (-v) prints version info" << std::endl;
 	exit(1);
 }
+
+#ifdef TEST_PLAYBACK_FEEDBACK
+#include "ambulant/common/player.h"
+#include "ambulant/lib/node.h"
+
+class pbfeedback : public ambulant::common::player_feedback {
+  public:
+	void node_started(ambulant::lib::node *n) {
+		ambulant::lib::logger::get_logger()->trace("%s started", n->get_sig().c_str());
+	}
+
+	void node_stopped(ambulant::lib::node *n) {
+		ambulant::lib::logger::get_logger()->trace("%s stopped", n->get_sig().c_str());
+	}
+};
+
+class pbfeedback pbfeedback;
+#endif
 
 mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	bool use_mms, ambulant::common::embedder *app)
@@ -156,8 +175,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
 	pf->add_plugins(m_factory);
 
-
-	m_doc = create_document(filename);
+	ambulant::net::url url(filename);
+	m_doc = create_document(url);
 	if (!m_doc) {
 		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), filename);
 		return;
@@ -169,13 +188,26 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
+#ifdef TEST_PLAYBACK_FEEDBACK
+	m_player->set_feedback(&pbfeedback);
+#endif
+#if 1
+	const std::string& id = url.get_ref();
+	if (id != "") {
+		const ambulant::lib::node *node = m_doc->get_node(id);
+		if (!node) {
+			lib::logger::get_logger()->warn(gettext("%s: node ID not found"), id.c_str());
+		} else {
+			m_goto_node = node;
+		}
+	}
+#endif
 }
 
 ambulant::lib::document *
-mainloop::create_document(const char *filename)
+mainloop::create_document(ambulant::net::url& url)
 {
 	char *data;
-	ambulant::net::url url(filename);
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
 #if 0
@@ -193,18 +225,18 @@ mainloop::create_document(const char *filename)
 	}
 	int size = ambulant::net::read_data_from_url(url, m_factory->df, &data);
 	if (size < 0) {
-		ambulant::lib::logger::get_logger()->error(gettext("%s: Cannot open"), filename);
+		ambulant::lib::logger::get_logger()->error(gettext("%s: Cannot open"), url.get_url().c_str());
 		return NULL;
 	}
 	std::string docdata(data, size);
 	free(data);
-	ambulant::lib::logger::get_logger()->trace("%s: Parsing document...", filename);
+	ambulant::lib::logger::get_logger()->trace("%s: Parsing document...", url.get_url().c_str());
 	ambulant::lib::document *rv = ambulant::lib::document::create_from_string(m_factory, docdata, url.get_url());
 	if (rv) {
-		ambulant::lib::logger::get_logger()->trace("%s: Parser done", filename);
+		ambulant::lib::logger::get_logger()->trace("%s: Parser done", url.get_url().c_str());
 		rv->set_src_url(url);
 	} else {
-		ambulant::lib::logger::get_logger()->trace("%s: Failed to parse document ", filename);
+		ambulant::lib::logger::get_logger()->trace("%s: Failed to parse document ", url.get_url().c_str());
 	}
 	return rv;
 }	
@@ -236,6 +268,11 @@ mainloop::play()
 	m_running = true;
 	m_speed = 1.0;
 	m_player->start();
+	if (m_goto_node) {
+		bool ok = m_player->goto_node(m_goto_node);
+		if (!ok)
+			ambulant::lib::logger::get_logger()->trace("mainloop::run: goto_node failed");
+	} 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::run(): returning");
 }
 

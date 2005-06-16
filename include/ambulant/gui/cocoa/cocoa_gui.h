@@ -76,11 +76,11 @@ class cocoa_window : public common::gui_window {
   		m_view(_view) {};
 	~cocoa_window();
   		
-	void need_redraw(const lib::screen_rect<int> &r);
+	void need_redraw(const lib::screen_rect_int &r);
 	void redraw_now();
 	void need_events(bool want);
 	
-	void redraw(const lib::screen_rect<int> &r);
+	void redraw(const lib::screen_rect_int &r);
 	void user_event(const lib::point &where, int what = 0);
 
 	void *view() { return m_view; }
@@ -154,8 +154,8 @@ class cocoa_renderer_factory : public common::playable_factory {
 - (bool)isAmbulantWindowInUse;
 - (BOOL)isFlipped;
 
-- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect<int> *)arect;
-- (ambulant::lib::screen_rect<int>) ambulantRectForNSRect: (const NSRect *)nsrect;
+- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::screen_rect_int *)arect;
+- (ambulant::lib::screen_rect_int) ambulantRectForNSRect: (const NSRect *)nsrect;
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect;
 - (void) syncDisplayIfNeeded: (id) dummy;

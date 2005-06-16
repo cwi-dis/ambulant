@@ -54,7 +54,9 @@
 #define AMBULANT_SMIL2_TIME_NCTX_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/player.h"
 #include "ambulant/smil2/smil_time.h"
 
 #include <string>
@@ -62,7 +64,6 @@
 namespace ambulant {
 
 namespace lib {
-	class node;
 	class timer;
 }
 
@@ -76,7 +77,7 @@ enum dst_playstate { dst_play, dst_pause, dst_external };
 // Time nodes context requirements
 // This interface is used by time nodes to communicate with their environment
 // This interface is used by the timegraph builder 
-class time_node_context {
+class time_node_context : public common::player_feedback {
   public:
 	// Services
 	virtual time_traits::value_type elapsed() const = 0;
@@ -149,6 +150,8 @@ class dummy_time_node_context : public time_node_context {
 	// Notifications
 	virtual void started_playback() {}
 	virtual void done_playback(){}
+	virtual void node_started(const lib::node *n) {}
+	virtual void node_stopped(const lib::node *n) {}
 };
 
 } // namespace smil2

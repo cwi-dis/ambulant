@@ -57,6 +57,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/smil2/time_nctx.h"
@@ -70,7 +71,6 @@
 namespace ambulant {
 namespace lib {
 class document;
-class node;
 class timer;
 } // namespace lib
 
@@ -86,7 +86,7 @@ class smil_layout_manager;
 class animation_engine;
 class scheduler;
 
-class smil_player : public common::player, public time_node_context, public common::playable_notification {
+class smil_player : public common::player, public common::player_feedback, public time_node_context, public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -167,6 +167,13 @@ class smil_player : public common::player, public time_node_context, public comm
 	virtual bool wait_for_eom() const { return m_eom_flag;}
 	virtual void set_wait_for_eom(bool b) { m_eom_flag = b;}
 	
+	// Feedback stuff
+	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
+	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
+	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
+	
+	virtual bool goto_node(const lib::node *n);
+
 	// Export the layout functionality for those who need it
 	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
 	
@@ -198,6 +205,7 @@ class smil_player : public common::player, public time_node_context, public comm
 	//common::window_factory *m_wf;
 	//common::playable_factory *m_pf;
 	common::embedder *m_system;
+	common::player_feedback *m_feedback_handler;
 	animation_engine *m_animation_engine;
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;

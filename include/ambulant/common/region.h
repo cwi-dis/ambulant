@@ -70,7 +70,7 @@ namespace common {
 class passive_region : public surface_template, public surface, public gui_events {
   // The only constructor is protected: 
   protected:
-	passive_region(const std::string &name, passive_region *parent, screen_rect<int> bounds,
+	passive_region(const std::string &name, passive_region *parent, screen_rect_int bounds,
 		const region_info *info, bgrenderer *bgrenderer);
   public:
 	virtual ~passive_region();
@@ -83,15 +83,15 @@ class passive_region : public surface_template, public surface, public gui_event
 	// The surface interface:
 	void show(gui_events *cur);
 	void renderer_done(gui_events *renderer);
-	virtual void need_redraw(const screen_rect<int> &r);
+	virtual void need_redraw(const screen_rect_int &r);
 	void need_redraw();
 	virtual void need_events(bool want);
-	const screen_rect<int>& get_rect() const { return m_inner_bounds; }
+	const screen_rect_int& get_rect() const { return m_inner_bounds; }
 	virtual const point &get_global_topleft() const;
-	screen_rect<int> get_fit_rect(const size& src_size, rect* out_src_rect, common::alignment *align) const;
+	screen_rect_int get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
 #ifdef USE_SMIL21
 	bool is_tiled() const;
-	tile_positions get_tiles(lib::size image_size, lib::screen_rect<int> surface_rect) const;
+	tile_positions get_tiles(lib::size image_size, lib::screen_rect_int surface_rect) const;
 #endif
 	const region_info *get_info() const { return m_info; }	
 #ifdef USE_SMIL21
@@ -104,7 +104,7 @@ class passive_region : public surface_template, public surface, public gui_event
 	void keep_as_background();
 	
 	// The gui_events interface:
-	void redraw(const screen_rect<int> &dirty, gui_window *window);
+	void redraw(const screen_rect_int &dirty, gui_window *window);
 	void user_event(const point &where, int what = 0);
 		
 	// Win32 code needs this, but I don't like it:
@@ -112,18 +112,18 @@ class passive_region : public surface_template, public surface, public gui_event
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes
-	screen_rect<int> get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
-	void draw_background(const screen_rect<int> &r, gui_window *window);
+	screen_rect_int get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
+	void draw_background(const screen_rect_int &r, gui_window *window);
 
   protected:
-	virtual void transition_done(lib::screen_rect<int> area);
-	void transition_freeze_end(lib::screen_rect<int> area);
+	virtual void transition_done(lib::screen_rect_int area);
+	void transition_freeze_end(lib::screen_rect_int area);
 
   	std::string m_name;					// for debugging
 
 	bool m_bounds_inited;				// True if bounds and topleft initialized
-  	screen_rect<int> m_inner_bounds;	// region rectangle (0, 0) based
-  	screen_rect<int> m_outer_bounds;	// region rectangle in parent coordinate space
+  	screen_rect_int m_inner_bounds;	// region rectangle (0, 0) based
+  	screen_rect_int m_outer_bounds;	// region rectangle in parent coordinate space
 	point m_window_topleft;				// region top-left in window coordinate space
 
   	passive_region *m_parent;			// parent region
@@ -147,7 +147,7 @@ class passive_root_layout : public passive_region {
 	passive_root_layout(const region_info *info, size bounds, bgrenderer *bgrenderer, window_factory *wf);
 	~passive_root_layout();
 	
-	void need_redraw(const screen_rect<int> &r);
+	void need_redraw(const screen_rect_int &r);
 	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
 #ifdef USE_SMIL21
@@ -155,7 +155,7 @@ class passive_root_layout : public passive_region {
 #endif
 	gui_window *get_gui_window() { return m_gui_window; }
   protected:
-	void transition_done(lib::screen_rect<int> area) { transition_freeze_end(area); }
+	void transition_done(lib::screen_rect_int area) { transition_freeze_end(area); }
   private:
 	gui_window *m_gui_window;
 };

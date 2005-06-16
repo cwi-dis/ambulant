@@ -120,10 +120,10 @@ cocoa_text_renderer::~cocoa_text_renderer()
 }
 
 void
-cocoa_text_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *window)
+cocoa_text_renderer::redraw_body(const screen_rect_int &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
+	const screen_rect_int &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	if (m_data && !m_text_storage) {
@@ -143,7 +143,7 @@ cocoa_text_renderer::redraw_body(const screen_rect<int> &dirty, gui_window *wind
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect<int> dstrect = r;
+	screen_rect_int dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 #if 0

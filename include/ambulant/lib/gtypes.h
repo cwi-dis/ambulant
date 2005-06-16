@@ -511,13 +511,14 @@ class screen_rect {
 	}
 	
 };
+typedef screen_rect<int> screen_rect_int;
 
 // Returns the coord where the arguement 'x' is mapped using the same
 // transform that mapped the 'src' argument to the 'dst' argument.
 // In the following primes represent dest coordinates (x -> x_p)
 // xp = ( (x_2^p-x_1^p)*(x-x_1) + (x_2 - x_1)*x_1_p )/(x_2 - x_1)
 template <class T>
-inline int tf_x(T x, const screen_rect<int> *src, const screen_rect<int> *dst) {
+inline int tf_x(T x, const screen_rect_int *src, const screen_rect_int *dst) {
 	double x1 = src->left(), x2 = src->right();
 	double x1p = dst->left(), x2p = dst->right();
 	double xp = ((x2p-x1p)*(x-x1) + (x2-x1)*x1p)/(x2-x1);
@@ -553,7 +554,7 @@ inline T tf_y(T y, const screen_rect<T> *src, const screen_rect<T> *dst) {
 // In the following primes represent dest coordinates (y -> y_p)
 // y = ((y_2 - y_1)*y^p + (y_1*y_2^p-y_2*y_1^p))/(y_2^p-y_1^p)
 template <class T>
-inline T reverse_tf_y(T yp, const screen_rect<T> *src, const screen_rect<int> *dst){
+inline T reverse_tf_y(T yp, const screen_rect<T> *src, const screen_rect_int *dst){
 	double y1 = src->top(), y2 = src->bottom();
 	double y1p = dst->top(), y2p = dst->bottom();
 	double y = ((y2-y1)*yp + (y1*y2p-y2*y1p))/(y2p-y1p);
@@ -621,7 +622,7 @@ inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) {
 	return s << '(' << z.w << ", " << z.h << ')';
 }
 
-inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
+inline std::string repr(const ambulant::lib::screen_rect_int& r) {
 	std::string s;
 	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
@@ -629,7 +630,7 @@ inline std::string repr(const ambulant::lib::screen_rect<int>& r) {
 #else 
 inline std::string repr(const ambulant::lib::basic_point<int>& p) { return "";}
 inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) { return "";}
-inline std::string repr(const ambulant::lib::screen_rect<int>& r) {return "";}
+inline std::string repr(const ambulant::lib::screen_rect_int& r) {return "";}
 #endif
 
 

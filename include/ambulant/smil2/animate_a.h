@@ -56,6 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/common/region_info.h"
 
 #include <string>
@@ -64,7 +65,6 @@
 namespace ambulant {
 
 namespace lib {
-	class node;
 	class logger;
 }
 

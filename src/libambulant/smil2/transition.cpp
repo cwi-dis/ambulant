@@ -160,11 +160,11 @@ void
 transition_engine_barwipe::compute()
 {
 	// XXX Only does horizontal left-to-right at the moment
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int xcur = dstrect.m_left + int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
 //	int ycur = dstrect.m_top + int(m_progress*(dstrect.m_bottom - dstrect.m_top) + 0.5);
-	m_newrect = lib::screen_rect<int>(
+	m_newrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(xcur, dstrect.m_bottom));
 }
@@ -173,11 +173,11 @@ void
 transition_engine_boxwipe::compute()
 {
 	// XXX Only does box from topleft right now
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int xcur = dstrect.m_left + int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 	int ycur = dstrect.m_top + int(m_progress*(dstrect.m_bottom - dstrect.m_top) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
-	m_newrect = lib::screen_rect<int>(
+	m_newrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(xcur, ycur));
 }
@@ -186,23 +186,23 @@ transition_engine_boxwipe::compute()
 void
 transition_engine_fourboxwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int xmid = (dstrect.m_left + dstrect.m_right)/2;
 	int ymid = (dstrect.m_top + dstrect.m_bottom)/2;
 	int half_width = int(m_progress*(xmid - dstrect.m_left) + 0.5);
 	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = (dstrect.m_right - dstrect.m_left)/2;
 	clear();
-	m_newrectlist.push_back(lib::screen_rect<int>(
+	m_newrectlist.push_back(lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(dstrect.m_left+half_width, dstrect.m_top+half_height)));
-	m_newrectlist.push_back(lib::screen_rect<int>(
+	m_newrectlist.push_back(lib::screen_rect_int(
 		lib::point(dstrect.m_right-half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_top+half_height)));
-	m_newrectlist.push_back(lib::screen_rect<int>(
+	m_newrectlist.push_back(lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_bottom-half_height),
 		lib::point(dstrect.m_left+half_width, dstrect.m_bottom)));
-	m_newrectlist.push_back(lib::screen_rect<int>(
+	m_newrectlist.push_back(lib::screen_rect_int(
 		lib::point(dstrect.m_right-half_width, dstrect.m_bottom-half_height),
 		lib::point(dstrect.m_right, dstrect.m_bottom)));
 }
@@ -211,13 +211,13 @@ void
 transition_engine_barndoorwipe::compute()
 {
 	// XXX Only does horizontal right now
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int xmid = (dstrect.m_left + dstrect.m_right)/2;
 //	int ymid = (dstrect.m_top + dstrect.m_bottom)/2;
 	int half_width = int(m_progress*(xmid - dstrect.m_left) + 0.5);
 //	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = (dstrect.m_right - dstrect.m_left)/2;
-	m_newrect = lib::screen_rect<int>(
+	m_newrect = lib::screen_rect_int(
 		lib::point(xmid-half_width, dstrect.m_top),
 		lib::point(xmid+half_width, dstrect.m_bottom));
 }
@@ -225,7 +225,7 @@ transition_engine_barndoorwipe::compute()
 void
 transition_engine_diagonalwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int xmin = dstrect.left() - 2*dstrect.width();
 	int xcur = xmin + (int)(m_progress*2*dstrect.width());
 	m_stepcount = 2*dstrect.width();
@@ -239,42 +239,42 @@ transition_engine_diagonalwipe::compute()
 void
 transition_engine_miscdiagonalwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype miscDiagonalWipe not yet implemented");
 }
 
 void
 transition_engine_veewipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype veeWipe not yet implemented");
 }
 
 void
 transition_engine_barnveewipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype barnVeeWipe not yet implemented");
 }
 
 void
 transition_engine_zigzagwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype zigZagWipe not yet implemented");
 }
 
 void
 transition_engine_barnzigzagwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype barnZigZagWipe not yet implemented");
 }
 
 void
 transition_engine_bowtiewipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype bowTieWipe not yet implemented");
 }
 
@@ -283,7 +283,7 @@ transition_engine_bowtiewipe::compute()
 void
 transition_engine__iris::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int pointcount;
 	lib::dpoint *pointp = get_template(&pointcount);
 	clear();
@@ -445,7 +445,7 @@ transition_engine_miscshapewipe::get_template(int *size)
 
 // series 3: clock-type wipes
 
-detail::angle_computer::angle_computer(lib::screen_rect<int> rect)
+detail::angle_computer::angle_computer(lib::screen_rect_int rect)
 :   m_initialized(true),
 	m_rect(rect)
 {
@@ -453,7 +453,7 @@ detail::angle_computer::angle_computer(lib::screen_rect<int> rect)
 }
 
 bool
-detail::angle_computer::matches(lib::screen_rect<int> rect)
+detail::angle_computer::matches(lib::screen_rect_int rect)
 {
 	if (!m_initialized) return false;
 	return rect == m_rect;
@@ -550,7 +550,7 @@ detail::angle_computer::angle2edge(double angle, lib::point &edgepoint)
 void
 transition_engine_clockwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	// First check whether we're done.
 	clear();
 	if (m_progress > 0.999) {
@@ -572,49 +572,49 @@ transition_engine_clockwipe::compute()
 void
 transition_engine_singlesweepwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype singleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_doublesweepwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype doubleSweepWipe not yet implemented");
 }
 
 void
 transition_engine_saloondoorwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype saloonDoorWipe not yet implemented");
 }
 
 void
 transition_engine_windshieldwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype windshieldWipe not yet implemented");
 }
 
 void
 transition_engine_fanwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype fanWipe not yet implemented");
 }
 
 void
 transition_engine_doublefanwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype doubleFanWipe not yet implemented");
 }
 
 void
 transition_engine_pinwheelwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype pinWheelWipe not yet implemented");
 }
 
@@ -623,7 +623,7 @@ transition_engine_pinwheelwipe::compute()
 void
 transition_engine_snakewipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int index = (int)(m_progress*MATRIX_HSTEPS*MATRIX_VSTEPS);
 	int hindex = index % MATRIX_HSTEPS;
 	int vindex = index / MATRIX_HSTEPS;
@@ -632,18 +632,18 @@ transition_engine_snakewipe::compute()
 	m_stepcount = MATRIX_HSTEPS*MATRIX_VSTEPS;
 	clear();
 	if (vindex)
-		m_newrectlist.push_back(lib::screen_rect<int>(
+		m_newrectlist.push_back(lib::screen_rect_int(
 			lib::point(dstrect.m_left, dstrect.m_top),
 			lib::point(dstrect.m_right, vindexpos)));
 	if (hindex) {
 		if (vindex & 1) {
 			int hindexpos = (dstrect.m_right - hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
-			m_newrectlist.push_back(lib::screen_rect<int>(
+			m_newrectlist.push_back(lib::screen_rect_int(
 				lib::point(hindexpos, vindexpos),
 				lib::point(dstrect.m_right, vindex2pos)));
 		} else {
 			int hindex2pos = (dstrect.m_left + hindex*(dstrect.m_right-dstrect.m_left)/MATRIX_VSTEPS);
-			m_newrectlist.push_back(lib::screen_rect<int>(
+			m_newrectlist.push_back(lib::screen_rect_int(
 				lib::point(dstrect.m_left, vindexpos),
 				lib::point(hindex2pos, vindex2pos)));
 		}
@@ -653,7 +653,7 @@ transition_engine_snakewipe::compute()
 void
 transition_engine_waterfallwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int index = (int)(m_progress*MATRIX_HSTEPS*MATRIX_VSTEPS);
 	int hindex = index / MATRIX_HSTEPS;
 	int vindex = index % MATRIX_HSTEPS;
@@ -663,11 +663,11 @@ transition_engine_waterfallwipe::compute()
 	m_stepcount = MATRIX_HSTEPS*MATRIX_VSTEPS;
 	clear();
 	if (hindex)
-		m_newrectlist.push_back(lib::screen_rect<int>(
+		m_newrectlist.push_back(lib::screen_rect_int(
 			lib::point(dstrect.m_left, dstrect.m_top),
 			lib::point(hindexpos, dstrect.m_bottom)));
 	if (vindex)
-		m_newrectlist.push_back(lib::screen_rect<int>(
+		m_newrectlist.push_back(lib::screen_rect_int(
 			lib::point(hindexpos, dstrect.m_top),
 			lib::point(hindex2pos, vindexpos)));
 }
@@ -675,21 +675,21 @@ transition_engine_waterfallwipe::compute()
 void
 transition_engine_spiralwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype spiralWipe not yet implemented");
 }
 
 void
 transition_engine_parallelsnakeswipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype parallelSnakesWipe not yet implemented");
 }
 
 void
 transition_engine_boxsnakeswipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	lib::logger::get_logger()->trace("transitiontype boxSnakesWipe not yet implemented");
 }
 
@@ -698,20 +698,20 @@ transition_engine_boxsnakeswipe::compute()
 void
 transition_engine_pushwipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int half_width = int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 //	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
-	m_oldsrcrect = lib::screen_rect<int>(
+	m_oldsrcrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(dstrect.m_right-half_width, dstrect.m_bottom));
-	m_olddstrect = lib::screen_rect<int>(
+	m_olddstrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left+half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_bottom));
-	m_newsrcrect = lib::screen_rect<int>(
+	m_newsrcrect = lib::screen_rect_int(
 		lib::point(dstrect.m_right-half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_bottom));
-	m_newdstrect = lib::screen_rect<int>(
+	m_newdstrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(dstrect.m_left+half_width, dstrect.m_bottom));
 }
@@ -719,20 +719,20 @@ transition_engine_pushwipe::compute()
 void
 transition_engine_slidewipe::compute()
 {
-	lib::screen_rect<int> dstrect = m_dst->get_rect();
+	lib::screen_rect_int dstrect = m_dst->get_rect();
 	int half_width = int(m_progress*(dstrect.m_right - dstrect.m_left) + 0.5);
 //	int half_height = int(m_progress*(ymid - dstrect.m_top) + 0.5);
 	m_stepcount = dstrect.m_right - dstrect.m_left;
-	m_oldsrcrect = lib::screen_rect<int>(
+	m_oldsrcrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left+half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_bottom));
-	m_olddstrect = lib::screen_rect<int>(
+	m_olddstrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left+half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_bottom));
-	m_newsrcrect = lib::screen_rect<int>(
+	m_newsrcrect = lib::screen_rect_int(
 		lib::point(dstrect.m_right-half_width, dstrect.m_top),
 		lib::point(dstrect.m_right, dstrect.m_bottom));
-	m_newdstrect = lib::screen_rect<int>(
+	m_newdstrect = lib::screen_rect_int(
 		lib::point(dstrect.m_left, dstrect.m_top),
 		lib::point(dstrect.m_left+half_width, dstrect.m_bottom));
 }

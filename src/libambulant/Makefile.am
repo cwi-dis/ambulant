@@ -27,10 +27,10 @@ endif
 
 if WITH_EXPAT
 expat_parser_source = lib/expat_parser.cpp
-
+expatlibs = $(EXPAT_LIBS)
 else
 expat_parser_source = 
-
+expatlibs =
 endif
 
 if WITH_XERCES_BUILTIN
@@ -43,6 +43,7 @@ endif
 
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
+platlibs = -framework CoreFoundation
 libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_fill.m \
 	gui/cocoa/cocoa_gui.m \
@@ -55,6 +56,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_dsvideo.m
 else
 toolkit_cocoa_libraries =
+platlibs =
 endif
 
 if WITH_QT
@@ -152,7 +154,9 @@ AM_CPPFLAGS = \
 
 AM_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
-	$(livelibs)
+	$(expatlibs) \
+	$(livelibs) \
+	$(platlibs)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \

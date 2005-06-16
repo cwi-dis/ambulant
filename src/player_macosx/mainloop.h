@@ -59,6 +59,7 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/net/url.h"
 
 class mainloop : public ambulant::lib::ref_counted_obj {
   public:
@@ -83,11 +84,14 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	static void set_preferences(std::string &path);
 
   private:
-	ambulant::lib::document *create_document(const char *filename);
+	ambulant::lib::document *create_document(ambulant::net::url& url);
   	bool m_running;
 	double m_speed;
 	ambulant::lib::document *m_doc;
 	ambulant::common::player *m_player;
   	ambulant::common::factories *m_factory;
 	ambulant::common::embedder *m_embedder;
+#if 1
+	const ambulant::lib::node *m_goto_node;	// XXX Quick hack
+#endif
 };

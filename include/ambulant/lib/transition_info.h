@@ -54,12 +54,11 @@
 #define AMBULANT_LIB_TRANSITION_INFO_H
 
 #include "ambulant/lib/colors.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 	
 namespace lib {
-class node;
-
 	
 enum transition_type {
 	barWipe,

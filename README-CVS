@@ -16,6 +16,10 @@ invocation of "autoreconf", if you have it.
    
    (autoreconf should probably do this for you)
    
+   NOTE: for Mac OS X in some cases you need a more recent libtool than the
+   Apple-installed one. If you run into build problems install libtool 1.5.18
+   or newer, and modify the pathname to ltmain.sh accordingly. 
+   
 3. Create the autoconf helper files::
 
 	% aclocal -I m4

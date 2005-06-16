@@ -723,7 +723,7 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 			*attrp++ = bgrepeat;
 		}
 		*attrp++ = NULL;
-		lib::node *n = new lib::node("img", attrs, context);
+		lib::node *n = lib::node_factory("img", attrs, context);
 		
 		// Create the renderer
 		if (n) {

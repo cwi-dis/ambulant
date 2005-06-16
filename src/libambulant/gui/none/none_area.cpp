@@ -71,7 +71,7 @@ void
 none_area_renderer::start(double starttime) {
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::start()", (void*)this);
 	if(m_activated) return;	
-	lib::screen_rect<int> rrc = m_dest->get_rect();
+	lib::screen_rect_int rrc = m_dest->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start(%s)", 
 		repr(rrc).c_str());
 	
@@ -79,7 +79,7 @@ none_area_renderer::start(double starttime) {
 	const char *shape = m_node->get_attribute("shape");
 	if(!coords || !coords[0]) {
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: no coords, whole area");
-		m_rgn = new lib::screen_rect<int>(m_dest->get_rect());
+		m_rgn = new lib::screen_rect_int(m_dest->get_rect());
 	} else {
 		common::region_dim_spec rds(coords, shape);
 		rds.convert(rrc);
@@ -88,9 +88,9 @@ none_area_renderer::start(double starttime) {
 		int w = rds.width.absolute()?rds.width.get_as_int():rrc.width();
 		int h = rds.height.absolute()?rds.height.get_as_int():rrc.height();
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: lt=(%d,%d) wh=(%d,%d)", l, t, w, h);
-		lib::screen_rect<int> rc;
+		lib::screen_rect_int rc;
 		rc.set_coord(l, t, l+w, t+h);
-		m_rgn = new lib::screen_rect<int>(rc);
+		m_rgn = new lib::screen_rect_int(rc);
 	}
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: wantclicks=%d", m_wantclicks);
 	m_dest->need_events(m_wantclicks);

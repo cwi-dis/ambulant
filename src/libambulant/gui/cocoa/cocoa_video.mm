@@ -193,11 +193,11 @@ cocoa_video_renderer::poll_playing()
 }
 
 void
-cocoa_video_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_video_renderer::redraw(const screen_rect_int &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
-	screen_rect<int> dstrect = r;
+	const screen_rect_int &r = m_dest->get_rect();
+	screen_rect_int dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 

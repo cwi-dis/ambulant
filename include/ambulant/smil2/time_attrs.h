@@ -113,7 +113,6 @@ std::string repr(restart_behavior f);
 enum actuate { actuate_onload, actuate_onrequest};
 std::string repr(actuate f);
 
-class lib::node;
 class lib::logger;
 
 class time_attrs : public time_traits {

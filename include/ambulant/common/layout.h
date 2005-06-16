@@ -55,12 +55,11 @@
 
 #include <string>
 #include "ambulant/lib/gtypes.h"
-//#include "ambulant/lib/node.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 
 namespace lib {
-class node;
 class document;
 class transition_info;
 } // namespace lib
@@ -75,7 +74,7 @@ class gui_events; // forward
 class factories;
 
 #ifdef USE_SMIL21
-typedef std::pair<lib::rect, lib::screen_rect<int> > tile_position;
+typedef std::pair<lib::rect, lib::screen_rect_int > tile_position;
 typedef std::vector<tile_position> tile_positions;
 #endif
 
@@ -114,7 +113,7 @@ class gui_window {
 	virtual ~gui_window() {}
 	
 	/// Signals that rectangle r may need to be redrawn.
-	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
+	virtual void need_redraw(const lib::screen_rect_int &r) = 0;
 	
 	/// Do any pending redraws right now
 	virtual void redraw_now() = 0;
@@ -141,13 +140,13 @@ class gui_events  {
   public:
   
   	/// Request to redraw a certain area.
-	virtual void redraw(const lib::screen_rect<int> &dirty, gui_window *window) = 0;
+	virtual void redraw(const lib::screen_rect_int &dirty, gui_window *window) = 0;
 	
 	/// Signals a ouse click or move.
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	
 	/// Signals that a transition in the given area has started.
-	virtual void transition_freeze_end(lib::screen_rect<int> area) = 0;
+	virtual void transition_freeze_end(lib::screen_rect_int area) = 0;
 };
 
 /// 
@@ -161,7 +160,7 @@ class renderer : public gui_events {
 	virtual void set_surface(surface *destination) = 0;
 	
 	/// Use alignment align for image display.
-	virtual void set_alignment(alignment *align) = 0;
+	virtual void set_alignment(const alignment *align) = 0;
 	
 	/// Apply an inTransition when starting playback.
 	virtual void set_intransition(const lib::transition_info *info) = 0;
@@ -202,7 +201,7 @@ class surface {
 	virtual void renderer_done(gui_events *renderer) = 0;
 
 	/// The given rect r has changed and needs a redraw.
-	virtual void need_redraw(const lib::screen_rect<int> &r) = 0;
+	virtual void need_redraw(const lib::screen_rect_int &r) = 0;
 	
 	/// The whole region has changed and needs a redraw.
 	virtual void need_redraw() = 0;
@@ -217,7 +216,7 @@ class surface {
 	virtual void keep_as_background() = 0;
 	
 	/// Returns the region rectangle, (0, 0) based.
-	virtual const lib::screen_rect<int>& get_rect() const = 0;
+	virtual const lib::screen_rect_int& get_rect() const = 0;
 	
 	/// Returns the gui_window coordinates for (0, 0).
 	virtual const lib::point &get_global_topleft() const = 0;
@@ -225,7 +224,7 @@ class surface {
 	/// Determine where to draw an image.
 	/// For a given image size, return portion of source image to display, and where
 	/// to display it. The renderer must do the scaling.
-	virtual lib::screen_rect<int> get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, alignment *align) const = 0;
+	virtual lib::screen_rect_int get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const alignment *align) const = 0;
 	
 	/// Get object holding SMIL region parameters for querying.
 	virtual const region_info *get_info() const = 0;
@@ -238,7 +237,7 @@ class surface {
 	virtual bool is_tiled() const = 0;
 	
 	/// Given image size and region rectangle return a list of (srcrect, dstrect).
-	virtual tile_positions get_tiles(lib::size image_size, lib::screen_rect<int> surface_rect) const = 0;
+	virtual tile_positions get_tiles(lib::size image_size, lib::screen_rect_int surface_rect) const = 0;
 #endif
 	
 	/// Get the OS window for this surface.

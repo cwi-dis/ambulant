@@ -115,6 +115,20 @@ fi
 AC_MSG_RESULT($enable_smil21)
 
 #
+# Do we want external DOM tree support?
+#
+AC_MSG_CHECKING(for --with-external-dom)
+AC_ARG_WITH([external-dom],[
+    AC_HELP_STRING([--without-external-dom],
+                   [Use the fast DOM tree implementation only])
+    ],[with_external_dom=${withval}], [with_external_dom=yes])
+if test "x$with_external_dom" = xyes;
+then
+    AC_DEFINE(WITH_EXTERNAL_DOM, 1, [Define to enable external DOM tree support])
+fi
+AC_MSG_RESULT($with_external_dom)
+
+#
 # Find expat
 #
 AC_MSG_CHECKING(for --with-expat)

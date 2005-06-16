@@ -217,8 +217,8 @@ inline N* node_navigator<N>::detach(N *n) {
 		parent->down(n->next());
 
 		// detach
-		n->next(0);
-		n->up(0);
+		n->next((N*)0);
+		n->up((N*)0);
 		return n;
 	}
 
@@ -230,8 +230,8 @@ inline N* node_navigator<N>::detach(N *n) {
 			prev->next(n->next());
 
 			// detach
-			n->next(0);
-			n->up(0);
+			n->next((N*)0);
+			n->up((N*)0);
 			return n;
 		}
 		prev = e;
@@ -250,12 +250,12 @@ inline void node_navigator<N>::delete_tree(N *n) {
 
 	N *e = n->down();
 	if(e) {
-		e->up(0);
+		e->up((N*)0);
 		N *tmp = e;
 		e = e->next();
 		delete tmp;
 		while(e) {
-			e->up(0);
+			e->up((N*)0);
 			N *tmp2 = e;
 			e = e->next();
 			delete tmp2;

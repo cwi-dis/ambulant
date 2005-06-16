@@ -1416,7 +1416,10 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 		timestamp.as_doc_time_value());
 	assert(timestamp.first == sync_node());
 	on_add_instance(timestamp, tn_begin_event, timestamp.second);
+	
+	// Send feedback to the upper layers about what we're doing
 	if(is_root()) m_context->started_playback();
+	m_context->node_started(m_node);
 	
 	// Simulate a timegraph-sampling implementation
 	// For a time container we know that more info will be available
@@ -1479,6 +1482,7 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	}
 		
 	if(is_root()) m_context->done_playback();
+	m_context->node_stopped(m_node);
 }
 
 void time_node::raise_activate_event(qtime_type timestamp) {

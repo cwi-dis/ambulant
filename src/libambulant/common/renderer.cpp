@@ -284,7 +284,7 @@ global_playable_factory::new_aux_audio_playable(
 }
 
 void 
-active_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window)
+active_video_renderer::redraw(const lib::screen_rect_int &dirty, common::gui_window *window)
 {
 	AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::redraw (this = 0x%x)", (void *) this);
 }

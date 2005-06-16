@@ -82,7 +82,7 @@ class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
 	void start(double where);
 	void seek(double t) {}
 
-    void redraw_body(const screen_rect<int> &dirty, gui_window *window);
+    void redraw_body(const screen_rect_int &dirty, gui_window *window);
   private:
 	critical_section m_lock;
 };
@@ -93,7 +93,7 @@ class cocoa_background_renderer : public background_renderer {
 	:   background_renderer(src),
 		m_bgimage(NULL) {}
 	~cocoa_background_renderer();
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void redraw(const lib::screen_rect_int &dirty, common::gui_window *window);
 	void keep_as_background();
   private:
 	NSImage *m_bgimage;

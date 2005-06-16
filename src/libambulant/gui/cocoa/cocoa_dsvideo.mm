@@ -154,10 +154,10 @@ cocoa_dsvideo_renderer::show_frame(char* frame, int size)
 }
 
 void
-cocoa_dsvideo_renderer::redraw(const screen_rect<int> &dirty, gui_window *window)
+cocoa_dsvideo_renderer::redraw(const screen_rect_int &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
+	const screen_rect_int &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
@@ -186,7 +186,7 @@ cocoa_dsvideo_renderer::redraw(const screen_rect<int> &dirty, gui_window *window
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-		screen_rect<int> dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+		screen_rect_int dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong

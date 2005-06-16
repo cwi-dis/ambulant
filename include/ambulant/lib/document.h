@@ -68,37 +68,14 @@ namespace ambulant {
 namespace lib {
 
 /// Information on custom test used in the document.
-struct custom_test {
+class custom_test {
+  public:
 	std::string idd;
 	std::string title;
 	bool state;
 	bool override;
 	std::string uid;
 };
-
-/// Interface of document class accesible to nodes.
-class node_context {
-  public:
-	
-	virtual void 
-	set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
-	
-	virtual const char* 
-	get_namespace_prefix(const xml_string& uri) const = 0;
-	
-	/// Resolve relative URLs.
-	virtual net::url 
-	resolve_url(const net::url& rurl) const = 0;
-	
-	/// Returns name-indexed mapping of all custom tests used.
-	virtual const std::map<std::string, custom_test>* 
-	get_custom_tests() const = 0;
-	
-	/// Return node with a given ID.
-	virtual const node* 
-	get_node(const std::string& idd) const = 0;
-};
-
 
 /// A class respresenting an XML document.
 ///
@@ -119,6 +96,12 @@ class document : public node_context {
 	/// Creates documents from source strings.
 	/// The src_id argument is used in error messages only
 	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
+	
+	/// A document factory function.
+	/// Creates a document from a given DOM tree.
+	/// The tree is not freed when the document is, and the caller is
+	/// responsible for keeping it alive.
+	static document* create_from_tree(common::factories* factory, lib::node *root, const net::url& u);
 	
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.
@@ -159,7 +142,7 @@ class document : public node_context {
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
   protected:
-	document(node *root = 0);
+	document(node *root = 0, bool owned=true);
 	document(node *root, const std::string& src_url);
 	
 	void set_root(node* n);
@@ -174,6 +157,9 @@ class document : public node_context {
 	
 	// the root of this document
 	node *m_root;
+	
+	// Whether m_root should be freed
+	bool m_root_owned;
 	
 	// the external source url
 	ambulant::net::url m_src_url;
