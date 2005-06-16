@@ -290,10 +290,10 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		common::default_layout_width, ambulant::common::default_layout_height);
 
 	CWinApp* pApp = AfxGetApp();
-	CString val = pApp->GetProfileString("Settings", "Welcome");
+	CString val = pApp->GetProfileString(_T("Settings"), _T("Welcome"));
 	if(val.IsEmpty()) {
 		// first time; write the string and play welcome
-		pApp->WriteProfileString("Settings", "Welcome",  "1");
+		pApp->WriteProfileString(_T("Settings"), _T("Welcome"),  _T("1"));
 		if(!m_welcomeDocFilename.IsEmpty())
 			PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 	}
@@ -318,6 +318,7 @@ void MmView::OnDestroy()
 }
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
+	USES_CONVERSION;
 	gui_player *dummy = player;
 	player = 0;
 	if(dummy) {
@@ -330,19 +331,19 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	// - contains neither : nor /
 	bool is_local_filename = false;
 
-	if (strchr(lpszPathName, '\\')) is_local_filename = true;
-	if (lpszPathName[0] && lpszPathName[1] == ':') is_local_filename = true;
-	if (strchr(lpszPathName, ':') == NULL && strchr(lpszPathName, '/') == NULL) is_local_filename = true;
+	if (_tcschr(lpszPathName, _T('\\'))) is_local_filename = true;
+	if (lpszPathName[0] && lpszPathName[1] == _T(':')) is_local_filename = true;
+	if (_tcschr(lpszPathName, _T(':')) == NULL && _tcschr(lpszPathName, _T('/')) == NULL) is_local_filename = true;
 
 	TCHAR path[_MAX_PATH];
 	if (is_local_filename) {
 		TCHAR *pFilePart = 0;	
 		GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
 	} else {
-		strcpy(path, lpszPathName);
+		_tcscpy(path, lpszPathName);
 	}
 	
-	net::url u(path);
+	net::url u(T2CA(path));
 	if (!u.is_absolute()) {
 		lib::logger::get_logger()->error("Cannot play from non-absolute pathname: %s", lpszPathName);
 		return;
@@ -450,15 +451,17 @@ void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void MmView::OnViewSource() {
+	USES_CONVERSION;
 	CString cmd = TEXT("Notepad.exe ");
-	std::string ustr = LPCTSTR(m_curDocFilename);
+	std::string ustr = T2CA(LPCTSTR(m_curDocFilename));
 	net::url u(ustr);
 	cmd += u.get_file().c_str();
-	WinExec(cmd, SW_SHOW);	
+	WinExec(T2CA(cmd), SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
-	bool b = player && !m_curDocFilename.IsEmpty() && net::url(LPCTSTR(m_curDocFilename)).is_local_file();
+	USES_CONVERSION;
+	bool b = player && !m_curDocFilename.IsEmpty() && net::url(T2CA(LPCTSTR(m_curDocFilename))).is_local_file();
 	pCmdUI->Enable(b?TRUE:FALSE);
 }
 
@@ -509,14 +512,16 @@ LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 }
 
 LPARAM MmView::OnReplaceDoc(WPARAM wParam, LPARAM lParam) {
+	USES_CONVERSION;
 	if(lParam == 0) return 0;
 	std::string *purlstr = (std::string *)lParam;
-	SetMMDocument(purlstr->c_str(), wParam?true:false);
+	SetMMDocument(A2CT(purlstr->c_str()), wParam?true:false);
 	delete purlstr;
 	return 0;
 }
 
 void MmView::OnOpenFilter() {
+	USES_CONVERSION;
 	BOOL bOpenFileDialog = TRUE;
 	TCHAR lpszDefExt[] = TEXT("*.xml");
 	LPCTSTR lpszFileName = NULL; // no initial fn
@@ -526,9 +531,9 @@ void MmView::OnOpenFilter() {
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
 	dlg.m_ofn.lpstrTitle = TEXT("Select settings file");
 	if(!m_curDocFilename.IsEmpty()) {
-		net::url u( (LPCTSTR) m_curDocFilename);
+		net::url u( T2CA((LPCTSTR) m_curDocFilename));
 		if(u.is_local_file())
-			dlg.m_ofn.lpstrInitialDir = get_directory(u.get_file().c_str());
+			dlg.m_ofn.lpstrInitialDir = get_directory(A2CT(u.get_file().c_str()));
 	}
 	if(dlg.DoModal()==IDOK) {
 		CString str = dlg.GetPathName();
@@ -545,10 +550,11 @@ void MmView::OnUpdateOpenFilter(CCmdUI *pCmdUI)
 
 void MmView::OnViewFilter()
 {
+	USES_CONVERSION;
 	if(!m_curFilter.IsEmpty()) {
 		CString cmd = TEXT("Notepad.exe ");
 		cmd += m_curFilter;
-		WinExec((LPCSTR)cmd, SW_SHOW);
+		WinExec(T2CA((LPCTSTR)cmd), SW_SHOW);
 	}
 }
 
@@ -579,9 +585,9 @@ BOOL MmView::OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult)
 	if(pNMHDR->code == TTN_NEEDTEXTA && (pTTTA->uFlags & TTF_IDISHWND) ||
 		pNMHDR->code == TTN_NEEDTEXTW && (pTTTW->uFlags & TTF_IDISHWND)) {
 		std::string str = player->get_pointed_node_str();
-		strTipText.Format("Anchor: %s", str.c_str());
+		strTipText.Format(_T("Anchor: %s"), str.c_str());
 		if(pNMHDR->code == TTN_NEEDTEXTA)
-			lstrcpyn(pTTTA->szText, str.c_str(), sizeof(pTTTA->szText));
+			strncpy(pTTTA->szText, str.c_str(), sizeof(pTTTA->szText));
 		else
 			::MultiByteToWideChar( CP_ACP , 0, str.c_str(), -1, pTTTW->szText, sizeof(pTTTW->szText) );
 		*pResult = 0;

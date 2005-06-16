@@ -42,18 +42,19 @@ END_MESSAGE_MAP()
 
 void COpenUrlDlg::OnOK()
 {
+	USES_CONVERSION;
 	UpdateData(TRUE);
 	
 	if(m_url.IsEmpty()) {
-		AfxMessageBox("Please enter a URL or select a local file");
+		AfxMessageBox(_T("Please enter a URL or select a local file"));
 		return;
 	}
 	
-	std::string urlstr = (const char *) m_url;
+	std::string urlstr = T2CA((LPCTSTR) m_url);
 	net::url u(urlstr);
 	if(u.is_local_file() && !lib::win32::file_exists(u.get_file())) {
 		CString str;
-		str.Format("The file specified does not exist");
+		str.Format(_T("The file specified does not exist"));
 		AfxMessageBox(str);
 		return;
 	}
@@ -64,16 +65,16 @@ void COpenUrlDlg::OnOK()
 void COpenUrlDlg::OnBnClickedButtonBrowse()
 {
 	BOOL bOpenFileDialog = TRUE;
-	char lpszDefExt[] = "*.smil";
+	text_char lpszDefExt[] = _T("*.smil");
 	LPCTSTR lpszFileName = NULL; // no initial fn
 	DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-	char lpszFilter[] = "SMIL Documents (*.smil)|*.smil;*.smi;*.grins|All Files (*.*)|*.*||";
+	text_char lpszFilter[] = _T("SMIL Documents (*.smil)|*.smil;*.smi;*.grins|All Files (*.*)|*.*||");
 	CWnd* pParentWnd = this;
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
-	dlg.m_ofn.lpstrTitle = "Open SMIL document";
+	dlg.m_ofn.lpstrTitle = _T("Open SMIL document");
 	if(dlg.DoModal()==IDOK) {
 		CString s = dlg.GetPathName();
-		s.Replace("\\", "/");
+		s.Replace(_T("\\"), _T("/"));
 		m_url = "file:///"; m_url += s;
 		GetDlgItem(IDC_EDIT_URL)->SetWindowText(m_url);
 	}	

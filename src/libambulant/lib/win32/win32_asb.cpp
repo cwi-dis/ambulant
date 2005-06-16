@@ -58,6 +58,11 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
+#ifdef _UNICODE
+#define TSTR_TO_STR(s) ambulant::lib::textptr(s).c_str()
+#else
+#define TSTR_TO_STR(s) (s)
+#endif
 
 #include <string>
 #include <cstring>
@@ -98,16 +103,16 @@ std::basic_string<text_char> lib::win32::get_module_filename() {
 	return buf;
 }
 
-std::basic_string<text_char> lib::win32::get_module_dir() {
+std::string lib::win32::get_module_dir() {
 	text_char buf[MAX_PATH];
 	GetModuleFileName(NULL, buf, MAX_PATH);
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#ifdef _UNICODE
 	wchar_t *p = wcsrchr(buf, '\\');
 #else
-	char *p = strrchr(buf, '\\');
+	char *p = _tcsrchr(buf, '\\');
 #endif
 	if (p) p[1] = '\0';
-	return buf;
+	return std::string(TSTR_TO_STR(buf));
 }
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE

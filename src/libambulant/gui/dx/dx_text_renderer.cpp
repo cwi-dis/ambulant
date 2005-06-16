@@ -63,6 +63,13 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
 
+#ifdef _UNICODE
+#include "ambulant/lib/textptr.h"
+#define STR_TO_TSTR(s) ambulant::lib::textptr(s).c_wstr()
+#else
+#define STR_TO_TSTR(s) (s)
+#endif
+
 using namespace ambulant;
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_report_last_error;
@@ -172,7 +179,7 @@ void gui::dx::text_renderer::open() {
 			CLIP_DEFAULT_PRECIS, // clipping precision
 			DEFAULT_QUALITY,	// output quality
 			family,				// pitch and family
-			fontname);			// typeface name
+			STR_TO_TSTR(fontname));			// typeface name
 	::SelectObject(hdc, fontobj);
 	RECT dstRC = {0, 0, m_size.w, m_size.h};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;

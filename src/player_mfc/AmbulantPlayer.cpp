@@ -164,8 +164,8 @@ BOOL CAmbulantPlayerApp::InitInstance()
 
 	// Initialize the help filename
 	EnableHtmlHelp();
-	if (!LocateHelpDoc("AmbulantPlayerHelp.chm"))
-		LocateHelpDoc("..\\..\\Documentation\\user-htmlhelp\\AmbulantPlayerHelp.chm");
+	if (!LocateHelpDoc(_T("AmbulantPlayerHelp.chm")))
+		LocateHelpDoc(_T("..\\..\\Documentation\\user-htmlhelp\\AmbulantPlayerHelp.chm"));
 
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);

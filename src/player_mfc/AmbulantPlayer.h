@@ -64,7 +64,7 @@ class CAmCommandLineInfo : public CCommandLineInfo {
 
 	void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast) {
 		if (bFlag){
-			if(strcmpi(pszParam, "start") == 0)
+			if(_tcsicmp(pszParam, _T("start")) == 0)
 				m_autostart = true;
 			else
 				CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);

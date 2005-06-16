@@ -60,8 +60,9 @@ END_MESSAGE_MAP()
 void
 CLogWindow::AppendText(const char *data)
 {
+	USES_CONVERSION;
 	m_richedit.SetSel(-1, -1);
-	m_richedit.ReplaceSel(data);
+	m_richedit.ReplaceSel(A2CT(data));
 }
 void CLogWindow::OnEnChangeRichedit21()
 {

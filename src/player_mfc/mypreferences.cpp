@@ -59,35 +59,38 @@ mypreferences::install_singleton()
 bool
 mypreferences::load_preferences()
 {
+	USES_CONVERSION;
 //	NSLog(@"Loading preferences");
 	CWinApp* pApp = AfxGetApp();
-	CString val = pApp->GetProfileString("Settings", "parser_id", "any");
-	m_parser_id = (LPCTSTR)val;
-	val = pApp->GetProfileString("Settings", "validation_scheme", "auto");
-	m_validation_scheme = (LPCTSTR)val;
-	m_do_namespaces = (bool)pApp->GetProfileInt("Settings", "do_namespaces", 0);
-	m_do_schema = (bool)pApp->GetProfileInt("Settings", "do_schema", 0);
-	m_validation_schema_full_checking = (bool)pApp->GetProfileInt("Settings", "validation_schema_full_checking", 0);
-	m_log_level = pApp->GetProfileInt("Settings", "log_level", 0);
-	m_use_plugins = (bool)pApp->GetProfileInt("Settings", "use_plugins", 0);
-	m_plugin_dir = pApp->GetProfileString("Settings", "plugin_dir",0);
+	CString val = pApp->GetProfileString(_T("Settings"), _T("parser_id"), _T("any"));
+	m_parser_id = T2CA((LPCTSTR)val);
+	val = pApp->GetProfileString(_T("Settings"), _T("validation_scheme"), _T("auto"));
+	m_validation_scheme = T2CA((LPCTSTR)val);
+	m_do_namespaces = (bool)pApp->GetProfileInt(_T("Settings"), _T("do_namespaces"), 0);
+	m_do_schema = (bool)pApp->GetProfileInt(_T("Settings"), _T("do_schema"), 0);
+	m_validation_schema_full_checking = (bool)pApp->GetProfileInt(_T("Settings"), _T("validation_schema_full_checking"), 0);
+	m_log_level = pApp->GetProfileInt(_T("Settings"), _T("log_level"), 0);
+	m_use_plugins = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_plugins"), 0);
+	val = pApp->GetProfileString(_T("Settings"), _T("plugin_dir"),0);
+	m_plugin_dir = T2CA((LPCTSTR)val);
 
 	return true;
 }
 
 bool
 mypreferences::save_preferences()
-{	
+{
+	USES_CONVERSION;
 	CWinApp* pApp = AfxGetApp();
 
-	pApp->WriteProfileString("Settings", "parser_id", m_parser_id.c_str());
-	pApp->WriteProfileString("Settings", "validation_scheme", m_validation_scheme.c_str());
-	pApp->WriteProfileInt("Settings", "do_namespaces", (int)m_do_namespaces);
-	pApp->WriteProfileInt("Settings", "do_schema", (int)m_do_schema);
-	pApp->WriteProfileInt("Settings", "validation_schema_full_checking", (int)m_validation_schema_full_checking);
-	pApp->WriteProfileInt("Settings", "log_level", m_log_level);
-	pApp->WriteProfileInt("Settings", "use_plugins", m_use_plugins);
-	pApp->WriteProfileString("Settings", "plugin_dir", m_plugin_dir.c_str());
+	pApp->WriteProfileString(_T("Settings"), _T("parser_id"), A2CT(m_parser_id.c_str()));
+	pApp->WriteProfileString(_T("Settings"), _T("validation_scheme"), A2CT(m_validation_scheme.c_str()));
+	pApp->WriteProfileInt(_T("Settings"), _T("do_namespaces"), (int)m_do_namespaces);
+	pApp->WriteProfileInt(_T("Settings"), _T("do_schema"), (int)m_do_schema);
+	pApp->WriteProfileInt(_T("Settings"), _T("validation_schema_full_checking"), (int)m_validation_schema_full_checking);
+	pApp->WriteProfileInt(_T("Settings"), _T("log_level"), m_log_level);
+	pApp->WriteProfileInt(_T("Settings"), _T("use_plugins"), m_use_plugins);
+	pApp->WriteProfileString(_T("Settings"), _T("plugin_dir"), A2CT(m_plugin_dir.c_str()));
 	
 	return true;
 }

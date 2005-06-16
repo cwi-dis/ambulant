@@ -144,11 +144,11 @@ BOOL MmDoc::OnOpenDocument(LPCTSTR lpszPathName)
 }
 
 void MmDoc::SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU) {
-	if(strstr(lpszPathName, "://") != 0) {
+	if(_tcsstr(lpszPathName, _T("://")) != 0) {
 		// seems a url
 		m_strPathName = "URL";
 		m_bEmbedded = FALSE;
-		SetTitle("URL");
+		SetTitle(_T("URL"));
 	} else {
 		CDocument::SetPathName(lpszPathName, bAddToMRU);
 	}

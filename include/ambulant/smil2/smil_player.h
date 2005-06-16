@@ -86,7 +86,7 @@ class smil_layout_manager;
 class animation_engine;
 class scheduler;
 
-class smil_player : public common::player, public common::player_feedback, public time_node_context, public common::playable_notification {
+class smil_player : public common::player, /* public common::player_feedback,*/ public time_node_context, public common::playable_notification {
   public:
 	typedef time_traits::value_type time_value_type;
 	
