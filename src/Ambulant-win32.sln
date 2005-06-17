@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant_win32 [noxerces]", "libambulant\libambulant_win32-noxerces.vcproj", "{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant_win32", "libambulant\libambulant_win32-noxerces.vcproj", "{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -11,18 +11,23 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		DebugShlib = DebugShlib
 		Release = Release
 		ReleaseShlib = ReleaseShlib
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.ActiveCfg = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.Build.0 = Debug|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.ActiveCfg = DebugShlib|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.Build.0 = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.Build.0 = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.ActiveCfg = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.Build.0 = Debug|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib.ActiveCfg = DebugShlib|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib.Build.0 = DebugShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.ActiveCfg = Release|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.Build.0 = Release|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
