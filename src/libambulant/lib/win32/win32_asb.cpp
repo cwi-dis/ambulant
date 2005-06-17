@@ -109,7 +109,7 @@ std::string lib::win32::get_module_dir() {
 #ifdef _UNICODE
 	wchar_t *p = wcsrchr(buf, '\\');
 #else
-	char *p = _tcsrchr(buf, '\\');
+	char *p = strrchr(buf, '\\');
 #endif
 	if (p) p[1] = '\0';
 	return std::string(TSTR_TO_STR(buf));
