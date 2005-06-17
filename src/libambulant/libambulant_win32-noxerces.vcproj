@@ -157,7 +157,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;AMBULANT_BUILD_DLL"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
