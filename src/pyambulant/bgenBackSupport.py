@@ -29,15 +29,20 @@ class BackModule(BackGeneratorGroup):
     def addobject(self, od):
         self.add(od)
 
-    def generate(self):
-        OutHeader1("Callbacks Module " + self.name)
+    def generateDeclaration(self):
+        OutHeader1("Declaration of C++ to Python callback module " + self.name)
         Output("#include \"Python.h\"")
         Output()
 
         if self.includestuff:
-            Output()
             Output("%s", self.includestuff)
-
+    
+        BackGeneratorGroup.generateDeclaration(self)
+        
+    def generate(self):
+        OutHeader1("Callbacks Module " + self.name)
+        if self.includestuff:
+            Output("%s", self.includestuff)
 
         BackGeneratorGroup.generate(self)
 
@@ -82,20 +87,18 @@ class BackObjectDefinition(BackGeneratorGroup):
         
     def generate(self):
         OutHeader2("Class %s"%self.name)
-        
-        self.outputClassDeclaration()
-        
+                
         self.outputConstructor()
         self.outputDestructor()
         
         BackGeneratorGroup.generate(self)
         
-    def outputClassDeclaration(self):
+    def generateDeclaration(self):
         Output("class %s : public %s {", self.name, self.itselftype)
         self.generateConDesDeclaration()        
         Output("public:")
         IndentLevel()
-        self.generateDeclaration()
+        BackGeneratorGroup.generateDeclaration(self)
         DedentLevel()
         Output("  private:")
         IndentLevel()

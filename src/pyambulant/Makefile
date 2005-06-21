@@ -7,7 +7,7 @@ clean:
 ambulantobjgen.py ambulantincludegen.py: genobjects.py 
 	python genobjects.py
 	
-ambulantmodule.cpp: ambulantscan.py ambulantsupport.py ambulantgen.py ambulantobjgen.py ambulantincludegen.py
+ambulantmodule.cpp ambulantgen.py: ambulantscan.py ambulantsupport.py ambulantobjgen.py ambulantincludegen.py
 	python ambulantscan.py
 
 ambulantmodule.so: ambulantmodule.cpp setup.py
