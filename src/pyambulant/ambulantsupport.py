@@ -166,11 +166,13 @@ InBuffer = VarInputBufferType('char', 'size_t', 'l')
 # Ambulant-specific
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
 screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_screen_rect")
+const_lib_screen_rect_int_ref = OpaqueByRefType("ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
 size = OpaqueByRefType("ambulant::lib::size", "ambulant_size")
 zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
+const_cookie_type_ref = cookie_type
 color_t = Type("ambulant::lib::color_t", "l") # XXXX Split into RGB
 event_priority = Type("ambulant::lib::event_processor::event_priority", "l")
 timestamp_t = Type("ambulant::net::timestamp_t", "L")
@@ -270,7 +272,6 @@ lib_size = size
 lib_color_t = color_t
 lib_rect = rect
 common_zindex_t = zindex_t
-const_cookie_type_ref = cookie_type
 
 # Do the type tests
 execfile("ambulanttypetest.py")
@@ -278,6 +279,7 @@ execfile("ambulanttypetest.py")
 # Create the generator classes used to populate the lists
 Function = FunctionGenerator
 Method = CxxMethodGenerator
+ConstMethod = Method
 
 # Create and populate the lists
 
@@ -324,10 +326,15 @@ class NoFunctionGenerator(FunctionGenerator):
         
 Function = NoFunctionGenerator
 Method = BackMethodGenerator
+ConstMethod = ConstBackMethodGenerator
+
+const_cookie_type_ref = Type("ambulant::common::playable::cookie_type&", "l")
 
 module = BackModule("pyambulant", includestuff, finalstuff)
 functions = []
 execfile("ambulantobjgen.py")
+
+gui_window_object.baseconstructors = "ambulant::common::gui_window(0)"
 
 #import pdb ; pdb.set_trace()
 execfile(INPUTFILE)

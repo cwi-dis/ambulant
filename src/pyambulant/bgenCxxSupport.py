@@ -69,6 +69,7 @@ class CxxScanner(Scanner):
     def modifyarg(self, type, name, mode):
         if type[:6] == "const_":
             type = type[6:]
+            mode = mode + "+ConstMode"
             # Note that const ref and const ptr parameters stay InMode
             if type[-4:] == '_ref':
                 type = type[:-4]
@@ -91,7 +92,8 @@ class CxxScanner(Scanner):
                         r"\s+"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
         self.args_pat = r"\((?P<args>([^\(;\)]+|\([^\(;\)]*\))*)\)"
-        self.whole_pat = self.type_pat + self.name_pat + self.args_pat
+        self.const_pat = r"\s+(?P<const>const)?"
+        self.whole_pat = self.type_pat + self.name_pat + self.args_pat + self.const_pat
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
                        r"[ \t]*(?P<defn>[-0-9_a-zA-Z'\"\(][^\t\n,;}]*),?"
         self.asplit_pat = r"^(?P<type>[^=]*[^a-zA-Z0-9_])(?P<name>[a-zA-Z0-9_]+)(?P<array>\[\])?(?P<initializer>\s*=[a-zA-Z0-9_ ]+)?$"
@@ -209,11 +211,19 @@ class CxxScanner(Scanner):
             self.error("Uncaught EOF error")
         self.reportusedtypes()
 
-    def destination(self, type, name, arglist):
+    def getmodifiers(self, match):
+        modifiers = []
+        if match.group('const') == 'const':
+            modifiers.append('const')
+        return modifiers
+        
+    def destination(self, type, name, arglist, modifiers=[]):
         if self.in_class_defn:
             classname = self.namespaces[-1]
             classname = self.pythonizename(classname)
             if classname in self.blacklisttypes:
                 return None, None
+            if "const" in modifiers:
+                return "ConstMethod", "methods_%s" % classname
             return "Method", "methods_%s" % classname
         return "Function", "functions"

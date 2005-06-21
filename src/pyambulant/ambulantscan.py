@@ -125,18 +125,11 @@ class MyScanner(CxxScanner):
             ),
             (
               [
-                ('char_ptr', '*', 'InMode'),
+                ('char_ptr', '*', 'InMode+ConstMode'),
                 ('size_t', '*', 'InMode')
               ],[
                 ('InBuffer', '*', 'InMode'),
                ]
-            ),
-            (
-              [
-                ('const_lib_screen_rect_int_ref', '*', 'ReturnMode')
-              ], [
-                ('screen_rect_int', '*', 'ReturnMode+RefMode')
-              ]
             ),
             ('get_fit_rect',
               [

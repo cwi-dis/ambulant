@@ -74,6 +74,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         self.virtual = "virtual "   # Or "", for non-virtual destructor
         if hasattr(self, "assertions"):
             self.assertions()
+        self.baseconstructors = None
         
     def add(self, g, dupcheck=0):
         BackGeneratorGroup.add(self, g, dupcheck)
@@ -124,8 +125,9 @@ class BackObjectDefinition(BackGeneratorGroup):
         OutRbrace()
         Output()
         
-    def outputConstructorInitializers():
-        pass
+    def outputConstructorInitializers(self):
+        if self.baseconstructors:
+            Output(":\t%s", self.baseconstructors)
         
     def outputCheckConstructorArg(self):
         Output("if (itself == NULL) itself = Py_None;")
@@ -139,6 +141,8 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output()
         
 class BackMethodGenerator:
+    const = ""
+    
     def __init__(self, returntype, name, *argumentList, **conditionlist):
         self.returntype = returntype
         self.name = name
@@ -147,6 +151,7 @@ class BackMethodGenerator:
         self.argumentList = []
         self.parseArgumentList(argumentList)
         self.classname = ''
+        self.condition = conditionlist.get('condition')
         
     def setClass(self, name):
         self.classname = name
@@ -169,7 +174,15 @@ class BackMethodGenerator:
             self.argumentList.append(arg)
 
     def generateDeclaration(self):
+        if self.condition:
+            DedentLevel()
+            Output(self.condition)
+            IndentLevel()
         Output("%s%s;", self.virtual, self.getDeclaration())
+        if self.condition:
+            DedentLevel()
+            Output("#endif")
+            IndentLevel()
         
     def getDeclaration(self, qualified=False):
         if qualified:
@@ -179,14 +192,16 @@ class BackMethodGenerator:
         if self.returntype:
             namedecl = self.returntype.getDeclaration(name)
         else:
-            namedecl = "void %s" % self.name
+            namedecl = "void %s" % name
         argdecllist = []
         for arg in self.argumentList:
             argdecllist.append(arg.getDeclaration())
         argdecl = ', '.join(argdecllist)
-        return "%s(%s)" % (namedecl, argdecl)
+        return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
     def generate(self):
+        if self.condition:
+            Output(self.condition)
         Output("%s", self.getDeclaration(qualified=True))
         OutLbrace()
         if self.rv:
@@ -195,8 +210,13 @@ class BackMethodGenerator:
         if self.rv:
             Output("return _rv;")
         OutRbrace()
+        if self.condition:
+            Output("#endif")
         Output()
         
+class ConstBackMethodGenerator(BackMethodGenerator):
+    const = " const"
+    
 def _test():
     m = BackModule("spam")
     o = BackObjectDefinition("eggs", "eggsbase")
