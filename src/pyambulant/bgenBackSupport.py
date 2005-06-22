@@ -233,7 +233,6 @@ class BackMethodGenerator:
     def declarations(self):
         if self.rv:
             self.rv.declare()
-            Output("PyObject *py_%s;", self.rv.name)
         for arg in self.argumentList:
             if arg.mode in (InMode, InOutMode):
                 initializer = 'Py_BuildValue("%s", %s)' % (arg.mkvalueFormat(), arg.mkvalueArgs())
@@ -250,7 +249,7 @@ class BackMethodGenerator:
             argsnames = ', ' + ', '.join(argsnames)
         else:
             argsnames = ''
-        Output('py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s)',
+        Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
             self.classname, self.name, argsformat, argsnames)
         
     def checkit(self):
