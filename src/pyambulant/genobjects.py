@@ -9,6 +9,11 @@ module.addobject(%(pname)s_object)
 const_%(pname)s_ptr = OpaqueByValueType('const %(cname)s*', '%(pname)sObj')
 """
 
+INCLFORMAT="""extern PyObject *%(pname)sObj_New(%(cname)s* itself);
+extern int %(pname)sObj_Convert(PyObject *v, %(cname)s* *p_itself);
+"""
+
+
 OBJECTS=[
 	"lib/node.h",
 	("node_context", "ambulant::lib::node_context", None),
@@ -75,6 +80,7 @@ OBJECTS=[
 
 out = open('ambulantobjgen.py', 'w')
 incout = open('ambulantincludegen.py', 'w')
+modout = open('ambulantmodule.h', 'w')
 for item in OBJECTS:
 	if type(item) == type(""):
 		print >>out, "# From %s:" % item
@@ -87,4 +93,5 @@ for item in OBJECTS:
 	else:
 		bname = 'pass'
 	print >>out, FORMAT % locals()
+	print >>modout, INCLFORMAT % locals()
 	

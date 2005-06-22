@@ -27,10 +27,7 @@ execfile("ambulantincludegen.py")
 includestuff = includestuff + """
 
 #include "ambulantutilities.h"
-
-// Forward declarations:
-extern PyObject *nodeObj_New(ambulant::lib::node* itself);
-extern int surfaceObj_Convert(PyObject *v, ambulant::common::surface* *p_itself);
+#include "ambulantmodule.h"
 
 """
 
@@ -246,6 +243,7 @@ module.generateDeclaration()
 module.includestuff = """
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
+#include "ambulantmodule.h"
 
 """
 SetOutputFileName(CXX2PYFILE)

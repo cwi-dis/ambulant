@@ -193,12 +193,15 @@ class BackMethodGenerator:
         else:
             name = self.name
         if self.returntype:
-            namedecl = self.returntype.getDeclaration(name)
+            namedecl = self.returntype.getDeclarations(name)
+            if len(namedecl) != 1:
+                raise RuntimeError, "Illegal return type"
+            namedecl = namedecl[0]
         else:
             namedecl = "void %s" % name
         argdecllist = []
         for arg in self.argumentList:
-            argdecllist.append(arg.getDeclaration())
+            argdecllist = argdecllist + arg.getDeclarations()
         argdecl = ', '.join(argdecllist)
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
@@ -249,7 +252,7 @@ class BackMethodGenerator:
             argsnames = ', ' + ', '.join(argsnames)
         else:
             argsnames = ''
-        Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
+        Output('PyObject *py__rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
             self.classname, self.name, argsformat, argsnames)
         
     def checkit(self):
@@ -264,11 +267,11 @@ class BackMethodGenerator:
             self.converttoc(self.rv)
             Output("return %s;", self.rv.name)
         else:
-            Output("Py_DECREF(py_rv);")
+            Output("Py_DECREF(py__rv);")
             
     def converttoc(self, arg):
         if arg.mode in (OutMode, InOutMode, ReturnMode):
-            Output('if (!PyArg_Parse(py_%s, "%s", %s)',
+            Output('if (!PyArg_Parse(py_%s, "%s", %s))',
                 self.rv.name,
                 self.rv.getargsFormat(),
                 self.rv.getargsArgs())
