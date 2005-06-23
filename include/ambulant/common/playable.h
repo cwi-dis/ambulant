@@ -173,7 +173,7 @@ class playable : public lib::ref_counted_obj {
 	
 	/// Returns the cookie identifying this playable to the client code.
 	/// The cookie is usually provided to this playable when it was constructed.
-	virtual const cookie_type& get_cookie() const = 0;
+	virtual const cookie_type get_cookie() const = 0;
 	
 	virtual renderer *get_renderer() { return (renderer *)NULL; }
 };

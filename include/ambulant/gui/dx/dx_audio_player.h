@@ -97,7 +97,7 @@ class audio_player : public common::playable {
 	std::pair<bool, double> get_dur();
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}
-	const cookie_type& get_cookie() const { return m_cookie;}
+	const cookie_type get_cookie() const { return m_cookie;}
 
 	bool can_play();
 	bool is_playing();
