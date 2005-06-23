@@ -61,9 +61,11 @@ namespace ambulant {
 
 namespace lib {
 
-class system {
+class system_embedder {
   public:
-	virtual ~system() {}
+	virtual ~system_embedder() {}
+
+    /// Open the given URL with an external program (such as a web browser).
 	virtual void show_file(const net::url& href) = 0;
 };
 
