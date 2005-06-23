@@ -26,6 +26,7 @@ execfile("ambulantincludegen.py")
 
 includestuff = includestuff + """
 
+#include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
@@ -77,6 +78,7 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
         Output('Py_INCREF(Py_None);')
         Output('return Py_None;')
         OutRbrace()
+        CxxMixin.outputCheckNewArg(self)
         # XXX Add refcount, if needed
         
     def outputCheckConvertArg(self):
@@ -153,6 +155,7 @@ methods_abstract_event_processor = methods_event_processor
 
 lib_event_ptr = event_ptr
 lib_timer_ptr = abstract_timer_ptr
+lib_abstract_timer_ptr = abstract_timer_ptr
 lib_screen_rect_int = screen_rect_int
 lib_point = point
 lib_size = size

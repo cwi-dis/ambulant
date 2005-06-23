@@ -7,7 +7,7 @@ from bgenlocations import TOOLBOXDIR, BGENDIR
 sys.path.append(BGENDIR)
 from bgenCxxSupport import CxxScanner
 
-AMBULANT="/usr/local/include/ambulant/"
+AMBULANT="../../include/ambulant/"
 DO_SCAN=True
 
 def main():

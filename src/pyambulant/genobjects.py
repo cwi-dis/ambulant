@@ -35,7 +35,7 @@ OBJECTS=[
 	("xml_parser", "ambulant::lib::xml_parser", None),
 	
 	"lib/system.h",
-	("system", "ambulant::lib::system", None),
+	("system_embedder", "ambulant::lib::system_embedder", None),
 	
 	"lib/timer.h",
 	("timer_events", "ambulant::lib::timer_events", None),

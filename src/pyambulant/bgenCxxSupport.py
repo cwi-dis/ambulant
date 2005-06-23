@@ -34,6 +34,18 @@ class CxxMixin:
         OutRbrace()
         Output()
 
+    def outputCheckNewArg(self):
+        """This implementation assumes we are generating a two-way bridge, and
+        the Convert method has been declared a friend of the C++ encapsulation
+        class. And it assumes RTTI."""
+        Output("%s *encaps_itself = dynamic_cast<%s *>(itself);",
+            self.name, self.name)
+        Output("if (encaps_itself && encaps_itself->py_%s)", self.name)
+        OutLbrace()
+        Output("Py_INCREF(encaps_itself->py_%s);", self.name)
+        Output("return encaps_itself->py_%s;", self.name)
+        OutRbrace()
+
 class CxxScanner(Scanner):
     """Pretty dumb C++ scanner.
     

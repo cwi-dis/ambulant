@@ -103,6 +103,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output("  private:")
         IndentLevel()
         self.outputMembers()
+        self.outputFriends()
         DedentLevel()
         Output("};")
         Output()
@@ -117,6 +118,11 @@ class BackObjectDefinition(BackGeneratorGroup):
         
     def outputMembers(self):
         Output("PyObject *py_%s;", self.name)
+        
+    def outputFriends(self):
+        Output()
+        Output("friend PyObject *%sObj_New(%s *itself);",
+            self.name, self.itselftype)
         
     def outputConstructor(self):
         Output("%s::%s(PyObject *itself)", self.name, self.name)
