@@ -68,7 +68,7 @@ class live_audio_datasource_factory : public audio_datasource_factory {
 class live_video_datasource_factory : public video_datasource_factory {
   public:
 	~live_video_datasource_factory() {};
-	video_datasource* new_video_datasource(const net::url& url);
+	video_datasource* new_video_datasource(const net::url& url,timestamp_t clip_begin, timestamp_t clip_end);
 };
 
 }

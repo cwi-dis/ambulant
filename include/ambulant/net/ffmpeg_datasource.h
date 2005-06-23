@@ -126,7 +126,7 @@ class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
 class ffmpeg_video_datasource_factory : public video_datasource_factory {
   public:
 	~ffmpeg_video_datasource_factory() {};
-	video_datasource* new_video_datasource(const net::url& url);
+	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 };
 
 class ffmpeg_audio_parser_finder : public audio_parser_finder {

@@ -127,7 +127,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_f
 
 
 video_datasource* 
-live_video_datasource_factory::new_video_datasource(const net::url& url)
+live_video_datasource_factory::new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 {
 	AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
@@ -135,7 +135,7 @@ live_video_datasource_factory::new_video_datasource(const net::url& url)
 		AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	rtsp_demux *thread = new rtsp_demux(context, 0, -1);
+	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
 	int i = 0;
 
 	//int stream_index;

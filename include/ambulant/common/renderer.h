@@ -305,6 +305,8 @@ class active_video_renderer : public common::renderer_playable {
 	  bool m_is_playing;
 	  bool m_is_paused;
 	  unsigned long int m_paused_epoch;
+  	  net::timestamp_t m_clip_begin;
+  	  net::timestamp_t m_clip_end;
 	  lib::critical_section m_lock;
 };
 

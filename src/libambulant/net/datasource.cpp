@@ -309,13 +309,13 @@ datasource_factory::new_filter_datasource(const net::url& url, audio_format_choi
 }
 
 video_datasource*
-datasource_factory::new_video_datasource(const net::url &url)
+datasource_factory::new_video_datasource(const net::url &url, timestamp_t clip_begin, timestamp_t clip_end)
 {
     std::vector<video_datasource_factory *>::iterator i;
     video_datasource *src;
     
     for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
-        src = (*i)->new_video_datasource(url);
+        src = (*i)->new_video_datasource(url, clip_begin, clip_end );
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
         if (src) return src;
     }

@@ -63,9 +63,9 @@ namespace net {
 
 	
 #ifdef AMBULANT_HAS_LONG_LONG
-  typedef long long int timestamp_t; // microseconds
+  	typedef long long int timestamp_t; // microseconds
 #else
-typedef INT64 timestamp_t;
+	typedef INT64 timestamp_t;
 #endif
 	
 /// This struct completely describes an audio format.
@@ -394,7 +394,7 @@ class video_datasource_factory  {
     virtual ~video_datasource_factory() {};
 
 	/// Create a new video_datasource to read the given URL.
-  	virtual video_datasource* new_video_datasource(const net::url& url) = 0;
+  	virtual video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Implementation of all datasource factories.
@@ -419,7 +419,7 @@ class datasource_factory :
 	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Client interface: obtain a video datasource for the given URL.
-  	video_datasource* new_video_datasource(const net::url& url);
+  	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Semi-private interface: obtain an audio filter datasource.
 	audio_datasource* new_filter_datasource(const net::url& url, audio_format_choices fmt, audio_datasource* ds);
