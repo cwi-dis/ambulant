@@ -212,6 +212,7 @@ class BackMethodGenerator:
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
     def generate(self):
+        Output()
         if self.condition:
             Output(self.condition)
 
@@ -223,7 +224,6 @@ class BackMethodGenerator:
             Output("#endif")
 
     def functionheader(self):
-        Output()
         Output("%s", self.getDeclaration(qualified=True))
         OutLbrace()
 

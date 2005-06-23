@@ -69,6 +69,7 @@ class MyScanner(CxxScanner):
             "const_xml_string_ref", # XXX For now
             "const_custom_test_map_ptr", # XXX For now 
             "const_q_attributes_list_ref",  # XXX For now
+            "const_lib_screen_rect_int_ref", # XXX For now
             "transition_info_ptr",
             "lib_transition_info_ptr",
             "sax_content_handler",

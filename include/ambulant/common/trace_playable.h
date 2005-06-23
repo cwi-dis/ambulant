@@ -106,15 +106,11 @@ class trace_playable : virtual public playable {
 		return std::pair<bool, double>(false, 0);
 	}
 
-	const cookie_type& get_cookie() const { return m_cookie; }
-	//XXXX @Jack I put these here just to make it compile again, Daniel.
-	//long add_ref() {};
-	//long release() {};	
-	//long get_ref_count() const {};
+	cookie_type get_cookie() const { return m_cookie; }
 		
   private:
 	const lib::node *m_node;
-	const cookie_type m_cookie;
+	cookie_type m_cookie;
 	std::string m_tag;
 	std::string m_id;
 	lib::logger *m_logger;

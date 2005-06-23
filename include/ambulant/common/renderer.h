@@ -99,7 +99,7 @@ class playable_imp : public playable {
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
 	std::pair<bool, double> get_dur() { return std::pair<bool, double>(true, 0);}
-	const cookie_type get_cookie() const { return m_cookie;}
+	cookie_type get_cookie() const { return m_cookie;}
   protected:
     playable_notification *m_context;	///< Status feedback object.
     cookie_type m_cookie;				///< Parameter for status feedback object.

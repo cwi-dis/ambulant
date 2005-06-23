@@ -220,7 +220,6 @@ Function = NoFunctionGenerator
 Method = BackMethodGenerator
 ConstMethod = ConstBackMethodGenerator
 
-const_cookie_type_ref = Type("ambulant::common::playable::cookie_type&", "l")
 const_lib_screen_rect_int_ref = OpaqueByRefType("ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 
 module = BackModule("pyambulant", includestuff, finalstuff)
