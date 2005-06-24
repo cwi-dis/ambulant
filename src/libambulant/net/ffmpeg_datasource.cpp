@@ -1600,7 +1600,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, audio_
 	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
-	m_elapsed(0),
+	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(false),
 	m_duration(false, 0),
 	m_client_callback(NULL)
@@ -1619,7 +1619,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_fmt(src->get_audio_format()),
 	m_event_processor(NULL),
 	m_src(src),
-	m_elapsed(0),
+	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(true),
 	m_duration(false, 0),
 	m_client_callback(NULL)
@@ -1759,7 +1759,7 @@ ffmpeg_decoder_datasource::data_avail()
 							m_buffer.pushdata(0);
 						}
 					} else {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We are still before clip_begin");
+						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We are still before clip_begin (m_elapsed = %lld, clip_begin = %lld)", m_elapsed, m_src->get_clip_begin());
 						m_buffer.pushdata(0);
 					}
 					
@@ -1843,7 +1843,7 @@ ffmpeg_decoder_datasource::_clip_end()
 	if (clip_end == -1) return false;
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
-	if ((m_elapsed + m_src->get_clip_begin()) > clip_end) {
+	if ((m_elapsed ) > clip_end) {
 		return true;
 	}
 	

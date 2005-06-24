@@ -175,6 +175,7 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	//virtual bool end_of_file() =0 ;
 	virtual timestamp_t get_clip_end() = 0; 
 	virtual timestamp_t get_clip_begin() = 0; 
+	virtual timestamp_t get_start_time() = 0;
 
 
   protected:
@@ -202,6 +203,7 @@ class ffmpeg_demux : public abstract_demux {
 	void cancel();
 	timestamp_t get_clip_end(); 
 	timestamp_t get_clip_begin();
+	timestamp_t get_start_time() { return 0; };
   protected:
 	unsigned long run();
   private:
@@ -246,6 +248,7 @@ class demux_audio_datasource:
 	bool buffer_full();
   	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
+  	timestamp_t get_start_time() { return m_thread->get_start_time(); };
 	char* get_read_ptr();
 	int size() const;   
 	audio_format& get_audio_format();
@@ -292,6 +295,7 @@ class demux_video_datasource:
 	bool buffer_full();
   	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
+  	timestamp_t get_start_time() { return m_thread->get_start_time(); };
   	int width();
   	int height();
   
@@ -378,6 +382,7 @@ class ffmpeg_video_decoder_datasource:
 	bool buffer_full();
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
   	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
+	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	std::pair<bool, double> get_dur();
 	
   private:
@@ -435,6 +440,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	audio_format& get_audio_format();
 	timestamp_t get_clip_end();
   	timestamp_t get_clip_begin();
+  	timestamp_t get_start_time() { return m_elapsed; };
 	static bool supported(const net::url& url);
   protected:
   	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);
@@ -484,6 +490,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	std::pair<bool, double> get_dur();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
+	timestamp_t get_start_time() { return m_src->get_start_time(); }
   protected:
     int init(); 
   	

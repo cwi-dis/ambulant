@@ -383,6 +383,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	
 	// turned this of because I think here also happends a get_read_ptr when it should not
 	//XXXX sometimes we get this one in News when changing video itmes
+	
 	assert(m_is_playing);
 	int rv;
 	*ptr = NULL;

@@ -136,6 +136,7 @@ class rtsp_demux : public detail::abstract_demux {
 	bool set_position(timestamp_t time);
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
+	timestamp_t get_start_time() { return m_clip_begin; };
   protected:
 	unsigned long run();
   private:	
