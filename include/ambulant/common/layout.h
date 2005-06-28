@@ -308,9 +308,9 @@ class layout_manager {
 
 
 // XXX These should be elsewhere
-layout_manager *create_smil2_layout_manager(common::factories *factory,lib::document *doc);
+AMBULANTAPI layout_manager *create_smil2_layout_manager(common::factories *factory,lib::document *doc);
 //layout_manager *create_mms_layout_manager();
-surface_factory *create_smil_surface_factory();
+AMBULANTAPI surface_factory *create_smil_surface_factory();
 	
 } // namespace common
  

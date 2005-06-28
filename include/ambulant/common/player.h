@@ -139,10 +139,10 @@ class player {
 // Factory functions - should these be here?
 
 /// Create a player using the old timeline based MMS scheduler.
-player *create_mms_player(lib::document *doc, common::factories* factory);
+AMBULANTAPI player *create_mms_player(lib::document *doc, common::factories* factory);
 
 /// Create a player using the full SMIL 2.0 scheduler.
-player *create_smil2_player(lib::document *doc, common::factories* factory, common::embedder *sys);
+AMBULANTAPI player *create_smil2_player(lib::document *doc, common::factories* factory, common::embedder *sys);
 
 } // namespace common
  

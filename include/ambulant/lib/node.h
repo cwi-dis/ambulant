@@ -351,20 +351,20 @@ class node_context {
 #if WITH_EXTERNAL_DOM
 // Factory functions. These are defined in node.cpp, and will return
 // node_impl objects.
-node_interface *node_factory(const char *local_name, const char **attrs = 0, const node_context *ctx = 0);
+AMBULANTAPI node_interface *node_factory(const char *local_name, const char **attrs = 0, const node_context *ctx = 0);
 
 /// Construct a new, unconnected, node.
 /// Note: attrs are as per expat parser
 /// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-node_interface *node_factory(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0);
+AMBULANTAPI node_interface *node_factory(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0);
 
 /// Construct a new, unconnected, node.
 /// Note: attrs are as per expat parser
 /// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-node_interface *node_factory(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0);
+AMBULANTAPI node_interface *node_factory(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0);
 
 // shallow copy from other.
-node_interface *node_factory(const node* other);
+AMBULANTAPI node_interface *node_factory(const node* other);
 #else
 // Factory functions. These call node_impl constructors directly.
 inline node *

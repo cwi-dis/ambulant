@@ -456,7 +456,7 @@ class datasource_factory :
 
 
 /// convenience function: read a whole document through any raw datasource.
-int read_data_from_url(const net::url &url, datasource_factory *df, char **result);
+AMBULANTAPI int read_data_from_url(const net::url &url, datasource_factory *df, char **result);
 
 } // end namespace net
 

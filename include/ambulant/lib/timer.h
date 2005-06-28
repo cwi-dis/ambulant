@@ -180,7 +180,7 @@ class timer : public abstract_timer, public timer_events {
 };
 
 // A (machine-dependent) routine to create a timer object
-abstract_timer *realtime_timer_factory();
+AMBULANTAPI abstract_timer *realtime_timer_factory();
 
 } // namespace lib
  
