@@ -61,8 +61,6 @@ class CxxScanner(Scanner):
     def __init__(self, input=None, output=None, defsoutput=None):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
-        #self.debug = 1
-        #self.silent = 0
         
     def initnamespaces(self):
         self.namespaces = []
@@ -229,6 +227,11 @@ class CxxScanner(Scanner):
             modifiers.append('const')
         return modifiers
         
+	def checkduplicate(self, name):
+		"""By default we do not check for duplicates in C++ code"""
+        self.alreadydone.append(name)
+        return False
+
     def destination(self, type, name, arglist, modifiers=[]):
         if self.in_class_defn:
             classname = self.namespaces[-1]

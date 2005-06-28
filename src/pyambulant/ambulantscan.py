@@ -41,6 +41,8 @@ def main():
 
        
 class MyScanner(CxxScanner):
+    silent = 0
+
     def makeblacklistnames(self):
         return [
             # node.h

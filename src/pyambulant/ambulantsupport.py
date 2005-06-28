@@ -202,6 +202,15 @@ module.generate()
 # and call generate on this new module. Poof! We have the interface
 # the other way...
 from bgenBackSupport import *
+class BackVarInputBufferType(VarInputBufferType):
+    
+    def getAuxDeclarations(self, name):
+        return []
+        
+    def mkvalueArgs(self, name):
+        return "%s__in__, (int)%s__len__" % (name, name)
+
+InBuffer = BackVarInputBufferType('char', 'long', 'l')
 
 includestuff = """
 #define WITH_EXTERNAL_DOM 1
@@ -225,6 +234,25 @@ const_lib_screen_rect_int_ref = OpaqueByRefType("ambulant::lib::screen_rect_int&
 module = BackModule("pyambulant", includestuff, finalstuff)
 functions = []
 execfile("ambulantobjgen.py")
+# Some type synonyms
+node_interface_ptr = node_ptr
+lib_node_ptr = node_ptr
+const_node_interface_ptr = const_node_ptr
+methods_node_interface = methods_node
+
+lib_event_processor_ptr = event_processor_ptr
+abstract_event_processor_ptr = event_processor_ptr
+methods_abstract_event_processor = methods_event_processor
+
+lib_event_ptr = event_ptr
+lib_timer_ptr = abstract_timer_ptr
+lib_abstract_timer_ptr = abstract_timer_ptr
+lib_screen_rect_int = screen_rect_int
+lib_point = point
+lib_size = size
+lib_color_t = color_t
+lib_rect = rect
+common_zindex_t = zindex_t
 
 gui_window_object.baseconstructors = "ambulant::common::gui_window(0)"
 

@@ -6,7 +6,7 @@ setup(name='ambulant',
       ext_modules=[
         Extension('ambulant',
             ['ambulantmodule.cpp', 'ambulantinterface.cpp', 'ambulantutilities.cpp'],
-            libraries=['ambulant', 'expat'],
+            libraries=['ambulant', 'expat', 'intl'],
             extra_link_args=['-framework', 'CoreFoundation'],
             library_dirs=['../../third_party_packages/expat-unix/lib'],
             include_dirs=['../../include']

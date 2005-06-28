@@ -199,7 +199,7 @@ class BackMethodGenerator:
         else:
             name = self.name
         if self.returntype:
-            namedecl = self.returntype.getDeclarations(name)
+            namedecl = self.returntype.getArgDeclarations(name)
             if len(namedecl) != 1:
                 raise RuntimeError, "Illegal return type"
             namedecl = namedecl[0]
@@ -207,7 +207,7 @@ class BackMethodGenerator:
             namedecl = "void %s" % name
         argdecllist = []
         for arg in self.argumentList:
-            argdecllist = argdecllist + arg.getDeclarations()
+            argdecllist = argdecllist + arg.getArgDeclarations()
         argdecl = ', '.join(argdecllist)
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
@@ -226,9 +226,15 @@ class BackMethodGenerator:
     def functionheader(self):
         Output("%s", self.getDeclaration(qualified=True))
         OutLbrace()
+        auxdecllist = []
+        for arg in self.argumentList:
+        	auxdecllist = auxdecllist + arg.getAuxDeclarations()
+        if auxdecllist:
+	        for decl in auxdecllist:
+	        	Output("%s;", decl)
+	        Output()
 
     def functionbody(self):
-        Output("/* XXX To be provided */")
         self.declarations()
         self.precheck()
         self.callit()
@@ -240,12 +246,17 @@ class BackMethodGenerator:
         OutRbrace()
         
     def declarations(self):
+        anydone = False
         if self.rv:
             self.rv.declare()
+            anydone = True
         for arg in self.argumentList:
             if arg.mode in (InMode, InOutMode):
                 initializer = 'Py_BuildValue("%s", %s)' % (arg.mkvalueFormat(), arg.mkvalueArgs())
                 Output("PyObject *py_%s = %s;", arg.name, initializer)
+                anydone = True
+        if anydone:
+            Output()
         
     def precheck(self):
         # Could acquire Python lock here
@@ -258,34 +269,48 @@ class BackMethodGenerator:
             argsnames = ', ' + ', '.join(argsnames)
         else:
             argsnames = ''
-        Output('PyObject *py__rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
+        Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
             self.classname, self.name, argsformat, argsnames)
         
     def checkit(self):
         Output("if (PyErr_Occurred()) abort();");
+        Output()
         
     def returnargs(self):
+        pyvars = ['py_rv']
+    	if self.rv:
+    		fmt = self.rv.getargsFormat()
+    		args = self.rv.getargsArgs()
+    	else:
+            fmt = ""
+            args = ""
         for arg in self.argumentList:
-            self.converttoc(arg)
-        
-    def returnvalue(self):
-        if self.rv:
-            self.converttoc(self.rv)
-            Output("return %s;", self.rv.name)
-        else:
-            Output("Py_DECREF(py__rv);")
-            
-    def converttoc(self, arg):
-        if arg.mode in (OutMode, InOutMode, ReturnMode):
-            Output('if (!PyArg_Parse(py_%s, "%s", %s))',
-                self.rv.name,
-                self.rv.getargsFormat(),
-                self.rv.getargsArgs())
+            if arg.mode in (OutMode, InOutMode):
+                fmt = fmt + arg.getargsFormat()
+                thisargs = arg.getargsArgs()
+                if thisargs:
+                    if args:
+                        args = args + ", " + thisargs
+                    else:
+                        args = thisargs
+            if arg.mode in (InMode, InOutMode):
+                pyvars.append('py_%s' % arg.name)
+        if fmt:
+            Output('if (!PyArg_Parse(py_rv, "%s", %s))',
+                fmt, args)
             IndentLevel()
             Output("abort();")
             DedentLevel()
-        Output('Py_DECREF(py_%s);', arg.name)
-
+            Output()
+        for pyvar in pyvars:
+            Output("Py_DECREF(%s);", pyvar)
+        Output()
+ 
+    def returnvalue(self):
+        if self.rv:
+            #self.converttoc(self.rv)
+            Output("return %s;", self.rv.name)
+            
     def getargsformat(self):
         format = ""
         for arg in self.argumentList:
@@ -302,7 +327,7 @@ class BackMethodGenerator:
 
 class ConstBackMethodGenerator(BackMethodGenerator):
     const = " const"
-    
+    	
 def _test():
     m = BackModule("spam")
     o = BackObjectDefinition("eggs", "eggsbase")
