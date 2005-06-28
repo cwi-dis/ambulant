@@ -12,6 +12,7 @@ DO_SCAN=True
 
 def main():
     input = [
+        AMBULANT+ "version.h",
         AMBULANT+ "lib/node.h",
         AMBULANT+ "lib/document.h",
         AMBULANT+ "lib/event.h",
@@ -103,35 +104,49 @@ class MyScanner(CxxScanner):
 
     def makerepairinstructions(self):
         return [
-            ('set_attribute',
-              [
-                ('char_ptr', '*', '*'),
-                ('char_ptr', '*', '*')
-              ],[
-                ('stringptr', '*', '*'),
-                ('stringptr', '*', '*')
-              ]
-            ),
-            ('locate_node',
-              [
-                ('char_ptr', '*', '*')
-              ],[
-                ('stringptr', '*', '*')
-              ]
-            ),
-            ('get_url',
-              [
-                ('char_ptr', '*', '*')
-              ],[
-                ('stringptr', '*', '*')
-              ]
-            ),
+##            ('set_attribute',
+##              [
+##                ('char_ptr', '*', '*'),
+##                ('char_ptr', '*', '*')
+##              ],[
+##                ('stringptr', '*', '*'),
+##                ('stringptr', '*', '*')
+##              ]
+##            ),
+##            ('locate_node',
+##              [
+##                ('char_ptr', '*', '*')
+##              ],[
+##                ('stringptr', '*', '*')
+##              ]
+##            ),
+##            ('get_url',
+##              [
+##                ('char_ptr', '*', '*')
+##              ],[
+##                ('stringptr', '*', '*')
+##              ]
+##            ),
             (
               [
                 ('char_ptr', '*', 'InMode+ConstMode'),
                 ('size_t', '*', 'InMode')
               ],[
                 ('InBuffer', '*', 'InMode'),
+               ]
+            ),
+            (
+              [
+                ('char_ptr', '*', 'InMode+ConstMode'),
+              ],[
+                ('stringptr', '*', '*'),
+               ]
+            ),
+            (
+              [
+                ('const_char_ptr', '*', 'ReturnMode'),
+              ],[
+                ('return_stringptr', '*', '*'),
                ]
             ),
             ('get_fit_rect',

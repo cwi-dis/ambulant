@@ -3,6 +3,7 @@ BGENOUTPUT=ambulantmodule.cpp ambulantinterface.cpp
 BGENTEMP=ambulantgen.py
 BGENINPUT=ambulantscan.py ambulantsupport.py
 GENOBJOUTPUT=ambulantobjgen.py ambulantincludegen.py ambulantmodule.h
+PYTHON=python2.5
 
 all: ambulantmodule.so
 
@@ -11,10 +12,10 @@ clean:
 	rm -fr build
 	
 $(GENOBJOUTPUT): genobjects.py 
-	python genobjects.py
+	$(PYTHON) genobjects.py
 	
 $(BGENOUTPUT) $(BGENTEMP): $(BGENINPUT) $(GENOBJOUTPUT) $(BGENADDITIONS)
-	python ambulantscan.py
+	$(PYTHON) ambulantscan.py
 
 ambulantmodule.so: setup.py $(BGENOUTPUT) ambulantutilities.cpp ambulantutilities.h ambulantmodule.h
-	python setup.py build
+	$(PYTHON) setup.py build

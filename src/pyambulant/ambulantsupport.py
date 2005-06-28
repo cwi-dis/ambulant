@@ -50,6 +50,7 @@ unsigned_int = Type("unsigned int", "l")
 std_string = OpaqueByRefType("std::string", "cxx_std_string")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
+return_stringptr = Type("char *", "s")  # ONLY FOR RETURN VALUES!!
 
 # Ambulant-specific
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
@@ -57,6 +58,7 @@ screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_sc
 const_lib_screen_rect_int_ref = screen_rect_int
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
+const_lib_point_ref = point
 size = OpaqueByRefType("ambulant::lib::size", "ambulant_size")
 zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
@@ -150,19 +152,23 @@ const_node_interface_ptr = const_node_ptr
 methods_node_interface = methods_node
 
 lib_event_processor_ptr = event_processor_ptr
+ambulant_lib_event_processor_ptr = event_processor_ptr
 abstract_event_processor_ptr = event_processor_ptr
 methods_abstract_event_processor = methods_event_processor
 
 lib_event_ptr = event_ptr
+ambulant_lib_event_ptr = event_ptr
 lib_timer_ptr = abstract_timer_ptr
 lib_abstract_timer_ptr = abstract_timer_ptr
+timer_ptr = abstract_timer_ptr
 lib_screen_rect_int = screen_rect_int
 lib_point = point
 lib_size = size
 lib_color_t = color_t
 lib_rect = rect
 common_zindex_t = zindex_t
-
+playable_notification_cookie_type = cookie_type
+net_audio_datasource_ptr = audio_datasource_ptr
 # Do the type tests
 execfile("ambulanttypetest.py")
 
@@ -253,6 +259,7 @@ lib_size = size
 lib_color_t = color_t
 lib_rect = rect
 common_zindex_t = zindex_t
+net_audio_datasource_ptr = audio_datasource_ptr
 
 gui_window_object.baseconstructors = "ambulant::common::gui_window(0)"
 

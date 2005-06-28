@@ -61,6 +61,7 @@ class CxxScanner(Scanner):
     def __init__(self, input=None, output=None, defsoutput=None):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
+        self.silent = 0
         
     def initnamespaces(self):
         self.namespaces = []
@@ -94,14 +95,13 @@ class CxxScanner(Scanner):
         return type, name, mode
 
     def initpatterns(self):
-        self.head_pat = r"^\s*(virtual|extern)\s+"
+        self.head_pat = r"^\s*(AMBULANTAPI|virtual|extern)\s+"
         self.tail_pat = r"[;={}]"
-        self.type_pat = r"(virtual|extern)" + \
+        self.type_pat = r"(AMBULANTAPI|virtual|extern)" + \
                         r"\s+" + \
-                        r"(?P<type>[a-zA-Z0-9_*:& \t]*[a-zA-Z0-9_*&])" + \
-                        r"\s+"
+                        r"(?P<type>[a-zA-Z0-9_*:& \t]*[ *&])"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
-        self.args_pat = r"\((?P<args>([^\(;\)]+|\([^\(;\)]*\))*)\)"
+        self.args_pat = r"\((?P<args>[^\(;\)]*)\)"
         self.const_pat = r"\s+(?P<const>const)?"
         self.whole_pat = self.type_pat + self.name_pat + self.args_pat + self.const_pat
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
@@ -227,8 +227,8 @@ class CxxScanner(Scanner):
             modifiers.append('const')
         return modifiers
         
-	def checkduplicate(self, name):
-		"""By default we do not check for duplicates in C++ code"""
+    def checkduplicate(self, name):
+        """By default we do not check for duplicates in C++ code"""
         self.alreadydone.append(name)
         return False
 
