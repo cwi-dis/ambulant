@@ -315,14 +315,20 @@ active_video_renderer::active_video_renderer(
 	// here we have to get clip_begin/clip_end from the node
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	long long int cb = 0;
+#ifndef AMBULANT_PLATFORM_WIN32
 	char *lastp;
+#endif
 	
 	if (!clip_begin_attr) {
 		clip_begin_attr = m_node->get_attribute("clip-begin");
 	}
 	
 	if (clip_begin_attr) {
+#ifdef AMBULANT_PLATFORM_WIN32
+		cb = _atoi64(clip_begin_attr);
+#else
 		cb = strtoll(clip_begin_attr, &lastp,0);
+#endif
 	}
 	
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
@@ -332,7 +338,11 @@ active_video_renderer::active_video_renderer(
 	}
 	
 	if (clip_end_attr) {
+#ifdef AMBULANT_PLATFORM_WIN32
+		ce = _atoi64(clip_end_attr);
+#else
 		ce = strtoll(clip_end_attr, &lastp,0);
+#endif
 	}
 	m_clip_begin = cb;
 	m_clip_end = ce;

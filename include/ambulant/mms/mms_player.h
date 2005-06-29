@@ -78,7 +78,7 @@ class mms_player : public common::player, public lib::ref_counted_obj {
 #endif
 	~mms_player();
 
-	virtual lib::timer* get_timer() { return m_event_processor->get_timer(); }
+	virtual lib::abstract_timer* get_timer() { return m_event_processor->get_timer(); }
 	virtual lib::event_processor* get_evp() { return m_event_processor; }
 	void start();
 	void stop();
