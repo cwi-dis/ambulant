@@ -69,6 +69,9 @@
 #ifndef AMBULANTAPI
 #define AMBULANTAPI
 #endif
+#ifndef pyapi
+#define pyapi
+#endif
 #endif  // AMBULANT_CONFIG_H
 
 

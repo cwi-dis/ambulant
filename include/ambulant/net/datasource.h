@@ -418,31 +418,31 @@ class datasource_factory :
   	~datasource_factory();
   
 	/// Client interface: obtain a datasource for the given URL.
-  	datasource* new_raw_datasource(const net::url& url);
+  	pyapi datasource* new_raw_datasource(const net::url& url);
 	
 	/// Client interface: obtain an audio_datasource for the given URL and format.
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end);
+	pyapi audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Client interface: obtain a video datasource for the given URL.
-  	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
+  	pyapi video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Semi-private interface: obtain an audio filter datasource.
-	audio_datasource* new_filter_datasource(const net::url& url, audio_format_choices fmt, audio_datasource* ds);
+	pyapi audio_datasource* new_filter_datasource(const net::url& url, audio_format_choices fmt, audio_datasource* ds);
 	
 	/// Provider interface: add a raw_datasource_factory.
-  	void add_raw_factory(raw_datasource_factory *df);
+  	pyapi void add_raw_factory(raw_datasource_factory *df);
 	
 	/// Provider interface: add an audio_datasource_factory.
-	void add_audio_factory(audio_datasource_factory *df);
+	pyapi void add_audio_factory(audio_datasource_factory *df);
 	
 	/// Provider interface: add an audio_parser_finder.
-	void add_audio_parser_finder(audio_parser_finder *df);
+	pyapi void add_audio_parser_finder(audio_parser_finder *df);
 	
 	/// Provider interface: add an audio_filter_finder.
-	void add_audio_filter_finder(audio_filter_finder *df);
+	pyapi void add_audio_filter_finder(audio_filter_finder *df);
 	
 	/// Provider interface: add a video_datasource_factory.
-	void add_video_factory(video_datasource_factory *df);
+	pyapi void add_video_factory(video_datasource_factory *df);
 		
   private:
 	std::vector<raw_datasource_factory*> m_raw_factories;
