@@ -41,6 +41,9 @@ OBJECTS=[
 	("timer_events", "ambulant::lib::timer_events", None),
 	("abstract_timer", "ambulant::lib::abstract_timer", None),
 	
+	"common/embedder.h",
+	("embedder", "ambulant::common::embedder", None),
+	
 	"common/layout.h",
 	("alignment", "ambulant::common::alignment", None),
 	("animation_notification", "ambulant::common::animation_notification", None),
@@ -71,6 +74,7 @@ OBJECTS=[
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted
 	("audio_datasource", "ambulant::net::audio_datasource", "datasource_Type"), # XXX Refcounted
 	("video_datasource", "ambulant::net::video_datasource", None), # XXX Refcounted
+	("datasource_factory", "ambulant::net::datasource_factory", None),
 	("raw_datasource_factory", "ambulant::net::raw_datasource_factory", None),
 	("audio_datasource_factory", "ambulant::net::audio_datasource_factory", None),
 	("video_datasource_factory", "ambulant::net::video_datasource_factory", None),

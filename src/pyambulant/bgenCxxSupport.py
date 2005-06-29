@@ -16,8 +16,35 @@ class CxxMethodGenerator(FunctionGenerator):
     def __init__(self, returntype, name, *argumentlist, **conditionlist):
         FunctionGenerator.__init__(self, returntype, name, *argumentlist, **conditionlist)
         self.callname = "_self->ob_itself->" + self.name
-
-class CxxMixin:
+        
+class CxxGeneratorGroupMixin:
+    """Mixin class for ObjectDefinition and Module that handles duplicate
+    names."""
+    
+    def resolveduplicates(self):
+        names = {}
+        dupnames = {}
+        # First collect duplicate names in dupnames, and
+        # also initialize the counter to 1
+        for g in self.generators:
+            name = g.name
+            if name in names:
+                dupnames[name] = 1
+                print 'DBG: duplicate %s.%s' % (self.name, name)
+            names[name] = True
+        for g in self.generators:
+            name = g.name
+            if name in dupnames:
+                count = dupnames[name]
+                dupnames[name] = count + 1
+                name = '%s_%d' % (name, count)
+                g.name = name
+        for g in self.generators:
+            if isinstance(g, CxxGeneratorGroupMixin):
+                g.resolveduplicates()
+        
+                
+class CxxMixin(CxxGeneratorGroupMixin):
     """Mixin for ObjectDefinition.
     
     The C++ compiler is more picky on use preceding declaration so
@@ -45,7 +72,10 @@ class CxxMixin:
         Output("Py_INCREF(encaps_itself->py_%s);", self.name)
         Output("return encaps_itself->py_%s;", self.name)
         OutRbrace()
-
+        
+class CxxModule(CxxGeneratorGroupMixin, Module):
+    pass
+    
 class CxxScanner(Scanner):
     """Pretty dumb C++ scanner.
     
@@ -102,7 +132,7 @@ class CxxScanner(Scanner):
                         r"(?P<type>[a-zA-Z0-9_*:& \t]*[ *&])"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
         self.args_pat = r"\((?P<args>[^\(;\)]*)\)"
-        self.const_pat = r"\s+(?P<const>const)?"
+        self.const_pat = r"\s*(?P<const>const)?"
         self.whole_pat = self.type_pat + self.name_pat + self.args_pat + self.const_pat
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
                        r"[ \t]*(?P<defn>[-0-9_a-zA-Z'\"\(][^\t\n,;}]*),?"

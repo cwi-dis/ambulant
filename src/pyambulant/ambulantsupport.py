@@ -5,7 +5,7 @@
 
 import string
 from bgen import *
-from bgenCxxSupport import CxxMethodGenerator, CxxMixin
+from bgenCxxSupport import CxxMethodGenerator, CxxMixin, CxxModule
 # Declarations that change for each manager
 MODNAME = 'ambulant'                         # The name of the module
 
@@ -21,6 +21,7 @@ CXX2PYDECLFILE = MODNAME + "interface.h"     # The C++ to Python declarations
 includestuff = """
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
+#include "ambulant/version.h"
 """
 execfile("ambulantincludegen.py")
 
@@ -30,6 +31,9 @@ includestuff = includestuff + """
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
+using ambulant::get_version;
+using ambulant::lib::realtime_timer_factory;
+using ambulant::common::create_smil_surface_factory;
 """
 
 finalstuff = """
@@ -50,7 +54,7 @@ unsigned_int = Type("unsigned int", "l")
 std_string = OpaqueByRefType("std::string", "cxx_std_string")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
-return_stringptr = Type("char *", "s")  # ONLY FOR RETURN VALUES!!
+return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
 
 # Ambulant-specific
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
@@ -58,7 +62,6 @@ screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_sc
 const_lib_screen_rect_int_ref = screen_rect_int
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
-const_lib_point_ref = point
 size = OpaqueByRefType("ambulant::lib::size", "ambulant_size")
 zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
@@ -140,7 +143,7 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
         Output("return -1;")
 
 # Create the generator groups and link them
-module = Module(MODNAME, MODPREFIX, includestuff, finalstuff, initstuff, variablestuff)
+module = CxxModule(MODNAME, MODPREFIX, includestuff, finalstuff, initstuff, variablestuff)
 functions = []
 
 execfile("ambulantobjgen.py")
@@ -158,7 +161,6 @@ methods_abstract_event_processor = methods_event_processor
 
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
-lib_timer_ptr = abstract_timer_ptr
 lib_abstract_timer_ptr = abstract_timer_ptr
 timer_ptr = abstract_timer_ptr
 lib_screen_rect_int = screen_rect_int
@@ -167,6 +169,7 @@ lib_size = size
 lib_color_t = color_t
 lib_rect = rect
 common_zindex_t = zindex_t
+common_embedder_ptr = embedder_ptr
 playable_notification_cookie_type = cookie_type
 net_audio_datasource_ptr = audio_datasource_ptr
 # Do the type tests
@@ -192,6 +195,9 @@ for name, object in locals().items():
         methodlist = locals()[methodlist_name]
         for f in methodlist:
             object.add(f)
+
+# Resolve duplicates
+module.resolveduplicates()
 
 # ADD add forloop here
 

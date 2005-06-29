@@ -21,6 +21,7 @@ def main():
         AMBULANT+ "lib/sax_handler.h",
         AMBULANT+ "lib/system.h",
         AMBULANT+ "lib/timer.h",
+        AMBULANT+ "common/embedder.h",
         AMBULANT+ "common/layout.h",
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
@@ -73,6 +74,10 @@ class MyScanner(CxxScanner):
             "const_custom_test_map_ptr", # XXX For now 
             "const_q_attributes_list_ref",  # XXX For now
             "const_lib_screen_rect_int_ref", # XXX For now
+            "const_lib_point_ref", # XXX For now
+            "char_ptr_ptr", # XXX For now
+            "common_factories_ptr", # XXX For now
+            "lib_document_ptr", # XXX For now
             "transition_info_ptr",
             "lib_transition_info_ptr",
             "sax_content_handler",
