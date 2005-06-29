@@ -76,7 +76,7 @@ class embedder : public lib::system_embedder {
 	/// or waits for user interaction. If old is specified that player
 	/// is closed, and if possible the new player will re-use its window.
 	
-	virtual void open(net::url newdoc, bool start, player *old=NULL) = 0;
+	virtual void open(net::url newdoc, bool start, player *old = 0) = 0;
 	
 	/// Called when player p has stopped.
 	/// The embedding application could communicate this fact to the end user

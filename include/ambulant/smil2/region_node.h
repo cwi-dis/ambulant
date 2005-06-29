@@ -114,7 +114,7 @@ class region_node : public common::animation_destination {
 	// query for this region's rectangle
 	// the rectangle is evaluaded on the fly
 	// the evaluation takes into account relative coordinates
-	lib::basic_rect<int> get_rect() const;
+	lib::rect get_rect() const;
 	lib::screen_rect_int get_screen_rect() const;
 	
 	// gets the underlying region_dim_spec for modification

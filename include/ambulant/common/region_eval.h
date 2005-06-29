@@ -209,25 +209,25 @@ class region_evaluator {
 	}
 	
 	/// Evaluate (if needed) and return rectangle.
-	basic_rect<int> get_rect() {
-		return basic_rect<int>(basic_point<int>(get_left(), get_top()),
-			basic_size<int>(get_width(), get_height()));
+	rect get_rect() {
+		return rect(point(get_left(), get_top()),
+			size(get_width(), get_height()));
 	}
 	
 	/// Evaluate (if needed) and return rectangle.
 	screen_rect_int get_screen_rect() {
-		return screen_rect_int(basic_point<int>(get_left(), get_top()),
-			basic_point<int>(get_left()+get_width(), get_top()+get_height()));
+		return screen_rect_int(point(get_left(), get_top()),
+			point(get_left()+get_width(), get_top()+get_height()));
 	}
 	
 	/// Evaluate (if needed) and return (left, top) point.
-	basic_point<int> get_origin() {
-		return basic_point<int>(get_left(), get_top());
+	point get_origin() {
+		return point(get_left(), get_top());
 	}
 	
 	/// Evaluate (if needed) and return (width, height) size.
-	basic_size<int> get_size() {
-		return basic_size<int>(get_width(), get_height());
+	size get_size() {
+		return size(get_width(), get_height());
 	}
 	
 	// get clipped box

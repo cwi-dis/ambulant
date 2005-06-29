@@ -330,7 +330,7 @@ region_node::fix_from_dom_node()
 	return changed;
 }
 
-lib::basic_rect<int>
+lib::rect
 region_node::get_rect() const {
 	const region_node *inherit_region = NULL;
 	const region_node *parent_node = up();
@@ -350,9 +350,9 @@ region_node::get_rect() const {
 	  case di_none:
 		break;
 	}
-	lib::basic_rect<int> rc;
+	lib::rect rc;
 	if(inherit_region == NULL) {
-		rc = lib::basic_rect<int, int>(lib::basic_size<int>(common::default_layout_width, common::default_layout_height)); 
+		rc = lib::rect(lib::size(common::default_layout_width, common::default_layout_height)); 
 	} else {
 		rc = inherit_region->get_rect();
 	}

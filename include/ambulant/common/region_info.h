@@ -95,7 +95,7 @@ class region_info {
 	virtual std::string get_name() const = 0;
 	
 	/// Return the rectangle of the region.
-	virtual basic_rect<int> get_rect() const = 0;
+	virtual rect get_rect() const = 0;
 	
 	/// Return the rectangle of the region.
 	virtual screen_rect_int get_screen_rect() const = 0;

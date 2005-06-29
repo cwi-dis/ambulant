@@ -167,7 +167,7 @@ class abstract_event_processor : public event_processor {
 };
 
 // Machine-dependent factory function
-AMBULANTAPI event_processor *event_processor_factory(timer *t);
+AMBULANTAPI event_processor *event_processor_factory(abstract_timer *t);
 
 } // namespace lib
 

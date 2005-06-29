@@ -78,7 +78,7 @@ smil_surface_factory::new_topsurface(
 {
 	lib::size bounds = lib::size(common::default_layout_width, common::default_layout_height);
 	if (info) {
-		lib::basic_rect<int, int> rect = info->get_rect();
+		rect rect = info->get_rect();
 		bounds = lib::size(rect.width(), rect.height());
 	}
 	return new passive_root_layout(info, bounds, bgrend, wf);
