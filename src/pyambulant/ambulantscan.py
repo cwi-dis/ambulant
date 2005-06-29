@@ -68,6 +68,8 @@ class MyScanner(CxxScanner):
             "const_q_name_pair",
             "const_q_name_pair_ref",
             "q_name_pair",
+            "flag_event",
+            "timer",
             "node_list", # XXX For now
             "xml_string", # XXX For now
             "const_xml_string_ref", # XXX For now
@@ -76,6 +78,12 @@ class MyScanner(CxxScanner):
             "const_lib_screen_rect_int_ref", # XXX For now
             "const_lib_point_ref", # XXX For now
             "common_factories_ptr", # XXX For now
+            "const_ambulant_net_url_ref", # XXX for now
+            "const_audio_format_ref", # XXX for now
+            "delta_timer", # XXX for now
+            "std_queue<event_ptr>_ptr",
+            "iterator",
+            "const_iterator",
             "char_ptr_ptr",
             "transition_info_ptr",
             "lib_transition_info_ptr",

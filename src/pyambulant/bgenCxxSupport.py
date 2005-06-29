@@ -101,13 +101,14 @@ class CxxScanner(Scanner):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
         self.silent = 0
-        #self.debug = 1
+        self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []
         self.in_class_defn = 0
         self.last_scope_name = None
         self.last_scope_was_class = False
+        self.visible = "public"
 
     def pythonizename(self, name):        
         if '<' in name or '>' in name:
@@ -137,15 +138,27 @@ class CxxScanner(Scanner):
         return type, name, mode
 
     def initpatterns(self):
-        self.head_pat = r"^\s*(AMBULANTAPI|static|virtual|extern|pyapi)\s+"
+        # Patterns to find function/method declaration outside of classes
+        self.head1_pat = r"^\s*(AMBULANTAPI|static|virtual|extern|pyapi)\s+"
         self.tail_pat = r"[;={}]"
-        self.type_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)" + \
+        self.type1_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)" + \
                         r"\s+" + \
                         r"(?P<type>[a-zA-Z0-9_*:& \t]*[ *&])"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
         self.args_pat = r"\((?P<args>[^\(;\)]*)\)"
         self.const_pat = r"\s*(?P<const>const)?"
-        self.whole_pat = self.type_pat + self.name_pat + self.args_pat + self.const_pat
+        self.whole1_pat = self.type1_pat + self.name_pat + self.args_pat + self.const_pat
+        # Patterns to detect same within class declarations
+        self.head2_pat = r"^\s*[a-zA-Z0-9_]+[\s*&]"
+        self.type2_pat = r"\s*(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)?" + \
+                        r"\s+" + \
+                        r"(?P<type>[a-zA-Z0-9_*:& \t]+[ *&])"
+        self.whole2_pat = self.type2_pat + self.name_pat + self.args_pat + self.const_pat
+        # Default to outside-class:
+        self.head_pat = self.head1_pat
+        self.type_pat = self.type1_pat
+        self.whole_pat = self.whole1_pat
+        
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
                        r"[ \t]*(?P<defn>[-0-9_a-zA-Z'\"\(][^\t\n,;}]*),?"
         self.asplit_pat = r"^(?P<type>[^=]*[^a-zA-Z0-9_])(?P<name>[a-zA-Z0-9_]+)(?P<array>\[\])?(?P<initializer>\s*=[a-zA-Z0-9_ ]+)?$"
@@ -154,6 +167,7 @@ class CxxScanner(Scanner):
         self.comment2_pat = r"(?P<rest1>.*)/\*.*\*/(?P<rest2>.*)"
         self.namespace_pat = r"^\s*namespace\s+(?P<name>[a-zA-Z0-9_:]+)\s+{"
         self.klass_pat = r"^\s*class\s+(?P<name>[a-zA-Z0-9_:]+)\s+[{:]"
+        self.visibility_pat = r"^\s*(?P<visibility>protected|private|public)\s*:\s*$"
 
     def donamespace(self, match):
         if self.in_class_defn:
@@ -182,15 +196,29 @@ class CxxScanner(Scanner):
                 self.namespaces.append("<scope>")
                 if self.in_class_defn:
                     self.in_class_defn += 1
+        if self.in_class_defn:
+            self.head = self.head2
+            self.type = self.type2
+            self.whole = self.whole2
+            self.visible = "private"
         
     def doendscope(self, count):
         for i in range(count):
             if self.in_class_defn:
                 self.in_class_defn -= 1
+                assert self.in_class_defn >= 0
             if self.debug:
                 self.report("      %d: leaving %s" % (len(self.namespaces), self.namespaces[-1]))
             del self.namespaces[-1]
             count -= 1
+        if not self.in_class_defn:
+            self.head = self.head1
+            self.type = self.type1
+            self.whole = self.whole1
+            
+    def dovisibility(self, match):
+        ## assert self.in_class_defn
+        self.visible = match.group("visibility")
 
     def scan(self):
         if not self.scanfile:
@@ -216,17 +244,20 @@ class CxxScanner(Scanner):
                 except EOFError: break
                 if self.debug:
                     self.report("LINE: %r" % (line,))
+
                 match = self.comment1.match(line)
                 if match:
                     line = match.group('rest')
                     if self.debug:
                         self.report("\tafter comment1: %r" % (line,))
+
                 match = self.comment2.match(line)
                 while match:
                     line = match.group('rest1')+match.group('rest2')
                     if self.debug:
                         self.report("\tafter comment2: %r" % (line,))
                     match = self.comment2.match(line)
+
                 if self.defsfile:
                     match = self.sym.match(line)
                     if match:
@@ -234,36 +265,36 @@ class CxxScanner(Scanner):
                             self.report("\tmatches sym.")
                         self.dosymdef(match)
                         continue
+
                 match = self.head.match(line)
                 if match:
                     if self.debug:
                         self.report("\tmatches head.")
                     line = self.dofuncspec()
                     # XXX Need to check for { and }
-                    beginscopecount = line.count('{')
-                    endscopecount = line.count('}')
-                    if beginscopecount > endscopecount:
-                        self.dobeginscope(beginscopecount-endscopecount)
-                    elif beginscopecount < endscopecount:
-                        self.doendscope(endscopecount-beginscopecount)
-                    continue
+
                 match = self.namespace.match(line)
                 if match:
                     if self.debug:
                         self.report("\tmatches namespace.")
                     self.donamespace(match)
+
                 match = self.klass.match(line)
                 if match:
                     if self.debug:
                         self.report("\tmatches class.")
                     self.doclass(match)
+
+                match = self.visibility.match(line)
+                if match:
+                    self.dovisibility(match)
+                    
                 beginscopecount = line.count('{')
                 endscopecount = line.count('}')
                 if beginscopecount > endscopecount:
                     self.dobeginscope(beginscopecount-endscopecount)
                 elif beginscopecount < endscopecount:
                     self.doendscope(endscopecount-beginscopecount)
-                continue
         except EOFError:
             self.error("Uncaught EOF error")
         self.reportusedtypes()
@@ -294,6 +325,10 @@ class CxxScanner(Scanner):
             if classname in self.blacklisttypes:
                 return None, None
             
+            #Then, skip non-public methods
+            if self.visible != 'public':
+                return None, None
+                
             # Next, treat static methods as functions.
             if "static" in modifiers:
                 return "Function", "functions"

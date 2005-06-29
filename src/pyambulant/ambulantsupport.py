@@ -169,6 +169,8 @@ common_zindex_t = zindex_t
 common_embedder_ptr = embedder_ptr
 playable_notification_cookie_type = cookie_type
 net_audio_datasource_ptr = audio_datasource_ptr
+ambulant_net_url = net_url
+
 # Do the type tests
 execfile("ambulanttypetest.py")
 
