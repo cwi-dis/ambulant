@@ -101,10 +101,13 @@ class CxxScanner(Scanner):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
         self.silent = 0
+        #self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []
         self.in_class_defn = 0
+        self.last_scope_name = None
+        self.last_scope_was_class = False
 
     def pythonizename(self, name):        
         if '<' in name or '>' in name:
@@ -156,22 +159,29 @@ class CxxScanner(Scanner):
         if self.in_class_defn:
             self.report("Cannot do namespace inside class")
         name = match.group("name")
-        self.namespaces.append(name)
+        self.last_scope_name = name
+        self.last_scope_was_class = False
         if self.debug:
             self.report("      %d: namespace %s" % (len(self.namespaces), name))
         
     def doclass(self, match):
         name = match.group("name")
-        self.namespaces.append(name)
-        self.in_class_defn += 1
+        self.last_scope_name = name
+        self.last_scope_was_class = True
         if self.debug:
             self.report("      %d: namespace %s" % (len(self.namespaces), name))
             
     def dobeginscope(self, count):
         for i in range(count):
-            self.namespaces.append("<scope>")
-            if self.in_class_defn:
-                self.in_class_defn += 1
+            if self.last_scope_name:
+                self.namespaces.append(self.last_scope_name)
+                self.last_scope_name = None
+                if self.last_scope_was_class:
+                    self.in_class_defn += 1
+            else:
+                self.namespaces.append("<scope>")
+                if self.in_class_defn:
+                    self.in_class_defn += 1
         
     def doendscope(self, count):
         for i in range(count):
@@ -242,13 +252,11 @@ class CxxScanner(Scanner):
                     if self.debug:
                         self.report("\tmatches namespace.")
                     self.donamespace(match)
-                    continue
                 match = self.klass.match(line)
                 if match:
                     if self.debug:
                         self.report("\tmatches class.")
                     self.doclass(match)
-                    continue
                 beginscopecount = line.count('{')
                 endscopecount = line.count('}')
                 if beginscopecount > endscopecount:

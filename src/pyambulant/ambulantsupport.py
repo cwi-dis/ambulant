@@ -30,10 +30,6 @@ includestuff = includestuff + """
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
-
-//using ambulant::get_version;
-//using ambulant::lib::realtime_timer_factory;
-//using ambulant::common::create_smil_surface_factory;
 """
 
 finalstuff = """
@@ -55,6 +51,7 @@ std_string = OpaqueByRefType("std::string", "cxx_std_string")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
+output_stringptr = Type("char *", "s")  # BE CAREFUL!
 
 # Ambulant-specific
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")

@@ -75,9 +75,8 @@ class MyScanner(CxxScanner):
             "const_q_attributes_list_ref",  # XXX For now
             "const_lib_screen_rect_int_ref", # XXX For now
             "const_lib_point_ref", # XXX For now
-            "char_ptr_ptr", # XXX For now
             "common_factories_ptr", # XXX For now
-            "lib_document_ptr", # XXX For now
+            "char_ptr_ptr",
             "transition_info_ptr",
             "lib_transition_info_ptr",
             "sax_content_handler",
@@ -152,6 +151,13 @@ class MyScanner(CxxScanner):
                 ('const_char_ptr', '*', 'ReturnMode'),
               ],[
                 ('return_stringptr', '*', '*'),
+               ]
+            ),
+            (
+              [
+                ('char_ptr_ptr', 'result', 'InMode'),
+              ],[
+                ('output_stringptr', '*', 'OutMode'),
                ]
             ),
             ('get_fit_rect',
