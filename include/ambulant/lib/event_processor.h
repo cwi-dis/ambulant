@@ -83,7 +83,7 @@ class event_processor {
 	virtual void serve_events() = 0;
 
 	// Get the underlying timer.
-	virtual timer *get_timer() const = 0;
+	virtual abstract_timer *get_timer() const = 0;
 	
 	// Stop this event processor (stops the underlying thread).
 	virtual void stop_processor_thread() = 0;
@@ -120,9 +120,9 @@ namespace lib {
 /// event_processor interface.
 class abstract_event_processor : public event_processor {
   public:
- 	abstract_event_processor(timer *t);	
+ 	abstract_event_processor(abstract_timer *t);	
 	~abstract_event_processor();	
-	timer *get_timer() const;
+	abstract_timer *get_timer() const;
 	
 	void add_event(event *pe, time_type t, event_priority priority);
 	bool cancel_event(event *pe, event_priority priority = low);
@@ -139,7 +139,7 @@ class abstract_event_processor : public event_processor {
 	virtual void wait_event() = 0;
 
 	// the timer for this processor
-	timer *m_timer;
+	abstract_timer *m_timer;
 
  private:
 	// check, if needed, with a delta_timer to fill its run queue
