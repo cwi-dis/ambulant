@@ -65,6 +65,9 @@ class CxxMixin(CxxGeneratorGroupMixin):
         """This implementation assumes we are generating a two-way bridge, and
         the Convert method has been declared a friend of the C++ encapsulation
         class. And it assumes RTTI."""
+        DedentLevel()
+        Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
+        IndentLevel()
         Output("%s *encaps_itself = dynamic_cast<%s *>(itself);",
             self.name, self.name)
         Output("if (encaps_itself && encaps_itself->py_%s)", self.name)
@@ -72,6 +75,12 @@ class CxxMixin(CxxGeneratorGroupMixin):
         Output("Py_INCREF(encaps_itself->py_%s);", self.name)
         Output("return encaps_itself->py_%s;", self.name)
         OutRbrace()
+        DedentLevel()
+        Output("#endif")
+        IndentLevel()
+
+    def outputTypeObjectInitializerCompat(self):
+        pass
         
 class CxxModule(CxxGeneratorGroupMixin, Module):
     pass
@@ -125,9 +134,9 @@ class CxxScanner(Scanner):
         return type, name, mode
 
     def initpatterns(self):
-        self.head_pat = r"^\s*(AMBULANTAPI|virtual|extern)\s+"
+        self.head_pat = r"^\s*(AMBULANTAPI|static|virtual|extern)\s+"
         self.tail_pat = r"[;={}]"
-        self.type_pat = r"(AMBULANTAPI|virtual|extern)" + \
+        self.type_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern)" + \
                         r"\s+" + \
                         r"(?P<type>[a-zA-Z0-9_*:& \t]*[ *&])"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
@@ -253,8 +262,15 @@ class CxxScanner(Scanner):
 
     def getmodifiers(self, match):
         modifiers = []
+
+        if match.group('storage') == 'static':
+            modifiers.append('static')
+        elif match.group('storage') == 'virtual':
+            modifiers.append('virtual')
+            
         if match.group('const') == 'const':
             modifiers.append('const')
+
         return modifiers
         
     def checkduplicate(self, name):
@@ -266,9 +282,25 @@ class CxxScanner(Scanner):
         if self.in_class_defn:
             classname = self.namespaces[-1]
             classname = self.pythonizename(classname)
+            # First check that we don't skip this class altogether
             if classname in self.blacklisttypes:
                 return None, None
+            
+            # Next, treat static methods as functions.
+            if "static" in modifiers:
+                return "Function", "functions"
+                
+            # Finally treat const methods differently
             if "const" in modifiers:
                 return "ConstMethod", "methods_%s" % classname
             return "Method", "methods_%s" % classname
         return "Function", "functions"
+
+    def generatemodifiers(self, classname, name, modifiers):
+        if classname == 'Function' and self.namespaces:
+            callname = '::'.join(self.namespaces + [name])
+            self.specfile.write('    callname="%s",\n' % callname)
+        if modifiers:
+            self.specfile.write('    modifiers=%s,\n' % repr(modifiers))
+            
+            

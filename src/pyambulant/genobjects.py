@@ -30,6 +30,7 @@ OBJECTS=[
 	
 	"lib/parser_factory.h",
 	("parser_factory", "ambulant::lib::parser_factory", None),
+	("global_parser_factory", "ambulant::lib::global_parser_factory", "parser_factory_Type"),
 	
 	"lib/sax_handler.h",
 	("xml_parser", "ambulant::lib::xml_parser", None),

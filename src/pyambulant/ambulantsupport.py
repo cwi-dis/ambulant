@@ -31,9 +31,9 @@ includestuff = includestuff + """
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
-using ambulant::get_version;
-using ambulant::lib::realtime_timer_factory;
-using ambulant::common::create_smil_surface_factory;
+//using ambulant::get_version;
+//using ambulant::lib::realtime_timer_factory;
+//using ambulant::common::create_smil_surface_factory;
 """
 
 finalstuff = """
@@ -239,7 +239,7 @@ class NoFunctionGenerator(FunctionGenerator):
         
 Function = NoFunctionGenerator
 Method = BackMethodGenerator
-ConstMethod = ConstBackMethodGenerator
+ConstMethod = BackMethodGenerator
 
 const_lib_screen_rect_int_ref = OpaqueByRefType("ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 

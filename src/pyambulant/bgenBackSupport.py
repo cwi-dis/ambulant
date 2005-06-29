@@ -9,6 +9,12 @@ class BackGeneratorGroup:
     def add(self, g, dupcheck=0):
         self.generators.append(g)
 
+    def checkgenerate(self):
+        for g in self.generators:
+            if g.checkgenerate():
+                return True
+        return False
+        
     def generateDeclaration(self):
         for g in self.generators:
             g.generateDeclaration()
@@ -30,6 +36,8 @@ class BackModule(BackGeneratorGroup):
         self.add(od)
 
     def generateDeclaration(self):
+        if not self.checkgenerate():
+            return
         OutHeader1("Declaration of C++ to Python callback module " + self.name)
         Output("#include \"Python.h\"")
         Output()
@@ -40,6 +48,8 @@ class BackModule(BackGeneratorGroup):
         BackGeneratorGroup.generateDeclaration(self)
         
     def generate(self):
+        if not self.checkgenerate():
+            return
         OutHeader1("Callbacks Module " + self.name)
         if self.includestuff:
             Output("%s", self.includestuff)
@@ -76,7 +86,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         #self.argref = ""    # set to "*" if arg to <type>_New should be pointer
         #self.static = "static " # set to "" to make <type>_New and <type>_Convert public
         #self.modulename = None
-        self.virtual = "virtual "   # Or "", for non-virtual destructor
+        self.virtual_destructor = "virtual "   # Or "", for non-virtual destructor
         if hasattr(self, "assertions"):
             self.assertions()
         self.baseconstructors = None
@@ -86,6 +96,8 @@ class BackObjectDefinition(BackGeneratorGroup):
         g.setClass(self.name)
         
     def generate(self):
+        if not self.checkgenerate():
+            return
         OutHeader2("Class %s"%self.name)
                 
         self.outputConstructor()
@@ -94,10 +106,11 @@ class BackObjectDefinition(BackGeneratorGroup):
         BackGeneratorGroup.generate(self)
         
     def generateDeclaration(self):
+        if not self.checkgenerate():
+            return
         Output("class %s : public %s {", self.name, self.itselftype)
         self.generateConDesDeclaration()        
-        Output("public:")
-        IndentLevel()
+
         BackGeneratorGroup.generateDeclaration(self)
         DedentLevel()
         Output("  private:")
@@ -106,15 +119,15 @@ class BackObjectDefinition(BackGeneratorGroup):
         self.outputFriends()
         DedentLevel()
         Output("};")
+        Output("#define BGEN_BACK_SUPPORT_%s", self.name)
         Output()
         
     def generateConDesDeclaration(self):
         Output("public:")
         IndentLevel()
         Output("%s(PyObject *itself);", self.name)
-        Output("%s~%s();", self.virtual, self.name)
+        Output("%s~%s();", self.virtual_destructor, self.name)
         Output()
-        DedentLevel()
         
     def outputMembers(self):
         Output("PyObject *py_%s;", self.name)
@@ -150,20 +163,26 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output()
         
 class BackMethodGenerator:
-    const = ""
-    
     def __init__(self, returntype, name, *argumentList, **conditionlist):
         self.returntype = returntype
         self.name = name
         self.setreturnvar()
-        self.virtual = 'virtual '
         self.argumentList = []
         self.parseArgumentList(argumentList)
         self.classname = ''
         self.condition = conditionlist.get('condition')
+        self.modifiers = conditionlist.get('modifiers', [])
+        if 'const' in self.modifiers:
+            self.const = ' const'
+        else:
+            self.const = ''
+        self.virtual = 'virtual' in self.modifiers
         
     def setClass(self, name):
         self.classname = name
+        
+    def checkgenerate(self):
+        return self.virtual
         
     def setreturnvar(self):
         if self.returntype:
@@ -183,11 +202,13 @@ class BackMethodGenerator:
             self.argumentList.append(arg)
 
     def generateDeclaration(self):
+        if not self.checkgenerate():
+            return
         if self.condition:
             DedentLevel()
             Output(self.condition)
             IndentLevel()
-        Output("%s%s;", self.virtual, self.getDeclaration())
+        Output("virtual %s;", self.getDeclaration())
         if self.condition:
             DedentLevel()
             Output("#endif")
@@ -212,6 +233,8 @@ class BackMethodGenerator:
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
     def generate(self):
+        if not self.checkgenerate():
+            return
         Output()
         if self.condition:
             Output(self.condition)
@@ -325,9 +348,6 @@ class BackMethodGenerator:
                 argnames.append("py_%s" % arg.name)
         return argnames
 
-class ConstBackMethodGenerator(BackMethodGenerator):
-    const = " const"
-    	
 def _test():
     m = BackModule("spam")
     o = BackObjectDefinition("eggs", "eggsbase")
