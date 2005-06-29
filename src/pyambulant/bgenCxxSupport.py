@@ -137,9 +137,9 @@ class CxxScanner(Scanner):
         return type, name, mode
 
     def initpatterns(self):
-        self.head_pat = r"^\s*(AMBULANTAPI|static|virtual|extern)\s+"
+        self.head_pat = r"^\s*(AMBULANTAPI|static|virtual|extern|pyapi)\s+"
         self.tail_pat = r"[;={}]"
-        self.type_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern)" + \
+        self.type_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)" + \
                         r"\s+" + \
                         r"(?P<type>[a-zA-Z0-9_*:& \t]*[ *&])"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
