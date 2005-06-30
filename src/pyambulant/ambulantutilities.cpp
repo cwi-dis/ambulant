@@ -21,22 +21,6 @@ bool_Convert(PyObject *v, bool *p_itself)
     return 1;
 }
 
-
-PyObject *cxx_std_string_New(std::string& itself)
-{
-    return PyString_FromString(itself.c_str());
-}
-
-int
-cxx_std_string_Convert(PyObject *v, std::string *p_itself)
-{
-    char *cstr = PyString_AsString(v);
-    if (cstr == NULL) return 0;
-    *p_itself = cstr;
-    return 1;
-}
-
-
 PyObject *ambulant_url_New(ambulant::net::url& itself)
 {
     return PyString_FromString(itself.get_url().c_str());

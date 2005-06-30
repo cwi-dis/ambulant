@@ -5,7 +5,30 @@ from bgen import *
 from scantools import Scanner
 import re
 
-class CxxMethodGenerator(FunctionGenerator):
+class CxxFunctionGenerator(FunctionGenerator):
+    """C++ Function generator.
+    
+    One refinement when compared to the C function generator: we assign the
+    function return value in the declaration of the return variable. This allows
+    support of functions returning const values"""
+
+    def declarations(self):
+        # Don't declare return value just yet
+        if self.rv:
+            del self.argumentList[0]
+        FunctionGenerator.declarations(self)
+        if self.rv:
+            self.argumentList.insert(0, self.rv)
+            
+    def getrvforcallit(self):
+        if self.rv:
+            decl = self.rv.getArgDeclarations()
+            if len(decl) != 1:
+                raise RuntimeError, "Type %s cannot be used as return value" % self.rv.type
+            return "%s = " % decl[0]
+        return ""
+    
+class CxxMethodGenerator(CxxFunctionGenerator):
     """C++ Method generator.
     
     Almost identical to a FunctionGenerator (not a MethodGenerator: that class
@@ -101,7 +124,7 @@ class CxxScanner(Scanner):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
         self.silent = 0
-        self.debug = 1
+        #self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []
@@ -347,3 +370,78 @@ class CxxScanner(Scanner):
             self.specfile.write('    modifiers=%s,\n' % repr(modifiers))
             
             
+
+class TupleType(Type):
+
+    def __init__(self, type, *memberlist):
+        self.typeName = type
+        self.memberlist
+        self.dot = '.'
+        
+    def getargsFormat(self):
+        fmt = '('
+        for membertype, membername in self.memberlist:
+            fmt += membertype.getargsFormat()
+        fmt += ')'
+        return fmt
+        
+    def getargsArgs(self, name):
+        alist = []
+        for membertype, membername in self.memberlist:
+            alist.append(membertype.getargsArgs(name + self.dot + membername))
+        return ', '.join(alist)
+          
+    def mkvalueFormat(self):
+        fmt = '('
+        for membertype, membername in self.memberlist:
+            fmt += membertype.mkvalueFormat()
+        fmt += ')'
+        return fmt
+        
+    def mkvalueArgs(self, name):
+        alist = []
+        for membertype, membername in self.memberlist:
+            alist.append(membertype.mkvalueArgs(name + self.dot + membername))
+        return ', '.join(alist)
+
+class ByAddressTupleType(TupleType):
+
+    def passInput(self, name):
+        return "&%s" % name
+        
+class ByReferenceTupleType(TupleType):
+
+    def passOutput(self, name):
+        return name
+        
+class CallbackTupleType(TupleType):
+
+    def __init__(self, type, *memberlist):
+        TupleType.__init__(self, type + '*', *memberlist)
+        self.dot = '->'
+        
+    def getargsFormat(self):
+        raise RuntimeError, \
+            "CallbackTupleType('%s') can only be used for callback input parameters" % self.typeName
+
+    def getargsArgs(self, name):
+        raise RuntimeError, \
+            "CallbackTupleType('%s') can only be used for callback input parameters" % self.typeName
+
+class StdStringType(Type):
+    def __init__(self, typeName="std::string", celement="char", fmt="s"):
+        Type.__init__(self, typeName, fmt)
+        self.typeName = typeName
+        self.celement = celement
+        
+    def getAuxDeclarations(self, name):
+        return ["%s *%s_cstr" % (self.celement, name)]
+        
+    def getargsArgs(self, name):
+        return "&%s_cstr" % name
+        
+    def getargsCheck(self, name):
+        Output("%s = %s_cstr;", name, name)
+        
+    def mkvalueArgs(self, name):
+        return "%s.c_str()" % name

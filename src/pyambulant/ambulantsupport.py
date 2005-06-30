@@ -5,7 +5,7 @@
 
 import string
 from bgen import *
-from bgenCxxSupport import CxxMethodGenerator, CxxMixin, CxxModule
+from bgenCxxSupport import *
 # Declarations that change for each manager
 MODNAME = 'ambulant'                         # The name of the module
 
@@ -47,7 +47,7 @@ variablestuff="""
 bool = OpaqueByValueType("bool", "bool")
 size_t = Type("size_t", "l")
 unsigned_int = Type("unsigned int", "l")
-std_string = OpaqueByRefType("std::string", "cxx_std_string")
+std_string = StdStringType()
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
@@ -170,6 +170,7 @@ common_embedder_ptr = embedder_ptr
 playable_notification_cookie_type = cookie_type
 net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
+xml_string = std_string
 
 # Do the type tests
 execfile("ambulanttypetest.py")

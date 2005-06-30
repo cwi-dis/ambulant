@@ -71,8 +71,7 @@ class MyScanner(CxxScanner):
             "flag_event",
             "timer",
             "node_list", # XXX For now
-            "xml_string", # XXX For now
-            "const_xml_string_ref", # XXX For now
+            "const_xml_string_ref", # XXX for now
             "const_custom_test_map_ptr", # XXX For now 
             "const_q_attributes_list_ref",  # XXX For now
             "const_lib_screen_rect_int_ref", # XXX For now
