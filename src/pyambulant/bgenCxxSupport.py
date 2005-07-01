@@ -375,7 +375,7 @@ class TupleType(Type):
 
     def __init__(self, type, *memberlist):
         self.typeName = type
-        self.memberlist
+        self.memberlist = memberlist
         self.dot = '.'
         
     def getargsFormat(self):
@@ -434,8 +434,8 @@ class StdStringType(Type):
         self.typeName = typeName
         self.celement = celement
         
-    def getAuxDeclarations(self, name):
-        return ["%s *%s_cstr" % (self.celement, name)]
+    def getargsPreCheck(self, name):
+        Output("%s *%s_cstr;", self.celement, name)
         
     def getargsArgs(self, name):
         return "&%s_cstr" % name

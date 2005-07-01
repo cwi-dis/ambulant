@@ -63,22 +63,15 @@ class MyScanner(CxxScanner):
 
     def makeblacklisttypes(self):
         return [
+            "Where_we_get_our", # Parser trips over a comment:-)
             "q_attributes_list",
             "q_attributes_list_ref",
+            "const_q_attributes_list_ref",
             "const_q_name_pair",
             "const_q_name_pair_ref",
-            "q_name_pair",
             "flag_event",
             "timer",
             "node_list", # XXX For now
-            "const_xml_string_ref", # XXX for now
-            "const_custom_test_map_ptr", # XXX For now 
-            "const_q_attributes_list_ref",  # XXX For now
-            "const_lib_screen_rect_int_ref", # XXX For now
-            "const_lib_point_ref", # XXX For now
-            "common_factories_ptr", # XXX For now
-            "const_ambulant_net_url_ref", # XXX for now
-            "const_audio_format_ref", # XXX for now
             "delta_timer", # XXX for now
             "std_queue<event_ptr>_ptr",
             "iterator",
@@ -92,7 +85,10 @@ class MyScanner(CxxScanner):
             "sax_error",
             "audio_format_choices", # XXX For now
             "audio_format_ref", # XXX For now
+            "const_audio_format_ref", # XXX for now
             "region_dim", # XXX For now
+            "alignment_ptr", # XXX for now
+            "common_alignment_ptr", # XXX for now
             "tile_positions",
             
         ]
@@ -115,29 +111,7 @@ class MyScanner(CxxScanner):
 
     def makerepairinstructions(self):
         return [
-##            ('set_attribute',
-##              [
-##                ('char_ptr', '*', '*'),
-##                ('char_ptr', '*', '*')
-##              ],[
-##                ('stringptr', '*', '*'),
-##                ('stringptr', '*', '*')
-##              ]
-##            ),
-##            ('locate_node',
-##              [
-##                ('char_ptr', '*', '*')
-##              ],[
-##                ('stringptr', '*', '*')
-##              ]
-##            ),
-##            ('get_url',
-##              [
-##                ('char_ptr', '*', '*')
-##              ],[
-##                ('stringptr', '*', '*')
-##              ]
-##            ),
+            # Assume a pair (const char *, size_t) is an input buffer
             (
               [
                 ('char_ptr', '*', 'InMode+ConstMode'),
@@ -146,6 +120,8 @@ class MyScanner(CxxScanner):
                 ('InBuffer', '*', 'InMode'),
                ]
             ),
+            
+            # Assume a const char * is an input string
             (
               [
                 ('char_ptr', '*', 'InMode+ConstMode'),
@@ -153,6 +129,8 @@ class MyScanner(CxxScanner):
                 ('stringptr', '*', '*'),
                ]
             ),
+            
+            # Handle const char * return values as strings too
             (
               [
                 ('const_char_ptr', '*', 'ReturnMode'),
@@ -160,6 +138,8 @@ class MyScanner(CxxScanner):
                 ('return_stringptr', '*', '*'),
                ]
             ),
+            
+            # And also for char **
             (
               [
                 ('char_ptr_ptr', 'result', 'InMode'),
@@ -167,6 +147,8 @@ class MyScanner(CxxScanner):
                 ('output_stringptr', '*', 'OutMode'),
                ]
             ),
+            
+            # get_fit_rect got one output parameter wrong.
             ('get_fit_rect',
               [
                 ('lib_rect_ptr', 'out_src_rect', 'InMode'),

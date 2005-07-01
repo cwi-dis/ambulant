@@ -116,6 +116,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output("  private:")
         IndentLevel()
         self.outputMembers()
+        self.outputReturnVars()
         self.outputFriends()
         DedentLevel()
         Output("};")
@@ -132,6 +133,15 @@ class BackObjectDefinition(BackGeneratorGroup):
     def outputMembers(self):
         Output("PyObject *py_%s;", self.name)
         
+    def outputReturnVars(self):
+        rvdecls = []
+        for g in self.generators:
+            rv = g.checkreturnvar()
+            if rv:
+                rvdecls.append(rv)
+        for d in rvdecls:
+            Output("%s;", d)
+            
     def outputFriends(self):
         Output()
         Output("friend PyObject *%sObj_New(%s *itself);",
@@ -163,10 +173,10 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output()
         
 class BackMethodGenerator:
+    
     def __init__(self, returntype, name, *argumentList, **conditionlist):
         self.returntype = returntype
         self.name = name
-        self.setreturnvar()
         self.argumentList = []
         self.parseArgumentList(argumentList)
         self.classname = ''
@@ -177,6 +187,8 @@ class BackMethodGenerator:
         else:
             self.const = ''
         self.virtual = 'virtual' in self.modifiers
+        self.rvname = "_rv"
+        self.rv = None
         
     def setClass(self, name):
         self.classname = name
@@ -184,14 +196,46 @@ class BackMethodGenerator:
     def checkgenerate(self):
         return self.virtual
         
-    def setreturnvar(self):
+    def checkreturnvar(self):
+        """Check whether the return value is a reference.
+        
+        If it is we need to declare it in the object in stead of
+        in the method."""
         if self.returntype:
-            self.rv = self.makereturnvar()
-        else:
-            self.rv = None
+            # Hacking our way ahead. We peek in the typeName,
+            # and to make matters worse we change it to get rid
+            # of the reference and the const.
+            returntypedecl = self.returntype.getArgDeclarations("")
+            if len(returntypedecl) != 1:
+                return None
+            returntypedecl = returntypedecl[0]
+            if "&" in returntypedecl:
+                # It appears to be a reference. Check for "const "
+                if returntypedecl[:6] == "const ":
+                    returntypedecl = returntypedecl[6:]
+                while "&" in returntypedecl:
+                    returntypedecl = returntypedecl[:-1]
+                    
+                returnvarname = self.name + "_rv"
+                returntypedecl += " " + returnvarname
+                # Hacking gets worse: we create the return
+                # variable in the "usual" way hoping things will "just work"
+                self.rvname = returnvarname
+                self.rv = self.makereturnvar()
+                return returntypedecl
+        return None
+            
+    def declarereturnvar(self):
+        if self.rv:
+            return False
+        if not self.returntype:
+            return False
+        self.rv = self.makereturnvar()
+        self.rv.declare()
+        return True
 
     def makereturnvar(self):
-        return Variable(self.returntype, "_rv", OutMode)
+        return Variable(self.returntype, self.rvname, OutMode)
 
     def parseArgumentList(self, argumentList):
         iarg = 0
@@ -251,11 +295,11 @@ class BackMethodGenerator:
         OutLbrace()
         auxdecllist = []
         for arg in self.argumentList:
-        	auxdecllist = auxdecllist + arg.getAuxDeclarations()
+            auxdecllist = auxdecllist + arg.getAuxDeclarations()
         if auxdecllist:
-	        for decl in auxdecllist:
-	        	Output("%s;", decl)
-	        Output()
+            for decl in auxdecllist:
+                Output("%s;", decl)
+            Output()
 
     def functionbody(self):
         self.declarations()
@@ -269,12 +313,10 @@ class BackMethodGenerator:
         OutRbrace()
         
     def declarations(self):
-        anydone = False
-        if self.rv:
-            self.rv.declare()
-            anydone = True
+        anydone = self.declarereturnvar()
         for arg in self.argumentList:
             if arg.mode in (InMode, InOutMode):
+                arg.mkvaluePreCheck()
                 initializer = 'Py_BuildValue("%s", %s)' % (arg.mkvalueFormat(), arg.mkvalueArgs())
                 Output("PyObject *py_%s = %s;", arg.name, initializer)
                 anydone = True
@@ -301,14 +343,16 @@ class BackMethodGenerator:
         
     def returnargs(self):
         pyvars = ['py_rv']
-    	if self.rv:
-    		fmt = self.rv.getargsFormat()
-    		args = self.rv.getargsArgs()
-    	else:
+        if self.rv:
+            self.rv.getargsPreCheck()
+            fmt = self.rv.getargsFormat()
+            args = self.rv.getargsArgs()
+        else:
             fmt = ""
             args = ""
         for arg in self.argumentList:
             if arg.mode in (OutMode, InOutMode):
+                arg.getargsPreCheck()
                 fmt = fmt + arg.getargsFormat()
                 thisargs = arg.getargsArgs()
                 if thisargs:
@@ -325,6 +369,11 @@ class BackMethodGenerator:
             Output("abort();")
             DedentLevel()
             Output()
+        if self.rv:
+            self.rv.getargsCheck()
+        for arg in self.argumentList:
+            if arg.mode in (OutMode, InOutMode):
+                arg.getargsCheck()
         for pyvar in pyvars:
             Output("Py_DECREF(%s);", pyvar)
         Output()

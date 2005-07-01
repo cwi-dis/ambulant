@@ -21,7 +21,7 @@ bool_Convert(PyObject *v, bool *p_itself)
     return 1;
 }
 
-PyObject *ambulant_url_New(ambulant::net::url& itself)
+PyObject *ambulant_url_New(const ambulant::net::url& itself)
 {
     return PyString_FromString(itself.get_url().c_str());
 }
@@ -38,7 +38,7 @@ ambulant_url_Convert(PyObject *v, ambulant::net::url *p_itself)
 }
 
 
-PyObject *ambulant_screen_rect_New(ambulant::lib::screen_rect_int& itself)
+PyObject *ambulant_screen_rect_New(const ambulant::lib::screen_rect_int& itself)
 {
     return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());
 }
@@ -54,7 +54,7 @@ ambulant_screen_rect_Convert(PyObject *v, ambulant::lib::screen_rect_int *p_itse
     return 1;
 }
 
-PyObject *ambulant_rect_New(ambulant::lib::rect& itself)
+PyObject *ambulant_rect_New(const ambulant::lib::rect& itself)
 {
     return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());
 }
@@ -72,7 +72,7 @@ ambulant_rect_Convert(PyObject *v, ambulant::lib::rect *p_itself)
     return 1;
 }
 
-PyObject *ambulant_point_New(ambulant::lib::point& itself)
+PyObject *ambulant_point_New(const ambulant::lib::point& itself)
 {
     return Py_BuildValue("ll", itself.x, itself.y);
 }
@@ -85,7 +85,7 @@ ambulant_point_Convert(PyObject *v, ambulant::lib::point *p_itself)
     return 1;
 }
 
-PyObject *ambulant_size_New(ambulant::lib::size& itself)
+PyObject *ambulant_size_New(const ambulant::lib::size& itself)
 {
     return Py_BuildValue("ll", itself.w, itself.h);
 }

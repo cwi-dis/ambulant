@@ -48,6 +48,8 @@ bool = OpaqueByValueType("bool", "bool")
 size_t = Type("size_t", "l")
 unsigned_int = Type("unsigned int", "l")
 std_string = StdStringType()
+xml_string = StdStringType("ambulant::lib::xml_string")
+const_xml_string_ref = StdStringType("const ambulant::lib::xml_string&")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
@@ -56,9 +58,10 @@ output_stringptr = Type("char *", "s")  # BE CAREFUL!
 # Ambulant-specific
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
 screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_screen_rect")
-const_lib_screen_rect_int_ref = screen_rect_int
+const_lib_screen_rect_int_ref = OpaqueByRefType("const ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
+const_lib_point_ref = OpaqueByRefType("const ambulant::lib::point&", "ambulant_point")
 size = OpaqueByRefType("ambulant::lib::size", "ambulant_size")
 zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
@@ -145,6 +148,12 @@ functions = []
 
 execfile("ambulantobjgen.py")
 
+common_factories_ptr = ByAddressTupleType("ambulant::common::factories",
+        (playable_factory_ptr, "rf"),
+        (window_factory_ptr, "wf"),
+        (datasource_factory_ptr, "df"),
+        (global_parser_factory_ptr, "pf"))
+
 # Some type synonyms
 node_interface_ptr = node_ptr
 lib_node_ptr = node_ptr
@@ -156,6 +165,9 @@ ambulant_lib_event_processor_ptr = event_processor_ptr
 abstract_event_processor_ptr = event_processor_ptr
 methods_abstract_event_processor = methods_event_processor
 
+common_surface_ptr = surface_ptr
+common_gui_window_ptr = gui_window_ptr
+lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
 lib_abstract_timer_ptr = abstract_timer_ptr
@@ -170,7 +182,7 @@ common_embedder_ptr = embedder_ptr
 playable_notification_cookie_type = cookie_type
 net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
-xml_string = std_string
+const_ambulant_net_url_ref = net_url
 
 # Do the type tests
 execfile("ambulanttypetest.py")
@@ -240,8 +252,6 @@ class NoFunctionGenerator(FunctionGenerator):
 Function = NoFunctionGenerator
 Method = BackMethodGenerator
 ConstMethod = BackMethodGenerator
-
-const_lib_screen_rect_int_ref = OpaqueByRefType("ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 
 module = BackModule("pyambulant", includestuff, finalstuff)
 functions = []
