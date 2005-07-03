@@ -163,7 +163,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui) :
 	m_factory->df->add_raw_factory(new net::posix_datasource_factory());
 
 	// Next create the playable factory and populate it.
-	m_factory->rf = new common::global_playable_factory();
+	m_factory->rf = common::get_global_playable_factory();
 		
 	AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();

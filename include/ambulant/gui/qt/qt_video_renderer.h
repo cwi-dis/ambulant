@@ -77,7 +77,7 @@ class qt_active_video_renderer : public common::active_video_renderer {
 				 common::factories *factory);
 	
 	~qt_active_video_renderer();
-    void show_frame(char* frame, int size);
+    void show_frame(const char* frame, int size);
 	void redraw(const lib::screen_rect<int> &r, common::gui_window* w);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

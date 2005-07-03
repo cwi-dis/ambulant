@@ -69,7 +69,7 @@ class none_video_renderer : public common::active_video_renderer {
   	~none_video_renderer() {};
 	
 
-	void show_frame(char* frame, int size);
+	void show_frame(const char* frame, int size);
 		
     void redraw(const lib::screen_rect_int &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};

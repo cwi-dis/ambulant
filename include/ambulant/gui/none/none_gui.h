@@ -78,7 +78,7 @@ class none_window_factory : public common::window_factory {
   	none_window_factory() {}
   	
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
-	common::bgrenderer *new_background_renderer(common::region_info *src);
+	common::bgrenderer *new_background_renderer(const common::region_info *src);
 };
 
 class none_playable : public common::playable_imp {
@@ -103,7 +103,7 @@ class none_playable : public common::playable_imp {
 
 class none_background_renderer : public common::background_renderer {
   public:
-	none_background_renderer(common::region_info *src)
+	none_background_renderer(const common::region_info *src)
 	:   background_renderer(src) {}
 	~none_background_renderer() {}
 	void redraw(const lib::screen_rect_int &dirty, common::gui_window *window);

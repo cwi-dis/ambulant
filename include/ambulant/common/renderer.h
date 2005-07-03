@@ -206,10 +206,10 @@ class renderer_playable_dsall : public renderer_playable_ds {
 /// through add_factory(). Then, when the client code wants to allocate
 /// a new playable all factories are tried in order until one is
 /// able to create a playable.
-class global_playable_factory : public playable_factory {
+class global_playable_factory_impl : public global_playable_factory {
   public:
-    global_playable_factory();
-    ~global_playable_factory();
+    global_playable_factory_impl();
+    ~global_playable_factory_impl();
     
 	/// Add a factory.
     void add_factory(playable_factory *rf);
@@ -278,7 +278,7 @@ class active_video_renderer : public common::renderer_playable {
   	bool is_playing() { return m_is_playing; };  
 	
 	/// Display video data.
-	virtual void show_frame(char* frame, int size) {};
+	virtual void show_frame(const char* frame, int size) {};
     virtual void redraw(const lib::screen_rect_int &dirty, common::gui_window *window);
 	
 	void start(double where);

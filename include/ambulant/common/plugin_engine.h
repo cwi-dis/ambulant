@@ -59,12 +59,7 @@
  
 namespace ambulant {
 
-namespace net {
-class datasource_factory;
-};
-
 namespace common {
-class global_playable_factory;
 
 /// Pointer to the initialize function in the plugin.
 extern "C" {

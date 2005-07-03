@@ -229,12 +229,12 @@ renderer_playable_dsall::readdone()
 	
 }
 
-global_playable_factory::global_playable_factory()
+global_playable_factory_impl::global_playable_factory_impl()
 :   m_default_factory(new gui::none::none_playable_factory())
 {
 }
 
-global_playable_factory::~global_playable_factory()
+global_playable_factory_impl::~global_playable_factory_impl()
 {
     // XXXX Should I delete the factories in m_factories? I think
     // so, but I'm not sure...
@@ -242,13 +242,13 @@ global_playable_factory::~global_playable_factory()
 }
     
 void
-global_playable_factory::add_factory(playable_factory *rf)
+global_playable_factory_impl::add_factory(playable_factory *rf)
 {
     m_factories.push_back(rf);
 }
     
 playable *
-global_playable_factory::new_playable(
+global_playable_factory_impl::new_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
@@ -265,7 +265,7 @@ global_playable_factory::new_playable(
 }
 
 playable *
-global_playable_factory::new_aux_audio_playable(
+global_playable_factory_impl::new_aux_audio_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
@@ -281,6 +281,12 @@ global_playable_factory::new_aux_audio_playable(
     }
 	
     return m_default_factory->new_playable(context, cookie, node, evp);
+}
+
+global_playable_factory *
+common::get_global_playable_factory()
+{
+    return new global_playable_factory_impl();
 }
 
 void 

@@ -79,7 +79,7 @@ class cocoa_dsvideo_renderer :
 
 	
 //	void user_event(const point &where, int what = 0);
-    void show_frame(char* frame, int size);
+    void show_frame(const char* frame, int size);
 	void redraw(const screen_rect_int &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

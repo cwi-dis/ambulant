@@ -118,7 +118,7 @@ gui::none::none_playable_factory::new_playable(
 }
 
 bgrenderer *
-gui::none::none_window_factory::new_background_renderer(region_info *src)
+gui::none::none_window_factory::new_background_renderer(const region_info *src)
 {
 	return new none_background_renderer(src);
 }

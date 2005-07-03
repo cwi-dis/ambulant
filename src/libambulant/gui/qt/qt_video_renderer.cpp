@@ -111,7 +111,7 @@ qt_active_video_renderer::~qt_active_video_renderer()
 }
 
 void 
-qt_active_video_renderer::show_frame(char* frame, int size)
+qt_active_video_renderer::show_frame(const char* frame, int size)
 {
 	m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);

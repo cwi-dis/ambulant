@@ -110,7 +110,7 @@ cocoa_dsvideo_renderer::~cocoa_dsvideo_renderer()
 }
 	
 void
-cocoa_dsvideo_renderer::show_frame(char* frame, int size)
+cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 {
 	m_lock.enter();
 	if (m_image) {

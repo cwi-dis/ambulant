@@ -56,8 +56,6 @@
 namespace ambulant {
 
 namespace common {
-
-class global_playable_factory;
 	
 class factories {
 public:
@@ -66,7 +64,7 @@ public:
 		wf(NULL),
 		df(NULL),
 		pf(NULL) {};
-	ambulant::common::global_playable_factory *rf;
+	ambulant::common::playable_factory *rf;
 	ambulant::common::window_factory *wf;
 	ambulant::net::datasource_factory *df;	
 	ambulant::lib::global_parser_factory* pf;

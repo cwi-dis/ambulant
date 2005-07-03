@@ -241,6 +241,18 @@ class playable_factory {
 		};	
 };
 
+class global_playable_factory : public playable_factory {
+  public:
+    virtual ~global_playable_factory() {}
+    
+	/// Add a factory.
+    virtual void add_factory(playable_factory *rf) = 0;
+};
+
+/// Factory function:
+AMBULANTAPI global_playable_factory *get_global_playable_factory();
+
+
 } // namespace common
  
 } // namespace ambulant
