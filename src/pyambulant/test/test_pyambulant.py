@@ -34,8 +34,8 @@ class TestBasics(unittest.TestCase):
         self.assertAlmostEqual(t1, t2, -1)
         
     def test04document(self):
-        rf = ambulant.playable_factory()
-        wf = ambulant.window_factory()
+        rf = ambulant.get_global_playable_factory()
+        wf = ambulant.none_window_factory()
         df = ambulant.datasource_factory()
         pf = ambulant.get_parser_factory()
         factories = (rf, wf, df, pf)

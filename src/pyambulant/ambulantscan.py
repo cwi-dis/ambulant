@@ -26,6 +26,7 @@ def main():
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
         AMBULANT+ "common/region_info.h",
+        AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "net/datasource.h",
             ]
     if DO_SCAN:
@@ -58,7 +59,14 @@ class MyScanner(CxxScanner):
             "get_frame", # Doable, with size in the arglist
             "wakeup", # XXX private/protected
             "wait_event", # XXX private/protected
-            
+            "flag_event", # Constructor for unsupported type
+            "sax_error", # Constructor for unsupported type
+            "audio_format_choices", # Constructor for unsupported type
+            "abstract_event_processor", # XXX Constructor for unsupported type
+            "none_playable", # XXX Constructor for unsupported type
+            "none_background_renderer", # XXX Constructor for unsupported type
+            "none_playable_factory",  # XXX Constructor for unsupported type
+           
         ]
 
     def makeblacklisttypes(self):
@@ -70,6 +78,7 @@ class MyScanner(CxxScanner):
             "const_q_name_pair",
             "const_q_name_pair_ref",
             "flag_event",
+            "flag_event_ptr",
             "timer",
             "node_list", # XXX For now
             "delta_timer", # XXX for now
@@ -83,8 +92,14 @@ class MyScanner(CxxScanner):
             "sax_content_handler_ptr",
             "sax_error_handler_ptr",
             "sax_error",
+            "sax_error_ptr",
+            "none_playable",
+            "none_playable_ptr",
+            "none_background_renderer",
+            "none_background_renderer_ptr",
             "audio_format_choices", # XXX For now
             "audio_format_ref", # XXX For now
+            "audio_format_choices_ptr", # XXX For now
             "const_audio_format_ref", # XXX for now
             "region_dim", # XXX For now
             "alignment_ptr", # XXX for now

@@ -40,6 +40,43 @@ class CxxMethodGenerator(CxxFunctionGenerator):
         FunctionGenerator.__init__(self, returntype, name, *argumentlist, **conditionlist)
         self.callname = "_self->ob_itself->" + self.name
         
+class CxxConstructorGenerator(CxxFunctionGenerator):
+    """Specialized Method: constructor.
+    
+    For these objects generate() and such will not be called, in stead
+    outputConstructorBody() will output the code fragment needed in the Python
+    tp_init function."""
+
+    def setselftype(self, selftype, itselftype):
+        CxxFunctionGenerator.setselftype(self, selftype, itselftype)
+        if itselftype[-1] != '*':
+            raise RuntimeError, "CxxConstructorGenerator(%s): needs pointer type" % itselftype
+        self.callname = "new %s" % itselftype[:-1]
+    
+    def generate(self):
+        raise RuntimeError, "Cannot call generate() on constructors"
+        
+    def outputConstructorBody(self):
+        OutLbrace()
+        self.declarations()
+        sep = ",\n" + ' '*len("if (PyArg_ParseTuple(")
+        fmt, lst = self.getargsFormatArgs(sep)
+        Output("if (PyArg_ParseTuple(_args, \"%s\"%s))", fmt, lst)
+        OutLbrace()
+        for arg in self.argumentList:
+            if arg.flags == SelfMode:
+                continue
+            if arg.mode in (InMode, InOutMode):
+                arg.getargsCheck()
+        self.callit()
+        Output("return 0;")
+        OutRbrace()
+        OutRbrace()
+        Output()
+
+    def getrvforcallit(self):
+        return "((%s *)_self)->ob_itself = " % self.objecttype
+        
 class CxxGeneratorGroupMixin:
     """Mixin class for ObjectDefinition and Module that handles duplicate
     names."""
@@ -124,7 +161,7 @@ class CxxScanner(Scanner):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
         self.silent = 0
-        #self.debug = 1
+        self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []
@@ -181,6 +218,10 @@ class CxxScanner(Scanner):
         self.head_pat = self.head1_pat
         self.type_pat = self.type1_pat
         self.whole_pat = self.whole1_pat
+        # More special patterns to find constructors
+        self.headconstructor_pat = r"\s*(?P<name>[a-zA-Z0-9_]+)\s*\("
+        self.typeconstructor_pat = r"^(?P<const>)(?P<storage>)(?P<type>)\s*"
+        self.wholeconstructor_pat = self.typeconstructor_pat + self.name_pat + self.args_pat + r"\s*(:[^;{]*)?"
         
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
                        r"[ \t]*(?P<defn>[-0-9_a-zA-Z'\"\(][^\t\n,;}]*),?"
@@ -294,8 +335,22 @@ class CxxScanner(Scanner):
                     if self.debug:
                         self.report("\tmatches head.")
                     line = self.dofuncspec()
-                    # XXX Need to check for { and }
-
+                elif self.in_class_defn:
+                    match = self.headconstructor.match(line)
+                    if match and match.group('name') == self.namespaces[-1]:
+                        if self.debug:
+                            self.report("\tmatches constructor head.")
+                            # It appears to be a constructor. Temporarily use
+                            # different patterns for type and whole, which will
+                            # keep dofuncspec() somewhat happy.
+                            keep_type = self.type
+                            keep_whole = self.whole
+                            self.type = self.typeconstructor
+                            self.whole = self.wholeconstructor
+                            line = self.dofuncspec()
+                            self.type = keep_type
+                            self.whole = keep_whole
+                            
                 match = self.namespace.match(line)
                 if match:
                     if self.debug:
@@ -355,6 +410,10 @@ class CxxScanner(Scanner):
             # Next, treat static methods as functions.
             if "static" in modifiers:
                 return "Function", "functions"
+            
+            # Also treat constructors as functions, but append to the method list
+            if name == self.namespaces[-1]:
+                return "ConstructorMethod", "methods_%s" % classname
                 
             # Finally treat const methods differently
             if "const" in modifiers:
@@ -363,13 +422,27 @@ class CxxScanner(Scanner):
         return "Function", "functions"
 
     def generatemodifiers(self, classname, name, modifiers):
+        # If we are using namespaces make sure to fully qualify
+        # all functions.
         if classname == 'Function' and self.namespaces:
             callname = '::'.join(self.namespaces + [name])
+            self.specfile.write('    callname="%s",\n' % callname)
+        # If this is a constructor we call it with "new"
+        if self.in_class_defn and classname == 'Method' and \
+                self.namespaces and self.namespaces[-1] == name:
+            callname = 'new ' + '::'.join(self.namespaces + [name])
             self.specfile.write('    callname="%s",\n' % callname)
         if modifiers:
             self.specfile.write('    modifiers=%s,\n' % repr(modifiers))
             
-            
+    def repairarglist(self, functionname, arglist):
+        # More trickery for constructors: if we're in a constructor
+        # modify the return arg to return a pointer to the class name
+        if self.in_class_defn \
+                and arglist == [('', self.namespaces[-1], 'ReturnMode')]:
+            return [(self.namespaces[-1]+'_ptr', self.namespaces[-1], 'ReturnMode')]
+        return Scanner.repairarglist(self, functionname, arglist)
+        
 
 class TupleType(Type):
 

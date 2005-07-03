@@ -62,6 +62,7 @@ OBJECTS=[
 	("playable", "ambulant::common::playable", None), # XXX Refcounted
 	("playable_notification", "ambulant::common::playable_notification", None), 
 	("playable_factory", "ambulant::common::playable_factory", None),
+	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory_Type"),
 	
 	"common/player.h",
 	("player_feedback", "ambulant::common::player_feedback", None),
@@ -70,6 +71,10 @@ OBJECTS=[
 	"common/region_info.h",
 	("region_info", "ambulant::common::region_info", None),
 	("animation_destination", "ambulant::common::animation_destination", "region_info_Type"),
+	
+	"gui/none/none_gui.h",
+	("none_window", "ambulant::gui::none::none_window", "gui_window_Type"),
+	("none_window_factory", "ambulant::gui::none::none_window_factory", "window_factory_Type"),
 	
 	"net/datasource.h",
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted

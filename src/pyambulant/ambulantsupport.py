@@ -77,6 +77,19 @@ sound_alignment = Type("ambulant::common::sound_alignment", "l")
 # Our (opaque) objects
 
 class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
+
+    def __init__(self, name, prefix, itselftype):
+        GlobalObjectDefinition.__init__(self, name, prefix, itselftype)
+        self.constructors = []
+        
+    def add(self, g, dupcheck=0):
+        if g.name == self.name:
+            g.setselftype(self.objecttype, self.itselftype)
+            self.constructors.append(g)
+            print "Adding constructor for", self.name
+        else:
+            GlobalObjectDefinition.add(self, g, dupcheck)
+            
     def outputCheckNewArg(self):
         Output('if (itself == NULL)')
         OutLbrace()
@@ -123,25 +136,27 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
         OutRbrace()
 
     def output_tp_newBody(self):
-        Output("PyObject *self;")
-        Output
-        Output("if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;")
-        Output("((%s *)self)->ob_itself = NULL;", self.objecttype)
+        Output("PyObject *_self;")
+        Output()
+        Output("if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;")
+        Output("((%s *)_self)->ob_itself = NULL;", self.objecttype)
         ##Output("((%s *)self)->ob_freeit = CFRelease;", self.objecttype)
-        Output("return self;")
+        Output("return _self;")
 
     def output_tp_initBody(self):
         Output("%s itself;", self.itselftype)
         Output("char *kw[] = {\"itself\", 0};")
         Output()
-        Output("if (PyArg_ParseTupleAndKeywords(args, kwds, \"O&\", kw, %s_Convert, &itself))",
+        for con in self.constructors:
+            con.outputConstructorBody()
+        Output("if (PyArg_ParseTupleAndKeywords(_args, _kwds, \"O&\", kw, %s_Convert, &itself))",
                 self.prefix)
         OutLbrace()
-        Output("((%s *)self)->ob_itself = itself;", self.objecttype)
+        Output("((%s *)_self)->ob_itself = itself;", self.objecttype)
         Output("return 0;")
         OutRbrace()
         Output("return -1;")
-
+        
 # Create the generator groups and link them
 module = CxxModule(MODNAME, MODPREFIX, includestuff, finalstuff, initstuff, variablestuff)
 functions = []
@@ -167,6 +182,7 @@ methods_abstract_event_processor = methods_event_processor
 
 common_surface_ptr = surface_ptr
 common_gui_window_ptr = gui_window_ptr
+common_gui_events_ptr = gui_events_ptr
 lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
@@ -191,6 +207,7 @@ execfile("ambulanttypetest.py")
 Function = FunctionGenerator
 Method = CxxMethodGenerator
 ConstMethod = Method
+ConstructorMethod = CxxConstructorGenerator
 
 # Create and populate the lists
 
@@ -249,9 +266,22 @@ class NoFunctionGenerator(FunctionGenerator):
     def generate(self):
         pass
         
+    def setClass(self, name):
+        pass
+        
+    def generateDeclaration(self):
+        pass
+        
+    def checkreturnvar(self):
+        pass
+        
+    def checkgenerate(self):
+        return False
+        
 Function = NoFunctionGenerator
 Method = BackMethodGenerator
 ConstMethod = BackMethodGenerator
+ConstructorMethod = NoFunctionGenerator
 
 module = BackModule("pyambulant", includestuff, finalstuff)
 functions = []
