@@ -120,7 +120,11 @@ find_datafile(const char **locations)
 qt_gui::qt_gui(const char* title,
 	       const char* initfile)
  :
+#ifdef	WITH_QT_HTML_WIDGET
+  KMainWindow(0L, title),
+#else /*WITH_QT_HTML_WIDGET*/
 	QWidget(),  
+#endif/*WITH_QT_HTML_WIDGET*/
         m_busy(true),
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	m_cursor_shape(Qt::ArrowCursor),
@@ -702,11 +706,15 @@ main (int argc, char*argv[]) {
 	unix_preferences unix_prefs;
 	unix_prefs.load_preferences();
 	FILE* DBG = stdout;
+#ifdef	WITH_QT_HTML_WIDGET
+	KApplication myapp( argc, argv, "AmbulantPlayer" );
+#else /*WITH_QT_HTML_WIDGET*/
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QPEApplication myapp(argc, argv);
 #endif/*QT_NO_FILEDIALOG*/
+#endif/*WITH_QT_HTML_WIDGET*/
 
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
@@ -776,7 +784,9 @@ main (int argc, char*argv[]) {
 		std::cerr << error_message << std::endl;
 		myapp.exec();
 	}
+#ifndef	WITH_QT_HTML_WIDGET
 	delete mywidget;
+#endif/*WITH_QT_HTML_WIDGET*/
 	unix_prefs.save_preferences();
 	delete qt_logger::get_qt_logger();
 	std::cout << "Exiting program" << std::endl;

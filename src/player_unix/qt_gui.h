@@ -84,14 +84,25 @@
 #include <qtooltip.h>
 #include <qwidget.h>
 
+#ifdef	WITH_QT_HTML_WIDGET
+#include <kapp.h>
+#include <kmainwindow.h>
+#endif/*WITH_QT_HTML_WIDGET*/
+
 #include "qt_logger.h"
 #include "qt_settings.h"
 
 class qt_mainloop;
 
-class qt_gui : public QWidget {
+#ifdef	WITH_QT_HTML_WIDGET
+#define qt_gui_BASE KMainWindow
+#else /*WITH_QT_HTML_WIDGET*/
+#define qt_gui_BASE QWidget
+#endif/*WITH_QT_HTML_WIDGET*/
 
-   Q_OBJECT;
+ class qt_gui : public qt_gui_BASE {
+
+   Q_OBJECT
 
    public:
   	qt_gui(const char* title, const char* initfile);

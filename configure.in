@@ -370,6 +370,30 @@ if test x$qt = xtrue  && ! test x$qtopia = xtrue; then
 fi
 AC_SUBST(QT_PREFIX)
 AC_MSG_RESULT($qt)
+
+#
+# Test for QT_HTML_WIDGET
+#
+AC_MSG_CHECKING(for --with-qt-html-widget)
+AC_ARG_WITH(qtthmlwidget,
+     [  --with-qt-html-widget    Turn on Qt Html widget],
+     [case "${withval}" in
+       yes) qtthmlwidget=true
+                ;;
+       *)  qtthmlwidget=false
+                ;;
+     esac],[
+     if test -f /usr/include/kde/khtml_part.h; 
+     then qtthmlwidget=true;
+     else AC_MSG_ERROR(--with-qt-html-widget without KDE include  directory);
+     fi
+     ])
+AM_CONDITIONAL(WITH_QT_HTML_WIDGET, test x$qtthmlwidget = xtrue)
+ if test x$qtthmlwidget = xtrue; then
+      CXXFLAGS="$CXXFLAGS -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
+       LIBS="$LIBS -lkdecore -lkhtml"
+   fi
+AC_MSG_RESULT($qtthmlwidget)
 #
 # Test for SDL
 #

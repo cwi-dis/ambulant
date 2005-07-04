@@ -77,6 +77,11 @@ qtincludes=
 toolkit_qt_libraries =
 endif
 
+if WITH_QT_HTML_WIDGET
+libambulant_qt_la_SOURCES += 		\
+	gui/qt/qt_html_renderer.cpp
+endif
+
 if WITH_ARTS
 toolkit_arts_libraries = libambulant_arts.la
 
