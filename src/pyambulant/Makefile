@@ -13,6 +13,9 @@ clean:
 	rm -f $(BGENOUTPUT) $(BGENTEMP) $(GENOBJOUTPUT)
 	rm -fr build
 	
+install:
+	$(PYTHON) setup.py install
+	
 tests:
 	PYTHONPATH=$(BUILDLIBDIR) $(PYTHON) test/test_pyambulant.py
 	

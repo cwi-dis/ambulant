@@ -80,6 +80,7 @@ class MyScanner(CxxScanner):
             "flag_event",
             "flag_event_ptr",
             "timer",
+            "const_custom_test_map_ptr",
             "node_list", # XXX For now
             "delta_timer", # XXX for now
             "std_queue<event_ptr>_ptr",
