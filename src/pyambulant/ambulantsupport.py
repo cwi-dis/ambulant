@@ -105,6 +105,7 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
         Output('*p_itself = NULL;')
         Output('return 1;')
         OutRbrace()
+        CxxMixin.outputCheckConvertArg(self)
         
     def outputStructMembers(self):
         GlobalObjectDefinition.outputStructMembers(self)
@@ -319,6 +320,16 @@ for name, object in locals().items():
         for f in methodlist:
             object.add(f)
 
+# Dummy versions of methods we cannot support:
+node_context_object.othermethods = [
+    "const custom_test_map* get_custom_tests() const { return NULL; }",
+]
+node_object.othermethods = [
+    "void get_children(const_node_list& l) const {}", # XXX for now
+    "void append_data(const char *data, size_t len) { abort(); }", # XXX for now
+    "void set_attributes(const char **attrs) { abort(); }", # XXX for now
+    "const ambulant::lib::q_name_pair& get_qname() const { abort(); }", # XXX for now
+]
 # Generate the interface
 SetOutputFileName(CXX2PYDECLFILE)
 module.generateDeclaration()

@@ -90,6 +90,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         if hasattr(self, "assertions"):
             self.assertions()
         self.baseconstructors = None
+        self.othermethods = []
         
     def add(self, g, dupcheck=0):
         BackGeneratorGroup.add(self, g, dupcheck)
@@ -112,6 +113,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         self.generateConDesDeclaration()        
 
         BackGeneratorGroup.generateDeclaration(self)
+        self.outputOtherMethods()
         DedentLevel()
         Output("  private:")
         IndentLevel()
@@ -121,15 +123,22 @@ class BackObjectDefinition(BackGeneratorGroup):
         DedentLevel()
         Output("};")
         Output("#define BGEN_BACK_SUPPORT_%s", self.name)
+        Output("inline %s *Py_WrapAs_%s(PyObject *o) { return new %s(o); }", 
+                self.name, self.name, self.name)
         Output()
         
     def generateConDesDeclaration(self):
+        # XXX Constructor needs to be private, with WrapAs a friend function
         Output("public:")
         IndentLevel()
         Output("%s(PyObject *itself);", self.name)
         Output("%s~%s();", self.virtual_destructor, self.name)
         Output()
         
+    def outputOtherMethods(self):
+        for om in self.othermethods:
+            Output(om)
+            
     def outputMembers(self):
         Output("PyObject *py_%s;", self.name)
         
@@ -272,7 +281,7 @@ class BackMethodGenerator:
             namedecl = "void %s" % name
         argdecllist = []
         for arg in self.argumentList:
-            argdecllist = argdecllist + arg.getArgDeclarations()
+            argdecllist = argdecllist + arg.getArgDeclarations(constmode=True)
         argdecl = ', '.join(argdecllist)
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         
@@ -302,15 +311,28 @@ class BackMethodGenerator:
             Output()
 
     def functionbody(self):
+        self.beginGIL()
         self.declarations()
         self.precheck()
         self.callit()
         self.checkit()
         self.returnargs()
+        self.endGIL()
         self.returnvalue()
 
     def functiontrailer(self):
         OutRbrace()
+        
+    def beginGIL(self):
+        #OutLbrace()
+        Output("PyGILState_STATE _GILState = PyGILState_Ensure();")
+        
+    def endGIL(self):
+        Output("PyGILState_Release(_GILState);")
+        #OutRbrace()
+        
+    def returnGIL(self):
+        Output("PyGILState_Release(_GILState);")
         
     def declarations(self):
         anydone = self.declarereturnvar()
@@ -337,8 +359,14 @@ class BackMethodGenerator:
         Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
             self.classname, self.name, argsformat, argsnames)
         
+        
     def checkit(self):
-        Output("if (PyErr_Occurred()) abort();");
+        Output("if (PyErr_Occurred())")
+        OutLbrace()
+        self.returnGIL()
+        Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
+        Output("PyErr_Print();")
+        OutRbrace()
         Output()
         
     def returnargs(self):
@@ -365,9 +393,11 @@ class BackMethodGenerator:
         if fmt:
             Output('if (!PyArg_Parse(py_rv, "%s", %s))',
                 fmt, args)
-            IndentLevel()
-            Output("abort();")
-            DedentLevel()
+            OutLbrace()
+            self.returnGIL()
+            Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
+            Output("PyErr_Print();")
+            OutRbrace()
             Output()
         if self.rv:
             self.rv.getargsCheck()

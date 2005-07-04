@@ -116,8 +116,26 @@ class CxxMixin(CxxGeneratorGroupMixin):
         Output()
         Output("inline bool %s_Check(PyObject *x)", self.prefix)
         OutLbrace()
+        DedentLevel()
+        Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
+        IndentLevel()
+        #
+        # This version will only accept the exact object type.
+        # Objects with subtypes as their class will be wrapped
+        # in the C++ to Python wrapper, so that added functionality
+        # is exported to C++.
+        Output("return ((x)->ob_type == &%s);", self.typename)
+        DedentLevel()
+        Output("#else")
+        IndentLevel()
+        # This version allows subclasses of the given type to
+        # be passed. But note that the object passed to C++ will be the
+        # one with the baseclass type, i.e. without any modified methods.
         Output("return ((x)->ob_type == &%s || PyObject_TypeCheck((x), &%s));",
                self.typename, self.typename)
+        DedentLevel()
+        Output("#endif")
+        IndentLevel()
         OutRbrace()
         Output()
 
@@ -125,6 +143,8 @@ class CxxMixin(CxxGeneratorGroupMixin):
         """This implementation assumes we are generating a two-way bridge, and
         the Convert method has been declared a friend of the C++ encapsulation
         class. And it assumes RTTI."""
+        # XXX Not sure this is actually correct. What will happen to classes
+        # that have been subtyped in C++??
         DedentLevel()
         Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
         IndentLevel()
@@ -135,6 +155,16 @@ class CxxMixin(CxxGeneratorGroupMixin):
         Output("Py_INCREF(encaps_itself->py_%s);", self.name)
         Output("return encaps_itself->py_%s;", self.name)
         OutRbrace()
+        DedentLevel()
+        Output("#endif")
+        IndentLevel()
+
+    def outputCheckConvertArg(self):
+        DedentLevel()
+        Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
+        IndentLevel()
+        Output("*p_itself = Py_WrapAs_%s(v);", self.name)
+        Output("if (*p_itself) return 1;")
         DedentLevel()
         Output("#endif")
         IndentLevel()
