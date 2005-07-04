@@ -330,6 +330,15 @@ node_object.othermethods = [
     "void set_attributes(const char **attrs) { abort(); }", # XXX for now
     "const ambulant::lib::q_name_pair& get_qname() const { abort(); }", # XXX for now
 ]
+parser_factory_object.othermethods = [
+    "ambulant::lib::xml_parser* new_parser(ambulant::lib::sax_content_handler*, ambulant::lib::sax_error_handler*) { abort(); }", # XXX for now
+]
+xml_parser_object.othermethods = [
+    "bool parse(const char*, long unsigned int, bool) { abort(); }", # XXX for now
+    "void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }", #XXXX
+    "void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }", #XXXX
+]
+
 # Generate the interface
 SetOutputFileName(CXX2PYDECLFILE)
 module.generateDeclaration()
