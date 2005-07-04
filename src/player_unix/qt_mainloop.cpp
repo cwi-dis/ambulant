@@ -163,28 +163,29 @@ qt_mainloop::qt_mainloop(qt_gui* gui) :
 	m_factory->df->add_raw_factory(new net::posix_datasource_factory());
 
 	// Next create the playable factory and populate it.
-	m_factory->rf = common::get_global_playable_factory();
-		
+	global_playable_factory *rf = common::get_global_playable_factory();
+    m_factory->rf = rf;
+    
 	AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
 	pf->add_plugins(m_factory);
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	m_factory->rf->add_factory( new sdl::sdl_renderer_factory(m_factory) );
+	rf->add_factory( new sdl::sdl_renderer_factory(m_factory) );
 AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
 
 #ifdef WITH_ARTS
-	m_factory->rf->add_factory(new arts::arts_renderer_factory(m_factory));
+	rf->add_factory(new arts::arts_renderer_factory(m_factory));
 #endif 
 
-	m_factory->rf->add_factory(new qt_renderer_factory(m_factory));
+	rf->add_factory(new qt_renderer_factory(m_factory));
 	
 	AM_DBG m_logger->debug("mainloop::mainloop: added qt_video_factory");		
- 	m_factory->rf->add_factory(new qt_video_factory(m_factory));
+ 	rf->add_factory(new qt_video_factory(m_factory));
 		AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");		
 
-	m_factory->rf->add_factory(new none::none_video_factory(m_factory));
+	rf->add_factory(new none::none_video_factory(m_factory));
 
 	
 	m_factory->wf = new qt_window_factory(m_gui, 
