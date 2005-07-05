@@ -57,7 +57,6 @@ class TestBasics(unittest.TestCase):
                 self.rtt = rtt
                 
             def elapsed(self):
-                print "elapsed called"
                 return self.rtt.elapsed()*2
                 
         rtt_real = ambulant.realtime_timer_factory()
@@ -65,10 +64,11 @@ class TestBasics(unittest.TestCase):
         evp = ambulant.event_processor_factory(rtt)
         self.assert_(type(evp) is ambulant.event_processor)
         time.sleep(1)
-        t1 = rtt.elapsed()
+        t1 = rtt_real.elapsed()
         evp_timer = evp.get_timer_1()
         t2 = evp_timer.elapsed()
-        self.assertAlmostEqual(t1, t2*2, -1)
+        self.assertAlmostEqual(t1*2, t2, -1)
+        del evp
         
     def test_04_document(self):
         rf = ambulant.get_global_playable_factory()
@@ -96,7 +96,7 @@ class TestBasics(unittest.TestCase):
         rf = ambulant.get_global_playable_factory()
         wf = ambulant.none_window_factory()
         df = ambulant.datasource_factory()
-        pf = 23 # ambulant.get_parser_factory()
+        pf = ambulant.get_parser_factory()
         factories = (rf, wf, df, pf)
         doc = ambulant.create_from_string(factories, DOCUMENT, "file:///testdir/test.smil")
         self.assert_(doc)

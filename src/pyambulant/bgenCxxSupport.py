@@ -190,8 +190,8 @@ class CxxScanner(Scanner):
     def __init__(self, input=None, output=None, defsoutput=None):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
-        self.silent = 0
-        self.debug = 1
+        #self.silent = 0
+        #self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []

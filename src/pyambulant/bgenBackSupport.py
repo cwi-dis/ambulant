@@ -167,9 +167,11 @@ class BackObjectDefinition(BackGeneratorGroup):
         Output("%s::%s(PyObject *itself)", self.name, self.name)
         self.outputConstructorInitializers()
         OutLbrace()
+        self.beginGIL()
         self.outputCheckConstructorArg()
         Output("py_%s = itself;", self.name)
         Output("Py_XINCREF(itself);")
+        self.endGIL()
         OutRbrace()
         Output()
         
@@ -186,9 +188,20 @@ class BackObjectDefinition(BackGeneratorGroup):
     def outputDestructor(self):
         Output("%s::~%s()", self.name, self.name)
         OutLbrace()
+        self.beginGIL()
         Output("Py_XDECREF(py_%s);", self.name)
+        Output("py_%s = NULL;", self.name)
+        self.endGIL()
         OutRbrace()
         Output()
+        
+    def beginGIL(self):
+        #OutLbrace()
+        Output("PyGILState_STATE _GILState = PyGILState_Ensure();")
+        
+    def endGIL(self):
+        Output("PyGILState_Release(_GILState);")
+        #OutRbrace()
         
 class BackMethodGenerator:
     
@@ -404,7 +417,7 @@ class BackMethodGenerator:
                 fmt, args)
             OutLbrace()
             #self.returnGIL()
-            Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
+            Output("PySys_WriteStderr(\"Ignoring exception occurred in Python return value conversion (called from C++):\");")
             Output("PyErr_Print();")
             OutRbrace()
             Output()

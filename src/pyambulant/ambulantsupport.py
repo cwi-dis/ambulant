@@ -39,6 +39,7 @@ extern "C" void initambulant();
 """
 
 initstuff = """
+PyEval_InitThreads();
 """
 
 variablestuff="""
