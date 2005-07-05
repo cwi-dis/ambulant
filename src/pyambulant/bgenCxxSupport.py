@@ -235,7 +235,7 @@ class CxxScanner(Scanner):
                         r"\s+" + \
                         r"(?P<type>[a-zA-Z0-9_*:& \t]*[\s*&]\s*)"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
-        self.args_pat = r"\((?P<args>.*)\)"
+        self.args_pat = r"\((?P<args>[^)]*)\)"
         self.const_pat = r"\s*(?P<const>const)?"
         self.whole1_pat = self.type1_pat + self.name_pat + self.args_pat + self.const_pat
         # Patterns to detect same within class declarations

@@ -89,7 +89,10 @@ class BackObjectDefinition(BackGeneratorGroup):
         self.virtual_destructor = "virtual "   # Or "", for non-virtual destructor
         if hasattr(self, "assertions"):
             self.assertions()
-        self.baseconstructors = None
+        if self.baseclass:
+            self.baseconstructors = ["::%s(itself)" % self.baseclass]
+        else:
+            self.baseconstructors = []
         self.othermethods = []
         
     def add(self, g, dupcheck=0):
@@ -109,7 +112,11 @@ class BackObjectDefinition(BackGeneratorGroup):
     def generateDeclaration(self):
         if not self.checkgenerate():
             return
-        Output("class %s : public %s {", self.name, self.itselftype)
+        if self.baseclass:
+            baseclass = "public %s, " % self.baseclass
+        else:
+            baseclass = ""
+        Output("class %s : %spublic %s {", self.name, baseclass, self.itselftype)
         self.generateConDesDeclaration()        
 
         BackGeneratorGroup.generateDeclaration(self)
@@ -168,7 +175,9 @@ class BackObjectDefinition(BackGeneratorGroup):
         
     def outputConstructorInitializers(self):
         if self.baseconstructors:
-            Output(":\t%s", self.baseconstructors)
+            # import pdb ; pdb.set_trace()
+            con = ", ".join(self.baseconstructors)
+            Output(":\t%s", con)
         
     def outputCheckConstructorArg(self):
         Output("if (itself == NULL) itself = Py_None;")
@@ -261,7 +270,7 @@ class BackMethodGenerator:
             DedentLevel()
             Output(self.condition)
             IndentLevel()
-        Output("virtual %s;", self.getDeclaration())
+        Output("%s;", self.getDeclaration())
         if self.condition:
             DedentLevel()
             Output("#endif")
@@ -363,7 +372,7 @@ class BackMethodGenerator:
     def checkit(self):
         Output("if (PyErr_Occurred())")
         OutLbrace()
-        self.returnGIL()
+        #self.returnGIL()
         Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
         Output("PyErr_Print();")
         OutRbrace()
@@ -394,7 +403,7 @@ class BackMethodGenerator:
             Output('if (!PyArg_Parse(py_rv, "%s", %s))',
                 fmt, args)
             OutLbrace()
-            self.returnGIL()
+            #self.returnGIL()
             Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
             Output("PyErr_Print();")
             OutRbrace()

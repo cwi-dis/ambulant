@@ -20,7 +20,7 @@ OBJECTS=[
 	("node", "ambulant::lib::node", None),
 	
 	"lib/document.h",
-	("document", "ambulant::lib::document", "node_context_Type"),
+	("document", "ambulant::lib::document", "node_context"),
 	
 	"lib/event.h",
 	("event", "ambulant::lib::event", None),
@@ -30,7 +30,7 @@ OBJECTS=[
 	
 	"lib/parser_factory.h",
 	("parser_factory", "ambulant::lib::parser_factory", None),
-	("global_parser_factory", "ambulant::lib::global_parser_factory", "parser_factory_Type"),
+	("global_parser_factory", "ambulant::lib::global_parser_factory", "parser_factory"),
 	
 	"lib/sax_handler.h",
 	("xml_parser", "ambulant::lib::xml_parser", None),
@@ -43,18 +43,18 @@ OBJECTS=[
 	("abstract_timer", "ambulant::lib::abstract_timer", None),
 	
 	"common/embedder.h",
-	("embedder", "ambulant::common::embedder", None),
+	("embedder", "ambulant::common::embedder", "system_embedder"),
 	
 	"common/layout.h",
 	("alignment", "ambulant::common::alignment", None),
 	("animation_notification", "ambulant::common::animation_notification", None),
 	("gui_window", "ambulant::common::gui_window", None),
 	("gui_events", "ambulant::common::gui_events", None),
-	("renderer", "ambulant::common::renderer", "gui_events_Type"),
-	("bgrenderer", "ambulant::common::bgrenderer", "gui_events_Type"),
+	("renderer", "ambulant::common::renderer", "gui_events"),
+	("bgrenderer", "ambulant::common::bgrenderer", "gui_events"),
 	("surface", "ambulant::common::surface", None),
 	("window_factory", "ambulant::common::window_factory", None),
-	("surface_template", "ambulant::common::surface_template", "animation_notification_Type"),
+	("surface_template", "ambulant::common::surface_template", "animation_notification"),
 	("surface_factory", "ambulant::common::surface_factory", None),
 	("layout_manager", "ambulant::common::layout_manager", None),
 	
@@ -62,7 +62,7 @@ OBJECTS=[
 	("playable", "ambulant::common::playable", None), # XXX Refcounted
 	("playable_notification", "ambulant::common::playable_notification", None), 
 	("playable_factory", "ambulant::common::playable_factory", None),
-	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory_Type"),
+	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory"),
 	
 	"common/player.h",
 	("player_feedback", "ambulant::common::player_feedback", None),
@@ -70,15 +70,15 @@ OBJECTS=[
 	
 	"common/region_info.h",
 	("region_info", "ambulant::common::region_info", None),
-	("animation_destination", "ambulant::common::animation_destination", "region_info_Type"),
+	("animation_destination", "ambulant::common::animation_destination", "region_info"),
 	
 	"gui/none/none_gui.h",
-	("none_window", "ambulant::gui::none::none_window", "gui_window_Type"),
-	("none_window_factory", "ambulant::gui::none::none_window_factory", "window_factory_Type"),
+	("none_window", "ambulant::gui::none::none_window", "gui_window"),
+	("none_window_factory", "ambulant::gui::none::none_window_factory", "window_factory"),
 	
 	"net/datasource.h",
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted
-	("audio_datasource", "ambulant::net::audio_datasource", "datasource_Type"), # XXX Refcounted
+	("audio_datasource", "ambulant::net::audio_datasource", "datasource"), # XXX Refcounted
 	("video_datasource", "ambulant::net::video_datasource", None), # XXX Refcounted
 	("datasource_factory", "ambulant::net::datasource_factory", None),
 	("raw_datasource_factory", "ambulant::net::raw_datasource_factory", None),
@@ -99,9 +99,9 @@ for item in OBJECTS:
 		continue
 	pname, cname, bname = item
 	if bname:
-		bname = 'basetype = "%s"' % bname
+		bname = 'basetype = "%s_Type"\n    baseclass = "%s"' % (bname, bname)
 	else:
-		bname = 'pass'
+		bname = 'baseclass = None'
 	print >>out, FORMAT % locals()
 	print >>modout, INCLFORMAT % locals()
 	

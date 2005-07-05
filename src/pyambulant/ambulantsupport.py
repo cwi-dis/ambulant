@@ -308,7 +308,7 @@ lib_rect = rect
 common_zindex_t = zindex_t
 net_audio_datasource_ptr = audio_datasource_ptr
 
-gui_window_object.baseconstructors = "ambulant::common::gui_window(0)"
+gui_window_object.baseconstructors.append("ambulant::common::gui_window(0)")
 
 #import pdb ; pdb.set_trace()
 execfile(INPUTFILE)
@@ -338,7 +338,44 @@ xml_parser_object.othermethods = [
     "void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }", #XXXX
     "void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }", #XXXX
 ]
+embedder_object.othermethods = [
+    "void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }"
+]
 
+renderer_object.othermethods = [
+    "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
+    "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "void transition_freeze_end(ambulant::lib::screen_rect_int) { abort(); }", # XXX
+    "void set_alignment(const ambulant::common::alignment*) { abort(); }", # XXX
+    "void set_intransition(const ambulant::lib::transition_info*) { abort(); }", # XXX
+    "void start_outtransition(const ambulant::lib::transition_info*) { abort(); }", # XXX
+]
+bgrenderer_object.othermethods = [
+    "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
+    "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "void transition_freeze_end(ambulant::lib::screen_rect_int) { abort(); }", # XXX
+]
+surface_object.othermethods = [
+    "ambulant::lib::screen_rect_int get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }", # XXX
+]
+surface_template_object.othermethods = [
+    "void animated() { abort(); }", # XXX
+]
+layout_manager_object.othermethods = [
+    "ambulant::common::alignment* get_alignment(const ambulant::lib::node*) { abort(); }", # XXX
+]
+playable_object.othermethods = [
+    "std::pair<bool, double> get_dur() { abort(); }", #XXX
+]
+global_playable_factory_object.othermethods = [
+    "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX
+]
+datasource_object.othermethods = [
+    "long add_ref() { return 1; }",
+    "long release() { return 1;}",
+    "long get_ref_count() const { return 1; }",
+    "char *get_read_ptr() { abort(); return NULL;}", # XXX
+]
 # Generate the interface
 SetOutputFileName(CXX2PYDECLFILE)
 module.generateDeclaration()

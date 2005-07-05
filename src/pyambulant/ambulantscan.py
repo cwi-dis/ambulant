@@ -71,6 +71,9 @@ class MyScanner(CxxScanner):
 
     def makeblacklisttypes(self):
         return [
+            "animation_destination", # XXX
+            "audio_datasource", #XXX
+            "video_datasource", #XXX
             "Where_we_get_our", # Parser trips over a comment:-)
             "q_attributes_list",
             "q_attributes_list_ref",
