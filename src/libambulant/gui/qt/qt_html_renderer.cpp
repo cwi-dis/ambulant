@@ -108,10 +108,11 @@ qt_html_renderer::redraw_body(const lib::screen_rect<int> &r,
 		(const char*) m_url->get_url().c_str(),
 		p.x, p.y);
 	if (m_browser == NULL) {
-//		m_browser = new KHTMLPart(KApplication::kApplication()->mainWidget());
-		m_browser = new KHTMLPart((QWidget*)w);
+		ambulant_qt_window* aqw = (ambulant_qt_window*)w;
+		qt_ambulant_widget* qaw = aqw-> get_ambulant_widget();
+		m_browser = new KHTMLPart((QWidget*)qaw);
 		m_browser->openURL(m_url->get_url().c_str());
-//		m_browser->view()->resize(500,400);
+		m_browser->view()->resize(r.width(),r.height());
 		m_browser->show();
 	}
 	m_lock.leave();
