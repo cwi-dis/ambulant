@@ -383,16 +383,16 @@ AC_ARG_WITH(qtthmlwidget,
        *)  qtthmlwidget=false
                 ;;
      esac],[
-     if test -f /usr/include/kde/khtml_part.h; 
-     then qtthmlwidget=true;
-     else AC_MSG_ERROR(--with-qt-html-widget without KDE include  directory);
-     fi
+     	qtthmlwidget=false     
      ])
 AM_CONDITIONAL(WITH_QT_HTML_WIDGET, test x$qtthmlwidget = xtrue)
- if test x$qtthmlwidget = xtrue; then
-      CXXFLAGS="$CXXFLAGS -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
-       LIBS="$LIBS -lkdecore -lkhtml"
-   fi
+if test x$qtthmlwidget = xtrue; then
+	if test ! -f /usr/include/kde/khtml_part.h;
+	then AC_MSG_ERROR(--with-qt-html-widget without KDE include directory);
+	fi
+	CXXFLAGS="$CXXFLAGS -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
+ 	LIBS="$LIBS -lkdecore -lkhtml"
+fi
 AC_MSG_RESULT($qtthmlwidget)
 #
 # Test for SDL
