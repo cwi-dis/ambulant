@@ -190,8 +190,8 @@ class CxxScanner(Scanner):
     def __init__(self, input=None, output=None, defsoutput=None):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
-        #self.silent = 0
-        #self.debug = 1
+        self.silent = 0
+        self.debug = 1
         
     def initnamespaces(self):
         self.namespaces = []
@@ -233,16 +233,16 @@ class CxxScanner(Scanner):
         self.tail_pat = r"[;={}]"
         self.type1_pat = r"(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)" + \
                         r"\s+" + \
-                        r"(?P<type>[a-zA-Z0-9_*:& \t]*[\s*&]\s*)"
+                        r"(?P<type>[a-zA-Z0-9_:\s]*[a-zA-Z0-9_*&\s]+[\s*&]\s*)"
         self.name_pat = r"(?P<name>[a-zA-Z0-9_]+)\s*"
         self.args_pat = r"\((?P<args>[^)]*)\)"
         self.const_pat = r"\s*(?P<const>const)?"
         self.whole1_pat = self.type1_pat + self.name_pat + self.args_pat + self.const_pat
         # Patterns to detect same within class declarations
-        self.head2_pat = r"^\s*[a-zA-Z0-9_]+[\s*\&]"
+        self.head2_pat = r"^\s*[a-zA-Z0-9_:\s]*[a-zA-Z0-9_]+[\s*\&]"
         self.type2_pat = r"\s*(?P<storage>AMBULANTAPI|static|virtual|extern|pyapi)?" + \
                         r"\s+" + \
-                        r"(?P<type>[a-zA-Z0-9_*:& \t]+[\s*&]\s*)"
+                        r"(?P<type>[a-zA-Z0-9_:\s]*[a-zA-Z0-9_*&\s]+[\s*&]\s*)"
         self.whole2_pat = self.type2_pat + self.name_pat + self.args_pat + self.const_pat
         # Default to outside-class:
         self.head_pat = self.head1_pat

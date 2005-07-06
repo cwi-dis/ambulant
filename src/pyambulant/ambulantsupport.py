@@ -165,6 +165,9 @@ functions = []
 
 execfile("ambulantobjgen.py")
 
+# XXXX Temporarily disabled
+methods_none_playable_factory = []
+
 common_factories_ptr = ByAddressTupleType("ambulant::common::factories",
         (playable_factory_ptr, "rf"),
         (window_factory_ptr, "wf"),
@@ -183,8 +186,11 @@ abstract_event_processor_ptr = event_processor_ptr
 methods_abstract_event_processor = methods_event_processor
 
 common_surface_ptr = surface_ptr
+common_playable_ptr = playable_ptr
+common_region_info_ptr = region_info_ptr
 common_gui_window_ptr = gui_window_ptr
 common_gui_events_ptr = gui_events_ptr
+common_bgrenderer_ptr = bgrenderer_ptr
 lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
@@ -198,6 +204,8 @@ lib_rect = rect
 common_zindex_t = zindex_t
 common_embedder_ptr = embedder_ptr
 playable_notification_cookie_type = cookie_type
+common_playable_notification_cookie_type = cookie_type
+common_playable_notification_ptr = playable_notification_ptr
 net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
 const_ambulant_net_url_ref = net_url

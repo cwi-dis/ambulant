@@ -13,10 +13,10 @@ DOCUMENT="""<?xml version="1.0"?>
   </head>
   <body>
     <par id="par1">
-      <img id="img1" src="img1.gif"/>
+      <img id="img1" src="img1.gif" dur="2s"/>
       <par id="par2">
-        <img id="img2" src="img2.gif"/>
-        <img id="img3" src="img3.gif"/>
+        <img id="img2" src="img2.gif" dur="1s"/>
+        <img id="img3" src="img3.gif" dur="3s"/>
       </par>
     </par>
   </body>
@@ -80,6 +80,7 @@ class TestBasics(unittest.TestCase):
         self.assert_(type(doc) is ambulant.document)
         root = doc.get_root()
         self.assert_(type(root) is ambulant.node)
+        self.assertEqual(root.size(), 1)
         
     def test_05_baddocument(self):
         rf = None #ambulant.get_global_playable_factory()
@@ -91,6 +92,7 @@ class TestBasics(unittest.TestCase):
         self.assert_(type(doc) is ambulant.document)
         root = doc.get_root()
         self.assert_(type(root) is ambulant.node)
+        self.assertEqual(root.size(), 1)
         
     def test_06_node(self):
         rf = ambulant.get_global_playable_factory()
@@ -102,6 +104,7 @@ class TestBasics(unittest.TestCase):
         self.assert_(doc)
         root = doc.get_root()
         self.assertEqual(root.get_local_name(), "smil")
+        self.assertEqual(root.size(), 8)
         p1 = doc.get_node("par1")
         self.assertEqual(p1.get_local_name(), "par")
         self.assertEqual(p1.get_attribute_1("id"), "par1")
@@ -115,7 +118,7 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(p1_path, "smil/body/par:par1")
         self.assertEqual(root.locate_node("body/par"), p1)
         
-    def test_07_mmsplayer(self):
+    def x_test_07_mmsplayer(self):
         rf = ambulant.get_global_playable_factory()
         wf = ambulant.none_window_factory()
         df = ambulant.datasource_factory()
@@ -126,6 +129,24 @@ class TestBasics(unittest.TestCase):
         player = ambulant.create_mms_player(doc, factories)
         # self.assert_(not player.is_playing())
         player.start()
+        player.stop()
+       
+    def test_08_smil2player(self):
+        class MyEmbedder:
+            pass
+        rf = ambulant.get_global_playable_factory()
+        wf = ambulant.none_window_factory()
+        df = ambulant.datasource_factory()
+        pf = ambulant.get_parser_factory()
+        factories = (rf, wf, df, pf)
+        doc = ambulant.create_from_file(factories, WELCOME)
+        self.assert_(doc)
+        embedder = MyEmbedder()
+        player = ambulant.create_smil2_player(doc, factories, embedder)
+        # self.assert_(not player.is_playing())
+        player.start()
+        time.sleep(5)
+        player.stop()
        
 def test_main():
     suite = unittest.TestSuite()

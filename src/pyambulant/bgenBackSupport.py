@@ -378,7 +378,7 @@ class BackMethodGenerator:
             argsnames = ', ' + ', '.join(argsnames)
         else:
             argsnames = ''
-        Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "%s"%s);',
+        Output('PyObject *py_rv = PyObject_CallMethod(py_%s, "%s", "(%s)"%s);',
             self.classname, self.name, argsformat, argsnames)
         
         
@@ -386,7 +386,7 @@ class BackMethodGenerator:
         Output("if (PyErr_Occurred())")
         OutLbrace()
         #self.returnGIL()
-        Output("PySys_WriteStderr(\"Ignoring exception occurred in Python (called from C++):\");")
+        Output("PySys_WriteStderr(\"Python exception during %s::%s() callback:\\n\");", self.classname, self.name)
         Output("PyErr_Print();")
         OutRbrace()
         Output()
@@ -400,12 +400,14 @@ class BackMethodGenerator:
         else:
             fmt = ""
             args = ""
+        nargs = 0
         for arg in self.argumentList:
             if arg.mode in (OutMode, InOutMode):
                 arg.getargsPreCheck()
                 fmt = fmt + arg.getargsFormat()
                 thisargs = arg.getargsArgs()
                 if thisargs:
+                    nargs += 1
                     if args:
                         args = args + ", " + thisargs
                     else:
@@ -413,11 +415,13 @@ class BackMethodGenerator:
             if arg.mode in (InMode, InOutMode):
                 pyvars.append('py_%s' % arg.name)
         if fmt:
-            Output('if (!PyArg_Parse(py_rv, "%s", %s))',
+            if nargs > 1:
+                fmt = "(" + fmt + ")"
+            Output('if (py_rv && !PyArg_Parse(py_rv, "%s", %s))',
                 fmt, args)
             OutLbrace()
             #self.returnGIL()
-            Output("PySys_WriteStderr(\"Ignoring exception occurred in Python return value conversion (called from C++):\");")
+            Output("PySys_WriteStderr(\"Python exception during %s::%s() return:\\n\");", self.classname, self.name)
             Output("PyErr_Print();")
             OutRbrace()
             Output()
@@ -427,7 +431,7 @@ class BackMethodGenerator:
             if arg.mode in (OutMode, InOutMode):
                 arg.getargsCheck()
         for pyvar in pyvars:
-            Output("Py_DECREF(%s);", pyvar)
+            Output("Py_XDECREF(%s);", pyvar)
         Output()
  
     def returnvalue(self):
