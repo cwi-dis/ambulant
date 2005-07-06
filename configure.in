@@ -375,9 +375,10 @@ AC_MSG_RESULT($qt)
 # Test for QT_HTML_WIDGET
 #
 AC_MSG_CHECKING(for --with-qt-html-widget)
-AC_ARG_WITH(qtthmlwidget,
+qtthmlwidget=false     
+AC_ARG_WITH(qt-html-widget,
      [  --with-qt-html-widget    Turn on Qt Html widget],
-     [case "${withval}" in
+     [ case "${withval}" in
        yes) qtthmlwidget=true
                 ;;
        *)  qtthmlwidget=false
@@ -385,6 +386,7 @@ AC_ARG_WITH(qtthmlwidget,
      esac],[
      	qtthmlwidget=false     
      ])
+echo qtthmlwidget=$qtthmlwidget
 AM_CONDITIONAL(WITH_QT_HTML_WIDGET, test x$qtthmlwidget = xtrue)
 if test x$qtthmlwidget = xtrue; then
 	if test ! -f /usr/include/kde/khtml_part.h;
