@@ -127,7 +127,12 @@ class TestBasics(unittest.TestCase):
         # self.assert_(not player.is_playing())
         player.start()
        
+def test_main():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestBasics))
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
         
 if __name__ == "__main__":
-    unittest.main()
+    test_main()
     
