@@ -440,7 +440,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	audio_format& get_audio_format();
 	timestamp_t get_clip_end();
   	timestamp_t get_clip_begin();
-  	timestamp_t get_start_time() { return m_elapsed; };
+  	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	static bool supported(const net::url& url);
   protected:
   	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);

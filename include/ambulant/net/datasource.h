@@ -74,7 +74,8 @@ namespace net {
 /// are meaningful. If name is nonempty it is some encoded
 /// format, parameters points to format-specific data
 /// and samplerate/channels/bits are not meaningful.
-struct audio_format {
+struct audio_format {	
+	std::string mime_type;
 	std::string name;	///< Name of the format, or empty for linear samples
 	void *parameters;	///< For a named format, pointer to parameters
 	int samplerate;		///< For linear samples: the samplerate
@@ -83,7 +84,8 @@ struct audio_format {
 	
 	/// Default constructor: creates unknown audio_format.
 	audio_format()
-	:   name("unknown"),
+	:   mime_type("audio/unknown"),
+		name("unknown"),
 		parameters(NULL),
 		samplerate(0),
 		channels(0),
@@ -91,7 +93,8 @@ struct audio_format {
 		
 	/// Constructor for linear samples.
 	audio_format(int s, int c, int b)
-	:   name(""),
+	:   mime_type("audio/unknown"),
+		name(""),
 		parameters(NULL),
 		samplerate(s),
 		channels(c),
@@ -99,7 +102,8 @@ struct audio_format {
 	
 	/// Constructor for named audio_format.
 	audio_format(std::string &n, void *p=(void *)0)
-	:   name(n),
+	:   mime_type("audio/unknown"),
+		name(n),
 		parameters(p),
 		samplerate(0),
 		channels(0),
@@ -107,7 +111,8 @@ struct audio_format {
 		
 	/// Constructor for named audio format.
 	audio_format(const char *n, void *p=(void *)0)
-	:   name(n),
+	:   mime_type("audio/unknown"),
+		name(n),
 		parameters(p),
 		samplerate(0),
 		channels(0),
@@ -115,6 +120,8 @@ struct audio_format {
 };
 
 struct video_format {
+	
+	std::string mime_type;
 	std::string name;	///< Name of the format, or empty for linear samples
 	void *parameters;	///< For a named format, pointer to parameters
 	int framerate;		///< For linear samples: the samplerate
@@ -123,7 +130,8 @@ struct video_format {
 	
 	/// Default constructor: creates unknown audio_format.
 	video_format()
-	:   name("unknown"),
+	:   mime_type("video/unknown"),
+		name("unknown"),
 		parameters(NULL),
 		framerate(0),
 		width(0),
@@ -131,7 +139,8 @@ struct video_format {
 		
 	/// Constructor for linear samples.
 	video_format(int r, int w, int h)
-	:   name(""),
+	:   mime_type("video/unknown"),
+		name(""),
 		parameters(NULL),
 		framerate(r),
 		width(w),
@@ -139,7 +148,8 @@ struct video_format {
 	
 	/// Constructor for named video_format.
 	video_format(std::string &n, void *p=(void *)0)
-	:   name(n),
+	:   mime_type("video/unknown"),
+		name(n),
 		parameters(p),
 		framerate(0),
 		width(0),
@@ -147,7 +157,8 @@ struct video_format {
 		
 	/// Constructor for named video_format.
 	video_format(const char *n, void *p=(void *)0)
-	:   name(n),
+	:   mime_type("video/unknown"),
+		name(n),
 		parameters(p),
 		framerate(0),
 		width(0),

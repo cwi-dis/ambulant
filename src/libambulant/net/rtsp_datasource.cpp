@@ -114,7 +114,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->video_packet = NULL;
 	//context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 	//if (!context->video_packet) {
-	//		return NULL;		
+	//		return NULL;		later the audio renderers wil have to do skipping of data.
 	//}
 	context->video_buffer = NULL;
 	context->video_buffer_size = 0;
@@ -190,8 +190,8 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			if (context->audio_stream < 0) {
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
-				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
-				context->audio_fmt.channels = subsession->numChannels() + 1;
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
+				context->audio_fmt.channels = subsession->numChannels();
 				context->audio_fmt.bits = 16;
 				//context->fmt.samplerate = subsession->rtpSource()->timestampFrequency();
 				
@@ -201,7 +201,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			if (context->video_stream < 0) {
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
-				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
 				context->video_fmt.framerate = subsession->videoFPS();
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();

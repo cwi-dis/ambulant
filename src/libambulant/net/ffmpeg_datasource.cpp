@@ -137,6 +137,8 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("MPA-ROBUST", CODEC_ID_MP3);
 	add_codec("X_MP3-DRAFT-00", CODEC_ID_MP3);
 	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
+	add_codec("L16", CODEC_ID_PCM_S16LE);
+	
 }
 
 
@@ -309,6 +311,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin,
 	int audio_idx = audio_stream_nr();
 	if ( audio_idx >= 0) {
 		m_audio_fmt.parameters = (void *)&con->streams[audio_idx]->codec;
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: audio_codec_name=%s", m_con->streams[audio_idx]->codec.codec_name);
 		m_audio_fmt.samplerate = con->streams[audio_idx]->codec.sample_rate;
 		m_audio_fmt.channels = con->streams[audio_idx]->codec.channels;
 		m_audio_fmt.bits = 16;
@@ -318,6 +321,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin,
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
 		m_video_fmt.parameters = (void *)&con->streams[video_stream_nr()]->codec;
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", m_con->streams[video_stream_nr()]->codec.codec_name);
 	} else {
 		m_video_fmt.parameters = NULL;
 	}
@@ -378,6 +382,7 @@ detail::ffmpeg_demux::supported(const net::url& url)
 	}
 	AM_DBG dump_format(ic, 0, url_str.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
+	
 	return ic;
 }
 
@@ -1747,10 +1752,16 @@ ffmpeg_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					//free(tmpptr);
+					if (!m_fmt.samplerate) 
+						m_fmt.samplerate = m_con->sample_rate;
+					if (!m_fmt.channels) 
+						m_fmt.channels = m_con->channels;
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps",m_con->sample_rate);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 					double duration = ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
 					m_elapsed += (timestamp_t) round(duration*1000000);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail elapsed = %f ", m_elapsed);
+
 					if (m_elapsed >= m_src->get_clip_begin()) {	
 						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We passed clip_begin : (outsize = %d) ", outsize);
 						if (outsize > 0) {
@@ -1946,7 +1957,8 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		
+		/*AM_DB*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
+
 		m_fmt = audio_format(enc->sample_rate, enc->channels, 16);
 		return true;
 	} else if (fmt.name == "live") {
@@ -1982,6 +1994,7 @@ audio_format&
 ffmpeg_decoder_datasource::get_audio_format()
 {
 	m_lock.enter();
+	//m_fmt = m_src->get_audio_format();
 #if 0
 	if (m_con) {
 		// Refresh info on audio format
@@ -1995,10 +2008,12 @@ ffmpeg_decoder_datasource::get_audio_format()
 		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, asking ffmpeg");
 		m_fmt.samplerate = m_con->sample_rate;
 	}
-	if (m_fmt.channels == 0) {
-		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: channels not set, guessing 2");
-		m_fmt.channels = m_con->channels;
-	}
+	
+	if (m_fmt.channels == 0) {	
+			lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: channels not set, asking ffmpeg");
+			m_fmt.channels = m_con->channels;
+		}
+
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	m_lock.leave();
@@ -2198,7 +2213,7 @@ ffmpeg_resample_datasource::data_avail()
 			}
 			
 			timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
-			long outsz = tmp;
+			timestamp_t outsz = tmp;
 			
 	
 			if (!cursize && !m_src->end_of_file()) {
