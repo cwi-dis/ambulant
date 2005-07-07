@@ -548,3 +548,40 @@ class StdStringType(Type):
         
     def mkvalueArgs(self, name):
         return "%s.c_str()" % name
+
+class StdPairType(Type):
+    def __init__(self, firsttype, secondtype, typeName="std::pair<%s, %s>"):
+        if '%' in typeName:
+            typeName = decl % (firsttype.typeName, secondtype.typeName)
+        Type.__init__(self, typeName, "")
+        self.firsttype = firsttype
+        self.secondtype = secondtype
+        
+    def getargsPreCheck(self, name):
+        decls = self.firsttype.getArgDeclarations(name + "_first") + \
+                self.firsttype.getAuxDeclarations(name + "_first") + \
+                self.secondtype.getArgDeclarations(name + "_second") + \
+                self.secondtype.getAuxDeclarations(name + "_second")
+        for d in decls:
+            Output("%s;", d)
+        self.firsttype.getargsPreCheck(name + "_first")
+        self.secondtype.getargsPreCheck(name + "_second")
+        
+    def getargsArgs(self, name):
+        return self.firsttype.getargsArgs(name + "_first") + \
+               self.secondtype.getargsArgs(name + "_second")
+               
+    def getargsFormat(self):
+        return self.firsttype.getargsFormat() + \
+               self.secondtype.getargsFormat()
+               
+    def getargsCheck(self, name):
+        Output("%s = %s(%s_first, %s_second);", name, self.typeName, name, name)
+        
+    def mkvalueArgs(self, name):
+        return ", ".join([self.firsttype.mkvalueArgs(name + ".first"),
+               self.secondtype.mkvalueArgs(name + ".second")])
+               
+    def mkvalueFormat(self):
+        return self.firsttype.mkvalueFormat() + \
+               self.secondtype.mkvalueFormat()

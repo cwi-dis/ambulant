@@ -51,6 +51,8 @@ unsigned_int = Type("unsigned int", "l")
 std_string = StdStringType()
 xml_string = StdStringType("ambulant::lib::xml_string")
 const_xml_string_ref = StdStringType("const ambulant::lib::xml_string&")
+q_name_pair = StdPairType(xml_string, xml_string, "ambulant::lib::q_name_pair")
+const_q_name_pair_ref = StdPairType(xml_string, xml_string, "const ambulant::lib::q_name_pair&")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!

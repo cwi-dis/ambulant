@@ -78,8 +78,6 @@ class MyScanner(CxxScanner):
             "q_attributes_list",
             "q_attributes_list_ref",
             "const_q_attributes_list_ref",
-            "const_q_name_pair",
-            "const_q_name_pair_ref",
             "flag_event",
             "flag_event_ptr",
             "timer",
