@@ -42,6 +42,9 @@ OBJECTS=[
 	("timer_events", "ambulant::lib::timer_events", None),
 	("abstract_timer", "ambulant::lib::abstract_timer", None),
 	
+	"lib/transition_info.h",
+	("transition_info", "ambulant::lib::transition_info", None),
+	
 	"common/embedder.h",
 	("embedder", "ambulant::common::embedder", "system_embedder"),
 	

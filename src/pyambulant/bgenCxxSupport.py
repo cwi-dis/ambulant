@@ -550,12 +550,15 @@ class StdStringType(Type):
         return "%s.c_str()" % name
 
 class StdPairType(Type):
-    def __init__(self, firsttype, secondtype, typeName="std::pair<%s, %s>"):
+    def __init__(self, firsttype, secondtype, typeName="std::pair<%s, %s>", castname=None):
         if '%' in typeName:
             typeName = decl % (firsttype.typeName, secondtype.typeName)
         Type.__init__(self, typeName, "")
         self.firsttype = firsttype
         self.secondtype = secondtype
+        if not castname:
+            castname = typeName
+        self.castname = castname
         
     def getargsPreCheck(self, name):
         decls = self.firsttype.getArgDeclarations(name + "_first") + \
@@ -568,20 +571,22 @@ class StdPairType(Type):
         self.secondtype.getargsPreCheck(name + "_second")
         
     def getargsArgs(self, name):
-        return self.firsttype.getargsArgs(name + "_first") + \
-               self.secondtype.getargsArgs(name + "_second")
+        return ', '.join([self.firsttype.getargsArgs(name + "_first"),
+               self.secondtype.getargsArgs(name + "_second")])
                
     def getargsFormat(self):
-        return self.firsttype.getargsFormat() + \
-               self.secondtype.getargsFormat()
+        return '(' + self.firsttype.getargsFormat() + \
+               self.secondtype.getargsFormat() + ')'
                
     def getargsCheck(self, name):
-        Output("%s = %s(%s_first, %s_second);", name, self.typeName, name, name)
+        self.firsttype.getargsCheck(name + "_first")
+        self.secondtype.getargsCheck(name + "_second")
+        Output("%s = %s(%s_first, %s_second);", name, self.castname, name, name)
         
     def mkvalueArgs(self, name):
         return ", ".join([self.firsttype.mkvalueArgs(name + ".first"),
                self.secondtype.mkvalueArgs(name + ".second")])
                
     def mkvalueFormat(self):
-        return self.firsttype.mkvalueFormat() + \
-               self.secondtype.mkvalueFormat()
+        return '(' + self.firsttype.mkvalueFormat() + \
+               self.secondtype.mkvalueFormat() + ')'
