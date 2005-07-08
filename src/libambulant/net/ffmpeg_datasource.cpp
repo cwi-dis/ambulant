@@ -1369,18 +1369,22 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t timestamp, bool keepdata
 int 
 ffmpeg_video_decoder_datasource::width()
 {	
+	m_lock.enter();
 	if (m_fmt.width == 0) {
 			m_fmt.width = m_con->width;
 	}
+	m_lock.leave();
 	return m_fmt.width;
 }
 
 int 
 ffmpeg_video_decoder_datasource::height()
 {
+	m_lock.enter();
 	if (m_fmt.height == 0) {
 			m_fmt.height = m_con->height;
 	}
+	m_lock.leave();
 	return m_fmt.height;
 }
 
@@ -1614,9 +1618,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	}
 
 	frame = m_old_frame;
-	m_lock.leave();
 	if (timestamp_p) *timestamp_p = frame.first;
 	if (size_p) *size_p = m_size;
+	m_lock.leave();
 	return frame.second;
 }
 
@@ -1882,6 +1886,7 @@ ffmpeg_decoder_datasource::_end_of_file()
 bool 
 ffmpeg_decoder_datasource::_clip_end()
 {
+	// private method - no need to lock
 	timestamp_t clip_end = m_src->get_clip_end();
 	if (clip_end == -1) return false;
 	
@@ -1929,22 +1934,27 @@ ffmpeg_decoder_datasource::size() const
 timestamp_t
 ffmpeg_decoder_datasource::get_clip_end()
 {
+	m_lock.enter();
 	timestamp_t clip_end;
 	clip_end =  m_src->get_clip_end();
+	m_lock.leave();
 	return clip_end;
 }
 
 timestamp_t
 ffmpeg_decoder_datasource::get_clip_begin()
 {
+	m_lock.enter();
 	timestamp_t clip_begin;
 	clip_begin =  m_src->get_clip_begin();
+	m_lock.leave();
 	return clip_begin;
 }
 
 bool 
 ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 {
+	// private method - no need to lock
 	AVCodec *codec = avcodec_find_decoder_by_name(file_ext);
 	if (codec == NULL) {
 			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
@@ -1964,6 +1974,7 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 bool 
 ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 {
+	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		if (enc == NULL) {
@@ -1989,7 +2000,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		/*AM_DB*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
 
 		m_fmt = audio_format(enc->sample_rate, enc->channels, 16);
 		return true;
@@ -2061,10 +2072,13 @@ ffmpeg_decoder_datasource::get_dur()
 bool
 ffmpeg_decoder_datasource::supported(const net::url& url)
 {
+	// no lock - static function
 	ffmpeg_init();
 	const char *file_ext = getext(url);
 	AVCodec  *codec = avcodec_find_decoder_by_name(file_ext);
-	if (codec == NULL) lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: no such decoder: \"%s\"", file_ext);
+	if (codec == NULL) 
+		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: no such decoder: \"%s\"", file_ext);
+
 	return codec != NULL;
 }
 
@@ -2072,6 +2086,7 @@ ffmpeg_decoder_datasource::supported(const net::url& url)
 bool 
 ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 {
+	// private method - no need to lock
 	AVCodec *codec = avcodec_find_decoder_by_name(file_ext);
 	if (codec == NULL) {
 			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
@@ -2091,6 +2106,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 bool 
 ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 {
+	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		m_con = enc;
