@@ -794,7 +794,7 @@ common::playable *time_node::create_playable() {
 }
 
 time_node::time_type time_node::get_playable_dur() {
-	std::pair<bool, double> dur_pair = m_context->get_dur(m_node);
+	common::duration dur_pair = m_context->get_dur(m_node);
 	if(dur_pair.first && dur_pair.second>0)
 		return secs_to_time_type(dur_pair.second)();
 	return time_type::unresolved;

@@ -96,7 +96,7 @@ class video_player : public common::playable {
 	void pause();
 	void resume();
 	void seek(double t);
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
 	cookie_type get_cookie() const { return m_cookie;}

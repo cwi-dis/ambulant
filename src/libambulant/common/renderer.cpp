@@ -425,12 +425,12 @@ active_video_renderer::seek(double t)
 	lib::logger::get_logger()->trace("active_video_renderer: seek(%f) not implemented", t);
 }
 
-std::pair<bool, double> 
+common::duration 
 active_video_renderer::get_dur()
 {
-	//DBG return std::pair<bool, double>(true, 7);
-	std::pair<bool, double> rv(false, 0.0);
-	std::pair<bool, double> rv2(false, 0.0);
+	//DBG return common::duration(true, 7);
+	common::duration rv(false, 0.0);
+	common::duration rv2(false, 0.0);
 
 	m_lock.enter();
 	// video is the important one so we ask the video source

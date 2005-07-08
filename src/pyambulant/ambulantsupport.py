@@ -55,6 +55,7 @@ const_xml_string_ref = StdStringType("const ambulant::lib::xml_string&")
 q_name_pair = StdPairType(xml_string, xml_string, "ambulant::lib::q_name_pair")
 const_q_name_pair_ref = StdPairType(xml_string, xml_string, 
     "const ambulant::lib::q_name_pair&", "ambulant::lib::q_name_pair")
+duration = StdPairType(bool, double, "ambulant::common::duration")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
@@ -190,6 +191,7 @@ abstract_event_processor_ptr = event_processor_ptr
 methods_abstract_event_processor = methods_event_processor
 lib_transition_info_ptr = transition_info_ptr
 
+common_duration = duration
 common_surface_ptr = surface_ptr
 common_playable_ptr = playable_ptr
 common_region_info_ptr = region_info_ptr
@@ -359,7 +361,6 @@ renderer_object.othermethods = [
     "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
     "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
     "void transition_freeze_end(ambulant::lib::screen_rect_int) { abort(); }", # XXX
-    "void set_alignment(const ambulant::common::alignment*) { abort(); }", # XXX
 ]
 bgrenderer_object.othermethods = [
     "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
@@ -371,12 +372,6 @@ surface_object.othermethods = [
 ]
 surface_template_object.othermethods = [
     "void animated() { abort(); }", # XXX
-]
-layout_manager_object.othermethods = [
-    "ambulant::common::alignment* get_alignment(const ambulant::lib::node*) { abort(); }", # XXX
-]
-playable_object.othermethods = [
-    "std::pair<bool, double> get_dur() { abort(); }", #XXX
 ]
 global_playable_factory_object.othermethods = [
     "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX

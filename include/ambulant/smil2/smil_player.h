@@ -144,7 +144,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	//////////////////////
 	// Time node context: Playable queries
 	
-	virtual std::pair<bool, double> get_dur(const lib::node *n);
+	virtual common::duration get_dur(const lib::node *n);
 	
 	//////////////////
 	// Time node context: Notifications

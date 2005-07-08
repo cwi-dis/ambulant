@@ -139,7 +139,7 @@ class trace_player : public time_node_context,
 	virtual void resume_playable(const lib::node *n);
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const lib::node *n);
+	virtual common::duration get_dur(const lib::node *n);
 	
 	// Notifications
 	// none

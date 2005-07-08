@@ -101,9 +101,9 @@ class trace_playable : virtual public playable {
 			m_id.c_str(), when, where, how_much);	
 	}
 	
-	std::pair<bool, double> get_dur() {
+	duration get_dur() {
 		trace_call("get_dur");
-		return std::pair<bool, double>(false, 0);
+		return duration(false, 0);
 	}
 
 	cookie_type get_cookie() const { return m_cookie; }

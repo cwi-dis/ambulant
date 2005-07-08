@@ -55,6 +55,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/common/playable.h"
 #include "ambulant/net/url.h"
 
 namespace ambulant {
@@ -265,7 +266,7 @@ class audio_datasource : virtual public datasource {
 	//XXX later this should be changed and elapsed should return the time it is playing or if unknown 0;
 	virtual timestamp_t get_start_time() = 0;
 	// Return the duration of the audio data, if known.
-	virtual std::pair<bool, double> get_dur() = 0;
+	virtual common::duration get_dur() = 0;
 };
 
 class raw_audio_datasource: 
@@ -294,12 +295,12 @@ class raw_audio_datasource:
 	int size() const { return m_src->size(); };   
 	audio_format& get_audio_format() { return m_fmt; };
 
-	std::pair<bool, double> get_dur() {	return m_duration; };
+	common::duration get_dur() {	return m_duration; };
   
   private:
 	datasource* m_src;
   	audio_format m_fmt;
-  	std::pair<bool, double> m_duration;
+  	common::duration m_duration;
 		
 };
 
@@ -313,7 +314,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
   	virtual ~video_datasource() {};
 
 	// Return the duration of the audio data, if known.
-	virtual std::pair<bool, double> get_dur() = 0;
+	virtual common::duration get_dur() = 0;
 
 	/// Returns true if the video stream contains audio data too.
 	virtual bool has_audio() = 0;

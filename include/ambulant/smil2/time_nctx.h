@@ -99,7 +99,7 @@ class time_node_context : public common::player_feedback {
 	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) = 0;
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const lib::node *n) = 0;
+	virtual common::duration get_dur(const lib::node *n) = 0;
 		
 	// Notifications
 	virtual void started_playback() = 0;
@@ -144,8 +144,8 @@ class dummy_time_node_context : public time_node_context {
 	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) {}
 	
 	// Playable queries
-	virtual std::pair<bool, double> get_dur(const lib::node *n) { 
-		return std::pair<bool, double>(true, 1.0);} // allow for fast forward
+	virtual common::duration get_dur(const lib::node *n) { 
+		return common::duration(true, 1.0);} // allow for fast forward
 		
 	// Notifications
 	virtual void started_playback() {}

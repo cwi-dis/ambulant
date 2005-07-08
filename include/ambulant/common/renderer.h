@@ -98,7 +98,7 @@ class playable_imp : public playable {
 //	void seek(double where) {}
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
-	std::pair<bool, double> get_dur() { return std::pair<bool, double>(true, 0);}
+	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
   protected:
     playable_notification *m_context;	///< Status feedback object.
@@ -287,7 +287,7 @@ class active_video_renderer : public common::renderer_playable {
     void pause();
     void resume();
     void data_avail();
-	std::pair<bool, double> get_dur();
+	duration get_dur();
 //	void playdone() {};
 	
 		

@@ -103,8 +103,6 @@ class MyScanner(CxxScanner):
             "audio_format_choices_ptr", # XXX For now
             "const_audio_format_ref", # XXX for now
             "region_dim", # XXX For now
-            "alignment_ptr", # XXX for now
-            "common_alignment_ptr", # XXX for now
             "tile_positions",
             
         ]

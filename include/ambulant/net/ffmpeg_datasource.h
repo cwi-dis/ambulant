@@ -253,7 +253,7 @@ class demux_audio_datasource:
 	int size() const;   
 	audio_format& get_audio_format();
 
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 
   private:
     bool _end_of_file();
@@ -307,7 +307,7 @@ class demux_video_datasource:
 
 	video_format& get_video_format();
 	
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 
   private:
     bool _end_of_file();
@@ -383,7 +383,7 @@ class ffmpeg_video_decoder_datasource:
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
   	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 	
   private:
 	bool _select_decoder(const char* file_ext);
@@ -436,7 +436,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 
 	char* get_read_ptr();
 	int size() const;   
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 	audio_format& get_audio_format();
 	timestamp_t get_clip_end();
   	timestamp_t get_clip_begin();
@@ -456,7 +456,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   	audio_datasource* m_src;
   	timestamp_t m_elapsed;
 	bool m_is_audio_ds;
-	std::pair<bool, double> m_duration;
+	common::duration m_duration;
 	
 	databuffer m_buffer;
 	bool m_blocked_full;
@@ -487,7 +487,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 //    void get_input_format(audio_context &fmt);  
 //    void get_output_format(audio_context &fmt);
 	audio_format& get_audio_format() { return m_out_fmt; };
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_src->get_start_time(); }

@@ -71,7 +71,7 @@ class dead_playable_class : public common::playable {
 	void seek(double t) {};
 	void wantclicks(bool want) {};
 	void preroll(double t1, double t2, double t3) {};
-	std::pair<bool, double> get_dur() { return std::pair<bool, double>(false, 0.0); }
+	common::duration get_dur() { return common::duration(false, 0.0); }
 	virtual int get_cookie() const { static int zero=0; return zero; }
 	long add_ref() {return 1;};
 	long release() {return 1;};

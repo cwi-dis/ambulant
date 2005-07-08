@@ -795,13 +795,13 @@ demux_audio_datasource::get_audio_format()
 	return m_thread->get_audio_format();
 }
 
-std::pair<bool, double>
+common::duration
 demux_audio_datasource::get_dur()
 {
-	std::pair<bool, double> rv(false, 0.0);
+	common::duration rv(false, 0.0);
 	m_lock.enter();
 	if (m_thread->duration() >= 0) {
-		rv = std::pair<bool, double>(true, m_thread->duration());
+		rv = common::duration(true, m_thread->duration());
 		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_dur: duration=%f", rv.second);
 	}
 	m_lock.leave();
@@ -1166,13 +1166,13 @@ demux_video_datasource::get_audio_datasource()
 	return NULL;
 }
 
-std::pair<bool, double>
+common::duration
 demux_video_datasource::get_dur()
 {
-	std::pair<bool, double> rv(false, 0.0);
+	common::duration rv(false, 0.0);
 	m_lock.enter();
 	if (m_thread->duration() >= 0) {
-		rv = std::pair<bool, double>(true, m_thread->duration());
+		rv = common::duration(true, m_thread->duration());
 		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_dur: duration=%f", rv.second);
 	}
 	m_lock.leave();
@@ -1620,7 +1620,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	return frame.second;
 }
 
-std::pair<bool, double>
+common::duration
 ffmpeg_video_decoder_datasource::get_dur()
 {
 	
@@ -2052,7 +2052,7 @@ ffmpeg_decoder_datasource::get_audio_format()
 	return m_fmt;
 }
 
-std::pair<bool, double>
+common::duration
 ffmpeg_decoder_datasource::get_dur()
 {
 	return m_duration;
@@ -2425,10 +2425,10 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	m_lock.leave();
 }
 
-std::pair<bool, double>
+common::duration
 ffmpeg_resample_datasource::get_dur()
 {
-	std::pair<bool, double> rv(false, 0.0);
+	common::duration rv(false, 0.0);
 	m_lock.enter();
 	if (m_src)
 		rv = m_src->get_dur();

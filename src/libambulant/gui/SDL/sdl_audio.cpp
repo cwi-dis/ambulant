@@ -619,10 +619,10 @@ gui::sdl::sdl_active_audio_renderer::seek(double where)
 	lib::logger::get_logger()->trace("sdl_active_audio_renderer: seek(%f) not implemented", where);
 }
 
-std::pair<bool, double> 
+common::duration 
 gui::sdl::sdl_active_audio_renderer::get_dur()
 {
-	std::pair<bool, double> rv(false, 0.0);
+	common::duration rv(false, 0.0);
 	m_lock.enter();
 	if (m_audio_src)
 		rv = m_audio_src->get_dur();

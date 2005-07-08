@@ -325,20 +325,20 @@ void smil_player::resume_playable(const lib::node *n) {
 }
 
 // Query the node's playable for its duration.
-std::pair<bool, double> 
+common::duration 
 smil_player::get_dur(const lib::node *n) {
-	const std::pair<bool, double> not_available(false, 0.0);
+	const common::duration not_available(false, 0.0);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np) {
-		std::pair<bool, double> idur = np->get_dur();
+		common::duration idur = np->get_dur();
 		if(idur.first) m_playables_dur[n] = idur.second;
 		AM_DBG lib::logger::get_logger()->debug("smil_player::get_dur(0x%x): <%s, %f>", n, idur.first?"true":"false", idur.second);
 		return idur;
 	}
 	std::map<const node*, double>::iterator it2 = m_playables_dur.find(n);
-	std::pair<bool, double> rv = (it2 != m_playables_dur.end())?std::pair<bool, double>(true,(*it2).second):not_available;
+	common::duration rv = (it2 != m_playables_dur.end())?common::duration(true,(*it2).second):not_available;
 	AM_DBG lib::logger::get_logger()->debug("smil_player::get_dur(0x%x): <%s, %f>", n, rv.first?"true":"false", rv.second);
 	return rv;
 }

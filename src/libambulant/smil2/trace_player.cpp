@@ -153,11 +153,11 @@ void trace_player::resume_playable(const node *n) {
 	if(p) p->resume();
 }
 
-std::pair<bool, double> 
+common::duration 
 trace_player::get_dur(const node *n) {
 	playable *p = get_playable(n);
 	if(p) return p->get_dur();
-	return std::pair<bool, double>(false, 0);
+	return common::duration(false, 0);
 }
 
 common::playable *trace_player::get_playable(const lib::node *n) {

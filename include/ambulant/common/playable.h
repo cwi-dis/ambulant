@@ -76,6 +76,11 @@ class renderer;
 /// Display mode when the playable is paused.
 enum pause_display {display_disable, display_hide, display_show};
 
+/// Duration of a node or media item. The first item is true for
+/// known, false for unknown; the second item is the duration in
+/// seconds (if known).
+typedef std::pair<bool, double> duration;
+
 /// Interface the scheduler uses to control playback.
 /// The playable interface is used by the scheduler to control
 /// the objects being scheduled (renderers, animations, timelines,
@@ -168,7 +173,7 @@ class playable : public lib::ref_counted_obj {
 	/// the playable may cash the value. Also, it may return 
 	/// std::pair<false, any> originally and later, when the dur becomes 
 	/// known std::pair<true, dur>.
-	virtual std::pair<bool, double> get_dur() = 0;
+	virtual duration get_dur() = 0;
 	
 	
 	/// Returns the cookie identifying this playable to the client code.

@@ -81,7 +81,7 @@ class cocoa_video_renderer :
 	void stop();
 	void seek(double t) {}
 
-	std::pair<bool, double> get_dur();
+	common::duration get_dur();
 	
 	void redraw(const screen_rect_int &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
