@@ -80,6 +80,7 @@ OBJECTS=[
 	("none_window_factory", "ambulant::gui::none::none_window_factory", "window_factory"),
 	
 	"net/datasource.h",
+#	("audio_format_choices", "ambulant::net::audio_format_choices", None),
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted
 	("audio_datasource", "ambulant::net::audio_datasource", "datasource"), # XXX Refcounted
 	("video_datasource", "ambulant::net::video_datasource", None), # XXX Refcounted

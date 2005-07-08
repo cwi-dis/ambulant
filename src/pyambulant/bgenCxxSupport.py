@@ -37,9 +37,16 @@ class CxxMethodGenerator(CxxFunctionGenerator):
     """
     
     def __init__(self, returntype, name, *argumentlist, **conditionlist):
-        FunctionGenerator.__init__(self, returntype, name, *argumentlist, **conditionlist)
-        self.callname = "_self->ob_itself->" + self.name
+        CxxFunctionGenerator.__init__(self, returntype, name, *argumentlist, **conditionlist)
         
+    def setselftype(self, selftype, itselftype):
+        CxxFunctionGenerator.setselftype(self, selftype, itselftype)
+        if itselftype[-1] == '*':
+            self.callname = "_self->ob_itself->" + self.name
+        else:
+            # Assume non-pointer type
+            self.callname = "_self->ob_itself." + self.name
+            
 class CxxConstructorGenerator(CxxFunctionGenerator):
     """Specialized Method: constructor.
     
@@ -49,9 +56,11 @@ class CxxConstructorGenerator(CxxFunctionGenerator):
 
     def setselftype(self, selftype, itselftype):
         CxxFunctionGenerator.setselftype(self, selftype, itselftype)
-        if itselftype[-1] != '*':
-            raise RuntimeError, "CxxConstructorGenerator(%s): needs pointer type" % itselftype
-        self.callname = "new %s" % itselftype[:-1]
+        if itselftype[-1] == '*':
+            self.callname = "new %s" % itselftype[:-1]
+        else:
+            self.callname = itselftype
+        
     
     def generate(self):
         raise RuntimeError, "Cannot call generate() on constructors"
@@ -481,6 +490,10 @@ class TupleType(Type):
         self.memberlist = memberlist
         self.dot = '.'
         
+    def getargsPreCheck(self, name):
+        for membertype, membername in self.memberlist:
+            membertype.getargsPreCheck(name + self.dot + membername)
+        
     def getargsFormat(self):
         fmt = '('
         for membertype, membername in self.memberlist:
@@ -491,9 +504,15 @@ class TupleType(Type):
     def getargsArgs(self, name):
         alist = []
         for membertype, membername in self.memberlist:
-            alist.append(membertype.getargsArgs(name + self.dot + membername))
+            arg = membertype.getargsArgs(name + self.dot + membername)
+            if arg:
+                alist.append(arg)
         return ', '.join(alist)
           
+    def getargsCheck(self, name):
+        for membertype, membername in self.memberlist:
+            membertype.getargsCheck(name + self.dot + membername)
+        
     def mkvalueFormat(self):
         fmt = '('
         for membertype, membername in self.memberlist:
@@ -538,13 +557,16 @@ class StdStringType(Type):
         self.celement = celement
         
     def getargsPreCheck(self, name):
+        name = name.replace('.', '_')
         Output("%s *%s_cstr;", self.celement, name)
         
     def getargsArgs(self, name):
+        name = name.replace('.', '_')
         return "&%s_cstr" % name
         
     def getargsCheck(self, name):
-        Output("%s = %s_cstr;", name, name)
+        tmpname = name.replace('.', '_')
+        Output("%s = %s_cstr;", name, tmpname)
         
     def mkvalueArgs(self, name):
         return "%s.c_str()" % name

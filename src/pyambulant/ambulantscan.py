@@ -98,10 +98,6 @@ class MyScanner(CxxScanner):
             "none_playable_ptr",
             "none_background_renderer",
             "none_background_renderer_ptr",
-            "audio_format_choices", # XXX For now
-            "audio_format_ref", # XXX For now
-            "audio_format_choices_ptr", # XXX For now
-            "const_audio_format_ref", # XXX for now
             "region_dim", # XXX For now
             "tile_positions",
             

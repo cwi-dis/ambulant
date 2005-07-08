@@ -30,6 +30,9 @@ includestuff = includestuff + """
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
+
+extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 """
 
 finalstuff = """
@@ -44,6 +47,8 @@ PyEval_InitThreads();
 
 variablestuff="""
 """
+
+print "=== Defining simple types ==="
 
 bool = OpaqueByValueType("bool", "bool")
 size_t = Type("size_t", "l")
@@ -168,7 +173,11 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 module = CxxModule(MODNAME, MODPREFIX, includestuff, finalstuff, initstuff, variablestuff)
 functions = []
 
+print "=== generating object definitions ==="
+
 execfile("ambulantobjgen.py")
+
+print "=== declaring more types ==="
 
 # XXXX Temporarily disabled
 methods_none_playable_factory = []
@@ -178,6 +187,61 @@ common_factories_ptr = ByAddressTupleType("ambulant::common::factories",
         (window_factory_ptr, "wf"),
         (datasource_factory_ptr, "df"),
         (global_parser_factory_ptr, "pf"))
+
+audio_format = TupleType("ambulant::net::audio_format",
+        (std_string, "mime_type"),
+        (std_string, "name"),
+        (FakeType("(void *)0"), "parameters"),
+        (int, "samplerate"),
+        (int, "channels"),
+        (int, "bits"))
+audio_format_ref = TupleType("ambulant::net::audio_format&",
+        (std_string, "mime_type"),
+        (std_string, "name"),
+        (FakeType("(void *)0"), "parameters"),
+        (int, "samplerate"),
+        (int, "channels"),
+        (int, "bits"))
+const_audio_format_ref = TupleType("const ambulant::net::audio_format&",
+        (std_string, "mime_type"),
+        (std_string, "name"),
+        (FakeType("(void *)0"), "parameters"),
+        (int, "samplerate"),
+        (int, "channels"),
+        (int, "bits"))
+        
+class audio_format_choicesObjectDefinition(MyGlobalObjectDefinition):
+    baseclass = None
+    argref = "*"
+    def output_tp_newBody(self):
+        Output("PyObject *_self;")
+        Output()
+        Output("if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;")
+        #Output("((%s *)_self)->ob_itself = NULL;", self.objecttype)
+        Output("return _self;")
+
+    def outputCheckConvertArg(self):
+        CxxMixin.outputCheckConvertArg(self)
+
+    def outputCompare(self):
+        Output()
+        Output("#define %s_compare NULL", self.prefix)
+
+    def outputHash(self):
+        Output()
+        Output("#define %s_hash NULL", self.prefix)
+
+audio_format_choices_object = audio_format_choicesObjectDefinition('audio_format_choices', 'audio_format_choicesObj', 'ambulant::net::audio_format_choices')
+methods_audio_format_choices = []
+module.addobject(audio_format_choices_object)
+
+class OpaqueByFunnyRefType(OpaqueByRefType):
+    def mkvalueArgs(self, name):
+        return "%s(&%s)" % (self.new, name)
+
+audio_format_choices = OpaqueByFunnyRefType('ambulant::net::audio_format_choices', 'audio_format_choicesObj')
+audio_format_choices_ptr = OpaqueByValueType('ambulant::net::audio_format_choices*', 'audio_format_choicesObj')
+const_audio_format_choices_ptr = OpaqueByValueType('const ambulant::net::audio_format_choices*', 'audio_format_choicesObj')
 
 # Some type synonyms
 node_interface_ptr = node_ptr
@@ -217,8 +281,12 @@ net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
 const_ambulant_net_url_ref = net_url
 
+print "=== Testing availability of support for all needed C types ==="
+
 # Do the type tests
 execfile("ambulanttypetest.py")
+
+print "=== Populating method and function lists ==="
 
 # Create the generator classes used to populate the lists
 Function = FunctionGenerator
@@ -230,6 +298,7 @@ ConstructorMethod = CxxConstructorGenerator
 
 execfile(INPUTFILE)
 
+print "=== Adding methods to objects, resolving duplicates ==="
 
 # add the populated lists to the generator groups
 # (in a different wordl the scan program would generate this)
@@ -246,6 +315,8 @@ for name, object in locals().items():
 module.resolveduplicates()
 
 # ADD add forloop here
+
+print "=== Generating Python->C++ interface module ==="
 
 # generate output (open the output file as late as possible)
 SetOutputFileName(PY2CXXFILE)
@@ -302,7 +373,11 @@ ConstructorMethod = NoFunctionGenerator
 
 module = BackModule("pyambulant", includestuff, finalstuff)
 functions = []
+print "=== generating object definitions for callbacks ==="
+
 execfile("ambulantobjgen.py")
+
+print "=== declaring more types for callbacks ==="
 # Some type synonyms
 node_interface_ptr = node_ptr
 lib_node_ptr = node_ptr
@@ -326,8 +401,15 @@ net_audio_datasource_ptr = audio_datasource_ptr
 
 gui_window_object.baseconstructors.append("ambulant::common::gui_window(0)")
 
+# We do not want callback support for audio_format__choices.
+
+del audio_format_choices_object
+
+print "=== Populating method and function lists for callbacks ==="
 #import pdb ; pdb.set_trace()
 execfile(INPUTFILE)
+
+print "=== Adding methods to objects, callbacks ==="
 
 for name, object in locals().items():
     if name[-7:] == '_object':
@@ -382,15 +464,23 @@ datasource_object.othermethods = [
     "long get_ref_count() const { return 1; }",
     "char *get_read_ptr() { abort(); return NULL;}", # XXX
 ]
+
+print "=== Generating C++->Python callback interfaces (.h file) ==="
+
 # Generate the interface
 SetOutputFileName(CXX2PYDECLFILE)
 module.generateDeclaration()
+
+print "=== Generating C++->Python callback implementation (.cpp file) ==="
+
 # Generate the code
 module.includestuff = """
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
+extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 """
 SetOutputFileName(CXX2PYFILE)
 module.generate()
