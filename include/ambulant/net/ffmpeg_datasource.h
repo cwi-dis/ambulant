@@ -198,7 +198,7 @@ class ffmpeg_demux : public abstract_demux {
   	double duration();
   	int nstreams();
     void seek(timestamp_t time);
-    audio_format& get_audio_format() { return m_audio_fmt; };
+    audio_format& get_audio_format();
   	video_format& get_video_format();
 	void cancel();
 	timestamp_t get_clip_end(); 

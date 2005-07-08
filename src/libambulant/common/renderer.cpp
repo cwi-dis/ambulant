@@ -517,7 +517,7 @@ active_video_renderer::data_avail()
 	if (m_is_playing && buf) {
 		//if (ts <= now()) {
 			if ((ts2 >= m_clip_begin) && (ts2 <= m_clip_end)) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) (%lld, %lld) ", (void *) this, ts, now(), (void *) buf, ts2, m_clip_begin);
+				AM_DBG lib::logger::get_logger()->debug("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) (%lld, %lld) ", (void *) this, ts, now(), (void *) buf, ts2, m_clip_begin);
 				show_frame(buf, size);
 				m_dest->need_redraw();
 				displayed = true;
@@ -529,7 +529,7 @@ active_video_renderer::data_avail()
 				} 
 								
 			} else {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("**** (this = 0x%x) Calling frame_done() timestamp : %f, now = %f (located at 0x%x) (%lld, %lld) ", (void *) this, ts, now(), (void *) buf, ts2, m_clip_begin);
+				AM_DBG lib::logger::get_logger()->debug("**** (this = 0x%x) Calling frame_done() timestamp : %f, now = %f (located at 0x%x) (%lld, %lld) ", (void *) this, ts, now(), (void *) buf, ts2, m_clip_begin);
 				m_src->frame_done(ts2, false);
 				if (!m_src->end_of_file() && (ts2 <= m_clip_end)) {
 					lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
@@ -545,14 +545,14 @@ active_video_renderer::data_avail()
 		if (m_is_playing && !m_src->end_of_file()) {
 			lib::logger::get_logger()->debug("active_video_renderer::data_avial: No more data, but not end of file!");
 		}
-		/*AM_DBG*/ lib::logger::get_logger ()->debug("active_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
+		AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::data_avail(this = 0x%x): end_of_file ", (void *) this);
 		m_is_playing = false;
 		m_lock.leave();
 		m_context->stopped(m_cookie, 0);
 		return;
 	} else {
 		if (!m_src->end_of_file() && (ts2 <= m_clip_end)) {		
-			/*AM_DBG*/ lib::logger::get_logger ()->debug("active_video_renderer::data_avail(this = 0x%x): restart datasource ", (void *) this);
+			AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::data_avail(this = 0x%x): restart datasource ", (void *) this);
 
 			lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
 			m_src->start_frame(m_event_processor, e, ts2);
