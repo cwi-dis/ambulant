@@ -102,7 +102,7 @@ struct audio_format {
 		bits(b) {};
 	
 	/// Constructor for named audio_format.
-	audio_format(std::string &n, void *p=(void *)0)
+	audio_format(const std::string &n, void *p=(void *)0)
 	:   mime_type("audio/unknown"),
 		name(n),
 		parameters(p),
@@ -180,14 +180,17 @@ struct video_format {
 class audio_format_choices {
   public:
   
+	/// Default constructor: support no formats.
+	audio_format_choices();
+	
 	/// Constructor using a single audio_format.
-	audio_format_choices(audio_format &fmt);
+	audio_format_choices(const audio_format &fmt);
 	
 	/// Constructor using a linear sample format. 
 	audio_format_choices(int samplerate, int channels, int bits);
 	
 	/// Constructor using a named format.
-	audio_format_choices(std::string &name);
+	audio_format_choices(const std::string &name);
 	
 	/// Return the best (highest quality) format.
 	const audio_format& best() const;
@@ -202,13 +205,13 @@ class audio_format_choices {
 	void add_bits(int bits);
 	
 	/// Add support for an additional named format.
-	void add_named_format(std::string &name);
+	void add_named_format(const std::string &name);
 	
 	/// Return true if the audio_format argument matches any of the supported formats.
-	bool contains(audio_format& fmt) const;
+	bool contains(const audio_format& fmt) const;
 	
   private:
-	const audio_format m_best;
+	audio_format m_best;
 	std::set<int> m_samplerate;
 	std::set<int> m_channels;
 	std::set<int> m_bits;
@@ -379,7 +382,7 @@ class audio_datasource_factory  {
 	/// The fmt parameter describes the audio formats the client can handle,
 	/// the actual format can then be obtained from the audio_datasource returned.
 	/// Returns NULL if this factory cannot create such a datasource.
-  	virtual audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
+  	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Factory for implementations where the audio_datasource
@@ -391,7 +394,7 @@ class audio_parser_finder {
 	virtual ~audio_parser_finder() {};
 	
 	/// Create an audio parser for the given datasource.
-	virtual audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, audio_datasource *src) = 0;
+	virtual audio_datasource* new_audio_parser(const net::url& url, const audio_format_choices& hint, audio_datasource *src) = 0;
 };
 
 /// Factory for implementations where the audio_datasource
@@ -402,7 +405,7 @@ class audio_filter_finder  {
     virtual ~audio_filter_finder() {};
 	
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
-  	virtual audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts) = 0;
+  	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
 /// Interface to create a video_datasource for a given URL.
@@ -433,13 +436,13 @@ class datasource_factory :
   	datasource* new_raw_datasource(const net::url& url);
 	
 	/// Client interface: obtain an audio_datasource for the given URL and format.
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmt, timestamp_t clip_begin, timestamp_t clip_end);
+	audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Client interface: obtain a video datasource for the given URL.
   	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Semi-private interface: obtain an audio filter datasource.
-	audio_datasource* new_filter_datasource(const net::url& url, audio_format_choices fmt, audio_datasource* ds);
+	audio_datasource* new_filter_datasource(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
 	
 	/// Provider interface: add a raw_datasource_factory.
   	void add_raw_factory(raw_datasource_factory *df);

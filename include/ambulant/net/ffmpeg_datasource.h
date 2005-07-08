@@ -120,7 +120,7 @@ class ffmpeg_codec_id {
 class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
   public:
 	~ffmpeg_audio_datasource_factory() {};
-	audio_datasource* new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end);
+	audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end);
 };
 
 class ffmpeg_video_datasource_factory : public video_datasource_factory {
@@ -132,13 +132,13 @@ class ffmpeg_video_datasource_factory : public video_datasource_factory {
 class ffmpeg_audio_parser_finder : public audio_parser_finder {
   public:
 	~ffmpeg_audio_parser_finder() {};
-	audio_datasource* new_audio_parser(const net::url& url, audio_format_choices hint, audio_datasource *src);
+	audio_datasource* new_audio_parser(const net::url& url, const audio_format_choices& hint, audio_datasource *src);
 };
 
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
   public:
 	~ffmpeg_audio_filter_finder() {};
-	audio_datasource* new_audio_filter(audio_datasource *src, audio_format_choices fmts);
+	audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts);
 };
 
 #ifdef WITH_FFMPEG_AVFORMAT

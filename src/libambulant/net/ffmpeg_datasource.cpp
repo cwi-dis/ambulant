@@ -197,7 +197,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 
 
 audio_datasource* 
-ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
+ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
 #ifdef WITH_FFMPEG_AVFORMAT
 	
@@ -252,7 +252,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, audio
 }
 
 audio_datasource* 
-ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, audio_format_choices fmts, audio_datasource *src)
+ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, const audio_format_choices& fmts, audio_datasource *src)
 {
 	
 	audio_datasource *ds = NULL;
@@ -270,7 +270,7 @@ ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, audio_format_c
 }
 
 audio_datasource*
-ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, audio_format_choices fmts)
+ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_format_choices& fmts)
 {
 	audio_format& fmt = src->get_audio_format();
 	// First check that we understand the source format

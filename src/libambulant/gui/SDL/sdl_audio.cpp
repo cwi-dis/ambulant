@@ -259,7 +259,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	if (init() != 0)
 		return;
 		
-	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
+	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	long long int cb = 0;
@@ -311,7 +311,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_is_paused(false),
 	m_read_ptr_called(false)
 {
-	net::audio_format_choices supported = net::audio_format_choices(m_ambulant_format);
+	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x), ds = 0x%x",  (void*) this, (void*) ds);
 	if (init() != 0)

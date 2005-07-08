@@ -87,7 +87,13 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 };
 
 // *********************** audio_format_choices ***********************************************
-audio_format_choices::audio_format_choices(audio_format &fmt)
+audio_format_choices::audio_format_choices()
+:   m_best(audio_format("unknown"))
+{
+	add_named_format("unknown");
+}
+
+audio_format_choices::audio_format_choices(const audio_format &fmt)
 :   m_best(fmt)
 {
 	add_samplerate(fmt.samplerate);
@@ -103,7 +109,7 @@ audio_format_choices::audio_format_choices(int samplerate, int channels, int bit
 	add_bits(bits);
 };
 
-audio_format_choices::audio_format_choices(std::string &name)
+audio_format_choices::audio_format_choices(const std::string &name)
 :   m_best(audio_format(name))
 {
 	add_named_format(name);
@@ -134,12 +140,12 @@ audio_format_choices::add_bits(int bits)
 }
 
 void
-audio_format_choices::add_named_format(std::string &name)
+audio_format_choices::add_named_format(const std::string &name)
 {
 	m_named_formats.insert(name);
 }
 
-bool audio_format_choices::contains(audio_format& fmt) const
+bool audio_format_choices::contains(const audio_format& fmt) const
 {
 	if (fmt.name != "")
 		return m_named_formats.count(fmt.name) != 0;
@@ -232,7 +238,7 @@ datasource_factory::new_raw_datasource(const net::url &url)
 }
 
 audio_datasource*
-datasource_factory::new_audio_datasource(const net::url &url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
+datasource_factory::new_audio_datasource(const net::url &url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
     audio_datasource *src = NULL;
 
@@ -284,7 +290,7 @@ datasource_factory::new_audio_datasource(const net::url &url, audio_format_choic
 }
 
 audio_datasource*
-datasource_factory::new_filter_datasource(const net::url& url, audio_format_choices fmts, audio_datasource* ds)
+datasource_factory::new_filter_datasource(const net::url& url, const audio_format_choices& fmts, audio_datasource* ds)
 {
 	if (!ds) 
 		return NULL;
