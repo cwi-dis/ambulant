@@ -455,6 +455,20 @@ surface_object.othermethods = [
 surface_template_object.othermethods = [
     "void animated() { abort(); }", # XXX
 ]
+animation_destination_object.othermethods = [
+    "std::string get_name() const { return region_info::get_name(); }",
+    "ambulant::lib::rect get_rect() const { return region_info::get_rect(); }",
+    "ambulant::lib::screen_rect_int get_screen_rect() const { return region_info::get_screen_rect(); }",
+    "ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }",
+    "ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }",
+    "bool get_transparent() const { return region_info::get_transparent(); }",
+    "ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }",
+    "bool get_showbackground() const { return region_info::get_showbackground(); }",
+    "bool is_subregion() const { return region_info::is_subregion(); }",
+    "double get_soundlevel() const { return region_info::get_soundlevel(); }",
+    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
+    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
+]
 global_playable_factory_object.othermethods = [
     "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX
 ]

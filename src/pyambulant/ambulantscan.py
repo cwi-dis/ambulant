@@ -72,15 +72,14 @@ class MyScanner(CxxScanner):
 
     def makeblacklisttypes(self):
         return [
-            "animation_destination", # XXX
             "audio_datasource", #XXX
             "video_datasource", #XXX
             "Where_we_get_our", # Parser trips over a comment:-)
-            "q_attributes_list",
-            "q_attributes_list_ref",
-            "const_q_attributes_list_ref",
-            "flag_event",
-            "flag_event_ptr",
+            "q_attributes_list",    # We don't do lists, for now
+            "q_attributes_list_ref",    # We don't do lists, for now
+            "const_q_attributes_list_ref",    # We don't do lists, for now
+            "flag_event",  # Holds a reference to a bool, not useful for Python
+            "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
             "timer",
             "const_custom_test_map_ptr",
             "node_list", # XXX For now
