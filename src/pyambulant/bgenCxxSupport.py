@@ -63,7 +63,7 @@ class CxxConstructorGenerator(CxxFunctionGenerator):
         
     
     def generate(self):
-        raise RuntimeError, "Cannot call generate() on constructors"
+        raise RuntimeError, "Cannot call generate() on constructor %s::%s"%(self.itselftype, self.name)
         
     def outputConstructorBody(self):
         OutLbrace()

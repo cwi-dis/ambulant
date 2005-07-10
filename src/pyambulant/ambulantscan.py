@@ -50,20 +50,15 @@ class MyScanner(CxxScanner):
     def makeblacklistnames(self):
         return [
             # node.h
-            "find_nodes_with_name",
-            "has_graph_data",
-            "create_idmap",
-            "to_string",
-            "to_trimmed_string",
-            "set_attributes",       # string list, too difficult
+#            "set_attributes",       # string list, too difficult
             "get_read_ptr", # Does not translate to Python
             "get_frame", # Doable, with size in the arglist
-            "wakeup", # XXX private/protected
-            "wait_event", # XXX private/protected
+#            "wakeup", # XXX private/protected
+#            "wait_event", # XXX private/protected
             "flag_event", # Constructor for unsupported type
             "sax_error", # Constructor for unsupported type
-            "audio_format_choices", # Constructor for unsupported type
-            "abstract_event_processor", # XXX Constructor for unsupported type
+#            "audio_format_choices", # Constructor for unsupported type
+            "abstract_event_processor", # Name problem: event_processor vs. abstract_event_processor
             "none_playable", # XXX Constructor for unsupported type
             "none_background_renderer", # XXX Constructor for unsupported type
             "none_playable_factory",  # XXX Constructor for unsupported type
@@ -82,11 +77,11 @@ class MyScanner(CxxScanner):
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
             "timer",
             "const_custom_test_map_ptr",
-            "node_list", # XXX For now
+            "node_list",     # We don't do lists, for now
             "delta_timer", # XXX for now
             "std_queue<event_ptr>_ptr",
-            "iterator",
-            "const_iterator",
+            "iterator", # Not needed in Python
+            "const_iterator", # Not needed in Python
             "char_ptr_ptr",
             "sax_content_handler",
             "sax_content_handler_ptr",
@@ -98,7 +93,7 @@ class MyScanner(CxxScanner):
             "none_background_renderer",
             "none_background_renderer_ptr",
             "region_dim", # XXX For now
-            "tile_positions",
+            "tile_positions",    # We don't do lists, for now
             
         ]
 
