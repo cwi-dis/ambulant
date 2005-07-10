@@ -110,9 +110,7 @@ class node_interface {
 	// tree iterators
 	typedef tree_iterator<node_interface> iterator;
 	typedef const_tree_iterator<node_interface> const_iterator;
-	
-	typedef std::list<const node*> const_node_list;
-	
+		
 	/// Destruct this node and its contents.
 	/// If this node is part of a tree, detach it first
 	/// and then delete the node and its contents.
@@ -170,12 +168,7 @@ class node_interface {
 	
 	/// Find the first direct child with the given tag.
 	virtual const node_interface *get_first_child(const char *name) const = 0;
-	
-#if 0
-	/// Find all descendants with the given tag.
-	virtual void find_nodes_with_name(const xml_string& name, std::list<node_interface*>& list) = 0;
-#endif
-	
+		
 	/// Find the root of the tree to which this node belongs.
 	virtual node_interface* get_root() = 0;
 	
@@ -252,10 +245,6 @@ class node_interface {
 	/// Return the trimmed data for this node.
 	virtual xml_string get_trimmed_data() const = 0;
 
-#if 0
-	virtual bool has_graph_data() const = 0;
-#endif
-	
 	/// Return the value for the given attribute.
 	virtual const char *get_attribute(const char *name) const = 0;
 	
@@ -266,19 +255,8 @@ class node_interface {
 	/// Relative URLs are resolved against the document base URL, if possible.
 	virtual net::url get_url(const char *attrname) const = 0;
 	
-#if 0
-	/// Return a reference to all attributes.
-	virtual const q_attributes_list& get_attrs() const = 0;
-#endif	
-
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	virtual unsigned int size() const = 0;
-
-#if 0
-	/// Fills in a map with node ids.
-	/// the map may be used for retreiving nodes from their id.
-	virtual void create_idmap(std::map<std::string, node_interface*>& m) const = 0;
-#endif
 	
 	/// Returns a "friendly" path desription of this node.
 	virtual std::string get_path_display_desc() const = 0;
@@ -292,10 +270,6 @@ class node_interface {
 	
 	/// Return the
 	virtual xml_string xmlrepr() const = 0;
-#if 0
-	virtual xml_string to_string() const = 0;
-	virtual xml_string to_trimmed_string() const = 0;
-#endif	
 	/////////////////////
 	// node context
 	
