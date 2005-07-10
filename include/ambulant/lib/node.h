@@ -106,6 +106,8 @@ class node_interface {
 
   public:
   
+    typedef std::list<const node*> const_node_list;
+    
 	///////////////////////////////
 	// tree iterators
 	typedef tree_iterator<node_interface> iterator;
