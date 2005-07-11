@@ -92,7 +92,6 @@ class MyScanner(CxxScanner):
             "none_playable_ptr",
             "none_background_renderer",
             "none_background_renderer_ptr",
-            "region_dim", # XXX For now
             "tile_positions",    # We don't do lists, for now
             
         ]

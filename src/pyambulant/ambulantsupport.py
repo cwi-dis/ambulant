@@ -67,6 +67,7 @@ return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
 output_stringptr = Type("char *", "s")  # BE CAREFUL!
 
 # Ambulant-specific
+region_dim = OpaqueByRefType("ambulant::common::region_dim", "ambulant_region_dim")
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
 screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_screen_rect")
 const_lib_screen_rect_int_ref = OpaqueByRefType("const ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
@@ -466,8 +467,8 @@ animation_destination_object.othermethods = [
     "bool get_showbackground() const { return region_info::get_showbackground(); }",
     "bool is_subregion() const { return region_info::is_subregion(); }",
     "double get_soundlevel() const { return region_info::get_soundlevel(); }",
-    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
-    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
+#    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
+#    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
 ]
 global_playable_factory_object.othermethods = [
     "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX

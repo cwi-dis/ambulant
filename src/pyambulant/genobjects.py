@@ -32,6 +32,7 @@ OBJECTS=[
 	("parser_factory", "ambulant::lib::parser_factory", None),
 	("global_parser_factory", "ambulant::lib::global_parser_factory", "parser_factory"),
 	
+	
 	"lib/sax_handler.h",
 	("xml_parser", "ambulant::lib::xml_parser", None),
 	
@@ -71,6 +72,8 @@ OBJECTS=[
 	("player_feedback", "ambulant::common::player_feedback", None),
 	("player", "ambulant::common::player", None),
 	
+	"common/region_dim.h",
+
 	"common/region_info.h",
 	("region_info", "ambulant::common::region_info", None),
 	("animation_destination", "ambulant::common::animation_destination", "region_info"),

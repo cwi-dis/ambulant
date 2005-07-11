@@ -38,6 +38,52 @@ ambulant_url_Convert(PyObject *v, ambulant::net::url *p_itself)
 }
 
 
+PyObject *ambulant_region_dim_New(const ambulant::common::region_dim& itself)
+{
+    if (itself.absolute())
+        return Py_BuildValue("sl", "auto", 0);
+    else if (itself.relative())
+        return Py_BuildValue("sd", "relative", itself.get_as_dbl());
+    else
+        return Py_BuildValue("sl", "absolute", itself.get_as_int());
+}
+
+int
+ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself)
+{
+    char *tp;
+    double dv;
+    int iv;
+    
+    if (PyArg_Parse(v, "sd", &tp, &dv)) {
+        if (strcmp(tp, "auto") == 0) {
+            *p_itself = ambulant::common::region_dim();
+            return 1;
+        }
+        if (strcmp(tp, "relative") == 0) {
+            *p_itself = ambulant::common::region_dim(dv);
+            return 1;
+        }
+        if (strcmp(tp, "absolute") == 0) {
+            *p_itself = ambulant::common::region_dim((int)dv);
+            return 1;
+        }
+        PyErr_SetString(PyExc_TypeError, "region_dim type should be auto, relative or absolute");
+        return 0;
+    }
+    if (PyArg_Parse(v, "d", &dv)) {
+        *p_itself = ambulant::common::region_dim(dv);
+        return 1;
+    }
+    if (PyArg_Parse(v, "l", &iv)) {
+        *p_itself = ambulant::common::region_dim(iv);
+        return 1;
+    }
+    PyErr_SetString(PyExc_TypeError, "region_dim should be int, double or (type, value) tuple");
+    return 0;
+}
+
+
 PyObject *ambulant_screen_rect_New(const ambulant::lib::screen_rect_int& itself)
 {
     return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());
