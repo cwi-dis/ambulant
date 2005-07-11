@@ -76,10 +76,9 @@ class MyScanner(CxxScanner):
             "flag_event",  # Holds a reference to a bool, not useful for Python
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
             "timer",
-            "const_custom_test_map_ptr",
+            "const_custom_test_map_ptr", # We don't do maps for now
             "node_list",     # We don't do lists, for now
             "delta_timer", # XXX for now
-            "std_queue<event_ptr>_ptr",
             "iterator", # Not needed in Python
             "const_iterator", # Not needed in Python
             "char_ptr_ptr",
