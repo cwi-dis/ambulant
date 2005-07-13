@@ -589,6 +589,7 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 bool smil_player::goto_node(const lib::node *target)
 {
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
+	
 	if(it != m_dom2tn->end()) {
 		m_scheduler->start((*it).second);
 		return true;

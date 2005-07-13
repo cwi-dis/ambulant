@@ -65,7 +65,7 @@ using namespace net;
 
 
 audio_datasource* 
-live_audio_datasource_factory::new_audio_datasource(const net::url& url, audio_format_choices fmts, timestamp_t clip_begin, timestamp_t clip_end)
+live_audio_datasource_factory::new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
 	rtsp_context_t *context = rtsp_demux::supported(url);
