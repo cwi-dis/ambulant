@@ -1791,8 +1791,8 @@ ffmpeg_decoder_datasource::data_avail()
 						m_fmt.samplerate = m_con->sample_rate;
 					if (!m_fmt.channels != m_con->channels) 
 						m_fmt.channels = m_con->channels;
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 					assert(m_fmt.samplerate);
 					double duration = ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
 					m_elapsed += (timestamp_t) round(duration*1000000);

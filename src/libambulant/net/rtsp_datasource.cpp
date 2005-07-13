@@ -364,7 +364,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 				if (sz > 0)
 					memcpy((context->video_buffer + context->video_buffer_size), context->video_packet, sz);
 					context->video_buffer_size += sz;
-				lib::logger::get_logger()->debug("after_reading_video: stored !! (I)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+				AM_DBG lib::logger::get_logger()->debug("after_reading_video: stored !! (I)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
 			} else {
 				lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
 			}

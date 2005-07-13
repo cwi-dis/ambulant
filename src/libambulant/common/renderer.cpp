@@ -350,6 +350,7 @@ active_video_renderer::active_video_renderer(
 		ce = strtoll(clip_end_attr, &lastp,0);
 #endif
 	}
+	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() created (cb=%lld, ce=%lld)", cb,ce);
 	m_clip_begin = cb;
 	m_clip_end = ce;
 	m_src = factory->df->new_video_datasource(url,m_clip_begin, m_clip_end);
@@ -516,7 +517,8 @@ active_video_renderer::data_avail()
 	AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(buf = 0x%x) (ts=%f, now=%f):", (void *) buf,ts, now());	
 	if (m_is_playing && buf) {
 		//if (ts <= now()) {
-			if ((ts2 >= m_clip_begin) && (ts2 <= m_clip_end)) {
+			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::data_avail(buf = 0x%x) (ts=%lld, clip_begin=%lld, clip_end=%lld):", (void *) buf,ts2, m_clip_begin, m_clip_end);	
+			if ((ts2 >= m_clip_begin) && ( ((m_clip_end > -1) && (ts2 <= m_clip_end)) || (m_clip_end < 0) )) {
 				AM_DBG lib::logger::get_logger()->debug("**** (this = 0x%x) Calling show_frame() timestamp : %f, now = %f (located at 0x%x) (%lld, %lld) ", (void *) this, ts, now(), (void *) buf, ts2, m_clip_begin);
 				show_frame(buf, size);
 				m_dest->need_redraw();
