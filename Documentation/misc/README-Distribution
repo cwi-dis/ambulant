@@ -1,5 +1,59 @@
-To make a distribution make sure you do:
+Creating ambulant releases
+==========================
 
+This document explains how to cut releases. Doing a release is very boring
+and tedious, but please follow these guidelines closely. While getting ready
+for a release you should have almost the opposite mindset of during normal
+development: only fix what really needs fixing, and please don't be creative.
+Also remember that testing is very important. If you decide to save 1 minute
+of tedious work by not running all the tests this could well result in another
+bug fix release being needed a few weeks later, leading to _days_ of extra
+work for everyone (including you:-).
+
+Version numbers, release branches and tags
+==========================================
+
+We use a strict numbering scheme for versions. Development versions have
+an odd minor number, releases an even one. For example, "1.5" is a development
+version, and is a moving target. Once development is finished and we're
+getting ready for a release (which will be called "1.6") we create a release
+branch called "release-ambulant-16-branch". On this branch, we do the work
+described below. Once everything has been tested and the distributions created
+(and everything checked in:-) we tag the release branch with tag
+"release-ambulant-16". Changes made on the release branch are _not_
+propagated to the trunk at this point.
+
+Now we need to merge the changes to the trunk. Set your working copy
+to the trunk and "cvs up -jrelease-ambulant-16-branch". Test and commit.
+
+Next, we want to tag the _branch_ to show that we have merged up to here:
+set your working copy to the branch, and tag with "release-ambulant-16-merge".
+
+Now go back to the trunk, set version numbers to "1.7" and start working on
+wonderful new ideas. But first: do all the tests you did for the release
+on the trunk as well, to make sure that all fixes you made on the release
+branch have been propagated to the trunk correctly.
+
+Some time later a bug fix release "1.6.1" will have to be done. Switch your working
+copy to the "release-ambulant-16-branch" and fix the bugs. Do not add new features,
+and only fix critical bugs! Go through the whole distribution and testing
+rigamarole explained below. When the releases have been created tag
+the branch with "release-ambulant-161". Again, don't propagate fixes to the
+trunk just yet.
+
+After the release you need to merge the changes again, but only the ones
+you didn't merge previously. Set working copy to the trunk, and
+"cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch". (NOTE:
+this has not been tested yet so please take care and modify this sentence if
+it turns out to be wrong:-). Finally we need to move the "-merge" tag to
+show up to which point the branch has been merged: set your working
+copy to the branch, and "cvs tag -F release-ambulant-16-merge" to move
+the tag.
+
+A final note: releases 1.4.X and earlier have not followed these guidelines
+exactly, the branch and tag names are slightly different (release-ambulant-14
+for the branch, release-ambulant-14-tag for the release tag) and the "-merge"
+tag was not used.
 
 Before creating the distribution
 ================================
