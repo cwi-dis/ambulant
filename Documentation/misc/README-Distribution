@@ -37,6 +37,9 @@ Before creating the distribution
   
   % cvs log -b -d '>'2004-07-01 | cvs2cl.pl --hide-filenames --stdout --stdin
   (the perl script is on http://www.red-bean.com/cvs2cl/cvs2cl.pl).
+  
+  Note that if we're preparing for a micro-release you should replace the '-b'
+  with -rrelease-ambulant-xxx and merge the output into ChangeLog.
 
 - Update the API documentation in Documentation/API by running doxygen
   Read and check the documentation for consistency, errors and missing items.
@@ -140,7 +143,17 @@ but as we have done one before we should write down the procedure here.
 Testing the distributions
 =========================
 
-Here are some random remarks about testing the distributions.
+Here are some random remarks about testing the distributions. Note that
+during the distribution test period it is important to be thorough and
+precise. If you save yourself a few minute of effort by not testing
+something or not reporting a problem this may well result in an extra
+bugfix release later (which will cost everyone another 2 days or so of work).
+
+- IMPORTANT: while we are testing distributions we want to make absolutely
+  sure that any bugs are either (a) fixed or (b) acknowledged as known bugs.
+  Therefore, if you find a bug that you think may be critical you *must*
+  submit a bug report with high priority and assign to the release czar
+  (probably Jack).
 
 - The Mac player must definitely be tested on a virgin machine,
   to ensure there are no dependencies on dynamic libraries in /usr/local
@@ -231,16 +244,17 @@ To be supplied. Here are some random thoughts:
 Advertising the distributions
 =============================
 
-To be supplied. Some ideas, plus who knows how to submit things):
+To be supplied. Some ideas, plus who knows how to submit things:
 - ambulant-announce
 - ambulant-users
 - www-smil
-- W3C
+- W3C (Dick)
+- NLnet (Dick)
 -   http://guide.apple.com/usindex.lasso (jack)
 -   http://www.apple.com/downloads/macosx/submit (jack)
 -   http://www.versiontracker.com/ (jack, userid Jack.Jansen@oratrix.com)
 -   http://www.macshareware.net (jack, userid jackjansen)
-	- A macpad file is in www.cwi.nl/~jack/macpad. There's a pad file there too.
+-	A macpad file is in www.cwi.nl/~jack/macpad. There's a pad file there too.
 -   archivist@info-mac.org (jack)
 -   adcnews@apple.com? (jack)
 -   news@macnn.com (jack)

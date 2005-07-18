@@ -113,10 +113,13 @@ class viewport {
 	
 	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
 	void draw(dib_surface_t* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc = false, lib::color_t transp = CLR_INVALID);
+		const lib::screen_rect<int>& dst_rc, bool keysrc = false, 
+		lib::color_t transp = CLR_INVALID);
 	
 	// Draw the text to the back buffer within destination rectangle
-	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, 
+		lib::color_t clr = CLR_INVALID, const char *fontname = NULL,
+		float fontsize = 0);
 	
 	// Draw a frame around the provided rect
 	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
@@ -127,6 +130,14 @@ class viewport {
 	
 	HWND get_hwnd() { return m_hwnd;}
 	
+	// Create a new offscreen bitmap with the given size. The bitmap is
+	// owned by the dib_surface_t object returned.
+	dib_surface_t* create_surface(DWORD w, DWORD h);
+
+	// Return the bitmap containing the current screen bits. The surface_t
+	// is not a copy, it is a borrowed reference.
+	surface_t* get_surface();
+
   private:
 	int m_width;
 	int m_height;

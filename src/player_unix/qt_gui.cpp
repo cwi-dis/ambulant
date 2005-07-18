@@ -426,9 +426,11 @@ qt_gui::slot_load_settings() {
 				 gettext("open settings file dialog"),
 				 gettext("Double Click a settings file to open")
 				 );
-	smil2::test_attrs::load_test_attrs(settings_filename.ascii());
-	if (openSMILfile(m_smilfilename, IO_ReadOnly))
-		slot_play();
+	if ( ! settings_filename.isNull()) {
+		smil2::test_attrs::load_test_attrs(settings_filename.ascii());
+		if (openSMILfile(m_smilfilename, IO_ReadOnly))
+			slot_play();
+	}
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	/* TBD embedded Qt settings file dialog XXXX */
 	printf("1.m_settings_selector =0x%x\n",m_settings_selector );

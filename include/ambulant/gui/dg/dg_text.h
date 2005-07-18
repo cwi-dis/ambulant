@@ -57,6 +57,7 @@
 #include <string>
 
 #include "ambulant/common/renderer.h"
+#include "ambulant/lib/colors.h"
 
 namespace ambulant {
 
@@ -82,7 +83,10 @@ class dg_text_renderer : public common::renderer_playable {
 	void start_outtransition(const lib::transition_info *info) {};
   private:
 	std::basic_string<text_char> m_text;
-	common::gui_window *m_window;	
+	common::gui_window *m_window;
+	const char *m_fontname;
+	float m_fontsize;
+	lib::color_t m_color;
 };
 
 } // namespace dg

@@ -1,6 +1,17 @@
 
-What's new in Ambulant Player 1.4.1?
+What's new in Ambulant Player 1.4.5?
 ------------------------------------
+
+Changes between 1.4.5 and 1.4.4:
+- SMIL 2.1 default backgroundRepeat has been fixed.
+
+Changes between 1.4.4 and 1.4.2:
+- SMIL 2.1 has gone to PR (Proposed Recommendation). The main change is
+  that some of the DTD URIs have changed slightly.
+- Ambulant Player now passes all SMIL 2.1 interoperability tests.
+
+Changes between 1.4.2 and 1.4.1:
+- SMIL 2.1 behaviour of backgroundImage and backgroundRepeat has been fixed.
 
 Changes between 1.4 and 1.4.1:
 - Mac player didn't support QuickTime playback. Fixed.

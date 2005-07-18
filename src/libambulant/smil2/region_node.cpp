@@ -403,12 +403,41 @@ common::tiling
 region_node::get_tiling() const
 {
 	if(m_tiling == common::tiling_inherit) {
-		const region_node *parent_node = up();
-		if (parent_node)
-			return parent_node->get_tiling();
+		const region_node *inherit_node = NULL;
+		if (m_dim_inherit == di_parent) {
+			inherit_node = up();
+		} else {
+			const region_node *root_node = get_root();
+			inherit_node = root_node->get_first_child("root-layout");
+		}
+		if (inherit_node)
+			return inherit_node->get_tiling();
 	}
 	return m_tiling;
 }
+
+const char *
+region_node::get_bgimage() const
+{
+	const char *bgimage = m_bgimage;
+	if (bgimage && strcmp(bgimage, "inherit") == 0) {
+		const region_node *inherit_node;
+		if (m_dim_inherit == di_parent) {
+			inherit_node = up();
+		} else {
+			const region_node *root_node = get_root();
+			inherit_node = root_node->get_first_child("root-layout");
+		}
+		if (inherit_node)
+			bgimage = inherit_node->get_bgimage();
+		else
+			bgimage = NULL;
+	}
+	if (bgimage && strcmp(bgimage, "none") == 0)
+		bgimage = NULL;
+	return bgimage;
+}
+
 #endif // USE_SMIL21
 
 void

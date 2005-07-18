@@ -19,12 +19,6 @@
 			settings = {
 			};
 		};
-		0415816A08564CFC0052FA10 = {
-			fileRef = 0418F4600855E4E8004CAF9C;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		04161386072078C400A8B0B6 = {
 			buildPhases = (
 				04161387072078C400A8B0B6,
@@ -41,7 +35,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "USE_SMIL21=1 WITH_LTDL_PLUGINS=1 WITH_SDL=1 WITH_FFMPEG=1 WITH_EXPAT=1 WITH_FFMPEG_AVFORMAT=1 WITH_EXTERNAL_DOM=1";
+				GCC_PREPROCESSOR_DEFINITIONS = "USE_SMIL21= WITH_LTDL_PLUGINS=1 WITH_SDL=1 WITH_FFMPEG=1 WITH_EXPAT=1 WITH_FFMPEG_AVFORMAT=1";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -187,8 +181,6 @@
 				041613FA072078C400A8B0B6,
 				041613FB072078C400A8B0B6,
 				042125B207A7DFD300D20F9D,
-				0415816A08564CFC0052FA10,
-				0423C2AF0858DA1000D89497,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1075,7 +1067,6 @@
 				04161457072078C400A8B0B6,
 				042125AF07A7DFBE00D20F9D,
 				042125D807A7EBF900D20F9D,
-				0423C2AA0858D9E000D89497,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1708,20 +1699,6 @@
 			settings = {
 			};
 		};
-		0418F4600855E4E8004CAF9C = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = node_impl.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		0418F4610855E4E8004CAF9C = {
-			fileRef = 0418F4600855E4E8004CAF9C;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		042125AD07A7DFBE00D20F9D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -1814,46 +1791,6 @@
 		};
 		042239D00536F48E0010C447 = {
 			fileRef = 042239CD0536F48E0010C447;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0423C2A80858D9E000D89497 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = node_dummy.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		0423C2A90858D9E000D89497 = {
-			fileRef = 0423C2A80858D9E000D89497;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0423C2AA0858D9E000D89497 = {
-			fileRef = 0423C2A80858D9E000D89497;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0423C2AE0858DA1000D89497 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = node_dummy.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		0423C2AF0858DA1000D89497 = {
-			fileRef = 0423C2AE0858DA1000D89497;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0423C2B00858DA1000D89497 = {
-			fileRef = 0423C2AE0858DA1000D89497;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2391,7 +2328,6 @@
 		};
 		04382B4805D7AEE600CFA029 = {
 			children = (
-				0418F4600855E4E8004CAF9C,
 				041614840720836C00A8B0B6,
 				04C65258071FC0C3001E3C7B,
 				04E976B9067FA5DA00AE60D0,
@@ -2429,7 +2365,6 @@
 				04382B6505D7AEE600CFA029,
 				04382B6605D7AEE600CFA029,
 				04382B6705D7AEE600CFA029,
-				0423C2AE0858DA1000D89497,
 			);
 			isa = PBXGroup;
 			path = lib;
@@ -3469,7 +3404,6 @@
 				0444D32C051F2EEF0010C447,
 				04984765058DE42400D855A9,
 				0444D32D051F2EEF0010C447,
-				0423C2A80858D9E000D89497,
 				044C06DB05986D0D00592A78,
 				04984769058DE47100D855A9,
 				041485070532E37A001276A4,
@@ -4016,8 +3950,8 @@
 			isa = PBXGroup;
 			name = Welcome;
 			path = ../../Extras/Welcome;
-			refType = 0;
-			sourceTree = "<absolute>";
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		045F4C6D0609E00D0061DCA5 = {
 			fileEncoding = 30;
@@ -5658,7 +5592,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "USE_SMIL21=1 WITH_SDL=1 WITH_FFMPEG=1 WITH_XERCES=1 WITH_EXPAT=1 WITH_FFMPEG_AVFORMAT=1 WITH_EXTERNAL_DOM=1";
+				GCC_PREPROCESSOR_DEFINITIONS = "USE_SMIL21= WITH_SDL= WITH_FFMPEG= WITH_XERCES= WITH_EXPAT= WITH_FFMPEG_AVFORMAT=";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -5806,8 +5740,6 @@
 				041614850720836C00A8B0B6,
 				04A107730748E0A6002EA347,
 				042125B107A7DFD300D20F9D,
-				0418F4610855E4E8004CAF9C,
-				0423C2B00858DA1000D89497,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5945,7 +5877,6 @@
 				041614870720838000A8B0B6,
 				042125AE07A7DFBE00D20F9D,
 				042125D707A7EBF900D20F9D,
-				0423C2A90858D9E000D89497,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

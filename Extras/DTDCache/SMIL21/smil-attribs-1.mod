@@ -4,7 +4,7 @@
 
       This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 2.1: Sjoerd Mullender, CWI
@@ -104,7 +104,7 @@
 
 <!-- ================== BackgroundTilingLayout ============================ -->
 <!ENTITY % SMIL.backgroundImage.attrib "
-  %SMIL.pfx;backgroundImage %URI.datatype; #IMPLIED
+  %SMIL.pfx;backgroundImage %URI.datatype; 'none'
 ">
 <!ENTITY % SMIL.backgroundRepeat.attrib "
   %SMIL.pfx;backgroundRepeat (repeat|repeatX|repeatY|noRepeat|inherit) 'repeat'
@@ -129,7 +129,7 @@
 ">
 
 <!ENTITY % SMIL.soundAlign.attrib "
- %SMIL.pfx;soundAlign (left|both|right) 'both'
+ %SMIL.pfx;soundAlign (left|both|right) #IMPLIED
 ">
 
 <!ENTITY % SMIL.RegistrationPoint.attrib "

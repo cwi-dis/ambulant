@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=9.02
-  Title=Ambulant Player for SMIL 2.0 Installation
+  Title=Ambulant Player for SMIL 2.1PR Installation
   Title French= Installation
   Flags=00000100
   Languages=65 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -30,6 +30,7 @@ item: Global
   Dialogs Version=7
   Version File=1.5
   Version Description=Ambulant Player for SMIL 2.0
+  Version Description=Ambulant Player for SMIL 2.1CR
   Version Copyright=Copyright (c) 2004-2005
   Version Company=Stichting CWI
   Crystal Format=10111100101100000010001001001001
@@ -85,7 +86,7 @@ item: Remark
 end
 item: Set Variable
   Variable=APPTITLE
-  Value=Ambulant Player for SMIL 2.0
+  Value=Ambulant Player for SMIL 2.1PR
   Flags=10000000
 end
 item: Remark
@@ -1686,11 +1687,6 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
-  Destination=%MAINDIR%\msvcr71.dll
-  Flags=0000000010000011
-end
-item: Install File
   Source=..\..\Extras\DTDCache\Smil21\SMIL-transition.mod
   Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-transition.mod
   Flags=0000000010000010
@@ -1751,6 +1747,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\smil-DTD.html
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-DTD.html
+  Flags=0000000010000010
+end
+item: Install File
   Source=..\..\Extras\DTDCache\Smil21\smil-datatypes-1.mod
   Destination=%MAINDIR%\Extras\DTDCache\Smil21\smil-datatypes-1.mod
   Flags=0000000010000010
@@ -1771,24 +1772,39 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\DTDCache\Smil21\SMIL21MobileProfile.dtd
-  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21MobileProfile.dtd
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21Mobile.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21Mobile.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\DTDCache\Smil21\SMIL21LanguageProfile.dtd
-  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21LanguageProfile.dtd
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21ExtendedMobile.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21ExtendedMobile.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\DTDCache\Smil21\SMIL21ExtendedMobileProfile.dtd
-  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21ExtendedMobileProfile.dtd
+  Source=..\..\Extras\DTDCache\Smil21\SMIL21.dtd
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL21.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\Extras\DTDCache\Smil21\DTD.zip
-  Destination=%MAINDIR%\Extras\DTDCache\Smil21\DTD.zip
+  Source=..\..\Extras\DTDCache\Smil21\Overview.html
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\Overview.html
   Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\IPR+Notice+and+Disclaimers.htm
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\IPR+Notice+and+Disclaimers.htm
+  Flags=0000000010000010
+end
+item: Install File
+  Source=..\..\Extras\DTDCache\Smil21\base.css
+  Destination=%MAINDIR%\Extras\DTDCache\Smil21\base.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
+  Destination=%MAINDIR%\msvcr71.dll
+  Flags=0000000010000011
 end
 item: Install File
   Source=..\..\Extras\DTDCache\Smil20\w3c_home
@@ -2416,7 +2432,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=1.3
+  New Value=1.4.4
   Value Name=DisplayVersion
   Root=2
 end

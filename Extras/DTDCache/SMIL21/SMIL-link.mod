@@ -4,7 +4,7 @@
 
      This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Author: Jacco van Ossenbruggen, Lloyd Rutledge, Aaron Cohen

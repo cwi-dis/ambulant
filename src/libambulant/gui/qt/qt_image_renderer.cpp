@@ -103,7 +103,7 @@ qt_active_image_renderer::redraw_body(const screen_rect<int> &dirty,
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundRepeat") && m_dest->is_tiled()) {
+	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
 		AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw: drawing tiled image");
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());

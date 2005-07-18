@@ -3,7 +3,7 @@ ALL_HTML=objects.html overall.html timeline.html walkthrough.html organisation.h
 ALL_LATEX=objects.latex overall.latex walkthrough.latex organisation.latex	
 
 REST=/Users/jack/tmp/docutils/tools
-REST2HTML=$(REST)/html.py
+REST2HTML=$(REST)/rst2html.py
 REST2LATEX=$(REST)/rst2latex.py
 PDFLATEX=/usr/local/teTeX/bin/powerpc-apple-darwin-current/pdflatex
 MAKEINDEX=/usr/local/teTeX/bin/powerpc-apple-darwin-current/makeindex
@@ -11,7 +11,7 @@ PYTHON=python
 
 .SUFFIXES: .txt .html .tex .pdf
 
-all: $(ALL_HTML) ambulantdesign.pdf
+all: $(ALL_HTML) # ambulantdesign.pdf
 
 clean:
 	-rm ambulantdesign.txt ambulantdesign.tex ambulantdesign.aux ambulantdesign.idx
@@ -28,7 +28,7 @@ ambulantdesign.txt: head_latex.txt $(ALL) diagrams.txt
 	cat head_html.txt $< $*_tail.txt | $(PYTHON) $(REST2HTML) > $@
 
 .txt.tex:
-	$(PYTHON) $(REST2LATEX) --use-latex-toc=USE_LATEX_TOC $< $@
+	$(PYTHON) $(REST2LATEX) --use-latex-toc $< $@
 	
 .tex.pdf:
 	$(PDFLATEX) $< 

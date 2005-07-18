@@ -164,6 +164,12 @@ in ``lib/PLATFORM/PLATFORM_mtsync.h``,
 conditionally include that in ``lib/mtsync.h`` and create an empty subclass
 ``critical_section`` of it. 
 
+In case you really need a preprocessor define to trigger machine-dependent
+code on: ``ambulant/config.h`` defines a number of macros like
+``AMBULANT_PLATFORM_UNIX``, ``AMBULANT_PLATFORM_LINUX``, ``AMBULANT_PLATFORM_MACOS``, 
+``AMBULANT_PLATFORM_WIN32`` and ``AMBULANT_PLATFORM_WIN32_WCE``. Use of these is
+preferred over platorm-native defines.
+
 integrating third-party tools
 -----------------------------
 

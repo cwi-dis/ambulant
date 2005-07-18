@@ -58,6 +58,7 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/gui/dg/dg_dib_surface.h"
 
 namespace ambulant {
 
@@ -71,6 +72,8 @@ class dg_bgrenderer : public common::background_renderer {
 	~dg_bgrenderer();
 	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
 	void keep_as_background();
+private:
+	dib_surface_t *m_bg_image;
 };
 
 } // namespace dg

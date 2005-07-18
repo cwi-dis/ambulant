@@ -600,7 +600,7 @@ passive_region::is_tiled() const
 {
 	common::tiling t = m_info->get_tiling();
 	
-	return (t == common::tiling_horizontal || t == common::tiling_vertical || t == common::tiling_both);
+	return (t == common::tiling_horizontal || t == common::tiling_vertical || t == common::tiling_both || t == common::tiling_default);
 }
 
 tile_positions
@@ -616,9 +616,9 @@ passive_region::get_tiles(lib::size image_size, lib::screen_rect_int surface_rec
 	int max_x = surface_rect.left()+width;
 	int max_y = surface_rect.top()+height;
 	common::tiling t = m_info->get_tiling();
-	if (t == common::tiling_horizontal || t == common::tiling_both)
+	if (t == common::tiling_horizontal || t == common::tiling_both || t == common::tiling_default)
 		max_x = surface_rect.right();
-	if (t == common::tiling_vertical || t == common::tiling_both)
+	if (t == common::tiling_vertical || t == common::tiling_both || t == common::tiling_default)
 		max_y = surface_rect.bottom();
 		
 	for (x=surface_rect.left(); x < max_x; x += width) {

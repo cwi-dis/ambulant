@@ -232,11 +232,41 @@ void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& ds
 
 // Paints the provided string
 void gui::dg::viewport::draw(const std::basic_string<text_char>& text, 
-	const lib::screen_rect<int>& dst_rc, lib::color_t clr) {
+	const lib::screen_rect<int>& dst_rc, lib::color_t clr, const char *fontname, float size) {
 	if(!m_memdc) return;
 	SetBkMode(m_memdc, TRANSPARENT);
 	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
 	::SetTextColor(m_memdc, crTextColor);	
+	if (fontname || size) {
+		DWORD family = FF_DONTCARE | DEFAULT_PITCH;
+		if (fontname) {
+			if (strcmp(fontname, "serif") == 0) {
+				family = FF_ROMAN | VARIABLE_PITCH;
+				fontname = NULL;
+			} else if (strcmp(fontname, "sans-serif") == 0) {
+				family = FF_SWISS | VARIABLE_PITCH;
+				fontname = NULL;
+			} else if (strcmp(fontname, "monospace") == 0) {
+				family = FF_DONTCARE | FIXED_PITCH;
+				fontname = NULL;
+			} else if (strcmp(fontname, "cursive") == 0) {
+				family = FF_SCRIPT | VARIABLE_PITCH;
+				fontname = NULL;
+			} else if (strcmp(fontname, "fantasy") == 0) {
+				family = FF_DECORATIVE | VARIABLE_PITCH;
+				fontname = NULL;
+			}
+		}
+
+		LOGFONT lf;
+		memset(&lf, 0, sizeof(LOGFONT));
+		lf.lfHeight = (long)(-size*GetDeviceCaps(m_memdc, LOGPIXELSY)/72);
+		lf.lfPitchAndFamily = family;
+//		if (fontname)
+//			strncpy(lf.lfFaceName, fontname, 32);
+		HFONT fontobj = ::CreateFontIndirect(&lf);
+		::SelectObject(m_memdc, fontobj);
+	}
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;
 	int res = ::DrawText(m_memdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
@@ -288,6 +318,33 @@ void gui::dg::viewport::frame_rect(const lib::screen_rect<int>& rc, lib::color_t
 	DeleteObject((HGDIOBJ) hbr);
 }
 
+gui::dg::dib_surface_t*
+gui::dg::viewport::create_surface(DWORD w, DWORD h)
+{
+	HDC hdc = GetDC(NULL);
+	if(!hdc) {
+		win_report_last_error("GetDC");
+		return NULL;
+	}
+	lib::color_trible *bits = 0;
+	BITMAPINFO *pbmpi = get_bmp_info(m_width, m_height, m_bits_size);
+	HBITMAP hbmp = CreateDIBSection(hdc, pbmpi, DIB_RGB_COLORS, (void**)&bits, NULL, 0);
+	if(!hbmp || !bits) {
+		win_report_last_error("CreateDIBSection");
+		return NULL;
+	}
+	surface_t *surf = new surface_t(m_width, m_height, m_bits_size, bits);
+	surf->fill(lib::color_trible(m_bgd));
+#if 0
+	xxm_memdc = CreateCompatibleDC(hdc);
+	xxm_hold = (HBITMAP) SelectObject(xxm_memdc, xxm_hbmp);
+#endif
+	DeleteDC(hdc);
+	return new dib_surface_t(hbmp, surf);
+}
 
-
-
+gui::dg::surface_t*
+gui::dg::viewport::get_surface()
+{
+	return m_surf;
+}

@@ -99,7 +99,8 @@ class dx_renderer_playable : public common::renderer_playable {
 		gui::dx::dx_transition *tr = m_dxplayer->get_transition(this);
 		if (tr) return tr;
 		m_transitioning = false;
-		m_dest->transition_done();
+//		m_dxplayer->stopped(this);
+//		m_dest->transition_done();
 		return NULL;
 	}
   protected:

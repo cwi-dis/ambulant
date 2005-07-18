@@ -180,7 +180,7 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	// dirty region and transitions are ignored.
 	// Also, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundRepeat") && m_dest->is_tiled()) {
+	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer.redraw: drawing tiled image");
 		img_reg_rc = m_dest->get_rect();
 		img_reg_rc.translate(m_dest->get_global_topleft());

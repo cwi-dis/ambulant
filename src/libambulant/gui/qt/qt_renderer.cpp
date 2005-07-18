@@ -199,27 +199,31 @@ qt_transition_renderer::redraw_post(gui_window *window)
 		aqw->reset_ambulant_surface();
 	}
 	if(m_trans_engine) {
+		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
-			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
-			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop);
-			m_event_processor->add_event(ev, 0, lib::event_processor::med);
 #ifdef USE_SMIL21
 			if (m_fullscreen)
 				aqw->screenTransitionStep(NULL, 0);
+			else
+				m_trans_engine->step(now);
+#else
+			m_trans_engine->step(now);
 #endif
+			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
+			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop);
+			m_event_processor->add_event(ev, 0, lib::event_processor::med);
 		} else {
 			if ( 1 /* XXX was: surf */) {
-				lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 				AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
-	#ifdef USE_SMIL21
+#ifdef USE_SMIL21
 				if (m_fullscreen) {
 					aqw->screenTransitionStep (m_trans_engine, now);
 				} else {
 					m_trans_engine->step(now);
 				}
-	#else
+#else
 				m_trans_engine->step(now);
-	#endif
+#endif
 				typedef no_arg_callback<qt_transition_renderer>transition_callback;
 				event *ev = new transition_callback (this, &qt_transition_renderer::transition_step);
 				transition_info::time_type delay = m_trans_engine->next_step_delay();

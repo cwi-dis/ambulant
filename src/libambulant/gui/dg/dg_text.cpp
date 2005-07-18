@@ -61,6 +61,8 @@
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/textptr.h"
 
+#include "ambulant/smil2/params.h"
+
 //#define AM_DBG if(1)
 
 #ifndef AM_DBG
@@ -76,7 +78,11 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	lib::event_processor* evp,
 	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp), 
-	m_window(window) { 
+	m_window(window),
+	m_fontname(NULL),
+	m_fontsize(0),
+	m_color(CLR_INVALID)
+{ 
 	
 	AM_DBG lib::logger::get_logger()->debug("dg_text_renderer(0x%x)", this);
 	dg_window *dgwindow = static_cast<dg_window*>(window);
@@ -92,6 +98,15 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	std::string s((const char*)mf.data(), mf.size());
 	m_text = lib::textptr(s.c_str()).c_wstr();
 #endif
+	// Pass <param> settings, if applicable
+	smil2::params *params = smil2::params::for_node(m_node);
+	if (params) {
+		m_fontname = params->get_str("font-family");
+//		const char *fontstyle = params->get_str("font-style");
+		m_color = params->get_color("color", 0);
+		m_fontsize = params->get_float("font-size", 0.0);
+		delete params;
+	}
 }
 
 gui::dg::dg_text_renderer::~dg_text_renderer() {
@@ -147,7 +162,7 @@ void gui::dg::dg_text_renderer::redraw(const lib::screen_rect<int> &dirty, commo
 	lib::screen_rect<int> rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	if(!m_text.empty()) v->draw(m_text, rc);
+	if(!m_text.empty()) v->draw(m_text, rc, m_color, m_fontname, m_fontsize);
 
 	if (m_erase_never) m_dest->keep_as_background();
 }

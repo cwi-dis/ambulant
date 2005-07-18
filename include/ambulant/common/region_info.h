@@ -127,6 +127,9 @@ class region_info {
 	
 	/// Return image tiling within region
 	virtual tiling get_tiling() const = 0;
+
+	/// Return the background image
+	virtual const char *get_bgimage() const = 0;
 #endif
 };
 

@@ -145,8 +145,9 @@ class dx_transition_engine : public dx_transition {
 	}
 	
 	bool next_step(lib::timer::time_type pt) {
+		bool no_more = m_engine->is_done();
 		m_engine->step(m_timer->elapsed(pt));
-		return !m_engine->is_done();
+		return !no_more;
 	}
 	
 	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info)

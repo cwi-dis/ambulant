@@ -1,23 +1,23 @@
 <!-- ...................................................................... -->
-<!-- SMIL 2.1 Mobile Profile DTD  ......................................... -->
-<!-- file: SMIL21Mobile.dtd                                                 -->
-<!-- SMIL 2.1 Mobile Profile DTD
+<!-- SMIL 2.1 Extended Mobile Profile DTD  ................................ -->
+<!-- file: SMIL21ExtendedMobile.dtd                                         -->
+<!-- SMIL 2.1 Extended Mobile Profile DTD
 
         This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Author:     Jacco van Ossenbruggen
         Editor for SMIL 2.1: Sjoerd Mullender, CWI
         $Revision$
 
- This is the driver file for the SMIL 2.1 Mobile Profile DTD.
+ This is the driver file for the SMIL 2.1 Extended Mobile Profile DTD.
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-     PUBLIC "-//W3C//DTD SMIL 2.1//EN"
-     SYSTEM "http://www.w3.org/2005/SMIL21/WD/SMIL21.dtd"
+     PUBLIC "-//W3C//DTD SMIL 2.1 Extended Mobile//EN"
+     SYSTEM "http://www.w3.org/2005/SMIL21/PR/SMIL21ExtendedMobile.dtd"
 
 -->
 
@@ -27,7 +27,7 @@
 <!-- Define the Content Model -->
 <!ENTITY % smil-model.mod
     PUBLIC "-//W3C//ENTITIES SMIL 2.1 Document Model 1.0//EN"
-           "smil-mobile-profile-model-1.mod" >
+           "smil-extended-mobile-profile-model-1.mod" >
 
 <!-- Modular Framework Module  ................................... -->
 <!ENTITY % smil-framework.module "INCLUDE" >
@@ -37,7 +37,8 @@
             "smil-framework-1.mod" >
 %smil-framework.mod;]]>
 
-<!-- The SMIL 2.1 Profile includes the following sections:
+<!-- The SMIL 2.1 Extended Mobile Profile includes the following sections:
+             C. The SMIL Animation Module 
              D. The SMIL Content Control Module 
              G. The SMIL Layout Module 
              H. The SMIL Linking Module 
@@ -49,6 +50,9 @@
              P. The SMIL Transition effects Module 
 -->
 
+<!ENTITY % SMIL.anim-mod   
+  PUBLIC "-//W3C//ELEMENTS SMIL 2.1 Animation//EN"  
+  "SMIL-anim.mod">
 <!ENTITY % SMIL.control-mod 
   PUBLIC "-//W3C//ELEMENTS SMIL 2.1 Content Control//EN" 
   "SMIL-control.mod">
@@ -75,6 +79,7 @@
   "SMIL-transition.mod">
 
 %SMIL.struct-mod;
+%SMIL.anim-mod;
 %SMIL.control-mod;
 %SMIL.meta-mod;
 %SMIL.layout-mod;

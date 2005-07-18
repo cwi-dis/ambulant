@@ -143,7 +143,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 }
 
 void gui::dx::dx_img_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->show("dx_img_renderer::stop(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
 	m_dest->renderer_done(this);
@@ -160,6 +160,7 @@ void gui::dx::dx_img_renderer::stop() {
 			}
 		}
 	}
+	m_dest->need_redraw();
 }
 
 void gui::dx::dx_img_renderer::user_event(const lib::point& pt, int what) {
@@ -171,6 +172,7 @@ void gui::dx::dx_img_renderer::user_event(const lib::point& pt, int what) {
 }
 
 void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
+	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw(0x%x)", this);
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
@@ -195,7 +197,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	// dirty region and transitions are ignored.
 	// Also, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundRepeat") && m_dest->is_tiled()) {
+	if (m_node->get_attribute("backgroundImage") &&  m_dest->is_tiled()) {
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer.redraw: drawing tiled image");
 		img_reg_rc = m_dest->get_rect();
 		img_reg_rc.translate(m_dest->get_global_topleft());

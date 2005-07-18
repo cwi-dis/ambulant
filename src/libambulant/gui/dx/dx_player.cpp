@@ -456,6 +456,7 @@ void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::tra
 
 gui::dx::dx_transition *
 gui::dx::dx_player::set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition) {  
+	stopped(p);
 	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
@@ -478,7 +479,13 @@ void gui::dx::dx_player::update_transitions() {
 	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
 		if(!(*it).second->next_step(pt)) {
 			delete (*it).second;
+			common::playable *p = (*it).first;
 			it = m_trmap.erase(it);
+			common::renderer *r = p->get_renderer();
+			if (r) {
+				common::surface *surf = r->get_surface();
+				if (surf) surf->transition_done();
+			}
 		}
 	}
 	//unlock_redraw();
@@ -503,7 +510,13 @@ void gui::dx::dx_player::stopped(common::playable *p) {
 	trmap_t::iterator it = m_trmap.find(p);
 	if(it != m_trmap.end()) {
 		delete (*it).second;
-		m_trmap.erase(it);
+		common::playable *p = (*it).first;
+		it = m_trmap.erase(it);
+		common::renderer *r = p->get_renderer();
+		if (r) {
+			common::surface *surf = r->get_surface();
+			if (surf) surf->transition_done();
+		}
 	}
 	m_trmap_cs.leave();
 }

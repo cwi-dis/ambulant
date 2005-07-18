@@ -37,7 +37,8 @@
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames="LIBC.lib"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				TargetMachine="1"/>

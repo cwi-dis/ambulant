@@ -316,6 +316,8 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 		common::bgrenderer *bgrenderer = wf->new_background_renderer(first_root_layout);
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_surfaces: create root_layout");
 		root_surface = create_top_surface(wf, first_root_layout, bgrenderer);
+		assert(root_surface);
+		first_root_layout->set_surface_template(root_surface);
 	}
 		
 	// Loop over all the layout elements, create the regions and root_layouts,
@@ -377,6 +379,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 					assert(0);
 				}
 				// Store in the region_node
+				assert(surf); // XXXX Good idea?
 				rn->set_surface_template(surf);
 				
 				// Finally push on to the stack for reference by child nodes
@@ -399,6 +402,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			root_surface = create_top_surface(wf, NULL, NULL);
 		}
 		common::surface_template *surf = root_surface->new_subsurface(rn, bgrenderer);
+		assert(surf); // XXXX Good idea?
 		rn->set_surface_template(surf);
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_surfaces: subregion 0x%x surface 0x%x", (void*)rn, (void*)surf);
 	}
@@ -709,12 +713,21 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 	for(it = m_layout_root->begin(); it != end; it++) {
 		if (!(*it).first) continue;
 		const lib::node *rn = (*it).second;
-		const char *bgimage = rn->get_attribute("backgroundImage");
-		if (bgimage == NULL) continue;
+		if (rn->get_attribute("backgroundImage") == NULL) continue;
+
+		common::surface *surf = layout_mgr->get_surface(rn);
+		if (!surf) {
+			lib::logger::get_logger()->debug("bgimage_loader: no surface");
+			continue;
+		}
+		const char *bgimage = surf->get_info()->get_bgimage();
+		if (!bgimage) continue;
 		const char *bgrepeat = rn->get_attribute("backgroundRepeat");
 		AM_DBG lib::logger::get_logger()->debug("load_bgimages: load bgimage %s", bgimage);
-		const char *attrs[7], **attrp = attrs;
+		const char *attrs[9], **attrp = attrs;
 		*attrp++ = "src";
+		*attrp++ = bgimage;
+		*attrp++ = "backgroundImage";
 		*attrp++ = bgimage;
 		*attrp++ = "erase";
 		*attrp++ = "never";
@@ -734,18 +747,15 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 				// toplevel gui_window so we can synchronise the redraws before
 				// zapping the whole bgimage_loader and other objects.
 				common::surface *surf = layout_mgr->get_surface(rn);
-				if (surf) {
-					common::renderer *r = p->get_renderer();
-					if (r) {
-						r->set_surface(surf);
-						common::gui_window *w = surf->get_gui_window();
-						if (w && !m_gui_windows.count(w))
-							m_gui_windows.insert(w);
-					} else {
-						lib::logger::get_logger()->debug("bgimage_loader: no renderer");
-					}
+				assert(surf);
+				common::renderer *r = p->get_renderer();
+				if (r) {
+					r->set_surface(surf);
+					common::gui_window *w = surf->get_gui_window();
+					if (w && !m_gui_windows.count(w))
+						m_gui_windows.insert(w);
 				} else {
-					lib::logger::get_logger()->debug("bgimage_loader: no surface");
+					lib::logger::get_logger()->debug("bgimage_loader: no renderer");
 				}
 				// Remember renderer and node.
 				m_nodes.push_back(n);

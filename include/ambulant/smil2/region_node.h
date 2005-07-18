@@ -135,7 +135,7 @@ class region_node : public common::animation_destination {
 	double get_soundlevel() const { return m_display_soundlevel; }
 #ifdef USE_SMIL21
 	common::sound_alignment get_soundalign() const { return m_display_soundalign; }
-	const char *get_bgimage() const { return m_bgimage; }
+	const char *get_bgimage() const;
 	common::tiling get_tiling() const;
 #endif
 

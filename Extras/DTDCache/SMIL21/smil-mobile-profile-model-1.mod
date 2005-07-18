@@ -4,7 +4,7 @@
 
      This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Author: Warner ten Kate, Jacco van Ossenbruggen, Aaron Cohen
@@ -19,7 +19,7 @@
      ====================================================================== -->
 
 <!--
-        This file defines the SMIL 2.1 Extended Mobile Profile
+        This file defines the SMIL 2.1 Mobile Profile
         Document Model.  All attributes and content models are defined
         in the second half of this file.  We first start with some
         utility definitions.  These are mainly used to simplify the

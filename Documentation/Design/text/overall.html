@@ -3,19 +3,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
+<title>Ambulant design, overall</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document">
+<div class="document" id="ambulant-design-overall">
+<h1 class="title">Ambulant design, overall</h1>
 <!-- This document is prepended when we generate HTML. It contains the links
 used by the other documents, implemented as hyperlinks. An alternative
 head document is available for LaTeX generation. -->
-<a class="target" id="overall-design-section" name="overall-design-section"></a><div class="section" id="ambulant-design-overall">
-<h1><a name="ambulant-design-overall">Ambulant design, overall</a></h1>
-<p>Last updated for Ambulant version 1.1.</p>
+<a class="target" id="overall-design-section" name="overall-design-section"></a><p>Last updated for Ambulant version 1.1.</p>
 <div class="section" id="design-process">
-<h2><a name="design-process">Design process</a></h2>
+<h1><a name="design-process">Design process</a></h1>
 <p>The design consists of a mixed bag of technologies:</p>
 <ul class="simple">
 <li>Text files such as this one for informal descriptions. They are marked
@@ -29,11 +29,11 @@ which version of Ambulant they were last updated, so it is relatively
 easy to spot outdated (or potentially outdated) documents.</p>
 </div>
 <div class="section" id="global-structure">
-<h2><a name="global-structure">Global structure</a></h2>
+<h1><a name="global-structure">Global structure</a></h1>
 <p>To be able to use the code
 to create, say, a plugin SMIL renderer for use in a browser we need a global
 &quot;playback engine&quot; object that has all the others hanging off it (plus factory
-methods to create them, etc). To support this we have a global object <tt class="literal"><span class="pre">player</span></tt>
+methods to create them, etc). To support this we have a global object <tt class="docutils literal"><span class="pre">player</span></tt>
 that is the controller of all aspects of playback of a single SMIL document.</p>
 <p>In addition we use factories for creating things like renderers, file readers,
 parsers and windows. These factories are populated by the main program and then
@@ -48,7 +48,7 @@ render anything, but only prints on stdout what should happen at what time, or
 any other form of symbolic execution.</p>
 </div>
 <div class="section" id="replaceable-components">
-<h2><a name="replaceable-components">Replaceable components</a></h2>
+<h1><a name="replaceable-components">Replaceable components</a></h1>
 <p>AmbulantPlayer is intended to be a research system, and therefore all components
 should be easy to replace with interfering with the rest of the system. This
 allows a researcher to concentrate on one issue, such as network protocols or
@@ -64,7 +64,7 @@ this will be done at a later stage. All other functionality (media playback,
 data retrieval, parsing, layout, scheduling) does follow this pattern.</p>
 </div>
 <div class="section" id="run-time-system">
-<h2><a name="run-time-system">run-time system</a></h2>
+<h1><a name="run-time-system">run-time system</a></h1>
 <p>Because we have a C++ implementation
 we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that is used for
@@ -83,7 +83,7 @@ schedules and ending these to a low level scheduler, isn't going to work
 for SMIL without putting almost all SMIL complexity in the low-level scheduler.</p>
 </div>
 <div class="section" id="main-loop">
-<h2><a name="main-loop">main loop</a></h2>
+<h1><a name="main-loop">main loop</a></h1>
 <p>The basic architecture is event-driven, with a small
 number of worker threads picking up events from the event queue. The alternative
 is to use multiple threads all over, but it seems event-driven is the better
@@ -113,26 +113,26 @@ enough that the best execution order of things that happen &quot;at the same tim
 is automatic.</p>
 </div>
 <div class="section" id="factory-pattern">
-<h2><a name="factory-pattern">Factory pattern</a></h2>
+<h1><a name="factory-pattern">Factory pattern</a></h1>
 <p>There are various factories that follow a common pattern. There is a client
-interface, called something like <tt class="literal"><span class="pre">playable_factory</span></tt>, that can be used to create
-<tt class="literal"><span class="pre">playable</span></tt> objects. If the factory cannot create the object it returns <tt class="literal"><span class="pre">NULL</span></tt>.</p>
+interface, called something like <tt class="docutils literal"><span class="pre">playable_factory</span></tt>, that can be used to create
+<tt class="docutils literal"><span class="pre">playable</span></tt> objects. If the factory cannot create the object it returns <tt class="docutils literal"><span class="pre">NULL</span></tt>.</p>
 <p>This interface is implemented by all the providers of objects that have the
-<tt class="literal"><span class="pre">playable</span></tt> interface. For example, the implementation of a video renderer 
-for Cocoa on MacOSX will consist of a <tt class="literal"><span class="pre">cocoa_video_playable</span></tt> implementation and
-a <tt class="literal"><span class="pre">cocoa_video_playable_factory</span></tt> implementation.</p>
+<tt class="docutils literal"><span class="pre">playable</span></tt> interface. For example, the implementation of a video renderer 
+for Cocoa on MacOSX will consist of a <tt class="docutils literal"><span class="pre">cocoa_video_playable</span></tt> implementation and
+a <tt class="docutils literal"><span class="pre">cocoa_video_playable_factory</span></tt> implementation.</p>
 <p>The core also has a provider interface, usually called
-<tt class="literal"><span class="pre">global_playable_factory</span></tt>. This interface has a method <tt class="literal"><span class="pre">add_playable_factory</span></tt>
-that the playable provider uses to register its <tt class="literal"><span class="pre">playable_factory</span></tt>. Then,
-when a client uses the <tt class="literal"><span class="pre">global_playable_factory</span></tt> to create a playable
+<tt class="docutils literal"><span class="pre">global_playable_factory</span></tt>. This interface has a method <tt class="docutils literal"><span class="pre">add_playable_factory</span></tt>
+that the playable provider uses to register its <tt class="docutils literal"><span class="pre">playable_factory</span></tt>. Then,
+when a client uses the <tt class="docutils literal"><span class="pre">global_playable_factory</span></tt> to create a playable
 it will iterate over all playable factories until one is found that can create
 the object.</p>
-<p>These <tt class="literal"><span class="pre">global_playable_factory</span></tt> objects should be singletons, but in the
-current implementation this isn't always true. Also, the <tt class="literal"><span class="pre">global_</span></tt> naming
+<p>These <tt class="docutils literal"><span class="pre">global_playable_factory</span></tt> objects should be singletons, but in the
+current implementation this isn't always true. Also, the <tt class="docutils literal"><span class="pre">global_</span></tt> naming
 convention isn't strictly followed for all factories.</p>
 </div>
 <div class="section" id="machine-dependent-code">
-<h2><a name="machine-dependent-code">Machine-dependent code</a></h2>
+<h1><a name="machine-dependent-code">Machine-dependent code</a></h1>
 <p>The general way to handle machine-dependency is to create a machine-independent
 abstract base class, plus machine-dependent subclasses. Then there is a factory
 function that creates a machine-dependent instance and returns it casted
@@ -142,15 +142,20 @@ easily: modules using these extensions declare objects of the subclass and
 call the initializer directly in stead of through the factory function.</p>
 <p>The scheme does not work for all objects, however: it breaks if we want to
 create static copies of the objects. For classes for which this is the case,
-such as the <tt class="literal"><span class="pre">critical_region</span></tt> object, we declare an abstract object 
-<tt class="literal"><span class="pre">abstract_critical_section</span></tt> in
-<tt class="literal"><span class="pre">lib/abstract_mtsync.h</span></tt>, subclass that as <tt class="literal"><span class="pre">PLATFORM::critical_section</span></tt>
-in <tt class="literal"><span class="pre">lib/PLATFORM/PLATFORM_mtsync.h</span></tt>,
-conditionally include that in <tt class="literal"><span class="pre">lib/mtsync.h</span></tt> and create an empty subclass
-<tt class="literal"><span class="pre">critical_section</span></tt> of it.</p>
+such as the <tt class="docutils literal"><span class="pre">critical_region</span></tt> object, we declare an abstract object 
+<tt class="docutils literal"><span class="pre">abstract_critical_section</span></tt> in
+<tt class="docutils literal"><span class="pre">lib/abstract_mtsync.h</span></tt>, subclass that as <tt class="docutils literal"><span class="pre">PLATFORM::critical_section</span></tt>
+in <tt class="docutils literal"><span class="pre">lib/PLATFORM/PLATFORM_mtsync.h</span></tt>,
+conditionally include that in <tt class="docutils literal"><span class="pre">lib/mtsync.h</span></tt> and create an empty subclass
+<tt class="docutils literal"><span class="pre">critical_section</span></tt> of it.</p>
+<p>In case you really need a preprocessor define to trigger machine-dependent
+code on: <tt class="docutils literal"><span class="pre">ambulant/config.h</span></tt> defines a number of macros like
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_UNIX</span></tt>, <tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_LINUX</span></tt>, <tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_MACOS</span></tt>, 
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32</span></tt> and <tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32_WCE</span></tt>. Use of these is
+preferred over platorm-native defines.</p>
 </div>
 <div class="section" id="integrating-third-party-tools">
-<h2><a name="integrating-third-party-tools">integrating third-party tools</a></h2>
+<h1><a name="integrating-third-party-tools">integrating third-party tools</a></h1>
 <p>We need to be able to use existing toolkits that take work out of our hands.
 Think of QuickTime and DirectX, where you basically pass a URL and say &quot;play&quot; and
 have nothing to worry about anymore. Also, existing URL access libraries (such
@@ -162,18 +167,17 @@ which media bits can go from their source (far away on the net) to the screen.</
 when applicable, but no work on this has been done yet.</p>
 </div>
 <div class="section" id="other-languages">
-<h2><a name="other-languages">Other languages</a></h2>
+<h1><a name="other-languages">Other languages</a></h1>
 <p>It is our intention to eventually allow bridging of Ambulant Player to other languages
 such as Python or Java. An effort has been made to keep the APIs clean enough
 to allow this, but no actual work has been done on it yet.</p>
 </div>
 <div class="section" id="where-next">
-<h2><a name="where-next">Where next?</a></h2>
+<h1><a name="where-next">Where next?</a></h1>
 <p>A good place to continue reading is the <a class="reference" href="walkthrough.html">walkthrough</a> document, which gives a terse
 description of how a SMIL document is opened, parsed and played. Then continue
 with the <a class="reference" href="objects.html">objects</a> document which describes the main objects in more detail.
 Or go back to the <a class="reference" href="../index.html">main documentation index</a>.</p>
-</div>
 </div>
 </div>
 </body>

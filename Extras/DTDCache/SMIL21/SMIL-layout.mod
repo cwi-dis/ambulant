@@ -4,7 +4,7 @@
 
         This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Author:     Jacco van Ossenbruggen, Aaron Cohen
@@ -147,7 +147,7 @@
 <![%SMIL.BackgroundTilingLayout.module;[
   <!-- ================== BackgroundTilingLayout Entities ================= -->
   <!ENTITY % SMIL.BackgroundTiling-attrs "
-    backgroundImage %URI.datatype; #IMPLIED
+    backgroundImage %URI.datatype; 'none'
     backgroundRepeat (repeat|repeatX|repeatY|noRepeat|inherit) 'repeat'
 ">
 

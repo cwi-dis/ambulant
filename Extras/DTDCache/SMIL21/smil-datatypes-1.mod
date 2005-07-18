@@ -4,7 +4,7 @@
 
      This is SMIL 2.1.
 
-        Copyright: 1998-2001,2005 W3C (MIT, INRIA, Keio), All Rights
+        Copyright: 1998-2001,2005 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Author:     Jacco van Ossenbruggen
@@ -28,10 +28,10 @@
     <!-- a single character from [ISO10646] -->
 <!ENTITY % ContentType.datatype "CDATA">
     <!-- media type, as per [RFC2045] -->
-<!ENTITY % LanguageCode.datatype "NMTOKEN">
-    <!-- a language code, as per [RFC1766] -->
+<!ENTITY % LanguageCode.datatype "CDATA">
+    <!-- a language code, as per [RFC3066] -->
 <!ENTITY % LanguageCodes.datatype "CDATA">
-    <!-- comma-separated list of language codes, as per [RFC1766] -->
+    <!-- comma-separated list of language codes, as per [RFC3066] -->
 <!ENTITY % Number.datatype "CDATA">
     <!-- one or more digits -->
 <!ENTITY % Script.datatype "CDATA">

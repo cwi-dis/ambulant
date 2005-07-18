@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2005-04-29 13:19+0200\n"
+"POT-Creation-Date: 2005-06-21 16:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,17 +28,17 @@ msgstr ""
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:258
+#: src/libambulant/gui/SDL/sdl_audio.cpp:266
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:260
+#: src/libambulant/gui/SDL/sdl_audio.cpp:268
 #, c-format
 msgid "%s: audio format not supported"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:291
+#: src/libambulant/gui/SDL/sdl_audio.cpp:299
 #, c-format
 msgid "%s: cannot open"
 msgstr ""
@@ -96,34 +96,34 @@ msgstr ""
 msgid "%s: Error parsing document"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:116
+#: src/libambulant/mms/timeline_builder.cpp:117
 msgid "MMS player: ignoring XML namespace"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:129
-#: src/libambulant/mms/timeline_builder.cpp:174
+#: src/libambulant/mms/timeline_builder.cpp:130
+#: src/libambulant/mms/timeline_builder.cpp:175
 #, c-format
 msgid "MMS player: unknown tag \"%s\""
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:234
+#: src/libambulant/mms/timeline_builder.cpp:235
 #, c-format
 msgid "Internal error: timeline_builder.build_node: unknown nodetype %d"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:272
+#: src/libambulant/mms/timeline_builder.cpp:273
 msgid "MMS Player: empty seq not allowed in MMS"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:308
+#: src/libambulant/mms/timeline_builder.cpp:309
 msgid "MMS Player: empty par not allowed in MMS"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:315
+#: src/libambulant/mms/timeline_builder.cpp:316
 msgid "MMS Player: par must have explicit delay in MMS"
 msgstr ""
 
-#: src/libambulant/mms/timeline_builder.cpp:320
+#: src/libambulant/mms/timeline_builder.cpp:321
 msgid "MMS Player: dur attribute must be of form \"1000ms\""
 msgstr ""
 
@@ -170,27 +170,26 @@ msgstr ""
 
 #: src/libambulant/net/ffmpeg_datasource.cpp:579
 #: src/libambulant/net/ffmpeg_datasource.cpp:615
-#: src/libambulant/net/ffmpeg_datasource.cpp:1505
-#: src/libambulant/net/ffmpeg_datasource.cpp:1544
-#: src/libambulant/net/ffmpeg_datasource.cpp:1582
-#: src/libambulant/net/ffmpeg_datasource.cpp:1689
-#: src/libambulant/net/ffmpeg_datasource.cpp:1694
-#: src/libambulant/net/ffmpeg_datasource.cpp:1700
-#: src/libambulant/net/ffmpeg_datasource.cpp:1707
-#: src/libambulant/net/ffmpeg_datasource.cpp:1813
-#: src/libambulant/net/ffmpeg_datasource.cpp:1818
-#: src/libambulant/net/ffmpeg_datasource.cpp:1826
-#: src/libambulant/net/ffmpeg_datasource.cpp:1833
-#: src/libambulant/net/ffmpeg_datasource.cpp:1940
-#: src/libambulant/net/ffmpeg_datasource.cpp:1977
-#: src/libambulant/net/ffmpeg_datasource.cpp:2114
+#: src/libambulant/net/ffmpeg_datasource.cpp:1506
+#: src/libambulant/net/ffmpeg_datasource.cpp:1545
+#: src/libambulant/net/ffmpeg_datasource.cpp:1583
+#: src/libambulant/net/ffmpeg_datasource.cpp:1690
+#: src/libambulant/net/ffmpeg_datasource.cpp:1695
+#: src/libambulant/net/ffmpeg_datasource.cpp:1701
+#: src/libambulant/net/ffmpeg_datasource.cpp:1708
+#: src/libambulant/net/ffmpeg_datasource.cpp:1814
+#: src/libambulant/net/ffmpeg_datasource.cpp:1819
+#: src/libambulant/net/ffmpeg_datasource.cpp:1827
+#: src/libambulant/net/ffmpeg_datasource.cpp:1834
+#: src/libambulant/net/ffmpeg_datasource.cpp:1941
+#: src/libambulant/net/ffmpeg_datasource.cpp:1978
+#: src/libambulant/net/ffmpeg_datasource.cpp:2115
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
 #: src/libambulant/net/ffmpeg_datasource.cpp:792
 #: src/libambulant/net/ffmpeg_datasource.cpp:811
 #: src/libambulant/net/ffmpeg_datasource.cpp:1099
-#: src/libambulant/net/ffmpeg_datasource.cpp:1154
 msgid "Programmer error encountered during video playback"
 msgstr ""
 
@@ -199,24 +198,24 @@ msgstr ""
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_datasource.cpp:1324
+#: src/libambulant/net/ffmpeg_datasource.cpp:1325
 msgid "error decoding video frame"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_datasource.cpp:1437
+#: src/libambulant/net/ffmpeg_datasource.cpp:1438
 #, c-format
 msgid "%s: audio decoder \"%s\" not supported"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_datasource.cpp:1454
+#: src/libambulant/net/ffmpeg_datasource.cpp:1455
 #, c-format
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_datasource.cpp:1669
-#: src/libambulant/net/ffmpeg_datasource.cpp:1676
-#: src/libambulant/net/ffmpeg_datasource.cpp:1792
-#: src/libambulant/net/ffmpeg_datasource.cpp:1799
+#: src/libambulant/net/ffmpeg_datasource.cpp:1670
+#: src/libambulant/net/ffmpeg_datasource.cpp:1677
+#: src/libambulant/net/ffmpeg_datasource.cpp:1793
+#: src/libambulant/net/ffmpeg_datasource.cpp:1800
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
