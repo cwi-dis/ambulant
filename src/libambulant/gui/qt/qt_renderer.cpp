@@ -141,7 +141,7 @@ qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 void
 qt_transition_renderer::stop()
 {
-	// private method - no locking
+	m_lock.enter();
 	if (!m_trans_engine) return;
 	delete m_trans_engine;
 	m_trans_engine = NULL;
@@ -150,6 +150,7 @@ qt_transition_renderer::stop()
 		((ambulant_qt_window*)m_view)->endScreenTransition();
 	}
 #endif
+	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 	m_view = NULL;
 }
@@ -235,10 +236,10 @@ qt_transition_renderer::redraw_post(gui_window *window)
 void
 qt_transition_renderer::transition_step()
 {
-//	m_lock.enter();
+	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("qt_renderer.transition_step: now=%d",m_event_processor->get_timer()->elapsed());
 	if (m_transition_dest) m_transition_dest->need_redraw();
-//	m_lock.leave();
+	m_lock.leave();
 }
 
 } // namespace qt
