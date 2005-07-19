@@ -529,7 +529,7 @@ passive_timeline::build()
 	m_playdone_indices = new int[m_timeline_nodes.size()];//(-1);
 	for(size_t i=0;i<m_timeline_nodes.size();i++) m_playdone_indices[i] = -1;
 	for(node=m_timeline_nodes.begin(); node < m_timeline_nodes.end(); node++) {
-		int node_index = node - m_timeline_nodes.begin();
+		int node_index = (int)(node - m_timeline_nodes.begin());
 		(*node)->build_actions(m_actions, indexer, node_index);
 		int playdone_index = (*node)->get_playdone_index(indexer, node_index);
 		m_playdone_indices[node_index] = playdone_index;

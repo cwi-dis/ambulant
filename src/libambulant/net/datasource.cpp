@@ -66,10 +66,10 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 	mem_datasource(const net::url &url)
 	{
 		const char *data = url.get_url().c_str() + 6; // strlen("data:,")
-		int datalen = strlen(data);
-		char *ptr = m_databuf.get_write_ptr(datalen);
+		size_t datalen = strlen(data);
+		char *ptr = m_databuf.get_write_ptr((int)datalen);
 		memcpy(ptr, data, datalen);
-		m_databuf.pushdata(datalen);
+		m_databuf.pushdata((int)datalen);
 	}
 	~mem_datasource() {};
 

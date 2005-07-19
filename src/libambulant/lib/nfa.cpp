@@ -448,7 +448,7 @@ bool lib::nfa_matcher::match(const std::string& str) {
 
 // static
 void lib::nfa_matcher::get_groups(int anchor, std::set<int>& groups) {
-	for(size_t i=1;i<sizeof(int);i++) {
+	for(int i=1;i<(int)sizeof(int);i++) {
 		anchor >>= 1;
 		if(anchor & 1) groups.insert(i);
 	}

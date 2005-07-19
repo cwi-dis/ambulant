@@ -238,7 +238,7 @@ void gui::dg::viewport::draw(const std::basic_string<text_char>& text,
 	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
 	::SetTextColor(m_memdc, crTextColor);	
 	if (fontname || size) {
-		DWORD family = FF_DONTCARE | DEFAULT_PITCH;
+		BYTE family = FF_DONTCARE | DEFAULT_PITCH;
 		if (fontname) {
 			if (strcmp(fontname, "serif") == 0) {
 				family = FF_ROMAN | VARIABLE_PITCH;

@@ -136,11 +136,13 @@ bool lib::win32::file_exists(const std::string& fn) {
 		FindClose(hFind);
 		hFind = INVALID_HANDLE_VALUE;
 		exists = true;
+#if 0
 	} else  {
 		DWORD dw = GetLastError();
 
 		if(dw != ERROR_FILE_NOT_FOUND)
-			/*win_report_error("FindFirstFile()", dw)*/;
+			win_report_error("FindFirstFile()", dw);
+#endif
 	}
 	return exists;
 }

@@ -143,7 +143,7 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	memcpy(&m_buf[old_size], buf, len);
 	if (final == false)
 		return true;
-	MemBufInputSource membuf((const XMLByte*) m_buf, m_size, m_id);
+	MemBufInputSource membuf((const XMLByte*) m_buf, (unsigned int)m_size, m_id);
 	try {
 		m_saxparser->parse(membuf);
 		succeeded = true;
@@ -223,7 +223,7 @@ void
 xerces_sax_parser::to_qattrs(AttributeList& attrs, 
 			     q_attributes_list& list) {
 	if (attrs.getLength() == 0) return;
-	for (int i = 0; i < attrs.getLength(); i++) {
+	for (int i = 0; i < (int)attrs.getLength(); i++) {
 		char* value = XMLString::transcode(attrs.getValue(i));
 		xml_string xmlvalue(value);
 		q_attribute_pair qap (to_q_name_pair(attrs.getName(i)),

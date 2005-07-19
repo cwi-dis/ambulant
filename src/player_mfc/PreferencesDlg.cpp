@@ -56,9 +56,9 @@ void PreferencesDlg::OnBnClickedOK()
 	prefs->m_log_level = m_log_level;
 	prefs->m_parser_id = T2CA((LPCTSTR)m_parser_id);
 	prefs->m_validation_scheme = T2CA((LPCTSTR)m_validation_scheme);
-	prefs->m_do_namespaces = m_do_namespaces;
-	prefs->m_do_schema = m_do_schema;
-	prefs->m_validation_schema_full_checking = m_validation_schema_full_checking;
+	prefs->m_do_namespaces = (bool)m_do_namespaces;
+	prefs->m_do_schema = (bool)m_do_schema;
+	prefs->m_validation_schema_full_checking = (bool)m_validation_schema_full_checking;
 	prefs->save_preferences();
 }
 
