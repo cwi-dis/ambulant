@@ -59,8 +59,7 @@
 using namespace ambulant;
 
 lib::unix::thread::thread()
-:	m_thread(NULL),
-	m_exit_requested(false),
+:	m_exit_requested(false),
 	m_running(false),
 	m_starting(false)
 {
