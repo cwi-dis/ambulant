@@ -84,14 +84,11 @@ to use:
 	}
 	}
 	
-- We need to define which preprocessor defines we are going to
-  switch on for platform-dependent code, so we don't get `#ifdef _WIN32` in
-  one place and something completely different in another place.
-  Suggestion:
-  
-  - `#ifdef _WIN32` to test for Windows
-  - something to test for Linux?
-  - `#ifdef __APPLE__` to test for MacOSX
+- Use the following preprocessor defines to test for platform:
+  ``AMBULANT_PLATFORM_UNIX``, ``AMBULANT_PLATFORM_LINUX``,
+  ``AMBULANT_PLATFORM_MACOS``, ``AMBULANT_PLATFORM_WIN32`` and 
+  ``AMBULANT_PLATFORM_WIN32_WCE``.
+
   - something to test for 386 or other architectures?
   - something to test for Visual Studio versus gcc?
   

@@ -3,20 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.3.0: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
+<title>Timelines</title>
 <link rel="stylesheet" href="default.css" type="text/css" />
 </head>
 <body>
-<div class="document">
+<div class="document" id="timelines">
+<h1 class="title">Timelines</h1>
 <!-- This document is prepended when we generate HTML. It contains the links
 used by the other documents, implemented as hyperlinks. An alternative
 head document is available for LaTeX generation. -->
-<div class="section" id="timelines">
-<h1><a name="timelines">Timelines</a></h1>
 <p><em>Warning</em>: this document does not describe the SMIL 2.0 scheduler. It describes
 the MMS scheduler, which handles a subset of SMIL 1 (as used by MMS documents).</p>
 <div class="section" id="introduction">
-<h2><a name="introduction">Introduction</a></h2>
+<h1><a name="introduction">Introduction</a></h1>
 <p>This document gives an overview of what is in a timeline object. It is
 loosely based on what the old CMIF scheduler looked like. There are some
 simplifications, because I think that some of the extra states and transitions
@@ -24,7 +24,7 @@ that the CMIF scheduler had are no longer needed because a timeline is only
 supposed to schedule self-contained pieces.</p>
 </div>
 <div class="section" id="conceptual-design">
-<h2><a name="conceptual-design">Conceptual design</a></h2>
+<h1><a name="conceptual-design">Conceptual design</a></h1>
 <p>The sample SMIL document that I use to clarify this is the following:</p>
 <pre class="literal-block">
 &lt;seq id=&quot;outerseq&quot;&gt;
@@ -35,15 +35,15 @@ supposed to schedule self-contained pieces.</p>
         &lt;ref id=&quot;seqchild2&quot;/&gt;
 &lt;/seq&gt;
 </pre>
-<p>The <em>states</em> that a node goes through are <tt class="literal"><span class="pre">IDLE</span></tt>, <tt class="literal"><span class="pre">PREROLLING</span></tt>, <tt class="literal"><span class="pre">PLAYING</span></tt>,
-<tt class="literal"><span class="pre">PLAYED</span></tt> and <tt class="literal"><span class="pre">DONE</span></tt>. We may want an extra state <tt class="literal"><span class="pre">PREROLLED</span></tt>, but I don't think
+<p>The <em>states</em> that a node goes through are <tt class="docutils literal"><span class="pre">IDLE</span></tt>, <tt class="docutils literal"><span class="pre">PREROLLING</span></tt>, <tt class="docutils literal"><span class="pre">PLAYING</span></tt>,
+<tt class="docutils literal"><span class="pre">PLAYED</span></tt> and <tt class="docutils literal"><span class="pre">DONE</span></tt>. We may want an extra state <tt class="docutils literal"><span class="pre">PREROLLED</span></tt>, but I don't think
 we need it. The interesting thing seems to be that the states an active timeline
 object itself goes
-through are the same. <tt class="literal"><span class="pre">PLAYED</span></tt> and <tt class="literal"><span class="pre">DONE</span></tt> need a bit of explanation. A node
-goes from <tt class="literal"><span class="pre">PLAYING</span></tt> to <tt class="literal"><span class="pre">PLAYED</span></tt> when its implicit or explicit duration is over,
+through are the same. <tt class="docutils literal"><span class="pre">PLAYED</span></tt> and <tt class="docutils literal"><span class="pre">DONE</span></tt> need a bit of explanation. A node
+goes from <tt class="docutils literal"><span class="pre">PLAYING</span></tt> to <tt class="docutils literal"><span class="pre">PLAYED</span></tt> when its implicit or explicit duration is over,
 but its freeze duration not. I.e. the thing is logically finished, but you
-can still see it. It goes from <tt class="literal"><span class="pre">PLAYED</span></tt> to <tt class="literal"><span class="pre">DONE</span></tt> (or directly from <tt class="literal"><span class="pre">PLAYING</span></tt> to
-<tt class="literal"><span class="pre">DONE</span></tt>) when its parent decides to stop it playing.</p>
+can still see it. It goes from <tt class="docutils literal"><span class="pre">PLAYED</span></tt> to <tt class="docutils literal"><span class="pre">DONE</span></tt> (or directly from <tt class="docutils literal"><span class="pre">PLAYING</span></tt> to
+<tt class="docutils literal"><span class="pre">DONE</span></tt>) when its parent decides to stop it playing.</p>
 <p>These states give rise to <em>state-transitions</em>, and those are what we are
 actually interested in. These are the things
 that are often called &quot;events&quot; in other such designs, but I think we are
@@ -52,8 +52,8 @@ already overusing that term as-is.</p>
 The semantics used here are that we wait for the state transitions on the
 lefthandside of the colon to happen, and as soon as they have happened
 we fire the state transitions on the righthandside. If there is more than one
-transition on the LHS we use either the <tt class="literal"><span class="pre">&amp;&amp;</span></tt> operator to wait for all
-of them or <tt class="literal"><span class="pre">||</span></tt> to wait for the first one:</p>
+transition on the LHS we use either the <tt class="docutils literal"><span class="pre">&amp;&amp;</span></tt> operator to wait for all
+of them or <tt class="docutils literal"><span class="pre">||</span></tt> to wait for the first one:</p>
 <pre class="literal-block">
 START_PREROLL_TIMELINE:
         START_PREROLL(outerseq)
@@ -104,24 +104,24 @@ DONE_PLAY(seqchild2):
         STOP_PLAY_RENDERER(seqchild2),
         DONE_PLAY(outerseq)
 </pre>
-<p>The <tt class="literal"><span class="pre">xxx_TIMELINE</span></tt> state-transitions are the communication between this timeline
-and the highlevel scheduler: the <tt class="literal"><span class="pre">START_PREROLL_TIMELINE</span></tt> and <tt class="literal"><span class="pre">START_PLAY_TIMELINE</span></tt>
-are injected form above to get the ball rolling, the <tt class="literal"><span class="pre">DONE_PLAY_TIMELINE</span></tt> is
+<p>The <tt class="docutils literal"><span class="pre">xxx_TIMELINE</span></tt> state-transitions are the communication between this timeline
+and the highlevel scheduler: the <tt class="docutils literal"><span class="pre">START_PREROLL_TIMELINE</span></tt> and <tt class="docutils literal"><span class="pre">START_PLAY_TIMELINE</span></tt>
+are injected form above to get the ball rolling, the <tt class="docutils literal"><span class="pre">DONE_PLAY_TIMELINE</span></tt> is
 sent back up to notify that the timeline has finished.</p>
-<p>The <tt class="literal"><span class="pre">START_PREROLL_RENDERER(xx)</span></tt>, <tt class="literal"><span class="pre">START_PLAY_RENDERER(xx)</span></tt> and <tt class="literal"><span class="pre">STOP_PLAY_RENDERER(xx)</span></tt> are 
+<p>The <tt class="docutils literal"><span class="pre">START_PREROLL_RENDERER(xx)</span></tt>, <tt class="docutils literal"><span class="pre">START_PLAY_RENDERER(xx)</span></tt> and <tt class="docutils literal"><span class="pre">STOP_PLAY_RENDERER(xx)</span></tt> are 
 &quot;side-effect-only&quot;
 transitions: the timeline doesn't use these on the lefthandside, their only effect
-is to kick renderers and other objects into motion. The <tt class="literal"><span class="pre">DONE_PLAY_RENDERER(xx)</span></tt> is the
+is to kick renderers and other objects into motion. The <tt class="docutils literal"><span class="pre">DONE_PLAY_RENDERER(xx)</span></tt> is the
 reverse: for media nodes these are generated by the renderer.</p>
 <p>There is one more bit of functionality: timed events. For each delay needed a delayer
 object is instantiated (with the delay time as parameter). This object appears on a 
-righthandside rule as <tt class="literal"><span class="pre">DELAY(delayobj)</span></tt>, at which point the timer starts. When the timer
-finishes the event <tt class="literal"><span class="pre">DELAY(delayobj)</span></tt> fires on the lefthandside.</p>
+righthandside rule as <tt class="docutils literal"><span class="pre">DELAY(delayobj)</span></tt>, at which point the timer starts. When the timer
+finishes the event <tt class="docutils literal"><span class="pre">DELAY(delayobj)</span></tt> fires on the lefthandside.</p>
 </div>
 <div class="section" id="design-issues-still-to-be-handled">
-<h2><a name="design-issues-still-to-be-handled">Design issues still to be handled</a></h2>
-<p>A bit that is still incomplete is region control. The <tt class="literal"><span class="pre">passive_region</span></tt> is implied
-by the node, and <tt class="literal"><span class="pre">START_PREROLL_RENDERER</span></tt>  creates the corresponding <tt class="literal"><span class="pre">active_region</span></tt>
+<h1><a name="design-issues-still-to-be-handled">Design issues still to be handled</a></h1>
+<p>A bit that is still incomplete is region control. The <tt class="docutils literal"><span class="pre">passive_region</span></tt> is implied
+by the node, and <tt class="docutils literal"><span class="pre">START_PREROLL_RENDERER</span></tt>  creates the corresponding <tt class="docutils literal"><span class="pre">active_region</span></tt>
 that does the rendering. Implications of (SMIL-) transitions and fill behaviour
 are still TBD.</p>
 <p>Anchors aren't mentioned explicitly, but I think they can be handled analogous
@@ -132,61 +132,60 @@ similarly as parallel interior nodes, but I don't think the design here has any 
 with that.</p>
 <p>Clocks aren't mentioned yet. It could be that they are implicit (i.e. the renderer
 picks up the clock to use from the node), but I think they probably need to be
-explicit. This would mean that the <tt class="literal"><span class="pre">DELAY</span></tt> and all the <tt class="literal"><span class="pre">xxx_RENDERER</span></tt> state transitions 
+explicit. This would mean that the <tt class="docutils literal"><span class="pre">DELAY</span></tt> and all the <tt class="docutils literal"><span class="pre">xxx_RENDERER</span></tt> state transitions 
 get a clock parameter.</p>
 </div>
 <div class="section" id="id1">
-<h2><a name="id1">Objects</a></h2>
-<p>The three main objects are <tt class="literal"><span class="pre">timeline_builder</span></tt>, <tt class="literal"><span class="pre">passive_timeline</span></tt> 
-and <tt class="literal"><span class="pre">active_timeline</span></tt>.</p>
-<p><tt class="literal"><span class="pre">timeline_builder</span></tt> is a temporary object you use to build a <tt class="literal"><span class="pre">passive_timeline</span></tt>
+<h1><a name="id1">Objects</a></h1>
+<p>The three main objects are <tt class="docutils literal"><span class="pre">timeline_builder</span></tt>, <tt class="docutils literal"><span class="pre">passive_timeline</span></tt> 
+and <tt class="docutils literal"><span class="pre">active_timeline</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">timeline_builder</span></tt> is a temporary object you use to build a <tt class="docutils literal"><span class="pre">passive_timeline</span></tt>
 from part of a SMIL tree. The current implementation is very simple-minded, and
 handles only documents that adhere to the 3GPP MMS 2.0 specification. This basically
 means fixed layout with one text and one image region, and a fixed structure
-of a sequence of <tt class="literal"><span class="pre">&lt;par&gt;</span></tt> nodes containing each at most one <tt class="literal"><span class="pre">&lt;text&gt;</span></tt>, one <tt class="literal"><span class="pre">&lt;image&gt;</span></tt>
-and one <tt class="literal"><span class="pre">&lt;audio&gt;</span></tt>.</p>
-<p><tt class="literal"><span class="pre">Timeline_builder</span></tt> currently also creates the <tt class="literal"><span class="pre">passive_region</span></tt>
-hierarchy, and is therefore called with the <tt class="literal"><span class="pre">window_factory</span></tt> object as argument.
+of a sequence of <tt class="docutils literal"><span class="pre">&lt;par&gt;</span></tt> nodes containing each at most one <tt class="docutils literal"><span class="pre">&lt;text&gt;</span></tt>, one <tt class="docutils literal"><span class="pre">&lt;image&gt;</span></tt>
+and one <tt class="docutils literal"><span class="pre">&lt;audio&gt;</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">Timeline_builder</span></tt> currently also creates the <tt class="docutils literal"><span class="pre">passive_region</span></tt>
+hierarchy, and is therefore called with the <tt class="docutils literal"><span class="pre">window_factory</span></tt> object as argument.
 This is a temporary situation: the region hierarchy is document-wide and hence
 longer lived that timeline objects.</p>
-<p>The timeline builder class is declared in <tt class="literal"><span class="pre">lib/timeline_builder.h</span></tt>.</p>
-<p><tt class="literal"><span class="pre">passive_timeline</span></tt> objects first go through a building stage, during which the
+<p>The timeline builder class is declared in <tt class="docutils literal"><span class="pre">lib/timeline_builder.h</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">passive_timeline</span></tt> objects first go through a building stage, during which the
 timeline builder adds the nodes, adds the delays, and adds the transitions to the nodes.
-These are all stored in <tt class="literal"><span class="pre">timeline_node</span></tt>, <tt class="literal"><span class="pre">timeline_delay</span></tt>, <tt class="literal"><span class="pre">timeline_node_transitions</span></tt>,
-<tt class="literal"><span class="pre">timeline_event</span></tt> and <tt class="literal"><span class="pre">timeline_rhs_event</span></tt> objects.</p>
-<p>Once these datastructures are complete the builder calls the <tt class="literal"><span class="pre">build()</span></tt> method
+These are all stored in <tt class="docutils literal"><span class="pre">timeline_node</span></tt>, <tt class="docutils literal"><span class="pre">timeline_delay</span></tt>, <tt class="docutils literal"><span class="pre">timeline_node_transitions</span></tt>,
+<tt class="docutils literal"><span class="pre">timeline_event</span></tt> and <tt class="docutils literal"><span class="pre">timeline_rhs_event</span></tt> objects.</p>
+<p>Once these datastructures are complete the builder calls the <tt class="docutils literal"><span class="pre">build()</span></tt> method
 on the passive timeline. This converts the information in the datastructures above
-to the form of two arrays, one of <tt class="literal"><span class="pre">active_action</span></tt> objects and one of <tt class="literal"><span class="pre">active_dependency</span></tt>
-objects. An <tt class="literal"><span class="pre">active_action</span></tt> stores a single RHS of a timeline node transition, and
+to the form of two arrays, one of <tt class="docutils literal"><span class="pre">active_action</span></tt> objects and one of <tt class="docutils literal"><span class="pre">active_dependency</span></tt>
+objects. An <tt class="docutils literal"><span class="pre">active_action</span></tt> stores a single RHS of a timeline node transition, and
 it has various subclasses to cater for the different actions. Active actions for each
-node transition are stored contiguously. An <tt class="literal"><span class="pre">active_dependency</span></tt> stores the whole
+node transition are stored contiguously. An <tt class="docutils literal"><span class="pre">active_dependency</span></tt> stores the whole
 LHS of a timeline node transition, but only in the form of a dependency count and
-begin/end pointers into the <tt class="literal"><span class="pre">active_action</span></tt> array. After calling <tt class="literal"><span class="pre">build()</span></tt> the
+begin/end pointers into the <tt class="docutils literal"><span class="pre">active_action</span></tt> array. After calling <tt class="docutils literal"><span class="pre">build()</span></tt> the
 passive timeline is immutable.</p>
-<p>The <tt class="literal"><span class="pre">active_action</span></tt> objects store internal events (the events without side effects)
-as indices into the <tt class="literal"><span class="pre">active_dependency</span></tt> array. It uses an interior object
-<tt class="literal"><span class="pre">dependency_index_generator</span></tt> to create and store this mapping.</p>
+<p>The <tt class="docutils literal"><span class="pre">active_action</span></tt> objects store internal events (the events without side effects)
+as indices into the <tt class="docutils literal"><span class="pre">active_dependency</span></tt> array. It uses an interior object
+<tt class="docutils literal"><span class="pre">dependency_index_generator</span></tt> to create and store this mapping.</p>
 <blockquote>
 Timelines could be optimized pretty aggressively: for any state transition in the RHS
 of a rule that occurs alone in the LHS of another rule we can simply replace
 it's occurrence in the RHS with its own expansion. This does not happen yet in the current implementation.</blockquote>
-<p>Calling <tt class="literal"><span class="pre">activate()</span></tt> on a <tt class="literal"><span class="pre">passive_timeline</span></tt> will return a new active timeline 
+<p>Calling <tt class="docutils literal"><span class="pre">activate()</span></tt> on a <tt class="docutils literal"><span class="pre">passive_timeline</span></tt> will return a new active timeline 
 object which can execute the
-timeline graph. The <tt class="literal"><span class="pre">active_dependency</span></tt> array is copied to the active timeline,
-as its dependency counts will be updated during execution, but the <tt class="literal"><span class="pre">active_action</span></tt>
-array is immutable and hence not copied, multiple <tt class="literal"><span class="pre">active_timeline</span></tt> objects can
-share the copy in the <tt class="literal"><span class="pre">passive_timeline</span></tt>.</p>
-<p>Active timelines have <tt class="literal"><span class="pre">preroll()</span></tt> and <tt class="literal"><span class="pre">start()</span></tt> methods, similar to nodes.
+timeline graph. The <tt class="docutils literal"><span class="pre">active_dependency</span></tt> array is copied to the active timeline,
+as its dependency counts will be updated during execution, but the <tt class="docutils literal"><span class="pre">active_action</span></tt>
+array is immutable and hence not copied, multiple <tt class="docutils literal"><span class="pre">active_timeline</span></tt> objects can
+share the copy in the <tt class="docutils literal"><span class="pre">passive_timeline</span></tt>.</p>
+<p>Active timelines have <tt class="docutils literal"><span class="pre">preroll()</span></tt> and <tt class="docutils literal"><span class="pre">start()</span></tt> methods, similar to nodes.
 It is possible to activate and preroll a timeline without any visible effect,
 hence this can be used to do branch prediction on hyperlinks, etc.</p>
-<p>Handling of internal events is straightforward, their <tt class="literal"><span class="pre">fire()</span></tt> method is called
+<p>Handling of internal events is straightforward, their <tt class="docutils literal"><span class="pre">fire()</span></tt> method is called
 which schedules a new dependency. Handling of events with side-effects is a bit
-more elaborate: the <tt class="literal"><span class="pre">fire()</span></tt> method schedules a low-priority callback to 
-<tt class="literal"><span class="pre">ext_dependency_callback()</span></tt> which calls the actual external method to do the work.
+more elaborate: the <tt class="docutils literal"><span class="pre">fire()</span></tt> method schedules a low-priority callback to 
+<tt class="docutils literal"><span class="pre">ext_dependency_callback()</span></tt> which calls the actual external method to do the work.
 This roundabout way ensures that all internal events scheduled for a certain point in
 time are processed before all external events, which should make the system
 snappier.</p>
-</div>
 </div>
 </div>
 </body>
