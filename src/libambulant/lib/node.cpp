@@ -730,11 +730,12 @@ node_factory(const lib::node_interface* other)
 	return new node_impl(dynamic_cast<const node_impl*>(other));
 }
 
+#ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const lib::node_interface& n)
 {
-	return os << *dynamic_cast<const node_impl*>(&n);
+	return os << *dynamic_cast<const ambulant::lib::node_impl*>(&n);
 }
-
+#endif
 } // namespace lib
 } // namespace ambulant
 #endif

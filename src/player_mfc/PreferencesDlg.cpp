@@ -7,6 +7,7 @@
 #include ".\preferencesdlg.h"
 #include "ambulant/common/preferences.h"
 
+#pragma warning( disable: 4800)  // Disable performance warning "forcing value to bool true of false"
 
 // PreferencesDlg dialog
 
