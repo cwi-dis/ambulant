@@ -236,12 +236,12 @@ lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::st
 
 void 
 lib::tree_builder::end_prefix_mapping(const std::string& prefix) {
-	(prefix); // UNREFERENCED_PARAMETER(prefix)
+	(void)prefix; // UNREFERENCED_PARAMETER(prefix)
 }
 
 void 
-lib::tree_builder::error(const sax_error& error) {
+lib::tree_builder::error(const sax_error& err) {
 	m_well_formed = false;
-	lib::logger::get_logger()->trace("%s, line %d, column %d: Parse error: %s", m_filename.c_str(), error.get_line(), error.get_column(), error.what());
+	lib::logger::get_logger()->trace("%s, line %d, column %d: Parse error: %s", m_filename.c_str(), err.get_line(), err.get_column(), err.what());
 	lib::logger::get_logger()->error(gettext("%s: Error parsing document"), m_filename.c_str());
 }

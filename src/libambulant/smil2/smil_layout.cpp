@@ -746,8 +746,6 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 				// Now tell the renderer where to render to, and remember the
 				// toplevel gui_window so we can synchronise the redraws before
 				// zapping the whole bgimage_loader and other objects.
-				common::surface *surf = layout_mgr->get_surface(rn);
-				assert(surf);
 				common::renderer *r = p->get_renderer();
 				if (r) {
 					r->set_surface(surf);

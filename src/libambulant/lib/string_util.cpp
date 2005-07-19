@@ -61,7 +61,6 @@ using namespace ambulant;
 
 lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
 	std::string s = (!entry || !entry[0])?"":entry;
-	typedef std::string::size_type size_type;
 	size_type offset = 0;
 	while(offset != std::string::npos) {
 		size_type i = s.find_first_of(delims, offset);

@@ -93,7 +93,7 @@ class basic_parselet {
 	
 	bool matches(const string_type& s) {
 		const_iterator b = s.begin(), e = s.end();
-		return parse(b, e) == s.length();
+		return parse(b, e) == (std::ptrdiff_t)s.length();
 	}
 };
 
@@ -519,7 +519,7 @@ class number_list_p : public parselet {
 	typedef number_list_p self_type;
 	typedef std::vector<double> result_type;
 	result_type m_result;
-	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& endit);
 	
 	// result related helpers
 	const result_type& get_result() const { return m_result;}

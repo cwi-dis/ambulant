@@ -180,44 +180,44 @@ class linear_map_f : public simple_animation_f {
 	
 	map_type& get_time_values_map() { return m_ktv;}
 
-	void init(time_type dur, T val) {
-		m_d = dur;
+	void init(time_type duration, T val) {
+		m_d = duration;
 		m_ktv.clear();
 		m_ktv[0]=val;
-		m_ktv[dur]=val;
+		m_ktv[duration]=val;
 	}
 
-	void init(time_type dur, T from, T to) {
-		m_d = dur;
+	void init(time_type duration, T from, T to) {
+		m_d = duration;
 		m_ktv.clear();
 		m_ktv[0]=from;
-		m_ktv[dur]=to;
+		m_ktv[duration]=to;
 	}
 
-	void init(time_type dur, const std::vector<T>& vals) {
+	void init(time_type duration, const std::vector<T>& vals) {
 		assert(!vals.empty());
-		m_d = dur;
+		m_d = duration;
 		int n = int(vals.size());
 		if(n==1) {
-			init(dur, vals[0]);
+			init(duration, vals[0]);
 		} else if(n==2) {
-			init(dur, vals[0], vals[1]);
+			init(duration, vals[0], vals[1]);
 		} else { 
 			m_ktv.clear();
 			time_type to = 0;
-			for(int i=0;i<n;i++, to+=dur)
+			for(int i=0;i<n;i++, to+=duration)
 				m_ktv[to/(n-1)] = vals[i];
 		}
 	}
 	
-	void init(time_type dur, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
+	void init(time_type duration, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
 		assert(!vals.empty());
-		m_d = dur;
+		m_d = duration;
 		int n = int(vals.size());
 		if(n==1) {
-			init(dur, vals[0]);
+			init(duration, vals[0]);
 		} else if(n==2) {
-			init(dur, vals[0], vals[1]);
+			init(duration, vals[0], vals[1]);
 		} else {
 			// assumes keyTimes have been verified and thus 
 			// the following assertions evaluate to true
@@ -227,20 +227,20 @@ class linear_map_f : public simple_animation_f {
 			for(int j=1;j<n;j++) assert(keyTimes[j]>keyTimes[j-1]);
 			m_ktv.clear();
 			for(int i=0;i<n;i++) {
-				time_type t = time_type(floor(keyTimes[i]*dur + 0.5));
+				time_type t = time_type(floor(keyTimes[i]*duration + 0.5));
 				m_ktv[t] = vals[i];
 			}
 		}
 	}
 	
-	void paced_init(time_type dur, const std::vector<T>& vals) {
+	void paced_init(time_type duration, const std::vector<T>& vals) {
 		assert(!vals.empty());
-		m_d = dur;
+		m_d = duration;
 		int n = int(vals.size());
 		if(n==1) {
-			init(dur, vals[0]);
+			init(duration, vals[0]);
 		} else if(n==2) {
-			init(dur, vals[0], vals[1]);
+			init(duration, vals[0], vals[1]);
 		} else { 
 			m_ktv.clear();
 			double length = 0.0;
@@ -249,7 +249,7 @@ class linear_map_f : public simple_animation_f {
 			m_ktv[0] = vals[0];
 			for(int i2=1;i2<n;i2++) {
 				dl += dist(vals[i2-1], vals[i2]);
-				time_type t = time_type(::floor(0.5+dur*dl/length));
+				time_type t = time_type(::floor(0.5+duration*dl/length));
 				m_ktv[t] = vals[i2];
 			}		
 		}
@@ -284,38 +284,38 @@ class discrete_map_f : public simple_animation_f {
 	
 	map_type& get_time_values_map() { return m_ktv;}
 
-	void init(time_type dur, T val) {
-		m_d = dur;
+	void init(time_type duration, T val) {
+		m_d = duration;
 		m_ktv.clear();
 		m_ktv[0]=val;
 	}
 
-	void init(time_type dur, T from, T to) {
-		m_d = dur;
+	void init(time_type duration, T from, T to) {
+		m_d = duration;
 		m_ktv.clear();
 		m_ktv[0]=from;
-		m_ktv[dur/2]=to;
+		m_ktv[duration/2]=to;
 	}
 
-	void init(time_type dur, const std::vector<T>& vals) {
+	void init(time_type duration, const std::vector<T>& vals) {
 		assert(!vals.empty());
-		m_d = dur;
+		m_d = duration;
 		int n = int(vals.size());
 		if(n==1) {
-			init(dur, vals[0]);
+			init(duration, vals[0]);
 		} else if(n==2) {
-			init(dur, vals[0], vals[1]);
+			init(duration, vals[0], vals[1]);
 		} else { 
 			m_ktv.clear();
 			time_type to = 0;
-			for(int i=0;i<n;i++, to+=dur)
+			for(int i=0;i<n;i++, to+=duration)
 				m_ktv[to/n] = vals[i];
 		}
 	}
 	
-	void init(time_type dur, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
+	void init(time_type duration, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
 		assert(!vals.empty());
-		m_d = dur;
+		m_d = duration;
 		int n = int(vals.size());
 		// assumes keyTimes have been verified and thus 
 		// the following assertions evaluate to true
@@ -324,23 +324,23 @@ class discrete_map_f : public simple_animation_f {
 		assert(vals.size() == keyTimes.size());
 		for(int j=1;j<n;j++) assert(keyTimes[j]>keyTimes[j-1]);
 		if(n==1) {
-			init(dur, vals[0]);
+			init(duration, vals[0]);
 		} else if(n==2) {
 			m_ktv.clear();
 			m_ktv[0]= vals[0];
-			time_type t = time_type(floor(keyTimes[1]*dur + 0.5));
+			time_type t = time_type(floor(keyTimes[1]*duration + 0.5));
 			m_ktv[t] = vals[1];
 		} else { 
 			m_ktv.clear();
 			for(int i=0;i<n;i++) {
-				time_type t = time_type(floor(keyTimes[i]*dur + 0.5));
+				time_type t = time_type(floor(keyTimes[i]*duration + 0.5));
 				m_ktv[t] = vals[i];
 			}
 		}
 	}
 
-	void paced_init(long dur, const std::vector<T>& vals) {
-		init(dur, vals);
+	void paced_init(long duration, const std::vector<T>& vals) {
+		init(duration, vals);
 	}
 	
   private:	
@@ -362,8 +362,8 @@ class underlying_to_f : public simple_animation_f {
 		return (u*(m_d-t))/m_d + (m_v*t)/m_d;
 	}
 	
-	void init(time_type dur, value_type v) {
-		m_d = dur; m_v = v;
+	void init(time_type duration, value_type v) {
+		m_d = duration; m_v = v;
 	}
 	 
   private:	

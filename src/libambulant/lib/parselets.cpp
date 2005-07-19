@@ -180,14 +180,14 @@ lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 // The parser stops to the first not number sequence or at end
 
 std::ptrdiff_t 
-lib::number_list_p::parse(const_iterator& it, const const_iterator& end) {
+lib::number_list_p::parse(const_iterator& it, const const_iterator& endit) {
 	m_result.clear();
 	const_iterator tit = it;
 	std::ptrdiff_t sd = 0;
 	std::ptrdiff_t d = 0;
 	number_p nparser;
 	while(d != -1) {
-		d = nparser.parse(tit, end);
+		d = nparser.parse(tit, endit);
 		if(d != -1) {
 			sd += d;
 			m_result.push_back(nparser.m_result);

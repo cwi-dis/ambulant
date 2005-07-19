@@ -93,6 +93,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	NSURL *url = [NSURL URLWithString: str_url];
 	NSDocumentController *docController = [NSDocumentController sharedDocumentController];
 	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES];
+	(void)doc; // Suppress warning
 	[pool release];
 	// [doc retain] ??
 	

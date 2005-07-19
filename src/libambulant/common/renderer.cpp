@@ -497,7 +497,6 @@ active_video_renderer::data_avail()
 	double ts;
 	char *buf = NULL;
 	int size;
-	unsigned long int event_time;
 	bool displayed;
 	
 	if (!m_src) {
@@ -538,11 +537,6 @@ active_video_renderer::data_avail()
 					m_src->start_frame (m_event_processor, e,ts2);
 				} 
 			}
-		//} else {
-		//	lib::event * e = new dataavail_callback (this, &active_video_renderer::data_avail);
-		//	event_time = (unsigned long int) round( 1 + ts*1000 - now()*1000); 
-		//	m_event_processor->add_event(e, event_time, lib::event_processor::med);
-		//}
 	} else if((!m_is_playing) || (ts2 > m_clip_end)){
 		if (m_is_playing && !m_src->end_of_file()) {
 			lib::logger::get_logger()->debug("active_video_renderer::data_avial: No more data, but not end of file!");

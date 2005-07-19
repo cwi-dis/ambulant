@@ -248,8 +248,8 @@ inline void smil_handler::start_prefix_mapping(const std::string& prefix, const 
 inline void smil_handler::end_prefix_mapping(const std::string& prefix) {
 }
 
-inline void smil_handler::error(const sax_error& error) {
-	lib::logger::get_logger()->error("%s at line %d column %d", error.what(), error.get_line(), error.get_column());
+inline void smil_handler::error(const sax_error& err) {
+	lib::logger::get_logger()->error("%s at line %d column %d", err.what(), err.get_line(), err.get_column());
 }
 
 } // namespace lib

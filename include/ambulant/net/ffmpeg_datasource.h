@@ -288,7 +288,7 @@ class demux_video_datasource:
 	void read_ahead(timestamp_t clip_end);
     void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
     void stop();  
-	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
+	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
     void frame_done(timestamp_t timestamp, bool keepdata);
     void data_avail(timestamp_t pts, uint8_t *data, int size);
     bool end_of_file();

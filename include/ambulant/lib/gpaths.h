@@ -216,6 +216,7 @@ class gpath_builder {
 class polyline_path : public gpath {
   public:
 	polyline_path(const std::vector<point>& points);
+	virtual ~polyline_path() {}
 	
 	// gpath interface
 	double length() const;

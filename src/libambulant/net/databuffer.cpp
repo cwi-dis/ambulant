@@ -292,7 +292,7 @@ databuffer::readdone(int sz)
 	assert(m_reading);
 	m_reading = false;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
-	assert(sz <= m_used);
+	assert((size_t)sz <= m_used);
 #ifdef RANDOM_BYTES
 	unsigned int i;
 	for(i=m_rear; i<m_rear+sz; i++) m_buffer[i] = (char) rand();

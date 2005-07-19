@@ -244,16 +244,17 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	lib::event_processor *evp,
 	common::factories *factory)
 :	common::renderer_playable(context, cookie, node, evp),
-#ifdef USE_SMIL21
-	m_intransition(NULL),
-	m_outtransition(NULL),
-	m_transition_engine(NULL),
-#endif                                   
 	m_audio_src(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
 	m_read_ptr_called(false),
 	m_volcount(0)
+#ifdef USE_SMIL21
+	,
+	m_intransition(NULL),
+	m_outtransition(NULL),
+	m_transition_engine(NULL)
+#endif                                   
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() -> 0x%x",  this);
 	if (init() != 0)
@@ -301,15 +302,16 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	common::factories* factory,
 	net::audio_datasource *ds)
 :	common::renderer_playable(context, cookie, node, evp),
-#ifdef USE_SMIL21
-	m_intransition(NULL),
-	m_outtransition(NULL),
-	m_transition_engine(NULL),
-#endif                                   
 	m_audio_src(ds),
 	m_is_playing(false),
 	m_is_paused(false),
 	m_read_ptr_called(false)
+#ifdef USE_SMIL21
+	,
+	m_intransition(NULL),
+	m_outtransition(NULL),
+	m_transition_engine(NULL)
+#endif                                   
 {
 	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");

@@ -71,7 +71,7 @@
 class nslog_ostream : public ambulant::lib::ostream {
 	bool is_open() const {return true;}
 	void close() {}
-	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa");}
+	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa"); return 0;}
 	int write(const char *cstr);
 	void write(ambulant::lib::byte_buffer& bb) {NSLog(@"ostream use of byte_buffer not implemented for Cocoa");}
 	void flush() {}
@@ -86,6 +86,7 @@ nslog_ostream::write(const char *cstr)
 	if (log) [log insertText: nsstr];
 //	[nsstr release];
 	[pool release];
+	return 0;
 }
 
 void

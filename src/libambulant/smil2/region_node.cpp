@@ -481,13 +481,13 @@ region_node::get_first_child(const char *name) const {
 // XXX: The implementations below are almost dummy
 
 common::region_dim region_node::get_region_dim(const std::string& which, bool fromdom) const {
-	const common::region_dim_spec& rds = fromdom?m_rds:m_display_rds;
-	if(which == "left") return rds.left;
-	else if(which == "width") return rds.width;
-	else if(which == "right") return rds.right;
-	else if(which == "top") return rds.top;
-	else if(which == "height") return rds.height;
-	else if(which == "bottom") return rds.bottom;
+	const common::region_dim_spec& myrds = fromdom?m_rds:m_display_rds;
+	if(which == "left") return myrds.left;
+	else if(which == "width") return myrds.width;
+	else if(which == "right") return myrds.right;
+	else if(which == "top") return myrds.top;
+	else if(which == "height") return myrds.height;
+	else if(which == "bottom") return myrds.bottom;
 	assert(false);
 	return common::region_dim();
 }
@@ -516,13 +516,13 @@ common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_dim(\"%s\", \"%s\") to %s", m_node->get_attribute("id"), which.c_str(), repr(rd).c_str());
-	common::region_dim_spec& rds = m_display_rds;
-	if(which == "left") rds.left = rd;
-	else if(which == "width") rds.width = rd;
-	else if(which == "right") rds.right = rd;
-	else if(which == "top") rds.top = rd;
-	else if(which == "height") rds.height = rd;
-	else if(which == "bottom") rds.bottom = rd;
+	common::region_dim_spec& myrds = m_display_rds;
+	if(which == "left") myrds.left = rd;
+	else if(which == "width") myrds.width = rd;
+	else if(which == "right") myrds.right = rd;
+	else if(which == "top") myrds.top = rd;
+	else if(which == "height") myrds.height = rd;
+	else if(which == "bottom") myrds.bottom = rd;
 }
 
 // Sets the display value of the backgroundColor or color

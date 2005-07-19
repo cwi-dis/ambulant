@@ -153,7 +153,7 @@ class textptr {
 	const_wchar_ptr m_pcw;
 	char_ptr m_pb;
 	wchar_ptr m_pw;
-	size_t m_length;
+	ptrdiff_t m_length;
 };
 
 

@@ -114,6 +114,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 				else {
 					// multiple commands
 					const std::vector<double>& argsv =  parser.get_result();
+					(void)argsv; // Suppress compiler warning
 					std::vector<double>::const_iterator bit = parser.begin();
 					std::vector<double>::const_iterator eit = bit;
 					eit += numbers_expected;

@@ -251,17 +251,17 @@ void animate_attrs::get_key_times(std::vector<double>& v) {
 }
 
 void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
-	const char *p = m_node->get_attribute("keySplines");
-	if(!p) return;
+	const char *attr = m_node->get_attribute("keySplines");
+	if(!attr) return;
 	std::list<std::string> c;
-	lib::split_trim_list(p, c, ';');
+	lib::split_trim_list(attr, c, ';');
 	lib::number_p parser;
 	for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++) {
 		std::list<std::string> sc;
 		lib::split_trim_list(*it, sc, ' ');
 		if(sc.size() != 4) {
 			m_logger->error("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines", 
-				m_tag.c_str(), m_id.c_str(), p);
+				m_tag.c_str(), m_id.c_str(), attr);
 			m_logger->warn(gettext("Error in SMIL animation"));
 		}
 		qtuple qt;
@@ -288,7 +288,6 @@ int animate_attrs::safeatoi(const char *p) {
 }
 
 void animate_attrs::get_values(std::vector<int>& v) {
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
@@ -326,7 +325,6 @@ double animate_attrs::safeatof(const char *p) {
 }
 
 void animate_attrs::get_values(std::vector<double>& v) {
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
@@ -359,7 +357,6 @@ void animate_attrs::get_values(std::vector<double>& v) {
 }
 
 void animate_attrs::get_values(std::vector<std::string>& v) {
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
@@ -401,7 +398,6 @@ common::region_dim animate_attrs::to_region_dim(const std::string& s) {
 	return common::region_dim(parser.get_px_val());
 }
 void animate_attrs::get_values(std::vector<common::region_dim>& v) {
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
@@ -435,7 +431,6 @@ void animate_attrs::get_values(std::vector<common::region_dim>& v) {
 
 void animate_attrs::get_values(std::vector<lib::color_t>& v) {
 	using lib::to_color;
-	const char *pvalues = m_node->get_attribute("values");
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;

@@ -76,8 +76,10 @@ transition_engine::transition_engine()
 :	m_dst(NULL),
 	m_info(NULL),
 	m_begin_time(0),
+	m_stepcount(0),
+	m_progress(0),
 	m_old_progress(0),
-	m_stepcount(0)
+	m_progress_per_milli(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("transition_engine::transition_engine()");
 }
@@ -746,12 +748,13 @@ transition_engine_fade::compute()
 #ifdef USE_SMIL21
 
 audio_transition_engine::audio_transition_engine()
-  :	m_event_processor(NULL),
-	m_start_time(0),
+:	m_start_time(0),
+	m_dur(0),
 	m_startProgress(0),
 	m_endProgress(1),
-	m_dur(0),
-	m_outtrans(false) {
+	m_outtrans(false),
+	m_event_processor(NULL)
+{
 }
 
 void audio_transition_engine::init(const lib::event_processor* evp,bool outtrans, const lib::transition_info* info) {

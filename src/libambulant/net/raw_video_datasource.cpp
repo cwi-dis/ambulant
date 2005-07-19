@@ -142,13 +142,13 @@ raw_video_datasource::filesize(int stream)
 {
 	// private method - no locking
  	using namespace std;
-	int filesize;
+	int sz;
 	int dummy;
 	if (stream >= 0) {
 		// Seek to the end of the file, and get the filesize
-		filesize=lseek(stream, 0, SEEK_END); 		
+		sz=lseek(stream, 0, SEEK_END); 		
 	 	dummy=lseek(stream, 0, SEEK_SET);		
-		return filesize;		
+		return sz;		
 	} else {
  		lib::logger::get_logger()->fatal("raw_video_datasource.filesize(): no file open");
 		return 0;

@@ -92,8 +92,8 @@ time_node::time_node(context_type *ctx, const node *n,
 	m_precounter(0),
 	m_priority(0),
 	m_paused(false), 
-	m_paused_sync_time(0),
 	m_pad(0),
+	m_paused_sync_time(0),
 	m_deferred(false),
 	m_ffwd_mode(false),
 	m_update_event(false, qtime_type(0, 0)),
@@ -378,13 +378,13 @@ time_node::calc_first_interval() {
 // An interval should begin after the previous end
 // A zero-dur previous interval affects calcs  
 time_node::interval_type 
-time_node::calc_next_interval(interval_type previous) {
-	if(previous == interval_type::unresolved) {
+time_node::calc_next_interval(interval_type prev) {
+	if(prev == interval_type::unresolved) {
 		if(m_history.empty()) {
 			// xxx: add warn
 			return interval_type::unresolved;
 		}
-		previous = m_history.back();
+		prev = m_history.back();
 	}
 	
 	// Get the begin instance list
@@ -402,8 +402,8 @@ time_node::calc_next_interval(interval_type previous) {
 	// Parent simple dur
 	time_type parent_simple_dur = up()?up()->get_last_dur():time_type::indefinite;
 	
-	return m_time_calc->calc_next_interval(begin_list, end_list, parent_simple_dur, previous.end, 
-		previous.is_zero_dur());
+	return m_time_calc->calc_next_interval(begin_list, end_list, parent_simple_dur, prev.end, 
+		prev.is_zero_dur());
 }
 
 // Sets the state of this node.
@@ -1234,7 +1234,7 @@ void time_node::fill(qtime_type timestamp) {
 	if(!m_needs_remove) return;
 	
 	fill_behavior fb = m_attrs.get_fill();
-	fill_behavior pfb = sync_node()->get_time_attrs()->get_fill();
+//	fill_behavior pfb = sync_node()->get_time_attrs()->get_fill();
 	
 	bool keep = (fb != fill_remove);
 	
@@ -2166,7 +2166,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	}
 	
 	// Retrieve priority attrs of active and interrupting nodes
-	priority_attrs *pi = m_priority_attrs[interrupting_node->priority()];
+	priority_attrs *pai = m_priority_attrs[interrupting_node->priority()];
 	priority_attrs *pa = m_priority_attrs[active_node->priority()];
 	
 	// get time attrs for debug printout
@@ -2209,7 +2209,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// a node may end while paused
 		// accepts sync_update
 		
-		active_node->pause(timestamp, pi->display);
+		active_node->pause(timestamp, pai->display);
 		m_queue->push_pause(active_node);
 		
 		AM_DBG m_logger->debug("%s[%s] int_pause by %s[%s]", ta->get_tag().c_str(), 
@@ -2244,18 +2244,18 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 // Notification for a child normal end.
 void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 	if(!m_queue || m_queue->empty()) return;
-	time_node *next = m_queue->pop();
+	time_node *nxt = m_queue->pop();
 	
-	const time_attrs* ta = next->get_time_attrs();	
+	const time_attrs* ta = nxt->get_time_attrs();	
 	AM_DBG m_logger->debug("%s[%s].dequeue %s", ta->get_tag().c_str(), 
-			ta->get_id().c_str(), (next->is_active()?"active":"deferred"));	
+			ta->get_id().c_str(), (nxt->is_active()?"active":"deferred"));	
 	
 	// if its active resume else start
-	if(next->paused()) {
-		next->resume(timestamp);
-	} else if(next->deferred()) { 
+	if(nxt->paused()) {
+		nxt->resume(timestamp);
+	} else if(nxt->deferred()) { 
 		// When an element is deferred, the begin time is deferred as well
-		next->set_deferred_interval(timestamp);
+		nxt->set_deferred_interval(timestamp);
 	} else {
 		assert(false);
 	}

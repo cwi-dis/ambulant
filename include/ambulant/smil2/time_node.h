@@ -385,7 +385,7 @@ class time_node : public schedulable {
 		
 	// Calculate interval
 	interval_type calc_first_interval();
-	interval_type calc_next_interval(interval_type previous = interval_type::unresolved);
+	interval_type calc_next_interval(interval_type prev = interval_type::unresolved);
 	
 	// Re-calculate current interval end
 	time_type calc_current_interval_end();

@@ -52,12 +52,12 @@
 @implementation LogController
 
 + (id)sharedLogController {
-    static LogController *_LogController = nil;
+    static LogController *s_LogController = nil;
 
-    if (!_LogController) {
-        _LogController = [[LogController allocWithZone:[self zone]] init];
+    if (!s_LogController) {
+        s_LogController = [[LogController allocWithZone:[self zone]] init];
     }
-    return _LogController;
+    return s_LogController;
 }
 
 - (id)init {
@@ -87,9 +87,9 @@
 
 - (void) setLogLevel: (id) sender
 {
-	int level = [sender indexOfSelectedItem];
+	int lvl = [sender indexOfSelectedItem];
 	MyAppDelegate *app = [[NSApplication sharedApplication] delegate];
-	[app setLogLevel: level];
+	[app setLogLevel: lvl];
 }
 
 - (void) setLogLevelUI: (int) newlevel

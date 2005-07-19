@@ -69,12 +69,12 @@ using namespace ambulant;
 
 static long infinite = std::numeric_limits<long>::max();
 
-lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool running /* = true */)
+lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool run /* = true */)
 :   m_parent(parent),
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
 	m_speed(speed),
-	m_running(running),
+	m_running(run),
 	m_period(infinite),
 	m_listeners(0)
 {	

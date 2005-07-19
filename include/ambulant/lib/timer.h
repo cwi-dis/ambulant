@@ -96,7 +96,7 @@ class timer : public abstract_timer, public timer_events {
 	/// Creates a timer with the provided parent, 
 	/// ticking at the speed specified and
 	/// initially running or paused as specified. 
-	timer(abstract_timer *parent, double speed = 1.0, bool running = true);
+	timer(abstract_timer *parent, double speed = 1.0, bool run = true);
 	
 	~timer();
 	

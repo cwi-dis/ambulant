@@ -280,11 +280,11 @@ ffmpeg_raw_datasource::get_sinkbuffer(uint8_t **datap)
 }
 
 void
-ffmpeg_raw_datasource::pushdata(int size)
+ffmpeg_raw_datasource::pushdata(int sz)
 {
 	m_lock.enter();
-	if (size >= 0) m_buffer.pushdata(size);
-	if (size <= 0)
+	if (sz >= 0) m_buffer.pushdata(sz);
+	if (sz <= 0)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);

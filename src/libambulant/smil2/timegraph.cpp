@@ -278,7 +278,6 @@ void timegraph::build_trans_out_graph() {
 	for(it = m_root->begin(); it != end; it++) {
 		if(!(*it).first) continue;
 		time_node *tn = (*it).second;
-		const lib::node *dn = tn->dom_node();
 		const time_attrs *ta = tn->get_time_attrs();
 		if(!ta->get_trans_out()) continue;
 		time_type offset = -ta->get_trans_out_dur();

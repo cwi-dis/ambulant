@@ -260,7 +260,7 @@ class nfa_expr {
 	// that this nfa_expr represents. 
 	bool matches(const std::string& str) const {
 		std::string::const_iterator b = str.begin(), e = str.end();
-		return parse(b, e) == str.length();
+		return (size_t)parse(b, e) == str.length();
 	}
 	
 	// Creates a matcher for the argument string

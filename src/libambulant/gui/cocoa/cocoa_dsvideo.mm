@@ -118,7 +118,7 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 		m_image = NULL;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::show_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
-	assert(size == m_size.w * m_size.h * 4);
+	assert(size == (int)(m_size.w * m_size.h * 4));
 	// XXXX Who keeps reference to frame?
 	NSSize nssize = NSMakeSize(m_size.w, m_size.h);
 	m_image = [[NSImage alloc] initWithSize: nssize];

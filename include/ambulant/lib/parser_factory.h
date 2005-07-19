@@ -85,8 +85,8 @@ class global_parser_factory : public parser_factory {
   private:
 	global_parser_factory();
     std::vector<parser_factory *> m_factories;
-    parser_factory *m_default_factory;
 	bool m_warned;
+    parser_factory *m_default_factory;
   	static global_parser_factory* s_singleton;
 };
 
