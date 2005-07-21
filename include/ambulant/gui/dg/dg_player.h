@@ -219,7 +219,7 @@ class dg_player :
 	std::stack<frame*> m_frames;
 	
 	// The secondary timer and processor
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	lib::event_processor *m_worker_processor;	
 		
 	lib::event *m_update_event;

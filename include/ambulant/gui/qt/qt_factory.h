@@ -72,15 +72,15 @@ class qt_ambulant_widget;
 class ambulant_qt_window : public common::gui_window {
   public:
 	ambulant_qt_window(const std::string &name,
-			   lib::screen_rect<int>* bounds,
+			   lib::rect* bounds,
 			   common::gui_events *region);
 	~ambulant_qt_window();
 			   
 	void set_ambulant_widget(qt_ambulant_widget* qaw);
 	qt_ambulant_widget* get_ambulant_widget();
 
-	void need_redraw(const lib::screen_rect<int> &r);
-	void redraw(const lib::screen_rect<int> &r);
+	void need_redraw(const lib::rect &r);
+	void redraw(const lib::rect &r);
 	void redraw_now();
 
 	void mouse_region_changed();
@@ -91,7 +91,7 @@ class ambulant_qt_window : public common::gui_window {
 	QPixmap* new_ambulant_surface();
 	QPixmap* get_ambulant_surface();
 	QPixmap* get_ambulant_oldpixmap();
-	QPixmap* get_pixmap_from_screen(const lib::screen_rect<int> &r);
+	QPixmap* get_pixmap_from_screen(const lib::rect &r);
 	void reset_ambulant_surface(void);
 	void set_ambulant_surface(QPixmap* surf);
 	void delete_ambulant_surface();
@@ -101,7 +101,7 @@ class ambulant_qt_window : public common::gui_window {
 	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
 		
 	void _screenTransitionPreRedraw();
-	void _screenTransitionPostRedraw(const lib::screen_rect<int> &r);
+	void _screenTransitionPostRedraw(const lib::rect &r);
 #endif
 	
   private:
@@ -124,7 +124,7 @@ class ambulant_qt_window : public common::gui_window {
 class qt_ambulant_widget : public QWidget {
   public:
 	qt_ambulant_widget(const std::string &name,
-			   lib::screen_rect<int>* bounds,
+			   lib::rect* bounds,
 			   QWidget* parent_widget);
 	~qt_ambulant_widget();
 	

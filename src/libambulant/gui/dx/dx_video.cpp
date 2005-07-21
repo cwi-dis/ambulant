@@ -195,7 +195,7 @@ void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
+void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {
 	if(!m_player || !m_player->can_play() || !m_update_event) {
 		// No bits available
 		return;
@@ -214,24 +214,24 @@ void gui::dx::dx_video_renderer::redraw(const lib::screen_rect<int> &dirty, comm
 	
 	// Get fit rectangles
 	lib::rect vid_rect1;
-	lib::screen_rect<int> vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1, m_alignment);
+	lib::rect vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1, m_alignment);
 	
 	// Use one type of rect to do op
-	lib::screen_rect<int> vid_rect(vid_rect1);
+	lib::rect vid_rect(vid_rect1);
 	
 	// A complete repaint would be:  
 	// vid_rect -> vid_reg_rc
 	
 	// We have to paint only the intersection.
 	// Otherwise we will override upper layers 
-	lib::screen_rect<int> vid_reg_rc_dirty = vid_reg_rc & dirty;
+	lib::rect vid_reg_rc_dirty = vid_reg_rc & dirty;
 	if(vid_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		return;
 	}	
 		
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::screen_rect<int> vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty, 
+	lib::rect vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty, 
 		&vid_rect, &vid_reg_rc);
 		
 	

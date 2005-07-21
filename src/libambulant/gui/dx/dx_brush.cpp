@@ -125,7 +125,7 @@ void gui::dx::dx_brush::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
+void gui::dx::dx_brush::redraw(const lib::rect &dirty, common::gui_window *window) {
 //	AM_DBG lib::logger::get_logger()->debug("dx_brush::redraw(): %s", repr(dirty).c_str());
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
@@ -133,7 +133,7 @@ void gui::dx::dx_brush::redraw(const lib::screen_rect<int> &dirty, common::gui_w
 	if(!v) return;
 	
 	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = dirty;
+	lib::rect rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	

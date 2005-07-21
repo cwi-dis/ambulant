@@ -144,7 +144,7 @@ class qt_renderer : public RP_Base {
 		RP_Base::stop();
 	}
 
-	void redraw(const screen_rect<int> &dirty, gui_window *window) {
+	void redraw(const rect &dirty, gui_window *window) {
 		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window);
 		m_transition_renderer->redraw_post(window);
@@ -165,7 +165,7 @@ class qt_renderer : public RP_Base {
 	void stop_transition() {
 		m_transition_renderer->stop();
 	}
-	virtual void redraw_body(const screen_rect<int> &dirty, gui_window *window) = 0;
+	virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
 
   private:
 	qt_transition_renderer *m_transition_renderer;

@@ -58,15 +58,16 @@ class MyScanner(CxxScanner):
             "flag_event", # Constructor for unsupported type
             "sax_error", # Constructor for unsupported type
 #            "audio_format_choices", # Constructor for unsupported type
-            "abstract_event_processor", # Name problem: event_processor vs. abstract_event_processor
             "none_playable", # XXX Constructor for unsupported type
             "none_background_renderer", # XXX Constructor for unsupported type
             "none_playable_factory",  # XXX Constructor for unsupported type
+            "event_processor_impl", # Constructor for unsupported type
            
         ]
 
     def makeblacklisttypes(self):
         return [
+            "event_processor_impl",  # Concrete version of event_processor, ignore.
             "audio_datasource", #XXX
             "video_datasource", #XXX
             "Where_we_get_our", # Parser trips over a comment:-)
@@ -75,7 +76,6 @@ class MyScanner(CxxScanner):
             "const_q_attributes_list_ref",    # We don't do lists, for now
             "flag_event",  # Holds a reference to a bool, not useful for Python
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
-            "timer",
             "const_custom_test_map_ptr", # We don't do maps for now
             "node_list",     # We don't do lists, for now
             "delta_timer", # XXX for now

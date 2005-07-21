@@ -67,7 +67,7 @@ using namespace smil2;
 static scheduler::time_type infinity = 
 std::numeric_limits<scheduler::time_type>::max();
 
-scheduler::scheduler(time_node *root, lib::timer *timer)
+scheduler::scheduler(time_node *root, lib::timer_control *timer)
 :	m_root(root), 
 	m_timer(timer), 
 	m_horizon(0) {

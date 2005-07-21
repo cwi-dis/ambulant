@@ -65,7 +65,7 @@ namespace common {
 class passive_region;
 }}
 
-typedef ambulant::common::passive_region region;
+typedef ambulant::common::surface_impl region;
 
 namespace ambulant {
 
@@ -84,8 +84,8 @@ class dx_window : public common::gui_window {
   		viewport* m_viewport);
   	~dx_window();
   	
-	void need_redraw(const lib::screen_rect<int>& r);
-	void redraw(const lib::screen_rect<int>& r);
+	void need_redraw(const lib::rect& r);
+	void redraw(const lib::rect& r);
 	void need_redraw();
 	void redraw_now() { /* Redraws are synchronous on Windows */ }
 	void need_events(bool onoff) { /* Always get them on windows */ }
@@ -101,13 +101,13 @@ class dx_window : public common::gui_window {
 	// passive_region *m_region;
 	region *m_rgn;
 	std::string m_name; // for easy access
-	lib::screen_rect<int> m_viewrc;
+	lib::rect m_viewrc;
 	common::window_factory *m_wf;
     viewport* m_viewport;
     
     // lock/unlock redraw
 	bool m_locked;
-	lib::screen_rect<int> m_redraw_rect;
+	lib::rect m_redraw_rect;
 	bool m_isnew_redraw_rect;
 };
 

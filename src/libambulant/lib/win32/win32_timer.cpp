@@ -59,53 +59,48 @@
 
 using namespace ambulant;
 
+
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+
+static DWORD
+os_time() {
+	return GetTickCount();
+}
+
+#else
+
 const ULONGLONG MILLIS_FACT = 10000;
+// Returns system time in system units (0.1 micro-sec units or 0.0001 msec). 
+static DWORD 
+os_time() {
+	FILETIME ft;
+	SYSTEMTIME st;
+	GetSystemTime(&st);              
+	SystemTimeToFileTime(&st, &ft);
+	ULARGE_INTEGER li = {ft.dwLowDateTime, ft.dwHighDateTime};
+	return (DWORD)(li.QuadPart/MILLIS_FACT);
+}
+
+#endif
 
 lib::win32::win32_timer::win32_timer() 
-:	m_epoch(os_time()), 
-	m_speed(1.0) {
+:	m_epoch(os_time()) {
 }
 
 // Returns time in msec since epoch.
 // Takes into account speed with a 1% precision.
 lib::win32::win32_timer::time_type
 lib::win32::win32_timer::elapsed() const {
-	ULONGLONG dt = os_time() - m_epoch;
-	if(m_speed == 1.0)
-		return time_type(dt/MILLIS_FACT);
-	ULONGLONG speed100 = ULONGLONG(::floor(0.5 + m_speed * 100));
-	ULONGLONG edt = (speed100 * dt ) / 100;
-	return time_type(edt/MILLIS_FACT);
+	DWORD dt = os_time() - m_epoch;
+	return time_type(dt);
 }
 
-// Sets the speed of this timer. 
-void
-lib::win32::win32_timer::set_speed(double speed) {
-	m_epoch = os_time();
-	m_speed = speed;
-}
-
-// Returns system time in system units (0.1 micro-sec units or 0.0001 msec). 
-// static
-ULONGLONG 
-lib::win32::win32_timer::os_time() {
-	FILETIME ft;
-	SYSTEMTIME st;
-	GetSystemTime(&st);              
-	SystemTimeToFileTime(&st, &ft);
-	ULARGE_INTEGER li = {ft.dwLowDateTime, ft.dwHighDateTime};
-	return li.QuadPart;
-}
 
 // Factory routine for the machine-independent
 // timer class
-lib::abstract_timer*
+lib::timer*
 lib::realtime_timer_factory() {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	return new lib::win32::win32_timer();
-#else
-	return new lib::win32::win_timer();
-#endif
 }
 
 

@@ -159,7 +159,7 @@ void gui::dg::dg_img_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
+void gui::dg::dg_img_renderer::redraw(const lib::rect& dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dg_window *dxwindow = static_cast<dg_window*>(window);
 	viewport *v = dxwindow->get_viewport();
@@ -171,7 +171,7 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	}
 	
 	lib::rect img_rect1;
-	lib::screen_rect<int> img_reg_rc;
+	lib::rect img_reg_rc;
 	lib::size srcsize = m_image->get_size();
 #ifdef USE_SMIL21
 	// This code could be neater: it could share quite a bit with the
@@ -201,21 +201,21 @@ void gui::dg::dg_img_renderer::redraw(const lib::screen_rect<int>& dirty, common
 	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
 	
 	// Use one type of rect to do op
-	lib::screen_rect<int> img_rect(img_rect1);
+	lib::rect img_rect(img_rect1);
 	
 	// A complete repaint would be:  
 	// {img, img_rect } -> img_reg_rc
 	
 	// We have to paint only the intersection.
 	// Otherwise we will override upper layers 
-	lib::screen_rect<int> img_reg_rc_dirty = img_reg_rc & dirty;
+	lib::rect img_reg_rc_dirty = img_reg_rc & dirty;
 	if(img_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		return;
 	}	
 	
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::screen_rect<int> img_rect_dirty = lib::reverse_transform(&img_reg_rc_dirty, 
+	lib::rect img_rect_dirty = lib::reverse_transform(&img_reg_rc_dirty, 
 		&img_rect, &img_reg_rc);
 		
 	// Translate img_reg_rc_dirty to viewport coordinates 

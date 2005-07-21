@@ -54,6 +54,9 @@ to use:
 - Underscores to delimit words
 - attribute names start with "m\_"
 - static attributes start with "s\_"
+- Code that is tightly-coupled to an external framework (such as GUI code)
+  may relax the previous rules and adhere to the conventions of the external
+  framework.
 - we have a toplevel namespace ambulant, with a second level of namespaces
   under that
 - semi-private classes go into into a namespace named "detail".
@@ -84,13 +87,13 @@ to use:
 	}
 	}
 	
-- Use the following preprocessor defines to test for platform:
-  ``AMBULANT_PLATFORM_UNIX``, ``AMBULANT_PLATFORM_LINUX``,
-  ``AMBULANT_PLATFORM_MACOS``, ``AMBULANT_PLATFORM_WIN32`` and 
-  ``AMBULANT_PLATFORM_WIN32_WCE``.
-
-  - something to test for 386 or other architectures?
-  - something to test for Visual Studio versus gcc?
+- If you need to switch on platform in an ifdef please use the ambulant-specific
+  constants: 
+  ``AMBULANT_PLATFORM_MACOS``, 
+  ``AMBULANT_PLATFORM_LINUX``,
+  ``AMBULANT_PLATFORM_UNIX`` (any Unix variant), 
+  ``AMBULANT_PLATFORM_WIN32`` (any Windows variant, including CE),
+  ``AMBULANT_PLATFORM_WIN32_WCE`` (WinCE)
   
 - APIs that could be considered external must be documented inline, in a form
   compatible with Doxygen. The easiest way to do this is with a triple-slashed

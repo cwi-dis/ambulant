@@ -98,12 +98,12 @@ class transition_engine {
 
 class transition_blitclass_rect : public transition_engine {
   protected:
-	lib::screen_rect_int m_newrect;
+	lib::rect m_newrect;
 };
 
 class transition_blitclass_r1r2r3r4 : public transition_engine {
   protected:
-	lib::screen_rect_int m_oldsrcrect, m_olddstrect, m_newsrcrect, m_newdstrect;
+	lib::rect m_oldsrcrect, m_olddstrect, m_newsrcrect, m_newdstrect;
 };
 
 class transition_blitclass_rectlist : public transition_engine {
@@ -111,7 +111,7 @@ class transition_blitclass_rectlist : public transition_engine {
 	~transition_blitclass_rectlist() { clear(); }
   protected:
 	void clear() { m_newrectlist.clear(); };
-	std::vector< lib::screen_rect_int > m_newrectlist;
+	std::vector< lib::rect > m_newrectlist;
 };
 
 class transition_blitclass_poly : public transition_engine {
@@ -128,7 +128,7 @@ class transition_blitclass_polylist : public transition_engine {
   protected:
 	void clear() { m_newpolygonlist.clear(); };
 	std::vector< std::vector<lib::point> > m_newpolygonlist;
-	lib::screen_rect_int m_oldrect;
+	lib::rect m_oldrect;
 };
 
 class transition_blitclass_fade : public transition_engine {
@@ -278,17 +278,17 @@ class angle_computer {
   public:
 	angle_computer()
 	:   m_initialized(false) {}
-	angle_computer(lib::screen_rect_int rect);
+	angle_computer(lib::rect rect);
 	~angle_computer() {}
 	
-	bool matches(lib::screen_rect_int rect);
+	bool matches(lib::rect rect);
 	
 	void angle2poly(std::vector<lib::point> &outpoly, double angle, bool clockwise);
   private:
 	void recompute_angles();
 	edgetype angle2edge(double angle, lib::point &edgepoint);
 	bool m_initialized;
-	lib::screen_rect_int m_rect;
+	lib::rect m_rect;
 	// more...
 	int m_xmid, m_ymid;
 	double m_angle_topleft, m_angle_topright, m_angle_botleft, m_angle_botright;

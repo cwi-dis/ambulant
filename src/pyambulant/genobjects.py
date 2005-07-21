@@ -41,7 +41,9 @@ OBJECTS=[
 	
 	"lib/timer.h",
 	("timer_events", "ambulant::lib::timer_events", None),
-	("abstract_timer", "ambulant::lib::abstract_timer", None),
+	("timer", "ambulant::lib::timer", None),
+	("timer_control", "ambulant::lib::timer_control", "timer"),
+	("timer_control_impl", "ambulant::lib::timer_control_impl", "timer_control"),
 	
 	"lib/transition_info.h",
 	("transition_info", "ambulant::lib::transition_info", None),

@@ -84,22 +84,6 @@ ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself)
 }
 
 
-PyObject *ambulant_screen_rect_New(const ambulant::lib::screen_rect_int& itself)
-{
-    return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());
-}
-
-int
-ambulant_screen_rect_Convert(PyObject *v, ambulant::lib::screen_rect_int *p_itself)
-{
-    int l, t, r, b;
-    
-    if (!PyArg_Parse(v, "llll", &l, &t, &r, &b))
-        return 0;
-    p_itself->set_coord(l, t, r, b);
-    return 1;
-}
-
 PyObject *ambulant_rect_New(const ambulant::lib::rect& itself)
 {
     return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());

@@ -67,7 +67,7 @@ namespace lib {
 
 /// A mutex.
 /// The actual implementation is machine-dependent and
-/// implements the abstract_critical_section interface.
+/// implements the base_critical_section interface.
 ///
 /// The reason for the slightly convoluted implementation
 /// in stead of a normal pattern is to allow allocation

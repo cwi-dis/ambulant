@@ -187,13 +187,6 @@ class basic_rect {
 	T x, y;
 	S w, h;
 	
-#if 0
-	basic_rect(S _w, S _h) 
-	:	x(0), y(0), w(_w), h(_h) {}
-	
-	basic_rect(T _x, T _y, S _w, S _h) 
-	:	x(_x), y(_y), w(_w), h(_h) {}
-#endif
 	basic_rect() : x(0), y(0), w(0), h(0) {}
 		 
 	basic_rect(const basic_rect<T, S>& o) 
@@ -259,8 +252,8 @@ class basic_rect {
 	/// Get coordinates of a rectangle p in a base setup by this rectangle.
 	basic_rect<T, S> innercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
-		rv &= this;
-		rv.translate(left_top());
+		rv &= *this;
+		rv.translate(-left_top());
 		return rv;
 	}
 	
@@ -268,8 +261,8 @@ class basic_rect {
 	/// in the system setup by this rectangle.
 	basic_rect<T, S> outercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
-		rv.translate(-left_top());
-		rv &= this;
+		rv.translate(left_top());
+		rv &= *this;
 		return rv;
 	}
 	
@@ -342,251 +335,6 @@ class basic_rect {
 	}
 };
 
-
-/// A special case rectangle that uses variable naming 
-/// that depends on axis-orientation.
-/// Assumes the y axis is reflected and vertival. 
-/// valid rect cond: right>=left and bottom>=top;
-///
-/// A screen_rect includes the points (x, y): 
-/// where x in [left, right) and y in [top, bottom)
-/// if w == 0 or h == 0 the basic_rect is empty
-///
-/// Note: for convenience and by tradition
-/// left, top, right, bottom are public.
-/// This means that when set directly 
-/// this class may not represent a valid rect
-/// (use valid() member function to check this).
-
-template <class T>
-class screen_rect {
-  public:
-	T m_left, m_top, m_right, m_bottom;
-		
-	screen_rect() 
-	:	m_left(0), m_top(0), m_right(0), m_bottom(0) {}
-	
-	screen_rect(const screen_rect<T>& o) 
-	:	m_left(o.m_left), m_top(o.m_top), m_right(o.m_right), m_bottom(o.m_bottom) {}
-	
-	screen_rect(const basic_point<T>& p, const basic_point<T>& q) 
-	:	m_left(p.x), m_top(p.y), m_right(q.x), m_bottom(q.y) {}
-
-	template <class S>
-	screen_rect(const basic_point<T>& p, const basic_size<S>& s) 
-	:	m_left(p.x), m_top(p.y), m_right(p.x+s.w), m_bottom(p.y+s.h) {}
-	
-	template <class S>
-	screen_rect(const basic_rect<T, S>& r) 
-	:	m_left(r.x), m_top(r.y), m_right(r.x+r.w), m_bottom(r.y+r.h) {}
-	
-	void set_coord(T l, T t, T r, T b) {
-		m_left = l; m_top = t; m_right = r; m_bottom = b;
-	}
-	
-	template <class S>
-	void set_coord(const basic_rect<T, S>& r) {
-		m_left = r.x; m_top = r.y; m_right = r.x+r.w; m_bottom = r.y+r.h;
-	}
-	bool valid() const {
-		return m_right>=m_left && m_bottom>=m_top;
-	}
-	
-	bool empty() const {
-		return m_right<=m_left || m_bottom<=m_top;
-	}
-	
-	T left() const {
-		return m_left;
-	}
-	
-	T top() const {
-		return m_top;
-	}
-	
-	T right() const {
-		return m_right;
-	}
-	
-	T bottom() const {
-		return m_bottom;
-	}
-	
-	basic_point<T> left_top() const {
-		return basic_point<T>(m_left, m_top);
-	}
-	
-	basic_point<T> right_bottom() const {
-		return basic_point<T>(m_right, m_bottom);
-	}
-	
-	basic_size<T> size() const {
-		return basic_size<T>(lmax(0,m_right-m_left), lmax(0,m_bottom-m_top));
-	}
-
-	T width() const {
-		return lmax(0,m_right-m_left);
-	}
-
-	T height() const {
-		return lmax(0,m_bottom-m_top);
-	}
-
-	void translate(const basic_point<T>& p) {
-		m_left += p.x; m_right += p.x;
-		m_top += p.y; m_bottom += p.y;
-	}
-
-	screen_rect<T> outercoordinates(const screen_rect<T>& p) const {
-		screen_rect<T> rv = p;
-		rv.translate(left_top());
-		rv &= *this;
-		return rv;
-	}
-		
-	screen_rect<T> innercoordinates(const screen_rect<T>& p) const {
-		screen_rect<T> rv = p;
-		rv &= *this;
-		rv.translate(-left_top());
-		return rv;
-	}
-		
-	void fix() {
-		set_coord(lmin(m_left, m_right), lmin(m_top, m_bottom), lmax(m_left, m_right), lmax(m_top, m_bottom));
-	}
-	
-	bool operator==(const screen_rect<T> o) const {
-		return m_left == o.left() && m_top == o.top() &&
-			m_right == o.right() && m_bottom == o.bottom();
-	}
-	
-	bool operator!=(const screen_rect<T> o) const {
-		return !(o == (*this));
-	}
-
-	void operator+=(basic_point<T> p) {
-		translate(p);
-	}
-	
-	void operator-=(basic_point<T> p) {
-		translate(-p);
-	}
-	
-	void operator&=(const screen_rect<T>& o) {
-		// set to intersection
-		// re-use basic_rect implementation
-		basic_rect<T> r1(left_top(), size());
-		basic_rect<T> r2(o.left_top(), o.size());
-		set_coord(r1 & r2);
-	}
-
-	void operator|=(const screen_rect<T>& o) {
-		// set to union
-		// re-use basic_rect implementation
-		basic_rect<T> r1(left_top(), size());
-		basic_rect<T> r2(o.left_top(), o.size());
-		set_coord(r1 | r2);
-	}
-	
-	screen_rect<T> operator&(const screen_rect<T>& r) const {
-		// return intersection
-		screen_rect<T> l(*this); 
-		l &= r;
-		return l;
-	}
-	
-	screen_rect<T> operator|(const screen_rect<T>& r)  const {
-		// return union
-		screen_rect<T> l(*this); 
-		l |= r;
-		return l; 
-	}
-
-	bool contains(const basic_point<T>& p) const {
-		return contains(p.x, p.y);
-	}
-	
-	bool contains(T x, T y) const {
-		return (x >= m_left ) && (x < m_right) && (y >= m_top ) && (y < m_bottom);
-	}
-	
-};
-typedef screen_rect<int> screen_rect_int;
-
-// Returns the coord where the arguement 'x' is mapped using the same
-// transform that mapped the 'src' argument to the 'dst' argument.
-// In the following primes represent dest coordinates (x -> x_p)
-// xp = ( (x_2^p-x_1^p)*(x-x_1) + (x_2 - x_1)*x_1_p )/(x_2 - x_1)
-template <class T>
-inline int tf_x(T x, const screen_rect_int *src, const screen_rect_int *dst) {
-	double x1 = src->left(), x2 = src->right();
-	double x1p = dst->left(), x2p = dst->right();
-	double xp = ((x2p-x1p)*(x-x1) + (x2-x1)*x1p)/(x2-x1);
-	return int(floor(xp+0.5));
-}
-
-// Returns the x coord mapped to the destination 'xp' using the same
-// transform that mapped the 'src' argument to the 'dst' argument.
-// In the following primes represent dest coordinates (x -> x_p)
-// x = ((x_2 - x_1)*x^p + (x_1*x_2^p-x_2*x_1^p))/(x_2^p-x_1^p)
-template <class T>
-inline T reverse_tf_x(T xp, const screen_rect<T> *src, const screen_rect<T> *dst) {
-	double x1 = src->left(), x2 = src->right();
-	double x1p = dst->left(), x2p = dst->right();
-	double x = ((x2-x1)*xp + (x1*x2p-x2*x1p))/(x2p-x1p);
-	return (int)floor(x+0.5);
-}
-
-// Returns the coord where the arguement 'y' is mapped using the same
-// transform that mapped the 'src' argument to the 'dst' argument.
-// In the following primes represent dest coordinates (y -> y_p)
-// yp = ( (y_2^p-y_1^p)*(y-y_1) + (y_2 - y_1)*y_1_p )/(y_2 - y_1)
-template <class T>
-inline T tf_y(T y, const screen_rect<T> *src, const screen_rect<T> *dst) {
-	double y1 = src->top(), y2 = src->bottom();
-	double y1p = dst->top(), y2p = dst->bottom();
-	double yp = ((y2p-y1p)*(y-y1) + (y2-y1)*y1p)/(y2-y1);
-	return (int)floor(yp+0.5);
-}
-
-// Returns the y coord mapped to the destination (yp) using the same
-// transform that mapped src argument to dst argument.
-// In the following primes represent dest coordinates (y -> y_p)
-// y = ((y_2 - y_1)*y^p + (y_1*y_2^p-y_2*y_1^p))/(y_2^p-y_1^p)
-template <class T>
-inline T reverse_tf_y(T yp, const screen_rect<T> *src, const screen_rect_int *dst){
-	double y1 = src->top(), y2 = src->bottom();
-	double y1p = dst->top(), y2p = dst->bottom();
-	double y = ((y2-y1)*yp + (y1*y2p-y2*y1p))/(y2p-y1p);
-	return (int)floor(y+0.5);
-}
-
-// Returns the rect where 'psrc' is mapped using the same
-// transform that mapped 'src' argument to 'dst' argument.
-template <class T>
-inline lib::screen_rect<T> transform( const lib::screen_rect<T> *psrc, 
-	const lib::screen_rect<T> *src, const lib::screen_rect<T> *dst) {
-	lib::screen_rect<T> rc;
-	rc.set_coord(tf_x(psrc->left(), src, dst),
-		tf_y(psrc->top(), src, dst),
-		tf_x(psrc->right(), src, dst),
-		tf_y(psrc->bottom(), src, dst));
-	return rc;
-}
-
-// Returns the source rect mapped to the destination (pdst) using the same
-// transform that mapped 'src' argument to 'dst' argument.
-template <class T>
-inline lib::screen_rect<T> reverse_transform(const lib::screen_rect<T> *pdst, 
-	const lib::screen_rect<T> *src, const lib::screen_rect<T> *dst){
-	lib::screen_rect<T> rc;
-	rc.set_coord(reverse_tf_x(pdst->left(), src, dst),
-		reverse_tf_y(pdst->top(), src, dst),
-		reverse_tf_x(pdst->right(), src, dst),
-		reverse_tf_y(pdst->bottom(), src, dst));
-	return rc;
-}
-
 // short names for the common cases
 
 // int based
@@ -603,6 +351,85 @@ typedef basic_rect<double> drect;
 typedef basic_point<long> lpoint;
 typedef basic_size<unsigned long> lsize;
 typedef basic_rect<long, unsigned long> lrect;
+
+// Returns the coord where the arguement 'x' is mapped using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (x -> x_p)
+// xp = ( (x_2^p-x_1^p)*(x-x_1) + (x_2 - x_1)*x_1_p )/(x_2 - x_1)
+inline int
+tf_x(int x, const rect *src, const rect *dst)
+{
+	double x1 = src->left(), x2 = src->right();
+	double x1p = dst->left(), x2p = dst->right();
+	double xp = ((x2p-x1p)*(x-x1) + (x2-x1)*x1p)/(x2-x1);
+	return int(floor(xp+0.5));
+}
+
+// Returns the x coord mapped to the destination 'xp' using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (x -> x_p)
+// x = ((x_2 - x_1)*x^p + (x_1*x_2^p-x_2*x_1^p))/(x_2^p-x_1^p)
+inline int
+reverse_tf_x(int xp, const rect *src, const rect *dst)
+{
+	double x1 = src->left(), x2 = src->right();
+	double x1p = dst->left(), x2p = dst->right();
+	double x = ((x2-x1)*xp + (x1*x2p-x2*x1p))/(x2p-x1p);
+	return (int)floor(x+0.5);
+}
+
+// Returns the coord where the arguement 'y' is mapped using the same
+// transform that mapped the 'src' argument to the 'dst' argument.
+// In the following primes represent dest coordinates (y -> y_p)
+// yp = ( (y_2^p-y_1^p)*(y-y_1) + (y_2 - y_1)*y_1_p )/(y_2 - y_1)
+inline int
+tf_y(int y, const rect *src, const rect *dst)
+{
+	double y1 = src->top(), y2 = src->bottom();
+	double y1p = dst->top(), y2p = dst->bottom();
+	double yp = ((y2p-y1p)*(y-y1) + (y2-y1)*y1p)/(y2-y1);
+	return (int)floor(yp+0.5);
+}
+
+// Returns the y coord mapped to the destination (yp) using the same
+// transform that mapped src argument to dst argument.
+// In the following primes represent dest coordinates (y -> y_p)
+// y = ((y_2 - y_1)*y^p + (y_1*y_2^p-y_2*y_1^p))/(y_2^p-y_1^p)
+inline int
+reverse_tf_y(int yp, const rect *src, const rect *dst)
+{
+	double y1 = src->top(), y2 = src->bottom();
+	double y1p = dst->top(), y2p = dst->bottom();
+	double y = ((y2-y1)*yp + (y1*y2p-y2*y1p))/(y2p-y1p);
+	return (int)floor(y+0.5);
+}
+
+// Returns the rect where 'psrc' is mapped using the same
+// transform that mapped 'src' argument to 'dst' argument.
+inline rect
+transform(const rect *psrc, const rect *src, const rect *dst)
+{
+	int l = tf_x(psrc->left(), src, dst);
+	int t = tf_y(psrc->top(), src, dst);
+	rect rc(point(l, t),
+		size(tf_x(psrc->right(), src, dst)-l,
+			 tf_y(psrc->bottom(), src, dst)-t));
+	return rc;
+}
+
+// Returns the source rect mapped to the destination (pdst) using the same
+// transform that mapped 'src' argument to 'dst' argument.
+inline rect
+reverse_transform(const rect *pdst, const rect *src, const rect *dst)
+{
+	int l = reverse_tf_x(pdst->left(), src, dst);
+	int t = reverse_tf_y(pdst->top(), src, dst);
+	rect rc(point(l, t),
+		size(reverse_tf_x(pdst->right(), src, dst)-l,
+			 reverse_tf_y(pdst->bottom(), src, dst)-t));
+	return rc;
+}
+
   
 } // namespace lib
  
@@ -622,7 +449,7 @@ inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) {
 	return s << '(' << z.w << ", " << z.h << ')';
 }
 
-inline std::string repr(const ambulant::lib::screen_rect_int& r) {
+inline std::string repr(const ambulant::lib::rect& r) {
 	std::string s;
 	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
@@ -630,7 +457,7 @@ inline std::string repr(const ambulant::lib::screen_rect_int& r) {
 #else 
 inline std::string repr(const ambulant::lib::basic_point<int>& p) { return "";}
 inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) { return "";}
-inline std::string repr(const ambulant::lib::screen_rect_int& r) {return "";}
+inline std::string repr(const ambulant::lib::rect& r) {return "";}
 #endif
 
 
@@ -656,11 +483,6 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_siz
 template<class T, class S>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_rect<T, S>& r) { 
 	return os << '(' << r.x << ", " << r.y << ", " << r.w << ", " << r.h << ')';
-}
-
-template<class T>
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::screen_rect<T>& r) { 
-	return os << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
 
 #endif // AMBULANT_NO_IOSTREAMS

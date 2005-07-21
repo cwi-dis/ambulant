@@ -82,7 +82,7 @@ qt_window_factory::qt_window_factory( QWidget* parent_widget, int x, int y)
 }	
   
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
-	   lib::screen_rect<int>* bounds,
+	   lib::rect* bounds,
 	   common::gui_events *region)
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
@@ -151,7 +151,7 @@ ambulant_qt_window::get_ambulant_pixmap()
 }
 
 QPixmap*
-ambulant_qt_window::get_pixmap_from_screen(const lib::screen_rect<int> &r)
+ambulant_qt_window::get_pixmap_from_screen(const lib::rect &r)
 {
 	QPixmap *rv = new QPixmap(r.width(), r.height());
 	bitBlt(rv, 0, 0, m_pixmap, r.left(), r.top(), r.width(), r.height());
@@ -218,7 +218,7 @@ ambulant_qt_window::delete_ambulant_surface()
 }
 
 void
-ambulant_qt_window::need_redraw(const lib::screen_rect<int> &r)
+ambulant_qt_window::need_redraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (m_ambulant_widget == NULL) {
@@ -283,7 +283,7 @@ void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
 #endif
 
 void
-ambulant_qt_window::redraw(const lib::screen_rect<int> &r)
+ambulant_qt_window::redraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
 #ifdef USE_SMIL21
@@ -313,7 +313,7 @@ ambulant_qt_window::need_events(bool want)
 
 // XXXX
 qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
-	lib::screen_rect<int>* bounds,
+	lib::rect* bounds,
 	QWidget* parent_widget)
 :	QWidget(parent_widget,"qt_ambulant_widget",0),
 	m_qt_window(NULL)
@@ -345,9 +345,9 @@ qt_ambulant_widget::paintEvent(QPaintEvent* e)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::paintEvent(0x%x): e=0x%x)", (void*) this, (void*) e);
 	QRect qr = e->rect();
-	lib::screen_rect<int> r =  lib::screen_rect<int>(
+	lib::rect r =  lib::rect(
 		lib::point(qr.left(),qr.top()),
-		lib::point(qr.right(),qr.bottom()));
+		lib::size(qr.width(),qr.height()));
 	if (m_qt_window == NULL) {
 		lib::logger::get_logger()->debug("qt_ambulant_widget::paintEvent(0x%x): e=0x%x m_qt_window==NULL",
 			(void*) this, (void*) e);
@@ -409,14 +409,14 @@ qt_renderer_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
 	common::playable* rv;
 	if (tag == "img") {
- 		rv = new qt_active_image_renderer(context, cookie, node,
+ 		rv = new qt_image_renderer(context, cookie, node,
 						  evp, m_factory);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_image_renderer 0x%x", 
+		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if (tag == "brush") {
  		rv = new qt_fill_renderer(context, cookie, node,
 					  evp, m_factory);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_fill_renderer 0x%x", 
+		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_fill_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
 #ifdef	WITH_QT_HTML_WIDGET
@@ -428,9 +428,9 @@ qt_renderer_factory::new_playable(
 			AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_html_renderer 0x%x", (void*) node, (void*) rv);
 		} else {
 #endif/*WITH_QT_HTML_WIDGET*/
-		rv = new qt_active_text_renderer(context, cookie, node,
+		rv = new qt_text_renderer(context, cookie, node,
 						 evp, m_factory);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_active_text_renderer 0x%x",
+		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_text_renderer 0x%x",
 			(void*) node, (void*) rv);
 #ifdef	WITH_QT_HTML_WIDGET
 		}
@@ -446,7 +446,7 @@ qt_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
 			       common::gui_events *region)
 {
-	lib::screen_rect<int>* r = new lib::screen_rect<int>(m_p, bounds);
+	lib::rect* r = new lib::rect(m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
 		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
  	ambulant_qt_window * aqw = new ambulant_qt_window(name, r, region);
@@ -492,7 +492,7 @@ qt_video_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-	  rv = new qt_active_video_renderer(context, cookie, node, evp, m_factory);
+	  rv = new qt_video_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x: returning qt_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: no renderer for tag \"%s\"", tag.c_str());
@@ -541,7 +541,7 @@ ambulant_qt_window::_screenTransitionPreRedraw()
 }
 
 void 
-ambulant_qt_window::_screenTransitionPostRedraw(const lib::screen_rect<int> &r)
+ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw()");
 	if (m_fullscreen_count == 0 && m_fullscreen_old_pixmap == NULL) {

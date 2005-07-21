@@ -95,7 +95,7 @@ class dg_transition {
 };
 
 dg_transition *make_transition(lib::transition_type id, 
-	common::playable *playable, lib::timer *timer);
+	common::playable *playable, lib::timer_control *timer);
 	
 smil2::blitter_type get_transition_blitter_type(lib::transition_type id);
 
@@ -203,6 +203,6 @@ HRGN create_rectlist_region(ambulant::gui::dg::dg_transition *tr);
 HRGN create_poly_region(ambulant::gui::dg::dg_transition *tr);
 HRGN create_polylist_region(ambulant::gui::dg::dg_transition *tr);
 void clipto_r1r2r3r4(ambulant::gui::dg::dg_transition *tr, 
-	ambulant::lib::screen_rect<int>& src, ambulant::lib::screen_rect<int>& dst);
+	ambulant::lib::rect& src, ambulant::lib::rect& dst);
 
 #endif // AMBULANT_GUI_DG_TRANSITION_H

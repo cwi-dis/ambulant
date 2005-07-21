@@ -81,7 +81,7 @@ gui::dg::dg_area::~dg_area() {
 
 void gui::dg::dg_area::start(double t) {		
 	if(m_activated) return;	
-	lib::screen_rect<int> rrc = m_dest->get_rect();
+	lib::rect rrc = m_dest->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("dg_area::start(%s)", 
 		repr(rrc).c_str());
 	
@@ -96,8 +96,7 @@ void gui::dg::dg_area::start(double t) {
 		int t = rds.top.absolute()?rds.top.get_as_int():rrc.top();
 		int w = rds.width.absolute()?rds.width.get_as_int():rrc.width();
 		int h = rds.height.absolute()?rds.height.get_as_int():rrc.height();
-		lib::screen_rect<int> rc;
-		rc.set_coord(l, t, l+w, t+h);
+		lib::rect rc(lib::point(l, t), lib::size(w, h));
 		m_rgn = new dg_gui_region(rc);
 	}
 	m_dest->show(this);
@@ -114,7 +113,7 @@ void gui::dg::dg_area::stop() {
 	}	
 }
 
-void gui::dg::dg_area::redraw(const lib::screen_rect<int> &dirty, 
+void gui::dg::dg_area::redraw(const lib::rect &dirty, 
 	common::gui_window *window) {
 	if(!m_rgn) return;	
 	AM_DBG {
@@ -122,7 +121,7 @@ void gui::dg::dg_area::redraw(const lib::screen_rect<int> &dirty,
 		viewport *v = dgwindow->get_viewport();
 		if(!v) return;
 		
-		lib::screen_rect<int> reg_rc = m_rgn->get_bounding_box();
+		lib::rect reg_rc = m_rgn->get_bounding_box();
 		lib::point pt = m_dest->get_global_topleft();
 		reg_rc.translate(pt);
 		

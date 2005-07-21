@@ -106,7 +106,7 @@ class viewport {
 	
 	// Blt back buffer to primary surface
 	void redraw();
-	void redraw(const lib::screen_rect<int>& rc);
+	void redraw(const lib::rect& rc);
 	void redraw(HDC hdc) { redraw();}
 	
 	// Clears the back buffer using this viewport bgd color
@@ -114,52 +114,52 @@ class viewport {
 
 	// Clears the specified back buffer rectangle using the provided color 
 	// and taking into account any transition
-	void clear(const lib::screen_rect<int>& rc, lib::color_t clr, dx_transition *tr = 0);
+	void clear(const lib::rect& rc, lib::color_t clr, dx_transition *tr = 0);
 	
 	// Clears the specified buffer rectangle using the provided color 
-	void clear(const lib::screen_rect<int>& rc, lib::color_t clr, IDirectDrawSurface* dstview);
+	void clear(const lib::rect& rc, lib::color_t clr, IDirectDrawSurface* dstview);
 	
 	// Clears a DD surface with the provided color.
 	void clear_surface(IDirectDrawSurface* p, lib::color_t clr);
 
 	// Draw the whole DD surface to the back buffer and destination rectangle
-	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& dst_rc, bool keysrc = false);
+	void draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc = false);
 	
 	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
-	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc = false, dx_transition *tr = 0);
+	void draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+		const lib::rect& dst_rc, bool keysrc = false, dx_transition *tr = 0);
 	
 	// Draw the src_rc of the DD surface to the dstview buffer and destination rectangle
-	void draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc, IDirectDrawSurface* dstview);
+	void draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+		const lib::rect& dst_rc, bool keysrc, IDirectDrawSurface* dstview);
 	
 
 	// Draw the text to the back buffer within destination rectangle
-	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, lib::color_t clr = 0);
+	void draw(const std::basic_string<text_char>& text, const lib::rect& dst_rc, lib::color_t clr = 0);
 	
 	// Blits (src, src_rc) to (dst, dst_rc)
-	void blit(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-		IDirectDrawSurface* dst, const lib::screen_rect<int>& dst_rc);
+	void blit(IDirectDrawSurface* src, const lib::rect& src_rc,
+		IDirectDrawSurface* dst, const lib::rect& dst_rc);
 
 	// Copies to the DD surface the bits of the back buffer within the from rect
-	void rdraw(IDirectDrawSurface* dst, const lib::screen_rect<int>& from_rc);
+	void rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc);
 	
 	// Creates a copy of the bgd 
-	void copy_bgd_to(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc);
+	void copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc);
 	
 	// Draw the copy using the clipping region
-	void draw_to_bgd(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc, HRGN hrgn);
+	void draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn);
 	
 	// Fading support
-	HRESULT blt_blend32(const lib::screen_rect<int>& rc, double progress,
+	HRESULT blt_blend32(const lib::rect& rc, double progress,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
-	HRESULT blt_blend24(const lib::screen_rect<int>& rc, double progress,
+	HRESULT blt_blend24(const lib::rect& rc, double progress,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
-	HRESULT blt_blend16(const lib::screen_rect<int>& rc, double progress,
+	HRESULT blt_blend16(const lib::rect& rc, double progress,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
 	
 	// Paints the provided rect
-	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
+	void frame_rect(const lib::rect& rc, lib::color_t clr = 0xFF0000);
 	
 	// Helper, that returns the size of a DD surface 
 	static lib::size get_size(IDirectDrawSurface *p);
@@ -216,7 +216,7 @@ inline void set_rect(IDirectDrawSurface *p, RECT *r) {
 	r->bottom = s.h;
 }
 
-inline void set_rect(const lib::screen_rect<int>& rc, RECT *r) {
+inline void set_rect(const lib::rect& rc, RECT *r) {
 	r->left = rc.left();
 	r->top = rc.top();
 	r->right = rc.right();

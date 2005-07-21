@@ -149,7 +149,7 @@ void gui::dg::viewport::redraw(HDC hdc) {
 	if(!res) win_report_last_error("BitBlt");
 }
 
-void gui::dg::viewport::redraw(const lib::screen_rect<int>& rc) {
+void gui::dg::viewport::redraw(const lib::rect& rc) {
 	if(!m_surf || !m_memdc)
 		return;
 	
@@ -172,7 +172,7 @@ void gui::dg::viewport::clear() {
 }
 
 // Clears the specified back buffer rectangle using the provided color 
-void gui::dg::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr) {
+void gui::dg::viewport::clear(const lib::rect& rc, lib::color_t clr) {
 	if(m_surf) m_surf->fill(rc, lib::color_trible(clr));
 	/*
 	if(!m_memdc) return;
@@ -189,8 +189,8 @@ void gui::dg::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr)
 
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
-void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& src_rc,
-	const lib::screen_rect<int>& dst_rc, bool keysrc, lib::color_t transp) {
+void gui::dg::viewport::draw(dib_surface_t* src, const lib::rect& src_rc,
+	const lib::rect& dst_rc, bool keysrc, lib::color_t transp) {
 	if(!src || !m_surf || !m_memdc) return;
 	
 	if(src_rc != dst_rc) {
@@ -223,16 +223,16 @@ void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& sr
 }
 
 // Draw the whole dib surface to the back buffer and destination rectangle
-void gui::dg::viewport::draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc, 
+void gui::dg::viewport::draw(dib_surface_t* src, const lib::rect& dst_rc, 
 	bool keysrc, lib::color_t transp) {
 	surface_t *p = src->get_pixmap();
-	lib::screen_rect<int> src_rc(lib::point(0,0), lib::point(p->get_width(),p->get_height()));
+	lib::rect src_rc(lib::point(0,0), lib::size(p->get_width(),p->get_height()));
 	draw(src, src_rc, dst_rc, keysrc, transp);
 }
 
 // Paints the provided string
 void gui::dg::viewport::draw(const std::basic_string<text_char>& text, 
-	const lib::screen_rect<int>& dst_rc, lib::color_t clr, const char *fontname, float size) {
+	const lib::rect& dst_rc, lib::color_t clr, const char *fontname, float size) {
 	if(!m_memdc) return;
 	SetBkMode(m_memdc, TRANSPARENT);
 	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
@@ -304,7 +304,7 @@ static int wce_FrameRect(HDC hdc, const RECT* lprc, HBRUSH hbr)
 #endif
 
 // Frames the provided rect
-void gui::dg::viewport::frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr) {
+void gui::dg::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	if(!m_memdc) return;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	HBRUSH hbr = CreateSolidBrush(clr);

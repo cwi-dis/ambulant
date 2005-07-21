@@ -1999,16 +1999,6 @@ audio_format&
 ffmpeg_decoder_datasource::get_audio_format()
 {
 	m_lock.enter();
-	//m_fmt = m_src->get_audio_format();
-#if 0
-	if (m_con) {
-		// Refresh info on audio format
-		m_fmt.samplerate = m_con->sample_rate;
-		m_fmt.bits = 16; // XXXX
-		m_fmt.channels = m_con->channels;
-	}
-#endif
-	//m_fmt.bits = 16; // XXXX
 	if (m_fmt.samplerate == 0) {
 		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, asking ffmpeg");
 		m_fmt.samplerate = m_con->sample_rate;

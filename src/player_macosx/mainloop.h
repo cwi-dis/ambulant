@@ -91,7 +91,5 @@ class mainloop : public ambulant::lib::ref_counted_obj {
 	ambulant::common::player *m_player;
   	ambulant::common::factories *m_factory;
 	ambulant::common::embedder *m_embedder;
-#if 1
 	const ambulant::lib::node *m_goto_node;	// XXX Quick hack
-#endif
 };

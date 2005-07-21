@@ -159,7 +159,7 @@ void
 qt_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_transition_dest->get_rect();
+	const rect &r = m_transition_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	AM_DBG logger::get_logger()->debug("qt_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,aqw->get_ambulant_pixmap());
 
@@ -176,7 +176,7 @@ qt_transition_renderer::redraw_pre(gui_window *window)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {
 			// Copy the background pixels
-			screen_rect<int> dstrect = r;
+			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			bitBlt(surf, dstrect.left(),dstrect.top(),

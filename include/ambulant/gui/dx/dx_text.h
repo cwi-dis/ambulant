@@ -81,7 +81,7 @@ class dx_text_renderer : public dx_renderer_playable {
 	void stop();
 	void seek(double t) {}
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:
 	text_renderer *m_text;

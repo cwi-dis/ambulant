@@ -33,7 +33,7 @@ class TestBasics(unittest.TestCase):
         
     def test_02_realtimetimer(self):
         rtt = ambulant.realtime_timer_factory()
-        self.assert_(type(rtt) is ambulant.abstract_timer)
+        self.assert_(type(rtt) is ambulant.timer)
         t1 = rtt.elapsed()
         self.assert_(t1 > 0)
         time.sleep(1)
@@ -46,13 +46,13 @@ class TestBasics(unittest.TestCase):
         self.assert_(type(evp) is ambulant.event_processor)
         time.sleep(1)
         t1 = rtt.elapsed()
-        evp_timer = evp.get_timer_1()
+        evp_timer = evp.get_timer()
         t2 = evp_timer.elapsed()
         self.assertAlmostEqual(t1, t2, -1)
         
     def test_031_eventprocessorrttsubclass(self):
 
-        class MyTimerWrapper(ambulant.abstract_timer):
+        class MyTimerWrapper(ambulant.timer):
             def __init__(self, rtt):
                 self.rtt = rtt
                 
@@ -65,7 +65,7 @@ class TestBasics(unittest.TestCase):
         self.assert_(type(evp) is ambulant.event_processor)
         time.sleep(1)
         t1 = rtt_real.elapsed()
-        evp_timer = evp.get_timer_1()
+        evp_timer = evp.get_timer()
         t2 = evp_timer.elapsed()
         self.assertAlmostEqual(t1*2, t2, -1)
         del evp
@@ -131,7 +131,7 @@ class TestBasics(unittest.TestCase):
         player.start()
         player.stop()
        
-    def test_08_smil2player(self):
+    def x_test_08_smil2player(self):
         class MyEmbedder:
             pass
         rf = ambulant.get_global_playable_factory()

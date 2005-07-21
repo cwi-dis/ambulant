@@ -94,7 +94,7 @@ void gui::dg::dg_bgrenderer::keep_as_background() {
 	dst->blit(src, dstrect, 0, 0, 0);
 }
 	
-void gui::dg::dg_bgrenderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
+void gui::dg::dg_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *window) {
 	AM_DBG lib::logger::get_logger()->debug("dg_bgrenderer::redraw(%s)",repr(dirty).c_str());
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	

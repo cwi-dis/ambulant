@@ -75,10 +75,10 @@ namespace lib {
 /// Uses delta timer pattern.
 class delta_timer {
   public:
-	typedef abstract_timer::time_type time_type;
+	typedef timer::time_type time_type;
 	typedef std::pair<event*, time_type> timeout_event;
 	
-	delta_timer(abstract_timer *t);
+	delta_timer(timer *t);
 	virtual ~delta_timer();
 
 	/// Fires ready events. 
@@ -120,7 +120,7 @@ class delta_timer {
 	time_type m_last_run;
 	
 	// timer
-	abstract_timer *m_timer;
+	timer *m_timer;
 	};
 
 } // namespace lib

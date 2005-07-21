@@ -83,7 +83,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	void seek(double t);
 	void resume();
 	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *window);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
 	common::duration get_dur();
 	
   private:
@@ -94,7 +94,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	lib::critical_section m_cs;
 	
 	// for debugging
-	lib::screen_rect<int> m_msg_rect;
+	lib::rect m_msg_rect;
 	
 };
 

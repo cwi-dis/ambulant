@@ -86,7 +86,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	m_dest = dest;
 	
-	lib::screen_rect<int> rc = dest->get_rect();
+	lib::rect rc = dest->get_rect();
 	lib::size bounds(rc.width(), rc.height());
 	net::url url = m_node->get_url("src");
 	dx_window *dxwindow = static_cast<dx_window*>(m_window);
@@ -170,7 +170,7 @@ void gui::dx::dx_text_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, common::gui_window *window) {
+void gui::dx::dx_text_renderer::redraw(const lib::rect& dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
@@ -182,8 +182,8 @@ void gui::dx::dx_text_renderer::redraw(const lib::screen_rect<int>& dirty, commo
 		return;
 	}
 	
-	lib::screen_rect<int> text_rc = dirty;
-	lib::screen_rect<int> reg_rc = dirty;
+	lib::rect text_rc = dirty;
+	lib::rect reg_rc = dirty;
 	
 	// Translate img_reg_rc_dirty to viewport coordinates 
 	lib::point pt = m_dest->get_global_topleft();

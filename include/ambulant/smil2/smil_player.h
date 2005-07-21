@@ -210,7 +210,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	time_node* m_root;
 	std::map<int, time_node*> *m_dom2tn;
 	smil_layout_manager *m_layout_manager;
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	lib::event_processor *m_event_processor;	
 	scheduler *m_scheduler;
 	common::play_state m_state;

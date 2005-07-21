@@ -80,11 +80,11 @@ namespace lib {
 namespace win32 {
 
 class event_processor : 
-  public ambulant::lib::abstract_event_processor,
+  public ambulant::lib::event_processor_impl,
   public ambulant::lib::win32::thread {
   
   public:
-	event_processor(abstract_timer *t);	
+	event_processor(timer *t);	
 	~event_processor();
     
     virtual void stop_processor_thread() {

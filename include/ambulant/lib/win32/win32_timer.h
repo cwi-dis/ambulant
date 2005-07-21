@@ -81,7 +81,7 @@ namespace lib {
 
 namespace win32 {
 
-class win32_timer : public ambulant::lib::abstract_timer  {
+class win32_timer : public ambulant::lib::timer  {
   public:
 	win32_timer();
 	
@@ -89,66 +89,16 @@ class win32_timer : public ambulant::lib::abstract_timer  {
 	// Takes into account speed with a 1% precision.	
 	time_type elapsed() const;
 	
-	// Sets the speed of this timer. 	
-	void set_speed(double speed);
-	
 	// Gets the speed of this timer
-	double get_speed() const { return m_speed;}
+	double get_speed() const { return 1.0;}
 	
 	// Gets the realtime speed of this 
 	// timer as modulated by its parent
-	double get_realtime_speed() const { return m_speed;}
-	
-  private:
-  
-	// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
-	static ULONGLONG os_time();
-		
+	double get_realtime_speed() const { return 1.0;}
+  private:		
 	ULONGLONG m_epoch;
-	double m_speed;
 	
 };
-
-class win_timer : public ambulant::lib::abstract_timer  {
-  public:
-	win_timer() : m_epoch(os_time()), m_speed(1.0) {}
-	
-	// Returns time in msec since epoch.
-	// Takes into account speed with a 1% precision.	
-	time_type elapsed() const {
-		DWORD dt = os_time() - m_epoch;
-		if(m_speed == 1.0)
-			return time_type(dt);
-		DWORD speed100 = DWORD(::floor(0.5 + m_speed * 100));
-		DWORD edt = (speed100 * dt ) / 100;
-		return time_type(edt);
-	}
-	
-	// Sets the speed of this timer. 	
-	void set_speed(double speed) {
-		m_epoch = os_time();
-		m_speed = speed;
-	}
-	
-	// Gets the speed of this timer
-	double get_speed() const { return m_speed;}
-	
-	// Gets the realtime speed of this 
-	// timer as modulated by its parent
-	double get_realtime_speed() const { return m_speed;}
-	
-  private:
-  
-	// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
-	static DWORD os_time() {
-		return GetTickCount();
-	}
-		
-	DWORD m_epoch;
-	double m_speed;
-	
-};
-
 
 } // namespace win32
  

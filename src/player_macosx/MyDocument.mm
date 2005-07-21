@@ -127,11 +127,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
 
-#if 1
 	if ([self fileURL] == nil) {
-#else
-	if ([self fileName] == nil) {
-#endif
 		[self askForURL: self];
 	} else {
 		[self openTheDocument];
@@ -160,11 +156,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
 	if (returnCode == NSOKButton && [[url_field stringValue] length] > 0) {
 		AM_DBG NSLog(@"ask_for_url: User said OK: %@", [url_field stringValue]);
-#if 1
 		[self setFileURL: [NSURL URLWithString: [url_field stringValue]]];
-#else
-		[self setFileName: [url_field stringValue]];
-#endif
 		[self openTheDocument];
 	} else {
 		AM_DBG NSLog(@"ask_for_url: User said cancel");
@@ -176,11 +168,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
-#if 1
     NSString *filename = [[self fileURL] absoluteString];
-#else
-    NSString *filename = [self fileName];
-#endif
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms, embedder);

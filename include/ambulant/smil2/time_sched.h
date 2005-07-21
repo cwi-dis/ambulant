@@ -70,7 +70,7 @@ class scheduler {
   public:
 	typedef lib::timer::time_type time_type;
 	
-	scheduler(time_node *root, lib::timer *timer);
+	scheduler(time_node *root, lib::timer_control *timer);
 	~scheduler();
 	
 	time_type exec();
@@ -95,7 +95,7 @@ class scheduler {
 	void set_ffwd_mode(time_node *tn, bool b);
 	
 	time_node *m_root;
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	time_type m_horizon;
 	
 	bool m_locked;

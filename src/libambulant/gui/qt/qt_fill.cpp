@@ -124,11 +124,11 @@ qt_fill_renderer::stop()
 }
 
 void
-qt_fill_renderer::redraw(const screen_rect<int> &dirty,
+qt_fill_renderer::redraw(const rect &dirty,
 			 gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect<int> &r = m_dest->get_rect();
+	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
 	
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
@@ -146,7 +146,7 @@ qt_fill_renderer::redraw(const screen_rect<int> &dirty,
 		if (surf != NULL) {
 			aqw->set_ambulant_surface(surf);
 			// Copy the background pixels
-			screen_rect<int> dstrect = r;
+			rect dstrect = r;
 			dstrect.translate(m_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("qt_fill.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			bitBlt(surf, dstrect.left(),dstrect.top(),
@@ -193,16 +193,16 @@ qt_fill_renderer::user_event(const point &where, int what)
 }
 
 void
-qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
+qt_fill_renderer::redraw_body(const lib::rect &dirty,
 				     common::gui_window *window) {
 	const common::region_info *info = m_dest->get_info();
-	const lib::screen_rect<int> &r = m_dest->get_rect();
+	const lib::rect &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPainter paint;
 	paint.begin(aqw->get_ambulant_pixmap());
 	// <brush> drawing
 	// First find our whole area to be cleared to <brush> color
-	lib::screen_rect<int> dstrect_whole = r;
+	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
 	int	L = dstrect_whole.left(), 
 		T = dstrect_whole.top(),
@@ -229,17 +229,17 @@ qt_fill_renderer::redraw_body(const lib::screen_rect<int> &dirty,
 }
 
 void
-qt_background_renderer::redraw(const lib::screen_rect<int> &dirty,
+qt_background_renderer::redraw(const lib::rect &dirty,
 			       common::gui_window *window)
 {	
-	const lib::screen_rect<int> &r = m_dst->get_rect();
+	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw(0x%x)", (void *)this);
 	if (m_src && !m_src->get_transparent()) {
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
 		paint.begin(aqw->get_ambulant_pixmap());
-		lib::screen_rect<int> dstrect_whole = r;
+		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
 		    T = dstrect_whole.top(),
@@ -264,9 +264,9 @@ void
 qt_background_renderer::keep_as_background()
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::keep_as_background(0x%x) called", (void *)this);
-	const lib::screen_rect<int> &r = m_dst->get_rect();
+	const lib::rect &r = m_dst->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) m_dst->get_gui_window();
-	lib::screen_rect<int> dstrect_whole = r;
+	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	if (m_background_pixmap) {
 		delete m_background_pixmap;

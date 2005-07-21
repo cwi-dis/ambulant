@@ -74,11 +74,11 @@ cocoa_dsvideo_renderer::cocoa_dsvideo_renderer(
 	const lib::node *node,
 	event_processor *evp,
 	common::factories *factory)
-:	common::active_video_renderer(context, cookie, node, evp, factory),
+:	common::video_renderer(context, cookie, node, evp, factory),
 	m_image(NULL)
 {
 	if (!m_src) {
-		lib::logger::get_logger()->error("qt_active_video_renderer::qt_active_video_renderer: no datasource");
+		lib::logger::get_logger()->error("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: no datasource");
 		//m_context->stopped(m_cookie, 0);
 		return;
 	}
@@ -86,16 +86,16 @@ cocoa_dsvideo_renderer::cocoa_dsvideo_renderer(
 		m_audio_ds = m_src->get_audio_datasource();
 	
 		if (m_audio_ds) {
-			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: creating audio renderer !");
+			AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: creating audio renderer !");
 			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
-			AM_DBG lib::logger::get_logger()->debug("qt_active_video_renderer::qt_active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
-			//m_audio_renderer = new gui::sdl::sdl_active_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
-			//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
+			AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
+			//m_audio_renderer = new gui::sdl::sdl_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
+			//lib::logger::get_logger()->debug("video_renderer::video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
 		} else {
 			m_audio_renderer = NULL;
 		}
 		
-		//lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer() video has audio", (void *) m_src);
+		//lib::logger::get_logger()->debug("video_renderer::video_renderer() video has audio", (void *) m_src);
 	}
 }
 
@@ -154,10 +154,10 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 }
 
 void
-cocoa_dsvideo_renderer::redraw(const screen_rect_int &dirty, gui_window *window)
+cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect_int &r = m_dest->get_rect();
+	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
@@ -186,7 +186,7 @@ cocoa_dsvideo_renderer::redraw(const screen_rect_int &dirty, gui_window *window)
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-		screen_rect_int dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+		rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 		
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong

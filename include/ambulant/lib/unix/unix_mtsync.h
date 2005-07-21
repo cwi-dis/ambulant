@@ -65,7 +65,7 @@ namespace lib {
 #undef unix
 namespace unix {
 
-class critical_section : public ambulant::lib::abstract_critical_section {
+class critical_section : public ambulant::lib::base_critical_section {
 	friend class condition;
   public:
 	critical_section();
@@ -78,7 +78,7 @@ class critical_section : public ambulant::lib::abstract_critical_section {
 	pthread_mutex_t m_cs;
 };
 
-class condition : public ambulant::lib::abstract_condition {
+class condition : public ambulant::lib::base_condition {
   public:
 	condition();
 	~condition();

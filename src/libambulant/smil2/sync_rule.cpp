@@ -68,9 +68,9 @@ using namespace smil2;
 
 
 //////////////////////////////////
-// abstract_sync_rule implementation
+// sync_rule_impl implementation
 
-abstract_sync_rule::abstract_sync_rule(time_node *syncbase, sync_event se) 
+sync_rule_impl::sync_rule_impl(time_node *syncbase, sync_event se) 
 :	m_target(0),
 	m_target_attr(rt_begin),
 	m_syncbase(syncbase),
@@ -79,19 +79,19 @@ abstract_sync_rule::abstract_sync_rule(time_node *syncbase, sync_event se)
 	m_locked(false),
 	m_trace(false) {}
 
-void abstract_sync_rule::set_target(time_node *tn, rule_type rt) { 
+void sync_rule_impl::set_target(time_node *tn, rule_type rt) { 
 	m_target = tn; 
 	m_target_attr = rt; 
 	eval_refnode();
 }
 
-void abstract_sync_rule::set_syncbase(time_node *tn, sync_event se) { 
+void sync_rule_impl::set_syncbase(time_node *tn, sync_event se) { 
 	m_syncbase = tn; 
 	m_syncbase_event = se;
 	eval_refnode();
 }	
 
-void abstract_sync_rule::eval_refnode() { 
+void sync_rule_impl::eval_refnode() { 
 	if(!m_refnode && m_target && m_syncbase) {
 		typedef lib::node_navigator<time_node> nnhelper;
 		m_refnode = nnhelper::get_common_ancestor(m_target->sync_node(), 
@@ -100,7 +100,7 @@ void abstract_sync_rule::eval_refnode() {
 }
 
 sync_rule::time_type 
-abstract_sync_rule::to_ref(time_type instance) const {
+sync_rule_impl::to_ref(time_type instance) const {
 	if(!instance.is_definite()) return instance;
 	assert(m_syncbase && m_refnode);
 	qtime_type tc(m_syncbase->sync_node(), instance);
@@ -108,14 +108,14 @@ abstract_sync_rule::to_ref(time_type instance) const {
 }
 
 sync_rule::time_type 
-abstract_sync_rule::from_ref(time_type instance) const {
+sync_rule_impl::from_ref(time_type instance) const {
 	assert(m_target && m_refnode);
 	if(!instance.is_definite()) return instance;
 	qtime_type tc(m_refnode, instance);
 	return tc.to_descendent(m_target->sync_node());
 }
 
-std::string abstract_sync_rule::to_string() {
+std::string sync_rule_impl::to_string() {
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::ostringstream os;
 	os << m_target->to_string() << "."  << rule_type_str(m_target_attr);

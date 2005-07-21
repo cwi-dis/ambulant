@@ -75,7 +75,7 @@ class dg_gui_region  {
 	}
 	
 	// Creates a rect region
-	dg_gui_region(const lib::screen_rect<int>& rect) 
+	dg_gui_region(const lib::rect& rect) 
 	:	m_hrgn(CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom())) { 
 		s_counter++;
 	}
@@ -114,16 +114,16 @@ class dg_gui_region  {
 		return PtInRegion(m_hrgn, pt.x, pt.y) != 0;
 	}
 	
-	bool overlaps(const lib::screen_rect<int>& rect) const {
+	bool overlaps(const lib::rect& rect) const {
 		RECT rc = {rect.left(), rect.top(), rect.right(), rect.bottom()};
 		return RectInRegion(m_hrgn, &rc) != 0;
 	}
 	
-	lib::screen_rect<int> get_bounding_box() const {
+	lib::rect get_bounding_box() const {
 		RECT rect;
 		GetRgnBox(m_hrgn, &rect);
-		return lib::screen_rect<int>(lib::point(rect.left, rect.top), 
-			lib::point(rect.right, rect.bottom));
+		return lib::rect(lib::point(rect.left, rect.top), 
+			lib::size(rect.right-rect.left, rect.bottom-rect.top));
 	}
 	
 	bool operator ==(const dg_gui_region& r) const {
@@ -131,7 +131,7 @@ class dg_gui_region  {
 	}
 	
 	// assignment
-	dg_gui_region& operator =(const lib::screen_rect<int>& rect) {
+	dg_gui_region& operator =(const lib::rect& rect) {
 		SetRectRgn(m_hrgn, rect.left(), rect.top(), rect.right(), rect.bottom());
 		return *this;
 	}
@@ -151,7 +151,7 @@ class dg_gui_region  {
 	}
 	
 	// intersection
-	dg_gui_region& operator &=(const lib::screen_rect<int>& rect) {
+	dg_gui_region& operator &=(const lib::rect& rect) {
 		HRGN hrgn = CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
 		CombineRgn(m_hrgn, m_hrgn, hrgn, RGN_AND);
 		DeleteObject((HGDIOBJ) hrgn);

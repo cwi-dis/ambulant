@@ -192,7 +192,6 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 #ifdef TEST_PLAYBACK_FEEDBACK
 	m_player->set_feedback(&pbfeedback);
 #endif
-#if 1
 	const std::string& id = url.get_ref();
 	if (id != "") {
 		const ambulant::lib::node *node = m_doc->get_node(id);
@@ -202,7 +201,6 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 			m_goto_node = node;
 		}
 	}
-#endif
 }
 
 ambulant::lib::document *

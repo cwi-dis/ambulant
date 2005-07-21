@@ -348,7 +348,7 @@ class datasource_reader : public lib::ref_counted_obj {
 typedef lib::no_arg_callback<datasource_reader> readdone_callback;
 
 datasource_reader::datasource_reader(datasource *src)
-:   m_timer(new lib::timer(lib::realtime_timer_factory(), 1.0, false)),
+:   m_timer(lib::realtime_timer_factory()),
 	m_src(src),
 	m_data(NULL),
 	m_size(0)

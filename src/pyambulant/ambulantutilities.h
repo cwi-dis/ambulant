@@ -11,9 +11,6 @@ int ambulant_url_Convert(PyObject *v, ambulant::net::url *p_itself);
 PyObject *ambulant_region_dim_New(const ambulant::common::region_dim& itself);
 int ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself);
 
-PyObject *ambulant_screen_rect_New(const ambulant::lib::screen_rect_int& itself);
-int ambulant_screen_rect_Convert(PyObject *v, ambulant::lib::screen_rect_int *p_itself);
-
 PyObject *ambulant_rect_New(const ambulant::lib::rect& itself);
 int ambulant_rect_Convert(PyObject *v, ambulant::lib::rect *p_itself);
 

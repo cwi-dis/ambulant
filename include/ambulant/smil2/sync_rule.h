@@ -198,9 +198,9 @@ class sync_rule : public time_traits {
 };
 
 // A base class providing an implementation for the internal functions.
-class abstract_sync_rule : public sync_rule {
+class sync_rule_impl : public sync_rule {
   public:
-	abstract_sync_rule(time_node *sb, sync_event se);
+	sync_rule_impl(time_node *sb, sync_event se);
 	void set_target(time_node *tn, rule_type rt);
 	void set_syncbase(time_node *tn, sync_event se);
 	time_node* get_target() { return m_target;}
@@ -227,10 +227,10 @@ class abstract_sync_rule : public sync_rule {
 };
 
 // A basic model rule
-class model_rule : public abstract_sync_rule {
+class model_rule : public sync_rule_impl {
   public:
 	model_rule(time_node *sb, sync_event se, time_type offset) 
-	:	abstract_sync_rule(sb, se),
+	:	sync_rule_impl(sb, se),
 		m_offset(offset)  {}
 	virtual void get_instance_times(time_mset& s) const;
 	virtual void reset(time_node *src);
@@ -243,14 +243,14 @@ class model_rule : public abstract_sync_rule {
 };
 
 // A basic event rule
-class event_rule : public abstract_sync_rule {
+class event_rule : public sync_rule_impl {
   public:
 	event_rule(time_node *sb, sync_event se, value_type offset = 0, int selector = 0) 
-	:	abstract_sync_rule(sb, se),
+	:	sync_rule_impl(sb, se),
 		m_offset(offset),
 		m_selector(selector)  {}
 	event_rule(time_node *sb, sync_event se, value_type offset, const std::string& selector) 
-	:	abstract_sync_rule(sb, se),
+	:	sync_rule_impl(sb, se),
 		m_offset(offset),
 		m_selector(0),
 		m_str_selector(selector)  {}
@@ -268,10 +268,10 @@ protected:
 // A simple offset rule. 
 // An offset_rule is special case of a model_rule.
 // The implementation avoid inheritance from a model_rule for optinization reasons
-class offset_rule : public abstract_sync_rule {
+class offset_rule : public sync_rule_impl {
   public:
 	offset_rule(time_node *sb, sync_event se, time_type offset) 
-	:	abstract_sync_rule(sb, se),
+	:	sync_rule_impl(sb, se),
 		m_offset(offset)  {}
 	virtual void get_instance_times(time_mset& s) const { s.insert(m_offset);}
  protected:	
@@ -279,10 +279,10 @@ class offset_rule : public abstract_sync_rule {
 };
 
 // A special model rule for transOut
-class transout_rule : public abstract_sync_rule {
+class transout_rule : public sync_rule_impl {
   public:
 	transout_rule(time_node *sb, sync_event se, time_type offset) 
-	:	abstract_sync_rule(sb, se),
+	:	sync_rule_impl(sb, se),
 		m_offset(offset)  {}
 	virtual void get_instance_times(time_mset& s) const;
 	virtual void reset(time_node *src);
@@ -304,10 +304,10 @@ class transout_rule : public abstract_sync_rule {
 // The syncbase node uses this link to wake up 
 // the target when the target may take benefit 
 // of the newly acquired info at the syncbase. 
-class trigger_rule : public abstract_sync_rule {
+class trigger_rule : public sync_rule_impl {
   public:
 	trigger_rule(time_node *sb, sync_event se, time_type offset) 
-	:	abstract_sync_rule(sb, se), m_offset(offset) {}
+	:	sync_rule_impl(sb, se), m_offset(offset) {}
 	virtual void new_instance(qtime_type timestamp, time_type instance);
 	virtual void cancel_instance(qtime_type timestamp, time_type instance);
 	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);

@@ -76,7 +76,7 @@ namespace lib {
 
 namespace win32 {
 
-class AMBULANTAPI critical_section : public ambulant::lib::abstract_critical_section {
+class AMBULANTAPI critical_section : public ambulant::lib::base_critical_section {
 	friend class condition;
   public:
 	critical_section() { InitializeCriticalSection(&m_cs);}
@@ -89,7 +89,7 @@ class AMBULANTAPI critical_section : public ambulant::lib::abstract_critical_sec
 	CRITICAL_SECTION m_cs;
 };
 
-class AMBULANTAPI condition : public ambulant::lib::abstract_condition {
+class AMBULANTAPI condition : public ambulant::lib::base_condition {
   public:
 	  condition() { m_event = CreateEvent(NULL, TRUE, FALSE, NULL);}
 	  ~condition() { CloseHandle(m_event); }

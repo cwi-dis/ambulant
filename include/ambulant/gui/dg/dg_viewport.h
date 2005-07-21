@@ -98,31 +98,30 @@ class viewport {
 		
 	// Blt back buffer to primary surface
 	void redraw();
-	void redraw(const lib::screen_rect<int>& rc);
+	void redraw(const lib::rect& rc);
 	void redraw(HDC hdc);
 	
 	// Clears the back buffer using this viewport bgd color
 	void clear();
 
 	// Clears the specified back buffer rectangle using the provided color 
-	void clear(const lib::screen_rect<int>& rc, lib::color_t clr);
+	void clear(const lib::rect& rc, lib::color_t clr);
 
 	// Draw the whole DD surface to the back buffer and destination rectangle
-	void draw(dib_surface_t* src, const lib::screen_rect<int>& dst_rc,  
+	void draw(dib_surface_t* src, const lib::rect& dst_rc,  
 		bool keysrc = false, lib::color_t transp = CLR_INVALID);
 	
 	// Draw the src_rc of the DD surface to the back buffer and destination rectangle
-	void draw(dib_surface_t* src, const lib::screen_rect<int>& src_rc,
-		const lib::screen_rect<int>& dst_rc, bool keysrc = false, 
-		lib::color_t transp = CLR_INVALID);
+	void draw(dib_surface_t* src, const lib::rect& src_rc,
+		const lib::rect& dst_rc, bool keysrc = false, lib::color_t transp = CLR_INVALID);
 	
 	// Draw the text to the back buffer within destination rectangle
-	void draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& dst_rc, 
+	void draw(const std::basic_string<text_char>& text, const lib::rect& dst_rc, 
 		lib::color_t clr = CLR_INVALID, const char *fontname = NULL,
 		float fontsize = 0);
 	
 	// Draw a frame around the provided rect
-	void frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr = 0xFF0000);
+	void frame_rect(const lib::rect& rc, lib::color_t clr = 0xFF0000);
 	
 	int get_width() const { return m_width;}
 	

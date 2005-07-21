@@ -70,7 +70,7 @@ gui::dg::dg_window::dg_window(const std::string& name,
 :	common::gui_window(rgn),
 	m_rgn(rgn),
 	m_name(name),
-	m_viewrc(point(0, 0), point(bounds.w, bounds.h)),
+	m_viewrc(point(0, 0), size(bounds.w, bounds.h)),
 	m_wf(wf),
 	m_viewport(v) {
 }
@@ -80,8 +80,8 @@ gui::dg::dg_window::~dg_window() {
 	m_wf->window_done(m_name);
 }
   		
-void gui::dg::dg_window::need_redraw(const lib::screen_rect<int> &r) {
-	lib::screen_rect<int> rc = r;
+void gui::dg::dg_window::need_redraw(const lib::rect &r) {
+	lib::rect rc = r;
 	rc &= m_viewrc;
 	m_rgn->redraw(rc, this);
 	m_viewport->redraw(rc);

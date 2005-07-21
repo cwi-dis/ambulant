@@ -362,11 +362,6 @@ region_node::get_rect() const {
 	return re.get_rect();
 }
  
-lib::screen_rect_int
-region_node::get_screen_rect() const {
-	return lib::screen_rect_int(get_rect());
-}
-
 std::string
 region_node::get_name() const {
 	const char *pid = m_node->get_attribute("id");

@@ -74,7 +74,7 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 	   common::surface * dst,
 	   color_t color) 
 {
-	screen_rect<int> dstrect_whole = dst->get_rect();
+	rect dstrect_whole = dst->get_rect();
 	QPainter paint;
 	paint.begin(aqw->get_ambulant_pixmap());
 	dstrect_whole.translate(dst->get_global_topleft());
@@ -121,8 +121,8 @@ finalize_transition(bool outtrans, ambulant_qt_window *aqw,  common::surface *de
 		// copy the pixels in m_tmppixmap to the on-screen pixmap
 		QPixmap* dest_pixmap = aqw->get_ambulant_pixmap();
 		QPixmap* temp_pixmap = aqw->get_ambulant_surface();
-		const lib::screen_rect<int> &cr=  dest->get_rect();
-		lib::screen_rect<int> r=cr;
+		const lib::rect &cr=  dest->get_rect();
+		lib::rect r=cr;
 		r.translate(dest->get_global_topleft());
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_pixmap=0x%x: temp_pixmap=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_pixmap, temp_pixmap,r.left(),r.top(),r.width(), r.height());
 		bitBlt(dest_pixmap,r.left(),r.top(), temp_pixmap,r.left(),r.top(),r.width(), r.height());
@@ -178,7 +178,7 @@ qt_transition_blitclass_fade::update()
 //	    if (j&4 && !(j&3) && i&4 &&!(i&3)) /* AM_DBG */ logger::get_logger()->debug("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
 	  }
 	}
-	screen_rect<int> newrect_whole =  m_dst->get_rect();
+	rect newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
@@ -198,7 +198,7 @@ qt_transition_blitclass_rect::update()
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *npm, *qpm;
 	setup_transition(m_outtrans, aqw, &qpm, &npm);
-	screen_rect<int> newrect_whole = m_newrect;
+	rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
@@ -215,10 +215,10 @@ qt_transition_blitclass_r1r2r3r4::update()
 	setup_transition(m_outtrans, aqw, &qpm, &npm);
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_r1r2r3r4::update(%f) qpm(%d,%d),npm(%d,%d)", m_progress, qpm->width(),  qpm->height(), npm->width(), npm->height());
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_r1r2r3r4::update() qpm=0x%x, npm=0x%x.", qpm, npm);
-	screen_rect<int> oldsrcrect_whole = m_oldsrcrect;
-	screen_rect<int> olddstrect_whole = m_olddstrect;
-	screen_rect<int> newsrcrect_whole = m_newsrcrect;
-	screen_rect<int> newdstrect_whole = m_newdstrect;
+	rect oldsrcrect_whole = m_oldsrcrect;
+	rect olddstrect_whole = m_olddstrect;
+	rect newsrcrect_whole = m_newsrcrect;
+	rect newdstrect_whole = m_newdstrect;
 	oldsrcrect_whole.translate(m_dst->get_global_topleft());
 	olddstrect_whole.translate(m_dst->get_global_topleft());
 	newsrcrect_whole.translate(m_dst->get_global_topleft());
@@ -257,7 +257,7 @@ qt_transition_blitclass_rectlist::update()
 	setup_transition(m_outtrans, aqw, &qpm, &npm);
 	QImage img1 = qpm->convertToImage();
 	QImage img2 = npm->convertToImage();
-	screen_rect<int> dstrect_whole = m_dst->get_rect();
+	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	int L = dstrect_whole.left(), T = dstrect_whole.top(),
 		W = dstrect_whole.width(), H = dstrect_whole.height();
@@ -266,9 +266,9 @@ qt_transition_blitclass_rectlist::update()
 	QRegion clip_region;
 	paint.begin(qpm);
 	paint.drawImage(L,T,img1,L,T,W,H);
-	std::vector< screen_rect<int> >::iterator newrect;
+	std::vector< rect >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
-		screen_rect<int> corner_rect = *newrect;
+		rect corner_rect = *newrect;
 		corner_rect.translate(m_dst->get_global_topleft());
 		int L = corner_rect.left(), T = corner_rect.top(),
         		W = corner_rect.width(), H = corner_rect.height();
@@ -302,7 +302,7 @@ qt_transition_blitclass_poly::update()
 		qpa.putPoints(idx++, 1, p.x, p.y);
 	}
 	QRegion qreg(qpa, true);
-	screen_rect<int> newrect_whole =  m_dst->get_rect();
+	rect newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(dst_global_topleft);
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
@@ -346,7 +346,7 @@ qt_transition_blitclass_polylist::update()
 		QRegion qreg(qpa, true);
 		clip_region += qreg;
 	}
-	screen_rect<int> newrect_whole =  m_dst->get_rect();
+	rect newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(dst_global_topleft);
 	int L = newrect_whole.left(), T = newrect_whole.top(),
 	 W = newrect_whole.width(), H = newrect_whole.height();

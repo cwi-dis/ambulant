@@ -71,15 +71,16 @@ class timer_events {
 };
 
 
-/// Interface to timer objects.
-class abstract_timer {
+/// Client interface to timer objects: allows you to get the
+/// current time and the rate at which time passes.
+class timer {
   public:
 	/// The underline time type used by this timer. 
 	/// Assumed to be an integral type.
 	typedef unsigned long time_type;
 	
 	// Allows subclasses to be deleted using base pointers
-	virtual ~abstract_timer() {}
+	virtual ~timer() {}
 		
 	/// Returns the time elapsed.
 	virtual time_type elapsed() const = 0;
@@ -88,17 +89,87 @@ class abstract_timer {
 	virtual double get_realtime_speed() const = 0;
 };
 
+/// Controller interface to timer objects: augments the base class
+/// with methods to start and stop the timer, and set its speed.
+
+class timer_control : public timer {
+  public:	
+	
+	/// Returns the zero-based elapsed time.
+	/// Does not take periodicity into account.
+	virtual time_type elapsed() const = 0;
+
+	// Returns the zero-based time elapsed for the provided parent elapsed time.
+	virtual time_type elapsed(time_type pt) const = 0;
+	
+	/// Starts ticking at t (t>=0).
+	virtual void start(time_type t = 0) = 0;
+	
+	/// Stop ticking and reset elapsed time to zero.
+	virtual void stop() = 0;
+	
+	/// Stop ticking but do not reset the elapsed time.
+	/// While paused this timer's elapsed() returns the same value. 
+	/// Speed remains unchanged and when resumed
+	/// will be ticking at that speed.
+	virtual void pause() = 0;
+	
+	/// Resumes ticking.
+	virtual void resume() = 0;
+	
+	/// Sets the speed of this timer.
+	/// At any state, paused or running, set_speed() 
+	/// may be called to change speed.
+	/// When paused, the new speed will be
+	/// used when the timer is resumed else
+	/// the new speed is applied immediately.
+	/// The current elapsed time is not affected. 
+	virtual void set_speed(double speed) = 0;
+	
+	/// Set the current elapsed time.
+	virtual void set_time(time_type t) = 0;
+	
+	// Returns the speed of this timer.
+	virtual double get_speed() const = 0;
+	
+	/// Returns true when this timer is running.
+	virtual bool running() const = 0;
+	
+	/// Returns the realtime speed of this timer 
+	/// as modulated by its parent.
+	virtual double get_realtime_speed() const = 0;
+
+// Some methods that aren't used, yet:
+//
+//	/// Return the current elapsed time. 
+//	/// If this is a periodic timer this returns the
+//	/// elapsed time within the current period.
+//	virtual time_type get_time() const = 0;
+//	
+//	/// Return the period number.
+//	/// If this is a non-periodic timer it returns 0.
+//	virtual time_type get_repeat() const = 0;
+//	
+//	/// Set timer to periodic mode, and period duration.
+//	virtual void set_period(time_type t) = 0;
+//	/// Add timer_events listener.
+//	virtual void add_listener(timer_events *listener) = 0;
+//	
+//	/// Remove timer_events listener.
+//	virtual void remove_listener(timer_events *listener) = 0;
+};
+
 
 /// A timer class able to fulfill SMIL 2.0 timing requirements.
 /// The timer can be 
-class timer : public abstract_timer, public timer_events {
+class timer_control_impl : public timer_control, public timer_events {
   public:	
 	/// Creates a timer with the provided parent, 
 	/// ticking at the speed specified and
 	/// initially running or paused as specified. 
-	timer(abstract_timer *parent, double speed = 1.0, bool run = true);
+	timer_control_impl(timer *parent, double speed = 1.0, bool run = true);
 	
-	~timer();
+	~timer_control_impl();
 	
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
@@ -106,7 +177,7 @@ class timer : public abstract_timer, public timer_events {
 	
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
 	time_type elapsed(time_type pt) const;
-	
+		
 	/// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
 	
@@ -134,18 +205,6 @@ class timer : public abstract_timer, public timer_events {
 	/// Set the current elapsed time.
 	void set_time(time_type t);
 	
-	/// Return the current elapsed time. 
-	/// If this is a periodic timer this returns the
-	/// elapsed time within the current period.
-	time_type get_time() const;
-	
-	/// Return the period number.
-	/// If this is a non-periodic timer it returns 0.
-	time_type get_repeat() const;
-	
-	/// Set timer to periodic mode, and period duration.
-	void set_period(time_type t) { m_period = t;}
-	
 	// Returns the speed of this timer.
 	double get_speed() const { return m_speed;}
 	
@@ -159,16 +218,28 @@ class timer : public abstract_timer, public timer_events {
 	/// Receives timer_events notifications.
 	void speed_changed();
 	
-	/// Add timer_events listener.
-	void add_listener(timer_events *listener);
-	
-	/// Remove timer_events listener.
-	void remove_listener(timer_events *listener);
+//	/// Return the current elapsed time. 
+//	/// If this is a periodic timer this returns the
+//	/// elapsed time within the current period.
+//	time_type get_time() const;
+//	
+//	/// Return the period number.
+//	/// If this is a non-periodic timer it returns 0.
+//	time_type get_repeat() const;
+//	
+//	/// Set timer to periodic mode, and period duration.
+//	void set_period(time_type t) { m_period = t;}
+//	
+//	/// Add timer_events listener.
+//	void add_listener(timer_events *listener);
+//	
+//	/// Remove timer_events listener.
+//	void remove_listener(timer_events *listener);
 	
   private:
 	time_type apply_speed_manip(time_type dt) const;
 	
-	abstract_timer *m_parent;
+	timer *m_parent;
 	time_type m_parent_epoch;
 	time_type m_local_epoch;
 	double m_speed;
@@ -180,7 +251,7 @@ class timer : public abstract_timer, public timer_events {
 };
 
 // A (machine-dependent) routine to create a timer object
-AMBULANTAPI abstract_timer *realtime_timer_factory();
+AMBULANTAPI timer *realtime_timer_factory();
 
 } // namespace lib
  

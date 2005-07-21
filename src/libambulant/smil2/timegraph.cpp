@@ -264,9 +264,9 @@ void timegraph::build_timers_graph() {
 	for(it = m_root->begin(); it != end; it++) {
 		if(!(*it).first) continue;
 		time_node *tn = (*it).second;
-		lib::timer *timer = 0;
-		if(tn->is_root()) timer = new lib::timer(m_context->get_timer(), 1.0, false);
-		else timer = new lib::timer(tn->up()->get_timer(), 1.0, false);
+		lib::timer_control *timer = 0;
+		if(tn->is_root()) timer = new lib::timer_control_impl(m_context->get_timer(), 1.0, false);
+		else timer = new lib::timer_control_impl(tn->up()->get_timer(), 1.0, false);
 		tn->set_timer(timer);
 	}
 }

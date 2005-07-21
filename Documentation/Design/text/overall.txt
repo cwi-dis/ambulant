@@ -158,7 +158,7 @@ call the initializer directly in stead of through the factory function.
 The scheme does not work for all objects, however: it breaks if we want to
 create static copies of the objects. For classes for which this is the case,
 such as the ``critical_region`` object, we declare an abstract object 
-``abstract_critical_section`` in
+``base_critical_section`` in
 ``lib/abstract_mtsync.h``, subclass that as ``PLATFORM::critical_section``
 in ``lib/PLATFORM/PLATFORM_mtsync.h``,
 conditionally include that in ``lib/mtsync.h`` and create an empty subclass
@@ -190,4 +190,4 @@ Other languages
 
 It is our intention to eventually allow bridging of Ambulant Player to other languages
 such as Python or Java. An effort has been made to keep the APIs clean enough
-to allow this, but no actual work has been done on it yet.
+to allow this, and work has started on a Python API, but this is not finished yet.

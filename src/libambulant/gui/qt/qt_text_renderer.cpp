@@ -64,7 +64,7 @@
 using namespace ambulant;
 using namespace gui::qt;
 
-qt_active_text_renderer::qt_active_text_renderer(
+qt_text_renderer::qt_text_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
@@ -77,7 +77,7 @@ qt_active_text_renderer::qt_active_text_renderer(
  	m_text_size(0)
 {
 	smil2::params *params = smil2::params::for_node(node);
-	AM_DBG lib::logger::get_logger()->debug("qt_active_text_renderer(0x%x) params=0x%x",this,params);
+	AM_DBG lib::logger::get_logger()->debug("qt_text_renderer(0x%x) params=0x%x",this,params);
 	if (params) {
 		m_text_font = params->get_str("font-family");
 //		const char *fontstyle = params->get_str("font-style");
@@ -87,8 +87,8 @@ qt_active_text_renderer::qt_active_text_renderer(
 	}
 }
 
-qt_active_text_renderer::~qt_active_text_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("~qt_active_text_renderer(0x%x)", this);
+qt_text_renderer::~qt_text_renderer() {
+	AM_DBG lib::logger::get_logger()->debug("~qt_text_renderer(0x%x)", this);
 	m_lock.enter();
 	if (m_text_storage != NULL) {
 		free(m_text_storage);
@@ -98,7 +98,7 @@ qt_active_text_renderer::~qt_active_text_renderer() {
 }
 
 void
-qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
+qt_text_renderer::redraw_body(const lib::rect &r,
 				     common::gui_window* w) {
 // No m_lock needed, protected by base class
 	const lib::point p = m_dest->get_global_topleft();
@@ -110,7 +110,7 @@ qt_active_text_renderer::redraw_body(const lib::screen_rect<int> &r,
 		m_text_storage[m_data_size] = '\0';
 	}
 	AM_DBG lib::logger::get_logger()->debug(
-		"qt_active_text_renderer.redraw(0x%x):"
+		"qt_text_renderer.redraw(0x%x):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d)",
 		(void *)this, r.left(), r.top(), r.right(), r.bottom(),
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,

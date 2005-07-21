@@ -76,10 +76,10 @@ using namespace net;
 
 namespace qt {
 
-class qt_active_image_renderer : public qt_renderer<renderer_playable_dsall> {
+class qt_image_renderer : public qt_renderer<renderer_playable_dsall> {
 
   public:
-	qt_active_image_renderer(
+	qt_image_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const node *node,
@@ -89,9 +89,9 @@ class qt_active_image_renderer : public qt_renderer<renderer_playable_dsall> {
 	 	m_image(NULL),
 		m_image_loaded(false)
 	 	{};
-	~qt_active_image_renderer();
+	~qt_image_renderer();
 
-	void redraw_body(const screen_rect<int> &dirty,
+	void redraw_body(const rect &dirty,
 			 gui_window *window);
     
  private:

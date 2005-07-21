@@ -104,7 +104,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 :	m_hoster(hoster),
 	m_url(u),
 	m_player(0),
-	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
 	m_update_event(0),	
 	m_logger(lib::logger::get_logger()) {
@@ -377,7 +377,7 @@ gui::dg::dg_player::new_playable(
 
 void gui::dg::dg_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
-	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	lib::timer_control *timer = new lib::timer_control_impl(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
 	tr->init(p->get_renderer()->get_surface(), false, info);
@@ -387,7 +387,7 @@ void gui::dg::dg_player::set_intransition(common::playable *p, const lib::transi
 
 void gui::dg::dg_player::start_outtransition(common::playable *p, const lib::transition_info *info) {  
 	lib::logger::get_logger()->debug("start_outtransition : %s", repr(info->m_type).c_str());
-	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+	lib::timer_control *timer = new lib::timer_control_impl(m_timer, 1.0, false);
 	dg_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
 	tr->init(p->get_renderer()->get_surface(), true, info);

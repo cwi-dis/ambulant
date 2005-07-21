@@ -97,7 +97,7 @@ qt_html_renderer::~qt_html_renderer() {
 
 
 void
-qt_html_renderer::redraw_body(const lib::screen_rect<int> &r,
+qt_html_renderer::redraw_body(const lib::rect &r,
 				     common::gui_window* w) {
 	m_lock.enter();
 	const lib::point p = m_dest->get_global_topleft();

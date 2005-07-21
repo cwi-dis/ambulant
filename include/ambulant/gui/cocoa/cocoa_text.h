@@ -76,7 +76,7 @@ class cocoa_text_renderer : public cocoa_renderer<renderer_playable_dsall> {
 		common::factories *factory);
         ~cocoa_text_renderer();
 	
-    void redraw_body(const screen_rect_int &dirty, gui_window *window);
+    void redraw_body(const rect &dirty, gui_window *window);
   private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;

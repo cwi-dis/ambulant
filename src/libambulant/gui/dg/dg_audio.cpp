@@ -173,7 +173,7 @@ void gui::dg::dg_audio_renderer::resume() {
 	if(m_player) m_player->resume();
 }
 
-void gui::dg::dg_audio_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
+void gui::dg::dg_audio_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {
 	// we don't have any bits to blit for audio
 }
 

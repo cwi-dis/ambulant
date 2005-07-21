@@ -152,14 +152,14 @@ void gui::dg::dg_text_renderer::user_event(const lib::point& pt, int what) {
 	}
 }
 
-void gui::dg::dg_text_renderer::redraw(const lib::screen_rect<int> &dirty, common::gui_window *window) {
+void gui::dg::dg_text_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {
 	// Get the top-level surface
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();
 	if(!v) return;
 	
 	// Draw the pixels of this renderer to the surface specified by m_dest.
-	lib::screen_rect<int> rc = dirty;
+	lib::rect rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
 	if(!m_text.empty()) v->draw(m_text, rc, m_color, m_fontname, m_fontsize);

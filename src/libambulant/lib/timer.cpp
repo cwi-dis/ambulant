@@ -69,7 +69,7 @@ using namespace ambulant;
 
 static long infinite = std::numeric_limits<long>::max();
 
-lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool run /* = true */)
+lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* = 1.0 */, bool run /* = true */)
 :   m_parent(parent),
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
@@ -78,57 +78,57 @@ lib::timer::timer(lib::abstract_timer* parent, double speed /* = 1.0 */, bool ru
 	m_period(infinite),
 	m_listeners(0)
 {	
-	AM_DBG lib::logger::get_logger()->debug("lib::timer()");
+	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl()");
 }
 
-lib::timer::~timer()
+lib::timer_control_impl::~timer_control_impl()
 {
 	// This class does not own event listeners.
 	// Therefore, deleting the container is enough
 	delete m_listeners;
-	AM_DBG lib::logger::get_logger()->debug("~lib::timer()");
+	AM_DBG lib::logger::get_logger()->debug("~lib::timer_control_impl()");
 }
 
-lib::timer::time_type
-lib::timer::elapsed() const
+lib::timer_control_impl::time_type
+lib::timer_control_impl::elapsed() const
 {
 	if(!m_running) return m_local_epoch;
 	return m_local_epoch + apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 }
 
-lib::timer::time_type
-lib::timer::elapsed(time_type pe) const
+lib::timer_control_impl::time_type
+lib::timer_control_impl::elapsed(time_type pe) const
 {
 	if(!m_running) return m_local_epoch;
 	return m_local_epoch + apply_speed_manip(pe - m_parent_epoch);
 }
 
-void lib::timer::start(time_type t /* = 0 */) {
+void lib::timer_control_impl::start(time_type t /* = 0 */) {
 	m_parent_epoch = m_parent->elapsed();
 	m_local_epoch = t;
 	m_running = true;
 }
 
-void lib::timer::stop() {
+void lib::timer_control_impl::stop() {
 	m_local_epoch = 0;
 	m_running = false;
 }
 	
-void lib::timer::pause() {
+void lib::timer_control_impl::pause() {
 	if(m_running) {
 		m_local_epoch += apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
 	}
 }
 	
-void lib::timer::resume() {
+void lib::timer_control_impl::resume() {
 	if(!m_running) {
 		m_parent_epoch = m_parent->elapsed();
 		m_running = true;
 	}
 }
 
-void lib::timer::set_time(time_type t) {
+void lib::timer_control_impl::set_time(time_type t) {
 	if(!m_running) {
 		m_local_epoch = t;
 	} else {
@@ -138,17 +138,19 @@ void lib::timer::set_time(time_type t) {
 	}
 }	
 
-lib::timer::time_type 
-lib::timer::get_time() const {
+#if 0
+lib::timer_control_impl::time_type 
+lib::timer_control_impl::get_time() const {
 	return (m_period == infinite)?elapsed():(elapsed() % m_period);
 }
 
-lib::timer::time_type 
-lib::timer::get_repeat() const {
+lib::timer_control_impl::time_type 
+lib::timer_control_impl::get_repeat() const {
 	return (m_period == infinite)?0:(elapsed() / m_period);
 }
+#endif
 
-void lib::timer::set_speed(double speed)
+void lib::timer_control_impl::set_speed(double speed)
 {
 	if(!m_running) {
 		m_speed = speed;
@@ -161,21 +163,22 @@ void lib::timer::set_speed(double speed)
 }
 
 double
-lib::timer::get_realtime_speed() const
+lib::timer_control_impl::get_realtime_speed() const
 {
 	return m_speed * m_parent->get_realtime_speed();
 }
 
-lib::timer::time_type 
-lib::timer::apply_speed_manip(lib::timer::time_type dt) const 
+lib::timer_control_impl::time_type 
+lib::timer_control_impl::apply_speed_manip(lib::timer::time_type dt) const 
 {
 	if(m_speed == 1.0) return dt;
 	else if(m_speed == 0.0) return 0;
 	return time_type(::floor(m_speed*dt + 0.5));
 }
 
+#if 0
 void 
-lib::timer::add_listener(lib::timer_events *listener) 
+lib::timer_control_impl::add_listener(lib::timer_events *listener) 
 {
 	if(!m_listeners) m_listeners = new std::set<lib::timer_events*>();
 	typedef std::set<lib::timer_events*>::iterator iterator;
@@ -185,14 +188,15 @@ lib::timer::add_listener(lib::timer_events *listener)
 }
 
 void 
-lib::timer::remove_listener(lib::timer_events *listener)
+lib::timer_control_impl::remove_listener(lib::timer_events *listener)
 {
 	if(!m_listeners || !m_listeners->erase(listener))
 		lib::logger::get_logger()->debug("abstract_timer_client::remove_listener: listener not present");
 }
+#endif
 
 void
-lib::timer::speed_changed()
+lib::timer_control_impl::speed_changed()
 {
 	if(!m_listeners) return;
 	std::set<lib::timer_events*>::iterator it;

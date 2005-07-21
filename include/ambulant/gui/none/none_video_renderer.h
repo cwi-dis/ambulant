@@ -55,7 +55,7 @@ namespace ambulant {
 namespace gui {
 namespace none {	  
 
-class none_video_renderer : public common::active_video_renderer {
+class none_video_renderer : public common::video_renderer {
   public:
     none_video_renderer(
     common::playable_notification *context,
@@ -63,7 +63,7 @@ class none_video_renderer : public common::active_video_renderer {
     const lib::node *node,
     lib::event_processor *evp,
 	common::factories *factory)
-	:   common::active_video_renderer(context, cookie, node, evp, factory)
+	:   common::video_renderer(context, cookie, node, evp, factory)
 	{ }
 
   	~none_video_renderer() {};
@@ -71,7 +71,7 @@ class none_video_renderer : public common::active_video_renderer {
 
 	void show_frame(const char* frame, int size);
 		
-    void redraw(const lib::screen_rect_int &dirty, common::gui_window *window) {};
+    void redraw(const lib::rect &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

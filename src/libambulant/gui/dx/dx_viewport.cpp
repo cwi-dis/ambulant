@@ -446,7 +446,7 @@ void gui::dx::viewport::redraw() {
 		return;
 	RECT src_rc = {0, 0, m_width, m_height};
 	RECT dst_rc = {0, 0, m_width, m_height};
-	lib::screen_rect<int> ourrect(lib::point(0,0), lib::size(m_width, m_height));
+	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
 #ifdef USE_SMIL21
 	if (m_fstransition) {
@@ -467,8 +467,8 @@ void gui::dx::viewport::redraw() {
 		// Determine blitter type and blend in the fg surface
 		smil2::blitter_type bt = m_fstransition->get_blitter_type();
 		if (bt == smil2::bt_r1r2r3r4) {
-			lib::screen_rect<int> src_rc_v = ourrect;
-			lib::screen_rect<int> dst_rc_v = ourrect;
+			lib::rect src_rc_v = ourrect;
+			lib::rect dst_rc_v = ourrect;
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
@@ -541,7 +541,7 @@ void gui::dx::viewport::redraw() {
 #endif
 }
 
-void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
+void gui::dx::viewport::redraw(const lib::rect& rc) {
 	if(!m_primary_surface || !m_surface)
 		return;
 	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -558,7 +558,7 @@ void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
 		return;
 		
 	// Blit:
-	lib::screen_rect<int> ourrect(lib::point(0,0), lib::size(m_width, m_height));
+	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
 #ifdef USE_SMIL21
 	if (m_fstransition) {
@@ -579,8 +579,8 @@ void gui::dx::viewport::redraw(const lib::screen_rect<int>& rc) {
 		// Determine blitter type and blend in the fg surface
 		smil2::blitter_type bt = m_fstransition->get_blitter_type();
 		if (bt == smil2::bt_r1r2r3r4) {
-			lib::screen_rect<int> src_rc_v = ourrect;
-			lib::screen_rect<int> dst_rc_v = ourrect;
+			lib::rect src_rc_v = ourrect;
+			lib::rect dst_rc_v = ourrect;
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
@@ -668,7 +668,7 @@ void gui::dx::viewport::clear() {
 }
 
 // Clears the specified back buffer rectangle using the provided color and taking into account any transition
-void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr, dx_transition *tr) {
+void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transition *tr) {
 	if(!m_surface) return;
 	
 	if(!tr) {
@@ -679,7 +679,7 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 	smil2::blitter_type bt = tr->get_blitter_type();
 	
 	if(bt == smil2::bt_r1r2r3r4) {
-		lib::screen_rect<int> rc_v = rc;
+		lib::rect rc_v = rc;
 		clipto_r1r2r3r4(tr, rc_v, rc_v);
 		clear(rc_v, clr, m_surface);
 		return;
@@ -747,7 +747,7 @@ void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr,
 }
 
 // Clears the specified surface rectangle using the provided color
-void gui::dx::viewport::clear(const lib::screen_rect<int>& rc, lib::color_t clr, IDirectDrawSurface* dstview) {
+void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, IDirectDrawSurface* dstview) {
 	if(!dstview) return;
 	
 	DDBLTFX bltfx;
@@ -785,7 +785,7 @@ void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr) {
 }
 
 // Draw the whole DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& dst_rc, bool keysrc) {
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc) {
 	if(!m_surface || !src) return;
 	DWORD flags = DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
@@ -809,8 +809,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-	const lib::screen_rect<int>& dst_rc, bool keysrc, dx_transition *tr) {
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+	const lib::rect& dst_rc, bool keysrc, dx_transition *tr) {
 	if(!m_surface || !src) return;
 	
 	if(!tr) {
@@ -821,8 +821,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	smil2::blitter_type bt = tr->get_blitter_type();
 	
 	if(bt == smil2::bt_r1r2r3r4) {
-		lib::screen_rect<int> src_rc_v = src_rc;
-		lib::screen_rect<int> dst_rc_v = dst_rc;
+		lib::rect src_rc_v = src_rc;
+		lib::rect dst_rc_v = dst_rc;
 		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
 		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
 		return;
@@ -895,8 +895,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 	DeleteObject((HGDIOBJ)hrgn);
 }
 
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-	const lib::screen_rect<int>& dst_rc, bool keysrc, IDirectDrawSurface* dstview) {
+void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+	const lib::rect& dst_rc, bool keysrc, IDirectDrawSurface* dstview) {
 	if(!dstview || !src) return;
 	
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
@@ -924,7 +924,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::screen_rect<int
 }
 
 // Paints the provided string
-void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::screen_rect<int>& rc, lib::color_t clr) {
+void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rect& rc, lib::color_t clr) {
 	if(!m_surface || text.empty()) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -944,7 +944,7 @@ void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib
 }
 
 // Frames the provided rect
-void gui::dx::viewport::frame_rect(const lib::screen_rect<int>& rc, lib::color_t clr) {
+void gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	if(!m_surface) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -974,8 +974,8 @@ lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
 }
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::screen_rect<int>& src_rc,
-	IDirectDrawSurface* dst, const lib::screen_rect<int>& dst_rc) {
+void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
+	IDirectDrawSurface* dst, const lib::rect& dst_rc) {
 	
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
@@ -1002,7 +1002,7 @@ void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::screen_rect<int
 }
 
 // Copies to the DD surface the back buffer within the from rect
-void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::screen_rect<int>& from_rc) {
+void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 	if(!m_surface || !dst) return;
 	DWORD flags = DDBLT_WAIT;
 	
@@ -1024,7 +1024,7 @@ void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::screen_rect<in
 	}
 }
 
-void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc) { 
+void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) { 
 	if(!m_surface || !surf) return;
 	DWORD flags = DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -1036,7 +1036,7 @@ void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::screen_
 	}
 }
 
-void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::screen_rect<int>& rc, HRGN hrgn) {
+void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn) {
 	if(!m_surface) return;
 	DWORD flags = DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -1157,7 +1157,7 @@ RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 
 __forceinline int blend(int w, int c1, int c2) {return (c1==c2)?c1:(c1 + w*(c2-c1)/256); }
 
-HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double progress,
+HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
@@ -1175,8 +1175,8 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double p
 		return hr;
 	}
 	
-	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
-	lib::screen_rect<int> rcc = rc;
+	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
+	lib::rect rcc = rc;
 	rcc &= rcv;
 	int begin_row = rcc.bottom();
 	int end_row = rcc.top();
@@ -1201,7 +1201,7 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::screen_rect<int>& rc, double p
 }
 
 
-HRESULT gui::dx::viewport::blt_blend24(const lib::screen_rect<int>& rc, double progress,
+HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
@@ -1219,8 +1219,8 @@ HRESULT gui::dx::viewport::blt_blend24(const lib::screen_rect<int>& rc, double p
 		return hr;
 	}
 	
-	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
-	lib::screen_rect<int> rcc = rc;
+	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
+	lib::rect rcc = rc;
 	rcc &= rcv;
 	int begin_row = rcc.bottom();
 	int end_row = rcc.top();
@@ -1271,7 +1271,7 @@ struct trible565 {
 	BYTE red() { return (v & 0x1f) << 3;}
 };
 
-HRESULT gui::dx::viewport::blt_blend16(const lib::screen_rect<int>& rc, double progress,
+HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
 	
 	DDSURFACEDESC desc1, desc2;
@@ -1289,8 +1289,8 @@ HRESULT gui::dx::viewport::blt_blend16(const lib::screen_rect<int>& rc, double p
 		return hr;
 	}
 	
-	lib::screen_rect<int> rcv(lib::point(0,0), lib::point(m_width,m_height));
-	lib::screen_rect<int> rcc = rc;
+	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
+	lib::rect rcc = rc;
 	rcc &= rcv;
 	int begin_row = rcc.bottom();
 	int end_row = rcc.top();

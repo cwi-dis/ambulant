@@ -120,10 +120,10 @@ cocoa_text_renderer::~cocoa_text_renderer()
 }
 
 void
-cocoa_text_renderer::redraw_body(const screen_rect_int &dirty, gui_window *window)
+cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect_int &r = m_dest->get_rect();
+	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	if (m_data && !m_text_storage) {
@@ -143,25 +143,9 @@ cocoa_text_renderer::redraw_body(const screen_rect_int &dirty, gui_window *windo
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	screen_rect_int dstrect = r;
+	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-#if 0
-	// XXXX WRONG! This is the info for the region, not for the node!
-	const region_info *info = m_dest->get_info();
-	// First find our whole area
-	if (info && !info->get_transparent()) {
-		// XXXX Fill with background color
-		color_t bgcolor = info->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("cocoa_text_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
-					green:greenf(bgcolor)
-					blue:bluef(bgcolor)
-					alpha:1.0];
-		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect);
-	}
-#endif
 	if (m_text_storage && m_layout_manager) {
 		NSPoint origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
 		NSSize size = NSMakeSize(NSWidth(cocoa_dstrect), NSHeight(cocoa_dstrect));

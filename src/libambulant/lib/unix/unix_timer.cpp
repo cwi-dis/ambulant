@@ -82,7 +82,7 @@ lib::unix::unix_timer::os_millitime()
 
 // Factory routine for the machine-independent
 // timer class
-lib::abstract_timer *
+lib::timer *
 lib::realtime_timer_factory()
 {
 	return new lib::unix::unix_timer();

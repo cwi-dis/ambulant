@@ -92,37 +92,10 @@ class posix_datasource_factory : public raw_datasource_factory {
 
   
 
-class passive_datasource : public ambulant::lib::ref_counted_obj
-{
-public:
-	
-	// constructor 
-	passive_datasource(const std::string filename)
-	:   m_filename(filename) {}
-	
-	// copy constructor
-	//	passive_datasource(passive_datasource& ds);
-
-	~passive_datasource();
-	
-	datasource *activate();
-	
-	friend inline std::ostream& operator<<(std::ostream& os, const passive_datasource& n) {
-		os << "passive_datasource(" << (void *)&n << ", filename=\"" << n.m_filename << "\")";
-		return os;
-	}
-	
-	const std::string m_filename;
-};
-
-	
-
-
-class active_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
+class posix_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
-	active_datasource();
-	active_datasource(passive_datasource *const source, int file);
-  	~active_datasource();
+	posix_datasource(std::string filename, int file);
+  	~posix_datasource();
   	
   	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 	void stop();
@@ -137,8 +110,8 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
   
 	void read(char *data, int size);
   	
-  	friend inline std::ostream& operator<<(std::ostream& os, const active_datasource& n) {
-		os << "active_datasource(" << (void *)&n << ", source=" << (void *)n.m_source << ")";
+  	friend inline std::ostream& operator<<(std::ostream& os, const posix_datasource& n) {
+		os << "posix_datasource(" << (void *)&n << ", \"" << n.m_filename << "\")";
 		return os;
 	}
   private: 
@@ -146,8 +119,8 @@ class active_datasource : virtual public datasource, virtual public lib::ref_cou
 	void filesize();
     void read_file();
 	
+	const std::string m_filename;
   	databuffer *m_buffer;
-  	passive_datasource *m_source;
 
   	int m_filesize;
 	int m_stream;

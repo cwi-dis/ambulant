@@ -641,7 +641,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
   private:
 	const lib::node *m_layout_root;
 	common::playable_factory *m_pf;
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	lib::event_processor *m_event_processor;
 	std::vector<lib::node*> m_nodes;
 	std::map<int, common::playable*> m_playables;
@@ -666,7 +666,7 @@ smil_layout_manager::load_bgimages(common::playable_factory *pf)
 bgimage_loader::bgimage_loader(const lib::node *layout_root, common::playable_factory *pf)
 :	m_layout_root(layout_root),
 	m_pf(pf),
-	m_timer(new lib::timer(lib::realtime_timer_factory(), 1.0, false)),
+	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 1.0, false)),
 	m_event_processor(NULL)
 {
 	m_event_processor = event_processor_factory(m_timer);

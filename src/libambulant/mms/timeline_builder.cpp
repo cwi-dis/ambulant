@@ -80,14 +80,13 @@ typedef enum {
 
 class mms_region_info : public common::region_info {
   public:
-	mms_region_info(std::string name, lib::screen_rect_int bounds)
+	mms_region_info(std::string name, lib::rect bounds)
 	:   m_name(name),
 		m_bounds(bounds) {}
 	virtual ~mms_region_info() {}
 		
 	std::string get_name() const {return m_name; }
-	lib::rect get_rect() const { return lib::rect(m_bounds.left_top(), lib::size(m_bounds.width(), m_bounds.height())); }
-	lib::screen_rect_int get_screen_rect() const { return m_bounds; }
+	lib::rect get_rect() const { return m_bounds; }
 	common::fit_t get_fit() const { return common::fit_meet; }
 	lib::color_t get_bgcolor() const { return (lib::color_t)0; }
 	bool get_transparent() const { return true; }
@@ -102,7 +101,7 @@ class mms_region_info : public common::region_info {
 	bool is_subregion() const { return false; }
   private:
 	std::string m_name;
-	lib::screen_rect_int m_bounds;
+	lib::rect m_bounds;
 };
 	
 	

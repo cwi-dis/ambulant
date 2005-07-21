@@ -97,9 +97,6 @@ class region_info {
 	/// Return the rectangle of the region.
 	virtual rect get_rect() const = 0;
 	
-	/// Return the rectangle of the region.
-	virtual screen_rect_int get_screen_rect() const = 0;
-	
 	/// Return the fit attribute for the region.
 	virtual fit_t get_fit() const = 0;
 	

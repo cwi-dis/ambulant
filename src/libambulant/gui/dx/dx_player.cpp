@@ -111,7 +111,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u)
 :	m_hoster(hoster),
 	m_url(u),
 	m_player(0),
-	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
 	m_update_event(0),
 	m_logger(lib::logger::get_logger()) {
@@ -456,8 +456,8 @@ void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::tra
 
 gui::dx::dx_transition *
 gui::dx::dx_player::set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition) {  
-	stopped(p);
-	lib::timer *timer = new lib::timer(m_timer, 1.0, false);
+//XXXX	stopped(p);
+	lib::timer_control *timer = new lib::timer_control_impl(m_timer, 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
 	common::surface *surf = p->get_renderer()->get_surface();

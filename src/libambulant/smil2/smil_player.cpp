@@ -97,7 +97,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_root(0),
 	m_dom2tn(0),
 	m_layout_manager(0),
-	m_timer(new timer(realtime_timer_factory(), 1.0, false)),
+	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_event_processor(0),
 	m_scheduler(0),
 	m_state(common::ps_idle),
@@ -535,12 +535,12 @@ smil_player::new_playable(const lib::node *n) {
 
 // Destroys the playable of the node (checkpoint).
 void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
-#if 1
-	std::string tag = n->get_local_name();
-	const char *pid = n->get_attribute("id");
+	AM_DBG {
+		std::string tag = n->get_local_name();
+		const char *pid = n->get_attribute("id");
 	
-	AM_DBG m_logger->debug("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
-#endif
+		m_logger->debug("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
+	}
 	np->stop();
 	int rem = np->release();
 	if (rem) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);

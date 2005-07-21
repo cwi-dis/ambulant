@@ -109,7 +109,7 @@ class trace_player : public time_node_context,
 	trace_player(lib::document *doc);
 	~trace_player();
 		
-	lib::timer* get_timer() { return m_timer;}
+	lib::timer_control* get_timer() { return m_timer;}
 	lib::event_processor* get_evp() { return m_event_processor;}
 		
 	///////////////////
@@ -155,7 +155,7 @@ class trace_player : public time_node_context,
 	common::playable *get_playable(const node *n);
 	lib::document *m_doc;
 	time_node* m_root;
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	lib::event_processor *m_event_processor;	
 	std::map<const node*, playable *> m_playables;
 	

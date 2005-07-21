@@ -68,7 +68,7 @@ class none_window : public common::gui_window {
   	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
   	:	common::gui_window(handler) {};
   		
-	void need_redraw(const lib::screen_rect_int &r) { m_handler->redraw(r, this); };
+	void need_redraw(const lib::rect &r) { m_handler->redraw(r, this); };
 	void need_events(bool want) {};
 	void redraw_now() {};
 };
@@ -106,7 +106,7 @@ class none_background_renderer : public common::background_renderer {
 	none_background_renderer(const common::region_info *src)
 	:   background_renderer(src) {}
 	~none_background_renderer() {}
-	void redraw(const lib::screen_rect_int &dirty, common::gui_window *window);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void keep_as_background();
 };
 

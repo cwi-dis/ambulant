@@ -80,10 +80,10 @@ cocoa_image_renderer::~cocoa_image_renderer()
 }
 	
 void
-cocoa_image_renderer::redraw_body(const screen_rect_int &dirty, gui_window *window)
+cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const screen_rect_int &r = m_dest->get_rect();
+	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	if (m_data && !m_image) {
@@ -109,7 +109,7 @@ cocoa_image_renderer::redraw_body(const screen_rect_int &dirty, gui_window *wind
 	size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 	rect srcrect;
 	NSRect cocoa_srcrect;
-	screen_rect_int dstrect;
+	rect dstrect;
 	NSRect cocoa_dstrect;
 #ifdef USE_SMIL21
 	// While rendering background images only, check for tiling. This code is

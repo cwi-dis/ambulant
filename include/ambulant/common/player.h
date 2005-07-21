@@ -59,7 +59,6 @@
 namespace ambulant {
 
 namespace lib {
-class timer;
 class event_processor;
 class document;
 }
@@ -94,7 +93,7 @@ class player {
 #endif
 
 	/// Return the timer this player uses.
-	virtual lib::abstract_timer* get_timer() = 0;
+	virtual lib::timer* get_timer() = 0;
 	
 	/// Return the event_processor this player uses.
 	virtual lib::event_processor* get_evp() = 0;

@@ -69,11 +69,10 @@ output_stringptr = Type("char *", "s")  # BE CAREFUL!
 # Ambulant-specific
 region_dim = OpaqueByRefType("ambulant::common::region_dim", "ambulant_region_dim")
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
-screen_rect_int = OpaqueByRefType("ambulant::lib::screen_rect_int", "ambulant_screen_rect")
-const_lib_screen_rect_int_ref = OpaqueByRefType("const ambulant::lib::screen_rect_int&", "ambulant_screen_rect")
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
 const_lib_point_ref = OpaqueByRefType("const ambulant::lib::point&", "ambulant_point")
+const_lib_rect_ref = OpaqueByRefType("const ambulant::lib::rect&", "ambulant_rect")
 size = OpaqueByRefType("ambulant::lib::size", "ambulant_size")
 zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
@@ -81,7 +80,7 @@ const_cookie_type = cookie_type
 color_t = Type("ambulant::lib::color_t", "l") # XXXX Split into RGB
 event_priority = Type("ambulant::lib::event_processor::event_priority", "l")
 timestamp_t = Type("ambulant::net::timestamp_t", "L")
-time_type = Type("ambulant::lib::abstract_timer::time_type", "l")
+time_type = Type("ambulant::lib::timer::time_type", "l")
 tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")
@@ -252,8 +251,6 @@ methods_node_interface = methods_node
 
 lib_event_processor_ptr = event_processor_ptr
 ambulant_lib_event_processor_ptr = event_processor_ptr
-abstract_event_processor_ptr = event_processor_ptr
-methods_abstract_event_processor = methods_event_processor
 lib_transition_info_ptr = transition_info_ptr
 
 common_duration = duration
@@ -266,9 +263,7 @@ common_bgrenderer_ptr = bgrenderer_ptr
 lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
-lib_abstract_timer_ptr = abstract_timer_ptr
-timer_ptr = abstract_timer_ptr
-lib_screen_rect_int = screen_rect_int
+lib_timer_ptr = timer_ptr
 lib_point = point
 lib_size = size
 lib_color_t = color_t
@@ -386,13 +381,9 @@ const_node_interface_ptr = const_node_ptr
 methods_node_interface = methods_node
 
 lib_event_processor_ptr = event_processor_ptr
-abstract_event_processor_ptr = event_processor_ptr
-methods_abstract_event_processor = methods_event_processor
 
 lib_event_ptr = event_ptr
-lib_timer_ptr = abstract_timer_ptr
-lib_abstract_timer_ptr = abstract_timer_ptr
-lib_screen_rect_int = screen_rect_int
+lib_timer_ptr = timer_ptr
 lib_point = point
 lib_size = size
 lib_color_t = color_t
@@ -441,17 +432,17 @@ embedder_object.othermethods = [
 ]
 
 renderer_object.othermethods = [
-    "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
+    "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
     "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
-    "void transition_freeze_end(ambulant::lib::screen_rect_int) { abort(); }", # XXX
+    "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 bgrenderer_object.othermethods = [
-    "void redraw(const ambulant::lib::screen_rect_int&, ambulant::common::gui_window*) { abort(); }", # XXX
+    "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
     "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
-    "void transition_freeze_end(ambulant::lib::screen_rect_int) { abort(); }", # XXX
+    "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 surface_object.othermethods = [
-    "ambulant::lib::screen_rect_int get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }", # XXX
+    "ambulant::lib::rect get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }", # XXX
 ]
 surface_template_object.othermethods = [
     "void animated() { abort(); }", # XXX
@@ -459,7 +450,6 @@ surface_template_object.othermethods = [
 animation_destination_object.othermethods = [
     "std::string get_name() const { return region_info::get_name(); }",
     "ambulant::lib::rect get_rect() const { return region_info::get_rect(); }",
-    "ambulant::lib::screen_rect_int get_screen_rect() const { return region_info::get_screen_rect(); }",
     "ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }",
     "ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }",
     "bool get_transparent() const { return region_info::get_transparent(); }",

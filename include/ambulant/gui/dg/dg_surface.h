@@ -102,7 +102,7 @@ class surface {
 		}
 	}
 	
-	void fill(const ambulant::lib::screen_rect<int>& rc, value_type bkcolor) {
+	void fill(const ambulant::lib::rect& rc, value_type bkcolor) {
 		int l = std::max(rc.left(), 0);
 		int r = std::min(rc.right(), m_width);
 		int t = std::max(rc.top(), 0);
@@ -113,7 +113,7 @@ class surface {
 		}
 	}
 	
-	void blit(const surface<T>* ps, const ambulant::lib::screen_rect<int>& dst_rc, 
+	void blit(const surface<T>* ps, const ambulant::lib::rect& dst_rc, 
 		int sl, int st, value_type transp) {
 		if(!ps) return;
 		int l = std::max(dst_rc.left(), 0);

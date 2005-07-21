@@ -104,8 +104,8 @@ class time_node : public schedulable {
 	// Sets the timer for this node
 	// This node becomes the owner of the timer e.g. should delete it on exit
 	// The timegraph builder has already established the clocks network
-	virtual void set_timer(lib::timer *tmr) { m_timer = tmr;}
-	virtual lib::timer *get_timer() { return m_timer;}
+	virtual void set_timer(lib::timer_control *tmr) { m_timer = tmr;}
+	virtual lib::timer_control *get_timer() { return m_timer;}
 	
 	// Timegarph configuration
 	void set_want_activate_event(bool want) { m_want_activate_events = want;}
@@ -419,7 +419,7 @@ class time_node : public schedulable {
 	bool m_discrete;
 			
 	// The timer assigned to this node by the timegraph builder
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 	
 	// The lifetime state of this node.
 	// Summarizes the state variables below.

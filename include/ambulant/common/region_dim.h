@@ -321,7 +321,7 @@ struct region_dim_spec {
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
 	
 	/// Convert all relative parameters to absolute.
-	void convert(const lib::screen_rect_int& rc);
+	void convert(const lib::rect& rc);
 };
 
 
@@ -362,7 +362,7 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 }
 
 // Converts those coordinates that are relative to absolute 
-inline void region_dim_spec::convert(const lib::screen_rect_int& rc) {
+inline void region_dim_spec::convert(const lib::rect& rc) {
 	int w = rc.width(), h = rc.height();
 	
 	if(!left.isauto()) left = left.get(w);

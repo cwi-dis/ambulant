@@ -101,8 +101,8 @@ class qt_fill_renderer : public  renderer_playable {
 	void set_intransition(lib::transition_info *info) { m_intransition = info; }
 	void start_outtransition(lib::transition_info *info);
 	void user_event(const point &where, int what = 0);
-	void redraw(const screen_rect<int> &dirty, gui_window *window);
-	void redraw_body(const lib::screen_rect<int> &dirty, 
+	void redraw(const rect &dirty, gui_window *window);
+	void redraw_body(const lib::rect &dirty, 
 			 common::gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
@@ -121,7 +121,7 @@ class qt_background_renderer : public common::background_renderer {
   	:	common::background_renderer(src),
   		m_background_pixmap(NULL) {}
   	
-	void redraw(const lib::screen_rect<int> &dirty, common::gui_window *windo);
+	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void keep_as_background();
   private:
   	QPixmap *m_background_pixmap;

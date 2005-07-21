@@ -64,7 +64,7 @@ extern "C" {
 
 void sdl_C_callback(void *userdata, Uint8 *stream, int len)
 {
-	gui::sdl::sdl_active_audio_renderer::sdl_callback(stream, len);
+	gui::sdl::sdl_audio_renderer::sdl_callback(stream, len);
 }
 
 }
@@ -87,19 +87,19 @@ add_samples(short *outbuf, short *inbuf, int size, float *volumes, int volcount)
 	}
 }
 
-typedef lib::no_arg_callback<gui::sdl::sdl_active_audio_renderer> readdone_callback;
+typedef lib::no_arg_callback<gui::sdl::sdl_audio_renderer> readdone_callback;
 	
 // ************************************************************
 
-bool gui::sdl::sdl_active_audio_renderer::m_sdl_init = false;
-Uint16 gui::sdl::sdl_active_audio_renderer::m_sdl_format = AUDIO_S16SYS;
-net::audio_format gui::sdl::sdl_active_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
-int gui::sdl::sdl_active_audio_renderer::m_buffer_size = 4096;    
-lib::critical_section gui::sdl::sdl_active_audio_renderer::m_static_lock;    
-std::list<gui::sdl::sdl_active_audio_renderer *> gui::sdl::sdl_active_audio_renderer::m_renderers;
+bool gui::sdl::sdl_audio_renderer::m_sdl_init = false;
+Uint16 gui::sdl::sdl_audio_renderer::m_sdl_format = AUDIO_S16SYS;
+net::audio_format gui::sdl::sdl_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
+int gui::sdl::sdl_audio_renderer::m_buffer_size = 4096;    
+lib::critical_section gui::sdl::sdl_audio_renderer::m_static_lock;    
+std::list<gui::sdl::sdl_audio_renderer *> gui::sdl::sdl_audio_renderer::m_renderers;
 
 int
-gui::sdl::sdl_active_audio_renderer::init()
+gui::sdl::sdl_audio_renderer::init()
 {
 	m_static_lock.enter();
 	if (m_sdl_init) {
@@ -113,7 +113,7 @@ gui::sdl::sdl_active_audio_renderer::init()
 	// Step one - initialize the SDL library
 	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
 	if (err < 0) {
-		lib::logger::get_logger()->trace("sdl_active_audio_renderer.init: SDL_Init failed: error %d", err);
+		lib::logger::get_logger()->trace("sdl_audio_renderer.init: SDL_Init failed: error %d", err);
 		lib::logger::get_logger()->error(gettext("Cannot initialize SDL audio library"));
 		m_static_lock.leave();
 		return err;
@@ -145,37 +145,37 @@ gui::sdl::sdl_active_audio_renderer::init()
 		m_static_lock.leave();
 		return -1;
 	}
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.init: SDL init succes");			
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.init: SDL init succes");			
 	m_sdl_init = true;
 	m_static_lock.leave();
 	return err;
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::register_renderer(sdl_active_audio_renderer *rnd)
+gui::sdl::sdl_audio_renderer::register_renderer(sdl_audio_renderer *rnd)
 {
 	m_static_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer(0x%x)", rnd);
-	std::list<sdl_active_audio_renderer *>::iterator i;
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer(0x%x)", rnd);
+	std::list<sdl_audio_renderer *>::iterator i;
 	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
 		if ((*i) == rnd) {
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer() already exists !");
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer() already exists !");
 			m_static_lock.leave();
 			return;
 		}
 	}
 	m_renderers.push_back(rnd);
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer: unpause SDL");
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer: unpause SDL");
 	SDL_PauseAudio(0);
 	m_static_lock.leave();
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::unregister_renderer(sdl_active_audio_renderer *rnd)
+gui::sdl::sdl_audio_renderer::unregister_renderer(sdl_audio_renderer *rnd)
 {
 	m_static_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::unregister_renderer(0x%x)", rnd);
-	std::list<sdl_active_audio_renderer *>::iterator i;
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::unregister_renderer(0x%x)", rnd);
+	std::list<sdl_audio_renderer *>::iterator i;
 	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
 		if ((*i) == rnd) {
 			m_renderers.erase(i);
@@ -183,17 +183,17 @@ gui::sdl::sdl_active_audio_renderer::unregister_renderer(sdl_active_audio_render
 		}
 	}
 	if (m_renderers.size() == 0) {
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::register_renderer: pause SDL");
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer: pause SDL");
 		SDL_PauseAudio(1);
 	}
 	m_static_lock.leave();
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
+gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
 	m_static_lock.enter();
-	std::list<sdl_active_audio_renderer *>::iterator first = m_renderers.begin();
+	std::list<sdl_audio_renderer *>::iterator first = m_renderers.begin();
 	if (m_renderers.size() == 1 && (*first)->m_volcount == 0
 #ifdef USE_SMIL21
 	    && ! ((*first)->m_intransition || (*first)->m_outtransition)
@@ -203,7 +203,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		// no transitions: use simple copy
 		Uint8 *single_data;
 
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data()", (void*) stream, len);
 
 		int single_len = (*first)->get_data(len, &single_data);
 		assert(single_len <= len);
@@ -212,7 +212,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			memcpy(stream, single_data, std::min(len, single_len));
 		}
 
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
 
 		(*first)->get_data_done(single_len);
 		if (single_len < len)
@@ -220,15 +220,15 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 	} else {
 		// No streams, or more than one: use an accumulation buffer
 		memset(stream, 0, len);
-		std::list<sdl_active_audio_renderer *>::iterator i;
+		std::list<sdl_audio_renderer *>::iterator i;
 		for (i=first; i != m_renderers.end(); i++) {
 			Uint8 *next_data;
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			int next_len = (*i)->get_data(len, &next_data);
 			if (next_len)
 				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2), (*i)->m_volumes, (*i)->m_volcount);
 
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
 			(*i)->get_data_done(next_len);
 		}
 	}
@@ -237,7 +237,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_callback(Uint8 *stream, int len)
 
 // ************************************************************
 
-gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
+gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
@@ -256,7 +256,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	m_transition_engine(NULL)
 #endif                                   
 {
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() -> 0x%x",  this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_audio_renderer() -> 0x%x",  this);
 	if (init() != 0)
 		return;
 		
@@ -294,7 +294,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	}
 }
 
-gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
+gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
     common::playable_notification *context,
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
@@ -315,7 +315,7 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 {
 	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::sdl_active_audio_renderer() this=(x%x), ds = 0x%x",  (void*) this, (void*) ds);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_audio_renderer() this=(x%x), ds = 0x%x",  (void*) this, (void*) ds);
 	if (init() != 0)
 		return;
 		
@@ -325,18 +325,18 @@ gui::sdl::sdl_active_audio_renderer::sdl_active_audio_renderer(
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {
 		net::audio_datasource *resample_ds = factory->df->new_filter_datasource(url, supported, ds);
-		AM_DBG lib::logger::get_logger ()->debug("active_video_renderer::active_video_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
+		AM_DBG lib::logger::get_logger ()->debug("sdl_audio_renderer::sdl_audio_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
 		if (resample_ds) {
 			m_audio_src = resample_ds;
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer: opened resample datasource !");
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: opened resample datasource !");
 		}
 	}
 }
 
-gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
+gui::sdl::sdl_audio_renderer::~sdl_audio_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::~sdl_active_audio_renderer(0x%x) m_audio_src=0x%x",  this, m_audio_src);		
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::~sdl_audio_renderer(0x%x) m_audio_src=0x%x",  this, m_audio_src);		
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
@@ -360,7 +360,7 @@ gui::sdl::sdl_active_audio_renderer::~sdl_active_audio_renderer()
 #ifdef USE_SMIL21
 
 void
-gui::sdl::sdl_active_audio_renderer::set_intransition(const lib::transition_info* info) {
+gui::sdl::sdl_audio_renderer::set_intransition(const lib::transition_info* info) {
  	if (m_transition_engine)
 		delete m_transition_engine;
 	m_intransition = info;
@@ -369,7 +369,7 @@ gui::sdl::sdl_active_audio_renderer::set_intransition(const lib::transition_info
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::start_outtransition(const lib::transition_info* info) {
+gui::sdl::sdl_audio_renderer::start_outtransition(const lib::transition_info* info) {
  	if (m_transition_engine)
 		delete m_transition_engine;
 	m_outtransition = info;
@@ -379,7 +379,7 @@ gui::sdl::sdl_active_audio_renderer::start_outtransition(const lib::transition_i
 #endif
 
 int
-gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
+gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 {
 	m_lock.enter();
 	
@@ -393,7 +393,7 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		rv = 0;
 		m_read_ptr_called = false;
 	} else {
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
 		m_read_ptr_called = true;
 		rv = m_audio_src->size();
 		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
@@ -436,22 +436,22 @@ gui::sdl::sdl_active_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		}
 	}
 	m_lock.leave();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data(0x%x) return rv=%d, m_volcount=%d, m_volumes=[%f,%f]",this,rv,m_volcount,m_volcount>=1?m_volumes[0]:1,m_volcount==2?m_volumes[1]:m_volcount==1?0:1);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data(0x%x) return rv=%d, m_volcount=%d, m_volumes=[%f,%f]",this,rv,m_volcount,m_volcount>=1?m_volumes[0]:1,m_volcount==2?m_volumes[1]:m_volcount==1?0:1);
 	return rv;
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
+gui::sdl::sdl_audio_renderer::get_data_done(int size)
 {
 	m_lock.enter();
 	// Acknowledge that we are ready with the data provided to us
 	// at the previous callback time
-	//AM_DBG if (m_audio_src) lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
+	//AM_DBG if (m_audio_src) lib::logger::get_logger()->debug("sdl_audio_renderer::get_data_done: m_src->readdone(%d), %d more", size, m_audio_src->size()-size);
 	//if (size) {
 	if (m_audio_src) {
 
 		if (m_read_ptr_called) {
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data_done: calling m_audio_src->readdone(%d) m_audio_src=0x%x, this = (x%x)", size, (void*) m_audio_src, (void*) this);
 			m_audio_src->readdone(size);
 			m_read_ptr_called = false;
 		}
@@ -461,14 +461,14 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 	still_busy = (size != 0);
 	still_busy |= restart_audio_input();
 	if (!still_busy) {
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::playdone: calling m_context->stopped() this = (x%x)",this);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::playdone: calling m_context->stopped() this = (x%x)",this);
 		if(m_is_playing) {
-			AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::Still playing while there is no data !");
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::Still playing while there is no data !");
 		}
 		// We cannot call unregister_renderer from here, because we are called from the
 		// SDL callback and already holding the m_global_lock. So, in stead
 		// we use the event processor to unregister ourselves later.
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::stop);
+		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::stop);
 		m_event_processor->add_event(e, 0, ambulant::lib::event_processor::med);
 		if (m_audio_src) {
 			m_audio_src->stop();
@@ -479,7 +479,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 		if (m_context) {
 			m_context->stopped(m_cookie, 0);
 		} else {
-			AM_DBG lib::logger::get_logger()->trace("sdl_active_audio_renderer(0x%x): m_context is  NULL", (void*)this);
+			AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer(0x%x): m_context is  NULL", (void*)this);
 		}
 		return;
 	}
@@ -487,7 +487,7 @@ gui::sdl::sdl_active_audio_renderer::get_data_done(int size)
 }
 
 bool
-gui::sdl::sdl_active_audio_renderer::restart_audio_input()
+gui::sdl::sdl_audio_renderer::restart_audio_input()
 {
 	// private method - no need to lock.
 	if (!m_audio_src || m_audio_src->end_of_file() || !m_is_playing) {
@@ -496,31 +496,31 @@ gui::sdl::sdl_active_audio_renderer::restart_audio_input()
 	}
 	if (m_audio_src->size() == 0) {
 		// Start reading 
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
+		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
 	}
 	return true;
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::data_avail()
+gui::sdl::sdl_audio_renderer::data_avail()
 {
 	m_lock.enter();
 	//assert(m_audio_src);
 	if (!m_audio_src) {				
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail:m_audio_src does not exist");
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail:m_audio_src does not exist");
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail: %d bytes available", m_audio_src->size());
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: %d bytes available", m_audio_src->size());
 	
 	restart_audio_input();
 	
 	m_lock.leave();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::data_avail: done");
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: done");
 }	
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_paused()
+gui::sdl::sdl_audio_renderer::is_paused()
 {
 	m_lock.enter();
 	bool rv;
@@ -530,7 +530,7 @@ gui::sdl::sdl_active_audio_renderer::is_paused()
 }
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_stopped()
+gui::sdl::sdl_audio_renderer::is_stopped()
 {
 	m_lock.enter();
 	bool rv;
@@ -540,7 +540,7 @@ gui::sdl::sdl_active_audio_renderer::is_stopped()
 }
 
 bool
-gui::sdl::sdl_active_audio_renderer::is_playing()
+gui::sdl::sdl_audio_renderer::is_playing()
 {
 	m_lock.enter();
 	bool rv;
@@ -551,10 +551,10 @@ gui::sdl::sdl_active_audio_renderer::is_playing()
 
 
 void
-gui::sdl::sdl_active_audio_renderer::stop()
+gui::sdl::sdl_audio_renderer::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::stop(0x%x)",(void*)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
@@ -572,7 +572,7 @@ gui::sdl::sdl_active_audio_renderer::stop()
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::pause()
+gui::sdl::sdl_audio_renderer::pause()
 {
 	m_lock.enter();
 	m_is_paused = true;
@@ -580,7 +580,7 @@ gui::sdl::sdl_active_audio_renderer::pause()
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::resume()
+gui::sdl::sdl_audio_renderer::resume()
 {
 	m_lock.enter();
 	m_is_paused = false;
@@ -588,15 +588,15 @@ gui::sdl::sdl_active_audio_renderer::resume()
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::start(double where)
+gui::sdl::sdl_audio_renderer::start(double where)
 {
 	m_lock.enter();
     if (!m_node) abort();
 		
-	AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.start(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x)", (void *)this);
 	if (m_audio_src) {
-		lib::event *e = new readdone_callback(this, &sdl_active_audio_renderer::data_avail);
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
+		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
 		m_is_playing = true;
 		m_is_paused = false;
@@ -609,20 +609,20 @@ gui::sdl::sdl_active_audio_renderer::start(double where)
 		}
 #endif                                   
 	} else {
-		AM_DBG lib::logger::get_logger()->debug("sdl_active_audio_renderer.start: no datasource");
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start: no datasource");
 		m_lock.leave();
 		m_context->stopped(m_cookie, 0);
 	}
 }
 
 void
-gui::sdl::sdl_active_audio_renderer::seek(double where)
+gui::sdl::sdl_audio_renderer::seek(double where)
 {
-	lib::logger::get_logger()->trace("sdl_active_audio_renderer: seek(%f) not implemented", where);
+	lib::logger::get_logger()->trace("sdl_audio_renderer: seek(%f) not implemented", where);
 }
 
 common::duration 
-gui::sdl::sdl_active_audio_renderer::get_dur()
+gui::sdl::sdl_audio_renderer::get_dur()
 {
 	common::duration rv(false, 0.0);
 	m_lock.enter();

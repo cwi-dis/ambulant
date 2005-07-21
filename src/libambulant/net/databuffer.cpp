@@ -254,7 +254,7 @@ void databuffer::pushdata(int sz)
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::pushdata(%d) realloc m_buffer=x%x, from %d bytes to %d bytes", (void*)this, sz, (void*) m_buffer, m_size, m_size + sz);
 
 	m_size += sz;
-	//AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata:size = %d ",sz);
+	//AM_DBG lib::logger::get_logger()->debug("databuffer.pushdata:size = %d ",sz);
 	assert(m_size >= m_rear);
 	m_used = m_size - m_rear;
 	 if (!m_buffer && (sz > 0)) {
@@ -262,7 +262,7 @@ void databuffer::pushdata(int sz)
 		 abort();
 	 }
 	if(m_max_size > 0 && m_used > m_max_size) {
-		AM_DBG lib::logger::get_logger()->debug("active_datasource.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
+		AM_DBG lib::logger::get_logger()->debug("databuffer.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
 		m_buffer_full = true;
 	}
 	m_lock.leave();

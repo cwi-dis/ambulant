@@ -126,7 +126,7 @@ class renderer_playable : public playable_imp, public renderer {
 	surface *get_surface() { return m_dest;}
 	virtual void user_event(const lib::point &where, int what = 0);	
 	renderer *get_renderer() { return this; }
-	void transition_freeze_end(lib::screen_rect_int r) { m_context->transitioned(m_cookie); }
+	void transition_freeze_end(lib::rect r) { m_context->transitioned(m_cookie); }
 	virtual void start(double t);
 	virtual void stop();
 	
@@ -164,7 +164,7 @@ class renderer_playable_ds : public renderer_playable {
 //	virtual void resume() {}
 //	virtual void wantclicks(bool want);
 
-	virtual void redraw(const lib::screen_rect_int &dirty, gui_window *window) = 0;
+	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;
 	/// Called whenever data is available.
 	virtual void readdone() = 0;
   protected:
@@ -251,22 +251,22 @@ class empty_playable_notification : public playable_notification {
 /// baseclass to use. It handles reading the video file (through
 /// a video_datasource object), calls show_frame for every frame,
 /// and splitting out the optional audio track and handing it to
-/// an audio playable. active_video_renderer will also control
+/// an audio playable. video_renderer will also control
 /// the audio playable, forwarding play/stop/pause calls that it
 /// receives to the audio_playable too.
 ///
 /// So, the only thing you need to provide are a show_frame
 /// and a redraw function.
-class active_video_renderer : public common::renderer_playable {
+class video_renderer : public common::renderer_playable {
   public:
-	active_video_renderer(
+	video_renderer(
     common::playable_notification *context,
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
 	common::factories *factory);
 
-  	virtual ~active_video_renderer();
+  	virtual ~video_renderer();
 	
 	/// Return true if video is paused.
   	bool is_paused() { return m_is_paused; };
@@ -279,7 +279,7 @@ class active_video_renderer : public common::renderer_playable {
 	
 	/// Display video data.
 	virtual void show_frame(const char* frame, int size) {};
-    virtual void redraw(const lib::screen_rect_int &dirty, common::gui_window *window);
+    virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	
 	void start(double where);
     void stop();
@@ -298,9 +298,9 @@ class active_video_renderer : public common::renderer_playable {
   	common::playable *m_audio_renderer;	///< the audio playable.
   	empty_playable_notification m_playable_notification;
   private:
-	  typedef lib::no_arg_callback <active_video_renderer > dataavail_callback;
+	  typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	  double now();
-	  lib::abstract_timer *m_timer;
+	  lib::timer *m_timer;
  	  unsigned long int m_epoch;
 	  bool m_is_playing;
 	  bool m_is_paused;
@@ -325,7 +325,7 @@ class background_renderer : public bgrenderer {
 	virtual ~background_renderer() {}
 	void set_surface(surface *destination) { m_dst = destination; }
 	void user_event(const lib::point &where, int what = 0) {};
-	void transition_freeze_end(lib::screen_rect_int area) {};
+	void transition_freeze_end(lib::rect area) {};
   protected:
 	const region_info *m_src;	///< Where we get our parameters (such as color) from.
 	surface *m_dst;				///< Where we should render to.

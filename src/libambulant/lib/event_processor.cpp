@@ -64,22 +64,22 @@
 using namespace ambulant;
 using namespace lib;
 
-abstract_event_processor::abstract_event_processor(abstract_timer *t) 
+event_processor_impl::event_processor_impl(timer *t) 
 	:	m_timer(t),
 		m_high_delta_timer(t), 
 		m_med_delta_timer(t), 
 		m_low_delta_timer(t)
 		{ assert(t != 0); }
 
-abstract_event_processor::~abstract_event_processor() {
+event_processor_impl::~event_processor_impl() {
 		// the timer is not owned by this
 }
 
-abstract_timer *
-abstract_event_processor::get_timer() const { return m_timer; }
+timer *
+event_processor_impl::get_timer() const { return m_timer; }
 
 void 
-abstract_event_processor::add_event(event *pe, time_type t, 
+event_processor_impl::add_event(event *pe, time_type t, 
 				    event_priority priority) {
 
  	AM_DBG logger::get_logger()->debug("add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
@@ -100,7 +100,7 @@ abstract_event_processor::add_event(event *pe, time_type t,
 }
 
 bool
-abstract_event_processor::cancel_event(event *pe, 
+event_processor_impl::cancel_event(event *pe, 
 				       event_priority priority) {
 	bool succeeded = false;
  	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
@@ -121,7 +121,7 @@ abstract_event_processor::cancel_event(event *pe,
 }
 	
 void
-abstract_event_processor::cancel_all_events() {
+event_processor_impl::cancel_all_events() {
 	AM_DBG logger::get_logger()->debug("cancel_all_events()");
 	m_delta_timer_cs.enter();
 	m_high_delta_timer.clear();
@@ -131,7 +131,7 @@ abstract_event_processor::cancel_all_events() {
 }
 
 void 
-abstract_event_processor::serve_events()
+event_processor_impl::serve_events()
 // serve all events in the high-med-low prioritity run queues
 // in the right order, after checking with their delta timers
 {
@@ -159,7 +159,7 @@ abstract_event_processor::serve_events()
 }
 
 bool
-abstract_event_processor::events_available(delta_timer& dt, std::queue<event*> *qp)
+event_processor_impl::events_available(delta_timer& dt, std::queue<event*> *qp)
 // check, if needed, with a delta_timer to fill its run queue
 // return true if the run queue contains any events
 {
@@ -172,7 +172,7 @@ abstract_event_processor::events_available(delta_timer& dt, std::queue<event*> *
 }
 
 bool
-abstract_event_processor::serve_event(delta_timer& dt, std::queue<event*> *qp)
+event_processor_impl::serve_event(delta_timer& dt, std::queue<event*> *qp)
 // serve a single event from a delta_timer run queue
 // return true if an event was served
 {

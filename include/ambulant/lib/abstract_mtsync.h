@@ -62,9 +62,9 @@ namespace lib {
 /// API for the main synchronisation primitive.
 /// Do not use this class directly, in stead allocate
 /// objects of class critical section.
-class AMBULANTAPI abstract_critical_section {
+class AMBULANTAPI base_critical_section {
   public:
-	virtual ~abstract_critical_section() {}
+	virtual ~base_critical_section() {}
 	
 	/// Enter a critical section.
 	virtual void enter() = 0;
@@ -73,13 +73,13 @@ class AMBULANTAPI abstract_critical_section {
 	virtual void leave() = 0;
 };
 
-class AMBULANTAPI abstract_condition {
+class AMBULANTAPI base_condition {
   public:
-	virtual ~abstract_condition() {}
+	virtual ~base_condition() {}
 	
 	virtual void signal() = 0;
 	virtual void signal_all() = 0;
-	// virtual bool wait(int microseconds, abstract_critical_section &cs) = 0;
+	// virtual bool wait(int microseconds, base_critical_section &cs) = 0;
 };
 
 } // namespace lib

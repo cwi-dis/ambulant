@@ -64,7 +64,7 @@ namespace unix {
 // XXX: time() returns secs. This timer should be msec based. 
 
 // simple unix os timer
-class unix_timer : public ambulant::lib::abstract_timer  {
+class unix_timer : public ambulant::lib::timer  {
   public:
 	unix_timer() {};
 	

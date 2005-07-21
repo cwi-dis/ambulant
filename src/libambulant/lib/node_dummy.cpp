@@ -54,23 +54,6 @@
 #include "ambulant/lib/node_dummy.h"
 #include "ambulant/lib/logger.h"
 
-#if 0
-// find_if, etc
-#include <algorithm>
-
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-// ostringstream
-#include <sstream>
-#endif
-
-// assert
-#include <cassert>
-
-// node context
-#include "ambulant/lib/document.h" 
-
-#include <stdio.h> 
-#endif
 // trim strings
 #include "ambulant/lib/string_util.h"
 
