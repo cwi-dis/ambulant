@@ -320,7 +320,7 @@ video_renderer::video_renderer(
 	
 	// here we have to get clip_begin/clip_end from the node
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
-	long long int cb = 0;
+	net::timestamp_t cb = 0;
 #ifndef AMBULANT_PLATFORM_WIN32
 	char *lastp;
 #endif
@@ -338,7 +338,7 @@ video_renderer::video_renderer(
 	}
 	
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
-	long long int ce = -1;
+	net::timestamp_t ce = -1;
 	if (!clip_end_attr) {
 		clip_end_attr = m_node->get_attribute("clip-end");
 	}

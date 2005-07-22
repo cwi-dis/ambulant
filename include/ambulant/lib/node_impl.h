@@ -65,8 +65,11 @@ namespace lib {
 /// The node trees are not fully DOM compliant, but should
 /// be compatible with a bit of glue code.
 /// The parent of each node is also its owner and container.
-
+#ifdef AMBULANT_PLATFORM_WIN32_WCE_3
+class node_impl { // WinCE3 compiler has trouble with baseclass
+#else
 class node_impl : public node_interface {
+#endif
 
   public:
   

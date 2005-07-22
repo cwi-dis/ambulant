@@ -263,7 +263,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
-	long long int cb = 0;
+	timestamp_t cb = 0;
 	char *lastp;
 	
 	if (!clip_begin_attr) {
@@ -275,7 +275,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	}
 	
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
-	long long int ce = -1;
+	timestamp_t ce = -1;
 	if (!clip_end_attr) {
 		clip_end_attr = m_node->get_attribute("clip-end");
 	}
