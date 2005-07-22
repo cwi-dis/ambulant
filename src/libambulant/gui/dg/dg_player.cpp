@@ -469,7 +469,7 @@ void gui::dg::dg_player::schedule_update() {
 // Layout helpers with a lot of hacks
 
 typedef common::surface_template iregion;
-typedef common::passive_region region;
+typedef common::surface_impl region;
 
 static const region* 
 get_top_layout(smil2::smil_layout_manager *layout, const lib::node* n) {

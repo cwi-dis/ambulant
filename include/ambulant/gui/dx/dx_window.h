@@ -59,13 +59,14 @@
 
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/common/region.h"
 
 namespace ambulant {
 namespace common {
 class passive_region;
 }}
 
-typedef ambulant::common::surface_impl region;
+typedef ambulant::common::surface_impl region; // XXX Or should it be surface??
 
 namespace ambulant {
 

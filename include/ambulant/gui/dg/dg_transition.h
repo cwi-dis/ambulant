@@ -116,7 +116,7 @@ class transition_engine_adapter : public T {
 template<class T>
 class dg_transition_engine : public dg_transition {
   public:
-	dg_transition_engine(common::playable *playable, lib::timer *timer)
+	dg_transition_engine(common::playable *playable, lib::timer_control *timer)
 	:	m_playable(playable), m_timer(timer) {
 		m_engine = new transition_engine_adapter<T>();
 	}
@@ -184,7 +184,7 @@ class dg_transition_engine : public dg_transition {
 		
 	transition_engine_adapter<T> *m_engine;
 	common::playable *m_playable;
-	lib::timer *m_timer;
+	lib::timer_control *m_timer;
 };
 
 

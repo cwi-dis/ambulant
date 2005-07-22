@@ -59,13 +59,14 @@
 
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/common/region.h"
 
 namespace ambulant {
 namespace common {
 class passive_region;
 }}
 
-typedef ambulant::common::surface_impl region;
+typedef ambulant::common::surface_impl region; // XXX Or should it be surface??
 
 namespace ambulant {
 
@@ -97,7 +98,7 @@ class dg_window : public common::gui_window {
   private:
 	// gui_window:
 	// passive_region *m_region;
-	region *m_rgn;
+	region *m_rgn; 
 	std::string m_name; // for easy access
 	lib::rect m_viewrc;	
 	common::window_factory *m_wf;

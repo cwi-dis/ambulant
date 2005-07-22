@@ -77,9 +77,9 @@ void gui::dg::dg_bgrenderer::keep_as_background() {
 	AM_DBG lib::logger::get_logger()->debug("dg_bgrenderer::keep_as_background(0x%x)", this);
 	dg_window *dgwindow = (dg_window *)m_dst->get_gui_window();
 	viewport *v = dgwindow->get_viewport();	
-	screen_rect<int> dstrect = m_dst->get_rect();
-	screen_rect<int> srcrect = dstrect;
-	srcrect.translate(m_dst->get_global_topleft());
+	rect dstrect = m_dst->get_rect();
+//	rect srcrect = dstrect;
+//	srcrect.translate(m_dst->get_global_topleft());
 
 	if (m_bg_image) delete m_bg_image;
 	m_bg_image = v->create_surface(dstrect.width(), dstrect.height());
@@ -99,12 +99,12 @@ void gui::dg::dg_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	
 	if (m_bg_image) {
-		screen_rect<int> dstrect_whole = m_dst->get_rect();
+		rect dstrect_whole = m_dst->get_rect();
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to image");
 		v->draw(m_bg_image, dstrect_whole);	
 	} else {
-		lib::screen_rect<int> rc = dirty;
+		rect rc = dirty;
 		lib::point pt = m_dst->get_global_topleft();
 		rc.translate(pt);
 		if(v && m_src && !m_src->get_transparent()) {
