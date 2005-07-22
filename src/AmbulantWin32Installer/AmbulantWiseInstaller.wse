@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=9.02
-  Title=Ambulant Player for SMIL 2.1PR Installation
+  Title=Ambulant Player for SMIL 2.1 DEV-INSTALLER Installation
   Title French= Installation
   Flags=00000100
   Languages=65 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -86,7 +86,7 @@ item: Remark
 end
 item: Set Variable
   Variable=APPTITLE
-  Value=Ambulant Player for SMIL 2.1PR
+  Value=Ambulant Player for SMIL 2.1 DEV-INSTALLER
   Flags=10000000
 end
 item: Remark
