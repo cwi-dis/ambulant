@@ -217,12 +217,36 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 #ifdef WITH_FFMPEG_AVFORMAT
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
+
+	// First we check that the file format is supported by the file reader.
+	// If it is we create a file reader (demux head end).
 	AVFormatContext *context = detail::ffmpeg_demux::supported(url);
 	if (!context) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: no support for %s", repr(url).c_str());
+		lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
 	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context, clip_begin, clip_end);
+
+	// Now, we can check that there is actually audio in the file.
+	if (thread->audio_stream_nr() < 0) {
+		thread->cancel();
+		lib::logger::get_logger()->trace("ffmpeg: No audio stream in %s", repr(url).c_str());
+		return NULL;
+	}
+	
+	// Next, if there is audio we check that it is either in a format our caller wants,
+	// or we can decode this type of audio stream.
+	//
+	// XXX This code is incomplete. There could be more audio streams in the file,
+	// and we could have trouble decoding the first one but not others.... Oh well...
+	audio_format fmt = thread->get_audio_format();
+	if (!fmts.contains(fmt) && !ffmpeg_decoder_datasource::supported(fmt)) {
+		thread->cancel();
+		lib::logger::get_logger()->trace("ffmpeg: Unsupported audio stream in %s", repr(url).c_str());
+		return NULL;
+	}
+
+	// All seems well. Create the demux reader, the decoder and optionally the resampler.
 	audio_datasource *ds = demux_audio_datasource::new_demux_audio_datasource(url, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("fdemux_audio_datasource_factory::new_audio_datasource: could not allocate ffmpeg_video_datasource");
@@ -269,19 +293,23 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 audio_datasource* 
 ffmpeg_audio_parser_finder::new_audio_parser(const net::url& url, const audio_format_choices& fmts, audio_datasource *src)
 {
-	
+	if (src == NULL) return NULL;
 	audio_datasource *ds = NULL;
-	if (src) {
-			// XXXX Here we have to check for the mime type.
-			if (!ffmpeg_decoder_datasource::supported(url)) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_parser_finder::new_audio_parser: no support for %s", repr(url).c_str());
-				return NULL;
-			}
-			ds = new ffmpeg_decoder_datasource(url, src);
-			// XXX Here we have to check if ext & fmt are supported by ffmpeg
-			if (ds) return ds;			
-		}
-	return NULL;	
+#if 0
+	// XXXX Here we have to check for the mime type, but raw_audio_datasource doesn't
+	// give it...
+	if (!ffmpeg_decoder_datasource::supported(src->get_audio_format())) {
+#else
+	if (!ffmpeg_decoder_datasource::supported(url)) {
+#endif
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_parser_finder::new_audio_parser: no support for %s", repr(url).c_str());
+		return NULL;
+	}
+	ds = new ffmpeg_decoder_datasource(src);
+	if (ds == NULL) {
+		return NULL;
+	}
+	return ds;	
 }
 
 audio_datasource*
@@ -1203,7 +1231,7 @@ demux_video_datasource::get_dur()
 
 // **************************** ffmpeg_video_decoder_datasource ********************
 bool
-ffmpeg_video_decoder_datasource::supported(video_format fmt)
+ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
@@ -1626,6 +1654,23 @@ ffmpeg_video_decoder_datasource::get_dur()
 #endif // WITH_FFMPEG_AVFORMAT
 
 // **************************** ffpmeg_decoder_datasource *****************************
+bool
+ffmpeg_decoder_datasource::supported(const audio_format& fmt)
+{
+	if (fmt.name != "ffmpeg") return false;
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+	if (enc->codec_type != CODEC_TYPE_AUDIO) return false;
+	if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+	return true;
+}
+
+bool
+ffmpeg_decoder_datasource::supported(const net::url& url)
+{
+	const char *ext = getext(url);
+	if (avcodec_find_decoder_by_name(ext) == NULL) return false;
+	return true;
+}
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, audio_datasource *const src)
 :	m_con(NULL),
@@ -2050,20 +2095,6 @@ ffmpeg_decoder_datasource::get_dur()
 {
 	return m_duration;
 }
-
-bool
-ffmpeg_decoder_datasource::supported(const net::url& url)
-{
-	// no lock - static function
-	ffmpeg_init();
-	const char *file_ext = getext(url);
-	AVCodec  *codec = avcodec_find_decoder_by_name(file_ext);
-	if (codec == NULL) 
-		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource: no such decoder: \"%s\"", file_ext);
-
-	return codec != NULL;
-}
-
 
 bool 
 ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)

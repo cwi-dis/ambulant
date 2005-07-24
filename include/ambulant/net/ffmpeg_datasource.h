@@ -361,7 +361,7 @@ class ffmpeg_video_decoder_datasource:
 	virtual public video_datasource,
 	virtual public lib::ref_counted_obj {
   public:
-	static bool supported(video_format fmt);
+	static bool supported(const video_format& fmt);
 	
 	 //ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
 	 ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
@@ -422,6 +422,9 @@ class ffmpeg_video_decoder_datasource:
 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
+	static bool supported(const audio_format& fmt);
+	static bool supported(const net::url& url);
+
 	 ffmpeg_decoder_datasource(const net::url& url, audio_datasource *src);
 	 ffmpeg_decoder_datasource(audio_datasource *src);
     ~ffmpeg_decoder_datasource();
@@ -443,7 +446,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_clip_end();
   	timestamp_t get_clip_begin();
   	timestamp_t get_start_time() { return m_src->get_start_time(); };
-	static bool supported(const net::url& url);
   protected:
   	int _decode(uint8_t* in, int size, uint8_t* out, int &outsize);
 	bool _select_decoder(const char* file_ext);
