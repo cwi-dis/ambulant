@@ -421,8 +421,14 @@ detail::ffmpeg_demux::video_stream_nr()
 double
 detail::ffmpeg_demux::duration()
 {
-	//XXX this is a double now, later this should retrun a long long int 
- 	return (m_con->duration / (double)AV_TIME_BASE);
+	// XXX this is a double now, later this should retrun a long long int
+	// XXX Note that this code knows that m_clip_{begin,end} and m_con->duration
+	// are both microseconds
+	timestamp_t dur = m_con->duration;
+	if (m_clip_end && m_clip_end < dur)
+		dur = m_clip_end;
+	dur -= m_clip_begin;
+ 	return dur / (double)AV_TIME_BASE;
 	
 }
 	
