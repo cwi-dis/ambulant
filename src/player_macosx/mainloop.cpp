@@ -118,7 +118,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	m_doc(NULL),
 	m_player(NULL),
 	m_factory(NULL),
-	m_embedder(app)
+	m_embedder(app),
+	m_goto_node(NULL)
 {
 	using namespace ambulant;
 	m_factory = new common::factories;
