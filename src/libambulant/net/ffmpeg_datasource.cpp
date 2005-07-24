@@ -158,37 +158,52 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 #ifdef WITH_FFMPEG_AVFORMAT
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
+	
+	// First we check that the file format is supported by the file reader.
+	// If it is we create a file reader (demux head end).
 	AVFormatContext *context = detail::ffmpeg_demux::supported(url);
 	if (!context) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: no support for %s", repr(url).c_str());
+		AM_DBG lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
 	detail::ffmpeg_demux *thread = new detail::ffmpeg_demux(context, clip_begin, clip_end);
+	
+	// Now, we can check that there is actually video in the file.
 	if (thread->video_stream_nr() < 0) {
 		thread->cancel();
-		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory: No video stream in %s", repr(url).c_str());
+		lib::logger::get_logger()->trace("ffmpeg: No video stream in %s", repr(url).c_str());
 		return NULL;
 	}
+	
+	// Next, if there is video we check that we can decode this type of video
+	// stream.
+	video_format fmt = thread->get_video_format();
+	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
+		thread->cancel();
+		lib::logger::get_logger()->trace("ffmpeg: Unsupported video stream in %s", repr(url).c_str());
+		return NULL;
+	}
+	
+	// All seems well. Create the demux reader and the decoder.
 	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
-	video_datasource *dds = NULL;
-	
-	if (ds) {
-		 video_format fmt = thread->get_video_format();
-		 //dds = ds;
-		 dds = new ffmpeg_video_decoder_datasource(ds, fmt);
-		 ds->read_ahead(clip_begin);
-	} else {
-		return NULL;
-	}
-	
-	
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
-
-	if ((dds == NULL)  || (ds == NULL)) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
+	if (!ds) {
+		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_demux_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
+	video_datasource *dds =  new ffmpeg_video_decoder_datasource(ds, fmt);
+	if (dds == NULL) {
+		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
+		thread->cancel();
+		return NULL;
+	}
+
+	// Finally, tell the demux datasource to skip ahead to clipBegin, if
+	// it can do so. No harm done if it can't: the decoder will then skip
+	// any unneeded frames.
+	ds->read_ahead(clip_begin);
+	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
 	return dds;		
 #else
 	return NULL;	
@@ -1187,6 +1202,15 @@ demux_video_datasource::get_dur()
 
 
 // **************************** ffmpeg_video_decoder_datasource ********************
+bool
+ffmpeg_video_decoder_datasource::supported(video_format fmt)
+{
+	if (fmt.name != "ffmpeg") return false;
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+	if (enc->codec_type != CODEC_TYPE_VIDEO) return false;
+	if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+	return true;
+}
 
 ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt)
 :	m_src(src),

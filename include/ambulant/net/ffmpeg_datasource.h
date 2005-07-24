@@ -361,6 +361,8 @@ class ffmpeg_video_decoder_datasource:
 	virtual public video_datasource,
 	virtual public lib::ref_counted_obj {
   public:
+	static bool supported(video_format fmt);
+	
 	 //ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
 	 ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
 	 
