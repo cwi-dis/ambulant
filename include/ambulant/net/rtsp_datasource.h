@@ -50,7 +50,17 @@
 #ifndef AMBULANT_NET_RTSP_DATASOURCE_H
 #define AMBULANT_NET_RTSP_DATASOURCE_H
 
+#include "ambulant/config/config.h"
+
 #define MAX_RTP_FRAME_SIZE 50000
+
+#ifdef AMBULANT_PLATFORM_MACOS
+// Both MacHeaders.h and Live typedef Boolean, but to imcompatible
+// types.
+#define Boolean LiveBoolean
+// Similarly for EventTime
+#define EventTime LiveEventTime
+#endif
 
 // LiveMedia includes
 #include "BasicUsageEnvironment.hh"
@@ -72,17 +82,6 @@
 #include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/ffmpeg_datasource.h"
-
-
-
-static void 
-after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
-
-static void 
-after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
-	
-static void 
-on_source_close(void* data);
 
 namespace ambulant
 {
@@ -133,7 +132,7 @@ class rtsp_demux : public detail::abstract_demux {
 	audio_format& get_audio_format() { return m_context->audio_fmt; };
 	video_format& get_video_format() { return m_context->video_fmt; };
 	void seek(timestamp_t time);
-	bool set_position(timestamp_t time);
+	void set_position(timestamp_t time);
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };

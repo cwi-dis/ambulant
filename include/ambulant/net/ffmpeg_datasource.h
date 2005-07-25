@@ -394,6 +394,7 @@ class ffmpeg_video_decoder_datasource:
   	bool _clip_end();
 	bool _buffer_full();
 	qelt _pop_top_frame();
+	void _need_fmt_uptodate();
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
@@ -454,6 +455,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   private:
 	bool _clip_end();
     bool _end_of_file();
+	void _need_fmt_uptodate();
     AVCodecContext *m_con;
 	audio_format m_fmt;
     lib::event_processor *m_event_processor;

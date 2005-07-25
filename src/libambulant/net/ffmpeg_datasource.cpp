@@ -1430,9 +1430,7 @@ int
 ffmpeg_video_decoder_datasource::width()
 {	
 	m_lock.enter();
-	if (m_fmt.width == 0) {
-			m_fmt.width = m_con->width;
-	}
+	_need_fmt_uptodate();
 	m_lock.leave();
 	return m_fmt.width;
 }
@@ -1441,15 +1439,22 @@ int
 ffmpeg_video_decoder_datasource::height()
 {
 	m_lock.enter();
-	if (m_fmt.height == 0) {
-			m_fmt.height = m_con->height;
-	}
+	_need_fmt_uptodate();
 	m_lock.leave();
 	return m_fmt.height;
 }
 
-//~ #undef AM_DBG
-//~ #define AM_DBG
+void
+ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
+{
+	// Private method: no locking
+	if (m_fmt.height == 0) {
+			m_fmt.height = m_con->height;
+	}
+	if (m_fmt.width == 0) {
+			m_fmt.width = m_con->width;
+	}
+}
 
 void
 ffmpeg_video_decoder_datasource::read_ahead(timestamp_t clip_begin)
@@ -1501,9 +1506,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 						AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
 						// Setup the AVPicture for the format we want, plus the data pointer
+						_need_fmt_uptodate();
 						w = m_fmt.width;
 						h = m_fmt.height;
 						m_size = w * h * 4;
+						assert(m_size);
 						char *framedata = (char*) malloc(m_size);
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
 						assert(framedata != NULL);
@@ -1555,15 +1562,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
 	if ( m_frames.size() || m_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
-	  if ( m_client_callback ) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
-		assert(m_event_processor);
-		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::med);
-		m_client_callback = NULL;
-		//m_event_processor = NULL;
-	  } else {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource::data_avail(): No client callback!");
-	  }
+		if ( m_client_callback ) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
+			assert(m_event_processor);
+			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::med);
+			m_client_callback = NULL;
+			//m_event_processor = NULL;
+		} else {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource::data_avail(): No client callback!");
+		}
   	}
 	if (!m_src->end_of_file()) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
@@ -1824,10 +1831,7 @@ ffmpeg_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					//free(tmpptr);
-					if (!m_fmt.samplerate) 
-						m_fmt.samplerate = m_con->sample_rate;
-					if (!m_fmt.channels != m_con->channels) 
-						m_fmt.channels = m_con->channels;
+					_need_fmt_uptodate();
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 					assert(m_fmt.samplerate);
@@ -2074,21 +2078,25 @@ audio_format&
 ffmpeg_decoder_datasource::get_audio_format()
 {
 	m_lock.enter();
-	if (m_fmt.samplerate == 0) {
-		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: samplerate not set, asking ffmpeg");
-		m_fmt.samplerate = m_con->sample_rate;
-	}
-	
-	if (m_fmt.channels == 0) {	
-			lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: channels not set, asking ffmpeg");
-			m_fmt.channels = m_con->channels;
-		}
-
-	
+	_need_fmt_uptodate();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
 	m_lock.leave();
 	return m_fmt;
 }
+
+void
+ffmpeg_decoder_datasource::_need_fmt_uptodate()
+{
+	// Private method - no locking
+	if (m_fmt.samplerate == 0) {
+		m_fmt.samplerate = m_con->sample_rate;
+	}
+	if (m_fmt.channels == 0) {	
+		m_fmt.channels = m_con->channels;
+	}
+}
+
+
 
 common::duration
 ffmpeg_decoder_datasource::get_dur()
