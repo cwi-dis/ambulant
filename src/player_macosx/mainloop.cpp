@@ -79,6 +79,9 @@
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
 #endif
+#ifdef WITH_LIVE
+#include "ambulant/net/rtsp_factory.h"
+#endif
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -134,6 +137,11 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	// Next create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
 	
+#ifdef WITH_LIVE	
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add live_audio_datasource_factory");
+	m_factory->df->add_video_factory(new net::live_video_datasource_factory());
+	m_factory->df->add_audio_factory(new net::live_audio_datasource_factory()); 
+#endif
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");

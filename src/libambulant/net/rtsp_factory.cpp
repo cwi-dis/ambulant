@@ -74,7 +74,6 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 		return NULL;
 	}
 	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
-	int i = 0;
 	
 	if (context->video_stream > -1) {
 		thread->cancel();
@@ -136,7 +135,6 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 		return NULL;
 	}
 	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
-	int i = 0;
 
 	//int stream_index;
 	

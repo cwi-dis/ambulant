@@ -46,6 +46,7 @@
  * 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/net/rtsp_datasource.h"
 #include "ambulant/lib/logger.h"
 #include "GroupsockHelper.hh"
@@ -60,6 +61,12 @@ using namespace net;
 
 #define MIN_VIDEO_PACKET_SIZE 1024
 
+// Forward declarations
+static void after_reading_audio(void* data, unsigned sz, unsigned truncated, 
+	struct timeval pts, unsigned duration);
+static void  after_reading_video(void* data, unsigned sz, unsigned truncated, 
+	struct timeval pts, unsigned duration);
+static void on_source_close(void* data);
 
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_context(context),
@@ -214,6 +221,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		
 		int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 		int buf_size = increaseReceiveBufferTo(*env, rtp_sock_num, desired_buf_size);
+		(void)buf_size; // Forestall compiler warning
 		
 		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false)) {
 			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to send setup command to subsesion");
@@ -244,7 +252,7 @@ ambulant::net::rtsp_demux::seek(timestamp_t time)
 	m_clip_begin_set = false;
 }
 
-bool
+void
 ambulant::net::rtsp_demux::set_position(timestamp_t time)
 {
 	float time_sec;
@@ -315,6 +323,7 @@ ambulant::net::rtsp_demux::run()
 		scheduler.doEventLoop(&m_context->blocking_flag);
 		m_context->blocking_flag = 0;
 	}
+	return 0;
 	
 }
 
