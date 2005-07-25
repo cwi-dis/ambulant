@@ -49,7 +49,9 @@
 
 
 // Define this to prefer QuickTime-based video over datasource-based video
+#ifndef AM_PREFER_FFMPEG
 #define AM_PREFER_QUICKTIME
+#endif
 #undef WITH_COCOA_AUDIO
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"

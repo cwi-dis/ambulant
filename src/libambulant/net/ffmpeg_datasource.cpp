@@ -345,7 +345,7 @@ detail::ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin,
 		assert (m_con);
 		assert (m_con->iformat);
 		std::cout << "read_seek" << "\n";
-		int seek = av_seek_frame(m_con, -1, m_clip_begin);
+		av_seek_frame(m_con, -1, m_clip_begin);
 	} 
 #endif
 	
@@ -573,19 +573,14 @@ detail::ffmpeg_demux::run()
 			}
 			if (sink && !exit_requested()) {
 				
-#ifdef	WITH_FFMPEG_0_4_9					
-				int num = 0;
-				int den = 0;
-#else /*WITH_FFMPEG_0_4_9*/
-				int num = m_con->pts_num;
-				int den = m_con->pts_den;
-#endif/*WITH_FFMPEG_0_4_9*/
 				pts = 0;
 				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
 #ifdef	WITH_FFMPEG_0_4_9				
 					pts = pkt->pts;							
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: ffmpeg 0.4.9 pts = 0x%llx",pts);
 #else /*WITH_FFMPEG_0_4_9*/							
+					int num = m_con->pts_num;
+					int den = m_con->pts_den;
 					pts = (timestamp_t) round(((double) pkt->pts * (((double) num)*1000000)/den));
 #endif/*WITH_FFMPEG_0_4_9*/
 				}

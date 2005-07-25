@@ -94,9 +94,8 @@ plugin_engine::get_plugin_engine()
 
 plugin_engine::plugin_engine()
 {
-bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
-
 #ifdef WITH_PLUGINS
+	bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
     collect_plugin_directories();
 #ifdef WITH_LTDL_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
@@ -106,10 +105,10 @@ bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
 		lib::logger::get_logger()->warn(gettext("Plugin loader encountered problem: plugins disabled"));
 	    return;
 	}
-#endif
+#endif // WITH_LTDL_PLUGINS
 #ifdef WITH_WINDOWS_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: using Windows plugin loader");
-#endif
+#endif // WITH_WINDOWS_PLUGINS
 	if (use_plugins) {
 		int count = 0;
 		std::vector< std::string >::iterator i;
@@ -125,7 +124,7 @@ bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
 	}
 #else
 	lib::logger::get_logger()->trace("plugin_engine: no plugin loader configured");
-#endif
+#endif // WITH_PLUGINS
 }
 
 void

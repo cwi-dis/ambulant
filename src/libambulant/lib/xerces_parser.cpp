@@ -99,11 +99,15 @@ lib::xerces_factory::get_parser_name()
 
 xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 				     sax_error_handler *error_handler) 
-:	m_content_handler(content_handler),
+:	m_saxparser(0),
+	m_logger(0),
+	m_content_handler(content_handler),
 	m_error_handler(error_handler),
 	m_parsing(false),
-	m_saxparser(0), m_logger(0), m_buf((char*)malloc(1)), m_size(0),
-	m_id("AmbulantXercesParser") {
+	m_buf((char*)malloc(1)),
+	m_size(0),
+	m_id("AmbulantXercesParser")
+{
 	m_logger = lib::logger::get_logger();
         AM_DBG m_logger->debug("xerces_sax_parser::xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();

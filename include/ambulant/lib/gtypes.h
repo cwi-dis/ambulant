@@ -327,7 +327,7 @@ class basic_rect {
 	}
 	
 	bool contains(T xp, T yp) const {
-		return (xp >= x ) && (xp < x + w) && (yp >= y ) && (yp < y + h);
+		return (xp >= x ) && (xp < x + (T)w) && (yp >= y ) && (yp < y + (T)h);
 	}
 	
 	bool same_size(const basic_rect<T, S>& o) const {
