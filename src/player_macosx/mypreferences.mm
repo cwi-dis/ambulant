@@ -69,6 +69,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: false], @"validation_schema_full_checking",
 		[NSNumber numberWithInt: 2], @"log_level",
 		[NSNumber numberWithBool: true], @"use_plugins",
+		[NSNumber numberWithBool: false], @"prefer_ffmpeg",
 		@"", @"plugin_dir",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
@@ -80,6 +81,7 @@ mypreferences::load_preferences()
 	m_log_level = [prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
+	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	save_preferences();
 	return true;
 }
@@ -96,5 +98,6 @@ mypreferences::save_preferences()
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
 	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
+	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	return true;
 }

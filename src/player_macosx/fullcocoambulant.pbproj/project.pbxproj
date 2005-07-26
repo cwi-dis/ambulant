@@ -40,7 +40,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-0.4.8/libavcodec ../../third_party_packages/ffmpeg-0.4.8/libavformat";
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-0.4.8/libavformat ../../third_party_packages/ffmpeg-0.4.8/libavcodec";
 				LIBRARY_STYLE = Static;
@@ -3312,6 +3312,18 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		0442DEB708965537008D10AE = {
+			fileRef = 0493212708951DF900F38A0A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0442DEB80896553B008D10AE = {
+			fileRef = 0493213C089520B500F38A0A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0444D2DD051F2EEF0010C447 = {
 			children = (
 				04382AB805D7AEE600CFA029,
@@ -4020,7 +4032,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-0.4.8/libavcodec ../../third_party_packages/ffmpeg-0.4.8/libavformat ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/UsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/xerces-unix/include";
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/src/player_macosx/Info copy.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-0.4.8/libavformat ../../third_party_packages/ffmpeg-0.4.8/libavcodec ../../third_party_packages/xerces-unix/lib /Users/jack/src/ambulant/third_party_packages/live/liveMedia /Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment /Users/jack/src/ambulant/third_party_packages/live/groupsock /Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment";
 				LIBRARY_STYLE = Static;
@@ -6116,7 +6128,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-0.4.9-pre1/libavcodec ../../third_party_packages/ffmpeg-0.4.9-pre1/libavformat ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/UsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/xerces-unix/include";
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/src/player_macosx/Info copy 2.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-0.4.9-pre1/libavformat ../../third_party_packages/ffmpeg-0.4.9-pre1/libavcodec ../../third_party_packages/xerces-unix/lib /Users/jack/src/ambulant/third_party_packages/live/liveMedia /Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment /Users/jack/src/ambulant/third_party_packages/live/groupsock /Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment /Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat /Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec";
 				LIBRARY_STYLE = Static;
@@ -7661,8 +7673,8 @@
 				04932109089519EF00F38A0A,
 				0493211508951A8A00F38A0A,
 				0493211708951AAE00F38A0A,
-				0493212808951DF900F38A0A,
-				0493213D089520B500F38A0A,
+				0442DEB708965537008D10AE,
+				0442DEB80896553B008D10AE,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7812,12 +7824,6 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		0493212808951DF900F38A0A = {
-			fileRef = 0493212708951DF900F38A0A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		0493213C089520B500F38A0A = {
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
@@ -7825,12 +7831,6 @@
 			path = /usr/local/lib/libdirac_encoder.a;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		0493213D089520B500F38A0A = {
-			fileRef = 0493213C089520B500F38A0A;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		049580E70652BBD500CDAB3B = {
 			fileEncoding = 30;

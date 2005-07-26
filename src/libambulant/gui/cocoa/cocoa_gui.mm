@@ -48,10 +48,6 @@
 
 
 
-// Define this to prefer QuickTime-based video over datasource-based video
-#ifndef AM_PREFER_FFMPEG
-#define AM_PREFER_QUICKTIME
-#endif
 #undef WITH_COCOA_AUDIO
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -62,6 +58,7 @@
 #include "ambulant/gui/cocoa/cocoa_video.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/preferences.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -187,23 +184,27 @@ cocoa_renderer_factory::new_playable(
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else if ( tag == "video") {
-#ifdef AM_PREFER_QUICKTIME
-		rv = new cocoa_video_renderer(context, cookie, node, evp);
-		if (rv) {
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
-		} else {
+		if (common::preferences::get_preferences()->m_prefer_ffmpeg ) {
 			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
-		}
-#else
-		rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
-		if (rv) {
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+			if (rv) {
+				logger::get_logger()->trace("video: using ffmpeg renderer");
+				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+			} else {
+				rv = new cocoa_video_renderer(context, cookie, node, evp);
+				if (rv) logger::get_logger()->trace("video: using QuickTime renderer");
+				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+			}
 		} else {
 			rv = new cocoa_video_renderer(context, cookie, node, evp);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+			if (rv) {
+				logger::get_logger()->trace("video: using QuickTime renderer");
+				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
+			} else {
+				rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
+				if (rv) logger::get_logger()->trace("video: using ffmpeg renderer");
+				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
+			}
 		}
-#endif // AM_PREFER_QUICKTIME
 	} else {
 		// logger::get_logger()->error(gettext("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\""), tag.c_str());
 		return NULL;

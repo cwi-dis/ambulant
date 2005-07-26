@@ -48,7 +48,7 @@
 
 
 //#define WITH_NONE_VIDEO
-//#define WITH_FFMPEG_VIDEO
+#define WITH_FFMPEG_VIDEO
 //#define TEST_PLAYBACK_FEEDBACK
 
 #include <iostream>

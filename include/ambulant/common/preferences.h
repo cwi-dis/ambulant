@@ -108,6 +108,11 @@ class AMBULANTAPI preferences {
 	
 	// Where to find the plugins 
 	std::string m_plugin_dir;
+	
+#ifdef AMBULANT_PLATFORM_MACOS
+	/// Prefer ffmpeg video over quicktime video
+	bool m_prefer_ffmpeg;
+#endif
 
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();

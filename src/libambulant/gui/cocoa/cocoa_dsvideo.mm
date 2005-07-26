@@ -137,6 +137,9 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 		hasAlpha: NO
 		isPlanar: NO
 		colorSpaceName: NSDeviceRGBColorSpace
+#if 1
+		bitmapFormat: NSAlphaFirstBitmapFormat
+#endif
 		bytesPerRow: m_size.w * 4
 		bitsPerPixel: 32];
 	if (!bitmaprep) {
@@ -145,7 +148,11 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 		m_lock.leave();
 		return;
 	}
+#if 1
 	memcpy([bitmaprep bitmapData], frame, size);
+#else
+	swab(frame, [bitmaprep bitmapData], size);
+#endif
 	[m_image addRepresentation: bitmaprep];
 	[m_image setFlipped: true];
 	[bitmaprep release];
