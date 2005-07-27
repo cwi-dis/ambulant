@@ -130,7 +130,7 @@ initialize_logger()
 	mypreferences::install_singleton();
 	
 	// Install our logger
-	if (initialize_logger() == 0) {
+	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
 		// Show the logger window immedeately if log level is DEBUG
 		[self showLogWindow: self];
 	}

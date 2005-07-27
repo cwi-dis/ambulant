@@ -270,6 +270,8 @@ class demux_audio_datasource:
 	lib::critical_section m_lock;
 };
 
+typedef std::pair<timestamp_t, video_frame> ts_frame_pair;
+
 class demux_video_datasource: 
 	virtual public video_datasource,
 	public detail::datasink,
@@ -317,8 +319,8 @@ class demux_video_datasource:
 //	audio_format m_fmt;
 	bool m_src_end_of_file;
     lib::event_processor *m_event_processor;
-	std::queue<std::pair<timestamp_t, video_frame> > m_frames;
-	std::pair<timestamp_t, video_frame> m_old_frame;
+	std::queue<ts_frame_pair > m_frames;
+	ts_frame_pair m_old_frame;
 	detail::abstract_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	audio_datasource* m_audio_src;
@@ -328,34 +330,15 @@ class demux_video_datasource:
   
 };
 
-typedef std::pair<timestamp_t, char*> qelt;
-//~ class frame_qelt {
-  //~ public:
-	//~ frame_qelt(timestamp_t timestamp, char* data);
-  	//~ ~frame_qelt() { if (frame.second) free(frame.second);
-					//~ frame.second = NULL; };
-  	
-	//~ timestamp_t timestamp() { return frame.first; };
-  	//~ char* frame_data() { return frame.second; };
-  	
-	//~ // This is a strange < !!! (it's more a > :-) )
-  	//~ bool operator< (const frame_qelt & left) const {
-		//~ return left.frame.first < frame.first;
-	//~ }
-	
-  //~ protected:
-	//~ std::pair<timestamp_t, char*> frame;
-//~ };
-
-
+typedef std::pair<timestamp_t, char*> ts_pointer_pair;
 
 class sorted_frame_compare {
  public:
-	bool operator () (const qelt left, const qelt right) {
+	bool operator () (const ts_pointer_pair left, const ts_pointer_pair right) {
     		return left.first > right.first;
   	}
 };
-typedef std::priority_queue<qelt, std::vector<qelt>, sorted_frame_compare > sorted_frames;
+typedef std::priority_queue<ts_pointer_pair, std::vector<ts_pointer_pair>, sorted_frame_compare > sorted_frames;
 
 class ffmpeg_video_decoder_datasource:
 	virtual public video_datasource,
@@ -393,23 +376,24 @@ class ffmpeg_video_decoder_datasource:
 	bool _end_of_file();
   	bool _clip_end();
 	bool _buffer_full();
-	qelt _pop_top_frame();
+	ts_pointer_pair _pop_top_frame();
 	void _need_fmt_uptodate();
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
-	int m_stream_index;
+//	int m_stream_index;
   	video_format m_fmt;
- 	bool m_src_end_of_file;
+// 	bool m_src_end_of_file;
  	lib::event_processor *m_event_processor;
 	sorted_frames  m_frames;
-	qelt m_old_frame;
+	ts_pointer_pair m_old_frame;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;
-	detail::ffmpeg_demux *m_thread;
+//	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	timestamp_t m_pts_last_frame;
   	timestamp_t m_last_p_pts;
+	timestamp_t m_video_clock;
   	int m_frame_count;
     lib::critical_section m_lock;
 	timestamp_t m_elapsed;

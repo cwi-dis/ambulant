@@ -123,21 +123,22 @@ struct audio_format {
 struct video_format {
 	
 	std::string mime_type;
-	std::string name;	///< Name of the format, or empty for linear samples
-	void *parameters;	///< For a named format, pointer to parameters
-	int framerate;		///< For linear samples: the samplerate
-	int width;			/// The width of the video
-	int height;			///	The height of the video
+	std::string name;			///< Name of the format, or empty for linear samples
+	void *parameters;			///< For a named format, pointer to parameters
+	timestamp_t frameduration;	///< For linear samples: the samplerate
+	int width;					/// The width of the video
+	int height;					///	The height of the video
 	
 	/// Default constructor: creates unknown audio_format.
 	video_format()
 	:   mime_type("video/unknown"),
 		name("unknown"),
 		parameters(NULL),
-		framerate(0),
+		frameduration(0),
 		width(0),
 		height(0) {};
 		
+#if 0
 	/// Constructor for linear samples.
 	video_format(int r, int w, int h)
 	:   mime_type("video/unknown"),
@@ -146,13 +147,13 @@ struct video_format {
 		framerate(r),
 		width(w),
 		height(h) {};
-	
+#endif	
 	/// Constructor for named video_format.
 	video_format(std::string &n, void *p=(void *)0)
 	:   mime_type("video/unknown"),
 		name(n),
 		parameters(p),
-		framerate(0),
+		frameduration(0),
 		width(0),
 		height(0) {};
 		
@@ -161,7 +162,7 @@ struct video_format {
 	:   mime_type("video/unknown"),
 		name(n),
 		parameters(p),
-		framerate(0),
+		frameduration(0),
 		width(0),
 		height(0) {};
 };

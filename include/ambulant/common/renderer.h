@@ -272,10 +272,10 @@ class video_renderer : public common::renderer_playable {
   	bool is_paused() { return m_is_paused; };
 	
 	/// Return true if video is not playing.
-  	bool is_stopped() { return !m_is_playing;};
+  	bool is_stopped() { return !m_activated;};
 	
 	/// Return true if video is playing.
-  	bool is_playing() { return m_is_playing; };  
+  	bool is_playing() { return m_activated; };  
 	
 	/// Display video data.
 	virtual void show_frame(const char* frame, int size) {};
@@ -301,10 +301,10 @@ class video_renderer : public common::renderer_playable {
 	  typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	  double now();
 	  lib::timer *m_timer;
- 	  unsigned long int m_epoch;
-	  bool m_is_playing;
+ 	  long int m_epoch;
+	  bool m_activated;
 	  bool m_is_paused;
-	  unsigned long int m_paused_epoch;
+	  long int m_paused_epoch;
   	  net::timestamp_t m_clip_begin;
   	  net::timestamp_t m_clip_end;
 	  lib::critical_section m_lock;
