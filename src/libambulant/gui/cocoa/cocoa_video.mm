@@ -97,6 +97,15 @@ cocoa_video_renderer::cocoa_video_renderer(
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);
+	
+	_init_clip_begin_end();
+	if (m_clip_begin) {
+		Movie mov = (Movie)[m_movie QTMovie];
+		TimeScale movscale = GetMovieTimeScale(mov);
+		TimeValue movtime = (TimeValue)(m_clip_begin*(double)movscale/1000000.0);
+		SetMovieTimeValue(mov, movtime);
+	}
+
 	[pool release];
 }
 
@@ -109,6 +118,7 @@ cocoa_video_renderer::~cocoa_video_renderer()
 		m_movie = NULL;
 	}
 	if (m_movie_view) {
+		[m_movie_view stop: NULL];
 		[m_movie_view removeFromSuperview];
 		m_movie_view = NULL;
 	}
@@ -128,6 +138,10 @@ cocoa_video_renderer::get_dur()
 		TimeValue movdur = GetMovieDuration(mov);
 		TimeScale movscale = GetMovieTimeScale(mov);
 		double dur = (double)movdur / (double)movscale;
+		if (m_clip_end > 0 && dur > (m_clip_end/1000000.0))
+			dur = (m_clip_end/1000000.0);
+		if (m_clip_begin > 0)
+			dur -= (m_clip_begin/1000000.0);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur: GetMovieDuration=%f", dur);
 		rv = common::duration(true, dur);
 	}
@@ -181,6 +195,17 @@ cocoa_video_renderer::poll_playing()
 		return;
 	}
 	bool is_stopped = ![m_movie_view isPlaying];
+	if (!is_stopped && m_clip_end > 0) {
+		Movie mov = (Movie)[m_movie QTMovie];
+		TimeValue movtime = GetMovieTime(mov, NULL);
+		TimeScale movscale = GetMovieTimeScale(mov);
+		double curtime = (double)movtime / (double)movscale;
+		if ( curtime > (m_clip_end/1000000.0)) {
+			is_stopped = true;
+			if (m_movie_view) [m_movie_view stop: NULL];
+		}
+	}
+	
 	if (!is_stopped) {
 		// schedule another call in a while
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);

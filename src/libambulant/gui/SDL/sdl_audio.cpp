@@ -262,29 +262,10 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 		
 	net::audio_format_choices supported(m_ambulant_format);
 	net::url url = node->get_url("src");
-	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
-	net::timestamp_t cb = 0;
-	char *lastp;
 	
-	if (!clip_begin_attr) {
-		clip_begin_attr = m_node->get_attribute("clip-begin");
-	}
+	_init_clip_begin_end();
 	
-	if (clip_begin_attr) {
-		cb = strtoll(clip_begin_attr, &lastp,0);
-	}
-	
-	const char *clip_end_attr = m_node->get_attribute("clipEnd");
-	net::timestamp_t ce = -1;
-	if (!clip_end_attr) {
-		clip_end_attr = m_node->get_attribute("clip-end");
-	}
-	
-	if (clip_end_attr) {
-		ce = strtoll(clip_end_attr, &lastp,0);
-	}
-	
-	m_audio_src = factory->df->new_audio_datasource(url, supported, cb, ce);
+	m_audio_src = factory->df->new_audio_datasource(url, supported, m_clip_begin, m_clip_end);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {

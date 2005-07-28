@@ -77,26 +77,7 @@ cocoa_dsvideo_renderer::cocoa_dsvideo_renderer(
 :	common::video_renderer(context, cookie, node, evp, factory),
 	m_image(NULL)
 {
-	if (!m_src) {
-		lib::logger::get_logger()->error("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: no datasource");
-		//m_context->stopped(m_cookie, 0);
-		return;
-	}
-	if (m_src->has_audio()) {
-		m_audio_ds = m_src->get_audio_datasource();
-	
-		if (m_audio_ds) {
-			AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: creating audio renderer !");
-			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
-			AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::cocoa_dsvideo_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
-			//m_audio_renderer = new gui::sdl::sdl_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
-			//lib::logger::get_logger()->debug("video_renderer::video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
-		} else {
-			m_audio_renderer = NULL;
-		}
-		
-		//lib::logger::get_logger()->debug("video_renderer::video_renderer() video has audio", (void *) m_src);
-	}
+	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer(): 0x%x created", (void*)this);
 }
 
 cocoa_dsvideo_renderer::~cocoa_dsvideo_renderer()

@@ -79,33 +79,18 @@ qt_video_renderer::qt_video_renderer(
   	//m_data(NULL),
 	m_img_displayed(0)
 {
+#if 0
+    // This is ridiculous! how could something be in m_frames?
 	while ( m_frames.size() > 0 ) {
 		std::pair<int, char*> element = m_frames.front();
 		//free(element.second);
 		m_frames.pop();
 	}
+#endif
+    assert(m_frames.size() == 0);
 	
-	if (!m_src) {
-		lib::logger::get_logger()->error("qt_video_renderer::qt_video_renderer: no datasource");
-		//m_context->stopped(m_cookie, 0);
-		return;
-	}
-	if (m_src->has_audio()) {
-		m_audio_ds = m_src->get_audio_datasource();
-	
-		if (m_audio_ds) {
-			AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::qt_video_renderer: creating audio renderer !");
-			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
-			AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::qt_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
-			//m_audio_renderer = new gui::sdl::sdl_audio_renderer(&m_playable_notification, cookie, node, evp, df, m_audio_ds);
-			//lib::logger::get_logger()->debug("video_renderer::video_renderer() (this =0x%x) got audio renderer (0x%x)", (void *) this, (void*) m_audio_renderer);
-		} else {
-			m_audio_renderer = NULL;
-		}
-		
-		//lib::logger::get_logger()->debug("video_renderer::video_renderer() video has audio", (void *) m_src);
-	}
 }
+
 qt_video_renderer::~qt_video_renderer()
 {
 }
@@ -114,21 +99,15 @@ void
 qt_video_renderer::show_frame(const char* frame, int size)
 {
 	m_lock.enter();
-		AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
     char* data = NULL;
 	
-	//if (m_data) {
-	//	free(m_data);
-	//	m_data = NULL;
-	//}
-	
-	
-
-			data = (char*) malloc(size);
-			if (data) {
-				AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: allocated m_data=0x%x, size=%d", data, size);
-				
-			}
+    data = (char*) malloc(size);
+    if (data) {
+        AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: allocated m_data=0x%x, size=%d", data, size);
+        
+    }
 
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
