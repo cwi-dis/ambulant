@@ -107,6 +107,12 @@ sdlincludes=
 toolkit_sdl_libraries =
 endif
 
+if WITH_DIRAC
+dirac_libraries=`pkg-config --libs dirac`
+else
+dirac_libraries=
+endif
+
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
 #
@@ -119,7 +125,8 @@ toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
 ##	-L$(FFMPEG_FORMAT_LIB) -lavformat
 libambulant_ffmpeg_la_LDFLAGS =  \
 	$(FFMPEG_FORMAT_LIB)/libavformat.a \
-	$(FFMPEG_CODEC_LIB)/libavcodec.a
+	$(FFMPEG_CODEC_LIB)/libavcodec.a \
+	$(dirac_libraries)
 
 ffmpegincludes = -I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT

@@ -55,6 +55,12 @@ extra_arts_ldflags=
 extra_arts_DEFINES=
 endif
 
+if WITH_DIRAC
+dirac_libraries=`pkg-config --libs dirac`
+else
+dirac_libraries=
+endif
+
 if WITH_FFMPEG
 #
 # Using the dynamic ffmpeg libraries will fail on RedHat 9, which has
@@ -67,7 +73,9 @@ if WITH_FFMPEG
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
 	$(FFMPEG_FORMAT_LIB)/libavformat.a \
 	$(FFMPEG_CODEC_LIB)/libavcodec.a
-extra_ffmpeg_ldflags=
+	
+	
+extra_ffmpeg_ldflags=$(dirac_libraries)
 extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT
 else

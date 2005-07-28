@@ -555,6 +555,18 @@ AC_SUBST(FFMPEG_FORMAT_INCLUDE)
 AC_SUBST(FFMPEG_FORMAT_LIB)
 AC_MSG_RESULT($ffmpeg - $withvalabs)
 
+AC_ARG_WITH(dirac,
+    [ --with-dirac Turn on Dirac video codec if ffmpeg is enabled],
+    [case "${withval}" in
+        yes) dirac=true ;;
+        no) dirac=false ;;
+        *) AC_MSG_ERROR(--with-dirac takes no argument - it uses pkg-config) ;;
+    esac], [
+        dirac=false
+    ])
+AM_CONDITIONAL(WITH_DIRAC, test x$dirac = xtrue)
+AC_MSG_RESULT($dirac)
+
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
