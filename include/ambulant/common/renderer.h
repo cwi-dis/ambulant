@@ -131,10 +131,13 @@ class renderer_playable : public playable_imp, public renderer {
 	virtual void stop();
 	
   protected:
+	virtual void _init_clip_begin_end();	///< Fill m_clip_begin and m_clip_end
 	surface *m_dest;		///< The surface we should render to.
 	const alignment *m_alignment;	///< The image alignment to use when rendering.
 	bool m_activated;		///< True when playing
 	bool m_erase_never;		///< True if erase="never" is specified on the node
+	net::timestamp_t m_clip_begin;	///< Where continuous media start playing (microseconds)
+	net::timestamp_t m_clip_end;	///< Where continuous media stop playing (microseconds)
 };
 
 
@@ -305,8 +308,6 @@ class video_renderer : public common::renderer_playable {
 	  bool m_activated;
 	  bool m_is_paused;
 	  long int m_paused_epoch;
-  	  net::timestamp_t m_clip_begin;
-  	  net::timestamp_t m_clip_end;
 	  lib::critical_section m_lock;
 };
 
