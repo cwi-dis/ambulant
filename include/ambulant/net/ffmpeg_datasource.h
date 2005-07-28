@@ -446,7 +446,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   	audio_datasource* m_src;
   	timestamp_t m_elapsed;
 	bool m_is_audio_ds;
-	common::duration m_duration;
 	
 	databuffer m_buffer;
 	bool m_blocked_full;
