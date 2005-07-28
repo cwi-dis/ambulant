@@ -1489,7 +1489,13 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video:, returned %d decoded bytes , %d left, gotpic = %d, ipts = %lld", len, sz - len, got_pic, ipts);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
+#ifdef WITH_FFMPEG_0_4_9
+            // I'm not sure wheter this is a hack or not.
+            // Some codecs (notably Dirac) always gobble up all bytes,
+            // and only return len==sz if got_pic is true.
+            len = sz;
+#endif
 			if (len >= 0) {
 				assert(len <= sz);
 				ptr +=len;	
