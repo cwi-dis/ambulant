@@ -485,10 +485,7 @@ video_renderer::seek(double t)
 common::duration 
 video_renderer::get_dur()
 {
-	//DBG return common::duration(true, 7);
 	common::duration rv(false, 0.0);
-	common::duration rv2(false, 0.0);
-
 	m_lock.enter();
 	// video is the important one so we ask the video source
 	if (m_src) {

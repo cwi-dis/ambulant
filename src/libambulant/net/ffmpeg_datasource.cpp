@@ -1248,7 +1248,6 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
 	
 	ffmpeg_init();
-	//m_duration = m_src->get_dur();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
@@ -1688,13 +1687,11 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, audio_
 	m_src(src),
 	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(false),
-	m_duration(false, 0),
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
 	const char *ext = getext(url);
-	m_duration = src->get_dur();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: Selecting \"%s\" decoder", ext);
 	if (!_select_decoder(ext))
 		lib::logger::get_logger()->error(gettext("%s: audio decoder \"%s\" not supported"), url.get_url().c_str(), ext);
@@ -1707,13 +1704,11 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(audio_datasource *const src
 	m_src(src),
 	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(true),
-	m_duration(false, 0),
 	m_client_callback(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
 	audio_format fmt = src->get_audio_format();
-	m_duration = src->get_dur();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
@@ -1852,10 +1847,6 @@ ffmpeg_decoder_datasource::data_avail()
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We are still before clip_begin (m_elapsed = %lld, clip_begin = %lld)", m_elapsed, m_src->get_clip_begin());
 						m_buffer.pushdata(0);
 					}
-					
-					
-					
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : sample duration = %f, m_elapsed = %d, total duration = %f ( sz(u_int8) = %d, bits = %d ) ", duration, m_elapsed, m_duration.second, sizeof(uint8_t), m_fmt.bits);
 
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 					m_src->readdone(decoded);
@@ -2103,7 +2094,7 @@ ffmpeg_decoder_datasource::_need_fmt_uptodate()
 common::duration
 ffmpeg_decoder_datasource::get_dur()
 {
-	return m_duration;
+	return m_src->get_dur();
 }
 
 bool 
