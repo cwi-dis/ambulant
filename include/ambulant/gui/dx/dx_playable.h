@@ -54,7 +54,7 @@
 #define AMBULANT_GUI_DX_PLAYABLE_H
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 
 namespace ambulant {
 

@@ -587,7 +587,7 @@
 					RelativePath=".\common\region.cpp">
 				</File>
 				<File
-					RelativePath=".\common\renderer.cpp">
+					RelativePath=".\common\renderer_impl.cpp">
 				</File>
 				<File
 					RelativePath=".\common\schema.cpp">
@@ -597,6 +597,9 @@
 				</File>
 				<File
 					RelativePath=".\common\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath=".\common\video_renderer.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1047,7 +1050,7 @@
 						RelativePath="..\..\include\ambulant\common\region_info.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\renderer.h">
+						RelativePath="..\..\include\ambulant\common\renderer_impl.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\schema.h">
@@ -1060,6 +1063,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\trace_playable.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\video_renderer.h">
 					</File>
 				</Filter>
 				<Filter

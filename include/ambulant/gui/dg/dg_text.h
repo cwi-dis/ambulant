@@ -56,7 +56,7 @@
 #include "ambulant/config/config.h"
 #include <string>
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/lib/colors.h"
 
 namespace ambulant {

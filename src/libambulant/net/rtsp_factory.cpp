@@ -48,6 +48,7 @@
 
 #include "ambulant/net/rtsp_datasource.h"
 #include "ambulant/net/rtsp_factory.h"
+#include "ambulant/net/demux_datasource.h"
 #include "ambulant/lib/logger.h"
 
 

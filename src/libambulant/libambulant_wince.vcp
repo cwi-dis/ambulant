@@ -160,7 +160,6 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\plugin_engine.h"\
 	"..\..\include\ambulant\common\preferences.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -180,6 +179,7 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -190,9 +190,7 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -203,7 +201,6 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\plugin_engine.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -237,6 +234,9 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_PLUGI=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -246,7 +246,6 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\plugin_engine.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -281,6 +280,9 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
+NODEP_CPP_PLUGI=\
+	"..\..\include\ambulant\common\renderer.h"\
+	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
@@ -289,7 +291,6 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\plugin_engine.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -323,6 +324,9 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_PLUGI=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ENDIF 
@@ -453,6 +457,7 @@ DEP_CPP_REGIO=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -580,7 +585,7 @@ NODEP_CPP_REGIO=\
 # End Source File
 # Begin Source File
 
-SOURCE=.\common\renderer.cpp
+SOURCE=.\common\renderer_impl.cpp
 
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
@@ -588,7 +593,7 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -611,6 +616,7 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -622,129 +628,143 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\posix_datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
-	"..\..\include\ambulant\net\stdio_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_RENDE=\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\posix_datasource.h"\
-	"..\..\include\ambulant\net\stdio_datasource.h"\
-	
-NODEP_CPP_RENDE=\
-	".\mbulant\common\layout.h"\
-	".\mbulant\common\playable.h"\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\delta_timer.h"\
-	".\mbulant\lib\event.h"\
-	".\mbulant\lib\event_processor.h"\
-	".\mbulant\lib\gtypes.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\node.h"\
-	".\mbulant\lib\node_iterator.h"\
-	".\mbulant\lib\refcount.h"\
-	".\mbulant\lib\sax_types.h"\
-	".\mbulant\lib\string_util.h"\
-	".\mbulant\lib\timer.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_RENDE=\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\posix_datasource.h"\
-	"..\..\include\ambulant\net\stdio_datasource.h"\
-	
-NODEP_CPP_RENDE=\
-	".\mbulant\common\layout.h"\
-	".\mbulant\common\playable.h"\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\delta_timer.h"\
-	".\mbulant\lib\event.h"\
-	".\mbulant\lib\event_processor.h"\
-	".\mbulant\lib\gtypes.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\node.h"\
-	".\mbulant\lib\node_iterator.h"\
-	".\mbulant\lib\refcount.h"\
-	".\mbulant\lib\sax_types.h"\
-	".\mbulant\lib\string_util.h"\
-	".\mbulant\lib\timer.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_RENDE=\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
 	"..\..\include\ambulant\gui\none\none_gui.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\basic_types.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
 	"..\..\include\ambulant\lib\callback.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
+	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\transition_info.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\posix_datasource.h"\
-	"..\..\include\ambulant\net\stdio_datasource.h"\
-	
-NODEP_CPP_RENDE=\
-	".\mbulant\common\layout.h"\
-	".\mbulant\common\playable.h"\
-	".\mbulant\config\config.h"\
-	".\mbulant\config\posix_features.h"\
-	".\mbulant\config\select_compiler_config.h"\
-	".\mbulant\config\select_platform_config.h"\
-	".\mbulant\config\select_stdlib_config.h"\
-	".\mbulant\config\suffix.h"\
-	".\mbulant\lib\abstract_mtsync.h"\
-	".\mbulant\lib\asb.h"\
-	".\mbulant\lib\delta_timer.h"\
-	".\mbulant\lib\event.h"\
-	".\mbulant\lib\event_processor.h"\
-	".\mbulant\lib\gtypes.h"\
-	".\mbulant\lib\logger.h"\
-	".\mbulant\lib\mtsync.h"\
-	".\mbulant\lib\node.h"\
-	".\mbulant\lib\node_iterator.h"\
-	".\mbulant\lib\refcount.h"\
-	".\mbulant\lib\sax_types.h"\
-	".\mbulant\lib\string_util.h"\
-	".\mbulant\lib\timer.h"\
-	".\mbulant\lib\unix\unix_mtsync.h"\
-	".\mbulant\lib\win32\win32_asb.h"\
-	".\mbulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	
 
 !ENDIF 
@@ -878,6 +898,7 @@ DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -1026,6 +1047,7 @@ DEP_CPP_SMIL_H=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
@@ -1118,6 +1140,181 @@ NODEP_CPP_SMIL_H=\
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\common\video_renderer.cpp
+
+!IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
+
+DEP_CPP_VIDEO=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
+
+DEP_CPP_VIDEO=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
+
+DEP_CPP_VIDEO=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
+
+DEP_CPP_VIDEO=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
+	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
+	"..\..\include\ambulant\config\config.h"\
+	"..\..\include\ambulant\config\gettext.h"\
+	"..\..\include\ambulant\config\posix_features.h"\
+	"..\..\include\ambulant\config\select_compiler_config.h"\
+	"..\..\include\ambulant\config\select_platform_config.h"\
+	"..\..\include\ambulant\config\select_stdlib_config.h"\
+	"..\..\include\ambulant\config\suffix.h"\
+	"..\..\include\ambulant\lib\abstract_mtsync.h"\
+	"..\..\include\ambulant\lib\amstream.h"\
+	"..\..\include\ambulant\lib\asb.h"\
+	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
+	"..\..\include\ambulant\lib\logger.h"\
+	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
+	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\timer.h"\
+	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\win32\win32_asb.h"\
+	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
+	"..\..\include\ambulant\net\url.h"\
+	
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "gui"
 
@@ -1136,8 +1333,10 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\region_info.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -1165,6 +1364,7 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -1175,16 +1375,13 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_DG_AR=\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1198,6 +1395,7 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	
 NODEP_CPP_DG_AR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1231,7 +1429,6 @@ NODEP_CPP_DG_AR=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
 
 DEP_CPP_DG_AR=\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1245,6 +1442,7 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	
 NODEP_CPP_DG_AR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1278,7 +1476,6 @@ NODEP_CPP_DG_AR=\
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
 DEP_CPP_DG_AR=\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1292,6 +1489,7 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	
 NODEP_CPP_DG_AR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1338,7 +1536,7 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -1366,6 +1564,7 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\memfile.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -1379,9 +1578,7 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -1390,7 +1587,6 @@ DEP_CPP_DG_AU=\
 DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
@@ -1409,6 +1605,7 @@ DEP_CPP_DG_AU=\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
 	
 NODEP_CPP_DG_AU=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
@@ -1448,7 +1645,6 @@ NODEP_CPP_DG_AU=\
 DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
@@ -1467,6 +1663,7 @@ DEP_CPP_DG_AU=\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
 	
 NODEP_CPP_DG_AU=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
@@ -1506,7 +1703,6 @@ NODEP_CPP_DG_AU=\
 DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_player.h"\
 	"..\..\include\ambulant\gui\dg\dg_audio_renderer.h"\
@@ -1525,6 +1721,7 @@ DEP_CPP_DG_AU=\
 	"..\..\third_party_packages\mp3lib\mp3lib.h"\
 	
 NODEP_CPP_DG_AU=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\config\config.h"\
@@ -1786,9 +1983,10 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -1815,6 +2013,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -1825,9 +2024,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -1835,7 +2032,6 @@ DEP_CPP_DG_BG=\
 
 DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_bgrenderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1847,6 +2043,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1879,7 +2076,6 @@ NODEP_CPP_DG_BG=\
 
 DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_bgrenderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1891,6 +2087,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1923,7 +2120,6 @@ NODEP_CPP_DG_BG=\
 
 DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_bgrenderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -1935,6 +2131,7 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -1977,9 +2174,10 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -2006,6 +2204,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -2016,9 +2215,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -2026,7 +2223,6 @@ DEP_CPP_DG_BR=\
 
 DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_brush.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -2038,6 +2234,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2070,7 +2267,6 @@ NODEP_CPP_DG_BR=\
 
 DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_brush.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -2082,6 +2278,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2114,7 +2311,6 @@ NODEP_CPP_DG_BR=\
 
 DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_brush.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
@@ -2126,6 +2322,7 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_BR=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2363,9 +2560,10 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -2396,6 +2594,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\memfile.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -2408,9 +2607,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -2418,7 +2615,6 @@ DEP_CPP_DG_IMG=\
 
 DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_image_renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_img.h"\
@@ -2433,6 +2629,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_IMG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2466,7 +2663,6 @@ NODEP_CPP_DG_IMG=\
 
 DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_image_renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_img.h"\
@@ -2481,6 +2677,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_IMG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2514,7 +2711,6 @@ NODEP_CPP_DG_IMG=\
 
 DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_image_renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_img.h"\
@@ -2529,6 +2725,7 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_IMG=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -2680,7 +2877,7 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -2720,6 +2917,7 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -2737,9 +2935,7 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_layout.h"\
 	"..\..\include\ambulant\smil2\smil_player.h"\
@@ -2760,7 +2956,6 @@ DEP_CPP_DG_PL=\
 DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
@@ -2796,6 +2991,7 @@ DEP_CPP_DG_PL=\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	
 NODEP_CPP_DG_PL=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\player.h"\
@@ -2836,7 +3032,6 @@ NODEP_CPP_DG_PL=\
 DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
@@ -2872,6 +3067,7 @@ DEP_CPP_DG_PL=\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	
 NODEP_CPP_DG_PL=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\player.h"\
@@ -2912,7 +3108,6 @@ NODEP_CPP_DG_PL=\
 DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\gui\dg\dg_area.h"\
@@ -2948,6 +3143,7 @@ DEP_CPP_DG_PL=\
 	"..\..\third_party_packages\expat\lib\expat.h"\
 	
 NODEP_CPP_DG_PL=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\player.h"\
@@ -2997,9 +3193,10 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\preferences.h"\
+	"..\..\include\ambulant\common\region.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3028,6 +3225,7 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\memfile.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -3041,17 +3239,15 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	"..\..\include\ambulant\smil2\params.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
 
 DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_text.h"\
@@ -3065,6 +3261,7 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_TE=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -3098,7 +3295,6 @@ NODEP_CPP_DG_TE=\
 
 DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_text.h"\
@@ -3112,6 +3308,7 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_TE=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -3145,7 +3342,6 @@ NODEP_CPP_DG_TE=\
 
 DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\gui\dg\dg_dib_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_surface.h"\
 	"..\..\include\ambulant\gui\dg\dg_text.h"\
@@ -3159,6 +3355,7 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\net\datasource.h"\
 	
 NODEP_CPP_DG_TE=\
+	"..\..\include\ambulant\common\renderer.h"\
 	".\mbulant\common\layout.h"\
 	".\mbulant\common\playable.h"\
 	".\mbulant\common\preferences.h"\
@@ -3220,7 +3417,11 @@ DEP_CPP_DG_TR=\
 	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
+	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
@@ -3228,6 +3429,7 @@ DEP_CPP_DG_TR=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_error.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\transition.h"\
 	
 
@@ -3491,6 +3693,7 @@ DEP_CPP_DG_WI=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -3643,7 +3846,7 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3664,6 +3867,7 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -3674,9 +3878,7 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -3687,7 +3889,6 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3722,6 +3923,9 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -3731,7 +3935,6 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3767,6 +3970,9 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
+NODEP_CPP_NONE_=\
+	"..\..\include\ambulant\common\renderer.h"\
+	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
@@ -3775,7 +3981,6 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3810,6 +4015,9 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ENDIF 
@@ -3825,7 +4033,8 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3847,6 +4056,7 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -3857,9 +4067,7 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -3869,7 +4077,6 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3905,6 +4112,9 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_F=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -3913,7 +4123,6 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3950,6 +4159,9 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
+NODEP_CPP_NONE_F=\
+	"..\..\include\ambulant\common\renderer.h"\
+	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
@@ -3957,7 +4169,6 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -3993,6 +4204,9 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_F=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ENDIF 
@@ -4010,7 +4224,7 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4034,6 +4248,7 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -4044,9 +4259,7 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -4058,7 +4271,6 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4096,6 +4308,9 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_G=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -4106,7 +4321,6 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4145,6 +4359,9 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
+NODEP_CPP_NONE_G=\
+	"..\..\include\ambulant\common\renderer.h"\
+	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
@@ -4154,7 +4371,6 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4192,6 +4408,9 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_G=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ENDIF 
@@ -4207,7 +4426,8 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
+	"..\..\include\ambulant\common\video_renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4228,6 +4448,7 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
@@ -4238,9 +4459,7 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
 
@@ -4250,7 +4469,6 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4285,6 +4503,9 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_V=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Release"
@@ -4293,7 +4514,6 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4329,6 +4549,9 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	
+NODEP_CPP_NONE_V=\
+	"..\..\include\ambulant\common\renderer.h"\
+	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE x86em) Debug"
 
@@ -4336,7 +4559,6 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
-	"..\..\include\ambulant\common\renderer.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -4371,6 +4593,9 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
+	
+NODEP_CPP_NONE_V=\
+	"..\..\include\ambulant\common\renderer.h"\
 	
 
 !ENDIF 
@@ -5351,6 +5576,7 @@ DEP_CPP_DOCUM=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -5977,6 +6203,7 @@ DEP_CPP_NODE_=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -6533,6 +6760,7 @@ DEP_CPP_TRANS=\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -6664,6 +6892,7 @@ DEP_CPP_TREE_=\
 	"..\..\include\ambulant\lib\memfile.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -6816,6 +7045,7 @@ DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -7009,6 +7239,7 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -7198,6 +7429,7 @@ DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -7408,6 +7640,7 @@ DEP_CPP_ANIMA=\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
+	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -7432,6 +7665,7 @@ DEP_CPP_ANIMA=\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
@@ -7564,8 +7798,10 @@ SOURCE=.\smil2\animate_e.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_ANIMAT=\
+	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
@@ -7591,9 +7827,12 @@ DEP_CPP_ANIMAT=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -7601,6 +7840,7 @@ DEP_CPP_ANIMAT=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\animate_a.h"\
 	"..\..\include\ambulant\smil2\animate_e.h"\
@@ -7788,6 +8028,7 @@ DEP_CPP_ANIMATE=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
@@ -7814,6 +8055,7 @@ DEP_CPP_ANIMATE=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -8024,6 +8266,7 @@ DEP_CPP_PARAM=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -8161,6 +8404,7 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -8328,6 +8572,7 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -8521,6 +8766,7 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -8731,7 +8977,10 @@ SOURCE=.\smil2\smil_time.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_SMIL_T=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -8746,13 +8995,21 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -8760,6 +9017,7 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
@@ -8895,7 +9153,10 @@ SOURCE=.\smil2\sync_rule.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_SYNC_=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -8910,13 +9171,21 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -8924,6 +9193,7 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
@@ -9084,6 +9354,7 @@ DEP_CPP_TEST_=\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parselets.h"\
@@ -9221,6 +9492,7 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -9246,6 +9518,7 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -9423,6 +9696,7 @@ DEP_CPP_TIME_C=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
@@ -9548,7 +9822,10 @@ SOURCE=.\smil2\time_node.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TIME_N=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
@@ -9565,14 +9842,21 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
 	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -9580,6 +9864,7 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\animate_a.h"\
 	"..\..\include\ambulant\smil2\animate_e.h"\
@@ -9719,7 +10004,10 @@ SOURCE=.\smil2\time_sched.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TIME_S=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -9734,13 +10022,21 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -9748,6 +10044,7 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
@@ -9890,7 +10187,10 @@ SOURCE=.\smil2\time_state.cpp
 !IF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Release"
 
 DEP_CPP_TIME_ST=\
+	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\schema.h"\
 	"..\..\include\ambulant\compat\limits"\
 	"..\..\include\ambulant\config\config.h"\
@@ -9905,13 +10205,21 @@ DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\lib\asb.h"\
 	"..\..\include\ambulant\lib\basic_types.h"\
 	"..\..\include\ambulant\lib\byte_buffer.h"\
+	"..\..\include\ambulant\lib\callback.h"\
 	"..\..\include\ambulant\lib\colors.h"\
+	"..\..\include\ambulant\lib\delta_timer.h"\
+	"..\..\include\ambulant\lib\event.h"\
+	"..\..\include\ambulant\lib\event_processor.h"\
+	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
+	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\
@@ -9919,6 +10227,7 @@ DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\smil_time.h"\
 	"..\..\include\ambulant\smil2\sync_rule.h"\
@@ -10057,6 +10366,7 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\common\factory.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
+	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\region_dim.h"\
 	"..\..\include\ambulant\common\region_info.h"\
 	"..\..\include\ambulant\common\schema.h"\
@@ -10083,6 +10393,7 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
@@ -10290,6 +10601,7 @@ DEP_CPP_TRANSI=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
@@ -10486,7 +10798,7 @@ SOURCE=..\..\include\ambulant\common\region_info.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\ambulant\common\renderer.h
+SOURCE=..\..\include\ambulant\common\renderer_impl.h
 # End Source File
 # Begin Source File
 
@@ -10495,6 +10807,10 @@ SOURCE=..\..\include\ambulant\common\schema.h
 # Begin Source File
 
 SOURCE=..\..\include\ambulant\common\smil_alignment.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\ambulant\common\video_renderer.h
 # End Source File
 # End Group
 # Begin Group "gui h"

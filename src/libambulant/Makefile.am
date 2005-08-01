@@ -132,8 +132,10 @@ ffmpegincludes = -I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
 	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT
 
 libambulant_ffmpeg_la_SOURCES = 	\
-		net/ffmpeg_datasource.cpp \
-		net/ffmpeg_rawdatasource.cpp
+		net/ffmpeg_common.cpp \
+		net/ffmpeg_audio.cpp \
+		net/ffmpeg_video.cpp \
+		net/ffmpeg_raw.cpp
 else
 ffmpegincludes=
 toolkit_ffmpeg_libraries=
@@ -200,16 +202,18 @@ libambulant_la_SOURCES = \
 	net/stdio_datasource.cpp \
 	net/raw_video_datasource.cpp \
 	net/datasource.cpp \
+	net/demux_datasource.cpp \
 	net/databuffer.cpp \
 	net/url.cpp \
 	\
 	common/preferences.cpp \
 	common/region.cpp \
-	common/renderer.cpp \
+	common/renderer_impl.cpp \
 	common/schema.cpp \
 	common/smil_alignment.cpp \
 	common/smil_handler.cpp \
 	common/plugin_engine.cpp \
+	common/video_renderer.cpp \
 	\
 	smil2/animate_a.cpp \
 	smil2/animate_e.cpp \

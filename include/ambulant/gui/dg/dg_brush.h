@@ -54,7 +54,7 @@
 #define AMBULANT_GUI_DG_BRUSH_H
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/lib/colors.h"
 
 namespace ambulant {

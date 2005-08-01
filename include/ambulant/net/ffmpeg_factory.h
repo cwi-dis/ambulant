@@ -46,62 +46,27 @@
  * 
  */
 
-/* 
- * @$Id$ 
- */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#ifndef AMBULANT_NET_FFMPEG_FACTORY_H
+#define AMBULANT_NET_FFMPEG_FACTORY_H
 
-#include "ambulant/smil2/transition.h"
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/gui/cocoa/cocoa_renderer.h"
-#include <Cocoa/Cocoa.h>
 
-namespace ambulant {
+#include "ambulant/config/config.h"
+#include "ambulant/net/datasource.h"
 
-using namespace lib;
-using namespace common;
+namespace ambulant
+{
 
-namespace gui {
+namespace net
+{  
 
-namespace cocoa {
+raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
+video_datasource_factory *get_ffmpeg_video_datasource_factory();
+audio_datasource_factory *get_ffmpeg_audio_datasource_factory();
+audio_parser_finder *get_ffmpeg_audio_parser_finder();
+audio_filter_finder *get_ffmpeg_audio_filter_finder();
 
-class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
-  public:
-	cocoa_fill_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp) {};
-	~cocoa_fill_renderer();
+}	// end namespace net
+}	// end namespace ambulant
 
-//	void freeze() {}
-	void start(double where);
-	void seek(double t) {}
-
-    void redraw_body(const rect &dirty, gui_window *window);
-  private:
-	critical_section m_lock;
-};
-
-class cocoa_background_renderer : public background_renderer {
-  public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src),
-		m_bgimage(NULL) {}
-	~cocoa_background_renderer();
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-	void keep_as_background();
-  private:
-	NSImage *m_bgimage;
-};
-
-} // namespace cocoa
-
-} // namespace gui
- 
-} // namespace ambulant
-
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+#endif // AMBULANT_NET_FFMPEG_FACTORY_H

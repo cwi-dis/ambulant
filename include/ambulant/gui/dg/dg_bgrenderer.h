@@ -55,7 +55,7 @@
 
 #include "ambulant/config/config.h"
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/gui/dg/dg_dib_surface.h"

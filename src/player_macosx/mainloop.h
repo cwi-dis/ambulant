@@ -56,7 +56,7 @@
 //#include "ambulant/lib/asb.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/playable.h"
-#include "ambulant/common/renderer.h"
+//#include "ambulant/common/renderer.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"

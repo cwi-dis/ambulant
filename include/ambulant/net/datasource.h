@@ -55,9 +55,13 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/thread.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/net/url.h"
-
+#ifdef AMBULANT_PLATFORM_UNIX
+#include <stdint.h>
+#include "ambulant/lib/unix/unix_thread.h"
+#endif
 namespace ambulant {
 
 namespace net {
@@ -468,7 +472,76 @@ class datasource_factory :
 	std::vector<video_datasource_factory*> m_video_factories;
 };
 
+#ifdef AMBULANT_PLATFORM_UNIX
+/// Abstract helper class for abstract_demux. This is the interface
+/// A file demultiplexer expects from its sink.
+class demux_datasink {
+  public:
+	/// Data push call: consume data with given size and timestamp. Must copy data
+	/// before returning.
+    virtual void data_avail(timestamp_t pts, uint8_t *data, int size) = 0;
+	
+	/// Return true if no more data should be pushed (through data_avail).
+	virtual bool buffer_full() = 0;
+};
 
+/// Interface for an object that splits a multiplexed A/V stream into its
+/// constituent streams. A demultiplexer will feed stream data into multiple
+/// objects with the demux_datasink interface.
+/// Expected use is that these sink objects will also provide a datasource
+/// (or audio_datasource or video_datasource) interface to their clients.
+/// The paradigm is that a multiplexed file/stream consists of numbered
+/// substreams, and that it is possible up-front to decide on stream numbers
+/// to use as the main audio and video stream. These are then used, any
+/// data for unused streams is discarded.
+class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
+  public:
+	virtual ~abstract_demux() {};	
+ 
+	/// Add a datasink for the given stream index.
+	virtual void add_datasink(demux_datasink *parent, int stream_index) = 0;
+	
+	/// Remove the datasink for the given stream index. When the
+	/// last datasink is removed the abstract_demux should clean itself
+	/// up.
+	virtual void remove_datasink(int stream_index) = 0;
+	
+	/// Force immediate cleanup.
+	virtual void cancel() = 0;
+	
+	/// Return the stream number for the first available audio stream.
+	virtual int audio_stream_nr() = 0;
+	
+	/// Return the stream number for the first available video stream.
+	virtual int video_stream_nr() = 0;
+	
+	/// Return the number of streams.
+	virtual int nstreams() = 0;
+	
+	/// Return the duration of the full multiplexed stream. The return value
+	/// should cater for clip_begin and clip_end values.
+	virtual double duration() = 0;
+	
+	/// Seek to the given location, if possible. As timestamps are
+	/// provided to the sinks this call may be implemented as no-op.
+	virtual void seek(timestamp_t time) = 0;
+
+	/// Return audio_format for stream audio_stream_nr()
+	virtual audio_format& get_audio_format() = 0;
+	
+	/// Return video_format for stream video_stream_nr()
+	virtual video_format& get_video_format() = 0;
+
+	/// Return clip start time, as set during demux creation.
+	virtual timestamp_t get_clip_begin() = 0; 
+
+	/// Return clip end time as set during demux creation.
+	virtual timestamp_t get_clip_end() = 0;
+	
+	/// No clue.
+	virtual timestamp_t get_start_time() = 0;
+};
+#endif // AMBULANT_PLATFORM_UNIX
 
 
 /// convenience function: read a whole document through any raw datasource.

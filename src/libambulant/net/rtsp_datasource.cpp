@@ -48,6 +48,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/net/rtsp_datasource.h"
+#include "ambulant/net/demux_datasource.h"
 #include "ambulant/lib/logger.h"
 #include "GroupsockHelper.hh"
 
@@ -81,7 +82,7 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 
 
 void 
-ambulant::net::rtsp_demux::add_datasink(detail::datasink *parent, int stream_index)
+ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context->sinks[stream_index] == 0);
@@ -209,10 +210,10 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
-				context->video_fmt.framerate = subsession->videoFPS();
+				context->video_fmt.frameduration = (timestamp_t)(1000000.0/subsession->videoFPS());
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
-				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %d",context->video_fmt.width, context->video_fmt.height, context->video_fmt.framerate);
+				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
 
 			}
 		}

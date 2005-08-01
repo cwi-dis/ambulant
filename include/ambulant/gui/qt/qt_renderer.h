@@ -55,7 +55,7 @@
 
 
 #include "ambulant/common/factory.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
 

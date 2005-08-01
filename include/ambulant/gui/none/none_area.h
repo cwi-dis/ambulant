@@ -54,7 +54,7 @@
 #define AMBULANT_GUI_NONE_AREA_H
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/layout.h"
 
 namespace ambulant {

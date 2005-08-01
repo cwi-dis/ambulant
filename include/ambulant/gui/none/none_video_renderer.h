@@ -49,7 +49,7 @@
 #ifndef NONE_VIDEO_RENDERER
 #define NONE_VIDEO_RENDERER
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/video_renderer.h"
 
 namespace ambulant {
 namespace gui {

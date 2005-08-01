@@ -46,62 +46,103 @@
  * 
  */
 
-/* 
- * @$Id$ 
- */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#ifndef AMBULANT_NET_FFMPEG_COMMON_H
+#define AMBULANT_NET_FFMPEG_COMMON_H
 
-#include "ambulant/smil2/transition.h"
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/gui/cocoa/cocoa_renderer.h"
-#include <Cocoa/Cocoa.h>
 
-namespace ambulant {
+//#include <vector>
+//#include <queue>
 
-using namespace lib;
-using namespace common;
+//#include <sys/types.h>
+//#include <sys/stat.h>
+//#include <fcntl.h>
 
-namespace gui {
 
-namespace cocoa {
+#include "ambulant/config/config.h"
+//#include "ambulant/lib/callback.h"
+//#include "ambulant/lib/refcount.h"
+//#include "ambulant/lib/event_processor.h"
+//#include "ambulant/lib/mtsync.h"
+//#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/unix/unix_thread.h"
+#include "ambulant/net/datasource.h"
 
-class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
+#include "avcodec.h"
+#include "avformat.h"
+//#include "common.h"
+
+// temporary debug messages
+//#include <iostream>
+#ifndef AMBULANT_NO_OSTREAM
+//#include <ostream>
+#else /*AMBULANT_NO_OSTREAM */
+//#include <ostream.h>
+#endif /*AMBULANT_NO_OSTREAM */
+//#include <cstring>
+//#include <sys/types.h>
+//#include <sys/stat.h>
+//#include <fcntl.h>
+//#include <unistd.h>
+//#include <map>
+
+namespace ambulant
+{
+
+namespace net
+{  
+
+void ffmpeg_init();
+
+class ffmpeg_codec_id {
   public:
-	cocoa_fill_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp) {};
-	~cocoa_fill_renderer();
+	static ffmpeg_codec_id* instance();
+  	~ffmpeg_codec_id() {};
 
-//	void freeze() {}
-	void start(double where);
-	void seek(double t) {}
-
-    void redraw_body(const rect &dirty, gui_window *window);
+	void add_codec(const char* codec_name, 	CodecID id);
+	CodecID get_codec_id(const char* codec_name);
   private:
-	critical_section m_lock;
+	ffmpeg_codec_id(); 
+	static ffmpeg_codec_id* m_uniqueinstance;
+	std::map<std::string, CodecID> m_codec_id;		  
 };
 
-class cocoa_background_renderer : public background_renderer {
+class ffmpeg_demux : public abstract_demux {
   public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src),
-		m_bgimage(NULL) {}
-	~cocoa_background_renderer();
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-	void keep_as_background();
+	ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end);
+	~ffmpeg_demux();
+	
+	static AVFormatContext *supported(const net::url& url);
+	  
+	void add_datasink(demux_datasink *parent, int stream_index);
+	void remove_datasink(int stream_index);
+    int audio_stream_nr();
+  	int video_stream_nr();
+    // XXX this should also be timestamp_t instead of double
+  	double duration();
+  	int nstreams();
+    void seek(timestamp_t time);
+    audio_format& get_audio_format();
+  	video_format& get_video_format();
+	void cancel();
+	timestamp_t get_clip_end(); 
+	timestamp_t get_clip_begin();
+	timestamp_t get_start_time() { return 0; };
+  protected:
+	unsigned long run();
   private:
-	NSImage *m_bgimage;
+	audio_format m_audio_fmt;
+  	video_format m_video_fmt;
+    demux_datasink *m_sinks[MAX_STREAMS];
+	AVFormatContext *m_con;
+	int m_nstream;
+	lib::critical_section m_lock;
+  	timestamp_t m_clip_begin;
+  	timestamp_t m_clip_end;
+  	bool m_clip_begin_set;
 };
 
-} // namespace cocoa
+}	// end namespace net
+}	// end namespace ambulant
 
-} // namespace gui
- 
-} // namespace ambulant
-
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+#endif // AMBULANT_NET_FFMPEG_COMMON_H

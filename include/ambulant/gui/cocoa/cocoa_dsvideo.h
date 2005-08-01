@@ -53,7 +53,7 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_DSVIDEO_H
 #define AMBULANT_GUI_COCOA_COCOA_DSVIDEO_H
 
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/video_renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>
 

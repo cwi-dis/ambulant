@@ -52,7 +52,7 @@
 
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/none/none_area.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/lib/logger.h"
 

@@ -50,7 +50,7 @@
 #define QT_VIDEO_RENDERER
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/video_renderer.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/callback.h"

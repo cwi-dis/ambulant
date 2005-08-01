@@ -79,9 +79,9 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/unix/unix_thread.h"
 #include "ambulant/net/databuffer.h"
-#include "ambulant/net/posix_datasource.h"
+//#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
-#include "ambulant/net/ffmpeg_datasource.h"
+#include "ambulant/net/ffmpeg_common.h"
 
 namespace ambulant
 {
@@ -112,17 +112,17 @@ struct rtsp_context_t {
 	timeval first_sync_time;
 	audio_format audio_fmt;	
 	video_format video_fmt;
-	detail::datasink *sinks[MAX_STREAMS];
+	demux_datasink *sinks[MAX_STREAMS];
 };
 	
-class rtsp_demux : public detail::abstract_demux {
+class rtsp_demux : public abstract_demux {
   public:
 	rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end);
 	//~rtsp_demux() {};
 	
 	static rtsp_context_t* supported(const net::url& url);
 	
-	void add_datasink(detail::datasink *parent, int stream_index);
+	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
 	void cancel() {};
   	int audio_stream_nr() { return m_context->audio_stream; };

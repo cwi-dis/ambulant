@@ -47,7 +47,9 @@
  * 
  */
  
-#include "ambulant/net/ffmpeg_rawdatasource.h" 
+#include "ambulant/net/ffmpeg_common.h"
+#include "ambulant/net/ffmpeg_raw.h" 
+#include "ambulant/net/ffmpeg_factory.h" 
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
@@ -59,18 +61,16 @@
 using namespace ambulant;
 using namespace net;
 
+raw_datasource_factory *
+ambulant::net::get_ffmpeg_raw_datasource_factory()
+{
+	static raw_datasource_factory *s_factory;
+	
+	if (!s_factory) s_factory = new ffmpeg_raw_datasource_factory();
+	return s_factory;
+}
 
 #define DEFAULT_BUFFER_SIZE 128*1024
-
-// Static initializer function shared among ffmpeg classes
-static void 
-ffmpeg_init()
-{
-	static bool is_inited = false;
-	if (is_inited) return;
-	av_register_all();
-	is_inited = true;
-}
 
 datasource* 
 ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)

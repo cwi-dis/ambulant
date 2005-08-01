@@ -56,7 +56,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 
 namespace ambulant {
 

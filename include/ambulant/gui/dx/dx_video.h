@@ -55,7 +55,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/event.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/dx/dx_playable.h"
 #include "ambulant/lib/mtsync.h"
 

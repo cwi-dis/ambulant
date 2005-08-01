@@ -71,8 +71,7 @@
 #include "ambulant/net/stdio_datasource.h"
 #endif
 #ifdef WITH_FFMPEG
-#include "ambulant/net/ffmpeg_datasource.h"
-#include "ambulant/net/ffmpeg_rawdatasource.h"
+#include "ambulant/net/ffmpeg_factory.h"
 #endif
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/common/plugin_engine.h"
@@ -145,16 +144,16 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
-	m_factory->df->add_video_factory(new net::ffmpeg_video_datasource_factory());
+	m_factory->df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	m_factory->df->add_audio_factory(new net::ffmpeg_audio_datasource_factory());
+	m_factory->df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_parser_finder");
-	m_factory->df->add_audio_parser_finder(new net::ffmpeg_audio_parser_finder());
+	m_factory->df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
-	m_factory->df->add_audio_filter_finder(new net::ffmpeg_audio_filter_finder());
+	m_factory->df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
-	m_factory->df->add_raw_factory(new net::ffmpeg_raw_datasource_factory());
+	m_factory->df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif
 #ifdef WITH_STDIO_DATASOURCE
 	// This is for debugging only, really: the posix datasource

@@ -47,8 +47,8 @@
  */
 
 
-#ifndef AMBULANT_NET_FFMPEG_RAWDATASOURCE_H
-#define AMBULANT_NET_FFMPEG_RAWDATASOURCE_H
+#ifndef AMBULANT_NET_FFMPEG_RAW_H
+#define AMBULANT_NET_FFMPEG_RAW_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/callback.h"
@@ -156,4 +156,4 @@ class ffmpeg_raw_datasource:
 }	// end namespace net
 }	// end namespace ambulant
 
-#endif
+#endif // AMBULANT_NET_FFMPEG_RAW_H

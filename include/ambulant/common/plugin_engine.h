@@ -54,7 +54,7 @@
 
 #include "ambulant/common/factory.h"
 #include "ambulant/common/playable.h"
-#include "ambulant/common/renderer.h"
+//#include "ambulant/common/renderer.h"
 
  
 namespace ambulant {

@@ -50,58 +50,86 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_COCOA_COCOA_FILL_H
-#define AMBULANT_GUI_COCOA_COCOA_FILL_H
+#ifndef AMBULANT_COMMON_VIDEO_RENDERER_H
+#define AMBULANT_COMMON_VIDEO_RENDERER_H
 
-#include "ambulant/smil2/transition.h"
+#include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/gui/cocoa/cocoa_renderer.h"
-#include <Cocoa/Cocoa.h>
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/net/datasource.h"
+#include "ambulant/common/playable.h"
+#include "ambulant/common/renderer_impl.h"
 
 namespace ambulant {
 
-using namespace lib;
-using namespace common;
+namespace common {
 
-namespace gui {
-
-namespace cocoa {
-
-class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
+/// Convenience class for video renderer_playables.
+/// If your video renderer displays frame-by-frame this is the
+/// baseclass to use. It handles reading the video file (through
+/// a video_datasource object), calls show_frame for every frame,
+/// and splitting out the optional audio track and handing it to
+/// an audio playable. video_renderer will also control
+/// the audio playable, forwarding play/stop/pause calls that it
+/// receives to the audio_playable too.
+///
+/// So, the only thing you need to provide are a show_frame
+/// and a redraw function.
+class video_renderer : public common::renderer_playable {
   public:
-	cocoa_fill_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp) {};
-	~cocoa_fill_renderer();
+	video_renderer(
+    common::playable_notification *context,
+    common::playable_notification::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *evp,
+	common::factories *factory);
 
-//	void freeze() {}
+  	virtual ~video_renderer();
+	
+	/// Return true if video is paused.
+  	bool is_paused() { return m_is_paused; };
+	
+	/// Return true if video is not playing.
+  	bool is_stopped() { return !m_activated;};
+	
+	/// Return true if video is playing.
+  	bool is_playing() { return m_activated; };  
+	
+	/// Display video data.
+	virtual void show_frame(const char* frame, int size) {};
+    virtual void redraw(const lib::rect &dirty, common::gui_window *window);
+	
 	void start(double where);
-	void seek(double t) {}
-
-    void redraw_body(const rect &dirty, gui_window *window);
+    void stop();
+	void seek(double where);
+    void pause();
+    void resume();
+    void data_avail();
+	duration get_dur();
+//	void playdone() {};
+	
+		
+  protected:
+	lib::size m_size;		///< (width, height) of the video data.
+  	net::video_datasource* m_src;	///< video datasource.
+  	net::audio_datasource *m_audio_ds;	///< audio datasource.
+  	common::playable *m_audio_renderer;	///< the audio playable.
+  	empty_playable_notification m_playable_notification;
   private:
-	critical_section m_lock;
+	  typedef lib::no_arg_callback <video_renderer > dataavail_callback;
+	  double now();
+	  lib::timer *m_timer;
+ 	  long int m_epoch;
+	  bool m_activated;
+	  bool m_is_paused;
+	  long int m_paused_epoch;
+	  lib::critical_section m_lock;
 };
 
-class cocoa_background_renderer : public background_renderer {
-  public:
-    cocoa_background_renderer(const common::region_info *src)
-	:   background_renderer(src),
-		m_bgimage(NULL) {}
-	~cocoa_background_renderer();
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-	void keep_as_background();
-  private:
-	NSImage *m_bgimage;
-};
-
-} // namespace cocoa
-
-} // namespace gui
+} // namespace common
  
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_COCOA_COCOA_FILL_H
+#endif // AMBULANT_COMMON_VIDEO_RENDERER_H

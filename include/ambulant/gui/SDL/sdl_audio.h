@@ -55,7 +55,7 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/renderer.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
