@@ -56,6 +56,7 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/logger.h"
@@ -99,7 +100,6 @@ namespace ambulant {
 namespace smil2 {
 
 class lib::document;
-class lib::node;
 
 class trace_player : public time_node_context, 
 	public common::playable_notification {
