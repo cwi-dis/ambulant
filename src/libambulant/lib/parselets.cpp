@@ -89,7 +89,7 @@ lib::options_p::parse(const_iterator& it, const const_iterator& end) {
 	
 	std::ptrdiff_t dmax = -1;
 	
-	std::ptrdiff_t *aptrdiff = new int[m_options.size()];
+	std::ptrdiff_t *aptrdiff = new ptrdiff_t[m_options.size()];
 		
 	std::list<parselet*>::iterator rit;
 	int ix = 0;
