@@ -74,10 +74,12 @@ Before creating the distribution
   	- General Information->Installation Version
   	- Add/Remove Programs -> Software Version
   	- Shortcuts
+  	- Build Settings -> Installation .exe name
   - src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse
   	- Product Details->Default Directory
   	- Add/Remove Programs -> Software Version
   	- General Information->Installation Version
+  	- Build Settings -> Installation .exe name
 - check the following files for being up-to-date:
   - README
   - INSTALL

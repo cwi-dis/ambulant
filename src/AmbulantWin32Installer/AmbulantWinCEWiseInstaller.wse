@@ -24,7 +24,7 @@ item: Global
   Patch Memory=4000
   MIF PDF Version=1.0
   MIF SMS Version=2.0
-  EXE Filename=..\..\bin\wince\AmbulantPPCinstaller.exe
+  EXE Filename=..\..\bin\wince\Ambulant-1.5-wince.exe
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
