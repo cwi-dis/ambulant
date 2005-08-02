@@ -60,6 +60,10 @@
 
 #include "ambulant/lib/logger.h"
 
+// Define this to ignore duration==0 and just continue playing in that case
+// This works around a bug in the Dirac DirectX interface that it always
+// returns 0 for the movie duration.
+#define IGNORE_ZERO_DURATION
 using namespace ambulant;
 
 using ambulant::lib::win32::win_report_error;
@@ -158,6 +162,11 @@ bool gui::dx::video_player::is_playing() {
 		return false;
 	}
 	
+	if (hr == S_FALSE) return true;
+#ifdef IGNORE_ZERO_DURATION
+	// XXX Dirac workaround:
+	if (stdur == 0) return true;
+#endif
 	STREAM_TIME st;
 	hr = m_mmstream->GetTime(&st);
 	if(FAILED(hr)) {
