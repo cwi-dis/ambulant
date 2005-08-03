@@ -84,19 +84,27 @@ ambulant::net::get_ffmpeg_audio_datasource_factory()
 audio_parser_finder *
 ambulant::net::get_ffmpeg_audio_parser_finder()
 {
+#if 0
 	static audio_parser_finder *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_parser_finder();
 	return s_factory;
+#else
+	return new ffmpeg_audio_parser_finder();
+#endif
 }
 
 audio_filter_finder *
 ambulant::net::get_ffmpeg_audio_filter_finder()
 {
+#if 0
 	static audio_filter_finder *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_filter_finder();
 	return s_factory;
+#else
+	return new ffmpeg_audio_filter_finder();
+#endif
 }
 
 audio_datasource* 
