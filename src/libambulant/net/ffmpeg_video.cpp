@@ -77,10 +77,14 @@ typedef lib::no_arg_callback<ffmpeg_video_decoder_datasource> framedone_callback
 video_datasource_factory *
 ambulant::net::get_ffmpeg_video_datasource_factory()
 {
+#if 0
 	static video_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_video_datasource_factory();
 	return s_factory;
+#else
+	return new ffmpeg_video_datasource_factory();
+#endif
 }
 
 

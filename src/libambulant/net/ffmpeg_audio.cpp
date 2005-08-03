@@ -71,10 +71,14 @@ typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 audio_datasource_factory *
 ambulant::net::get_ffmpeg_audio_datasource_factory()
 {
+#if 0
 	static audio_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_datasource_factory();
 	return s_factory;
+#else
+	return new ffmpeg_audio_datasource_factory();
+#endif
 }
 
 audio_parser_finder *

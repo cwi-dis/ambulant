@@ -64,10 +64,14 @@ using namespace net;
 raw_datasource_factory *
 ambulant::net::get_ffmpeg_raw_datasource_factory()
 {
+#if 0
 	static raw_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_raw_datasource_factory();
 	return s_factory;
+#else
+	return new ffmpeg_raw_datasource_factory();
+#endif
 }
 
 #define DEFAULT_BUFFER_SIZE 128*1024
