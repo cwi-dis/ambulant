@@ -119,9 +119,9 @@ qt_transition_renderer::start(double where)
 void
 qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
+	if (m_trans_engine) stop();
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("qt_renderer.start_outtransition(0x%x)", (void *)this);
-	if (m_trans_engine) stop();
 	m_outtransition = info;
 	m_trans_engine = qt_transition_engine(m_transition_dest, true, m_outtransition);
 	if (m_transition_dest && m_trans_engine) {
@@ -142,7 +142,10 @@ void
 qt_transition_renderer::stop()
 {
 	m_lock.enter();
-	if (!m_trans_engine) return;
+	if (!m_trans_engine) {
+	   m_lock.leave();
+	   return;
+    }
 	delete m_trans_engine;
 	m_trans_engine = NULL;
 #ifdef USE_SMIL21
