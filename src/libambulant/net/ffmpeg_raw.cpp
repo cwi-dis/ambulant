@@ -196,6 +196,7 @@ ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *co
 	if (!m_thread) {
 		lib::logger::get_logger()->error(gettext("%s: Cannot start reader thread"), url.get_url().c_str());
 		m_src_end_of_file = true;
+		return;
 	}
 	m_thread->set_datasink(this);
 }

@@ -54,12 +54,14 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cassert>
 #undef terminate
 
 using namespace ambulant;
 
 lib::unix::thread::thread()
 :	m_exit_requested(false),
+    m_exit_done(false),
 	m_running(false),
 	m_starting(false)
 {
@@ -74,6 +76,10 @@ lib::unix::thread::~thread()
 bool 
 lib::unix::thread::start()
 {
+    assert(!m_starting);
+    assert(!m_running);
+    assert(!m_exit_requested);
+    assert(!m_exit_done);
 	m_starting = true;
 	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
 		perror("pthread_create");
@@ -85,9 +91,11 @@ lib::unix::thread::start()
 void
 lib::unix::thread::stop()
 {
+    assert(!m_exit_done);
 	m_exit_requested = true;
 	/* TODO: wake thread up */
 	pthread_join(m_thread, NULL);
+	m_exit_done = true;
 }
 	
 bool
@@ -120,6 +128,9 @@ void *
 lib::unix::thread::threadproc(void *pParam)
 {
 	thread* p = static_cast<thread*>(pParam);
+	assert(p->m_starting);
+	assert(!p->m_running);
+	assert(!p->m_exit_done);
 	p->m_running = true;
 	p->m_starting = false;
 	(void)p->run();
