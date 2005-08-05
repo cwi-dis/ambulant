@@ -234,6 +234,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
 	m_lock.enter();
+	bool restart_input = false;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: (this = 0x%x)", (void*) this);
 
 	if (m_client_callback != NULL) {
@@ -260,8 +261,15 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
+		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
+	}
+	// Also restart our source if we still have room and there is
+	// data to read.
+	if ( !_end_of_file() && !_buffer_full() ) restart_input = true;
+	
+	if (restart_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
 		assert(m_src);

@@ -91,31 +91,32 @@ typedef lib::no_arg_callback<gui::sdl::sdl_audio_renderer> readdone_callback;
 	
 // ************************************************************
 
-bool gui::sdl::sdl_audio_renderer::m_sdl_init = false;
-Uint16 gui::sdl::sdl_audio_renderer::m_sdl_format = AUDIO_S16SYS;
-net::audio_format gui::sdl::sdl_audio_renderer::m_ambulant_format = net::audio_format(44100, 2, 16);
-int gui::sdl::sdl_audio_renderer::m_buffer_size = 4096;    
-lib::critical_section gui::sdl::sdl_audio_renderer::m_static_lock;    
-std::list<gui::sdl::sdl_audio_renderer *> gui::sdl::sdl_audio_renderer::m_renderers;
+bool gui::sdl::sdl_audio_renderer::s_sdl_init = false;
+Uint16 gui::sdl::sdl_audio_renderer::s_sdl_format = AUDIO_S16SYS;
+net::audio_format gui::sdl::sdl_audio_renderer::s_ambulant_format = net::audio_format(44100, 2, 16);
+int gui::sdl::sdl_audio_renderer::s_buffer_size = 4096;
+int gui::sdl::sdl_audio_renderer::s_min_buffer_size_bytes = 2 * 4096 * 2 * 2;  
+lib::critical_section gui::sdl::sdl_audio_renderer::s_static_lock;    
+std::list<gui::sdl::sdl_audio_renderer *> gui::sdl::sdl_audio_renderer::s_renderers;
 
 int
 gui::sdl::sdl_audio_renderer::init()
 {
-	m_static_lock.enter();
-	if (m_sdl_init) {
-		m_static_lock.leave();
+	s_static_lock.enter();
+	if (s_sdl_init) {
+		s_static_lock.leave();
 		return 0;
 	}
     int err = 0;
 	
-	// XXXX Should check that m_ambulant_format and m_sdl_format match!
+	// XXXX Should check that s_ambulant_format and s_sdl_format match!
 	
 	// Step one - initialize the SDL library
 	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("sdl_audio_renderer.init: SDL_Init failed: error %d", err);
 		lib::logger::get_logger()->error(gettext("Cannot initialize SDL audio library"));
-		m_static_lock.leave();
+		s_static_lock.leave();
 		return err;
 	}
 	
@@ -123,78 +124,78 @@ gui::sdl::sdl_audio_renderer::init()
 	SDL_AudioSpec desired, obtained;
 	(void) memset(&desired, 0, sizeof(SDL_AudioSpec));
 	(void) memset(&obtained, 0, sizeof(SDL_AudioSpec));
-	desired.freq = m_ambulant_format.samplerate;
-	desired.format = m_sdl_format;
-	desired.channels = m_ambulant_format.channels;
-	desired.samples = m_buffer_size;
+	desired.freq = s_ambulant_format.samplerate;
+	desired.format = s_sdl_format;
+	desired.channels = s_ambulant_format.channels;
+	desired.samples = s_buffer_size;
 	desired.callback = sdl_C_callback;
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %d", err);
 		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream"));
-		m_static_lock.leave();
+		s_static_lock.leave();
     	return err;
 	}
-	m_ambulant_format.samplerate = obtained.freq;
-	m_ambulant_format.channels = obtained.channels;
-	if (obtained.format != m_sdl_format) {
+	s_ambulant_format.samplerate = obtained.freq;
+	s_ambulant_format.channels = obtained.channels;
+	if (obtained.format != s_sdl_format) {
 		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio could not support format 0x%x, returned 0x%x",
-			m_sdl_format, obtained.format);
+			s_sdl_format, obtained.format);
 		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream with required characteristics"));
-		m_static_lock.leave();
+		s_static_lock.leave();
 		return -1;
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.init: SDL init succes");			
-	m_sdl_init = true;
-	m_static_lock.leave();
+	s_sdl_init = true;
+	s_static_lock.leave();
 	return err;
 }
 
 void
 gui::sdl::sdl_audio_renderer::register_renderer(sdl_audio_renderer *rnd)
 {
-	m_static_lock.enter();
+	s_static_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer(0x%x)", rnd);
 	std::list<sdl_audio_renderer *>::iterator i;
-	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
+	for( i=s_renderers.begin(); i != s_renderers.end(); i++) {
 		if ((*i) == rnd) {
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer() already exists !");
-			m_static_lock.leave();
+			s_static_lock.leave();
 			return;
 		}
 	}
-	m_renderers.push_back(rnd);
+	s_renderers.push_back(rnd);
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer: unpause SDL");
 	SDL_PauseAudio(0);
-	m_static_lock.leave();
+	s_static_lock.leave();
 }
 
 void
 gui::sdl::sdl_audio_renderer::unregister_renderer(sdl_audio_renderer *rnd)
 {
-	m_static_lock.enter();
+	s_static_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::unregister_renderer(0x%x)", rnd);
 	std::list<sdl_audio_renderer *>::iterator i;
-	for( i=m_renderers.begin(); i != m_renderers.end(); i++) {
+	for( i=s_renderers.begin(); i != s_renderers.end(); i++) {
 		if ((*i) == rnd) {
-			m_renderers.erase(i);
+			s_renderers.erase(i);
 			break;
 		}
 	}
-	if (m_renderers.size() == 0) {
+	if (s_renderers.size() == 0) {
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer: pause SDL");
 		SDL_PauseAudio(1);
 	}
-	m_static_lock.leave();
+	s_static_lock.leave();
 }
 
 void
 gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 {
-	m_static_lock.enter();
-	std::list<sdl_audio_renderer *>::iterator first = m_renderers.begin();
-	if (m_renderers.size() == 1 && (*first)->m_volcount == 0
+	s_static_lock.enter();
+	std::list<sdl_audio_renderer *>::iterator first = s_renderers.begin();
+	if (s_renderers.size() == 1 && (*first)->m_volcount == 0
 #ifdef USE_SMIL21
 	    && ! ((*first)->m_intransition || (*first)->m_outtransition)
 #endif
@@ -212,7 +213,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			memcpy(stream, single_data, std::min(len, single_len));
 		}
 
-		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done()", (void*) stream, len);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done(%d)", (void*) stream, len, single_len);
 
 		(*first)->get_data_done(single_len);
 		if (single_len < len)
@@ -221,7 +222,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		// No streams, or more than one: use an accumulation buffer
 		memset(stream, 0, len);
 		std::list<sdl_audio_renderer *>::iterator i;
-		for (i=first; i != m_renderers.end(); i++) {
+		for (i=first; i != s_renderers.end(); i++) {
 			Uint8 *next_data;
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			int next_len = (*i)->get_data(len, &next_data);
@@ -232,7 +233,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			(*i)->get_data_done(next_len);
 		}
 	}
-	m_static_lock.leave();
+	s_static_lock.leave();
 }
 
 // ************************************************************
@@ -260,7 +261,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	if (init() != 0)
 		return;
 		
-	net::audio_format_choices supported(m_ambulant_format);
+	net::audio_format_choices supported(s_ambulant_format);
 	net::url url = node->get_url("src");
 	
 	_init_clip_begin_end();
@@ -294,7 +295,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_transition_engine(NULL)
 #endif                                   
 {
-	net::audio_format_choices supported(m_ambulant_format);
+	net::audio_format_choices supported(s_ambulant_format);
 	net::url url = node->get_url("src");
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_audio_renderer() this=(x%x), ds = 0x%x",  (void*) this, (void*) ds);
 	if (init() != 0)
@@ -472,7 +473,7 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
 		// No more data.
 		return false;
 	}
-	if (m_audio_src->size() == 0) {
+	if (m_audio_src->size() < s_min_buffer_size_bytes ) {
 		// Start reading 
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);

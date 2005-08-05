@@ -146,12 +146,13 @@ class sdl_audio_renderer : public common::renderer_playable {
 	static int init();
  	static void register_renderer(sdl_audio_renderer *rnd);
  	static void unregister_renderer(sdl_audio_renderer *rnd);
-    static bool m_sdl_init;
-	static Uint16 m_sdl_format;
-	static net::audio_format m_ambulant_format;
-    static int m_buffer_size;
-	static lib::critical_section m_static_lock;
-	static std::list<sdl_audio_renderer *>m_renderers;
+    static bool s_sdl_init;			// True when SDL has beeen initialized
+	static Uint16 s_sdl_format;		// Audio format we want, in SDL terms
+	static net::audio_format s_ambulant_format;	// Audio format we want, in Ambulant terms
+    static int s_buffer_size;		// Number of samples we want SDL to process at once
+	static int s_min_buffer_size_bytes;		// Minimum number of bytes we need for the abobe
+	static lib::critical_section s_static_lock;
+	static std::list<sdl_audio_renderer *>s_renderers;
 };
 
 } // end namespace sdl

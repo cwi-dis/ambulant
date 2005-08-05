@@ -319,6 +319,7 @@ void
 ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
+	bool restart_input = false;
 	
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
@@ -339,11 +340,21 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
+		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
+	}
+	
+	// Also restart our source if we still have room and there is
+	// data to read.
+	if ( !_end_of_file() && !m_buffer.buffer_full() ) restart_input = true;
+	
+	if (restart_input) {
 		lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
-		m_src->start(m_event_processor,  e);
+		m_src->start(evp,  e);
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): not restarting, eof=%d, buffer_full=%d", (int)_end_of_file(), (int)m_buffer.buffer_full());
 	}
 	m_lock.leave();
 }
@@ -911,6 +922,8 @@ void
 ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
+	bool restart_input = false;
+	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): start(0x%x) called", this);
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
@@ -932,11 +945,19 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
+		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
+	}
+	// Also restart our source if we still have room and there is
+	// data to read.
+	if ( !_end_of_file() && !m_buffer.buffer_full() ) restart_input = true;
+	
+	if (restart_input) {
+		// Restart the input stream
 		lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
-		m_src->start(m_event_processor,  e);
+		m_src->start(evp,  e);
 	}
 	
 	m_lock.leave();
