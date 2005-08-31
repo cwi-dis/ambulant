@@ -57,7 +57,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -67,7 +67,7 @@
 #endif
 
 // How many video frames we would like to buffer at most
-#define MAX_VIDEO_FRAMES 300
+#define MAX_VIDEO_FRAMES 30
 
 using namespace ambulant;
 using namespace net;
@@ -563,7 +563,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// pop frames until (just before) "now". Then return the last frame popped.
 	m_lock.enter();
 	assert(now >= 0);
-	timestamp_t frame_duration = 33000; // XXX For now assume 30fps
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
+	assert(m_frames.size() > 0);
+	timestamp_t frame_duration = 33000; // XXX For now assume fps
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%d)\n", (int) now);
 
 	while ( m_frames.size() && m_old_frame.first < now - frame_duration) {
@@ -571,7 +573,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 		_pop_top_frame();
 	}
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
-	assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
+	// Why is this assert here ? I don't think it is correct.	
+	//assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
+	
 	 
 	if (timestamp_p) *timestamp_p = m_old_frame.first;
 	if (size_p) *size_p = m_size;

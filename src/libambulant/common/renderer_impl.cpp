@@ -56,6 +56,7 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/lib/parselets.h"
 
 
 //#define AM_DBG
@@ -139,11 +140,23 @@ renderer_playable::_init_clip_begin_end()
 	}
 	
 	if (clip_begin_attr) {
-#ifdef AMBULANT_PLATFORM_WIN32
-		cb = _atoi64(clip_begin_attr);
-#else
-		cb = strtoll(clip_begin_attr, &lastp,0);
-#endif
+//~ #ifdef AMBULANT_PLATFORM_WIN32
+		//~ cb = _atoi64(clip_begin_attr);
+//~ #else
+		//~ cb = strtoll(clip_begin_attr, &lastp,0);
+//~ #endif
+		lib::clock_value_p parser;
+		std::string s(clip_begin_attr);
+		std::string::const_iterator b = s.begin();
+		std::string::const_iterator e = s.end();
+		std::ptrdiff_t d = parser.parse(b, e);
+		if (d == -1) {
+			lib::logger::get_logger()->warn("Cannot parse clipBegin");
+		} else {
+			cb = parser.get_value() * 1000 ;	// get_value returns ms !
+			lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
+
+		}
 	}
 	
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
@@ -153,11 +166,21 @@ renderer_playable::_init_clip_begin_end()
 	}
 	
 	if (clip_end_attr) {
-#ifdef AMBULANT_PLATFORM_WIN32
-		ce = _atoi64(clip_end_attr);
-#else
-		ce = strtoll(clip_end_attr, &lastp,0);
-#endif
+		lib::clock_value_p parser;
+		std::string s(clip_end_attr);
+		std::string::const_iterator b = s.begin();
+		std::string::const_iterator e = s.end();
+		std::ptrdiff_t d = parser.parse(b, e);
+		if (d == -1) {
+			lib::logger::get_logger()->warn("Cannot parse clipEnd");
+		} else {
+			ce = parser.get_value() *1000;	// get_value returns ms !
+		}	
+//~ #ifdef AMBULANT_PLATFORM_WIN32
+		//~ ce = _atoi64(clip_end_attr);
+//~ #else
+		//~ ce = strtoll(clip_end_attr, &lastp,0);
+//~ #endif
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable::init_clip_begin_end: cb=%lld, ce=%lld", cb,ce);
 	m_clip_begin = cb;
