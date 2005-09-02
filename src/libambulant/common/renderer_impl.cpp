@@ -145,7 +145,7 @@ renderer_playable::_init_clip_begin_end()
 //~ #else
 		//~ cb = strtoll(clip_begin_attr, &lastp,0);
 //~ #endif
-		lib::clock_value_p parser;
+		lib::smpte_p parser;
 		std::string s(clip_begin_attr);
 		std::string::const_iterator b = s.begin();
 		std::string::const_iterator e = s.end();
@@ -153,7 +153,7 @@ renderer_playable::_init_clip_begin_end()
 		if (d == -1) {
 			lib::logger::get_logger()->warn("Cannot parse clipBegin");
 		} else {
-			cb = parser.get_value() * 1000 ;	// get_value returns ms !
+			//cb = parser.get_value() * 1000 ;	// get_value returns ms !
 			lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
 
 		}

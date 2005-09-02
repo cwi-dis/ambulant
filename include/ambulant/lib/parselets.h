@@ -710,6 +710,15 @@ class point_p : public parselet {
 	int get_y() const { return m_result.y;}
 };
 
+//parses smtpe=d+:d+:d+:d+.d+ 
+class smpte_p : public parselet {
+  public:
+	typedef int result_type[5];
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	result_type& get_time() { return m_result;}; // returns time in ms
+	result_type m_result;
+};
+
 } // namespace lib
  
 } // namespace ambulant
