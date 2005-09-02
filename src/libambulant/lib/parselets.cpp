@@ -584,19 +584,27 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	std::ptrdiff_t sd = 0;
 	int smpte[5];
 	
-	delimiter_p space(" \t\r\n");
+	delimiter_p space(" \t\r\n smpte");
 	
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Failed to parse optional space "));
+	}
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
-	
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Failed to parse literal = "));
+	}
+
 	for(int i=0; i<5; i++) {
 		int_p ip;
 		d = ip.parse(tit,end);
-		if (d == -1) return -1;
+		if (d == -1) { 
+			logger::get_logger()->debug(gettext("Failed to parse smtpe (i=%d)"),i);
+			return -1;
+		}
 		m_result[i] = ip.m_result;
 		sd += d;
 		
