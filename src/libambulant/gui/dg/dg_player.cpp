@@ -375,6 +375,16 @@ gui::dg::dg_player::new_playable(
 	return p;
 }
 
+common::playable *
+gui::dg::dg_player::new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	return NULL;
+}
 void gui::dg::dg_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	lib::timer_control *timer = new lib::timer_control_impl(m_timer, 1.0, false);
