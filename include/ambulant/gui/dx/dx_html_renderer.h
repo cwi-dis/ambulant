@@ -46,91 +46,58 @@
  * 
  */
 
-// MmView.h : interface of the MmView class
-//
+/* 
+ * @$Id$ 
+ */
 
+#ifndef AMBULANT_GUI_DX_HTML_RENDERER_H
+#define AMBULANT_GUI_DX_HTML_RENDERER_H
 
-#pragma once
+#ifdef	WITH_HTML_WIDGET
 
-class CLogWindow;
+#include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
+#include "ambulant/net/url.h"
 
-class MmView : public CView
-{
-protected: // create from serialization only
-	MmView();
-	DECLARE_DYNCREATE(MmView)
+#include <string>
 
-// Attributes
-public:
-	MmDoc* GetDocument() const;
-	
-// Operations
-public:
-	void SetMMDocument(LPCTSTR lpszPathName, bool autostart);
-	bool LocateWelcomeDoc(LPCTSTR rpath);
-	UINT_PTR m_timer_id;
-	CString m_curDocFilename;
-	CString m_curFilter;
-	UINT m_cursor_id;
-	bool m_autoplay;
-	CString m_welcomeDocFilename;
-#ifndef WITHOUT_LOG_WINDOW
-	CLogWindow *m_logwindow;
-#endif
-// Overrides
-	public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-protected:
+#include "ambulant/gui/dx/dx_playable.h"
 
-// Implementation
-public:
-	virtual ~MmView();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
+namespace ambulant {
 
-protected:
+namespace gui {
 
-// Generated message map functions
-protected:
-	DECLARE_MESSAGE_MAP()
+namespace dx {
 
-public:
-	afx_msg void OnDestroy();
-	virtual void OnInitialUpdate();
-	afx_msg void OnFilePlay();
-	afx_msg void OnUpdateFilePlay(CCmdUI *pCmdUI);
-	afx_msg void OnFilePause();
-	afx_msg void OnUpdateFilePause(CCmdUI *pCmdUI);
-	afx_msg void OnFileStop();
-	afx_msg void OnUpdateFileStop(CCmdUI *pCmdUI);
-	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnViewSource();
-	afx_msg void OnUpdateViewSource(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateViewLog(CCmdUI *pCmdUI);
-	afx_msg void OnViewLog();
-	afx_msg LRESULT OnSetClientRect(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnOpenFilter();
-	afx_msg void OnViewFilter();
-	afx_msg void OnUpdateViewFilter(CCmdUI *pCmdUI);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnUpdateOpenFilter(CCmdUI *pCmdUI);
-	afx_msg void OnViewAutoplay();
-	void OnUpdateViewAutoplay(CCmdUI *pCmdUI);
-	afx_msg BOOL OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
+class viewport;
 
-	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
-	afx_msg void OnHelpWelcome();
-	afx_msg void OnUpdateHelpWelcome(CCmdUI *pCmdUI);
-	afx_msg LRESULT OnReplaceDoc(WPARAM wParam, LPARAM lParam);
+class dx_html_renderer : public dx_renderer_playable {
+  public:
+	dx_html_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp,
+		common::gui_window *window, 
+		dx_playables_context *dxplayer);
+	~dx_html_renderer();
+	void start(double t);
+	void stop();
+	void seek(double t) {}
+	void user_event(const lib::point& pt, int what);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
+	void set_surface(common::surface *dest);
+  private:
+	html_browser *m_html_browser;
 };
 
-#ifndef _DEBUG  // debug version in MmView.cpp
-inline MmDoc* MmView::GetDocument() const
-   { return reinterpret_cast<MmDoc*>(m_pDocument); }
-#endif
+} // namespace dx
+
+} // namespace gui
+
+} // namespace ambulant 
+
+#endif // WITH_HTML_WIDGET
+
+#endif // AMBULANT_GUI_DX_HTML_RENDERER_H
+

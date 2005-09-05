@@ -75,8 +75,10 @@
 #include "ambulant/smil2/test_attrs.h"
 
 // Renderer playables
+#include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_text.h"
+#include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_audio.h"
 #include "ambulant/gui/dx/dx_video.h"
@@ -419,6 +421,13 @@ gui::dx::dx_player::new_playable(
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
 	if(tag == "text") {
+#ifdef	WITH_HTML_WIDGET
+		std::string src = net::url(node->get_url("src")).get_url();
+		if (src.find(".html") != std::string.npos) {
+			p = new dx_html_renderer(context, cookie, node, evp, window, this);
+			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
+		} else 
+#endif/*WITH_HTML_WIDGET*/
 		p = new dx_text_renderer(context, cookie, node, evp, window, this);
 	} else if(tag == "img") {
 		p = new dx_img_renderer(context, cookie, node, evp, window, this);

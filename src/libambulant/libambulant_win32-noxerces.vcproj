@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib;..\..\third_party_packages\xerces-c-src_2_6_0\src\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;USE_SMIL21"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;USE_SMIL21;WIHT_HTML_WIDGET"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xerces-c-src_2_6_0\src\&quot;;..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng125;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;USE_SMIL21;WITH_EXTERNAL_DOM=1"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;USE_SMIL21;WITH_EXTERNAL_DOM=1;WITH_HTML_WIDGET"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -243,6 +243,9 @@
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_brush.cpp">
+					</File>
+					<File
+						RelativePath=".\gui\dx\dx_html_renderer.cpp">
 					</File>
 					<File
 						RelativePath=".\gui\dx\dx_image_renderer.cpp">
@@ -723,6 +726,9 @@
 							RelativePath="..\..\include\ambulant\gui\dx\dx_brush.h">
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_html_renderer.h">
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_image_renderer.h">
 						</File>
 						<File
@@ -763,6 +769,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\gif_decoder.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\html_bridge.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\img_decoder.h">

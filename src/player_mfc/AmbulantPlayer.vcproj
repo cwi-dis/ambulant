@@ -16,20 +16,21 @@
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="2">
+			CharacterSet="2"
+			ManagedExtensions="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -39,6 +40,7 @@
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib"
 				GenerateDebugInformation="TRUE"
+				AssemblyDebug="1"
 				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
@@ -183,6 +185,10 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<AssemblyReference
+			RelativePath="mscorlib.dll"/>
+		<AssemblyReference
+			RelativePath="System.dll"/>
 	</References>
 	<Files>
 		<Filter
