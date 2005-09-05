@@ -386,7 +386,7 @@ ffmpeg_demux::run()
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
-//		av_free_packet(pkt);
+		av_free_packet(pkt);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final data_avail(0, 0)");
 	int i;

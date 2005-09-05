@@ -139,9 +139,8 @@ demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 {
 	m_lock.enter();
 	assert(m_thread);
-	if (m_thread && !m_thread->is_running()) {
-		m_thread->start();
-	}
+	m_thread->start();
+	
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
@@ -182,8 +181,6 @@ demux_audio_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
 	assert(m_thread);
-	assert(m_thread->is_running()); // the thread should be running before we can seek it
-	assert(m_thread);
 	m_thread->seek(time);
 	m_lock.leave();
 }
@@ -194,7 +191,6 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 	m_lock.enter();
 	assert(m_thread);
 	assert(!m_thread->is_running());
-	assert(m_thread);
 	
 	m_thread->seek(time);
 	m_thread->start();
@@ -403,7 +399,6 @@ demux_video_datasource::read_ahead(timestamp_t time)
 	m_lock.enter();
 	assert(m_thread);
 	assert(!m_thread->is_running());
-	assert(m_thread);
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::read_ahead: (this = 0x%x), clip_begin=%d", (void*) this, time);
 
 	m_thread->seek(time);
@@ -417,10 +412,7 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 {
 	m_lock.enter();
 	assert(m_thread);
-	if(!m_thread->is_running()) {
-		m_thread->start();
-	}
-	
+	m_thread->start();
 	
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start_frame: (this = 0x%x), callback = 0x%x", (void*) this, (void*) callbackk);
 

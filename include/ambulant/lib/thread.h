@@ -68,7 +68,8 @@ class thread {
 	// use the virtual table to invoke the destructor 
 	virtual ~thread() {}
 	
-	/// Starts the thread.
+	/// Starts the thread, if it has not been started already.
+	/// Returns true if it actually started the thread.
 	virtual bool start() = 0;
 	
 	/// Request the thread to stop.

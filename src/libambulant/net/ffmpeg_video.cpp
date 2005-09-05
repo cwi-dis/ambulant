@@ -382,7 +382,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 {
 	m_lock.enter();
 	int got_pic;
-	AVFrame *frame = avcodec_alloc_frame();
 	AVPicture picture;
 	int len, dummy2;
 	int pic_fmt, dst_pic_fmt;
@@ -408,6 +407,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		m_lock.leave();
 		return;
 	}
+	
+	// No easy error conditions, so let's allocate our frame.
+	AVFrame *frame = avcodec_alloc_frame();
+
 	while(inbuf && sz && m_con) {	
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 		assert(&m_con != NULL);
@@ -565,9 +568,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 {
 	// pop frames until (just before) "now". Then return the last frame popped.
 	m_lock.enter();
-	//assert(now >= 0);
-	if (now < 0) 
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: warning: now=%lld", now);
+	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0);
 	timestamp_t frame_duration = 33000; // XXX For now assume fps
@@ -578,8 +579,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 		_pop_top_frame();
 	}
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
-	// Why is this assert here ? I don't think it is correct.	
-	//assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
+	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
+	// are no frames left, or the first frame has a time that is in the future)
+	assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
 	
 	 
 	if (timestamp_p) *timestamp_p = m_old_frame.first;
