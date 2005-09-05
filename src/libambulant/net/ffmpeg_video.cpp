@@ -57,7 +57,10 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
-#define AM_DBG
+// WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
+// a condition that makes the whole player hang or collapse. So you probably
+// shouldn't do it:-)
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -562,7 +565,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 {
 	// pop frames until (just before) "now". Then return the last frame popped.
 	m_lock.enter();
-	assert(now >= 0);
+	//assert(now >= 0);
+	if (now < 0) 
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: warning: now=%lld", now);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0);
 	timestamp_t frame_duration = 33000; // XXX For now assume fps

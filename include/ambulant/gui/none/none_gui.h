@@ -121,6 +121,13 @@ class none_playable_factory : public common::playable_factory {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
+		
+	common::playable *new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src);
 };
 
 } // namespace none

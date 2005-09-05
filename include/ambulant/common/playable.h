@@ -235,15 +235,14 @@ class playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp) = 0;
 		
+	/// Create a playable for a given audio stream, to be used to play the audio track
+	/// accompanying a video stream.
 	virtual playable *new_aux_audio_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		net::audio_datasource *src) {
-			lib::logger::get_logger()->debug("new_aux_audio_playabel std definition called\n");
-			return NULL;
-		};	
+		net::audio_datasource *src) = 0;	
 };
 
 class global_playable_factory : public playable_factory {

@@ -212,6 +212,17 @@ cocoa_renderer_factory::new_playable(
 	return rv;
 }
 
+playable *
+cocoa_renderer_factory::new_aux_audio_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	return NULL;
+}
+
 gui_window *
 cocoa_window_factory::new_window(const std::string &name, size bounds, gui_events *handler)
 {

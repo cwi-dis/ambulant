@@ -55,6 +55,9 @@
 #include "ambulant/net/ffmpeg_factory.h" 
 #include "ambulant/net/demux_datasource.h" 
 
+// WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
+// a condition that makes the whole player hang or collapse. So you probably
+// shouldn't do it:-)
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)

@@ -117,6 +117,17 @@ gui::none::none_playable_factory::new_playable(
 	return new none_playable(context, cookie, node, evp);
 }
 
+common::playable *
+gui::none::none_playable_factory::new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	return NULL;
+}
+
 bgrenderer *
 gui::none::none_window_factory::new_background_renderer(const region_info *src)
 {
