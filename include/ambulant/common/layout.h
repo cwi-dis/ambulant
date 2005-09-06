@@ -242,6 +242,14 @@ class surface {
 	
 	/// Get the OS window for this surface.
 	virtual gui_window *get_gui_window() = 0;
+
+#ifdef WITH_HTML_WIDGET
+	/// Get auxiliary ref_counted data pointer set on this surface
+	virtual void* get_renderer_data(void* id) = 0;
+
+	/// Set an auxiliary ref_counted data pointer on this surface 
+	virtual void set_renderer_data(void* id, void* data) = 0;
+#endif // WITH_HTML_WIDGET
 };
 
 /// API for creating windows.

@@ -115,7 +115,15 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	rect get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
 	void draw_background(const rect &r, gui_window *window);
 
-  protected:
+ #ifdef WITH_HTML_WIDGET
+	lib::auto_ref<void> m_renderer_data;
+	void* m_renderer_id;
+public:
+	void* get_renderer_data(void* id);
+	void set_renderer_data(void* id, void* data);
+#endif // WITH_HTML_WIDGET
+
+protected:
 	virtual void transition_done(lib::rect area);
 	void transition_freeze_end(lib::rect area);
 

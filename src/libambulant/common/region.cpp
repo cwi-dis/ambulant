@@ -677,6 +677,27 @@ surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 	m_children_cs.leave();
 }
 
+#ifdef WITH_HTML_WIDGET
+
+void* 
+surface_impl::get_renderer_data(void* id) {
+	if (id == m_renderer_id)
+		return m_renderer_data.get_ptr();
+	return NULL;
+}
+
+void 
+surface_impl::set_renderer_data(void* id, void* data) {
+	if (m_renderer_data.get_ptr())
+			m_renderer_data.release();
+	m_renderer_data.set_ptr(data);
+	m_renderer_data.add_ref();
+	m_renderer_id = id;
+}
+#endif // WITH_HTML_WIDGET
+
+// toplevel_surface_impl
+
 toplevel_surface_impl::toplevel_surface_impl(const region_info *info, lib::size bounds, bgrenderer *bgrenderer, window_factory *wf)
 :   surface_impl(info?info->get_name():"topLayout", NULL, rect(point(0, 0), bounds), info, bgrenderer)
 {
