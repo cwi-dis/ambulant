@@ -69,7 +69,11 @@
 	#define WITH_FFMPEG_0_4_9					
 #endif
 
-// How many video frames we would like to buffer at most
+// How many video frames we would like to buffer at least. This number should
+// not be too low, otherwise a fast consumer will see only I and P frames
+// because these are produced before the B frames
+#define MIN_VIDEO_FRAMES 4
+// How many video frames we would like to buffer at most.
 #define MAX_VIDEO_FRAMES 30
 
 using namespace ambulant;
@@ -462,22 +466,29 @@ ffmpeg_video_decoder_datasource::data_avail()
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
 					}
 					
-					if (pts != 0)
+					if (pts != 0) {
 						m_video_clock = pts;
-					else
+					} else {
 						pts = m_video_clock;
-					timestamp_t frame_delay = m_fmt.frameduration;
-					if (frame->repeat_pict)
-						frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
-					m_video_clock += frame_delay;
+						timestamp_t frame_delay = m_fmt.frameduration;
+						if (frame->repeat_pict)
+							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
+						m_video_clock += frame_delay;
+					}
 					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld", ipts, pts, m_video_clock);
 					// Stupid HAck to get the pts right, we will have to look again to this later
-					//pts = m_fmt.frameduration*m_frame_count;
+					pts = m_fmt.frameduration*m_frame_count;
 					// And store the data.
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
-					std::pair<timestamp_t, char*> element(pts, framedata);
-					m_frames.push(element);
+					if (pts >= m_old_frame.first) {
+						std::pair<timestamp_t, char*> element(pts, framedata);
+						m_frames.push(element);
+					} else {
+						// A frame that came after this frame has already been consumed.
+						// We should drop this frame.
+						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late", m_frame_count);
+					}
 					m_elapsed = pts;
 				} else {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
@@ -492,7 +503,7 @@ ffmpeg_video_decoder_datasource::data_avail()
   	}
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
-	if ( m_frames.size() || m_src->end_of_file()) {
+	if ( m_frames.size() >= MIN_VIDEO_FRAMES || m_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
@@ -570,7 +581,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	m_lock.enter();
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
-	assert(m_frames.size() > 0);
+	assert(m_frames.size() > 0 || _end_of_file());
 	timestamp_t frame_duration = 33000; // XXX For now assume fps
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%d)\n", (int) now);
 
@@ -580,7 +591,17 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	}
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
-	// are no frames left, or the first frame has a time that is in the future)
+	// are no frames left, or the first frame has a time that is in the future). It also assures that
+	// the frames in m_frames are indeed in the right order.
+#if 0
+	if (!(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration)) {
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: top frame before now!");
+		lib::logger::get_logger()->debug("now-frameduration = %lld-%lld = %lld", now, frame_duration, now-frame_duration);
+		lib::logger::get_logger()->debug("m_old_frame.first = %lld", m_old_frame.first);
+		lib::logger::get_logger()->debug("m_frames.top().first = %lld", m_frames.top().first);
+		lib::logger::get_logger()->debug("go figure...");
+	}
+#endif
 	assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
 	
 	 
