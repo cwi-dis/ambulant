@@ -54,7 +54,7 @@
 #include "ambulant/common/region.h"
 #include "ambulant/common/preferences.h"
 
-//#define AM_DBG
+// #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -678,6 +678,10 @@ surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 }
 
 #ifdef WITH_HTML_WIDGET
+surface_impl*
+surface_impl::get_parent() {
+	return m_parent;
+}
 
 void* 
 surface_impl::get_renderer_data(void* id) {

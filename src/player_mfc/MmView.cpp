@@ -85,7 +85,7 @@
 #endif
 
 #ifdef WITHOUT_LOG_WINDOW
-const TCHAR log_name[] = "amlog.txt";
+const TCHAR log_name[] = TEXT("amlog.txt");
 
 static std::string get_log_filename() {
 	TCHAR buf[_MAX_PATH];
@@ -200,7 +200,9 @@ END_MESSAGE_MAP()
 // MmView construction/destruction
 
 MmView::MmView()
+#ifndef WITHOUT_LOG_WINDOW
 :	m_logwindow(NULL)
+#endif // WITHOUT_LOG_WINDOW
 {
 	// TODO: add construction code here
 	m_timer_id = 0;
@@ -487,7 +489,7 @@ void MmView::OnViewLog() {
 	text_strcat(buf, log_name);
 	CString cmd = TEXT("Notepad.exe ");
 	cmd += buf;
-	WinExec(cmd, SW_SHOW);
+	WinExec((LPCSTR)(LPCTSTR)cmd, SW_SHOW);
 #else
 	// Logging to a window: show the window.
 	if (m_logwindow == NULL) {

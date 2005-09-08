@@ -60,6 +60,13 @@
 using namespace ambulant;
 
 #ifdef	WITH_HTML_WIDGET
+
+// #define AM_DBG
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 // HtmlView
 
 IMPLEMENT_DYNCREATE(HtmlView, CHtmlView)
@@ -100,7 +107,7 @@ BOOL HtmlView::PreCreateWindow(CREATESTRUCT& cs)
 
 void HtmlView::InitialUpdate()
 {
-	Navigate2(_T("http://www.google.nl/"),NULL,NULL);
+//	Navigate2(_T("http://www.google.nl/"),NULL,NULL);
 }
 
 void HtmlView::OnInitialUpdate()
@@ -111,7 +118,7 @@ void HtmlView::OnInitialUpdate()
 }
 
 extern CWnd*  topView;
-HtmlView* s_browser = NULL;
+//KB HtmlView* s_browser = NULL;
 CWinThread* s_ambulant_thread = NULL;
 
 html_browser::html_browser(int left, int top, int width, int height)
@@ -121,44 +128,48 @@ html_browser::html_browser(int left, int top, int width, int height)
 	rect.top = top;
 	rect.right = left + width;
 	rect.bottom = top + height;
-	if ( ! s_browser) {
+	if ( ! m_browser) {
 		HtmlView* browser = new HtmlView(rect, topView);
 //KB	HtmlView* browser = new HtmlView(rect, CWnd::GetForegroundWindow());
 		assert (browser != NULL);
 		browser->InitialUpdate();
-		s_ambulant_thread = AfxGetThread();
-		s_ambulant_thread->SetThreadPriority(THREAD_PRIORITY_LOWEST);
-		m_browser = s_browser = browser;
+		if ( ! s_ambulant_thread) {
+			s_ambulant_thread = AfxGetThread();
+			s_ambulant_thread->SetThreadPriority(THREAD_PRIORITY_LOWEST);
+		}
+		m_browser = browser;
 		hide();
-	} else m_browser = s_browser;
+	} 
+	AM_DBG lib::logger::get_logger()->debug("html_browser::html_browser(0x%x): LTWH=(%d,%d,%d,%d) m_browser=0x%x", this, left, top, width, height, m_browser);
 }
 
 html_browser::~html_browser() {
-	lib::logger::get_logger()->debug("html_browser::~html_browser(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("html_browser::~html_browser(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_HIDE);
-	delete m_browser;
-	s_browser = NULL;
+//KB DestroyWindow(browser->m_hWnd);
+//KB delete browser;
+//KB s_browser = NULL;
 }
 
 void
 html_browser::goto_url(std::string url) {
 	CString CSurl(url.c_str());
-	lib::logger::get_logger()->debug("html_browser::goto_url(0x%x): url=%s)", this, url.c_str());
+	AM_DBG lib::logger::get_logger()->debug("html_browser::goto_url(0x%x): url=%s)", this, url.c_str());
 	HtmlView* browser = (HtmlView*) m_browser;
 	browser->Navigate2(CSurl,NULL,_T(""));
 }
 
 void
 html_browser::hide() {
-	lib::logger::get_logger()->debug("html_browser::hide(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("html_browser::hide(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_HIDE);
 }
 
 void
 html_browser::show() {
-	lib::logger::get_logger()->debug("html_browser::show(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("html_browser::show(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_SHOW);
 }

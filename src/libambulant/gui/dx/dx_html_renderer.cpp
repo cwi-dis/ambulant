@@ -49,6 +49,9 @@
 /* 
  * @$Id$ 
  */
+
+#ifdef	WITH_HTML_WIDGET
+
 #include "ambulant/gui/dx/dx_text.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
@@ -56,6 +59,7 @@
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_transition.h"
 
+#include "ambulant/common/region.h"
 #include "ambulant/common/region_info.h"
 
 #include "ambulant/lib/node.h"
@@ -63,9 +67,7 @@
 #include "ambulant/lib/string_util.h"
 #include "ambulant/smil2/params.h"
 
-#ifdef	WITH_HTML_WIDGET
-
-#define AM_DBG
+// #define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -93,11 +95,11 @@ gui::dx::dx_html_renderer::~dx_html_renderer() {
 void 
 gui::dx::dx_html_renderer::start(double t) {
  	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x)", this);
- 		if(!m_html_browser) {
+ 	if(!m_html_browser) {
  		// Notify scheduler
  		m_context->stopped(m_cookie);
  		return;
-		}
+	}
 }
 void
 gui::dx::dx_html_renderer::set_surface(common::surface *dest) {
@@ -116,9 +118,15 @@ gui::dx::dx_html_renderer::set_surface(common::surface *dest) {
 		return;
 	}
 	if ( ! m_html_browser) {
-		m_html_browser = new html_browser(rc.left()+p.x, rc.top()+p.y, rc.width()+p.x, rc.height()+p.y);
-		AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::set_surface(0x%x) html_widget=0x%x",this,m_html_browser);
+		//XXXX for some reason the pointer to the browser is stored in the parent of the current surface node
+		common::surface_impl* parent = ((common::surface_impl*)dest)->get_parent();
+		m_html_browser = (html_browser*) parent->get_renderer_data(parent);
+		if (m_html_browser == NULL) {
+			m_html_browser = new html_browser(rc.left()+p.x, rc.top()+p.y, rc.width()+p.x, rc.height()+p.y);
+			parent->set_renderer_data(parent, m_html_browser);
+		}
 	}
+	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::set_surface(0x%x) html_widget=0x%x",this,m_html_browser);
 	assert(m_html_browser != NULL);
 	m_html_browser->goto_url(url);
 

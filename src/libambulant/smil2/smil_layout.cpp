@@ -63,7 +63,7 @@
 #include "ambulant/smil2/test_attrs.h"
 #include <stack>
 
-//#define AM_DBG
+// #define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
