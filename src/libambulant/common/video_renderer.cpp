@@ -79,7 +79,8 @@ video_renderer::video_renderer(
 	m_epoch(0),
 	m_activated(false),
 	m_is_paused(false),
-	m_paused_epoch(0)	
+	m_paused_epoch(0),
+	m_last_frame_timestamp(-1)
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
@@ -305,16 +306,25 @@ video_renderer::data_avail()
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
 	if (buf && frame_ts_micros <= now_micros+frame_duration && frame_ts_micros >= m_clip_begin-frame_duration) {
-		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: display frame");
-		show_frame(buf, size);
-		m_dest->need_redraw();
+		// It could be we're displaying this frame already. In that case there's no point in
+		// re-displaying.
+		if (frame_ts_micros > m_last_frame_timestamp ) {
+			AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: display frame");
+			show_frame(buf, size);
+			m_dest->need_redraw();
+			m_last_frame_timestamp = frame_ts_micros;
+		}
 		m_src->frame_done(frame_ts_micros, true);
-		// Now we need to decide when we want the next callback.
+		// Now we need to decide when we want the next callback, by computing what the timestamp
+		// of the next frame is expected to be.
 		frame_ts_micros += frame_duration;						
 	}
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
-	m_src->start_frame (m_event_processor, e, frame_ts_micros-m_clip_begin);
+	// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to
+	// the m_event_processor clock (even though it is in microseconds, not milliseconds). Very bad design,
+	// for now we hack around it.
+	m_src->start_frame (m_event_processor, e, frame_ts_micros+(m_epoch*1000));
 	m_lock.leave();
 }
 

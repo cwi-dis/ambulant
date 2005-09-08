@@ -125,6 +125,7 @@ class video_renderer : public common::renderer_playable {
 	  bool m_activated;
 	  bool m_is_paused;
 	  long int m_paused_epoch;
+	  net::timestamp_t m_last_frame_timestamp;
 	  lib::critical_section m_lock;
 };
 

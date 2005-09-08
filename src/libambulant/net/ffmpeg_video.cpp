@@ -259,7 +259,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			lib::timer::time_type delta_milli = 0;
 			if (now_milli < timestamp_milli)
 				delta_milli = timestamp_milli - now_milli;
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp=%d delta_milli=%d, now_milli=%d", (int)timestamp, (int)delta_milli, (int)now_milli);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d", (int)timestamp_milli, (int)delta_milli, (int)now_milli);
 			evp->add_event(callbackk, delta_milli, ambulant::lib::event_processor::high);
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource::start(): no client callback!");
