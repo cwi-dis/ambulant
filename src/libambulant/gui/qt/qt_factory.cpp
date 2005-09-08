@@ -440,6 +440,17 @@ qt_renderer_factory::new_playable(
 	}
     return rv;
 }
+
+common::playable *
+qt_renderer_factory::new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	return NULL;
+}
   
 common::gui_window *
 qt_window_factory::new_window (const std::string &name,
@@ -500,6 +511,18 @@ qt_video_factory::new_playable(
 	}
 	return rv;
 }
+
+common::playable *
+qt_video_factory::new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+{
+	return NULL;
+}
+  
 #ifdef USE_SMIL21
 
 void 
