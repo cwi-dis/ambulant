@@ -118,15 +118,20 @@ class video_renderer : public common::renderer_playable {
   	common::playable *m_audio_renderer;	///< the audio playable.
   	empty_playable_notification m_playable_notification;
   private:
-	  typedef lib::no_arg_callback <video_renderer > dataavail_callback;
-	  double now();
-	  lib::timer *m_timer;
- 	  long int m_epoch;
-	  bool m_activated;
-	  bool m_is_paused;
-	  long int m_paused_epoch;
-	  net::timestamp_t m_last_frame_timestamp;
-	  lib::critical_section m_lock;
+	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
+	double now();
+	lib::timer *m_timer;
+	long int m_epoch;
+	bool m_activated;
+	bool m_is_paused;
+	long int m_paused_epoch;
+	net::timestamp_t m_last_frame_timestamp;
+	long int m_frame_displayed;
+	long int m_frame_duplicate;
+	long int m_frame_early;
+	long int m_frame_late;
+	long int m_frame_missing;
+	lib::critical_section m_lock;
 };
 
 } // namespace common

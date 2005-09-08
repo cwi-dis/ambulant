@@ -260,7 +260,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			if (now_milli < timestamp_milli)
 				delta_milli = timestamp_milli - now_milli;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d", (int)timestamp_milli, (int)delta_milli, (int)now_milli);
-			evp->add_event(callbackk, delta_milli, ambulant::lib::event_processor::high);
+			evp->add_event(callbackk, delta_milli+1, ambulant::lib::event_processor::high);
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
@@ -487,7 +487,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 					} else {
 						// A frame that came after this frame has already been consumed.
 						// We should drop this frame.
-						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late", m_frame_count);
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late", m_frame_count);
 					}
 					m_elapsed = pts;
 				} else {

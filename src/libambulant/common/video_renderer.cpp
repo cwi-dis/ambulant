@@ -80,7 +80,12 @@ video_renderer::video_renderer(
 	m_activated(false),
 	m_is_paused(false),
 	m_paused_epoch(0),
-	m_last_frame_timestamp(-1)
+	m_last_frame_timestamp(-1),
+	m_frame_displayed(0),
+	m_frame_duplicate(0),
+	m_frame_early(0),
+	m_frame_late(0),
+	m_frame_missing(0)
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
@@ -200,6 +205,8 @@ video_renderer::stop()
 		m_timer = NULL;
 	}
 #endif
+	lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
+		m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
 	m_lock.leave();
 }
 
@@ -313,11 +320,20 @@ video_renderer::data_avail()
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			m_last_frame_timestamp = frame_ts_micros;
+			m_frame_displayed++;
+		} else {
+			m_frame_duplicate++;
 		}
 		m_src->frame_done(frame_ts_micros, true);
 		// Now we need to decide when we want the next callback, by computing what the timestamp
 		// of the next frame is expected to be.
 		frame_ts_micros += frame_duration;						
+	} else if (frame_ts_micros <= now_micros+frame_duration) {
+		m_frame_late++;
+	} else if (frame_ts_micros >= m_clip_begin-frame_duration) {
+		m_frame_early++;
+	} else if (!buf) {
+		m_frame_missing++;
 	}
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
