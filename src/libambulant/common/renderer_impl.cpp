@@ -145,7 +145,7 @@ renderer_playable::_init_clip_begin_end()
 //~ #else
 		//~ cb = strtoll(clip_begin_attr, &lastp,0);
 //~ #endif
-		lib::smpte_p parser;
+		lib::mediaclipping_p parser;
 		std::string s(clip_begin_attr);
 		std::string::const_iterator b = s.begin();
 		std::string::const_iterator e = s.end();
@@ -166,7 +166,7 @@ renderer_playable::_init_clip_begin_end()
 	}
 	
 	if (clip_end_attr) {
-		lib::clock_value_p parser;
+		lib::mediaclipping_p parser;
 		std::string s(clip_end_attr);
 		std::string::const_iterator b = s.begin();
 		std::string::const_iterator e = s.end();
@@ -174,7 +174,7 @@ renderer_playable::_init_clip_begin_end()
 		if (d == -1) {
 			lib::logger::get_logger()->warn("Cannot parse clipEnd");
 		} else {
-			ce = parser.get_value() *1000;	// get_value returns ms !
+			ce = parser.get_time() *1000;	// get_value returns ms !
 		}	
 //~ #ifdef AMBULANT_PLATFORM_WIN32
 		//~ ce = _atoi64(clip_end_attr);

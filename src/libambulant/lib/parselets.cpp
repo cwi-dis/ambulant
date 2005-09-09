@@ -576,13 +576,19 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	return (it = tit, sd);
 }
 
+//This parser parses smpte smpte-30-drop and smpte-25 time formats
 std::ptrdiff_t 
 lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
+	
 	int smpte[5];
+	int result;
+	
+	m_drop = false;
+	m_frame_rate = 30;
 	
 	delimiter_p space(" \t\r\n smpte");
 	
@@ -592,24 +598,193 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	if (d == -1) {
 		logger::get_logger()->debug(gettext("Failed to parse optional space "));
 	}
+	
+	delimiter_p space1(" \t\r\n-30-drop");
+	
+	star_p<delimiter_p> opt_space_inst1 = make_star(space1);
+	d = opt_space_inst1.parse(tit, end);
+	sd += (d == -1)?0:d;
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Not smpte-30-drop"));
+		m_drop = false;
+	} else {
+		m_drop = true;
+		m_frame_rate = 30;
+	}
+	
+	
+	delimiter_p space2(" \t\r\n-25");
+	
+	star_p<delimiter_p> opt_space_inst2 = make_star(space);
+	d = opt_space_inst2.parse(tit, end);
+	sd += (d == -1)?0:d;
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Not smpte-25"));
+		m_drop = false;
+		m_frame_rate = 30;
+	} else {
+		m_drop = false;
+		m_frame_rate = 25;
+	}
+	
+	
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
 		logger::get_logger()->debug(gettext("Failed to parse literal = "));
 	}
+	
+	
 
-	for(int i=0; i<5; i++) {
-		int_p ip;
+	//parse the actual smpte values
+	int_p ip;
+	for(int i=0; i<3; i++) {
 		d = ip.parse(tit,end);
 		if (d == -1) { 
 			logger::get_logger()->debug(gettext("Failed to parse smtpe (i=%d)"),i);
 			return -1;
 		}
+		
 		m_result[i] = ip.m_result;
+		if ( (i > 0) && ( (m_result[i] < 0) || (m_result[i] > 59)) ) {
+			logger::get_logger()->warn(gettext("Failed to parse smpte minutes/seconds. Value out of range [0,59]"));
+			m_result[i] = 0;
+		}
+
 		sd += d;
 		
 		d = literal_p<':'>().parse(tit,end);
 		sd += (d == -1)?0:d;
 	}
+	
+	
+	
+	d = ip.parse(tit,end);
+	if (d != -1) { 
+		result = ip.m_result;
+		if ( (result >= 0) && (result < m_frame_rate)) // range [0, framerate-1]
+			m_result[3] = ip.m_result;
+		else {
+			logger::get_logger()->warn(gettext("Failed to parse smpte frames. Value out of range [0,%d]"),m_frame_rate-1);
+			m_result[3] = 0;
+		}
+			
+	} else {
+		m_result[3] = 0;
+	}
+	
+	sd += (d == -1)?0:d;
+			
+	d = literal_p<'.'>().parse(tit,end);
+	sd += (d == -1)?0:d;
+	
+	d = ip.parse(tit,end);
+	if (d != -1) { 
+		result = ip.m_result;
+		if ( (result >= 0) && (result < 2) ) // range [0,1]
+			m_result[4] = ip.m_result;
+		else {
+			logger::get_logger()->warn(gettext("Failed to parse smpte sub-frames. Value out of range [0,1]"));
+			m_result[4] = 0;
+		}
+		m_result[4] = ip.m_result;
+	} else {
+		m_result[4] = 0;
+	}
+
+	sd += (d == -1)?0:d;
 	return (it=tit, sd);
+}
+
+long int 
+lib::smpte_p::get_time()
+{
+	long int time;
+	double frame_duration;
+	
+	if ((m_frame_rate == 30)) 
+		frame_duration = 1.001/30;
+	else 
+		frame_duration = 1.0/25;
+	
+	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) round( (m_result[3] * frame_duration  + m_result[4] * frame_duration/2) * 1000);
+	
+	return time;
+}
+
+//This parser parses npt time format
+std::ptrdiff_t 
+lib::npt_p::parse(const_iterator& it, const const_iterator& end)
+{
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	std::ptrdiff_t sd = 0;
+	
+	int result;
+	
+	
+	delimiter_p space(" \t\r\n ntp");
+	
+	star_p<delimiter_p> opt_space_inst = make_star(space);
+	d = opt_space_inst.parse(tit, end);
+	sd += (d == -1)?0:d;
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Failed to parse optional space "));
+	}
+	
+	d = literal_p<'='>().parse(tit,end);
+	sd += (d == -1)?0:d;
+	if (d == -1) {
+		logger::get_logger()->debug(gettext("Failed to parse literal = "));
+	
+		}
+	lib::clock_value_p parser;
+		
+	d = parser.parse(tit,end);
+	sd+= (d == -1)?0:d;
+	if (d == -1) {
+		return -1;
+	} else {
+		m_result = parser.get_value();
+	}
+	
+	return (it=tit, sd);
+}
+
+
+long int 
+lib::npt_p::get_time()
+{
+	return m_result;
+}
+
+std::ptrdiff_t 
+lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
+{
+	const_iterator tit = it;
+	std::ptrdiff_t d;
+	
+	lib::smpte_p smpte_parser;
+	lib::smpte_p npt_parser;
+	
+	d = npt_parser.parse(tit, end);
+	if (d != -1) {
+		m_result = npt_parser.get_time();
+		return d;
+	}
+
+	d = smpte_parser.parse(tit,end);
+	if (d != -1) {
+		m_result = npt_parser.get_time();
+		return d;
+	}
+	
+	return -1;
+	
+}
+
+long int 
+lib::mediaclipping_p::get_time()
+{
+	return m_result;
 }

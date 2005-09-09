@@ -710,15 +710,34 @@ class point_p : public parselet {
 	int get_y() const { return m_result.y;}
 };
 
-//parses smtpe=d+:d+:d+:d+.d+ 
+//parses smtpe=d+:d+:d+[:d+.d+]
 class smpte_p : public parselet {
-  public:
-	typedef int result_type[5];
+  public:	
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
-	result_type& get_time() { return m_result;}; 
-	result_type m_result;
+	long int get_time(); //returns the parsed time converted to ms.
+	int m_result[5];
+	int m_frame_rate;
+	bool m_drop;
 };
 
+
+class npt_p : public parselet {
+  public:	
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	long int get_time(); //returns the parsed time converted to ms.
+	int m_result;
+	int m_frame_rate;
+	bool m_drop;
+};
+
+class mediaclipping_p : public parselet {
+  public:	
+	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+	long int get_time(); //returns the parsed time converted to ms.
+	int m_result;
+	int m_frame_rate;
+	bool m_drop;
+};
 
 } // namespace lib
  
