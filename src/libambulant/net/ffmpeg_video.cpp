@@ -71,8 +71,9 @@
 
 // How many video frames we would like to buffer at least. This number should
 // not be too low, otherwise a fast consumer will see only I and P frames
-// because these are produced before the B frames
-#define MIN_VIDEO_FRAMES 4
+// because these are produced before the B frames.
+// On second thoughts this seems a bad idea, so setting MIN_VIDEO_FRAMES to zero.
+#define MIN_VIDEO_FRAMES 0
 // How many video frames we would like to buffer at most.
 #define MAX_VIDEO_FRAMES 30
 
@@ -169,7 +170,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_last_p_pts(0),
 	m_video_clock(src->get_clip_begin()),
 	m_frame_count(0),
-	m_elapsed(0)
+	m_elapsed(0),
+	m_start_input(true)
 {	
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
@@ -241,7 +243,6 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
 	m_lock.enter();
-	bool restart_input = false;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: (this = 0x%x)", (void*) this);
 
 	if (m_client_callback != NULL) {
@@ -268,19 +269,18 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
-		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
-	// Also restart our source if we still have room and there is
-	// data to read.
-	if ( !_end_of_file() && !_buffer_full() ) restart_input = true;
+	// Don't restart our source if we are at end of file.
+	if ( _end_of_file() ) m_start_input = false;
 	
-	if (restart_input) {
+	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
 		assert(m_src);
 		m_src->start_frame(evp, e, 0);
+		m_start_input = false;
 	}
 	m_lock.leave();
 }
@@ -403,6 +403,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		return;
 	}
 	
+	// Now that we have gotten this callback we need to restart input at some point.
+	m_start_input = true;
+	
+	// Get the input data
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
@@ -501,9 +505,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
 		m_src->frame_done(0, false);
   	}
+	av_free(frame);
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
-	if ( m_frames.size() >= MIN_VIDEO_FRAMES || m_src->end_of_file()) {
+	if ( m_frames.size() > MIN_VIDEO_FRAMES || m_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
@@ -515,12 +520,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): No client callback!");
 		}
   	}
-	if (!m_src->end_of_file()) {
+	// Restart input if there is buffer space and anything remains to be read. Otherwise we
+	// leave m_start_input true, and restarting is taken care of in start_frame().
+	if (!m_src->end_of_file() && !_buffer_full()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
 		m_src->start_frame(m_event_processor, e, ipts);
+		m_start_input = false;
 	}
-	av_free(frame);
+
 	m_lock.leave();
 }
 
