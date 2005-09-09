@@ -2,9 +2,11 @@
 # src/libambulant/common/preferences.cpp
 # src/libambulant/common/region.cpp
 # src/libambulant/common/renderer.cpp
+# src/libambulant/common/renderer_impl.cpp
 # src/libambulant/common/schema.cpp
 # src/libambulant/common/smil_alignment.cpp
 # src/libambulant/common/smil_handler.cpp
+# src/libambulant/common/video_renderer.cpp
 # src/libambulant/get_version.cpp
 # src/libambulant/gui/arts/arts.cpp
 # src/libambulant/gui/arts/arts_audio.cpp
@@ -28,6 +30,7 @@
 # src/libambulant/gui/dx/dx_audio_player.cpp
 # src/libambulant/gui/dx/dx_bgrenderer.cpp
 # src/libambulant/gui/dx/dx_brush.cpp
+# src/libambulant/gui/dx/dx_html_renderer.cpp
 # src/libambulant/gui/dx/dx_image_renderer.cpp
 # src/libambulant/gui/dx/dx_img.cpp
 # src/libambulant/gui/dx/dx_player.cpp
@@ -42,10 +45,9 @@
 # src/libambulant/gui/none/none_factory.cpp
 # src/libambulant/gui/none/none_gui.cpp
 # src/libambulant/gui/none/none_video_renderer.cpp
-# src/libambulant/gui/qsound/qsound_audio.cpp
-# src/libambulant/gui/qsound/qsound_factory.cpp
 # src/libambulant/gui/qt/qt_factory.cpp
 # src/libambulant/gui/qt/qt_fill.cpp
+# src/libambulant/gui/qt/qt_html_renderer.cpp
 # src/libambulant/gui/qt/qt_image_renderer.cpp
 # src/libambulant/gui/qt/qt_renderer.cpp
 # src/libambulant/gui/qt/qt_text_renderer.cpp
@@ -56,12 +58,15 @@ src/libambulant/gui/SDL/sdl_audio.cpp
 # src/libambulant/lib/colors.cpp
 # src/libambulant/lib/delta_timer.cpp
 src/libambulant/lib/document.cpp
+# src/libambulant/lib/event_processor.cpp
 # src/libambulant/lib/expat_parser.cpp
 # src/libambulant/lib/gpaths.cpp
 # src/libambulant/lib/logger.cpp
 # src/libambulant/lib/nfa.cpp
 # src/libambulant/lib/node.cpp
+# src/libambulant/lib/node_dummy.cpp
 # src/libambulant/lib/parselets.cpp
+# src/libambulant/lib/parser_factory.cpp
 # src/libambulant/lib/string_util.cpp
 # src/libambulant/lib/timer.cpp
 src/libambulant/lib/transition_info.cpp
@@ -84,15 +89,21 @@ src/libambulant/mms/timeline_builder.cpp
 # src/libambulant/mms/timelines.cpp
 # src/libambulant/net/databuffer.cpp
 src/libambulant/net/datasource.cpp
-src/libambulant/net/ffmpeg_datasource.cpp
-src/libambulant/net/ffmpeg_rawdatasource.cpp
+src/libambulant/net/demux_datasource.cpp
+src/libambulant/net/ffmpeg_audio.cpp
+src/libambulant/net/ffmpeg_common.cpp
+src/libambulant/net/ffmpeg_raw.cpp
+src/libambulant/net/ffmpeg_video.cpp
 src/libambulant/net/posix_datasource.cpp
 # src/libambulant/net/raw_video_datasource.cpp
+src/libambulant/net/rtsp_datasource.cpp
+src/libambulant/net/rtsp_factory.cpp
 # src/libambulant/net/stdio_datasource.cpp
 src/libambulant/net/url.cpp
 # src/libambulant/smil2/animate_a.cpp
 # src/libambulant/smil2/animate_e.cpp
 # src/libambulant/smil2/animate_n.cpp
+# src/libambulant/smil2/params.cpp
 # src/libambulant/smil2/region_node.cpp
 # src/libambulant/smil2/smil_layout.cpp
 src/libambulant/smil2/smil_player.cpp
@@ -109,6 +120,8 @@ src/libambulant/smil2/test_attrs.cpp
 # src/libambulant/smil2/transition.cpp
 src/player_macosx/mainloop.cpp
 # src/player_mfc/AmbulantPlayer.cpp
+# src/player_mfc/HtmlView.cpp
+# src/player_mfc/LogWindow.cpp
 # src/player_mfc/MainFrm.cpp
 # src/player_mfc/MmDoc.cpp
 # src/player_mfc/MmView.cpp
@@ -129,7 +142,9 @@ src/player_unix/qt_settings.cpp
 # src/player_wince/StdAfx.cpp
 # src/player_wincon/main_dx.cpp
 # src/player_wincon/main_none.cpp
+# src/plugins/artsplugin.cpp
 # src/plugins/plugin.cpp
+src/plugins/xercesplugin.cpp
 # src/libambulant/gui/cocoa/cocoa_audio.mm
 # src/libambulant/gui/cocoa/cocoa_dsvideo.mm
 # src/libambulant/gui/cocoa/cocoa_fill.mm
