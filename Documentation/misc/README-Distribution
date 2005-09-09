@@ -86,6 +86,8 @@ Before creating the distribution
   - Documentation/misc/README-ZAURUS
   - Documentation/misc/README-Distribution (this file)
   - third_party_packages/readme.txt
+- Make sure Documentation/API/{refman,html} are empty: we don't want the
+  full doxygen output in our source distribution
 - You must update NEWS, give a high-level overview of what has changed.
 - You must update Changelog. There is a tool cvs2cl that does this
   more-or-less automatically, something like the following command line should
