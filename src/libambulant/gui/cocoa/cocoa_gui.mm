@@ -187,7 +187,7 @@ cocoa_renderer_factory::new_playable(
 		if (common::preferences::get_preferences()->m_prefer_ffmpeg ) {
 			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
 			if (rv) {
-				logger::get_logger()->trace("video: using ffmpeg renderer");
+				logger::get_logger()->trace("video: using native Ambulant renderer");
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 			} else {
 				rv = new cocoa_video_renderer(context, cookie, node, evp);

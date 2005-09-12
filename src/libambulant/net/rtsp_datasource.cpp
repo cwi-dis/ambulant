@@ -164,7 +164,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	if (ch_url) {
 		context->sdp = context->rtsp_client->describeURL(ch_url);
 		if (!context->sdp) {
-			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to get dsp description from rtsp server");
+			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to get dsp description from rtsp server");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");		
 			return NULL;
 		}
