@@ -725,7 +725,7 @@ class npt_p : public parselet {
   public:	
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 	long int get_time(); //returns the parsed time converted to ms.
-	int m_result;
+	long int m_result;
 	int m_frame_rate;
 	bool m_drop;
 };
@@ -734,7 +734,7 @@ class mediaclipping_p : public parselet {
   public:	
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
 	long int get_time(); //returns the parsed time converted to ms.
-	int m_result;
+	long int m_result;
 	int m_frame_rate;
 	bool m_drop;
 };

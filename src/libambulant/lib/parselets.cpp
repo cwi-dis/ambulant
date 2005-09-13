@@ -49,6 +49,11 @@
 /* 
  * @$Id$ 
  */
+ 
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 #include "ambulant/lib/parselets.h"
 #include "ambulant/lib/logger.h"
@@ -590,7 +595,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	m_drop = false;
 	m_frame_rate = 30;
 	
-	delimiter_p space(" \t\r\n smpte");
+	delimiter_p space(" \t\r\n");
 	
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
@@ -599,49 +604,55 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		logger::get_logger()->debug(gettext("Failed to parse optional space "));
 	}
 	
-	delimiter_p space1(" \t\r\n-30-drop");
-	
-	star_p<delimiter_p> opt_space_inst1 = make_star(space1);
-	d = opt_space_inst1.parse(tit, end);
+	d = literal_cstr_p("smpte").parse(tit,end);
 	sd += (d == -1)?0:d;
-	if (d == -1) {
-		logger::get_logger()->debug(gettext("Not smpte-30-drop"));
-		m_drop = false;
+	if (d == -1) 
+		return -1;
+	
+	d = literal_p<'-'>().parse(tit,end);
+	sd += (d == -1)?0:d;
+	int_p ip;
+	if (d != -1) {
+		d = ip.parse(tit,end);
+		int r = ip.m_result;
+		if (r == 25) 
+		{	
+			AM_DBG logger::get_logger()->debug(gettext("smpte-25"));
+			m_frame_rate = 25;
+			m_drop = false;
+		} else {
+			AM_DBG logger::get_logger()->debug(gettext("smpte-30"));
+			m_frame_rate = 30;
+			m_drop = false;
+		}
+				
 	} else {
-		m_drop = true;
 		m_frame_rate = 30;
+		m_drop = false;
 	}
 	
-	
-	delimiter_p space2(" \t\r\n-25");
-	
-	star_p<delimiter_p> opt_space_inst2 = make_star(space);
-	d = opt_space_inst2.parse(tit, end);
-	sd += (d == -1)?0:d;
+	d = literal_cstr_p("-drop").parse(tit,end);
 	if (d == -1) {
-		logger::get_logger()->debug(gettext("Not smpte-25"));
 		m_drop = false;
-		m_frame_rate = 30;
 	} else {
-		m_drop = false;
-		m_frame_rate = 25;
+		AM_DBG logger::get_logger()->debug(gettext("drop"));
+		m_drop = true;
 	}
 	
 	
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
-		logger::get_logger()->debug(gettext("Failed to parse literal = "));
+		AM_DBG logger::get_logger()->debug(gettext("smpte parser failed to parse literal = "));
 	}
 	
 	
 
 	//parse the actual smpte values
-	int_p ip;
 	for(int i=0; i<3; i++) {
 		d = ip.parse(tit,end);
 		if (d == -1) { 
-			logger::get_logger()->debug(gettext("Failed to parse smtpe (i=%d)"),i);
+			AM_DBG logger::get_logger()->debug(gettext("smpte parser failed to parse smtpe (i=%d)"),i);
 			return -1;
 		}
 		
@@ -720,7 +731,7 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
 	
-	int result;
+	//int result;
 	
 	
 	delimiter_p space(" \t\r\n ntp");
@@ -728,24 +739,36 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	if (d == -1) {
-		logger::get_logger()->debug(gettext("Failed to parse optional space "));
+	AM_DBG {
+		if (d == -1) {
+			logger::get_logger()->debug(gettext("ntp parser failed to parse optional space"));
+		} else {
+			logger::get_logger()->debug(gettext("ntp parser succeded to parse optional space"));
+		}
 	}
 	
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
-	if (d == -1) {
-		logger::get_logger()->debug(gettext("Failed to parse literal = "));
-	
+	AM_DBG { 
+		if (d == -1) {
+			logger::get_logger()->debug(gettext("ntp parser failed to parse literal = "));
+		} else {
+			logger::get_logger()->debug(gettext("ntp parser succeded to parse literal = "));
 		}
+	}
+	
+		
 	lib::clock_value_p parser;
 		
 	d = parser.parse(tit,end);
 	sd+= (d == -1)?0:d;
 	if (d == -1) {
+		AM_DBG logger::get_logger()->debug(gettext("ntp parser failed to parse time"));
 		return -1;
 	} else {
 		m_result = parser.get_value();
+		AM_DBG logger::get_logger()->debug(gettext("ntp parser succeded to parse time %ld"),m_result);
+
 	}
 	
 	return (it=tit, sd);
@@ -765,9 +788,10 @@ lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
 	std::ptrdiff_t d;
 	
 	lib::smpte_p smpte_parser;
-	lib::smpte_p npt_parser;
+	lib::npt_p npt_parser;
 	
 	d = npt_parser.parse(tit, end);
+	
 	if (d != -1) {
 		m_result = npt_parser.get_time();
 		return d;
@@ -775,7 +799,7 @@ lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
 
 	d = smpte_parser.parse(tit,end);
 	if (d != -1) {
-		m_result = npt_parser.get_time();
+		m_result = smpte_parser.get_time();
 		return d;
 	}
 	
