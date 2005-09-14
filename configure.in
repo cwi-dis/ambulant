@@ -505,15 +505,19 @@ AC_ARG_WITH(ffmpeg,
 			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
 			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
 			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+			FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
 			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
 			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
+			FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
 	  	else
 	  		# If that doesn't exist assume RH9-style
 	  	    withvalabs="RH9-style"
 		  	FFMPEG_CODEC_INCLUDE=/usr/include/ffmpeg
 		  	FFMPEG_FORMAT_INCLUDE=/usr/include/ffmpeg
+			FFMPEG_UTIL_INCLUDE=/usr/include/ffmpeg
 		  	FFMPEG_CODEC_LIB=/usr/lib
 		  	FFMPEG_FORMAT_LIB=/usr/lib
+			FFMPEG_UTIL_LIB=/usr/lib/libavutil.a
 		fi
 	  	;;
 	  no)  ffmpeg=false
@@ -523,8 +527,10 @@ AC_ARG_WITH(ffmpeg,
 	     withvalabs=`cd ${withval}; pwd`
 	     FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
 	     FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+	     FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
 	     FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
 	     FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
+	     FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
 	     ;;
 	 esac],[
 	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
@@ -532,8 +538,10 @@ AC_ARG_WITH(ffmpeg,
 			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
 			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
 			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
+			FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
 			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
 			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
+            FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
 		else
 			withvalabs=false
 			ffmpeg=false
@@ -547,12 +555,17 @@ if test x$ffmpeg = xtrue; then
 		 -o ! -f $FFMPEG_FORMAT_INCLUDE/avformat.h -o ! -f $FFMPEG_FORMAT_LIB/libavformat.a; then
 		AC_MSG_ERROR("--with-ffmpeg value incorrect. Read configure.in for details")
 	fi
+	if test ! -f $FFMPEG_UTIL_LIB; then
+		FFMPEG_UTIL_LIB=
+	fi
 fi
 AM_CONDITIONAL(WITH_FFMPEG, test x$ffmpeg = xtrue)
 AC_SUBST(FFMPEG_CODEC_INCLUDE)
 AC_SUBST(FFMPEG_CODEC_LIB)
 AC_SUBST(FFMPEG_FORMAT_INCLUDE)
 AC_SUBST(FFMPEG_FORMAT_LIB)
+AC_SUBST(FFMPEG_UTIL_INCLUDE)
+AC_SUBST(FFMPEG_UTIL_LIB)
 AC_MSG_RESULT($ffmpeg - $withvalabs)
 
 AC_ARG_WITH(dirac,
