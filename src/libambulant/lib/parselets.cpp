@@ -734,7 +734,7 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	//int result;
 	
 	
-	delimiter_p space(" \t\r\n ntp");
+	delimiter_p space(" \t\r\n");
 	
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
@@ -746,6 +746,9 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 			logger::get_logger()->debug(gettext("ntp parser succeded to parse optional space"));
 		}
 	}
+	
+	d = literal_cstr_p("npt").parse(tit,end);
+	sd += (d == -1)?0:d;
 	
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
