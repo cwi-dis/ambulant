@@ -64,11 +64,11 @@
 
 
 // This construction is needed to get the CVS version of ffmpeg to work. (14-sept-05)
-//#if FFMPEG_VERSION == CVS
+#ifndef FFMPEG_BUILD
 	#define am_get_codec_var(codec,var) codec->var
-//#else
-//	#define am_get_codec_var(codec,var) codec.var
-//#endif
+#else
+	#define am_get_codec_var(codec,var) codec.var
+#endif
 
 #if FFMPEG_VERSION_INT >= 0x000409
 	#define WITH_FFMPEG_0_4_9					

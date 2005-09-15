@@ -718,7 +718,7 @@ lib::smpte_p::get_time()
 	else 
 		frame_duration = 1.0/25;
 	
-	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) round( (m_result[3] * frame_duration  + m_result[4] * frame_duration/2) * 1000);
+	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) ::floor( ((m_result[3] * frame_duration  + m_result[4] * frame_duration/2) + 0.5 ) * 1000);
 	
 	return time;
 }
