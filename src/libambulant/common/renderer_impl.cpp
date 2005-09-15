@@ -131,20 +131,12 @@ renderer_playable::_init_clip_begin_end()
 	// here we have to get clip_begin/clip_end from the node
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	net::timestamp_t cb = 0;
-#ifndef AMBULANT_PLATFORM_WIN32
-	char *lastp;
-#endif
 	
 	if (!clip_begin_attr) {
 		clip_begin_attr = m_node->get_attribute("clip-begin");
 	}
 	
 	if (clip_begin_attr) {
-//~ #ifdef AMBULANT_PLATFORM_WIN32
-		//~ cb = _atoi64(clip_begin_attr);
-//~ #else
-		//~ cb = strtoll(clip_begin_attr, &lastp,0);
-//~ #endif
 		lib::mediaclipping_p parser;
 		std::string s(clip_begin_attr);
 		std::string::const_iterator b = s.begin();
@@ -176,11 +168,6 @@ renderer_playable::_init_clip_begin_end()
 		} else {
 			ce = parser.get_time() *1000;	// get_time returns ms !
 		}	
-//~ #ifdef AMBULANT_PLATFORM_WIN32
-		//~ ce = _atoi64(clip_end_attr);
-//~ #else
-		//~ ce = strtoll(clip_end_attr, &lastp,0);
-//~ #endif
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable::init_clip_begin_end: cb=%lld, ce=%lld", cb,ce);
 	m_clip_begin = cb;
