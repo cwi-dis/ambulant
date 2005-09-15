@@ -173,5 +173,12 @@ html_browser::show() {
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_SHOW);
 }
+
+void
+html_browser::redraw() {
+	AM_DBG lib::logger::get_logger()->debug("html_browser::redraw(0x%x)", this);
+	HtmlView* browser = (HtmlView*) m_browser;
+	ShowWindow(browser->m_hWnd, SW_SHOWNA);
+}
 #else	// WITH_HTML_WIDGET
 #endif // WITH_HTML_WIDGET

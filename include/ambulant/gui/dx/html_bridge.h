@@ -19,6 +19,7 @@ public:
 	void goto_url(std::string url);
 	void show();
 	void hide();
+	void redraw();
 
 private:
 	void* m_browser;
