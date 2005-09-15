@@ -70,7 +70,7 @@
 #endif
 
 //#ifndef LIBAVCODEC_BUILD
-	#define FFMPEG_CVS
+//	#define FFMPEG_CVS
 //#endif
 
 // How many video frames we would like to buffer at least. This number should
@@ -378,14 +378,14 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 	}
 	if (m_fmt.frameduration == 0) {
 		// And convert the timestamp
-#ifndef FFMPEG_CVS
+#if LIBAVFORMAT_BUILD <= 4623
 		timestamp_t framerate = m_con->frame_rate;
 		timestamp_t framebase = m_con->frame_rate_base;
 		timestamp_t frameduration = (framebase*1000000)/framerate;
 #else
 		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num / (double) m_con->time_base.den);
-		m_fmt.frameduration = frameduration;
 #endif
+		m_fmt.frameduration = frameduration;
 	}
 }
 
