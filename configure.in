@@ -528,7 +528,7 @@ if test "x$test_ffmpeg" = "xmanual"; then
 			dnl See whether this ffmpeg version has libavutil
 			dnl
 			if test -f ${withvalabs}/libavutil/avutil.h; then
-			    FFMPEG_CFLAGS="${FFMPEG_INCLUDES} -I${withvalabs}/libavutil"
+			    FFMPEG_CFLAGS="${FFMPEG_CFLAGS} -I${withvalabs}/libavutil"
 			    FFMPEG_LIBS="${FFMPEG_LIBS} ${withvalabs}/libavutil.a"
 			fi
 			test_ffmpeg=true
