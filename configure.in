@@ -1,12 +1,23 @@
-AC_INIT(ambulant, 1.5)
-AM_INIT_AUTOMAKE
+AC_INIT(src/libambulant/get_version.cpp)
 
+AMBULANT_VERSION=1.5
+AM_INIT_AUTOMAKE(ambulant, $AMBULANT_VERSION)
+
+dnl =================================================================
+FFMPEG_REQUIRED=0.4.8
+QT_REQUIRED=3.3.4
+
+AC_SUBST(FFMPEG_REQUIRED)
+AC_SUBST(QT_REQUIRED)
+
+dnl ================================================================
+
+AC_ISC_POSIX
 AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_INSTALL
-AC_PROG_RANLIB
+AC_PROG_CPP
+AC_STDC_HEADERS
 LT_AC_PROG_SED
-
+am__api_version="1.9"
 #
 # Allow either included or standard ltdl
 #
@@ -103,7 +114,7 @@ AC_MSG_RESULT($with_dummy_plugin)
 #
 # Do we want SMIL 2.1 support?
 #
-AC_MSG_CHECKING(for --enable-smil21)
+AC_MSG_CHECKING(for if smil21 should be enabled)
 AC_ARG_ENABLE([smil21],[
     AC_HELP_STRING([--disable-smil21],
                    [Only support SMIL 2.0, not SMIL 2.1(LC)])
@@ -111,12 +122,14 @@ AC_ARG_ENABLE([smil21],[
 if test "x$enable_smil21" = xyes;
 then
     AC_DEFINE(USE_SMIL21, 1, [Define to enable SMIL 2.1 support])
+    test_smil21=true
 fi
 AC_MSG_RESULT($enable_smil21)
 
 #
 # Do we want external DOM tree support?
 #
+test_dom=false
 AC_MSG_CHECKING(for --with-external-dom)
 AC_ARG_WITH([external-dom],[
     AC_HELP_STRING([--without-external-dom],
@@ -125,87 +138,96 @@ AC_ARG_WITH([external-dom],[
 if test "x$with_external_dom" = xyes;
 then
     AC_DEFINE(WITH_EXTERNAL_DOM, 1, [Define to enable external DOM tree support])
+   test_dom=true
 fi
 AC_MSG_RESULT($with_external_dom)
 
-#
-# Find expat
-#
-AC_MSG_CHECKING(for --with-expat)
+dnl
+dnl Check for external/internal copy of expat
+dnl
+test_expat=true
+AC_MSG_CHECKING(for expat XML handling library)
 EXPAT_PREFIX=third_party_packages/expat-unix
-AC_ARG_WITH([expat],[
-	AC_HELP_STRING([--with-expat],
-                   [Location expat is installed (default is third_party_packages/expat-unix)])
-    ],[
-    case "${withval}" in    
-     yes) expat=true;
-          EXPAT_PREFIX=third_party_packages/expat-unix ;;
-     no)  expat=false ;;
-     *)   expat=true;
-          EXPAT_PREFIX=${withval};;
-	esac],[
-	# First check whether the standard expat is good enough
+AC_ARG_WITH(expat,
+	[  --with-expat		Turn on/off use of expat XML library],
+	[if test "x$withval" = "xno"; then
+	test_expat=false
+fi
+])
+
+dnl test for slurped version first
+dnl
+if test "x$test_expat" = "xtrue"; then
+	if test -f `pwd`/third_party_packages/expat-unix;	
+	then
+          EXPAT_PREFIX=third_party_packages/expat-unix
+	else
 	AC_TRY_COMPILE(
 	    [#include <expat.h>],[
 	    #if !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7)
 	    #error Need at least expat 1.95.7
 	    #endif],
-	    [expat=true
+	    [test_expat=true
 	    if test -f /usr/local/include/expat.h; then
 	        EXPAT_PREFIX=/usr/local
 	    else
 	        EXPAT_PREFIX=/usr
-	    fi],
-	    [expat=true
-	    EXPAT_PREFIX=third_party_packages/expat-unix])
-	])
-if test x$expat = xtrue; then
+	    fi
+	    ])
+	fi
+fi
+
+if test "x$test_expat" = "xtrue"; then
 	if test  -f $EXPAT_PREFIX/include/expat.h; then
 		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
 		EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
 		EXPAT_INCLUDES="-I$EXPAT_PREFIX/include"
 		AC_DEFINE(WITH_EXPAT, 1, [Define to enable expat XML parser])
-	else
-		AC_MSG_ERROR([expat not found in $EXPAT_PREFIX, please use --with-expat])
-		expat=false
-		unset EXPAT_PREFIX
+		expat_path="$EXPAT_PREFIX"
 	fi
-else
-	unset EXPAT_PREFIX
+fi
+
+if test "x$test_expat" = "xfalse"; then
+	AC_MSG_WARN([No expat found)])
+        expat_warning="
+Unable to find a version of expat to use. You either need to have expat installed at in /usr or /usr/local or installed in third_party_packages/expat-unix inside the ambulant source structure. If you are using another XML parser, like Xerces with Ambulant you can ignore this message."
+unset EXPAT_PREFIX
 fi
 
 AC_SUBST(EXPAT_PREFIX)
 AC_SUBST(EXPAT_LIBS)
 AC_SUBST(EXPAT_INCLUDES)
-AM_CONDITIONAL(WITH_EXPAT, test x$expat = xtrue)
-AC_MSG_RESULT($expat)
+AM_CONDITIONAL(WITH_EXPAT, test x$test_expat = xtrue)
+AC_MSG_RESULT($test_expat)
 
 #
-# Find xerces
+# Find xerces XML handling library
 #
-AC_MSG_CHECKING(for --with-xerces)
-xerces=false
+test_xerces=false
+AC_MSG_CHECKING(for xerces XML handling library)
 
-AC_ARG_WITH([xerces],[
-	AC_HELP_STRING([--with-xerces],
-                   [Location xerces is installed (default is third_party_packages/xerces-unix)])
-    ],[
-    case "${withval}" in    
-     yes) xerces=true;
-          XERCES_PREFIX=third_party_packages/xerces-unix ;;
-     no)  xerces=false ;;
-     *)   xerces=true;
-          XERCES_PREFIX=${withval};;
-     esac])
-	
-if test x$xerces = xtrue;
+AC_ARG_WITH(xerces,
+	[  --with-xerces		Turn on/off use of Xerces XML library],
+	[if test "x$withval" = "xyes"; then
+	test_xerces=true
+fi
+])
+dnl test for slurped version first
+dnl
+if test "x$test_xerces" = "xtrue"; then
+	if test "x$XERCES_PREFIX" = "x";	
+	then
+          XERCES_PREFIX=third_party_packages/xerces-unix
+	fi
+fi	
+if test "x$test_xerces" = "xtrue";
 then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
      then
-     	XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
-	XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
-	XERCES_INCLUDES="-I$XERCES_PREFIX/include"
-	AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
-     else  AC_MSG_ERROR([xerces not found in $XERCES_PREFIX, please use --with-xerces])
+        XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
+	    XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
+	    XERCES_INCLUDES="-I$XERCES_PREFIX/include"
+	    AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
+     else  AC_MSG_ERROR([xerces not found in $XERCES_PREFIX])
      fi
 else
      unset XERCES_PREFIX;
@@ -214,8 +236,8 @@ fi
 AC_SUBST(XERCES_PREFIX)
 AC_SUBST(XERCES_LIBS)
 AC_SUBST(XERCES_INCLUDES)
-AM_CONDITIONAL(WITH_XERCES, test x$xerces = xtrue)
-AC_MSG_RESULT($xerces)
+AM_CONDITIONAL(WITH_XERCES, test x$test_xerces = xtrue)
+AC_MSG_RESULT($test_xerces)
 
 #
 # Do we want xerces in a plugin only?
@@ -249,14 +271,14 @@ AC_MSG_RESULT($xerces_plugin)
 #
 # Test that we have at least one XML parser available
 #
-if test x$expat = xfalse -a x$xerces = xfalse; then
+if test "x$test_expat" = "xfalse" -a "x$test_xerces" = "xfalse"; then
 	AC_MSG_ERROR([No XML parser configured - Use at least one of --with-expat or --with-xerces])
 fi
 
 #
 AC_MSG_CHECKING(for --with-cocoa)
 AC_ARG_WITH(cocoa,
-     [  --with-cocoa    Turn on Cocoa support],
+     [  --with-cocoa		Turn on Cocoa support],
      [case "${withval}" in
        yes) cocoa=true ;;
        no)  cocoa=false ;;
@@ -291,7 +313,7 @@ AC_SUBST(OBJC)
 AC_MSG_CHECKING(for --with-qtopia (cross compilation for Sharp SL-5600 Zaurus))
 QTOPIA_PREFIX=
 AC_ARG_WITH(qtopia,
-     [  --with-qtopia    Turn on Qtopia support (cross compilation for Sharp SL-5600 Zaurus)],
+     [  --with-qtopia		Enable/disable Qtopia support (cross compilation for Sharp SL-5600 Zaurus)],
      [case "${withval}" in
        yes) qtopia=true
 		QTDIR=/opt/Qtopia/sharp
@@ -328,56 +350,52 @@ configure with: ./configure --build=`config.guess` --host=arm-linux])
 fi
 AC_MSG_RESULT($qtopia)
 
-AC_MSG_CHECKING(for --with-qt)
-QT_PREFIX=
-AC_ARG_WITH(qt,
-     [  --with-qt    Turn on Qt support],
-     [case "${withval}" in
-       yes) qt=true
-       		QT_PREFIX=$QTDIR
-       		;;
-       no)  qt=false
-       		;;
-       *) 	qt=true
-       		QT_PREFIX=${withval}
-       		;;
-     esac
-     gui_toolkit_found=true],[
-     case x$QTDIR in
-     x)	if test -f /usr/include/qt.h; then
-            # Debian: no QTDIR but Qt installed in /usr
-            QT_PREFIX=/ufs
-            qt=true
-        else
-            qt=false
-        fi
-     	;;
-     *) qt=true
-     	gui_toolkit_found=true
-     	QT_PREFIX=$QTDIR
-     	;;
-     esac])
-AM_CONDITIONAL(WITH_QT, test x$qt = xtrue)
-if test x$qt = xtrue -a x$QT_PREFIX = x; then
-	AC_MSG_ERROR(--with-qt without valid QT_PREFIX directory)
-fi
-if test x$qt = xtrue  && ! test x$qtopia = xtrue; then
-#  Test for QT_THREAD_SUPPORT
-   AC_TRY_LINK([#include <qthread.h>], [QThread::postEvent(NULL,NULL)], xQThread_ok=true)
-   if test xQThread_ok=xtrue; then
-      CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
-   fi
-fi
-AC_SUBST(QT_PREFIX)
-AC_MSG_RESULT($qt)
+dnl Testing for Qt
+dnl ====================================================================
 
-#
-# Test for QT_HTML_WIDGET
-#
+test_qt=true
+AC_ARG_WITH(qt,[  --with-qt		Enalble/disable Qt frontend],
+     [if test "x$withval" = "xno"; then
+		test_qt=false
+	fi
+     ])
+if test "x$test_qt" = "xtrue"; then
+	PKG_CHECK_MODULES(QT,[qt-mt >= 3.3.0], test_qt=true, test_qt=false)
+fi
+
+if test "x$test_qt" = "xtrue"; then
+	LIBQT_INCLUDES="$QT_CFLAGS -DHAVE_LIBQT=1"
+	LIBQT_LIBS="$QT_LIBS"
+	LIBQTPKG="libqt"
+	QT_PREFIX="`pkg-config --variable=exec_prefix qt-mt`"
+elif test "x$QTDIR" != "x"; then
+    # Old-style, Qt directory in QTDIR environment variable
+    test_qt=true
+	LIBQT_INCLUDES="$QT_CFLAGS -DHAVE_LIBQT=1"
+	LIBQT_LIBS="$QT_LIBS"
+	LIBQTPKG="libqt"
+	QT_PREFIX="$QTDIR"
+else
+	AC_MSG_WARN([Qt support disabled, as requested])
+        qt_warning="
+No Qt toolkit found so cannot build Qt player. Unless you are developing your
+own player towards the Ambulant library you probably want this."
+fi
+
+AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
+AC_SUBST(LIBQTPKG)
+AC_SUBST(LIBQT_INCLUDES)
+AC_SUBST(LIBQT_LIBS)
+AC_SUBST(QT_PREFIX)
+
+
+dnl Test for QT_HTML_WIDGET
+dnl ====================================================================
+
 AC_MSG_CHECKING(for --with-qt-html-widget)
 qtthmlwidget=false     
 AC_ARG_WITH(qt-html-widget,
-     [  --with-qt-html-widget    Turn on Qt Html widget],
+     [  --with-qt-html-widget	Turn on Qt Html widget],
      [ case "${withval}" in
        yes) qtthmlwidget=true
                 ;;
@@ -396,35 +414,33 @@ if test x$qtthmlwidget = xtrue; then
  	LIBS="$LIBS -lkdecore -lkhtml"
 fi
 AC_MSG_RESULT($qtthmlwidget)
-#
-# Test for SDL
-#
-AC_MSG_CHECKING(for --with-sdl)
+
+dnl Test for SDL
+dnl ======================================================================
+
+test_sdl=true
+AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
 AC_ARG_WITH(sdl,
-     [  --with-sdl    Turn on SDL support],
-     [case "${withval}" in
-       yes) sdl=true
-                ;;
-       no)  sdl=false
-                ;;
-       *)   AC_MSG_ERROR(--with-sdl takes no argument - it uses sdl-config)
-                ;;
-     esac],[
+     [  --with-sdl		Turn on/off SDL support],
+     [if test "x$withval" = "xno"; then
+	test_sdl=false
+  else 
      if sdl-config --libs > /dev/null 2>&1; then
-     sdl=true
+     test_sdl=true
      else
-     sdl=false
+     test_sdl=false
      fi
-     ])
-AM_CONDITIONAL(WITH_SDL, test x$sdl = xtrue)
-AC_MSG_RESULT($sdl)
+  fi])
+AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
+AC_MSG_RESULT($test_sdl)
 
 #
 # Test for arts 
 #
-AC_MSG_CHECKING(for --with-arts)
+test_arts=false dnl set to false until fixed
+AC_MSG_CHECKING(for arts soundsystem)
 AC_ARG_WITH(arts,
-     [  --with-arts    Turn on aRts (basic) support (currently broken) ],
+     [  --with-arts		Turn on aRts (basic) support (currently broken) ],
      [case "${withval}" in
        yes) arts=true
                 ;;
@@ -434,142 +450,119 @@ AC_ARG_WITH(arts,
                 ;;
      esac],[
      	arts=false
+	test_arts=false
      ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
 #
-# Test for Live
+# Test for Live.com library
 #
-
-AC_MSG_CHECKING(for --with-live)
-FFMPEG_INCLUDE=
-FFMPEG_LIB=
+test_live=true
+AC_MSG_CHECKING(for live.com RTSP support)
 AC_ARG_WITH(live,
-	[  --with-live Turn on live.com rtsp support],
-	[case "${withval}" in
-	  yes) live=true
-	  	if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
-			# Prefer an live installation in third_party_packages
-			withvalabs=`pwd`/third_party_packages/live
-			LIVE_ROOT=${withvalabs}
-		fi
-	  	;;
-	  no)  live=false
-	  	;;
-	  *) live=true
-	     # Turn into absolute path
-	     withvalabs=`cd ${withval}; pwd`
-	     LIVE_ROOT=${withvalabs}
-	     ;;
-	 esac],[
-	  	if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
-			live=true
-			# Prefer an live installation in third_party_packages
-			withvalabs=`pwd`/third_party_packages/live
-			LIVE_ROOT=${withvalabs}
-		else
-			withvalabs=false
-			live=false		
-		fi
-	 ])
+	[  --with-live		Turn on live.com rtsp support],
+	[if test "x$withval" = "xno"; then
+		test_live=false
+	 fi
+	])
+if test "x$test_live" = "xtrue"; then
+   if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
+		# Prefer an live installation in third_party_packages
+		withvalabs=`pwd`/third_party_packages/live
+		LIVE_ROOT=${withvalabs}
+   else
+	test_live=false
+   fi
+fi
+if test "x$test_live" = "xfalse"; then
+	AC_MSG_WARN([live.com RTSP support not enabled)])
+        live_warning="
+live.com not found. You have to place a copy of live.com libraries within the third_party_packages directory in your ambulant source tree to enable RTSP with it"
+fi
 
 AM_CONDITIONAL(WITH_LIVE, test x$live = xtrue)
 AC_SUBST(LIVE_ROOT)
-AC_MSG_RESULT($live - $withvalabs)
-
-
+AC_MSG_RESULT(Live.com library found - $test_live)
 
 #
 # Test for ffmpeg
 #
-# XXXX FFmpeg installation is quirky. When you build 0.4.8 from source
-# and do "make install" the header files don't get installed.
-# On a RedHat 9 system it is pre-installed, but in a funny way:
-# the includes are in /usr/include/ffmpeg, the library in /usr/lib.
-#
-# The only workaround I can think of is:
-# a) for "--with-ffpmpeg" we first test for an ffmpeg installed in
-#    third_party_packages, otherwise we try and make do with the
-#    one installed in RedHat 9.
-# b) for self-installed ffpmeg pass the path to ffmpeg-0.4.8
-#    to configure
-AC_MSG_CHECKING(for --with-ffmpeg)
-FFMPEG_INCLUDE=
-FFMPEG_LIB=
+# XXXX FFmpeg installation is quirky. We currently support the following,
+# in (somewhat) preferred order:
+# - a pkg-config enabled ffmpeg, with module name "ffmpeg"
+# - a pre-built ffmpeg 0.4.8 in third_party_packages/ffmpeg-0.4.8
+# - a pre-built ffmpeg (any version) with the pathname passed to --with-ffmpeg
+# - a redhat/fedora installed one.
+
+test_ffmpeg=true
 AC_ARG_WITH(ffmpeg,
-	[  --with-ffmpeg Turn on ffmpeg audio decoders],
-	[case "${withval}" in
-	  yes) ffmpeg=true
-	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
-			# Prefer an fmpeg in third_party_packages
-			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
-			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
-			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
-			FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
-			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
-			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
-			FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
-	  	else
-	  		# If that doesn't exist assume RH9-style
-	  	    withvalabs="RH9-style"
-		  	FFMPEG_CODEC_INCLUDE=/usr/include/ffmpeg
-		  	FFMPEG_FORMAT_INCLUDE=/usr/include/ffmpeg
-			FFMPEG_UTIL_INCLUDE=/usr/include/ffmpeg
-		  	FFMPEG_CODEC_LIB=/usr/lib
-		  	FFMPEG_FORMAT_LIB=/usr/lib
-			FFMPEG_UTIL_LIB=/usr/lib/libavutil.a
-		fi
-	  	;;
-	  no)  ffmpeg=false
-	  	;;
-	  *) ffmpeg=true
-	     # Turn into absolute path
-	     withvalabs=`cd ${withval}; pwd`
-	     FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
-	     FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
-	     FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
-	     FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
-	     FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
-	     FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
-	     ;;
-	 esac],[
-	  	if test -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
-			ffmpeg=true
-			withvalabs=`pwd`/third_party_packages/ffmpeg-0.4.8
-			FFMPEG_CODEC_INCLUDE=${withvalabs}/libavcodec
-			FFMPEG_FORMAT_INCLUDE=${withvalabs}/libavformat
-			FFMPEG_UTIL_INCLUDE=${withvalabs}/libavutil
-			FFMPEG_CODEC_LIB=${FFMPEG_CODEC_INCLUDE}
-			FFMPEG_FORMAT_LIB=${FFMPEG_FORMAT_INCLUDE}
-            FFMPEG_UTIL_LIB=${FFMPEG_UTIL_INCLUDE}/libavutil.a
-		else
-			withvalabs=false
-			ffmpeg=false
-			AC_MSG_ERROR("ffmpeg not found. To build without ffmpeg (and thus have no network support) use explicit --without-ffmpeg")
-			
-		fi
-	 ])
-if test x$ffmpeg = xtrue; then
-	# Test for consistency
-	if test ! -f $FFMPEG_CODEC_INCLUDE/avcodec.h -o ! -f $FFMPEG_CODEC_LIB/libavcodec.a \
-		 -o ! -f $FFMPEG_FORMAT_INCLUDE/avformat.h -o ! -f $FFMPEG_FORMAT_LIB/libavformat.a; then
-		AC_MSG_ERROR("--with-ffmpeg value incorrect. Read configure.in for details")
-	fi
-	if test ! -f $FFMPEG_UTIL_LIB; then
-		FFMPEG_UTIL_LIB=
-	fi
+	[  --with-ffmpeg		Turn on/off ffmpeg audio decoders],
+	[if test "x$withval" = "xno"; then
+	  test_ffmpeg=false
 fi
-AM_CONDITIONAL(WITH_FFMPEG, test x$ffmpeg = xtrue)
-AC_SUBST(FFMPEG_CODEC_INCLUDE)
-AC_SUBST(FFMPEG_CODEC_LIB)
-AC_SUBST(FFMPEG_FORMAT_INCLUDE)
-AC_SUBST(FFMPEG_FORMAT_LIB)
-AC_SUBST(FFMPEG_UTIL_INCLUDE)
-AC_SUBST(FFMPEG_UTIL_LIB)
-AC_MSG_RESULT($ffmpeg - $withvalabs)
+])
+
+dnl old tests which can hopefully be deemded redundant 
+dnl at some point
+dnl ====================================================
+
+if test "x$test_ffmpeg" = "xtrue"; then
+        PKG_CHECK_MODULES(FFMPEG,[ffmpeg >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+        inst_style="found through pkgconfig"        
+fi
+
+dnl
+dnl Need to check for post 0.4.9 cvs-style pkg-config support here too
+dnl
+
+dnl test for slurped version (default 0.4.8, otherwise use --with-ffmpeg argument)
+if test "x$test_ffmpeg" = "xmanual"; then
+    if test "x$withval" = "xyes" -a -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
+        withval=third_party_packages/ffmpeg-0.4.8
+    fi
+	if test -f ${withval}/libavcodec/avcodec.h; 	then
+			withvalabs=`cd ${withval}; pwd`
+			FFMPEG_CFLAGS="-I${withvalabs}/libavcodec -I${withvalabs}/libavformat"
+			FFMPEG_LIBS="${withvalabs}/libavformat/libavformat.a ${withvalabs}/libavcodec/libavcodec.a"
+			dnl
+			dnl See whether this ffmpeg version has libavutil
+			dnl
+			if test -f ${withvalabs}/libavutil/avutil.h; then
+			    FFMPEG_CFLAGS="${FFMPEG_INCLUDES} -I${withvalabs}/libavutil"
+			    FFMPEG_LIBS="${FFMPEG_LIBS} ${withvalabs}/libavutil.a"
+			fi
+			test_ffmpeg=true
+			ffmpeg_path="$withvalabs"
+			inst_style="Ambulant included version"
+	 else
+		if test -f /usr/include/ffmpeg/avcodec.h; then
+		  	FFMPEG_CFLAGS=-I/usr/include/ffmpeg
+		  	FFMPEG_LIBS="-lavformat -lavcodec"
+			test_ffmpeg=true
+			inst_style="RedHat/Fedora type install"
+		else
+			test_ffmpeg=false
+			inst_style="not found"
+		fi
+	 fi
+fi	
+ 
+if test "x$test_ffmpeg" = "xfalse"; then
+	AC_MSG_WARN([ffmpeg support not enabled])
+        ffmpeg_warning="
+ffmpeg not found or disabled. Building without ffmpeg (which means you limited media support)"
+
+fi
+AM_CONDITIONAL(WITH_FFMPEG, test "x$test_ffmpeg" = "xtrue")
+AC_SUBST(FFMPEG_CFLAGS)
+AC_SUBST(FFMPEG_LIBS)
+AC_MSG_RESULT(Discovered FFMPEG version to use - $inst_style)
+
+dnl Testing for Dirac
+dnl ======================================================================
 
 AC_ARG_WITH(dirac,
-    [ --with-dirac Turn on Dirac video codec if ffmpeg is enabled],
+    [  --with-dirac		Turn on Dirac video codec if ffmpeg is enabled],
     [case "${withval}" in
         yes) dirac=true ;;
         no) dirac=false ;;
@@ -578,7 +571,7 @@ AC_ARG_WITH(dirac,
         dirac=false
     ])
 AM_CONDITIONAL(WITH_DIRAC, test x$dirac = xtrue)
-AC_MSG_RESULT($dirac)
+AC_MSG_RESULT(Using Dirac - $dirac)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
@@ -773,9 +766,34 @@ AC_LANG_RESTORE
 
 ACX_PTHREAD
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
-AC_OUTPUT
+AC_OUTPUT([
+libambulant.pc
+ambulant.spec
+])
 
-# Finally we check that the configuration makes sense
-if test "x$gui_toolkit_found" != xtrue; then
-	AC_MSG_ERROR([No GUI toolkit found so cannot build player. Use explicit --without-qt or similar to suppress this error.])
-fi
+dnl ============================================================================
+echo "
+ambulant-$AMBULANT_VERSION will be built with following parameters:
+
+	targeted prefix:                ${prefix}
+	compiler:                       ${CC}
+
+	Enable SMIL21 support:		${test_smil21}
+	Enable external DOM:		${test_dom}
+	Use expat XML library:		${test_expat}	${expat_path}
+	Use xerces XML library:		${test_xerces}	${xerces_path}
+	Enable Xerces as plugin:	${xerces_plugin}
+	Build with ffmpeg:     		${test_ffmpeg}	${ffmpeg_path}
+	Turn on ffmpeg Dirac support:	${dirac}
+	Build Qtopia frontend:		${qtopia}
+	Build Qt frontend:              ${test_qt}
+	Build Cocoa frontend:		${cocoa}
+	Build with SDL:			${test_sdl}
+	Build with ARTS support:	${test_arts}
+	Build with live.com RTSP:	${test_live}
+     "
+
+AC_MSG_RESULT([$qt_warning]);
+AC_MSG_RESULT([$ffmpeg_warning]);
+AC_MSG_RESULT([$live_warning]);
+AC_MSG_RESULT([$expat_warning]);

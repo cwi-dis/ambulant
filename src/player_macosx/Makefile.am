@@ -36,20 +36,9 @@ dirac_libraries=
 endif
 
 if WITH_FFMPEG
-#
-# Using the dynamic ffmpeg libraries will fail on RedHat 9, which has
-# incompatible ffmpeg libraries installed into /usr/lib, which will be
-# preferred over our libraries because of linker flags provided by sdl_config:-(
-#
-##extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
-##	-L$(FFMPEG_CODEC_LIB)  -lavcodec \
-##	-L$(FFMPEG_FORMAT_LIB) -lavformat -lz
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a \
-	$(FFMPEG_FORMAT_LIB)/libavformat.a \
-	$(FFMPEG_CODEC_LIB)/libavcodec.a -lz
-extra_ffmpeg_ldflags=$(dirac_libraries)
-extra_ffmpeg_DEFINES=-I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
-	-I$(FFMPEG_FORMAT_INCLUDE) -DWITH_FFMPEG_AVFORMAT
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a
+extra_ffmpeg_ldflags=$(FFMPEG_LIBS) $(dirac_libraries) -lz
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 else
 extra_ffmpeg_LDADD=
 extra_ffmpeg_ldflags=

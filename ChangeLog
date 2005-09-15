@@ -1,3 +1,17 @@
+2005-08-04  Christian Schaller  <uraeus@gnome.org>
+	
+	* .cvsignore: adding a few files
+	* Makefile.am: add pkgconfig file installation
+	* configure.in: Huge rewrite of tests and enable/disable code
+			Qt, SDL, FFmpeg, Expat, Xerces almost fully redone
+	* include/ambulant/net/Makefile.am: Put header files inside a USE_FFMPEG 					    conditional
+	* src/libambulant/Makefile.am: Move demux_datasource.cpp to under 
+				       USE_FFMPEG
+	* Adding libambulant.pc.in, autogen.sh and ambulant.spec.in files
+	* po/POTFILES.in: Remove ffmpeg_rawdatasource.cpp as it doesn't exist
+	
+	I donate copyright on all these changes to Centrum voor Wiskunde en Informatica
+
 2005-05-23 16:15  koelimoe
 
 	* updated version numbers

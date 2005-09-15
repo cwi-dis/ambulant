@@ -115,28 +115,16 @@ endif
 
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
-#
-# Using the dynamic ffmpeg libraries will fail on RedHat 9, which has
-# incompatible ffmpeg libraries installed into /usr/lib, which will be
-# preferred over our libraries because of linker flags provided by sdl_config:-(
-#
-##libambulant_ffmpeg_la_LDFLAGS =  \
-##	-L$(FFMPEG_CODEC_LIB)  -lavcodec \
-##	-L$(FFMPEG_FORMAT_LIB) -lavformat
-libambulant_ffmpeg_la_LDFLAGS =  \
-	$(FFMPEG_FORMAT_LIB)/libavformat.a \
-	$(FFMPEG_CODEC_LIB)/libavcodec.a \
-	$(FFMPEG_UTIL_LIB) \
-	$(dirac_libraries)
 
-ffmpegincludes = -I$(FFMPEG_CODEC_INCLUDE) -DWITH_FFMPEG \
-	-I$(FFMPEG_FORMAT_INCLUDE) -I$(FFMPEG_UTIL_INCLUDE) -DWITH_FFMPEG_AVFORMAT
+libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS) $(dirac_libraries)
+ffmpegincludes = -DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 
 libambulant_ffmpeg_la_SOURCES = 	\
 		net/ffmpeg_common.cpp \
 		net/ffmpeg_audio.cpp \
 		net/ffmpeg_video.cpp \
-		net/ffmpeg_raw.cpp
+		net/ffmpeg_raw.cpp	\
+		net/demux_datasource.cpp
 else
 ffmpegincludes=
 toolkit_ffmpeg_libraries=
@@ -203,7 +191,6 @@ libambulant_la_SOURCES = \
 	net/stdio_datasource.cpp \
 	net/raw_video_datasource.cpp \
 	net/datasource.cpp \
-	net/demux_datasource.cpp \
 	net/databuffer.cpp \
 	net/url.cpp \
 	\
@@ -263,3 +250,5 @@ EXTRA_DIST= \
 	gui/dx \
 	gui/qt \
 	lib/win32
+
+CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT

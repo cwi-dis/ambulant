@@ -14,3 +14,5 @@ install-sh
 missing
 mkinstalldirs
 ltmain.sh
+config.rpath
+stamp-h.in
