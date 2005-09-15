@@ -12,10 +12,13 @@ follow later.
 
     % ACLOCAL_FLAGS="-I m4" ./autogen.sh
    
-4. If you want to build in a subdirectory (keeping the source tree clean)
-   you should now clean out the Makefiles and such::
+4. Optionally, ff you want to build in a subdirectory (keeping the source tree clean)
+   you should now clean out the Makefiles and such, and re-create them
+   in your build-dir::
    
     % make distclean
+    % cd build
+    % ../configure
     	
 5. Build::
 
