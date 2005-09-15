@@ -71,10 +71,6 @@
 	#define am_get_codec_var(codec,var) codec.var
 #endif
 
-#if FFMPEG_VERSION_INT >= 0x000409
-	#define WITH_FFMPEG_0_4_9					
-#endif
-
 using namespace ambulant;
 using namespace net;
 
@@ -144,11 +140,12 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_clip_end(clip_end),
 	m_clip_begin_set(false)
 {
-#ifdef WITH_FFMPEG_0_4_9
+#if LIBAVFORMAT_BUILD > 4609
+
 	if (m_clip_begin > 0) {
 		assert (m_con);
 		assert (m_con->iformat);
-#if LIBAVFORMAT_BUILD >= 4629
+#if LIBAVFORMAT_BUILD > 4628
 		av_seek_frame(m_con, -1, m_clip_begin, 0);
 #else
 		av_seek_frame(m_con, -1, m_clip_begin);
@@ -358,7 +355,7 @@ ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		m_lock.leave();
-#ifdef WITH_FFMPEG_0_4_9
+#if LIBAVFORMAT_BUILD > 4609
 		int ret = av_read_frame(m_con, pkt);
 #else
 		int ret = av_read_packet(m_con, pkt);
@@ -388,14 +385,14 @@ ffmpeg_demux::run()
 				
 				pts = 0;
 				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
-#ifdef	WITH_FFMPEG_0_4_9				
+#if LIBAVFORMAT_BUILD > 4609
 					pts = pkt->pts;							
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: ffmpeg 0.4.9 pts = %lld", pts);
-#else /*WITH_FFMPEG_0_4_9*/							
+#else
 					int num = m_con->pts_num;
 					int den = m_con->pts_den;
 					pts = (timestamp_t) round(((double) pkt->pts * (((double) num)*1000000)/den));
-#endif/*WITH_FFMPEG_0_4_9*/
+#endif
 				}
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration);
 				

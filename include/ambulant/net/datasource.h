@@ -142,16 +142,6 @@ struct video_format {
 		width(0),
 		height(0) {};
 		
-#if 0
-	/// Constructor for linear samples.
-	video_format(int r, int w, int h)
-	:   mime_type("video/unknown"),
-		name(""),
-		parameters(NULL),
-		framerate(r),
-		width(w),
-		height(h) {};
-#endif	
 	/// Constructor for named video_format.
 	video_format(std::string &n, void *p=(void *)0)
 	:   mime_type("video/unknown"),

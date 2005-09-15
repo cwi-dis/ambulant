@@ -401,11 +401,6 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 				lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
 			}
 		}
-		
-		 //~ if(context->video_packet) {			
-			//~ if(context->sinks[context->video_stream]) 
-				//~ context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
-		//~ }
 		context->need_video = true;
 		assert(context->video_packet);
 		free(context->video_packet);

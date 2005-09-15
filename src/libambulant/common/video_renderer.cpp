@@ -198,13 +198,6 @@ video_renderer::stop()
 		m_src->release();
 		m_src = NULL;
 	}
-#if 0
-	// Assumes we own the timer
-	if (m_timer) {
-		delete m_timer;
-		m_timer = NULL;
-	}
-#endif
 	lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
 		m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
 	m_lock.leave();

@@ -65,14 +65,6 @@
 #define AM_DBG if(0)
 #endif 
 
-#if FFMPEG_VERSION_INT >= 0x000409
-	#define WITH_FFMPEG_0_4_9					
-#endif
-
-//#ifndef LIBAVCODEC_BUILD
-//	#define FFMPEG_CVS
-//#endif
-
 // How many video frames we would like to buffer at least. This number should
 // not be too low, otherwise a fast consumer will see only I and P frames
 // because these are produced before the B frames.
@@ -446,8 +438,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
-#ifdef WITH_FFMPEG_0_4_9
-            // I'm not sure wheter this is a hack or not.
+#if LIBAVFORMAT_BUILD > 4609
+            // XXX Dirac hack, to be removed.
             // Some codecs (notably Dirac) always gobble up all bytes,
             // and only return len==sz if got_pic is true.
             len = sz;

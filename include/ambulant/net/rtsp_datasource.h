@@ -118,7 +118,6 @@ struct rtsp_context_t {
 class rtsp_demux : public abstract_demux {
   public:
 	rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end);
-	//~rtsp_demux() {};
 	
 	static rtsp_context_t* supported(const net::url& url);
 	
