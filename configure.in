@@ -529,7 +529,7 @@ if test "x$test_ffmpeg" = "xmanual"; then
 			dnl
 			if test -f ${withvalabs}/libavutil/avutil.h; then
 			    FFMPEG_CFLAGS="${FFMPEG_CFLAGS} -I${withvalabs}/libavutil"
-			    FFMPEG_LIBS="${FFMPEG_LIBS} ${withvalabs}/libavutil.a"
+			    FFMPEG_LIBS="${FFMPEG_LIBS} ${withvalabs}/libavutil/libavutil.a"
 			fi
 			test_ffmpeg=true
 			ffmpeg_path="$withvalabs"
