@@ -608,9 +608,8 @@ demux_video_datasource::get_video_format()
 {
     m_lock.enter();
     assert(m_thread);
-	video_format rv = m_thread->get_video_format();
 	m_lock.leave();
-	return rv;
+	return m_thread->get_video_format();
 }
 
 int

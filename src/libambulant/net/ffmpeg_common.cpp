@@ -62,6 +62,14 @@
 #define AM_DBG if(0)
 #endif 
 
+
+// This construction is needed to get the CVS version of ffmpeg to work. (14-sept-05)
+//#if FFMPEG_VERSION == CVS
+	#define am_get_codec_var(codec,var) codec->var
+//#else
+//	#define am_get_codec_var(codec,var) codec.var
+//#endif
+
 #if FFMPEG_VERSION_INT >= 0x000409
 	#define WITH_FFMPEG_0_4_9					
 #endif
@@ -115,7 +123,7 @@ ffmpeg_codec_id::get_codec_id(const char* codec_name)
 ffmpeg_codec_id::ffmpeg_codec_id()
 {
 	
-	//XXX Lots of formats missing here obviously
+	// XXX Lots of formats missing here obviously
 	// Live.com formats
 	add_codec("MPA", CODEC_ID_MP3);
 	add_codec("MPA-ROBUST", CODEC_ID_MP3);
@@ -152,9 +160,9 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	int audio_idx = audio_stream_nr();
 	if ( audio_idx >= 0) {
 		m_audio_fmt.parameters = (void *)&con->streams[audio_idx]->codec;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: audio_codec_name=%s", m_con->streams[audio_idx]->codec.codec_name);
-		m_audio_fmt.samplerate = con->streams[audio_idx]->codec.sample_rate;
-		m_audio_fmt.channels = con->streams[audio_idx]->codec.channels;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: audio_codec_name=%s", m_con->streams[audio_idx]->am_get_codec_var(codec,codec_name));
+		m_audio_fmt.samplerate = con->streams[audio_idx]->am_get_codec_var(codec,sample_rate);
+		m_audio_fmt.channels = con->streams[audio_idx]->am_get_codec_var(codec,channels);
 		m_audio_fmt.bits = 16;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): samplerate=%d, channels=%d, m_con->codec (0x%x)", m_audio_fmt.samplerate, m_audio_fmt.channels, m_audio_fmt.parameters  );
 	} 
@@ -162,7 +170,7 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
 		m_video_fmt.parameters = (void *)&con->streams[video_stream_nr()]->codec;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", m_con->streams[video_stream_nr()]->codec.codec_name);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", m_con->streams[video_stream_nr()]->am_get_codec_var(codec,codec_name));
 	} else {
 		m_video_fmt.parameters = NULL;
 	}
@@ -203,7 +211,11 @@ ffmpeg_demux::supported(const net::url& url)
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
 	fmt = av_probe_input_format(&probe_data, 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): av_probe_input_format: 0x%x", url_str.c_str(), (void*)fmt);
+	if (!fmt) {
+		fmt = av_find_input_format(url.get_file().c_str());
+		
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), url.get_file().c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
 	int err = av_open_input_file(&ic, url_str.c_str(), fmt, 0, 0);
 	if (err) {
@@ -218,8 +230,9 @@ ffmpeg_demux::supported(const net::url& url)
 		if (ic) av_close_input_file(ic);
 		return NULL;
 	}
+	
 	AM_DBG dump_format(ic, 0, url_str.c_str(), 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec.sample_rate, ic->streams[0]->codec.channels);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->am_get_codec_var(codec,sample_rate), ic->streams[0]->am_get_codec_var(codec,channels));
 	
 	return ic;
 }
@@ -237,7 +250,7 @@ ffmpeg_demux::audio_stream_nr()
 {
 	int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec.codec_type == CODEC_TYPE_AUDIO)
+		if (m_con->streams[stream_index]->am_get_codec_var(codec,codec_type) == CODEC_TYPE_AUDIO)
 			return stream_index;
 	}
 	
@@ -249,8 +262,10 @@ ffmpeg_demux::video_stream_nr()
 {
 	int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec.codec_type == CODEC_TYPE_VIDEO)
+		if (m_con->streams[stream_index]->am_get_codec_var(codec,codec_type) == CODEC_TYPE_VIDEO) {
+			lib::logger::get_logger()->debug("ffmpeg_demux::supported: codec_type: %d (%d), stream_index = %d",m_con->streams[stream_index]->am_get_codec_var(codec,codec_type), CODEC_TYPE_VIDEO, stream_index );
 			return stream_index;
+		}
 	}
 	
 	return -1;
@@ -286,8 +301,10 @@ video_format&
 ffmpeg_demux::get_video_format() 
 { 
 	m_lock.enter();
-	if (m_video_fmt.width == 0) m_video_fmt.width = m_con->streams[video_stream_nr()]->codec.width;
-	if (m_video_fmt.height == 0) m_video_fmt.height = m_con->streams[video_stream_nr()]->codec.height;
+	if (m_video_fmt.width == 0) m_video_fmt.width = m_con->streams[video_stream_nr()]->am_get_codec_var(codec,width);
+	if (m_video_fmt.height == 0) m_video_fmt.height = m_con->streams[video_stream_nr()]->am_get_codec_var(codec,height);
+	lib::logger::get_logger()->debug("ffmpeg_demux:: AVCodecContext: 0x%x, Codec_type %d", (void*) m_con->streams[video_stream_nr()]->codec, m_con->streams[video_stream_nr()]->am_get_codec_var(codec,codec_type));
+
 	m_lock.leave();
 	return m_video_fmt; 
 	

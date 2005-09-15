@@ -69,6 +69,10 @@
 	#define WITH_FFMPEG_0_4_9					
 #endif
 
+//#ifndef LIBAVCODEC_BUILD
+	#define FFMPEG_CVS
+//#endif
+
 // How many video frames we would like to buffer at least. This number should
 // not be too low, otherwise a fast consumer will see only I and P frames
 // because these are produced before the B frames.
@@ -121,6 +125,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	// Next, if there is video we check that we can decode this type of video
 	// stream.
 	video_format fmt = thread->get_video_format();
+	
 	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
 		thread->cancel();
 		lib::logger::get_logger()->trace("ffmpeg: Unsupported video stream in %s", repr(url).c_str());
@@ -156,8 +161,14 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-	if (enc->codec_type != CODEC_TYPE_VIDEO) return false;
-	if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+	if (enc->codec_type != CODEC_TYPE_VIDEO) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
+		return false;
+	}
+	if (avcodec_find_decoder(enc->codec_id) == NULL) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec");
+		return false;
+	}
 	return true;
 }
 
@@ -367,10 +378,14 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 	}
 	if (m_fmt.frameduration == 0) {
 		// And convert the timestamp
+#ifndef FFMPEG_CVS
 		timestamp_t framerate = m_con->frame_rate;
 		timestamp_t framebase = m_con->frame_rate_base;
 		timestamp_t frameduration = (framebase*1000000)/framerate;
+#else
+		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num / (double) m_con->time_base.den);
 		m_fmt.frameduration = frameduration;
+#endif
 	}
 }
 
