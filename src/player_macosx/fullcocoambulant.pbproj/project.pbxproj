@@ -1935,10 +1935,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/UsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/xerces-unix/include";
+				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/ffmpeg-cvs/libavutil ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/UsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/xerces-unix/include";
 				INFOPLIST_FILE = "/Users/jack/src/ambulant/src/player_macosx/Info copy.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/xerces-unix/lib /Users/jack/src/ambulant/third_party_packages/live/liveMedia /Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment /Users/jack/src/ambulant/third_party_packages/live/groupsock /Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment /Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat /Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/xerces-unix/lib /Users/jack/src/ambulant/third_party_packages/live/liveMedia /Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment /Users/jack/src/ambulant/third_party_packages/live/groupsock /Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment /Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat /Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec /Users/jack/packages/ffmpeg-cvs/libavformat /Users/jack/packages/ffmpeg-cvs/libavcodec /Users/jack/packages/ffmpeg-cvs/libavutil";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2076,6 +2076,13 @@
 				0427F77E0898352F0022C4EC,
 				0427F77F0898352F0022C4EC,
 				0427F7800898352F0022C4EC,
+				0459E81B08DAD0E600BF6ED5,
+				0459E81C08DAD0E700BF6ED5,
+				0459E81D08DAD0E800BF6ED5,
+				0459E81E08DAD0E900BF6ED5,
+				0459E81F08DAD0EA00BF6ED5,
+				0459E82308DAD11A00BF6ED5,
+				0459E82408DAD12B00BF6ED5,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2960,6 +2967,13 @@
 				0427F7DD0898352F0022C4EC,
 				0427F7DE0898352F0022C4EC,
 				0427F7DF0898352F0022C4EC,
+				0459E80308DACECA00BF6ED5,
+				0459E81808DAD0D300BF6ED5,
+				0459E81908DAD0D600BF6ED5,
+				0459E81A08DAD0D900BF6ED5,
+				0459E82008DAD10F00BF6ED5,
+				0459E82108DAD11100BF6ED5,
+				0459E82208DAD11900BF6ED5,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3439,6 +3453,9 @@
 				0427F7EC0898352F0022C4EC,
 				0427F7EF0898352F0022C4EC,
 				0427F7F00898352F0022C4EC,
+				0459E7FE08DACE2600BF6ED5,
+				0459E80008DACE5D00BF6ED5,
+				0459E80208DACE8100BF6ED5,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5515,6 +5532,132 @@
 		};
 		04542B0D05E246FF00D812FB = {
 			fileRef = 04542B0C05E246FF00D812FB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E7FD08DACE2600BF6ED5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libavformat.a;
+			path = "../../../../packages/ffmpeg-cvs/libavformat/libavformat.a";
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0459E7FE08DACE2600BF6ED5 = {
+			fileRef = 0459E7FD08DACE2600BF6ED5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E7FF08DACE5D00BF6ED5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libavcodec.a;
+			path = "../../../../packages/ffmpeg-cvs/libavcodec/libavcodec.a";
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0459E80008DACE5D00BF6ED5 = {
+			fileRef = 0459E7FF08DACE5D00BF6ED5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E80108DACE8100BF6ED5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libavutil.a;
+			path = "../../../../packages/ffmpeg-cvs/libavutil/libavutil.a";
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0459E80208DACE8100BF6ED5 = {
+			fileRef = 0459E80108DACE8100BF6ED5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E80308DACECA00BF6ED5 = {
+			fileRef = 0471BDCB089E3D3900C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81808DAD0D300BF6ED5 = {
+			fileRef = 0471BDCC089E3D3900C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81908DAD0D600BF6ED5 = {
+			fileRef = 0471BDCD089E3D3900C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81A08DAD0D900BF6ED5 = {
+			fileRef = 0471BDCE089E3D3900C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81B08DAD0E600BF6ED5 = {
+			fileRef = 0471BDDC089E3F6300C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81C08DAD0E700BF6ED5 = {
+			fileRef = 0471BDDD089E3F6300C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81D08DAD0E800BF6ED5 = {
+			fileRef = 0471BE06089E456100C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81E08DAD0E900BF6ED5 = {
+			fileRef = 0471BDDE089E3F6300C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E81F08DAD0EA00BF6ED5 = {
+			fileRef = 0471BDDF089E3F6300C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E82008DAD10F00BF6ED5 = {
+			fileRef = 0471BDAE089E272700C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E82108DAD11100BF6ED5 = {
+			fileRef = 0471BDA1089E25A200C44EA0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E82208DAD11900BF6ED5 = {
+			fileRef = 04BD5C09089E6DE000597620;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E82308DAD11A00BF6ED5 = {
+			fileRef = 04BD5C0C089E6DF200597620;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0459E82408DAD12B00BF6ED5 = {
+			fileRef = 0471BD69089E23CF00C44EA0;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -11077,8 +11220,11 @@
 			children = (
 				0427B2210625FD160071CD58,
 				0493211408951A8A00F38A0A,
+				0459E7FD08DACE2600BF6ED5,
 				0427B21F0625FCF20071CD58,
 				0493211608951AAE00F38A0A,
+				0459E7FF08DACE5D00BF6ED5,
+				0459E80108DACE8100BF6ED5,
 				0493212708951DF900F38A0A,
 				0493213C089520B500F38A0A,
 				04B9F6120700518600B78CC4,
