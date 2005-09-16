@@ -1,4 +1,6 @@
 import sys
+import os
+import urllib
 import ambulant
 
 class AmbulantPlayer:
@@ -27,8 +29,9 @@ class AmbulantDocumentPlayer:
         window_f = ambulant.none_window_factory()
         parser_f = ambulant.get_parser_factory()
         datasource_f = ambulant.datasource_factory()
+        datasource_f.add_raw_factory(ambulant.posix_datasource_factory())
         playable_f = ambulant.get_global_playable_factory()
-        self.factories = (window_f, parser_f, datasource_f, playable_f)
+        self.factories = (playable_f, window_f, datasource_f, parser_f)
         self.document = None
         self.player = None
         self.opendoc(url)
@@ -42,7 +45,8 @@ class AmbulantDocumentPlayer:
         self.player.initialize()
         
     def create_document(self, url):
-        data = ambulant.read_data_from_url(url, self.factories[2])
+        datalen, data = ambulant.read_data_from_url(url, self.factories[2])
+        assert datalen == len(data)
         document = ambulant.create_from_string(self.factories, data, url)
         document.set_src_url(url)
         return document
@@ -64,8 +68,16 @@ def main():
     if len(sys.argv) != 2:
         print "Usage: %s smilurl" % sys.argv[0]
         sys.exit(1)
-    print "Opening document..."
-    player = AmbulantDocumentPlayer(sys.argv[1])
+    url = sys.argv[1]
+    
+    # Hack pathnames to urls
+    if not ':' in url:
+        url = os.path.abspath(url)
+        url = urllib.pathname2url(url)
+        if not ':' in url:
+            url = 'file://' + url
+    print "Opening document: %s" % url
+    player = AmbulantDocumentPlayer(url)
     print "Start playback..."
     player.play()
     print "Playback done."

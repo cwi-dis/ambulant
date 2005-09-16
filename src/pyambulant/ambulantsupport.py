@@ -289,7 +289,10 @@ common_playable_notification_cookie_type = cookie_type
 common_playable_notification_ptr = playable_notification_ptr
 net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
+url = net_url
 const_ambulant_net_url_ref = net_url
+posix_datasource_ptr = datasource_ptr
+stdio_datasource_ptr = datasource_ptr
 
 print "=== Testing availability of support for all needed C types ==="
 

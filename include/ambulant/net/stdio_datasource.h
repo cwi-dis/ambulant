@@ -59,6 +59,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/databuffer.h"
+#include "ambulant/net/url.h"
 
 #include <stdio.h>
 
@@ -93,16 +94,17 @@ namespace net {
 class stdio_datasource_factory : public raw_datasource_factory {
   public:
 	~stdio_datasource_factory() {};
-	datasource* new_raw_datasource(const std::string& url);
+	datasource* new_raw_datasource(const url& url);
 };
 
-  
+inline
+raw_datasource_factory *get_stdio_datasource_factory() { return new stdio_datasource_factory(); }
 
 
 class stdio_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	stdio_datasource();
-	stdio_datasource(const std::string& url, FILE* file);
+	stdio_datasource(const url& url, FILE* file);
   	~stdio_datasource();
   	
   	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
@@ -120,7 +122,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
   	
 #ifndef AMBULANT_NO_IOSTREAMS_HEADERS
   	friend inline std::ostream& operator<<(std::ostream& os, const stdio_datasource& n) {
-		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url << ")";
+		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url.get_url() << ")";
 		return os;
 	}
 #endif
@@ -128,7 +130,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
     bool _end_of_file();
 	void filesize();
     void read_file();
-	const std::string m_url;
+	const url m_url;
 	databuffer *m_buffer;
 	int m_filesize;
 	FILE *m_stream;

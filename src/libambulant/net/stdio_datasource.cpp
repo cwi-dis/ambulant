@@ -68,11 +68,11 @@ using namespace ambulant;
 using namespace net;
 
 datasource* 
-stdio_datasource_factory::new_raw_datasource(const std::string& url)
+stdio_datasource_factory::new_raw_datasource(const url& url)
 {
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
-	if (url != "") {
-		FILE *fp = fopen(url.c_str(), "rb");
+	if (url.get_url() != "") {
+		FILE *fp = fopen(url.get_url().c_str(), "rb");
 		if (fp == NULL) return NULL;
 		return new stdio_datasource(url, fp);
 	} else {
@@ -84,7 +84,7 @@ stdio_datasource_factory::new_raw_datasource(const std::string& url)
 // *********************** stdio_datasource ***********************************************
 
 
-stdio_datasource::stdio_datasource(const std::string& url, FILE* file)
+stdio_datasource::stdio_datasource(const url& url, FILE* file)
 :	m_url(url),
 	m_buffer(NULL),
 	m_filesize(0),
@@ -202,8 +202,8 @@ stdio_datasource::read_file()
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
-			lib::logger::get_logger()->trace("%s: %s", m_url.c_str(), strerror(errno));
-			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.c_str());
+			lib::logger::get_logger()->trace("%s: %s", m_url.get_url().c_str(), strerror(errno));
+			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.get_url().c_str());
 		} 		
 	}
 }

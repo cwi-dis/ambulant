@@ -161,10 +161,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
-	m_factory->df->add_raw_factory(new net::stdio_datasource_factory());
+	m_factory->df->add_raw_factory(net::get_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
-	m_factory->df->add_raw_factory(new net::posix_datasource_factory());
+	m_factory->df->add_raw_factory(net::get_posix_datasource_factory());
 	
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *rf = common::get_global_playable_factory();

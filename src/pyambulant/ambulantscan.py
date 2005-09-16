@@ -29,6 +29,8 @@ def main():
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "net/datasource.h",
+        AMBULANT+ "net/posix_datasource.h",
+        AMBULANT+ "net/stdio_datasource.h",
             ]
     if DO_SCAN:
         output = "ambulantgen.py"
@@ -73,6 +75,12 @@ class MyScanner(CxxScanner):
             "abstract_demux", #XXX
             "demux_datasink", #XXX
             "demux_datasink_ptr", #XXX
+            "posix_datasource", # We want only the factory and (abstract) interface
+            "posix_datasource_ptr", # Ditto
+            "posix_datasource_factory",
+            "stdio_datasource", # We want only the factory and (abstract) interface
+            "stdio_datasource_ptr", # Ditto
+            "stdio_datasource_factory",
             "Where_we_get_our", # Parser trips over a comment:-)
             "q_attributes_list",    # We don't do lists, for now
             "q_attributes_list_ref",    # We don't do lists, for now

@@ -90,6 +90,8 @@ class posix_datasource_factory : public raw_datasource_factory {
 	datasource* new_raw_datasource(const net::url& url);
 };
 
+inline
+raw_datasource_factory *get_posix_datasource_factory() { return new posix_datasource_factory(); }
   
 
 class posix_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
