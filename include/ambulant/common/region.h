@@ -116,12 +116,14 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void draw_background(const rect &r, gui_window *window);
 
 #ifdef WITH_HTML_WIDGET
-	lib::auto_ref<void> m_renderer_data;
-	void* m_renderer_id;
+	typedef void renderer_data;
+	typedef void* renderer_id;
+	lib::auto_ref<renderer_data> m_renderer_data;
+	renderer_id m_renderer_id;
 public:
 	surface_impl* get_parent();
-	void* get_renderer_data(void* id);
-	void set_renderer_data(void* id, void* data);
+	renderer_data* get_renderer_data(renderer_id idd);
+	void set_renderer_data(renderer_id idd, renderer_data* data);
 #endif // WITH_HTML_WIDGET
 
 protected:

@@ -683,20 +683,20 @@ surface_impl::get_parent() {
 	return m_parent;
 }
 
-void* 
-surface_impl::get_renderer_data(void* id) {
-	if (id == m_renderer_id)
+surface_impl::renderer_data*
+surface_impl::get_renderer_data(renderer_id idd) {
+	if (idd == m_renderer_id)
 		return m_renderer_data.get_ptr();
 	return NULL;
 }
 
 void 
-surface_impl::set_renderer_data(void* id, void* data) {
+surface_impl::set_renderer_data(renderer_id idd, renderer_data* data) {
 	if (m_renderer_data.get_ptr())
 			m_renderer_data.release();
 	m_renderer_data.set_ptr(data);
 	m_renderer_data.add_ref();
-	m_renderer_id = id;
+	m_renderer_id = idd;
 }
 #endif // WITH_HTML_WIDGET
 
