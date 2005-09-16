@@ -202,6 +202,20 @@ audio_format_ref = TupleType("ambulant::net::audio_format&",
         (int, "samplerate"),
         (int, "channels"),
         (int, "bits"))
+video_format = TupleType("ambulant::net::video_format",
+        (std_string, "mime_type"),
+        (std_string, "name"),
+        (FakeType("(void*)0"), "parameters"),
+        (timestamp_t, "frameduration"),
+        (int, "width"),
+        (int, "height"))
+video_format_ref = TupleType("ambulant::net::video_format&",
+        (std_string, "mime_type"),
+        (std_string, "name"),
+        (FakeType("(void*)0"), "parameters"),
+        (timestamp_t, "frameduration"),
+        (int, "width"),
+        (int, "height"))
 const_audio_format_ref = TupleType("const ambulant::net::audio_format&",
         (std_string, "mime_type"),
         (std_string, "name"),
@@ -462,6 +476,7 @@ animation_destination_object.othermethods = [
 ]
 global_playable_factory_object.othermethods = [
     "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX
+    "ambulant::common::playable* new_aux_audio_playable(ambulant::common::playable_notification *context, int, const ambulant::lib::node *node, ambulant::lib::event_processor *evp, ambulant::net::audio_datasource *src) { abort(); }", # XXX
 ]
 datasource_object.othermethods = [
     "long add_ref() { return 1; }",

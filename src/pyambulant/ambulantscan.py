@@ -45,7 +45,7 @@ def main():
 
        
 class MyScanner(CxxScanner):
-    silent = 0
+    silent = 1
 
     def makeblacklistnames(self):
         return [
@@ -70,6 +70,9 @@ class MyScanner(CxxScanner):
             "event_processor_impl",  # Concrete version of event_processor, ignore.
             "audio_datasource", #XXX
             "video_datasource", #XXX
+            "abstract_demux", #XXX
+            "demux_datasink", #XXX
+            "demux_datasink_ptr", #XXX
             "Where_we_get_our", # Parser trips over a comment:-)
             "q_attributes_list",    # We don't do lists, for now
             "q_attributes_list_ref",    # We don't do lists, for now
@@ -104,6 +107,7 @@ class MyScanner(CxxScanner):
                 'get_tiles',
                 'get_soundalign',
                 'get_tiling',
+                'get_bgimage',
                 'initialize',
                 'get_region_soundalign',
                 'set_region_soundalign',
@@ -127,6 +131,15 @@ class MyScanner(CxxScanner):
             (
               [
                 ('char_ptr', '*', 'InMode+ConstMode'),
+              ],[
+                ('stringptr', '*', '*'),
+               ]
+            ),
+            
+            # Assume a const uint8_t * is an input string
+            (
+              [
+                ('uint8_t_ptr', '*', 'InMode+ConstMode'),
               ],[
                 ('stringptr', '*', '*'),
                ]
