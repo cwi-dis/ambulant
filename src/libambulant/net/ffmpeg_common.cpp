@@ -159,7 +159,7 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_audio_fmt.bits = 16;
 	int audio_idx = audio_stream_nr();
 	if ( audio_idx >= 0) {
-		m_audio_fmt.parameters = (void *)&con->streams[audio_idx]->codec;
+		m_audio_fmt.parameters = (void *) am_get_codec(con->streams[audio_idx]->codec);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: audio_codec_name=%s", am_get_codec_var(m_con->streams[audio_idx]->codec, codec_name));
 		m_audio_fmt.samplerate = am_get_codec_var(con->streams[audio_idx]->codec, sample_rate);
 		m_audio_fmt.channels = am_get_codec_var(con->streams[audio_idx]->codec, channels);

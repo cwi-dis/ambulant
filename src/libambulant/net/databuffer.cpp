@@ -274,7 +274,7 @@ databuffer::get_read_ptr()
 {
 	m_lock.enter();
 	char *rv = (m_buffer + m_rear);
-	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("databuffer(0x%x)::get_read_ptr(): returning 0x%x (m_size = %d)", (void*)this, (void*)rv, m_size);
 
 	assert(!m_reading);
 	m_reading = true;
@@ -291,7 +291,7 @@ databuffer::readdone(int sz)
 
 	assert(m_reading); // if this fails we have a readdone with a get_read_ptr() prior to to readdone call.
 	m_reading = false;
-	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
 	assert((size_t)sz <= m_used);
 #ifdef RANDOM_BYTES
 	unsigned int i;

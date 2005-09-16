@@ -105,7 +105,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d", context->streams[0]->codec->codec_type);
+	
 
 	ffmpeg_demux *thread = new ffmpeg_demux(context, clip_begin, clip_end);
 	
@@ -160,11 +160,11 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	if (enc->codec_type != CODEC_TYPE_VIDEO) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
 		return false;
 	}
 	if (avcodec_find_decoder(enc->codec_id) == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec");
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec");
 		return false;
 	}
 	return true;
@@ -422,7 +422,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	// Get the input data
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
 	
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
 	if(sz == 0 && !m_src->end_of_file() ) {
 		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no data, not eof?");
 		m_lock.leave();
@@ -494,7 +494,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 					}
 					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld", ipts, pts, m_video_clock);
 					// Stupid HAck to get the pts right, we will have to look again to this later
-					pts = m_fmt.frameduration*m_frame_count;
+					// pts = m_fmt.frameduration*m_frame_count;
 					// And store the data.
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
