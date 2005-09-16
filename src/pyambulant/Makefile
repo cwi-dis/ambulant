@@ -19,6 +19,9 @@ install:
 tests:
 	PYTHONPATH=$(BUILDLIBDIR) $(PYTHON) test/test_pyambulant.py
 	
+testplay:
+	PYTHONPATH=$(BUILDLIBDIR) $(PYTHON) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
+	
 $(GENOBJOUTPUT): genobjects.py 
 	$(PYTHON) genobjects.py
 	
