@@ -199,7 +199,7 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 
 
 void 
-demux_audio_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
+demux_audio_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
 	// XXX timestamp is ignored, for now
 	m_lock.enter();
@@ -484,7 +484,7 @@ write_data(long long int frame_nr, char* data, int sz)
 
 
 void 
-demux_video_datasource::data_avail(timestamp_t pts, uint8_t *inbuf, int sz)
+demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
 	m_lock.enter();
 

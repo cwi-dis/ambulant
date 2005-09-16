@@ -122,7 +122,7 @@ class demux_audio_datasource:
 	void read_ahead(timestamp_t clip_begin);
   	void seek(timestamp_t time);
     void readdone(int len);
-    void data_avail(timestamp_t pts, uint8_t *data, int size);
+    void data_avail(timestamp_t pts, const uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
   	timestamp_t get_clip_end();
@@ -171,7 +171,7 @@ class demux_video_datasource:
     void stop();  
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
     void frame_done(timestamp_t timestamp, bool keepdata);
-    void data_avail(timestamp_t pts, uint8_t *data, int size);
+    void data_avail(timestamp_t pts, const uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();
   	timestamp_t get_clip_end();
