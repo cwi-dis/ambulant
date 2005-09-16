@@ -67,8 +67,10 @@
 // AVStream.codec got changed from AVCodecContext to AVCodecContext*
 #if LIBAVFORMAT_BUILD > 4628
 	#define am_get_codec_var(codec,var) codec->var
+	#define am_get_codec(codec) codec
 #else
 	#define am_get_codec_var(codec,var) codec.var
+	#define am_get_codec(codec) &codec
 #endif
 
 using namespace ambulant;
@@ -167,9 +169,10 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
-		m_video_fmt.parameters = (void *)&con->streams[video_stream_nr()]->codec;
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
+		m_video_fmt.parameters = (void *) am_get_codec(con->streams[video_stream_nr()]->codec);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
 	} else {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: No Video stream ?");
 		m_video_fmt.parameters = NULL;
 	}
 	memset(m_sinks, 0, sizeof m_sinks);
@@ -231,7 +234,7 @@ ffmpeg_demux::supported(const net::url& url)
 	
 	AM_DBG dump_format(ic, 0, url_str.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", am_get_codec_var(ic->streams[0]->codec,sample_rate), am_get_codec_var(ic->streams[0]->codec,channels));
-	
+	assert(ic);
 	return ic;
 }
 
@@ -301,8 +304,6 @@ ffmpeg_demux::get_video_format()
 	m_lock.enter();
 	if (m_video_fmt.width == 0) m_video_fmt.width = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, width);
 	if (m_video_fmt.height == 0) m_video_fmt.height = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, height);
-	lib::logger::get_logger()->debug("ffmpeg_demux:: Codec_type %d", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_type));
-
 	m_lock.leave();
 	return m_video_fmt; 
 	

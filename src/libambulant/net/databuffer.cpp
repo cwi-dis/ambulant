@@ -289,7 +289,7 @@ databuffer::readdone(int sz)
 {
 	m_lock.enter();
 
-	assert(m_reading);
+	assert(m_reading); // if this fails we have a readdone with a get_read_ptr() prior to to readdone call.
 	m_reading = false;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
 	assert((size_t)sz <= m_used);

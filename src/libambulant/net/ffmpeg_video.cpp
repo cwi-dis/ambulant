@@ -105,6 +105,8 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d", context->streams[0]->codec->codec_type);
+
 	ffmpeg_demux *thread = new ffmpeg_demux(context, clip_begin, clip_end);
 	
 	// Now, we can check that there is actually video in the file.
@@ -117,7 +119,11 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	// Next, if there is video we check that we can decode this type of video
 	// stream.
 	video_format fmt = thread->get_video_format();
+	//fmt.parameters = (void*) context;
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d", enc->codec_type);
+
 	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
 		thread->cancel();
 		lib::logger::get_logger()->trace("ffmpeg: Unsupported video stream in %s", repr(url).c_str());
@@ -154,11 +160,11 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	if (enc->codec_type != CODEC_TYPE_VIDEO) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
 		return false;
 	}
 	if (avcodec_find_decoder(enc->codec_id) == NULL) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec");
 		return false;
 	}
 	return true;
