@@ -313,7 +313,7 @@ ffmpeg_decoder_datasource::stop()
 }	
 
 int
-ffmpeg_decoder_datasource::_decode(const uint8_t* in, int sz, uint8_t* out, int &outsize)
+ffmpeg_decoder_datasource::_decode(AM_MAC_CONST uint8_t* in, int sz, uint8_t* out, int &outsize)
 {
 	return avcodec_decode_audio(m_con, (short*) out, &outsize, in, sz);
 }

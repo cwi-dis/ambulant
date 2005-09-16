@@ -88,6 +88,13 @@
 //#include <unistd.h>
 //#include <map>
 
+#ifdef AMBULANT_PLATFORM_MACOS
+	#define AM_MAC_CONST const
+#else
+	#define AM_MAC_CONST
+#endif
+
+
 namespace ambulant
 {
 
@@ -139,7 +146,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   	timestamp_t get_clip_begin();
   	timestamp_t get_start_time() { return m_src->get_start_time(); };
   protected:
-  	int _decode(const uint8_t* in, int size, uint8_t* out, int &outsize);
+  	int _decode(AM_MAC_CONST uint8_t* in, int size, uint8_t* out, int &outsize);
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(audio_format &fmt);
 	  
