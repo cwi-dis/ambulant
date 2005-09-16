@@ -64,6 +64,13 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	Extras/Makefile])
 	
 #
+# This variable records whether we have support for
+# any windowing system (so we can give a warning at
+# the end if not)
+#
+with_frontend=false
+
+#
 #
 # Do we want plugin support?
 #
@@ -337,6 +344,7 @@ if test x$qtopia = xtrue -a x$QTOPIA_PREFIX = x; then
 	AC_MSG_ERROR(--with-qtopia without valid QTOPIA_PREFIX directory)
 fi
 if test x$qtopia = xtrue; then
+  with_frontend=true
   QT_PREFIX=$QTOPIA_PREFIX
   CXXFLAGS="-fno-rtti -pipe -DQT_QWS_EBX -DQT_QWS_CUSTOM -DQWS $CXXFLAGS" 
   # flags added for ffmpeg_datasource.cpp
@@ -375,11 +383,10 @@ elif test "x$QTDIR" != "x"; then
 	LIBQT_LIBS="$QT_LIBS"
 	LIBQTPKG="libqt"
 	QT_PREFIX="$QTDIR"
-else
-	AC_MSG_WARN([Qt support disabled, as requested])
-        qt_warning="
-No Qt toolkit found so cannot build Qt player. Unless you are developing your
-own player towards the Ambulant library you probably want this."
+fi
+
+if test "x$test_qt" = "xtrue"; then
+    with_frontend=true
 fi
 
 AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
@@ -793,6 +800,9 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with live.com RTSP:	${test_live}
      "
 
+if test "x$with_frontend" = "x$false"; then
+    AC_MSG_WARN([No GUI support, so no player will be built])
+fi
 AC_MSG_RESULT([$qt_warning]);
 AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$live_warning]);
