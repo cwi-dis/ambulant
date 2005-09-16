@@ -516,6 +516,8 @@ void gui::dx::viewport::redraw() {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
+		if (m_primary_surface->IsLost())
+			m_primary_surface->Restore();
 		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
@@ -523,6 +525,8 @@ void gui::dx::viewport::redraw() {
 		release_surface(tmps);
 	} else {
 		// Copy to screen
+		if (m_primary_surface->IsLost())
+			m_primary_surface->Restore();
 		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
@@ -534,6 +538,8 @@ void gui::dx::viewport::redraw() {
 		}
 	}
 #else
+	if (m_primary_surface->IsLost())
+		m_primary_surface->Restore();
 	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
@@ -628,15 +634,22 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
+		if (m_primary_surface->IsLost())
+			m_primary_surface->Restore();
 		HRESULT hr = m_primary_surface->Blt(&dst_rc, tmps, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
-			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
+			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()A", hr);
 		}
 	} else {
 		// Copy to screen
+		if (m_primary_surface->IsLost())
+			m_primary_surface->Restore();
 		HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
-			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
+			//m_direct_draw->RestoreAllSurfaces();
+			HRESULT hr = m_primary_surface->Restore();
+			if (FAILED(hr))
+				seterror("viewport::redraw(rc)/DirectDrawSurface::Restore()", hr);
 		}
 		// Copy to backing store, for later use with transition
 		// XXX Or should we copy the whole surface?
@@ -646,9 +659,11 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 		}
 	}
 #else
+	if (m_primary_surface->IsLost())
+		m_primary_surface->Restore();
 	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
 	if (FAILED(hr)) {
-		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()", hr);
+		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()C", hr);
 	}
 #endif
 }
