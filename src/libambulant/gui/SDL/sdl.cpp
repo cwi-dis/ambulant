@@ -50,7 +50,9 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
- 
+
+// SDL.h is needed here to solve a compile problem with gcc 4.0
+#include <SDL.h> 
 #include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
 
