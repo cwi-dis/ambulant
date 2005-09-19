@@ -1936,7 +1936,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/expat-unix/include /usr/local/include/SDL ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/ffmpeg-cvs/libavutil ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/UsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/xerces-unix/include";
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/src/player_macosx/Info copy.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 ../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-cvs/libavformat ../../third_party_packages/ffmpeg-cvs/libavcodec ../../third_party_packages/xerces-unix/lib /Users/jack/src/ambulant/third_party_packages/live/liveMedia /Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment /Users/jack/src/ambulant/third_party_packages/live/groupsock /Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment /Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat /Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec /Users/jack/packages/ffmpeg-cvs/libavformat /Users/jack/packages/ffmpeg-cvs/libavcodec /Users/jack/packages/ffmpeg-cvs/libavutil";
 				LIBRARY_STYLE = Static;
