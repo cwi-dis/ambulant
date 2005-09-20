@@ -5,7 +5,7 @@ BGENINPUT=ambulantscan.py ambulantsupport.py
 GENOBJOUTPUT=ambulantobjgen.py ambulantincludegen.py ambulantmodule.h
 PYTHON=python2.5
 
-BUILDLIBDIR=./build/lib.darwin-8.1.0-Power_Macintosh-2.5
+BUILDLIBDIR=./build/lib.darwin-8.2.0-Power_Macintosh-2.5
 
 all: ambulantmodule.so
 

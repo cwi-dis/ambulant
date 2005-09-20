@@ -29,7 +29,7 @@ class AmbulantDocumentPlayer:
         window_f = ambulant.none_window_factory()
         parser_f = ambulant.get_parser_factory()
         datasource_f = ambulant.datasource_factory()
-        datasource_f.add_raw_factory(ambulant.posix_datasource_factory())
+        datasource_f.add_raw_factory(ambulant.get_stdio_datasource_factory())
         playable_f = ambulant.get_global_playable_factory()
         self.factories = (playable_f, window_f, datasource_f, parser_f)
         self.document = None
@@ -39,20 +39,22 @@ class AmbulantDocumentPlayer:
     def opendoc(self, url):
         # Create the document
         self.document = self.create_document(url)
-        
+        if self.document is None: return
         # Create the player
         self.player = create_smil2_player(self.document, self.factories, self)
         self.player.initialize()
         
     def create_document(self, url):
         datalen, data = ambulant.read_data_from_url(url, self.factories[2])
+        if data is None: return None
         assert datalen == len(data)
         document = ambulant.create_from_string(self.factories, data, url)
         document.set_src_url(url)
         return document
         
     def play(self):
-        self.player.play()
+        if self.player:
+            self.player.play()
         
     # document_embedder interface
     def show_file(self, url):
