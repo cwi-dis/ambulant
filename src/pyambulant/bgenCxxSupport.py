@@ -153,7 +153,7 @@ class CxxMixin(CxxGeneratorGroupMixin):
         the Convert method has been declared a friend of the C++ encapsulation
         class. And it assumes RTTI."""
         # XXX Not sure this is actually correct. What will happen to classes
-        # that have been subtyped in C++??
+        # that have been subtyped in C++?? Maybe we should use typeid()?
         DedentLevel()
         Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
         IndentLevel()
@@ -172,8 +172,11 @@ class CxxMixin(CxxGeneratorGroupMixin):
         DedentLevel()
         Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
         IndentLevel()
+        Output("if (!%s_Check(v))", self.prefix)
+        OutLbrace()
         Output("*p_itself = Py_WrapAs_%s(v);", self.name)
         Output("if (*p_itself) return 1;")
+        OutRbrace()
         DedentLevel()
         Output("#endif")
         IndentLevel()
