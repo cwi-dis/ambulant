@@ -41,13 +41,20 @@ class AmbulantDocumentPlayer:
         self.document = self.create_document(url)
         if self.document is None: return
         # Create the player
+        print 'Creating player'
         self.player = create_smil2_player(self.document, self.factories, self)
+        print 'Initializing player'
         self.player.initialize()
         
     def create_document(self, url):
+        print 'Reading document data'
         datalen, data = ambulant.read_data_from_url(url, self.factories[2])
-        if data is None: return None
+        if data is None:
+            print 'Read_data_from_url returns None'
+            return None
+        print 'datalen=', datalen, 'len(data)=', len(data)
         assert datalen == len(data)
+        print 'Creating document'
         document = ambulant.create_from_string(self.factories, data, url)
         document.set_src_url(url)
         return document

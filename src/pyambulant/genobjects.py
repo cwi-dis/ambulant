@@ -95,6 +95,9 @@ OBJECTS=[
 	("video_datasource_factory", "ambulant::net::video_datasource_factory", None),
 	("audio_parser_finder", "ambulant::net::audio_parser_finder", None),
 	("audio_filter_finder", "ambulant::net::audio_filter_finder", None),
+	
+	"net/stdio_datasource.h",
+	"net/posix_datasource.h",
 ]
 
 out = open('ambulantobjgen.py', 'w')

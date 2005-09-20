@@ -301,9 +301,17 @@ execfile("ambulanttypetest.py")
 
 print "=== Populating method and function lists ==="
 
-# Create the generator classes used to populate the lists
-Function = FunctionGenerator
-Method = CxxMethodGenerator
+class AllowThreadMixin:
+    def beginallowthreads(self):
+        Output("PyThreadState *_save = PyEval_SaveThread();")
+        
+    def endallowthreads(self):
+        Output("PyEval_RestoreThread(_save);")
+        
+class Function(AllowThreadMixin, FunctionGenerator):
+    pass
+class Method(AllowThreadMixin, CxxMethodGenerator):
+    pass
 ConstMethod = Method
 ConstructorMethod = CxxConstructorGenerator
 
