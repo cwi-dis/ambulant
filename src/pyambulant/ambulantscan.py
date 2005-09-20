@@ -162,12 +162,15 @@ class MyScanner(CxxScanner):
                ]
             ),
             
-            # And also for char **
+            # And also handle char **, size_t * (malloced buffer plus size)
+            # The InOutMode is a hack: it makes sure that the buffer is set to
+            # NULL.
             (
               [
-                ('char_ptr_ptr', 'result', 'InMode'),
+                ('char_ptr_ptr', '*', 'InMode'),
+                ('size_t_ptr', '*', 'InMode'),
               ],[
-                ('output_stringptr', '*', 'OutMode'),
+                ('output_malloc_buf', '*', 'InOutMode'),
                ]
             ),
             

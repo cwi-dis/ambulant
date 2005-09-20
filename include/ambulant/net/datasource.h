@@ -535,7 +535,8 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 
 
 /// convenience function: read a whole document through any raw datasource.
-AMBULANTAPI int read_data_from_url(const net::url &url, datasource_factory *df, char **result);
+/// Returns true on success, and pointer to malloc()ed data plus its size.
+AMBULANTAPI bool read_data_from_url(const net::url &url, datasource_factory *df, char **result, size_t *sizep);
 
 } // end namespace net
 

@@ -64,7 +64,8 @@ duration = StdPairType(bool, double, "ambulant::common::duration")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
-output_stringptr = Type("char *", "s")  # BE CAREFUL!
+# output_stringptr = Type("char *", "s")  # BE CAREFUL!
+output_malloc_buf = MallocHeapOutputBufferType("char", "size_t", "l")
 
 # Ambulant-specific
 region_dim = OpaqueByRefType("ambulant::common::region_dim", "ambulant_region_dim")

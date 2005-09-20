@@ -48,12 +48,9 @@ class AmbulantDocumentPlayer:
         
     def create_document(self, url):
         print 'Reading document data'
-        datalen, data = ambulant.read_data_from_url(url, self.factories[2])
-        if data is None:
-            print 'Read_data_from_url returns None'
-            return None
-        print 'datalen=', datalen, 'len(data)=', len(data)
-        assert datalen == len(data)
+        ok, data = ambulant.read_data_from_url(url, self.factories[2])
+        if not ok:
+            print 'Read_data_from_url failed'
         print 'Creating document'
         document = ambulant.create_from_string(self.factories, data, url)
         document.set_src_url(url)
