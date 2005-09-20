@@ -260,6 +260,27 @@ seterror(const char *funcname, HRESULT hr){
 	viewport_logger->error( "%s failed, error = %x, %s", funcname, hr, pszmsg);
 	LocalFree(pszmsg);
 }
+// wrapper for Blt on primary surface to check for recoverable errors
+#define MAX_RETRIES 1
+static void 
+primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect, 
+			LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags, LPDDBLTFX lpDDBltFX){
+	HRESULT hr = DD_OK;
+	int retries = MAX_RETRIES;
+	while (retries--) {
+		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
+		if (hr == DDERR_SURFACELOST && retries >= 0) {
+			viewport_logger->trace("primary_Blt recovering from DDERR_LOSTSURFACE retry=%d", MAX_RETRIES-retries); 
+			hr = primary_surface->Restore();
+			if (FAILED(hr)) {
+				seterror("primary_Blt/DirectDrawSurface::Restore()", hr);
+				return;
+			}
+		} else break;
+	}
+	if (FAILED(hr))
+		seterror("primary_Blt/DirectDrawSurface::Blt()", hr);
+}
 
 const lib::color_t CLR_DEFAULT = RGB(255, 255, 255);
 
@@ -516,21 +537,11 @@ void gui::dx::viewport::redraw() {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
-		if (m_primary_surface->IsLost())
-			m_primary_surface->Restore();
-		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
-		if (FAILED(hr)) {
-			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
-		}
+		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
 		release_surface(tmps);
 	} else {
 		// Copy to screen
-		if (m_primary_surface->IsLost())
-			m_primary_surface->Restore();
 		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
-		if (FAILED(hr)) {
-			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
-		}
 		// Copy to backing store for posible fs transition later
 		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
@@ -538,12 +549,7 @@ void gui::dx::viewport::redraw() {
 		}
 	}
 #else
-	if (m_primary_surface->IsLost())
-		m_primary_surface->Restore();
-	HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
-	}
+	primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
 #endif
 }
 
@@ -634,37 +640,19 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
-		if (m_primary_surface->IsLost())
-			m_primary_surface->Restore();
-		HRESULT hr = m_primary_surface->Blt(&dst_rc, tmps, &src_rc, flags, NULL);
-		if (FAILED(hr)) {
-			seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()A", hr);
-		}
+		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
 	} else {
 		// Copy to screen
-		if (m_primary_surface->IsLost())
-			m_primary_surface->Restore();
-		HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
-		if (FAILED(hr)) {
-			//m_direct_draw->RestoreAllSurfaces();
-			HRESULT hr = m_primary_surface->Restore();
-			if (FAILED(hr))
-				seterror("viewport::redraw(rc)/DirectDrawSurface::Restore()", hr);
-		}
+		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
 		// Copy to backing store, for later use with transition
 		// XXX Or should we copy the whole surface?
-		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 		}
 	}
 #else
-	if (m_primary_surface->IsLost())
-		m_primary_surface->Restore();
-	HRESULT hr = m_primary_surface->Blt(&dst_rc, m_surface, &src_rc, flags, NULL);
-	if (FAILED(hr)) {
-		seterror("viewport::redraw(rc)/DirectDrawSurface::Blt()C", hr);
-	}
+	primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
 #endif
 }
 
