@@ -265,6 +265,7 @@ void net::url::set_from_localhost_file_uri(lib::scanner& sc, const std::string& 
 	m_host = "localhost";
 	m_port = 0;
 	set_parts(sc, pat);
+	// The initial / in the pathname has been eaten
 }
 
 // pat: "/n"
@@ -318,6 +319,9 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	const std::string& toks = sc.get_tokens();
 	size_type n = toks.length();
 	size_type i1 = pat.length();
+	// Most patterns include the initial / of the pathname, but we want it in
+	// the pathname.
+	if (i1 > 0) i1--;
 	size_type i2 = toks.find_last_of('?');
 	size_type i3 = toks.find_last_of('#');
 	i2 = (i2 == std::string::npos)?n:i2;

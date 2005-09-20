@@ -261,13 +261,12 @@ inline std::string repr(const ambulant::net::url& u) {
 	if (u.is_absolute()) {
 		if(u.get_protocol() == "file") {
 			os << u.get_protocol() << "://" << 
-				((u.get_host()=="localhost")?"":u.get_host()) << "/";
+				((u.get_host()=="localhost")?"":u.get_host());
 		} else if (u.get_protocol() == "data") {
 			os << "data:,";
 		} else {
 			os << u.get_protocol() << "://" << u.get_host();
 			if(u.get_port() != 0) os << ":" << int(u.get_port());
-			os <<  "/";
 		}
 	}
 	os << u.get_path();
@@ -281,7 +280,7 @@ inline std::string repr(const ambulant::net::url& u) {
 inline std::string repr(const ambulant::net::url& u) {
 	std::string os;
 	if (u.is_absolute())
-		os += u.get_protocol() + "//" + u.get_host() + "/" + u.get_path();
+		os += u.get_protocol() + "//" + u.get_host() + u.get_path();
 	else
 		os += u.get_path();
 	return os;
