@@ -203,7 +203,7 @@ class CxxScanner(Scanner):
         Scanner.__init__(self, input, output, defsoutput)
         self.initnamespaces()
         self.silent = 0
-        self.debug = 1
+        self.debug = 0
         
     def initnamespaces(self):
         self.namespaces = []
@@ -288,6 +288,7 @@ class CxxScanner(Scanner):
         name = match.group("name")
         self.last_scope_name = name
         self.last_scope_was_class = True
+        self.visible = "private"
         if self.debug:
             self.report("      %d: namespace %s" % (len(self.namespaces), name))
             
@@ -306,7 +307,6 @@ class CxxScanner(Scanner):
             self.head = self.head2
             self.type = self.type2
             self.whole = self.whole2
-            self.visible = "private"
         
     def doendscope(self, count):
         for i in range(count):
@@ -325,6 +325,8 @@ class CxxScanner(Scanner):
     def dovisibility(self, match):
         ## assert self.in_class_defn
         self.visible = match.group("visibility")
+        if self.debug:
+            self.report("      %d: %s:" % (len(self.namespaces), self.visible))
 
     def scan(self):
         if not self.scanfile:
@@ -443,10 +445,12 @@ class CxxScanner(Scanner):
             classname = self.pythonizename(classname)
             # First check that we don't skip this class altogether
             if classname in self.blacklisttypes:
+                self.report("*** class %s blacklisted", classname)
                 return None, None
             
             #Then, skip non-public methods
             if self.visible != 'public':
+                self.report("*** %s method skipped", self.visible)
                 return None, None
                 
             # Next, treat static methods as functions.
