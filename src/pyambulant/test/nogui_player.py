@@ -42,7 +42,7 @@ class AmbulantDocumentPlayer:
         if self.document is None: return
         # Create the player
         print 'Creating player'
-        self.player = create_smil2_player(self.document, self.factories, self)
+        self.player = ambulant.create_smil2_player(self.document, self.factories, self)
         print 'Initializing player'
         self.player.initialize()
         
