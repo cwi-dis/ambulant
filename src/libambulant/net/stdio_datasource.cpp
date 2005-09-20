@@ -55,24 +55,27 @@
 #include "ambulant/net/stdio_datasource.h"
 //#include <unistd.h>
 
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-
-// ***********************************  C++  CODE  ***********************************
-
-// data_buffer
-
 using namespace ambulant;
 using namespace net;
 
-datasource* 
+raw_datasource_factory *
+ambulant::net::get_stdio_datasource_factory()
+{
+    return new stdio_datasource_factory();
+}
+
+datasource * 
 stdio_datasource_factory::new_raw_datasource(const url& url)
 {
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
-	if (url.get_url() != "") {
-		FILE *fp = fopen(url.get_url().c_str(), "rb");
+	if (url.is_local_file()) {
+		std::string filename = url.get_file();
+		FILE *fp = fopen(filename.c_str(), "rb");
 		if (fp == NULL) return NULL;
 		return new stdio_datasource(url, fp);
 	} else {

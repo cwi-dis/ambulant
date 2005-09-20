@@ -61,14 +61,16 @@
 #endif
 
 
-// ***********************************  C++  CODE  ***********************************
-
-// data_buffer
-
 using namespace ambulant;
 using namespace net;
 
-datasource* 
+raw_datasource_factory *
+ambulant::net::get_posix_datasource_factory()
+{
+    return new posix_datasource_factory();
+}
+
+datasource * 
 posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
 	AM_DBG lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
