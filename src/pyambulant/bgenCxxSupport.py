@@ -384,16 +384,16 @@ class CxxScanner(Scanner):
                     if match and match.group('name') == self.namespaces[-1]:
                         if self.debug:
                             self.report("\tmatches constructor head.")
-                            # It appears to be a constructor. Temporarily use
-                            # different patterns for type and whole, which will
-                            # keep dofuncspec() somewhat happy.
-                            keep_type = self.type
-                            keep_whole = self.whole
-                            self.type = self.typeconstructor
-                            self.whole = self.wholeconstructor
-                            line = self.dofuncspec()
-                            self.type = keep_type
-                            self.whole = keep_whole
+                        # It appears to be a constructor. Temporarily use
+                        # different patterns for type and whole, which will
+                        # keep dofuncspec() somewhat happy.
+                        keep_type = self.type
+                        keep_whole = self.whole
+                        self.type = self.typeconstructor
+                        self.whole = self.wholeconstructor
+                        line = self.dofuncspec()
+                        self.type = keep_type
+                        self.whole = keep_whole
                             
                 match = self.namespace.match(line)
                 if match:
