@@ -169,7 +169,7 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
-		m_video_fmt.parameters = (void *) am_get_codec(con->streams[video_stream_nr()]->codec);
+		m_video_fmt.parameters = (void *) m_con->streams[video_stream_nr()];
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: No Video stream ?");
@@ -216,7 +216,7 @@ ffmpeg_demux::supported(const net::url& url)
 		fmt = av_find_input_format(url.get_file().c_str());
 		
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), url.get_file().c_str(), (void*)fmt);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), url.get_file().c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
 	int err = av_open_input_file(&ic, url_str.c_str(), fmt, 0, 0);
 	if (err) {
