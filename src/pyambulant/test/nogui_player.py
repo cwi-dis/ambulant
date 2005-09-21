@@ -18,7 +18,22 @@ class AmbulantPlayer:
         # Initialize data directory
         pass        
         
+class WrapWindowFactory:
+    def __init__(self, wf):
+        self.wf = wf
         
+    def new_background_renderer(self, *args):
+        print "WrapWindowFactory.new_background_renderer(self=%s, args=%s)" % (self, args)
+        rv = self.wf.new_background_renderer(*args)
+        print "--> %s" % rv
+        return rv
+    
+    def new_window(self, *args):
+        print "WrapWindowFactory.new_window(self=%s, args=%s)" % (self, args)
+        rv = self.wf.new_window(*args)
+        print "--> %s" % rv
+        return rv
+    
 #class AmbulantDocumentPlayer(ambulant.document_embedder):
 class AmbulantDocumentPlayer:
     # For now, inherit the application, because we will only play
@@ -26,7 +41,8 @@ class AmbulantDocumentPlayer:
     
     def __init__(self, url):
         # Create the factories
-        window_f = ambulant.none_window_factory()
+        real_window_f = ambulant.none_window_factory()
+        window_f = WrapWindowFactory(real_window_f)
         parser_f = ambulant.get_parser_factory()
         datasource_f = ambulant.datasource_factory()
         datasource_f.add_raw_factory(ambulant.get_stdio_datasource_factory())
