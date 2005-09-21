@@ -73,6 +73,16 @@
 // How many video frames we would like to buffer at most.
 #define MAX_VIDEO_FRAMES 30
 
+// This construction is needed to get the CVS version of ffmpeg to work:
+// AVStream.codec got changed from AVCodecContext to AVCodecContext*
+#if LIBAVFORMAT_BUILD > 4628
+	#define am_get_codec_var(codec,var) codec->var
+	#define am_get_codec(codec) codec
+#else
+	#define am_get_codec_var(codec,var) codec.var
+	#define am_get_codec(codec) &codec
+#endif
+
 using namespace ambulant;
 using namespace net;
 
@@ -122,7 +132,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	//fmt.parameters = (void*) context;
 	AVStream *enc = (AVStream *)fmt.parameters;
 	
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d, codec_id %d", enc->codec.codec_type, enc->codec.codec_id);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d, codec_id %d", am_get_codec_var(enc->codec, codec_type), am_get_codec_var(enc->codec, codec_id));
    
 	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
 		thread->cancel();
@@ -159,12 +169,12 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
 	if (fmt.name != "ffmpeg") return false;
 	AVStream *enc = (AVStream *)fmt.parameters;
-	if (enc->codec.codec_type != CODEC_TYPE_VIDEO) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec.codec_type, CODEC_TYPE_VIDEO);
+	if (am_get_codec_var(enc->codec, codec_type) != CODEC_TYPE_VIDEO) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", am_get_codec_var(enc->codec, codec_type), CODEC_TYPE_VIDEO);
 		return false;
 	}
-	if (avcodec_find_decoder(enc->codec.codec_id) == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec (codec_id: %d)", enc->codec.codec_id);
+	if (avcodec_find_decoder(am_get_codec_var(enc->codec, codec_id)) == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec (codec_id: %d)", am_get_codec_var(enc->codec, codec_id));
 		return false;
 	}
 	return true;
@@ -668,19 +678,19 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
 		AVStream *enc = (AVStream *)fmt.parameters;
-		m_con = &enc->codec;
+		m_con = am_get_codec(enc->codec);
 		if (enc == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		if (enc->codec.codec_type != CODEC_TYPE_VIDEO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), enc->codec.codec_type);
+		if (am_get_codec_var(enc->codec, codec_type) != CODEC_TYPE_VIDEO) {
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), am_get_codec_var(enc->codec, codec_type));
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec.codec_id);
-		AVCodec *codec = avcodec_find_decoder(enc->codec.codec_id);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", am_get_codec_var(enc->codec, codec_id));
+		AVCodec *codec = avcodec_find_decoder(am_get_codec_var(enc->codec, codec_id));
 		if (codec == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), (void*) fmt.parameters);
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
