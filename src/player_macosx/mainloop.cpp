@@ -230,7 +230,7 @@ mainloop::create_document(ambulant::net::url& url)
 		url = url.join_to_base(cwd_url);
 		AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
-	int size;
+	size_t size;
 	bool ok = ambulant::net::read_data_from_url(url, m_factory->df, &data, &size);
 	if (!ok) {
 		ambulant::lib::logger::get_logger()->error(gettext("%s: Cannot open"), url.get_url().c_str());

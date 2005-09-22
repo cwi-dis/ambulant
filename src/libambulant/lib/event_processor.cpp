@@ -186,3 +186,27 @@ event_processor_impl::serve_event(delta_timer& dt, std::queue<event*> *qp)
 	}
 	return must_serve; 
 }
+
+#ifndef NDEBUG
+void
+event_processor_impl::dump()
+{
+//	std::queue<event*>::iterator i;
+	lib::logger::get_logger()->trace("event_processor_impl[0x%x]::dump():", (void *)this);
+	lib::logger::get_logger()->trace("high waiting:");
+	m_high_delta_timer.write_trace();
+//	lib::logger::get_logger()->trace("high runnable:");
+//	for (i=m_high_q.begin(); i != m_high_q.end(); i++)
+//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+	lib::logger::get_logger()->trace("med waiting:");
+	m_med_delta_timer.write_trace();
+//	lib::logger::get_logger()->trace("med runnable:");
+//	for (i=m_med_q.begin(); i != m_med_q.end(); i++)
+//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+	lib::logger::get_logger()->trace("low waiting:");
+	m_low_delta_timer.write_trace();
+//	lib::logger::get_logger()->trace("low runnable:");
+//	for (i=m_low_q.begin(); i != m_low_q.end(); i++)
+//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+}
+#endif

@@ -106,12 +106,6 @@ posix_datasource::posix_datasource(std::string filename, int file)
 	}
 }
 
-
-void
-posix_datasource::callback()
-{
-}
-
 bool
 posix_datasource::end_of_file()
 {
@@ -199,16 +193,10 @@ posix_datasource::read_file()
 	//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {
-		//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: getting buffer pointer");
             buf = m_buffer->get_write_ptr(BUFSIZ);
-			//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: buffer ptr : %x", buf);
-			if (buf) {
-				//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: start reading %d bytes", BUFSIZ);
-				n = ::read(m_stream, buf, BUFSIZ);
-				//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: done reading %d bytes", n);
-				if (n > 0) m_buffer->pushdata(n); 
-			}
-		
+			assert(buf);
+			n = ::read(m_stream, buf, BUFSIZ);
+			m_buffer->pushdata(n > 0 ? n : 0); 		
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
@@ -222,6 +210,7 @@ char*
 posix_datasource::get_read_ptr()
 {
 	m_lock.enter();
+	assert(!_end_of_file());
 	char *rv = m_buffer->get_read_ptr();
 	m_lock.leave();
 	return rv;
@@ -233,12 +222,10 @@ posix_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 	m_lock.enter();
  	if (! _end_of_file() ) read_file();
 	
-	if (m_buffer->size() > 0 ) {
-    	if (evp && cbevent) {
-			AM_DBG lib::logger::get_logger()->debug("posix_datasource.start: trigger readdone callback (x%x)", cbevent);
-			evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
-    	}
-	}
+    assert(evp);
+	assert(cbevent);
+	AM_DBG lib::logger::get_logger()->debug("posix_datasource.start: trigger readdone callback (x%x)", cbevent);
+	evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
 	m_lock.leave();
 }
  

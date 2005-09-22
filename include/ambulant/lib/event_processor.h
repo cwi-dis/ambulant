@@ -131,7 +131,9 @@ class event_processor_impl : public event_processor {
 	void cancel_all_events();
 	void serve_events();
 	void stop_processor_thread() {};
-	
+#ifndef NDEBUG
+	void dump();
+#endif
   protected:
 	// called by add_event
 	// wakes up thread executing serve_events

@@ -1,6 +1,7 @@
 import sys
 import os
 import urllib
+import time
 import ambulant
 
 class AmbulantPlayer:
@@ -59,8 +60,9 @@ class AmbulantDocumentPlayer:
         # Create the player
         print 'Creating player'
         self.player = ambulant.create_smil2_player(self.document, self.factories, self)
+        #self.player = ambulant.create_mms_player(self.document, self.factories)
         print 'Initializing player'
-        self.player.initialize()
+        #self.player.initialize()
         
     def create_document(self, url):
         print 'Reading document data'
@@ -74,7 +76,9 @@ class AmbulantDocumentPlayer:
         
     def play(self):
         if self.player:
-            self.player.play()
+            self.player.start()
+        while not self.player.is_done():
+            time.sleep(1)
         
     # document_embedder interface
     def show_file(self, url):

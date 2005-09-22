@@ -106,12 +106,6 @@ stdio_datasource::stdio_datasource(const url& url, FILE* file)
 	}
 }
 
-
-void
-stdio_datasource::callback()
-{
-}
-
 bool
 stdio_datasource::end_of_file()
 {
@@ -192,16 +186,11 @@ stdio_datasource::read_file()
 	//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: 	reading file ");
 	if (m_stream >= 0) {
 		do {
-		//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: getting buffer pointer");
             buf = m_buffer->get_write_ptr(BUFSIZ);
-			//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: buffer ptr : %x", buf);
-			if (buf) {
-				//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: start reading %d bytes", BUFSIZ);
-				n = fread(buf, 1, BUFSIZ, m_stream);
-				//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: done reading %d bytes", n);
-				if (n > 0) m_buffer->pushdata((int)n); 
-			}
-		
+			assert(buf);
+			n = fread(buf, 1, BUFSIZ, m_stream);
+			assert(n > 0);
+			m_buffer->pushdata(n > 0 ? n : 0);		
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
@@ -215,6 +204,7 @@ char*
 stdio_datasource::get_read_ptr()
 {
 	m_lock.enter();
+	assert(!_end_of_file());
 	char * rv = m_buffer->get_read_ptr();
 	m_lock.leave();
 	return rv;
@@ -226,12 +216,10 @@ stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 	m_lock.enter();
  	if (! _end_of_file() ) read_file();
 	
-	if (m_buffer->size() > 0 ) {
-    	if (evp && cbevent) {
-			AM_DBG lib::logger::get_logger()->debug("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
-			evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
-    	}
-	}
+    assert(evp);
+	assert(cbevent);
+	AM_DBG lib::logger::get_logger()->debug("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
+	evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
 	m_lock.leave();
 }
  

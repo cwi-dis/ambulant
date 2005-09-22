@@ -100,7 +100,6 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
   	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 	void stop();
 	void readdone(int len);
-    void callback();
     bool end_of_file();
 	
 		
