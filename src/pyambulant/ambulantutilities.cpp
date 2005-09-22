@@ -55,7 +55,7 @@ ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself)
     double dv;
     int iv;
     
-    if (PyArg_Parse(v, "sd", &tp, &dv)) {
+    if (PyArg_ParseTuple(v, "sd", &tp, &dv)) {
         if (strcmp(tp, "auto") == 0) {
             *p_itself = ambulant::common::region_dim();
             return 1;
@@ -94,7 +94,7 @@ ambulant_rect_Convert(PyObject *v, ambulant::lib::rect *p_itself)
 {
     int l, t, r, b;
     
-    if (!PyArg_Parse(v, "llll", &l, &t, &r, &b))
+    if (!PyArg_ParseTuple(v, "llll", &l, &t, &r, &b))
         return 0;
     *p_itself = ambulant::lib::rect(
                 ambulant::lib::point(l, t),
@@ -110,7 +110,7 @@ PyObject *ambulant_point_New(const ambulant::lib::point& itself)
 int
 ambulant_point_Convert(PyObject *v, ambulant::lib::point *p_itself)
 {
-    if (!PyArg_Parse(v, "ll", &p_itself->x, &p_itself->y))
+    if (!PyArg_ParseTuple(v, "ll", &p_itself->x, &p_itself->y))
         return 0;
     return 1;
 }
@@ -123,7 +123,7 @@ PyObject *ambulant_size_New(const ambulant::lib::size& itself)
 int
 ambulant_size_Convert(PyObject *v, ambulant::lib::size *p_itself)
 {
-    if (!PyArg_Parse(v, "ll", &p_itself->w, &p_itself->h))
+    if (!PyArg_ParseTuple(v, "ll", &p_itself->w, &p_itself->h))
         return 0;
     return 1;
 }
