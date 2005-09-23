@@ -143,7 +143,8 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_clip_begin_set(false)
 {
 #if LIBAVFORMAT_BUILD > 4609
-
+	
+	assert(m_clip_begin >= 0);
 	if (m_clip_begin > 0) {
 		assert (m_con);
 		assert (m_con->iformat);
@@ -264,7 +265,6 @@ ffmpeg_demux::video_stream_nr()
 	int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
 		if (am_get_codec_var(m_con->streams[stream_index]->codec, codec_type) == CODEC_TYPE_VIDEO) {
-			lib::logger::get_logger()->debug("ffmpeg_demux::supported: codec_type: %d (%d), stream_index = %d", am_get_codec_var(m_con->streams[stream_index]->codec, codec_type), CODEC_TYPE_VIDEO, stream_index );
 			return stream_index;
 		}
 	}

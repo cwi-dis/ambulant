@@ -396,7 +396,7 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", frameduration);
 #else
 		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000/ (double) m_con->time_base.den);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
 #endif
 		m_fmt.frameduration = frameduration;
 	}
@@ -420,7 +420,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	int w,h;
 	unsigned char* ptr;
 	
-	timestamp_t ipts;
+	timestamp_t ipts = 0;
 	uint8_t *inbuf;
 	int sz;
 	got_pic = 0;
@@ -507,7 +507,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 						if (frame->repeat_pict)
 							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 						m_video_clock += frame_delay;
-#else
+#else // ffmpeg 0.4.8 
 					if (pts != 0) {
 						m_video_clock = pts;
 					} else {

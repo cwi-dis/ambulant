@@ -565,7 +565,7 @@ demux_video_datasource::get_clip_begin()
 	m_lock.enter();
 	assert(m_thread);
 	timestamp_t clip_begin = m_thread->get_clip_begin();
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_clip_begin: clip_begin=%d", clip_begin);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::get_clip_begin: clip_begin=%d", clip_begin);
 	m_lock.leave();
 	return  clip_begin;
 }
