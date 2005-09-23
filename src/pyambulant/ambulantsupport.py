@@ -469,6 +469,7 @@ bgrenderer_object.othermethods = [
 ]
 surface_object.othermethods = [
     "ambulant::lib::rect get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }", # XXX
+    "ambulant::common::tile_positions get_tiles(ambulant::lib::size s, ambulant::lib::rect r) const { return surface::get_tiles(s, r); }",
 ]
 surface_template_object.othermethods = [
     "void animated() { abort(); }", # XXX
@@ -483,6 +484,9 @@ animation_destination_object.othermethods = [
     "bool get_showbackground() const { return region_info::get_showbackground(); }",
     "bool is_subregion() const { return region_info::is_subregion(); }",
     "double get_soundlevel() const { return region_info::get_soundlevel(); }",
+    "ambulant::common::sound_alignment get_soundalign() const { return region_info::get_soundalign(); }",
+    "ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }",
+    "const char* get_bgimage() const { return region_info::get_bgimage(); }",
 #    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
 #    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
 ]
