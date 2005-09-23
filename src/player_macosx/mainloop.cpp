@@ -47,9 +47,11 @@
  */
 
 
-//#define WITH_NONE_VIDEO
 #define WITH_FFMPEG_VIDEO
 //#define TEST_PLAYBACK_FEEDBACK
+// Define NONE_PLAYER to skip all cocoa support but use the dummy
+// none_window and none_playable in stead.
+//#define NONE_PLAYER
 
 #include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
@@ -61,8 +63,8 @@
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
-#ifdef WITH_NONE_VIDEO
-#include "ambulant/gui/none/none_factory.h"
+#ifdef NONE_PLAYER
+#include "ambulant/gui/none/none_gui.h"
 #endif
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/posix_datasource.h"
@@ -125,6 +127,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 {
 	using namespace ambulant;
 	m_factory = new common::factories;
+#ifdef NONE_PLAYER
+	// Replace the real window factory with a none_window_factory instance.
+	wf = new gui::none::none_window_factory();
+#endif // NONE_PLAYER
 	m_factory->wf = wf;
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
 	// Populate the parser factory
@@ -135,7 +141,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 
 	// Next create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
-	
+
+#ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add live_audio_datasource_factory");
 	m_factory->df->add_video_factory(new net::live_video_datasource_factory());
@@ -145,7 +152,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 #ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	m_factory->df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-#endif
+#endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	m_factory->df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_parser_finder");
@@ -154,7 +161,8 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	m_factory->df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	m_factory->df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
-#endif
+#endif // WITH_FFMPEG
+#endif // NONE_PLAYER
 #ifdef WITH_STDIO_DATASOURCE
 	// This is for debugging only, really: the posix datasource
 	// should always perform better, and is always available on OSX.
@@ -169,15 +177,13 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	// Next create the playable factory and populate it.
 	common::global_playable_factory *rf = common::get_global_playable_factory();
 	m_factory->rf = rf;
-#ifdef WITH_NONE_VIDEO
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for none_video");
-	rf->add_factory( new gui::none::none_video_factory(m_factory) );      
-#endif
+#ifndef NONE_PLAYER
 	rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_factory));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
 	rf->add_factory( new gui::sdl::sdl_renderer_factory(m_factory) );      
-#endif
+#endif // WITH_SDL
+#endif // NONE_PLAYER
 
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 
