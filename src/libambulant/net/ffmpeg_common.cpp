@@ -169,7 +169,7 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
-		m_video_fmt.parameters = (void *) m_con->streams[video_stream_nr()];
+		m_video_fmt.parameters = (void *) am_get_codec(m_con->streams[video_stream_nr()]->codec);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: No Video stream ?");
@@ -346,6 +346,7 @@ ffmpeg_demux::run()
 {
 	m_lock.enter();
 	int pkt_nr;
+	int streamnr = video_stream_nr(); ;
 	timestamp_t pts;
 	pkt_nr = 0;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: started");
@@ -385,16 +386,24 @@ ffmpeg_demux::run()
 			if (sink && !exit_requested()) {
 				
 				pts = 0;
+				
+#if LIBAVFORMAT_BUILD > 4628
+				if (pkt->dts != AV_NOPTS_VALUE) {
+            		pts = (timestamp_t)( (double) m_con->streams[streamnr]->time_base.num /m_con->streams[streamnr]->time_base.den)*pkt->dts;
+				}
+#elif LIBAVFORMAT_BUILD > 4609
 				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
-#if LIBAVFORMAT_BUILD > 4609
 					pts = pkt->pts;							
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: ffmpeg 0.4.9 pts = %lld", pts);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: ffmpeg 0.4.9 pts = %lld", pts);					
+				}
 #else
+				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
 					int num = m_con->pts_num;
 					int den = m_con->pts_den;
 					pts = (timestamp_t) round(((double) pkt->pts * (((double) num)*1000000)/den));
-#endif
 				}
+#endif
+				
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration);
 				
 				sink->data_avail(pts, pkt->data, pkt->size);

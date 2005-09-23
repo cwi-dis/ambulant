@@ -130,9 +130,11 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	// stream.
 	video_format fmt = thread->get_video_format();
 	//fmt.parameters = (void*) context;
-	AVStream *enc = (AVStream *)fmt.parameters;
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d, codec_id %d", am_get_codec_var(enc->codec, codec_type), am_get_codec_var(enc->codec, codec_id));
+
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d, codec_id %d", enc->codec_type, enc->codec_id);
+
    
 	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
 		thread->cancel();
@@ -168,13 +170,14 @@ bool
 ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
 	if (fmt.name != "ffmpeg") return false;
-	AVStream *enc = (AVStream *)fmt.parameters;
-	if (am_get_codec_var(enc->codec, codec_type) != CODEC_TYPE_VIDEO) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", am_get_codec_var(enc->codec, codec_type), CODEC_TYPE_VIDEO);
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+	if (enc->codec_type != CODEC_TYPE_VIDEO) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
 		return false;
 	}
-	if (avcodec_find_decoder(am_get_codec_var(enc->codec, codec_id)) == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec (codec_id: %d)", am_get_codec_var(enc->codec, codec_id));
+	if (avcodec_find_decoder(enc->codec_id) == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec (codec_id: %d)", enc->codec_id);
+
 		return false;
 	}
 	return true;
@@ -392,8 +395,8 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 		timestamp_t frameduration = (framebase*1000000)/framerate;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", frameduration);
 #else
-		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num / (double) m_con->time_base.den);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", frameduration);
+		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000/ (double) m_con->time_base.den);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
 #endif
 		m_fmt.frameduration = frameduration;
 	}
@@ -494,7 +497,17 @@ ffmpeg_video_decoder_datasource::data_avail()
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:frame has B frames but this frame is no B frame  (this=0x%x) ", this);
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
 					}
-					
+#if LIBAVFORMAT_BUILD > 4906
+					if (pts != 0) {
+						m_video_clock = pts;
+					} else {
+						pts = m_video_clock;
+					}
+						timestamp_t frame_delay = m_fmt.frameduration;
+						if (frame->repeat_pict)
+							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
+						m_video_clock += frame_delay;
+#else
 					if (pts != 0) {
 						m_video_clock = pts;
 					} else {
@@ -504,7 +517,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 						m_video_clock += frame_delay;
 					}
-					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld", ipts, pts, m_video_clock);
+#endif				
+					/*AM_DBG*/ lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld", ipts, pts, m_video_clock);
 					// Stupid HAck to get the pts right, we will have to look again to this later
 					// pts = m_fmt.frameduration*m_frame_count;
 					// And store the data.
@@ -677,20 +691,22 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 {
 	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
-		AVStream *enc = (AVStream *)fmt.parameters;
-		m_con = am_get_codec(enc->codec);
+		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		m_con = enc;
+
 		if (enc == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		if (am_get_codec_var(enc->codec, codec_type) != CODEC_TYPE_VIDEO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), am_get_codec_var(enc->codec, codec_type));
+		if (enc->codec_type != CODEC_TYPE_VIDEO) {
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 				return false;
 		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", am_get_codec_var(enc->codec, codec_id));
-		AVCodec *codec = avcodec_find_decoder(am_get_codec_var(enc->codec, codec_id));
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec_id);
+		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
+
 		if (codec == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), (void*) fmt.parameters);
 				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
