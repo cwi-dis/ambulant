@@ -189,7 +189,6 @@ stdio_datasource::read_file()
             buf = m_buffer->get_write_ptr(BUFSIZ);
 			assert(buf);
 			n = fread(buf, 1, BUFSIZ, m_stream);
-			assert(n > 0);
 			m_buffer->pushdata(n > 0 ? n : 0);		
 		} while (n > 0);
 		m_end_of_file = true;
