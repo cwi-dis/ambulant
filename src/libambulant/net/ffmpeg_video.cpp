@@ -629,7 +629,8 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0 || _end_of_file());
-	timestamp_t frame_duration = 33000; // XXX For now assume fps
+	
+	timestamp_t frame_duration = m_fmt.frameduration; 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%d)\n", (int) now);
 
 	while ( m_frames.size() && m_old_frame.first < now - frame_duration) {
