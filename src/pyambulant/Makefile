@@ -5,6 +5,12 @@ BGENINPUT=ambulantscan.py ambulantsupport.py
 GENOBJOUTPUT=ambulantobjgen.py ambulantincludegen.py ambulantmodule.h
 PYTHON=python2.5
 
+# Set these variables to change the way the tests are run
+DEBUGGER=
+#DEBUGGER=gdb --args
+PYTHONARGS=
+#PYTHONARGS=-i
+
 BUILDLIBDIR=./build/lib.darwin-8.2.0-Power_Macintosh-2.5
 
 all: ambulantmodule.so
@@ -17,10 +23,10 @@ install:
 	$(PYTHON) setup.py install
 	
 tests:
-	PYTHONPATH=$(BUILDLIBDIR) $(PYTHON) test/test_pyambulant.py
+	PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
 	
 testplay:
-	PYTHONPATH=$(BUILDLIBDIR) $(PYTHON) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
+	PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
 	
 $(GENOBJOUTPUT): genobjects.py 
 	$(PYTHON) genobjects.py
