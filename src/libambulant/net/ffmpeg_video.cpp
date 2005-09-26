@@ -489,7 +489,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 					
 					// Try and compute the timestamp and update the video clock.
 					timestamp_t pts = 0;
-					
+					timestamp_t frame_delay = 0;
 				
 #if LIBAVFORMAT_BUILD > 4906
 				    pts = ipts;
@@ -498,7 +498,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 					} else {
 						pts = m_video_clock;
 					}
-						timestamp_t frame_delay = m_fmt.frameduration;
+						frame_delay = m_fmt.frameduration;
 						if (frame->repeat_pict)
 							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 						m_video_clock += frame_delay;
@@ -514,17 +514,14 @@ ffmpeg_video_decoder_datasource::data_avail()
 						m_video_clock = pts;
 					} else {
 						pts = m_video_clock;
-						timestamp_t frame_delay = m_fmt.frameduration;
+						frame_delay = m_fmt.frameduration;
 						if (frame->repeat_pict)
 							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 						m_video_clock += frame_delay;
 					}
 #endif				
-					/*AM_DBG*/ lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
-					// Stupid HAck to get the pts right, we will have to look again to this later
-					// pts = m_fmt.frameduration*m_frame_count;
-					// And store the data.
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
+					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
 					if (pts >= m_old_frame.first) {
 						std::pair<timestamp_t, char*> element(pts, framedata);
