@@ -117,6 +117,18 @@ void HtmlView::OnInitialUpdate()
 //KB	Navigate2(_T("http://www.ambulantplayer.org"),NULL,NULL);
 }
 
+#ifdef _DEBUG
+void HtmlView::AssertValid() const
+{
+	CView::AssertValid();
+}
+
+void HtmlView::Dump(CDumpContext& dc) const
+{
+	CView::Dump(dc);
+}
+#endif //_DEBUG
+
 extern CWnd*  topView;
 //KB HtmlView* s_browser = NULL;
 CWinThread* s_ambulant_thread = NULL;
