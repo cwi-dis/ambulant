@@ -10,6 +10,8 @@ DEBUGGER=
 #DEBUGGER=gdb --args
 PYTHONARGS=
 #PYTHONARGS=-i
+PYTHONENV=
+#PYTHONENV=DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib
 
 BUILDLIBDIR=./build/lib.darwin-8.2.0-Power_Macintosh-2.5
 
@@ -23,10 +25,10 @@ install:
 	$(PYTHON) setup.py install
 	
 tests:
-	PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
+	$(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
 	
 testplay:
-	PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
+	$(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
 	
 $(GENOBJOUTPUT): genobjects.py 
 	$(PYTHON) genobjects.py

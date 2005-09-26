@@ -125,26 +125,31 @@ class CxxMixin(CxxGeneratorGroupMixin):
         Output()
         Output("inline bool %s_Check(PyObject *x)", self.prefix)
         OutLbrace()
-        DedentLevel()
-        Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
-        IndentLevel()
+##        DedentLevel()
+##        Output("#ifdef BGEN_BACK_SUPPORT_%s", self.name)
+##        IndentLevel()
         #
-        # This version will only accept the exact object type.
-        # Objects with subtypes as their class will be wrapped
+        # This version will only accept the exact object type, or
+        # C++ subclasses of it.
+        # XXXX The "C++ subclasses" bit is not true yet.
+        # Objects with Python subtypes as their class will be wrapped
         # in the C++ to Python wrapper, so that added functionality
         # is exported to C++.
-        Output("return ((x)->ob_type == &%s);", self.typename)
-        DedentLevel()
-        Output("#else")
-        IndentLevel()
-        # This version allows subclasses of the given type to
-        # be passed. But note that the object passed to C++ will be the
-        # one with the baseclass type, i.e. without any modified methods.
-        Output("return ((x)->ob_type == &%s || PyObject_TypeCheck((x), &%s));",
-               self.typename, self.typename)
-        DedentLevel()
-        Output("#endif")
-        IndentLevel()
+        subtypes = ""
+##        for stn in self.subtypenames:
+##            subtypes += "|| (x)->ob_type == &%s" % stn
+        Output("return ((x)->ob_type == &%s%s);", self.typename, subtypes)
+##        DedentLevel()
+##        Output("#else")
+##        IndentLevel()
+##        # This version allows subclasses of the given type to
+##        # be passed. But note that the object passed to C++ will be the
+##        # one with the baseclass type, i.e. without any modified methods.
+##        Output("return ((x)->ob_type == &%s || PyObject_TypeCheck((x), &%s));",
+##               self.typename, self.typename)
+##        DedentLevel()
+##        Output("#endif")
+##        IndentLevel()
         OutRbrace()
         Output()
 

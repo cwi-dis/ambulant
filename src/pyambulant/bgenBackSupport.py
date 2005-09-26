@@ -22,6 +22,10 @@ class BackGeneratorGroup:
     def generate(self):
         for g in self.generators:
             g.generate()
+            
+    def generateAttributeExistenceTest(self):
+        for g in self.generators:
+            g.generateAttributeExistenceTest()
 
 class BackModule(BackGeneratorGroup):
     def __init__(self, name,
@@ -182,6 +186,10 @@ class BackObjectDefinition(BackGeneratorGroup):
             Output(":\t%s", con)
         
     def outputCheckConstructorArg(self):
+        Output("if (itself)")
+        OutLbrace()
+        self.generateAttributeExistenceTest()
+        OutRbrace()
         Output("if (itself == NULL) itself = Py_None;")
         Output()
         
@@ -452,6 +460,10 @@ class BackMethodGenerator:
             if arg.mode in (InMode, InOutMode):
                 argnames.append("py_%s" % arg.name)
         return argnames
+        
+    def generateAttributeExistenceTest(self):
+        Output('if (!PyObject_HasAttrString(itself, "%s")) PyErr_Warn(PyExc_Warning, "%s: missing attribute: %s");',
+            self.name, self.classname, self.name)
 
 def _test():
     m = BackModule("spam")

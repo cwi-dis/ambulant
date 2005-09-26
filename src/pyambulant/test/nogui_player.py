@@ -35,6 +35,28 @@ class WrapWindowFactory:
         print "--> %s" % rv
         return rv
     
+    def window_done(self, *args):
+        print "WrapWindowFactory.window_done(self=%s, args=%s)" % (self, args)
+        rv = self.wf.window_done(*args)
+        print "--> %s" % rv
+        return rv
+    
+class WrapPlayableFactory:
+    def __init__(self, pf):
+        self.pf = pf
+    
+    def new_playable(self, *args):
+        print "WrapPlayableFactory.new_playable(self=%s, args=%s)" % (self, args)
+        rv = self.pf.new_playable(*args)
+        print "--> %s" % rv
+        return rv
+    
+    def new_aux_audio_playable(self, *args):
+        print "WrapPlayableFactory.new_aux_audio_playable(self=%s, args=%s)" % (self, args)
+        rv = self.pf.new_aux_audio_playable(*args)
+        print "--> %s" % rv
+        return rv
+    
 #class AmbulantDocumentPlayer(ambulant.document_embedder):
 class AmbulantDocumentPlayer:
     # For now, inherit the application, because we will only play
@@ -47,7 +69,8 @@ class AmbulantDocumentPlayer:
         parser_f = ambulant.get_parser_factory()
         datasource_f = ambulant.datasource_factory()
         datasource_f.add_raw_factory(ambulant.get_stdio_datasource_factory())
-        playable_f = ambulant.get_global_playable_factory()
+        real_playable_f = ambulant.get_global_playable_factory()
+        playable_f = WrapPlayableFactory(real_playable_f)
         self.factories = (playable_f, window_f, datasource_f, parser_f)
         self.document = None
         self.player = None
@@ -89,6 +112,9 @@ class AmbulantDocumentPlayer:
         
     def open(self, url, start, oldplayer):
         print "python.document_embedder.open(%s, %s)" % (url, start)
+        
+    def done(self, player):
+        print "python.document_embedder.done()"
         
 def main():
     if len(sys.argv) != 2:
