@@ -388,8 +388,10 @@ ffmpeg_demux::run()
 				pts = 0;
 				
 #if LIBAVFORMAT_BUILD > 4628
-				if (pkt->dts != AV_NOPTS_VALUE) {
-            		pts = (timestamp_t) round(( (double) m_con->streams[streamnr]->time_base.num* 1000000.0 /m_con->streams[streamnr]->time_base.den)*pkt->dts);
+				if (streamnr > -1) {
+					if (pkt->dts != AV_NOPTS_VALUE) {
+            			pts = (timestamp_t) round(( (double) m_con->streams[streamnr]->time_base.num* 1000000.0 /m_con->streams[streamnr]->time_base.den)*pkt->dts);
+					}
 				}
 #elif LIBAVFORMAT_BUILD > 4609
 				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
