@@ -183,7 +183,7 @@ print "=== declaring more types ==="
 # XXXX Temporarily disabled
 methods_none_playable_factory = []
 
-common_factories_ptr = ByAddressTupleType("ambulant::common::factories",
+common_factories_ptr = HeapTupleType("ambulant::common::factories",
         (playable_factory_ptr, "rf"),
         (window_factory_ptr, "wf"),
         (datasource_factory_ptr, "df"),

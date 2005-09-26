@@ -539,7 +539,6 @@ class TupleType(Type):
         return ', '.join(alist)
 
 class ByAddressTupleType(TupleType):
-
     def passInput(self, name):
         return "&%s" % name
         
@@ -548,6 +547,21 @@ class ByReferenceTupleType(TupleType):
     def passOutput(self, name):
         return name
         
+class HeapTupleType(TupleType):
+
+    def __init__(self, type, *memberlist):
+        self._realtype = type
+        TupleType.__init__(self, type + '*', *memberlist)
+        self.dot = '->'
+
+    def getargsPreCheck(self, name):
+        # XXX This is a hack: we allocate the object on the heap
+        # but never free it!
+        Output("%s = new %s;", name, self._realtype)
+
+    def passOutput(self, name):
+        return name
+
 class CallbackTupleType(TupleType):
 
     def __init__(self, type, *memberlist):
