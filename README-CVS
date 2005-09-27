@@ -10,7 +10,7 @@ follow later.
 
 3. Run autoconf, aclocal, automake and configure::
 
-    % ACLOCAL_FLAGS="-I m4" ./autogen.sh
+    % ./autogen.sh
    
 4. Optionally, ff you want to build in a subdirectory (keeping the source tree clean)
    you should now clean out the Makefiles and such, and re-create them

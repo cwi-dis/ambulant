@@ -123,6 +123,7 @@ check_m4macros() {
 
     # construct list of macro directories
     macrodirs="`$ACLOCAL --print-ac-dir`"
+    macrodirs="$macrodirs m4"    # We keep our macros in the m4 subdir
     set - $ACLOCAL_FLAGS
     while [ $# -gt 0 ]; do
 	if [ "$1" = "-I" ]; then
@@ -267,7 +268,7 @@ for configure_in in $configure_files; do
     else
 	printbold "Processing $configure_in"
 
-	aclocalinclude="$ACLOCAL_FLAGS"
+	aclocalinclude="-I m4 $ACLOCAL_FLAGS"
 	printbold "Running $ACLOCAL..."
 	$ACLOCAL $aclocalinclude || exit 1
 
