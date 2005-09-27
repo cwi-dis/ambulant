@@ -152,6 +152,7 @@ check_m4macros() {
 	    fi
 	done
     fi
+    status=0
     if [ -n "$FORBIDDEN_M4MACROS" ]; then
 	printbold "Checking for forbidden M4 macros..."
 	# check that each macro file is in one of the macro dirs
