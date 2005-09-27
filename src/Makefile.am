@@ -11,8 +11,13 @@ build_player_macosx=player_macosx
 else
 build_player_macosx=
 endif
-SUBDIRS = libambulant plugins $(build_player_unix) $(build_player_macosx)
-DIST_SUBDIRS = libambulant plugins player_unix player_macosx
+if WITH_PYTHON
+build_pyambulant=pyambulant
+else
+build_pyambulant=
+endif
+SUBDIRS = libambulant plugins $(build_player_unix) $(build_player_macosx) $(build_pyambulant)
+DIST_SUBDIRS = libambulant plugins player_unix player_macosx pyambulant
 EXTRA_DIST= \
 	Ambulant-win32.sln \
 	Ambulant-win32-noxerces.sln \

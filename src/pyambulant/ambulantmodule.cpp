@@ -1,0 +1,11883 @@
+
+/* ======================== Module ambulant ========================= */
+
+#include "Python.h"
+
+
+
+#define WITH_EXTERNAL_DOM 1
+#include "ambulant/config/config.h"
+#include "ambulant/version.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
+#include "ambulant/lib/event.h"
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/parser_factory.h"
+#include "ambulant/lib/sax_handler.h"
+#include "ambulant/lib/system.h"
+#include "ambulant/lib/timer.h"
+#include "ambulant/lib/transition_info.h"
+#include "ambulant/common/embedder.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/playable.h"
+#include "ambulant/common/player.h"
+#include "ambulant/common/region_dim.h"
+#include "ambulant/common/region_info.h"
+#include "ambulant/gui/none/none_gui.h"
+#include "ambulant/net/datasource.h"
+#include "ambulant/net/stdio_datasource.h"
+#include "ambulant/net/posix_datasource.h"
+
+
+#include "ambulantinterface.h"
+#include "ambulantutilities.h"
+#include "ambulantmodule.h"
+
+extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
+
+static PyObject *PyAm_Error;
+
+/* -------------------- Object type node_context -------------------- */
+
+extern PyTypeObject node_context_Type;
+
+inline bool node_contextObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &node_context_Type);
+}
+
+typedef struct node_contextObject {
+	PyObject_HEAD
+	ambulant::lib::node_context* ob_itself;
+} node_contextObject;
+
+PyObject *node_contextObj_New(ambulant::lib::node_context* itself)
+{
+	node_contextObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_node_context
+	node_context *encaps_itself = dynamic_cast<node_context *>(itself);
+	if (encaps_itself && encaps_itself->py_node_context)
+	{
+		Py_INCREF(encaps_itself->py_node_context);
+		return encaps_itself->py_node_context;
+	}
+#endif
+	it = PyObject_NEW(node_contextObject, &node_context_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int node_contextObj_Convert(PyObject *v, ambulant::lib::node_context* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_node_context
+	if (!node_contextObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_node_context(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!node_contextObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "node_context required");
+		return 0;
+	}
+	*p_itself = ((node_contextObject *)v)->ob_itself;
+	return 1;
+}
+
+static void node_contextObj_dealloc(node_contextObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *node_contextObj_set_prefix_mapping(node_contextObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string prefix;
+	std::string uri;
+	char *prefix_cstr;
+	char *uri_cstr;
+	if (!PyArg_ParseTuple(_args, "ss",
+	                      &prefix_cstr,
+	                      &uri_cstr))
+		return NULL;
+	prefix = prefix_cstr;
+	uri = uri_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_prefix_mapping(prefix,
+	                                     uri);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *node_contextObj_get_namespace_prefix(node_contextObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::xml_string uri;
+	char *uri_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &uri_cstr))
+		return NULL;
+	uri = uri_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_namespace_prefix(uri);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *node_contextObj_resolve_url(node_contextObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url rurl;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &rurl))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::url _rv = _self->ob_itself->resolve_url(rurl);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_url_New(_rv));
+	return _res;
+}
+
+static PyObject *node_contextObj_get_root(node_contextObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_root();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *node_contextObj_get_node(node_contextObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string idd;
+	char *idd_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &idd_cstr))
+		return NULL;
+	idd = idd_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_node(idd);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef node_contextObj_methods[] = {
+	{"set_prefix_mapping", (PyCFunction)node_contextObj_set_prefix_mapping, 1,
+	 PyDoc_STR("(std::string prefix, std::string uri) -> None")},
+	{"get_namespace_prefix", (PyCFunction)node_contextObj_get_namespace_prefix, 1,
+	 PyDoc_STR("(ambulant::lib::xml_string uri) -> (const char * _rv)")},
+	{"resolve_url", (PyCFunction)node_contextObj_resolve_url, 1,
+	 PyDoc_STR("(ambulant::net::url rurl) -> (ambulant::net::url _rv)")},
+	{"get_root", (PyCFunction)node_contextObj_get_root, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"get_node", (PyCFunction)node_contextObj_get_node, 1,
+	 PyDoc_STR("(std::string idd) -> (const ambulant::lib::node* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define node_contextObj_getsetlist NULL
+
+
+static int node_contextObj_compare(node_contextObject *self, node_contextObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define node_contextObj_repr NULL
+
+static int node_contextObj_hash(node_contextObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int node_contextObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::node_context* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, node_contextObj_Convert, &itself))
+	{
+		((node_contextObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define node_contextObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *node_contextObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((node_contextObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define node_contextObj_tp_free PyObject_Del
+
+
+PyTypeObject node_context_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.node_context", /*tp_name*/
+	sizeof(node_contextObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) node_contextObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) node_contextObj_compare, /*tp_compare*/
+	(reprfunc) node_contextObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) node_contextObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	node_contextObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	node_contextObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	node_contextObj_tp_init, /* tp_init */
+	node_contextObj_tp_alloc, /* tp_alloc */
+	node_contextObj_tp_new, /* tp_new */
+	node_contextObj_tp_free, /* tp_free */
+};
+
+/* ------------------ End object type node_context ------------------ */
+
+
+/* ------------------------ Object type node ------------------------ */
+
+extern PyTypeObject node_Type;
+
+inline bool nodeObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &node_Type);
+}
+
+typedef struct nodeObject {
+	PyObject_HEAD
+	ambulant::lib::node* ob_itself;
+} nodeObject;
+
+PyObject *nodeObj_New(ambulant::lib::node* itself)
+{
+	nodeObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_node
+	node *encaps_itself = dynamic_cast<node *>(itself);
+	if (encaps_itself && encaps_itself->py_node)
+	{
+		Py_INCREF(encaps_itself->py_node);
+		return encaps_itself->py_node;
+	}
+#endif
+	it = PyObject_NEW(nodeObject, &node_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int nodeObj_Convert(PyObject *v, ambulant::lib::node* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_node
+	if (!nodeObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_node(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!nodeObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "node required");
+		return 0;
+	}
+	*p_itself = ((nodeObject *)v)->ob_itself;
+	return 1;
+}
+
+static void nodeObj_dealloc(nodeObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *nodeObj_down_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->down();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_up_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->up();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_next_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->next();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_down_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->down();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_up_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->up();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_next_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->next();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_down_3(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->down(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_up_3(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->up(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_next_3(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->next(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_previous(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->previous();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_last_child(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_last_child();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_locate_node(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* path;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &path))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->locate_node(path);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_first_child_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->get_first_child(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_first_child_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_first_child(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_root(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->get_root();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_container_attribute(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_container_attribute(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_append_child_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* child;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &child))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->append_child(child);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_append_child_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->append_child(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_detach(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->detach();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_clone(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->clone();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_append_data_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	if (!PyArg_ParseTuple(_args, "s#",
+	                      &data__in__, &data__in_len__))
+		return NULL;
+	data__len__ = data__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->append_data(data__in__, data__len__);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_append_data_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* c_str;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &c_str))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->append_data(c_str);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_append_data_3(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::xml_string str;
+	char *str_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &str_cstr))
+		return NULL;
+	str = str_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->append_data(str);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_set_attribute_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	char* value;
+	if (!PyArg_ParseTuple(_args, "ss",
+	                      &name,
+	                      &value))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_attribute(name,
+	                                value);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_set_attribute_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	ambulant::lib::xml_string value;
+	char *value_cstr;
+	if (!PyArg_ParseTuple(_args, "ss",
+	                      &name,
+	                      &value_cstr))
+		return NULL;
+	value = value_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_attribute(name,
+	                                value);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_set_namespace(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::xml_string ns;
+	char *ns_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &ns_cstr))
+		return NULL;
+	ns = ns_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_namespace(ns);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *nodeObj_get_namespace(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->get_namespace();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_local_name(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->get_local_name();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_qname(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::q_name_pair& _rv = _self->ob_itself->get_qname();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("(ss)",
+	                     _rv.first.c_str(), _rv.second.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_numid(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->get_numid();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_data(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->get_data();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_trimmed_data(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::xml_string _rv = _self->ob_itself->get_trimmed_data();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_attribute_1(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_attribute(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_attribute_2(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string name;
+	char *name_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name_cstr))
+		return NULL;
+	name = name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_attribute(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_url(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* attrname;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &attrname))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::url _rv = _self->ob_itself->get_url(attrname);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_url_New(_rv));
+	return _res;
+}
+
+static PyObject *nodeObj_size(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	unsigned int _rv = _self->ob_itself->size();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_get_path_display_desc(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->get_path_display_desc();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_sig(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->get_sig();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_xmlrepr(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::xml_string _rv = _self->ob_itself->xmlrepr();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *nodeObj_get_context(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node_context* _rv = _self->ob_itself->get_context();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     node_contextObj_New, _rv);
+	return _res;
+}
+
+static PyObject *nodeObj_set_context(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node_context* c;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      node_contextObj_Convert, &c))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_context(c);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef nodeObj_methods[] = {
+	{"down_1", (PyCFunction)nodeObj_down_1, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"up_1", (PyCFunction)nodeObj_up_1, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"next_1", (PyCFunction)nodeObj_next_1, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"down_2", (PyCFunction)nodeObj_down_2, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"up_2", (PyCFunction)nodeObj_up_2, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"next_2", (PyCFunction)nodeObj_next_2, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"down_3", (PyCFunction)nodeObj_down_3, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"up_3", (PyCFunction)nodeObj_up_3, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"next_3", (PyCFunction)nodeObj_next_3, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"previous", (PyCFunction)nodeObj_previous, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"get_last_child", (PyCFunction)nodeObj_get_last_child, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"locate_node", (PyCFunction)nodeObj_locate_node, 1,
+	 PyDoc_STR("(char* path) -> (ambulant::lib::node* _rv)")},
+	{"get_first_child_1", (PyCFunction)nodeObj_get_first_child_1, 1,
+	 PyDoc_STR("(char* name) -> (ambulant::lib::node* _rv)")},
+	{"get_first_child_2", (PyCFunction)nodeObj_get_first_child_2, 1,
+	 PyDoc_STR("(char* name) -> (const ambulant::lib::node* _rv)")},
+	{"get_root", (PyCFunction)nodeObj_get_root, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"get_container_attribute", (PyCFunction)nodeObj_get_container_attribute, 1,
+	 PyDoc_STR("(char* name) -> (const char * _rv)")},
+	{"append_child_1", (PyCFunction)nodeObj_append_child_1, 1,
+	 PyDoc_STR("(ambulant::lib::node* child) -> (ambulant::lib::node* _rv)")},
+	{"append_child_2", (PyCFunction)nodeObj_append_child_2, 1,
+	 PyDoc_STR("(char* name) -> (ambulant::lib::node* _rv)")},
+	{"detach", (PyCFunction)nodeObj_detach, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"clone", (PyCFunction)nodeObj_clone, 1,
+	 PyDoc_STR("() -> (ambulant::lib::node* _rv)")},
+	{"append_data_1", (PyCFunction)nodeObj_append_data_1, 1,
+	 PyDoc_STR("(Buffer data) -> None")},
+	{"append_data_2", (PyCFunction)nodeObj_append_data_2, 1,
+	 PyDoc_STR("(char* c_str) -> None")},
+	{"append_data_3", (PyCFunction)nodeObj_append_data_3, 1,
+	 PyDoc_STR("(ambulant::lib::xml_string str) -> None")},
+	{"set_attribute_1", (PyCFunction)nodeObj_set_attribute_1, 1,
+	 PyDoc_STR("(char* name, char* value) -> None")},
+	{"set_attribute_2", (PyCFunction)nodeObj_set_attribute_2, 1,
+	 PyDoc_STR("(char* name, ambulant::lib::xml_string value) -> None")},
+	{"set_namespace", (PyCFunction)nodeObj_set_namespace, 1,
+	 PyDoc_STR("(ambulant::lib::xml_string ns) -> None")},
+	{"get_namespace", (PyCFunction)nodeObj_get_namespace, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::xml_string& _rv)")},
+	{"get_local_name", (PyCFunction)nodeObj_get_local_name, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::xml_string& _rv)")},
+	{"get_qname", (PyCFunction)nodeObj_get_qname, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::q_name_pair& _rv)")},
+	{"get_numid", (PyCFunction)nodeObj_get_numid, 1,
+	 PyDoc_STR("() -> (int _rv)")},
+	{"get_data", (PyCFunction)nodeObj_get_data, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::xml_string& _rv)")},
+	{"get_trimmed_data", (PyCFunction)nodeObj_get_trimmed_data, 1,
+	 PyDoc_STR("() -> (ambulant::lib::xml_string _rv)")},
+	{"get_attribute_1", (PyCFunction)nodeObj_get_attribute_1, 1,
+	 PyDoc_STR("(char* name) -> (const char * _rv)")},
+	{"get_attribute_2", (PyCFunction)nodeObj_get_attribute_2, 1,
+	 PyDoc_STR("(std::string name) -> (const char * _rv)")},
+	{"get_url", (PyCFunction)nodeObj_get_url, 1,
+	 PyDoc_STR("(char* attrname) -> (ambulant::net::url _rv)")},
+	{"size", (PyCFunction)nodeObj_size, 1,
+	 PyDoc_STR("() -> (unsigned int _rv)")},
+	{"get_path_display_desc", (PyCFunction)nodeObj_get_path_display_desc, 1,
+	 PyDoc_STR("() -> (std::string _rv)")},
+	{"get_sig", (PyCFunction)nodeObj_get_sig, 1,
+	 PyDoc_STR("() -> (std::string _rv)")},
+	{"xmlrepr", (PyCFunction)nodeObj_xmlrepr, 1,
+	 PyDoc_STR("() -> (ambulant::lib::xml_string _rv)")},
+	{"get_context", (PyCFunction)nodeObj_get_context, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node_context* _rv)")},
+	{"set_context", (PyCFunction)nodeObj_set_context, 1,
+	 PyDoc_STR("(ambulant::lib::node_context* c) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define nodeObj_getsetlist NULL
+
+
+static int nodeObj_compare(nodeObject *self, nodeObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define nodeObj_repr NULL
+
+static int nodeObj_hash(nodeObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int nodeObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::node* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, nodeObj_Convert, &itself))
+	{
+		((nodeObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define nodeObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *nodeObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((nodeObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define nodeObj_tp_free PyObject_Del
+
+
+PyTypeObject node_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.node", /*tp_name*/
+	sizeof(nodeObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) nodeObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) nodeObj_compare, /*tp_compare*/
+	(reprfunc) nodeObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) nodeObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	nodeObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	nodeObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	nodeObj_tp_init, /* tp_init */
+	nodeObj_tp_alloc, /* tp_alloc */
+	nodeObj_tp_new, /* tp_new */
+	nodeObj_tp_free, /* tp_free */
+};
+
+/* ---------------------- End object type node ---------------------- */
+
+
+/* ---------------------- Object type document ---------------------- */
+
+extern PyTypeObject document_Type;
+
+inline bool documentObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &document_Type);
+}
+
+typedef struct documentObject {
+	PyObject_HEAD
+	ambulant::lib::document* ob_itself;
+} documentObject;
+
+PyObject *documentObj_New(ambulant::lib::document* itself)
+{
+	documentObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_document
+	document *encaps_itself = dynamic_cast<document *>(itself);
+	if (encaps_itself && encaps_itself->py_document)
+	{
+		Py_INCREF(encaps_itself->py_document);
+		return encaps_itself->py_document;
+	}
+#endif
+	it = PyObject_NEW(documentObject, &document_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int documentObj_Convert(PyObject *v, ambulant::lib::document* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_document
+	if (!documentObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_document(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!documentObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "document required");
+		return 0;
+	}
+	*p_itself = ((documentObject *)v)->ob_itself;
+	return 1;
+}
+
+static void documentObj_dealloc(documentObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *documentObj_get_root_1(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool detach;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &detach))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->get_root(detach);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *documentObj_get_root_2(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_root();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *documentObj_locate_node_1(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* path;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &path))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::node* _rv = _self->ob_itself->locate_node(path);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *documentObj_locate_node_2(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* path;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &path))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->locate_node(path);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *documentObj_get_src_url(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::url _rv = _self->ob_itself->get_src_url();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_url_New(_rv));
+	return _res;
+}
+
+static PyObject *documentObj_set_prefix_mapping(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string prefix;
+	std::string uri;
+	char *prefix_cstr;
+	char *uri_cstr;
+	if (!PyArg_ParseTuple(_args, "ss",
+	                      &prefix_cstr,
+	                      &uri_cstr))
+		return NULL;
+	prefix = prefix_cstr;
+	uri = uri_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_prefix_mapping(prefix,
+	                                     uri);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *documentObj_get_namespace_prefix(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::xml_string uri;
+	char *uri_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &uri_cstr))
+		return NULL;
+	uri = uri_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_namespace_prefix(uri);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *documentObj_resolve_url(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url rurl;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &rurl))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::url _rv = _self->ob_itself->resolve_url(rurl);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_url_New(_rv));
+	return _res;
+}
+
+static PyObject *documentObj_get_node(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string idd;
+	char *idd_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &idd_cstr))
+		return NULL;
+	idd = idd_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::node* _rv = _self->ob_itself->get_node(idd);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *documentObj_set_src_url(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url u;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &u))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_src_url(u);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef documentObj_methods[] = {
+	{"get_root_1", (PyCFunction)documentObj_get_root_1, 1,
+	 PyDoc_STR("(bool detach) -> (ambulant::lib::node* _rv)")},
+	{"get_root_2", (PyCFunction)documentObj_get_root_2, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
+	{"locate_node_1", (PyCFunction)documentObj_locate_node_1, 1,
+	 PyDoc_STR("(char* path) -> (ambulant::lib::node* _rv)")},
+	{"locate_node_2", (PyCFunction)documentObj_locate_node_2, 1,
+	 PyDoc_STR("(char* path) -> (const ambulant::lib::node* _rv)")},
+	{"get_src_url", (PyCFunction)documentObj_get_src_url, 1,
+	 PyDoc_STR("() -> (ambulant::net::url _rv)")},
+	{"set_prefix_mapping", (PyCFunction)documentObj_set_prefix_mapping, 1,
+	 PyDoc_STR("(std::string prefix, std::string uri) -> None")},
+	{"get_namespace_prefix", (PyCFunction)documentObj_get_namespace_prefix, 1,
+	 PyDoc_STR("(ambulant::lib::xml_string uri) -> (const char * _rv)")},
+	{"resolve_url", (PyCFunction)documentObj_resolve_url, 1,
+	 PyDoc_STR("(ambulant::net::url rurl) -> (ambulant::net::url _rv)")},
+	{"get_node", (PyCFunction)documentObj_get_node, 1,
+	 PyDoc_STR("(std::string idd) -> (const ambulant::lib::node* _rv)")},
+	{"set_src_url", (PyCFunction)documentObj_set_src_url, 1,
+	 PyDoc_STR("(ambulant::net::url u) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define documentObj_getsetlist NULL
+
+
+static int documentObj_compare(documentObject *self, documentObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define documentObj_repr NULL
+
+static int documentObj_hash(documentObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int documentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::document* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, documentObj_Convert, &itself))
+	{
+		((documentObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define documentObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *documentObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((documentObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define documentObj_tp_free PyObject_Del
+
+
+PyTypeObject document_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.document", /*tp_name*/
+	sizeof(documentObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) documentObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) documentObj_compare, /*tp_compare*/
+	(reprfunc) documentObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) documentObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	documentObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	documentObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	documentObj_tp_init, /* tp_init */
+	documentObj_tp_alloc, /* tp_alloc */
+	documentObj_tp_new, /* tp_new */
+	documentObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type document -------------------- */
+
+
+/* ----------------------- Object type event ------------------------ */
+
+extern PyTypeObject event_Type;
+
+inline bool eventObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &event_Type);
+}
+
+typedef struct eventObject {
+	PyObject_HEAD
+	ambulant::lib::event* ob_itself;
+} eventObject;
+
+PyObject *eventObj_New(ambulant::lib::event* itself)
+{
+	eventObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_event
+	event *encaps_itself = dynamic_cast<event *>(itself);
+	if (encaps_itself && encaps_itself->py_event)
+	{
+		Py_INCREF(encaps_itself->py_event);
+		return encaps_itself->py_event;
+	}
+#endif
+	it = PyObject_NEW(eventObject, &event_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int eventObj_Convert(PyObject *v, ambulant::lib::event* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_event
+	if (!eventObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_event(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!eventObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "event required");
+		return 0;
+	}
+	*p_itself = ((eventObject *)v)->ob_itself;
+	return 1;
+}
+
+static void eventObj_dealloc(eventObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *eventObj_fire(eventObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->fire();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef eventObj_methods[] = {
+	{"fire", (PyCFunction)eventObj_fire, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define eventObj_getsetlist NULL
+
+
+static int eventObj_compare(eventObject *self, eventObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define eventObj_repr NULL
+
+static int eventObj_hash(eventObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int eventObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::event* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, eventObj_Convert, &itself))
+	{
+		((eventObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define eventObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *eventObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((eventObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define eventObj_tp_free PyObject_Del
+
+
+PyTypeObject event_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.event", /*tp_name*/
+	sizeof(eventObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) eventObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) eventObj_compare, /*tp_compare*/
+	(reprfunc) eventObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) eventObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	eventObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	eventObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	eventObj_tp_init, /* tp_init */
+	eventObj_tp_alloc, /* tp_alloc */
+	eventObj_tp_new, /* tp_new */
+	eventObj_tp_free, /* tp_free */
+};
+
+/* --------------------- End object type event ---------------------- */
+
+
+/* ------------------ Object type event_processor ------------------- */
+
+extern PyTypeObject event_processor_Type;
+
+inline bool event_processorObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &event_processor_Type);
+}
+
+typedef struct event_processorObject {
+	PyObject_HEAD
+	ambulant::lib::event_processor* ob_itself;
+} event_processorObject;
+
+PyObject *event_processorObj_New(ambulant::lib::event_processor* itself)
+{
+	event_processorObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_event_processor
+	event_processor *encaps_itself = dynamic_cast<event_processor *>(itself);
+	if (encaps_itself && encaps_itself->py_event_processor)
+	{
+		Py_INCREF(encaps_itself->py_event_processor);
+		return encaps_itself->py_event_processor;
+	}
+#endif
+	it = PyObject_NEW(event_processorObject, &event_processor_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int event_processorObj_Convert(PyObject *v, ambulant::lib::event_processor* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_event_processor
+	if (!event_processorObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_event_processor(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!event_processorObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "event_processor required");
+		return 0;
+	}
+	*p_itself = ((event_processorObject *)v)->ob_itself;
+	return 1;
+}
+
+static void event_processorObj_dealloc(event_processorObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *event_processorObj_add_event(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::event* pe;
+	ambulant::lib::timer::time_type t;
+	ambulant::lib::event_processor::event_priority priority;
+	if (!PyArg_ParseTuple(_args, "O&ll",
+	                      eventObj_Convert, &pe,
+	                      &t,
+	                      &priority))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_event(pe,
+	                            t,
+	                            priority);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *event_processorObj_cancel_all_events(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->cancel_all_events();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *event_processorObj_cancel_event(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::event* pe;
+	ambulant::lib::event_processor::event_priority priority;
+	if (!PyArg_ParseTuple(_args, "O&l",
+	                      eventObj_Convert, &pe,
+	                      &priority))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->cancel_event(pe,
+	                                          priority);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *event_processorObj_serve_events(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->serve_events();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *event_processorObj_get_timer(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer* _rv = _self->ob_itself->get_timer();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     timerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *event_processorObj_stop_processor_thread(event_processorObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop_processor_thread();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef event_processorObj_methods[] = {
+	{"add_event", (PyCFunction)event_processorObj_add_event, 1,
+	 PyDoc_STR("(ambulant::lib::event* pe, ambulant::lib::timer::time_type t, ambulant::lib::event_processor::event_priority priority) -> None")},
+	{"cancel_all_events", (PyCFunction)event_processorObj_cancel_all_events, 1,
+	 PyDoc_STR("() -> None")},
+	{"cancel_event", (PyCFunction)event_processorObj_cancel_event, 1,
+	 PyDoc_STR("(ambulant::lib::event* pe, ambulant::lib::event_processor::event_priority priority) -> (bool _rv)")},
+	{"serve_events", (PyCFunction)event_processorObj_serve_events, 1,
+	 PyDoc_STR("() -> None")},
+	{"get_timer", (PyCFunction)event_processorObj_get_timer, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},
+	{"stop_processor_thread", (PyCFunction)event_processorObj_stop_processor_thread, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define event_processorObj_getsetlist NULL
+
+
+static int event_processorObj_compare(event_processorObject *self, event_processorObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define event_processorObj_repr NULL
+
+static int event_processorObj_hash(event_processorObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int event_processorObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::event_processor* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, event_processorObj_Convert, &itself))
+	{
+		((event_processorObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define event_processorObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *event_processorObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((event_processorObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define event_processorObj_tp_free PyObject_Del
+
+
+PyTypeObject event_processor_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.event_processor", /*tp_name*/
+	sizeof(event_processorObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) event_processorObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) event_processorObj_compare, /*tp_compare*/
+	(reprfunc) event_processorObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) event_processorObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	event_processorObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	event_processorObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	event_processorObj_tp_init, /* tp_init */
+	event_processorObj_tp_alloc, /* tp_alloc */
+	event_processorObj_tp_new, /* tp_new */
+	event_processorObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type event_processor ----------------- */
+
+
+/* ------------------- Object type parser_factory ------------------- */
+
+extern PyTypeObject parser_factory_Type;
+
+inline bool parser_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &parser_factory_Type);
+}
+
+typedef struct parser_factoryObject {
+	PyObject_HEAD
+	ambulant::lib::parser_factory* ob_itself;
+} parser_factoryObject;
+
+PyObject *parser_factoryObj_New(ambulant::lib::parser_factory* itself)
+{
+	parser_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_parser_factory
+	parser_factory *encaps_itself = dynamic_cast<parser_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_parser_factory)
+	{
+		Py_INCREF(encaps_itself->py_parser_factory);
+		return encaps_itself->py_parser_factory;
+	}
+#endif
+	it = PyObject_NEW(parser_factoryObject, &parser_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int parser_factoryObj_Convert(PyObject *v, ambulant::lib::parser_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_parser_factory
+	if (!parser_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_parser_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!parser_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "parser_factory required");
+		return 0;
+	}
+	*p_itself = ((parser_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void parser_factoryObj_dealloc(parser_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *parser_factoryObj_get_parser_name(parser_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->get_parser_name();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyMethodDef parser_factoryObj_methods[] = {
+	{"get_parser_name", (PyCFunction)parser_factoryObj_get_parser_name, 1,
+	 PyDoc_STR("() -> (std::string _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define parser_factoryObj_getsetlist NULL
+
+
+static int parser_factoryObj_compare(parser_factoryObject *self, parser_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define parser_factoryObj_repr NULL
+
+static int parser_factoryObj_hash(parser_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::parser_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, parser_factoryObj_Convert, &itself))
+	{
+		((parser_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define parser_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *parser_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((parser_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define parser_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject parser_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.parser_factory", /*tp_name*/
+	sizeof(parser_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) parser_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) parser_factoryObj_compare, /*tp_compare*/
+	(reprfunc) parser_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) parser_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	parser_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	parser_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	parser_factoryObj_tp_init, /* tp_init */
+	parser_factoryObj_tp_alloc, /* tp_alloc */
+	parser_factoryObj_tp_new, /* tp_new */
+	parser_factoryObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type parser_factory ----------------- */
+
+
+/* --------------- Object type global_parser_factory ---------------- */
+
+extern PyTypeObject global_parser_factory_Type;
+
+inline bool global_parser_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &global_parser_factory_Type);
+}
+
+typedef struct global_parser_factoryObject {
+	PyObject_HEAD
+	ambulant::lib::global_parser_factory* ob_itself;
+} global_parser_factoryObject;
+
+PyObject *global_parser_factoryObj_New(ambulant::lib::global_parser_factory* itself)
+{
+	global_parser_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_global_parser_factory
+	global_parser_factory *encaps_itself = dynamic_cast<global_parser_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_global_parser_factory)
+	{
+		Py_INCREF(encaps_itself->py_global_parser_factory);
+		return encaps_itself->py_global_parser_factory;
+	}
+#endif
+	it = PyObject_NEW(global_parser_factoryObject, &global_parser_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int global_parser_factoryObj_Convert(PyObject *v, ambulant::lib::global_parser_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_global_parser_factory
+	if (!global_parser_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_global_parser_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!global_parser_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "global_parser_factory required");
+		return 0;
+	}
+	*p_itself = ((global_parser_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void global_parser_factoryObj_dealloc(global_parser_factoryObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *global_parser_factoryObj_add_factory(global_parser_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::parser_factory* pf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      parser_factoryObj_Convert, &pf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_factory(pf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef global_parser_factoryObj_methods[] = {
+	{"add_factory", (PyCFunction)global_parser_factoryObj_add_factory, 1,
+	 PyDoc_STR("(ambulant::lib::parser_factory* pf) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define global_parser_factoryObj_getsetlist NULL
+
+
+static int global_parser_factoryObj_compare(global_parser_factoryObject *self, global_parser_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define global_parser_factoryObj_repr NULL
+
+static int global_parser_factoryObj_hash(global_parser_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int global_parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::global_parser_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, global_parser_factoryObj_Convert, &itself))
+	{
+		((global_parser_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define global_parser_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *global_parser_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((global_parser_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define global_parser_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject global_parser_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.global_parser_factory", /*tp_name*/
+	sizeof(global_parser_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) global_parser_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) global_parser_factoryObj_compare, /*tp_compare*/
+	(reprfunc) global_parser_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) global_parser_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	global_parser_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	global_parser_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	global_parser_factoryObj_tp_init, /* tp_init */
+	global_parser_factoryObj_tp_alloc, /* tp_alloc */
+	global_parser_factoryObj_tp_new, /* tp_new */
+	global_parser_factoryObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type global_parser_factory -------------- */
+
+
+/* --------------------- Object type xml_parser --------------------- */
+
+extern PyTypeObject xml_parser_Type;
+
+inline bool xml_parserObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &xml_parser_Type);
+}
+
+typedef struct xml_parserObject {
+	PyObject_HEAD
+	ambulant::lib::xml_parser* ob_itself;
+} xml_parserObject;
+
+PyObject *xml_parserObj_New(ambulant::lib::xml_parser* itself)
+{
+	xml_parserObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_xml_parser
+	xml_parser *encaps_itself = dynamic_cast<xml_parser *>(itself);
+	if (encaps_itself && encaps_itself->py_xml_parser)
+	{
+		Py_INCREF(encaps_itself->py_xml_parser);
+		return encaps_itself->py_xml_parser;
+	}
+#endif
+	it = PyObject_NEW(xml_parserObject, &xml_parser_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int xml_parserObj_Convert(PyObject *v, ambulant::lib::xml_parser* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_xml_parser
+	if (!xml_parserObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_xml_parser(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!xml_parserObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "xml_parser required");
+		return 0;
+	}
+	*p_itself = ((xml_parserObject *)v)->ob_itself;
+	return 1;
+}
+
+static void xml_parserObj_dealloc(xml_parserObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *xml_parserObj_parse(xml_parserObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *buf__in__;
+	size_t buf__len__;
+	int buf__in_len__;
+	bool final;
+	if (!PyArg_ParseTuple(_args, "s#O&",
+	                      &buf__in__, &buf__in_len__,
+	                      bool_Convert, &final))
+		return NULL;
+	buf__len__ = buf__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->parse(buf__in__, buf__len__,
+	                                   final);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyMethodDef xml_parserObj_methods[] = {
+	{"parse", (PyCFunction)xml_parserObj_parse, 1,
+	 PyDoc_STR("(Buffer buf, bool final) -> (bool _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define xml_parserObj_getsetlist NULL
+
+
+static int xml_parserObj_compare(xml_parserObject *self, xml_parserObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define xml_parserObj_repr NULL
+
+static int xml_parserObj_hash(xml_parserObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int xml_parserObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::xml_parser* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, xml_parserObj_Convert, &itself))
+	{
+		((xml_parserObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define xml_parserObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *xml_parserObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((xml_parserObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define xml_parserObj_tp_free PyObject_Del
+
+
+PyTypeObject xml_parser_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.xml_parser", /*tp_name*/
+	sizeof(xml_parserObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) xml_parserObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) xml_parserObj_compare, /*tp_compare*/
+	(reprfunc) xml_parserObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) xml_parserObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	xml_parserObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	xml_parserObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	xml_parserObj_tp_init, /* tp_init */
+	xml_parserObj_tp_alloc, /* tp_alloc */
+	xml_parserObj_tp_new, /* tp_new */
+	xml_parserObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type xml_parser ------------------- */
+
+
+/* ------------------ Object type system_embedder ------------------- */
+
+extern PyTypeObject system_embedder_Type;
+
+inline bool system_embedderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &system_embedder_Type);
+}
+
+typedef struct system_embedderObject {
+	PyObject_HEAD
+	ambulant::lib::system_embedder* ob_itself;
+} system_embedderObject;
+
+PyObject *system_embedderObj_New(ambulant::lib::system_embedder* itself)
+{
+	system_embedderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_system_embedder
+	system_embedder *encaps_itself = dynamic_cast<system_embedder *>(itself);
+	if (encaps_itself && encaps_itself->py_system_embedder)
+	{
+		Py_INCREF(encaps_itself->py_system_embedder);
+		return encaps_itself->py_system_embedder;
+	}
+#endif
+	it = PyObject_NEW(system_embedderObject, &system_embedder_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int system_embedderObj_Convert(PyObject *v, ambulant::lib::system_embedder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_system_embedder
+	if (!system_embedderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_system_embedder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!system_embedderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "system_embedder required");
+		return 0;
+	}
+	*p_itself = ((system_embedderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void system_embedderObj_dealloc(system_embedderObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *system_embedderObj_show_file(system_embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url href;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &href))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->show_file(href);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef system_embedderObj_methods[] = {
+	{"show_file", (PyCFunction)system_embedderObj_show_file, 1,
+	 PyDoc_STR("(ambulant::net::url href) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define system_embedderObj_getsetlist NULL
+
+
+static int system_embedderObj_compare(system_embedderObject *self, system_embedderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define system_embedderObj_repr NULL
+
+static int system_embedderObj_hash(system_embedderObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int system_embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::system_embedder* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, system_embedderObj_Convert, &itself))
+	{
+		((system_embedderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define system_embedderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *system_embedderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((system_embedderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define system_embedderObj_tp_free PyObject_Del
+
+
+PyTypeObject system_embedder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.system_embedder", /*tp_name*/
+	sizeof(system_embedderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) system_embedderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) system_embedderObj_compare, /*tp_compare*/
+	(reprfunc) system_embedderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) system_embedderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	system_embedderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	system_embedderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	system_embedderObj_tp_init, /* tp_init */
+	system_embedderObj_tp_alloc, /* tp_alloc */
+	system_embedderObj_tp_new, /* tp_new */
+	system_embedderObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type system_embedder ----------------- */
+
+
+/* -------------------- Object type timer_events -------------------- */
+
+extern PyTypeObject timer_events_Type;
+
+inline bool timer_eventsObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_events_Type);
+}
+
+typedef struct timer_eventsObject {
+	PyObject_HEAD
+	ambulant::lib::timer_events* ob_itself;
+} timer_eventsObject;
+
+PyObject *timer_eventsObj_New(ambulant::lib::timer_events* itself)
+{
+	timer_eventsObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_events
+	timer_events *encaps_itself = dynamic_cast<timer_events *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_events)
+	{
+		Py_INCREF(encaps_itself->py_timer_events);
+		return encaps_itself->py_timer_events;
+	}
+#endif
+	it = PyObject_NEW(timer_eventsObject, &timer_events_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_eventsObj_Convert(PyObject *v, ambulant::lib::timer_events* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_events
+	if (!timer_eventsObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_events(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_eventsObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_events required");
+		return 0;
+	}
+	*p_itself = ((timer_eventsObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_eventsObj_dealloc(timer_eventsObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *timer_eventsObj_speed_changed(timer_eventsObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->speed_changed();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef timer_eventsObj_methods[] = {
+	{"speed_changed", (PyCFunction)timer_eventsObj_speed_changed, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define timer_eventsObj_getsetlist NULL
+
+
+static int timer_eventsObj_compare(timer_eventsObject *self, timer_eventsObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_eventsObj_repr NULL
+
+static int timer_eventsObj_hash(timer_eventsObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int timer_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_events* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_eventsObj_Convert, &itself))
+	{
+		((timer_eventsObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_eventsObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_eventsObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_eventsObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_eventsObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_events_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_events", /*tp_name*/
+	sizeof(timer_eventsObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_eventsObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_eventsObj_compare, /*tp_compare*/
+	(reprfunc) timer_eventsObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_eventsObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_eventsObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_eventsObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_eventsObj_tp_init, /* tp_init */
+	timer_eventsObj_tp_alloc, /* tp_alloc */
+	timer_eventsObj_tp_new, /* tp_new */
+	timer_eventsObj_tp_free, /* tp_free */
+};
+
+/* ------------------ End object type timer_events ------------------ */
+
+
+/* ----------------------- Object type timer ------------------------ */
+
+extern PyTypeObject timer_Type;
+
+inline bool timerObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_Type);
+}
+
+typedef struct timerObject {
+	PyObject_HEAD
+	ambulant::lib::timer* ob_itself;
+} timerObject;
+
+PyObject *timerObj_New(ambulant::lib::timer* itself)
+{
+	timerObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer
+	timer *encaps_itself = dynamic_cast<timer *>(itself);
+	if (encaps_itself && encaps_itself->py_timer)
+	{
+		Py_INCREF(encaps_itself->py_timer);
+		return encaps_itself->py_timer;
+	}
+#endif
+	it = PyObject_NEW(timerObject, &timer_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timerObj_Convert(PyObject *v, ambulant::lib::timer* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer
+	if (!timerObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timerObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer required");
+		return 0;
+	}
+	*p_itself = ((timerObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timerObj_dealloc(timerObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *timerObj_elapsed(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timerObj_get_realtime_speed(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_realtime_speed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyMethodDef timerObj_methods[] = {
+	{"elapsed", (PyCFunction)timerObj_elapsed, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
+	{"get_realtime_speed", (PyCFunction)timerObj_get_realtime_speed, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define timerObj_getsetlist NULL
+
+
+static int timerObj_compare(timerObject *self, timerObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timerObj_repr NULL
+
+static int timerObj_hash(timerObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int timerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timerObj_Convert, &itself))
+	{
+		((timerObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timerObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timerObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timerObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timerObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer", /*tp_name*/
+	sizeof(timerObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timerObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timerObj_compare, /*tp_compare*/
+	(reprfunc) timerObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timerObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timerObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timerObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timerObj_tp_init, /* tp_init */
+	timerObj_tp_alloc, /* tp_alloc */
+	timerObj_tp_new, /* tp_new */
+	timerObj_tp_free, /* tp_free */
+};
+
+/* --------------------- End object type timer ---------------------- */
+
+
+/* ------------------- Object type timer_control -------------------- */
+
+extern PyTypeObject timer_control_Type;
+
+inline bool timer_controlObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_control_Type);
+}
+
+typedef struct timer_controlObject {
+	PyObject_HEAD
+	ambulant::lib::timer_control* ob_itself;
+} timer_controlObject;
+
+PyObject *timer_controlObj_New(ambulant::lib::timer_control* itself)
+{
+	timer_controlObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_control
+	timer_control *encaps_itself = dynamic_cast<timer_control *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_control)
+	{
+		Py_INCREF(encaps_itself->py_timer_control);
+		return encaps_itself->py_timer_control;
+	}
+#endif
+	it = PyObject_NEW(timer_controlObject, &timer_control_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_controlObj_Convert(PyObject *v, ambulant::lib::timer_control* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_control
+	if (!timer_controlObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_control(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_controlObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_control required");
+		return 0;
+	}
+	*p_itself = ((timer_controlObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_controlObj_dealloc(timer_controlObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *timer_controlObj_elapsed_1(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_elapsed_2(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type pt;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &pt))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed(pt);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_start(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type t;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_stop(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_pause(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->pause();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_resume(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resume();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_set_speed(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double speed;
+	if (!PyArg_ParseTuple(_args, "d",
+	                      &speed))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_speed(speed);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_set_time(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type t;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_time(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_get_speed(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_speed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_running(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->running();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_get_realtime_speed(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_realtime_speed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyMethodDef timer_controlObj_methods[] = {
+	{"elapsed_1", (PyCFunction)timer_controlObj_elapsed_1, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
+	{"elapsed_2", (PyCFunction)timer_controlObj_elapsed_2, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type pt) -> (ambulant::lib::timer::time_type _rv)")},
+	{"start", (PyCFunction)timer_controlObj_start, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type t) -> None")},
+	{"stop", (PyCFunction)timer_controlObj_stop, 1,
+	 PyDoc_STR("() -> None")},
+	{"pause", (PyCFunction)timer_controlObj_pause, 1,
+	 PyDoc_STR("() -> None")},
+	{"resume", (PyCFunction)timer_controlObj_resume, 1,
+	 PyDoc_STR("() -> None")},
+	{"set_speed", (PyCFunction)timer_controlObj_set_speed, 1,
+	 PyDoc_STR("(double speed) -> None")},
+	{"set_time", (PyCFunction)timer_controlObj_set_time, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type t) -> None")},
+	{"get_speed", (PyCFunction)timer_controlObj_get_speed, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{"running", (PyCFunction)timer_controlObj_running, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_realtime_speed", (PyCFunction)timer_controlObj_get_realtime_speed, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define timer_controlObj_getsetlist NULL
+
+
+static int timer_controlObj_compare(timer_controlObject *self, timer_controlObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_controlObj_repr NULL
+
+static int timer_controlObj_hash(timer_controlObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int timer_controlObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_control* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_controlObj_Convert, &itself))
+	{
+		((timer_controlObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_controlObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_controlObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_controlObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_controlObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_control_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_control", /*tp_name*/
+	sizeof(timer_controlObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_controlObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_controlObj_compare, /*tp_compare*/
+	(reprfunc) timer_controlObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_controlObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_controlObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_controlObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_controlObj_tp_init, /* tp_init */
+	timer_controlObj_tp_alloc, /* tp_alloc */
+	timer_controlObj_tp_new, /* tp_new */
+	timer_controlObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type timer_control ------------------ */
+
+
+/* ----------------- Object type timer_control_impl ----------------- */
+
+extern PyTypeObject timer_control_impl_Type;
+
+inline bool timer_control_implObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_control_impl_Type);
+}
+
+typedef struct timer_control_implObject {
+	PyObject_HEAD
+	ambulant::lib::timer_control_impl* ob_itself;
+} timer_control_implObject;
+
+PyObject *timer_control_implObj_New(ambulant::lib::timer_control_impl* itself)
+{
+	timer_control_implObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_control_impl
+	timer_control_impl *encaps_itself = dynamic_cast<timer_control_impl *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_control_impl)
+	{
+		Py_INCREF(encaps_itself->py_timer_control_impl);
+		return encaps_itself->py_timer_control_impl;
+	}
+#endif
+	it = PyObject_NEW(timer_control_implObject, &timer_control_impl_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_control_implObj_Convert(PyObject *v, ambulant::lib::timer_control_impl* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_control_impl
+	if (!timer_control_implObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_control_impl(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_control_implObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_control_impl required");
+		return 0;
+	}
+	*p_itself = ((timer_control_implObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_control_implObj_dealloc(timer_control_implObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *timer_control_implObj_elapsed_1(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_elapsed_2(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type pt;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &pt))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed(pt);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_start(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type t;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_stop(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_pause(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->pause();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_resume(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resume();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_set_speed(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double speed;
+	if (!PyArg_ParseTuple(_args, "d",
+	                      &speed))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_speed(speed);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_set_time(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::time_type t;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_time(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_get_speed(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_speed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_running(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->running();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_get_realtime_speed(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_realtime_speed();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_speed_changed(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->speed_changed();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef timer_control_implObj_methods[] = {
+	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
+	{"elapsed_2", (PyCFunction)timer_control_implObj_elapsed_2, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type pt) -> (ambulant::lib::timer::time_type _rv)")},
+	{"start", (PyCFunction)timer_control_implObj_start, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type t) -> None")},
+	{"stop", (PyCFunction)timer_control_implObj_stop, 1,
+	 PyDoc_STR("() -> None")},
+	{"pause", (PyCFunction)timer_control_implObj_pause, 1,
+	 PyDoc_STR("() -> None")},
+	{"resume", (PyCFunction)timer_control_implObj_resume, 1,
+	 PyDoc_STR("() -> None")},
+	{"set_speed", (PyCFunction)timer_control_implObj_set_speed, 1,
+	 PyDoc_STR("(double speed) -> None")},
+	{"set_time", (PyCFunction)timer_control_implObj_set_time, 1,
+	 PyDoc_STR("(ambulant::lib::timer::time_type t) -> None")},
+	{"get_speed", (PyCFunction)timer_control_implObj_get_speed, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{"running", (PyCFunction)timer_control_implObj_running, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_realtime_speed", (PyCFunction)timer_control_implObj_get_realtime_speed, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{"speed_changed", (PyCFunction)timer_control_implObj_speed_changed, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define timer_control_implObj_getsetlist NULL
+
+
+static int timer_control_implObj_compare(timer_control_implObject *self, timer_control_implObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_control_implObj_repr NULL
+
+static int timer_control_implObj_hash(timer_control_implObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int timer_control_implObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_control_impl* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_control_implObj_Convert, &itself))
+	{
+		((timer_control_implObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_control_implObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_control_implObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_control_implObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_control_implObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_control_impl_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_control_impl", /*tp_name*/
+	sizeof(timer_control_implObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_control_implObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_control_implObj_compare, /*tp_compare*/
+	(reprfunc) timer_control_implObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_control_implObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_control_implObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_control_implObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_control_implObj_tp_init, /* tp_init */
+	timer_control_implObj_tp_alloc, /* tp_alloc */
+	timer_control_implObj_tp_new, /* tp_new */
+	timer_control_implObj_tp_free, /* tp_free */
+};
+
+/* --------------- End object type timer_control_impl --------------- */
+
+
+/* ------------------ Object type transition_info ------------------- */
+
+extern PyTypeObject transition_info_Type;
+
+inline bool transition_infoObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &transition_info_Type);
+}
+
+typedef struct transition_infoObject {
+	PyObject_HEAD
+	ambulant::lib::transition_info* ob_itself;
+} transition_infoObject;
+
+PyObject *transition_infoObj_New(ambulant::lib::transition_info* itself)
+{
+	transition_infoObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_transition_info
+	transition_info *encaps_itself = dynamic_cast<transition_info *>(itself);
+	if (encaps_itself && encaps_itself->py_transition_info)
+	{
+		Py_INCREF(encaps_itself->py_transition_info);
+		return encaps_itself->py_transition_info;
+	}
+#endif
+	it = PyObject_NEW(transition_infoObject, &transition_info_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int transition_infoObj_Convert(PyObject *v, ambulant::lib::transition_info* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_transition_info
+	if (!transition_infoObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_transition_info(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!transition_infoObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "transition_info required");
+		return 0;
+	}
+	*p_itself = ((transition_infoObject *)v)->ob_itself;
+	return 1;
+}
+
+static void transition_infoObj_dealloc(transition_infoObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyMethodDef transition_infoObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define transition_infoObj_getsetlist NULL
+
+
+static int transition_infoObj_compare(transition_infoObject *self, transition_infoObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define transition_infoObj_repr NULL
+
+static int transition_infoObj_hash(transition_infoObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int transition_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::transition_info* itself;
+	char *kw[] = {"itself", 0};
+
+	{
+		if (PyArg_ParseTuple(_args, ""))
+		{
+			((transition_infoObject *)_self)->ob_itself = new ambulant::lib::transition_info();
+			return 0;
+		}
+	}
+
+	{
+		ambulant::lib::transition_info* info;
+		if (PyArg_ParseTuple(_args, "O&",
+		                     transition_infoObj_Convert, &info))
+		{
+			((transition_infoObject *)_self)->ob_itself = new ambulant::lib::transition_info(info);
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, transition_infoObj_Convert, &itself))
+	{
+		((transition_infoObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define transition_infoObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *transition_infoObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((transition_infoObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define transition_infoObj_tp_free PyObject_Del
+
+
+PyTypeObject transition_info_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.transition_info", /*tp_name*/
+	sizeof(transition_infoObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) transition_infoObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) transition_infoObj_compare, /*tp_compare*/
+	(reprfunc) transition_infoObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) transition_infoObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	transition_infoObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	transition_infoObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	transition_infoObj_tp_init, /* tp_init */
+	transition_infoObj_tp_alloc, /* tp_alloc */
+	transition_infoObj_tp_new, /* tp_new */
+	transition_infoObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type transition_info ----------------- */
+
+
+/* ---------------------- Object type embedder ---------------------- */
+
+extern PyTypeObject embedder_Type;
+
+inline bool embedderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &embedder_Type);
+}
+
+typedef struct embedderObject {
+	PyObject_HEAD
+	ambulant::common::embedder* ob_itself;
+} embedderObject;
+
+PyObject *embedderObj_New(ambulant::common::embedder* itself)
+{
+	embedderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_embedder
+	embedder *encaps_itself = dynamic_cast<embedder *>(itself);
+	if (encaps_itself && encaps_itself->py_embedder)
+	{
+		Py_INCREF(encaps_itself->py_embedder);
+		return encaps_itself->py_embedder;
+	}
+#endif
+	it = PyObject_NEW(embedderObject, &embedder_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int embedderObj_Convert(PyObject *v, ambulant::common::embedder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_embedder
+	if (!embedderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_embedder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!embedderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "embedder required");
+		return 0;
+	}
+	*p_itself = ((embedderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void embedderObj_dealloc(embedderObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *embedderObj_close(embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::player* p;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playerObj_Convert, &p))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->close(p);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *embedderObj_open(embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url newdoc;
+	bool start;
+	ambulant::common::player* old;
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      ambulant_url_Convert, &newdoc,
+	                      bool_Convert, &start,
+	                      playerObj_Convert, &old))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->open(newdoc,
+	                       start,
+	                       old);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *embedderObj_done(embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::player* p;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playerObj_Convert, &p))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->done(p);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef embedderObj_methods[] = {
+	{"close", (PyCFunction)embedderObj_close, 1,
+	 PyDoc_STR("(ambulant::common::player* p) -> None")},
+	{"open", (PyCFunction)embedderObj_open, 1,
+	 PyDoc_STR("(ambulant::net::url newdoc, bool start, ambulant::common::player* old) -> None")},
+	{"done", (PyCFunction)embedderObj_done, 1,
+	 PyDoc_STR("(ambulant::common::player* p) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define embedderObj_getsetlist NULL
+
+
+static int embedderObj_compare(embedderObject *self, embedderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define embedderObj_repr NULL
+
+static int embedderObj_hash(embedderObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::embedder* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, embedderObj_Convert, &itself))
+	{
+		((embedderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define embedderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *embedderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((embedderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define embedderObj_tp_free PyObject_Del
+
+
+PyTypeObject embedder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.embedder", /*tp_name*/
+	sizeof(embedderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) embedderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) embedderObj_compare, /*tp_compare*/
+	(reprfunc) embedderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) embedderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	embedderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	embedderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	embedderObj_tp_init, /* tp_init */
+	embedderObj_tp_alloc, /* tp_alloc */
+	embedderObj_tp_new, /* tp_new */
+	embedderObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type embedder -------------------- */
+
+
+/* --------------------- Object type alignment ---------------------- */
+
+extern PyTypeObject alignment_Type;
+
+inline bool alignmentObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &alignment_Type);
+}
+
+typedef struct alignmentObject {
+	PyObject_HEAD
+	ambulant::common::alignment* ob_itself;
+} alignmentObject;
+
+PyObject *alignmentObj_New(ambulant::common::alignment* itself)
+{
+	alignmentObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_alignment
+	alignment *encaps_itself = dynamic_cast<alignment *>(itself);
+	if (encaps_itself && encaps_itself->py_alignment)
+	{
+		Py_INCREF(encaps_itself->py_alignment);
+		return encaps_itself->py_alignment;
+	}
+#endif
+	it = PyObject_NEW(alignmentObject, &alignment_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int alignmentObj_Convert(PyObject *v, ambulant::common::alignment* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_alignment
+	if (!alignmentObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_alignment(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!alignmentObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "alignment required");
+		return 0;
+	}
+	*p_itself = ((alignmentObject *)v)->ob_itself;
+	return 1;
+}
+
+static void alignmentObj_dealloc(alignmentObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *alignmentObj_get_image_fixpoint(alignmentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::size image_size;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_size_Convert, &image_size))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::point _rv = _self->ob_itself->get_image_fixpoint(image_size);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_point_New(_rv));
+	return _res;
+}
+
+static PyObject *alignmentObj_get_surface_fixpoint(alignmentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::size surface_size;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_size_Convert, &surface_size))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::point _rv = _self->ob_itself->get_surface_fixpoint(surface_size);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_point_New(_rv));
+	return _res;
+}
+
+static PyMethodDef alignmentObj_methods[] = {
+	{"get_image_fixpoint", (PyCFunction)alignmentObj_get_image_fixpoint, 1,
+	 PyDoc_STR("(ambulant::lib::size image_size) -> (ambulant::lib::point _rv)")},
+	{"get_surface_fixpoint", (PyCFunction)alignmentObj_get_surface_fixpoint, 1,
+	 PyDoc_STR("(ambulant::lib::size surface_size) -> (ambulant::lib::point _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define alignmentObj_getsetlist NULL
+
+
+static int alignmentObj_compare(alignmentObject *self, alignmentObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define alignmentObj_repr NULL
+
+static int alignmentObj_hash(alignmentObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int alignmentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::alignment* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, alignmentObj_Convert, &itself))
+	{
+		((alignmentObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define alignmentObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *alignmentObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((alignmentObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define alignmentObj_tp_free PyObject_Del
+
+
+PyTypeObject alignment_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.alignment", /*tp_name*/
+	sizeof(alignmentObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) alignmentObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) alignmentObj_compare, /*tp_compare*/
+	(reprfunc) alignmentObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) alignmentObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	alignmentObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	alignmentObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	alignmentObj_tp_init, /* tp_init */
+	alignmentObj_tp_alloc, /* tp_alloc */
+	alignmentObj_tp_new, /* tp_new */
+	alignmentObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type alignment -------------------- */
+
+
+/* --------------- Object type animation_notification --------------- */
+
+extern PyTypeObject animation_notification_Type;
+
+inline bool animation_notificationObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &animation_notification_Type);
+}
+
+typedef struct animation_notificationObject {
+	PyObject_HEAD
+	ambulant::common::animation_notification* ob_itself;
+} animation_notificationObject;
+
+PyObject *animation_notificationObj_New(ambulant::common::animation_notification* itself)
+{
+	animation_notificationObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_animation_notification
+	animation_notification *encaps_itself = dynamic_cast<animation_notification *>(itself);
+	if (encaps_itself && encaps_itself->py_animation_notification)
+	{
+		Py_INCREF(encaps_itself->py_animation_notification);
+		return encaps_itself->py_animation_notification;
+	}
+#endif
+	it = PyObject_NEW(animation_notificationObject, &animation_notification_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int animation_notificationObj_Convert(PyObject *v, ambulant::common::animation_notification* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_animation_notification
+	if (!animation_notificationObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_animation_notification(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!animation_notificationObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "animation_notification required");
+		return 0;
+	}
+	*p_itself = ((animation_notificationObject *)v)->ob_itself;
+	return 1;
+}
+
+static void animation_notificationObj_dealloc(animation_notificationObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *animation_notificationObj_animated(animation_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->animated();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef animation_notificationObj_methods[] = {
+	{"animated", (PyCFunction)animation_notificationObj_animated, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define animation_notificationObj_getsetlist NULL
+
+
+static int animation_notificationObj_compare(animation_notificationObject *self, animation_notificationObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define animation_notificationObj_repr NULL
+
+static int animation_notificationObj_hash(animation_notificationObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int animation_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::animation_notification* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, animation_notificationObj_Convert, &itself))
+	{
+		((animation_notificationObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define animation_notificationObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *animation_notificationObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((animation_notificationObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define animation_notificationObj_tp_free PyObject_Del
+
+
+PyTypeObject animation_notification_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.animation_notification", /*tp_name*/
+	sizeof(animation_notificationObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) animation_notificationObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) animation_notificationObj_compare, /*tp_compare*/
+	(reprfunc) animation_notificationObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) animation_notificationObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	animation_notificationObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	animation_notificationObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	animation_notificationObj_tp_init, /* tp_init */
+	animation_notificationObj_tp_alloc, /* tp_alloc */
+	animation_notificationObj_tp_new, /* tp_new */
+	animation_notificationObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type animation_notification ------------- */
+
+
+/* --------------------- Object type gui_window --------------------- */
+
+extern PyTypeObject gui_window_Type;
+
+inline bool gui_windowObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &gui_window_Type);
+}
+
+typedef struct gui_windowObject {
+	PyObject_HEAD
+	ambulant::common::gui_window* ob_itself;
+} gui_windowObject;
+
+PyObject *gui_windowObj_New(ambulant::common::gui_window* itself)
+{
+	gui_windowObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_gui_window
+	gui_window *encaps_itself = dynamic_cast<gui_window *>(itself);
+	if (encaps_itself && encaps_itself->py_gui_window)
+	{
+		Py_INCREF(encaps_itself->py_gui_window);
+		return encaps_itself->py_gui_window;
+	}
+#endif
+	it = PyObject_NEW(gui_windowObject, &gui_window_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int gui_windowObj_Convert(PyObject *v, ambulant::common::gui_window* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_gui_window
+	if (!gui_windowObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_gui_window(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!gui_windowObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "gui_window required");
+		return 0;
+	}
+	*p_itself = ((gui_windowObject *)v)->ob_itself;
+	return 1;
+}
+
+static void gui_windowObj_dealloc(gui_windowObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *gui_windowObj_need_redraw(gui_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::rect r;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_rect_Convert, &r))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_redraw(r);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_windowObj_redraw_now(gui_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->redraw_now();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_windowObj_need_events(gui_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool want;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &want))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_events(want);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef gui_windowObj_methods[] = {
+	{"need_redraw", (PyCFunction)gui_windowObj_need_redraw, 1,
+	 PyDoc_STR("(ambulant::lib::rect r) -> None")},
+	{"redraw_now", (PyCFunction)gui_windowObj_redraw_now, 1,
+	 PyDoc_STR("() -> None")},
+	{"need_events", (PyCFunction)gui_windowObj_need_events, 1,
+	 PyDoc_STR("(bool want) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define gui_windowObj_getsetlist NULL
+
+
+static int gui_windowObj_compare(gui_windowObject *self, gui_windowObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define gui_windowObj_repr NULL
+
+static int gui_windowObj_hash(gui_windowObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int gui_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::gui_window* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, gui_windowObj_Convert, &itself))
+	{
+		((gui_windowObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define gui_windowObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *gui_windowObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((gui_windowObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define gui_windowObj_tp_free PyObject_Del
+
+
+PyTypeObject gui_window_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.gui_window", /*tp_name*/
+	sizeof(gui_windowObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) gui_windowObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) gui_windowObj_compare, /*tp_compare*/
+	(reprfunc) gui_windowObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) gui_windowObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	gui_windowObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	gui_windowObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	gui_windowObj_tp_init, /* tp_init */
+	gui_windowObj_tp_alloc, /* tp_alloc */
+	gui_windowObj_tp_new, /* tp_new */
+	gui_windowObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type gui_window ------------------- */
+
+
+/* --------------------- Object type gui_events --------------------- */
+
+extern PyTypeObject gui_events_Type;
+
+inline bool gui_eventsObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &gui_events_Type);
+}
+
+typedef struct gui_eventsObject {
+	PyObject_HEAD
+	ambulant::common::gui_events* ob_itself;
+} gui_eventsObject;
+
+PyObject *gui_eventsObj_New(ambulant::common::gui_events* itself)
+{
+	gui_eventsObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_gui_events
+	gui_events *encaps_itself = dynamic_cast<gui_events *>(itself);
+	if (encaps_itself && encaps_itself->py_gui_events)
+	{
+		Py_INCREF(encaps_itself->py_gui_events);
+		return encaps_itself->py_gui_events;
+	}
+#endif
+	it = PyObject_NEW(gui_eventsObject, &gui_events_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int gui_eventsObj_Convert(PyObject *v, ambulant::common::gui_events* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_gui_events
+	if (!gui_eventsObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_gui_events(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!gui_eventsObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "gui_events required");
+		return 0;
+	}
+	*p_itself = ((gui_eventsObject *)v)->ob_itself;
+	return 1;
+}
+
+static void gui_eventsObj_dealloc(gui_eventsObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *gui_eventsObj_redraw(gui_eventsObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::rect dirty;
+	ambulant::common::gui_window* window;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      ambulant_rect_Convert, &dirty,
+	                      gui_windowObj_Convert, &window))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->redraw(dirty,
+	                         window);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_eventsObj_user_event(gui_eventsObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::point where;
+	int what;
+	if (!PyArg_ParseTuple(_args, "O&i",
+	                      ambulant_point_Convert, &where,
+	                      &what))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->user_event(where,
+	                             what);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_eventsObj_transition_freeze_end(gui_eventsObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::rect area;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_rect_Convert, &area))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->transition_freeze_end(area);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef gui_eventsObj_methods[] = {
+	{"redraw", (PyCFunction)gui_eventsObj_redraw, 1,
+	 PyDoc_STR("(ambulant::lib::rect dirty, ambulant::common::gui_window* window) -> None")},
+	{"user_event", (PyCFunction)gui_eventsObj_user_event, 1,
+	 PyDoc_STR("(ambulant::lib::point where, int what) -> None")},
+	{"transition_freeze_end", (PyCFunction)gui_eventsObj_transition_freeze_end, 1,
+	 PyDoc_STR("(ambulant::lib::rect area) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define gui_eventsObj_getsetlist NULL
+
+
+static int gui_eventsObj_compare(gui_eventsObject *self, gui_eventsObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define gui_eventsObj_repr NULL
+
+static int gui_eventsObj_hash(gui_eventsObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int gui_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::gui_events* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, gui_eventsObj_Convert, &itself))
+	{
+		((gui_eventsObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define gui_eventsObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *gui_eventsObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((gui_eventsObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define gui_eventsObj_tp_free PyObject_Del
+
+
+PyTypeObject gui_events_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.gui_events", /*tp_name*/
+	sizeof(gui_eventsObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) gui_eventsObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) gui_eventsObj_compare, /*tp_compare*/
+	(reprfunc) gui_eventsObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) gui_eventsObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	gui_eventsObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	gui_eventsObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	gui_eventsObj_tp_init, /* tp_init */
+	gui_eventsObj_tp_alloc, /* tp_alloc */
+	gui_eventsObj_tp_new, /* tp_new */
+	gui_eventsObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type gui_events ------------------- */
+
+
+/* ---------------------- Object type renderer ---------------------- */
+
+extern PyTypeObject renderer_Type;
+
+inline bool rendererObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &renderer_Type);
+}
+
+typedef struct rendererObject {
+	PyObject_HEAD
+	ambulant::common::renderer* ob_itself;
+} rendererObject;
+
+PyObject *rendererObj_New(ambulant::common::renderer* itself)
+{
+	rendererObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_renderer
+	renderer *encaps_itself = dynamic_cast<renderer *>(itself);
+	if (encaps_itself && encaps_itself->py_renderer)
+	{
+		Py_INCREF(encaps_itself->py_renderer);
+		return encaps_itself->py_renderer;
+	}
+#endif
+	it = PyObject_NEW(rendererObject, &renderer_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int rendererObj_Convert(PyObject *v, ambulant::common::renderer* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_renderer
+	if (!rendererObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_renderer(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!rendererObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "renderer required");
+		return 0;
+	}
+	*p_itself = ((rendererObject *)v)->ob_itself;
+	return 1;
+}
+
+static void rendererObj_dealloc(rendererObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *rendererObj_set_surface(rendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::surface* destination;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      surfaceObj_Convert, &destination))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_surface(destination);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *rendererObj_set_alignment(rendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::alignment* align;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      alignmentObj_Convert, &align))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_alignment(align);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *rendererObj_set_intransition(rendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::transition_info* info;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      transition_infoObj_Convert, &info))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_intransition(info);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *rendererObj_start_outtransition(rendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::transition_info* info;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      transition_infoObj_Convert, &info))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start_outtransition(info);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *rendererObj_get_surface(rendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface* _rv = _self->ob_itself->get_surface();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surfaceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef rendererObj_methods[] = {
+	{"set_surface", (PyCFunction)rendererObj_set_surface, 1,
+	 PyDoc_STR("(ambulant::common::surface* destination) -> None")},
+	{"set_alignment", (PyCFunction)rendererObj_set_alignment, 1,
+	 PyDoc_STR("(ambulant::common::alignment* align) -> None")},
+	{"set_intransition", (PyCFunction)rendererObj_set_intransition, 1,
+	 PyDoc_STR("(ambulant::lib::transition_info* info) -> None")},
+	{"start_outtransition", (PyCFunction)rendererObj_start_outtransition, 1,
+	 PyDoc_STR("(ambulant::lib::transition_info* info) -> None")},
+	{"get_surface", (PyCFunction)rendererObj_get_surface, 1,
+	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define rendererObj_getsetlist NULL
+
+
+static int rendererObj_compare(rendererObject *self, rendererObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define rendererObj_repr NULL
+
+static int rendererObj_hash(rendererObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int rendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::renderer* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, rendererObj_Convert, &itself))
+	{
+		((rendererObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define rendererObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *rendererObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((rendererObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define rendererObj_tp_free PyObject_Del
+
+
+PyTypeObject renderer_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.renderer", /*tp_name*/
+	sizeof(rendererObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) rendererObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) rendererObj_compare, /*tp_compare*/
+	(reprfunc) rendererObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) rendererObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	rendererObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	rendererObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	rendererObj_tp_init, /* tp_init */
+	rendererObj_tp_alloc, /* tp_alloc */
+	rendererObj_tp_new, /* tp_new */
+	rendererObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type renderer -------------------- */
+
+
+/* --------------------- Object type bgrenderer --------------------- */
+
+extern PyTypeObject bgrenderer_Type;
+
+inline bool bgrendererObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &bgrenderer_Type);
+}
+
+typedef struct bgrendererObject {
+	PyObject_HEAD
+	ambulant::common::bgrenderer* ob_itself;
+} bgrendererObject;
+
+PyObject *bgrendererObj_New(ambulant::common::bgrenderer* itself)
+{
+	bgrendererObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_bgrenderer
+	bgrenderer *encaps_itself = dynamic_cast<bgrenderer *>(itself);
+	if (encaps_itself && encaps_itself->py_bgrenderer)
+	{
+		Py_INCREF(encaps_itself->py_bgrenderer);
+		return encaps_itself->py_bgrenderer;
+	}
+#endif
+	it = PyObject_NEW(bgrendererObject, &bgrenderer_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int bgrendererObj_Convert(PyObject *v, ambulant::common::bgrenderer* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_bgrenderer
+	if (!bgrendererObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_bgrenderer(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!bgrendererObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "bgrenderer required");
+		return 0;
+	}
+	*p_itself = ((bgrendererObject *)v)->ob_itself;
+	return 1;
+}
+
+static void bgrendererObj_dealloc(bgrendererObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *bgrendererObj_set_surface(bgrendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::surface* destination;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      surfaceObj_Convert, &destination))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_surface(destination);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *bgrendererObj_keep_as_background(bgrendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->keep_as_background();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef bgrendererObj_methods[] = {
+	{"set_surface", (PyCFunction)bgrendererObj_set_surface, 1,
+	 PyDoc_STR("(ambulant::common::surface* destination) -> None")},
+	{"keep_as_background", (PyCFunction)bgrendererObj_keep_as_background, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define bgrendererObj_getsetlist NULL
+
+
+static int bgrendererObj_compare(bgrendererObject *self, bgrendererObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define bgrendererObj_repr NULL
+
+static int bgrendererObj_hash(bgrendererObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int bgrendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::bgrenderer* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, bgrendererObj_Convert, &itself))
+	{
+		((bgrendererObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define bgrendererObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *bgrendererObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((bgrendererObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define bgrendererObj_tp_free PyObject_Del
+
+
+PyTypeObject bgrenderer_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.bgrenderer", /*tp_name*/
+	sizeof(bgrendererObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) bgrendererObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) bgrendererObj_compare, /*tp_compare*/
+	(reprfunc) bgrendererObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) bgrendererObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	bgrendererObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	bgrendererObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	bgrendererObj_tp_init, /* tp_init */
+	bgrendererObj_tp_alloc, /* tp_alloc */
+	bgrendererObj_tp_new, /* tp_new */
+	bgrendererObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type bgrenderer ------------------- */
+
+
+/* ---------------------- Object type surface ----------------------- */
+
+extern PyTypeObject surface_Type;
+
+inline bool surfaceObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &surface_Type);
+}
+
+typedef struct surfaceObject {
+	PyObject_HEAD
+	ambulant::common::surface* ob_itself;
+} surfaceObject;
+
+PyObject *surfaceObj_New(ambulant::common::surface* itself)
+{
+	surfaceObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface
+	surface *encaps_itself = dynamic_cast<surface *>(itself);
+	if (encaps_itself && encaps_itself->py_surface)
+	{
+		Py_INCREF(encaps_itself->py_surface);
+		return encaps_itself->py_surface;
+	}
+#endif
+	it = PyObject_NEW(surfaceObject, &surface_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int surfaceObj_Convert(PyObject *v, ambulant::common::surface* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface
+	if (!surfaceObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_surface(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!surfaceObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "surface required");
+		return 0;
+	}
+	*p_itself = ((surfaceObject *)v)->ob_itself;
+	return 1;
+}
+
+static void surfaceObj_dealloc(surfaceObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *surfaceObj_show(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::gui_events* renderer;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      gui_eventsObj_Convert, &renderer))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->show(renderer);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_renderer_done(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::gui_events* renderer;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      gui_eventsObj_Convert, &renderer))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->renderer_done(renderer);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_need_redraw_1(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::rect r;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_rect_Convert, &r))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_redraw(r);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_need_redraw_2(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_redraw();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_need_events(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool want;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &want))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_events(want);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_transition_done(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->transition_done();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_keep_as_background(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->keep_as_background();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_get_rect(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::rect& _rv = _self->ob_itself->get_rect();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_rect_New(_rv));
+	return _res;
+}
+
+static PyObject *surfaceObj_get_global_topleft(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::point& _rv = _self->ob_itself->get_global_topleft();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_point_New(_rv));
+	return _res;
+}
+
+static PyObject *surfaceObj_get_fit_rect(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::size src_size;
+	ambulant::lib::rect out_src_rect;
+	ambulant::common::alignment* align;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      ambulant_size_Convert, &src_size,
+	                      alignmentObj_Convert, &align))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::rect _rv = _self->ob_itself->get_fit_rect(src_size,
+	                                                         &out_src_rect,
+	                                                         align);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("OO",
+	                     ambulant_rect_New(_rv),
+	                     ambulant_rect_New(out_src_rect));
+	return _res;
+}
+
+static PyObject *surfaceObj_get_info(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::common::region_info* _rv = _self->ob_itself->get_info();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     region_infoObj_New, _rv);
+	return _res;
+}
+
+#ifdef USE_SMIL21
+
+static PyObject *surfaceObj_get_top_surface(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface* _rv = _self->ob_itself->get_top_surface();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surfaceObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef USE_SMIL21
+
+static PyObject *surfaceObj_is_tiled(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_tiled();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+#endif
+
+static PyObject *surfaceObj_get_gui_window(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::gui_window* _rv = _self->ob_itself->get_gui_window();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     gui_windowObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef surfaceObj_methods[] = {
+	{"show", (PyCFunction)surfaceObj_show, 1,
+	 PyDoc_STR("(ambulant::common::gui_events* renderer) -> None")},
+	{"renderer_done", (PyCFunction)surfaceObj_renderer_done, 1,
+	 PyDoc_STR("(ambulant::common::gui_events* renderer) -> None")},
+	{"need_redraw_1", (PyCFunction)surfaceObj_need_redraw_1, 1,
+	 PyDoc_STR("(ambulant::lib::rect r) -> None")},
+	{"need_redraw_2", (PyCFunction)surfaceObj_need_redraw_2, 1,
+	 PyDoc_STR("() -> None")},
+	{"need_events", (PyCFunction)surfaceObj_need_events, 1,
+	 PyDoc_STR("(bool want) -> None")},
+	{"transition_done", (PyCFunction)surfaceObj_transition_done, 1,
+	 PyDoc_STR("() -> None")},
+	{"keep_as_background", (PyCFunction)surfaceObj_keep_as_background, 1,
+	 PyDoc_STR("() -> None")},
+	{"get_rect", (PyCFunction)surfaceObj_get_rect, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::rect& _rv)")},
+	{"get_global_topleft", (PyCFunction)surfaceObj_get_global_topleft, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::point& _rv)")},
+	{"get_fit_rect", (PyCFunction)surfaceObj_get_fit_rect, 1,
+	 PyDoc_STR("(ambulant::lib::size src_size, ambulant::common::alignment* align) -> (ambulant::lib::rect _rv, ambulant::lib::rect out_src_rect)")},
+	{"get_info", (PyCFunction)surfaceObj_get_info, 1,
+	 PyDoc_STR("() -> (const ambulant::common::region_info* _rv)")},
+
+#ifdef USE_SMIL21
+	{"get_top_surface", (PyCFunction)surfaceObj_get_top_surface, 1,
+	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
+#endif
+
+#ifdef USE_SMIL21
+	{"is_tiled", (PyCFunction)surfaceObj_is_tiled, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+#endif
+	{"get_gui_window", (PyCFunction)surfaceObj_get_gui_window, 1,
+	 PyDoc_STR("() -> (ambulant::common::gui_window* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define surfaceObj_getsetlist NULL
+
+
+static int surfaceObj_compare(surfaceObject *self, surfaceObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define surfaceObj_repr NULL
+
+static int surfaceObj_hash(surfaceObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int surfaceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::surface* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, surfaceObj_Convert, &itself))
+	{
+		((surfaceObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define surfaceObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *surfaceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((surfaceObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define surfaceObj_tp_free PyObject_Del
+
+
+PyTypeObject surface_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.surface", /*tp_name*/
+	sizeof(surfaceObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) surfaceObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) surfaceObj_compare, /*tp_compare*/
+	(reprfunc) surfaceObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) surfaceObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	surfaceObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	surfaceObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	surfaceObj_tp_init, /* tp_init */
+	surfaceObj_tp_alloc, /* tp_alloc */
+	surfaceObj_tp_new, /* tp_new */
+	surfaceObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type surface --------------------- */
+
+
+/* ------------------- Object type window_factory ------------------- */
+
+extern PyTypeObject window_factory_Type;
+
+inline bool window_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &window_factory_Type);
+}
+
+typedef struct window_factoryObject {
+	PyObject_HEAD
+	ambulant::common::window_factory* ob_itself;
+} window_factoryObject;
+
+PyObject *window_factoryObj_New(ambulant::common::window_factory* itself)
+{
+	window_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_window_factory
+	window_factory *encaps_itself = dynamic_cast<window_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_window_factory)
+	{
+		Py_INCREF(encaps_itself->py_window_factory);
+		return encaps_itself->py_window_factory;
+	}
+#endif
+	it = PyObject_NEW(window_factoryObject, &window_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int window_factoryObj_Convert(PyObject *v, ambulant::common::window_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_window_factory
+	if (!window_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_window_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!window_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "window_factory required");
+		return 0;
+	}
+	*p_itself = ((window_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void window_factoryObj_dealloc(window_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *window_factoryObj_new_window(window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string name;
+	ambulant::lib::size bounds;
+	ambulant::common::gui_events* handler;
+	char *name_cstr;
+	if (!PyArg_ParseTuple(_args, "sO&O&",
+	                      &name_cstr,
+	                      ambulant_size_Convert, &bounds,
+	                      gui_eventsObj_Convert, &handler))
+		return NULL;
+	name = name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::gui_window* _rv = _self->ob_itself->new_window(name,
+	                                                                 bounds,
+	                                                                 handler);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     gui_windowObj_New, _rv);
+	return _res;
+}
+
+static PyObject *window_factoryObj_new_background_renderer(window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::region_info* src;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      region_infoObj_Convert, &src))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::bgrenderer* _rv = _self->ob_itself->new_background_renderer(src);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bgrendererObj_New, _rv);
+	return _res;
+}
+
+static PyObject *window_factoryObj_window_done(window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string name;
+	char *name_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name_cstr))
+		return NULL;
+	name = name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->window_done(name);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef window_factoryObj_methods[] = {
+	{"new_window", (PyCFunction)window_factoryObj_new_window, 1,
+	 PyDoc_STR("(std::string name, ambulant::lib::size bounds, ambulant::common::gui_events* handler) -> (ambulant::common::gui_window* _rv)")},
+	{"new_background_renderer", (PyCFunction)window_factoryObj_new_background_renderer, 1,
+	 PyDoc_STR("(ambulant::common::region_info* src) -> (ambulant::common::bgrenderer* _rv)")},
+	{"window_done", (PyCFunction)window_factoryObj_window_done, 1,
+	 PyDoc_STR("(std::string name) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define window_factoryObj_getsetlist NULL
+
+
+static int window_factoryObj_compare(window_factoryObject *self, window_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define window_factoryObj_repr NULL
+
+static int window_factoryObj_hash(window_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::window_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, window_factoryObj_Convert, &itself))
+	{
+		((window_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define window_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *window_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((window_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define window_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject window_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.window_factory", /*tp_name*/
+	sizeof(window_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) window_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) window_factoryObj_compare, /*tp_compare*/
+	(reprfunc) window_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) window_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	window_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	window_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	window_factoryObj_tp_init, /* tp_init */
+	window_factoryObj_tp_alloc, /* tp_alloc */
+	window_factoryObj_tp_new, /* tp_new */
+	window_factoryObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type window_factory ----------------- */
+
+
+/* ------------------ Object type surface_template ------------------ */
+
+extern PyTypeObject surface_template_Type;
+
+inline bool surface_templateObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &surface_template_Type);
+}
+
+typedef struct surface_templateObject {
+	PyObject_HEAD
+	ambulant::common::surface_template* ob_itself;
+} surface_templateObject;
+
+PyObject *surface_templateObj_New(ambulant::common::surface_template* itself)
+{
+	surface_templateObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface_template
+	surface_template *encaps_itself = dynamic_cast<surface_template *>(itself);
+	if (encaps_itself && encaps_itself->py_surface_template)
+	{
+		Py_INCREF(encaps_itself->py_surface_template);
+		return encaps_itself->py_surface_template;
+	}
+#endif
+	it = PyObject_NEW(surface_templateObject, &surface_template_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int surface_templateObj_Convert(PyObject *v, ambulant::common::surface_template* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface_template
+	if (!surface_templateObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_surface_template(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!surface_templateObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "surface_template required");
+		return 0;
+	}
+	*p_itself = ((surface_templateObject *)v)->ob_itself;
+	return 1;
+}
+
+static void surface_templateObj_dealloc(surface_templateObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *surface_templateObj_new_subsurface(surface_templateObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::region_info* info;
+	ambulant::common::bgrenderer* bgrend;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      region_infoObj_Convert, &info,
+	                      bgrendererObj_Convert, &bgrend))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface_template* _rv = _self->ob_itself->new_subsurface(info,
+	                                                                           bgrend);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surface_templateObj_New, _rv);
+	return _res;
+}
+
+static PyObject *surface_templateObj_activate(surface_templateObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface* _rv = _self->ob_itself->activate();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surfaceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef surface_templateObj_methods[] = {
+	{"new_subsurface", (PyCFunction)surface_templateObj_new_subsurface, 1,
+	 PyDoc_STR("(ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend) -> (ambulant::common::surface_template* _rv)")},
+	{"activate", (PyCFunction)surface_templateObj_activate, 1,
+	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define surface_templateObj_getsetlist NULL
+
+
+static int surface_templateObj_compare(surface_templateObject *self, surface_templateObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define surface_templateObj_repr NULL
+
+static int surface_templateObj_hash(surface_templateObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int surface_templateObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::surface_template* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, surface_templateObj_Convert, &itself))
+	{
+		((surface_templateObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define surface_templateObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *surface_templateObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((surface_templateObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define surface_templateObj_tp_free PyObject_Del
+
+
+PyTypeObject surface_template_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.surface_template", /*tp_name*/
+	sizeof(surface_templateObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) surface_templateObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) surface_templateObj_compare, /*tp_compare*/
+	(reprfunc) surface_templateObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) surface_templateObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	surface_templateObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	surface_templateObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	surface_templateObj_tp_init, /* tp_init */
+	surface_templateObj_tp_alloc, /* tp_alloc */
+	surface_templateObj_tp_new, /* tp_new */
+	surface_templateObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type surface_template ---------------- */
+
+
+/* ------------------ Object type surface_factory ------------------- */
+
+extern PyTypeObject surface_factory_Type;
+
+inline bool surface_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &surface_factory_Type);
+}
+
+typedef struct surface_factoryObject {
+	PyObject_HEAD
+	ambulant::common::surface_factory* ob_itself;
+} surface_factoryObject;
+
+PyObject *surface_factoryObj_New(ambulant::common::surface_factory* itself)
+{
+	surface_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface_factory
+	surface_factory *encaps_itself = dynamic_cast<surface_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_surface_factory)
+	{
+		Py_INCREF(encaps_itself->py_surface_factory);
+		return encaps_itself->py_surface_factory;
+	}
+#endif
+	it = PyObject_NEW(surface_factoryObject, &surface_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int surface_factoryObj_Convert(PyObject *v, ambulant::common::surface_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_surface_factory
+	if (!surface_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_surface_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!surface_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "surface_factory required");
+		return 0;
+	}
+	*p_itself = ((surface_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void surface_factoryObj_dealloc(surface_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *surface_factoryObj_new_topsurface(surface_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::region_info* info;
+	ambulant::common::bgrenderer* bgrend;
+	ambulant::common::window_factory* wf;
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      region_infoObj_Convert, &info,
+	                      bgrendererObj_Convert, &bgrend,
+	                      window_factoryObj_Convert, &wf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface_template* _rv = _self->ob_itself->new_topsurface(info,
+	                                                                           bgrend,
+	                                                                           wf);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surface_templateObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef surface_factoryObj_methods[] = {
+	{"new_topsurface", (PyCFunction)surface_factoryObj_new_topsurface, 1,
+	 PyDoc_STR("(ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend, ambulant::common::window_factory* wf) -> (ambulant::common::surface_template* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define surface_factoryObj_getsetlist NULL
+
+
+static int surface_factoryObj_compare(surface_factoryObject *self, surface_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define surface_factoryObj_repr NULL
+
+static int surface_factoryObj_hash(surface_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int surface_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::surface_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, surface_factoryObj_Convert, &itself))
+	{
+		((surface_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define surface_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *surface_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((surface_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define surface_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject surface_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.surface_factory", /*tp_name*/
+	sizeof(surface_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) surface_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) surface_factoryObj_compare, /*tp_compare*/
+	(reprfunc) surface_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) surface_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	surface_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	surface_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	surface_factoryObj_tp_init, /* tp_init */
+	surface_factoryObj_tp_alloc, /* tp_alloc */
+	surface_factoryObj_tp_new, /* tp_new */
+	surface_factoryObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type surface_factory ----------------- */
+
+
+/* ------------------- Object type layout_manager ------------------- */
+
+extern PyTypeObject layout_manager_Type;
+
+inline bool layout_managerObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &layout_manager_Type);
+}
+
+typedef struct layout_managerObject {
+	PyObject_HEAD
+	ambulant::common::layout_manager* ob_itself;
+} layout_managerObject;
+
+PyObject *layout_managerObj_New(ambulant::common::layout_manager* itself)
+{
+	layout_managerObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_layout_manager
+	layout_manager *encaps_itself = dynamic_cast<layout_manager *>(itself);
+	if (encaps_itself && encaps_itself->py_layout_manager)
+	{
+		Py_INCREF(encaps_itself->py_layout_manager);
+		return encaps_itself->py_layout_manager;
+	}
+#endif
+	it = PyObject_NEW(layout_managerObject, &layout_manager_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int layout_managerObj_Convert(PyObject *v, ambulant::common::layout_manager* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_layout_manager
+	if (!layout_managerObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_layout_manager(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!layout_managerObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "layout_manager required");
+		return 0;
+	}
+	*p_itself = ((layout_managerObject *)v)->ob_itself;
+	return 1;
+}
+
+static void layout_managerObj_dealloc(layout_managerObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *layout_managerObj_get_surface(layout_managerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* node;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &node))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface* _rv = _self->ob_itself->get_surface(node);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surfaceObj_New, _rv);
+	return _res;
+}
+
+static PyObject *layout_managerObj_get_alignment(layout_managerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* node;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &node))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::alignment* _rv = _self->ob_itself->get_alignment(node);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     alignmentObj_New, _rv);
+	return _res;
+}
+
+static PyObject *layout_managerObj_get_animation_notification(layout_managerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* node;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &node))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::animation_notification* _rv = _self->ob_itself->get_animation_notification(node);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     animation_notificationObj_New, _rv);
+	return _res;
+}
+
+static PyObject *layout_managerObj_get_animation_destination(layout_managerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* node;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &node))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::animation_destination* _rv = _self->ob_itself->get_animation_destination(node);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     animation_destinationObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef layout_managerObj_methods[] = {
+	{"get_surface", (PyCFunction)layout_managerObj_get_surface, 1,
+	 PyDoc_STR("(ambulant::lib::node* node) -> (ambulant::common::surface* _rv)")},
+	{"get_alignment", (PyCFunction)layout_managerObj_get_alignment, 1,
+	 PyDoc_STR("(ambulant::lib::node* node) -> (ambulant::common::alignment* _rv)")},
+	{"get_animation_notification", (PyCFunction)layout_managerObj_get_animation_notification, 1,
+	 PyDoc_STR("(ambulant::lib::node* node) -> (ambulant::common::animation_notification* _rv)")},
+	{"get_animation_destination", (PyCFunction)layout_managerObj_get_animation_destination, 1,
+	 PyDoc_STR("(ambulant::lib::node* node) -> (ambulant::common::animation_destination* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define layout_managerObj_getsetlist NULL
+
+
+static int layout_managerObj_compare(layout_managerObject *self, layout_managerObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define layout_managerObj_repr NULL
+
+static int layout_managerObj_hash(layout_managerObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int layout_managerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::layout_manager* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, layout_managerObj_Convert, &itself))
+	{
+		((layout_managerObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define layout_managerObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *layout_managerObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((layout_managerObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define layout_managerObj_tp_free PyObject_Del
+
+
+PyTypeObject layout_manager_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.layout_manager", /*tp_name*/
+	sizeof(layout_managerObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) layout_managerObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) layout_managerObj_compare, /*tp_compare*/
+	(reprfunc) layout_managerObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) layout_managerObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	layout_managerObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	layout_managerObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	layout_managerObj_tp_init, /* tp_init */
+	layout_managerObj_tp_alloc, /* tp_alloc */
+	layout_managerObj_tp_new, /* tp_new */
+	layout_managerObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type layout_manager ----------------- */
+
+
+/* ---------------------- Object type playable ---------------------- */
+
+extern PyTypeObject playable_Type;
+
+inline bool playableObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &playable_Type);
+}
+
+typedef struct playableObject {
+	PyObject_HEAD
+	ambulant::common::playable* ob_itself;
+} playableObject;
+
+PyObject *playableObj_New(ambulant::common::playable* itself)
+{
+	playableObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable
+	playable *encaps_itself = dynamic_cast<playable *>(itself);
+	if (encaps_itself && encaps_itself->py_playable)
+	{
+		Py_INCREF(encaps_itself->py_playable);
+		return encaps_itself->py_playable;
+	}
+#endif
+	it = PyObject_NEW(playableObject, &playable_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int playableObj_Convert(PyObject *v, ambulant::common::playable* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable
+	if (!playableObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_playable(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!playableObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "playable required");
+		return 0;
+	}
+	*p_itself = ((playableObject *)v)->ob_itself;
+	return 1;
+}
+
+static void playableObj_dealloc(playableObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *playableObj_start(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double t;
+	if (!PyArg_ParseTuple(_args, "d",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_stop(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_pause(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->pause();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_resume(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resume();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_seek(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double t;
+	if (!PyArg_ParseTuple(_args, "d",
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->seek(t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_wantclicks(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool want;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &want))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->wantclicks(want);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_preroll(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double when;
+	double where;
+	double how_much;
+	if (!PyArg_ParseTuple(_args, "ddd",
+	                      &when,
+	                      &where,
+	                      &how_much))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->preroll(when,
+	                          where,
+	                          how_much);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playableObj_get_dur(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::duration _rv = _self->ob_itself->get_dur();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("(O&d)",
+	                     bool_New, _rv.first, _rv.second);
+	return _res;
+}
+
+static PyObject *playableObj_get_cookie(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::playable::cookie_type _rv = _self->ob_itself->get_cookie();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *playableObj_get_renderer(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::renderer* _rv = _self->ob_itself->get_renderer();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     rendererObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef playableObj_methods[] = {
+	{"start", (PyCFunction)playableObj_start, 1,
+	 PyDoc_STR("(double t) -> None")},
+	{"stop", (PyCFunction)playableObj_stop, 1,
+	 PyDoc_STR("() -> None")},
+	{"pause", (PyCFunction)playableObj_pause, 1,
+	 PyDoc_STR("() -> None")},
+	{"resume", (PyCFunction)playableObj_resume, 1,
+	 PyDoc_STR("() -> None")},
+	{"seek", (PyCFunction)playableObj_seek, 1,
+	 PyDoc_STR("(double t) -> None")},
+	{"wantclicks", (PyCFunction)playableObj_wantclicks, 1,
+	 PyDoc_STR("(bool want) -> None")},
+	{"preroll", (PyCFunction)playableObj_preroll, 1,
+	 PyDoc_STR("(double when, double where, double how_much) -> None")},
+	{"get_dur", (PyCFunction)playableObj_get_dur, 1,
+	 PyDoc_STR("() -> (ambulant::common::duration _rv)")},
+	{"get_cookie", (PyCFunction)playableObj_get_cookie, 1,
+	 PyDoc_STR("() -> (ambulant::common::playable::cookie_type _rv)")},
+	{"get_renderer", (PyCFunction)playableObj_get_renderer, 1,
+	 PyDoc_STR("() -> (ambulant::common::renderer* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define playableObj_getsetlist NULL
+
+
+static int playableObj_compare(playableObject *self, playableObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define playableObj_repr NULL
+
+static int playableObj_hash(playableObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int playableObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::playable* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, playableObj_Convert, &itself))
+	{
+		((playableObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define playableObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *playableObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((playableObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define playableObj_tp_free PyObject_Del
+
+
+PyTypeObject playable_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.playable", /*tp_name*/
+	sizeof(playableObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) playableObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) playableObj_compare, /*tp_compare*/
+	(reprfunc) playableObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) playableObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	playableObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	playableObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	playableObj_tp_init, /* tp_init */
+	playableObj_tp_alloc, /* tp_alloc */
+	playableObj_tp_new, /* tp_new */
+	playableObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type playable -------------------- */
+
+
+/* --------------- Object type playable_notification ---------------- */
+
+extern PyTypeObject playable_notification_Type;
+
+inline bool playable_notificationObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &playable_notification_Type);
+}
+
+typedef struct playable_notificationObject {
+	PyObject_HEAD
+	ambulant::common::playable_notification* ob_itself;
+} playable_notificationObject;
+
+PyObject *playable_notificationObj_New(ambulant::common::playable_notification* itself)
+{
+	playable_notificationObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable_notification
+	playable_notification *encaps_itself = dynamic_cast<playable_notification *>(itself);
+	if (encaps_itself && encaps_itself->py_playable_notification)
+	{
+		Py_INCREF(encaps_itself->py_playable_notification);
+		return encaps_itself->py_playable_notification;
+	}
+#endif
+	it = PyObject_NEW(playable_notificationObject, &playable_notification_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int playable_notificationObj_Convert(PyObject *v, ambulant::common::playable_notification* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable_notification
+	if (!playable_notificationObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_playable_notification(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!playable_notificationObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "playable_notification required");
+		return 0;
+	}
+	*p_itself = ((playable_notificationObject *)v)->ob_itself;
+	return 1;
+}
+
+static void playable_notificationObj_dealloc(playable_notificationObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *playable_notificationObj_started(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->started(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_stopped(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stopped(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_stalled(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stalled(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_unstalled(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->unstalled(n,
+	                            t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_clicked(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->clicked(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_pointed(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->pointed(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playable_notificationObj_transitioned(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	double t;
+	if (!PyArg_ParseTuple(_args, "ld",
+	                      &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->transitioned(n,
+	                               t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef playable_notificationObj_methods[] = {
+	{"started", (PyCFunction)playable_notificationObj_started, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"stopped", (PyCFunction)playable_notificationObj_stopped, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"stalled", (PyCFunction)playable_notificationObj_stalled, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"unstalled", (PyCFunction)playable_notificationObj_unstalled, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"clicked", (PyCFunction)playable_notificationObj_clicked, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"pointed", (PyCFunction)playable_notificationObj_pointed, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"transitioned", (PyCFunction)playable_notificationObj_transitioned, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define playable_notificationObj_getsetlist NULL
+
+
+static int playable_notificationObj_compare(playable_notificationObject *self, playable_notificationObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define playable_notificationObj_repr NULL
+
+static int playable_notificationObj_hash(playable_notificationObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int playable_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::playable_notification* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, playable_notificationObj_Convert, &itself))
+	{
+		((playable_notificationObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define playable_notificationObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *playable_notificationObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((playable_notificationObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define playable_notificationObj_tp_free PyObject_Del
+
+
+PyTypeObject playable_notification_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.playable_notification", /*tp_name*/
+	sizeof(playable_notificationObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) playable_notificationObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) playable_notificationObj_compare, /*tp_compare*/
+	(reprfunc) playable_notificationObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) playable_notificationObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	playable_notificationObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	playable_notificationObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	playable_notificationObj_tp_init, /* tp_init */
+	playable_notificationObj_tp_alloc, /* tp_alloc */
+	playable_notificationObj_tp_new, /* tp_new */
+	playable_notificationObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type playable_notification -------------- */
+
+
+/* ------------------ Object type playable_factory ------------------ */
+
+extern PyTypeObject playable_factory_Type;
+
+inline bool playable_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &playable_factory_Type);
+}
+
+typedef struct playable_factoryObject {
+	PyObject_HEAD
+	ambulant::common::playable_factory* ob_itself;
+} playable_factoryObject;
+
+PyObject *playable_factoryObj_New(ambulant::common::playable_factory* itself)
+{
+	playable_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable_factory
+	playable_factory *encaps_itself = dynamic_cast<playable_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_playable_factory)
+	{
+		Py_INCREF(encaps_itself->py_playable_factory);
+		return encaps_itself->py_playable_factory;
+	}
+#endif
+	it = PyObject_NEW(playable_factoryObject, &playable_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int playable_factoryObj_Convert(PyObject *v, ambulant::common::playable_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_playable_factory
+	if (!playable_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_playable_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!playable_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "playable_factory required");
+		return 0;
+	}
+	*p_itself = ((playable_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void playable_factoryObj_dealloc(playable_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *playable_factoryObj_new_playable(playable_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_notification* context;
+	ambulant::common::playable::cookie_type cookie;
+	ambulant::lib::node* node;
+	ambulant::lib::event_processor* evp;
+	if (!PyArg_ParseTuple(_args, "O&lO&O&",
+	                      playable_notificationObj_Convert, &context,
+	                      &cookie,
+	                      nodeObj_Convert, &node,
+	                      event_processorObj_Convert, &evp))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::playable* _rv = _self->ob_itself->new_playable(context,
+	                                                                 cookie,
+	                                                                 node,
+	                                                                 evp);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playableObj_New, _rv);
+	return _res;
+}
+
+static PyObject *playable_factoryObj_new_aux_audio_playable(playable_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_notification* context;
+	ambulant::common::playable::cookie_type cookie;
+	ambulant::lib::node* node;
+	ambulant::lib::event_processor* evp;
+	ambulant::net::audio_datasource* src;
+	if (!PyArg_ParseTuple(_args, "O&lO&O&O&",
+	                      playable_notificationObj_Convert, &context,
+	                      &cookie,
+	                      nodeObj_Convert, &node,
+	                      event_processorObj_Convert, &evp,
+	                      audio_datasourceObj_Convert, &src))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::playable* _rv = _self->ob_itself->new_aux_audio_playable(context,
+	                                                                           cookie,
+	                                                                           node,
+	                                                                           evp,
+	                                                                           src);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playableObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef playable_factoryObj_methods[] = {
+	{"new_playable", (PyCFunction)playable_factoryObj_new_playable, 1,
+	 PyDoc_STR("(ambulant::common::playable_notification* context, ambulant::common::playable::cookie_type cookie, ambulant::lib::node* node, ambulant::lib::event_processor* evp) -> (ambulant::common::playable* _rv)")},
+	{"new_aux_audio_playable", (PyCFunction)playable_factoryObj_new_aux_audio_playable, 1,
+	 PyDoc_STR("(ambulant::common::playable_notification* context, ambulant::common::playable::cookie_type cookie, ambulant::lib::node* node, ambulant::lib::event_processor* evp, ambulant::net::audio_datasource* src) -> (ambulant::common::playable* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define playable_factoryObj_getsetlist NULL
+
+
+static int playable_factoryObj_compare(playable_factoryObject *self, playable_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define playable_factoryObj_repr NULL
+
+static int playable_factoryObj_hash(playable_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::playable_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, playable_factoryObj_Convert, &itself))
+	{
+		((playable_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define playable_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *playable_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((playable_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define playable_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject playable_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.playable_factory", /*tp_name*/
+	sizeof(playable_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) playable_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) playable_factoryObj_compare, /*tp_compare*/
+	(reprfunc) playable_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) playable_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	playable_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	playable_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	playable_factoryObj_tp_init, /* tp_init */
+	playable_factoryObj_tp_alloc, /* tp_alloc */
+	playable_factoryObj_tp_new, /* tp_new */
+	playable_factoryObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type playable_factory ---------------- */
+
+
+/* -------------- Object type global_playable_factory --------------- */
+
+extern PyTypeObject global_playable_factory_Type;
+
+inline bool global_playable_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &global_playable_factory_Type);
+}
+
+typedef struct global_playable_factoryObject {
+	PyObject_HEAD
+	ambulant::common::global_playable_factory* ob_itself;
+} global_playable_factoryObject;
+
+PyObject *global_playable_factoryObj_New(ambulant::common::global_playable_factory* itself)
+{
+	global_playable_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_global_playable_factory
+	global_playable_factory *encaps_itself = dynamic_cast<global_playable_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_global_playable_factory)
+	{
+		Py_INCREF(encaps_itself->py_global_playable_factory);
+		return encaps_itself->py_global_playable_factory;
+	}
+#endif
+	it = PyObject_NEW(global_playable_factoryObject, &global_playable_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int global_playable_factoryObj_Convert(PyObject *v, ambulant::common::global_playable_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_global_playable_factory
+	if (!global_playable_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_global_playable_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!global_playable_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "global_playable_factory required");
+		return 0;
+	}
+	*p_itself = ((global_playable_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void global_playable_factoryObj_dealloc(global_playable_factoryObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *global_playable_factoryObj_add_factory(global_playable_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* rf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playable_factoryObj_Convert, &rf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_factory(rf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef global_playable_factoryObj_methods[] = {
+	{"add_factory", (PyCFunction)global_playable_factoryObj_add_factory, 1,
+	 PyDoc_STR("(ambulant::common::playable_factory* rf) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define global_playable_factoryObj_getsetlist NULL
+
+
+static int global_playable_factoryObj_compare(global_playable_factoryObject *self, global_playable_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define global_playable_factoryObj_repr NULL
+
+static int global_playable_factoryObj_hash(global_playable_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int global_playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::global_playable_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, global_playable_factoryObj_Convert, &itself))
+	{
+		((global_playable_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define global_playable_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *global_playable_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((global_playable_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define global_playable_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject global_playable_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.global_playable_factory", /*tp_name*/
+	sizeof(global_playable_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) global_playable_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) global_playable_factoryObj_compare, /*tp_compare*/
+	(reprfunc) global_playable_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) global_playable_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	global_playable_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	global_playable_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	global_playable_factoryObj_tp_init, /* tp_init */
+	global_playable_factoryObj_tp_alloc, /* tp_alloc */
+	global_playable_factoryObj_tp_new, /* tp_new */
+	global_playable_factoryObj_tp_free, /* tp_free */
+};
+
+/* ------------ End object type global_playable_factory ------------- */
+
+
+/* ------------------ Object type player_feedback ------------------- */
+
+extern PyTypeObject player_feedback_Type;
+
+inline bool player_feedbackObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &player_feedback_Type);
+}
+
+typedef struct player_feedbackObject {
+	PyObject_HEAD
+	ambulant::common::player_feedback* ob_itself;
+} player_feedbackObject;
+
+PyObject *player_feedbackObj_New(ambulant::common::player_feedback* itself)
+{
+	player_feedbackObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_player_feedback
+	player_feedback *encaps_itself = dynamic_cast<player_feedback *>(itself);
+	if (encaps_itself && encaps_itself->py_player_feedback)
+	{
+		Py_INCREF(encaps_itself->py_player_feedback);
+		return encaps_itself->py_player_feedback;
+	}
+#endif
+	it = PyObject_NEW(player_feedbackObject, &player_feedback_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int player_feedbackObj_Convert(PyObject *v, ambulant::common::player_feedback* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_player_feedback
+	if (!player_feedbackObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_player_feedback(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!player_feedbackObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "player_feedback required");
+		return 0;
+	}
+	*p_itself = ((player_feedbackObject *)v)->ob_itself;
+	return 1;
+}
+
+static void player_feedbackObj_dealloc(player_feedbackObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *player_feedbackObj_node_started(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->node_started(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_node_stopped(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->node_stopped(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef player_feedbackObj_methods[] = {
+	{"node_started", (PyCFunction)player_feedbackObj_node_started, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"node_stopped", (PyCFunction)player_feedbackObj_node_stopped, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define player_feedbackObj_getsetlist NULL
+
+
+static int player_feedbackObj_compare(player_feedbackObject *self, player_feedbackObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define player_feedbackObj_repr NULL
+
+static int player_feedbackObj_hash(player_feedbackObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int player_feedbackObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::player_feedback* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, player_feedbackObj_Convert, &itself))
+	{
+		((player_feedbackObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define player_feedbackObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *player_feedbackObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((player_feedbackObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define player_feedbackObj_tp_free PyObject_Del
+
+
+PyTypeObject player_feedback_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.player_feedback", /*tp_name*/
+	sizeof(player_feedbackObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) player_feedbackObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) player_feedbackObj_compare, /*tp_compare*/
+	(reprfunc) player_feedbackObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) player_feedbackObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	player_feedbackObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	player_feedbackObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	player_feedbackObj_tp_init, /* tp_init */
+	player_feedbackObj_tp_alloc, /* tp_alloc */
+	player_feedbackObj_tp_new, /* tp_new */
+	player_feedbackObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type player_feedback ----------------- */
+
+
+/* ----------------------- Object type player ----------------------- */
+
+extern PyTypeObject player_Type;
+
+inline bool playerObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &player_Type);
+}
+
+typedef struct playerObject {
+	PyObject_HEAD
+	ambulant::common::player* ob_itself;
+} playerObject;
+
+PyObject *playerObj_New(ambulant::common::player* itself)
+{
+	playerObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_player
+	player *encaps_itself = dynamic_cast<player *>(itself);
+	if (encaps_itself && encaps_itself->py_player)
+	{
+		Py_INCREF(encaps_itself->py_player);
+		return encaps_itself->py_player;
+	}
+#endif
+	it = PyObject_NEW(playerObject, &player_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int playerObj_Convert(PyObject *v, ambulant::common::player* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_player
+	if (!playerObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_player(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!playerObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "player required");
+		return 0;
+	}
+	*p_itself = ((playerObject *)v)->ob_itself;
+	return 1;
+}
+
+static void playerObj_dealloc(playerObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+#ifdef USE_SMIL21
+
+static PyObject *playerObj_initialize(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->initialize();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+#endif
+
+static PyObject *playerObj_get_timer(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer* _rv = _self->ob_itself->get_timer();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     timerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *playerObj_get_evp(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::event_processor* _rv = _self->ob_itself->get_evp();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     event_processorObj_New, _rv);
+	return _res;
+}
+
+static PyObject *playerObj_start(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_stop(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_pause(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->pause();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_resume(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resume();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_is_playing(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_playing();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *playerObj_is_pausing(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_pausing();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *playerObj_is_done(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_done();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *playerObj_get_cursor(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->get_cursor();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *playerObj_set_cursor(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int cursor;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &cursor))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_cursor(cursor);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_set_feedback(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::player_feedback* fb;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      player_feedbackObj_Convert, &fb))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_feedback(fb);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_goto_node(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->goto_node(n);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyMethodDef playerObj_methods[] = {
+
+#ifdef USE_SMIL21
+	{"initialize", (PyCFunction)playerObj_initialize, 1,
+	 PyDoc_STR("() -> None")},
+#endif
+	{"get_timer", (PyCFunction)playerObj_get_timer, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},
+	{"get_evp", (PyCFunction)playerObj_get_evp, 1,
+	 PyDoc_STR("() -> (ambulant::lib::event_processor* _rv)")},
+	{"start", (PyCFunction)playerObj_start, 1,
+	 PyDoc_STR("() -> None")},
+	{"stop", (PyCFunction)playerObj_stop, 1,
+	 PyDoc_STR("() -> None")},
+	{"pause", (PyCFunction)playerObj_pause, 1,
+	 PyDoc_STR("() -> None")},
+	{"resume", (PyCFunction)playerObj_resume, 1,
+	 PyDoc_STR("() -> None")},
+	{"is_playing", (PyCFunction)playerObj_is_playing, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"is_pausing", (PyCFunction)playerObj_is_pausing, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"is_done", (PyCFunction)playerObj_is_done, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_cursor", (PyCFunction)playerObj_get_cursor, 1,
+	 PyDoc_STR("() -> (int _rv)")},
+	{"set_cursor", (PyCFunction)playerObj_set_cursor, 1,
+	 PyDoc_STR("(int cursor) -> None")},
+	{"set_feedback", (PyCFunction)playerObj_set_feedback, 1,
+	 PyDoc_STR("(ambulant::common::player_feedback* fb) -> None")},
+	{"goto_node", (PyCFunction)playerObj_goto_node, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define playerObj_getsetlist NULL
+
+
+static int playerObj_compare(playerObject *self, playerObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define playerObj_repr NULL
+
+static int playerObj_hash(playerObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int playerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::player* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, playerObj_Convert, &itself))
+	{
+		((playerObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define playerObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *playerObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((playerObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define playerObj_tp_free PyObject_Del
+
+
+PyTypeObject player_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.player", /*tp_name*/
+	sizeof(playerObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) playerObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) playerObj_compare, /*tp_compare*/
+	(reprfunc) playerObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) playerObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	playerObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	playerObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	playerObj_tp_init, /* tp_init */
+	playerObj_tp_alloc, /* tp_alloc */
+	playerObj_tp_new, /* tp_new */
+	playerObj_tp_free, /* tp_free */
+};
+
+/* --------------------- End object type player --------------------- */
+
+
+/* -------------------- Object type region_info --------------------- */
+
+extern PyTypeObject region_info_Type;
+
+inline bool region_infoObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &region_info_Type);
+}
+
+typedef struct region_infoObject {
+	PyObject_HEAD
+	ambulant::common::region_info* ob_itself;
+} region_infoObject;
+
+PyObject *region_infoObj_New(ambulant::common::region_info* itself)
+{
+	region_infoObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_region_info
+	region_info *encaps_itself = dynamic_cast<region_info *>(itself);
+	if (encaps_itself && encaps_itself->py_region_info)
+	{
+		Py_INCREF(encaps_itself->py_region_info);
+		return encaps_itself->py_region_info;
+	}
+#endif
+	it = PyObject_NEW(region_infoObject, &region_info_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int region_infoObj_Convert(PyObject *v, ambulant::common::region_info* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_region_info
+	if (!region_infoObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_region_info(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!region_infoObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "region_info required");
+		return 0;
+	}
+	*p_itself = ((region_infoObject *)v)->ob_itself;
+	return 1;
+}
+
+static void region_infoObj_dealloc(region_infoObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *region_infoObj_get_name(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->get_name();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *region_infoObj_get_rect(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::rect _rv = _self->ob_itself->get_rect();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_rect_New(_rv));
+	return _res;
+}
+
+static PyObject *region_infoObj_get_fit(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::fit_t _rv = _self->ob_itself->get_fit();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_bgcolor(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::color_t _rv = _self->ob_itself->get_bgcolor();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_transparent(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->get_transparent();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_zindex(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::zindex_t _rv = _self->ob_itself->get_zindex();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_showbackground(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->get_showbackground();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_is_subregion(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_subregion();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_soundlevel(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_soundlevel();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+#ifdef USE_SMIL21
+
+static PyObject *region_infoObj_get_soundalign(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::sound_alignment _rv = _self->ob_itself->get_soundalign();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+#endif
+
+#ifdef USE_SMIL21
+
+static PyObject *region_infoObj_get_tiling(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::tiling _rv = _self->ob_itself->get_tiling();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+#endif
+
+#ifdef USE_SMIL21
+
+static PyObject *region_infoObj_get_bgimage(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_bgimage();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+#endif
+
+static PyMethodDef region_infoObj_methods[] = {
+	{"get_name", (PyCFunction)region_infoObj_get_name, 1,
+	 PyDoc_STR("() -> (std::string _rv)")},
+	{"get_rect", (PyCFunction)region_infoObj_get_rect, 1,
+	 PyDoc_STR("() -> (ambulant::lib::rect _rv)")},
+	{"get_fit", (PyCFunction)region_infoObj_get_fit, 1,
+	 PyDoc_STR("() -> (ambulant::common::fit_t _rv)")},
+	{"get_bgcolor", (PyCFunction)region_infoObj_get_bgcolor, 1,
+	 PyDoc_STR("() -> (ambulant::lib::color_t _rv)")},
+	{"get_transparent", (PyCFunction)region_infoObj_get_transparent, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_zindex", (PyCFunction)region_infoObj_get_zindex, 1,
+	 PyDoc_STR("() -> (ambulant::common::zindex_t _rv)")},
+	{"get_showbackground", (PyCFunction)region_infoObj_get_showbackground, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"is_subregion", (PyCFunction)region_infoObj_is_subregion, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_soundlevel", (PyCFunction)region_infoObj_get_soundlevel, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+
+#ifdef USE_SMIL21
+	{"get_soundalign", (PyCFunction)region_infoObj_get_soundalign, 1,
+	 PyDoc_STR("() -> (ambulant::common::sound_alignment _rv)")},
+#endif
+
+#ifdef USE_SMIL21
+	{"get_tiling", (PyCFunction)region_infoObj_get_tiling, 1,
+	 PyDoc_STR("() -> (ambulant::common::tiling _rv)")},
+#endif
+
+#ifdef USE_SMIL21
+	{"get_bgimage", (PyCFunction)region_infoObj_get_bgimage, 1,
+	 PyDoc_STR("() -> (const char * _rv)")},
+#endif
+	{NULL, NULL, 0}
+};
+
+#define region_infoObj_getsetlist NULL
+
+
+static int region_infoObj_compare(region_infoObject *self, region_infoObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define region_infoObj_repr NULL
+
+static int region_infoObj_hash(region_infoObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int region_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::region_info* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, region_infoObj_Convert, &itself))
+	{
+		((region_infoObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define region_infoObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *region_infoObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((region_infoObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define region_infoObj_tp_free PyObject_Del
+
+
+PyTypeObject region_info_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.region_info", /*tp_name*/
+	sizeof(region_infoObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) region_infoObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) region_infoObj_compare, /*tp_compare*/
+	(reprfunc) region_infoObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) region_infoObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	region_infoObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	region_infoObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	region_infoObj_tp_init, /* tp_init */
+	region_infoObj_tp_alloc, /* tp_alloc */
+	region_infoObj_tp_new, /* tp_new */
+	region_infoObj_tp_free, /* tp_free */
+};
+
+/* ------------------ End object type region_info ------------------- */
+
+
+/* --------------- Object type animation_destination ---------------- */
+
+extern PyTypeObject animation_destination_Type;
+
+inline bool animation_destinationObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &animation_destination_Type);
+}
+
+typedef struct animation_destinationObject {
+	PyObject_HEAD
+	ambulant::common::animation_destination* ob_itself;
+} animation_destinationObject;
+
+PyObject *animation_destinationObj_New(ambulant::common::animation_destination* itself)
+{
+	animation_destinationObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_animation_destination
+	animation_destination *encaps_itself = dynamic_cast<animation_destination *>(itself);
+	if (encaps_itself && encaps_itself->py_animation_destination)
+	{
+		Py_INCREF(encaps_itself->py_animation_destination);
+		return encaps_itself->py_animation_destination;
+	}
+#endif
+	it = PyObject_NEW(animation_destinationObject, &animation_destination_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int animation_destinationObj_Convert(PyObject *v, ambulant::common::animation_destination* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_animation_destination
+	if (!animation_destinationObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_animation_destination(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!animation_destinationObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "animation_destination required");
+		return 0;
+	}
+	*p_itself = ((animation_destinationObject *)v)->ob_itself;
+	return 1;
+}
+
+static void animation_destinationObj_dealloc(animation_destinationObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *animation_destinationObj_get_region_dim(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string which;
+	bool fromdom;
+	char *which_cstr;
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &which_cstr,
+	                      bool_Convert, &fromdom))
+		return NULL;
+	which = which_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::region_dim _rv = _self->ob_itself->get_region_dim(which,
+	                                                                    fromdom);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_region_dim_New(_rv));
+	return _res;
+}
+
+static PyObject *animation_destinationObj_get_region_color(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string which;
+	bool fromdom;
+	char *which_cstr;
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &which_cstr,
+	                      bool_Convert, &fromdom))
+		return NULL;
+	which = which_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::color_t _rv = _self->ob_itself->get_region_color(which,
+	                                                                fromdom);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *animation_destinationObj_get_region_zindex(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool fromdom;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &fromdom))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::zindex_t _rv = _self->ob_itself->get_region_zindex(fromdom);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *animation_destinationObj_get_region_soundlevel(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool fromdom;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &fromdom))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_region_soundlevel(fromdom);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+#ifdef USE_SMIL21
+
+static PyObject *animation_destinationObj_get_region_soundalign(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool fromdom;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &fromdom))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::sound_alignment _rv = _self->ob_itself->get_region_soundalign(fromdom);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+#endif
+
+static PyObject *animation_destinationObj_set_region_dim(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string which;
+	ambulant::common::region_dim rd;
+	char *which_cstr;
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &which_cstr,
+	                      ambulant_region_dim_Convert, &rd))
+		return NULL;
+	which = which_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_region_dim(which,
+	                                 rd);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *animation_destinationObj_set_region_color(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string which;
+	ambulant::lib::color_t clr;
+	char *which_cstr;
+	if (!PyArg_ParseTuple(_args, "sl",
+	                      &which_cstr,
+	                      &clr))
+		return NULL;
+	which = which_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_region_color(which,
+	                                   clr);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *animation_destinationObj_set_region_zindex(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::zindex_t z;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &z))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_region_zindex(z);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *animation_destinationObj_set_region_soundlevel(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	double level;
+	if (!PyArg_ParseTuple(_args, "d",
+	                      &level))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_region_soundlevel(level);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+#ifdef USE_SMIL21
+
+static PyObject *animation_destinationObj_set_region_soundalign(animation_destinationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::sound_alignment sa;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &sa))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_region_soundalign(sa);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+#endif
+
+static PyMethodDef animation_destinationObj_methods[] = {
+	{"get_region_dim", (PyCFunction)animation_destinationObj_get_region_dim, 1,
+	 PyDoc_STR("(std::string which, bool fromdom) -> (ambulant::common::region_dim _rv)")},
+	{"get_region_color", (PyCFunction)animation_destinationObj_get_region_color, 1,
+	 PyDoc_STR("(std::string which, bool fromdom) -> (ambulant::lib::color_t _rv)")},
+	{"get_region_zindex", (PyCFunction)animation_destinationObj_get_region_zindex, 1,
+	 PyDoc_STR("(bool fromdom) -> (ambulant::common::zindex_t _rv)")},
+	{"get_region_soundlevel", (PyCFunction)animation_destinationObj_get_region_soundlevel, 1,
+	 PyDoc_STR("(bool fromdom) -> (double _rv)")},
+
+#ifdef USE_SMIL21
+	{"get_region_soundalign", (PyCFunction)animation_destinationObj_get_region_soundalign, 1,
+	 PyDoc_STR("(bool fromdom) -> (ambulant::common::sound_alignment _rv)")},
+#endif
+	{"set_region_dim", (PyCFunction)animation_destinationObj_set_region_dim, 1,
+	 PyDoc_STR("(std::string which, ambulant::common::region_dim rd) -> None")},
+	{"set_region_color", (PyCFunction)animation_destinationObj_set_region_color, 1,
+	 PyDoc_STR("(std::string which, ambulant::lib::color_t clr) -> None")},
+	{"set_region_zindex", (PyCFunction)animation_destinationObj_set_region_zindex, 1,
+	 PyDoc_STR("(ambulant::common::zindex_t z) -> None")},
+	{"set_region_soundlevel", (PyCFunction)animation_destinationObj_set_region_soundlevel, 1,
+	 PyDoc_STR("(double level) -> None")},
+
+#ifdef USE_SMIL21
+	{"set_region_soundalign", (PyCFunction)animation_destinationObj_set_region_soundalign, 1,
+	 PyDoc_STR("(ambulant::common::sound_alignment sa) -> None")},
+#endif
+	{NULL, NULL, 0}
+};
+
+#define animation_destinationObj_getsetlist NULL
+
+
+static int animation_destinationObj_compare(animation_destinationObject *self, animation_destinationObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define animation_destinationObj_repr NULL
+
+static int animation_destinationObj_hash(animation_destinationObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int animation_destinationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::animation_destination* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, animation_destinationObj_Convert, &itself))
+	{
+		((animation_destinationObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define animation_destinationObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *animation_destinationObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((animation_destinationObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define animation_destinationObj_tp_free PyObject_Del
+
+
+PyTypeObject animation_destination_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.animation_destination", /*tp_name*/
+	sizeof(animation_destinationObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) animation_destinationObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) animation_destinationObj_compare, /*tp_compare*/
+	(reprfunc) animation_destinationObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) animation_destinationObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	animation_destinationObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	animation_destinationObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	animation_destinationObj_tp_init, /* tp_init */
+	animation_destinationObj_tp_alloc, /* tp_alloc */
+	animation_destinationObj_tp_new, /* tp_new */
+	animation_destinationObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type animation_destination -------------- */
+
+
+/* -------------------- Object type none_window --------------------- */
+
+extern PyTypeObject none_window_Type;
+
+inline bool none_windowObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &none_window_Type);
+}
+
+typedef struct none_windowObject {
+	PyObject_HEAD
+	ambulant::gui::none::none_window* ob_itself;
+} none_windowObject;
+
+PyObject *none_windowObj_New(ambulant::gui::none::none_window* itself)
+{
+	none_windowObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_none_window
+	none_window *encaps_itself = dynamic_cast<none_window *>(itself);
+	if (encaps_itself && encaps_itself->py_none_window)
+	{
+		Py_INCREF(encaps_itself->py_none_window);
+		return encaps_itself->py_none_window;
+	}
+#endif
+	it = PyObject_NEW(none_windowObject, &none_window_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int none_windowObj_Convert(PyObject *v, ambulant::gui::none::none_window* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_none_window
+	if (!none_windowObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_none_window(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!none_windowObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "none_window required");
+		return 0;
+	}
+	*p_itself = ((none_windowObject *)v)->ob_itself;
+	return 1;
+}
+
+static void none_windowObj_dealloc(none_windowObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *none_windowObj_need_redraw(none_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::rect r;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_rect_Convert, &r))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_redraw(r);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *none_windowObj_need_events(none_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool want;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &want))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->need_events(want);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *none_windowObj_redraw_now(none_windowObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->redraw_now();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef none_windowObj_methods[] = {
+	{"need_redraw", (PyCFunction)none_windowObj_need_redraw, 1,
+	 PyDoc_STR("(ambulant::lib::rect r) -> None")},
+	{"need_events", (PyCFunction)none_windowObj_need_events, 1,
+	 PyDoc_STR("(bool want) -> None")},
+	{"redraw_now", (PyCFunction)none_windowObj_redraw_now, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define none_windowObj_getsetlist NULL
+
+
+static int none_windowObj_compare(none_windowObject *self, none_windowObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define none_windowObj_repr NULL
+
+static int none_windowObj_hash(none_windowObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int none_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::gui::none::none_window* itself;
+	char *kw[] = {"itself", 0};
+
+	{
+		std::string name;
+		ambulant::lib::size bounds;
+		ambulant::common::gui_events* handler;
+		char *name_cstr;
+		if (PyArg_ParseTuple(_args, "sO&O&",
+		                     &name_cstr,
+		                     ambulant_size_Convert, &bounds,
+		                     gui_eventsObj_Convert, &handler))
+		{
+			name = name_cstr;
+			((none_windowObject *)_self)->ob_itself = new ambulant::gui::none::none_window(name,
+			                                                                               bounds,
+			                                                                               handler);
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, none_windowObj_Convert, &itself))
+	{
+		((none_windowObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define none_windowObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *none_windowObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((none_windowObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define none_windowObj_tp_free PyObject_Del
+
+
+PyTypeObject none_window_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.none_window", /*tp_name*/
+	sizeof(none_windowObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) none_windowObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) none_windowObj_compare, /*tp_compare*/
+	(reprfunc) none_windowObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) none_windowObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	none_windowObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	none_windowObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	none_windowObj_tp_init, /* tp_init */
+	none_windowObj_tp_alloc, /* tp_alloc */
+	none_windowObj_tp_new, /* tp_new */
+	none_windowObj_tp_free, /* tp_free */
+};
+
+/* ------------------ End object type none_window ------------------- */
+
+
+/* ---------------- Object type none_window_factory ----------------- */
+
+extern PyTypeObject none_window_factory_Type;
+
+inline bool none_window_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &none_window_factory_Type);
+}
+
+typedef struct none_window_factoryObject {
+	PyObject_HEAD
+	ambulant::gui::none::none_window_factory* ob_itself;
+} none_window_factoryObject;
+
+PyObject *none_window_factoryObj_New(ambulant::gui::none::none_window_factory* itself)
+{
+	none_window_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_none_window_factory
+	none_window_factory *encaps_itself = dynamic_cast<none_window_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_none_window_factory)
+	{
+		Py_INCREF(encaps_itself->py_none_window_factory);
+		return encaps_itself->py_none_window_factory;
+	}
+#endif
+	it = PyObject_NEW(none_window_factoryObject, &none_window_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int none_window_factoryObj_Convert(PyObject *v, ambulant::gui::none::none_window_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_none_window_factory
+	if (!none_window_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_none_window_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!none_window_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "none_window_factory required");
+		return 0;
+	}
+	*p_itself = ((none_window_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void none_window_factoryObj_dealloc(none_window_factoryObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyObject *none_window_factoryObj_new_window(none_window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string name;
+	ambulant::lib::size bounds;
+	ambulant::common::gui_events* handler;
+	char *name_cstr;
+	if (!PyArg_ParseTuple(_args, "sO&O&",
+	                      &name_cstr,
+	                      ambulant_size_Convert, &bounds,
+	                      gui_eventsObj_Convert, &handler))
+		return NULL;
+	name = name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::gui_window* _rv = _self->ob_itself->new_window(name,
+	                                                                 bounds,
+	                                                                 handler);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     gui_windowObj_New, _rv);
+	return _res;
+}
+
+static PyObject *none_window_factoryObj_new_background_renderer(none_window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::region_info* src;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      region_infoObj_Convert, &src))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::bgrenderer* _rv = _self->ob_itself->new_background_renderer(src);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bgrendererObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef none_window_factoryObj_methods[] = {
+	{"new_window", (PyCFunction)none_window_factoryObj_new_window, 1,
+	 PyDoc_STR("(std::string name, ambulant::lib::size bounds, ambulant::common::gui_events* handler) -> (ambulant::common::gui_window* _rv)")},
+	{"new_background_renderer", (PyCFunction)none_window_factoryObj_new_background_renderer, 1,
+	 PyDoc_STR("(ambulant::common::region_info* src) -> (ambulant::common::bgrenderer* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define none_window_factoryObj_getsetlist NULL
+
+
+static int none_window_factoryObj_compare(none_window_factoryObject *self, none_window_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define none_window_factoryObj_repr NULL
+
+static int none_window_factoryObj_hash(none_window_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int none_window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::gui::none::none_window_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	{
+		if (PyArg_ParseTuple(_args, ""))
+		{
+			((none_window_factoryObject *)_self)->ob_itself = new ambulant::gui::none::none_window_factory();
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, none_window_factoryObj_Convert, &itself))
+	{
+		((none_window_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define none_window_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *none_window_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((none_window_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define none_window_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject none_window_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.none_window_factory", /*tp_name*/
+	sizeof(none_window_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) none_window_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) none_window_factoryObj_compare, /*tp_compare*/
+	(reprfunc) none_window_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) none_window_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	none_window_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	none_window_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	none_window_factoryObj_tp_init, /* tp_init */
+	none_window_factoryObj_tp_alloc, /* tp_alloc */
+	none_window_factoryObj_tp_new, /* tp_new */
+	none_window_factoryObj_tp_free, /* tp_free */
+};
+
+/* -------------- End object type none_window_factory --------------- */
+
+
+/* --------------------- Object type datasource --------------------- */
+
+extern PyTypeObject datasource_Type;
+
+inline bool datasourceObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &datasource_Type);
+}
+
+typedef struct datasourceObject {
+	PyObject_HEAD
+	ambulant::net::datasource* ob_itself;
+} datasourceObject;
+
+PyObject *datasourceObj_New(ambulant::net::datasource* itself)
+{
+	datasourceObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_datasource
+	datasource *encaps_itself = dynamic_cast<datasource *>(itself);
+	if (encaps_itself && encaps_itself->py_datasource)
+	{
+		Py_INCREF(encaps_itself->py_datasource);
+		return encaps_itself->py_datasource;
+	}
+#endif
+	it = PyObject_NEW(datasourceObject, &datasource_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int datasourceObj_Convert(PyObject *v, ambulant::net::datasource* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_datasource
+	if (!datasourceObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_datasource(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!datasourceObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "datasource required");
+		return 0;
+	}
+	*p_itself = ((datasourceObject *)v)->ob_itself;
+	return 1;
+}
+
+static void datasourceObj_dealloc(datasourceObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *datasourceObj_start(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::event_processor* evp;
+	ambulant::lib::event* callback;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      event_processorObj_Convert, &evp,
+	                      eventObj_Convert, &callback))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start(evp,
+	                        callback);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasourceObj_stop(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasourceObj_end_of_file(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->end_of_file();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *datasourceObj_size(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->size();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *datasourceObj_readdone(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int len;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &len))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->readdone(len);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef datasourceObj_methods[] = {
+	{"start", (PyCFunction)datasourceObj_start, 1,
+	 PyDoc_STR("(ambulant::lib::event_processor* evp, ambulant::lib::event* callback) -> None")},
+	{"stop", (PyCFunction)datasourceObj_stop, 1,
+	 PyDoc_STR("() -> None")},
+	{"end_of_file", (PyCFunction)datasourceObj_end_of_file, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"size", (PyCFunction)datasourceObj_size, 1,
+	 PyDoc_STR("() -> (int _rv)")},
+	{"readdone", (PyCFunction)datasourceObj_readdone, 1,
+	 PyDoc_STR("(int len) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define datasourceObj_getsetlist NULL
+
+
+static int datasourceObj_compare(datasourceObject *self, datasourceObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define datasourceObj_repr NULL
+
+static int datasourceObj_hash(datasourceObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::datasource* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, datasourceObj_Convert, &itself))
+	{
+		((datasourceObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define datasourceObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *datasourceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((datasourceObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define datasourceObj_tp_free PyObject_Del
+
+
+PyTypeObject datasource_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.datasource", /*tp_name*/
+	sizeof(datasourceObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) datasourceObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) datasourceObj_compare, /*tp_compare*/
+	(reprfunc) datasourceObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) datasourceObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	datasourceObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	datasourceObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	datasourceObj_tp_init, /* tp_init */
+	datasourceObj_tp_alloc, /* tp_alloc */
+	datasourceObj_tp_new, /* tp_new */
+	datasourceObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type datasource ------------------- */
+
+
+/* ------------------ Object type audio_datasource ------------------ */
+
+extern PyTypeObject audio_datasource_Type;
+
+inline bool audio_datasourceObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &audio_datasource_Type);
+}
+
+typedef struct audio_datasourceObject {
+	PyObject_HEAD
+	ambulant::net::audio_datasource* ob_itself;
+} audio_datasourceObject;
+
+PyObject *audio_datasourceObj_New(ambulant::net::audio_datasource* itself)
+{
+	audio_datasourceObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_datasource
+	audio_datasource *encaps_itself = dynamic_cast<audio_datasource *>(itself);
+	if (encaps_itself && encaps_itself->py_audio_datasource)
+	{
+		Py_INCREF(encaps_itself->py_audio_datasource);
+		return encaps_itself->py_audio_datasource;
+	}
+#endif
+	it = PyObject_NEW(audio_datasourceObject, &audio_datasource_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int audio_datasourceObj_Convert(PyObject *v, ambulant::net::audio_datasource* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_datasource
+	if (!audio_datasourceObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_audio_datasource(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!audio_datasourceObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "audio_datasource required");
+		return 0;
+	}
+	*p_itself = ((audio_datasourceObject *)v)->ob_itself;
+	return 1;
+}
+
+static void audio_datasourceObj_dealloc(audio_datasourceObject *self)
+{
+	self->ob_type->tp_base->tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef audio_datasourceObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define audio_datasourceObj_getsetlist NULL
+
+
+static int audio_datasourceObj_compare(audio_datasourceObject *self, audio_datasourceObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define audio_datasourceObj_repr NULL
+
+static int audio_datasourceObj_hash(audio_datasourceObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int audio_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::audio_datasource* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, audio_datasourceObj_Convert, &itself))
+	{
+		((audio_datasourceObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define audio_datasourceObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *audio_datasourceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((audio_datasourceObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define audio_datasourceObj_tp_free PyObject_Del
+
+
+PyTypeObject audio_datasource_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.audio_datasource", /*tp_name*/
+	sizeof(audio_datasourceObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) audio_datasourceObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) audio_datasourceObj_compare, /*tp_compare*/
+	(reprfunc) audio_datasourceObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) audio_datasourceObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	audio_datasourceObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	audio_datasourceObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	audio_datasourceObj_tp_init, /* tp_init */
+	audio_datasourceObj_tp_alloc, /* tp_alloc */
+	audio_datasourceObj_tp_new, /* tp_new */
+	audio_datasourceObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type audio_datasource ---------------- */
+
+
+/* ------------------ Object type video_datasource ------------------ */
+
+extern PyTypeObject video_datasource_Type;
+
+inline bool video_datasourceObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &video_datasource_Type);
+}
+
+typedef struct video_datasourceObject {
+	PyObject_HEAD
+	ambulant::net::video_datasource* ob_itself;
+} video_datasourceObject;
+
+PyObject *video_datasourceObj_New(ambulant::net::video_datasource* itself)
+{
+	video_datasourceObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_video_datasource
+	video_datasource *encaps_itself = dynamic_cast<video_datasource *>(itself);
+	if (encaps_itself && encaps_itself->py_video_datasource)
+	{
+		Py_INCREF(encaps_itself->py_video_datasource);
+		return encaps_itself->py_video_datasource;
+	}
+#endif
+	it = PyObject_NEW(video_datasourceObject, &video_datasource_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int video_datasourceObj_Convert(PyObject *v, ambulant::net::video_datasource* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_video_datasource
+	if (!video_datasourceObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_video_datasource(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!video_datasourceObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "video_datasource required");
+		return 0;
+	}
+	*p_itself = ((video_datasourceObject *)v)->ob_itself;
+	return 1;
+}
+
+static void video_datasourceObj_dealloc(video_datasourceObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyMethodDef video_datasourceObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define video_datasourceObj_getsetlist NULL
+
+
+static int video_datasourceObj_compare(video_datasourceObject *self, video_datasourceObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define video_datasourceObj_repr NULL
+
+static int video_datasourceObj_hash(video_datasourceObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int video_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::video_datasource* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, video_datasourceObj_Convert, &itself))
+	{
+		((video_datasourceObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define video_datasourceObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *video_datasourceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((video_datasourceObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define video_datasourceObj_tp_free PyObject_Del
+
+
+PyTypeObject video_datasource_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.video_datasource", /*tp_name*/
+	sizeof(video_datasourceObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) video_datasourceObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) video_datasourceObj_compare, /*tp_compare*/
+	(reprfunc) video_datasourceObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) video_datasourceObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	video_datasourceObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	video_datasourceObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	video_datasourceObj_tp_init, /* tp_init */
+	video_datasourceObj_tp_alloc, /* tp_alloc */
+	video_datasourceObj_tp_new, /* tp_new */
+	video_datasourceObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type video_datasource ---------------- */
+
+
+/* ----------------- Object type datasource_factory ----------------- */
+
+extern PyTypeObject datasource_factory_Type;
+
+inline bool datasource_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &datasource_factory_Type);
+}
+
+typedef struct datasource_factoryObject {
+	PyObject_HEAD
+	ambulant::net::datasource_factory* ob_itself;
+} datasource_factoryObject;
+
+PyObject *datasource_factoryObj_New(ambulant::net::datasource_factory* itself)
+{
+	datasource_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_datasource_factory
+	datasource_factory *encaps_itself = dynamic_cast<datasource_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_datasource_factory)
+	{
+		Py_INCREF(encaps_itself->py_datasource_factory);
+		return encaps_itself->py_datasource_factory;
+	}
+#endif
+	it = PyObject_NEW(datasource_factoryObject, &datasource_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int datasource_factoryObj_Convert(PyObject *v, ambulant::net::datasource_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_datasource_factory
+	if (!datasource_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_datasource_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!datasource_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "datasource_factory required");
+		return 0;
+	}
+	*p_itself = ((datasource_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void datasource_factoryObj_dealloc(datasource_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *datasource_factoryObj_new_raw_datasource(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &url))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::datasource* _rv = _self->ob_itself->new_raw_datasource(url);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_new_audio_datasource(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::audio_format_choices fmt;
+	ambulant::net::timestamp_t clip_begin;
+	ambulant::net::timestamp_t clip_end;
+	if (!PyArg_ParseTuple(_args, "O&O&LL",
+	                      ambulant_url_Convert, &url,
+	                      audio_format_choicesObj_Convert, &fmt,
+	                      &clip_begin,
+	                      &clip_end))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_datasource(url,
+	                                                                              fmt,
+	                                                                              clip_begin,
+	                                                                              clip_end);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_new_video_datasource(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::timestamp_t clip_begin;
+	ambulant::net::timestamp_t clip_end;
+	if (!PyArg_ParseTuple(_args, "O&LL",
+	                      ambulant_url_Convert, &url,
+	                      &clip_begin,
+	                      &clip_end))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::video_datasource* _rv = _self->ob_itself->new_video_datasource(url,
+	                                                                              clip_begin,
+	                                                                              clip_end);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     video_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_new_filter_datasource(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::audio_format_choices fmt;
+	ambulant::net::audio_datasource* ds;
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      ambulant_url_Convert, &url,
+	                      audio_format_choicesObj_Convert, &fmt,
+	                      audio_datasourceObj_Convert, &ds))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_filter_datasource(url,
+	                                                                               fmt,
+	                                                                               ds);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_add_raw_factory(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::raw_datasource_factory* df;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      raw_datasource_factoryObj_Convert, &df))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_raw_factory(df);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_add_audio_factory(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_datasource_factory* df;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      audio_datasource_factoryObj_Convert, &df))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_audio_factory(df);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_add_audio_parser_finder(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_parser_finder* df;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      audio_parser_finderObj_Convert, &df))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_audio_parser_finder(df);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_add_audio_filter_finder(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_filter_finder* df;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      audio_filter_finderObj_Convert, &df))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_audio_filter_finder(df);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *datasource_factoryObj_add_video_factory(datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::video_datasource_factory* df;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      video_datasource_factoryObj_Convert, &df))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->add_video_factory(df);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef datasource_factoryObj_methods[] = {
+	{"new_raw_datasource", (PyCFunction)datasource_factoryObj_new_raw_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url) -> (ambulant::net::datasource* _rv)")},
+	{"new_audio_datasource", (PyCFunction)datasource_factoryObj_new_audio_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::audio_datasource* _rv)")},
+	{"new_video_datasource", (PyCFunction)datasource_factoryObj_new_video_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::video_datasource* _rv)")},
+	{"new_filter_datasource", (PyCFunction)datasource_factoryObj_new_filter_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::audio_datasource* ds) -> (ambulant::net::audio_datasource* _rv)")},
+	{"add_raw_factory", (PyCFunction)datasource_factoryObj_add_raw_factory, 1,
+	 PyDoc_STR("(ambulant::net::raw_datasource_factory* df) -> None")},
+	{"add_audio_factory", (PyCFunction)datasource_factoryObj_add_audio_factory, 1,
+	 PyDoc_STR("(ambulant::net::audio_datasource_factory* df) -> None")},
+	{"add_audio_parser_finder", (PyCFunction)datasource_factoryObj_add_audio_parser_finder, 1,
+	 PyDoc_STR("(ambulant::net::audio_parser_finder* df) -> None")},
+	{"add_audio_filter_finder", (PyCFunction)datasource_factoryObj_add_audio_filter_finder, 1,
+	 PyDoc_STR("(ambulant::net::audio_filter_finder* df) -> None")},
+	{"add_video_factory", (PyCFunction)datasource_factoryObj_add_video_factory, 1,
+	 PyDoc_STR("(ambulant::net::video_datasource_factory* df) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define datasource_factoryObj_getsetlist NULL
+
+
+static int datasource_factoryObj_compare(datasource_factoryObject *self, datasource_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define datasource_factoryObj_repr NULL
+
+static int datasource_factoryObj_hash(datasource_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::datasource_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	{
+		if (PyArg_ParseTuple(_args, ""))
+		{
+			((datasource_factoryObject *)_self)->ob_itself = new ambulant::net::datasource_factory();
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, datasource_factoryObj_Convert, &itself))
+	{
+		((datasource_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define datasource_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((datasource_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define datasource_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject datasource_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.datasource_factory", /*tp_name*/
+	sizeof(datasource_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) datasource_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) datasource_factoryObj_compare, /*tp_compare*/
+	(reprfunc) datasource_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) datasource_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	datasource_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	datasource_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	datasource_factoryObj_tp_init, /* tp_init */
+	datasource_factoryObj_tp_alloc, /* tp_alloc */
+	datasource_factoryObj_tp_new, /* tp_new */
+	datasource_factoryObj_tp_free, /* tp_free */
+};
+
+/* --------------- End object type datasource_factory --------------- */
+
+
+/* --------------- Object type raw_datasource_factory --------------- */
+
+extern PyTypeObject raw_datasource_factory_Type;
+
+inline bool raw_datasource_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &raw_datasource_factory_Type);
+}
+
+typedef struct raw_datasource_factoryObject {
+	PyObject_HEAD
+	ambulant::net::raw_datasource_factory* ob_itself;
+} raw_datasource_factoryObject;
+
+PyObject *raw_datasource_factoryObj_New(ambulant::net::raw_datasource_factory* itself)
+{
+	raw_datasource_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_raw_datasource_factory
+	raw_datasource_factory *encaps_itself = dynamic_cast<raw_datasource_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_raw_datasource_factory)
+	{
+		Py_INCREF(encaps_itself->py_raw_datasource_factory);
+		return encaps_itself->py_raw_datasource_factory;
+	}
+#endif
+	it = PyObject_NEW(raw_datasource_factoryObject, &raw_datasource_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int raw_datasource_factoryObj_Convert(PyObject *v, ambulant::net::raw_datasource_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_raw_datasource_factory
+	if (!raw_datasource_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_raw_datasource_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!raw_datasource_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "raw_datasource_factory required");
+		return 0;
+	}
+	*p_itself = ((raw_datasource_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void raw_datasource_factoryObj_dealloc(raw_datasource_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *raw_datasource_factoryObj_new_raw_datasource(raw_datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &url))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::datasource* _rv = _self->ob_itself->new_raw_datasource(url);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef raw_datasource_factoryObj_methods[] = {
+	{"new_raw_datasource", (PyCFunction)raw_datasource_factoryObj_new_raw_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url) -> (ambulant::net::datasource* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define raw_datasource_factoryObj_getsetlist NULL
+
+
+static int raw_datasource_factoryObj_compare(raw_datasource_factoryObject *self, raw_datasource_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define raw_datasource_factoryObj_repr NULL
+
+static int raw_datasource_factoryObj_hash(raw_datasource_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int raw_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::raw_datasource_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, raw_datasource_factoryObj_Convert, &itself))
+	{
+		((raw_datasource_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define raw_datasource_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *raw_datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((raw_datasource_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define raw_datasource_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject raw_datasource_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.raw_datasource_factory", /*tp_name*/
+	sizeof(raw_datasource_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) raw_datasource_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) raw_datasource_factoryObj_compare, /*tp_compare*/
+	(reprfunc) raw_datasource_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) raw_datasource_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	raw_datasource_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	raw_datasource_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	raw_datasource_factoryObj_tp_init, /* tp_init */
+	raw_datasource_factoryObj_tp_alloc, /* tp_alloc */
+	raw_datasource_factoryObj_tp_new, /* tp_new */
+	raw_datasource_factoryObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type raw_datasource_factory ------------- */
+
+
+/* -------------- Object type audio_datasource_factory -------------- */
+
+extern PyTypeObject audio_datasource_factory_Type;
+
+inline bool audio_datasource_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &audio_datasource_factory_Type);
+}
+
+typedef struct audio_datasource_factoryObject {
+	PyObject_HEAD
+	ambulant::net::audio_datasource_factory* ob_itself;
+} audio_datasource_factoryObject;
+
+PyObject *audio_datasource_factoryObj_New(ambulant::net::audio_datasource_factory* itself)
+{
+	audio_datasource_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_datasource_factory
+	audio_datasource_factory *encaps_itself = dynamic_cast<audio_datasource_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_audio_datasource_factory)
+	{
+		Py_INCREF(encaps_itself->py_audio_datasource_factory);
+		return encaps_itself->py_audio_datasource_factory;
+	}
+#endif
+	it = PyObject_NEW(audio_datasource_factoryObject, &audio_datasource_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int audio_datasource_factoryObj_Convert(PyObject *v, ambulant::net::audio_datasource_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_datasource_factory
+	if (!audio_datasource_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_audio_datasource_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!audio_datasource_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "audio_datasource_factory required");
+		return 0;
+	}
+	*p_itself = ((audio_datasource_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void audio_datasource_factoryObj_dealloc(audio_datasource_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *audio_datasource_factoryObj_new_audio_datasource(audio_datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::audio_format_choices fmt;
+	ambulant::net::timestamp_t clip_begin;
+	ambulant::net::timestamp_t clip_end;
+	if (!PyArg_ParseTuple(_args, "O&O&LL",
+	                      ambulant_url_Convert, &url,
+	                      audio_format_choicesObj_Convert, &fmt,
+	                      &clip_begin,
+	                      &clip_end))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_datasource(url,
+	                                                                              fmt,
+	                                                                              clip_begin,
+	                                                                              clip_end);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef audio_datasource_factoryObj_methods[] = {
+	{"new_audio_datasource", (PyCFunction)audio_datasource_factoryObj_new_audio_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::audio_datasource* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define audio_datasource_factoryObj_getsetlist NULL
+
+
+static int audio_datasource_factoryObj_compare(audio_datasource_factoryObject *self, audio_datasource_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define audio_datasource_factoryObj_repr NULL
+
+static int audio_datasource_factoryObj_hash(audio_datasource_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int audio_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::audio_datasource_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, audio_datasource_factoryObj_Convert, &itself))
+	{
+		((audio_datasource_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define audio_datasource_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *audio_datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((audio_datasource_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define audio_datasource_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject audio_datasource_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.audio_datasource_factory", /*tp_name*/
+	sizeof(audio_datasource_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) audio_datasource_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) audio_datasource_factoryObj_compare, /*tp_compare*/
+	(reprfunc) audio_datasource_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) audio_datasource_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	audio_datasource_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	audio_datasource_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	audio_datasource_factoryObj_tp_init, /* tp_init */
+	audio_datasource_factoryObj_tp_alloc, /* tp_alloc */
+	audio_datasource_factoryObj_tp_new, /* tp_new */
+	audio_datasource_factoryObj_tp_free, /* tp_free */
+};
+
+/* ------------ End object type audio_datasource_factory ------------ */
+
+
+/* -------------- Object type video_datasource_factory -------------- */
+
+extern PyTypeObject video_datasource_factory_Type;
+
+inline bool video_datasource_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &video_datasource_factory_Type);
+}
+
+typedef struct video_datasource_factoryObject {
+	PyObject_HEAD
+	ambulant::net::video_datasource_factory* ob_itself;
+} video_datasource_factoryObject;
+
+PyObject *video_datasource_factoryObj_New(ambulant::net::video_datasource_factory* itself)
+{
+	video_datasource_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_video_datasource_factory
+	video_datasource_factory *encaps_itself = dynamic_cast<video_datasource_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_video_datasource_factory)
+	{
+		Py_INCREF(encaps_itself->py_video_datasource_factory);
+		return encaps_itself->py_video_datasource_factory;
+	}
+#endif
+	it = PyObject_NEW(video_datasource_factoryObject, &video_datasource_factory_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int video_datasource_factoryObj_Convert(PyObject *v, ambulant::net::video_datasource_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_video_datasource_factory
+	if (!video_datasource_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_video_datasource_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!video_datasource_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "video_datasource_factory required");
+		return 0;
+	}
+	*p_itself = ((video_datasource_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void video_datasource_factoryObj_dealloc(video_datasource_factoryObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *video_datasource_factoryObj_new_video_datasource(video_datasource_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::timestamp_t clip_begin;
+	ambulant::net::timestamp_t clip_end;
+	if (!PyArg_ParseTuple(_args, "O&LL",
+	                      ambulant_url_Convert, &url,
+	                      &clip_begin,
+	                      &clip_end))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::video_datasource* _rv = _self->ob_itself->new_video_datasource(url,
+	                                                                              clip_begin,
+	                                                                              clip_end);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     video_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef video_datasource_factoryObj_methods[] = {
+	{"new_video_datasource", (PyCFunction)video_datasource_factoryObj_new_video_datasource, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::video_datasource* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define video_datasource_factoryObj_getsetlist NULL
+
+
+static int video_datasource_factoryObj_compare(video_datasource_factoryObject *self, video_datasource_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define video_datasource_factoryObj_repr NULL
+
+static int video_datasource_factoryObj_hash(video_datasource_factoryObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int video_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::video_datasource_factory* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, video_datasource_factoryObj_Convert, &itself))
+	{
+		((video_datasource_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define video_datasource_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *video_datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((video_datasource_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define video_datasource_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject video_datasource_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.video_datasource_factory", /*tp_name*/
+	sizeof(video_datasource_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) video_datasource_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) video_datasource_factoryObj_compare, /*tp_compare*/
+	(reprfunc) video_datasource_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) video_datasource_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	video_datasource_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	video_datasource_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	video_datasource_factoryObj_tp_init, /* tp_init */
+	video_datasource_factoryObj_tp_alloc, /* tp_alloc */
+	video_datasource_factoryObj_tp_new, /* tp_new */
+	video_datasource_factoryObj_tp_free, /* tp_free */
+};
+
+/* ------------ End object type video_datasource_factory ------------ */
+
+
+/* ---------------- Object type audio_parser_finder ----------------- */
+
+extern PyTypeObject audio_parser_finder_Type;
+
+inline bool audio_parser_finderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &audio_parser_finder_Type);
+}
+
+typedef struct audio_parser_finderObject {
+	PyObject_HEAD
+	ambulant::net::audio_parser_finder* ob_itself;
+} audio_parser_finderObject;
+
+PyObject *audio_parser_finderObj_New(ambulant::net::audio_parser_finder* itself)
+{
+	audio_parser_finderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_parser_finder
+	audio_parser_finder *encaps_itself = dynamic_cast<audio_parser_finder *>(itself);
+	if (encaps_itself && encaps_itself->py_audio_parser_finder)
+	{
+		Py_INCREF(encaps_itself->py_audio_parser_finder);
+		return encaps_itself->py_audio_parser_finder;
+	}
+#endif
+	it = PyObject_NEW(audio_parser_finderObject, &audio_parser_finder_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int audio_parser_finderObj_Convert(PyObject *v, ambulant::net::audio_parser_finder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_parser_finder
+	if (!audio_parser_finderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_audio_parser_finder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!audio_parser_finderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "audio_parser_finder required");
+		return 0;
+	}
+	*p_itself = ((audio_parser_finderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void audio_parser_finderObj_dealloc(audio_parser_finderObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *audio_parser_finderObj_new_audio_parser(audio_parser_finderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url url;
+	ambulant::net::audio_format_choices hint;
+	ambulant::net::audio_datasource* src;
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      ambulant_url_Convert, &url,
+	                      audio_format_choicesObj_Convert, &hint,
+	                      audio_datasourceObj_Convert, &src))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_parser(url,
+	                                                                          hint,
+	                                                                          src);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef audio_parser_finderObj_methods[] = {
+	{"new_audio_parser", (PyCFunction)audio_parser_finderObj_new_audio_parser, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices hint, ambulant::net::audio_datasource* src) -> (ambulant::net::audio_datasource* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define audio_parser_finderObj_getsetlist NULL
+
+
+static int audio_parser_finderObj_compare(audio_parser_finderObject *self, audio_parser_finderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define audio_parser_finderObj_repr NULL
+
+static int audio_parser_finderObj_hash(audio_parser_finderObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int audio_parser_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::audio_parser_finder* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, audio_parser_finderObj_Convert, &itself))
+	{
+		((audio_parser_finderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define audio_parser_finderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *audio_parser_finderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((audio_parser_finderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define audio_parser_finderObj_tp_free PyObject_Del
+
+
+PyTypeObject audio_parser_finder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.audio_parser_finder", /*tp_name*/
+	sizeof(audio_parser_finderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) audio_parser_finderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) audio_parser_finderObj_compare, /*tp_compare*/
+	(reprfunc) audio_parser_finderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) audio_parser_finderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	audio_parser_finderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	audio_parser_finderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	audio_parser_finderObj_tp_init, /* tp_init */
+	audio_parser_finderObj_tp_alloc, /* tp_alloc */
+	audio_parser_finderObj_tp_new, /* tp_new */
+	audio_parser_finderObj_tp_free, /* tp_free */
+};
+
+/* -------------- End object type audio_parser_finder --------------- */
+
+
+/* ---------------- Object type audio_filter_finder ----------------- */
+
+extern PyTypeObject audio_filter_finder_Type;
+
+inline bool audio_filter_finderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &audio_filter_finder_Type);
+}
+
+typedef struct audio_filter_finderObject {
+	PyObject_HEAD
+	ambulant::net::audio_filter_finder* ob_itself;
+} audio_filter_finderObject;
+
+PyObject *audio_filter_finderObj_New(ambulant::net::audio_filter_finder* itself)
+{
+	audio_filter_finderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_filter_finder
+	audio_filter_finder *encaps_itself = dynamic_cast<audio_filter_finder *>(itself);
+	if (encaps_itself && encaps_itself->py_audio_filter_finder)
+	{
+		Py_INCREF(encaps_itself->py_audio_filter_finder);
+		return encaps_itself->py_audio_filter_finder;
+	}
+#endif
+	it = PyObject_NEW(audio_filter_finderObject, &audio_filter_finder_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int audio_filter_finderObj_Convert(PyObject *v, ambulant::net::audio_filter_finder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_filter_finder
+	if (!audio_filter_finderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_audio_filter_finder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!audio_filter_finderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "audio_filter_finder required");
+		return 0;
+	}
+	*p_itself = ((audio_filter_finderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void audio_filter_finderObj_dealloc(audio_filter_finderObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *audio_filter_finderObj_new_audio_filter(audio_filter_finderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_datasource* src;
+	ambulant::net::audio_format_choices fmts;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      audio_datasourceObj_Convert, &src,
+	                      audio_format_choicesObj_Convert, &fmts))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_filter(src,
+	                                                                          fmts);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasourceObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef audio_filter_finderObj_methods[] = {
+	{"new_audio_filter", (PyCFunction)audio_filter_finderObj_new_audio_filter, 1,
+	 PyDoc_STR("(ambulant::net::audio_datasource* src, ambulant::net::audio_format_choices fmts) -> (ambulant::net::audio_datasource* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define audio_filter_finderObj_getsetlist NULL
+
+
+static int audio_filter_finderObj_compare(audio_filter_finderObject *self, audio_filter_finderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define audio_filter_finderObj_repr NULL
+
+static int audio_filter_finderObj_hash(audio_filter_finderObject *self)
+{
+	return (int)self->ob_itself;
+}
+static int audio_filter_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::audio_filter_finder* itself;
+	char *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, audio_filter_finderObj_Convert, &itself))
+	{
+		((audio_filter_finderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define audio_filter_finderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *audio_filter_finderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((audio_filter_finderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define audio_filter_finderObj_tp_free PyObject_Del
+
+
+PyTypeObject audio_filter_finder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.audio_filter_finder", /*tp_name*/
+	sizeof(audio_filter_finderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) audio_filter_finderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) audio_filter_finderObj_compare, /*tp_compare*/
+	(reprfunc) audio_filter_finderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) audio_filter_finderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	audio_filter_finderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	audio_filter_finderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	audio_filter_finderObj_tp_init, /* tp_init */
+	audio_filter_finderObj_tp_alloc, /* tp_alloc */
+	audio_filter_finderObj_tp_new, /* tp_new */
+	audio_filter_finderObj_tp_free, /* tp_free */
+};
+
+/* -------------- End object type audio_filter_finder --------------- */
+
+
+/* ---------------- Object type audio_format_choices ---------------- */
+
+extern PyTypeObject audio_format_choices_Type;
+
+inline bool audio_format_choicesObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &audio_format_choices_Type);
+}
+
+typedef struct audio_format_choicesObject {
+	PyObject_HEAD
+	ambulant::net::audio_format_choices ob_itself;
+} audio_format_choicesObject;
+
+PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself)
+{
+	audio_format_choicesObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_audio_format_choices
+	audio_format_choices *encaps_itself = dynamic_cast<audio_format_choices *>(itself);
+	if (encaps_itself && encaps_itself->py_audio_format_choices)
+	{
+		Py_INCREF(encaps_itself->py_audio_format_choices);
+		return encaps_itself->py_audio_format_choices;
+	}
+#endif
+	it = PyObject_NEW(audio_format_choicesObject, &audio_format_choices_Type);
+	if (it == NULL) return NULL;
+	it->ob_itself = *itself;
+	return (PyObject *)it;
+}
+
+int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself)
+{
+#ifdef BGEN_BACK_SUPPORT_audio_format_choices
+	if (!audio_format_choicesObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_audio_format_choices(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!audio_format_choicesObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "audio_format_choices required");
+		return 0;
+	}
+	*p_itself = ((audio_format_choicesObject *)v)->ob_itself;
+	return 1;
+}
+
+static void audio_format_choicesObj_dealloc(audio_format_choicesObject *self)
+{
+	self->ob_type->tp_free((PyObject *)self);
+}
+
+static PyObject *audio_format_choicesObj_best(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::net::audio_format& _rv = _self->ob_itself.best();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("(ssiii)",
+	                     _rv.mime_type.c_str(), _rv.name.c_str(), _rv.parameters, _rv.samplerate, _rv.channels, _rv.bits);
+	return _res;
+}
+
+static PyObject *audio_format_choicesObj_add_samplerate(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int samplerate;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &samplerate))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself.add_samplerate(samplerate);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *audio_format_choicesObj_add_channels(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int channels;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &channels))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself.add_channels(channels);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *audio_format_choicesObj_add_bits(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int bits;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &bits))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself.add_bits(bits);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *audio_format_choicesObj_add_named_format(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string name;
+	char *name_cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name_cstr))
+		return NULL;
+	name = name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself.add_named_format(name);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *audio_format_choicesObj_contains(audio_format_choicesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_format fmt;
+	char *fmt_mime_type_cstr;
+	char *fmt_name_cstr;
+	if (!PyArg_ParseTuple(_args, "(ssiii)",
+	                      &fmt_mime_type_cstr, &fmt_name_cstr, &fmt.samplerate, &fmt.channels, &fmt.bits))
+		return NULL;
+	fmt.mime_type = fmt_mime_type_cstr;
+	fmt.name = fmt_name_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself.contains(fmt);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyMethodDef audio_format_choicesObj_methods[] = {
+	{"best", (PyCFunction)audio_format_choicesObj_best, 1,
+	 PyDoc_STR("() -> (const ambulant::net::audio_format& _rv)")},
+	{"add_samplerate", (PyCFunction)audio_format_choicesObj_add_samplerate, 1,
+	 PyDoc_STR("(int samplerate) -> None")},
+	{"add_channels", (PyCFunction)audio_format_choicesObj_add_channels, 1,
+	 PyDoc_STR("(int channels) -> None")},
+	{"add_bits", (PyCFunction)audio_format_choicesObj_add_bits, 1,
+	 PyDoc_STR("(int bits) -> None")},
+	{"add_named_format", (PyCFunction)audio_format_choicesObj_add_named_format, 1,
+	 PyDoc_STR("(std::string name) -> None")},
+	{"contains", (PyCFunction)audio_format_choicesObj_contains, 1,
+	 PyDoc_STR("(ambulant::net::audio_format fmt) -> (bool _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define audio_format_choicesObj_getsetlist NULL
+
+
+#define audio_format_choicesObj_compare NULL
+
+#define audio_format_choicesObj_repr NULL
+
+#define audio_format_choicesObj_hash NULL
+static int audio_format_choicesObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::net::audio_format_choices itself;
+	char *kw[] = {"itself", 0};
+
+	{
+		if (PyArg_ParseTuple(_args, ""))
+		{
+			((audio_format_choicesObject *)_self)->ob_itself = ambulant::net::audio_format_choices();
+			return 0;
+		}
+	}
+
+	{
+		ambulant::net::audio_format fmt;
+		char *fmt_mime_type_cstr;
+		char *fmt_name_cstr;
+		if (PyArg_ParseTuple(_args, "(ssiii)",
+		                     &fmt_mime_type_cstr, &fmt_name_cstr, &fmt.samplerate, &fmt.channels, &fmt.bits))
+		{
+			fmt.mime_type = fmt_mime_type_cstr;
+			fmt.name = fmt_name_cstr;
+			((audio_format_choicesObject *)_self)->ob_itself = ambulant::net::audio_format_choices(fmt);
+			return 0;
+		}
+	}
+
+	{
+		int samplerate;
+		int channels;
+		int bits;
+		if (PyArg_ParseTuple(_args, "iii",
+		                     &samplerate,
+		                     &channels,
+		                     &bits))
+		{
+			((audio_format_choicesObject *)_self)->ob_itself = ambulant::net::audio_format_choices(samplerate,
+			                                                                                       channels,
+			                                                                                       bits);
+			return 0;
+		}
+	}
+
+	{
+		std::string name;
+		char *name_cstr;
+		if (PyArg_ParseTuple(_args, "s",
+		                     &name_cstr))
+		{
+			name = name_cstr;
+			((audio_format_choicesObject *)_self)->ob_itself = ambulant::net::audio_format_choices(name);
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, audio_format_choicesObj_Convert, &itself))
+	{
+		((audio_format_choicesObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define audio_format_choicesObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *audio_format_choicesObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	return _self;
+}
+
+#define audio_format_choicesObj_tp_free PyObject_Del
+
+
+PyTypeObject audio_format_choices_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.audio_format_choices", /*tp_name*/
+	sizeof(audio_format_choicesObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) audio_format_choicesObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) audio_format_choicesObj_compare, /*tp_compare*/
+	(reprfunc) audio_format_choicesObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) audio_format_choicesObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	audio_format_choicesObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	audio_format_choicesObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	audio_format_choicesObj_tp_init, /* tp_init */
+	audio_format_choicesObj_tp_alloc, /* tp_alloc */
+	audio_format_choicesObj_tp_new, /* tp_new */
+	audio_format_choicesObj_tp_free, /* tp_free */
+};
+
+/* -------------- End object type audio_format_choices -------------- */
+
+
+static PyObject *PyAm_get_version(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	const char * _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::get_version();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *PyAm_node_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* _rv;
+	ambulant::lib::node* other;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &other))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::node_factory(other);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     nodeObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_from_url(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::document* _rv;
+	ambulant::common::factories* factory;
+	ambulant::net::url u;
+	factory = new ambulant::common::factories;
+	if (!PyArg_ParseTuple(_args, "(O&O&O&O&)O&",
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      ambulant_url_Convert, &u))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::document::create_from_url(factory,
+	                                               u);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     documentObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_from_file(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::document* _rv;
+	ambulant::common::factories* factory;
+	std::string filename;
+	factory = new ambulant::common::factories;
+	char *filename_cstr;
+	if (!PyArg_ParseTuple(_args, "(O&O&O&O&)s",
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      &filename_cstr))
+		return NULL;
+	filename = filename_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::document::create_from_file(factory,
+	                                                filename);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     documentObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_from_string(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::document* _rv;
+	ambulant::common::factories* factory;
+	std::string smil_src;
+	std::string src_id;
+	factory = new ambulant::common::factories;
+	char *smil_src_cstr;
+	char *src_id_cstr;
+	if (!PyArg_ParseTuple(_args, "(O&O&O&O&)ss",
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      &smil_src_cstr,
+	                      &src_id_cstr))
+		return NULL;
+	smil_src = smil_src_cstr;
+	src_id = src_id_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::document::create_from_string(factory,
+	                                                  smil_src,
+	                                                  src_id);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     documentObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_from_tree(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::document* _rv;
+	ambulant::common::factories* factory;
+	ambulant::lib::node* root;
+	ambulant::net::url u;
+	factory = new ambulant::common::factories;
+	if (!PyArg_ParseTuple(_args, "(O&O&O&O&)O&O&",
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      nodeObj_Convert, &root,
+	                      ambulant_url_Convert, &u))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::document::create_from_tree(factory,
+	                                                root,
+	                                                u);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     documentObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_event_processor_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::event_processor* _rv;
+	ambulant::lib::timer* t;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      timerObj_Convert, &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::event_processor_factory(t);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     event_processorObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_get_parser_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::global_parser_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::global_parser_factory::get_parser_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     global_parser_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_realtime_timer_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::realtime_timer_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     timerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_from_node(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::transition_info* _rv;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::transition_info::from_node(n);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     transition_infoObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_smil2_layout_manager(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::layout_manager* _rv;
+	ambulant::common::factories* factory;
+	ambulant::lib::document* doc;
+	factory = new ambulant::common::factories;
+	if (!PyArg_ParseTuple(_args, "(O&O&O&O&)O&",
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      documentObj_Convert, &doc))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::common::create_smil2_layout_manager(factory,
+	                                                    doc);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     layout_managerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_smil_surface_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::surface_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::common::create_smil_surface_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surface_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_get_global_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::global_playable_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::common::get_global_playable_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     global_playable_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_mms_player(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::player* _rv;
+	ambulant::lib::document* doc;
+	ambulant::common::factories* factory;
+	factory = new ambulant::common::factories;
+	if (!PyArg_ParseTuple(_args, "O&(O&O&O&O&)",
+	                      documentObj_Convert, &doc,
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::common::create_mms_player(doc,
+	                                          factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_smil2_player(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::player* _rv;
+	ambulant::lib::document* doc;
+	ambulant::common::factories* factory;
+	ambulant::common::embedder* sys;
+	factory = new ambulant::common::factories;
+	if (!PyArg_ParseTuple(_args, "O&(O&O&O&O&)O&",
+	                      documentObj_Convert, &doc,
+	                      playable_factoryObj_Convert, &factory->rf, window_factoryObj_Convert, &factory->wf, datasource_factoryObj_Convert, &factory->df, global_parser_factoryObj_Convert, &factory->pf,
+	                      embedderObj_Convert, &sys))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::common::create_smil2_player(doc,
+	                                            factory,
+	                                            sys);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_read_data_from_url(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool _rv;
+	ambulant::net::url url;
+	ambulant::net::datasource_factory* df;
+	char *result__out__;
+	size_t result__len__;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      ambulant_url_Convert, &url,
+	                      datasource_factoryObj_Convert, &df))
+		return NULL;
+	result__out__ = NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::read_data_from_url(url,
+	                                        df,
+	                                        &result__out__, &result__len__);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&z#",
+	                     bool_New, _rv,
+	                     result__out__, (int)result__len__);
+	if( result__out__ ) free(result__out__);
+	return _res;
+}
+
+static PyObject *PyAm_get_posix_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::raw_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_posix_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     raw_datasource_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_get_stdio_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::raw_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_stdio_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     raw_datasource_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef PyAm_methods[] = {
+	{"get_version", (PyCFunction)PyAm_get_version, 1,
+	 PyDoc_STR("() -> (const char * _rv)")},
+	{"node_factory", (PyCFunction)PyAm_node_factory, 1,
+	 PyDoc_STR("(ambulant::lib::node* other) -> (ambulant::lib::node* _rv)")},
+	{"create_from_url", (PyCFunction)PyAm_create_from_url, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory, ambulant::net::url u) -> (ambulant::lib::document* _rv)")},
+	{"create_from_file", (PyCFunction)PyAm_create_from_file, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory, std::string filename) -> (ambulant::lib::document* _rv)")},
+	{"create_from_string", (PyCFunction)PyAm_create_from_string, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory, std::string smil_src, std::string src_id) -> (ambulant::lib::document* _rv)")},
+	{"create_from_tree", (PyCFunction)PyAm_create_from_tree, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory, ambulant::lib::node* root, ambulant::net::url u) -> (ambulant::lib::document* _rv)")},
+	{"event_processor_factory", (PyCFunction)PyAm_event_processor_factory, 1,
+	 PyDoc_STR("(ambulant::lib::timer* t) -> (ambulant::lib::event_processor* _rv)")},
+	{"get_parser_factory", (PyCFunction)PyAm_get_parser_factory, 1,
+	 PyDoc_STR("() -> (ambulant::lib::global_parser_factory* _rv)")},
+	{"realtime_timer_factory", (PyCFunction)PyAm_realtime_timer_factory, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},
+	{"from_node", (PyCFunction)PyAm_from_node, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> (ambulant::lib::transition_info* _rv)")},
+	{"create_smil2_layout_manager", (PyCFunction)PyAm_create_smil2_layout_manager, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory, ambulant::lib::document* doc) -> (ambulant::common::layout_manager* _rv)")},
+	{"create_smil_surface_factory", (PyCFunction)PyAm_create_smil_surface_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::surface_factory* _rv)")},
+	{"get_global_playable_factory", (PyCFunction)PyAm_get_global_playable_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::global_playable_factory* _rv)")},
+	{"create_mms_player", (PyCFunction)PyAm_create_mms_player, 1,
+	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory) -> (ambulant::common::player* _rv)")},
+	{"create_smil2_player", (PyCFunction)PyAm_create_smil2_player, 1,
+	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory, ambulant::common::embedder* sys) -> (ambulant::common::player* _rv)")},
+	{"read_data_from_url", (PyCFunction)PyAm_read_data_from_url, 1,
+	 PyDoc_STR("(ambulant::net::url url, ambulant::net::datasource_factory* df, Buffer result) -> (bool _rv, Buffer result)")},
+	{"get_posix_datasource_factory", (PyCFunction)PyAm_get_posix_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+	{"get_stdio_datasource_factory", (PyCFunction)PyAm_get_stdio_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+	{NULL, NULL, 0}
+};
+
+
+// Declare initambulant as a C external:
+
+extern "C" void initambulant(); 
+
+
+void initambulant(void)
+{
+	PyObject *m;
+	PyObject *d;
+
+
+	PyEval_InitThreads();
+
+
+	m = Py_InitModule("ambulant", PyAm_methods);
+	d = PyModule_GetDict(m);
+	PyAm_Error = PyErr_NewException("ambulant.Error", NULL, NULL);
+	if (PyAm_Error == NULL ||
+	    PyDict_SetItemString(d, "Error", PyAm_Error) != 0)
+		return;
+	node_context_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&node_context_Type) < 0) return;
+	Py_INCREF(&node_context_Type);
+	PyModule_AddObject(m, "node_context", (PyObject *)&node_context_Type);
+	node_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&node_Type) < 0) return;
+	Py_INCREF(&node_Type);
+	PyModule_AddObject(m, "node", (PyObject *)&node_Type);
+	document_Type.ob_type = &PyType_Type;
+	document_Type.tp_base = &node_context_Type;
+	if (PyType_Ready(&document_Type) < 0) return;
+	Py_INCREF(&document_Type);
+	PyModule_AddObject(m, "document", (PyObject *)&document_Type);
+	event_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&event_Type) < 0) return;
+	Py_INCREF(&event_Type);
+	PyModule_AddObject(m, "event", (PyObject *)&event_Type);
+	event_processor_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&event_processor_Type) < 0) return;
+	Py_INCREF(&event_processor_Type);
+	PyModule_AddObject(m, "event_processor", (PyObject *)&event_processor_Type);
+	parser_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&parser_factory_Type) < 0) return;
+	Py_INCREF(&parser_factory_Type);
+	PyModule_AddObject(m, "parser_factory", (PyObject *)&parser_factory_Type);
+	global_parser_factory_Type.ob_type = &PyType_Type;
+	global_parser_factory_Type.tp_base = &parser_factory_Type;
+	if (PyType_Ready(&global_parser_factory_Type) < 0) return;
+	Py_INCREF(&global_parser_factory_Type);
+	PyModule_AddObject(m, "global_parser_factory", (PyObject *)&global_parser_factory_Type);
+	xml_parser_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&xml_parser_Type) < 0) return;
+	Py_INCREF(&xml_parser_Type);
+	PyModule_AddObject(m, "xml_parser", (PyObject *)&xml_parser_Type);
+	system_embedder_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&system_embedder_Type) < 0) return;
+	Py_INCREF(&system_embedder_Type);
+	PyModule_AddObject(m, "system_embedder", (PyObject *)&system_embedder_Type);
+	timer_events_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&timer_events_Type) < 0) return;
+	Py_INCREF(&timer_events_Type);
+	PyModule_AddObject(m, "timer_events", (PyObject *)&timer_events_Type);
+	timer_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&timer_Type) < 0) return;
+	Py_INCREF(&timer_Type);
+	PyModule_AddObject(m, "timer", (PyObject *)&timer_Type);
+	timer_control_Type.ob_type = &PyType_Type;
+	timer_control_Type.tp_base = &timer_Type;
+	if (PyType_Ready(&timer_control_Type) < 0) return;
+	Py_INCREF(&timer_control_Type);
+	PyModule_AddObject(m, "timer_control", (PyObject *)&timer_control_Type);
+	timer_control_impl_Type.ob_type = &PyType_Type;
+	timer_control_impl_Type.tp_base = &timer_control_Type;
+	if (PyType_Ready(&timer_control_impl_Type) < 0) return;
+	Py_INCREF(&timer_control_impl_Type);
+	PyModule_AddObject(m, "timer_control_impl", (PyObject *)&timer_control_impl_Type);
+	transition_info_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&transition_info_Type) < 0) return;
+	Py_INCREF(&transition_info_Type);
+	PyModule_AddObject(m, "transition_info", (PyObject *)&transition_info_Type);
+	embedder_Type.ob_type = &PyType_Type;
+	embedder_Type.tp_base = &system_embedder_Type;
+	if (PyType_Ready(&embedder_Type) < 0) return;
+	Py_INCREF(&embedder_Type);
+	PyModule_AddObject(m, "embedder", (PyObject *)&embedder_Type);
+	alignment_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&alignment_Type) < 0) return;
+	Py_INCREF(&alignment_Type);
+	PyModule_AddObject(m, "alignment", (PyObject *)&alignment_Type);
+	animation_notification_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&animation_notification_Type) < 0) return;
+	Py_INCREF(&animation_notification_Type);
+	PyModule_AddObject(m, "animation_notification", (PyObject *)&animation_notification_Type);
+	gui_window_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&gui_window_Type) < 0) return;
+	Py_INCREF(&gui_window_Type);
+	PyModule_AddObject(m, "gui_window", (PyObject *)&gui_window_Type);
+	gui_events_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&gui_events_Type) < 0) return;
+	Py_INCREF(&gui_events_Type);
+	PyModule_AddObject(m, "gui_events", (PyObject *)&gui_events_Type);
+	renderer_Type.ob_type = &PyType_Type;
+	renderer_Type.tp_base = &gui_events_Type;
+	if (PyType_Ready(&renderer_Type) < 0) return;
+	Py_INCREF(&renderer_Type);
+	PyModule_AddObject(m, "renderer", (PyObject *)&renderer_Type);
+	bgrenderer_Type.ob_type = &PyType_Type;
+	bgrenderer_Type.tp_base = &gui_events_Type;
+	if (PyType_Ready(&bgrenderer_Type) < 0) return;
+	Py_INCREF(&bgrenderer_Type);
+	PyModule_AddObject(m, "bgrenderer", (PyObject *)&bgrenderer_Type);
+	surface_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&surface_Type) < 0) return;
+	Py_INCREF(&surface_Type);
+	PyModule_AddObject(m, "surface", (PyObject *)&surface_Type);
+	window_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&window_factory_Type) < 0) return;
+	Py_INCREF(&window_factory_Type);
+	PyModule_AddObject(m, "window_factory", (PyObject *)&window_factory_Type);
+	surface_template_Type.ob_type = &PyType_Type;
+	surface_template_Type.tp_base = &animation_notification_Type;
+	if (PyType_Ready(&surface_template_Type) < 0) return;
+	Py_INCREF(&surface_template_Type);
+	PyModule_AddObject(m, "surface_template", (PyObject *)&surface_template_Type);
+	surface_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&surface_factory_Type) < 0) return;
+	Py_INCREF(&surface_factory_Type);
+	PyModule_AddObject(m, "surface_factory", (PyObject *)&surface_factory_Type);
+	layout_manager_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&layout_manager_Type) < 0) return;
+	Py_INCREF(&layout_manager_Type);
+	PyModule_AddObject(m, "layout_manager", (PyObject *)&layout_manager_Type);
+	playable_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&playable_Type) < 0) return;
+	Py_INCREF(&playable_Type);
+	PyModule_AddObject(m, "playable", (PyObject *)&playable_Type);
+	playable_notification_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&playable_notification_Type) < 0) return;
+	Py_INCREF(&playable_notification_Type);
+	PyModule_AddObject(m, "playable_notification", (PyObject *)&playable_notification_Type);
+	playable_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&playable_factory_Type) < 0) return;
+	Py_INCREF(&playable_factory_Type);
+	PyModule_AddObject(m, "playable_factory", (PyObject *)&playable_factory_Type);
+	global_playable_factory_Type.ob_type = &PyType_Type;
+	global_playable_factory_Type.tp_base = &playable_factory_Type;
+	if (PyType_Ready(&global_playable_factory_Type) < 0) return;
+	Py_INCREF(&global_playable_factory_Type);
+	PyModule_AddObject(m, "global_playable_factory", (PyObject *)&global_playable_factory_Type);
+	player_feedback_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&player_feedback_Type) < 0) return;
+	Py_INCREF(&player_feedback_Type);
+	PyModule_AddObject(m, "player_feedback", (PyObject *)&player_feedback_Type);
+	player_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&player_Type) < 0) return;
+	Py_INCREF(&player_Type);
+	PyModule_AddObject(m, "player", (PyObject *)&player_Type);
+	region_info_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&region_info_Type) < 0) return;
+	Py_INCREF(&region_info_Type);
+	PyModule_AddObject(m, "region_info", (PyObject *)&region_info_Type);
+	animation_destination_Type.ob_type = &PyType_Type;
+	animation_destination_Type.tp_base = &region_info_Type;
+	if (PyType_Ready(&animation_destination_Type) < 0) return;
+	Py_INCREF(&animation_destination_Type);
+	PyModule_AddObject(m, "animation_destination", (PyObject *)&animation_destination_Type);
+	none_window_Type.ob_type = &PyType_Type;
+	none_window_Type.tp_base = &gui_window_Type;
+	if (PyType_Ready(&none_window_Type) < 0) return;
+	Py_INCREF(&none_window_Type);
+	PyModule_AddObject(m, "none_window", (PyObject *)&none_window_Type);
+	none_window_factory_Type.ob_type = &PyType_Type;
+	none_window_factory_Type.tp_base = &window_factory_Type;
+	if (PyType_Ready(&none_window_factory_Type) < 0) return;
+	Py_INCREF(&none_window_factory_Type);
+	PyModule_AddObject(m, "none_window_factory", (PyObject *)&none_window_factory_Type);
+	datasource_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&datasource_Type) < 0) return;
+	Py_INCREF(&datasource_Type);
+	PyModule_AddObject(m, "datasource", (PyObject *)&datasource_Type);
+	audio_datasource_Type.ob_type = &PyType_Type;
+	audio_datasource_Type.tp_base = &datasource_Type;
+	if (PyType_Ready(&audio_datasource_Type) < 0) return;
+	Py_INCREF(&audio_datasource_Type);
+	PyModule_AddObject(m, "audio_datasource", (PyObject *)&audio_datasource_Type);
+	video_datasource_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&video_datasource_Type) < 0) return;
+	Py_INCREF(&video_datasource_Type);
+	PyModule_AddObject(m, "video_datasource", (PyObject *)&video_datasource_Type);
+	datasource_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&datasource_factory_Type) < 0) return;
+	Py_INCREF(&datasource_factory_Type);
+	PyModule_AddObject(m, "datasource_factory", (PyObject *)&datasource_factory_Type);
+	raw_datasource_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&raw_datasource_factory_Type) < 0) return;
+	Py_INCREF(&raw_datasource_factory_Type);
+	PyModule_AddObject(m, "raw_datasource_factory", (PyObject *)&raw_datasource_factory_Type);
+	audio_datasource_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&audio_datasource_factory_Type) < 0) return;
+	Py_INCREF(&audio_datasource_factory_Type);
+	PyModule_AddObject(m, "audio_datasource_factory", (PyObject *)&audio_datasource_factory_Type);
+	video_datasource_factory_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&video_datasource_factory_Type) < 0) return;
+	Py_INCREF(&video_datasource_factory_Type);
+	PyModule_AddObject(m, "video_datasource_factory", (PyObject *)&video_datasource_factory_Type);
+	audio_parser_finder_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&audio_parser_finder_Type) < 0) return;
+	Py_INCREF(&audio_parser_finder_Type);
+	PyModule_AddObject(m, "audio_parser_finder", (PyObject *)&audio_parser_finder_Type);
+	audio_filter_finder_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&audio_filter_finder_Type) < 0) return;
+	Py_INCREF(&audio_filter_finder_Type);
+	PyModule_AddObject(m, "audio_filter_finder", (PyObject *)&audio_filter_finder_Type);
+	audio_format_choices_Type.ob_type = &PyType_Type;
+	if (PyType_Ready(&audio_format_choices_Type) < 0) return;
+	Py_INCREF(&audio_format_choices_Type);
+	PyModule_AddObject(m, "audio_format_choices", (PyObject *)&audio_format_choices_Type);
+
+
+
+}
+
+/* ====================== End module ambulant ======================= */
+

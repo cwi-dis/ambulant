@@ -37,6 +37,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/player_unix/Makefile
 	src/player_macosx/Makefile
 	src/plugins/Makefile
+	src/pyambulant/Makefile
 	include/Makefile
 	include/ambulant/Makefile
 	include/ambulant/config/Makefile
@@ -568,6 +569,7 @@ AC_MSG_RESULT(Discovered FFMPEG version to use - $inst_style)
 dnl Testing for Dirac
 dnl ======================================================================
 
+AC_MSG_CHECKING(for Dirac support)
 AC_ARG_WITH(dirac,
     [  --with-dirac		Turn on Dirac video codec if ffmpeg is enabled],
     [case "${withval}" in
@@ -578,7 +580,32 @@ AC_ARG_WITH(dirac,
         dirac=false
     ])
 AM_CONDITIONAL(WITH_DIRAC, test x$dirac = xtrue)
-AC_MSG_RESULT(Using Dirac - $dirac)
+AC_MSG_RESULT($dirac)
+
+dnl Testing for Python
+dnl ======================================================================
+AC_MSG_CHECKING(whether to build Python interface)
+AC_ARG_WITH(python,
+    [  --with-python		Build Python interface to Ambulant],
+    [case "${withval}" in
+        yes)
+            PYTHON=`which python` 
+            with_python=true
+            ;;
+        no)
+            PYTHON=
+            with_python=false
+            ;;
+        *)
+            PYTHON=`which ${withval}`
+            with_python=true
+            ;;
+    esac], [
+        with_python=false
+    ])
+AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
+AC_SUBST(PYTHON)
+AC_MSG_RESULT($with_python - $PYTHON)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
@@ -798,6 +825,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with SDL:			${test_sdl}
 	Build with ARTS support:	${test_arts}
 	Build with live.com RTSP:	${test_live}
+	Build with Python support:     ${with_python}
      "
 
 if test "x$with_frontend" = "x$false"; then

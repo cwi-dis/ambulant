@@ -1,0 +1,9 @@
+Makefile.in
+ambulantgen.py
+ambulantincludegen.py
+ambulanttypetest.py
+ambulantobjgen.py
+*.pyc
+build
+.gdb_history
+

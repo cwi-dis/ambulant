@@ -1,0 +1,5064 @@
+
+/* ================== Callbacks Module pyambulant =================== */
+
+
+#include "ambulantinterface.h"
+#include "ambulantutilities.h"
+#include "ambulantmodule.h"
+
+extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
+
+
+/* ----------------------- Class node_context ----------------------- */
+
+node_context::node_context(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "set_prefix_mapping")) PyErr_Warn(PyExc_Warning, "node_context: missing attribute: set_prefix_mapping");
+		if (!PyObject_HasAttrString(itself, "get_namespace_prefix")) PyErr_Warn(PyExc_Warning, "node_context: missing attribute: get_namespace_prefix");
+		if (!PyObject_HasAttrString(itself, "resolve_url")) PyErr_Warn(PyExc_Warning, "node_context: missing attribute: resolve_url");
+		if (!PyObject_HasAttrString(itself, "get_root")) PyErr_Warn(PyExc_Warning, "node_context: missing attribute: get_root");
+		if (!PyObject_HasAttrString(itself, "get_node")) PyErr_Warn(PyExc_Warning, "node_context: missing attribute: get_node");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_node_context = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+node_context::~node_context()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_node_context);
+	py_node_context = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void node_context::set_prefix_mapping(const std::string& prefix, const std::string& uri)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_prefix = Py_BuildValue("s", prefix.c_str());
+	PyObject *py_uri = Py_BuildValue("s", uri.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "set_prefix_mapping", "(OO)", py_prefix, py_uri);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node_context::set_prefix_mapping() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_prefix);
+	Py_XDECREF(py_uri);
+
+	PyGILState_Release(_GILState);
+}
+
+const char * node_context::get_namespace_prefix(const ambulant::lib::xml_string& uri) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const char * _rv;
+	PyObject *py_uri = Py_BuildValue("s", uri.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "get_namespace_prefix", "(O)", py_uri);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node_context::get_namespace_prefix() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node_context::get_namespace_prefix() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_uri);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::net::url node_context::resolve_url(const ambulant::net::url& rurl) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::url _rv;
+	PyObject *py_rurl = Py_BuildValue("O", ambulant_url_New(rurl));
+
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "resolve_url", "(O)", py_rurl);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node_context::resolve_url() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_url_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node_context::resolve_url() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_rurl);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node_context::get_root() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "get_root", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node_context::get_root() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node_context::get_root() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node_context::get_node(const std::string& idd) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+	PyObject *py_idd = Py_BuildValue("s", idd.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "get_node", "(O)", py_idd);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node_context::get_node() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node_context::get_node() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_idd);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* --------------------------- Class node --------------------------- */
+
+node::node(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "down")) PyErr_Warn(PyExc_Warning, "node: missing attribute: down");
+		if (!PyObject_HasAttrString(itself, "up")) PyErr_Warn(PyExc_Warning, "node: missing attribute: up");
+		if (!PyObject_HasAttrString(itself, "next")) PyErr_Warn(PyExc_Warning, "node: missing attribute: next");
+		if (!PyObject_HasAttrString(itself, "down")) PyErr_Warn(PyExc_Warning, "node: missing attribute: down");
+		if (!PyObject_HasAttrString(itself, "up")) PyErr_Warn(PyExc_Warning, "node: missing attribute: up");
+		if (!PyObject_HasAttrString(itself, "next")) PyErr_Warn(PyExc_Warning, "node: missing attribute: next");
+		if (!PyObject_HasAttrString(itself, "down")) PyErr_Warn(PyExc_Warning, "node: missing attribute: down");
+		if (!PyObject_HasAttrString(itself, "up")) PyErr_Warn(PyExc_Warning, "node: missing attribute: up");
+		if (!PyObject_HasAttrString(itself, "next")) PyErr_Warn(PyExc_Warning, "node: missing attribute: next");
+		if (!PyObject_HasAttrString(itself, "previous")) PyErr_Warn(PyExc_Warning, "node: missing attribute: previous");
+		if (!PyObject_HasAttrString(itself, "get_last_child")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_last_child");
+		if (!PyObject_HasAttrString(itself, "locate_node")) PyErr_Warn(PyExc_Warning, "node: missing attribute: locate_node");
+		if (!PyObject_HasAttrString(itself, "get_first_child")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_first_child");
+		if (!PyObject_HasAttrString(itself, "get_first_child")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_first_child");
+		if (!PyObject_HasAttrString(itself, "get_root")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_root");
+		if (!PyObject_HasAttrString(itself, "get_container_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_container_attribute");
+		if (!PyObject_HasAttrString(itself, "append_child")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_child");
+		if (!PyObject_HasAttrString(itself, "append_child")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_child");
+		if (!PyObject_HasAttrString(itself, "detach")) PyErr_Warn(PyExc_Warning, "node: missing attribute: detach");
+		if (!PyObject_HasAttrString(itself, "clone")) PyErr_Warn(PyExc_Warning, "node: missing attribute: clone");
+		if (!PyObject_HasAttrString(itself, "append_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_data");
+		if (!PyObject_HasAttrString(itself, "append_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_data");
+		if (!PyObject_HasAttrString(itself, "append_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_data");
+		if (!PyObject_HasAttrString(itself, "set_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_attribute");
+		if (!PyObject_HasAttrString(itself, "set_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_attribute");
+		if (!PyObject_HasAttrString(itself, "set_namespace")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_namespace");
+		if (!PyObject_HasAttrString(itself, "get_namespace")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_namespace");
+		if (!PyObject_HasAttrString(itself, "get_local_name")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_local_name");
+		if (!PyObject_HasAttrString(itself, "get_qname")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_qname");
+		if (!PyObject_HasAttrString(itself, "get_numid")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_numid");
+		if (!PyObject_HasAttrString(itself, "get_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_data");
+		if (!PyObject_HasAttrString(itself, "get_trimmed_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_trimmed_data");
+		if (!PyObject_HasAttrString(itself, "get_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_attribute");
+		if (!PyObject_HasAttrString(itself, "get_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_attribute");
+		if (!PyObject_HasAttrString(itself, "get_url")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_url");
+		if (!PyObject_HasAttrString(itself, "size")) PyErr_Warn(PyExc_Warning, "node: missing attribute: size");
+		if (!PyObject_HasAttrString(itself, "get_path_display_desc")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_path_display_desc");
+		if (!PyObject_HasAttrString(itself, "get_sig")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_sig");
+		if (!PyObject_HasAttrString(itself, "xmlrepr")) PyErr_Warn(PyExc_Warning, "node: missing attribute: xmlrepr");
+		if (!PyObject_HasAttrString(itself, "get_context")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_context");
+		if (!PyObject_HasAttrString(itself, "set_context")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_context");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_node = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+node::~node()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_node);
+	py_node = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+const ambulant::lib::node* node::down() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "down", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::down() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::down() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node::up() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "up", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::up() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::up() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node::next() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "next", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::next() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::next() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::down()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "down", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::down() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::down() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::up()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "up", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::up() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::up() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::next()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "next", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::next() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::next() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void node::down(ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "down", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::down() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::up(ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "up", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::up() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::next(ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "next", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::next() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+const ambulant::lib::node* node::previous() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "previous", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::previous() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::previous() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node::get_last_child() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_last_child", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_last_child() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_last_child() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::locate_node(const char* path)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+	PyObject *py_path = Py_BuildValue("s", path);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "locate_node", "(O)", py_path);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::locate_node() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::locate_node() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_path);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::get_first_child(const char* name)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_first_child", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_first_child() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_first_child() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node* node::get_first_child(const char* name) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node* _rv;
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_first_child", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_first_child() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_first_child() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::get_root()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_root", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_root() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_root() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const char * node::get_container_attribute(const char* name) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const char * _rv;
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_container_attribute", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_container_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_container_attribute() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::append_child(ambulant::lib::node* child)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+	PyObject *py_child = Py_BuildValue("O&", nodeObj_New, child);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "append_child", "(O)", py_child);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::append_child() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::append_child() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_child);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::append_child(const char* name)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "append_child", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::append_child() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::append_child() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::detach()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "detach", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::detach() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::detach() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::node* node::clone() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::node* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "clone", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::clone() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", nodeObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::clone() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void node::append_data(char *data__in__, long data__len__)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "append_data", "(O)", py_data);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::append_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_data);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::append_data(const char* c_str)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_c_str = Py_BuildValue("s", c_str);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "append_data", "(O)", py_c_str);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::append_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_c_str);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::append_data(const ambulant::lib::xml_string& str)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_str = Py_BuildValue("s", str.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "append_data", "(O)", py_str);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::append_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_str);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::set_attribute(const char* name, const char* value)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_name = Py_BuildValue("s", name);
+	PyObject *py_value = Py_BuildValue("s", value);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "set_attribute", "(OO)", py_name, py_value);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::set_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+	Py_XDECREF(py_value);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::set_attribute(const char* name, const ambulant::lib::xml_string& value)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_name = Py_BuildValue("s", name);
+	PyObject *py_value = Py_BuildValue("s", value.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "set_attribute", "(OO)", py_name, py_value);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::set_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+	Py_XDECREF(py_value);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::set_namespace(const ambulant::lib::xml_string& ns)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_ns = Py_BuildValue("s", ns.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "set_namespace", "(O)", py_ns);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::set_namespace() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ns);
+
+	PyGILState_Release(_GILState);
+}
+
+const ambulant::lib::xml_string& node::get_namespace() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_namespace", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_namespace() callback:\n");
+		PyErr_Print();
+	}
+
+	char *get_namespace_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_namespace_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_namespace() return:\n");
+		PyErr_Print();
+	}
+
+	get_namespace_rv = get_namespace_rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_namespace_rv;
+}
+
+const ambulant::lib::xml_string& node::get_local_name() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_local_name", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_local_name() callback:\n");
+		PyErr_Print();
+	}
+
+	char *get_local_name_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_local_name_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_local_name() return:\n");
+		PyErr_Print();
+	}
+
+	get_local_name_rv = get_local_name_rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_local_name_rv;
+}
+
+const ambulant::lib::q_name_pair& node::get_qname() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_qname", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_qname() callback:\n");
+		PyErr_Print();
+	}
+
+	ambulant::lib::xml_string get_qname_rv_first;
+	ambulant::lib::xml_string get_qname_rv_second;
+	char *get_qname_rv_first_cstr;
+	char *get_qname_rv_second_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "(ss)", &get_qname_rv_first_cstr, &get_qname_rv_second_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_qname() return:\n");
+		PyErr_Print();
+	}
+
+	get_qname_rv_first = get_qname_rv_first_cstr;
+	get_qname_rv_second = get_qname_rv_second_cstr;
+	get_qname_rv = ambulant::lib::q_name_pair(get_qname_rv_first, get_qname_rv_second);
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_qname_rv;
+}
+
+int node::get_numid() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	int _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_numid", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_numid() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_numid() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::xml_string& node::get_data() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_data", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_data() callback:\n");
+		PyErr_Print();
+	}
+
+	char *get_data_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_data_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_data() return:\n");
+		PyErr_Print();
+	}
+
+	get_data_rv = get_data_rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_data_rv;
+}
+
+ambulant::lib::xml_string node::get_trimmed_data() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::xml_string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_trimmed_data", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_trimmed_data() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_trimmed_data() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const char * node::get_attribute(const char* name) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const char * _rv;
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_attribute", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_attribute() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const char * node::get_attribute(const std::string& name) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const char * _rv;
+	PyObject *py_name = Py_BuildValue("s", name.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_attribute", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_attribute() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::net::url node::get_url(const char* attrname) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::url _rv;
+	PyObject *py_attrname = Py_BuildValue("s", attrname);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_url", "(O)", py_attrname);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_url() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_url_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_url() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_attrname);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+unsigned int node::size() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	unsigned int _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "size", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::size() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::size() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+std::string node::get_path_display_desc() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_path_display_desc", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_path_display_desc() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_path_display_desc() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+std::string node::get_sig() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_sig", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_sig() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::get_sig() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::xml_string node::xmlrepr() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::xml_string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "xmlrepr", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::xmlrepr() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during node::xmlrepr() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::lib::node_context* node::get_context() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::lib::node_context* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_context", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::get_context() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", node_contextObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during node::get_context() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void node::set_context(ambulant::lib::node_context* c)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_c = Py_BuildValue("O&", node_contextObj_New, c);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "set_context", "(O)", py_c);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::set_context() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_c);
+
+	PyGILState_Release(_GILState);
+}
+
+/* -------------------------- Class event --------------------------- */
+
+event::event(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "fire")) PyErr_Warn(PyExc_Warning, "event: missing attribute: fire");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_event = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+event::~event()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_event);
+	py_event = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void event::fire()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_event, "fire", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event::fire() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class event_processor ---------------------- */
+
+event_processor::event_processor(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "add_event")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: add_event");
+		if (!PyObject_HasAttrString(itself, "cancel_all_events")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: cancel_all_events");
+		if (!PyObject_HasAttrString(itself, "cancel_event")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: cancel_event");
+		if (!PyObject_HasAttrString(itself, "serve_events")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: serve_events");
+		if (!PyObject_HasAttrString(itself, "get_timer")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: get_timer");
+		if (!PyObject_HasAttrString(itself, "stop_processor_thread")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: stop_processor_thread");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_event_processor = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+event_processor::~event_processor()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_event_processor);
+	py_event_processor = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void event_processor::add_event(ambulant::lib::event* pe, ambulant::lib::timer::time_type t, ambulant::lib::event_processor::event_priority priority)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_pe = Py_BuildValue("O&", eventObj_New, pe);
+	PyObject *py_t = Py_BuildValue("l", t);
+	PyObject *py_priority = Py_BuildValue("l", priority);
+
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "add_event", "(OOO)", py_pe, py_t, py_priority);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::add_event() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_pe);
+	Py_XDECREF(py_t);
+	Py_XDECREF(py_priority);
+
+	PyGILState_Release(_GILState);
+}
+
+void event_processor::cancel_all_events()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "cancel_all_events", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::cancel_all_events() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+bool event_processor::cancel_event(ambulant::lib::event* pe, ambulant::lib::event_processor::event_priority priority)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+	PyObject *py_pe = Py_BuildValue("O&", eventObj_New, pe);
+	PyObject *py_priority = Py_BuildValue("l", priority);
+
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "cancel_event", "(OO)", py_pe, py_priority);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::cancel_event() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during event_processor::cancel_event() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_pe);
+	Py_XDECREF(py_priority);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void event_processor::serve_events()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "serve_events", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::serve_events() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+ambulant::lib::timer* event_processor::get_timer() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "get_timer", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::get_timer() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", timerObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during event_processor::get_timer() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void event_processor::stop_processor_thread()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "stop_processor_thread", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during event_processor::stop_processor_thread() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ---------------------- Class parser_factory ---------------------- */
+
+parser_factory::parser_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "get_parser_name")) PyErr_Warn(PyExc_Warning, "parser_factory: missing attribute: get_parser_name");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_parser_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+parser_factory::~parser_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_parser_factory);
+	py_parser_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+std::string parser_factory::get_parser_name()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_parser_factory, "get_parser_name", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during parser_factory::get_parser_name() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during parser_factory::get_parser_name() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------------ Class xml_parser ------------------------ */
+
+xml_parser::xml_parser(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "parse")) PyErr_Warn(PyExc_Warning, "xml_parser: missing attribute: parse");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_xml_parser = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+xml_parser::~xml_parser()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_xml_parser);
+	py_xml_parser = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+bool xml_parser::parse(char *buf__in__, long buf__len__, bool final)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+	PyObject *py_buf = Py_BuildValue("s#", buf__in__, (int)buf__len__);
+	PyObject *py_final = Py_BuildValue("O&", bool_New, final);
+
+	PyObject *py_rv = PyObject_CallMethod(py_xml_parser, "parse", "(OO)", py_buf, py_final);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during xml_parser::parse() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during xml_parser::parse() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_buf);
+	Py_XDECREF(py_final);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* --------------------- Class system_embedder ---------------------- */
+
+system_embedder::system_embedder(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "show_file")) PyErr_Warn(PyExc_Warning, "system_embedder: missing attribute: show_file");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_system_embedder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+system_embedder::~system_embedder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_system_embedder);
+	py_system_embedder = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void system_embedder::show_file(const ambulant::net::url& href)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_href = Py_BuildValue("O", ambulant_url_New(href));
+
+	PyObject *py_rv = PyObject_CallMethod(py_system_embedder, "show_file", "(O)", py_href);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during system_embedder::show_file() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_href);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ----------------------- Class timer_events ----------------------- */
+
+timer_events::timer_events(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "speed_changed")) PyErr_Warn(PyExc_Warning, "timer_events: missing attribute: speed_changed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer_events = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer_events::~timer_events()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer_events);
+	py_timer_events = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void timer_events::speed_changed()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_events, "speed_changed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_events::speed_changed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* -------------------------- Class timer --------------------------- */
+
+timer::timer(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "elapsed")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: elapsed");
+		if (!PyObject_HasAttrString(itself, "get_realtime_speed")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: get_realtime_speed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer::~timer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer);
+	py_timer = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::lib::timer::time_type timer::elapsed() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::time_type _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "elapsed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::elapsed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::elapsed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double timer::get_realtime_speed() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "get_realtime_speed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::get_realtime_speed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::get_realtime_speed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ---------------------- Class timer_control ----------------------- */
+
+timer_control::timer_control(PyObject *itself)
+:	::timer(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "elapsed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: elapsed");
+		if (!PyObject_HasAttrString(itself, "elapsed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: elapsed");
+		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: start");
+		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: stop");
+		if (!PyObject_HasAttrString(itself, "pause")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: pause");
+		if (!PyObject_HasAttrString(itself, "resume")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: resume");
+		if (!PyObject_HasAttrString(itself, "set_speed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_speed");
+		if (!PyObject_HasAttrString(itself, "set_time")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_time");
+		if (!PyObject_HasAttrString(itself, "get_speed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_speed");
+		if (!PyObject_HasAttrString(itself, "running")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: running");
+		if (!PyObject_HasAttrString(itself, "get_realtime_speed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_realtime_speed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer_control = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer_control::~timer_control()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer_control);
+	py_timer_control = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::lib::timer::time_type timer_control::elapsed() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::time_type _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "elapsed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::elapsed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::elapsed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::timer::time_type timer_control::elapsed(ambulant::lib::timer::time_type pt) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::time_type _rv;
+	PyObject *py_pt = Py_BuildValue("l", pt);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "elapsed", "(O)", py_pt);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::elapsed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::elapsed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_pt);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void timer_control::start(ambulant::lib::timer::time_type t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_t = Py_BuildValue("l", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "start", "(O)", py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::start() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::stop()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "stop", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::stop() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::pause()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "pause", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::pause() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::resume()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "resume", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::resume() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::set_speed(double speed)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_speed = Py_BuildValue("d", speed);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_speed", "(O)", py_speed);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_speed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_speed);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::set_time(ambulant::lib::timer::time_type t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_t = Py_BuildValue("l", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_time", "(O)", py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_time() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+double timer_control::get_speed() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "get_speed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_speed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_speed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool timer_control::running() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "running", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::running() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::running() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double timer_control::get_realtime_speed() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "get_realtime_speed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_realtime_speed() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_realtime_speed() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------------- Class embedder ------------------------- */
+
+embedder::embedder(PyObject *itself)
+:	::system_embedder(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "close")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: close");
+		if (!PyObject_HasAttrString(itself, "open")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: open");
+		if (!PyObject_HasAttrString(itself, "done")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: done");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_embedder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+embedder::~embedder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_embedder);
+	py_embedder = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void embedder::close(ambulant::common::player* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playerObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_embedder, "close", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during embedder::close() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+void embedder::open(ambulant::net::url newdoc, bool start, ambulant::common::player* old)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_newdoc = Py_BuildValue("O", ambulant_url_New(newdoc));
+	PyObject *py_start = Py_BuildValue("O&", bool_New, start);
+	PyObject *py_old = Py_BuildValue("O&", playerObj_New, old);
+
+	PyObject *py_rv = PyObject_CallMethod(py_embedder, "open", "(OOO)", py_newdoc, py_start, py_old);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during embedder::open() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_newdoc);
+	Py_XDECREF(py_start);
+	Py_XDECREF(py_old);
+
+	PyGILState_Release(_GILState);
+}
+
+void embedder::done(ambulant::common::player* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playerObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_embedder, "done", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during embedder::done() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------------ Class alignment ------------------------- */
+
+alignment::alignment(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "get_image_fixpoint")) PyErr_Warn(PyExc_Warning, "alignment: missing attribute: get_image_fixpoint");
+		if (!PyObject_HasAttrString(itself, "get_surface_fixpoint")) PyErr_Warn(PyExc_Warning, "alignment: missing attribute: get_surface_fixpoint");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_alignment = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+alignment::~alignment()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_alignment);
+	py_alignment = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::lib::point alignment::get_image_fixpoint(ambulant::lib::size image_size) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::point _rv;
+	PyObject *py_image_size = Py_BuildValue("O", ambulant_size_New(image_size));
+
+	PyObject *py_rv = PyObject_CallMethod(py_alignment, "get_image_fixpoint", "(O)", py_image_size);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during alignment::get_image_fixpoint() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_point_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during alignment::get_image_fixpoint() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_image_size);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::point alignment::get_surface_fixpoint(ambulant::lib::size surface_size) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::point _rv;
+	PyObject *py_surface_size = Py_BuildValue("O", ambulant_size_New(surface_size));
+
+	PyObject *py_rv = PyObject_CallMethod(py_alignment, "get_surface_fixpoint", "(O)", py_surface_size);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during alignment::get_surface_fixpoint() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_point_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during alignment::get_surface_fixpoint() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_surface_size);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------ Class animation_notification ------------------ */
+
+animation_notification::animation_notification(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "animated")) PyErr_Warn(PyExc_Warning, "animation_notification: missing attribute: animated");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_animation_notification = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+animation_notification::~animation_notification()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_animation_notification);
+	py_animation_notification = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void animation_notification::animated()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_animation_notification, "animated", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_notification::animated() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------------ Class gui_window ------------------------ */
+
+gui_window::gui_window(PyObject *itself)
+:	ambulant::common::gui_window(0)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "need_redraw")) PyErr_Warn(PyExc_Warning, "gui_window: missing attribute: need_redraw");
+		if (!PyObject_HasAttrString(itself, "redraw_now")) PyErr_Warn(PyExc_Warning, "gui_window: missing attribute: redraw_now");
+		if (!PyObject_HasAttrString(itself, "need_events")) PyErr_Warn(PyExc_Warning, "gui_window: missing attribute: need_events");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_gui_window = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+gui_window::~gui_window()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_gui_window);
+	py_gui_window = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void gui_window::need_redraw(const ambulant::lib::rect& r)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_r = Py_BuildValue("O", ambulant_rect_New(r));
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_window, "need_redraw", "(O)", py_r);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_window::need_redraw() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_r);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_window::redraw_now()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_gui_window, "redraw_now", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_window::redraw_now() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_window::need_events(bool want)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_want = Py_BuildValue("O&", bool_New, want);
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_window, "need_events", "(O)", py_want);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_window::need_events() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_want);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------------ Class gui_events ------------------------ */
+
+gui_events::gui_events(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "redraw")) PyErr_Warn(PyExc_Warning, "gui_events: missing attribute: redraw");
+		if (!PyObject_HasAttrString(itself, "user_event")) PyErr_Warn(PyExc_Warning, "gui_events: missing attribute: user_event");
+		if (!PyObject_HasAttrString(itself, "transition_freeze_end")) PyErr_Warn(PyExc_Warning, "gui_events: missing attribute: transition_freeze_end");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_gui_events = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+gui_events::~gui_events()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_gui_events);
+	py_gui_events = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void gui_events::redraw(const ambulant::lib::rect& dirty, ambulant::common::gui_window* window)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_dirty = Py_BuildValue("O", ambulant_rect_New(dirty));
+	PyObject *py_window = Py_BuildValue("O&", gui_windowObj_New, window);
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_events, "redraw", "(OO)", py_dirty, py_window);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_events::redraw() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_dirty);
+	Py_XDECREF(py_window);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_events::user_event(const ambulant::lib::point& where, int what)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_where = Py_BuildValue("O", ambulant_point_New(where));
+	PyObject *py_what = Py_BuildValue("i", what);
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_events, "user_event", "(OO)", py_where, py_what);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_events::user_event() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_where);
+	Py_XDECREF(py_what);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_events::transition_freeze_end(ambulant::lib::rect area)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_area = Py_BuildValue("O", ambulant_rect_New(area));
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_events, "transition_freeze_end", "(O)", py_area);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_events::transition_freeze_end() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_area);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------------- Class renderer ------------------------- */
+
+renderer::renderer(PyObject *itself)
+:	::gui_events(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "set_surface")) PyErr_Warn(PyExc_Warning, "renderer: missing attribute: set_surface");
+		if (!PyObject_HasAttrString(itself, "set_alignment")) PyErr_Warn(PyExc_Warning, "renderer: missing attribute: set_alignment");
+		if (!PyObject_HasAttrString(itself, "set_intransition")) PyErr_Warn(PyExc_Warning, "renderer: missing attribute: set_intransition");
+		if (!PyObject_HasAttrString(itself, "start_outtransition")) PyErr_Warn(PyExc_Warning, "renderer: missing attribute: start_outtransition");
+		if (!PyObject_HasAttrString(itself, "get_surface")) PyErr_Warn(PyExc_Warning, "renderer: missing attribute: get_surface");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_renderer = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+renderer::~renderer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_renderer);
+	py_renderer = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void renderer::set_surface(ambulant::common::surface* destination)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_destination = Py_BuildValue("O&", surfaceObj_New, destination);
+
+	PyObject *py_rv = PyObject_CallMethod(py_renderer, "set_surface", "(O)", py_destination);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during renderer::set_surface() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_destination);
+
+	PyGILState_Release(_GILState);
+}
+
+void renderer::set_alignment(const ambulant::common::alignment* align)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_align = Py_BuildValue("O&", alignmentObj_New, align);
+
+	PyObject *py_rv = PyObject_CallMethod(py_renderer, "set_alignment", "(O)", py_align);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during renderer::set_alignment() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_align);
+
+	PyGILState_Release(_GILState);
+}
+
+void renderer::set_intransition(const ambulant::lib::transition_info* info)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_info = Py_BuildValue("O&", transition_infoObj_New, info);
+
+	PyObject *py_rv = PyObject_CallMethod(py_renderer, "set_intransition", "(O)", py_info);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during renderer::set_intransition() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_info);
+
+	PyGILState_Release(_GILState);
+}
+
+void renderer::start_outtransition(const ambulant::lib::transition_info* info)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_info = Py_BuildValue("O&", transition_infoObj_New, info);
+
+	PyObject *py_rv = PyObject_CallMethod(py_renderer, "start_outtransition", "(O)", py_info);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during renderer::start_outtransition() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_info);
+
+	PyGILState_Release(_GILState);
+}
+
+ambulant::common::surface* renderer::get_surface()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_renderer, "get_surface", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during renderer::get_surface() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during renderer::get_surface() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------------ Class bgrenderer ------------------------ */
+
+bgrenderer::bgrenderer(PyObject *itself)
+:	::gui_events(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "set_surface")) PyErr_Warn(PyExc_Warning, "bgrenderer: missing attribute: set_surface");
+		if (!PyObject_HasAttrString(itself, "keep_as_background")) PyErr_Warn(PyExc_Warning, "bgrenderer: missing attribute: keep_as_background");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_bgrenderer = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+bgrenderer::~bgrenderer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_bgrenderer);
+	py_bgrenderer = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void bgrenderer::set_surface(ambulant::common::surface* destination)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_destination = Py_BuildValue("O&", surfaceObj_New, destination);
+
+	PyObject *py_rv = PyObject_CallMethod(py_bgrenderer, "set_surface", "(O)", py_destination);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during bgrenderer::set_surface() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_destination);
+
+	PyGILState_Release(_GILState);
+}
+
+void bgrenderer::keep_as_background()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_bgrenderer, "keep_as_background", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during bgrenderer::keep_as_background() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------------- Class surface -------------------------- */
+
+surface::surface(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "show")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: show");
+		if (!PyObject_HasAttrString(itself, "renderer_done")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: renderer_done");
+		if (!PyObject_HasAttrString(itself, "need_redraw")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: need_redraw");
+		if (!PyObject_HasAttrString(itself, "need_redraw")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: need_redraw");
+		if (!PyObject_HasAttrString(itself, "need_events")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: need_events");
+		if (!PyObject_HasAttrString(itself, "transition_done")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: transition_done");
+		if (!PyObject_HasAttrString(itself, "keep_as_background")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: keep_as_background");
+		if (!PyObject_HasAttrString(itself, "get_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_rect");
+		if (!PyObject_HasAttrString(itself, "get_global_topleft")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_global_topleft");
+		if (!PyObject_HasAttrString(itself, "get_fit_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_fit_rect");
+		if (!PyObject_HasAttrString(itself, "get_info")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_info");
+		if (!PyObject_HasAttrString(itself, "get_top_surface")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_top_surface");
+		if (!PyObject_HasAttrString(itself, "is_tiled")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: is_tiled");
+		if (!PyObject_HasAttrString(itself, "get_gui_window")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_gui_window");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_surface = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+surface::~surface()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_surface);
+	py_surface = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void surface::show(ambulant::common::gui_events* renderer)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_renderer = Py_BuildValue("O&", gui_eventsObj_New, renderer);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "show", "(O)", py_renderer);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::show() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_renderer);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::renderer_done(ambulant::common::gui_events* renderer)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_renderer = Py_BuildValue("O&", gui_eventsObj_New, renderer);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "renderer_done", "(O)", py_renderer);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::renderer_done() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_renderer);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::need_redraw(const ambulant::lib::rect& r)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_r = Py_BuildValue("O", ambulant_rect_New(r));
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "need_redraw", "(O)", py_r);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::need_redraw() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_r);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::need_redraw()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "need_redraw", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::need_redraw() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::need_events(bool want)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_want = Py_BuildValue("O&", bool_New, want);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "need_events", "(O)", py_want);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::need_events() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_want);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::transition_done()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "transition_done", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::transition_done() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void surface::keep_as_background()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "keep_as_background", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::keep_as_background() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+const ambulant::lib::rect& surface::get_rect() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_rect", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &get_rect_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_rect_rv;
+}
+
+const ambulant::lib::point& surface::get_global_topleft() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_global_topleft", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_global_topleft() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_point_Convert, &get_global_topleft_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_global_topleft() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return get_global_topleft_rv;
+}
+
+ambulant::lib::rect surface::get_fit_rect(const ambulant::lib::size& src_size, ambulant::lib::rect out_src_rect, const ambulant::common::alignment* align) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect _rv;
+	PyObject *py_src_size = Py_BuildValue("O", ambulant_size_New(src_size));
+	PyObject *py_align = Py_BuildValue("O&", alignmentObj_New, align);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_fit_rect", "(OO)", py_src_size, py_align);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_fit_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&O&", ambulant_rect_Convert, &_rv, ambulant_rect_Convert, &out_src_rect))
+	{
+		PySys_WriteStderr("Python exception during surface::get_fit_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_src_size);
+	Py_XDECREF(py_align);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+const ambulant::common::region_info* surface::get_info() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const ambulant::common::region_info* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_info", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_info() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", region_infoObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_info() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+#ifdef USE_SMIL21
+ambulant::common::surface* surface::get_top_surface()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_top_surface", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_top_surface() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_top_surface() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+#ifdef USE_SMIL21
+bool surface::is_tiled() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "is_tiled", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::is_tiled() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::is_tiled() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+ambulant::common::gui_window* surface::get_gui_window()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::gui_window* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_gui_window", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_gui_window() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", gui_windowObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_gui_window() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ---------------------- Class window_factory ---------------------- */
+
+window_factory::window_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_window")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: new_window");
+		if (!PyObject_HasAttrString(itself, "new_background_renderer")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: new_background_renderer");
+		if (!PyObject_HasAttrString(itself, "window_done")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: window_done");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_window_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+window_factory::~window_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_window_factory);
+	py_window_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::gui_window* window_factory::new_window(const std::string& name, ambulant::lib::size bounds, ambulant::common::gui_events* handler)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::gui_window* _rv;
+	PyObject *py_name = Py_BuildValue("s", name.c_str());
+	PyObject *py_bounds = Py_BuildValue("O", ambulant_size_New(bounds));
+	PyObject *py_handler = Py_BuildValue("O&", gui_eventsObj_New, handler);
+
+	PyObject *py_rv = PyObject_CallMethod(py_window_factory, "new_window", "(OOO)", py_name, py_bounds, py_handler);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during window_factory::new_window() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", gui_windowObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during window_factory::new_window() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+	Py_XDECREF(py_bounds);
+	Py_XDECREF(py_handler);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::bgrenderer* window_factory::new_background_renderer(const ambulant::common::region_info* src)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::bgrenderer* _rv;
+	PyObject *py_src = Py_BuildValue("O&", region_infoObj_New, src);
+
+	PyObject *py_rv = PyObject_CallMethod(py_window_factory, "new_background_renderer", "(O)", py_src);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during window_factory::new_background_renderer() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bgrendererObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during window_factory::new_background_renderer() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_src);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void window_factory::window_done(const std::string& name)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_name = Py_BuildValue("s", name.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_window_factory, "window_done", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during window_factory::window_done() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class surface_template --------------------- */
+
+surface_template::surface_template(PyObject *itself)
+:	::animation_notification(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_subsurface")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: new_subsurface");
+		if (!PyObject_HasAttrString(itself, "activate")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: activate");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_surface_template = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+surface_template::~surface_template()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_surface_template);
+	py_surface_template = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::surface_template* surface_template::new_subsurface(const ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface_template* _rv;
+	PyObject *py_info = Py_BuildValue("O&", region_infoObj_New, info);
+	PyObject *py_bgrend = Py_BuildValue("O&", bgrendererObj_New, bgrend);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface_template, "new_subsurface", "(OO)", py_info, py_bgrend);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface_template::new_subsurface() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surface_templateObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface_template::new_subsurface() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_info);
+	Py_XDECREF(py_bgrend);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::surface* surface_template::activate()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface_template, "activate", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface_template::activate() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface_template::activate() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* --------------------- Class surface_factory ---------------------- */
+
+surface_factory::surface_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_topsurface")) PyErr_Warn(PyExc_Warning, "surface_factory: missing attribute: new_topsurface");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_surface_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+surface_factory::~surface_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_surface_factory);
+	py_surface_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::surface_template* surface_factory::new_topsurface(const ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend, ambulant::common::window_factory* wf)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface_template* _rv;
+	PyObject *py_info = Py_BuildValue("O&", region_infoObj_New, info);
+	PyObject *py_bgrend = Py_BuildValue("O&", bgrendererObj_New, bgrend);
+	PyObject *py_wf = Py_BuildValue("O&", window_factoryObj_New, wf);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface_factory, "new_topsurface", "(OOO)", py_info, py_bgrend, py_wf);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface_factory::new_topsurface() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surface_templateObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface_factory::new_topsurface() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_info);
+	Py_XDECREF(py_bgrend);
+	Py_XDECREF(py_wf);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ---------------------- Class layout_manager ---------------------- */
+
+layout_manager::layout_manager(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "get_surface")) PyErr_Warn(PyExc_Warning, "layout_manager: missing attribute: get_surface");
+		if (!PyObject_HasAttrString(itself, "get_alignment")) PyErr_Warn(PyExc_Warning, "layout_manager: missing attribute: get_alignment");
+		if (!PyObject_HasAttrString(itself, "get_animation_notification")) PyErr_Warn(PyExc_Warning, "layout_manager: missing attribute: get_animation_notification");
+		if (!PyObject_HasAttrString(itself, "get_animation_destination")) PyErr_Warn(PyExc_Warning, "layout_manager: missing attribute: get_animation_destination");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_layout_manager = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+layout_manager::~layout_manager()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_layout_manager);
+	py_layout_manager = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::surface* layout_manager::get_surface(const ambulant::lib::node* node)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::surface* _rv;
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+
+	PyObject *py_rv = PyObject_CallMethod(py_layout_manager, "get_surface", "(O)", py_node);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_surface() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_surface() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_node);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::alignment* layout_manager::get_alignment(const ambulant::lib::node* node)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::alignment* _rv;
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+
+	PyObject *py_rv = PyObject_CallMethod(py_layout_manager, "get_alignment", "(O)", py_node);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_alignment() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", alignmentObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_alignment() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_node);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::animation_notification* layout_manager::get_animation_notification(const ambulant::lib::node* node)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::animation_notification* _rv;
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+
+	PyObject *py_rv = PyObject_CallMethod(py_layout_manager, "get_animation_notification", "(O)", py_node);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_animation_notification() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", animation_notificationObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_animation_notification() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_node);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::animation_destination* layout_manager::get_animation_destination(const ambulant::lib::node* node)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::animation_destination* _rv;
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+
+	PyObject *py_rv = PyObject_CallMethod(py_layout_manager, "get_animation_destination", "(O)", py_node);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_animation_destination() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", animation_destinationObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during layout_manager::get_animation_destination() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_node);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------------- Class playable ------------------------- */
+
+playable::playable(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: start");
+		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: stop");
+		if (!PyObject_HasAttrString(itself, "pause")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: pause");
+		if (!PyObject_HasAttrString(itself, "resume")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: resume");
+		if (!PyObject_HasAttrString(itself, "seek")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: seek");
+		if (!PyObject_HasAttrString(itself, "wantclicks")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: wantclicks");
+		if (!PyObject_HasAttrString(itself, "preroll")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: preroll");
+		if (!PyObject_HasAttrString(itself, "get_dur")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_dur");
+		if (!PyObject_HasAttrString(itself, "get_cookie")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_cookie");
+		if (!PyObject_HasAttrString(itself, "get_renderer")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_renderer");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_playable = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+playable::~playable()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_playable);
+	py_playable = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void playable::start(double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "start", "(O)", py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::start() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::stop()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "stop", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::stop() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::pause()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "pause", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::pause() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::resume()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "resume", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::resume() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::seek(double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "seek", "(O)", py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::seek() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::wantclicks(bool want)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_want = Py_BuildValue("O&", bool_New, want);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "wantclicks", "(O)", py_want);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::wantclicks() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_want);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable::preroll(double when, double where, double how_much)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_when = Py_BuildValue("d", when);
+	PyObject *py_where = Py_BuildValue("d", where);
+	PyObject *py_how_much = Py_BuildValue("d", how_much);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "preroll", "(OOO)", py_when, py_where, py_how_much);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::preroll() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_when);
+	Py_XDECREF(py_where);
+	Py_XDECREF(py_how_much);
+
+	PyGILState_Release(_GILState);
+}
+
+ambulant::common::duration playable::get_dur()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::duration _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "get_dur", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::get_dur() callback:\n");
+		PyErr_Print();
+	}
+
+	bool _rv_first;
+	double _rv_second;
+	if (py_rv && !PyArg_Parse(py_rv, "(O&d)", bool_Convert, &_rv_first, &_rv_second))
+	{
+		PySys_WriteStderr("Python exception during playable::get_dur() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = ambulant::common::duration(_rv_first, _rv_second);
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::playable::cookie_type playable::get_cookie() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::playable::cookie_type _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "get_cookie", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::get_cookie() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during playable::get_cookie() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::renderer* playable::get_renderer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::renderer* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "get_renderer", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::get_renderer() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", rendererObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during playable::get_renderer() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------ Class playable_notification ------------------- */
+
+playable_notification::playable_notification(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: started");
+		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: stopped");
+		if (!PyObject_HasAttrString(itself, "stalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: stalled");
+		if (!PyObject_HasAttrString(itself, "unstalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: unstalled");
+		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: clicked");
+		if (!PyObject_HasAttrString(itself, "pointed")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: pointed");
+		if (!PyObject_HasAttrString(itself, "transitioned")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: transitioned");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_playable_notification = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+playable_notification::~playable_notification()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_playable_notification);
+	py_playable_notification = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void playable_notification::started(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "started", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::stopped(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "stopped", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::stopped() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::stalled(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "stalled", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::stalled() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::unstalled(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "unstalled", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::unstalled() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::clicked(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "clicked", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::clicked() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::pointed(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "pointed", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::pointed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::transitioned(ambulant::common::playable::cookie_type n, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "transitioned", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::transitioned() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class playable_factory --------------------- */
+
+playable_factory::playable_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_playable")) PyErr_Warn(PyExc_Warning, "playable_factory: missing attribute: new_playable");
+		if (!PyObject_HasAttrString(itself, "new_aux_audio_playable")) PyErr_Warn(PyExc_Warning, "playable_factory: missing attribute: new_aux_audio_playable");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_playable_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+playable_factory::~playable_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_playable_factory);
+	py_playable_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::playable* playable_factory::new_playable(ambulant::common::playable_notification* context, ambulant::common::playable::cookie_type cookie, const ambulant::lib::node* node, ambulant::lib::event_processor* evp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::playable* _rv;
+	PyObject *py_context = Py_BuildValue("O&", playable_notificationObj_New, context);
+	PyObject *py_cookie = Py_BuildValue("l", cookie);
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+	PyObject *py_evp = Py_BuildValue("O&", event_processorObj_New, evp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_factory, "new_playable", "(OOOO)", py_context, py_cookie, py_node, py_evp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_factory::new_playable() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", playableObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during playable_factory::new_playable() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_context);
+	Py_XDECREF(py_cookie);
+	Py_XDECREF(py_node);
+	Py_XDECREF(py_evp);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::playable* playable_factory::new_aux_audio_playable(ambulant::common::playable_notification* context, ambulant::common::playable::cookie_type cookie, const ambulant::lib::node* node, ambulant::lib::event_processor* evp, ambulant::net::audio_datasource* src)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::playable* _rv;
+	PyObject *py_context = Py_BuildValue("O&", playable_notificationObj_New, context);
+	PyObject *py_cookie = Py_BuildValue("l", cookie);
+	PyObject *py_node = Py_BuildValue("O&", nodeObj_New, node);
+	PyObject *py_evp = Py_BuildValue("O&", event_processorObj_New, evp);
+	PyObject *py_src = Py_BuildValue("O&", audio_datasourceObj_New, src);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_factory, "new_aux_audio_playable", "(OOOOO)", py_context, py_cookie, py_node, py_evp, py_src);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_factory::new_aux_audio_playable() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", playableObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during playable_factory::new_aux_audio_playable() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_context);
+	Py_XDECREF(py_cookie);
+	Py_XDECREF(py_node);
+	Py_XDECREF(py_evp);
+	Py_XDECREF(py_src);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ----------------- Class global_playable_factory ------------------ */
+
+global_playable_factory::global_playable_factory(PyObject *itself)
+:	::playable_factory(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "add_factory")) PyErr_Warn(PyExc_Warning, "global_playable_factory: missing attribute: add_factory");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_global_playable_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+global_playable_factory::~global_playable_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_global_playable_factory);
+	py_global_playable_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void global_playable_factory::add_factory(ambulant::common::playable_factory* rf)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rf = Py_BuildValue("O&", playable_factoryObj_New, rf);
+
+	PyObject *py_rv = PyObject_CallMethod(py_global_playable_factory, "add_factory", "(O)", py_rf);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during global_playable_factory::add_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_rf);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class player_feedback ---------------------- */
+
+player_feedback::player_feedback(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "node_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_started");
+		if (!PyObject_HasAttrString(itself, "node_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_stopped");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_player_feedback = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+player_feedback::~player_feedback()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_player_feedback);
+	py_player_feedback = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void player_feedback::node_started(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "node_started", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::node_started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::node_stopped(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "node_stopped", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::node_stopped() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+/* -------------------------- Class player -------------------------- */
+
+player::player(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "initialize")) PyErr_Warn(PyExc_Warning, "player: missing attribute: initialize");
+		if (!PyObject_HasAttrString(itself, "get_timer")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_timer");
+		if (!PyObject_HasAttrString(itself, "get_evp")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_evp");
+		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "player: missing attribute: start");
+		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "player: missing attribute: stop");
+		if (!PyObject_HasAttrString(itself, "pause")) PyErr_Warn(PyExc_Warning, "player: missing attribute: pause");
+		if (!PyObject_HasAttrString(itself, "resume")) PyErr_Warn(PyExc_Warning, "player: missing attribute: resume");
+		if (!PyObject_HasAttrString(itself, "is_playing")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_playing");
+		if (!PyObject_HasAttrString(itself, "is_pausing")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_pausing");
+		if (!PyObject_HasAttrString(itself, "is_done")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_done");
+		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_cursor");
+		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_cursor");
+		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
+		if (!PyObject_HasAttrString(itself, "goto_node")) PyErr_Warn(PyExc_Warning, "player: missing attribute: goto_node");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_player = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+player::~player()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_player);
+	py_player = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+#ifdef USE_SMIL21
+void player::initialize()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "initialize", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::initialize() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+#endif
+
+ambulant::lib::timer* player::get_timer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "get_timer", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::get_timer() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", timerObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::get_timer() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::event_processor* player::get_evp()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::event_processor* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "get_evp", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::get_evp() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", event_processorObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::get_evp() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void player::start()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "start", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::start() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::stop()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "stop", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::stop() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::pause()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "pause", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::pause() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::resume()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "resume", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::resume() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+bool player::is_playing() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "is_playing", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::is_playing() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::is_playing() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool player::is_pausing() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "is_pausing", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::is_pausing() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::is_pausing() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool player::is_done() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "is_done", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::is_done() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::is_done() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+int player::get_cursor() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	int _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "get_cursor", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::get_cursor() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::get_cursor() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void player::set_cursor(int cursor)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_cursor = Py_BuildValue("i", cursor);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "set_cursor", "(O)", py_cursor);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::set_cursor() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_cursor);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::set_feedback(ambulant::common::player_feedback* fb)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_fb = Py_BuildValue("O&", player_feedbackObj_New, fb);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "set_feedback", "(O)", py_fb);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::set_feedback() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fb);
+
+	PyGILState_Release(_GILState);
+}
+
+bool player::goto_node(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "goto_node", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::goto_node() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::goto_node() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ----------------------- Class region_info ------------------------ */
+
+region_info::region_info(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "get_name")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_name");
+		if (!PyObject_HasAttrString(itself, "get_rect")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_rect");
+		if (!PyObject_HasAttrString(itself, "get_fit")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_fit");
+		if (!PyObject_HasAttrString(itself, "get_bgcolor")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgcolor");
+		if (!PyObject_HasAttrString(itself, "get_transparent")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_transparent");
+		if (!PyObject_HasAttrString(itself, "get_zindex")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_zindex");
+		if (!PyObject_HasAttrString(itself, "get_showbackground")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_showbackground");
+		if (!PyObject_HasAttrString(itself, "is_subregion")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: is_subregion");
+		if (!PyObject_HasAttrString(itself, "get_soundlevel")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_soundlevel");
+		if (!PyObject_HasAttrString(itself, "get_soundalign")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_soundalign");
+		if (!PyObject_HasAttrString(itself, "get_tiling")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_tiling");
+		if (!PyObject_HasAttrString(itself, "get_bgimage")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgimage");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_region_info = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+region_info::~region_info()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_region_info);
+	py_region_info = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+std::string region_info::get_name() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_name", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_name() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_name() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::rect region_info::get_rect() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_rect", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::fit_t region_info::get_fit() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::fit_t _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_fit", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_fit() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_fit() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::color_t region_info::get_bgcolor() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::color_t _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_bgcolor", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_bgcolor() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_bgcolor() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool region_info::get_transparent() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_transparent", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_transparent() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_transparent() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::zindex_t region_info::get_zindex() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::zindex_t _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_zindex", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_zindex() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_zindex() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool region_info::get_showbackground() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_showbackground", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_showbackground() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_showbackground() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool region_info::is_subregion() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "is_subregion", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::is_subregion() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::is_subregion() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double region_info::get_soundlevel() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_soundlevel", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_soundlevel() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_soundlevel() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+#ifdef USE_SMIL21
+ambulant::common::sound_alignment region_info::get_soundalign() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::sound_alignment _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_soundalign", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_soundalign() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_soundalign() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+#ifdef USE_SMIL21
+ambulant::common::tiling region_info::get_tiling() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::tiling _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_tiling", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_tiling() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_tiling() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+#ifdef USE_SMIL21
+const char * region_info::get_bgimage() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	const char * _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_bgimage", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_bgimage() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_bgimage() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+/* ------------------ Class animation_destination ------------------- */
+
+animation_destination::animation_destination(PyObject *itself)
+:	::region_info(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "get_region_dim")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_dim");
+		if (!PyObject_HasAttrString(itself, "get_region_color")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_color");
+		if (!PyObject_HasAttrString(itself, "get_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_zindex");
+		if (!PyObject_HasAttrString(itself, "get_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundlevel");
+		if (!PyObject_HasAttrString(itself, "get_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundalign");
+		if (!PyObject_HasAttrString(itself, "set_region_dim")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_dim");
+		if (!PyObject_HasAttrString(itself, "set_region_color")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_color");
+		if (!PyObject_HasAttrString(itself, "set_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_zindex");
+		if (!PyObject_HasAttrString(itself, "set_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundlevel");
+		if (!PyObject_HasAttrString(itself, "set_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundalign");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_animation_destination = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+animation_destination::~animation_destination()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_animation_destination);
+	py_animation_destination = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::region_dim animation_destination::get_region_dim(const std::string& which, bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::region_dim _rv;
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_dim", "(OO)", py_which, py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_dim() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_region_dim_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_dim() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::color_t animation_destination::get_region_color(const std::string& which, bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::color_t _rv;
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_color", "(OO)", py_which, py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_color() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_color() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::common::zindex_t animation_destination::get_region_zindex(bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::zindex_t _rv;
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_zindex", "(O)", py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_zindex() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_zindex() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double animation_destination::get_region_soundlevel(bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_soundlevel", "(O)", py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_soundlevel() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_soundlevel() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+#ifdef USE_SMIL21
+ambulant::common::sound_alignment animation_destination::get_region_soundalign(bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::sound_alignment _rv;
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_soundalign", "(O)", py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_soundalign() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_soundalign() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+#endif
+
+void animation_destination::set_region_dim(const std::string& which, const ambulant::common::region_dim& rd)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
+	PyObject *py_rd = Py_BuildValue("O", ambulant_region_dim_New(rd));
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_dim", "(OO)", py_which, py_rd);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_dim() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
+	Py_XDECREF(py_rd);
+
+	PyGILState_Release(_GILState);
+}
+
+void animation_destination::set_region_color(const std::string& which, ambulant::lib::color_t clr)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
+	PyObject *py_clr = Py_BuildValue("l", clr);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_color", "(OO)", py_which, py_clr);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_color() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
+	Py_XDECREF(py_clr);
+
+	PyGILState_Release(_GILState);
+}
+
+void animation_destination::set_region_zindex(ambulant::common::zindex_t z)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_z = Py_BuildValue("l", z);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_zindex", "(O)", py_z);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_zindex() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_z);
+
+	PyGILState_Release(_GILState);
+}
+
+void animation_destination::set_region_soundlevel(double level)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_level = Py_BuildValue("d", level);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_soundlevel", "(O)", py_level);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_soundlevel() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_level);
+
+	PyGILState_Release(_GILState);
+}
+
+#ifdef USE_SMIL21
+void animation_destination::set_region_soundalign(ambulant::common::sound_alignment sa)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_sa = Py_BuildValue("l", sa);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_soundalign", "(O)", py_sa);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_soundalign() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_sa);
+
+	PyGILState_Release(_GILState);
+}
+#endif
+
+/* ------------------------ Class datasource ------------------------ */
+
+datasource::datasource(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: start");
+		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: stop");
+		if (!PyObject_HasAttrString(itself, "end_of_file")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: end_of_file");
+		if (!PyObject_HasAttrString(itself, "size")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: size");
+		if (!PyObject_HasAttrString(itself, "readdone")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: readdone");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_datasource = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+datasource::~datasource()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_datasource);
+	py_datasource = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void datasource::start(ambulant::lib::event_processor* evp, ambulant::lib::event* callback)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_evp = Py_BuildValue("O&", event_processorObj_New, evp);
+	PyObject *py_callback = Py_BuildValue("O&", eventObj_New, callback);
+
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "start", "(OO)", py_evp, py_callback);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::start() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_evp);
+	Py_XDECREF(py_callback);
+
+	PyGILState_Release(_GILState);
+}
+
+void datasource::stop()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "stop", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::stop() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+bool datasource::end_of_file()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "end_of_file", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::end_of_file() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during datasource::end_of_file() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+int datasource::size() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	int _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "size", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::size() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	{
+		PySys_WriteStderr("Python exception during datasource::size() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void datasource::readdone(int len)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_len = Py_BuildValue("i", len);
+
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "readdone", "(O)", py_len);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::readdone() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_len);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ------------------ Class raw_datasource_factory ------------------ */
+
+raw_datasource_factory::raw_datasource_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_raw_datasource")) PyErr_Warn(PyExc_Warning, "raw_datasource_factory: missing attribute: new_raw_datasource");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_raw_datasource_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+raw_datasource_factory::~raw_datasource_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_raw_datasource_factory);
+	py_raw_datasource_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::net::datasource* raw_datasource_factory::new_raw_datasource(const ambulant::net::url& url)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::datasource* _rv;
+	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
+
+	PyObject *py_rv = PyObject_CallMethod(py_raw_datasource_factory, "new_raw_datasource", "(O)", py_url);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during raw_datasource_factory::new_raw_datasource() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", datasourceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during raw_datasource_factory::new_raw_datasource() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_url);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ----------------- Class audio_datasource_factory ----------------- */
+
+audio_datasource_factory::audio_datasource_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_audio_datasource")) PyErr_Warn(PyExc_Warning, "audio_datasource_factory: missing attribute: new_audio_datasource");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_audio_datasource_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+audio_datasource_factory::~audio_datasource_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_audio_datasource_factory);
+	py_audio_datasource_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::net::audio_datasource* audio_datasource_factory::new_audio_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::audio_datasource* _rv;
+	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
+	PyObject *py_fmt = Py_BuildValue("O", audio_format_choicesObj_New(&fmt));
+	PyObject *py_clip_begin = Py_BuildValue("L", clip_begin);
+	PyObject *py_clip_end = Py_BuildValue("L", clip_end);
+
+	PyObject *py_rv = PyObject_CallMethod(py_audio_datasource_factory, "new_audio_datasource", "(OOOO)", py_url, py_fmt, py_clip_begin, py_clip_end);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during audio_datasource_factory::new_audio_datasource() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during audio_datasource_factory::new_audio_datasource() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_url);
+	Py_XDECREF(py_fmt);
+	Py_XDECREF(py_clip_begin);
+	Py_XDECREF(py_clip_end);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ----------------- Class video_datasource_factory ----------------- */
+
+video_datasource_factory::video_datasource_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_video_datasource")) PyErr_Warn(PyExc_Warning, "video_datasource_factory: missing attribute: new_video_datasource");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_video_datasource_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+video_datasource_factory::~video_datasource_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_video_datasource_factory);
+	py_video_datasource_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::net::video_datasource* video_datasource_factory::new_video_datasource(const ambulant::net::url& url, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::video_datasource* _rv;
+	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
+	PyObject *py_clip_begin = Py_BuildValue("L", clip_begin);
+	PyObject *py_clip_end = Py_BuildValue("L", clip_end);
+
+	PyObject *py_rv = PyObject_CallMethod(py_video_datasource_factory, "new_video_datasource", "(OOO)", py_url, py_clip_begin, py_clip_end);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during video_datasource_factory::new_video_datasource() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", video_datasourceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during video_datasource_factory::new_video_datasource() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_url);
+	Py_XDECREF(py_clip_begin);
+	Py_XDECREF(py_clip_end);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------- Class audio_parser_finder -------------------- */
+
+audio_parser_finder::audio_parser_finder(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_audio_parser")) PyErr_Warn(PyExc_Warning, "audio_parser_finder: missing attribute: new_audio_parser");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_audio_parser_finder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+audio_parser_finder::~audio_parser_finder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_audio_parser_finder);
+	py_audio_parser_finder = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::net::audio_datasource* audio_parser_finder::new_audio_parser(const ambulant::net::url& url, const ambulant::net::audio_format_choices& hint, ambulant::net::audio_datasource* src)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::audio_datasource* _rv;
+	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
+	PyObject *py_hint = Py_BuildValue("O", audio_format_choicesObj_New(&hint));
+	PyObject *py_src = Py_BuildValue("O&", audio_datasourceObj_New, src);
+
+	PyObject *py_rv = PyObject_CallMethod(py_audio_parser_finder, "new_audio_parser", "(OOO)", py_url, py_hint, py_src);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during audio_parser_finder::new_audio_parser() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during audio_parser_finder::new_audio_parser() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_url);
+	Py_XDECREF(py_hint);
+	Py_XDECREF(py_src);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ------------------- Class audio_filter_finder -------------------- */
+
+audio_filter_finder::audio_filter_finder(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_audio_filter")) PyErr_Warn(PyExc_Warning, "audio_filter_finder: missing attribute: new_audio_filter");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_audio_filter_finder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+audio_filter_finder::~audio_filter_finder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_audio_filter_finder);
+	py_audio_filter_finder = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::net::audio_datasource* audio_filter_finder::new_audio_filter(ambulant::net::audio_datasource* src, const ambulant::net::audio_format_choices& fmts)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::net::audio_datasource* _rv;
+	PyObject *py_src = Py_BuildValue("O&", audio_datasourceObj_New, src);
+	PyObject *py_fmts = Py_BuildValue("O", audio_format_choicesObj_New(&fmts));
+
+	PyObject *py_rv = PyObject_CallMethod(py_audio_filter_finder, "new_audio_filter", "(OO)", py_src, py_fmts);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during audio_filter_finder::new_audio_filter() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during audio_filter_finder::new_audio_filter() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_src);
+	Py_XDECREF(py_fmts);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+/* ================ End callbacks module pyambulant ================= */
+
