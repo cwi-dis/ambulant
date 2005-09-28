@@ -55,6 +55,8 @@
 #include "ambulant/lib/logger.h"
 #include <math.h>
 
+#include <vfwmsgs.h>
+
 using namespace ambulant;
 
 using ambulant::lib::win32::win_report_error;
@@ -182,7 +184,12 @@ bool gui::dx::audio_player::open(const std::string& url) {
 	MultiByteToWideChar(CP_ACP,0, url.c_str(), -1, wsz, MAX_PATH);
 	hr = m_graph_builder->RenderFile(wsz, 0);
 	if(FAILED(hr)){
-		win_report_error("IGraphBuilder::RenderFile()", hr);	
+		if (hr == 0x800c000d)  // XXX This value experimentally determined:-)
+			logger::get_logger()->error("%s; Unsupported URL protocol", url.c_str());
+		else if (hr == VFW_E_CANNOT_CONNECT)
+			logger::get_logger()->error("%s: Unsupported video format", url.c_str());
+		else
+			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
 		return false;
 	}
 		

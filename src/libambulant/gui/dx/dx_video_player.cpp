@@ -60,6 +60,8 @@
 
 #include "ambulant/lib/logger.h"
 
+#include <vfwmsgs.h>
+
 // Define this to ignore duration==0 and just continue playing in that case
 // This works around a bug in the Dirac DirectX interface that it always
 // returns 0 for the movie duration.
@@ -225,7 +227,12 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	hr = mmstream->OpenFile(wsz, 0);
 	if(FAILED(hr)) {
 		mmstream->Release();
-		win_report_error("IAMMultiMediaStream::OpenFile()", hr);	
+		if (hr == 0x800c000d)  // XXX This value experimentally determined:-)
+			logger::get_logger()->error("%s; Unsupported URL protocol", url.c_str());
+		else if (hr == VFW_E_CANNOT_CONNECT)
+			logger::get_logger()->error("%s: Unsupported video format", url.c_str());
+		else
+			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
 		return false;
 	}
 	
