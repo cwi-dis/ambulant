@@ -125,6 +125,7 @@ void scheduler::goto_next(time_node *tn) {
 	for(it = tnpath.begin(); it != tnpath.end();it++) {
 		time_node *parent = *it; cit = it;
 		time_node *child = *++cit;
+		assert(cit != tnpath.end());
 		if(parent->is_seq()) activate_seq_child(parent, child);
 		else if(parent->is_par()) activate_par_child(parent, child);
 		else if(parent->is_excl()) activate_excl_child(parent, child);
