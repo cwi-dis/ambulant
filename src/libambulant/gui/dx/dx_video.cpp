@@ -264,14 +264,16 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 
 void gui::dx::dx_video_renderer::update_callback() {
 	// Schedule a redraw callback 
+	m_cs.enter();
 	if(!m_update_event || !m_player) {
+		m_cs.leave();
 		return;
 	}
-	m_cs.enter();
 	m_dest->need_redraw();
+	bool need_callback = m_player->is_playing();
 	m_cs.leave();
 	
-	if(m_player->is_playing()) {
+	if( need_callback ) {
 		schedule_update();
 	} else {
 		m_update_event = 0;
