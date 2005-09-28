@@ -257,7 +257,7 @@ BOOL CAmbulantPlayerApp::OnOpenRecentFile(UINT nID)
 	ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile((*m_pRecentFileList)[nIndex]);
 	if(!mmdoc) m_pRecentFileList->Remove(nIndex);
-	if(mmdoc) mmdoc->StartPlayback();
+//	if(mmdoc) mmdoc->StartPlayback();
 	return TRUE;
 }
 
