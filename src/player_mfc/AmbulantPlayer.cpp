@@ -245,7 +245,6 @@ void CAmbulantPlayerApp::OnFileOpen()
 	  OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, TRUE, NULL))
 		return; // open cancelled
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(newName);
-	if(mmdoc) mmdoc->StartPlayback();
 }
 
 BOOL CAmbulantPlayerApp::OnOpenRecentFile(UINT nID)
