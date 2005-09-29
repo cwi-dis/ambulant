@@ -101,6 +101,7 @@ gui::dx::dx_html_renderer::start(double t) {
  		return;
 	}
 }
+
 void
 gui::dx::dx_html_renderer::set_surface(common::surface *dest) {
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::set_surface(0x%x) dest=0x%x", this, dest);

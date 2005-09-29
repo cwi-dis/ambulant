@@ -59,12 +59,15 @@
 #ifdef	WITH_QT_HTML_WIDGET
 
 #include "ambulant/common/factory.h"
+#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/region.h"
 #include "ambulant/gui/none/none_gui.h"
 
+#include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/net/url.h"
 #include <kapp.h>
 #include <khtml_part.h>
@@ -80,22 +83,27 @@ namespace gui {
 
 namespace qt {
 
-class qt_html_renderer : public qt_renderer<renderer_playable_dsall> {
+class qt_html_renderer : public renderer_playable {
   public:
-	qt_html_renderer(common::playable_notification *context,
-			 common::playable_notification::cookie_type cookie,
-			 const lib::node *node,
-			 lib::event_processor *const evp,
-			 common::factories *factory);
+	qt_html_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor* evp,
+		common::factories *factory);
 	~qt_html_renderer();
-
- 	void redraw_body(const lib::rect &r,
-			 common::gui_window* w);
-
+	void start(double t);
+	void stop();
+	void seek(double t) {}
+	void user_event(const lib::point& pt, int what);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
+	void set_surface(common::surface *dest);
+	void set_intransition(const lib::transition_info *info) {};
+	void start_outtransition(const lib::transition_info *info) {};
   private:
- 	lib::critical_section m_lock;
-	net::url*  m_url;
-	KHTMLPart* m_browser;
+	lib::critical_section	m_lock;
+	net::url		m_url;
+	KHTMLPart* 		m_html_browser;
 };
 
 } // namespace qt

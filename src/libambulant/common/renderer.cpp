@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * image = new QImage((uchar*) data, width, height, 32, NULL, 0, QImage::IgnoreEndian);
+
  * In addition, as a special exception, if you link Ambulant Player with
  * other files to produce an executable, this library does not by itself
  * cause the resulting executable to be covered by the GNU General Public

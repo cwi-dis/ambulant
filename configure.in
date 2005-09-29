@@ -418,7 +418,7 @@ if test x$qtthmlwidget = xtrue; then
 	if test ! -f /usr/include/kde/khtml_part.h;
 	then AC_MSG_ERROR(--with-qt-html-widget without KDE include directory);
 	fi
-	CXXFLAGS="$CXXFLAGS -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
+	CXXFLAGS="$CXXFLAGS -DWITH_HTML_WIDGET -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
  	LIBS="$LIBS -lkdecore -lkhtml"
 fi
 AC_MSG_RESULT($qtthmlwidget)
