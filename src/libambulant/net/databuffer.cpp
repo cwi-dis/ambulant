@@ -191,6 +191,7 @@ databuffer::get_write_ptr(int sz)
 {
 	m_lock.enter();
 	assert(!m_writing);
+	assert(sz > 0);
 	m_writing = true;
 	
 	char *rv = NULL;
