@@ -72,6 +72,7 @@ qt_html_renderer::qt_html_renderer(
 		lib::event_processor *const evp,
 		common::factories *factory)
   :	renderer_playable(context, cookie, node, evp)
+  ,	m_widget(NULL) 
   ,	m_html_browser(NULL) 
 {
     
@@ -181,7 +182,11 @@ gui::qt::qt_html_renderer::redraw(const lib::rect& r, common::gui_window *window
 		if (parent == NULL) parent = (common::surface_impl*)m_dest;
 		m_html_browser = (KHTMLPart*) parent->get_renderer_data(parent);
 		if (m_html_browser == NULL) {
-			m_html_browser = new KHTMLPart((QWidget*)qaw);
+			m_widget = new QWidget(qaw);
+			m_widget->setGeometry(p.x+r.left(), p.y+r.top(),
+					      r.width(), r.height());
+			m_widget->show();
+			m_html_browser = new KHTMLPart(m_widget);
 			parent->set_renderer_data(parent, m_html_browser);
 		}
 	}

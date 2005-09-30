@@ -69,6 +69,7 @@
 
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/net/url.h"
+#include <qwidget.h>
 #include <kapp.h>
 #include <khtml_part.h>
 #include <khtmlview.h>
@@ -103,6 +104,7 @@ class qt_html_renderer : public renderer_playable {
   private:
 	lib::critical_section	m_lock;
 	net::url		m_url;
+	QWidget*		m_widget;
 	KHTMLPart* 		m_html_browser;
 };
 
