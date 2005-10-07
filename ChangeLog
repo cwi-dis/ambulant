@@ -1,16 +1,1112 @@
-2005-08-04  Christian Schaller  <uraeus@gnome.org>
-	
-	* .cvsignore: adding a few files
-	* Makefile.am: add pkgconfig file installation
-	* configure.in: Huge rewrite of tests and enable/disable code
-			Qt, SDL, FFmpeg, Expat, Xerces almost fully redone
-	* include/ambulant/net/Makefile.am: Put header files inside a USE_FFMPEG 					    conditional
-	* src/libambulant/Makefile.am: Move demux_datasource.cpp to under 
-				       USE_FFMPEG
-	* Adding libambulant.pc.in, autogen.sh and ambulant.spec.in files
-	* po/POTFILES.in: Remove ffmpeg_rawdatasource.cpp as it doesn't exist
-	
-	I donate copyright on all these changes to Centrum voor Wiskunde en Informatica
+2005-10-07 11:54  jackjansen
+
+	* Merging exp-jack-cocoa-html branch: general cleanup of HTML
+	  rendering.
+
+2005-09-30 14:23  keesblom
+
+	* Extended qt_html_renderer such that it can render simultaneously
+	  multiple html pages in different regions.
+
+2005-09-29 22:32  jackjansen
+
+	* This outdated file was still around. Removed.
+
+2005-09-29 15:35  keesblom
+
+	* Re-wrote the HTML widget for Linux to look like the HTML widget
+	  for Windows, re-using the browser object by remembering it in
+	  "surface_impl" data struct.
+
+2005-09-29 11:38  jackjansen
+
+	* - Don't try to push 0 bytes into a databuffer - Added asserts to
+	  guard against this
+
+	  Fixes #1122383.
+
+2005-09-28 16:00  jackjansen
+
+	* Fixed a locking problem that could cause  a crash when stopping
+	  the presentation during video playback.
+
+2005-09-28 15:58  jackjansen
+
+	* Fixed very old bug: after "Open Recent" the play command was
+	  issued twice.  For some reason this was never a problem (probably
+	  because the first open finished before the second one was
+	  scheduled, which then was a no-op) but it suddenly is.
+
+2005-09-28 15:56  jackjansen
+
+	* Better error messages for audio/video problems (unsupported
+	  format, protocol). Fixes #1205996.
+
+2005-09-28 13:53  jackjansen
+
+	* Fixed very old bug: after "Open File" the play command was issued
+	  twice.  For some reason this was never a problem (probably
+	  because the first open finished before the second one was
+	  scheduled, which then was a no-op) but it suddenly is.
+
+2005-09-28 13:52  jackjansen
+
+	* Added assert.
+
+2005-09-27 15:09  jackjansen
+
+	* Python interface is in a state where it is ready for general
+	  testing.  Added generated module to the CVS repository, and
+	  include building of the ambulant module to configure/automake
+	  (depending on --with-python configure option).
+
+2005-09-27 15:02  jackjansen
+
+	* Modified autogen.sh so that it automatically includes our m4
+	  directory for aclocal.
+
+2005-09-27 11:53  koelimoe
+
+	* small mod. the status variable wasn't set back to zero after
+	  checking for required m4 macro's
+
+2005-09-26 17:16  jackjansen
+
+	* - Added a type HeapTupleType that allocates the struct on the
+	  heap. This does   mean that the memory is leaked, unless the API
+	  frees it.  - Use HeapTupleType to implement factories: the
+	  pointer to the struct is   long-lived. This is a cop-out (the
+	  memory-leak note above holds), we should   probably look at the
+	  API again.
+
+2005-09-26 16:57  jackjansen
+
+	* Removed debug.
+
+2005-09-26 16:11  jackjansen
+
+	* - Always require exact match in xxx_Check().	- When constructing
+	  a C++ wrapper around a Python object check that   all methods
+	  exist (attribute name check only) and issue warnings	 for
+	  missing methods.
+
+2005-09-26 16:02  koelimoe
+
+	* fixed: ffmpeg_demux bug for ffmpeg-cvs. audio only made
+	  ffmpeg-demux cradsh
+
+2005-09-26 15:39  koelimoe
+
+	* little fix needed to compile ambulantplayer after my last changes
+
+2005-09-26 14:10  koelimoe
+
+	* corrected the calculation of timestamps for ffmpeg-cvs
+
+2005-09-26 13:42  jackjansen
+
+	* A few quick hacks to make debugging easier.
+
+2005-09-26 11:32  jackjansen
+
+	* Fixes to make debug builds work.
+
+2005-09-23 17:19  jackjansen
+
+	* Added a define that builds a none_player.
+
+2005-09-23 17:15  jackjansen
+
+	* Parent of region can be NULL, when a node is rendered to the
+	  default region.
+
+2005-09-23 17:04  jackjansen
+
+	* Removed erronuous assert.
+
+2005-09-23 17:00  jackjansen
+
+	* Things go wrong when defines like USE_SMIL21 are different during
+	  library building and application building. Temporarily made the
+	  flags the same, but this will need a better solution later.
+
+2005-09-23 16:12  koelimoe
+
+	* removed an assumtion on the frameduration
+
+2005-09-23 15:37  koelimoe
+
+	* some minor fixes and comments added
+
+2005-09-23 13:47  koelimoe
+
+	* The pts is calculated correctly now in ffmpeg_demux::run
+
+2005-09-23 13:32  koelimoe
+
+	* i1) fixed my previous checkin 2) fixed the timing for ffmpeg-cvs
+	  (build 4629)
+
+2005-09-23 00:33  jackjansen
+
+	* - updated posix_datasource and stdio_datasource to the modern
+	  semantics   of the API.  - added dump method to event_processor.
+
+2005-09-22 11:35  jackjansen
+
+	* Use PyArg_ParseTuple, not PyArg_Parse, to parse tuples.
+
+2005-09-21 23:57  jackjansen
+
+	* Wrap window_factory (to help find nasty SystemError reason).
+
+2005-09-21 23:57  jackjansen
+
+	* Indentation error caused constructor methods to be skipped unless
+	  debug was defined:-)
+
+2005-09-21 23:24  jackjansen
+
+	* Added am_get_codec_var calls so it compiles with cvs ffmpeg.
+
+2005-09-21 16:31  koelimoe
+
+	* small fix for a small change made in datasource.h
+
+2005-09-21 15:45  koelimoe
+
+	* adaptations for ffmpeg-cvs
+
+2005-09-20 23:52  jackjansen
+
+	* Detail.
+
+2005-09-20 23:50  jackjansen
+
+	* After an inline method all subsequent methods were inadvertantly
+	  considered private. Fixed.
+
+2005-09-20 23:14  jackjansen
+
+	* Changed the interface for read_data_from_url: in stead of
+	  returning the size and eror indication combined we return a bool
+	  error condition and return the size through a size_t *.
+
+2005-09-20 23:12  jackjansen
+
+	* We double-wrapped C++ objects passed to Python and then back to
+	  C++. Fixed.
+
+2005-09-20 17:14  jackjansen
+
+	* Release the Python GIL while in the ambulant engine.
+
+2005-09-20 16:21  jackjansen
+
+	* Made the datasource_factory getter functions real functions in
+	  stead of inlines.
+
+2005-09-20 16:20  jackjansen
+
+	* Pathnames in URLs were not always returned correctly for local
+	  files. Fixed this, but this could break workarounds that were in
+	  place for the previous bug.
+
+2005-09-20 16:12  jackjansen
+
+	* Made a bit more resilient against errors.
+
+2005-09-20 11:04  keesblom
+
+	* Added a fix for recovery of a DERR_SURFACELOST error, that often
+	  occurs at wakeup from sleep/hibernate or screensaver. Any such
+	  recovery is logged.
+
+2005-09-19 13:19  jackjansen
+
+	* Added a const_cast (and put the const back in).
+
+2005-09-19 13:06  jackjansen
+
+	* Added pkg_config macros.
+
+2005-09-19 10:54  jackjansen
+
+	* Removed dead wood.
+
+2005-09-17 20:18  koelimoe
+
+	* fix to solve a fedora core 4 (gcc 4.0 related) compile problem
+
+2005-09-16 17:57  jackjansen
+
+	* Added get_posix_datasource_factory() and
+	  get_stdio_datasource_factory() so we don't have to call the
+	  constructors directly.
+
+2005-09-16 17:43  keesblom
+
+	* Added some experimental Restore() calls as suggested by Jack to
+	  avoid DERR_SURFACE. Tested with Sleep. It seems that checking
+	  using IsLost() before the Blt() often doesn't help, but Restore()
+	  when the error is detected is very effective.
+
+2005-09-16 16:24  jackjansen
+
+	* Started on a dummy app that uses the Python interface.
+
+2005-09-16 14:50  keesblom
+
+	* Implemented new datatypes renderer_data and renderer_id
+
+2005-09-16 14:35  koelimoe
+
+	* leftovers :-)
+
+2005-09-16 13:45  koelimoe
+
+	* small fix to make it compile on linux again
+
+2005-09-16 12:24  jackjansen
+
+	* Updated for building with ffmpeg-cvs.
+
+2005-09-16 11:33  koelimoe
+
+	* fix for the ffmpeg CVS version & added a comment to databuffer
+
+2005-09-16 11:29  jackjansen
+
+	* Added "const" to a couple of interfaces that are const.
+
+2005-09-16 11:28  jackjansen
+
+	* Test not only for the qt frontend, but for any GUI frontend.
+
+2005-09-16 11:17  jackjansen
+
+	* Updated for current state of the interfaces.
+
+2005-09-15 22:43  jackjansen
+
+	* Removed more turds.
+
+2005-09-15 22:18  jackjansen
+
+	* - Trigger ffmpeg conditional code on the value of
+	  LIBAVFORMAT_BUILD (and   LIBAVCODEC_BUILD), which seem to be
+	  updated rather faithfully by the ffmpeg   developers when they
+	  change something incompatibly. Only did the	ifdefs for the new
+	  cvs-ffmpeg code so far.  - Don't use the am_get_codec_var() macro
+	  half-way inside an expression,   moved it to the outermost level.
+
+2005-09-15 22:15  jackjansen
+
+	* Fixed instructions.
+
+2005-09-15 22:15  jackjansen
+
+	* Removed turds.
+
+2005-09-15 17:23  keesblom
+
+	* Added redraw function to html_browser
+
+2005-09-15 16:56  koelimoe
+
+	* ao a fix for kees, got rid of the round in parselets so it
+	  compiles on windows
+
+2005-09-15 16:48  koelimoe
+
+	* adaptions made to deal with ffmpeg CVS
+
+2005-09-15 16:20  koelimoe
+
+	* last fix to make ambulant + ffmpeg CVS compile in the autogen.sh
+	  env.
+
+2005-09-15 15:23  jackjansen
+
+	* Typo.
+
+2005-09-15 15:01  jackjansen
+
+	* Ffmpeg libraries were added to the wrong define.
+
+2005-09-15 14:40  jackjansen
+
+	* Merging exp-jack-newconfigure (with some mods): Christian
+	  Schaller donated code that uses autogen.sh to create configure
+	  and friends. In addition, configure now uses pkg_config for a
+	  couple of packages, and Ambulant also creates the .pc files to
+	  allow other packages to use it through pkg-config.  Attempted to
+	  keep support for post-0.4.9 ffmpeg working too (but untested).
+
+2005-09-14 10:04  koelimoe
+
+	* Preparing the configure/makefile stuff for ffmpeg from CVS
+
+2005-09-14 10:03  koelimoe
+
+	* mproved ntp parser
+
+2005-09-13 11:43  koelimoe
+
+	* fixes for the mediaclipping parsers
+
+2005-09-12 14:08  jackjansen
+
+	* Details.
+
+2005-09-12 11:17  koelimoe
+
+	* added a missing variable declaration, to ffmpeg video decoder
+
+2005-09-09 16:39  koelimoe
+
+	* created mediaclipping parsers
+
+2005-09-09 11:03  jackjansen
+
+	* - Be more sensible about when restarting input in the video
+	  decoder. This   solves the "no data, no eof?" problem and brings
+	  the CPU usage down to   a more reasonable level.  - Effectively
+	  got rid of MIN_VIDEO_FRAMES by setting it to zero.
+
+2005-09-09 11:00  jackjansen
+
+	* Added a note about removing doxygen output before building a
+	  distribution.
+
+2005-09-09 10:53  jackjansen
+
+	* Updated POTFILE.in to reflect new and moved files.
+
+2005-09-09 00:08  jackjansen
+
+	* Added statistics to video renderer, printed at end of video:
+	  frames displayed, early, late, dup, NULL.
+
+2005-09-08 16:45  jackjansen
+
+	* - start_frame() expects a timestamp relative to the
+	  event_processor   timer, but we were giving it a time relative to
+	  our movie-epoch.    Temporarily fixed by converting in the video
+	  renderer, but a better solution    would be to move the video
+	  clock to the video datasource (in stead    of having it in the
+	  renderer)  - the video renderer would re-display a frame that is
+	  already on-screen.	fixed.
+
+2005-09-08 15:16  keesblom
+
+	* Made the html_widget bound to the surface_impl (instead of a
+	  static pointer).  No cleanup when the surface_impl vanishes, no
+	  multiple widgets.
+
+2005-09-08 14:47  jackjansen
+
+	* New_aux_audio_playable() is no longer optional.
+
+2005-09-08 13:45  koelimoe
+
+	* removed a stupid comment
+
+2005-09-07 23:53  jackjansen
+
+	* - Timestamp computations were still incorrect: we also corrected
+	  values for   frames which had a timestamp.  - Frame dropping
+	  wasn't complete either: if a frame later than the current   frame
+	  has already made it to the consumer (and m_old_frame) we should
+	  drop the frame in data_avail.  - Added a MIN_VIDEO_FRAME to cater
+	  for a very fast consumer, but I'm not   sure it actually makes a
+	  difference.
+
+2005-09-06 12:17  keesblom
+
+	* HTML browser per region-step 1: adding data fields in
+	  surface_impl
+
+2005-09-05 17:49  jackjansen
+
+	* - Clarified the semantics that thread->start() is idempotent, and
+	  implemented	and used those semantics. This will probably fix
+	  the valgrind problems   we had with running out of threads
+	  (because we could inadvertantly create   tens of thousands of
+	  them).  - Cleaned up a couple of memory leaks in the ffmpeg code.
+	  Tested only with   ffmpeg 0.4.8 and without live.  - Played with
+	  assert()s.
+
+2005-09-05 17:29  jackjansen
+
+	* Merging ie_html_widget branch: we now have a (somewhat) working
+	  HTML widget on windows.
+
+2005-09-05 15:49  jackjansen
+
+	* get_aux_audio_playable() is no longer optional.
+
+2005-09-05 14:29  jackjansen
+
+	* - Got rid of the default implementation of
+	  get_aux_audio_playable,   making the class pure virtual again.  -
+	  Added a comment to the ffmpeg sources that globallly enabling
+	  AM_DBG output   is a bad idea.
+
+2005-09-02 14:33  koelimoe
+
+	* smtpe parselet
+
+2005-09-02 13:24  koelimoe
+
+	* creating special parsers for clipBegin clipEnd
+
+2005-08-31 10:54  koelimoe
+
+	* clip_begin clip_end is parsed using parselets now
+
+2005-08-05 14:14  jackjansen
+
+	* Finally found (and fixed) the Linux/Mac audio problems (hiccups
+	  during playback): the logic in the datasources was incorrect.
+	  Now, the datasource start() method will restart input on it's
+	  datasource if it has buffer space available.
+
+2005-08-04 17:04  jackjansen
+
+	* Added assertions, fixed some debug output.
+
+2005-08-04 17:02  jackjansen
+
+	* - Stop() would sometimes keep a lock. Fixed.	- Stop() could be
+	  called with the lock held. Fixed.
+
+2005-08-04 17:01  jackjansen
+
+	*
+	  Diudn't get removed during the merge.
+
+2005-08-03 12:59  jackjansen
+
+	* Missed 2 singletons.
+
+2005-08-03 12:43  jackjansen
+
+	* The factories are destroyed when a document is closed, so
+	  implementing them as singletons was not a good idea.
+
+2005-08-03 12:42  jackjansen
+
+	* Somehow some of the new files were not in all targets. Fixed.
+
+2005-08-02 23:34  jackjansen
+
+	* Started filling the credits file.
+
+2005-08-02 17:03  jackjansen
+
+	* 64bit fix.
+
+2005-08-02 15:59  jackjansen
+
+	* Gcc 4.0 compatibility fix.
+
+2005-08-02 15:21  jackjansen
+
+	* Finally ran boost configure, and gcc 4.0 seems indentical to 3.4.
+
+2005-08-02 12:44  jackjansen
+
+	* (Finally) added version number to the installer, so we don't have
+	  to manually rename it. Also documented this.
+
+2005-08-02 12:42  jackjansen
+
+	* Somehow the Dirac fix stopped working today. More aggressive fix:
+	  completely ignore duration if it is zero.
+
+2005-08-02 12:42  jackjansen
+
+	* Details.
+
+2005-08-01 17:15  jackjansen
+
+	* Split ffmpeg and demux code and headers in a couple of distinct
+	  files: - ffmpeg_factory.h has factory functions -
+	  demux_datasource.h has non-ffmpeg-dependent demultiplexing
+	  datasources - ffmpeg_audio.h has ffmpeg audio support -
+	  ffmpeb_video has ffmpeg video support - ffmpeg_common has the
+	  common code (demux, init, etc)
+
+2005-08-01 11:28  jackjansen
+
+	* More cleanup
+
+2005-07-28 16:23  jackjansen
+
+	* Dirac now works on the Mac too.
+
+2005-07-28 15:11  jackjansen
+
+	* Ignore avcodec_decode_video return value for ffmpeg 0.4.9. This
+	  makes dirac work on Linux.
+
+2005-07-28 14:25  jackjansen
+
+	* Dirac support.
+
+2005-07-28 14:15  jackjansen
+
+	* Merging exp-jack-diracvideo: - factored clipBegin/clipEnd support
+	  code out - implemented clipBegin/clipEnd for QuickTime - fixed
+	  ffmpeg timestamps/clipBegin/clipEnd - cleaned up bits of ffmpeg
+
+2005-07-28 13:46  jackjansen
+
+	* - Factored out clipBegin/clipEnd parsing code and put it into
+	  renderer_playable - Implemented clipBegin/clipEnd support for
+	  QuickTime video renderer.
+
+2005-07-28 00:06  jackjansen
+
+	* Fixed lots of issues with ffmpeg, including clipBegin/clipEnd,
+	  garbage collection and more.
+
+	  Unfortunately Dirac still doesn't play back. And mp4 support is
+	  broken in ffmpeg 0.4.9:-(
+
+2005-07-26 14:36  jackjansen
+
+	* - Fixed ffmpeg video playback on MacOS. Note that the fix may be
+	  10.4-only, I'm not sure.  - Added a preference so selection of
+	  quicktime/ffmpeg video playback is   now a runtime option (as
+	  opposed to compile-time).
+
+2005-07-25 16:26  jackjansen
+
+	* Added support for a build with ffmpeg-0.4.9 and dirac.
+	  Unfortunately it doesn't play dirac video yet.
+
+	  Squashed a couple more warnings.
+
+2005-07-25 14:56  jackjansen
+
+	* - The updating of various fields (width, height, samplerate, etc)
+	  in   m_fmt of the video and audio decoders was a mess.
+	  Rationalized.  - squashed various warnings.
+
+	  These have made rtsp support work somewhat on MacOSX.
+
+2005-07-25 13:45  jackjansen
+
+	* - Enabled rtsp support in xcode-based build on the mac.  - Got
+	  xerces support in xcode-based build working.
+
+2005-07-25 01:24  jackjansen
+
+	* For audio also implemented early testing that the format can be
+	  decoded.  Only slightly tested.
+
+2005-07-25 00:56  jackjansen
+
+	* Before creating a video datasource check also that the codec is
+	  supported, in stead of only checking that the file format is.
+	  This gives better error messages, and forestalls a crash.
+
+2005-07-24 23:44  jackjansen
+
+	* Removed debug.
+
+2005-07-24 23:43  jackjansen
+
+	* get_dur(), or actually the underlying ffmpeg_demux::duration(),
+	  didn't cater for clipBegin and clipEnd. Fixed.
+
+2005-07-24 23:13  jackjansen
+
+	* m_goto_node wasn't initialized leading to random crashes.
+
+2005-07-22 16:06  jackjansen
+
+	* Detail
+
+2005-07-22 14:01  jackjansen
+
+	* Addedan extra indictation that this is a development installer
+
+2005-07-22 14:00  jackjansen
+
+	* A few leftovers from the node changes.
+
+2005-07-22 13:13  jackjansen
+
+	* A few leftovers from class name changes.
+
+2005-07-21 23:24  jackjansen
+
+	* merging exp-jack-classnames, which renames a fair number of
+	  classes: - The "active_" and "passive_" prefixes are gone (except
+	  in the MMS   scheduler where they actually still mean something).
+	  - various incorrect uses of "abstract_" are gone - if something
+	  has a virtual API and an implementation the unadorned   name is
+	  used for the api and the implementation has "_impl" appended.
+
+2005-07-19 17:13  jackjansen
+
+	* Squashed another warning.
+
+2005-07-19 15:52  jackjansen
+
+	* Details.
+
+2005-07-19 15:40  jackjansen
+
+	* Squashed a few more warnings seen on Windows
+
+2005-07-19 15:09  jackjansen
+
+	* Squashed all compiler warnings as detected by XCode.
+
+2005-07-19 15:07  jackjansen
+
+	* - Added another note on machine-dependent defines - regenerated
+	  html
+
+2005-07-19 00:13  jackjansen
+
+	* Added notes on the new (1.5 onwards) branch/tag naming scheme and
+	  a couple more guidelines on doing distributions.
+
+2005-07-18 23:44  jackjansen
+
+	* Merged 1.4 branch up to 1.4.5. Set a tag
+	  release-ambulant-145-merge on the branch.
+
+2005-07-18 16:43  keesblom
+
+	* Added more locks in a (vain) attempt to avoid segmentation
+	  violations
+
+2005-07-14 16:12  keesblom
+
+	* Turned off #define AM_DBG
+
+2005-07-13 14:01  koelimoe
+
+	* fixed video render stuff that i broke
+
+2005-07-13 11:45  koelimoe
+
+	* fixed video sound
+
+2005-07-13 11:35  koelimoe
+
+	* small fixes to rtsp code to make it compile again, after jacks
+	  branch  exp_jack_classnames got merged with the trunk.
+
+2005-07-11 11:36  jackjansen
+
+	* Dead wood removal.
+
+2005-07-11 11:25  jackjansen
+
+	* Added region_dim
+
+2005-07-11 00:02  jackjansen
+
+	* Fixed an error message and removed dead wood.
+
+2005-07-11 00:02  jackjansen
+
+	* Removed one line too many
+
+2005-07-10 23:48  jackjansen
+
+	* Got rid of some dead wood.
+
+2005-07-10 23:42  jackjansen
+
+	* Animation_destination done.
+
+2005-07-08 17:29  jackjansen
+
+	* Various improvements in the API (triggered by the Python bridge).
+
+2005-07-08 17:28  jackjansen
+
+	* Added support for audio_format_choices.
+
+2005-07-08 15:56  koelimoe
+
+	* added m_lock
+
+2005-07-08 13:53  jackjansen
+
+	* Get rid of all ther std::pair<bool, double>, replaced by
+	  common::duration, defined in playable.h. For now, I'm not sure
+	  where the right location is.
+
+2005-07-08 12:54  koelimoe
+
+	* added m_locks that i forgot
+
+2005-07-08 11:54  jackjansen
+
+	* - Fixed a few issues with std::pair support - Added
+	  transition_info
+
+2005-07-07 23:59  jackjansen
+
+	* Started on support for std::pair.
+
+2005-07-07 16:13  koelimoe
+
+	* added mimetype support to the audio/video_format.  fixed missing
+	  samplerate on wav files.
+
+2005-07-06 18:45  jackjansen
+
+	* Refined the type RE to catch even more methods.  Better error
+	  handling for callbacks.
+
+2005-07-06 14:42  keesblom
+
+	* Now the html widget is contained within the region associated
+	  with the tag.
+
+2005-07-06 14:19  jackjansen
+
+	* Refactored test to use a suite.
+
+2005-07-06 12:06  keesblom
+
+	* Made configure --with-qt-html-widget=yes work again
+
+2005-07-06 11:34  keesblom
+
+	* Added qt_html_renderer (which momentarily doesn't work).  Changed
+	  configure.in, s.t. --with-qt-html-widget=false by default.
+
+2005-07-06 00:07  jackjansen
+
+	* - Added a call to PyEval_InitThreads in the module init function
+	  - Acquire the GIL also in the C++ wrapper constructor.
+
+	  These fix the crash in the callback, things seem to be starting
+	  to work!
+
+2005-07-05 23:00  jackjansen
+
+	* Got the callback mechanism working, somewhat: after 6 callbacks
+	  Python crashes.
+
+2005-07-04 17:27  jackjansen
+
+	* Global_playable_factory has changed.
+
+2005-07-04 17:24  jackjansen
+
+	* Added a few more dummy methods.
+
+2005-07-04 17:17  jackjansen
+
+	* We need to match type of objects to be passed to C++ exactly,
+	  otherwise we will not get any extended behaviour added in
+	  (Python) subclasses of the C++ class.
+
+	  Therefore, started on creation of C++->Python wrapper objects on
+	  demand, i.e. when a Python object is passed to C++.
+
+	  This revealed a couple of problems with not all vritual methods
+	  of the (C++) baseclass being suitably overridden, due to (a)
+	  "const" parameter problems and (b) methods not being
+	  representable in Python.
+
+	  Solved first case by getting "const" right. Started on solving
+	  the second by allowing the insterion of dummy methods into the
+	  wrapped class definition.
+
+2005-07-04 16:13  keesblom
+
+	* Merget the new qt_html_widget code into the trunk.
+
+2005-07-04 14:21  jackjansen
+
+	* - Refined REs to allow type/rest of declaration to be on separate
+	  lines.  - Added more testing.
+
+2005-07-04 00:10  jackjansen
+
+	* Turned global_playable_factory into an abstract class with
+	  corresponding implementation global_playable_factory_impl and a
+	  factory function get_global_playable_factory.
+
+	  Also a few other minor interface changes to accomodate the Python
+	  bridge.
+
+2005-07-04 00:06  jackjansen
+
+	* - Added support for exporting non-default constructors to Python.
+	  A   similar idea may be useable to export methods that only
+	  differ in signature	(with the same name) to Python using
+	  multimethods, I hope! - Added none_window_factory to the exported
+	  classes.  - The test script created the first document, yeah!
+
+2005-07-01 23:02  jackjansen
+
+	* Hit the first snag: constructors aren't supported.
+
+2005-07-01 22:26  jackjansen
+
+	* - Use getargsPreCheck to only declare std::string handler helper
+	  variables   when needed.  - Added serious hack that allows
+	  returning references from C++->Python   bridge methods: we
+	  allocate variables for the references in the class   declaration.
+	  It is ugly code that generates it, and it creates warnings   for
+	  const methods, but it works.	- Started on a test suite based on
+	  unittest. Initially I'll concentrate	 on testing the bridge,
+	  later we may be able to use this to test all	 of ambulant.
+
+2005-07-01 22:06  jackjansen
+
+	* Got rid of "pyapi" again.
+
+2005-06-30 17:01  jackjansen
+
+	* - Combine declaration and assignment of return value temporary,
+	  thereby allowing const return values.  - Handle std::string and
+	  friends inline.  - Started on code to handle structs that can be
+	  passed as tuples on the Python side.
+
+2005-06-30 16:47  keesblom
+
+	* Added a simple .smil test for html widget
+
+2005-06-30 00:12  jackjansen
+
+	* - Found a way to get rid of ugly "pyapi" keyword: by using
+	  different   patterns depending on being inside a class
+	  declaration or not.  - This necessitated being aware of
+	  visibility of methods (public/private/   protected) and
+	  generating interfaces only for public methods.
+
+2005-06-29 17:17  jackjansen
+
+	* First test of the pyapi "keyword", which signals that a method
+	  should be exported to Python.
+
+2005-06-29 17:16  jackjansen
+
+	* Sigh. The only way I can think of finding the non-virtual methods
+	  that we want to export to Python is by adding a "keyword". I've
+	  picked "pyapi".
+
+2005-06-29 16:48  jackjansen
+
+	* - better scope handling in the parser - got read_data_from_url()
+	  wrapped.
+
+2005-06-29 16:18  jackjansen
+
+	* Skip non-virtual methods in the C++ to Python bridge, and skip
+	  objects if they have no virtual methods at all. Also, in the
+	  Python->C++ bridge,  cater for the C++ to Python object not being
+	  generated.
+
+2005-06-29 14:23  jackjansen
+
+	* Another milestone: some of the calls actually work
+	  (get_version(), creating timer objects and getting the time from
+	  them).
+
+2005-06-29 14:18  jackjansen
+
+	* More changes wrt. changing interfaces to be more abstract.
+
+2005-06-29 13:59  jackjansen
+
+	* - Use rect in preference to basic_rect<int>.	- Use
+	  abstract_timer in stead of timer whenever possible.
+
+2005-06-29 12:33  jackjansen
+
+	* Use abstract_timer in stead of timer in event_processor API.
+
+2005-06-29 00:09  jackjansen
+
+	* Added AMBULANTAPI to various external definitions.
+
+2005-06-29 00:06  jackjansen
+
+	* Various methods were skipped. Fixed, but now it doesn't compile
+	  anymore due to duplicate names.
+
+2005-06-28 17:38  keesblom
+
+	* KHTMLtest is a minimal web browser, it doesn't even have a Back
+	  button.
+
+2005-06-28 17:21  jackjansen
+
+	* Another milestone: everything compiles, links and loads into
+	  Python.
+
+2005-06-24 15:15  koelimoe
+
+	* improvements to the clip_end clip_begin code.
+
+2005-06-24 01:20  jackjansen
+
+	* Cookies shouldn't be constant.
+
+2005-06-24 00:38  jackjansen
+
+	* Return cookies by value, not by reference. Simplifies Python
+	  interface and does no harm.
+
+2005-06-24 00:29  jackjansen
+
+	* - system turned out to be a bad name for a class, it's a
+	  namespace in the   standard C++ library, it seems. Renamed to
+	  system_embedder.
+
+2005-06-24 00:28  jackjansen
+
+	* - The C++ classes encapsulating Python objects now declare the
+	  corresponding   xxx_New() functions to be friends, and those
+	  functions thereby forestall	double-wrapping of Python objects
+	  passed through C++.  - system turned out to be a bad name for a
+	  class, it's a namespace in the   standard C++ library, it seems.
+	  Renamed to system_embedder.
+
+2005-06-23 09:34  koelimoe
+
+	* improvements to the clip_begin and clip_end infrastucture.  the
+	  video_renderer takes care of skipping video if the datasource is
+	  unable to do so. For audio the decoder takes care of this, later
+	  the audio renderers wil have to do skipping of data.
+
+2005-06-22 22:38  jackjansen
+
+	* Adapted for changes in bgen wrt. type support and a few other
+	  tweaks.
+
+2005-06-22 21:46  jackjansen
+
+	* Reorganized a bit.
+
+2005-06-22 00:20  jackjansen
+
+	* It is generating some code. Far from correct, though.
+
+2005-06-21 23:26  jackjansen
+
+	* Split callback module in a .cpp and .h file.
+
+2005-06-21 22:55  jackjansen
+
+	* A few more steps.
+
+2005-06-17 14:59  marisademeglio
+
+	* Added debug info gathering option to project settings
+
+2005-06-17 14:18  marisademeglio
+
+	* Linked to MFC Multithreaded Debug DLL
+
+2005-06-17 12:47  jackjansen
+
+	* Added targets for DebugShlib.
+
+2005-06-17 12:46  jackjansen
+
+	* Fixed bug in unicode-ifying.
+
+2005-06-16 23:28  jackjansen
+
+	* Fair amount of new code for creating the callback wrapper
+	  objects. The classes are created, along with empty methods.
+
+2005-06-16 15:21  jackjansen
+
+	* Switched to unicode (from MBCS).
+
+2005-06-16 13:08  jackjansen
+
+	* Merging exp-jack-virtual-nodes branch: - When building with
+	  WITH_EXTERNAL_DOM the node class becomes virtual,   with the old
+	  implementation class named node_impl. This virtual class   allows
+	  use of external DOM implementations (at a small iperformance
+	  cost for the native DOM case).  - Started on a Python interface
+	  to Ambulant.
+
+2005-06-13 16:42  koelimoe
+
+	* added clip_end to ffmpeg_datasource
+
+2005-06-09 13:22  koelimoe
+
+	* fixed the rtsp video. (but there are still some ffmpeg error
+	  msgs)
+
+2005-06-07 16:58  koelimoe
+
+	* changed the rtsp_demuxer so it puts all data for one frame
+	  together
+
+2005-06-07 13:56  koelimoe
+
+	* fixed ffmpeg-0.4.9 video. (altough it seems that there is still a
+	  problem with timestamps)
+
+2005-06-06 15:16  koelimoe
+
+	* added the ifdef AMBULANT_PLATFORM_MACOS around MAYBE_CONST defien
+	  because it's only for mac
+
+2005-06-06 15:10  koelimoe
+
+	* moved ffmpeg_init() from the .h file to the .cpp file
+
+2005-06-02 16:25  koelimoe
+
+	* 1) SDL renderer now also looks for clip-begin and clip-end 2)
+	  fixed a bug in clip_end
+
+2005-06-01 23:49  jackjansen
+
+	* Initial gcc4 fixes.
+
+2005-06-01 22:50  koelimoe
+
+	* 1) added clip_begin clip_end to the constructors of
+	  audio_datasources.  2) fixed the multiple thread->start() calls
+
+2005-05-31 13:22  koelimoe
+
+	*  removed /*AM_DBG*/
+
+2005-05-31 13:06  koelimoe
+
+	* working clip end. (tested for audio)
+
+2005-05-30 16:27  jackjansen
+
+	* Upped version number to 1.5.
+
+2005-05-30 14:57  jackjansen
+
+	* Merging changes from release-ambulant-140 branch, up to
+	  release-ambulant-141-tag.
+
+2005-05-30 13:15  koelimoe
+
+	* clip_end implementation. (untested)
+
+2005-05-23 16:22  koelimoe
+
+	* Updated the Changelog
 
 2005-05-23 16:15  koelimoe
 

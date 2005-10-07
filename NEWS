@@ -1,29 +1,30 @@
 
-What's new in Ambulant Player 1.4.5?
+What's new in Ambulant Player 1.6?
 ------------------------------------
 
-Changes between 1.4.5 and 1.4.4:
-- SMIL 2.1 default backgroundRepeat has been fixed.
+Changes between 1.6 and 1.4.5:
 
-Changes between 1.4.4 and 1.4.2:
-- SMIL 2.1 has gone to PR (Proposed Recommendation). The main change is
-  that some of the DTD URIs have changed slightly.
-- Ambulant Player now passes all SMIL 2.1 interoperability tests.
+- SMIL 2.1 support has been adapted to the final standard.
 
-Changes between 1.4.2 and 1.4.1:
-- SMIL 2.1 behaviour of backgroundImage and backgroundRepeat has been fixed.
+- clipBegin and clipEnd are now supported for most continuous media types on
+  most platforms.
+  
+- Rendering of HTML media items has been added.
 
-Changes between 1.4 and 1.4.1:
-- Mac player didn't support QuickTime playback. Fixed.
-- Windows player "Open URL..." did not work. Fixed.
+- Audio, video and rtsp support on Linux and MacOSX are greatly improved.
 
-Complete details are in ChangeLog, but here is a quick summary of the
-changes between 1.2 and 1.4:
+- Optionally Ambulant can use the BBC Dirac video codec.
 
-- full SMIL 2.1 RC support
-- limited RTSP support
-- many bug fixes
-- more documentation
+- The build procedure for Linux/Mac has been enhanced, and support for
+  pkg-config has been added.
 
+- Developers: Ambulant is now distributed with an LGPL license in stead of
+  the previous GPL-with-exceptions licence.
 
+- Developers: Ambulant can now play back from an external DOM tree.
 
+- Developers: the Ambulant API is now available in Python. Both embedding
+  in Python and extending in Python are suppported.
+  
+- Developers: the API has been rationalized in various places to support
+  the two changes mentioned above.
