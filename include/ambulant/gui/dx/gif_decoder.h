@@ -285,7 +285,7 @@ gif_decoder<DataSource, ColorType>::parse_image() {
 		new surface<ColorType>(imageWidth, imageHeight, ColorType::get_bits_size(), pBits);
 		
 	parse_image_pixels(imageWidth, imageHeight, interlaceFlag, psurf);
-	uchar_t img_terminator = m_src->get(); // read ';'
+	//uchar_t img_terminator = m_src->get(); // read ';'
 	return new dib_surface<ColorType>(bmp, psurf);
 }
 
