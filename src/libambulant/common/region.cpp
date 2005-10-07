@@ -95,7 +95,9 @@ surface_impl::surface_impl(const std::string &name, surface_impl *parent, rect b
 	m_parent(parent),
 	m_info(info),
 //	m_alignment(NULL),
-	m_bg_renderer(bgrenderer)
+	m_bg_renderer(bgrenderer),
+	m_renderer_data(NULL),
+	m_renderer_id(NULL)
 {
 	if (parent) m_window_topleft += parent->get_global_topleft();
 	if (m_bg_renderer) {
@@ -114,6 +116,8 @@ surface_impl::~surface_impl()
 	}
 	if (m_bg_renderer)
 		delete m_bg_renderer;
+	if (m_renderer_data)
+		m_renderer_data->release();
 //	if (m_info)
 //		delete m_info;
 	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
@@ -677,28 +681,30 @@ surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 	m_children_cs.leave();
 }
 
-#ifdef WITH_HTML_WIDGET
-surface_impl*
-surface_impl::get_parent() {
-	return m_parent;
-}
-
-surface_impl::renderer_data*
-surface_impl::get_renderer_data(renderer_id idd) {
+renderer_private_data*
+surface_impl::get_renderer_private_data(renderer_private_id idd) {
+	if (m_info && m_info->is_subregion()) {
+		assert(m_parent);
+		return m_parent->get_renderer_private_data(idd);
+	}
 	if (idd == m_renderer_id)
-		return m_renderer_data.get_ptr();
+		return m_renderer_data;
 	return NULL;
 }
 
 void 
-surface_impl::set_renderer_data(renderer_id idd, renderer_data* data) {
-	if (m_renderer_data.get_ptr())
-			m_renderer_data.release();
-	m_renderer_data.set_ptr(data);
-	m_renderer_data.add_ref();
+surface_impl::set_renderer_private_data(renderer_private_id idd, renderer_private_data* data) {
+	if (m_info && m_info->is_subregion()) {
+		assert(m_parent);
+		m_parent->set_renderer_private_data(idd, data);
+	}
+	// Release the old data
+	if (m_renderer_data)
+		m_renderer_data->release();
+	m_renderer_data = data;
+	m_renderer_data->add_ref();
 	m_renderer_id = idd;
 }
-#endif // WITH_HTML_WIDGET
 
 // toplevel_surface_impl
 

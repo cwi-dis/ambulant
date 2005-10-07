@@ -395,6 +395,18 @@ void set_url_from_spec(net::url& u, const char *spec) {
 
 #endif
 
+// Very limited guesstype (for now), only guesses some HTML documents.
+std::string
+net::url::guesstype() const
+{
+	int dotpos = m_path.find_last_of(".");
+	if (dotpos <= 0) return "";
+	std::string ext = m_path.substr(dotpos);
+	
+	if (ext == ".htm" || ext == ".HTM" || ext == ".html" || ext == ".HTML")
+		return "text/html";
+	return "";
+}
 
 #if defined(AMBULANT_PLATFORM_UNIX)
 

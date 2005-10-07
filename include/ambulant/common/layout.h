@@ -56,6 +56,7 @@
 #include <string>
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/refcount.h"
 
 namespace ambulant {
 
@@ -187,6 +188,13 @@ class bgrenderer : public gui_events {
 	virtual void keep_as_background() = 0;
 };
 
+// These two types enable a renderer to store private data on the surface
+// it renders to, and this data can be retrieved by the next instance of this
+// renderer. This can be used by renderers that use an external entity (such
+// as an HTML widget) to do the actual rendering.
+typedef lib::ref_counted renderer_private_data;
+typedef void* renderer_private_id;
+
 /// Pure virtual baseclass for a region of screenspace.
 /// It is the only interface that renderers use when talking to regions, and regions
 /// use when talking to their parent regions.
@@ -243,6 +251,12 @@ class surface {
 	/// Get the OS window for this surface.
 	virtual gui_window *get_gui_window() = 0;
 
+	/// Save a per-renderer private data pointer on the surface.
+	virtual void set_renderer_private_data(renderer_private_id idd, renderer_private_data* data) = 0;
+
+	/// Retrieve a per-renderer private data pointer previously stored with set_renderer_data.
+	virtual renderer_private_data* get_renderer_private_data(renderer_private_id idd) = 0;
+	
 };
 
 /// API for creating windows.

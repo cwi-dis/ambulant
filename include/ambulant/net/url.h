@@ -192,6 +192,10 @@ class AMBULANTAPI url {
 	/// as an URL. Implementation may be platform dependent.
 	std::pair<bool, url> get_local_datafile() const;
 
+	/// Guess the mimetype. Supports only very few types, returns
+	/// the empty string if it cannot guess.
+	std::string guesstype() const;
+	
 	/// Set the directory where datafiles (as returned by get_local_datafile())
 	/// normally reside on this platform. The argument is a platform-style
 	/// pathname, not a URL.

@@ -420,9 +420,8 @@ qt_renderer_factory::new_playable(
 			(void*) node, (void*) rv);
 	} else if ( tag == "text") {
 #ifdef	WITH_QT_HTML_WIDGET
-		std::string src = net::url(node->get_url("src")).get_url();
-		if (src.find(".html") != std::string::npos
-		    || src.find(".htm") != std::string::npos) {
+		net::url url = net::url(node->get_url("src"));
+		if (url.guesstype() == "text/html") {
 			rv = new qt_html_renderer(context, cookie, node, evp, m_factory);
 			AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_html_renderer 0x%x", (void*) node, (void*) rv);
 		} else {

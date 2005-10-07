@@ -50,55 +50,52 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_GUI_DX_HTML_RENDERER_H
-#define AMBULANT_GUI_DX_HTML_RENDERER_H
+#ifndef AMBULANT_GUI_COCOA_COCOA_HTML_H
+#define AMBULANT_GUI_COCOA_COCOA_HTML_H
 
-#ifdef	WITH_HTML_WIDGET
-
-#include "ambulant/config/config.h"
-#include "ambulant/lib/gtypes.h"
-#include "ambulant/net/url.h"
-
-#include <string>
-
-#include "ambulant/gui/dx/dx_playable.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/common/renderer_impl.h"
+#include <Cocoa/Cocoa.h>
 
 namespace ambulant {
 
+using namespace lib;
+using namespace common;
+
 namespace gui {
 
-namespace dx {
+namespace cocoa {
 
-class viewport;
-class browser_container;
+// Opaque class used to store the WebKit view:
+class wvc_container;
 
-class dx_html_renderer : public dx_renderer_playable {
+class cocoa_html_renderer : public common::renderer_playable {
   public:
-	dx_html_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
+	cocoa_html_renderer(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp,
-		common::gui_window *window, 
-		dx_playables_context *dxplayer);
-	~dx_html_renderer();
-	void start(double t);
+		event_processor *evp)
+	:	common::renderer_playable(context, cookie, node, evp),
+		m_html_view(NULL) {};
+	~cocoa_html_renderer() {};
+
+	void start(double where);
 	void stop();
+
 	void seek(double t) {}
-	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-//	void set_surface(common::surface *dest);
+	void redraw(const lib::rect &dirty, common::gui_window *window) {}
+	void set_intransition(const lib::transition_info *info) {};
+	void start_outtransition(const lib::transition_info *info) {};
   private:
-	browser_container *m_html_browser;
+	wvc_container *m_html_view; // We don't want to include WebKit.h here...
+	lib::critical_section m_lock;
 };
 
-} // namespace dx
+} // namespace cocoa
 
 } // namespace gui
+ 
+} // namespace ambulant
 
-} // namespace ambulant 
-
-#endif // WITH_HTML_WIDGET
-
-#endif // AMBULANT_GUI_DX_HTML_RENDERER_H
-
+#endif // AMBULANT_GUI_COCOA_COCOA_HTML_H

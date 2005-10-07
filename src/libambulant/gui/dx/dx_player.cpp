@@ -422,8 +422,8 @@ gui::dx::dx_player::new_playable(
 	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
 	if(tag == "text") {
 #ifdef	WITH_HTML_WIDGET
-		std::string src = net::url(node->get_url("src")).get_url();
-		if (src.find(".html") != std::string::npos) {
+		net::url url = net::url(node->get_url("src"));
+		if (url.guesstype() == "text/html") {
 			p = new dx_html_renderer(context, cookie, node, evp, window, this);
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 

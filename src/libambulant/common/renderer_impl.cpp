@@ -146,7 +146,7 @@ renderer_playable::_init_clip_begin_end()
 			lib::logger::get_logger()->warn("Cannot parse clipBegin");
 		} else {
 			cb = parser.get_time() * 1000 ;	// get_time returns ms !
-			lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
+			// lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
 
 		}
 	}

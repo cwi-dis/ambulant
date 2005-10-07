@@ -65,7 +65,7 @@ namespace ambulant {
 
 namespace common {
 
-	using namespace ambulant::lib;
+using namespace ambulant::lib;
 
 class surface_impl : public surface_template, public surface, public gui_events {
   // The only constructor is protected: 
@@ -102,6 +102,8 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void transition_done() { transition_done(m_inner_bounds); }
 
 	void keep_as_background();
+	renderer_private_data* get_renderer_private_data(renderer_private_id idd);
+	void set_renderer_private_data(renderer_private_id idd, renderer_private_data* data);
 	
 	// The gui_events interface:
 	void redraw(const rect &dirty, gui_window *window);
@@ -109,24 +111,14 @@ class surface_impl : public surface_template, public surface, public gui_events 
 		
 	// Win32 code needs this, but I don't like it:
 	const surface_impl *get_parent() const { return m_parent; }
+
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes
 	rect get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
 	void draw_background(const rect &r, gui_window *window);
 
-#ifdef WITH_HTML_WIDGET
-	typedef void renderer_data;
-	typedef void* renderer_id;
-	lib::auto_ref<renderer_data> m_renderer_data;
-	renderer_id m_renderer_id;
-public:
-	surface_impl* get_parent();
-	renderer_data* get_renderer_data(renderer_id idd);
-	void set_renderer_data(renderer_id idd, renderer_data* data);
-#endif // WITH_HTML_WIDGET
-
-protected:
+  protected:
 	virtual void transition_done(lib::rect area);
 	void transition_freeze_end(lib::rect area);
 
@@ -151,6 +143,8 @@ protected:
 
 	const region_info *m_info;			// Information such as z-order, etc.
 	bgrenderer *m_bg_renderer;			// Background renderer
+	renderer_private_data *m_renderer_data;	// per-renderer private data pointer
+	renderer_private_id m_renderer_id;		// owner of m_renderer_data
 };
 
 class toplevel_surface_impl : public surface_impl {

@@ -84,6 +84,8 @@ namespace gui {
 
 namespace qt {
 
+class browser_container;
+
 class qt_html_renderer : public renderer_playable {
   public:
 	qt_html_renderer(
@@ -96,16 +98,14 @@ class qt_html_renderer : public renderer_playable {
 	void start(double t);
 	void stop();
 	void seek(double t) {}
-	void user_event(const lib::point& pt, int what);
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-	void set_surface(common::surface *dest);
+//	void user_event(const lib::point& pt, int what);
+	void redraw(const lib::rect &dirty, common::gui_window *window) {}
+//	void set_surface(common::surface *dest);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   private:
-	lib::critical_section	m_lock;
-	net::url		m_url;
-	QWidget*		m_widget;
-	KHTMLPart* 		m_html_browser;
+	lib::critical_section  m_lock;
+	browser_container*     m_html_browser;
 };
 
 } // namespace qt
