@@ -731,7 +731,7 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
 	
-	//int result;
+	m_result = -1;
 	
 	
 	delimiter_p space(" \t\r\n");
@@ -793,17 +793,19 @@ lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
 	lib::smpte_p smpte_parser;
 	lib::npt_p npt_parser;
 	
+	m_result = -1;
+
 	d = npt_parser.parse(tit, end);
 	
 	if (d != -1) {
 		m_result = npt_parser.get_time();
-		return d;
+		return (it = tit, d);
 	}
 
 	d = smpte_parser.parse(tit,end);
 	if (d != -1) {
 		m_result = smpte_parser.get_time();
-		return d;
+		return (it = tit, d);
 	}
 	
 	return -1;

@@ -86,6 +86,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
+	_init_clip_begin_end();
 	if(url.is_local_file() || lib::win32::file_exists(url.get_file())) {
 		m_player = new gui::dx::video_player(url.get_file(), v->get_direct_draw());
 	} else if(url.is_absolute()) {
@@ -122,7 +123,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 	// Has this been activated
 	if(m_activated) {
 		// repeat
-		m_player->start(t);
+		m_player->start(t + (m_clip_begin / 1000000.0));
 		m_player->update();
 		m_dest->need_redraw();
 		schedule_update();
@@ -136,7 +137,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 	m_activated = true;
 		
 	// Start the underlying player
-	m_player->start(t);
+	m_player->start(t + (m_clip_begin / 1000000.0));
 	m_player->update();
 		
 	// Request a redraw
@@ -155,7 +156,15 @@ void gui::dx::dx_video_renderer::seek(double t) {
 	// ?? m_dest->need_redraw();
 }
 std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
-	if(m_player) return m_player->get_dur();
+	if(m_player) {
+		std::pair<bool, double> durp = m_player->get_dur();
+		if (!durp.first) return durp;
+		double dur = durp.second;
+		if (m_clip_end > 0 && dur > m_clip_end / 1000000.0)
+			dur = m_clip_end / 1000000.0;
+		dur -= (m_clip_begin / 1000000.0);
+		return std::pair<bool, double>(true, dur);
+	}
 	return std::pair<bool, double>(false, 0.0);
 }
 
@@ -271,6 +280,14 @@ void gui::dx::dx_video_renderer::update_callback() {
 	}
 	m_dest->need_redraw();
 	bool need_callback = m_player->is_playing();
+	if (need_callback && m_clip_end > 0) {
+		// Also check that we haven't gone past clipEnd yet
+		double mediatime = m_player->get_position();
+		if (mediatime > (m_clip_end / 1000000.0)) {
+			m_player->stop();
+			need_callback = false;
+		}
+	}
 	m_cs.leave();
 	
 	if( need_callback ) {

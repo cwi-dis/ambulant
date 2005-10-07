@@ -119,6 +119,13 @@ void gui::dx::audio_player::seek(double t) {
 		win_report_error("IMediaPosition::put_CurrentPosition()", hr);	
 }
 
+void gui::dx::audio_player::endseek(double t) {
+	if(m_media_position == 0) return;
+	HRESULT hr = m_media_position->put_StopTime(REFTIME(t));
+	if(FAILED(hr))
+		win_report_error("IMediaPosition::put_StopTime()", hr);	
+}
+
 std::pair<bool, double> gui::dx::audio_player::get_dur() {
 	if(m_media_position == 0) {
 		logger::get_logger()->debug("Invalid call to audio_player::get_duration");
@@ -155,6 +162,7 @@ bool gui::dx::audio_player::is_playing() {
 	return evCode == 0;
 }
 
+#if 0
 double gui::dx::audio_player::get_position() {
 	if(m_media_position == 0) {
 		logger::get_logger()->debug("Invalid call to audio_player::get_current_position");
@@ -168,7 +176,8 @@ double gui::dx::audio_player::get_position() {
 	}
 	return pos;
 }	
-	
+#endif
+
 //////////////////////////
 		
 bool gui::dx::audio_player::open(const std::string& url) {
@@ -238,7 +247,8 @@ void gui::dx::audio_player::release_player() {
 		m_graph_builder = 0;
 	}
 }
-		
+
+#if 0
 int gui::dx::audio_player::get_progress() {
 	return (int)floor(0.5 + 100.0*get_position()/get_dur().second);
 }
@@ -246,7 +256,8 @@ int gui::dx::audio_player::get_progress() {
 void gui::dx::audio_player::set_progress(int p) {
 	seek(get_dur().second*(double(p)/100.00));
 }
-			
+#endif
+
 // -val is the attenuation in decibels 
 // can be 0 to 100
 void gui::dx::audio_player::set_volume(long val) {

@@ -94,6 +94,7 @@ class audio_player : public common::playable {
 	void pause();
 	void resume();
 	void seek(double t);
+	void endseek(double t);
 	common::duration get_dur();
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}

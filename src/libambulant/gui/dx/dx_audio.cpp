@@ -90,6 +90,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	
 	AM_DBG lib::logger::get_logger()->debug("dx_audio_renderer(0x%x)", this);
 	net::url url = m_node->get_url("src");
+	_init_clip_begin_end();
 	if(url.is_local_file() && lib::win32::file_exists(url.get_file()))
 		m_player = new gui::dx::audio_player(url.get_file());
 	else if(url.is_absolute())
@@ -150,7 +151,8 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	update_levels();
 
 	// Start the underlying player
-	m_player->start(t);
+	m_player->endseek(m_clip_end / 1000000.0);
+	m_player->start(t + (m_clip_begin / 1000000.0));
 		
 	// Notify the scheduler; may take benefit
 	m_context->started(m_cookie);
@@ -209,10 +211,18 @@ gui::dx::dx_audio_renderer::start_outtransition(const lib::transition_info* info
 }
 
 void gui::dx::dx_audio_renderer::seek(double t) {
-	if (m_player) m_player->seek(t);
+	if (m_player) m_player->seek(t + (m_clip_begin / 1000000.0));
 }
 std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
-	if(m_player) return m_player->get_dur();
+	if(m_player) {
+		std::pair<bool, double> durp = m_player->get_dur();
+		if (!durp.first) return durp;
+		double dur = durp.second;
+		if (m_clip_end > 0 && dur > m_clip_end / 1000000.0)
+			dur = m_clip_end / 1000000.0;
+		dur -= (m_clip_begin / 1000000.0);
+		return std::pair<bool, double>(true, dur);
+	}
 	return std::pair<bool, double>(false, 0.0);
 }
 
