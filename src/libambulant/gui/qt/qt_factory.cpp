@@ -46,7 +46,7 @@
  *
  */
  
-//#define AM_DBG
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -127,20 +127,20 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = qaw;
-#ifdef	AM_DBG
-	// in debugging mode, initialize with purple background
+
 	if (qaw != NULL) {
 		QSize size = qaw->frameSize();
 		m_pixmap = new QPixmap(size.width(), size.height());
 		QPainter paint(m_pixmap);
-		QColor bgc = QColor(255,0,255);
+		QColor bgc = QColor(255,255,255); // white color
+		// in debugging mode, initialize with purple background
+		AM_DBG bgc = QColor(255,  0,255); // purple color
+		
 		paint.setBrush(bgc);
 		paint.drawRect(0,0,size.width(),size.height());
 		paint.flush();
 		paint.end();
-		
 	}
-#endif/*AM_DBG*/
 }
 
 QPixmap*

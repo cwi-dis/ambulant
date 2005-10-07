@@ -109,7 +109,6 @@ qt_html_renderer::qt_html_renderer(
 		lib::event_processor *const evp,
 		common::factories *factory)
   :	renderer_playable(context, cookie, node, evp)
-  ,	m_widget(NULL) 
   ,	m_html_browser(NULL) 
 {
     
@@ -128,12 +127,12 @@ gui::qt::qt_html_renderer::start(double t) {
 		const lib::point p = m_dest->get_global_topleft();
 		rc.translate(p);
 
-        assert(m_dest);
-        common::gui_window* window = m_dest->get_gui_window();
-        assert(window);
-        ambulant_qt_window* aqw = (ambulant_qt_window*)window;
-        qt_ambulant_widget* qaw = aqw->get_ambulant_widget();
-        assert(qaw);
+		assert(m_dest);
+		common::gui_window* window = m_dest->get_gui_window();
+		assert(window);
+		ambulant_qt_window* aqw = (ambulant_qt_window*)window;
+		qt_ambulant_widget* qaw = aqw->get_ambulant_widget();
+		assert(qaw);
 
 		KHTMLPart *br = new KHTMLPart((QWidget*)qaw);
 		// XXX new html_browser(rc.left(), rc.top(), rc.width(), rc.height());
