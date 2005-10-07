@@ -228,7 +228,7 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	if(FAILED(hr)) {
 		mmstream->Release();
 		if (hr == 0x800c000d)  // XXX This value experimentally determined:-)
-			logger::get_logger()->error("%s; Unsupported URL protocol", url.c_str());
+			logger::get_logger()->error("%s: Unsupported URL protocol", url.c_str());
 		else if (hr == VFW_E_CANNOT_CONNECT)
 			logger::get_logger()->error("%s: Unsupported video format", url.c_str());
 		else

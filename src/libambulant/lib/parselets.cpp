@@ -589,7 +589,6 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
 	
-	int smpte[5];
 	int result;
 	
 	m_drop = false;

@@ -194,7 +194,7 @@ bool gui::dx::audio_player::open(const std::string& url) {
 	hr = m_graph_builder->RenderFile(wsz, 0);
 	if(FAILED(hr)){
 		if (hr == 0x800c000d)  // XXX This value experimentally determined:-)
-			logger::get_logger()->error("%s; Unsupported URL protocol", url.c_str());
+			logger::get_logger()->error("%s: Unsupported URL protocol", url.c_str());
 		else if (hr == VFW_E_CANNOT_CONNECT)
 			logger::get_logger()->error("%s: Unsupported video format", url.c_str());
 		else
