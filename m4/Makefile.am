@@ -17,6 +17,7 @@ EXTRA_DIST = codeset.m4 \
 	longlong.m4 \
 	ltdl.m4 \
 	nls.m4 \
+	pkg.m4 \
 	po.m4 \
 	printf-posix.m4 \
 	progtest.m4 \
