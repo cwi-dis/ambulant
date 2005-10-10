@@ -158,17 +158,22 @@ AC_MSG_CHECKING(for expat XML handling library)
 EXPAT_PREFIX=third_party_packages/expat-unix
 AC_ARG_WITH(expat,
 	[  --with-expat		Turn on/off use of expat XML library],
-	[if test "x$withval" = "xno"; then
-	test_expat=false
-fi
-])
+	[
+	   case "${withval}" in
+	   yes) EXPAT_PREFIX=third_party_packages/expat-unix ;;
+	   no) EXPAT_PREFIX=""
+	       test_expat=false
+	       ;;
+	   *)  EXPAT_PREFIX=${withval} ;;
+	   esac
+], [EXPAT_PREFIX=third_party_packages/expat-unix])
 
 dnl test for slurped version first
 dnl
 if test "x$test_expat" = "xtrue"; then
-	if test -f `pwd`/third_party_packages/expat-unix;	
+	if test -f "$EXPAT_PREFIX";	
 	then
-          EXPAT_PREFIX=third_party_packages/expat-unix
+          :
 	else
 	AC_TRY_COMPILE(
 	    [#include <expat.h>],[
