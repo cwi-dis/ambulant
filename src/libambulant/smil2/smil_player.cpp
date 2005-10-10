@@ -106,14 +106,14 @@ smil_player::~smil_player() {
 		if (rem) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
 	}
 		
+	delete m_event_processor;
+	delete m_timer;
 	delete m_dom2tn;
 	delete m_animation_engine;
 	delete m_root;
 	delete m_scheduler;
 	delete m_doc;
 	delete m_layout_manager;
-	delete m_event_processor;
-	delete m_timer;
 }
 
 void smil_player::build_layout() {
