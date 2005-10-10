@@ -377,6 +377,8 @@ public:
 	bool is_tiled() const;
 #endif
 	ambulant::common::gui_window* get_gui_window();
+	void set_renderer_private_data(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data);
+	ambulant::common::renderer_private_data * get_renderer_private_data(ambulant::common::renderer_private_id idd);
 	ambulant::lib::rect get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }
 	ambulant::common::tile_positions get_tiles(ambulant::lib::size s, ambulant::lib::rect r) const { return surface::get_tiles(s, r); }
   private:

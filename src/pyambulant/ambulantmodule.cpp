@@ -5513,6 +5513,39 @@ static PyObject *surfaceObj_get_gui_window(surfaceObject *_self, PyObject *_args
 	return _res;
 }
 
+static PyObject *surfaceObj_set_renderer_private_data(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::renderer_private_id idd;
+	ambulant::common::renderer_private_data * data;
+	if (!PyArg_ParseTuple(_args, "ll",
+	                      &idd,
+	                      &data))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_renderer_private_data(idd,
+	                                            data);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *surfaceObj_get_renderer_private_data(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::renderer_private_id idd;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &idd))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::renderer_private_data * _rv = _self->ob_itself->get_renderer_private_data(idd);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
 static PyMethodDef surfaceObj_methods[] = {
 	{"show", (PyCFunction)surfaceObj_show, 1,
 	 PyDoc_STR("(ambulant::common::gui_events* renderer) -> None")},
@@ -5548,6 +5581,10 @@ static PyMethodDef surfaceObj_methods[] = {
 #endif
 	{"get_gui_window", (PyCFunction)surfaceObj_get_gui_window, 1,
 	 PyDoc_STR("() -> (ambulant::common::gui_window* _rv)")},
+	{"set_renderer_private_data", (PyCFunction)surfaceObj_set_renderer_private_data, 1,
+	 PyDoc_STR("(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data) -> None")},
+	{"get_renderer_private_data", (PyCFunction)surfaceObj_get_renderer_private_data, 1,
+	 PyDoc_STR("(ambulant::common::renderer_private_id idd) -> (ambulant::common::renderer_private_data * _rv)")},
 	{NULL, NULL, 0}
 };
 

@@ -2467,6 +2467,8 @@ surface::surface(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_top_surface")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_top_surface");
 		if (!PyObject_HasAttrString(itself, "is_tiled")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: is_tiled");
 		if (!PyObject_HasAttrString(itself, "get_gui_window")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_gui_window");
+		if (!PyObject_HasAttrString(itself, "set_renderer_private_data")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: set_renderer_private_data");
+		if (!PyObject_HasAttrString(itself, "get_renderer_private_data")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_renderer_private_data");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2768,6 +2770,52 @@ ambulant::common::gui_window* surface::get_gui_window()
 	}
 
 	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void surface::set_renderer_private_data(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_idd = Py_BuildValue("l", idd);
+	PyObject *py_data = Py_BuildValue("l", data);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "set_renderer_private_data", "(OO)", py_idd, py_data);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::set_renderer_private_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_idd);
+	Py_XDECREF(py_data);
+
+	PyGILState_Release(_GILState);
+}
+
+ambulant::common::renderer_private_data * surface::get_renderer_private_data(ambulant::common::renderer_private_id idd)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::renderer_private_data * _rv;
+	PyObject *py_idd = Py_BuildValue("l", idd);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_renderer_private_data", "(O)", py_idd);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_renderer_private_data() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_renderer_private_data() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_idd);
 
 	PyGILState_Release(_GILState);
 	return _rv;

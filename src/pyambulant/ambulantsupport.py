@@ -86,6 +86,10 @@ tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")
 
+# This is a bit of a hack. These types are opaque, really.
+renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")
+renderer_private_id = Type("ambulant::common::renderer_private_id", "l")
+
 # Our (opaque) objects
 
 class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
