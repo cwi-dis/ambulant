@@ -149,8 +149,9 @@ endif
 
 #	Install documentation
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+	sh $(srcdir)/genappleindex.sh $(srcdir)/../../Documentation/user
 	$(INSTALL_DATA) $(srcdir)/../../Documentation/user/*.* $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
-	sh $(srcdir)/genappleindex.sh $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+#	sh $(srcdir)/genappleindex.sh $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
 
 #	Install welcome document
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/data
@@ -177,7 +178,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(LIBINTL) \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
     -lstdc++
-AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime
+AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime -framework WebKit
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \
