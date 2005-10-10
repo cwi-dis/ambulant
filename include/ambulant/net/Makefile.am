@@ -1,11 +1,4 @@
 library_includedir=$(includedir)/ambulant/net
-
-if WITH_FFMPEG
-FFMPEG_FILES=ffmpeg_common.h ffmpeg_audio.h ffmpeg_video.h ffmpeg_factory.h ffmpeg_raw.h
-else
-FFMPEG_FILES=
-endif	
-
 library_include_HEADERS= \
 	connection.h \
 	datasource.h \
@@ -15,7 +8,11 @@ library_include_HEADERS= \
 	socket.h \
 	stdio_datasource.h \
 	url.h \
+	ffmpeg_common.h \
+	ffmpeg_audio.h \
+	ffmpeg_video.h \
+	ffmpeg_factory.h \
+	ffmpeg_raw.h \
 	raw_video_datasource.h \
 	rtsp_datasource.h \
-	rtsp_factory.h \
-	$(FFMPEG_FILES)
+	rtsp_factory.h
