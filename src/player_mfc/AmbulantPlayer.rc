@@ -178,7 +178,7 @@ BEGIN
     LTEXT           "Copyright (C) 2004-2005, Stichting CWI",IDC_STATIC,40,
                     23,128,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
-    LTEXT           "Ambulant Player is Open Source (modified GPL), please check License.txt for details.",
+    LTEXT           "Ambulant Player is Open Source (LGPL), please check License.txt for details.",
                     IDC_STATIC,7,55,221,16
     LTEXT           "www.ambulantplayer.org",IDC_STATIC,39,36,128,8
 END
