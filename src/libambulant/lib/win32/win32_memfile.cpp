@@ -38,6 +38,7 @@ lib::win32::memfile::~memfile() {
 bool lib::win32::memfile::exists(const net::url& u) {
 	if(!u.is_local_file()) return true;
 	std::string file = u.get_file();
+	if (file[0] == '/') file = file.substr(1);
 	textptr tp(file.c_str());
 	HANDLE hf = CreateFile(tp,  
 		GENERIC_READ,  
@@ -61,7 +62,9 @@ bool lib::win32::memfile::read() {
 }
 
 bool lib::win32::memfile::read_local(const std::string& fn) {
-	textptr tp(fn.c_str());
+	std::string file = fn;
+	if (file[0] == '/') file = file.substr(1);
+	textptr tp(file.c_str());
 	HANDLE hf = CreateFile(tp,  
 		GENERIC_READ,  
 		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
@@ -70,7 +73,7 @@ bool lib::win32::memfile::read_local(const std::string& fn) {
 		FILE_ATTRIBUTE_READONLY,  
 		NULL); 
 	if(hf == INVALID_HANDLE_VALUE) {
-		lib::logger::get_logger()->show("Failed to open file %s", fn.c_str());
+		lib::logger::get_logger()->show("Failed to open file %s", file.c_str());
 		return false;
 	}
 	const int buf_size = 1024;

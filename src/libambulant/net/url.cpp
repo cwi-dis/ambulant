@@ -335,18 +335,32 @@ net::url net::url::join_to_base(const net::url &base) const
 		newpath = basepath; 
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
-		newpath = lib::filesys::join(lib::filesys::get_base(basepath, base.m_pathsep), newpath, m_pathsep);
+		basepath = lib::filesys::get_base(basepath, base.m_pathsep);
+		// Convert basepath from Windows to URL, if needed.
+		// XXXX Incomplete?
+//		if (base.m_absolute && basepath[0] != '/')
+//			basepath = "/" + basepath;
+		std::string::iterator cp;
+		for (cp=basepath.begin(); cp != basepath.end(); cp++) {
+			char c = *cp;
+			if (c == '\\') *cp = '/';
+		}
+		newpath = lib::filesys::join(basepath, newpath, m_pathsep);
+		// Now ad
 		//newpath = lib::filesys::join(basepath, newpath, "/");
 	}
 	AM_DBG lib::logger::get_logger()->debug("url::join_to_base: old \"%s\" base \"%s\" newpath \"%s\"",
 		repr(*this).c_str(), repr(base).c_str(), newpath.c_str());
-	return net::url(
+	net::url rv = net::url(
 		base.get_protocol(),
 		base.get_host(),
 		base.get_port(),
 		newpath,
 		m_query,
 		m_ref);
+	if (base.m_absolute)
+		rv.m_absolute = true;
+	return rv;
 }
 
 bool net::url::same_document(const net::url &base) const
@@ -370,7 +384,7 @@ void set_url_from_spec(net::url& u, const char *spec) {
 std::string
 net::url::guesstype() const
 {
-	int dotpos = m_path.find_last_of(".");
+	size_t dotpos = m_path.find_last_of(".");
 	if (dotpos <= 0) return "";
 	std::string ext = m_path.substr(dotpos);
 	

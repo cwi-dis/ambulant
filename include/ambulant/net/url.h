@@ -239,6 +239,9 @@ inline std::string repr(const ambulant::net::url& u) {
 		if(u.get_protocol() == "file") {
 			os << u.get_protocol() << "://" << 
 				((u.get_host()=="localhost")?"":u.get_host());
+			// Hack for Windows absolute file paths
+			if (u.get_path()[0] != '/')
+				os << '/';
 		} else if (u.get_protocol() == "data") {
 			os << "data:,";
 		} else {
