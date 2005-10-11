@@ -251,7 +251,7 @@ ffmpeg_demux::duration()
 	// XXX Note that this code knows that m_clip_{begin,end} and m_con->duration
 	// are both microseconds
 	timestamp_t dur = m_con->duration;
-	if (m_clip_end && m_clip_end < dur)
+	if (m_clip_end > 0 && m_clip_end < dur)
 		dur = m_clip_end;
 	dur -= m_clip_begin;
  	return dur / (double)AV_TIME_BASE;
