@@ -9,9 +9,12 @@ if WITH_XERCES
 endif
 
 uninstall-local:
-	rm -r $(DESTDIR)$(pkgdatadir)/Welcome
-	rm -r $(DESTDIR)$(pkgdatadir)/DemoPresentation
+	chmod -R +w $(DESTDIR)$(pkgdatadir)/Welcome
+	rm -fr $(DESTDIR)$(pkgdatadir)/Welcome
+	chmod -R +w $(DESTDIR)$(pkgdatadir)/DemoPresentation
+	rm -fr $(DESTDIR)$(pkgdatadir)/DemoPresentation
 if WITH_XERCES
-	rm -r $(DESTDIR)$(pkgdatadir)/DTDCache
+	chmod -R +w $(DESTDIR)$(pkgdatadir)/DTDCache
+	rm -fr $(DESTDIR)$(pkgdatadir)/DTDCache
 endif
 	

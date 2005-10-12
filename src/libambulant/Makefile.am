@@ -245,6 +245,7 @@ EXTRA_DIST= \
 	libambulant_win32.vcproj \
 	libambulant_win32-noxerces.vcproj \
 	libambulant_wince.vcp \
+	gui/SDL \
 	gui/arts \
 	gui/cocoa \
 	gui/dg \
