@@ -388,18 +388,29 @@ ffmpeg_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 					assert(m_fmt.samplerate);
 					double duration = ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+					timestamp_t old_elapsed = m_elapsed;
 					m_elapsed += (timestamp_t) (duration*1000000);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail elapsed = %d ", m_elapsed);
 
-					// XXX Note: m_elapsed is the timestamp of the last sample in outbuf. That means that the
-					// next "if" will accept all data in outbuf even if get_clip_begin() is the second-to-last
-					// sample in the buffer.
-					if (m_elapsed >= m_src->get_clip_begin()) {	
+					// We need to do some tricks to handle clip_begin falling within this buffer.
+					// First we push all the data we have into the buffer, then we check whether the beginning
+					// should have been skipped and, if so, read out the bytes.
+					if (m_elapsed > m_src->get_clip_begin()) {	
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We passed clip_begin : (outsize = %d) ", outsize);
 						if (outsize > 0) {
 							m_buffer.pushdata(outsize);
 						} else {
 							m_buffer.pushdata(0);
+						}
+						if (old_elapsed < m_src->get_clip_begin()) {
+							timestamp_t delta_t_unwanted = m_src->get_clip_begin() - old_elapsed;
+							assert(delta_t_unwanted > 0);
+							int bytes_unwanted = (delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000;
+							bytes_unwanted &= ~3;
+							AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: clip_begin within buffer, dropping %lld us, %d bytes", delta_t_unwanted, bytes_unwanted);
+							char *tmpp = m_buffer.get_read_ptr();
+							assert(m_buffer.size() > bytes_unwanted);
+							m_buffer.readdone(bytes_unwanted);
 						}
 					} else {
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We are still before clip_begin (m_elapsed = %lld, clip_begin = %lld)", m_elapsed, m_src->get_clip_begin());
