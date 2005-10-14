@@ -100,6 +100,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui) :
 //	m_factory->pf->add_factory(new lib::expat_factory());
 #ifdef WITH_XERCES_BUILTIN
 	m_factory->pf->add_factory(new lib::xerces_factory());
+	AM_DBG m_logger->debug("mainloop::mainloop: add xerces_factory");
 #endif
 	// First create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();

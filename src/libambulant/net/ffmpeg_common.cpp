@@ -321,6 +321,8 @@ ffmpeg_demux::run()
 	int streamnr = video_stream_nr(); ;
 	timestamp_t pts;
 	pkt_nr = 0;
+	assert(m_con);
+	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: started");
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;

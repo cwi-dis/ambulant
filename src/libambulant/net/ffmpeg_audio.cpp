@@ -30,6 +30,7 @@
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -42,6 +43,7 @@ typedef lib::no_arg_callback<ffmpeg_decoder_datasource> readdone_callback;
 typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
+
 // Factory functions
 audio_datasource_factory *
 ambulant::net::get_ffmpeg_audio_datasource_factory()
@@ -295,7 +297,8 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 {
 	m_lock.enter();
 	bool restart_input = false;
-	
+	assert(!_clip_end());
+	assert(!_end_of_file());
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
@@ -377,22 +380,16 @@ ffmpeg_decoder_datasource::data_avail()
 					int cursz = sz;
 					if (cursz > AVCODEC_MAX_AUDIO_FRAME_SIZE/2) cursz = AVCODEC_MAX_AUDIO_FRAME_SIZE/2;
 					
-					//XXX Ugly hack, but it doesn't work  :-(
-					// Someone kicks away the buffer while we still need it.
-					//uint8_t *tmpptr = (uint8_t*) malloc(cursz);
-					//memcpy(tmpptr, inbuf, cursz);
-					//XXX end hack
 					
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
-					//free(tmpptr);
 					_need_fmt_uptodate();
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
 					assert(m_fmt.samplerate);
 					double duration = ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-					m_elapsed += (timestamp_t) round(duration*1000000);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail elapsed = %f ", m_elapsed);
+					m_elapsed += (timestamp_t) (duration*1000000);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail elapsed = %d ", m_elapsed);
 
 					// XXX Note: m_elapsed is the timestamp of the last sample in outbuf. That means that the
 					// next "if" will accept all data in outbuf even if get_clip_begin() is the second-to-last
@@ -435,7 +432,7 @@ ffmpeg_decoder_datasource::data_avail()
 				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 		
-		if ( m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file() || _clip_end() ) ) {
+		if ( m_client_callback && (m_buffer.buffer_not_empty() ||  _end_of_file() || _clip_end()  ) ) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
 			assert(m_event_processor);
 			if (m_elapsed >= m_src->get_clip_begin()) {
@@ -463,6 +460,7 @@ ffmpeg_decoder_datasource::end_of_file()
 	m_lock.enter();
 	if (_clip_end()) {
 		m_lock.leave();
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::end_of_file(): clip_end reached");
 		return true;
 	}
 	bool rv = _end_of_file();
@@ -480,7 +478,7 @@ ffmpeg_decoder_datasource::_end_of_file()
 }
 
 bool 
-ffmpeg_decoder_datasource::_clip_end()
+ffmpeg_decoder_datasource::_clip_end() const
 {
 	// private method - no need to lock
 	timestamp_t clip_end = m_src->get_clip_end();
@@ -816,7 +814,7 @@ ffmpeg_resample_datasource::data_avail()
 				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 		// If the client is currently interested tell them about data being available
-		if (m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file())) {
+		if (m_client_callback && (m_buffer.buffer_not_empty() || _end_of_file() )) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
 			assert(m_event_processor);
 			lib::event *clientcallback = m_client_callback;
@@ -865,6 +863,19 @@ ffmpeg_resample_datasource::_end_of_file()
 {
 	// private method - no need to lock
 	if (m_buffer.buffer_not_empty()) return false;
+	if (m_src)
+		return m_src->end_of_file();
+	
+	return true;
+}
+
+
+bool
+ffmpeg_resample_datasource::_src_end_of_file() const
+{
+	// private mathod - no need to lock
+	
+	
 	if (m_src)
 		return m_src->end_of_file();
 	
@@ -923,9 +934,13 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): m_client_callback already set!");
 	}
 	
-	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
+	if ( m_buffer.buffer_not_empty() && _end_of_file() ) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d  || %d) = %d ", _end_of_file(), m_buffer.buffer_not_empty(), _end_of_file() || m_buffer.buffer_not_empty());
+
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
+		restart_input = false;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): no restart EOF (or clipend reached) but no data available");
 		if (callbackk) {
 			assert(evp);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start: trigger client callback");
@@ -937,18 +952,24 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
 		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
 	// Also restart our source if we still have room and there is
 	// data to read.
-	if ( !_end_of_file() && !m_buffer.buffer_full() ) restart_input = true;
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
+	if ( ( !_src_end_of_file() ) && ( !m_buffer.buffer_full() ) ) {
+		restart_input = true;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): no EOF and buffer is not full so we need to do a restart, (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
+	}
+
 	
 	if (restart_input) {
 		// Restart the input stream
 		lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
 		m_src->start(evp,  e);
 	}
 	

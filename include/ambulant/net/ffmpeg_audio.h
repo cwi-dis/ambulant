@@ -123,7 +123,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool _select_decoder(audio_format &fmt);
 	  
   private:
-	bool _clip_end();
+	bool _clip_end() const;
     bool _end_of_file();
 	void _need_fmt_uptodate();
     AVCodecContext *m_con;
@@ -172,7 +172,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	  
   private:
     bool _end_of_file();
-
+	bool _src_end_of_file() const;
+  
     audio_datasource* m_src;
 
     bool m_context_set;
