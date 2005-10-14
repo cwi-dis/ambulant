@@ -493,7 +493,7 @@ if test "x$test_live" = "xfalse"; then
 live.com not found. You have to place a copy of live.com libraries within the third_party_packages directory in your ambulant source tree to enable RTSP with it"
 fi
 
-AM_CONDITIONAL(WITH_LIVE, test x$live = xtrue)
+AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
 AC_SUBST(LIVE_ROOT)
 AC_MSG_RESULT(Live.com library found - $test_live)
 

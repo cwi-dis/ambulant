@@ -26,7 +26,7 @@
 using namespace ambulant;
 using namespace net;
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -135,12 +135,12 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	assert(ch_url);
 	context->sdp = context->rtsp_client->describeURL(ch_url);
 	if (!context->sdp) {
-		/*AM_DBG*/ lib::logger::get_logger()->trace("%s: describeURL failed (url not found?)", ch_url);
+		AM_DBG lib::logger::get_logger()->trace("%s: describeURL failed (url not found?)", ch_url);
 		//lib::logger::get_logger()->error("RTSP Connection Failed");		
 		return NULL;
 	}
 
-	/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
+	AM_DBG lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
 	context->media_session = MediaSession::createNew(*env, context->sdp);
 	if (!context->media_session) {
 		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create  a MediaSession");
@@ -166,7 +166,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
-				context->audio_fmt.channels = subsession->numChannels();
+				context->audio_fmt.channels = 0; //Let the decoder (ffmpeg) find out the channels subsession->numChannels() returns channels -1 ???
 				context->audio_fmt.bits = 16;
 				//context->fmt.samplerate = subsession->rtpSource()->timestampFrequency();
 				
