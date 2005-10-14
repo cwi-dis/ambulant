@@ -132,19 +132,15 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	}
 	
 	const char* ch_url = url.get_url().c_str();
-	if (ch_url) {
-		context->sdp = context->rtsp_client->describeURL(ch_url);
-		if (!context->sdp) {
-			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to get dsp description from rtsp server");
-			//lib::logger::get_logger()->error("RTSP Connection Failed");		
-			return NULL;
-		}
-	} else {
-		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to get url");
-		lib::logger::get_logger()->error("Wrong RTSP URL !");		
+	assert(ch_url);
+	context->sdp = context->rtsp_client->describeURL(ch_url);
+	if (!context->sdp) {
+		/*AM_DBG*/ lib::logger::get_logger()->trace("%s: describeURL failed (url not found?)", ch_url);
+		//lib::logger::get_logger()->error("RTSP Connection Failed");		
 		return NULL;
 	}
-	
+
+	/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
 	context->media_session = MediaSession::createNew(*env, context->sdp);
 	if (!context->media_session) {
 		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create  a MediaSession");
@@ -187,6 +183,8 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
 
 			}
+		} else {
+			/* AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux: ignoring \"%s\" subsession", subsession->mediumName());
 		}
 		context->nstream++;
 		
