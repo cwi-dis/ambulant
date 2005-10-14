@@ -99,7 +99,7 @@ class ffmpeg_demux : public abstract_demux {
 	void cancel();
 	timestamp_t get_clip_end(); 
 	timestamp_t get_clip_begin();
-	timestamp_t get_start_time() { return 0; };
+	timestamp_t get_start_time() { return m_clip_begin; };
   protected:
 	unsigned long run();
   private:

@@ -297,8 +297,6 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 {
 	m_lock.enter();
 	bool restart_input = false;
-	assert(!_clip_end());
-	assert(!_end_of_file());
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
@@ -413,7 +411,7 @@ ffmpeg_decoder_datasource::data_avail()
 							m_buffer.readdone(bytes_unwanted);
 						}
 					} else {
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail We are still before clip_begin (m_elapsed = %lld, clip_begin = %lld)", m_elapsed, m_src->get_clip_begin());
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed = %lld < clip_begin = %lld, skipped %d bytes", m_elapsed, m_src->get_clip_begin(), outsize);
 						m_buffer.pushdata(0);
 					}
 
@@ -946,7 +944,7 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	}
 	
 	if ( m_buffer.buffer_not_empty() && _end_of_file() ) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d  || %d) = %d ", _end_of_file(), m_buffer.buffer_not_empty(), _end_of_file() || m_buffer.buffer_not_empty());
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d  || %d) = %d ", _end_of_file(), m_buffer.buffer_not_empty(), _end_of_file() || m_buffer.buffer_not_empty());
 
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
@@ -963,7 +961,7 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
 		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
@@ -971,7 +969,7 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	// Also restart our source if we still have room and there is
 	// data to read.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
-	if ( ( !_src_end_of_file() ) && ( !m_buffer.buffer_full() ) ) {
+	if ( !_src_end_of_file() && !m_buffer.buffer_full() ) {
 		restart_input = true;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): no EOF and buffer is not full so we need to do a restart, (%d && %d) = %d ", !_end_of_file(), !m_buffer.buffer_full(), !_end_of_file() && !m_buffer.buffer_full());
 	}
@@ -980,7 +978,7 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 	if (restart_input) {
 		// Restart the input stream
 		lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start(): calling m_src->start(0x%x, 0x%x)", m_event_processor, e);
 		m_src->start(evp,  e);
 	}
 	

@@ -233,8 +233,7 @@ class audio_datasource : virtual public datasource {
 	virtual timestamp_t get_clip_end() = 0;
 	// returns m_clip_begin, the timestamp where the video is suppossed to start	
 	virtual timestamp_t get_clip_begin() = 0;
-	// returns m_clip_begin if the datasource 	took care of clip_begin otherwise it returns 0
-	//XXX later this should be changed and elapsed should return the time it is playing or if unknown 0;
+	// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
 	virtual timestamp_t get_start_time() = 0;
 	// Return the duration of the audio data, if known.
 	virtual common::duration get_dur() = 0;
@@ -501,7 +500,7 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	/// Return clip end time as set during demux creation.
 	virtual timestamp_t get_clip_end() = 0;
 	
-	/// No clue.
+	/// Returns the timestamp at which the data starts streaming (m_clip_begin or 0).
 	virtual timestamp_t get_start_time() = 0;
 };
 #endif // AMBULANT_PLATFORM_UNIX
