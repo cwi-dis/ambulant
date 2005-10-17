@@ -239,6 +239,19 @@ BEGIN
                     WS_TABSTOP,0,0,353,92
 END
 
+IDD_SHOW_MESSAGE DIALOGEX 0, 0, 232, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Ambulant Player"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,175,98,50,14
+    PUSHBUTTON      "Show Log Window...",IDSHOWLOG,7,98,83,14
+    LTEXT           "(The log window may have more information)",IDC_STATIC,
+                    7,84,145,8
+    LTEXT           "Static",IDC_MESSAGE,7,7,218,70
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -315,6 +328,14 @@ BEGIN
     BEGIN
         RIGHTMARGIN, 294
         BOTTOMMARGIN, 92
+    END
+
+    IDD_SHOW_MESSAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 225
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
     END
 END
 #endif    // APSTUDIO_INVOKED

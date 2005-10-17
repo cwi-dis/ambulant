@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 #include "ambulant/lib/amstream.h"
 
+
 // Implementation of lib::ostream that sends output to the
 // log window.
 class logwindow_ostream : public ambulant::lib::ostream {

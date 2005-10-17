@@ -10,6 +10,7 @@
 #define IDD_OPEN_URL                    131
 #define IDD_PREFERENCES                 132
 #define IDD_LOG_WINDOW                  136
+#define IDD_SHOW_MESSAGE                137
 #define IDC_VERSION                     1000
 #define IDC_EDIT_URL                    1001
 #define IDC_BUTTON1                     1002
@@ -24,6 +25,8 @@
 #define IDC_VALIDATION_SCHEMA_FULL_CHECKING 1009
 #define IDC_RICHEDIT21                  1010
 #define IDC_VALIDATION_SCHEME           1011
+#define IDSHOWLOG                       1012
+#define IDC_MESSAGE                     1013
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773
@@ -41,9 +44,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32789
-#define _APS_NEXT_CONTROL_VALUE         1012
-#define _APS_NEXT_SYMED_VALUE           101
+#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

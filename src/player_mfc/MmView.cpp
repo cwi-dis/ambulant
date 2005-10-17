@@ -28,6 +28,7 @@
 #include "MmDoc.h"
 #include "MmView.h"
 #include "LogWindow.h"
+#include "ShowMessage.h"
 
 #include <fstream>
 #include <string>
@@ -179,7 +180,7 @@ MmView::MmView()
 	m_timer_id = 0;
 	m_cursor_id = 0;
 	m_autoplay = true;
-	lib::logger::get_logger()->set_show_message(lib::win32::show_message);
+	lib::logger::get_logger()->set_show_message(log_show_message);
 #ifdef WITHOUT_LOG_WINDOW
 	lib::logger::get_logger()->set_std_ostream(log_os);
 #else

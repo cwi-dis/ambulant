@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "AmbulantPlayer.h"
 #include "LogWindow.h"
-#include ".\logwindow.h"
 
 // logwindow_ostream implementation
 
