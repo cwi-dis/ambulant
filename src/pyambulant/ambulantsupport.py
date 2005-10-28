@@ -454,6 +454,7 @@ parser_factory_object.othermethods = [
 ]
 xml_parser_object.othermethods = [
     "bool parse(const char*, long unsigned int, bool) { abort(); }", # XXX for now
+    "bool parse(const char*, unsigned int, bool) { abort(); }", # XXX for now
     "void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }", #XXXX
     "void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }", #XXXX
 ]

@@ -160,6 +160,7 @@ public:
 
 	bool parse(char *buf__in__, long buf__len__, bool final);
 	bool parse(const char*, long unsigned int, bool) { abort(); }
+	bool parse(const char*, unsigned int, bool) { abort(); }
 	void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }
 	void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }
   private:
