@@ -1,7 +1,9 @@
 from distutils.core import setup, Extension
 DEFS =  [
     ('USE_SMIL21', '1'),
-    ('WITH_EXTERNAL_DOM', '1')]
+    ('WITH_EXTERNAL_DOM', '1'),
+    ('ENABLE_NLS', '1'),
+    ]
 
 setup(name='ambulant',
       version='0.1',
