@@ -232,6 +232,7 @@ const_audio_format_ref = TupleType("const ambulant::net::audio_format&",
 class audio_format_choicesObjectDefinition(MyGlobalObjectDefinition):
     baseclass = None
     argref = "*"
+    argconst = "const "
     def output_tp_newBody(self):
         Output("PyObject *_self;")
         Output()
@@ -520,7 +521,7 @@ module.includestuff = """
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
-extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 """
 SetOutputFileName(CXX2PYFILE)

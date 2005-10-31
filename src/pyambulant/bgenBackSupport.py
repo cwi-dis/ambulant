@@ -228,6 +228,7 @@ class BackMethodGenerator:
         self.virtual = 'virtual' in self.modifiers
         self.rvname = "_rv"
         self.rv = None
+        self.return_keepref = False
         
     def setClass(self, name):
         self.classname = name
@@ -255,12 +256,14 @@ class BackMethodGenerator:
                 while "&" in returntypedecl:
                     returntypedecl = returntypedecl[:-1]
                     
-                returnvarname = self.name + "_rv"
+                returnvarname = self.name + "_rvkeepref"
                 returntypedecl += " " + returnvarname
                 # Hacking gets worse: we create the return
                 # variable in the "usual" way hoping things will "just work"
-                self.rvname = returnvarname
-                self.rv = self.makereturnvar()
+                self.rvname = self.name
+                #self.rv = self.makereturnvar()
+                self.return_keepref = True
+                
                 return returntypedecl
         return None
             
@@ -270,7 +273,20 @@ class BackMethodGenerator:
         if not self.returntype:
             return False
         self.rv = self.makereturnvar()
-        self.rv.declare()
+        if self.return_keepref:
+            decl = self.rv.type.getArgDeclarations(self.rvname)
+            assert len(decl) == 1
+            decl = decl[0]
+            assert "&" in decl
+            if decl[:6] == "const ":
+                decl = decl[6:]
+            while "&" in decl:
+                decl = decl[:-1]
+            Output("%s %s;", decl, self.rvname)
+            for decl in self.rv.type.getAuxDeclarations(self.rvname):
+                Output("%s;", decl)
+        else:
+            self.rv.declare()
         return True
 
     def makereturnvar(self):
@@ -445,7 +461,14 @@ class BackMethodGenerator:
     def returnvalue(self):
         if self.rv:
             #self.converttoc(self.rv)
-            Output("return %s;", self.rv.name)
+            if self.return_keepref:
+                fixconst = ""
+                if self.const == ' const':
+                    fixconst = 'const_cast<%s *>(this)->' % self.classname
+                Output("%s%s_rvkeepref = %s;", fixconst, self.rv.name, self.rv.name)
+                Output("return %s_rvkeepref;", self.rv.name)
+            else:
+                Output("return %s;", self.rv.name)
             
     def getargsformat(self):
         format = ""

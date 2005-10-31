@@ -95,10 +95,10 @@ public:
 	void set_attributes(const char **attrs) { abort(); }
   private:
 	PyObject *py_node;
-	ambulant::lib::xml_string get_namespace_rv;
-	ambulant::lib::xml_string get_local_name_rv;
-	ambulant::lib::q_name_pair get_qname_rv;
-	ambulant::lib::xml_string get_data_rv;
+	ambulant::lib::xml_string get_namespace_rvkeepref;
+	ambulant::lib::xml_string get_local_name_rvkeepref;
+	ambulant::lib::q_name_pair get_qname_rvkeepref;
+	ambulant::lib::xml_string get_data_rvkeepref;
 
 	friend PyObject *nodeObj_New(ambulant::lib::node *itself);
 };
@@ -384,8 +384,8 @@ public:
 	ambulant::common::tile_positions get_tiles(ambulant::lib::size s, ambulant::lib::rect r) const { return surface::get_tiles(s, r); }
   private:
 	PyObject *py_surface;
-	ambulant::lib::rect get_rect_rv;
-	ambulant::lib::point get_global_topleft_rv;
+	ambulant::lib::rect get_rect_rvkeepref;
+	ambulant::lib::point get_global_topleft_rvkeepref;
 
 	friend PyObject *surfaceObj_New(ambulant::common::surface *itself);
 };

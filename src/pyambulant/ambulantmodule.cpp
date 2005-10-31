@@ -11041,7 +11041,7 @@ typedef struct audio_format_choicesObject {
 	ambulant::net::audio_format_choices ob_itself;
 } audio_format_choicesObject;
 
-PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself)
+PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself)
 {
 	audio_format_choicesObject *it;
 	if (itself == NULL)

@@ -6,7 +6,7 @@
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
-extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
+extern PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 
 
@@ -815,6 +815,8 @@ void node::set_namespace(const ambulant::lib::xml_string& ns)
 const ambulant::lib::xml_string& node::get_namespace() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::xml_string get_namespace;
+
 	PyObject *py_rv = PyObject_CallMethod(py_node, "get_namespace", "()");
 	if (PyErr_Occurred())
 	{
@@ -822,23 +824,26 @@ const ambulant::lib::xml_string& node::get_namespace() const
 		PyErr_Print();
 	}
 
-	char *get_namespace_rv_cstr;
-	if (py_rv && !PyArg_Parse(py_rv, "s", &get_namespace_rv_cstr))
+	char *get_namespace_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_namespace_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_namespace() return:\n");
 		PyErr_Print();
 	}
 
-	get_namespace_rv = get_namespace_rv_cstr;
+	get_namespace = get_namespace_cstr;
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_namespace_rv;
+	const_cast<node *>(this)->get_namespace_rvkeepref = get_namespace;
+	return get_namespace_rvkeepref;
 }
 
 const ambulant::lib::xml_string& node::get_local_name() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::xml_string get_local_name;
+
 	PyObject *py_rv = PyObject_CallMethod(py_node, "get_local_name", "()");
 	if (PyErr_Occurred())
 	{
@@ -846,23 +851,26 @@ const ambulant::lib::xml_string& node::get_local_name() const
 		PyErr_Print();
 	}
 
-	char *get_local_name_rv_cstr;
-	if (py_rv && !PyArg_Parse(py_rv, "s", &get_local_name_rv_cstr))
+	char *get_local_name_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_local_name_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_local_name() return:\n");
 		PyErr_Print();
 	}
 
-	get_local_name_rv = get_local_name_rv_cstr;
+	get_local_name = get_local_name_cstr;
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_local_name_rv;
+	const_cast<node *>(this)->get_local_name_rvkeepref = get_local_name;
+	return get_local_name_rvkeepref;
 }
 
 const ambulant::lib::q_name_pair& node::get_qname() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::q_name_pair get_qname;
+
 	PyObject *py_rv = PyObject_CallMethod(py_node, "get_qname", "()");
 	if (PyErr_Occurred())
 	{
@@ -870,23 +878,24 @@ const ambulant::lib::q_name_pair& node::get_qname() const
 		PyErr_Print();
 	}
 
-	ambulant::lib::xml_string get_qname_rv_first;
-	ambulant::lib::xml_string get_qname_rv_second;
-	char *get_qname_rv_first_cstr;
-	char *get_qname_rv_second_cstr;
-	if (py_rv && !PyArg_Parse(py_rv, "(ss)", &get_qname_rv_first_cstr, &get_qname_rv_second_cstr))
+	ambulant::lib::xml_string get_qname_first;
+	ambulant::lib::xml_string get_qname_second;
+	char *get_qname_first_cstr;
+	char *get_qname_second_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "(ss)", &get_qname_first_cstr, &get_qname_second_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_qname() return:\n");
 		PyErr_Print();
 	}
 
-	get_qname_rv_first = get_qname_rv_first_cstr;
-	get_qname_rv_second = get_qname_rv_second_cstr;
-	get_qname_rv = ambulant::lib::q_name_pair(get_qname_rv_first, get_qname_rv_second);
+	get_qname_first = get_qname_first_cstr;
+	get_qname_second = get_qname_second_cstr;
+	get_qname = ambulant::lib::q_name_pair(get_qname_first, get_qname_second);
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_qname_rv;
+	const_cast<node *>(this)->get_qname_rvkeepref = get_qname;
+	return get_qname_rvkeepref;
 }
 
 int node::get_numid() const
@@ -916,6 +925,8 @@ int node::get_numid() const
 const ambulant::lib::xml_string& node::get_data() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::xml_string get_data;
+
 	PyObject *py_rv = PyObject_CallMethod(py_node, "get_data", "()");
 	if (PyErr_Occurred())
 	{
@@ -923,18 +934,19 @@ const ambulant::lib::xml_string& node::get_data() const
 		PyErr_Print();
 	}
 
-	char *get_data_rv_cstr;
-	if (py_rv && !PyArg_Parse(py_rv, "s", &get_data_rv_cstr))
+	char *get_data_cstr;
+	if (py_rv && !PyArg_Parse(py_rv, "s", &get_data_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_data() return:\n");
 		PyErr_Print();
 	}
 
-	get_data_rv = get_data_rv_cstr;
+	get_data = get_data_cstr;
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_data_rv;
+	const_cast<node *>(this)->get_data_rvkeepref = get_data;
+	return get_data_rvkeepref;
 }
 
 ambulant::lib::xml_string node::get_trimmed_data() const
@@ -2606,6 +2618,8 @@ void surface::keep_as_background()
 const ambulant::lib::rect& surface::get_rect() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect get_rect;
+
 	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_rect", "()");
 	if (PyErr_Occurred())
 	{
@@ -2613,7 +2627,7 @@ const ambulant::lib::rect& surface::get_rect() const
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &get_rect_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &get_rect))
 	{
 		PySys_WriteStderr("Python exception during surface::get_rect() return:\n");
 		PyErr_Print();
@@ -2622,12 +2636,15 @@ const ambulant::lib::rect& surface::get_rect() const
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_rect_rv;
+	const_cast<surface *>(this)->get_rect_rvkeepref = get_rect;
+	return get_rect_rvkeepref;
 }
 
 const ambulant::lib::point& surface::get_global_topleft() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::point get_global_topleft;
+
 	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_global_topleft", "()");
 	if (PyErr_Occurred())
 	{
@@ -2635,7 +2652,7 @@ const ambulant::lib::point& surface::get_global_topleft() const
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_point_Convert, &get_global_topleft_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_point_Convert, &get_global_topleft))
 	{
 		PySys_WriteStderr("Python exception during surface::get_global_topleft() return:\n");
 		PyErr_Print();
@@ -2644,7 +2661,8 @@ const ambulant::lib::point& surface::get_global_topleft() const
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-	return get_global_topleft_rv;
+	const_cast<surface *>(this)->get_global_topleft_rvkeepref = get_global_topleft;
+	return get_global_topleft_rvkeepref;
 }
 
 ambulant::lib::rect surface::get_fit_rect(const ambulant::lib::size& src_size, ambulant::lib::rect out_src_rect, const ambulant::common::alignment* align) const
