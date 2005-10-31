@@ -47,7 +47,7 @@ PYTHONARGS=
 PYTHONENV=
 #PYTHONENV=DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib
 
-BUILDLIBDIR=./build/lib.*
+BUILDLIBDIR=`echo ./build/lib.*`
 	
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	cd $(srcdir) ; $(PYTHON) setup.py build
@@ -58,8 +58,9 @@ check-pyambulant:
 install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install
 	
-clean-pyambulant:
-	rm -fr $(srcdir)/build
+mostlyclean-am:
+	cd $(srcdir) ; $(PYTHON) setup.py clean
+	rm -r $(srcdir)/build
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 
