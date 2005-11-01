@@ -143,7 +143,7 @@ call the initializer directly in stead of through the factory function.</p>
 <p>The scheme does not work for all objects, however: it breaks if we want to
 create static copies of the objects. For classes for which this is the case,
 such as the <tt class="docutils literal"><span class="pre">critical_region</span></tt> object, we declare an abstract object 
-<tt class="docutils literal"><span class="pre">abstract_critical_section</span></tt> in
+<tt class="docutils literal"><span class="pre">base_critical_section</span></tt> in
 <tt class="docutils literal"><span class="pre">lib/abstract_mtsync.h</span></tt>, subclass that as <tt class="docutils literal"><span class="pre">PLATFORM::critical_section</span></tt>
 in <tt class="docutils literal"><span class="pre">lib/PLATFORM/PLATFORM_mtsync.h</span></tt>,
 conditionally include that in <tt class="docutils literal"><span class="pre">lib/mtsync.h</span></tt> and create an empty subclass
@@ -170,7 +170,7 @@ when applicable, but no work on this has been done yet.</p>
 <h1><a name="other-languages">Other languages</a></h1>
 <p>It is our intention to eventually allow bridging of Ambulant Player to other languages
 such as Python or Java. An effort has been made to keep the APIs clean enough
-to allow this, but no actual work has been done on it yet.</p>
+to allow this, and work has started on a Python API, but this is not finished yet.</p>
 </div>
 <div class="section" id="where-next">
 <h1><a name="where-next">Where next?</a></h1>

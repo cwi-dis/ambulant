@@ -64,6 +64,10 @@ that opened them.</p>
 </li>
 <li><p class="first">static attributes start with &quot;s_&quot;</p>
 </li>
+<li><p class="first">Code that is tightly-coupled to an external framework (such as GUI code)
+may relax the previous rules and adhere to the conventions of the external
+framework.</p>
+</li>
 <li><p class="first">we have a toplevel namespace ambulant, with a second level of namespaces
 under that</p>
 </li>
@@ -102,14 +106,13 @@ class node;
 }
 </pre>
 </li>
-<li><p class="first">Use the following preprocessor defines to test for platform:
-<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_UNIX</span></tt>, <tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_LINUX</span></tt>,
-<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_MACOS</span></tt>, <tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32</span></tt> and 
-<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32_WCE</span></tt>.</p>
-<ul class="simple">
-<li>something to test for 386 or other architectures?</li>
-<li>something to test for Visual Studio versus gcc?</li>
-</ul>
+<li><p class="first">If you need to switch on platform in an ifdef please use the ambulant-specific
+constants: 
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_MACOS</span></tt>, 
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_LINUX</span></tt>,
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_UNIX</span></tt> (any Unix variant), 
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32</span></tt> (any Windows variant, including CE),
+<tt class="docutils literal"><span class="pre">AMBULANT_PLATFORM_WIN32_WCE</span></tt> (WinCE)</p>
 </li>
 <li><p class="first">APIs that could be considered external must be documented inline, in a form
 compatible with Doxygen. The easiest way to do this is with a triple-slashed

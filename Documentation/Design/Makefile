@@ -6,11 +6,16 @@ PYTHON=python
 
 .SUFFIXES: .txt .html
 
-all: $(ALL) text-recursive
+all: html # pdf
+html: $(ALL) html-recursive
+pdf: pdf-recursive
 
 .txt.html:
 	$(PYTHON) $(REST2HTML) $< $@
 
-text-recursive:
-	(cd text ; $(MAKE))
+html-recursive:
+	(cd text ; $(MAKE) html)
+
+pdf-recursive:
+	(cd text ; $(MAKE) pdf)
 	

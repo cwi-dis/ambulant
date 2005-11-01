@@ -11,7 +11,9 @@ PYTHON=python
 
 .SUFFIXES: .txt .html .tex .pdf
 
-all: $(ALL_HTML) # ambulantdesign.pdf
+all: html pdf
+html: $(ALL_HTML)
+pdf: ambulantdesign.pdf
 
 clean:
 	-rm ambulantdesign.txt ambulantdesign.tex ambulantdesign.aux ambulantdesign.idx
