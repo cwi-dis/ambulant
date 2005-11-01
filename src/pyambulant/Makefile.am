@@ -50,10 +50,10 @@ PYTHONENV=
 BUILDLIBDIR=`echo ./build/lib.*`
 	
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
-	cd $(srcdir) ; $(PYTHON) setup.py build
+	cd $(srcdir) ; LDFLAGS="-L$(libdir)" $(PYTHON) setup.py build
 
 check-pyambulant:
-	cd $(srcdir) ; $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
+	cd $(srcdir) ; LD_LIBRARY_PATH=$(libdir) $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
 
 install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install
