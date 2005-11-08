@@ -123,7 +123,7 @@ void my_player_callbacks::destroy_os_window(HWND hwnd) {
 
 static gui_player* 
 create_player_instance(const net::url& u) {
-	return new gui_player(s_player_callbacks, u);
+	return new gui_player(s_player_callbacks, NULL, u);
 }
 
 static gui_player *player = 0;

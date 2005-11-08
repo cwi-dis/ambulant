@@ -88,7 +88,7 @@ class AMBULANTAPI dx_player :
 	public common::embedder {
 	
   public:
-	dx_player(dx_player_callbacks &hoster, const net::url& u);
+	  dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
 	~dx_player();
 	
 	////////////////////

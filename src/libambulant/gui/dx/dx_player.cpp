@@ -80,7 +80,7 @@ using namespace ambulant;
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
-gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u) 
+gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u) 
 :	m_hoster(hoster),
 	m_url(u),
 	m_goto_node(0),
@@ -129,6 +129,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u)
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
+	if (feedback) m_player->set_feedback(feedback);
 	
 	// Create a worker processor instance
 	m_worker_processor = event_processor_factory(m_timer);	
