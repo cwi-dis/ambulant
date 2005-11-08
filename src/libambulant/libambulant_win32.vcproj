@@ -454,7 +454,7 @@
 					RelativePath=".\common\region.cpp">
 				</File>
 				<File
-					RelativePath=".\common\renderer.cpp">
+					RelativePath=".\common\renderer_impl.cpp">
 				</File>
 				<File
 					RelativePath=".\common\schema.cpp">
