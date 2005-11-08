@@ -83,6 +83,7 @@ int gui::dx::dx_gui_region::s_counter = 0;
 gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u) 
 :	m_hoster(hoster),
 	m_url(u),
+	m_goto_node(0),
 	m_player(0),
 	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
@@ -111,7 +112,17 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, const net::url& u)
 		// message already logged
 		return;
 	}
-	
+	// If there's a fragment ID remember the node it points to,
+	// and when we first start playback we'll go there.
+	const std::string& idd = u.get_ref();
+	if (idd != "") {
+		const lib::node *node = doc->get_node(idd);
+		if (node) {
+			m_goto_node = node;
+		} else {
+			m_logger->warn(gettext("%s: node ID not found"), idd.c_str());
+		}
+	}
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(doc, &m_factory, this);
@@ -147,6 +158,10 @@ gui::dx::dx_player::~dx_player() {
 
 void gui::dx::dx_player::start() {
 	if(m_player) {
+		if (m_goto_node) {
+			m_player->goto_node(m_goto_node);
+			m_goto_node = NULL;
+		}
 		m_player->start();
 		m_timer->resume();
 		std::map<std::string, wininfo*>::iterator it;

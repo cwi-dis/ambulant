@@ -186,6 +186,9 @@ class AMBULANTAPI dx_player :
 	// The current document URL
 	net::url m_url;
 	
+	// The node we want to start playback at.
+	const lib::node *m_goto_node;
+
 	// The current SMIL2 player
 	smil2::smil_player *m_player;
 	
