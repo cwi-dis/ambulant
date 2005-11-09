@@ -300,9 +300,14 @@ ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	if (m_old_frame.second) {
 		free (m_old_frame.second);
 		m_old_frame.second = NULL;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame(): free'n m_old_frame.second");
+
 	}
-	if (m_frames.empty())
+	
+	if (m_frames.empty()) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame():no more frames left returning m_old_frame");
 		return m_old_frame;
+	}
 
 	m_old_frame = m_frames.top();
 	m_frames.pop();
@@ -358,8 +363,10 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 	}
 	if (m_fmt.width == 0) {
 			m_fmt.width = m_con->width;
-	}
-	if (m_fmt.frameduration == 0) {
+	}		
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", m_fmt. frameduration);
+
+	if (m_fmt.frameduration <= 0) {
 		// And convert the timestamp
 #if LIBAVFORMAT_BUILD <= 4623
 		timestamp_t framerate = m_con->frame_rate;
@@ -418,7 +425,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	
 	// No easy error conditions, so let's allocate our frame.
 	AVFrame *frame = avcodec_alloc_frame();
-
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail called (0x%x) ", (void*) this);
 	while(inbuf && sz && m_con) {	
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 		assert(&m_con != NULL);
@@ -597,17 +604,21 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 {
 	// pop frames until (just before) "now". Then return the last frame popped.
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld)\n", now);
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0 || _end_of_file());
 	if(m_fmt.frameduration == 0) {
 		_need_fmt_uptodate();
 	}
+	
 	timestamp_t frame_duration = m_fmt.frameduration; 
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%d)\n", (int) now);
+	
+
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
 
 	while ( m_frames.size() && m_old_frame.first < now - frame_duration) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x",m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
 	}
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
@@ -720,6 +731,8 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		
 		m_con->codec_type = CODEC_TYPE_VIDEO;
+		// We doe a fmt update here to sure that we have the correct values.
+		_need_fmt_uptodate();
 		return true;
 	}
 	// Could add support here for raw mp3, etc.

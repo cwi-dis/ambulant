@@ -26,7 +26,7 @@
 using namespace ambulant;
 using namespace net;
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -177,7 +177,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
-				context->video_fmt.frameduration = (timestamp_t)(1000000.0/subsession->videoFPS());
+				context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
@@ -365,7 +365,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 			if (context->video_buffer) {
 				memcpy(context->video_buffer + context->video_buffer_size, context->video_packet, sz);
 				context->video_buffer_size += sz;
-				lib::logger::get_logger()->debug("after_reading_video: stored !! (II)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
+				AM_DBG lib::logger::get_logger()->debug("after_reading_audio: stored !! (II)(sz = %d, buf_sz = %d", sz, context->video_buffer_size);
 			} else {
 				lib::logger::get_logger()->debug("after_reading_video: Out of memory (buf_sz = %d", context->video_buffer_size);
 			}
