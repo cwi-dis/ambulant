@@ -122,7 +122,10 @@ void gui::dx::dx_audio_renderer::start(double t) {
 	update_levels();
 
 	// Start the underlying player
-	m_player->endseek(m_clip_end / 1000000.0);
+	if (m_clip_end == -1)
+		m_player->endseek(m_player->get_dur().second);
+	else
+		m_player->endseek(m_clip_end / 1000000.0);
 	m_player->start(t + (m_clip_begin / 1000000.0));
 		
 	// Notify the scheduler; may take benefit
