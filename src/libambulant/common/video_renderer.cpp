@@ -280,7 +280,7 @@ video_renderer::data_avail()
 		// It could be we're displaying this frame already. In that case there's no point in
 		// re-displaying.
 		if (frame_ts_micros > m_last_frame_timestamp ) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::data_avail: display frame (timestamp = %lld)",frame_ts_micros);
+			AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: display frame (timestamp = %lld)",frame_ts_micros);
 			show_frame(buf, size);
 			m_dest->need_redraw();
 			m_last_frame_timestamp = frame_ts_micros;
