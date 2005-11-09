@@ -32,7 +32,7 @@ using namespace ambulant;
 
 #ifdef	WITH_HTML_WIDGET
 
-// #define AM_DBG
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -72,7 +72,7 @@ BOOL HtmlView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
+	cs.style |= WS_CLIPCHILDREN; // reduce flicker
 	return CHtmlView::PreCreateWindow(cs);
 }
 
@@ -87,6 +87,10 @@ void HtmlView::OnInitialUpdate()
 	InitialUpdate();
 //KB	Navigate2(_T("http://www.ambulantplayer.org"),NULL,NULL);
 }
+// Some people on the net override this function to reduce flicker
+afx_msg BOOL HtmlView::OnEraseBkgnd(CDC* pDC){
+	return true;
+};
 
 #ifdef _DEBUG
 void HtmlView::AssertValid() const

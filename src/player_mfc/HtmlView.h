@@ -38,6 +38,7 @@ protected: // create from serialization only
 public:
 	HtmlView(const RECT& rect, CWnd* parent);
 	void InitialUpdate();
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	MmDoc* GetDocument() const;
 
 // Operations

@@ -215,7 +215,7 @@ BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
+	cs.style |= WS_CLIPCHILDREN; // reduce flicker
 	return CView::PreCreateWindow(cs);
 }
 
@@ -266,6 +266,7 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
+	ModifyStyle(0, WS_CLIPCHILDREN); // reduce flicker
 	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
 		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
 		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
