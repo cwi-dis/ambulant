@@ -7,12 +7,17 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
 
+extern CWnd*  topView;
+
 void log_show_message(int level, const char *message) {
 	CShowMessage msg;
 	msg.m_message = (LPCTSTR)ambulant::lib::textptr(message);
 	// XXXX How do I find our topmost window??
-	if (msg.DoModal() == IDSHOWLOG) 
-		PostMessage(NULL, WM_COMMAND, ID_VIEW_LOG, 0);
+	if (msg.DoModal() == IDSHOWLOG && topView) {
+		
+		//PostMessage(sLastMmView, WM_COMMAND, ID_VIEW_LOG, 0);
+		topView->PostMessage(WM_COMMAND, ID_VIEW_LOG);
+	}
 }
 
 // CShowMessage dialog

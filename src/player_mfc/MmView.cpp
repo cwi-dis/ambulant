@@ -129,9 +129,7 @@ create_player_instance(const net::url& u) {
 static gui_player *player = 0;
 static needs_done_redraw = false;
 
-#ifdef	WITH_HTML_WIDGET
 CWnd* topView = NULL;
-#endif // WITH_HTML_WIDGET
 
 	// MmView
 
@@ -199,16 +197,12 @@ MmView::MmView()
 #else
 	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
 #endif
-#ifdef	WITH_HTML_WIDGET
 	topView = this;
-#endif // WITH_HTML_WIDGET
 }
 
 MmView::~MmView()
 {
-#ifdef	WITH_HTML_WIDGET
 	topView = NULL;
-#endif // WITH_HTML_WIDGET
 }
 
 BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
