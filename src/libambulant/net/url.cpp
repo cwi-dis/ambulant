@@ -163,6 +163,12 @@ net::url::url(const string& protocol, const string& host, int port,
  
 net::url::string net::url::get_file() const {
 	std::string file = get_path();
+#ifdef AMBULANT_PLATFORM_WIN32
+	// Sigh, this mix-n-match of filenames and URLs is really messing
+	// us up. If this is a file URL we may need to take off the first
+	// slash, but not always...
+	if (file[0] == '/') file = file.substr(1);
+#endif
 	if(!m_query.empty()) {
 		file += '?';
 		file += m_query;
