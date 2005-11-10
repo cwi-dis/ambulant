@@ -193,12 +193,14 @@ void smil_player::resume() {
 // Started callback from the scheduler
 void smil_player::started_playback() {
 	m_state = common::ps_playing;
+	document_started();
 }
 
 // Done callback from the scheduler
 void smil_player::done_playback() {
 	m_state = common::ps_done;
 	m_timer->pause();
+	document_stopped();
 	if(m_system) 
 		m_system->done(this);
 }
