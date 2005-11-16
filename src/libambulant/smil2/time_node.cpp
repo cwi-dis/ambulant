@@ -113,7 +113,7 @@ time_node::~time_node() {
 	// delete this time states
 	for(int i=0;i<=ts_dead;i++)
 		delete m_time_states[i];
-	
+	delete m_time_calc;
 	// Delete recursively this branch	
 	node_navigator<time_node>::delete_tree(this); 
 }
