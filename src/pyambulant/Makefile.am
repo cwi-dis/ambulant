@@ -59,8 +59,8 @@ install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install
 	
 mostlyclean-am:
-	cd $(srcdir) ; $(PYTHON) setup.py clean
-	rm -r $(srcdir)/build
+	-cd $(srcdir) ; $(PYTHON) setup.py clean
+	-rm -r $(srcdir)/build
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 

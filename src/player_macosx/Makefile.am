@@ -170,13 +170,14 @@ endif
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	
-LDADD = $(top_builddir)/src/libambulant/.libs/libambulant.a \
+LDADD = \
+	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
 	$(extra_sdl_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(LIBINTL) \
-	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
+    $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
 AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime -framework WebKit
 
