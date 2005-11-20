@@ -7571,6 +7571,32 @@ static void player_feedbackObj_dealloc(player_feedbackObject *self)
 	self->ob_type->tp_free((PyObject *)self);
 }
 
+static PyObject *player_feedbackObj_document_started(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->document_started();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_document_stopped(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->document_stopped();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *player_feedbackObj_node_started(player_feedbackObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -7602,6 +7628,10 @@ static PyObject *player_feedbackObj_node_stopped(player_feedbackObject *_self, P
 }
 
 static PyMethodDef player_feedbackObj_methods[] = {
+	{"document_started", (PyCFunction)player_feedbackObj_document_started, 1,
+	 PyDoc_STR("() -> None")},
+	{"document_stopped", (PyCFunction)player_feedbackObj_document_stopped, 1,
+	 PyDoc_STR("() -> None")},
 	{"node_started", (PyCFunction)player_feedbackObj_node_started, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"node_stopped", (PyCFunction)player_feedbackObj_node_stopped, 1,
@@ -11041,7 +11071,7 @@ typedef struct audio_format_choicesObject {
 	ambulant::net::audio_format_choices ob_itself;
 } audio_format_choicesObject;
 
-PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself)
+PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself)
 {
 	audio_format_choicesObject *it;
 	if (itself == NULL)

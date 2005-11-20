@@ -439,6 +439,8 @@ class datasource_factory :
 /// A file demultiplexer expects from its sink.
 class demux_datasink {
   public:
+    virtual ~demux_datasink(){}
+    
 	/// Data push call: consume data with given size and timestamp. Must copy data
 	/// before returning.
     virtual void data_avail(timestamp_t pts, const uint8_t *data, int size) = 0;

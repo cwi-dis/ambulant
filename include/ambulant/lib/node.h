@@ -274,6 +274,8 @@ typedef node_impl node;
 class node_context {
   public:
 	typedef std::map<std::string, custom_test> custom_test_map;
+    
+    virtual ~node_context(){}
 	
 	virtual void 
 	set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;

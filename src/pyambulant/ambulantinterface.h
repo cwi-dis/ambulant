@@ -534,6 +534,8 @@ public:
 	player_feedback(PyObject *itself);
 	virtual ~player_feedback();
 
+	void document_started();
+	void document_stopped();
 	void node_started(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
   private:

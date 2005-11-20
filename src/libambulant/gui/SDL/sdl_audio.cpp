@@ -545,6 +545,10 @@ gui::sdl::sdl_audio_renderer::start(double where)
 		
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x)", (void *)this);
 	if (m_audio_src) {
+	
+		if (m_audio_src->get_start_time() != m_audio_src->get_clip_begin())
+			lib::logger::get_logger()->trace("sdl_audio_renderer: warning: datasource does not support clipBegin");
+			
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);

@@ -6,7 +6,7 @@ PYTHON=python
 
 .SUFFIXES: .txt .html
 
-all: html # pdf
+all: html pdf
 html: $(ALL) html-recursive
 pdf: pdf-recursive
 
