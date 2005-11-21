@@ -473,8 +473,6 @@
 		041655D508F331530017F91F /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
 		041655D608F331530017F91F /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
 		041655D708F331530017F91F /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480D5E907208FB600D39BB5 /* libxerces-c.dylib */; };
-		041655D808F331530017F91F /* libdirac_decoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493212708951DF900F38A0A /* libdirac_decoder.a */; };
-		041655D908F331530017F91F /* libdirac_encoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493213C089520B500F38A0A /* libdirac_encoder.a */; };
 		041655DA08F331530017F91F /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
 		041655DB08F331530017F91F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
 		041655DC08F331530017F91F /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
@@ -708,8 +706,6 @@
 		0427F7EA0898352F0022C4EC /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
 		0427F7EB0898352F0022C4EC /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
 		0427F7EC0898352F0022C4EC /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480D5E907208FB600D39BB5 /* libxerces-c.dylib */; };
-		0427F7EF0898352F0022C4EC /* libdirac_decoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493212708951DF900F38A0A /* libdirac_decoder.a */; };
-		0427F7F00898352F0022C4EC /* libdirac_encoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493213C089520B500F38A0A /* libdirac_encoder.a */; };
 		042AF901053C2F020010C447 /* region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AF8FA053C2F020010C447 /* region.cpp */; };
 		042D9BD8061D8A40002F255F /* none_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 042D9BD5061D8A40002F255F /* none_factory.h */; };
 		042D9BDA061D8A40002F255F /* none_video_renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 042D9BD7061D8A40002F255F /* none_video_renderer.h */; };
@@ -1854,8 +1850,6 @@
 				041655D508F331530017F91F /* ApplicationServices.framework in Frameworks */,
 				041655D608F331530017F91F /* libltdl.a in Frameworks */,
 				041655D708F331530017F91F /* libxerces-c.dylib in Frameworks */,
-				041655D808F331530017F91F /* libdirac_decoder.a in Frameworks */,
-				041655D908F331530017F91F /* libdirac_encoder.a in Frameworks */,
 				041655DA08F331530017F91F /* libavformat.a in Frameworks */,
 				041655DB08F331530017F91F /* libavcodec.a in Frameworks */,
 				041655DC08F331530017F91F /* libavutil.a in Frameworks */,
@@ -1882,8 +1876,6 @@
 				0427F7EA0898352F0022C4EC /* ApplicationServices.framework in Frameworks */,
 				0427F7EB0898352F0022C4EC /* libltdl.a in Frameworks */,
 				0427F7EC0898352F0022C4EC /* libxerces-c.dylib in Frameworks */,
-				0427F7EF0898352F0022C4EC /* libdirac_decoder.a in Frameworks */,
-				0427F7F00898352F0022C4EC /* libdirac_encoder.a in Frameworks */,
 				0459E7FE08DACE2600BF6ED5 /* libavformat.a in Frameworks */,
 				0459E80008DACE5D00BF6ED5 /* libavcodec.a in Frameworks */,
 				0459E80208DACE8100BF6ED5 /* libavutil.a in Frameworks */,
