@@ -196,7 +196,7 @@ inline N* node_navigator<N>::detach(N *n) {
 	}
 
 	N *prev = e;
-	e = e = e->next();
+	e = e->next();
 	while(e) {
 		if(e == n) {
 			// set previous to next

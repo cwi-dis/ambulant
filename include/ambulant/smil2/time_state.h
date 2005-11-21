@@ -50,6 +50,8 @@ class time_node;
 class time_state : public time_traits {
   public:
 	time_state(time_node *tn);
+	virtual ~time_state(){}
+	
 	virtual void enter(qtime_type timestamp) {}
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
@@ -82,6 +84,8 @@ class reset_state : public time_state {
   public:
 	reset_state(time_node *tn)
 	:	time_state(tn) {}
+	virtual ~reset_state(){}
+	
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
@@ -94,6 +98,8 @@ class proactive_state : public time_state {
   public:
 	proactive_state(time_node *tn)
 	:	time_state(tn) {}
+	virtual ~proactive_state(){}
+	
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
@@ -110,6 +116,8 @@ class active_state : public time_state {
   public:
 	active_state(time_node *tn)
 	:	time_state(tn) {}
+	virtual ~active_state(){}
+	
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
@@ -124,6 +132,8 @@ class postactive_state : public time_state {
   public:
 	postactive_state(time_node *tn) 
 	:	time_state(tn) {}
+	virtual ~postactive_state(){}
+	
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp); 
 	virtual void kill(qtime_type timestamp, time_node *oproot);
@@ -138,6 +148,8 @@ class dead_state : public time_state {
   public:
 	dead_state(time_node *tn)
 	:	time_state(tn) {}
+	virtual ~dead_state(){}
+	
 	virtual void enter(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
 	virtual void reset(qtime_type timestamp, time_node *oproot);	 

@@ -113,6 +113,8 @@ class gpath_descr {
 // Returns a point for each parameter value s in [0, path::length())
 class gpath {
   public:
+	virtual ~gpath(){}
+	
 	// Returns the length of the path
 	virtual double length() const = 0;
 	
@@ -134,6 +136,7 @@ class gpath {
 class gpath_builder {
   public:
 	gpath_builder();
+	virtual ~gpath_builder(){}
 	
 	// Builds and returns the path described by gpath_descr
 	gpath *build_path(const gpath_descr* pd);

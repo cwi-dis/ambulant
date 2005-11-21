@@ -145,6 +145,8 @@ namespace detail {
 
 class active_action {
   public:
+	virtual ~active_action(){}
+	
   	// active_timeline calls this to execute the action
   	virtual void fire(active_timeline * const parent) const = 0;
   	virtual void delayed_fire(active_timeline * const parent) const = 0;

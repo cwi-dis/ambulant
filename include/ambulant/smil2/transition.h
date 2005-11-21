@@ -358,6 +358,7 @@ class transition_engine_fade : virtual public transition_blitclass_fade {
 
 class abstract_audio_transition_engine {
   public:
+	virtual ~abstract_audio_transition_engine(){}
 	virtual void init(const lib::event_processor* evp, bool outtrans, const lib::transition_info* info) = 0;
 	virtual const double get_volume(const double soundlevel) = 0;
 	virtual const bool is_done(lib::transition_info::time_type now) = 0;

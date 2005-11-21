@@ -251,6 +251,8 @@ struct priority_attrs {
 
 class schedulable : public time_traits {
   public:
+	virtual ~schedulable(){}
+	
 	virtual const time_attrs* get_time_attrs() const = 0;
 	
 	// Return unresolved when unknown

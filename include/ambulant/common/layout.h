@@ -69,6 +69,7 @@ class alignment {
 /// is has changed parameters on an animation destination.
 class animation_notification {
   public:
+	virtual ~animation_notification(){}
   
   	/// Called by the animator after some animation parameter has changed.
 	virtual void animated() = 0;

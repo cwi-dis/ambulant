@@ -376,9 +376,12 @@ class animate_f {
 		return m_cum?m_f.at(m_sd, u)*(m_ad/m_sd):m_f.at(m_sd, u);
 	}
 	
+#if 0
+	// Unused, and I don't know what they should return.
 	bool set_cumulative(bool c) { m_cum = c;}
 	bool update_ad(time_type ad) { m_ad = ad;}
 	bool update_sd(time_type sd) { m_sd = sd;}
+#endif
 	
 	const F& m_f;
 	time_type m_sd;
