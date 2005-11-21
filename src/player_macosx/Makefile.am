@@ -105,8 +105,8 @@ cocoambulant_bundle: cocoambulant_executable
 #	the one it was linked to.
 if WITH_XERCES_PLUGIN
 	mkdir -p $(BUILDAPPNAME).app/Contents/Frameworks
-	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.25.dylib $(BUILDAPPNAME).app/Contents/Frameworks
-	install_name_tool -change libxerces-c.25.dylib @executable_path/../Frameworks/libxerces-c.25.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces.so
+	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks
+	install_name_tool -change libxerces-c.27.dylib @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces
 endif
 	
 #	Install gettext localizations

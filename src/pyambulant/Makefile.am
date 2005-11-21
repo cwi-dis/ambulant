@@ -11,6 +11,8 @@
 # with multiple pythons, etc).
 #
 
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+
 EXTRA_DIST=setup.py \
     bgenCxxSupport.py bgenBackSupport.py \
     ambulantscan.py ambulantsupport.py genobjects.py \
@@ -50,10 +52,16 @@ PYTHONENV=
 BUILDLIBDIR=`echo ./build/lib.*`
 	
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
-	cd $(srcdir) ; LDFLAGS="-L$(libdir)" $(PYTHON) setup.py build
+	( a=`cd $(ambulantlibdir); pwd` ; \
+	  cd $(srcdir) ; \
+	  LDFLAGS="-L$$a" $(PYTHON) setup.py build ; \
+	)
 
 check-pyambulant:
-	cd $(srcdir) ; LD_LIBRARY_PATH=$(libdir) $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py
+	( a=`cd $(ambulantlibdir); pwd` ; \
+	  cd $(srcdir) ; \
+	  LD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py ; \
+	)
 
 install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install

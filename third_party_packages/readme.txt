@@ -64,9 +64,9 @@ expat-unix:
 	only look in third_party_packages/expat-unix.
 
 xerces-unix:
-	Download xerces-C++ Version 2.6.0 Source Release from
-	<http://xml.apache.org> and extract xerces-c-src_2_6_0 and extract
-	into xerces-c-src_2_6_0 in the directory
+	Download xerces-C++ Version 2.7.0 Source Release from
+	<http://xerces.apache.org> and extract xerces-c-src_2_7_0 and extract
+	into xerces-c-src_2_7_0 in the directory
 	(.../ambulant/third_party_packages).
 	Then do the following:
 		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
@@ -78,7 +78,7 @@ xerces-unix:
 	option:
 	    linux$ ./runConfigure -p linux -P $tppdir/xerces-unix
 	or
-		macosx$ ./runConfigure -p macosx -n native -P $tppdir/xerces-unix
+		macosx$ ./runConfigure -p macosx -n native -t native -P $tppdir/xerces-unix
 	After this "gmake" and "gmake install" will do the job.
 	
 	At this point in time you must specify --with-xerces to the Ambulant
@@ -94,7 +94,15 @@ xerces-unix:
 	the directory containing libxerces-c.so.
 
 ffmpeg:
-	You need ffmpeg 0.4.8. Download from
+    The best option is to use the the fairly recent frozen cvs-ffmpeg
+    that was created especially for Ambulant. You find this on the
+    Ambulant SF download pages as ffmpeg-cvs-20051121.tgz. Unpack this
+    into this directory (third_party_packages) as ffmpeg-cvs, and configure
+    and build it. No need to install, if you have kept all pathnames as
+    stated here the Ambulant configure script will pick it up.
+    
+	Alternatively, use ffmpeg 0.4.8 or 0.4.9pre, but some functionality
+	will not work in this case. Download from
 	<http://ffmpeg.sourceforge.net/> and unpack into ffmpeg-0.4.8 in
 	this directory (.../ambulant/third_party_packages).
 
@@ -122,13 +130,16 @@ ffmpeg:
 	X) or no audio and video (Linux).
 	
 sdl:
-	Ambulant has been tested with sdl 1.2.6 or 1.2.7. You find this at
+	Ambulant has been tested with sdl 1.2.6 thru 1.2.9. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure
 	the sdl-config utility is on your $PATH when running the configure
 	for Ambulant.
 
-	Note for MacOSX: the SDL install will fail if there are spaces in
-	the pathname *of the source directory pathname*.
+	Notes for MacOSX:
+	- the SDL install will fail if there are spaces in the 
+	  pathname *of the source directory pathname*.
+	- You may need to use "./configure --disable-cdrom" to build SDL
+	  if you've installed xcode 2.2.
 	
 arts:
 	Linux only.
