@@ -1,3 +1,268 @@
+2005-11-21 14:20  jackjansen
+
+	* Regenerated.
+
+2005-11-21 13:02  jackjansen
+
+	* Squashed more gcc 4 warnings.
+
+2005-11-21 13:00  jackjansen
+
+	* Ported to Xcode 2.2 and gcc 4.
+
+2005-11-21 11:25  jackjansen
+
+	* Gearing up towards the 1.6 distribution./
+
+2005-11-20 18:11  jackjansen
+
+	* Tweaks for xcode 2.2 and better cleanup.
+
+2005-11-20 02:21  jackjansen
+
+	* Minor mods for gcc 4.0.1/xcode 2.2.
+
+2005-11-16 13:05  koelimoe
+
+	* added VC7 project files for live.com
+
+2005-11-16 11:48  keesblom
+
+	* Removed memory leak time_node_calc, detected by Visual Leak
+	  Detector
+
+2005-11-14 16:45  keesblom
+
+	* Initial Ambulant plugin fot Firefox on Windows
+
+2005-11-10 15:58  jackjansen
+
+	* Temporarily disabled going to fragments.
+
+2005-11-10 15:17  jackjansen
+
+	* Make "View Log" button actually show the log by sending a command
+	  to the top view.
+
+2005-11-10 15:17  jackjansen
+
+	* Reverted to previous xerces.
+
+2005-11-10 14:34  jackjansen
+
+	* More special-case code for handling both windows pathnames and
+	  URLs.
+
+2005-11-10 10:15  jackjansen
+
+	* Added callbacks to document_started() and document_stopped().
+
+2005-11-09 17:07  keesblom
+
+	* Added a fix for clipEnd==-1
+
+2005-11-09 15:35  keesblom
+
+	* Attempt to reduce flicker when using HtmlWidget by: - adding
+	  WS_CLIPCHILDREN flag in style field of CREATESTRUCT in the
+	  PreCreateWindow()   functions of HtmlView and Mmview - overriding
+	  OnEraseBkgnd() function in HtmlView to let the system think that
+	  background   drawing has already been done
+
+	  There is still some undesirable behaviour: CHTMLView(url,...),
+	  when url contains a tag in the middle of a page, first draws the
+	  top of the page, immediately followed by the portion of the page
+	  containing the tag. In Amis, Marisa DeMeglio has a solution for
+	  this.
+
+2005-11-09 14:33  koelimoe
+
+	*  removed an forgotten /*AM_DBG*/
+
+2005-11-09 14:31  koelimoe
+
+	* fixed rtsp.
+
+2005-11-08 15:49  jackjansen
+
+	* Allow a hosting implementation to get callbacks for node and
+	  document started and stopped. Not implemented yet for documents.
+
+2005-11-08 14:32  jackjansen
+
+	* Implemented handling of opening url#frag documents on windows and
+	  starting the document at the right place.
+
+2005-11-08 14:31  jackjansen
+
+	* For some reason renderer.cpp was still in here (in stead of
+	  renderer_impl).
+
+2005-11-08 12:55  keesblom
+
+	* Added some notes how to make the plugin samples for Firefox work
+	  on Win32.
+
+2005-11-07 13:19  keesblom
+
+	* Update: How to get a somewhat working AmbulantPlayer plugin for
+	  Firefox on Linux Fedora Core 4 with a lot of irrepairable design
+	  flaws.
+
+2005-11-02 15:46  keesblom
+
+	* Added some notes how to obtain a working firefox plugin
+
+2005-11-01 14:40  jackjansen
+
+	* - Added build instructions for pdf - Regenerated
+
+2005-11-01 13:41  jackjansen
+
+	* More tweaks to make pyambulant build on Linux.
+
+2005-10-31 16:38  jackjansen
+
+	* Squashed the remaining warnings (which are errors under some
+	  compilers): - Some _New methods needed to have const arguments.
+	  - The hack for returning reference arguments returned from const
+	  methods   wasn't good enough. Replaced by a different hack.
+
+2005-10-31 16:34  jackjansen
+
+	* Fixed "make check" and "make clean".
+
+2005-10-28 17:21  jackjansen
+
+	* Hack for compiling on FC4: allow xml_parser::parse with two
+	  slightly different signatures.
+
+2005-10-28 16:50  jackjansen
+
+	* ENABLE_NLS needs to be defined to enable compiling on FC4.
+
+2005-10-28 14:52  jackjansen
+
+	* ShowMessage dialog with a "show log" button.
+
+2005-10-17 14:08  jackjansen
+
+	* Handle the ShowMessage ourselves, so we can add a "Show Log"
+	  button. Not complete: we need to resize the message box and the
+	  "Show Log" button doesn't work yet.
+
+2005-10-14 16:36  koelimoe
+
+	* fixed rtsp [only tested with audio]
+
+2005-10-14 13:53  jackjansen
+
+	* It turns out the solution to the mountains problem is
+	  implementing get_start_time() correctly: it should return the
+	  actual timestamp of the first sample returned to the user (i.e.
+	  depending on whether the datasource implements clip_begin or not
+	  it returns clip_begin or 0).
+
+2005-10-14 13:23  jackjansen
+
+	* Pathnames got mangled in 1.22 (maybe due to Kees' machine having
+	  a different layout?), reverting to 1.21.
+
+2005-10-14 11:56  jackjansen
+
+	* If clip_begin doesn't fall on the boundary of a data buffer we
+	  need to gobble up some bytes from the beginning of the buffer
+	  before passing it to the client.
+
+2005-10-14 11:27  jackjansen
+
+	* Newer ffmpeg seems to have some rtsp support, but it doesn't work
+	  yet.	For that reason we specifically forego passing rtsp urls to
+	  ffmpeg, so we don't get confused by error messages (thinking they
+	  come from Live).
+
+2005-10-14 10:28  koelimoe
+
+	* changes to clipend clipbegin
+
+2005-10-12 13:54  keesblom
+
+	* Changes s.t. "make distcheck" works up to "make uninstall" (but
+	  not beyond)
+
+2005-10-11 17:10  jackjansen
+
+	* Added a couple of hacks to make linked documents work again on
+	  Windows. But we really need to cleanup the URL stuff...
+
+2005-10-11 16:43  jackjansen
+
+	* Various fixes to make clip_end work. Appears to be incomplete,
+	  because now the player hangs occasionally.
+
+2005-10-11 00:10  jackjansen
+
+	* Adapted pyambulant to the current state of the API, and added a
+	  note about updating it to the readme.
+
+2005-10-10 16:39  jackjansen
+
+	* Reverting 1.66.2.1, which changed to order of deleting objects on
+	  cleanup of the smil_player. That change caused a crash when
+	  jumping from one document to the next (as in the Nokia tests),
+	  and I can't remember at all what it tried to fix.
+
+2005-10-10 16:22  keesblom
+
+	* Reverted back to version 1.8
+
+2005-10-10 14:53  jackjansen
+
+	* Fixed build procedure on 10.4 (Help file indexing).
+
+2005-10-10 14:52  jackjansen
+
+	* Additions for Cocoa html renderer.
+
+2005-10-10 14:40  jackjansen
+
+	* --with-expat argument was ignored, fixed.
+
+	  Fixes #1306933.
+
+2005-10-10 14:19  keesblom
+
+	* Added missing file pkg.m4 to EXTRA_DIST
+
+2005-10-10 12:45  jackjansen
+
+	* License changed to LGPL.
+
+2005-10-10 10:36  jackjansen
+
+	* Detail
+
+2005-10-07 17:06  jackjansen
+
+	* Details.
+
+2005-10-07 17:05  jackjansen
+
+	* Don't attempt to read terminating ";", apparently there are GIF
+	  files without it.
+
+2005-10-07 16:22  jackjansen
+
+	* Got clip-begin and clip-end working on Windows.
+
+2005-10-07 15:07  keesblom
+
+	* Changed default backgroundColor to white.
+
+2005-10-07 13:25  jackjansen
+
+	* Updated.
+
 2005-10-07 11:54  jackjansen
 
 	* Merging exp-jack-cocoa-html branch: general cleanup of HTML
@@ -1134,11 +1399,6 @@
 
 	* added a simple seek for rtsp.
 
-2005-05-09 12:19  keesblom
-
-	* Removed NYC-SMIL2-params.smil because it is not a good enough
-	  example for the distribution
-
 2005-05-09 12:09  keesblom
 
 	* Calling pthread_cond_timedwait() with NULL pointer for the
@@ -1152,14 +1412,6 @@
 2005-05-02 17:40  keesblom
 
 	* Modification for Fedora Core 3 (gcc 3.4.3)
-
-2005-04-29 14:20  jackjansen
-
-	* Removing binaries
-
-2005-04-29 14:15  jackjansen
-
-	* Removed binary files.
 
 2005-04-29 13:55  koelimoe
 
@@ -1833,12 +2085,6 @@
 
 	* Adapted for new parser driver signature.
 
-2005-02-01 15:41  jackjansen
-
-	* Temporary version of the demo document that uses fontColor,
-	  fontSize and fontName parameters to modify text rendering (and
-	  make it ugly/unreadable:-)
-
 2005-01-27 13:51  keesblom
 
 	* Various refinements in parser error handling: - Made changes in
@@ -2351,14 +2597,6 @@
 
 	* [no log message]
 
-2004-11-17 15:53  jackjansen
-
-	* Remove outdated file.
-
-2004-11-17 15:53  jackjansen
-
-	* Removed outdated file.
-
 2004-11-17 15:50  jackjansen
 
 	* - Install the manpage - Install the documentation (into
@@ -2544,7 +2782,7 @@
 	* Changed warn to debug. These where very geeky msgs so i don't
 	  think these should end up on the user screen anyway
 
-2004-11-10 12:34  koelimoe
+2004-11-10 12:35  koelimoe
 
 	* Added the xerces parser to the wndows player.  although the
 	  windows player doesn't uses the factory construction for this .
@@ -3384,22 +3622,11 @@
 
 	* Prevent descendents of paused nodes to go active.
 
-2004-07-19 17:01  kleanthis
-
-	* Avoid re-entering the main scheduler loop. Leave any events for
-	  the next iteration.  This should increase a lot the application's
-	  stability when links fire.
-
 2004-07-19 16:57  kleanthis
 
 	* Avoid re-entering the main scheduler loop. Leave any events for
 	  the next iteration.  This should increase a lot the application's
 	  stability when links fire.
-
-2004-07-18 19:53  kleanthis
-
-	* The latest win32 binary including smal improvements here and
-	  there.
 
 2004-07-18 19:42  kleanthis
 
@@ -3417,10 +3644,6 @@
 
 	* Auto-start dropped docs.
 
-2004-07-16 22:39  kleanthis
-
-	* Some more refinements on pausing plus auto-start dropped docs
-
 2004-07-16 22:36  kleanthis
 
 	* Some more refinements on pausing.
@@ -3429,12 +3652,6 @@
 
 	* Cleanup, removed debug output, added installation directory for
 	  the Welcome document
-
-2004-07-16 16:59  kleanthis
-
-	* Some more steps in integrating pause semantics into the model.
-	  The first result is that the ref document LinkingOnly now seems
-	  to play correctly.
 
 2004-07-16 16:53  kleanthis
 
@@ -3486,10 +3703,6 @@
 	  a complete "ipk" package and let the Zaurus Package Installer do
 	  all the work.  The old text is now called HISTORY-ZAURUS. Also
 	  the "ipk" package has been commited.
-
-2004-07-06 14:41  jackjansen
-
-	* Final candidates.
 
 2004-07-06 13:56  jackjansen
 
@@ -3564,11 +3777,6 @@
 	  Fixed.  - Dick wants the two-level name structure in the start
 	  menu back, and   I couldn't be bothered to argue:-)
 
-2004-07-05 10:20  kleanthis
-
-	* Various small plus disable slideWipe transitions until i provide
-	  a fix.
-
 2004-07-05 10:01  kleanthis
 
 	* Set the resolution of the event processor to 50ms. Should be even
@@ -3583,18 +3791,6 @@
 
 	* Disable slideWipe transitions until i provide a fix (i will
 	  attempt to do this later today).
-
-2004-07-04 15:54  kleanthis
-
-	* Various small changes based on Dick's report a) Fixed version
-	  string in the About box b) Changed check mark icon with the
-	  notepad icon. Please design a better one and we can replace it c)
-	  Some bogus URLs are catched d) Fixed load settings e) Verified
-	  that opening by double click works. BUT requires the correct
-	  registry entries. For example if the command is
-	  [<home>\AmbulantPlayer"] instead of [<home>\AmbulantPlayer" "%1"]
-	  the player will be opened by the filename will not be passed by
-	  the system.
 
 2004-07-04 15:46  kleanthis
 
@@ -3677,7 +3873,7 @@
 	* Unicode and URL related changes.  The WinCE player compiles and
 	  runs again.
 
-2004-07-02 11:35  jackjansen
+2004-07-02 11:36  jackjansen
 
 	* Fixed installer: - Added License - Fixed document icon - Changed
 	  Start menu folder name
@@ -3722,10 +3918,6 @@
 
 	* Autostart documents passed through the schell. But keep the
 	  mechanism just i case.
-
-2004-07-01 14:36  kleanthis
-
-	* The latest binary with doc linking and bug #983372 fixed.
 
 2004-07-01 14:26  kleanthis
 
