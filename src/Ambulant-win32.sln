@@ -11,25 +11,35 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		DebugNoXerces = DebugNoXerces
 		DebugShlib = DebugShlib
 		Release = Release
+		ReleaseNoXerces = ReleaseNoXerces
 		ReleaseShlib = ReleaseShlib
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.ActiveCfg = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.Build.0 = Debug|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugNoXerces.ActiveCfg = DebugNoXerces|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugNoXerces.Build.0 = DebugNoXerces|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.ActiveCfg = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.Build.0 = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = Release|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseNoXerces.ActiveCfg = ReleaseNoXerces|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseNoXerces.Build.0 = ReleaseNoXerces|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.Build.0 = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.ActiveCfg = Debug|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug.Build.0 = Debug|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugNoXerces.ActiveCfg = DebugNoXerces|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugNoXerces.Build.0 = DebugNoXerces|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib.ActiveCfg = DebugShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib.Build.0 = DebugShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.ActiveCfg = Release|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release.Build.0 = Release|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseNoXerces.ActiveCfg = ReleaseNoXerces|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseNoXerces.Build.0 = ReleaseNoXerces|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib.Build.0 = ReleaseShlib|Win32
 	EndGlobalSection
