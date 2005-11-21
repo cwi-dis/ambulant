@@ -1,15 +1,11 @@
-2005-11-21 15:24  koelimoe
+2005-11-21 15:52  jackjansen
 
-	* Automated Changelog Update
+	* Merged noxerces projects and solution into the standard one.
 
 2005-11-21 15:24  jackjansen
 
 	* Xerces and non-xerces versions of the Visual Studio files were
 	  confused.  Fixed.
-
-2005-11-21 15:08  koelimoe
-
-	* Automated Changelog Update
 
 2005-11-21 14:20  jackjansen
 
@@ -1382,10 +1378,6 @@
 
 	* clip_end implementation. (untested)
 
-2005-05-23 16:22  koelimoe
-
-	* Updated the Changelog
-
 2005-05-23 16:15  koelimoe
 
 	* updated version numbers
@@ -1425,10 +1417,6 @@
 2005-05-02 17:40  keesblom
 
 	* Modification for Fedora Core 3 (gcc 3.4.3)
-
-2005-04-29 13:55  koelimoe
-
-	* New Changelog (29/4/05)
 
 2005-04-29 13:37  jackjansen
 
@@ -2517,10 +2505,6 @@
 	* Workaround for a bug in the OSX compiler (optimizer? linker?)
 	  that caused plugins to crash.
 
-2004-12-01 16:59  koelimoe
-
-	* a new and compacter Changelog
-
 2004-11-30 17:11  jackjansen
 
 	* Started work on getting make dist/make distcheck to work.
@@ -2570,10 +2554,6 @@
 	* Implemented linked documents. It doesn't work really as it should
 	  do, but neither does the windows implementation, from which it
 	  was copied.
-
-2004-11-19 12:43  koelimoe
-
-	* a chanlog created with cvs2cl
 
 2004-11-18 23:41  jackjansen
 
