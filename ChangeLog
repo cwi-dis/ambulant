@@ -1,3 +1,8 @@
+2005-11-22 15:35  jackjansen
+
+	* Added targets DebugNoHtmlNoXerces and ReleaseNoHtmlNoXerces for
+	  the firefox plugin.
+
 2005-11-21 17:42  jackjansen
 
 	* Tweaks for new Xerces, intel-mac.
