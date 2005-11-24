@@ -39,9 +39,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng13.lib ..\..\lib\win32\zlib.lib"
 				OutputFile=".\Debug/npambulant.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
+				IgnoreDefaultLibraryNames="LIBCMTD.lib;LIBC"
 				ModuleDefinitionFile=".\ambulant.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/npambulant.pdb"

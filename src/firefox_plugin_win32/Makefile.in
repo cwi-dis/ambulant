@@ -36,7 +36,7 @@ REQUIRES = plugin \
 
 CPPSRCS = plugin.cpp
 
-SHARED_LIBRARY_LIBS = ../../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS =  ../../../third_party_packages/GeckoPluginSDK-samples/Win32SDK/sdk/samples/common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
 
 DEFFILE = $(srcdir)/ambulant.def
 RESFILE = ambulant.res
