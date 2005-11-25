@@ -1,3 +1,22 @@
+2005-11-25 11:09  keesblom
+
+	* Changed MIME-type that the plugin supports to "application/smil"
+
+2005-11-24 15:55  keesblom
+
+	* Changed project properties and README.txt such that building the
+	  firefox plugin really works with the downloaded SDK package from
+	  Mozilla.org
+
+2005-11-23 18:22  keesblom
+
+	* Added firefox_plugin_win32 to the repository.  The initial
+	  version works only on win32.	It can play .smil files (audio,
+	  video, text and SMIL interaction).  No player controls yet
+	  (start,stop,pause,preferences,log,xml settings) .  It is derived
+	  from Mozilla's GeckoPluginSDK-samples which must be downloaded
+	  and build first in third_party_packages.
+
 2005-11-22 15:35  jackjansen
 
 	* Added targets DebugNoHtmlNoXerces and ReleaseNoHtmlNoXerces for
