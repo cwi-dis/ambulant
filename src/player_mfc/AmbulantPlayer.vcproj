@@ -34,11 +34,12 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib;msvcrt.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				TargetMachine="1"/>
@@ -91,11 +92,12 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames="LIBC.lib"
-				GenerateDebugInformation="TRUE"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib"
+				GenerateDebugInformation="FALSE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -152,7 +154,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -264,6 +266,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libjpeg.lib;libexpat.lib;libpng.lib;zlib.lib"
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32"
@@ -311,7 +314,7 @@
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;WITH_HTML_WIDGET"
 				MinimalRebuild="FALSE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
@@ -321,11 +324,12 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libjpeg.lib;libexpat.lib;libpng.lib;zlib.lib"
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

@@ -1916,18 +1916,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=..\..\bin\win32\zlib.dll
-  Destination=%MAINDIR%\zlib.dll
-  Flags=0001000010000011
-end
-item: Install File
-  Source=..\..\bin\win32\libpng13.dll
-  Destination=%MAINDIR%\libpng13.dll
-  Flags=0000000010000011
-end
-item: Install File
-  Source=..\..\bin\win32\xerces-c_2_6.dll
-  Destination=%MAINDIR%\xerces-c_2_6.dll
+  Source=..\..\bin\win32\xerces-c_2_7.dll
+  Destination=%MAINDIR%\xerces-c_2_7.dll
   Flags=0001000010000011
 end
 item: Install File
@@ -1944,11 +1934,6 @@ item: Install File
   Source=..\..\bin\win32\AmbulantPlayer.exe
   Destination=%MAINDIR%\AmbulantPlayer.exe
   Flags=0000000010000011
-end
-item: Install File
-  Source=..\..\bin\win32\libexpat.dll
-  Destination=%MAINDIR%\libexpat.dll
-  Flags=0000000010000010
 end
 item: Install File
   Source=..\..\bin\win32\settings.xml

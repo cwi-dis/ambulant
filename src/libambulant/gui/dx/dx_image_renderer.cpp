@@ -27,10 +27,6 @@
 
 #include "ambulant/gui/dx/dx_image_renderer.h"
 
-// I hate this, but it seems to be the standard way to make
-// sure a library is included:
-#pragma comment (lib,"libjpeg.lib")
-
 //#define AM_DBG
 
 #ifndef AM_DBG

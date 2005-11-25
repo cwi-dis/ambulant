@@ -26,9 +26,6 @@
 #ifndef AMBULANT_GUI_PNG_DECODER_H
 #define AMBULANT_GUI_PNG_DECODER_H
 
-#pragma comment (lib,"libpng13.lib")
-#pragma comment (lib,"zlib.lib")
-
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif

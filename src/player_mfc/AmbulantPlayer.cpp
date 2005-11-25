@@ -36,9 +36,6 @@
 
 using namespace ambulant;
 
-#pragma comment (lib,"libjpeg.lib")
-#pragma comment (lib,"libexpat.lib")
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

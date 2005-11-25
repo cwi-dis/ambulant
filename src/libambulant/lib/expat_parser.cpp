@@ -31,12 +31,6 @@
 
 using namespace ambulant;
 
-#ifdef AMBULANT_PLATFORM_WIN32
-// I hate this, but it seems to be the standard way to make sure
-// libraries are included on Win32.
-#pragma comment (lib,"libexpat.lib")
-#endif
-
 lib::xml_parser*
 lib::expat_factory::new_parser(
 		sax_content_handler* content_handler, 

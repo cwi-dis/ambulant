@@ -24,8 +24,8 @@ Global
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugNoXerces.Build.0 = DebugNoXerces|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.ActiveCfg = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib.Build.0 = DebugShlib|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = DebugNoHtmlNoXerces|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = DebugNoHtmlNoXerces|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.ActiveCfg = Release|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release.Build.0 = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseNoXerces.ActiveCfg = ReleaseNoXerces|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseNoXerces.Build.0 = ReleaseNoXerces|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib.ActiveCfg = ReleaseShlib|Win32

@@ -90,8 +90,6 @@ using namespace ambulant;
 #ifdef AM_PLAYER_DG
 typedef gui::dg::dg_player gui_player;
 typedef gui::dg::dg_player_callbacks gui_callbacks;
-#pragma comment (lib,"mp3lib.lib")
-#pragma comment (lib,"libpng13.lib")
 #else 
 typedef gui::dx::dx_player gui_player;
 typedef gui::dx::dx_player_callbacks gui_callbacks;
