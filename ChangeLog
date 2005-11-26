@@ -1,3 +1,19 @@
+2005-11-25 17:17  jackjansen
+
+	* Third party packages for Windows updated. Also got rid of most of
+	  the horrible #pragma lib constructs to load libraries, in stead
+	  specifying them in the project files (with the exception of
+	  various OLE and directx libraries).  And use all libraries except
+	  xerces statically.
+
+2005-11-25 17:15  jackjansen
+
+	* Third party packages for Windows updated.
+
+2005-11-25 16:41  jackjansen
+
+	* Third party packages for Windows updated.
+
 2005-11-25 11:09  keesblom
 
 	* Changed MIME-type that the plugin supports to "application/smil"
