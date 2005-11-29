@@ -99,12 +99,8 @@ please report back.
 It is possible to build the various packages AmbulantPlayer depends on from
 source (but read on for an easier solution).
 Install the following distributions into directories in third_party_packages:
-- expat: XXXX
-- jpeg: XXXX
-- lpng125: XXXX
-- mp3lib: XXXX
-- zlib: XXXX
-- xerces: XXXX
+expat, jpeg, lpng125, mp3lib, zlib, xerces. Third_party_packages\readme.txt
+has the exact version info you need.
 As some of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
 third_party_packages-WIN.zip archive, it contains versions that
@@ -130,7 +126,7 @@ needed copies by hand.
 After these steps you are ready to build AmbulantPlayer itself:to build it 
 with xerces support open src\Ambulant-win32.sln in Visual Studio, select the Release configuration
 and do Build->Build Solution. Alternatively, if you don't want xerces support,
-there is an Ambulant-win32-noxerces.sln solution too.
+there are configurations for building Ambulant without xerces.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
@@ -171,11 +167,8 @@ in the project files, only the ones for this specific platform (ARM processor,
 non-debugging, PocketPC operating system) have been kept up-to-date.
 
 Install the following distributions into directories in third_party_packages:
-- expat: XXXX
-- jpeg: XXXX
-- lpng125: XXXX
-- mp3lib: XXXX
-- zlibce: XXXX
+expat, jpeg, lpng125, mp3lib, zlibce. third_party_packages\readme.txt has the
+version info.
 As most of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
 third_party_packages-WIN.zip archive, it contains versions that

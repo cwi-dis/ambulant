@@ -19,19 +19,19 @@ expat:
 xerces:
 	windows only.
 	
-	Download xerces-C++ Version 2.6.0 Source Release from
-	<http://xml.apache.org> and extract xerces-c-src_2_6_0 and put its
+	Download xerces-C++ Version 2.7.0 Source Release from
+	<http://xerces.apache.org> and extract xerces-c-src_2_7_0 and put its
 	content in the directory .../ambulant/third_party_packages/
 
 	Next read the Readme.html included in the xerces distribution and
 	follow the MSVC Version 7 buil instructions. After building xerces
-	copy xerces-c_2_6.dll and xerces-depcom_2_6.dll to
+	copy xerces-c_2_7.dll and xerces-depcom_2_7.dll to
 	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to
 	ambulant/lib.win32. The files are located in
 	xerces-c-src_2_6_0\Build\Win32\VC7\Release.
 
 	If you want to compile AmbulantPlayer without xerces support use the
-	Ambulant-win32-noxerces.sln solution.
+	NoXerces configurations in the Ambulant solution.
 	
 	
 others:
@@ -130,7 +130,7 @@ ffmpeg:
 	X) or no audio and video (Linux).
 	
 sdl:
-	Ambulant has been tested with sdl 1.2.6 thru 1.2.9. You find this at
+	Ambulant has been tested with sdl 1.2.5 thru 1.2.9. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure
 	the sdl-config utility is on your $PATH when running the configure
 	for Ambulant.
