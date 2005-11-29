@@ -68,6 +68,7 @@ namespace detail {
 
 class rawdatasink {
   public:
+	virtual ~rawdatasink(){}
     virtual int get_sinkbuffer(uint8_t **datap) = 0;
 	virtual void pushdata(int size) = 0;
 };

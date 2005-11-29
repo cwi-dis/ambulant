@@ -323,7 +323,9 @@ ffmpeg_demux::run()
 {
 	m_lock.enter();
 	int pkt_nr;
-	int streamnr = video_stream_nr(); ;
+#if LIBAVFORMAT_BUILD > 4628
+	int streamnr = video_stream_nr();
+#endif
 	timestamp_t pts;
 	pkt_nr = 0;
 	assert(m_con);

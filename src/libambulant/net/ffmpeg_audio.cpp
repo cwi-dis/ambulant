@@ -406,7 +406,7 @@ ffmpeg_decoder_datasource::data_avail()
 							int bytes_unwanted = (delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000;
 							bytes_unwanted &= ~3;
 							AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: clip_begin within buffer, dropping %lld us, %d bytes", delta_t_unwanted, bytes_unwanted);
-							char *tmpp = m_buffer.get_read_ptr();
+							(void)m_buffer.get_read_ptr();
 							assert(m_buffer.size() > bytes_unwanted);
 							m_buffer.readdone(bytes_unwanted);
 						}
