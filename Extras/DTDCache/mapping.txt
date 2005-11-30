@@ -1,70 +1,11 @@
 # odd lines are URLs as used in .smil files
 # even lines are relative pathnames of the corresponding cache
+# even line starting with a ! means the entry gives a warning message
 #
 # SMIL 2.0 only has one entry point:
 #
 http://www.w3.org/2001/SMIL20/SMIL20.dtd
 DTDCache/SMIL20/SMIL20.dtd
-#
-# SMIL 2.1 has 4 entry points:
-#
-http://www.w3.org/2005/SMIL21/WD/SMIL21.dtd
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/WD/Language
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/WD/Mobile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/WD/MobileProfile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/WD/ExtendedMobile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-http://www.w3.org/2005/SMIL21/WD/ExtendedMobileProfile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-#
-# SMIL 2.1 as RC 
-#
-http://www.w3.org/2005/SMIL21/CR/SMIL21.dtd
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/CR/Language
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/CR/Mobile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/CR/MobileProfile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/CR/ExtendedMobile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-http://www.w3.org/2005/SMIL21/CR/ExtendedMobileProfile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-#
-# SMIL 2.1 as CR 
-#
-http://www.w3.org/2005/SMIL21/CR/SMIL21.dtd
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/CR/Language
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/CR/Mobile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/CR/MobileProfile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/CR/ExtendedMobile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-http://www.w3.org/2005/SMIL21/CR/ExtendedMobileProfile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-#
-# SMIL 2.1 as PR 
-#
-http://www.w3.org/2005/SMIL21/PR/SMIL21.dtd
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/PR/Language
-DTDCache/SMIL21/SMIL21.dtd
-http://www.w3.org/2005/SMIL21/PR/Mobile
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/PR/SMIL21Mobile.dtd
-DTDCache/SMIL21/SMIL21Mobile.dtd
-http://www.w3.org/2005/SMIL21/PR/ExtendedMobile
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-http://www.w3.org/2005/SMIL21/PR/SMIL21ExtendedMobile.dtd
-DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
 #
 # SMIL 2.1 in final form
 #
@@ -80,3 +21,77 @@ http://www.w3.org/2005/SMIL21/ExtendedMobile
 DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
 http://www.w3.org/2005/SMIL21/SMIL21ExtendedMobile.dtd
 DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
+#
+# SMIL 2.1 has 4 obsolete entry points:
+#
+http://www.w3.org/2005/SMIL21/WD/SMIL21.dtd
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/Language
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/Mobile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/SMIL21Mobile.dtd
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/MobileProfile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/ExtendedMobile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/SMIL21ExtendedMobile.dtd
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/WD/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+#
+# SMIL 2.1 as RC 
+#
+http://www.w3.org/2005/SMIL21/RC/SMIL21.dtd
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/Language
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/Mobile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/SMIL21Mobile.dtd
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/MobileProfile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/ExtendedMobile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/SMIL21ExtendedMobile.dtd
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/RC/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+#
+# SMIL 2.1 as CR 
+#
+http://www.w3.org/2005/SMIL21/CR/SMIL21.dtd
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/Language
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/Mobile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/SMIL21Mobile.dtd
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/MobileProfile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/ExtendedMobile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/SMIL21ExtendedMobile.dtd
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/CR/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+#
+# SMIL 2.1 as PR 
+#
+http://www.w3.org/2005/SMIL21/PR/SMIL21.dtd
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/Language
+DTDCache/SMIL21/SMIL21.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/Mobile
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/SMIL21Mobile.dtd
+DTDCache/SMIL21/SMIL21Mobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/ExtendedMobile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/SMIL21ExtendedMobile.dtd
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete
+http://www.w3.org/2005/SMIL21/PR/ExtendedMobileProfile
+DTDCache/SMIL21/SMIL21ExtendedMobile.dtd?obsolete

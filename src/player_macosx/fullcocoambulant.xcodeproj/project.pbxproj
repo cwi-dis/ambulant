@@ -724,6 +724,11 @@
 		042EBB4E08EC84B500DB2F0E /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */; };
 		042EBB4F08EC84B500DB2F0E /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */; };
 		042EBB5A08EC869800DB2F0E /* renderer_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD68089E23CF00C44EA0 /* renderer_impl.h */; };
+		042EBD17093E5D18005CFBC8 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 042EBCD4093E5D18005CFBC8 /* DTDCache */; };
+		042EBD18093E5D18005CFBC8 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 042EBCD4093E5D18005CFBC8 /* DTDCache */; };
+		042EBD19093E5D18005CFBC8 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 042EBCD4093E5D18005CFBC8 /* DTDCache */; };
+		042EBD1A093E5D18005CFBC8 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 042EBCD4093E5D18005CFBC8 /* DTDCache */; };
+		042EBD1B093E5D18005CFBC8 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 042EBCD4093E5D18005CFBC8 /* DTDCache */; };
 		04382B9805D7AEE700CFA029 /* layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382ABE05D7AEE600CFA029 /* layout.h */; };
 		04382B9B05D7AEE700CFA029 /* playable.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382AC105D7AEE600CFA029 /* playable.h */; };
 		04382B9C05D7AEE700CFA029 /* player.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382AC205D7AEE600CFA029 /* player.h */; };
@@ -1571,6 +1576,7 @@
 		042D9BE3061D8AE0002F255F /* raw_video_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = raw_video_datasource.cpp; sourceTree = "<group>"; };
 		042EBB4408EC849700DB2F0E /* cocoa_html.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_html.h; sourceTree = "<group>"; };
 		042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_html.mm; sourceTree = "<group>"; };
+		042EBCD4093E5D18005CFBC8 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04382ABE05D7AEE600CFA029 /* layout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = layout.h; sourceTree = "<group>"; };
 		04382AC105D7AEE600CFA029 /* playable.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = playable.h; sourceTree = "<group>"; };
 		04382AC205D7AEE600CFA029 /* player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
@@ -2470,6 +2476,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				042EBCD4093E5D18005CFBC8 /* DTDCache */,
 				04878D3C061AB9A5008573FA /* systemTestSettings.xml */,
 				04AD6622060A5A9200487334 /* pause.png */,
 				04AD6623060A5A9200487334 /* play.png */,
@@ -3942,6 +3949,7 @@
 				0416557308F331530017F91F /* systemTestSettings.xml in Resources */,
 				0416557408F331530017F91F /* cocoambulant_Prefix.pch in Resources */,
 				0416557508F331530017F91F /* Log.nib in Resources */,
+				042EBD1B093E5D18005CFBC8 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3963,6 +3971,7 @@
 				0427F78D0898352F0022C4EC /* systemTestSettings.xml in Resources */,
 				0427F78E0898352F0022C4EC /* cocoambulant_Prefix.pch in Resources */,
 				0427F78F0898352F0022C4EC /* Log.nib in Resources */,
+				042EBD1A093E5D18005CFBC8 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3985,6 +3994,7 @@
 				04600EA70894E6B000B553A2 /* cocoambulant_Prefix.pch in Resources */,
 				04600EA80894E6B000B553A2 /* Log.nib in Resources */,
 				0409718008A0CC1900EC8191 /* Info.plist in Resources */,
+				042EBD17093E5D18005CFBC8 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4006,6 +4016,7 @@
 				049320A6089519EF00F38A0A /* systemTestSettings.xml in Resources */,
 				049320A7089519EF00F38A0A /* cocoambulant_Prefix.pch in Resources */,
 				049320A8089519EF00F38A0A /* Log.nib in Resources */,
+				042EBD19093E5D18005CFBC8 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4028,6 +4039,7 @@
 				04BF0D0D064BAE6E00D094D7 /* cocoambulant_Prefix.pch in Resources */,
 				04532DAC06DCDBFB00B7FC96 /* Log.nib in Resources */,
 				04F7E4D508A2398900D68AEA /* Info.plist in Resources */,
+				042EBD18093E5D18005CFBC8 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

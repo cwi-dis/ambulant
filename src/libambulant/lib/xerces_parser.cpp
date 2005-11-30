@@ -236,6 +236,7 @@ xerces_sax_parser::ambulant_val_scheme_2_xerces_ValSchemes(std::string v) {
 	return rv;
 }
 static std::map<std::string, std::string> dtd_cache_mapping;
+static std::map<std::string, std::string> obsolete_dtd_cache_mapping;
 
 static void
 init_dtd_cache_mapping() {	
@@ -266,11 +267,15 @@ init_dtd_cache_mapping() {
 			continue;
 		}
 		relative = line;
-		std::pair<bool, net::url> absolute_url = net::url(relative).get_local_datafile();
+		net::url relative_url(relative);
+		std::pair<bool, net::url> absolute_url = relative_url.get_local_datafile();
 		if (absolute_url.first) {
 			std::string abs_path = absolute_url.second.get_path();
 			std::pair<std::string,std::string> new_map(requested, abs_path);
-			dtd_cache_mapping.insert(new_map);
+			if (relative_url.get_query() == "obsolete") 
+				obsolete_dtd_cache_mapping.insert(new_map);
+			else
+				dtd_cache_mapping.insert(new_map);
 			requested = relative = ""; // reset
 		} else {
 			lib::logger::get_logger()->trace("DTDCache/mapping.txt contains non-existent file: %s", relative.c_str());
@@ -288,7 +293,13 @@ find_cached_dtd(std::string url) {
 	mi = dtd_cache_mapping.find(url);
 	if (mi != dtd_cache_mapping.end()) {
 		result = mi->second;
-	} 	
+	} else {
+		mi = obsolete_dtd_cache_mapping.find(url);
+		if (mi != obsolete_dtd_cache_mapping.end()) {
+			result = mi->second;
+			lib::logger::get_logger()->warn("Obsolete DTD: %s", url.c_str());
+		}
+	}
 	return result;
 }
 
