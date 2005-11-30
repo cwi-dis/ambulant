@@ -1,3 +1,11 @@
+2005-11-29 23:49  jackjansen
+
+	* Squashed a few more gcc4 warnings.
+
+2005-11-29 16:11  jackjansen
+
+	* Minor updates.
+
 2005-11-25 17:17  jackjansen
 
 	* Third party packages for Windows updated. Also got rid of most of
