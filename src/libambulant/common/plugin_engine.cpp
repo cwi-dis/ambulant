@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include"ambulant/common/plugin_engine.h"
+#include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 
@@ -100,6 +100,7 @@ plugin_engine::plugin_engine()
 void
 plugin_engine::collect_plugin_directories()
 {
+#ifdef WITH_PLUGINS
 	// First dir to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
 	if(plugin_dir != "")
@@ -126,6 +127,7 @@ plugin_engine::collect_plugin_directories()
 #endif
 #ifdef AMBULANT_PLATFORM_WIN32
 	// XXXX Need to add application directory
+#endif
 #endif
 }
 
