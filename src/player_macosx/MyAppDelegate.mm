@@ -37,6 +37,10 @@
 #include "ambulant/common/preferences.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/net/url.h"
+#ifdef WITH_XERCES_BUILTIN
+#include "ambulant/lib/xerces_parser.h"
+#endif
+
 #include <stdarg.h>
 
 class nslog_ostream : public ambulant::lib::ostream {
@@ -141,8 +145,11 @@ initialize_logger()
 	{
 		ambulant::common::factories fact;
 		fact.pf = ambulant::lib::global_parser_factory::get_parser_factory();
-		ambulant::common::plugin_engine *pf = ambulant::common::plugin_engine::get_plugin_engine();
-		pf->add_plugins(&fact);
+#ifdef WITH_XERCES_BUILTIN
+		fact.pf->add_factory(new ambulant::lib::xerces_factory());
+#endif
+		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+		pe->add_plugins(&fact);
 	}
 
 	// Initialize the default system test settings

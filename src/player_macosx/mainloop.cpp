@@ -47,9 +47,6 @@
 #endif
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/common/plugin_engine.h"
-#ifdef WITH_XERCES_BUILTIN
-#include "ambulant/lib/xerces_parser.h"
-#endif
 #ifdef WITH_LIVE
 #include "ambulant/net/rtsp_factory.h"
 #endif
@@ -105,9 +102,6 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
 	// Populate the parser factory
 	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
-#ifdef WITH_XERCES_BUILTIN
-	m_factory->pf->add_factory(new lib::xerces_factory());
-#endif
 
 	// Next create the datasource factory and populate it too.
 	m_factory->df = new net::datasource_factory();
