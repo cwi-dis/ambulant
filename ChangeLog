@@ -1,3 +1,23 @@
+2005-11-30 23:49  jackjansen
+
+	* - Added code to give warnings when an obsolete DTD is used (SMIL
+	  2.1 PR, etc).  - Enable that in the DTDCache.  - Include the
+	  DTDCache in the OSX debugging builds.
+
+2005-11-30 17:17  keesblom
+
+	* Added scriptability to the Firefox plugin. It compiles and links,
+	  but doesn't work yet.  Firefox hangs while trying to load the
+	  plugin.
+
+2005-11-30 13:38  koelimoe
+
+	* Fixed: [ 1096356 ] make install installs CVS directories
+
+2005-11-30 13:35  koelimoe
+
+	* removed some unnessary files in live_VC7
+
 2005-11-29 23:49  jackjansen
 
 	* Squashed a few more gcc4 warnings.
