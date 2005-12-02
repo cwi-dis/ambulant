@@ -32,14 +32,19 @@ NO_DIST_INSTALL = 1
 
 REQUIRES = plugin \
            java \
+           xpcom \
            $(NULL)
 
-CPPSRCS = plugin.cpp
+CPPSRCS = plugin.cpp \
+          nsambulantPeer.cpp \
+          $(NULL)
 
-SHARED_LIBRARY_LIBS =  ../../../third_party_packages/GeckoPluginSDK-samples/Win32SDK/sdk/samples/common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
+XPIDLSRCS = nsIambulantPluginSample.idl
 
-DEFFILE = $(srcdir)/ambulant.def
-RESFILE = ambulant.res
+SHARED_LIBRARY_LIBS = ../../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
+
+DEFFILE = $(srcdir)/npambulant.def
+RESFILE = npambulant.res
 
 ifdef GNU_CC
 OS_LIBS	+= -lgdi32
@@ -49,6 +54,7 @@ include $(topsrcdir)/config/rules.mk
 
 DEFINES += -DMOZILLA_STRICT_API
 
-LOCAL_INCLUDES = -I$(srcdir)/../../include \
+LOCAL_INCLUDES = -I./$(XPIDL_GEN_DIR) \
+                 -I$(srcdir)/../../include \
                  -I$(srcdir)/../../../include \
                  $(NULL)

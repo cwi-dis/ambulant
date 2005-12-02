@@ -22,11 +22,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\ambulant\include;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;"
-				PreprocessorDefinitions="_DEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPambulant_EXPORTS"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
+				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPambulant_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/npambulant.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -34,20 +35,20 @@
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
-				CompileAs="0"/>
+				CompileAs="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng13.lib ..\..\lib\win32\zlib.lib"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32_D.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib"
 				OutputFile=".\Debug/npambulant.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="LIBCMTD.lib;LIBC"
-				ModuleDefinitionFile=".\ambulant.def"
+				IgnoreAllDefaultLibraries="TRUE"
+				IgnoreDefaultLibraryNames=""
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/npambulant.pdb"
-				SubSystem="2"
 				ImportLibrary=".\Debug/npambulant.lib"
 				TargetMachine="1"/>
 			<Tool
@@ -60,9 +61,7 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="@echo on
-set MOZILLA_HOME=&quot;C:\Program Files\Mozilla Firefox&quot;
-copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
+				CommandLine="copy /y &quot;.\Debug\npambulant.dll&quot; &quot;C:\Program Files\Mozilla Firefox\plugins&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -95,11 +94,11 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\include,..\..\..\..\gecko-sdk\plugin\include,..\..\..\..\gecko-sdk\nspr\include,..\..\..\..\gecko-sdk\java\include"
-				PreprocessorDefinitions="NDEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPambulant_EXPORTS"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
+				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="FALSE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/npambulant.pch"
 				AssemblerListingLocation=".\Release/"
@@ -112,11 +111,16 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libambulant_win32.lib libexpat.lib libjpeg.lib libpng.lib zlib.lib msvcrt.lib user32.lib gdi32.lib ole32.lib shell32.lib $(NOINHERIT)"
 				OutputFile=".\Release/npambulant.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile=".\ambulant.def"
+				SuppressStartupBanner="FALSE"
+				AdditionalLibraryDirectories="..\..\lib\win32"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib;libcmtd.lib;libcmt.lib;libcpmtd.lib"
 				ProgramDatabaseFile=".\Release/npambulant.pdb"
+				SubSystem="2"
+				OptimizeReferences="1"
 				ImportLibrary=".\Release/npambulant.lib"
 				TargetMachine="1"/>
 			<Tool
@@ -128,7 +132,11 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 				TypeLibraryName=".\Release/npambulant.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="set MOZ_PLUGINS=&quot;C:\Program Files\Mozilla Firefox\plugins&quot;
+copy /y .\Release\npambulant.dll %MOZ_PLUGINS%
+copy /y .\nsIambulantPluginSample.xpt %MOZ_PLUGINS%
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -156,17 +164,14 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="ambulant.def">
-			</File>
-			<File
-				RelativePath="..\..\common\np_entry.cpp">
+				RelativePath="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\common\np_entry.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -175,18 +180,21 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"/>
+						PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\common\npn_gate.cpp">
+				RelativePath="npambulant.def">
+			</File>
+			<File
+				RelativePath="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\common\npn_gate.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -195,18 +203,18 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"/>
+						PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\common\npp_gate.cpp">
+				RelativePath="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\common\npp_gate.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -215,7 +223,27 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"/>
+						PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="nsambulantPeer.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -226,7 +254,7 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"
+						PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"
 						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -235,13 +263,43 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;MOZILLA_STRICT_API;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPambulant_EXPORTS;$(NoInherit)"/>
+						PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_MBCS;_USRDLL;NPSIMPLE_EXPORTS;$(NoInherit)"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="nsambulantPeer.h">
+			</File>
+			<File
+				RelativePath="nsIambulantPluginSample.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Running the XPIDL compiler and linker for $(InputName)"
+						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npambulant.xpt nsIambulantPluginSample.xpt
+"
+						Outputs="nsIambulantPluginSample.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Running the XPIDL compiler and linker for $(InputName)"
+						CommandLine="path=%path%;C:\Documents and Settings\kees\My Documents\My Work\ambulant\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin
+echo %path%
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npambulant.xpt nsIambulantPluginSample.xpt
+"
+						Outputs="nsIambulantPluginSample.h"/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath="plugin.h">
 			</File>
@@ -250,7 +308,21 @@ copy /y .\Debug\npambulant.dll %MOZILLA_HOME%\plugins
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 			<File
-				RelativePath="ambulant.rc">
+				RelativePath="npambulant.rc">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+						AdditionalIncludeDirectories="$(OUTDIR)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+						AdditionalIncludeDirectories="$(OUTDIR)"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

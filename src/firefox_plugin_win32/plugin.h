@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-ambulant-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -39,6 +39,7 @@
 #define __PLUGIN_H__
 
 #include "pluginbase.h"
+#include "nsambulantPeer.h"
 
 namespace ambulant {
 	namespace gui {
@@ -58,16 +59,26 @@ public:
   void shut();
   NPBool isInitialized();
 
+  // we need to provide implementation of this method as it will be
+  // used by Mozilla to retrive the ambulant peer
+  NPError	GetValue(NPPVariable variable, void *value);
+
   // locals
+  void showVersion();
+  void clear();
   const char* getValue(const char *name);
   const char * getVersion();
+
+  nsambulantPeer* getambulantPeer();
 
 private:
   NPP mInstance;
   NPBool mInitialized;
   HWND mhWnd;
+  nsambulantPeer * mambulantPeer;
 
 public:
+  char mString[128];
   nsPluginCreateData mCreateData;
   ambulant::gui::dx::dx_player* m_ambulant_player;
   int m_cursor_id;

@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-ambulant-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -40,12 +40,20 @@
 #include <atltypes.h>
 
 #include "plugin.h"
+#include "nsIServiceManager.h"
+#include "nsISupportsUtils.h" // some usefule macros are defined here
 
+#define AMBULANT
+#ifdef AMBULANT
 #include <ambulant/version.h>
 #include <ambulant/gui/dx/dx_player.h>
 #include <ambulant/net/url.h>
-#include <vld.h>
+#endif // AMBULANT
 
+//#define VLD
+#ifdef VLD // Visual Leak Detector
+#include <vld.h>
+#endif // VLD
 //////////////////////////////////////
 //
 // general initialization and shutdown
@@ -69,8 +77,6 @@ nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStru
     return NULL;
 
   nsPluginInstance * plugin = new nsPluginInstance(aCreateDataStruct->instance);
-  //NPN_SetValue(aCreateDataStruct->instance, NPPVpluginWindowBool, NULL);
-  plugin->mCreateData = *aCreateDataStruct;
   return plugin;
 }
 
@@ -87,19 +93,30 @@ void NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
 nsPluginInstance::nsPluginInstance(NPP aInstance) : nsPluginInstanceBase(),
   mInstance(aInstance),
   mInitialized(FALSE),
+  mambulantPeer(NULL),
   m_ambulant_player(NULL),
   m_cursor_id(0)
 {
-  mhWnd = NULL;
+	mhWnd = NULL;
+	mString[0] = '\0';
 }
 
 nsPluginInstance::~nsPluginInstance()
 {
+	// mambulantPeer may be also held by the browser 
+	// so releasing it here does not guarantee that it is over
+	// we should take precaution in case it will be called later
+	// and zero its mPlugin member
+	mambulantPeer->SetInstance(NULL);
+	NS_IF_RELEASE(mambulantPeer);
+
+#ifdef AMBULANT
 	if (m_ambulant_player) {
 		m_ambulant_player->stop();
 		delete m_ambulant_player;
 		m_ambulant_player = NULL;
 	}
+#endif // AMBULANT
 }
 
 static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
@@ -134,7 +151,6 @@ void nsPluginInstance::shut()
   SubclassWindow(mhWnd, lpOldProc);
   mhWnd = NULL;
   mInitialized = FALSE;
-  s_hwnd = NULL;
 }
 
 NPBool nsPluginInstance::isInitialized()
@@ -163,6 +179,111 @@ ambulant_player_callbacks::destroy_os_window(HWND hwnd)
 {
 }
 
+//XXXX
+// this will force to draw a version string in the plugin window
+void nsPluginInstance::showVersion()
+{
+  const char *ua = NPN_UserAgent(mInstance);
+  strcpy(mString, ua);
+  InvalidateRect(mhWnd, NULL, TRUE);
+  UpdateWindow(mhWnd);
+}
+
+// this will clean the plugin window
+void nsPluginInstance::clear()
+{
+  strcpy(mString, "");
+  InvalidateRect(mhWnd, NULL, TRUE);
+  UpdateWindow(mhWnd);
+}
+
+// ==============================
+// ! Scriptability related code !
+// ==============================
+//
+// here the plugin is asked by Mozilla to tell if it is ambulant
+// we should return a valid interface id and a pointer to 
+// nsambulantPeer interface which we should have implemented
+// and which should be defined in the corressponding *.xpt file
+// in the bin/components folder
+NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
+{
+  NPError rv = NPERR_NO_ERROR;
+
+  if (aVariable == NPPVpluginScriptableInstance) {
+    // addref happens in getter, so we don't addref here
+    nsIambulantPluginSample * ambulantPeer = getambulantPeer();
+    if (ambulantPeer) {
+      *(nsISupports **)aValue = ambulantPeer;
+    } else
+      rv = NPERR_OUT_OF_MEMORY_ERROR;
+  }
+  else if (aVariable == NPPVpluginScriptableIID) {
+    static nsIID ambulantIID = NS_IAMBULANTPLUGINSAMPLE_IID;
+    nsIID* ptr = (nsIID *)NPN_MemAlloc(sizeof(nsIID));
+    if (ptr) {
+        *ptr = ambulantIID;
+        *(nsIID **)aValue = ptr;
+    } else
+      rv = NPERR_OUT_OF_MEMORY_ERROR;
+  }
+
+  return rv;
+}
+
+// ==============================
+// ! Scriptability related code !
+// ==============================
+//
+// this method will return the ambulant object (and create it if necessary)
+nsambulantPeer* nsPluginInstance::getambulantPeer()
+{
+  if (!mambulantPeer) {
+    mambulantPeer = new nsambulantPeer(this);
+    if(!mambulantPeer)
+      return NULL;
+
+    NS_ADDREF(mambulantPeer);
+  }
+
+  // add reference for the caller requesting the object
+  NS_ADDREF(mambulantPeer);
+  return mambulantPeer;
+}
+
+#ifndef AMBULANT
+static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+  switch (msg) {
+    case WM_PAINT:
+      {
+        // draw a frame and display the string
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        RECT rc;
+        GetClientRect(hWnd, &rc);
+        FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
+
+        // get our plugin instance object and ask it for the version string
+        nsPluginInstance *plugin = (nsPluginInstance *)GetWindowLong(hWnd, GWL_USERDATA);
+        if (plugin)
+          DrawText(hdc, plugin->mString, strlen(plugin->mString), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+        else {
+          char string[] = "Error occured";
+          DrawText(hdc, string, strlen(string), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+        }
+
+        EndPaint(hWnd, &ps);
+      }
+      break;
+    default:
+      break;
+  }
+
+  return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+#else // AMBULANT
+
 static ambulant_player_callbacks s_ambulant_player_callbacks;
 
 static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -179,8 +300,8 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
 				// get our plugin instance object and ask it for the value of the "src" string
-				const char * string = plugin->getValue("src");
-				ambulant::net::url url(string);
+				const char * str = plugin->getValue("src");
+				ambulant::net::url url(str);
 				if ( ! plugin->m_ambulant_player) {
 					if ( ! s_hwnd)
 						s_hwnd = hWnd;
@@ -256,4 +377,4 @@ nsPluginInstance::getNPP()
 }
 
 
-
+#endif // AMBULANT

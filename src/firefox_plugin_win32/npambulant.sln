@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npambulant", "npambulant.vcproj", "{3D5D84E6-9351-4771-A272-C958191F6023}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npambulant", "npambulant.vcproj", "{613D13C4-164B-4543-8560-99E5AA19929B}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -9,10 +9,10 @@ Global
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{3D5D84E6-9351-4771-A272-C958191F6023}.Debug.ActiveCfg = Debug|Win32
-		{3D5D84E6-9351-4771-A272-C958191F6023}.Debug.Build.0 = Debug|Win32
-		{3D5D84E6-9351-4771-A272-C958191F6023}.Release.ActiveCfg = Release|Win32
-		{3D5D84E6-9351-4771-A272-C958191F6023}.Release.Build.0 = Release|Win32
+		{613D13C4-164B-4543-8560-99E5AA19929B}.Debug.ActiveCfg = Debug|Win32
+		{613D13C4-164B-4543-8560-99E5AA19929B}.Debug.Build.0 = Debug|Win32
+		{613D13C4-164B-4543-8560-99E5AA19929B}.Release.ActiveCfg = Release|Win32
+		{613D13C4-164B-4543-8560-99E5AA19929B}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

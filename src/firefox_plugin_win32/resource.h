@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by ambulant.rc
+// Microsoft Visual C++ generated include file.
+// Used by npambulant.rc
 //
 #define IDD_MAIN                        101
 #define IDC_BUTTON_GO                   1002
