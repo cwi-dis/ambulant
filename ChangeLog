@@ -1,3 +1,12 @@
+2005-12-02 00:46  jackjansen
+
+	* Some code needed to be in ifdefs.
+
+2005-12-01 23:18  jackjansen
+
+	* With xerces builtin, it was initialized too late leading to an
+	  error message while parsing the settings file. Fixed.
+
 2005-11-30 23:49  jackjansen
 
 	* - Added code to give warnings when an obsolete DTD is used (SMIL
