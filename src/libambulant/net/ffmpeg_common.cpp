@@ -121,10 +121,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 		assert (m_con);
 		assert (m_con->iformat);
 #if LIBAVFORMAT_BUILD > 4628
-		av_seek_frame(m_con, -1, m_clip_begin, 0);
+		int seekresult = av_seek_frame(m_con, -1, m_clip_begin, 0);
 #else
-		av_seek_frame(m_con, -1, m_clip_begin);
+		int seekresult = av_seek_frame(m_con, -1, m_clip_begin);
 #endif
+		if (seekresult < 0) lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 	} 
 #endif
 	

@@ -71,13 +71,25 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	if (m_context->nstream <= 0) cancel();
 }
 
+rtsp_context_t::~rtsp_context_t()
+{
+	//delete media_session;
+	//delete rtsp_client;
+	//delete env;
+	delete scheduler;
+	delete sdp;
+}
 
 rtsp_context_t*
 ambulant::net::rtsp_demux::supported(const net::url& url) 
 {
+	if (url.get_protocol() != "rtsp") return NULL;
+	
 	rtsp_context_t* context = new rtsp_context_t;
 	context->first_sync_time.tv_sec = 0;
 	context->first_sync_time.tv_usec = 0;
+	context->scheduler = NULL;
+	context->env = NULL;
 	context->rtsp_client = NULL;
 	context->media_session = NULL;
 	context->sdp = NULL;
@@ -86,15 +98,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->nstream = 0;
 	context->blocking_flag = 0;
 	context->audio_packet = NULL;
-	//context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
-	//if (!context->audio_packet) {
-	//	return NULL;		
-	//}
 	context->video_packet = NULL;
-	//context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
-	//if (!context->video_packet) {
-	//		return NULL;		later the audio renderers wil have to do skipping of data.
-	//}
 	context->video_buffer = NULL;
 	context->video_buffer_size = 0;
 	context->last_pts = 0;
@@ -109,25 +113,25 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	memset(context->sinks, 0, sizeof context->sinks);
 	
 	// setup the basics.
-	TaskScheduler* scheduler = BasicTaskScheduler::createNew();
-	if (!scheduler) {
+	context->scheduler = BasicTaskScheduler::createNew();
+	if (!context->scheduler) {
 		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create scheduler");
-	    //lib::logger::get_logger()->error("RTSP Connection Failed");		
+		delete context;
 		return NULL;
 	}
 	
-	UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
-	if (!env) {
+	context->env = BasicUsageEnvironment::createNew(*context->scheduler);
+	if (!context->env) {
 		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create UsageEnvironment");
-		//lib::logger::get_logger()->error("RTSP Connection Failed");		
+		delete context;
 		return NULL;
 	}
 	// setup a rtp session
 	int verbose = 0;
-	context->rtsp_client = RTSPClient::createNew(*env, verbose, "AmbulantPlayer");
+	context->rtsp_client = RTSPClient::createNew(*context->env, verbose, "AmbulantPlayer");
 	if (!context->rtsp_client) {
 		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create  a RTSP Client");
-		//lib::logger::get_logger()->error("RTSP Connection Failed");		
+		delete context;
 		return NULL;
 	}
 	
@@ -135,16 +139,19 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	assert(ch_url);
 	context->sdp = context->rtsp_client->describeURL(ch_url);
 	if (!context->sdp) {
-		AM_DBG lib::logger::get_logger()->trace("%s: describeURL failed (url not found?)", ch_url);
-		//lib::logger::get_logger()->error("RTSP Connection Failed");		
+		lib::logger::get_logger()->debug("%s: describeURL failed (not rtsp, or url not found?)", ch_url);
+		//lib::logger::get_logger()->error("RTSP Connection Failed");
+		delete context;	
 		return NULL;
 	}
+	delete ch_url;
 
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
-	context->media_session = MediaSession::createNew(*env, context->sdp);
+	context->media_session = MediaSession::createNew(*context->env, context->sdp);
 	if (!context->media_session) {
-		lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to create  a MediaSession");
-		//lib::logger::get_logger()->error("RTSP Connection Failed");		
+		lib::logger::get_logger()->debug("%s: failed to create a MediaSession, sdp=%s", ch_url, context->sdp);
+		//lib::logger::get_logger()->error("RTSP Connection Failed");
+		delete context;		
 		return NULL;
 	}	
 	
@@ -158,6 +165,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		if (!subsession->initiate()) {
 			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to initiate subsession");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
+			delete context;
 			return NULL;
 		}
 		if (strcmp(subsession->mediumName(), "audio") == 0) {
@@ -190,12 +198,13 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		
 		
 		int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
-		int buf_size = increaseReceiveBufferTo(*env, rtp_sock_num, desired_buf_size);
+		int buf_size = increaseReceiveBufferTo(*context->env, rtp_sock_num, desired_buf_size);
 		(void)buf_size; // Forestall compiler warning
 		
 		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false)) {
 			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to send setup command to subsesion");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
+			delete context;
 			return NULL;
 		}
 	}

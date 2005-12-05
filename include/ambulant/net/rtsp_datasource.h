@@ -62,6 +62,10 @@ namespace net
 {
 
 struct rtsp_context_t {
+	~rtsp_context_t();
+	
+	TaskScheduler* scheduler;
+	UsageEnvironment* env;
 	RTSPClient* rtsp_client;
   	MediaSession* media_session;
 	char* sdp;
