@@ -374,7 +374,7 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 		timestamp_t frameduration = (framebase*1000000)/framerate;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", frameduration);
 #else
-		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000/ (double) m_con->time_base.den);
+		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000.0 / (double) m_con->time_base.den) ;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
 #endif
 		m_fmt.frameduration = frameduration;
@@ -608,12 +608,14 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0 || _end_of_file());
-	if(m_fmt.frameduration == 0) {
+	if(m_fmt.frameduration  <= 0) {
 		_need_fmt_uptodate();
 	}
 	
 	timestamp_t frame_duration = m_fmt.frameduration; 
-	
+	assert (frame_duration > 0);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
 

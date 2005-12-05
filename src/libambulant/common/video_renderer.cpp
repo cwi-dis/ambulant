@@ -240,7 +240,7 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
-	net::timestamp_t frame_duration = 33000; // XXX For now: assume 30fps
+	net::timestamp_t frame_duration = 40000; // XXX For now: assume 30fps
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (!m_activated || !m_src) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: returning (already shutting down)");
@@ -276,7 +276,7 @@ video_renderer::data_avail()
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
-	if (buf && frame_ts_micros <= now_micros+frame_duration && frame_ts_micros >= m_clip_begin-frame_duration) {
+	if (buf && frame_ts_micros <= now_micros + frame_duration && frame_ts_micros >= m_clip_begin-frame_duration) {
 		// It could be we're displaying this frame already. In that case there's no point in
 		// re-displaying.
 		if (frame_ts_micros > m_last_frame_timestamp ) {
@@ -296,6 +296,7 @@ video_renderer::data_avail()
 		m_frame_late++;
 		/*AM_DBG*/lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now+dur=%lld", frame_ts_micros, now_micros+frame_duration);
 	} else if (frame_ts_micros >= m_clip_begin-frame_duration) {
+		lib::logger::get_logger()->debug("video_renderer::data_avail: frame early ! (timestamp = %lld, start_time = %lld, diff = %lld)",frame_ts_micros, m_clip_begin - frame_duration, frame_ts_micros - (now_micros + frame_duration));
 		m_frame_early++;
 	} else if (!buf) {
 		m_frame_missing++;
