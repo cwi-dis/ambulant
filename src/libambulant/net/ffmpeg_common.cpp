@@ -117,7 +117,12 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 #if LIBAVFORMAT_BUILD > 4609
 	
 	assert(m_clip_begin >= 0);
-	if (m_clip_begin > 0) {
+	if ( m_clip_begin > 0 
+#if 1
+	// Bug in ffmpeg 49.2.0: seeking in mov/mp4 files fails. Reported 5-Dec-05.
+	&& !strstr(con->iformat->name, "mp4")
+#endif
+		) {
 		assert (m_con);
 		assert (m_con->iformat);
 #if LIBAVFORMAT_BUILD > 4628
@@ -125,7 +130,13 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 #else
 		int seekresult = av_seek_frame(m_con, -1, m_clip_begin);
 #endif
-		if (seekresult < 0) lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
+		if (seekresult < 0) {
+			lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
+//#if LIBAVFORMAT_BUILD > 4628
+//			// ffmpeg has discarded data if av_seek_frame() failed
+//			av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
+//#endif
+		}
 	} 
 #endif
 	
@@ -388,7 +399,7 @@ ffmpeg_demux::run()
 				}
 #endif
 				
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d)", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
 				sink->data_avail(pts, pkt->data, pkt->size);
 

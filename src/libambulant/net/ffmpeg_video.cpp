@@ -162,7 +162,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_client_callback(NULL),
 	m_pts_last_frame(0),
 	m_last_p_pts(0),
-	m_video_clock(src->get_clip_begin()),
+	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
 	m_elapsed(0),
 	m_start_input(true)
@@ -502,13 +502,21 @@ ffmpeg_video_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
-					if (pts >= m_old_frame.first) {
-						std::pair<timestamp_t, char*> element(pts, framedata);
-						m_frames.push(element);
-					} else {
+					bool drop_this_frame = false;
+					if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
+						// A non-essential frame while skipping forward.
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: could drop B frame %d, ts=%lld", m_frame_count, pts);
+						drop_this_frame = true;
+					}
+					if (pts < m_old_frame.first) {
 						// A frame that came after this frame has already been consumed.
 						// We should drop this frame.
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late", m_frame_count);
+						drop_this_frame = true;
+					}
+					if (!drop_this_frame) {
+						std::pair<timestamp_t, char*> element(pts, framedata);
+						m_frames.push(element);
 					}
 					m_elapsed = pts;
 				} else {
