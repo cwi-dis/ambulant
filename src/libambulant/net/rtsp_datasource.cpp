@@ -135,7 +135,8 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}
 	
-	const char* ch_url = url.get_url().c_str();
+	std::string str_url = url.get_url();
+	const char* ch_url = str_url.c_str();
 	assert(ch_url);
 	context->sdp = context->rtsp_client->describeURL(ch_url);
 	if (!context->sdp) {
