@@ -145,8 +145,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		delete context;	
 		return NULL;
 	}
-	delete ch_url;
-
+	
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
 	context->media_session = MediaSession::createNew(*context->env, context->sdp);
 	if (!context->media_session) {
