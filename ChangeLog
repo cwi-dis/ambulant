@@ -1,3 +1,25 @@
+2005-12-05 16:14  jackjansen
+
+	* Fixed nasty bug: supported() used the c_str() of a std::string
+	  that was not kept around.
+
+2005-12-05 16:06  jackjansen
+
+	* Various bug fixes and workarounds: - ffmpeg doesn't handle
+	  seeking in quicktime/mp4 files correctly. Skip   in stead.  -
+	  Scheduler doesn't issue stop() for some movies, so we do that
+	  ourselves.	this is a hack.  - Drop B frames while skipping,
+	  but I think this should be done in a	 different place (demux).
+	  - m_video_clock was initialized to clip_begin in stead of 0.
+
+2005-12-05 15:43  koelimoe
+
+	* fixed cinepack video
+
+2005-12-05 11:53  jackjansen
+
+	* Added some cleanup code, and test some error conditions.
+
 2005-12-02 16:07  keesblom
 
 	* Plugin now also loads into Firefox in reasonable time, thanks to
