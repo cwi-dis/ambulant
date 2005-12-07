@@ -1,3 +1,7 @@
+2005-12-06 11:53  koelimoe
+
+	*  removed a unnecessary delete. this caused a crash.
+
 2005-12-05 16:14  jackjansen
 
 	* Fixed nasty bug: supported() used the c_str() of a std::string
