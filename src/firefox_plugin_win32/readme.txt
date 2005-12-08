@@ -20,6 +20,11 @@ Prequisites.
 
 2. The original GeckoPluginSDK from www.mozilla.org/projects/plugins
    must have been downloaded and built in ..\..\third_party_packages.
+   If during the build you get errors during the execution of "xpidl"
+   (like "libIDL-0.6.dll cannot be found"), the necessrary libraries
+   are available in:
+   ..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\moztools\wintools\buildtools\windows\bin\x86
+   Best copy these dll's to the directory where "xpidl" is stored.
 
 3. Now this project can be built. It will install 2 files in:
    C:\Program File\Mozilla Firefox\plugins: npambulant.dll and
@@ -28,4 +33,4 @@ Prequisites.
    This .html file works if you have the Welcome document stored
    in C:\Program Files\AmbulantPlayer-1.4\Extras\Welcome.
 
-   Kees Blom, Dec. 7th, 2005.
+   Kees Blom, Dec. 8th, 2005.
