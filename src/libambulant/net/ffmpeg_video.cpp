@@ -133,11 +133,13 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	// any unneeded frames.
 	ds->read_ahead(clip_begin);
 	
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource (dds = 0x%x)", (void*) dds);
 	return dds;		
 }
 		
 // **************************** ffmpeg_video_decoder_datasource ********************
+
+
 bool
 ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
@@ -499,7 +501,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 						m_video_clock += frame_delay;
 					}
 #endif				
-					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+					/*AM_DBG*/ lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
 					bool drop_this_frame = false;
@@ -622,7 +624,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	
 	timestamp_t frame_duration = m_fmt.frameduration; 
 	assert (frame_duration > 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
 
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );

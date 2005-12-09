@@ -117,7 +117,7 @@ video_renderer::start (double where)
 	}
 	m_activated = true;
 
-#if 1
+#if 0
 	m_timer = m_event_processor->get_timer();
 #else
 	// This is a workaround for a bug: the "normal" timer
@@ -200,6 +200,7 @@ video_renderer::get_dur()
 double
 video_renderer::now() 
 {
+	assert( m_timer );
 	// private method - no locking
 	double rv;
 	if (m_is_paused)
@@ -240,7 +241,7 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
-	net::timestamp_t frame_duration = 40000; // XXX For now: assume 30fps
+	net::timestamp_t frame_duration = 33000; // XXX For now: assume 30fps
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (!m_activated || !m_src) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: returning (already shutting down)");
@@ -274,6 +275,8 @@ video_renderer::data_avail()
 	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);	
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
+
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
