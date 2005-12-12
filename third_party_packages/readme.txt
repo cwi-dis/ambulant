@@ -148,9 +148,9 @@ arts:
 	instead of SDL, but for this release that support is untested, and
 	believed to be very buggy.
 
-live.com:
-	You need to download live-latest.tar.gz at
-	<http://www.live.com/liveMedia/public/>. Extract the tar file in
+live555.com:
+	You need to download live555-latest.tar.gz at
+	<http://www.live555.com/liveMedia/public/>. Extract the tar file in
 	.../ambulant/third_party_packages (or at anyother place, but
 	remember to use the configure option --with-live=.....). Build live
 	with the following commands:
