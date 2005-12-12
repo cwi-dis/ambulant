@@ -512,15 +512,15 @@ void gui::dx::viewport::redraw() {
 		release_surface(tmps);
 	} else {
 		// Copy to screen
-		HRESULT hr = m_primary_surface->Blt(to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 		// Copy to backing store for posible fs transition later
-		hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt() m_fstr_surface", hr);
 		}
 	}
 #else
-	primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
+	primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 #endif
 }
 
@@ -611,7 +611,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
-		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, &dst_rc, tmps, &src_rc, flags, NULL);
 	} else {
 		// Copy to screen
 		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
