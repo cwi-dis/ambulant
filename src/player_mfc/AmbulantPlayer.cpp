@@ -169,6 +169,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CString m_version;	
+	afx_msg void OnStnClickedVersion();
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD), m_version(_T(""))
@@ -178,10 +179,12 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD), m_version(_T(""))
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_VERSION, m_version);
+	// Hard-wired because of encoding problems:
+	// DDX_Text(pDX, IDC_VERSION, m_version);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
+	ON_STN_CLICKED(IDC_VERSION, OnStnClickedVersion)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -271,4 +274,8 @@ bool CAmbulantPlayerApp::LocateHelpDoc(LPCTSTR rpath) {
 		return true;
 	} 
 	return false;
+}
+void CAboutDlg::OnStnClickedVersion()
+{
+	// TODO: Add your control notification handler code here
 }

@@ -146,7 +146,7 @@ qt_transition_blitclass_fade::update()
 					      qBlue(p2)*mul2  ) >> 8 )
 #endif/*OPTIM*/
 			 );
-//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) /* AM_DBG */ logger::get_logger()->debug("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
+//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG logger::get_logger()->debug("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
 	  }
 	}
 	rect newrect_whole =  m_dst->get_rect();

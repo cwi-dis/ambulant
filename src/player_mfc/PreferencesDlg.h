@@ -31,4 +31,6 @@ public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnCbnSelchangeValidationScheme();
 	afx_msg void OnCbnSelchangeLogLevel();
+	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnBnClickedCheck2();
 };

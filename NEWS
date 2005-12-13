@@ -17,6 +17,8 @@ Changes between 1.6 and 1.4.5:
 
 - The build procedure for Linux/Mac has been enhanced, and support for
   pkg-config has been added.
+  
+- An experimental Mozilla/Firefox plugin is available for Windows.
 
 - Developers: Initial support is provided for a plug-in version of Ambulant.
   At present, an experimental Firefox plug-in is available, along

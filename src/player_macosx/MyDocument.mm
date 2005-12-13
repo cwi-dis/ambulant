@@ -139,7 +139,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
     myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
-    NSString *filename = [[self fileURL] absoluteString];
+    NSString *filename = [[self fileURL] path];
 	bool use_mms = ([[filename pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([filename UTF8String], myWindowFactory, use_mms, embedder);

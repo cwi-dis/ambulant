@@ -1,10 +1,10 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.5 (non-release) of the Ambulant Player,
-a playback engine for SMIL documents. This release supports SMIL 2.1 RC.
+This directory contains version 1.6 of the Ambulant Player,
+a playback engine for SMIL documents. This release supports SMIL 2.1.
 The Ambulant homepage at <http://www.ambulantplayer.org> has more information,
-also on exploring SMIL 2.1 PR.
+also on exploring SMIL 2.1.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers,
@@ -45,14 +45,17 @@ Currently we have support for:
 - MacOSX
 - Linux
 - Windows CE
-- Linux for handhelds (Qtopia)
 
 The specific platforms that have been used for testing are:
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
 - MacOSX: 10.3. 10.2 or earlier will not work.
 - Linux: RedHat 9/Fedora Core on fairly recent Intel hardware
 - Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
-- Linux for handhelds: Zaurus (Sharp SL-5600 PDA).
+
+Linux for handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
+mainly due to staffing constraints. This distribution may or may not
+work. If you are interested in helping out to support this platform
+please contact us.
 
 Supported media types
 ---------------------
@@ -68,13 +71,10 @@ Supported media types
   - MacOSX and Linux support audio through FFMPEG and SDL,
     giving support for MP3 and many other formats, but not
     all codecs may be supported on WMA or QuickTime files.
-  - Linux sometimes produces a hiss at the end of an MP3 file.
-    This is a known issue with ffmpeg that will be fixed in a later
-    release.
 - Video:
   - Windows supports video through DirectX.
   - Windows CE does not support video in this release.
-  - MacOSX supports video through QuickTime.
+  - MacOSX supports video through QuickTime and FFMPEG.
   - Linux supports video through FFMPEG. The number of codecs is limited.
 
 Networking support
@@ -83,18 +83,19 @@ Networking support
 This release has support for networked presentations. Streaming 
 media items can be retrieved via HTTP on most platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
-RTSP support has not been tested very thoroughly, feedback is requested.
+RTSP support is available on Linux and MacOSX, but it has not been tested
+very thoroughly, feedback is requested.
 
 SMIL 2.1 support
 ----------------
 
-This release includes full support for SMIL 2.1 Release Candidate.
+This release includes full support for SMIL 2.1.
 All new 2.1 features are implemented on all platforms, with two exceptions:
 - backgroundRepeat is not implemented in the Windows CE player
 - soundAlign is not implemented in the Windows CE player
 
 The Ambulant homepage, <http://www.ambulantplayer.org>, has more
-information on SMIL 2.1 RC, test documents, etc.
+information on SMIL 2.1, test documents, etc.
 
 SMIL 2.0 support
 ----------------

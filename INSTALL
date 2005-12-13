@@ -50,14 +50,23 @@ By default the player will be built with only the expat XML parser.
 Specify --with-xerces if you want the Xerces validating XML parser too,
 and additionally --with-xerces-plugin if you want that built as a plugin.
 
+If you want support for accessing RTSP streaming servers you need to
+specify that by passing the --with-live option.
+
+If you want to build the Python API to Ambulant you need to add the
+--with-python option to configure.
+
+For more special case configure options consult "configure --help".
 
 Building for Mac OS X
 ---------------------
 
 First make sure you install the third party packages on which Ambulant
-depends, see third_party_packages/readme.txt.
+depends, see third_party_packages/readme.txt. Most configure options
+specified in the "Building for Linux" section are also relevant for
+Mac OS X.
 
-For Tiger (10.4), you currently need to do the following things:
+IMPORTANT: for Tiger (10.4), you currently need to do the following things:
 - Gcc4 is preferred, but gcc3 should work too.
 - libtool 1.5 (which ships with Tiger) is broken. For the time being,
   this can be fixed by editing the generated "libtool" script (after configure)
@@ -99,15 +108,16 @@ please report back.
 It is possible to build the various packages AmbulantPlayer depends on from
 source (but read on for an easier solution).
 Install the following distributions into directories in third_party_packages:
-expat, jpeg, lpng125, mp3lib, zlib, xerces. Third_party_packages\readme.txt
+expat, jpeg, lpng128, mp3lib, zlib, xerces. Third_party_packages\readme.txt
 has the exact version info you need.
 As some of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the
-third_party_packages-WIN.zip archive, it contains versions that
+third_party_packages_win_20051212.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
-in your ambulant distribution. Xerces is not included in third_party_packages-WIN.zip,
-see third_party_packages/readme.txt for installation instructions. 
+in your ambulant distribution. Xerces is not included in this
+third_party_packages_win_20051212.zip, see third_party_packages/readme.txt
+for installation instructions. 
 
 Next, build these by opening
 third_party_packages\third_party_packages.sln in Visual Studio,
@@ -167,7 +177,7 @@ in the project files, only the ones for this specific platform (ARM processor,
 non-debugging, PocketPC operating system) have been kept up-to-date.
 
 Install the following distributions into directories in third_party_packages:
-expat, jpeg, lpng125, mp3lib, zlibce. third_party_packages\readme.txt has the
+expat, jpeg, lpng128, mp3lib, zlibce. third_party_packages\readme.txt has the
 version info.
 As most of these need some fiddling (missing Visual Studio projects, that
 sort of things) you are best off downloading the

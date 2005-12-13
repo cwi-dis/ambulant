@@ -8,14 +8,6 @@ Here is a list of the packages, where they come from, plus the versions:
 Windows Desktop, Windows CE
 ===========================
 
-expat:
-	Windows only.
-	
-	James Clark's expat XML parser library, version 1.95.7. Download via
-	<http://expat.sourceforge.net>. Installed with the win32 binary
-	installer (it seems to be difficult to build from the source).
-
-
 xerces:
 	windows only.
 	
@@ -28,7 +20,7 @@ xerces:
 	copy xerces-c_2_7.dll and xerces-depcom_2_7.dll to
 	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to
 	ambulant/lib.win32. The files are located in
-	xerces-c-src_2_6_0\Build\Win32\VC7\Release.
+	xerces-c-src_2_7_0\Build\Win32\VC7\Release.
 
 	If you want to compile AmbulantPlayer without xerces support use the
 	NoXerces configurations in the Ambulant solution.
@@ -36,9 +28,23 @@ xerces:
 	
 others:
 	For this release we don't fully remember where we got the other
-	libraries (jpeg, zlib, mp3lib, lpng125), so it is really in your
-	best interest to use the third_party_packages-WIN.zip archive we
-	have prepared.
+	libraries (jpeg, zlib, mp3lib, lpng128), so it is really in your
+	best interest to use the third_party_packages_win_20051212.zip 
+	archive we have prepared.
+	
+	After downloading and unpacking the zipfile move the 4 individual
+	folders from "INTO_third_party_packages" into this directory. Then
+	open third_party_packages.sln (windows desktop) or third_party_packages.vcw
+	(Windows CE), and build "Release". NOTE THAT LAST SENTENCE: you must
+	build the Release configuration, the default configuration opened is
+	not what you want (and we don't know how to fix this).
+	
+	If you really want to build from original distributions: the directory
+	win32_diff has all the project files that you need, move them into
+	the corresponding place in a freshly downloaded distribution of
+	{jpeg, zlib, mp3lib, libpng}. You'll probably need to fix them.
+	
+	RELEASE!
 	
 Unix (Linux, MacOSX)
 ====================

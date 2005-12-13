@@ -1,6 +1,6 @@
 AC_INIT(src/libambulant/get_version.cpp)
 
-AMBULANT_VERSION=1.5
+AMBULANT_VERSION=1.6
 AM_INIT_AUTOMAKE(ambulant, $AMBULANT_VERSION)
 
 dnl =================================================================
@@ -468,12 +468,12 @@ AC_ARG_WITH(arts,
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
 #
-# Test for Live.com library
+# Test for live555.com library
 #
 test_live=true
-AC_MSG_CHECKING(for live.com RTSP support)
+AC_MSG_CHECKING(for live555.com RTSP support)
 AC_ARG_WITH(live,
-	[  --with-live		Turn on live.com rtsp support],
+	[  --with-live		Turn on live555.com rtsp support],
 	[if test "x$withval" = "xno"; then
 		test_live=false
 	 fi
@@ -488,14 +488,14 @@ if test "x$test_live" = "xtrue"; then
    fi
 fi
 if test "x$test_live" = "xfalse"; then
-	AC_MSG_WARN([live.com RTSP support not enabled)])
+	AC_MSG_WARN([live555.com RTSP support not enabled)])
         live_warning="
-live.com not found. You have to place a copy of live.com libraries within the third_party_packages directory in your ambulant source tree to enable RTSP with it"
+live555.com not found. You have to place a copy of live555.com libraries within the third_party_packages directory in your ambulant source tree to enable RTSP with it"
 fi
 
 AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
 AC_SUBST(LIVE_ROOT)
-AC_MSG_RESULT(Live.com library found - $test_live)
+AC_MSG_RESULT(live555.com library found - $test_live)
 
 #
 # Test for ffmpeg
@@ -528,10 +528,10 @@ dnl
 dnl Need to check for post 0.4.9 cvs-style pkg-config support here too
 dnl
 
-dnl test for slurped version (default 0.4.8, otherwise use --with-ffmpeg argument)
+dnl test for slurped version (default cvs, otherwise use --with-ffmpeg argument)
 if test "x$test_ffmpeg" = "xmanual"; then
-    if test "x$withval" = "xyes" -a -f `pwd`/third_party_packages/ffmpeg-0.4.8/libavcodec/avcodec.h; then
-        withval=third_party_packages/ffmpeg-0.4.8
+    if test "x$withval" = "xyes" -a -f `pwd`/third_party_packages/ffmpeg-cvs/libavcodec/avcodec.h; then
+        withval=third_party_packages/ffmpeg-cvs
     fi
 	if test -f ${withval}/libavcodec/avcodec.h; 	then
 			withvalabs=`cd ${withval}; pwd`
@@ -829,7 +829,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build Cocoa frontend:		${cocoa}
 	Build with SDL:			${test_sdl}
 	Build with ARTS support:	${test_arts}
-	Build with live.com RTSP:	${test_live}
+	Build with live555.com RTSP:	${test_live}
 	Build with Python support:     ${with_python}
      "
 

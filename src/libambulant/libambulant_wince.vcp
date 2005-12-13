@@ -48,7 +48,8 @@ CFG=libambulant_wince - Win32 (WCE ARM) Debug
 # PROP Target_Dir ""
 CPP=clarm.exe
 # ADD BASE CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT) /c
-# ADD CPP /nologo /W3 /I "..\..\include" /I "..\..\include\ce3\stl" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\jpeg" /I "..\..\third_party_packages\lpng125" /I "..\..\third_party_packages\zlib" /I "..\..\third_party_packages\mp3lib" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /D "COMPILED_FROM_DSP" /D "XML_STATIC" /D "USE_SMIL21" /YX /Oxs /M$(CECrtMT) /c
+# ADD CPP /nologo /W3 /O2 /I "..\..\include" /I "..\..\include\ce3\stl" /I "..\..\third_party_packages\expat\lib" /I "..\..\third_party_packages\jpeg" /I "..\..\third_party_packages\lpng128" /I "..\..\third_party_packages\zlib" /I "..\..\third_party_packages\mp3lib" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /D "COMPILED_FROM_DSP" /D "XML_STATIC" /D "USE_SMIL21" /YX /Oxs /M$(CECrtMT) /c
+# SUBTRACT CPP /X
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"..\..\lib\wince-arm\libambulant_wince.lib"
@@ -186,8 +187,10 @@ DEP_CPP_PLUGI=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -615,17 +618,21 @@ DEP_CPP_RENDE=\
 	"..\..\include\ambulant\lib\gtypes.h"\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
+	"..\..\include\ambulant\lib\nfa.h"\
 	"..\..\include\ambulant\lib\node.h"\
 	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\parselets.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -906,8 +913,10 @@ DEP_CPP_SMIL_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -1178,8 +1187,10 @@ DEP_CPP_VIDEO=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -1371,8 +1382,10 @@ DEP_CPP_DG_AR=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -1572,8 +1585,10 @@ DEP_CPP_DG_AU=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
@@ -2020,8 +2035,10 @@ DEP_CPP_DG_BG=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -2211,8 +2228,10 @@ DEP_CPP_DG_BR=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -2395,20 +2414,14 @@ DEP_CPP_DG_IM=\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\url.h"\
-	"..\..\include\ce3\stl\alloc.h"\
-	"..\..\include\ce3\stl\stl_alloc.h"\
-	"..\..\include\ce3\stl\stl_config.h"\
-	"..\..\include\ce3\stl\stl_threads.h"\
-	"..\..\include\ce3\stl\wce_defs.h"\
 	"..\..\third_party_packages\jpeg\jconfig.h"\
 	"..\..\third_party_packages\jpeg\jerror.h"\
 	"..\..\third_party_packages\jpeg\jmorecfg.h"\
 	"..\..\third_party_packages\jpeg\jpegint.h"\
 	"..\..\third_party_packages\jpeg\jpeglib.h"\
-	"..\..\third_party_packages\lpng125\png.h"\
-	"..\..\third_party_packages\lpng125\pngconf.h"\
-	"..\..\third_party_packages\zlib\zconf.h"\
-	"..\..\third_party_packages\zlib\zlib.h"\
+	
+NODEP_CPP_DG_IM=\
+	"..\..\include\ambulant\gui\dg\png.h"\
 	
 
 !ELSEIF  "$(CFG)" == "libambulant_wince - Win32 (WCE ARM) Debug"
@@ -2602,8 +2615,10 @@ DEP_CPP_DG_IMG=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
@@ -2928,9 +2943,11 @@ DEP_CPP_DG_PL=\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\system.h"\
 	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
@@ -3234,8 +3251,10 @@ DEP_CPP_DG_TE=\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
@@ -3874,8 +3893,10 @@ DEP_CPP_NONE_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -4063,8 +4084,10 @@ DEP_CPP_NONE_F=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -4255,8 +4278,10 @@ DEP_CPP_NONE_G=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -4455,8 +4480,10 @@ DEP_CPP_NONE_V=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -5584,9 +5611,11 @@ DEP_CPP_DOCUM=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -6212,8 +6241,10 @@ DEP_CPP_NODE_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -6900,9 +6931,11 @@ DEP_CPP_TREE_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_memfile.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
@@ -7053,8 +7086,10 @@ DEP_CPP_MMS_P=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\mms_player.h"\
@@ -7247,8 +7282,10 @@ DEP_CPP_TIMEL=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\timeline_builder.h"\
@@ -7434,8 +7471,10 @@ DEP_CPP_TIMELI=\
 	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\mms\timelines.h"\
@@ -7674,8 +7713,10 @@ DEP_CPP_ANIMA=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -7835,9 +7876,11 @@ DEP_CPP_ANIMAT=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -8064,9 +8107,11 @@ DEP_CPP_ANIMATE=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -8274,8 +8319,10 @@ DEP_CPP_PARAM=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -8407,6 +8454,7 @@ DEP_CPP_REGION=\
 	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\node_navigator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
@@ -8581,8 +8629,10 @@ DEP_CPP_SMIL_L=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -8776,9 +8826,11 @@ DEP_CPP_SMIL_P=\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\system.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -9012,9 +9064,11 @@ DEP_CPP_SMIL_T=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -9188,9 +9242,11 @@ DEP_CPP_SYNC_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -9363,9 +9419,11 @@ DEP_CPP_TEST_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\tree_builder.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -9528,9 +9586,11 @@ DEP_CPP_TIME_=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -9859,9 +9919,11 @@ DEP_CPP_TIME_N=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -10039,9 +10101,11 @@ DEP_CPP_TIME_S=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -10222,9 +10286,11 @@ DEP_CPP_TIME_ST=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -10402,9 +10468,11 @@ DEP_CPP_TIMEG=\
 	"..\..\include\ambulant\lib\sax_handler.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\transition_info.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
 	"..\..\include\ambulant\net\datasource.h"\
@@ -10603,6 +10671,7 @@ DEP_CPP_TRANSI=\
 	"..\..\include\ambulant\lib\node.h"\
 	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
+	"..\..\include\ambulant\lib\refcount.h"\
 	"..\..\include\ambulant\lib\sax_types.h"\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\timer.h"\

@@ -76,6 +76,7 @@ libambulant_qt_la_SOURCES = 		\
 else
 qtincludes=
 toolkit_qt_libraries =
+libambulant_qt_la_SOURCES =
 endif
 
 if WITH_QT_HTML_WIDGET
@@ -243,7 +244,6 @@ libambulant_la_SOURCES = \
 EXTRA_DIST= \
 	libambulant_win32.dsp \
 	libambulant_win32.vcproj \
-	libambulant_win32-noxerces.vcproj \
 	libambulant_wince.vcp \
 	gui/SDL \
 	gui/arts \

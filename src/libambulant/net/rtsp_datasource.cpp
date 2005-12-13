@@ -192,7 +192,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 
 			}
 		} else {
-			/* AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux: ignoring \"%s\" subsession", subsession->mediumName());
+			AM_DBG lib::logger::get_logger()->debug("rtsp_demux: ignoring \"%s\" subsession", subsession->mediumName());
 		}
 		context->nstream++;
 		

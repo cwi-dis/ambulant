@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "libjpeg"=.\jpeg\wince\libjpeg.vcp - Package Owner=<4>
+Project: "libjpeg"=.\JPEG\WINCE\libjpeg\libjpeg.vcp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,7 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "libpng"=.\lpng125\projects\wince\libpng.vcp - Package Owner=<4>
+Project: "libpng"=.\lpng128\projects\emvc3\libpng.vcp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -35,9 +35,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name zlibce
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -54,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "zlibce"=.\zlibce\zlibce.vcp - Package Owner=<4>
+Project: "zlib"=.\LPNG128\PROJECTS\EMVC3\zlib\zlib.vcp - Package Owner=<4>
 
 Package=<5>
 {{{

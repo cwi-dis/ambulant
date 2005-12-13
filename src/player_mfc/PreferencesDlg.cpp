@@ -44,6 +44,8 @@ BEGIN_MESSAGE_MAP(PreferencesDlg, CDialog)
 //	ON_CBN_SELCHANGE(IDC_COMBO1, OnCbnSelchangeCombo1)
 	ON_BN_CLICKED(IDCANCEL, OnBnClickedCancel)
 	ON_BN_CLICKED(IDOK, OnBnClickedOK)
+	ON_BN_CLICKED(IDC_CHECK1, OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_CHECK2, OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -67,4 +69,14 @@ void PreferencesDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
 	OnCancel();
+}
+
+void PreferencesDlg::OnBnClickedCheck1()
+{
+	// TODO: Add your control notification handler code here
+}
+
+void PreferencesDlg::OnBnClickedCheck2()
+{
+	// TODO: Add your control notification handler code here
 }

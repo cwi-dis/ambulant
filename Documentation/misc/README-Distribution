@@ -86,6 +86,10 @@ Before creating the distribution
   - Documentation/misc/README-ZAURUS
   - Documentation/misc/README-Distribution (this file)
   - third_party_packages/readme.txt
+- Update the icons in the following files:
+  - src/player_mfc/res/AmbulantPlayer.ico
+  - src/player_wince/res/AmbulantPlayer.ico
+  - src/player_macos/cocoambulant.icns
 - The sources in src/pyambulant need to be regenerated. Currently this can only
   be done with a Python from cvs, by running "make regenerate-pyambulant".
 - Make sure Documentation/API/{refman,html} are empty: we don't want the
@@ -155,10 +159,13 @@ Creating the MacOSX installer
 
 - Build the whole source tree, don't forget options for
   enabling xerces, etc. You want to build with Xerces in a plugin,
+  live support, no Python support, only fast internal DOM acces,
   i.e. with
-    configure --with-xerces --with-xerces-plugin
+    ../configure -C --with-ffmpeg --without-external-dom \
+        --without-python --with-live \
+        --with-xerces --with-xerces-plugin
 - Install the player in src/player_macos.
-- Create a folder called something like "Ambulant Player 1.2", 
+- Create a folder called something like "Ambulant Player 1.6", 
   and copy the items mentioned above into it.
 - Use Applications->Utilities->Disk Utilities to create a .dmg
   disk image from this folder (read only, compressed). Make sure the
