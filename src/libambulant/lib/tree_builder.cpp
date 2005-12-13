@@ -108,7 +108,8 @@ lib::tree_builder::build_tree_from_url(const net::url& u) {
 #if defined(AMBULANT_PLATFORM_WIN32)
 	memfile mf(u);
 	if(!mf.read()) {
-		lib::logger::get_logger()->show(gettext("Failed to read URL: %s"), u.get_url().c_str());
+		// mf.read has given error message
+		// lib::logger::get_logger()->show(gettext("Failed to read URL: %s"), u.get_url().c_str());
 		return false;
 	}
 	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);

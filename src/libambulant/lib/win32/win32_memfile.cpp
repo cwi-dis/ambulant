@@ -102,14 +102,16 @@ bool lib::win32::memfile::read_remote(const std::string& urlstr) {
 	textptr tp(urlstr.c_str());
 	BOOL bres = InternetCanonicalizeUrl(tp, urlbuf , &nch, ICU_BROWSER_MODE);
 	if(!bres) {
-		win_report_last_error("InternetCanonicalizeUrl()");
+		lib::logger::get_logger()->trace("%s: InternetCanonicalizeUrl returned error 0x%x", urlbuf, GetLastError());
+		lib::logger::get_logger()->error("%s: Ill-formatted URL", urlbuf);
 		InternetCloseHandle(hinet); 
 		return false;
 	}
 	
 	HINTERNET hf = InternetOpenUrl(hinet, urlbuf,  NULL, 0, INTERNET_FLAG_RAW_DATA, 0);
 	if(!hf) {
-		win_report_last_error("InternetOpenUrl()");
+		lib::logger::get_logger()->trace("%s: InternetOpenUrl returned error 0x%x", urlbuf, GetLastError());
+		lib::logger::get_logger()->error("%s: Cannot open URL", urlbuf);
 		InternetCloseHandle(hinet); 
 		return false;
 	}

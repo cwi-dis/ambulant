@@ -76,7 +76,8 @@ lib::document::create_from_file(common::factories* factory, const std::string& f
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_file(filename.c_str())) {
-		logger::get_logger()->error(gettext("%s: Not a valid XML document"), filename.c_str());
+		// build_tree_from_file has reported the error already
+		// logger::get_logger()->error(gettext("%s: Not a valid XML document"), filename.c_str());
 		delete d;
 		return 0;
 	}
@@ -100,7 +101,8 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_url(u)) {
-		logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
+		// build_tree_from_url has already given the error message
+		// logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
 		delete d;
 		return NULL;
 	}
