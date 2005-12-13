@@ -24,11 +24,11 @@ item: Global
   Patch Memory=4000
   MIF PDF Version=1.0
   MIF SMS Version=2.0
-  EXE Filename=..\..\bin\win32\Ambulant-1.6-win32.exe
+  EXE Filename=..\..\bin\win32\Ambulant-1.7-win32.exe
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.6
+  Version File=1.7
   Version Description=Ambulant Player for SMIL 2.1
   Version Copyright=Copyright (c) 2004-2005
   Version Company=Stichting CWI
@@ -95,7 +95,7 @@ item: Remark
 end
 item: Set Variable
   Variable=GROUP
-  Value=Ambulant\Ambulant Player 1.6
+  Value=Ambulant\Ambulant Player 1.7
   Flags=10000000
 end
 item: Remark
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer-1.6
+  Value=AmbulantPlayer-1.7
   Flags=10000000
 end
 item: Remark
@@ -2416,7 +2416,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=1.6
+  New Value=1.7
   Value Name=DisplayVersion
   Root=2
 end

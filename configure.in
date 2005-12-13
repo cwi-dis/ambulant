@@ -1,6 +1,6 @@
 AC_INIT(src/libambulant/get_version.cpp)
 
-AMBULANT_VERSION=1.6
+AMBULANT_VERSION=1.7
 AM_INIT_AUTOMAKE(ambulant, $AMBULANT_VERSION)
 
 dnl =================================================================
