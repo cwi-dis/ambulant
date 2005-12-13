@@ -298,7 +298,7 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	size_type i1 = pat.length();
 	// Most patterns include the initial / of the pathname, but we want it in
 	// the pathname.
-	if (i1 > 0 && pat[i1] == '/') i1--;
+	if (i1 > 0 && pat[i1-1] == '/') i1--;
 	size_type i2 = toks.find_last_of('?');
 	size_type i3 = toks.find_last_of('#');
 	i2 = (i2 == std::string::npos)?n:i2;
