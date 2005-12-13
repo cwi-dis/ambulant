@@ -76,8 +76,14 @@ lib::document::create_from_file(common::factories* factory, const std::string& f
 	document *d = new document();
 	tree_builder builder(d);
 	if(!builder.build_tree_from_file(filename.c_str())) {
-		logger::get_logger()->error(gettext("%s: Could not build DOM tree"), filename.c_str());
+		logger::get_logger()->error(gettext("%s: Not a valid XML document"), filename.c_str());
+		delete d;
 		return 0;
+	}
+	if (!builder.assert_root_tag("smil")) {
+		logger::get_logger()->error(gettext("%s: Not a SMIL document"), filename.c_str());
+		delete d;
+		return NULL;
 	}
 	d->set_root(builder.detach());
 	d->set_src_url(ambulant::net::url(filename));
@@ -93,8 +99,16 @@ lib::document*
 lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
 	tree_builder builder(d);
-	if(!builder.build_tree_from_url(u))
-		return 0;
+	if(!builder.build_tree_from_url(u)) {
+		logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
+		delete d;
+		return NULL;
+	}
+	if (!builder.assert_root_tag("smil")) {
+		delete d;
+		logger::get_logger()->error(gettext("%s: Not a SMIL document"), u.get_url().c_str());
+		return NULL;
+	}
 	d->set_root(builder.detach());
 	d->set_src_url(u);
 	return d;
@@ -106,8 +120,14 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 	document *d = new document();
 	tree_builder builder(d, src_id.c_str());
 	if(!builder.build_tree_from_str(smil_src)) {
-		AM_DBG logger::get_logger()->trace(gettext("Could not build DOM tree for the provided string"));
-		return 0;
+		logger::get_logger()->error(gettext("%s: Not a valid XML document"), src_id.c_str());
+		delete d;
+		return NULL;
+	}
+	if (!builder.assert_root_tag("smil")) {
+		logger::get_logger()->error(gettext("%s: Not a SMIL document"), src_id.c_str());
+		delete d;
+		return NULL;
 	}
 	d->set_root(builder.detach());
 	return d;
@@ -116,6 +136,10 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 //static 
 lib::document* 
 lib::document::create_from_tree(common::factories* factory, lib::node *root, const net::url& u) {
+	if (root->get_local_name() != "smil" ) {
+		logger::get_logger()->error(gettext("%s: Not a SMIL document"), u.get_url().c_str());
+		return NULL;
+	}
 	document *d = new document(root, false);
 	d->set_root(root); // This fills the id2node map and such
 	d->set_src_url(u);

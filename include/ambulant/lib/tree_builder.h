@@ -98,6 +98,12 @@ class tree_builder :
 	/// Set ready to build next xml tree.
 	void reset();
 	
+	/// Check that the root node is of a specific type
+	bool assert_root_tag(const xml_string& tag) { return m_root && m_root->get_local_name() == tag; }
+
+	/// Check that the root node is of a specific type
+	bool assert_root_tag(const q_name_pair& tag) { return m_root && m_root->get_qname() == tag; }
+
 	///////////////
 	/// sax_content_handler interface method.
 	virtual void start_document();
