@@ -1,3 +1,34 @@
+2005-12-13 16:58  jackjansen
+
+	* Added ctrl-L as shortcut for Open URL.
+
+2005-12-13 16:58  jackjansen
+
+	* Argh. Off-by-one error in previous fix.
+
+2005-12-13 16:50  jackjansen
+
+	* Improved error reporting.
+
+2005-12-13 16:49  jackjansen
+
+	* URLs of the form "http://www.cwi.nl" (without trailing slash)
+	  were not parsed correctly. Bugfix candidate.
+
+2005-12-13 16:11  jackjansen
+
+	* Check that SMIL documents actually have a <smil> root node (to
+	  forestall trying to interpret random XML or HTML as smil)
+
+2005-12-13 15:24  jackjansen
+
+	* Post-release updating of version number to 1.7.
+
+2005-12-13 15:20  jackjansen
+
+	* Merging changes from release-ambulant-16-branch back to the
+	  trunk.
+
 2005-12-12 16:01  koelimoe
 
 	* changed the live.com into live555.com
