@@ -1,7 +1,7 @@
 #!/bin/sh
 # Test whether a given object file has any non-Apple dependencies
 for a in $@; do
-    deps=`otool -L $a | grep -v $a | grep -v /System | grep -v /usr/lib`
+    deps=`otool -L $a | grep -v $a | grep -v /System | grep -v /usr/lib | grep -v @executable_path`
     if test "x$deps" != "x"; then
         echo "WARNING: Non-Apple dependencies in $a:"
         echo "$deps"

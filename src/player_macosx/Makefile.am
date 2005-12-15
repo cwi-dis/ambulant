@@ -109,7 +109,9 @@ cocoambulant_bundle: cocoambulant_executable
 if WITH_XERCES_PLUGIN
 	mkdir -p $(BUILDAPPNAME).app/Contents/Frameworks
 	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks
-	install_name_tool -change libxerces-c.27.dylib @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces
+	install_name_tool -change `otool -D $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib | tail -n 1` \
+		@executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces
+	install_name_tool -id @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks/libxerces-c.27.dylib
 endif
 
 #	Install gettext localizations
@@ -176,6 +178,7 @@ endif
 #   Test for problematic dependencies
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
+	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
 	
 LDADD = \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
