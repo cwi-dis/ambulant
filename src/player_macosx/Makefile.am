@@ -81,6 +81,9 @@ cocoambulant_executable_SOURCES= \
 APPNAME="Ambulant Player"
 BUILDAPPNAME = "AmbulantPlayer"
 
+# Script to test dependencies
+TESTDEP=$(srcdir)/testdependencies
+
 cocoambulant_bundle: cocoambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
@@ -108,7 +111,7 @@ if WITH_XERCES_PLUGIN
 	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks
 	install_name_tool -change libxerces-c.27.dylib @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces
 endif
-	
+
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
@@ -169,6 +172,10 @@ endif
 #	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	
+#   Test for problematic dependencies
+	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	
 LDADD = \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
