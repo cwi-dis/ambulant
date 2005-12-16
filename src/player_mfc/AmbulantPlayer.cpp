@@ -246,7 +246,6 @@ void CAmbulantPlayerApp::OnFileOpenurl()
 	// Open URL
 	m_recentUrl = dlg.m_url;
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(dlg.m_url);
-	if(mmdoc) mmdoc->StartPlayback();
 }
 
 void CAmbulantPlayerApp::OnPreferences()
