@@ -41,6 +41,15 @@ rigamarole explained below. When the releases have been created tag
 the branch with "release-ambulant-161". Again, don't propagate fixes to the
 trunk just yet.
 
+If at some point you fix something on the trunk but later decide you want that
+fix on the release branch too you need to do a bit more. First you merge the
+fix to the branch, by doing (on the branch) something like "cvs up -j1.42 xxx.c" (or
+a "cvs diff" on the trunk and a "patch" on the branch).
+Then you test the fix and check it in (still on the branch). Finally you have to
+update the "release-ambulant-16-merge" tag so the fix doesn't get sent back to the
+trunk later (which would apply it twice) by doing
+"cvs tag -F release-ambulant-16-merge xxx.c".
+
 After the release you need to merge the changes again, but only the ones
 you didn't merge previously. Set working copy to the trunk, and
 "cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch". (NOTE:
@@ -326,6 +335,7 @@ To be supplied. Some ideas, plus who knows how to submit things:
 -   adcnews@apple.com? (jack)
 -   news@macnn.com (jack)
 -   http://www.macupdate.com
+-   softpedia.com (jack, add to all sections)
 
 linux:
 - www.freshmeat.net
