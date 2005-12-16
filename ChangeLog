@@ -1,3 +1,14 @@
+2005-12-15 16:02  jackjansen
+
+	* - @executable_path is also okay as a dependency - modify the
+	  library id for the xerces library too.
+
+2005-12-15 15:20  jackjansen
+
+	* During the build process, test for dependencies on non-Apple
+	  libraries.  These are probably a signal of a problem (such as
+	  inadvertently having linked with a library in /usr/local).
+
 2005-12-13 16:58  jackjansen
 
 	* Added ctrl-L as shortcut for Open URL.
