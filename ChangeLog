@@ -1,3 +1,25 @@
+2005-12-16 15:07  jackjansen
+
+	* Added a paragraph on merging fixes from the trunk to the release
+	  branch.
+
+2005-12-16 13:07  jackjansen
+
+	* Fixed yet another bug in the handling of mixed url/windows
+	  notation.
+
+	  Backport candidate.
+
+2005-12-16 12:55  jackjansen
+
+	* Slightly better formatting of the message dialog.
+
+2005-12-16 12:40  jackjansen
+
+	* OpenURL also had the "double play" bug that Open File had. Fixed.
+
+	  Bugfix candidate.
+
 2005-12-15 16:02  jackjansen
 
 	* - @executable_path is also okay as a dependency - modify the
