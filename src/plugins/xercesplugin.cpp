@@ -20,6 +20,7 @@
 #include "ambulant/lib/xerces_parser.h"
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/sax_handler.h"
+#include "ambulant/version.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -68,7 +69,9 @@ xerces_plugin_factory::get_parser_name()
 
 
 extern "C" void initialize(ambulant::common::factories* factory)
-{	
+{
+    if ( !ambulant::check_version() )
+        lib::logger::get_logger()->warn("xerces_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	AM_DBG lib::logger::get_logger()->debug("xerces_plugin::initialize registering factory function");
 	if (factory->pf) {
 		factory->pf->add_factory(new xerces_plugin_factory(factory));

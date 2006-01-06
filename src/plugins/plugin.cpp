@@ -21,6 +21,7 @@
 #include "ambulant/common/renderer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/unix/unix_mtsync.h"
+#include "ambulant/version.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -135,6 +136,8 @@ bug_workaround(ambulant::common::factories* factory)
 
 extern "C" void initialize(ambulant::common::factories* factory)
 {
+    if ( !ambulant::check_version() )
+        lib::logger::get_logger()->warn("basic_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
     AM_DBG lib::logger::get_logger()->debug("basic_plugin: loaded.");
     if (factory->rf) {

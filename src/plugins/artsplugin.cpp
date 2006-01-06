@@ -23,6 +23,7 @@
 #include "ambulant/lib/unix/unix_mtsync.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/arts/arts_audio.h"
+#include "ambulant/version.h"
 
 #include <artsc.h>
 
@@ -85,6 +86,8 @@ arts_plugin_factory::new_playable(
 
 extern "C" void initialize(ambulant::common::factories* factory)
 {	
+    if ( !ambulant::check_version() )
+        lib::logger::get_logger()->warn("arts_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	AM_DBG lib::logger::get_logger()->debug("arts_plugin::initialize registering factory function");
 	if (factory->rf) {
 		factory->rf->add_factory(new arts_plugin_factory(factory));

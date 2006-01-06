@@ -278,6 +278,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 	region_node::const_iterator end = m_layout_tree->end();
 	
 	AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_surfaces called");
+	assert(wf);
 	// First we check for a root-layout node. This will be used as the parent
 	// of toplevel region nodes. If there is no root-layout but there are
 	// toplevel region nodes we will create it later.

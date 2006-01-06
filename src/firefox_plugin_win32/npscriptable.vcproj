@@ -24,7 +24,7 @@
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
 				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/npscriptable.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -38,10 +38,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32_D.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
 				OutputFile=".\Debug/npscriptable.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				IgnoreDefaultLibraryNames="libcmt.lib"
 				ModuleDefinitionFile=".\npscriptable.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/npscriptable.pdb"
@@ -57,8 +58,8 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\Debug\npscriptable.dll  &quot;C:\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot;
-copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\plugins\nsIScriptablePluginSample.xpt&quot;
+				CommandLine="copy /y .\Debug\npscriptable.dll  &quot;\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot;
+copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsIAmbulantPlugin.xpt&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -91,7 +92,7 @@ copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\p
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\include,..\..\..\..\gecko-sdk\plugin\include,..\..\..\..\gecko-sdk\nspr\include,..\..\..\..\gecko-sdk\java\include,..\..\..\..\gecko-sdk\xpcom\include,..\..\..\..\gecko-sdk"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
 				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -108,9 +109,11 @@ copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\p
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
 				OutputFile=".\Release/npscriptable.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				IgnoreDefaultLibraryNames="libcpmtd.lib"
 				ModuleDefinitionFile=".\npscriptable.def"
 				ProgramDatabaseFile=".\Release/npscriptable.pdb"
 				ImportLibrary=".\Release/npscriptable.lib"
@@ -124,7 +127,10 @@ copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\p
 				TypeLibraryName=".\Release/npscriptable.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="copy /y .\Release\npscriptable.dll  &quot;\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot;
+copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsIAmbulantPlugin.xpt&quot;
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -259,7 +265,7 @@ copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\p
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="nsIScriptablePluginSample.idl">
+				RelativePath="nsIAmbulantPlugin.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -267,20 +273,19 @@ copy /y .\nsIScriptablePluginSample.xpt &quot;C:\Program Files\Mozilla Firefox\p
 						Description="Running the XPIDL compiler and linker for $(InputName)"
 						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
 ..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npscriptable.xpt nsIScriptablePluginSample.xpt
 "
-						Outputs="nsIScriptablePluginSample.h"/>
+						Outputs="nsIAmbulantPlugin.h;nsIAmbulantPlugin.xpt"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\..\..\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\..\..\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\..\..\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\..\..\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\..\..\gecko-sdk\xpcom\bin\xpt_link npscriptable.xpt nsIScriptablePluginSample.xpt
+						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npscriptable.xpt nsIAmbulantPlugin.xpt
 "
-						Outputs="nsIScriptablePluginSample.h"/>
+						Outputs="nsIAmbulantPlugin.h"/>
 				</FileConfiguration>
 			</File>
 			<File

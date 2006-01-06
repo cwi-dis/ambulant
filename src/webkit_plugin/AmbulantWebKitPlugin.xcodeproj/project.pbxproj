@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
+		045D0B220958C14700C194EE /* libambulant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B210958C14700C194EE /* libambulant.a */; };
+		045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
+		045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2A0958C23900C194EE /* libambulant_live.a */; };
+		045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */; };
+		045D0B300958C23900C194EE /* libambulant_cocoa.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2C0958C23900C194EE /* libambulant_cocoa.a */; };
+		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
+		045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
+		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
+		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
+		049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049775AB0958AC7600A7690F /* WebKit.framework */; };
+		049775B90958ADC500A7690F /* AmbulantWebView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */; };
+		0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8960959B22200A7FDF8 /* libavcodec.a */; };
+		0499E8990959B24100A7FDF8 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8980959B24100A7FDF8 /* libavformat.a */; };
+		0499E89C0959B25F00A7FDF8 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89B0959B25F00A7FDF8 /* libavutil.a */; };
+		0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89E0959B29100A7FDF8 /* libSDL.a */; };
+		0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8A40959B2E100A7FDF8 /* libz.dylib */; };
+		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA420018CDE011CA2923 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		014CEA430018CDE011CA2923 /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = ../libambulant/.libs/libambulant.a; sourceTree = SOURCE_ROOT; };
+		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = ../libambulant/.libs/libambulant_sdl.a; sourceTree = SOURCE_ROOT; };
+		045D0B2A0958C23900C194EE /* libambulant_live.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_live.a; path = ../libambulant/.libs/libambulant_live.a; sourceTree = SOURCE_ROOT; };
+		045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_ffmpeg.a; path = ../libambulant/.libs/libambulant_ffmpeg.a; sourceTree = SOURCE_ROOT; };
+		045D0B2C0958C23900C194EE /* libambulant_cocoa.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_cocoa.a; path = ../libambulant/.libs/libambulant_cocoa.a; sourceTree = SOURCE_ROOT; };
+		045D0B340958C26800C194EE /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		045D0B5B0958C36B00C194EE /* libintl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libintl.a; path = /usr/local/lib/libintl.a; sourceTree = "<absolute>"; };
+		045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
+		045D0B7F0958C53F00C194EE /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
+		045D0B920958C71E00C194EE /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../../../packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
+		049775AB0958AC7600A7690F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
+		049775B70958ADC500A7690F /* AmbulantWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebView.h; sourceTree = "<group>"; };
+		049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebView.mm; sourceTree = "<group>"; };
+		0499E8960959B22200A7FDF8 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-cvs/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		0499E8980959B24100A7FDF8 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-cvs/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		0499E89B0959B25F00A7FDF8 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-cvs/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		0499E89E0959B29100A7FDF8 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
+		0499E8A40959B2E100A7FDF8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* AmbulantWebKitPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebKitPlugin_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* AmbulantWebKitPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmbulantWebKitPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */,
+				045D0B220958C14700C194EE /* libambulant.a in Frameworks */,
+				045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */,
+				045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */,
+				045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */,
+				045D0B300958C23900C194EE /* libambulant_cocoa.a in Frameworks */,
+				045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */,
+				045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */,
+				045D0B930958C71E00C194EE /* libexpat.a in Frameworks */,
+				0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */,
+				0499E8990959B24100A7FDF8 /* libavformat.a in Frameworks */,
+				0499E89C0959B25F00A7FDF8 /* libavutil.a in Frameworks */,
+				0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */,
+				0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		045D0B570958C26F00C194EE /* Ambulant */ = {
+			isa = PBXGroup;
+			children = (
+				045D0B210958C14700C194EE /* libambulant.a */,
+				045D0B290958C23900C194EE /* libambulant_sdl.a */,
+				045D0B2A0958C23900C194EE /* libambulant_live.a */,
+				045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */,
+				045D0B2C0958C23900C194EE /* libambulant_cocoa.a */,
+			);
+			name = Ambulant;
+			sourceTree = "<group>";
+		};
+		089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = AmbulantWebKitPlugin;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				045D0B570958C26F00C194EE /* Ambulant */,
+				045D0B5B0958C36B00C194EE /* libintl.a */,
+				045D0B920958C71E00C194EE /* libexpat.a */,
+				0499E8960959B22200A7FDF8 /* libavcodec.a */,
+				0499E8980959B24100A7FDF8 /* libavformat.a */,
+				0499E89B0959B25F00A7FDF8 /* libavutil.a */,
+				0499E89E0959B29100A7FDF8 /* libSDL.a */,
+				0499E8A40959B2E100A7FDF8 /* libz.dylib */,
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				049775B70958ADC500A7690F /* AmbulantWebView.h */,
+				049775B80958ADC500A7690F /* AmbulantWebView.mm */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				045D0B340958C26800C194EE /* QuickTime.framework */,
+				049775AB0958AC7600A7690F /* WebKit.framework */,
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* AmbulantWebKitPlugin.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				045D0B7E0958C53F00C194EE /* mainloop.cpp */,
+				045D0B7F0958C53F00C194EE /* mainloop.h */,
+				32DBCF630370AF2F00C91783 /* AmbulantWebKitPlugin_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "AmbulantWebKitPlugin" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+			};
+			dependencies = (
+			);
+			name = AmbulantWebKitPlugin;
+			productInstallPath = "$(HOME)/Library/Internet Plug-Ins";
+			productName = AmbulantWebKitPlugin;
+			productReference = 8D5B49B6048680CD000E48DA /* AmbulantWebKitPlugin.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA420018CDE011CA2923 /* Debug */,
+				014CEA430018CDE011CA2923 /* Release */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
+			projectDirPath = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				042AF3D4095AFF780003E706 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				049775B90958ADC500A7690F /* AmbulantWebView.mm in Sources */,
+				045D0B800958C53F00C194EE /* mainloop.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"AM_PREFER_FFMPEG=",
+					"USE_SMIL21=",
+					"WITH_SDL=",
+					"WITH_FFMPEG=",
+					"WITH_EXPAT=",
+					"WITH_FFMPEG_AVFORMAT=",
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					../libambulant/.libs,
+					/usr/local/lib,
+					"../../third_party_packages/expat-unix/lib",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil",
+				);
+				PRODUCT_NAME = AmbulantWebKitPlugin;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"AM_PREFER_FFMPEG=",
+					"USE_SMIL21=",
+					"WITH_SDL=",
+					"WITH_FFMPEG=",
+					"WITH_EXPAT=",
+					"WITH_FFMPEG_AVFORMAT=",
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					../libambulant/.libs,
+					/usr/local/lib,
+					"../../third_party_packages/expat-unix/lib",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat",
+					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil",
+				);
+				PRODUCT_NAME = AmbulantWebKitPlugin;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "AmbulantWebKitPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

@@ -1,8 +1,20 @@
 
-What's new in Ambulant Player 1.6?
+What's new in Ambulant Player 1.6.1?
 ------------------------------------
+Changes between 1.6 and 1.6.1:
 
-Changes between 1.6 and 1.4.5:
+- Network playback was broken on Windows. Fixed.
+
+- Validation with Xerces was broken on the Mac. Fixed.
+  The build procedure was also adapted so this "shouldn't
+  happen" in the future.
+
+- The Ambulant Firefox plugin for Windows and the
+  Ambulant Safari plugin for MacOSX are now distributed.
+
+- Various minor fixes.
+
+Changes between 1.4.5 and 1.6:
 
 - SMIL 2.1 support has been adapted to the final standard.
 

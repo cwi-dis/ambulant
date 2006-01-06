@@ -1,0 +1,47 @@
+<html>
+ <head>
+  <title>%(title)s</title>
+ </head>
+ <body>
+  
+  <h1>%(title)s</h1>
+
+  <p>This web page contains an embedded SMIL presentation played with
+  the Ambulant Plugin. If no plugin is visible please visit the
+  <a href="http://www.ambulantPlayer.org">Ambulant Website</a> to
+  download it. </p>
+  
+  <p>Alternatively, you can <a href="%(fullurl)s">play the document in
+  the external Ambulant Player</a>. </p>
+
+  %(embed)s
+
+  <script>
+	var embed = document.embeds[0];
+	
+	function StartPlayer() {
+		embed.startPlayer();
+	}
+	function StopPlayer() {
+		embed.stopPlayer();
+	}
+	function RestartPlayer() {
+		embed.restartPlayer();
+	}
+	function ResumePlayer() {
+		embed.resumePlayer();
+	}
+	function PausePlayer() {
+		embed.pausePlayer();
+	}
+  </script>
+
+  <form name="formname">
+   <input type=button value="Start" onclick='StartPlayer()'>
+   <input type=button value="Stop" onclick='StopPlayer()'>
+   <input type=button value="Restart" onclick='RestartPlayer()'>
+   <input type=button value="Resume" onclick='ResumePlayer()'>
+   <input type=button value="Pause" onclick='PausePlayer()'>
+  </form>
+ </body>
+</html>

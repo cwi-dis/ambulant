@@ -221,9 +221,14 @@ AC_MSG_CHECKING(for xerces XML handling library)
 
 AC_ARG_WITH(xerces,
 	[  --with-xerces		Turn on/off use of Xerces XML library],
-	[if test "x$withval" = "xyes"; then
-	test_xerces=true
-fi
+	[
+    case "${withval}" in    
+     yes) test_xerces=true;;
+     no)  test_xerces=false;;
+     *)   test_xerces=true
+          XERCES_PREFIX=$withval
+          ;;
+    esac
 ])
 dnl test for slurped version first
 dnl
@@ -235,16 +240,22 @@ if test "x$test_xerces" = "xtrue"; then
 fi	
 if test "x$test_xerces" = "xtrue";
 then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
-     then
+    then
         XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
 	    XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
 	    XERCES_INCLUDES="-I$XERCES_PREFIX/include"
 	    AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
-     else  AC_MSG_ERROR([xerces not found in $XERCES_PREFIX])
+    else 
+        AC_MSG_ERROR([xerces not found in $XERCES_PREFIX])
+        test_xerces=false
+        unset XERCES_PREFIX
+        unset XERCES_LIBS
+        unset XERCES_INCLUDES
      fi
 else
-     unset XERCES_PREFIX;
-     unset XERCES_INCLUDES;
+    unset XERCES_PREFIX
+    unset XERCES_LIBS
+    unset XERCES_INCLUDES
 fi
 AC_SUBST(XERCES_PREFIX)
 AC_SUBST(XERCES_LIBS)
