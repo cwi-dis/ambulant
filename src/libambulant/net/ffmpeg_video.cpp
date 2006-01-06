@@ -467,7 +467,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 					// The format we have is already in frame. Convert.
 					pic_fmt = m_con->pix_fmt;
 					img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
-					
+#if defined(AMBULANT_PLATFORM_MACOS) && defined(__LITTLE_ENDIAN__)
+					// The format is now RGBARGBA, but on the Intel mac we need BGRABGRA
+					char *p, c;
+					for (p=framedata; p<framedata+m_size; p+=4) {
+						c = p[0];
+						p[0] = p[2];
+						p[2] = c;
+					}
+#endif
 					// Try and compute the timestamp and update the video clock.
 					timestamp_t pts = 0;
 					timestamp_t frame_delay = 0;
@@ -501,7 +509,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 						m_video_clock += frame_delay;
 					}
 #endif				
-					/*AM_DBG*/ lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;
 					bool drop_this_frame = false;
@@ -624,7 +632,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	
 	timestamp_t frame_duration = m_fmt.frameduration; 
 	assert (frame_duration > 0);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
 
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );

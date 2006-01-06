@@ -89,8 +89,10 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 		hasAlpha: NO
 		isPlanar: NO
 		colorSpaceName: NSDeviceRGBColorSpace
-#if 1
+#ifdef __BIG_ENDIAN__
 		bitmapFormat: NSAlphaFirstBitmapFormat
+#else
+		bitmapFormat: (NSBitmapFormat)0
 #endif
 		bytesPerRow: m_size.w * 4
 		bitsPerPixel: 32];
