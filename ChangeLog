@@ -1,3 +1,16 @@
+2006-01-06 17:00  jackjansen
+
+	* Merging changes for 1.6.1 (from ambulant-release-16-branch) back
+	  to the trunk.
+
+2006-01-06 13:28  jackjansen
+
+	* New SDL version needs to be linked with AudioUnits framework.
+
+2006-01-06 12:08  jackjansen
+
+	* Got video colors correct on the Intel mac.
+
 2005-12-16 15:07  jackjansen
 
 	* Added a paragraph on merging fixes from the trunk to the release
