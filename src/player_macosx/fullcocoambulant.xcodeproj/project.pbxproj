@@ -804,6 +804,12 @@
 		04382C5605D7AEE700CFA029 /* time_state.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9005D7AEE600CFA029 /* time_state.h */; };
 		04382C5705D7AEE700CFA029 /* timegraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9105D7AEE600CFA029 /* timegraph.h */; };
 		04382C5805D7AEE700CFA029 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9205D7AEE600CFA029 /* version.h */; };
+		043FA58C097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		043FA58D097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		043FA58E097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		043FA590097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		043FA591097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		0442DEB708965537008D10AE /* libdirac_decoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493212708951DF900F38A0A /* libdirac_decoder.a */; };
 		0442DEB80896553B008D10AE /* libdirac_encoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493213C089520B500F38A0A /* libdirac_encoder.a */; };
 		0444D3AC051F2EF00010C447 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0444D320051F2EEF0010C447 /* get_version.cpp */; };
@@ -1654,6 +1660,7 @@
 		04382B9205D7AEE600CFA029 /* version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		04383C7706F4600F006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		04383CCD06F4639B006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		043FA58B097275AB007EA0C2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		0444D320051F2EEF0010C447 /* get_version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = get_version.cpp; sourceTree = "<group>"; };
 		0444D325051F2EEF0010C447 /* cocoa_gui.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_gui.mm; sourceTree = "<group>"; };
 		0444D327051F2EEF0010C447 /* none_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = none_gui.cpp; sourceTree = "<group>"; };
@@ -1838,6 +1845,7 @@
 				04161464072078C400A8B0B6 /* libavformat.a in Frameworks */,
 				04161465072078C400A8B0B6 /* libltdl.a in Frameworks */,
 				048399E008ED2FDD008505C3 /* WebKit.framework in Frameworks */,
+				043FA58E097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1864,6 +1872,7 @@
 				044FD77E08F5D12700ED79BF /* libliveMedia.a in Frameworks */,
 				044FD77F08F5D12700ED79BF /* libUsageEnvironment.a in Frameworks */,
 				044FD78008F5D2D700ED79BF /* libgroupsock.a in Frameworks */,
+				043FA591097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1886,6 +1895,7 @@
 				0459E80008DACE5D00BF6ED5 /* libavcodec.a in Frameworks */,
 				0459E80208DACE8100BF6ED5 /* libavutil.a in Frameworks */,
 				048399DE08ED2FDD008505C3 /* WebKit.framework in Frameworks */,
+				043FA590097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1911,6 +1921,7 @@
 				04600F550894FA8D00B553A2 /* libgroupsock.a in Frameworks */,
 				04600F570894FA9A00B553A2 /* libUsageEnvironment.a in Frameworks */,
 				048399E108ED2FDD008505C3 /* WebKit.framework in Frameworks */,
+				043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1934,6 +1945,7 @@
 				0442DEB708965537008D10AE /* libdirac_decoder.a in Frameworks */,
 				0442DEB80896553B008D10AE /* libdirac_encoder.a in Frameworks */,
 				048399E208ED2FDD008505C3 /* WebKit.framework in Frameworks */,
+				043FA58C097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1955,6 +1967,7 @@
 				04B9F6130700518600B78CC4 /* libltdl.a in Frameworks */,
 				04F7E4DE08A23A0200D68AEA /* libxerces-c.dylib in Frameworks */,
 				048399DF08ED2FDD008505C3 /* WebKit.framework in Frameworks */,
+				043FA58D097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2400,6 +2413,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				043FA58B097275AB007EA0C2 /* AudioUnit.framework */,
 				048399DD08ED2FDC008505C3 /* WebKit.framework */,
 				045BB44806258FE500A75828 /* ApplicationServices.framework */,
 				045BB38A0625526900A75828 /* OpenGL.framework */,

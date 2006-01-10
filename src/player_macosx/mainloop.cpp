@@ -82,7 +82,7 @@ class pbfeedback : public ambulant::common::player_feedback {
 class pbfeedback pbfeedback;
 #endif
 
-mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
+mainloop::mainloop(const char *urlstr, ambulant::common::window_factory *wf,
 	bool use_mms, ambulant::common::embedder *app)
 :   m_running(false),
 	m_speed(1.0),
@@ -154,10 +154,10 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
 	pf->add_plugins(m_factory);
 
-	ambulant::net::url url(filename);
+	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
 	if (!m_doc) {
-		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), filename);
+		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), urlstr);
 		return;
 	}
 	if (use_mms)
@@ -184,6 +184,7 @@ mainloop::mainloop(const char *filename, ambulant::common::window_factory *wf,
 ambulant::lib::document *
 mainloop::create_document(ambulant::net::url& url)
 {
+	// XXXX Needs work for URLs
 	char *data;
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
@@ -195,7 +196,7 @@ mainloop::create_document(ambulant::net::url& url)
 		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
 			strcpy(cwdbuf, ".");
 		strcat(cwdbuf, "/");
-		ambulant::net::url cwd_url(cwdbuf);
+		ambulant::net::url cwd_url = ambulant::net::url::from_filename(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
 		AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());

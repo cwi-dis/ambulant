@@ -44,7 +44,7 @@ lib::document::document(node *root, bool owned)
 	read_custom_attributes();
 }
 
-lib::document::document(node *root, const std::string& src_url) 
+lib::document::document(node *root, const net::url& src_url) 
 :	m_root(root),
 	m_src_url(src_url) {
 	build_id2node_map();
@@ -87,7 +87,7 @@ lib::document::create_from_file(common::factories* factory, const std::string& f
 		return NULL;
 	}
 	d->set_root(builder.detach());
-	d->set_src_url(ambulant::net::url(filename));
+	d->set_src_url(ambulant::net::url::from_filename(filename));
 	
 //	std::string base = filesys::get_base(filename, file_separator.c_str());
 //	d->set_src_base(ambulant::net::url(base));

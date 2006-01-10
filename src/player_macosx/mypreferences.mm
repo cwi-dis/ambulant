@@ -19,6 +19,7 @@
 
 #include "mypreferences.h"
 #import <Cocoa/Cocoa.h>
+#include "ambulant/net/url.h"
 
 void
 mypreferences::install_singleton()
@@ -41,6 +42,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithInt: 2], @"log_level",
 		[NSNumber numberWithBool: true], @"use_plugins",
 		[NSNumber numberWithBool: false], @"prefer_ffmpeg",
+		[NSNumber numberWithBool: false], @"strict_url_parsing",
 		@"", @"plugin_dir",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
@@ -53,6 +55,7 @@ mypreferences::load_preferences()
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
+	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
 	save_preferences();
 	return true;
 }
@@ -70,5 +73,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
 	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
+	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
+	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }

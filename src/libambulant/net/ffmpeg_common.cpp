@@ -192,23 +192,26 @@ ffmpeg_demux::supported(const net::url& url)
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
 	std::string url_str(url.get_url());
+	std::string ffmpeg_name = url_str;
+	if (url.is_local_file())
+		ffmpeg_name = url.get_file();
 	
 #if 1
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
 	if (url_str.substr(0, 5) == "rtsp:") return NULL;
 #endif
-	probe_data.filename = url_str.c_str();
+	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
 	fmt = av_probe_input_format(&probe_data, 0);
-	if (!fmt) {
-		fmt = av_find_input_format(url.get_file().c_str());
+	if (!fmt && url.is_local_file()) {
+		fmt = av_find_input_format(ffmpeg_name.c_str());
 		
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), url.get_file().c_str(), (void*)fmt);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
-	int err = av_open_input_file(&ic, url_str.c_str(), fmt, 0, 0);
+	int err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
@@ -222,7 +225,7 @@ ffmpeg_demux::supported(const net::url& url)
 		return NULL;
 	}
 	
-	AM_DBG dump_format(ic, 0, url_str.c_str(), 0);
+	AM_DBG dump_format(ic, 0, ffmpeg_name.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", am_get_codec_var(ic->streams[0]->codec,sample_rate), am_get_codec_var(ic->streams[0]->codec,channels));
 	assert(ic);
 	return ic;

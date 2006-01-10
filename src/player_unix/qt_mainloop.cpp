@@ -164,7 +164,8 @@ AM_DBG logger::get_logger()->debug("add factory for SDL done");
 					      m_gui->get_o_y());
 
 	const char *filename = m_gui->filename();
-	m_doc = create_document(filename);
+	net::url url = net::url::from_filename(filename);
+	m_doc = create_document(url);
 	if (!m_doc) {
 		return;
 	}
@@ -187,11 +188,10 @@ qt_mainloop::create_player(const char* filename) {
 }
 
 lib::document *
-qt_mainloop::create_document(const char *filename)
+qt_mainloop::create_document(net::url& url)
 {
 	char *data;
-	AM_DBG m_logger->debug("qt_mainloop::create_document(\"%s\")", filename);
-	net::url url(filename);
+	AM_DBG m_logger->debug("qt_mainloop::create_document(\"%s\")", url.get_url().c_str());
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
 #if 0
@@ -202,7 +202,7 @@ qt_mainloop::create_document(const char *filename)
 		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
 			strcpy(cwdbuf, ".");
 		strcat(cwdbuf, "/");
-		net::url cwd_url(cwdbuf);
+		net::url cwd_url = net::url::from_filename(cwdbuf);
 #endif
 		url = url.join_to_base(cwd_url);
 		AM_DBG m_logger->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
@@ -216,7 +216,7 @@ qt_mainloop::create_document(const char *filename)
 	}
 	std::string docdata(data, size);
 	free(data);
-	lib::document *rv = lib::document::create_from_string(m_factory,docdata, filename);
+	lib::document *rv = lib::document::create_from_string(m_factory,docdata, url.get_url().c_str());
 	if (rv) rv->set_src_url(url);
 	return rv;
 }	
@@ -325,15 +325,14 @@ qt_mainloop::close(common::player *p)
 }
 
 void
-qt_mainloop::open(const net::url newdoc, bool start, common::player *old)
+qt_mainloop::open(net::url newdoc, bool start, common::player *old)
 {
-	const char* document_name(newdoc.get_url().c_str());
-	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",document_name);
+	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",newdoc.get_url().c_str());
  	// Parse the provided URL. 
-	m_doc = create_document(document_name);
+	m_doc = create_document(newdoc);
 	if(!m_doc) {
 		m_logger->error(gettext("%s: Cannot build DOM tree"), 
-				document_name);
+				newdoc.get_url().c_str());
 		return;
 	}
 	// send msg to gui thread

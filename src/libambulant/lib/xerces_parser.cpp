@@ -246,7 +246,7 @@ init_dtd_cache_mapping() {
 	// net::url.get_local_datafile() returns the absolute pathname
 	// the pairs <requested_URL, absolute_pathname> constitute the
 	// "dtd_cache_mapping"
-	net::url mapping("DTDCache/mapping.txt");
+	net::url mapping = net::url::from_url("DTDCache/mapping.txt");
 	std::pair<bool, net::url> mapping_filename = mapping.get_local_datafile();
 	if (!mapping_filename.first) return;
 	std::ifstream mapping_stream(mapping_filename.second.get_path().c_str());
@@ -267,7 +267,7 @@ init_dtd_cache_mapping() {
 			continue;
 		}
 		relative = line;
-		net::url relative_url(relative);
+		net::url relative_url = net::url::from_url(relative);
 		std::pair<bool, net::url> absolute_url = relative_url.get_local_datafile();
 		if (absolute_url.first) {
 			std::string abs_path = absolute_url.second.get_path();

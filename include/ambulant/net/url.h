@@ -64,9 +64,6 @@ class AMBULANTAPI url {
 
 	// The path part of this url.
     string m_path;
-
-	// The path separator characters in m_path
-	char *m_pathsep;
     
 	// The query part of this url.
     string m_query;
@@ -76,12 +73,11 @@ class AMBULANTAPI url {
 	
     // The mime type
     string m_mime;
-	
-  public:
-  
-	/// Default constructor: create an empty URL.
- 	url(); 
- 
+
+	// Determines how strict we parse URLs
+	static bool s_strict;
+
+  protected:
 	/// Create a URL from a given string.
 	url(const string& spec); 
 	
@@ -96,6 +92,19 @@ class AMBULANTAPI url {
 	url(const string& protocol, const string& host, int port, 
 		const string& path, const string& query, const string& ref); 
 		
+  public:
+	/// Default constructor: create an empty URL.
+ 	url();
+
+	/// Factory function: create URL given a URL string
+	static url from_url(const std::string& spec) {
+		return url(spec);
+	}
+
+	/// Factory function: create URL given a filename string
+	static url from_filename(const std::string& spec);
+ 
+
 	/// Return the protocol of this URL.
 	const string& get_protocol() const {
 		return m_protocol;
@@ -174,11 +183,21 @@ class AMBULANTAPI url {
 	/// pathname, not a URL.
 	static void set_datafile_directory(std::string pathname);
 	
+	/// Set a flag that determines whether we are strict about URL conformance
+	/// (illegal characters, etc) or not
+	static void set_strict_url_parsing(bool strict) {
+		s_strict = strict;
+	}
+
 	static void init_statics();
 
   private:
+
 	// protocols to ports map
  	// static std::map<string, short_type > s_ports;
+	
+	// Check that URL has correctly escaped characters
+	void _checkurl() const;
  
 	void set_parts(ambulant::lib::scanner& sc, const std::string& pat);
 	
@@ -201,13 +220,7 @@ class AMBULANTAPI url {
 	void set_from_localhost_file_uri(ambulant::lib::scanner& sc, const std::string& pat); 
 	
 	// pat: "/n"
-	void set_from_unix_path(ambulant::lib::scanner& sc, const std::string& pat);
-	
-	// pat: "n:n" or "n:/n"
-	void set_from_windows_path(ambulant::lib::scanner& sc, const std::string& pat);
-	
-	// pat: "\\n"
-	void set_from_wince_path(ambulant::lib::scanner& sc, const std::string& pat);
+	void set_from_absolute_path(ambulant::lib::scanner& sc, const std::string& pat);
 	
 	// pat: "n"
 	void set_from_relative_path(ambulant::lib::scanner& sc, const std::string& pat);
@@ -239,9 +252,6 @@ inline std::string repr(const ambulant::net::url& u) {
 		if(u.get_protocol() == "file") {
 			os << u.get_protocol() << "://" << 
 				((u.get_host()=="localhost")?"":u.get_host());
-			// Hack for Windows absolute file paths
-			if (u.get_path()[0] != '/')
-				os << '/';
 		} else if (u.get_protocol() == "data") {
 			os << "data:,";
 		} else {

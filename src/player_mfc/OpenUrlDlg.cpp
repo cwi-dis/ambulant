@@ -51,7 +51,7 @@ void COpenUrlDlg::OnOK()
 	}
 	
 	std::string urlstr = T2CA((LPCTSTR) m_url);
-	net::url u(urlstr);
+	net::url u = net::url::from_url(urlstr);
 	if(u.is_local_file() && !lib::win32::file_exists(u.get_file())) {
 		CString str;
 		str.Format(_T("The file specified does not exist"));

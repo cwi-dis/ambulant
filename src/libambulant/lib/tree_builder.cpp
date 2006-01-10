@@ -88,7 +88,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	ifs.close();
 	return m_well_formed;
 #elif defined(AMBULANT_PLATFORM_WIN32)
-	net::url u(filename);
+	net::url u = net::url::from_filename(filename);
 	memfile mf(u);
 	if(!mf.read()) {
 		lib::logger::get_logger()->show(gettext("Failed to read file: %s"), filename);

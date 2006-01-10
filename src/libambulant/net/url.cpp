@@ -29,20 +29,134 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/lib/filesys.h"
+#include "ambulant/lib/textptr.h"
  
 #include <string>
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
 #endif
 
-
 using namespace ambulant;
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
+bool ambulant::net::url::s_strict = false;
 const std::string url_delim = ":/?#,";
+// Characters to be escaped in pathnames. Note that ~ and ? have special meanings in
+// http: urls, but not specifically in file: urls.
+const std::string file_url_escape_reqd = " <>#{}|\\^[]`";
+const std::string file_url_escape = file_url_escape_reqd + "%";
+
+//
+// Helper routines to convert local file pathnames to url-style paths
+// and vice-versa
+//
+#ifdef AMBULANT_PLATFORM_WIN32
+
+#include "ambulant/lib/win32/win32_error.h"
+#include <wininet.h>
+
+static std::string
+filepath2urlpath(const std::string& filepath)
+{
+	size_t urlbufsize = filepath.size()*3; // Worst case: all characters escaped
+	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize);
+	DWORD urlbufsizearg = (DWORD)urlbufsize;
+	assert(urlbuf);
+	urlbuf[0] = 0;
+	if (!InternetCanonicalizeUrl(lib::textptr(filepath.c_str()), urlbuf, &urlbufsizearg, 0)) {
+		DWORD dw = GetLastError();
+		lib::win32::win_report_error(filepath.c_str(), dw);
+		urlbuf[0] = 0;
+	}
+	std::string rv = lib::textptr(urlbuf);
+	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
+	if (rv.substr(0, 7) == "file://" && rv[7] != '/')
+		rv = "file:///" + rv.substr(7);
+	// Finally replace backslashes
+	std::string::iterator i;
+	for(i=rv.begin(); i!=rv.end(); i++) {
+		char c = *i;
+		if (c == '\\') 
+			*i = '/';
+	}
+	return rv;
+}
+
+static std::string
+urlpath2filepath(const std::string& urlpath)
+{
+	size_t filebufsize = urlpath.size();
+	LPTSTR filebuf = (LPTSTR)malloc(filebufsize);
+	DWORD filebufsizearg = (DWORD)filebufsize;
+	assert(filebuf);
+	filebuf[0] = 0;
+	if (!InternetCanonicalizeUrl(lib::textptr(urlpath.c_str()), filebuf, 
+			&filebufsizearg, ICU_DECODE | ICU_NO_ENCODE)) {
+		DWORD dw = GetLastError();
+		lib::win32::win_report_error(urlpath.c_str(), dw);
+		filebuf[0] = 0;
+	}
+	std::string rv = lib::textptr(filebuf);
+	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
+	if (rv.substr(0, 8) == "file:///")
+		rv = rv.substr(8);
+	else if (rv[0] == '/')
+		rv = rv.substr(1);
+	// Finally replace slashes by backslashes
+	std::string::iterator i;
+	for(i=rv.begin(); i!=rv.end(); i++) {
+		char c = *i;
+		if (c == '/') 
+			*i = '\\';
+	}
+	return rv;
+}
 #else
-const std::string url_delim = ":/?#\\,";
-#endif
+// Unix implementation
+static std::string
+filepath2urlpath(const std::string& filepath)
+{
+	std::string::const_iterator i;
+	std::string rv;
+	for(i=filepath.begin(); i!=filepath.end(); i++) {
+		char c = *i;
+		if ( file_url_escape.find(c) != std::string::npos ) {
+			char buf[4];
+			sprintf(buf, "%%%02.2x", (unsigned)c);
+			rv += buf;
+		} else {
+			rv += c;
+		}
+	}
+	return rv;
+}
+
+static std::string
+urlpath2filepath(const std::string& urlpath)
+{
+	std::string::const_iterator i;
+	std::string rv;
+	for(i=urlpath.begin(); i!=urlpath.end(); i++) {
+		char c = *i;
+		if ( c == '%' ) {
+			char buf[3];
+			unsigned utfval;
+			buf[0] = *++i;
+			buf[1] = *++i;
+			buf[2] = '\0';
+			if (sscanf(buf, "%x", &utfval) == 1) {
+				rv += (char)utfval;
+			} else {
+				// Put the original string back. What else can we do...
+				rv += '%';
+				rv += buf;
+			}
+		} else {
+			rv += c;
+		}
+	}
+	return rv;
+}
+#endif // AMBULANT_PLATFORM_WIN32
 
 // static 
 //std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
@@ -86,17 +200,8 @@ void net::url::init_statics() {
 	static url_handler_pair h4a = { "n:,", &url::set_from_data_uri};
  	s_handlers.push_back(&h4a);
 
-	static url_handler_pair h5 = {"/n", &url::set_from_unix_path};
+	static url_handler_pair h5 = {"/n", &url::set_from_absolute_path};
  	s_handlers.push_back(&h5);
-
-	static url_handler_pair h6 = {"n:n", &url::set_from_windows_path};
- 	s_handlers.push_back(&h6);
- 	
-	static url_handler_pair h7 = {"n:/n", &url::set_from_windows_path};
- 	s_handlers.push_back(&h7);
- 	
-	static url_handler_pair h8 = {"\\n", &url::set_from_wince_path};
- 	s_handlers.push_back(&h8);
 	
 	static url_handler_pair h9 = {"", &url::set_from_relative_path};
  	s_handlers.push_back(&h9);
@@ -112,16 +217,27 @@ void net::url::init_statics() {
   	*/
  }
  
+// static
+net::url 
+net::url::from_filename(const std::string& spec)
+{
+	return net::url(filepath2urlpath(spec));
+}
+
+// Private: check URL for character escaping
+void net::url::_checkurl() const
+{
+	if (m_path.find_first_of(file_url_escape_reqd) != std::string::npos)
+		lib::logger::get_logger()->warn("%s: URL contains illegal characters", get_url().c_str());
+}
 net::url::url() 
 :	m_absolute(true),
-	m_port(0),
-	m_pathsep("/")
+	m_port(0)
 {
 }
  
 net::url::url(const string& spec) 
-:	m_port(0),
-	m_pathsep("/")
+:	m_port(0)
 {
 	set_from_spec(spec);
 }
@@ -131,10 +247,10 @@ net::url::url(const string& protocol, const string& host,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(0),
-	m_path(path),
-	m_pathsep("/")
+	m_path(path)
 {
 	m_absolute = (m_protocol != "");
+	if (s_strict) _checkurl();
 }
 
 net::url::url(const string& protocol, const string& host, int port, 
@@ -142,10 +258,10 @@ net::url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path),
-	m_pathsep("/")
+	m_path(path)
 {
 	m_absolute = (m_protocol != "");
+	if (s_strict) _checkurl();
 }
 
 net::url::url(const string& protocol, const string& host, int port, 
@@ -153,27 +269,23 @@ net::url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path),
-	m_pathsep("/"), 
+	m_path(path), 
 	m_query(query), 
 	m_ref(ref)
 {
 	m_absolute = (m_protocol != "");
+	if (s_strict) _checkurl();
 }
  
 net::url::string net::url::get_file() const {
 	std::string file = get_path();
-#ifdef AMBULANT_PLATFORM_WIN32
-	// Sigh, this mix-n-match of filenames and URLs is really messing
-	// us up. If this is a file URL we may need to take off the first
-	// slash, but not always...
-	if (is_local_file() && file[0] == '/') file = file.substr(1);
-#endif
+	// Workaround: we might have split a local file at the ?.
 	if(!m_query.empty()) {
 		file += '?';
 		file += m_query;
 	}
-	return file;
+	
+	return urlpath2filepath(file);
 }
 
 void net::url::set_from_spec(const string& spec) {
@@ -246,32 +358,13 @@ void net::url::set_from_localhost_file_uri(lib::scanner& sc, const std::string& 
 }
 
 // pat: "/n"
-void net::url::set_from_unix_path(lib::scanner& sc, const std::string& pat) {
+void net::url::set_from_absolute_path(lib::scanner& sc, const std::string& pat) {
 	m_absolute = true;
 	m_protocol = "file";
 	m_host = "localhost";
 	m_port = 0;
 	m_path = sc.get_src();
-}
-
-// pat: "n:n" or "n:/n"
-void net::url::set_from_windows_path(lib::scanner& sc, const std::string& pat) {
-	m_absolute = true;
-	m_protocol = "file";
-	m_host = "localhost";
-	m_port = 0;
-	m_path = sc.get_src();
-	m_pathsep = "/\\";
-}
-
-// pat: "\\n"
-void net::url::set_from_wince_path(lib::scanner& sc, const std::string& pat) {
-	m_absolute = true;
-	m_protocol = "file";
-	m_host = "localhost";
-	m_port = 0;
-	m_path = sc.get_src();
-	m_pathsep = "/\\";
+	if (s_strict) _checkurl();
 }
 
 void net::url::set_from_relative_path(lib::scanner& sc, const std::string& pat) {
@@ -290,6 +383,7 @@ void net::url::set_from_data_uri(lib::scanner& sc, const std::string& pat) {
 	m_host = "";
 	m_port = 0;
 	m_path = sc.join(3);  // Skip data:,
+	if (s_strict) _checkurl();
 }
 
 void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
@@ -307,6 +401,7 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	m_path = sc.join(i1, i4);
 	m_query = sc.join(i2+1, i3);
 	m_ref = sc.join(i3+1);
+	if (s_strict) _checkurl();
 }
 
 bool net::url::is_local_file() const
@@ -334,14 +429,14 @@ net::url net::url::join_to_base(const net::url &base) const
 	// Note: this hasn't been checked against RFCxxxx. We pick up protocol, host, port
 	// and initial pathname from base. Alll other items from base are ignored.
 	if (m_absolute) return *this;
-	std::string basepath = base.get_file();
-	std::string newpath = get_file();
+	std::string basepath = base.get_path();
+	std::string newpath = get_path();
 	if (newpath == "") {
 		// New path is, for instance, only #anchor.
 		newpath = basepath; 
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
-		basepath = lib::filesys::get_base(basepath, base.m_pathsep);
+		basepath = lib::filesys::get_base(basepath);
 		// Convert basepath from Windows to URL, if needed.
 		// XXXX Incomplete?
 //		if (base.m_absolute && basepath[0] != '/')
@@ -351,7 +446,7 @@ net::url net::url::join_to_base(const net::url &base) const
 			char c = *cp;
 			if (c == '\\') *cp = '/';
 		}
-		newpath = lib::filesys::join(basepath, newpath, m_pathsep);
+		newpath = lib::filesys::join(basepath, newpath);
 		// Now ad
 		//newpath = lib::filesys::join(basepath, newpath, "/");
 	}
@@ -443,8 +538,8 @@ net::url::get_local_datafile() const
 			}
 		}
 	} else if (is_local_file() 
-		   && access (get_path().c_str(), 0) >= 0) {
-		result = get_path().c_str();
+		   && access (get_file().c_str(), 0) >= 0) {
+		result = get_file().c_str();
 	}
 	
 	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
@@ -476,6 +571,7 @@ net::url::set_datafile_directory(std::string pathname)
 std::pair<bool, net::url>
 net::url::get_local_datafile() const
 {
+	// XXXX Needs work!
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	// Too lazy to convert char to wide char right now
 	return std::pair<bool, net::url>(false, net::url(*this));
@@ -499,7 +595,7 @@ net::url::get_local_datafile() const
 			}
 		}
 	} else if (is_local_file()) {
-		path = get_path();
+		path = get_file();
 		if (lib::win32::file_exists(path))
 			result = path.c_str();
 	}

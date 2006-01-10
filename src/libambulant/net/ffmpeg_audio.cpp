@@ -215,7 +215,7 @@ ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 static const char *
 getext(const net::url &url)
 {
-	const char *curl = url.get_file().c_str();
+	const char *curl = url.get_path().c_str();
 	const char *dotpos = rindex(curl, '.');
 	if (dotpos) return dotpos+1;
 	return NULL;
@@ -225,7 +225,7 @@ bool
 ffmpeg_decoder_datasource::supported(const net::url& url)
 {
 	const char *ext = getext(url);
-	if (avcodec_find_decoder_by_name(ext) == NULL) return false;
+	if (ext == NULL || avcodec_find_decoder_by_name(ext) == NULL) return false;
 	return true;
 }
 

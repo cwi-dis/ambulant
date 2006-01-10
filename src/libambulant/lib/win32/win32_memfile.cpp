@@ -95,11 +95,10 @@ bool lib::win32::memfile::read_remote(const std::string& urlstr) {
 		win_report_last_error("InternetOpen()");
 		return false;
 	}
-	
+#if 0
 	text_char urlbuf[512];
 	DWORD nch = 512;
 	
-	textptr tp(urlstr.c_str());
 	BOOL bres = InternetCanonicalizeUrl(tp, urlbuf , &nch, ICU_BROWSER_MODE);
 	if(!bres) {
 		lib::logger::get_logger()->trace("%s: InternetCanonicalizeUrl returned error 0x%x", urlbuf, GetLastError());
@@ -107,11 +106,12 @@ bool lib::win32::memfile::read_remote(const std::string& urlstr) {
 		InternetCloseHandle(hinet); 
 		return false;
 	}
-	
-	HINTERNET hf = InternetOpenUrl(hinet, urlbuf,  NULL, 0, INTERNET_FLAG_RAW_DATA, 0);
+#endif
+	textptr tp(urlstr.c_str());
+	HINTERNET hf = InternetOpenUrl(hinet, tp,  NULL, 0, INTERNET_FLAG_RAW_DATA, 0);
 	if(!hf) {
-		lib::logger::get_logger()->trace("%s: InternetOpenUrl returned error 0x%x", urlbuf, GetLastError());
-		lib::logger::get_logger()->error("%s: Cannot open URL", urlbuf);
+		lib::logger::get_logger()->trace("%s: InternetOpenUrl returned error 0x%x", urlstr.c_str(), GetLastError());
+		lib::logger::get_logger()->error("%s: Cannot open URL", urlstr.c_str());
 		InternetCloseHandle(hinet); 
 		return false;
 	}
@@ -120,7 +120,7 @@ bool lib::win32::memfile::read_remote(const std::string& urlstr) {
 	DWORD nread = 0;
 	bool succeeded = true;
 	do {
-		bres = InternetReadFile(hf, buf, buf_size, &nread);
+		BOOL bres = InternetReadFile(hf, buf, buf_size, &nread);
 		if(!bres) {
 			win_report_last_error("InternetReadFile()");
 			succeeded = false;

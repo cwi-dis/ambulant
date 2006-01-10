@@ -43,6 +43,7 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/smil2/smil_player.h"
+#include "ambulant/net/url.h"
 #include "qt_gui.h"
 
 using namespace ambulant;
@@ -114,7 +115,7 @@ class qt_mainloop : public ambulant::common::embedder, public ambulant::lib::ref
 	};
 	std::stack<frame*> m_frames;
 
-	ambulant::lib::document *create_document(const char *filename);
+	ambulant::lib::document *create_document(net::url& filename);
 	ambulant::common::player* create_player(const char* filename);
 	// sorted alphabetically on member name
 	document*				m_doc;

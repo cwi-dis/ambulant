@@ -1,7 +1,7 @@
-AC_INIT(src/libambulant/get_version.cpp)
-
+AC_INIT(ambulant, 1.7)
+AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
+AM_INIT_AUTOMAKE
 AMBULANT_VERSION=1.7
-AM_INIT_AUTOMAKE(ambulant, $AMBULANT_VERSION)
 
 dnl =================================================================
 FFMPEG_REQUIRED=0.4.8

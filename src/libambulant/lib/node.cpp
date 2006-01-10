@@ -411,7 +411,7 @@ net::url
 lib::node_impl::get_url(const char *attrname) const {
 	const char *rurl = get_attribute(attrname);
 	if(!rurl) return net::url();
-	net::url url(rurl);
+	net::url url = net::url::from_url(rurl);
 	return m_context ? m_context->resolve_url(url) : url;
 }
 

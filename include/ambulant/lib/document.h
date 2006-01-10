@@ -116,7 +116,7 @@ class document : public node_context {
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
   protected:
 	document(node *root = 0, bool owned=true);
-	document(node *root, const std::string& src_url);
+	document(node *root, const net::url& src_url);
 	
 	void set_root(node* n);
 //	void set_src_base(ambulant::net::url u) { m_src_base = u;}

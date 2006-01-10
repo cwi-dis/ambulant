@@ -313,15 +313,17 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	if (lpszPathName[0] && lpszPathName[1] == _T(':')) is_local_filename = true;
 	if (_tcschr(lpszPathName, _T(':')) == NULL && _tcschr(lpszPathName, _T('/')) == NULL) is_local_filename = true;
 
+	net::url u;
 	TCHAR path[_MAX_PATH];
 	if (is_local_filename) {
 		TCHAR *pFilePart = 0;	
 		GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
+		u = net::url::from_filename(path);
 	} else {
 		_tcscpy(path, lpszPathName);
+		u = net::url::from_url(path);
 	}
 	
-	net::url u(T2CA(path));
 	if (!u.is_absolute()) {
 		lib::logger::get_logger()->error("Cannot play from non-absolute pathname: %s", lpszPathName);
 		return;
@@ -432,14 +434,17 @@ void MmView::OnViewSource() {
 	USES_CONVERSION;
 	CString cmd = TEXT("Notepad.exe ");
 	std::string ustr = T2CA(LPCTSTR(m_curDocFilename));
-	net::url u(ustr);
-	cmd += u.get_file().c_str();
+	net::url u = net::url::from_url(ustr);
+	assert(0); // XXXX Need to find out ustr format (url or filename)
+	assert(u.is_local_file());
+	// XXXX Also check OnUpdateViewSource
+	cmd += u.get_file().c_str(); // XXXX Incorrect
 	WinExec(T2CA(cmd), SW_SHOW);	
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
 	USES_CONVERSION;
-	bool b = player && !m_curDocFilename.IsEmpty() && net::url(T2CA(LPCTSTR(m_curDocFilename))).is_local_file();
+	bool b = player && !m_curDocFilename.IsEmpty() && net::url::from_url(T2CA(LPCTSTR(m_curDocFilename))).is_local_file();
 	pCmdUI->Enable(b?TRUE:FALSE);
 }
 
@@ -509,7 +514,8 @@ void MmView::OnOpenFilter() {
 	CFileDialog dlg(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd);
 	dlg.m_ofn.lpstrTitle = TEXT("Select settings file");
 	if(!m_curDocFilename.IsEmpty()) {
-		net::url u( T2CA((LPCTSTR) m_curDocFilename));
+		// XXXX Is this correct? (URL vs. filename)
+		net::url u = net::url::from_url( T2CA((LPCTSTR) m_curDocFilename));
 		if(u.is_local_file())
 			dlg.m_ofn.lpstrInitialDir = get_directory(A2CT(u.get_file().c_str()));
 	}
@@ -520,7 +526,7 @@ void MmView::OnOpenFilter() {
 #ifndef AM_PLAYER_DG
 		if(player) player->restart();
 #endif
-	}	
+	}
 }
 
 void MmView::OnUpdateOpenFilter(CCmdUI *pCmdUI)

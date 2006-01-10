@@ -76,16 +76,19 @@ class AMBULANTAPI preferences {
 	/// Also do checking on the schema itself
 	bool m_validation_schema_full_checking;
 	
-	// Use plugins or not
+	/// Use plugins or not
 	bool m_use_plugins;
 	
-	// Where to find the plugins 
+	/// Where to find the plugins 
 	std::string m_plugin_dir;
 	
 #ifdef AMBULANT_PLATFORM_MACOS
 	/// Prefer ffmpeg video over quicktime video
 	bool m_prefer_ffmpeg;
 #endif
+
+	/// Do we do strict URL parsing?
+	bool m_strict_url_parsing;
 
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();
