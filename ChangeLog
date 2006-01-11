@@ -1,3 +1,23 @@
+2006-01-10 16:15  jackjansen
+
+	* net::url mods ported to WinCE. Untested.
+
+2006-01-10 14:54  jackjansen
+
+	* Merging branch exp-jack-winurl:
+
+	  net::url objects now always contain a true URL (so no more
+	  windows filenames).  The constructors (except the default one)
+	  are hidden, and there are factory functions net::url::from_url()
+	  and net::url::from_filename() that accept a URL and filename
+	  string, respectively. Get_path() and get_file() are now really
+	  different, and the latter should only be called if
+	  is_local_file() is true. It returns a local-os-style pathname.
+
+	  In addition there's a class method set_strict_url_parsing(bool)
+	  that enables checking URLs for illegal characters (space, \,
+	  etc).
+
 2006-01-06 17:00  jackjansen
 
 	* Merging changes for 1.6.1 (from ambulant-release-16-branch) back
