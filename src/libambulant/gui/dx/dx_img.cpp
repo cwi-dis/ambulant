@@ -49,6 +49,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
+	common::factories *factory,
 	common::gui_window *window,
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
@@ -56,6 +57,11 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::ctr(0x%x)", this);
 	net::url url = m_node->get_url("src");
+	net::datasource *src = factory->df->new_raw_datasource(url);
+	if (src == NULL) {
+		// XXX Should we give an error if this fails?
+		return;
+	}
 	if(!window) {
 		lib::logger::get_logger()->show("get_window() failed. [%s]",
 			url.get_url().c_str());
@@ -63,12 +69,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	}
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	if(!lib::memfile::exists(url)) {
-		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
-			url.get_url().c_str());
-		return;
-	}
-	m_image = new image_renderer(url, v);
+	m_image = new image_renderer(url, src, v);
 }
 
 gui::dx::dx_img_renderer::~dx_img_renderer() {

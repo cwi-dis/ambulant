@@ -47,8 +47,10 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
+	common::factories* factory,
 	common::gui_window *window)
-:   common::renderer_playable(context, cookie, node, evp), 
+:   common::renderer_playable(context, cookie, node, evp),
+	m_text(""),
 	m_window(window),
 	m_fontname(NULL),
 	m_fontsize(0),
@@ -59,16 +61,18 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	dg_window *dgwindow = static_cast<dg_window*>(window);
 	viewport *v = dgwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
-	lib::memfile mf(url);
-	if(!mf.read()) {
-		lib::logger::get_logger()->error("Failed to read [%s]", url.get_url().c_str());
-	}
+	char *data;
+	size_t datasize;
+	if (!net::read_data_from_url(url, factory->df, &data, &datasize))
+		return;
+
 #ifndef UNICODE
-	m_text.assign((const char*)mf.data(), mf.size());
+	m_text.assign(data, datasize);
 #else
-	std::string s((const char*)mf.data(), mf.size());
+	std::string s(data, datasize);
 	m_text = lib::textptr(s.c_str()).c_wstr();
 #endif
+	if (data) free(data);
 	// Pass <param> settings, if applicable
 	smil2::params *params = smil2::params::for_node(m_node);
 	if (params) {

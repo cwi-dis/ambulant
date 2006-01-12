@@ -697,6 +697,9 @@
 					RelativePath=".\lib\logger.cpp">
 				</File>
 				<File
+					RelativePath=".\lib\memfile.cpp">
+				</File>
+				<File
 					RelativePath=".\lib\nfa.cpp">
 				</File>
 				<File
@@ -760,9 +763,6 @@
 						RelativePath=".\lib\win32\win32_fstream.cpp">
 					</File>
 					<File
-						RelativePath=".\lib\win32\win32_memfile.cpp">
-					</File>
-					<File
 						RelativePath=".\lib\win32\win32_thread.cpp">
 					</File>
 					<File
@@ -784,6 +784,9 @@
 				</File>
 				<File
 					RelativePath=".\net\url.cpp">
+				</File>
+				<File
+					RelativePath=".\net\win32_datasource.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1220,9 +1223,6 @@
 							RelativePath="..\..\include\ambulant\lib\win32\win32_fstream.h">
 						</File>
 						<File
-							RelativePath="..\..\include\ambulant\lib\win32\win32_memfile.h">
-						</File>
-						<File
 							RelativePath="..\..\include\ambulant\lib\win32\win32_mtsync.h">
 						</File>
 						<File
@@ -1253,6 +1253,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\net\url.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\net\win32_datasource.h">
 					</File>
 				</Filter>
 				<Filter

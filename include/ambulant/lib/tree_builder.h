@@ -79,8 +79,8 @@ class tree_builder :
 	/// build DOM tree from a memory buffer.
 	bool build_tree_from_str(const char *begin, const char *end);
 
-	/// build DOM tree from a file anywhere on the net.
-	bool build_tree_from_url(const net::url& u);
+//	/// build DOM tree from a file anywhere on the net.
+//	bool build_tree_from_url(const net::url& u);
 	
 	/// Return true if the document was parsed correctly.
 	bool was_well_formed() const {return m_well_formed;}

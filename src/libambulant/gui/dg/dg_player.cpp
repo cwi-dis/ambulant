@@ -329,9 +329,9 @@ gui::dg::dg_player::new_playable(
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
-		p = new dg_text_renderer(context, cookie, node, evp, window);
+		p = new dg_text_renderer(context, cookie, node, evp, &m_factory, window);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, window, this);
+		p = new dg_img_renderer(context, cookie, node, evp, &m_factory, window, this);
 	} else if(tag == "audio") {
 		p = new dg_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {

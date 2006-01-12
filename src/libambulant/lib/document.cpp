@@ -100,12 +100,20 @@ lib::document*
 lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
 	tree_builder builder(d);
-	if(!builder.build_tree_from_url(u)) {
+	char *data;
+	size_t datasize;
+	if (!net::read_data_from_url(u, factory->df, &data, &datasize)) {
+		logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
+		delete d;
+		return NULL;
+	}
+	if(!builder.build_tree_from_str(data, data+datasize)) {
 		// build_tree_from_url has already given the error message
 		// logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
 		delete d;
 		return NULL;
 	}
+	if (data) free(data);
 	if (!builder.assert_root_tag("smil")) {
 		delete d;
 		logger::get_logger()->error(gettext("%s: Not a SMIL document"), u.get_url().c_str());

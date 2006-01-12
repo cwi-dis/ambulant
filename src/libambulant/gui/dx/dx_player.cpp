@@ -70,6 +70,9 @@
 #include "ambulant/lib/xerces_parser.h"
 #endif
 
+// Datasources
+#include "ambulant/net/datasource.h"
+#include "ambulant/net/win32_datasource.h"
 //#define AM_DBG
 
 #ifndef AM_DBG
@@ -92,9 +95,12 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	
 	// Fill the factory object
 	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
-	m_factory.df = NULL;
+	m_factory.df = new net::datasource_factory();
 	m_factory.wf = this->get_window_factory(); 
 	
+	// Add the datasource factories. For now we only need a raw
+	// datasource factory.
+	m_factory.df->add_raw_factory(net::get_win32_datasource_factory());
 	// Add the xerces parser, if available
 	m_factory.pf = lib::global_parser_factory::get_parser_factory();	
 #ifdef WITH_XERCES_BUILTIN
@@ -417,9 +423,9 @@ gui::dx::dx_player::new_playable(
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
 #endif/*WITH_HTML_WIDGET*/
-		p = new dx_text_renderer(context, cookie, node, evp, window, this);
+		p = new dx_text_renderer(context, cookie, node, evp, &m_factory, window, this);
 	} else if(tag == "img") {
-		p = new dx_img_renderer(context, cookie, node, evp, window, this);
+		p = new dx_img_renderer(context, cookie, node, evp, &m_factory, window, this);
 	} else if(tag == "audio") {
 		p = new dx_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {

@@ -34,6 +34,7 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/net/url.h"
+#include "ambulant/net/datasource.h"
 
 #include "ambulant/gui/dg/dg_surface.h"
 #include "ambulant/gui/dg/dg_dib_surface.h"
@@ -50,7 +51,7 @@ class viewport;
 
 class image_renderer {
   public:
-	image_renderer(const net::url& u, viewport* v);
+	  image_renderer(const net::url& u, net::datasource *src, viewport* v);
 	~image_renderer();
 	
 	bool can_play() const { return m_dibsurf != 0;}
@@ -60,7 +61,7 @@ class image_renderer {
 	lib::color_t get_transp_color() const { return m_transp_color;}
 	
   private:
-	void open(const net::url& u, viewport* v);
+	void open(net::datasource *src, viewport* v);
 	net::url m_url;
 	dib_surface_t *m_dibsurf;
 	lib::size m_size;

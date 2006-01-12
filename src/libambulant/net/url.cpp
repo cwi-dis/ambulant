@@ -57,7 +57,7 @@ const std::string file_url_escape = file_url_escape_reqd + "%";
 static std::string
 filepath2urlpath(const std::string& filepath)
 {
-	size_t urlbufsize = filepath.size()*3; // Worst case: all characters escaped
+	size_t urlbufsize = filepath.size()*3+7; // Worst case: all characters escaped
 	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize);
 	DWORD urlbufsizearg = (DWORD)urlbufsize;
 	assert(urlbuf);
@@ -84,7 +84,7 @@ filepath2urlpath(const std::string& filepath)
 static std::string
 urlpath2filepath(const std::string& urlpath)
 {
-	size_t filebufsize = urlpath.size();
+	size_t filebufsize = urlpath.size()+1;
 	LPTSTR filebuf = (LPTSTR)malloc(filebufsize);
 	DWORD filebufsizearg = (DWORD)filebufsize;
 	assert(filebuf);

@@ -78,7 +78,15 @@ gui::dx::text_renderer::set_text_font(const char *fontname) {
 	m_text_font = fontname;
 }
 
-void gui::dx::text_renderer::open() {
+void gui::dx::text_renderer::open(net::datasource_factory *df) {
+	char *data;
+	size_t datalen;
+	if (!net::read_data_from_url(m_url, df, &data, &datalen)) {
+		// Error message has already been produced
+		data = NULL;
+		datalen = 0;
+	}
+#if 0
 	std::basic_string<text_char> text;
 	std::string ustr = ::repr(m_url);
 	if(!lib::starts_with(ustr, "data:")) {
@@ -93,9 +101,10 @@ void gui::dx::text_renderer::open() {
 	} else {
 		text.assign(ustr.begin()+6, ustr.end());
 	}
-		
+#endif
 	m_ddsurf = m_viewport->create_surface(m_size);
 	if(!m_ddsurf) {
+		if (data) free(data);
 		return;
 	}
 	m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
@@ -107,6 +116,7 @@ void gui::dx::text_renderer::open() {
 	HRESULT hr = m_ddsurf->GetDC(&hdc);
 	if (FAILED(hr)) {
 		win_report_error("DirectDrawSurface::GetDC()", hr);
+		if (data) free(data);
 		return;
 	}
 
@@ -154,9 +164,12 @@ void gui::dx::text_renderer::open() {
 	::SelectObject(hdc, fontobj);
 	RECT dstRC = {0, 0, m_size.w, m_size.h};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;
-	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
-	if(res == 0)
-		win_report_last_error("DrawText()");
+	if (data) {
+		int res = ::DrawText(hdc, data, (int)datalen, &dstRC, uFormat); 
+		if(res == 0)
+			win_report_last_error("DrawText()");
+		free(data);
+	}
 	m_ddsurf->ReleaseDC(hdc);
 		
 	//////////////

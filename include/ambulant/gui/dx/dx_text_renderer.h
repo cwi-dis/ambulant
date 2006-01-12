@@ -34,6 +34,7 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/net/url.h"
+#include "ambulant/net/datasource.h"
 
 #include <string>
 
@@ -51,7 +52,7 @@ class text_renderer {
   public:
 	text_renderer(const net::url& u, const lib::size& bounds, viewport* v);
 	~text_renderer();
-	void open();
+	void open(net::datasource_factory *df);
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return true;}
 	const lib::size& get_size() const { return m_size;}

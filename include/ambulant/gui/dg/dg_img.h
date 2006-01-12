@@ -46,6 +46,7 @@ class dg_img_renderer : public dg_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
+		common::factories* factory,
 		common::gui_window *window, 
 		dg_playables_context *dgplayer);
 	~dg_img_renderer();

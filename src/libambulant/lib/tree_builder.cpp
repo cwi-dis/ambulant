@@ -71,7 +71,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!filename || !*filename) return false;
 	m_filename = filename;
 
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
+#if 1 // WAS: !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
 	const size_t buf_size = 1024;
@@ -101,12 +101,14 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #endif
 }
 
+#if 0
 bool 
 lib::tree_builder::build_tree_from_url(const net::url& u) {
 	if(!m_xmlparser) return false;
 	m_filename = u.get_url();
 #if defined(AMBULANT_PLATFORM_WIN32)
-	memfile mf(u);
+	assert(0);
+	memfile mf(u, NULL);  // XXXX
 	if(!mf.read()) {
 		// mf.read has given error message
 		// lib::logger::get_logger()->show(gettext("Failed to read URL: %s"), u.get_url().c_str());
@@ -121,6 +123,7 @@ lib::tree_builder::build_tree_from_url(const net::url& u) {
 	return false;
 #endif
 }
+#endif
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
