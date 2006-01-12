@@ -1,0 +1,11 @@
+This directory contains the source for the Cocoa-based Ambulant Player for
+Mac OS X.
+
+The normal build procedure is with the standard unix automake/configure/make
+tools. However, an XCode project is available here too, fullcocoambulant.pbproj.
+This is mainly for easy debugging and testing.
+
+It will require a little fiddling before it works for anyone but me, however:
+there are hardcoded pathnames in various of the include directory
+and library directory pathnames. This is to work around a bug in XCode
+where it does not calculate dependencies correctly for relative pathnames.
