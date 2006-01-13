@@ -1,3 +1,18 @@
+2006-01-12 22:11  jackjansen
+
+	* This file was never added to the repository.
+
+2006-01-12 16:51  jackjansen
+
+	* Merge of exp-jack-win-datasource: Windows now also uses
+	  datasources for getting static media. A new win32_datasource has
+	  been added that can retrieve both local and http-based media. The
+	  old win32_memfile has gone, and the platform-independent memfile
+	  has been reworked to accept any datasource as argument and
+	  provide a file-like interface.  In addition, a helper routine
+	  read_data_from_datasource has been added that gets all the data
+	  from a datasource in one fell swoop.
+
 2006-01-10 16:15  jackjansen
 
 	* net::url mods ported to WinCE. Untested.
@@ -758,10 +773,6 @@
 
 	* Added pkg_config macros.
 
-2005-09-19 10:54  jackjansen
-
-	* Removed dead wood.
-
 2005-09-17 20:18  koelimoe
 
 	* fix to solve a fedora core 4 (gcc 4.0 related) compile problem
@@ -794,10 +805,6 @@
 2005-09-16 13:45  koelimoe
 
 	* small fix to make it compile on linux again
-
-2005-09-16 12:24  jackjansen
-
-	* Updated for building with ffmpeg-cvs.
 
 2005-09-16 11:33  koelimoe
 
@@ -1022,10 +1029,6 @@
 
 	* The factories are destroyed when a document is closed, so
 	  implementing them as singletons was not a good idea.
-
-2005-08-03 12:42  jackjansen
-
-	* Somehow some of the new files were not in all targets. Fixed.
 
 2005-08-02 23:34  jackjansen
 
@@ -3237,10 +3240,6 @@
 	* Disable logging window (reverting to stderr logging) if
 	  AMBULANT_NOGGER_NOWINDOW is set.
 
-2004-10-20 23:38  jackjansen
-
-	* Added xerces support.
-
 2004-10-20 23:37  jackjansen
 
 	* Added two debug statements to see how loading the pluugin goes.
@@ -3427,10 +3426,6 @@
 2004-09-21 14:14  jackjansen
 
 	* Started on documenting our externally visible APIs.
-
-2004-09-21 14:12  jackjansen
-
-	* Use plugins.
 
 2004-09-21 14:10  jackjansen
 
