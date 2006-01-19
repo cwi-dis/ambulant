@@ -99,6 +99,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("MPA", CODEC_ID_MP3);
 	add_codec("MPA-ROBUST", CODEC_ID_MP3);
 	add_codec("X_MP3-DRAFT-00", CODEC_ID_MP3);
+	add_codec("X-MP3-DRAFT-00", CODEC_ID_MP3);
 	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
 	add_codec("L16", CODEC_ID_PCM_S16LE);
 	
