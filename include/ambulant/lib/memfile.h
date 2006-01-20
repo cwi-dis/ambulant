@@ -45,8 +45,8 @@ class memfile {
 	typedef buffer_type::size_type size_type;
 
 	memfile(net::datasource *src)
-	:	m_src(src),
-		m_gptr(0) {}
+	:	m_gptr(0),
+		m_src(src) {}
 		
 	~memfile();
 		
