@@ -93,18 +93,16 @@ mainloop::mainloop(const char *urlstr, ambulant::common::window_factory *wf,
 	m_goto_node(NULL)
 {
 	using namespace ambulant;
-	m_factory = new common::factories;
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
+
+	common::global_playable_factory *rf = common::get_global_playable_factory();
 #ifdef NONE_PLAYER
 	// Replace the real window factory with a none_window_factory instance.
 	wf = new gui::none::none_window_factory();
 #endif // NONE_PLAYER
-	m_factory->wf = wf;
-	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
-	// Populate the parser factory
-	m_factory->pf = lib::global_parser_factory::get_parser_factory();	
-
-	// Next create the datasource factory and populate it too.
-	m_factory->df = new net::datasource_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
+	m_factory = new common::factories(rf, wf, df, pf);
 
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
@@ -115,16 +113,16 @@ mainloop::mainloop(const char *urlstr, ambulant::common::window_factory *wf,
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
-	m_factory->df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
 #endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	m_factory->df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_parser_finder");
-	m_factory->df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
-	m_factory->df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
-	m_factory->df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG
 #endif // NONE_PLAYER
 #ifdef WITH_STDIO_DATASOURCE
@@ -133,14 +131,11 @@ mainloop::mainloop(const char *urlstr, ambulant::common::window_factory *wf,
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
-	m_factory->df->add_raw_factory(net::get_stdio_datasource_factory());
+	df->add_raw_factory(net::get_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
-	m_factory->df->add_raw_factory(net::get_posix_datasource_factory());
+	df->add_raw_factory(net::get_posix_datasource_factory());
 	
-	// Next create the playable factory and populate it.
-	common::global_playable_factory *rf = common::get_global_playable_factory();
-	m_factory->rf = rf;
 #ifndef NONE_PLAYER
 	rf->add_factory(new gui::cocoa::cocoa_renderer_factory(m_factory));
 #ifdef WITH_SDL
@@ -151,8 +146,8 @@ mainloop::mainloop(const char *urlstr, ambulant::common::window_factory *wf,
 
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
 
-	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
-	pf->add_plugins(m_factory);
+	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
+	plf->add_plugins(m_factory);
 
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
@@ -202,7 +197,7 @@ mainloop::create_document(ambulant::net::url& url)
 		AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
 	}
 	size_t size;
-	bool ok = ambulant::net::read_data_from_url(url, m_factory->df, &data, &size);
+	bool ok = ambulant::net::read_data_from_url(url, m_factory->get_datasource_factory(), &data, &size);
 	if (!ok) {
 		ambulant::lib::logger::get_logger()->error(gettext("%s: Cannot open"), url.get_url().c_str());
 		return NULL;
@@ -228,12 +223,6 @@ mainloop::~mainloop()
 	AM_DBG ambulant::lib::logger::get_logger()->debug("mainloop::~mainloop(0x%x)", (void*)this);
 	if (m_player) delete m_player;
 	m_player = NULL;
-	if (m_factory->rf) delete m_factory->rf;
-	m_factory->rf = NULL;
-	if (m_factory->df) delete m_factory->df;
-	m_factory->df = NULL;
-	// wf Window factory is owned by caller
-	m_factory->wf = NULL;
 	delete m_factory;
 }
 

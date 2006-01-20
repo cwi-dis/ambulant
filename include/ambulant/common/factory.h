@@ -33,15 +33,31 @@ namespace common {
 	
 class factories {
 public:
-	factories()
-	:	rf(NULL),
-		wf(NULL),
-		df(NULL),
-		pf(NULL) {};
+	factories(
+		ambulant::common::playable_factory *_rf = NULL,
+		ambulant::common::window_factory *_wf = NULL,
+		ambulant::net::datasource_factory *_df = NULL,
+		ambulant::lib::global_parser_factory *_pf = NULL
+	)
+	:	rf(_rf),
+		wf(_wf),
+		df(_df),
+		pf(_pf) {};
+	~factories() {
+		delete rf;
+		// wf is owned by parent;
+		delete df;
+		// delete pf; Singleton
+	}
+	ambulant::common::playable_factory *get_playable_factory() const { return rf; }
+	ambulant::common::window_factory *get_window_factory() const { return wf; }
+	ambulant::net::datasource_factory *get_datasource_factory() const { return df; }
+	ambulant::lib::global_parser_factory *get_parser_factory() const { return pf; }
+// XXXX private:
 	ambulant::common::playable_factory *rf;
 	ambulant::common::window_factory *wf;
-	ambulant::net::datasource_factory *df;	
-	ambulant::lib::global_parser_factory* pf;
+	ambulant::net::datasource_factory *df;
+	ambulant::lib::global_parser_factory *pf;
 };
 
 

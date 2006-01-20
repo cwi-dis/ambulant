@@ -61,13 +61,13 @@ mms_player::start()
 {
 	m_done = false;
 	passive_timeline *ptl = build_timeline();
-	common::layout_manager *layoutmgr = new mms_layout_manager(m_factory->wf, m_doc);
+	common::layout_manager *layoutmgr = new mms_layout_manager(m_factory->get_window_factory(), m_doc);
 	if (ptl) {
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: passive_timeline:" << std::endl;
 		AM_DBG ptl->dump(std::cout);
 #endif
-		active_timeline *atl = ptl->activate(m_event_processor, (common::playable_factory*) m_factory->rf, layoutmgr);
+		active_timeline *atl = ptl->activate(m_event_processor, m_factory->get_playable_factory(), layoutmgr);
 #ifndef AMBULANT_NO_IOSTREAMS
 		AM_DBG std::cout << "------------ mms_player: active_timeline:" << std::endl;
 		AM_DBG atl->dump(std::cout);
@@ -131,6 +131,6 @@ mms_player::build_timeline()
 	lib::node *playroot = m_tree->get_first_child("body");
 	if (playroot == NULL)
 		playroot = m_tree;
-	timeline_builder builder = timeline_builder(m_factory->wf, *playroot);
+	timeline_builder builder = timeline_builder(m_factory->get_window_factory(), *playroot);
 	return builder.build();
 }

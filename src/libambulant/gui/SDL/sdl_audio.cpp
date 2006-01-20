@@ -237,7 +237,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	
 	_init_clip_begin_end();
 	
-	m_audio_src = factory->df->new_audio_datasource(url, supported, m_clip_begin, m_clip_end);
+	m_audio_src = factory->get_datasource_factory()->new_audio_datasource(url, supported, m_clip_begin, m_clip_end);
 	if (!m_audio_src)
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
@@ -277,7 +277,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {
-		net::audio_datasource *resample_ds = factory->df->new_filter_datasource(url, supported, ds);
+		net::audio_datasource *resample_ds = factory->get_datasource_factory()->new_filter_datasource(url, supported, ds);
 		AM_DBG lib::logger::get_logger ()->debug("sdl_audio_renderer::sdl_audio_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
 		if (resample_ds) {
 			m_audio_src = resample_ds;

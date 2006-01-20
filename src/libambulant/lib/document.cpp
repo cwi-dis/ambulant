@@ -102,7 +102,7 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	tree_builder builder(d);
 	char *data;
 	size_t datasize;
-	if (!net::read_data_from_url(u, factory->df, &data, &datasize)) {
+	if (!net::read_data_from_url(u, factory->get_datasource_factory(), &data, &datasize)) {
 		logger::get_logger()->error(gettext("%s: Not a valid XML document"), u.get_url().c_str());
 		delete d;
 		return NULL;

@@ -69,13 +69,13 @@ smil_layout_manager::smil_layout_manager(common::factories *factory,lib::documen
 	build_body_regions(doc);
 
 	// Next, create the surfaces that correspond to this tree
-	build_surfaces(factory->wf);
+	build_surfaces(factory->get_window_factory());
 	
 	// Now we make sure there is at least one root-layout. This allows us
 	// to use this as the default region. XXXX Should be auto-show eventually.
 	if (m_rootsurfaces.empty()) {
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: no rootLayouts, creating one");
-		create_top_surface(factory->wf, NULL, NULL);
+		create_top_surface(factory->get_window_factory(), NULL, NULL);
 	}
 }
 

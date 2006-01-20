@@ -87,7 +87,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 void
 smil_player::initialize()
 {
-	m_layout_manager->load_bgimages((common::playable_factory*)m_factory->rf);
+	m_layout_manager->load_bgimages(m_factory->get_playable_factory());
 }
 #endif
 
@@ -483,7 +483,7 @@ smil_player::new_playable(const lib::node *n) {
 		(void*)n, nid,
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
-	common::playable_factory *pf = (playable_factory*) m_factory->rf;
+	common::playable_factory *pf = m_factory->get_playable_factory();
 	common::playable *np = pf->new_playable(this, nid, n, m_event_processor);
 	// And connect it to the rendering surface
 	if (np) {
