@@ -1,3 +1,7 @@
+2006-01-19 17:37  keesblom
+
+	* Added mp3 codec_id as produced by the Helix RTSP Server
+
 2006-01-12 22:11  jackjansen
 
 	* This file was never added to the repository.
