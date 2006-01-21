@@ -1,3 +1,12 @@
+2006-01-21 00:37  jackjansen
+
+	* Step 1 towards a self-contained player: add accessor methods to
+	  the factories object.
+
+2006-01-20 23:57  jackjansen
+
+	* Squashed warning.
+
 2006-01-19 17:37  keesblom
 
 	* Added mp3 codec_id as produced by the Helix RTSP Server
