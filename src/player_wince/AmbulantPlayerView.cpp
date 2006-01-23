@@ -185,8 +185,7 @@ void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
 		delete dummy;
 	}
 	lib::textptr tp(lpszPathName);
-	std::string pathstr(tp);
-	net::url u = net::url::from_filename(pathstr);
+	net::url u = net::url::from_filename(tp.c_str());
 	dummy = create_player_instance(u);
 	m_curDocFilename = lpszPathName;
 	player = dummy;

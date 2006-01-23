@@ -102,7 +102,10 @@ class AMBULANTAPI url {
 	}
 
 	/// Factory function: create URL given a filename string
-	static url from_filename(const std::string& spec);
+	static AMBULANTAPI url from_filename(const std::string& spec);
+ 
+	/// Factory function: create URL given a filename string
+	static AMBULANTAPI url from_filename(const char *spec);
  
 
 	/// Return the protocol of this URL.

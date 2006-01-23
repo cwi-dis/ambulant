@@ -218,8 +218,15 @@ void net::url::init_statics() {
  }
  
 // static
-net::url 
+AMBULANTAPI net::url 
 net::url::from_filename(const std::string& spec)
+{
+	return net::url(filepath2urlpath(spec));
+}
+
+// static
+AMBULANTAPI net::url 
+net::url::from_filename(const char *spec)
 {
 	return net::url(filepath2urlpath(spec));
 }

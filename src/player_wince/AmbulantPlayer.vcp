@@ -61,7 +61,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
-# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /out:"..\..\bin\wince\AmbulantPlayer.exe" /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# ADD LINK32 libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /map:"AmbulantPlayer.map" /out:"..\..\bin\wince\AmbulantPlayer.exe" /libpath:"..\..\lib\wince-arm" /subsystem:$(CESubsystem) /align:"4096" /MACHINE:ARM
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "AmbulantPlayer - Win32 (WCE ARM) Debug"
 
@@ -319,7 +320,7 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\player.h"\
 	"..\..\include\ambulant\common\preferences.h"\
-	"..\..\include\ambulant\common\renderer.h"\
+	"..\..\include\ambulant\common\renderer_impl.h"\
 	"..\..\include\ambulant\config\config.h"\
 	"..\..\include\ambulant\config\gettext.h"\
 	"..\..\include\ambulant\config\posix_features.h"\
@@ -343,6 +344,7 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\lib\logger.h"\
 	"..\..\include\ambulant\lib\mtsync.h"\
 	"..\..\include\ambulant\lib\node.h"\
+	"..\..\include\ambulant\lib\node_impl.h"\
 	"..\..\include\ambulant\lib\node_iterator.h"\
 	"..\..\include\ambulant\lib\nscontext.h"\
 	"..\..\include\ambulant\lib\parser_factory.h"\
@@ -352,14 +354,14 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\lib\string_util.h"\
 	"..\..\include\ambulant\lib\system.h"\
 	"..\..\include\ambulant\lib\textptr.h"\
+	"..\..\include\ambulant\lib\thread.h"\
 	"..\..\include\ambulant\lib\timer.h"\
 	"..\..\include\ambulant\lib\unix\unix_mtsync.h"\
+	"..\..\include\ambulant\lib\unix\unix_thread.h"\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
-	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
-	"..\..\include\ambulant\net\raw_video_datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\
 	".\AmbulantPlayer.h"\
