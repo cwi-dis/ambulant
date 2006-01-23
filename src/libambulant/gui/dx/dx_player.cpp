@@ -163,6 +163,7 @@ gui::dx::dx_player::~dx_player() {
 	delete m_worker_processor;
 	delete m_timer;	
 	assert(m_windows.empty());
+	delete m_factory;
 	if(dx_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
 }

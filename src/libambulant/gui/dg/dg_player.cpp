@@ -135,6 +135,7 @@ gui::dg::dg_player::~dg_player() {
 	delete m_worker_processor;
 	delete m_timer;
 	assert(m_windows.empty());
+	delete m_factory;
 	if(dg_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dg_gui_region::s_counter);
 }
