@@ -42,9 +42,8 @@ gui::dx::dx_brush::dx_brush(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window,
 	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
+:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
 	m_color(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_brush::dx_brush(0x%x)", this);
 }

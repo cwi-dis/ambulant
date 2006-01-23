@@ -49,9 +49,8 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::factories* factory,
-	common::gui_window *window,
 	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
+:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
 	m_text(0),
 	m_df(factory->get_datasource_factory())
 {
@@ -64,7 +63,7 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	lib::rect rc = dest->get_rect();
 	lib::size bounds(rc.width(), rc.height());
 	net::url url = m_node->get_url("src");
-	dx_window *dxwindow = static_cast<dx_window*>(m_window);
+	dx_window *dxwindow = static_cast<dx_window*>(m_dest->get_gui_window());
 	viewport *v = dxwindow->get_viewport();
 #if 0
 	if(!lib::memfile::exists(url)) {

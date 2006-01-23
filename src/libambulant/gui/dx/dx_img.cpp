@@ -50,26 +50,12 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::factories *factory,
-	common::gui_window *window,
 	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
-	m_image(0) {
+:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	m_image(0),
+	m_factory(factory) {
 	
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::ctr(0x%x)", this);
-	net::url url = m_node->get_url("src");
-	net::datasource *src = factory->get_datasource_factory()->new_raw_datasource(url);
-	if (src == NULL) {
-		// XXX Should we give an error if this fails?
-		return;
-	}
-	if(!window) {
-		lib::logger::get_logger()->show("get_window() failed. [%s]",
-			url.get_url().c_str());
-		return;
-	}
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();
-	m_image = new image_renderer(url, src, v);
 }
 
 gui::dx::dx_img_renderer::~dx_img_renderer() {
@@ -80,6 +66,21 @@ gui::dx::dx_img_renderer::~dx_img_renderer() {
 
 void gui::dx::dx_img_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::start(0x%x)", this);
+	net::url url = m_node->get_url("src");
+	net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
+	if (src == NULL) {
+		// XXX Should we give an error if this fails?
+		return;
+	}
+	common::surface *surf = get_surface();
+	if(!surf) {
+		lib::logger::get_logger()->show("No surface [%s]",
+			url.get_url().c_str());
+		return;
+	}
+	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
+	viewport *v = dxwindow->get_viewport();
+	m_image = new image_renderer(url, src, v);
 	if(!m_image) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
@@ -121,17 +122,6 @@ void gui::dx::dx_img_renderer::stop() {
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
-	// show debug message 'stopped'
-	AM_DBG {
-		dx_window *dxwindow = static_cast<dx_window*>(m_window);
-		viewport *v = dxwindow->get_viewport();
-		if(v) {
-			if(!m_msg_rect.empty()) {
-				v->draw(text_str("STOPPED"), m_msg_rect, lib::to_color("red"));
-				v->redraw(m_msg_rect);
-			}
-		}
-	}
 	m_dest->need_redraw();
 }
 

@@ -43,13 +43,10 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor* evp,
-	common::gui_window *window,
-	lib::event_processor* worker)
+	lib::event_processor* evp)
 :   common::renderer_playable(context, cookie, node, evp), 
 	m_player(0), 
 	m_update_event(0), 
-	m_worker(worker),
 	m_level(1.0)
 #ifdef USE_SMIL21
 	, m_balance(0),

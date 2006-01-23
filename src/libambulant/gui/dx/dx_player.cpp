@@ -89,17 +89,19 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	m_goto_node(0),
 	m_player(0),
 	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
-	m_worker_processor(0),
 	m_update_event(0),
 	m_logger(lib::logger::get_logger()),
 	m_factory(0) {
 	
 	// Fill the factory object
-	global_playable_factory *rf = (global_playable_factory*) this->get_playable_factory();
+	global_playable_factory *rf = common::get_global_playable_factory();
 	net::datasource_factory *df = new net::datasource_factory();
 	window_factory *wf = this->get_window_factory(); 
 	global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
 	m_factory = new factories(rf, wf, df, pf);
+
+	// Add the playable factory
+	rf->add_factory(new dx_playable_factory(m_factory, m_logger, this));
 
 	// Add the datasource factories. For now we only need a raw
 	// datasource factory.
@@ -142,7 +144,6 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	if (feedback) m_player->set_feedback(feedback);
 	
 	// Create a worker processor instance
-	m_worker_processor = event_processor_factory(m_timer);	
 }
 
 gui::dx::dx_player::~dx_player() {
@@ -158,9 +159,6 @@ gui::dx::dx_player::~dx_player() {
 		delete m_player;
 	}
 	if(m_timer) m_timer->pause();
-	if(m_worker_processor)
-		m_worker_processor->cancel_all_events();
-	delete m_worker_processor;
 	delete m_timer;	
 	assert(m_windows.empty());
 	delete m_factory;
@@ -409,12 +407,11 @@ gui::dx::dx_player::get_main_window() {
 // common::playable_factory implementation
 
 common::playable *
-gui::dx::dx_player::new_playable(
+gui::dx::dx_playable_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp) {
-	common::gui_window *window = get_window(node);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
@@ -422,29 +419,29 @@ gui::dx::dx_player::new_playable(
 #ifdef	WITH_HTML_WIDGET
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
-			p = new dx_html_renderer(context, cookie, node, evp, window, this);
+			p = new dx_html_renderer(context, cookie, node, evp, m_dxplayer);
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
 #endif/*WITH_HTML_WIDGET*/
-		p = new dx_text_renderer(context, cookie, node, evp, m_factory, window, this);
+		p = new dx_text_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "img") {
-		p = new dx_img_renderer(context, cookie, node, evp, m_factory, window, this);
+		p = new dx_img_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "audio") {
-		p = new dx_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
+		p = new dx_audio_renderer(context, cookie, node, evp);
 	} else if(tag == "video") {
-		p = new dx_video_renderer(context, cookie, node, evp, window, this);
+		p = new dx_video_renderer(context, cookie, node, evp, m_dxplayer);
 	} else if(tag == "area") {
-		p = new dx_area(context, cookie, node, evp, window);
+		p = new dx_area(context, cookie, node, evp);
 	} else if(tag == "brush") {
-		p = new dx_brush(context, cookie, node, evp, window, this);
+		p = new dx_brush(context, cookie, node, evp, m_dxplayer);
 	} else {
-		p = new dx_area(context, cookie, node, evp, window);
+		p = new dx_area(context, cookie, node, evp);
 	}
 	return p;
 }
 
 common::playable *
-gui::dx::dx_player::new_aux_audio_playable(
+gui::dx::dx_playable_factory::new_aux_audio_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,

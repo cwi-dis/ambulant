@@ -48,13 +48,23 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::gui_window *window,
 	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
+:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
 	m_player(0), 
 	m_update_event(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer(0x%x)", this);
-	dx_window *dxwindow = static_cast<dx_window*>(window);
+}
+
+gui::dx::dx_video_renderer::~dx_video_renderer() {
+	AM_DBG lib::logger::get_logger()->debug("~dx_video_renderer(0x%x)", this);
+	if(m_player) stop();
+}
+
+void gui::dx::dx_video_renderer::start(double t) {
+	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str()); 
+	common::surface *surf = get_surface();
+	
+	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
 	viewport *v = dxwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
 	_init_clip_begin_end();
@@ -66,16 +76,6 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());
 	}
-}
-
-gui::dx::dx_video_renderer::~dx_video_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("~dx_video_renderer(0x%x)", this);
-	if(m_player) stop();
-}
-
-void gui::dx::dx_video_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str()); 
-	
 	if(!m_player) {
 		// Not created or stopped (gone)
 		

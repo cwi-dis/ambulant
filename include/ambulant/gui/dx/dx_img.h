@@ -46,8 +46,7 @@ class dx_img_renderer : public dx_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories *factory,
-		common::gui_window *window, 
+		common::factories *factory, 
 		dx_playables_context *dxplayer);
 	~dx_img_renderer();
 	void start(double t);
@@ -59,6 +58,7 @@ class dx_img_renderer : public dx_renderer_playable {
 	image_renderer *m_image;
 	lib::rect m_msg_rect;
 	dx_gui_region *m_rgn;
+	common::factories *m_factory;
 };
 
 } // namespace dx

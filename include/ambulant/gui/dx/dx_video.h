@@ -47,7 +47,6 @@ class dx_video_renderer : public dx_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::gui_window *window,
 		dx_playables_context *dxplayer);
 	~dx_video_renderer();
 	void start(double t);

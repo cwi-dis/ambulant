@@ -47,8 +47,7 @@ class dx_text_renderer : public dx_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories* factory,
-		common::gui_window *window, 
+		common::factories* factory, 
 		dx_playables_context *dxplayer);
 	~dx_text_renderer();
 	void start(double t);

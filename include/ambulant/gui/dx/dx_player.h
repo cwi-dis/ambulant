@@ -80,10 +80,39 @@ class dx_player_callbacks {
 	virtual void destroy_os_window(HWND hwnd) = 0;
 };
 
+class dx_playable_factory : public common::playable_factory {
+  public:
+	  dx_playable_factory(
+			common::factories *factory,
+			lib::logger *logger,
+			dx_playables_context *ctx)
+	:	m_factory(factory),
+		m_logger(logger),
+		m_dxplayer(ctx) {}
+	////////////////////
+	// common::playable_factory implementation
+	
+	common::playable *new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const ambulant::lib::node *node,
+		lib::event_processor * evp);
+
+	common::playable *new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src);
+  private:
+	common::factories *m_factory;
+	lib::logger *m_logger;
+	dx_playables_context *m_dxplayer;
+};
+
 class AMBULANTAPI dx_player : 
 	//public common::player, 
 	public common::window_factory, 
-	public common::playable_factory,
 	public dx_playables_context,
 	public common::embedder {
 	
@@ -122,22 +151,6 @@ class AMBULANTAPI dx_player :
 	void window_done(const std::string& name);
 	
 	////////////////////
-	// common::playable_factory implementation
-	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const ambulant::lib::node *node,
-		lib::event_processor * evp);
-
-	common::playable *new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src);
-	
-	////////////////////
 	// common::embedder implementation
 	void show_file(const net::url& href);
 	void close(common::player *p);
@@ -155,7 +168,6 @@ class AMBULANTAPI dx_player :
 	void on_done();
 	
 	common::window_factory *get_window_factory() { return this;}
-	common::playable_factory *get_playable_factory() {return this;}
 	viewport* create_viewport(int w, int h, HWND hwnd);
 	void redraw(HWND hwnd, HDC hdc);
 	
@@ -203,7 +215,6 @@ class AMBULANTAPI dx_player :
 	
 	// The secondary timer and processor
 	lib::timer_control *m_timer;
-	lib::event_processor *m_worker_processor;	
 		
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
