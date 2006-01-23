@@ -4,7 +4,6 @@ library_include_HEADERS= \
 	win32_error.h \
 	win32_event_processor.h \
 	win32_fstream.h \
-	win32_memfile.h \
 	win32_mtsync.h \
 	win32_thread.h \
 	win32_timer.h

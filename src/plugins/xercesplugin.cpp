@@ -73,8 +73,9 @@ extern "C" void initialize(ambulant::common::factories* factory)
     if ( !ambulant::check_version() )
         lib::logger::get_logger()->warn("xerces_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	AM_DBG lib::logger::get_logger()->debug("xerces_plugin::initialize registering factory function");
-	if (factory->pf) {
-		factory->pf->add_factory(new xerces_plugin_factory(factory));
+	lib::global_parser_factory *pf = factory->get_parser_factory();
+	if (pf) {
+		pf->add_factory(new xerces_plugin_factory(factory));
 		lib::logger::get_logger()->trace("xerces_plugin: registered");
 	}
 }
