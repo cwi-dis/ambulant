@@ -141,6 +141,7 @@ initialize_logger()
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
 
+#if 0
 	// Initialize the plugins, so we can parser the system test settings file
 	{
 		ambulant::common::factories fact;
@@ -151,6 +152,7 @@ initialize_logger()
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 		pe->add_plugins(&fact);
 	}
+#endif
 
 	// Initialize the default system test settings
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
