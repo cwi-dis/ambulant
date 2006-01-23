@@ -139,6 +139,7 @@ int databuffer::size() const
 	return rv;
 }
 
+#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
 void databuffer::dump(std::ostream& os, bool verbose) const
 {
 	unsigned long int i;
@@ -155,6 +156,7 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 	} 
  	os << std::endl;
 }
+#endif
 
 char *
 databuffer::get_write_ptr(int sz)

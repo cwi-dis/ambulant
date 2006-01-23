@@ -53,7 +53,7 @@ public:
 	ambulant::common::window_factory *get_window_factory() const { return wf; }
 	ambulant::net::datasource_factory *get_datasource_factory() const { return df; }
 	ambulant::lib::global_parser_factory *get_parser_factory() const { return pf; }
-// XXXX private:
+private:
 	ambulant::common::playable_factory *rf;
 	ambulant::common::window_factory *wf;
 	ambulant::net::datasource_factory *df;

@@ -50,7 +50,6 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	common::factories* factory,
 	common::gui_window *window)
 :   common::renderer_playable(context, cookie, node, evp),
-	m_text(""),
 	m_window(window),
 	m_fontname(NULL),
 	m_fontsize(0),
@@ -63,7 +62,7 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	net::url url = m_node->get_url("src");
 	char *data;
 	size_t datasize;
-	if (!net::read_data_from_url(url, factory->df, &data, &datasize))
+	if (!net::read_data_from_url(url, factory->get_datasource_factory(), &data, &datasize))
 		return;
 
 #ifndef UNICODE

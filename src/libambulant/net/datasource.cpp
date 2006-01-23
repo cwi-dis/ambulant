@@ -21,6 +21,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/databuffer.h"
 #include "ambulant/lib/asb.h"
+#include "ambulant/lib/event_processor.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -325,7 +326,7 @@ datasource_reader::datasource_reader(datasource *src)
 	m_data(NULL),
 	m_size(0)
 {
-	m_event_processor = event_processor_factory(m_timer);
+	m_event_processor = lib::event_processor_factory(m_timer);
 }
 
 datasource_reader::~datasource_reader()

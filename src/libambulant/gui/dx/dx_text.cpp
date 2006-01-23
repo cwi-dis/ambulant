@@ -53,7 +53,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, window, dxplayer),
 	m_text(0),
-	m_df(factory->df)
+	m_df(factory->get_datasource_factory())
 {
 	AM_DBG lib::logger::get_logger()->debug("dx_text_renderer(0x%x)", this);
 }

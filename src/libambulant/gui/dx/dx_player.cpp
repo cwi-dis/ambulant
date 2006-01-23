@@ -91,28 +91,30 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
 	m_update_event(0),
-	m_logger(lib::logger::get_logger()) {
+	m_logger(lib::logger::get_logger()),
+	m_factory(0) {
 	
 	// Fill the factory object
-	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
-	m_factory.df = new net::datasource_factory();
-	m_factory.wf = this->get_window_factory(); 
-	
+	global_playable_factory *rf = (global_playable_factory*) this->get_playable_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	window_factory *wf = this->get_window_factory(); 
+	global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
+	m_factory = new factories(rf, wf, df, pf);
+
 	// Add the datasource factories. For now we only need a raw
 	// datasource factory.
-	m_factory.df->add_raw_factory(net::get_win32_datasource_factory());
+	df->add_raw_factory(net::get_win32_datasource_factory());
 	// Add the xerces parser, if available
-	m_factory.pf = lib::global_parser_factory::get_parser_factory();	
 #ifdef WITH_XERCES_BUILTIN
-	m_factory.pf->add_factory(new lib::xerces_factory());
+	pf->add_factory(new lib::xerces_factory());
 #endif
 	// Load the plugins
-	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
-	pf->add_plugins(&m_factory);
+	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
+	plf->add_plugins(m_factory);
 
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
-	lib::document *doc = lib::document::create_from_url(&m_factory, u);
+	lib::document *doc = lib::document::create_from_url(m_factory, u);
 	
 	if(!doc) {
 		// message already logged
@@ -133,7 +135,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 #endif
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
-	m_player = new smil2::smil_player(doc, &m_factory, this);
+	m_player = new smil2::smil_player(doc, m_factory, this);
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
@@ -224,13 +226,13 @@ void gui::dx::dx_player::restart() {
 		delete m_player;
 	}
 	m_player = 0;	
-	lib::document *doc = lib::document::create_from_url(&m_factory, m_url);
+	lib::document *doc = lib::document::create_from_url(m_factory, m_url);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", m_url.get_url().c_str());
 		return;
 	}
 	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());	
-	m_player = new smil2::smil_player(doc, &m_factory, this);	
+	m_player = new smil2::smil_player(doc, m_factory, this);	
 	
 	if(playing) start();	
 }
@@ -423,9 +425,9 @@ gui::dx::dx_player::new_playable(
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
 #endif/*WITH_HTML_WIDGET*/
-		p = new dx_text_renderer(context, cookie, node, evp, &m_factory, window, this);
+		p = new dx_text_renderer(context, cookie, node, evp, m_factory, window, this);
 	} else if(tag == "img") {
-		p = new dx_img_renderer(context, cookie, node, evp, &m_factory, window, this);
+		p = new dx_img_renderer(context, cookie, node, evp, m_factory, window, this);
 	} else if(tag == "audio") {
 		p = new dx_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
@@ -656,7 +658,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 	}
 	
 	// Parse the provided URL. 
-	lib::document *doc = lib::document::create_from_url(&m_factory, newdoc);
+	lib::document *doc = lib::document::create_from_url(m_factory, newdoc);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
 		return;
@@ -675,7 +677,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
-	m_player = new smil2::smil_player(doc, &m_factory, this);
+	m_player = new smil2::smil_player(doc, m_factory, this);
 	if(startnewdoc) start();
 }
 

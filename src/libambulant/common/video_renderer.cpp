@@ -64,7 +64,7 @@ video_renderer::video_renderer(
 	
 	_init_clip_begin_end();
 
-	m_src = factory->df->new_video_datasource(url,m_clip_begin, m_clip_end);
+	m_src = factory->get_datasource_factory()->new_video_datasource(url,m_clip_begin, m_clip_end);
 	if (m_src == NULL) {
 		lib::logger::get_logger()->warn(gettext("Cannot open video: %s"), url.get_url().c_str());
 		m_lock.leave();
@@ -75,7 +75,7 @@ video_renderer::video_renderer(
 	
 		if (m_audio_ds) {
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: creating audio renderer !");
-			m_audio_renderer = factory->rf->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
+			m_audio_renderer = factory->get_playable_factory()->new_aux_audio_playable(context, cookie, node, evp, m_audio_ds);
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
 		} else {
 			m_audio_renderer = NULL;

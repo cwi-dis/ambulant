@@ -27,6 +27,10 @@
 #include "ambulant/net/url.h"
 #include "ambulant/common/preferences.h"
 
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#include "ambulant/net/win32_datasource.h"
+#endif
+
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>
 #endif
@@ -71,7 +75,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!filename || !*filename) return false;
 	m_filename = filename;
 
-#if 1 // WAS: !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_PLATFORM_WIN32)
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
 	const size_t buf_size = 1024;
@@ -87,17 +91,19 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	delete[] buf;
 	ifs.close();
 	return m_well_formed;
-#elif defined(AMBULANT_PLATFORM_WIN32)
+#else
 	net::url u = net::url::from_filename(filename);
-	memfile mf(u);
-	if(!mf.read()) {
-		lib::logger::get_logger()->show(gettext("Failed to read file: %s"), filename);
+	net::datasource *ds = net::get_win32_datasource_factory()->new_raw_datasource(u);
+	char *data;
+	size_t datasize;
+	if (!net::read_data_from_datasource(ds, &data, &datasize)) {
+		// read_data_from_url has given error message
 		return false;
 	}
-	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);
-	return m_well_formed;
-#else
-	return false;
+	bool rv = build_tree_from_str(data, data+datasize);
+	free(data);
+	ds->release();
+	return rv;
 #endif
 }
 

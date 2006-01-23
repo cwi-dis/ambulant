@@ -211,7 +211,7 @@ class AMBULANTAPI dx_player :
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
-	common::factories m_factory;
+	common::factories *m_factory;
 };
 
 } // namespace dx

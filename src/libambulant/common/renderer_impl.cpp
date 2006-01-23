@@ -156,7 +156,7 @@ renderer_playable_ds::renderer_playable_ds(
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	net::url url = node->get_url("src");
-	m_src = factory->df->new_raw_datasource(url);	
+	m_src = factory->get_datasource_factory()->new_raw_datasource(url);	
 }
 
 renderer_playable_ds::~renderer_playable_ds()

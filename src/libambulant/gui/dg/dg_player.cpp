@@ -67,6 +67,8 @@
 #include "ambulant/common/region.h"
 #include "ambulant/smil2/smil_layout.h"
 
+#include "ambulant/net/win32_datasource.h"
+
 using namespace ambulant;
 
 int gui::dg::dg_gui_region::s_counter = 0;
@@ -81,17 +83,23 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 	m_logger(lib::logger::get_logger()) {
 	
 	// Fill the factory object
-	m_factory.rf = (global_playable_factory*) this->get_playable_factory();
-	m_factory.df = NULL;
-	m_factory.wf = this->get_window_factory();
+	// Fill the factory object
+	global_playable_factory *rf = (global_playable_factory*) this->get_playable_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	window_factory *wf = this->get_window_factory(); 
+	global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
+	m_factory = new factories(rf, wf, df, pf);
 
+	// Add the datasource factories. For now we only need a raw
+	// datasource factory.
+	df->add_raw_factory(net::get_win32_datasource_factory());
 	// Load the plugins
-	common::plugin_engine *pf = common::plugin_engine::get_plugin_engine();
-	pf->add_plugins(&m_factory);
+	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
+	plf->add_plugins(m_factory);
 
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
-	lib::document *doc = lib::document::create_from_url(&m_factory, u);
+	lib::document *doc = lib::document::create_from_url(m_factory, u);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", u.get_url().c_str());
 		return;
@@ -100,7 +108,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
-	m_player = new smil2::smil_player(doc, &m_factory, this);
+	m_player = new smil2::smil_player(doc, m_factory, this);
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
@@ -329,9 +337,9 @@ gui::dg::dg_player::new_playable(
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
-		p = new dg_text_renderer(context, cookie, node, evp, &m_factory, window);
+		p = new dg_text_renderer(context, cookie, node, evp, m_factory, window);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, &m_factory, window, this);
+		p = new dg_img_renderer(context, cookie, node, evp, m_factory, window, this);
 	} else if(tag == "audio") {
 		p = new dg_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
 	} else if(tag == "video") {
@@ -534,7 +542,7 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	}
 	
 	// Parse the provided URL. 
-	lib::document *doc = lib::document::create_from_url(&m_factory, newdoc);
+	lib::document *doc = lib::document::create_from_url(m_factory, newdoc);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
 		return;
@@ -553,6 +561,6 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
-	m_player = new smil2::smil_player(doc, &m_factory, this);
+	m_player = new smil2::smil_player(doc, m_factory, this);
 	if(startnewdoc) start();
 }

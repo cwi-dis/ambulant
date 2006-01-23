@@ -56,7 +56,7 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	
 	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::ctr(0x%x)", this);
 	net::url url = m_node->get_url("src");
-	net::datasource *src = factory->df->new_raw_datasource(url);
+	net::datasource *src = factory->get_datasource_factory()->new_raw_datasource(url);
 	if (src == NULL) {
 		// XXX Should we give an error if this fails?
 		return;
