@@ -1,3 +1,36 @@
+2006-01-23 16:49  jackjansen
+
+	* Fairly serious reorganisation to make Windows renderers follow
+	  the same pattern as Unix/Mac renderers.
+
+2006-01-23 15:19  jackjansen
+
+	* Adapted for factory function accessors.
+
+2006-01-23 14:52  jackjansen
+
+	* (temporarily?) disable early loading of plugins because it
+	  doesn't work with the new accessor scheme for factories. To be
+	  determined whether this is ok.
+
+2006-01-23 14:47  jackjansen
+
+	* More changes for WinCE wrt. datasourcde usage. Still doesn't
+	  work, though.
+
+2006-01-23 14:17  jackjansen
+
+	* Added cleanup of m_factory.
+
+2006-01-23 14:15  jackjansen
+
+	* More factory function accessor mods.
+
+2006-01-23 13:21  jackjansen
+
+	* Tweaks for: - Using accessors for factory objects - WinCE port of
+	  datasource mods.
+
 2006-01-21 00:37  jackjansen
 
 	* Step 1 towards a self-contained player: add accessor methods to
