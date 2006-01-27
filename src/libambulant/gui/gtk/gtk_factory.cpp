@@ -38,9 +38,7 @@ using namespace gui::gtk;
 using namespace net;
 
 
-static GdkPixmap *pixmap = NULL;
-
-void gtk_C_callback_do_paint_event(void *userdata, GtkWidget *widget, GdkEventExpose *event)
+void gtk_C_callback_do_paint_event(void *userdata, GdkEventExpose *event, GtkWidget *widget)
 {
 	((gtk_ambulant_widget*) userdata)->do_paint_event(event);
 }
@@ -66,7 +64,6 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	   common::gui_events *region)
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
-	m_pixmap(NULL),
 	m_oldpixmap(NULL),
 	m_tmppixmap(NULL),
 #ifdef USE_SMIL21
@@ -78,12 +75,13 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 #endif
 	m_surface(NULL)
 {
+	m_pixmap = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::ambulant_gtk_window(0x%x)",(void *)this);
 }
 
 ambulant_gtk_window::~ambulant_gtk_window()
 {
-
+	
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::~ambulant_gtk_window(0x%x): m_ambulant_widget=0x%x, m_pixmap=0x%x",this,m_ambulant_widget, m_pixmap);
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
@@ -111,7 +109,6 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 	m_ambulant_widget = gtkaw;
 	GdkColor color;
 	GdkColormap *cmap = gdk_colormap_get_system();
-	GdkPixmap *pixmap = NULL;
 	
 	if (gtkaw != NULL) {
 		// color is white
@@ -134,10 +131,19 @@ ambulant_gtk_window::get_ambulant_pixmap()
 GdkPixmap*
 ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
 {
-	GdkPixmap *rv = gdk_pixmap_new(m_pixmap,
-                          	m_ambulant_widget->get_gtk_widget()->allocation.width,
-                          	m_ambulant_widget->get_gtk_widget()->allocation.height,
+	// This function does not work
+	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window,
+                          	r.width(),
+                          	r.height(),
                           	-1);
+
+	// draw the screen into m_pixmap
+	gdk_draw_drawable(m_pixmap,
+			m_ambulant_widget->get_gtk_widget()->style->bg_gc[GTK_STATE_NORMAL], rv,
+			r.left(), r.top(),
+			r.left(), r.top(), 
+			r.width(), r.height());
+
 	return rv;
 }
 
@@ -283,6 +289,12 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 #ifdef USE_SMIL21
 	_screenTransitionPostRedraw(r);
 #endif
+	gdk_draw_pixmap(m_ambulant_widget->get_gtk_widget()->window,
+			m_ambulant_widget->get_gtk_widget()->style->bg_gc[GTK_STATE_NORMAL], m_pixmap,
+			r.left(), r.top(),
+			r.left(), r.top(), 
+			r.width(), r.height());
+
 //	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
