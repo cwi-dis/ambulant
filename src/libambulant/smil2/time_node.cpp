@@ -151,6 +151,7 @@ void time_node::reset(rule_list& rules, time_node *src) {
 // Starts a node at t = 0.
 // Currently supported only for the root.
 void time_node::start() {
+
 	if(!m_domcall_rule) {
 		m_domcall_rule = new event_rule(this, tn_dom_call);
 		add_begin_rule(m_domcall_rule);
@@ -161,7 +162,6 @@ void time_node::start() {
 	// Bring node to live
 	if(!is_alive())
 		set_state(ts_proactive, timestamp, this);
-	
 	// Add event instance
 	m_domcall_rule->add_instance(timestamp, 0);
 }

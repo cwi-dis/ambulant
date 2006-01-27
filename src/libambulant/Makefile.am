@@ -60,6 +60,27 @@ toolkit_cocoa_libraries =
 platlibs =
 endif
 
+if WITH_GTK
+toolkit_gtk_libraries = libambulant_gtk.la
+gtkincludes =$(GTK_CFLAGS)
+
+libambulant_gtk_la_SOURCES = 		\
+	gui/gtk/gtk_renderer.cpp	\
+	gui/gtk/gtk_fill.cpp		\
+	gui/gtk/gtk_image_renderer.cpp	\
+	gui/gtk/gtk_text_renderer.cpp 	\
+	gui/gtk/gtk_transition.cpp 	\
+	gui/gtk/gtk_video_renderer.cpp	\
+	gui/gtk/gtk_factory.cpp
+
+else
+gtkincludes=
+toolkit_gtk_libraries =
+libambulant_gtk_la_SOURCES =
+endif
+
+
+
 if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
 qtincludes = -I$(QT_PREFIX)/include
@@ -138,6 +159,7 @@ INCLUDES = \
 	$(EXPAT_INCLUDES) \
 	$(xerces_includes) \
 	$(qtincludes) \
+	$(gtkincludes) \
 	$(artsincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
@@ -148,6 +170,7 @@ lib_LTLIBRARIES = \
 	libambulant.la \
 	$(toolkit_cocoa_libraries) \
 	$(toolkit_qt_libraries) \
+	$(toolkit_gtk_libraries) \
 	$(toolkit_arts_libraries) \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
@@ -251,6 +274,7 @@ EXTRA_DIST= \
 	gui/dg \
 	gui/dx \
 	gui/qt \
+	gui/gtk \
 	lib/win32
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT

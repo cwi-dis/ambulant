@@ -72,13 +72,12 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_cursorid(0), 
 	m_pointed_node(0), 
 	m_eom_flag(true) {
+	
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player()");
 	m_event_processor = event_processor_factory(m_timer);
-	
 	// build the layout (we need the top-level layout)
 	build_layout();
-	
 	// Build the timegraph using the current filter
 	build_timegraph();
 }
