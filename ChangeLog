@@ -1,3 +1,12 @@
+2006-01-27 17:26  p_cesar
+
+	* GdkPixmap is there
+
+2006-01-27 14:56  p_cesar
+
+	* Merging exp-pablo-gtk branch Initial implementation of GTK
+	  support - GTK gui is working - GTK renderers are on the way
+
 2006-01-23 16:49  jackjansen
 
 	* Fairly serious reorganisation to make Windows renderers follow
