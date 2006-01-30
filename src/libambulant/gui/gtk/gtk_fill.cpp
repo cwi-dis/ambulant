@@ -25,10 +25,10 @@
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 using namespace ambulant;
 using namespace gui::gtk;
@@ -168,14 +168,9 @@ void
 gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 				     common::gui_window *window) {
 
-//	GdkColor color;
-//	GdkColormap *cmap = gdk_colormap_get_system();
-
 	const common::region_info *info = m_dest->get_info();
 	const lib::rect &r = m_dest->get_rect();
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
-	//QPainter paint;
-	//paint.begin(agtkw->get_ambulant_pixmap());
 	// <brush> drawing
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
@@ -192,16 +187,19 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 	}
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
-	//	lib::color_t bgcolor = info->get_bgcolor();
+	lib::color_t bgcolor = info->get_bgcolor();
 	AM_DBG lib::logger::get_logger()->debug
 		("gtk_fill_renderer.redraw_body: clearing to 0x%x", 
 		 (long)color);
-//QColor bgc = QColor(lib::redc(color),lib::greenc(color),lib::bluec(color));
+	GdkColor bgc;
+	bgc.red = redc(color)*0x101;
+	bgc.blue = bluec(color)*0x101;
+	bgc.green = greenc(color)*0x101;
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+	gdk_gc_set_rgb_fg_color (gc, &bgc);
+	gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
+	g_object_unref (G_OBJECT (gc));
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
-//	paint.setBrush(bgc);
-//	paint.drawRect(L,T,W,H);
-//	paint.flush();
-//	paint.end();
 }
 
 void
@@ -213,8 +211,6 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 	if (m_src && !m_src->get_transparent()) {
 	// First find our whole area to be cleared to background color
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
-		//QPainter paint;
-		//paint.begin(aqw->get_ambulant_pixmap());
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
@@ -224,15 +220,20 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
-		//QColor bgc = QColor(lib::redc(bgcolor),lib::greenc(bgcolor),lib::bluec(bgcolor));
-		//paint.setBrush(bgc);
+		GdkColor bgc;
+		bgc.red = redc(bgcolor)*0x101;
+		bgc.blue = bluec(bgcolor)*0x101;
+		bgc.green = greenc(bgcolor)*0x101;
+		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+		gdk_gc_set_rgb_fg_color (gc, &bgc);
+		gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
+		g_object_unref (G_OBJECT (gc));
+		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
 		//paint.drawRect(L,T,W,H);
 		if (m_background_pixmap) {
 			AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: drawing pixmap");
 		//	paint.drawPixmap(L, T, *m_background_pixmap);
 		}
-		//paint.flush();
-		//paint.end();
 	}
 }
 

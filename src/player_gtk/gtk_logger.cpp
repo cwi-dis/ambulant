@@ -86,12 +86,11 @@ gtk_logger::gtk_logger()
 {
 	m_logger_window = NULL;
 
-	/*
+	
 	common::preferences* prefs = 
 	  common::preferences::get_preferences();
-*/
 	lib::logger* logger = lib::logger::get_logger();
-/*
+
 	if (prefs != NULL && prefs->m_log_file != "") {
 		if (prefs->m_log_file == "-")
 			m_log_FILE = stderr;
@@ -102,7 +101,7 @@ gtk_logger::gtk_logger()
 				     prefs->m_log_file.c_str());
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
-	*/
+	
 	// Tell the logger about the output level preference
 	//int level = prefs->m_log_level;
 	//logger->set_level(level);

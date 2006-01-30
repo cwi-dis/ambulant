@@ -18,10 +18,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  
-//#define AM_DBG if(1)
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG if(1)
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
  
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_includes.h"
@@ -117,7 +117,14 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 		AM_DBG gdk_color_parse("Purple", &color);
 		gdk_colormap_alloc_color(cmap, &color, FALSE, TRUE);
 		// set the color in the widget
-		gtk_widget_modify_bg (GTK_WIDGET (gtkaw->get_gtk_widget()), GTK_STATE_NORMAL, &color );	
+		gtk_widget_modify_bg (GTK_WIDGET (gtkaw->get_gtk_widget()), GTK_STATE_NORMAL, &color );
+			// Initialize m_pixmap
+		gint width; gint height;
+		gtk_widget_get_size_request(GTK_WIDGET (gtkaw->get_gtk_widget()), &width, &height);
+		m_pixmap = gdk_pixmap_new(gtkaw->get_gtk_widget()->window,
+                		width,
+                          	height,
+                          	-1);
 	}
 }
 
@@ -136,14 +143,16 @@ ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
                           	r.width(),
                           	r.height(),
                           	-1);
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_ambulant_widget->get_gtk_widget()));
 
 	// draw the screen into m_pixmap
 	gdk_draw_drawable(m_pixmap,
-			m_ambulant_widget->get_gtk_widget()->style->bg_gc[GTK_STATE_NORMAL], rv,
+			gc, rv,
 			r.left(), r.top(),
 			r.left(), r.top(), 
 			r.width(), r.height());
-
+	g_object_unref (G_OBJECT (gc));
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_pixmap_from_screen(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
 	return rv;
 }
 
@@ -211,7 +220,7 @@ ambulant_gtk_window::delete_ambulant_surface()
 void
 ambulant_gtk_window::need_redraw(const lib::rect &r)
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
 	if (m_ambulant_widget == NULL) {
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
@@ -261,8 +270,11 @@ static bool isEqualToPrevious(GdkPixmap* qpmP) {
 /**/
 /* dumpPixmap on file */
 void gui::gtk::dumpPixmap(GdkPixmap* qpm, std::string filename) {
-/*	if ( ! qpm) return;
-	QImage img = qpm->convertToImage();
+/**
+	GtkImage image;
+	if ( ! qpm) return;
+		gtk_image_set_from_pixmap (GTK_IMAGE (image), qpm, NULL);
+//QImage img = qpm->convertToImage();
 	if ( ! isEqualToPrevious(qpm)) {
 		static int i;
 		char buf[5];
@@ -273,14 +285,13 @@ void gui::gtk::dumpPixmap(GdkPixmap* qpm, std::string filename) {
 	}
 **/
 }
-/**/
 #endif
 
 void
 ambulant_gtk_window::redraw(const lib::rect &r)
 {
 
-	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 #ifdef USE_SMIL21
 	_screenTransitionPreRedraw();
 #endif
@@ -289,12 +300,16 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 #ifdef USE_SMIL21
 	_screenTransitionPostRedraw(r);
 #endif
+//gdk_gc_new (GDK_DRAWABLE (m_pixmap))
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
+	//gdk_gc_set_rgb_fg_color (gc, &bgc);
 	gdk_draw_pixmap(m_ambulant_widget->get_gtk_widget()->window,
-			m_ambulant_widget->get_gtk_widget()->style->bg_gc[GTK_STATE_NORMAL], m_pixmap,
-			r.left(), r.top(),
+			gc,
+			m_pixmap,
 			r.left(), r.top(), 
+			0, 0,
 			r.width(), r.height());
-
+	g_object_unref (G_OBJECT (gc));
 //	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
@@ -596,7 +611,7 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		// Take a snapshot of the screen and return.
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: screen snapshot");
 		if (m_fullscreen_prev_pixmap) delete m_fullscreen_prev_pixmap;
-		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
+//		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
 //		dumpPixmap(m_fullscreen_prev_pixmap, "snap");
 		return;
 	}
