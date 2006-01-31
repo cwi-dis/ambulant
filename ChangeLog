@@ -1,3 +1,7 @@
+2006-01-30 18:33  p_cesar
+
+	* Brush and Background color in the regions are starting to work
+
 2006-01-27 17:26  p_cesar
 
 	* GdkPixmap is there
