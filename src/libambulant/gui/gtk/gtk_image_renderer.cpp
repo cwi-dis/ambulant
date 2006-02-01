@@ -58,14 +58,11 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 	if (m_data && !m_image_loaded) {
-		m_image = gdk_pixmap_create_from_data(
-					GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
+		m_image = gdk_bitmap_create_from_data(
+					NULL,
 					(const gchar*) m_data,
 					r.width(),
-					r.height(),
-					-1,
-					&agtkw->get_ambulant_widget()->get_gtk_widget()->style->black,
-					&agtkw->get_ambulant_widget()->get_gtk_widget()->style->white);
+					r.height());
 		if (m_image)
 			m_image_loaded = TRUE;
 //m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);

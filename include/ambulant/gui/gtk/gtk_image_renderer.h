@@ -68,7 +68,7 @@ class gtk_image_renderer : public gtk_renderer<renderer_playable_dsall> {
 			 gui_window *window);
     
  private:
-	GdkPixmap *m_image;
+	GdkBitmap *m_image;
 	bool m_image_loaded;
 	critical_section m_lock;
 };
