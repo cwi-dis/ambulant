@@ -94,6 +94,7 @@ class ambulant_gtk_window : public common::gui_window {
 
  public:
 	GdkPixmap* m_tmppixmap;
+	guint signal_redraw_id;
 };  // class ambulant_gtk_window
 
 class gtk_ambulant_widget : public GtkWidget {

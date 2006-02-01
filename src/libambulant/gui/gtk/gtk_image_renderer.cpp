@@ -27,10 +27,10 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 using namespace ambulant;
 using namespace common;
@@ -43,32 +43,45 @@ gtk_image_renderer::~gtk_image_renderer() {
 	m_lock.leave();
 }
 	
-
 void
 gtk_image_renderer::redraw_body(const rect &dirty,
 				      gui_window* w) {
-/*
+
 	m_lock.enter();
 	const point             p = m_dest->get_global_topleft();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
+
+// XXXX WRONG! This is the info for the region, not for the node!
+	const common::region_info *info = m_dest->get_info();
+	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: info=0x%x",info);
+	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
+
 	if (m_data && !m_image_loaded) {
-		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
+		m_image = gdk_pixmap_create_from_data(
+					GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
+					(const gchar*) m_data,
+					r.width(),
+					r.height(),
+					-1,
+					&agtkw->get_ambulant_widget()->get_gtk_widget()->style->black,
+					&agtkw->get_ambulant_widget()->get_gtk_widget()->style->white);
+		if (m_image)
+			m_image_loaded = TRUE;
+//m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
 	}
 	if ( ! m_image_loaded) {
 		// Initially the image may not yet be loaded
 	 	m_lock.leave();
 		return;
 	}
-// XXXX WRONG! This is the info for the region, not for the node!
-	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: info=0x%x",info);
-	ambulant_gtk_window* aqw = (ambulant_gtk_window*) w;
 
-	QPainter paint;
-	paint.begin(aqw->get_ambulant_pixmap());
-	QSize qsize = m_image.size();
-	size srcsize = size(qsize.width(), qsize.height());
+
+
+	int width; int height;
+	gdk_drawable_get_size(m_image, &width, &height);
+	printf("The sizes are: %i %i\n",width,height);
+	size srcsize = size(width, height);
 	rect srcrect;
 	rect dstrect;
 #ifdef USE_SMIL21
@@ -93,11 +106,10 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-			paint.drawImage(D_L,D_T, m_image, S_L,S_T, S_W,S_H);
-	
+			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+			gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L,S_T, S_W,S_H);
+			g_object_unref (G_OBJECT (gc));			
 		}
-		paint.flush();
-		paint.end();
 		m_lock.leave();
 		return;
 	}
@@ -127,13 +139,15 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_W = (int)(O_W*fact_W),
 		N_H = (int)(O_H*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
-#ifndef QT_NO_FILEDIALOG*/	/* Assume plain Qt */
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+	gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L, S_T, S_W, S_H);
+	g_object_unref (G_OBJECT (gc));
+
+//#ifndef QT_NO_FILEDIALOG*/	/* Assume plain Qt */
 //	QImage scaledimage = m_image.smoothScale(N_W, N_H, QImage::ScaleFree);
 //#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 //	QImage scaledimage = m_image.smoothScale(N_W, N_H);
 //#endif/*QT_NO_FILEDIALOG*/
 //	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W,D_H);
-//	paint.flush();
-//	paint.end();
-//	m_lock.leave();
+	m_lock.leave();
 }

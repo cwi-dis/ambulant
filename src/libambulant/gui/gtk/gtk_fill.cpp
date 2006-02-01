@@ -229,7 +229,6 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 		g_object_unref (G_OBJECT (gc));
 		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
-		//paint.drawRect(L,T,W,H);
 		if (m_background_pixmap) {
 			AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: drawing pixmap");
 		//	paint.drawPixmap(L, T, *m_background_pixmap);

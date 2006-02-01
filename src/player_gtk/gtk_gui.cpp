@@ -85,6 +85,12 @@ static GdkPixmap *pixmap = NULL;
 // callbacks for C++
 /* File */
 extern "C" {
+gboolean gtk_C_callback_timer(void *userdata)
+{
+	return TRUE;
+}
+}
+extern "C" {
 void gtk_C_callback_open(void *userdata)
 {
 	((gtk_gui*) userdata)->do_open();
@@ -275,7 +281,7 @@ gtk_gui::gtk_gui(const char* title,
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
 	gtk_window_set_resizable(m_toplevelcontainer, true); 	
-	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 320, 240);
+	gtk_widget_set_usize(GTK_WIDGET (m_toplevelcontainer), 320, 240);
 	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	
@@ -365,9 +371,9 @@ gtk_gui::gtk_gui(const char* title,
 */
 	m_o_x = 0;
 #ifndef GTK_NO_FILEDIALOG	/* Assume plain GTK */
-	m_o_y = 27;
+	//m_o_y = 27;
 #else /*GTK_NO_FILEDIALOG*/	/* Assume embedded GTK */
-	m_o_y = 20;
+	//m_o_y = 20;
 #endif/*QT_NO_FILEDIALOG*/
 	
 // This is the old manner of creating the menu bar 
@@ -1024,8 +1030,9 @@ main (int argc, char*argv[]) {
 		exec_flag = true;
 	}
 	
+	g_timeout_add(100, gtk_C_callback_timer, 0);
 	if (exec_flag){
-//		gdk_threads_enter();
+//		gdk_threads_enter();		
 		gtk_main();			
 //		gdk_threads_leave();
 	}else if (argc > 1) {

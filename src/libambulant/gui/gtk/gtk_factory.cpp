@@ -125,6 +125,7 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
                 		width,
                           	height,
                           	-1);
+		lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
 	}
 }
 
@@ -139,6 +140,7 @@ GdkPixmap*
 ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
 {
 	// This function does not work
+
 	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window,
                           	r.width(),
                           	r.height(),
@@ -168,9 +170,11 @@ ambulant_gtk_window::new_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
 	if (m_surface != NULL) delete m_surface;
-	m_surface = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window,
-                          	m_ambulant_widget->get_gtk_widget()->allocation.width,
-                          	m_ambulant_widget->get_gtk_widget()->allocation.height,
+	gint width; gint height;
+	gdk_drawable_get_size(GDK_DRAWABLE (m_pixmap), &width, &height);
+	m_surface = gdk_pixmap_new(m_pixmap,
+                          	width,
+                          	height,
                           	-1);
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
         return m_surface;
@@ -226,15 +230,6 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		return;
 	}
 	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
-
-#ifdef	GTK_NO_FILEDIALOG	/* Assume embedded GTK */
-//	m_ambulant_widget->repaint(r.left(), r.top(), r.width(), r.height(), false);
-//	qApp->wakeUpGuiThread();
-//	qApp->processEvents();
-#else	/*GTK_NO_FILEDIALOG*/	/* Assume plain GTK */
-//	m_ambulant_widget->update(r.left(), r.top(), r.width(), r.height());
-//	qApp->wakeUpGuiThread();
-#endif	/*GTK_NO_FILEDIALOG*/
 }
 
 void
@@ -300,17 +295,14 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 #ifdef USE_SMIL21
 	_screenTransitionPostRedraw(r);
 #endif
-//gdk_gc_new (GDK_DRAWABLE (m_pixmap))
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
-	//gdk_gc_set_rgb_fg_color (gc, &bgc);
 	gdk_draw_pixmap(m_ambulant_widget->get_gtk_widget()->window,
 			gc,
 			m_pixmap,
 			r.left(), r.top(), 
-			0, 0,
+			r.left(), r.top(),
 			r.width(), r.height());
 	g_object_unref (G_OBJECT (gc));
-//	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
 
@@ -342,12 +334,12 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	// Wrong parameters?
-	gtk_widget_set_size_request(GTK_WIDGET (m_widget), bounds->bottom(), bounds->right());
-	gtk_widget_set_uposition(GTK_WIDGET (m_widget), bounds->left(), bounds->top());
+	gtk_widget_set_usize(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
+	//gtk_widget_set_uposition(GTK_WIDGET (m_widget), bounds->left(), bounds->top());
 	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
 	gtk_widget_show(m_widget);
 	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-
+//	gtk_widget_set_events (m_widget, GDK_EXPOSURE_MASK);	
 
 //#ifndef QT_NO_FILEDIALOG	/* Assume plain Q */
 //	setMouseTracking(true); // enable mouseMoveEvent() to be called
@@ -382,24 +374,6 @@ void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 	}
 	m_gtk_window->redraw(r);
 }
-
-	/**
-void
-gtk_ambulant_widget::paintEvent(QPaintEvent* e)
-{
-	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::paintEvent(0x%x): e=0x%x)", (void*) this, (void*) e);
-	QRect qr = e->rect();
-	lib::rect r =  lib::rect(
-		lib::point(qr.left(),qr.top()),
-		lib::size(qr.width(),qr.height()));
-	if (m_gtk_window == NULL) {
-		lib::logger::get_logger()->debug("gtk_ambulant_widget::paintEvent(0x%x): e=0x%x m_gtk_window==NULL",
-			(void*) this, (void*) e);
-		return;
-	}
-	m_gtk_window->redraw(r);
-}
-**/
 
 /**
 void
@@ -506,12 +480,12 @@ gtk_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
 			       common::gui_events *region)
 {
-//	GList *list = NULL;
 	lib::rect* r = new lib::rect(m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
 		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, r, region);
 	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
+	//gtk_window_resize(GTK_WINDOW (gtk_widget_get_toplevel(gtkaw->get_gtk_widget())), r->right(), r->bottom());
 //	qApp->mainWidget()->resize(bounds.w + m_p.x, bounds.h + m_p.y);
 	agtkw->set_ambulant_widget(gtkaw);
 	gtkaw->set_gtk_window(agtkw);
