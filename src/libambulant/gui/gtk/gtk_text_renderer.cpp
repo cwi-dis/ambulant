@@ -32,6 +32,8 @@
 //#define AM_DBG if(0)
 //#endif
 
+#define FONT "Times 6"
+
 using namespace ambulant;
 using namespace gui::gtk;
 
@@ -72,7 +74,13 @@ void
 gtk_text_renderer::redraw_body(const lib::rect &r,
 				     common::gui_window* w) {
 // No m_lock needed, protected by base class
+	PangoContext *context;
+  	PangoLanguage *language;
+  	PangoFontDescription *font_desc;
+  	PangoLayout *layout;
+
 	const lib::point p = m_dest->get_global_topleft();
+	//XXX need to be fixed in renderer_playable_dsl
 	if (m_data && !m_text_storage) {
 		m_text_storage = (char*) malloc(m_data_size+1);
 		strncpy(m_text_storage,
@@ -93,9 +101,39 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		    W = r.width(),
 		    H = r.height();
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
-
-		PangoContext* pc = gtk_widget_get_pango_context(GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()));
 		
+		// initialize the pango context, layout...
+		context = gdk_pango_context_get();
+ 	 	language = gtk_get_default_language();
+  		pango_context_set_language (context, language);
+  		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
+		// We initialize the font as Sans 12
+		font_desc = pango_font_description_from_string ("sans 12");
+  		pango_context_set_font_description (context, font_desc);
+		layout = pango_layout_new(context);
+  		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
+		pango_layout_set_wrap (layout, PANGO_WRAP_CHAR);
+
+		// include the text
+  		pango_layout_set_text (layout, m_text_storage, -1);
+		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
+		pango_layout_set_width(layout, W*1000);
+
+		// in case we have some specific font style and type
+		if (m_text_font){
+			printf("We are entering to some bad place\n");
+			PangoFontDescription* pfd = pango_font_description_new();
+			pango_font_description_set_family(pfd, m_text_font);
+			pango_layout_set_font_description(layout, pfd);
+			pango_font_description_free(pfd);
+		}
+
+		// in case we have some point size (it is not done yet for Gtk)
+/*		if (m_text_size)
+			gtk_font.setPointSizeFloat(m_text_size);
+*/
+	
+		// Foreground Color of the text
 		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
 		gtk_color.blue = bluec(m_text_color)*0x101;
@@ -103,31 +141,9 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
 
-		PangoLayout* pl = pango_layout_new(pc);
-		pango_layout_set_text(pl, m_text_storage, -1);
-//gtk_widget_create_pango_layout (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), m_text_storage);
-		//pango_layout_set_width(pl, W);
-		if (m_text_font){
-//			font = gdk_font_load(m_text_font);
-			PangoFontDescription* pfd = pango_font_description_new();
-			pango_font_description_set_family(pfd, m_text_font);
-			pango_layout_set_font_description(pl, pfd);
-			pango_font_description_free(pfd);
-		}
-		pango_layout_set_alignment(pl, PANGO_ALIGN_LEFT);
-		int width; int height;
-		pango_layout_get_size(pl, &width, &height);
-		printf("The sizes are %i %i\n", width, height);
-//		pango_layout_set_wrap(pl, PANGO_WRAP_WORD_CHAR);
-//		if (m_text_size)
-//			gtk_font.setPointSizeFloat(m_text_size);
-//			font = gtk_style_get_font(agtkw->get_ambulant_widget()->get_gtk_widget()->style);
-  		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc, L, T, pl);
-		g_object_unref (pl);
+  		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
 		g_object_unref (G_OBJECT (gc));
-		//gdk_draw_string(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), font, gc, L, T, m_text_storage);
-//		paint.drawText(L,T,W,H,
-//			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
-//			m_text_storage);
+		pango_font_description_free(font_desc);
+		g_object_unref(layout);
 	}
 }

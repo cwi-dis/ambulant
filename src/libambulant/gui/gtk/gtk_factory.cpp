@@ -334,7 +334,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	// Wrong parameters?
-	gtk_widget_set_usize(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
+	gtk_widget_set_size_request(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
 	//gtk_widget_set_uposition(GTK_WIDGET (m_widget), bounds->left(), bounds->top());
 	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
 	gtk_widget_show(m_widget);

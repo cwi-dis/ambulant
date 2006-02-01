@@ -281,7 +281,7 @@ gtk_gui::gtk_gui(const char* title,
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
 	gtk_window_set_resizable(m_toplevelcontainer, true); 	
-	gtk_widget_set_usize(GTK_WIDGET (m_toplevelcontainer), 320, 240);
+	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 320, 240);
 	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	
