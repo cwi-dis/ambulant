@@ -1,3 +1,19 @@
+2006-02-01 13:53  p_cesar
+
+	* Current status:	- <text> works fine	- <brush> works
+	  fine	  - <img> does not get the proper image   - <audio> works
+	  fine	  - <video> does not work	  - User interaction: not
+	  provided yet	  - The GUI is copmleted and the .smil files can be
+	  played	- Logger, open URL, open file... works
+
+2006-02-01 13:45  p_cesar
+
+	* renderer_text works with Pango
+
+2006-02-01 09:31  p_cesar
+
+	* Brush working Text working (only single line) Image on the way
+
 2006-01-30 18:33  p_cesar
 
 	* Brush and Background color in the regions are starting to work
