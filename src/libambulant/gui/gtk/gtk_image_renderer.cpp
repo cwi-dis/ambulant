@@ -58,13 +58,15 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 	if (m_data && !m_image_loaded) {
+		/*
 		m_image = gdk_bitmap_create_from_data(
 					NULL,
 					(const gchar*) m_data,
 					r.width(),
-					r.height());
+					r.height());		
 		if (m_image)
 			m_image_loaded = TRUE;
+		*/
 //m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
 	}
 	if ( ! m_image_loaded) {
@@ -73,11 +75,9 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		return;
 	}
 
-
-
 	int width; int height;
-	gdk_drawable_get_size(m_image, &width, &height);
-	printf("The sizes are: %i %i\n",width,height);
+	//gdk_drawable_get_size(m_image, &width, &height);
+	//printf("The sizes are: %i %i\n",width,height);
 	size srcsize = size(width, height);
 	rect srcrect;
 	rect dstrect;
@@ -103,9 +103,9 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-			gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L,S_T, S_W,S_H);
-			g_object_unref (G_OBJECT (gc));			
+			//GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+			//gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L,S_T, S_W,S_H);
+			//g_object_unref (G_OBJECT (gc));			
 		}
 		m_lock.leave();
 		return;
@@ -137,7 +137,10 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_H = (int)(O_H*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-	gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L, S_T, S_W, S_H);
+	// Paints in white, because we don't have the image
+	gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, D_L, D_T, D_W, D_H);
+	//gdk_draw_drawable (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, m_image, D_L,D_T, S_L, S_T, S_W, S_H);
+	
 	g_object_unref (G_OBJECT (gc));
 
 //#ifndef QT_NO_FILEDIALOG*/	/* Assume plain Qt */
