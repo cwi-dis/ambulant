@@ -1,3 +1,27 @@
+2006-02-03 18:25  p_cesar
+
+	* Simple SMIL file: background and Brush functionality
+
+2006-02-03 16:29  dcab
+
+	* BBC background image
+
+2006-02-03 15:55  p_cesar
+
+	* RCP-XML support
+
+2006-02-03 15:23  p_cesar
+
+	* some JPEG image
+
+2006-02-03 14:50  p_cesar
+
+	* TabletPC Windows UI
+
+2006-02-03 13:34  p_cesar
+
+	* Ambulant does not crash with images
+
 2006-02-01 13:53  p_cesar
 
 	* Current status:	- <text> works fine	- <brush> works
