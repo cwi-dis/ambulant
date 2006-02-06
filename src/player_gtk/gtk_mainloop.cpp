@@ -151,8 +151,9 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui) :
 #endif 
 	
 	rf->add_factory(new gtk_renderer_factory(m_factory));
+	rf->add_factory(new gtk_video_factory(m_factory));
 	AM_DBG m_logger->debug("mainloop::mainloop: added gtk_video_factory");			
-	rf->add_factory(new none::none_video_factory(m_factory));
+	//rf->add_factory(new none::none_video_factory(m_factory));	
 	AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");
 	
 	

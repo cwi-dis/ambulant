@@ -32,6 +32,8 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/common/playable.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 namespace ambulant {
 
 namespace gui {
@@ -55,8 +57,9 @@ class gtk_video_renderer : public common::video_renderer {
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
  private:
-	//QImage *m_image;
- 	//char* m_data;
+	//GdkPixbuf *m_image;
+ 	int data_size;
+	//char* m_data;
  	std::queue< std::pair<int, char*> > m_frames;
  	long int m_img_displayed;
  

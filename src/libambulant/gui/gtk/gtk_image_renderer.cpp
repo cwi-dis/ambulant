@@ -27,10 +27,10 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-#define AM_DBG
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 using namespace common;
@@ -62,7 +62,10 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
 		if (gdk_pixbuf_loader_write(loader, (const guchar*) m_data, (gsize) m_data_size, 0))
 		{
+			//GError **error;
 			m_image = gdk_pixbuf_loader_get_pixbuf(loader);
+			//gdk_pixbuf_loader_close(loader, error);
+//			g_object_unref (G_OBJECT (loader));
 		}else
 			g_message("Could not get Loader working\n");
 

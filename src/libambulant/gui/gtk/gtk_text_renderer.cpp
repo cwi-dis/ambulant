@@ -27,10 +27,10 @@
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/smil2/params.h"
 
-#define AM_DBG
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 #define FONT "Times 6"
 
@@ -108,11 +108,10 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
   		pango_context_set_language (context, language);
   		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
 		// We initialize the font as Sans 12
-		font_desc = pango_font_description_from_string ("sans 12");
+		font_desc = pango_font_description_from_string ("sans 10");
   		pango_context_set_font_description (context, font_desc);
 		layout = pango_layout_new(context);
   		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-		pango_layout_set_wrap (layout, PANGO_WRAP_CHAR);
 
 		// include the text
   		pango_layout_set_text (layout, m_text_storage, -1);
