@@ -38,6 +38,7 @@
 #include "ambulant/gui/none/none_gui.h"
 
 #include "ambulant/gui/gtk/gtk_renderer.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 namespace ambulant {
 
@@ -68,7 +69,7 @@ class gtk_image_renderer : public gtk_renderer<renderer_playable_dsall> {
 			 gui_window *window);
     
  private:
-	GdkPixmap *m_image;
+	GdkPixbuf *m_image;
 	bool m_image_loaded;
 	critical_section m_lock;
 };
