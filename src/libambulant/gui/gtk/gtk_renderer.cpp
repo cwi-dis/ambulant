@@ -21,10 +21,10 @@
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
 
-#define AM_DBG
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 namespace ambulant {
 
