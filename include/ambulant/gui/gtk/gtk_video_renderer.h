@@ -52,14 +52,12 @@ class gtk_video_renderer : public common::video_renderer {
 				 common::factories *factory);
 	
 	~gtk_video_renderer();
-    void show_frame(const char* frame, int size);
+   	void show_frame(const char* frame, int size);
 	void redraw(const lib::rect &r, common::gui_window* w);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
  private:
-	//GdkPixbuf *m_image;
  	int data_size;
-	//char* m_data;
  	std::queue< std::pair<int, char*> > m_frames;
  	long int m_img_displayed;
  

@@ -82,14 +82,21 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
+	// This is needed to convert the colors to GTK+
 	if (data && frame) {
 		if (m_frames.size() < 2) {
-			if (memcpy(data, frame, size)) {
-				
+	//		memset(data, '0', size*sizeof(char));
+			for(int i=0;i < size;i=i+4)
+			{
+				data[i] = frame[i+2];	/*R Red*/
+				data[i+1] = frame[i+1];	/*G GREEN*/
+				data[i+2] = frame[i];	/*B BLUE*/
+				data[i+3] = frame[i+3];	/*  A ALPHA*/		    
+			}
 			std::pair<int, char*> element(size, data);
 			m_frames.push(element);
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: m_data(0x%x) stored !", (void*) element.second);
-			}
+//			}
 		} else {
 			free(data);
 			data = NULL;
@@ -181,8 +188,6 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			g_object_unref (G_OBJECT (gc));
 		}
 			
-		//data = NULL;
-	
 		if (m_frames.size() > 0 ) {
 			std::pair<int, char*> element = m_frames.front();
 			data = element.second;
@@ -195,16 +200,7 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			int width = m_size.w;
 			int height = m_size.h;
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
-/*			GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
-			bool loaded = gdk_pixbuf_loader_write(loader, (const guchar*) data, (gsize) data_size, 0);
-			if (loaded){
-				m_image = gdk_pixbuf_loader_get_pixbuf(loader);
-				GError **error;
-				gdk_pixbuf_loader_close(loader, error);
-			}
-*/
-			m_image =  gdk_pixbuf_new_from_data ((const guchar*) data, GDK_COLORSPACE_RGB, TRUE, 8, width, height, (width*3), NULL, NULL);
-//			image = new QImage((uchar*) data, width, height, 32, NULL, 0, QImage::IgnoreEndian);
+			m_image =  gdk_pixbuf_new_from_data ((const guchar*) data, GDK_COLORSPACE_RGB, TRUE, 8, width, height, (width*4), NULL, NULL);
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer, m_data=0x%x (this=0x%x)",(void*) data, (void *)this);
 		}
@@ -213,8 +209,6 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			int height = gdk_pixbuf_get_height(m_image);
 			printf("Size of frame is: %d %d", width, height);
 			size srcsize = size(width, height);
-//			QSize qsize = image->size();
-			//lib::size srcsize = lib::size(qsize.width(), qsize.height());
 			lib::rect srcrect = lib::rect(lib::size(0,0));
 			lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 			dstrect.translate(m_dest->get_global_topleft());
@@ -228,15 +222,12 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			g_object_unref (G_OBJECT (gc));			
 
 
-//			paint.drawImage(L,T,*image,0,0,W,H);
 		} else {
-	//		AM_DBG lib::logger::get_logger()->error("gtk_video_renderer.redraw(0x%x): no m_image", (void *) this);
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x): no m_image", (void *) this);
 		}
 	
 		if(m_image) {
 			g_object_unref (G_OBJECT (m_image));	
-			//delete(m_image );
 			m_image = NULL;
 		}
 	
