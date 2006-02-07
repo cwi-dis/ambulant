@@ -81,9 +81,10 @@ class gtk_gui : public GtkWidget{
 	const char*  m_programfilename;
 	const char*  m_smilfilename;
 	gtk_settings* m_settings;
-	GtkWindow*   m_toplevelcontainer;
-	GtkWidget*   m_guicontainer;
-	GtkWidget*   m_documentcontainer;
+	GtkWindow*   m_toplevelcontainer; // the actual top level window
+	GtkWidget*   menubar;		 // The UI (menubar)	
+	GtkWidget*   m_guicontainer;	// The container (menubar + documentcontainer)
+	GtkWidget*   m_documentcontainer; // The drawable area
 	GtkActionGroup *m_actions;
 
 #define	TRY_LOCKING
@@ -125,6 +126,7 @@ class gtk_gui : public GtkWidget{
 	void do_stop();
 
 	void do_need_redraw();
+	void do_resize(GdkEventConfigure *event);
 
 	guint signal_player_done_id;
 	guint signal_need_redraw_id;

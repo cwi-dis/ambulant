@@ -78,8 +78,6 @@ gtk_video_renderer::show_frame(const char* frame, int size)
     	if (data) {
         	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: allocated m_data=0x%x, size=%d", data, size);
     	}
-	data_size = size;
-
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
 	// This is needed to convert the colors to GTK+
@@ -154,7 +152,6 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x)",(void*) this);
 
 		//char* data = NULL;
-		//QImage* image = NULL;
 		GdkPixbuf *m_image;
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();

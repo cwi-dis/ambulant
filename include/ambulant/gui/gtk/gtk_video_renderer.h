@@ -57,10 +57,8 @@ class gtk_video_renderer : public common::video_renderer {
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
  private:
- 	int data_size;
  	std::queue< std::pair<int, char*> > m_frames;
  	long int m_img_displayed;
- 
 	lib::critical_section m_lock;
 };
 

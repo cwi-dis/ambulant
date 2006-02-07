@@ -118,14 +118,17 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 		gdk_colormap_alloc_color(cmap, &color, FALSE, TRUE);
 		// set the color in the widget
 		gtk_widget_modify_bg (GTK_WIDGET (gtkaw->get_gtk_widget()), GTK_STATE_NORMAL, &color );
-			// Initialize m_pixmap
+		// Initialize m_pixmap
 		gint width; gint height;
 		gtk_widget_get_size_request(GTK_WIDGET (gtkaw->get_gtk_widget()), &width, &height);
+		// This has to be changed (we have to add the height of the UI)
 		m_pixmap = gdk_pixmap_new(gtkaw->get_gtk_widget()->window,
                 		width,
                           	height,
                           	-1);
 		lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
+		// User Interaction
+			
 	}
 }
 
@@ -335,10 +338,13 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 		bounds->bottom());
 	// Wrong parameters?
 	gtk_widget_set_size_request(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
-	//gtk_widget_set_uposition(GTK_WIDGET (m_widget), bounds->left(), bounds->top());
+	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (m_widget)), bounds->right(), bounds->bottom());
+
+
 	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
 	gtk_widget_show(m_widget);
 	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
+
 //	gtk_widget_set_events (m_widget, GDK_EXPOSURE_MASK);	
 
 //#ifndef QT_NO_FILEDIALOG	/* Assume plain Q */

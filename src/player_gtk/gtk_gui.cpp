@@ -91,6 +91,12 @@ gboolean gtk_C_callback_timer(void *userdata)
 }
 }
 extern "C" {
+void gtk_C_callback_resize(void *userdata, GdkEventConfigure *event, GtkWidget *widget)
+{
+	((gtk_gui*) userdata)->do_resize(event);
+}
+}
+extern "C" {
 void gtk_C_callback_open(void *userdata)
 {
 	((gtk_gui*) userdata)->do_open();
@@ -281,10 +287,12 @@ gtk_gui::gtk_gui(const char* title,
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
 	gtk_window_set_resizable(m_toplevelcontainer, true); 	
-	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 320, 240);
+	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 150, 150);
 	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
-	
+	// Callback for the resize events
+	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+
 	/* Initialization of the signals */
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, g_cclosure_marshal_VOID__VOID,GTK_TYPE_NONE, 0, NULL);
 
@@ -346,7 +354,7 @@ gtk_gui::gtk_gui(const char* title,
 
 	
 	/* Creation of the Menubar and Menu Items */
-	GtkWidget *menubar = gtk_ui_manager_get_widget (ui, "/MenuBar");
+	menubar = gtk_ui_manager_get_widget (ui, "/MenuBar");
 	gtk_box_pack_start (GTK_BOX (m_guicontainer), menubar, FALSE, FALSE, 0);
 	gtk_widget_show_all(GTK_WIDGET (m_toplevelcontainer));
 	
@@ -848,6 +856,11 @@ gtk_gui::do_quit() {
 	}
 	m_busy = false;
 	gtk_main_quit();
+}
+
+void
+gtk_gui::do_resize(GdkEventConfigure *event) {
+	gtk_window_set_default_size(m_toplevelcontainer, event->width, menubar->allocation.height + event->height);
 }
 
 
