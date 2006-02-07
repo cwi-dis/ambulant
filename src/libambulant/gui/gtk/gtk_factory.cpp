@@ -37,11 +37,27 @@ using namespace ambulant;
 using namespace gui::gtk;
 using namespace net;
 
-
+extern "C" {
 void gtk_C_callback_do_paint_event(void *userdata, GdkEventExpose *event, GtkWidget *widget)
 {
 	((gtk_ambulant_widget*) userdata)->do_paint_event(event);
 }
+}
+
+extern "C" {
+void gtk_C_callback_do_motion_notify_event(void *userdata, GdkEventMotion *event, GtkWidget *widget)
+{
+	((gtk_ambulant_widget*) userdata)->do_motion_notify_event(event);
+}
+}
+
+extern "C" {
+void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *event, GtkWidget *widget)
+{
+	((gtk_ambulant_widget*) userdata)->do_button_release_event(event);
+}
+}
+
 
 gtk_video_factory::~gtk_video_factory()
 {
@@ -338,14 +354,13 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 		bounds->bottom());
 	// Wrong parameters?
 	gtk_widget_set_size_request(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
-	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (m_widget)), bounds->right(), bounds->bottom());
-
 
 	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
 	gtk_widget_show(m_widget);
 	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-
-//	gtk_widget_set_events (m_widget, GDK_EXPOSURE_MASK);	
+	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
 //#ifndef QT_NO_FILEDIALOG	/* Assume plain Q */
 //	setMouseTracking(true); // enable mouseMoveEvent() to be called
@@ -381,35 +396,32 @@ void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 	m_gtk_window->redraw(r);
 }
 
-/**
 void
-gtk_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
-	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseReleaseEvxent(0x%x): e=0x%x, position=(%d, %d))",
-		(void*) this, (void*) e, e->x(), e->y());
+gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::do_button_release_event(0x%x): e=0x%x, position=(%d, %d))",
+		(void*) this, (void*) e, e->x, e->y);
 	if (m_gtk_window == NULL) {
-		lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseReleaseEvent(0x%x): e=0x%x  position=(%d, %d) m_gtk_window==NULL",
-			(void*) this, (void*) e, e->x(), e->y());
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_button_release_event(0x%x): e=0x%x  position=(%d, %d) m_gtk_window==NULL",
+			(void*) this, (void*) e, e->x, e->y);
 		return;
 	}
-	lib::point amwhere = lib::point(e->x(), e->y());
-	m_gtk_window->user_event(amwhere);
+	if (e->type == GDK_BUTTON_RELEASE){
+		lib::point amwhere = lib::point(e->x, e->y);
+		m_gtk_window->user_event(amwhere);
+	}
 }
-**/
 
-
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Q */
-/**void 
-gtk_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
+void 
+gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
 	AM_DBG lib::logger::get_logger()->debug("%s:(%d,%d)\n",
-	       "gtk_ambulant_widget::mouseMoveEvent", e->x(),e->y());
-	ambulant::lib::point ap = ambulant::lib::point(e->x()-m_o_x,
-						       e->y()-m_o_y);
+	       "gtk_ambulant_widget::mouseMoveEvent", e->x,e->y);
+	// This is not right!!!
+	ambulant::lib::point ap = ambulant::lib::point(e->x,
+						       e->y-25);
 	m_gtk_window->user_event(ap, 1);
-	qApp->mainWidget()->unsetCursor(); //XXXX
+//	qApp->mainWidget()->unsetCursor(); //XXXX
 }
-**/
-#endif/*QT_NO_FILEDIALOG*/
 
 void 
 gtk_ambulant_widget::set_gtk_window( ambulant_gtk_window* agtkw)
@@ -491,8 +503,9 @@ gtk_window_factory::new_window (const std::string &name,
 		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, r, region);
 	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
-	//gtk_window_resize(GTK_WINDOW (gtk_widget_get_toplevel(gtkaw->get_gtk_widget())), r->right(), r->bottom());
-//	qApp->mainWidget()->resize(bounds.w + m_p.x, bounds.h + m_p.y);
+	
+	// Wrong!!! I need to add the GUI size
+	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (gtkaw->get_gtk_widget())), r->right(), r->bottom()+ 25);
 	agtkw->set_ambulant_widget(gtkaw);
 	gtkaw->set_gtk_window(agtkw);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window(0x%x): ambulant_widget=0x%x gtk_window=0x%x",

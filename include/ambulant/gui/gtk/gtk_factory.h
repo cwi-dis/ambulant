@@ -108,7 +108,9 @@ class gtk_ambulant_widget : public GtkWidget {
 	ambulant_gtk_window* gtk_window();
 	GtkWidget* get_gtk_widget();	
 
-	void gtk_ambulant_widget::do_paint_event (GdkEventExpose * event); 
+	void gtk_ambulant_widget::do_paint_event (GdkEventExpose * event);
+	void gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *event);
+	void gtk_ambulant_widget::do_button_release_event(GdkEventButton *event);
 //	void mouseReleaseEvent(QMouseEvent* e);
 
   private:

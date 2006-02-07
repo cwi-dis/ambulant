@@ -204,7 +204,6 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		if (m_image) {
 			int width = gdk_pixbuf_get_width(m_image);
 			int height = gdk_pixbuf_get_height(m_image);
-			printf("Size of frame is: %d %d", width, height);
 			size srcsize = size(width, height);
 			lib::rect srcrect = lib::rect(lib::size(0,0));
 			lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);

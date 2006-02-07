@@ -860,7 +860,7 @@ gtk_gui::do_quit() {
 
 void
 gtk_gui::do_resize(GdkEventConfigure *event) {
-	gtk_window_set_default_size(m_toplevelcontainer, event->width, menubar->allocation.height + event->height);
+//	gtk_window_set_default_size(m_toplevelcontainer, event->width, menubar->allocation.height + event->height);
 }
 
 
