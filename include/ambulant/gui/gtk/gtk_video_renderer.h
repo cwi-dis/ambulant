@@ -60,6 +60,8 @@ class gtk_video_renderer : public common::video_renderer {
  	std::queue< std::pair<int, char*> > m_frames;
  	long int m_img_displayed;
 	lib::critical_section m_lock;
+	GdkPixbuf*	m_image;
+	char* 		m_data;
 };
 
 

@@ -95,6 +95,7 @@ class ambulant_gtk_window : public common::gui_window {
  public:
 	GdkPixmap* m_tmppixmap;
 	guint signal_redraw_id;
+	GMainLoop* m_main_loop;
 };  // class ambulant_gtk_window
 
 class gtk_ambulant_widget : public GtkWidget {
@@ -126,7 +127,7 @@ class gtk_ambulant_widget : public GtkWidget {
 
 class gtk_window_factory : public common::window_factory {
   public:
-	gtk_window_factory( GtkWidget* parent_widget, int x, int y);
+	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
 		
 		common::gui_window* new_window(
 			const std::string &name,
@@ -137,6 +138,7 @@ class gtk_window_factory : public common::window_factory {
   private:
 	GtkWidget* m_parent_widget;
 	lib::point m_p;
+	GMainLoop* m_main_loop;
 };  // class gtk_window_factory
 
 class gtk_renderer_factory : public common::playable_factory {
@@ -182,7 +184,6 @@ class gtk_video_factory : public common::playable_factory {
 		net::audio_datasource *src);
  private:
         common::factories *m_factory;
-			
 }; // class gtk_video_factory 
 
 } // namespace gtk

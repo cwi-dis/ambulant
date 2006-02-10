@@ -94,8 +94,9 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui) :
 	m_logger = lib::logger::get_logger();
 	common::global_playable_factory *rf = common::get_global_playable_factory();
 	gtk_window_factory *wf = new gtk_window_factory(m_gui->get_gui_container(), 
-					      m_gui->get_o_x(),
-					      m_gui->get_o_y());
+						m_gui->get_o_x(),
+						m_gui->get_o_y(),
+						m_gui->main_loop);
 	net::datasource_factory *df = new net::datasource_factory();
 	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
 	m_factory = new common::factories(rf, wf, df, pf);

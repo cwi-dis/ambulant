@@ -18,10 +18,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  
-//#define AM_DBG if(1)
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG if(1)
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
  
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_includes.h"
@@ -69,9 +69,10 @@ gtk_renderer_factory::gtk_renderer_factory(common::factories *factory)
 	AM_DBG lib::logger::get_logger()->debug("gtk_renderer factory (0x%x)", (void*) this);
 }
 	
-gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y)
+gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop)
 :	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
 {
+	m_main_loop = loop;
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
 }	
   
@@ -248,7 +249,11 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
+
 	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
+//	 g_source_attach(GSource *source,g_main_loop_get_context(m_main_loop));
+//	g_main_context_dispatch(g_main_loop_get_context(m_main_loop));
+//	g_main_context_wakeup(g_main_loop_get_context(m_main_loop));
 }
 
 void
@@ -502,6 +507,7 @@ gtk_window_factory::new_window (const std::string &name,
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
 		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, r, region);
+	agtkw->m_main_loop = m_main_loop;
 	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
 	
 	// Wrong!!! I need to add the GUI size

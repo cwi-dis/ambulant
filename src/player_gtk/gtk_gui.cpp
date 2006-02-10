@@ -87,6 +87,7 @@ static GdkPixmap *pixmap = NULL;
 extern "C" {
 gboolean gtk_C_callback_timer(void *userdata)
 {
+	printf("I am waking up\n");
 	return TRUE;
 }
 }
@@ -240,6 +241,9 @@ gtk_gui::gtk_gui(const char* title,
 {
 
 	GError *error = NULL;
+
+	// creates the main loop
+	main_loop = g_main_loop_new(NULL, FALSE);
 
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
@@ -855,7 +859,8 @@ gtk_gui::do_quit() {
 		m_mainloop = NULL;
 	}
 	m_busy = false;
-	gtk_main_quit();
+	g_main_loop_quit (main_loop);
+//	gtk_main_quit();
 }
 
 void
@@ -1042,19 +1047,22 @@ main (int argc, char*argv[]) {
 		}
 		exec_flag = true;
 	}
-	
-	g_timeout_add(100, gtk_C_callback_timer, 0);
 	if (exec_flag){
+		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
+		g_main_loop_run(mywidget->main_loop);	
+	
 //		gdk_threads_enter();		
-		gtk_main();			
+//		gtk_main();
 //		gdk_threads_leave();
 	}else if (argc > 1) {
 		std::string error_message = gettext("Cannot open: ");
 		error_message = error_message + "\"" + argv[1] + "\"";
 		std::cerr << error_message << std::endl;
 //		gdk_threads_enter();
-		gtk_main();
+//		gtk_main();
 //		gdk_threads_leave();
+		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
+		g_main_loop_run(mywidget->main_loop);	
 	}	
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();

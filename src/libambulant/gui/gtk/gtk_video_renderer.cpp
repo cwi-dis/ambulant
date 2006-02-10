@@ -28,10 +28,10 @@
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 using namespace ambulant;
 using namespace gui::gtk;
@@ -45,8 +45,8 @@ gtk_video_renderer::gtk_video_renderer(
 		lib::event_processor *const evp,
     	common::factories *factory)
 :	 common::video_renderer(context, cookie, node, evp, factory),
- 	//m_image(NULL),
-  	//m_data(NULL),
+ 	m_image(NULL),
+  	m_data(NULL),
 	m_img_displayed(0)
 {
 #if 0
@@ -57,12 +57,16 @@ gtk_video_renderer::gtk_video_renderer(
 		m_frames.pop();
 	}
 #endif
-    assert(m_frames.size() == 0);
+ //   assert(m_frames.size() == 0);
 	
 }
 
 gtk_video_renderer::~gtk_video_renderer()
 {
+	if (m_data)
+		free(m_data);
+	if(m_image)
+		g_object_unref (G_OBJECT (m_image));
 }
 
 void 
@@ -72,24 +76,37 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 	m_lock.enter();
 	
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
-    	char* data = NULL;
+ 
+	if (m_data)
+		free(m_data);	
+
+//   	char* data = NULL;
 	
-    	data = (char*) malloc(size);
-    	if (data) {
+    	m_data = (char*) malloc(size);
+/* 
+   	if (data) {
         	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: allocated m_data=0x%x, size=%d", data, size);
     	}
+*/
 	//XXX this seems to work but framedroping shouldn't be nessecery here !
 	// so i gues it is somesort of wrong 
 	// This is needed to convert the colors to GTK+
+	for(int i=0;i < size;i=i+4){
+		m_data[i] = frame[i+2];	/*R Red*/
+		m_data[i+1] = frame[i+1];	/*G GREEN*/
+		m_data[i+2] = frame[i];	/*B BLUE*/
+		m_data[i+3] = frame[i+3];	/*  A ALPHA*/		    
+	}
+
+/*
 	if (data && frame) {
 		if (m_frames.size() < 2) {
-	//		memset(data, '0', size*sizeof(char));
 			for(int i=0;i < size;i=i+4)
 			{
-				data[i] = frame[i+2];	/*R Red*/
-				data[i+1] = frame[i+1];	/*G GREEN*/
-				data[i+2] = frame[i];	/*B BLUE*/
-				data[i+3] = frame[i+3];	/*  A ALPHA*/		    
+				data[i] = frame[i+2];
+				data[i+1] = frame[i+1];	
+				data[i+2] = frame[i];					
+				data[i+3] = frame[i+3];	 
 			}
 			std::pair<int, char*> element(size, data);
 			m_frames.push(element);
@@ -106,7 +123,7 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 			data = NULL;
 		}			
 	}
-
+*/
 	//if (m_image) {
 	//	delete m_image;
 	//	m_image = NULL;
@@ -121,14 +138,14 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 	//~ } else {
 		//~ AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer, m_data=0x%x (this=0x%x)",(void*) m_data, (void *)this);
 	//~ }
-	if (m_dest) {
-		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
+	//if (m_dest) {
+//		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
 		m_dest->need_redraw();	
-		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: need_redraw called");
-	} else {
-		lib::logger::get_logger()->error("gtk_video_renderer.show_frame: m_dest is NULL !");
-	}
-	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame done");
+//		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: need_redraw called");
+//	} else {
+//		lib::logger::get_logger()->error("gtk_video_renderer.show_frame: m_dest is NULL !");
+//	}
+//	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame done");
 
 	m_lock.leave();
 }
@@ -138,7 +155,8 @@ void
 gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w) 
 {
 
-	char *data=NULL;
+//	char *data=NULL;
+/*
 	if (m_frames.size() > 1) {
 		std::pair<int, char*> element = m_frames.front();
 		data = element.second;
@@ -146,13 +164,15 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		data = NULL;
 		m_frames.pop();
 	}	
-	
-	if (m_frames.size() > 0) {
+*/
+
+//	if (m_frames.size() > 0) {
+	if (m_data){
 		//m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x)",(void*) this);
 
 		//char* data = NULL;
-		GdkPixbuf *m_image;
+		//GdkPixbuf *m_image;
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 	
@@ -162,6 +182,7 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
+/*
 		// background drawing
 		if (info && !info->get_transparent()) {
 		// First find our whole area (which we have to clear to 
@@ -184,7 +205,8 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 			g_object_unref (G_OBJECT (gc));
 		}
-			
+*/
+/*			
 		if (m_frames.size() > 0 ) {
 			std::pair<int, char*> element = m_frames.front();
 			data = element.second;
@@ -192,15 +214,15 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		} else {
 			data = NULL;
 		}
-
-		if (data ) {
+*/
+//		if (data ) {
 			int width = m_size.w;
 			int height = m_size.h;
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame(0x%x): width = %d, height = %d",(void *)this, width, height);
-			m_image =  gdk_pixbuf_new_from_data ((const guchar*) data, GDK_COLORSPACE_RGB, TRUE, 8, width, height, (width*4), NULL, NULL);
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer, m_data=0x%x (this=0x%x)",(void*) data, (void *)this);
-		}
+			m_image =  gdk_pixbuf_new_from_data ((const guchar*) m_data, GDK_COLORSPACE_RGB, TRUE, 8, width, height, (width*4), NULL, NULL);
+//		} else {
+//			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer, m_data=0x%x (this=0x%x)",(void*) data, (void *)this);
+//		}
 		if (m_image) {
 			int width = gdk_pixbuf_get_width(m_image);
 			int height = gdk_pixbuf_get_height(m_image);
@@ -218,15 +240,15 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			g_object_unref (G_OBJECT (gc));			
 
 
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x): no m_image", (void *) this);
+//		} else {
+//			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x): no m_image", (void *) this);
 		}
-	
+/*	
 		if(m_image) {
 			g_object_unref (G_OBJECT (m_image));	
 			m_image = NULL;
 		}
-	
+*/	
 		//~ if (data) {
 			//~ free(data);
 			//~ data = NULL;

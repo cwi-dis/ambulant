@@ -135,5 +135,8 @@ class gtk_gui : public GtkWidget{
 	void do_internal_message(gtk_message_event* e);
 
 	void unsetCursor();
+	
+	GMainLoop* main_loop;
+
 };
 #endif/*__GTK_GUI_H__*/
