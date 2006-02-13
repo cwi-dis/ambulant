@@ -36,10 +36,10 @@
 #include "ambulant/version.h"
 #endif
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 #define	WITH_GTK_LOGGER
 
@@ -87,7 +87,7 @@ static GdkPixmap *pixmap = NULL;
 extern "C" {
 gboolean gtk_C_callback_timer(void *userdata)
 {
-	printf("I am waking up\n");
+	AM_DBG lib::logger::get_logger()->debug("gtk_C_callback_timer called");
 	return TRUE;
 }
 }
@@ -168,40 +168,17 @@ void gtk_C_callback_welcome(void *userdata)
 	((gtk_gui*) userdata)->do_welcome();
 }
 }
-
-/* Internal */
-/*
-extern "C" {
-void gtk_C_callback_file_selected(void *userdata)
-{
-	((gtk_gui*) userdata)->do_file_selected();
-}
-void gtk_C_callback_settings_selected(void *userdata)
-{
-	((gtk_gui*) userdata)->do_settings_selected();
-}
-void gtk_C_callback_url_selected(void *userdata)
-{
-	((gtk_gui*) userdata)->do_url_selected();
-}
-}
-*/
 extern "C" {
 void gtk_C_callback_do_player_done(void *userdata)
 {
 	((gtk_gui*) userdata)->do_player_done();
 }
-void gtk_C_callback_do_need_redraw_simple(void *userdata)
-{
-	((gtk_gui*) userdata)->do_need_redraw();
-}
-
 void gtk_C_callback_do_need_redraw(void *userdata, void* r_call, void* w_call, void* pt_call)
 {
 	const void* r = r_call;
 	void* w = w_call;
 	const void* pt = pt_call;
-//	((gtk_gui*) userdata)->do_need_redraw(r, w, pt);
+//	((gtk_gui*) userdata)->(r, w, pt);
 }
 void gtk_C_callback_do_internal_message(void *userdata, void* e)
 {
@@ -244,6 +221,10 @@ gtk_gui::gtk_gui(const char* title,
 
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
+
+//	g_thread_init(NULL);
+//	gdk_threads_init ();
+//	gdk_threads_enter();
 
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
@@ -301,7 +282,6 @@ gtk_gui::gtk_gui(const char* title,
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, g_cclosure_marshal_VOID__VOID,GTK_TYPE_NONE, 0, NULL);
 
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER_POINTER_POINTER,GTK_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
-//(const void*, void*, const void*));
 	
 	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER, GTK_TYPE_NONE, 1, G_TYPE_POINTER);
 
@@ -388,69 +368,13 @@ gtk_gui::gtk_gui(const char* title,
 	//m_o_y = 20;
 #endif/*QT_NO_FILEDIALOG*/
 	
-// This is the old manner of creating the menu bar 
-	/* A canvas with fixed layout should be the document_container */ 
-	//m_documentcontainer = gtk_drawing_area_new();
-	//g_signal_connect_swapped (G_OBJECT (m_documentcontainer), "expose_event", G_CALLBACK (gtk_C_callback_do_need_redraw_simple), (void*) this);
-	//gtk_widget_show(m_documentcontainer);
- 	//gtk_box_pack_start (GTK_BOX (m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
-	
-	// emits the signal that the player is done - it is not needed
-	//g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
 }
 
-void 
-gtk_gui::do_need_redraw () {
-
-//	AM_DBG printf("gtk_gui::need_redraw(0x%x)-r=(0x%x)\n", (void *)this,r?r:0);
-/*	GdkRectangle update_rect;
-	GdkColor color;
-	GdkColormap *cmap = gdk_colormap_get_system(  );	
-
-	if (gdk_color_parse("PeachPuff", &color) && gdk_colormap_alloc_color(cmap, &color, FALSE, TRUE))
-	{
- */ 		/* Use our MediumSpringGreen for a nice pastoral scene */
-/*
-		update_rect.x = 50;
-		update_rect.y = 50;
-		update_rect.width = 100;
-		update_rect.height = 100;	
-		
-		gtk_widget_modify_bg (m_documentcontainer, GTK_STATE_NORMAL, &color );
-
-		if (pixmap)
-			gdk_pixmap_unref(pixmap);	
-
-  		pixmap = gdk_pixmap_new(m_documentcontainer->window,
-                          	m_documentcontainer->allocation.width,
-                          	m_documentcontainer->allocation.height,
-                          	-1);
-  		gdk_draw_rectangle (pixmap,
-			m_documentcontainer->style->bg_gc[GTK_STATE_NORMAL],
-                      	TRUE,
-			update_rect.x,
-			update_rect.y,
-			update_rect.width,
-                      	update_rect.height);
-  		gdk_draw_pixmap (m_documentcontainer->window,
-			m_documentcontainer->style->bg_gc[GTK_STATE_NORMAL],
-			pixmap,
-			update_rect.x, update_rect.y,
-			0, 0,
-			update_rect.width,
-                      	update_rect.height);
-	}
-	else
-	{
-		printf("we haven't found the color\n");
-	} */
-}
 
 gtk_gui::~gtk_gui() {
 
 #define DELETE(X) if (X) { delete X; X = NULL; }
 	AM_DBG printf("%s0x%X\n", "gtk_gui::~gtk_gui(), m_mainloop=",m_mainloop);
-	//setCaption(QString::null);
 	gtk_widget_destroy(GTK_WIDGET (m_file_chooser));
 	gtk_widget_destroy(GTK_WIDGET (m_settings_chooser));
 	DELETE(m_actions);
@@ -859,8 +783,8 @@ gtk_gui::do_quit() {
 		m_mainloop = NULL;
 	}
 	m_busy = false;
+//	gdk_threads_leave ();	
 	g_main_loop_quit (main_loop);
-//	gtk_main_quit();
 }
 
 void
@@ -971,12 +895,7 @@ gtk_gui::internal_message(int level, char* msg) {
 
 int
 main (int argc, char*argv[]) {
-
-	/** Start gthread **/
-//	if( !g_thread_supported() ){
-//      		g_thread_init(NULL);
- //      		gdk_threads_init();
-//	}
+	
 	gtk_init(&argc,&argv);
 
 //#undef	ENABLE_NLS
@@ -1046,28 +965,23 @@ main (int argc, char*argv[]) {
 			}
 		}
 		exec_flag = true;
-	}
+	}	
 	if (exec_flag){
 		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
+		//g_timeout_add_full(G_PRIORITY_HIGH, 100, (GSourceFunc) gtk_C_callback_timer, NULL, NULL);
 		g_main_loop_run(mywidget->main_loop);	
-	
-//		gdk_threads_enter();		
-//		gtk_main();
-//		gdk_threads_leave();
 	}else if (argc > 1) {
 		std::string error_message = gettext("Cannot open: ");
 		error_message = error_message + "\"" + argv[1] + "\"";
 		std::cerr << error_message << std::endl;
-//		gdk_threads_enter();
-//		gtk_main();
-//		gdk_threads_leave();
+		//g_timeout_add_full(G_PRIORITY_HIGH, 100, (GSourceFunc) gtk_C_callback_timer, NULL, NULL);
 		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
 		g_main_loop_run(mywidget->main_loop);	
-	}	
+	}
+
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
 	mywidget->do_quit();
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }
-

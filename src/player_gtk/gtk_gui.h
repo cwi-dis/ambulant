@@ -125,7 +125,6 @@ class gtk_gui : public GtkWidget{
 	void do_settings_select();
 	void do_stop();
 
-	void do_need_redraw();
 	void do_resize(GdkEventConfigure *event);
 
 	guint signal_player_done_id;

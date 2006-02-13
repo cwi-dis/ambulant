@@ -473,8 +473,8 @@ AC_ARG_WITH(gtk,
       fi
      ])
 if test "x$test_gtk" = "xtrue"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_gtk=true, test_gtk=false)
-	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0`"
+	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
+	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.2`"
 fi
 
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk = xtrue)
