@@ -133,7 +133,7 @@ gtk_logger::gtk_logger()
 gtk_logger::~gtk_logger() {
 	if(m_log_FILE) fclose (m_log_FILE);
 	m_log_FILE = NULL;
-	if(m_logger_window) delete m_logger_window;
+	if(m_logger_window) free(m_logger_window);
 	m_logger_window = NULL;
 }
 

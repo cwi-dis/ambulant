@@ -36,10 +36,10 @@
 #include "ambulant/version.h"
 #endif
 
-#define AM_DBG
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 #define	WITH_GTK_LOGGER
 
@@ -221,10 +221,6 @@ gtk_gui::gtk_gui(const char* title,
 
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
-
-//	g_thread_init(NULL);
-//	gdk_threads_init ();
-//	gdk_threads_enter();
 
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
@@ -783,8 +779,7 @@ gtk_gui::do_quit() {
 		m_mainloop = NULL;
 	}
 	m_busy = false;
-//	gdk_threads_leave ();	
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (main_loop);	
 }
 
 void
@@ -895,6 +890,9 @@ gtk_gui::internal_message(int level, char* msg) {
 
 int
 main (int argc, char*argv[]) {
+
+//	g_thread_init(NULL);
+//	gdk_threads_init ();
 	
 	gtk_init(&argc,&argv);
 
@@ -968,13 +966,11 @@ main (int argc, char*argv[]) {
 	}	
 	if (exec_flag){
 		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
-		//g_timeout_add_full(G_PRIORITY_HIGH, 100, (GSourceFunc) gtk_C_callback_timer, NULL, NULL);
 		g_main_loop_run(mywidget->main_loop);	
 	}else if (argc > 1) {
 		std::string error_message = gettext("Cannot open: ");
 		error_message = error_message + "\"" + argv[1] + "\"";
 		std::cerr << error_message << std::endl;
-		//g_timeout_add_full(G_PRIORITY_HIGH, 100, (GSourceFunc) gtk_C_callback_timer, NULL, NULL);
 		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
 		g_main_loop_run(mywidget->main_loop);	
 	}
@@ -982,6 +978,7 @@ main (int argc, char*argv[]) {
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
 	mywidget->do_quit();
+	gdk_threads_leave ();
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

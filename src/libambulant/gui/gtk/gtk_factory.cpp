@@ -18,10 +18,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  
-#define AM_DBG if(1)
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG if(1)
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
  
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_includes.h"
@@ -38,14 +38,28 @@ using namespace gui::gtk;
 using namespace net;
 
 // under construction
-/*
+
+struct dirty_area_widget {
+	lib::rect area;
+	GtkWidget* widget;	
+};
+
 extern "C" {
-void gtk_C_callback_helper_queue_draw_area(void *userdata, lib::rect &rect)
+bool gtk_C_callback_helper_queue_draw_area(void *arg)
 {
-	gtk_widget_queue_draw_area(((ambulant_gtk_window*) (userdata))->get_ambulant_widget()->get_gtk_widget(), rect.left(), rect.top(), rect.width(), rect.height());
+	assert(arg);
+	dirty_area_widget *r = (dirty_area_widget *)arg;
+	assert(r != 0);
+	ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d", r->area.left(), r->area.top(), r->area.width(), r->area.height());
+	gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
+//	gtk_widget_queue_draw(r->widget);
+	delete r;
+	return false;
+//	r->release();
 }
 }
-*/
+
+
 extern "C" {
 void gtk_C_callback_do_paint_event(void *userdata, GdkEventExpose *event, GtkWidget *widget)
 {
@@ -115,10 +129,10 @@ ambulant_gtk_window::~ambulant_gtk_window()
 		m_ambulant_widget->set_gtk_window(NULL);
 		delete m_ambulant_widget;
 		m_ambulant_widget = NULL;
-		delete m_pixmap;
+		free(m_pixmap);
 		m_pixmap = NULL;
 		if (m_tmppixmap != NULL) {
-			delete m_tmppixmap;
+			free(m_tmppixmap);
 			m_tmppixmap = NULL;
 		}
 	} 
@@ -261,12 +275,11 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
-//	lib::rect& rect = (lib::rect&) malloc(sizeof(lib::rect&));
-//	lib::rect rect = r;
-//	memcopy(r, rect, sizeof(lib::rect));
-// 	g_idle_add(gtk_C_callback_helper_queue_draw_area, ((void*) this, rect));
-//	gdk_threads_enter ();
-	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
+	dirty_area_widget* dirty = new dirty_area_widget();
+	dirty->widget = m_ambulant_widget->get_gtk_widget();
+	dirty->area = r;
+	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
+//	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
 //	gdk_threads_leave ();
 //	g_main_context_dispatch(g_main_loop_get_context(m_main_loop)); 
 }
@@ -308,9 +321,9 @@ void gui::gtk::dumpPixmap(GdkPixmap* qpm, std::string filename) {
 	if ( ! qpm) return;
 		gtk_image_set_from_pixmap (GTK_IMAGE (image), qpm, NULL);
 //QImage img = qpm->convertToImage();
-	if ( ! isEqualToPrevious(qpm)) {
+	if ( !
+		char buf[5]; isEqualToPrevious(qpm)) {
 		static int i;
-		char buf[5];
 		sprintf(buf,"%04d",i++);
 		std::string newfile = buf + std::string(filename) +".png";
 		qpm->save(newfile, "PNG");
