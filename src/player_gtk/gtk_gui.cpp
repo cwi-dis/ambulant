@@ -383,6 +383,11 @@ gtk_gui::gtk_gui(const char* title,
 	gtk_widget_show_all(GTK_WIDGET (m_toplevelcontainer));
 
 
+	/* Creation of the document area */
+//	m_documentcontainer = gtk_drawing_area_new();
+//	gtk_widget_hide(m_documentcontainer);
+//	gtk_box_pack_start (GTK_BOX (m_toplevelcontainer), m_documentcontainer, TRUE, TRUE, 0);
+
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
 	
@@ -557,6 +562,7 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 
 	char* filename = strdup(smilfilename);
 	m_smilfilename = smilfilename;
+//	free(filename);
 
 	if (m_mainloop != NULL){
 		m_mainloop->release();

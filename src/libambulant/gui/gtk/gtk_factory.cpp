@@ -385,6 +385,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 :	m_gtk_window(NULL)
 {
 	m_widget = gtk_drawing_area_new();
+//	m_widget = parent_widget;
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",
 		(void *)this,
 		(void*)  parent_widget,
