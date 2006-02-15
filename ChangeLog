@@ -1,3 +1,21 @@
+2006-02-14 16:37  p_cesar
+
+	* Client side uses XML-RPC. It implements calls to the server side
+	  such as play(), pause(), screenshot(), and get_smil_document()
+
+2006-02-14 16:06  p_cesar
+
+	* Modified delete/free error in gtk_logger (m_logger_window)
+	  Modified delete/free error in gtk_factory (m_pixmap)
+
+	  The problem with the video happens as well in QT version...
+	  (maybe ffmpeg?)
+
+2006-02-13 17:49  p_cesar
+
+	* Several trials with g_thread and add_idle still video is not
+	  working properly
+
 2006-02-10 17:08  p_cesar
 
 	* Several tries, video is not ready yet
