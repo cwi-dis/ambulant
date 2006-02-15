@@ -36,14 +36,51 @@
 #include "ambulant/version.h"
 #endif
 
-//#define AM_DBG
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
+#define AM_DBG
+//#ifndef AM_DBG
+//#define AM_DBG if(0)
+//#endif
 
 #define	WITH_GTK_LOGGER
 
 #define UI_FILENAME "ui_manager.xml"
+
+const char *ui_description =
+	"<ui> \n"
+		"<menubar name=\"MenuBar\"> \n"
+			"<menu action=\"FileMenu\"> \n"
+				"<menuitem action=\"open\"/> \n"
+				"<menuitem action=\"openurl\"/> \n"
+				"<menuitem action=\"reload\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"settings\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"quit\"/> \n"
+			"</menu> \n"
+			"<menu action=\"PlayMenu\"> \n"
+				"<menuitem action=\"play\"/> \n"
+				"<menuitem action=\"pause\"/> \n"
+				"<menuitem action=\"stop\"/> \n"
+			"</menu> \n"
+			"<menu action=\"ViewMenu\"> \n"
+				"<menuitem action=\"fullscreen\"/> \n"
+				"<menuitem action=\"window\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"loadsettings\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"logwindow\"/> \n" 
+			"</menu> \n"
+			"<menu action=\"HelpMenu\"> \n"
+				"<menuitem action=\"about\"/> \n"
+				"<menuitem action=\"help\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"website\"/> \n"
+				"<separator/> \n"
+				"<menuitem action=\"welcome\"/> \n"
+			"</menu> \n"
+		"</menubar> \n"
+	"</ui> \n"
+	"\0";
 
 const char *about_text = 
 	"Ambulant SMIL 2.1 player.\n"
@@ -219,9 +256,6 @@ gtk_gui::gtk_gui(const char* title,
 
 	GError *error = NULL;
 
-	// creates the main loop
-	main_loop = g_main_loop_new(NULL, FALSE);
-
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
 	static GtkActionEntry entries[] = {
@@ -299,8 +333,9 @@ gtk_gui::gtk_gui(const char* title,
 	/* The Gtk UI Manager */
 	GtkUIManager *ui = gtk_ui_manager_new();
 
-	if (!gtk_ui_manager_add_ui_from_file(ui, UI_FILENAME, &error))
-		g_error("Could not merge UI from %s, error was: %s\n", UI_FILENAME, error->message);
+//	if (!gtk_ui_manager_add_ui_from_file(ui, UI_FILENAME, &error))
+	if (!gtk_ui_manager_add_ui_from_string(ui, ui_description, -1, &error))
+		g_error("Could not merge UI, error was: %s\n", error->message);
 	gtk_ui_manager_insert_action_group(ui, m_actions, 0);
 	
 	/* Disable and make invisible menus and menu items */
@@ -337,6 +372,10 @@ gtk_gui::gtk_gui(const char* title,
 	menubar = gtk_ui_manager_get_widget (ui, "/MenuBar");
 	gtk_box_pack_start (GTK_BOX (m_guicontainer), menubar, FALSE, FALSE, 0);
 	gtk_widget_show_all(GTK_WIDGET (m_toplevelcontainer));
+
+
+	// creates the main loop
+	main_loop = g_main_loop_new(NULL, FALSE);
 	
 	/* Old Menu bar */	
 /*
@@ -779,6 +818,7 @@ gtk_gui::do_quit() {
 		m_mainloop = NULL;
 	}
 	m_busy = false;
+//	gtk_main_quit();
 	g_main_loop_quit (main_loop);	
 }
 
@@ -964,16 +1004,19 @@ main (int argc, char*argv[]) {
 		}
 		exec_flag = true;
 	}	
-	if (exec_flag){
-		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
-		g_main_loop_run(mywidget->main_loop);	
-	}else if (argc > 1) {
-		std::string error_message = gettext("Cannot open: ");
-		error_message = error_message + "\"" + argv[1] + "\"";
-		std::cerr << error_message << std::endl;
-		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
-		g_main_loop_run(mywidget->main_loop);	
-	}
+	g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
+	g_main_loop_run(mywidget->main_loop);
+//	if (exec_flag){
+//		gtk_main();
+//		g_main_loop_run(mywidget->main_loop);	
+//	}else if (argc > 1) {
+//		std::string error_message = gettext("Cannot open: ");
+//		error_message = error_message + "\"" + argv[1] + "\"";
+//		std::cerr << error_message << std::endl;
+//		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
+//		g_main_loop_run(mywidget->main_loop);	
+//		gtk_main();
+//	}
 
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
