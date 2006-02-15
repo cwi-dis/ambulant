@@ -50,7 +50,7 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	assert(arg);
 	dirty_area_widget *r = (dirty_area_widget *)arg;
 	assert(r != 0);
-	ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d", r->area.left(), r->area.top(), r->area.width(), r->area.height());
+//	ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d", r->area.left(), r->area.top(), r->area.width(), r->area.height());
 	gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
 //	gtk_widget_queue_draw(r->widget);
 	delete r;
@@ -93,6 +93,7 @@ gtk_renderer_factory::gtk_renderer_factory(common::factories *factory)
 }
 	
 gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop)
+//gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y)
 :	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
 {
 	m_main_loop = loop;
@@ -171,8 +172,13 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
                           	-1);
 		lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
 		// User Interaction
-			
-	}
+	}		
+//	}else{
+//		gtk_widget_hide(GTK_WIDGET (gtkaw->get_gtk_widget()));
+//		gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
+//		gtk_container_remove(GTK_CONTAINER (gtkaw->get_gtk_widget()->parent), GTK_WIDGET (gtkaw->get_gtk_widget()));
+//		free(gtkaw->get_gtk_widget());
+//	}
 }
 
 GdkPixmap* 
@@ -275,10 +281,12 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
+
 	dirty_area_widget* dirty = new dirty_area_widget();
 	dirty->widget = m_ambulant_widget->get_gtk_widget();
 	dirty->area = r;
 	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
+
 //	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
 //	gdk_threads_leave ();
 //	g_main_context_dispatch(g_main_loop_get_context(m_main_loop)); 

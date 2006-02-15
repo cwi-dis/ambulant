@@ -128,7 +128,8 @@ class gtk_ambulant_widget : public GtkWidget {
 class gtk_window_factory : public common::window_factory {
   public:
 	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
-		
+
+//	gtk_window_factory( GtkWidget* parent_widget, int x, int y);		
 		common::gui_window* new_window(
 			const std::string &name,
 			lib::size bounds,
