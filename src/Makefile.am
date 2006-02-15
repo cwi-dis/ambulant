@@ -22,7 +22,7 @@ else
 build_pyambulant=
 endif
 SUBDIRS = libambulant plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx) $(build_pyambulant)
-DIST_SUBDIRS = libambulant plugins player_unix  player_gtk player_macosx pyambulant
+DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant
 EXTRA_DIST= \
 	Ambulant-win32.sln \
 	Ambulant-wince.vcw \

@@ -1,0 +1,11 @@
+Source: AmbulantPlayer-app
+Section: unknown
+Priority: optional
+Maintainer: Kees Blom <Kees.Blom@cwi.nl>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.0
+
+Package: AmbulantPlayer-app
+Architecture: any
+Depends: maemo
+Description: AmbulantPlayer package for Nokia 770.

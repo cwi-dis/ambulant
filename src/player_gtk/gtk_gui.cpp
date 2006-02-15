@@ -43,7 +43,16 @@
 
 #define	WITH_GTK_LOGGER
 
+//KB XXXX FIXME 
+#ifdef  WITH_NOKIA770
+#ifdef  AMBULANT_DATADIR  //KB XXXX
+#undef  AMBULANT_DATADIR
+#define AMBULANT_DATADIR "/var/lib/install/usr/share/ambulant"
+#endif/*AMBULANT_DATADIR*/
+#define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
+#else /*WITH_NOKIA770*/
 #define UI_FILENAME "ui_manager.xml"
+#endif/*WITH_NOKIA770*/
 
 const char *ui_description =
 	"<ui> \n"
@@ -928,8 +937,46 @@ gtk_gui::internal_message(int level, char* msg) {
 #endif /*TRY_LOCKING*/
 }
 
+#ifdef	WITH_NOKIA770
+#include <libosso.h>
+
+//KB XXXX FIXME #include "libAmbulantPlayer.h"
+
+gint
+dbus_callback (const gchar *interface, const gchar *method,
+               GArray *arguments, gpointer data,
+               osso_rpc_t *retval)
+{
+  printf ("AmbulantPlayer dbus: %s, %s\n", interface, method);
+
+  if (!strcmp (method, "top_application"))
+      gtk_window_present (GTK_WINDOW (data));
+
+  retval->type = DBUS_TYPE_INVALID;
+  return OSSO_OK;
+}
+#endif/*WITH_NOKIA770*/
+
+
 int
 main (int argc, char*argv[]) {
+#ifdef	WITH_NOKIA770
+	osso_context_t *ctxt;
+	osso_return_t ret;
+	GtkWindow *window;
+	
+	printf ("AmbulantPlayer: starting up\n");
+	
+	ctxt = osso_initialize ("AmbulantPlayer_app", PACKAGE_VERSION, TRUE, NULL);
+	if (ctxt == NULL){
+		  fprintf (stderr, "osso_initialize failed.\n");
+		  exit (1);
+	}
+	if (chdir(AMBULANT_DATADIR) < 0) {
+		printf("AmbulantPlayer: cannot chdir(%s) errno=%d\n", AMBULANT_DATADIR, errno);
+		return -1;
+	}
+#endif/*WITH_NOKIA770*/
 
 //	g_thread_init(NULL);
 //	gdk_threads_init ();

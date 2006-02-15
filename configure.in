@@ -37,6 +37,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
+	src/player_nokia770/Makefile
 	src/player_macosx/Makefile
 	src/plugins/Makefile
 	src/pyambulant/Makefile
@@ -381,8 +382,9 @@ AC_MSG_RESULT($qtopia)
 dnl Testing for Qt
 dnl ====================================================================
 
+AC_MSG_CHECKING(for --with-qt)
 test_qt=true
-AC_ARG_WITH(qt,[  --with-qt		Enalble/disable Qt frontend],
+AC_ARG_WITH(qt,[  --with-qt		Enable/disable Qt frontend],
      [if test "x$withval" = "xno"; then
 		test_qt=false
 	fi
@@ -409,6 +411,7 @@ if test "x$test_qt" = "xtrue"; then
     with_frontend=true
 fi
 
+AC_MSG_RESULT($qtopia)
 AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
 AC_SUBST(LIBQTPKG)
 AC_SUBST(LIBQT_INCLUDES)
@@ -467,7 +470,7 @@ dnl ====================================================================
 test_gtk=true
 AC_MSG_CHECKING(for gtk - the GIMP Toolkit)
 AC_ARG_WITH(gtk,
-     [  --with-gtk		Enalble/disable GTK support],
+     [  --with-gtk		Enable/disable GTK support],
      [if test "x$withval" = "xno"; then
 		test_gtk=false	
       fi
@@ -482,6 +485,36 @@ AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_PREFIX)
 AC_MSG_RESULT($test_gtk)
+
+dnl Testing for NOKIA770
+dnl ====================================================================
+
+test_nokia770=false
+AC_MSG_CHECKING(for Nokia 770 Internet Tablet)
+AC_ARG_WITH(nokia770,
+     [  --with-nokia770		Enable/disable NOKIA770 support],
+     [if test "x$withval" = "xyes"; then
+		test_nokia770=true	
+      fi
+     ])
+if test "x$test_nokia770" = "xtrue"; then
+dnl	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_nokia770=true, test_nokia770=false)
+dnl	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0`"
+	if test "x$test_gtk" = "xfalse"; then
+	   AC_MSG_ERROR(--with-nokia770 requires --with-gtk);
+	fi
+	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= 0.23.4)
+	PKG_CHECK_MODULES(OSSO, libosso >= 0.8.4, test_nokia770=true, test_nokia770=false)
+	AC_SUBST(OSSO_LIBS)
+	AC_SUBST(OSSO_CFLAGS)
+
+ fi
+
+AM_CONDITIONAL(WITH_NOKIA770, test x$test_nokia770 = xtrue)
+AC_SUBST(GTK_LIBS)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_PREFIX)
+AC_MSG_RESULT($test_nokia770)
 
 #
 # Test for arts 
@@ -865,6 +898,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build Cocoa frontend:		${cocoa}
 	Build with SDL:			${test_sdl}
 	Build with GTK:			${test_gtk}
+	Build with NOKIA770:		${test_nokia770}
 	Build with ARTS support:	${test_arts}
 	Build with live555.com RTSP:	${test_live}
 	Build with Python support:     ${with_python}
