@@ -1,3 +1,33 @@
+2006-02-15 18:18  p_cesar
+
+	* I think the problem with the reload function is because the
+	  GtkDrawingArea created in
+	  gtk_ambulant_widget::gtk_ambulant_widget is never removed from
+	  the container.  Solutions:	   1. gtk_gui is in charge of
+	  creating the GtkDrawingArea  2. when the widget is not needed, it
+	  has to be removed from the container and free
+
+2006-02-15 15:34  keesblom
+
+	* Added support for Nokia 770 Internet Tablet.	It compiles in the
+	  Scratchbox environment for Maemo after: configure --with-gtk
+	  --with-nokia770 and using: dpkg-buildpackage -rfakeroot a
+	  downloadble debian package will be created:
+	  ../ambulantplayer-app_0.2_arm.deb
+
+2006-02-15 15:08  p_cesar
+
+	*
+	   no more gtk_C_callback_helper_queue_draw_area message
+
+2006-02-15 11:18  p_cesar
+
+	* gtk_gui and gtk_factory do not print any debug information
+
+2006-02-15 11:09  p_cesar
+
+	* gtk_player does not need of the ui xml file
+
 2006-02-14 16:37  p_cesar
 
 	* Client side uses XML-RPC. It implements calls to the server side
