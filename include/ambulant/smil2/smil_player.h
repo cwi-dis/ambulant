@@ -135,7 +135,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	virtual time_value_type elapsed() const { return m_timer->elapsed();}
 	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep);
 	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
-		{ m_event_processor->cancel_event(ev, (lib::event_processor::event_priority)ep);}
+		{ m_event_processor->cancel_event(ev, ep);}
 	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
 	virtual bool wait_for_eom() const { return m_eom_flag;}
 	virtual void set_wait_for_eom(bool b) { m_eom_flag = b;}

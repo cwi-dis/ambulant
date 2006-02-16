@@ -37,7 +37,6 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
-	src/player_nokia770/Makefile
 	src/player_macosx/Makefile
 	src/plugins/Makefile
 	src/pyambulant/Makefile
@@ -478,6 +477,10 @@ AC_ARG_WITH(gtk,
 if test "x$test_gtk" = "xtrue"; then
 	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
 	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.2`"
+	if test $test_gtk = false; then
+	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
+	fi
+	  
 fi
 
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk = xtrue)
@@ -680,6 +683,54 @@ AC_ARG_WITH(python,
 AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
 AC_SUBST(PYTHON)
 AC_MSG_RESULT($with_python - $PYTHON)
+
+# Do we want python plugins ?
+#
+
+AC_MSG_CHECKING(for --with-python-plugin)
+AC_ARG_WITH([python-plugin],
+    [AC_HELP_STRING([--with-python-plugin],[Enable the python plugin (default: disabled)])
+	],[
+	case "${withval}" in
+	yes)  	with_python_plugin=true
+			;;
+	no)		with_python_plugin=false
+			;;
+	*)		AC_MSG_ERROR("--with-python-plugin takes no argument")
+			;;
+	esac],[
+	with_python_plugin=false])
+	
+if test x$with_python_plugin = xtrue;
+then
+	if test x$with_python = xfalse;
+	then
+		AC_MSG_ERROR("--with-python-plugin requires --with-python")
+		with_python_plugin=false
+	else
+	   PYTHON_INCLUDES=-I`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
+       # Trick to determine whether we're using a Mac framework build, in which
+       # case we need to specify the library differently.
+       case x$PYTHON_INCLUDES in
+       x/Library*)
+           PYTHON_LIBS="-framework Python" 
+           ;;
+       x/System/Library*)
+           PYTHON_LIBS="-framework Python"
+           ;;
+       *)
+           pylibdir=`python -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBDIR")'`
+           pyversion=`python -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
+           PYTHON_LIBS="-L${libdir} -lpython${pyversion}"
+           ;;
+       esac
+	fi
+fi
+
+AC_SUBST(PYTHON_INCLUDES)
+AC_SUBST(PYTHON_LIBS)
+AM_CONDITIONAL(WITH_PYTHON_PLUGIN, test x$with_python_plugin = xtrue)
+AC_MSG_RESULT($with_python_plugin)
 
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
@@ -902,6 +953,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with ARTS support:	${test_arts}
 	Build with live555.com RTSP:	${test_live}
 	Build with Python support:     ${with_python}
+	Build with Python plugin:      ${with_python_plugin}
      "
 
 if test "x$with_frontend" = "x$false"; then

@@ -88,10 +88,10 @@ using namespace ambulant;
 //#define AM_PLAYER_DG
 
 #ifdef AM_PLAYER_DG
-typedef gui::dg::dg_player gui_player;
+typedef gui::dg::dg_player dg_or_dx_player;
 typedef gui::dg::dg_player_callbacks gui_callbacks;
 #else 
-typedef gui::dx::dx_player gui_player;
+typedef gui::dx::dx_player dg_or_dx_player;
 typedef gui::dx::dx_player_callbacks gui_callbacks;
 #endif
 
@@ -119,12 +119,12 @@ void my_player_callbacks::destroy_os_window(HWND hwnd) {
 }
 
 
-static gui_player* 
+static dg_or_dx_player* 
 create_player_instance(const net::url& u) {
-	return new gui_player(s_player_callbacks, NULL, u);
+	return new dg_or_dx_player(s_player_callbacks, NULL, u);
 }
 
-static gui_player *player = 0;
+static dg_or_dx_player *player = 0;
 static needs_done_redraw = false;
 
 CWnd* topView = NULL;
@@ -297,7 +297,7 @@ void MmView::OnDestroy()
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	USES_CONVERSION;
-	gui_player *dummy = player;
+	dg_or_dx_player *dummy = player;
 	player = 0;
 	if(dummy) {
 		dummy->stop();
@@ -338,7 +338,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 void MmView::OnFilePlay()
 {
 	if(player) {
-		player->start();
+		player->play();
 		needs_done_redraw = true;
 		InvalidateRect(NULL);
 	}
@@ -346,8 +346,8 @@ void MmView::OnFilePlay()
 
 void MmView::OnUpdateFilePlay(CCmdUI *pCmdUI)
 {	
-	bool enable = player && !player->is_playing();
-	pCmdUI->Enable(enable?TRUE:FALSE);
+	pCmdUI->Enable((int)(player && player->is_play_enabled()));
+	pCmdUI->SetCheck((int)(player && player->is_play_active()));
 }
 
 void MmView::OnFilePause()
@@ -357,9 +357,8 @@ void MmView::OnFilePause()
 
 void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 {
-	bool enable = player && (player->is_playing() || player->is_pausing());
-	pCmdUI->Enable(enable?TRUE:FALSE);
-	if(enable) pCmdUI->SetCheck(player->is_pausing()?1:0);
+	pCmdUI->Enable((int)(player && player->is_pause_enabled()));
+	pCmdUI->SetCheck((int)(player && player->is_pause_active()));
 }
 
 void MmView::OnFileStop()
@@ -367,7 +366,7 @@ void MmView::OnFileStop()
 
 	if(player) {
 		net::url u = player->get_url();
-		gui_player *dummy = player;
+		dg_or_dx_player *dummy = player;
 		player = 0;
 		if(dummy) {
 			dummy->stop();
@@ -383,14 +382,15 @@ void MmView::OnFileStop()
 
 void MmView::OnUpdateFileStop(CCmdUI *pCmdUI)
 {
-	bool enable = player && (player->is_playing() || player->is_pausing());
-	pCmdUI->Enable(enable?TRUE:FALSE);
+	pCmdUI->Enable((int)(player && player->is_stop_enabled()));
+	pCmdUI->SetCheck((int)(player && player->is_stop_active()));
 }
 
 void MmView::OnTimer(UINT nIDEvent)
 {
+	// XXXX Jack: This seems a very funny way to get a final redraw...
 	CView::OnTimer(nIDEvent);
-	if(player && needs_done_redraw && player->is_done()) {
+	if(player && needs_done_redraw && player->is_stop_active()) {
 		player->on_done();
 		InvalidateRect(NULL);
 		PostMessage(WM_INITMENUPOPUP,0, 0); 

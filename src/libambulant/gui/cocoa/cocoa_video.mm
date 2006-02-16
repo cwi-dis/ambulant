@@ -180,7 +180,7 @@ cocoa_video_renderer::poll_playing()
 	if (!is_stopped) {
 		// schedule another call in a while
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
-		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
+		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
 	m_lock.leave();
@@ -213,7 +213,7 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		[m_movie_view start: NULL];
 		// And start the poll task
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
-		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::event_processor::low);
+		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
 	
 	m_lock.leave();

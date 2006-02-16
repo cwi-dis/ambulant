@@ -95,7 +95,7 @@ active_int_action::fire(active_timeline * const parent) const
 	
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(parent, &active_timeline::dependency_callback, m_dependency);
-	parent->m_event_processor->add_event(e, m_timeout, lib::event_processor::high);
+	parent->m_event_processor->add_event(e, m_timeout, lib::ep_high);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -137,7 +137,7 @@ active_ext_action::fire(active_timeline * const parent) const
 	
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(parent, &active_timeline::ext_dependency_callback, m_action_index);
-	parent->m_event_processor->add_event(e, 0, lib::event_processor::low);
+	parent->m_event_processor->add_event(e, 0, lib::ep_low);
 }
 
 #ifndef AMBULANT_NO_IOSTREAMS
@@ -654,7 +654,7 @@ active_timeline::dependency_callback(detail::dependency_callback_arg arg)
 #ifndef AMBULANT_NO_IOSTREAMS
 			AM_DBG std::cout << "firing playdone event to parent" << std::endl;
 #endif
-			m_event_processor->add_event(m_playdone, 0, lib::event_processor::low);
+			m_event_processor->add_event(m_playdone, 0, lib::ep_low);
 		}
 		// Other cleanup
 	}
@@ -756,7 +756,7 @@ active_timeline::stopped(int n, double t)
 		lib::logger::get_logger()->fatal("active_timeline::stopped(node %d): playdone_index=%d", n, playdone_index);
 	typedef lib::scalar_arg_callback<active_timeline, detail::dependency_callback_arg> mycallback;
 	lib::event *e = new mycallback(this, &active_timeline::dependency_callback, playdone_index);
-	m_event_processor->add_event(e, 0, lib::event_processor::high);
+	m_event_processor->add_event(e, 0, lib::ep_high);
 }
 
 void 

@@ -224,7 +224,7 @@ win32_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
     assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("win32_datasource.start: trigger readdone callback (x%x)", cbevent);
-	evp->add_event(cbevent, 0, ambulant::lib::event_processor::med);
+	evp->add_event(cbevent, 0, ambulant::lib::ep_med);
 	m_lock.leave();
 }
  

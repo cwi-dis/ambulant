@@ -54,8 +54,12 @@ class embedder : public lib::system_embedder {
 	/// Called when player p has stopped.
 	/// The embedding application could communicate this fact to the end user
 	/// through the GUI.
-	virtual void done(player *p) {} 
-
+	virtual void done(player *p) {}
+	
+	/// Called just before playback starts on player p.
+	/// The embedding application could communicate this fact to the end user
+	/// through the GUI.
+	virtual void starting(player *p) {}
 };
 
 } // namespace common

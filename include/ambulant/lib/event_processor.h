@@ -39,7 +39,6 @@ namespace lib {
 class event_processor {
   public:
 	typedef timer::time_type time_type;
-	enum event_priority {low, med, high};
 	
 	virtual ~event_processor() {}
 	
@@ -50,7 +49,7 @@ class event_processor {
 	virtual void cancel_all_events() = 0;
 
 	/// Cancel a previously scheduled event.
-	virtual bool cancel_event(event *pe, event_priority priority = low) = 0;
+	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
 	
 	// Fires waiting events.
 	virtual void serve_events() = 0;
@@ -100,7 +99,7 @@ class event_processor_impl : public event_processor {
 	timer *get_timer() const;
 	
 	void add_event(event *pe, time_type t, event_priority priority);
-	bool cancel_event(event *pe, event_priority priority = low);
+	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
 	void serve_events();
 	void stop_processor_thread() {};

@@ -33,9 +33,44 @@ includestuff = includestuff + """
 
 extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
+
+/* Workaround for "const" added in Python 2.5 */
+#if PY_VERSION_HEX >= 0x02050000
+# define Py_KEYWORDS_STRING_TYPE const char
+#else
+# define Py_KEYWORDS_STRING_TYPE char
+#endif
+
 """
 
 finalstuff = """
+// Helper routines to enable object identity to be maintained
+// across the bridge:
+
+cpppybridge *
+pycppbridge_getwrapper(PyObject *o)
+{
+    if (!pycppbridge_Check(o)) {
+    	PyErr_Warn(PyExc_Warning, "ambulant: Passing non-pycppbridge object to C++");
+    	return NULL;
+    }
+    pycppbridgeObject *bo = (pycppbridgeObject *)o;
+    return bo->ob_wrapper;
+}
+
+void
+pycppbridge_setwrapper(PyObject *o, cpppybridge *w)
+{
+    if (!pycppbridge_Check(o)) {
+        PyErr_SetString(PyExc_SystemError, "ambulant: attempt to set wrapper for non-bridged object");
+    } else {
+        pycppbridgeObject *bo = (pycppbridgeObject *)o;
+        if (bo->ob_wrapper)
+            PyErr_SetString(PyExc_SystemError, "ambulant: attempt to set wrapper second time");
+        bo->ob_wrapper = w;
+    }
+}
+
 // Declare initambulant as a C external:
 
 extern "C" void initambulant(); 
@@ -63,11 +98,12 @@ const_q_name_pair_ref = StdPairType(xml_string, xml_string,
 duration = StdPairType(bool, double, "ambulant::common::duration")
 
 InBuffer = VarInputBufferType('char', 'size_t', 'l')
-return_stringptr = Type("const char *", "s")  # ONLY FOR RETURN VALUES!!
+return_stringptr = Type("const char *", "z")  # ONLY FOR RETURN VALUES!! May be None/NULL.
 # output_stringptr = Type("char *", "s")  # BE CAREFUL!
 output_malloc_buf = MallocHeapOutputBufferType("char", "size_t", "l")
 
 # Ambulant-specific
+q_attributes_list = OpaqueByRefType("ambulant::lib::q_attributes_list", "ambulant_attributes_list")
 region_dim = OpaqueByRefType("ambulant::common::region_dim", "ambulant_region_dim")
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
@@ -79,7 +115,7 @@ zindex_t = Type("ambulant::common::zindex_t", "l")
 cookie_type = Type("ambulant::common::playable::cookie_type", "l")
 const_cookie_type = cookie_type
 color_t = Type("ambulant::lib::color_t", "l") # XXXX Split into RGB
-event_priority = Type("ambulant::lib::event_processor::event_priority", "l")
+event_priority = Type("ambulant::lib::event_priority", "l")
 timestamp_t = Type("ambulant::net::timestamp_t", "L")
 time_type = Type("ambulant::lib::timer::time_type", "l")
 tiling = Type("ambulant::common::tiling", "l")
@@ -90,8 +126,38 @@ sound_alignment = Type("ambulant::common::sound_alignment", "l")
 renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")
 renderer_private_id = Type("ambulant::common::renderer_private_id", "l")
 
-# Our (opaque) objects
+# A helper object, used as baseclass for our Python objects to enable
+# bridging objects back-and-forth between Python and C++ while maintaining
+# object identity.
+class MyBridgeObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 
+    def __init__(self, name, prefix):
+        GlobalObjectDefinition.__init__(self, name, prefix, None)
+        self.constructors = []
+        
+    def outputNew(self):
+        pass
+        
+    def outputConvert(self):
+        pass
+        
+    def outputCheck(self):
+        pass
+        
+    def outputStructMembers(self):
+        Output("cpppybridge *ob_wrapper;")
+        
+    def outputInitStructMembers(self):
+        Output("ob_wrapper = NULL;")
+        
+    def outputCleanupStructMembers(self):
+        Output("delete self->ob_wrapper;")
+        Output("self->ob_wrapper = NULL;")
+
+    def output_tp_new(self):
+        Output("#define %s_tp_new PyType_GenericNew", self.prefix)
+        
+# Our (opaque) objects
 class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 
     def __init__(self, name, prefix, itselftype):
@@ -124,10 +190,12 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
         CxxMixin.outputCheckConvertArg(self)
         
     def outputStructMembers(self):
+        Output("void *ob_dummy_wrapper; // Overlays bridge object storage")
         GlobalObjectDefinition.outputStructMembers(self)
         # XXX Output("bool owned;")
         
     def outputInitStructMembers(self):
+        Output("it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class")
         GlobalObjectDefinition.outputInitStructMembers(self)
         # XXX init owned, if needed
         
@@ -162,7 +230,7 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 
     def output_tp_initBody(self):
         Output("%s itself;", self.itselftype)
-        Output("char *kw[] = {\"itself\", 0};")
+        Output("Py_KEYWORDS_STRING_TYPE *kw[] = {\"itself\", 0};")
         Output()
         for con in self.constructors:
             con.outputConstructorBody()
@@ -178,6 +246,10 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 module = CxxModule(MODNAME, MODPREFIX, includestuff, finalstuff, initstuff, variablestuff)
 functions = []
 
+# Start with adding the bridging base class
+pycppbridge = MyBridgeObjectDefinition("pycppbridge", "pycppbridge")
+module.addobject(pycppbridge)
+
 print "=== generating object definitions ==="
 
 execfile("ambulantobjgen.py")
@@ -186,12 +258,6 @@ print "=== declaring more types ==="
 
 # XXXX Temporarily disabled
 methods_none_playable_factory = []
-
-common_factories_ptr = HeapTupleType("ambulant::common::factories",
-        (playable_factory_ptr, "rf"),
-        (window_factory_ptr, "wf"),
-        (datasource_factory_ptr, "df"),
-        (global_parser_factory_ptr, "pf"))
 
 audio_format = TupleType("ambulant::net::audio_format",
         (std_string, "mime_type"),
@@ -296,9 +362,14 @@ common_playable_notification_ptr = playable_notification_ptr
 net_audio_datasource_ptr = audio_datasource_ptr
 ambulant_net_url = net_url
 url = net_url
+
 const_ambulant_net_url_ref = net_url
 posix_datasource_ptr = datasource_ptr
 stdio_datasource_ptr = datasource_ptr
+lib_global_parser_factory_ptr = global_parser_factory_ptr
+lib_node_factory_ptr = node_factory_ptr
+net_datasource_factory_ptr = datasource_factory_ptr
+common_factories_ptr = factories_ptr
 
 print "=== Testing availability of support for all needed C types ==="
 
@@ -366,7 +437,7 @@ class BackVarInputBufferType(VarInputBufferType):
     def mkvalueArgs(self, name):
         return "%s__in__, (int)%s__len__" % (name, name)
 
-InBuffer = BackVarInputBufferType('char', 'long', 'l')
+InBuffer = BackVarInputBufferType('char', 'size_t', 'l')
 
 includestuff = """
 #define WITH_EXTERNAL_DOM 1
@@ -392,6 +463,9 @@ class NoFunctionGenerator(FunctionGenerator):
         
     def checkgenerate(self):
         return False
+        
+    def generateAttributeExistenceTest(self):
+        pass
         
 Function = NoFunctionGenerator
 Method = BackMethodGenerator
@@ -447,15 +521,16 @@ node_context_object.othermethods = [
 ]
 node_object.othermethods = [
     "void get_children(const_node_list& l) const {}", # XXX for now
-    "void append_data(const char *data, size_t len) { abort(); }", # XXX for now
     "void set_attributes(const char **attrs) { abort(); }", # XXX for now
+]
+node_factory_object.othermethods = [
+	"ambulant::lib::node *new_node(const char *local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };",
+	"ambulant::lib::node *new_node(const ambulant::lib::xml_string& local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };",
 ]
 parser_factory_object.othermethods = [
     "ambulant::lib::xml_parser* new_parser(ambulant::lib::sax_content_handler*, ambulant::lib::sax_error_handler*) { abort(); }", # XXX for now
 ]
 xml_parser_object.othermethods = [
-    "bool parse(const char*, long unsigned int, bool) { abort(); }", # XXX for now
-    "bool parse(const char*, unsigned int, bool) { abort(); }", # XXX for now
     "void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }", #XXXX
     "void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }", #XXXX
 ]
@@ -474,7 +549,6 @@ bgrenderer_object.othermethods = [
     "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 surface_object.othermethods = [
-    "ambulant::lib::rect get_fit_rect(const ambulant::lib::size&, ambulant::lib::rect*, const ambulant::common::alignment*) const { abort(); }", # XXX
     "ambulant::common::tile_positions get_tiles(ambulant::lib::size s, ambulant::lib::rect r) const { return surface::get_tiles(s, r); }",
 ]
 surface_template_object.othermethods = [

@@ -173,6 +173,7 @@ template<class Node>
 inline void const_tree_iterator<Node>::up() {
 	if(m_cur == m_root) { m_cur = 0; return;}
 	const Node* it = m_cur->up();
+	assert(it);
 	if(it) {
 		m_move = &const_tree_iterator::next;
 		m_cur = it;

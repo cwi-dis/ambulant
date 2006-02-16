@@ -299,56 +299,27 @@ class node_context {
 	get_node(const std::string& idd) const = 0;
 };
 
-#if WITH_EXTERNAL_DOM
-// Factory functions. These are defined in node.cpp, and will return
-// node_impl objects.
-AMBULANTAPI node_interface *node_factory(const char *local_name, const char **attrs = 0, const node_context *ctx = 0);
+class node_factory {
+  public:
+	virtual ~node_factory() {}
+	
+	virtual node *new_node(const char *local_name, const char **attrs = 0, const node_context *ctx = 0) = 0;
 
-/// Construct a new, unconnected, node.
-/// Note: attrs are as per expat parser
-/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-AMBULANTAPI node_interface *node_factory(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0);
+	/// Construct a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
+	virtual node *new_node(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0) = 0;
 
-/// Construct a new, unconnected, node.
-/// Note: attrs are as per expat parser
-/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-AMBULANTAPI node_interface *node_factory(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0);
+	/// Construct a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
+	virtual node *new_node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0) = 0;
 
-// shallow copy from other.
-AMBULANTAPI node_interface *node_factory(const node* other);
-#else
-// Factory functions. These call node_impl constructors directly.
-inline node *
-node_factory(const char *local_name, const char **attrs = 0, const node_context *ctx = 0)
-{
-	return new node(local_name, attrs, ctx);
-}
+	// shallow copy from other.
+	virtual node *new_node(const node* other) = 0;
+};
 
-/// Construct a new, unconnected, node.
-/// Note: attrs are as per expat parser
-/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-inline node *
-node_factory(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0)
-{
-	return new node(local_name, attrs, ctx);
-}
-
-/// Construct a new, unconnected, node.
-/// Note: attrs are as per expat parser
-/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-inline node *
-node_factory(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0)
-{
-	return new node(qn, qattrs, ctx);
-}
-
-// shallow copy from other.
-inline node *
-node_factory(const node* other)
-{
-	return new node(other);
-}
-#endif // WITH_EXTERNAL_DOM
+AMBULANTAPI node_factory *get_builtin_node_factory();
 
 } // namespace lib
  

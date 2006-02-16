@@ -41,7 +41,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
-#include "ambulant/common/factory.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
@@ -111,7 +111,7 @@ class dx_playable_factory : public common::playable_factory {
 };
 
 class AMBULANTAPI dx_player : 
-	//public common::player, 
+	public common::gui_player, 
 	public common::window_factory, 
 	public dx_playables_context,
 	public common::embedder {
@@ -121,24 +121,19 @@ class AMBULANTAPI dx_player :
 	~dx_player();
 	
 	////////////////////
-	// common::player implementation
-	
-	void start();
+	// common::gui_player implementation
+	void init_playable_factory();
+	void init_window_factory();
+	void init_datasource_factory();
+	void init_parser_factory();
+
+	void play();
 	void stop();
 	void pause();
-	void resume();
-	void restart();
 
-	bool is_playing() const;
-	bool is_pausing() const;
-	bool is_done() const;
+	void restart(bool reparse=true);
 
-	void set_preferences(const std::string& url);
-	
-	// should these be part of the player interface?
-	lib::timer* get_timer() { return 0;}
-	lib::event_processor* get_evp() { return 0;}
-	
+	void set_preferences(const std::string& url);	
 	
 	////////////////////
 	// common::window_factory implementation
@@ -164,7 +159,7 @@ class AMBULANTAPI dx_player :
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
-	const net::url& get_url() const { return m_url;}
+//	const net::url& get_url() const { return m_url;}
 	void on_done();
 	
 	common::window_factory *get_window_factory() { return this;}
@@ -187,7 +182,7 @@ class AMBULANTAPI dx_player :
 	
   private:
 	dx_transition *set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-	common::gui_window* get_window(const lib::node* n);
+//	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 	HWND get_main_window();
 	void lock_redraw();
@@ -196,33 +191,26 @@ class AMBULANTAPI dx_player :
 	// The hosting application
 	dx_player_callbacks &m_hoster;
 	// The current document URL
-	net::url m_url;
-	
-	// The node we want to start playback at.
-	const lib::node *m_goto_node;
-
-	// The current SMIL2 player
-	smil2::smil_player *m_player;
-	
+//	net::url m_url;
 	// The current view	
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	
 	wininfo* get_wininfo(HWND hwnd);
 	
 	// The frames stack
-	struct frame {std::map<std::string, wininfo*> windows; smil2::smil_player* player;};
+	struct frame {
+		std::map<std::string, wininfo*> windows;
+		common::player* player;
+		lib::document* doc;
+	};
 	std::stack<frame*> m_frames;
-	
-	// The secondary timer and processor
-	lib::timer_control *m_timer;
-		
+			
 	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
-	common::factories *m_factory;
 };
 
 } // namespace dx

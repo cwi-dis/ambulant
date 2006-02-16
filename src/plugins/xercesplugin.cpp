@@ -18,8 +18,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/lib/xerces_parser.h"
-#include "ambulant/common/factory.h"
 #include "ambulant/lib/sax_handler.h"
+#include "ambulant/common/factory.h"
+#include "ambulant/common/plugin_engine.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/version.h"
 
 #ifndef AM_DBG
@@ -68,8 +70,16 @@ xerces_plugin_factory::get_parser_name()
 
 
 
-extern "C" void initialize(ambulant::common::factories* factory)
+extern "C" void initialize(
+    int api_version,
+    ambulant::common::factories* factory,
+    ambulant::common::gui_player *player)
 {
+    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+        lib::logger::get_logger()->warn("xerces_plugin: built for plugin-api version %d, current %d. Skipping.", 
+            AMBULANT_PLUGIN_API_VERSION, api_version);
+        return;
+    }
     if ( !ambulant::check_version() )
         lib::logger::get_logger()->warn("xerces_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	AM_DBG lib::logger::get_logger()->debug("xerces_plugin::initialize registering factory function");

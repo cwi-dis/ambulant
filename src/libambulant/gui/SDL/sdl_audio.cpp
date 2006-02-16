@@ -419,7 +419,7 @@ gui::sdl::sdl_audio_renderer::get_data_done(int size)
 		// SDL callback and already holding the m_global_lock. So, in stead
 		// we use the event processor to unregister ourselves later.
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::stop);
-		m_event_processor->add_event(e, 0, ambulant::lib::event_processor::med);
+		m_event_processor->add_event(e, 0, ambulant::lib::ep_med);
 		if (m_audio_src) {
 			m_audio_src->stop();
 			m_audio_src->release();

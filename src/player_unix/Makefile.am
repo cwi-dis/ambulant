@@ -98,9 +98,9 @@ endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(extra_arts_LDADD)					\
 	$(extra_sdl_LDADD)					\
+	$(extra_live_LDADD) 				\
 	$(extra_ffmpeg_LDADD)				\
 	$(extra_xerces_LDADD)				\
-	$(extra_live_LDADD) 				\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
 	$(EXPAT_PREFIX)/lib/libexpat.a				\
 	$(qt_libs)							\
@@ -108,9 +108,9 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 
 AM_LDFLAGS=$(extra_arts_ldflags)				\
 	   $(extra_sdl_ldflags)					\
+       $(livelibs)  \
 	   $(extra_ffmpeg_ldflags)				\
-	   -export-dynamic	  \
-       $(livelibs)
+	   -export-dynamic
  
 AM_CPPFLAGS = \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \

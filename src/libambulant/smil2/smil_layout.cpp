@@ -597,7 +597,7 @@ smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 #ifdef USE_SMIL21
 class bgimage_loader : public lib::ref_counted_obj, public common::playable_notification {
   public:
-	bgimage_loader(const lib::node *layout_root, common::playable_factory *pf);
+	bgimage_loader(const lib::node *layout_root, common::factories *factories);
 	~bgimage_loader();
 	
 	void run(smil_layout_manager *layout_mgr);
@@ -612,7 +612,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	void transitioned(cookie_type n, double t = 0) {};
   private:
 	const lib::node *m_layout_root;
-	common::playable_factory *m_pf;
+	common::factories *m_factories;
 	lib::timer_control *m_timer;
 	lib::event_processor *m_event_processor;
 	std::vector<lib::node*> m_nodes;
@@ -625,19 +625,19 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 };
 
 void
-smil_layout_manager::load_bgimages(common::playable_factory *pf)
+smil_layout_manager::load_bgimages(common::factories *factories)
 {
 //	if (!m_uses_bgimages) return;
 //	abort();
 	if (!m_layout_section || !m_uses_bgimages) return;
-	bgimage_loader *loader = new bgimage_loader(m_layout_section, pf);
+	bgimage_loader *loader = new bgimage_loader(m_layout_section, factories);
 	loader->run(this);
 	loader->release();
 }
 
-bgimage_loader::bgimage_loader(const lib::node *layout_root, common::playable_factory *pf)
+bgimage_loader::bgimage_loader(const lib::node *layout_root, common::factories *factories)
 :	m_layout_root(layout_root),
-	m_pf(pf),
+	m_factories(factories),
 	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 1.0, false)),
 	m_event_processor(NULL)
 {
@@ -708,12 +708,12 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 			*attrp++ = bgrepeat;
 		}
 		*attrp++ = NULL;
-		lib::node *n = lib::node_factory("img", attrs, context);
+		lib::node *n = m_factories->get_node_factory()->new_node("img", attrs, context);
 		
 		// Create the renderer
 		if (n) {
 			cookie_type p_index = (cookie_type)m_playables.size();
-			common::playable *p = m_pf->new_playable(this, p_index, n, m_event_processor);
+			common::playable *p = m_factories->get_playable_factory()->new_playable(this, p_index, n, m_event_processor);
 			if (p) {
 				// Now tell the renderer where to render to, and remember the
 				// toplevel gui_window so we can synchronise the redraws before

@@ -34,11 +34,32 @@ xerces_plugin=
 xerces_include=
 endif
 
+# The Python plugin
+if WITH_PYTHON_PLUGIN
+# XXX These should be elsewhere
+pymodule = $(top_srcdir)/src/pyambulant
+pymodule_includes = -I$(pymodule)
+pymodule_tmp = $(pymodule)/build/temp.*
+pymodule_libs = \
+    $(pymodule_tmp)/ambulantmodule.o \
+    $(pymodule_tmp)/ambulantinterface.o \
+    $(pymodule_tmp)/ambulantutilities.o
+
+python_plugin = libamplugin_python.la
+python_includes = $(PYTHON_INCLUDES) $(pymodule_includes)
+libamplugin_python_la_LDFLAGS = -module $(PYTHON_LIBS) $(pymodule_libs)
+libamplugin_python_la_SOURCES = pythonplugin.cpp
+
+else
+python_plugin=
+python_include=
+endif
+
 # Now tie it all together.
 # XXXX Need to set install directory
 
-pkglib_LTLIBRARIES = $(dummy_plugin) $(arts_plugin) $(xerces_plugin)
+pkglib_LTLIBRARIES = $(dummy_plugin) $(arts_plugin) $(xerces_plugin) $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	 $(arts_includes) $(xerces_includes)
+	 $(arts_includes) $(xerces_includes) $(python_includes)
 

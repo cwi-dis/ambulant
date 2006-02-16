@@ -87,8 +87,10 @@ surface_impl::~surface_impl()
 	}
 	if (m_bg_renderer)
 		delete m_bg_renderer;
+	m_bg_renderer = NULL;
 	if (m_renderer_data)
 		m_renderer_data->release();
+	m_renderer_data = NULL;
 //	if (m_info)
 //		delete m_info;
 	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {

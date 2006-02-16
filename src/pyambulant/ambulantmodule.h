@@ -4,6 +4,9 @@ extern int node_contextObj_Convert(PyObject *v, ambulant::lib::node_context* *p_
 extern PyObject *nodeObj_New(ambulant::lib::node* itself);
 extern int nodeObj_Convert(PyObject *v, ambulant::lib::node* *p_itself);
 
+extern PyObject *node_factoryObj_New(ambulant::lib::node_factory* itself);
+extern int node_factoryObj_Convert(PyObject *v, ambulant::lib::node_factory* *p_itself);
+
 extern PyObject *documentObj_New(ambulant::lib::document* itself);
 extern int documentObj_Convert(PyObject *v, ambulant::lib::document* *p_itself);
 
@@ -42,6 +45,15 @@ extern int transition_infoObj_Convert(PyObject *v, ambulant::lib::transition_inf
 
 extern PyObject *embedderObj_New(ambulant::common::embedder* itself);
 extern int embedderObj_Convert(PyObject *v, ambulant::common::embedder* *p_itself);
+
+extern PyObject *factoriesObj_New(ambulant::common::factories* itself);
+extern int factoriesObj_Convert(PyObject *v, ambulant::common::factories* *p_itself);
+
+extern PyObject *gui_screenObj_New(ambulant::common::gui_screen* itself);
+extern int gui_screenObj_Convert(PyObject *v, ambulant::common::gui_screen* *p_itself);
+
+extern PyObject *gui_playerObj_New(ambulant::common::gui_player* itself);
+extern int gui_playerObj_Convert(PyObject *v, ambulant::common::gui_player* *p_itself);
 
 extern PyObject *alignmentObj_New(ambulant::common::alignment* itself);
 extern int alignmentObj_Convert(PyObject *v, ambulant::common::alignment* *p_itself);

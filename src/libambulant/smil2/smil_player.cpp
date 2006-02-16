@@ -86,7 +86,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 void
 smil_player::initialize()
 {
-	m_layout_manager->load_bgimages(m_factory->get_playable_factory());
+	m_layout_manager->load_bgimages(m_factory);
 }
 #endif
 
@@ -111,7 +111,7 @@ smil_player::~smil_player() {
 	delete m_animation_engine;
 	delete m_root;
 	delete m_scheduler;
-	delete m_doc;
+//	delete m_doc;
 	delete m_layout_manager;
 }
 
@@ -141,7 +141,7 @@ void smil_player::build_timegraph() {
 }
 
 void smil_player::schedule_event(lib::event *ev, lib::timer::time_type t, event_priority ep) {
-	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
+	m_event_processor->add_event(ev, t, ep);
 }
 
 // Command to start playback
@@ -151,6 +151,7 @@ void smil_player::start() {
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
 		if(m_root) {
+			if (m_system) m_system->starting(this);
 			m_scheduler->start(m_root);
 			update();
 		}
@@ -592,7 +593,7 @@ void smil_player::update() {
 		if(m_root->is_active()) {
 			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
 				&smil_player::update);
-			m_event_processor->add_event(update_event, dt, event_processor::high);
+			m_event_processor->add_event(update_event, dt, lib::ep_high);
 		}
 	}
 }

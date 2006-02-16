@@ -25,9 +25,9 @@
 #define PLUGIN_FACTORY_H
 
 #include "ambulant/common/factory.h"
-#include "ambulant/common/playable.h"
-//#include "ambulant/common/renderer.h"
+#include "ambulant/common/gui_player.h"
 
+#define AMBULANT_PLUGIN_API_VERSION 2
  
 namespace ambulant {
 
@@ -35,7 +35,7 @@ namespace common {
 
 /// Pointer to the initialize function in the plugin.
 extern "C" {
-	typedef void (*initfuncptr)(common::factories* factory);
+	typedef void (*initfuncptr)(int api_version, common::factories* factory, common::gui_player *player);
 };
 
 /// Plugin loader.
@@ -50,7 +50,7 @@ class plugin_engine {
     static plugin_engine *get_plugin_engine();
     
     /// Add plugins to the given global factories.
-    void add_plugins(common::factories *factory);
+    void add_plugins(common::factories *factory, common::gui_player *player = 0);
     
   private:
     

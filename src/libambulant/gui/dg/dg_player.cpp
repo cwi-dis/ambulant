@@ -75,32 +75,18 @@ int gui::dg::dg_gui_region::s_counter = 0;
 
 gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u) 
 :	m_hoster(hoster),
-	m_url(u),
-	m_player(0),
 	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
 	m_update_event(0),	
-	m_logger(lib::logger::get_logger()) {
-	
-	// Fill the factory object
-	// Fill the factory object
-	global_playable_factory *rf = (global_playable_factory*) this->get_playable_factory();
-	net::datasource_factory *df = new net::datasource_factory();
-	window_factory *wf = this->get_window_factory(); 
-	global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
-	m_factory = new factories(rf, wf, df, pf);
-
-	// Add the datasource factories. For now we only need a raw
-	// datasource factory.
-	df->add_raw_factory(net::get_win32_datasource_factory());
-	// Load the plugins
-	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
-	plf->add_plugins(m_factory);
+	m_logger(lib::logger::get_logger())
+{
+	set_embedder(this);	
+	init_factories();
 
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
-	lib::document *doc = lib::document::create_from_url(m_factory, u);
-	if(!doc) {
+	m_doc = lib::document::create_from_url(this, u);
+	if(!m_doc) {
 		m_logger->show("Failed to parse document %s", u.get_url().c_str());
 		return;
 	}
@@ -108,7 +94,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
-	m_player = new smil2::smil_player(doc, m_factory, this);
+	m_player = new smil2::smil_player(m_doc, this, m_embedder);
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
@@ -135,11 +121,40 @@ gui::dg::dg_player::~dg_player() {
 	delete m_worker_processor;
 	delete m_timer;
 	assert(m_windows.empty());
-	delete m_factory;
 	if(dg_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dg_gui_region::s_counter);
 }
 
+void
+gui::dg::dg_player::init_playable_factory()
+{
+	m_playable_factory = common::get_global_playable_factory();
+	// Add the playable factory
+	m_playable_factory->add_factory(new dg_playable_factory(this, m_logger, this));
+}
+
+void
+gui::dg::dg_player::init_window_factory()
+{
+		m_window_factory = this; 
+}
+
+void
+gui::dg::dg_player::init_datasource_factory()
+{
+	m_datasource_factory = new net::datasource_factory();
+	// Add the datasource factories. For now we only need a raw
+	// datasource factory.
+	m_datasource_factory->add_raw_factory(net::get_win32_datasource_factory());
+}
+
+void
+gui::dg::dg_player::init_parser_factory()
+{
+	m_parser_factory = lib::global_parser_factory::get_parser_factory();
+}
+
+#if 0
 void gui::dg::dg_player::start() {
 	if(m_player) {
 		m_timer->resume();
@@ -177,21 +192,10 @@ void gui::dg::dg_player::resume() {
 		m_timer->resume();
 	}
 }
-
-bool gui::dg::dg_player::is_playing() const {
-	return (m_player && m_player->is_playing()) || !m_frames.empty();
-}
-
-bool gui::dg::dg_player::is_pausing() const {
-	return m_player && m_player->is_pausing();
-}
-
-bool gui::dg::dg_player::is_done() const {
-	return m_player && m_player->is_done() && m_frames.empty();
-}
+#endif
 
 void gui::dg::dg_player::on_click(int x, int y, HWND hwnd) {
-	if(!m_player || !is_playing()) return;
+	if(!m_player) return;
 	lib::point pt(x, y);
 	dg_window *dgwin = (dg_window *) get_window(hwnd);
 	if(!dgwin) return;
@@ -200,7 +204,7 @@ void gui::dg::dg_player::on_click(int x, int y, HWND hwnd) {
 }
 
 int gui::dg::dg_player::get_cursor(int x, int y, HWND hwnd) {
-	if(!m_player || !is_playing()) return 0;
+	if(!m_player) return 0;
 	lib::point pt(x, y);
 	dg_window *dgwin = (dg_window *) get_window(hwnd);
 	if(!dgwin) return 0;
@@ -211,8 +215,12 @@ int gui::dg::dg_player::get_cursor(int x, int y, HWND hwnd) {
 }
 
 std::string gui::dg::dg_player::get_pointed_node_str() {
+#if 1
+	return "";
+#else
 	if(!m_player || !is_playing()) return "";
 	return m_player->get_pointed_node_str();
+#endif
 }
 
 void gui::dg::dg_player::on_char(int ch) {
@@ -328,21 +336,22 @@ gui::dg::dg_player::get_main_window() {
 // common::playable_factory implementation
 
 common::playable *
-gui::dg::dg_player::new_playable(
+gui::dg::dg_playable_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *const evp) {
 	
-	common::gui_window *window = get_window(node);
+	common::gui_window *window = NULL; // get_window(node);
+	assert(window);
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
 		p = new dg_text_renderer(context, cookie, node, evp, m_factory, window);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, m_factory, window, this);
+		p = new dg_img_renderer(context, cookie, node, evp, m_factory, window, m_dgplayer);
 	} else if(tag == "audio") {
-		p = new dg_audio_renderer(context, cookie, node, evp, window, m_worker_processor);
+		p = new dg_audio_renderer(context, cookie, node, evp, window, 0/*m_worker_processor*/);
 	} else if(tag == "video") {
 		p = new dg_area(context, cookie, node, evp, window);
 	} else if(tag == "area") {
@@ -356,7 +365,7 @@ gui::dg::dg_player::new_playable(
 }
 
 common::playable *
-gui::dg::dg_player::new_aux_audio_playable(
+gui::dg::dg_playable_factory::new_aux_audio_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
@@ -452,7 +461,7 @@ void gui::dg::dg_player::schedule_update() {
 	if(!m_player) return;
 	m_update_event = new lib::no_arg_callback_event<dg_player>(this, 
 		&dg_player::update_callback);
-	m_worker_processor->add_event(m_update_event, 50, lib::event_processor::low);
+	m_worker_processor->add_event(m_update_event, 50, lib::ep_low);
 }
 
 ////////////////////////
@@ -478,6 +487,7 @@ get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
 	return ri?ri->get_name().c_str():0;
 }
 
+#if 0
 common::gui_window *
 gui::dg::dg_player::get_window(const lib::node* n) {
 	typedef common::surface_template region;
@@ -494,7 +504,7 @@ gui::dg::dg_player::get_window(const lib::node* n) {
 	wininfo* winfo = (*it).second;
 	return winfo->w;
 }
-
+#endif
 void gui::dg::dg_player::show_file(const net::url& href) {
 #ifndef _WIN32_WCE
 	std::string s = href.get_url();
@@ -521,7 +531,7 @@ void gui::dg::dg_player::done(common::player *p) {
 		m_windows = pf->windows;
 		m_player = pf->player;
 		delete pf;
-		resume();
+		assert(0); // resume();
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			dg_window *dgwin = (dg_window *)(*it).second->w;
@@ -543,7 +553,7 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	}
 	
 	// Parse the provided URL. 
-	lib::document *doc = lib::document::create_from_url(m_factory, newdoc);
+	lib::document *doc = lib::document::create_from_url(this, newdoc);
 	if(!doc) {
 		m_logger->show("Failed to parse document %s", newdoc.get_url().c_str());
 		return;
@@ -562,6 +572,6 @@ void gui::dg::dg_player::open(net::url newdoc, bool startnewdoc, common::player 
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
-	m_player = new smil2::smil_player(doc, m_factory, this);
-	if(startnewdoc) start();
+	m_player = new smil2::smil_player(doc, this, this);
+	if(startnewdoc) play();
 }

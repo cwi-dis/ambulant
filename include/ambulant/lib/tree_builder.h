@@ -66,7 +66,7 @@ class tree_builder :
 
   ///////////////
   public:
-	tree_builder(node_context *context = 0, const char *filename = "");
+	tree_builder(node_factory *nf, node_context *context = 0, const char *filename = "");
 	//tree_builder() {};
 	~tree_builder();
 
@@ -130,6 +130,7 @@ class tree_builder :
 	node *m_root;
 	node *m_current;
 	bool m_well_formed;
+	node_factory *m_node_factory;
 	node_context *m_context;
 	std::string m_filename;		// For error messages only!
 };

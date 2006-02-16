@@ -101,6 +101,9 @@ class player {
 	/// Set desired cursor.
 	virtual void set_cursor(int cursor) {}
 
+	/// Called by the GUI when the user has pressed a key.
+	virtual void on_char(int ch) {}
+
 	/// Set the feedback handler.
 	virtual void set_feedback(player_feedback *fb) {}
 	

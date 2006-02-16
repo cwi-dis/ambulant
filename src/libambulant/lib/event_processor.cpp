@@ -56,13 +56,13 @@ event_processor_impl::add_event(event *pe, time_type t,
  	AM_DBG logger::get_logger()->debug("add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
 	m_delta_timer_cs.enter();
 	switch(priority) {
-		case high: 
+		case ep_high: 
 			m_high_delta_timer.insert(pe, t);
 			break;
-		case med: 
+		case ep_med: 
 			m_med_delta_timer.insert(pe, t);
 			break;
-		case low: 
+		case ep_low: 
 			m_low_delta_timer.insert(pe, t);
 			break;
 	}
@@ -77,13 +77,13 @@ event_processor_impl::cancel_event(event *pe,
  	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
 	m_delta_timer_cs.enter();
 	switch(priority) {
-		case high: 
+		case ep_high: 
 			succeeded = m_high_delta_timer.cancel(pe);
 			break;
-		case med: 
+		case ep_med: 
 			succeeded = m_med_delta_timer.cancel(pe);
 			break;
-		case low: 
+		case ep_low: 
 			succeeded = m_low_delta_timer.cancel(pe);
 			break;
 	}

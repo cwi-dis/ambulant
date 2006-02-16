@@ -185,7 +185,7 @@ qt_transition_renderer::redraw_post(gui_window *window)
 #endif
 			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop);
-			m_event_processor->add_event(ev, 0, lib::event_processor::med);
+			m_event_processor->add_event(ev, 0, lib::ep_med);
 		} else {
 			if ( 1 /* XXX was: surf */) {
 				AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
@@ -204,7 +204,7 @@ qt_transition_renderer::redraw_post(gui_window *window)
 				if (delay < 33) delay = 33; // XXX band-aid
 	//				delay = 1000;
 				AM_DBG logger::get_logger()->debug("qt_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
-				m_event_processor->add_event(ev, delay, event_processor::low);
+				m_event_processor->add_event(ev, delay, lib::ep_low);
 			}
 		}
 	}

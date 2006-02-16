@@ -163,7 +163,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	// Only audio/video session need to apply for a job !
 	while ((subsession = iter.next()) != NULL) {
 		if (!subsession->initiate()) {
-			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to initiate subsession");
+			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to initiate subsession for medium \"%s\"", subsession->mediumName());
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
 			delete context;
 			return NULL;

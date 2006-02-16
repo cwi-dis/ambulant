@@ -308,7 +308,7 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 		if (callbackk) {
 			assert(evp);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start: trigger client callback");
-			evp->add_event(callbackk, 0, ambulant::lib::event_processor::med);
+			evp->add_event(callbackk, 0, ambulant::lib::ep_med);
 		} else {
 			lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
@@ -445,7 +445,7 @@ ffmpeg_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): calling client callback (%d, %d)", m_buffer.size(), _end_of_file());
 			assert(m_event_processor);
 			if (m_elapsed >= m_src->get_clip_begin()) {
-				m_event_processor->add_event(m_client_callback, 0, ambulant::lib::event_processor::med);
+				m_event_processor->add_event(m_client_callback, 0, ambulant::lib::ep_med);
 				m_client_callback = NULL;
 			}
 			//m_event_processor = NULL;
@@ -828,7 +828,7 @@ ffmpeg_resample_datasource::data_avail()
 			assert(m_event_processor);
 			lib::event *clientcallback = m_client_callback;
 			m_client_callback = NULL;
-			m_event_processor->add_event(clientcallback, 0, ambulant::lib::event_processor::med);
+			m_event_processor->add_event(clientcallback, 0, ambulant::lib::ep_med);
 			//m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): No client callback!");
@@ -953,7 +953,7 @@ ffmpeg_resample_datasource::start(ambulant::lib::event_processor *evp, ambulant:
 		if (callbackk) {
 			assert(evp);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::start: trigger client callback");
-			evp->add_event(callbackk, 0, ambulant::lib::event_processor::med);
+			evp->add_event(callbackk, 0, ambulant::lib::ep_med);
 		} else {
 			lib::logger::get_logger()->error("Internal error: ffmpeg_resample_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));

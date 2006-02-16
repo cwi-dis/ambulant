@@ -196,7 +196,7 @@ void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
 void CAmbulantPlayerView::OnPlay() 
 {
 	if(player) {
-		player->start();
+		player->play();
 		needs_done_redraw = true;
 	}
 	
@@ -204,7 +204,7 @@ void CAmbulantPlayerView::OnPlay()
 
 void CAmbulantPlayerView::OnUpdatePlay(CCmdUI* pCmdUI) 
 {
-	bool enable = player && !player->is_playing();
+	bool enable = player && player->is_play_enabled();
 	pCmdUI->Enable(enable?TRUE:FALSE);
 	
 }
@@ -217,9 +217,9 @@ void CAmbulantPlayerView::OnPause()
 
 void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI) 
 {
-	bool enable = player && (player->is_playing() || player->is_pausing());
+	bool enable = player && player->is_pause_enabled();
 	pCmdUI->Enable(enable?TRUE:FALSE);
-	if(enable) pCmdUI->SetCheck(player->is_pausing()?1:0);
+	if(enable) pCmdUI->SetCheck(player->is_pause_active()?1:0);
 	
 }
 
@@ -243,7 +243,7 @@ void CAmbulantPlayerView::OnStop()
 
 void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI) 
 {
-	bool enable = player && (player->is_playing() || player->is_pausing());
+	bool enable = player && (player->is_stop_enabled());
 	pCmdUI->Enable(enable?TRUE:FALSE);
 	
 }
@@ -276,7 +276,7 @@ void CAmbulantPlayerView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CAmbulantPlayerView::OnTimer(UINT nIDEvent) 
 {
-	if(player && needs_done_redraw && player->is_done()) {
+	if(player && needs_done_redraw && player->is_stop_active()) {
 		OnStop();
 	}
 	

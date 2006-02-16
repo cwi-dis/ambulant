@@ -793,6 +793,12 @@
 				Name="common"
 				Filter="">
 				<File
+					RelativePath=".\common\factory.cpp">
+				</File>
+				<File
+					RelativePath=".\common\gui_player.cpp">
+				</File>
+				<File
 					RelativePath=".\common\plugin_engine.cpp">
 				</File>
 				<File
@@ -1266,6 +1272,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\factory.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\gui_player.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\layout.h">

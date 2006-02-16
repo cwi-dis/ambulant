@@ -19,3 +19,6 @@ int ambulant_point_Convert(PyObject *v, ambulant::lib::point *p_itself);
 
 PyObject *ambulant_size_New(const ambulant::lib::size& itself);
 int ambulant_size_Convert(PyObject *v, ambulant::lib::size *p_itself);
+
+PyObject *ambulant_attributes_list_New(const ambulant::lib::q_attributes_list& itself);
+int ambulant_attributes_list_Convert(PyObject *v, ambulant::lib::q_attributes_list *p_itself);

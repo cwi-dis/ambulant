@@ -41,7 +41,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
-#include "ambulant/common/factory.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/net/url.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
@@ -83,10 +83,39 @@ class viewport;
 class dg_window;
 class dg_transition;
 
+class dg_playable_factory : public common::playable_factory {
+  public:
+	  dg_playable_factory(
+			common::factories *factory,
+			lib::logger *logger,
+			dg_playables_context *ctx)
+	:	m_factory(factory),
+		m_logger(logger),
+		m_dgplayer(ctx) {}
+	////////////////////
+	// common::playable_factory implementation
+	
+	common::playable *new_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const ambulant::lib::node *node,
+		lib::event_processor * evp);
+
+	common::playable *new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src);
+  private:
+	common::factories *m_factory;
+	lib::logger *m_logger;
+	dg_playables_context *m_dgplayer;
+};
+
 class dg_player : 
-	//public common::player, 
+	public common::gui_player, 
 	public common::window_factory, 
-	public common::playable_factory,
 	public dg_playables_context,
 	public common::embedder {
 	
@@ -95,19 +124,12 @@ class dg_player :
 	~dg_player();
 	
 	////////////////////
-	// common::player implementation
-	
-	void start();
-	void stop();
-	void pause();
-	void resume();
-	
-	bool is_playing() const;
-	bool is_pausing() const;
-	bool is_done() const;
+	// common::gui_player implementation
+	void init_playable_factory();
+	void init_window_factory();
+	void init_datasource_factory();
+	void init_parser_factory();
 
-	void set_preferences(const char *url);
-	
 	// should these be part of the player interface?
 	lib::timer* get_timer() { return 0;}
 	lib::event_processor* get_evp() { return 0;}
@@ -124,21 +146,6 @@ class dg_player :
 	void window_done(const std::string& name);
 	
 	////////////////////
-	// common::playable_factory implementation
-	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const ambulant::lib::node *node,
-		lib::event_processor * evp);
-	
-	common::playable *new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src);
-	////////////////////
 	////////////////////
 	// common::embedder implementation
 	void show_file(const net::url& href);
@@ -153,10 +160,8 @@ class dg_player :
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
-	const net::url& get_url() const { return m_url;}
+//	const net::url& get_url() const { return m_url;}
 	
-	common::window_factory *get_window_factory() { return this;}
-	common::playable_factory *get_playable_factory() {return this;}
 	viewport* create_viewport(int w, int h, HWND hwnd);
 	void redraw(HWND hwnd, HDC hdc);
 	void on_done();
@@ -175,26 +180,20 @@ class dg_player :
 	dg_transition *get_transition(common::playable *p);
 	
   private:
-	common::gui_window* get_window(const lib::node* n);
+//	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 	HWND get_main_window();
 
 	// Callbacks to the hosting program
   	dg_player_callbacks &m_hoster;
   	
-	// The current document URL
-	net::url m_url;
-	
-	// The current SMIL2 player
-	smil2::smil_player *m_player;
-	
 	// The current view	
 	struct wininfo {HWND h; viewport *v; dg_window *w; long f;};
 	std::map<std::string, wininfo*> m_windows;	
 	wininfo* get_wininfo(HWND hwnd);
 	
 	// The frames stack
-	struct frame {std::map<std::string, wininfo*> windows; smil2::smil_player* player;};
+	struct frame {std::map<std::string, wininfo*> windows; common::player* player;};
 	std::stack<frame*> m_frames;
 	
 	// The secondary timer and processor
@@ -207,7 +206,6 @@ class dg_player :
 	lib::critical_section m_trmap_cs;
 	
 	lib::logger *m_logger;
-	common::factories *m_factory;
 };
 
 } // namespace dg

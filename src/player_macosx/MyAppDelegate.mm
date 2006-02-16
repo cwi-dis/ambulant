@@ -70,7 +70,7 @@ show_message(int level, const char *format)
 	NSString *message = [[NSString stringWithCString: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:) 
-		withObject: message waitUntilDone: YES];
+		withObject: message waitUntilDone: NO];
 //	[message release];
 }
 
@@ -150,7 +150,7 @@ initialize_logger()
 		fact.pf->add_factory(new ambulant::lib::xerces_factory());
 #endif
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
-		pe->add_plugins(&fact);
+		pe->add_plugins(&fact, NULL);
 	}
 #endif
 
@@ -158,7 +158,7 @@ initialize_logger()
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
 	if (systemTestSettingsPath) {
 		std::string path([systemTestSettingsPath cString]);
-		mainloop::set_preferences(path);
+		mainloop::load_test_attrs(path);
 		// And initialize the location where we find other datafiles (bit of a hack)
 		NSString *nsresourcedir = [systemTestSettingsPath stringByDeletingLastPathComponent];
 		std::string resourcedir([nsresourcedir cString]);
@@ -204,7 +204,7 @@ initialize_logger()
 	if (result != NSOKButton) return;
 	NSString *filename = [[panel filenames] objectAtIndex: 0];
 	std::string path([filename cString]);
-	mainloop::set_preferences(path);
+	mainloop::load_test_attrs(path);
 }
 
 - (IBAction)playWelcome:(id)sender

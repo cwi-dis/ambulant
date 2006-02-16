@@ -120,7 +120,7 @@ class qt_ambulant_widget : public QWidget {
 
 class qt_window_factory : public common::window_factory {
   public:
-	qt_window_factory( QWidget* parent_widget, int x, int y);
+	qt_window_factory( QWidget* parent_widget, int top_offset);
 		
 		common::gui_window* new_window(
 			const std::string &name,
@@ -130,7 +130,7 @@ class qt_window_factory : public common::window_factory {
 			const common::region_info *src);
   private:
 	QWidget* m_parent_widget;
-	lib::point m_p;
+	int m_top_offset;
 };  // class qt_window_factory
 
 class qt_renderer_factory : public common::playable_factory {

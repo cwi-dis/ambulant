@@ -108,7 +108,7 @@ class wvc_container : public lib::ref_counted_obj {
 	void hide(event_processor *evp) {
 		typedef lib::scalar_arg_callback_event<wvc_container, int> hide_cb;
 		hide_cb *cb = new hide_cb(this, &wvc_container::hide_generation, m_generation);
-		evp->add_event(cb, 1, lib::event_processor::med);
+		evp->add_event(cb, 1, lib::ep_med);
 	}
 };
 

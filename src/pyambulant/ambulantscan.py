@@ -23,6 +23,8 @@ def main():
         AMBULANT+ "lib/timer.h",
         AMBULANT+ "lib/transition_info.h",
         AMBULANT+ "common/embedder.h",
+        AMBULANT+ "common/factory.h",
+        AMBULANT+ "common/gui_player.h",
         AMBULANT+ "common/layout.h",
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
@@ -64,6 +66,8 @@ class MyScanner(CxxScanner):
             "none_background_renderer", # XXX Constructor for unsupported type
             "none_playable_factory",  # XXX Constructor for unsupported type
             "event_processor_impl", # Constructor for unsupported type
+            "load_test_attrs",
+            "create_from_tree", # Ifdeffed out, for the time being
            
         ]
 
@@ -82,9 +86,6 @@ class MyScanner(CxxScanner):
             "stdio_datasource_ptr", # Ditto
             "stdio_datasource_factory", # Ditto
             "Where_we_get_our", # Parser trips over a comment:-)
-            "q_attributes_list",    # We don't do lists, for now
-            "q_attributes_list_ref",    # We don't do lists, for now
-            "const_q_attributes_list_ref",    # We don't do lists, for now
             "flag_event",  # Holds a reference to a bool, not useful for Python
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
             "const_custom_test_map_ptr", # We don't do maps for now
@@ -125,13 +126,21 @@ class MyScanner(CxxScanner):
 
     def makerepairinstructions(self):
         return [
+        	# Assume an int pointer is an out-param
+        	(
+        	  [
+        	  	('int_ptr', '*', 'InMode'),
+        	  ], [
+        	    ('int', '*', 'OutMode')
+        	  ]
+        	),
             # Assume a pair (const char *, size_t) is an input buffer
             (
               [
                 ('char_ptr', '*', 'InMode+ConstMode'),
                 ('size_t', '*', 'InMode')
               ],[
-                ('InBuffer', '*', 'InMode'),
+                ('InBuffer', '*', 'InMode+ConstMode'),
                ]
             ),
             

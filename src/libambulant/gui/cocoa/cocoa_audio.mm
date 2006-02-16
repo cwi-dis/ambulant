@@ -104,7 +104,7 @@ cocoa_audio_playable::check_still_playing()
 			AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.check_still_playing(0x%x): busy", (void*)this);
 			typedef lib::no_arg_callback<cocoa_audio_playable> check_still_playing_callback;
 			lib::event *ev = new check_still_playing_callback(this, &cocoa_audio_playable::check_still_playing);
-			m_event_processor->add_event(ev, 100, lib::event_processor::med);
+			m_event_processor->add_event(ev, 100, lib::ep_med);
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.check_still_playing(0x%x): finished", (void*)this);
 			[m_sound release];

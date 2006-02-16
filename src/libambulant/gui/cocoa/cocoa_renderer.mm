@@ -193,7 +193,7 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
 		if (delay < 33) delay = 33; // XXX band-aid
 		AM_DBG lib::logger::get_logger()->debug("cocoa_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, lib::event_processor::med);
+		m_event_processor->add_event(ev, delay, lib::ep_med);
 	}
 
 	// Finally, if the transition is done clean it up and signal that freeze_transition
@@ -202,7 +202,7 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		typedef lib::no_arg_callback<cocoa_transition_renderer> stop_transition_callback;
 		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop);
-		m_event_processor->add_event(ev, 0, lib::event_processor::med);
+		m_event_processor->add_event(ev, 0, lib::ep_med);
 #ifdef USE_SMIL21
 		if (m_fullscreen)
 			[view screenTransitionStep: NULL elapsed: 0];

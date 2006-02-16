@@ -137,8 +137,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)openTheDocument
 {
-    ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
-    myWindowFactory = new ambulant::gui::cocoa::cocoa_window_factory((void *)view);
     NSString *url = [[self fileURL] path];
 	if ( [[self fileURL] isFileURL] ) {
 		NSString *escapedurl = (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
@@ -148,7 +146,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 	bool use_mms = ([[url pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
-	myMainloop = new mainloop([url UTF8String], myWindowFactory, use_mms, embedder);
+	myMainloop = new mainloop([url UTF8String], view, use_mms, embedder);
 	[self play: self];
 }
 
@@ -166,40 +164,41 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (BOOL) validateUIItem:(id)UIItem
 {
-	if (!myMainloop) return NO;
+	AM_DBG NSLog(@"Validating %@", UIItem);
 	SEL theAction = [UIItem action];
-	AM_DBG NSLog(@"Validating %@, is_running=%d, get_speed=%f", UIItem, myMainloop->is_running(),myMainloop->get_speed());
+	if (!myMainloop) {
+		// No document: no checkmarks and grayed for all items
+		[UIItem setState: NSOffState];
+		return NO;
+	}
+	
 	if (theAction == @selector(play:)) {
-		if (myMainloop->is_running() && myMainloop->get_speed() == 1.0) {
+		if (myMainloop->is_play_active()) {
 			AM_DBG NSLog(@"play - On");
 			[UIItem setState: NSOnState];
 		} else {
 			AM_DBG NSLog(@"play - Off");
 			[UIItem setState: NSOffState];
 		}
-		//AM_DBG NSLog(@"play - enabled=%d", (!myMainloop->is_running() || myMainloop->get_speed() == 0.0));
-		//return !myMainloop->is_running() || myMainloop->get_speed() == 0.0;
-		return YES;
+		return myMainloop->is_play_enabled();
 	} else if (theAction == @selector(stop:)) {
-		if (!myMainloop->is_running()) {
+		if (myMainloop->is_stop_active()) {
 			AM_DBG NSLog(@"stop - On");
 			[UIItem setState: NSOnState];
 		} else {
-			AM_DBG NSLog(@"stop - On");
+			AM_DBG NSLog(@"stop - Off");
 			[UIItem setState: NSOffState];
 		}
-		AM_DBG NSLog(@"play - enabled=%d", (myMainloop->is_running()));
-		return myMainloop->is_running();
+		return myMainloop->is_stop_enabled();
 	} else if (theAction == @selector(pause:)) {
-		if (myMainloop->is_running() && myMainloop->get_speed() == 0.0) {
+		if (myMainloop->is_pause_active()) {
 			AM_DBG NSLog(@"pause - On");
 			[UIItem setState: NSOnState];
 		} else {
 			AM_DBG NSLog(@"pause - On");
 			[UIItem setState: NSOffState];
 		}
-		AM_DBG NSLog(@"play - enabled=%d", (myMainloop->is_running()));
-		return myMainloop->is_running();
+		return myMainloop->is_pause_enabled();
 	}
 	return NO;
 }
@@ -223,37 +222,30 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction)pause:(id)sender
 {
-    if (myMainloop) myMainloop->set_speed(1.0 - myMainloop->get_speed());
+    if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }
 
 - (IBAction)play:(id)sender
 {
 	if (!myMainloop) return;
-	if (myMainloop->is_running())
-		myMainloop->set_speed(1.0);
-	else {
-		// Removed: see comment in [startPlay:]
-		// myMainloop->add_ref();
-		[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
-	}
+	[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
 	[self validateButtons: nil];
 }
 
 - (void)startPlay: (id)dummy
 {
+	// XXXX Jack thinks that this extra thread is no longer needed (20060124)
 	if (!myMainloop) return;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    if (![NSThread isMultiThreaded]) {
-        NSLog(@"startPlay: still not multi-threaded!");
-    }
-    myMainloop->play();
+    assert([NSThread isMultiThreaded]);
+	myMainloop->play();
 	// We don't use refcounting on myMainloop, because
 	// otherwise our player infrastructure will be destructed in this
 	// thread, and at that time the window (and the ambulantWidget) is
 	// gone. So the main thread does the cleanup and zaps myMainloop.
-	while (myMainloop && myMainloop->is_running()) {
+	while (myMainloop && (myMainloop->is_play_active()||myMainloop->is_pause_active())) {
 		AM_DBG NSLog(@"validating in separate thread");
 		[self validateButtons: nil];
 		sleep(1);
@@ -282,7 +274,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
-	if (myMainloop) myMainloop->release();
+	if (myMainloop) delete myMainloop;
 	myMainloop = NULL;
 	delete embedder;
 	embedder = NULL;

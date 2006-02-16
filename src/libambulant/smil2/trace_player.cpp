@@ -57,7 +57,7 @@ trace_player::~trace_player() {
 }
 
 void trace_player::schedule_event(event *ev, lib::timer::time_type t, event_priority ep) {
-	m_event_processor->add_event(ev, t, (event_processor::event_priority)ep);
+	m_event_processor->add_event(ev, t, ep);
 }
 
 void trace_player::start() {

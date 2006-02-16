@@ -42,25 +42,30 @@
 
 using namespace ambulant;
 
-lib::tree_builder::tree_builder(node_context *context, const char *id)
+lib::tree_builder::tree_builder(node_factory *nf, node_context *context, const char *id)
 :	m_xmlparser(0),
 	m_root(0),
 	m_current(0),
 	m_well_formed(false),
+	m_node_factory(nf),
 	m_context(context),
 	m_filename(id)
 {
+	assert(m_node_factory);
+#ifndef WITH_EXTERNAL_DOM
+	assert(m_node_factory == get_builtin_node_factory());
+#endif
 	reset();
 }
 
 lib::tree_builder::~tree_builder()
-	{
-//TMP	printf(":tree_builder::~tree_builder() m_xmlparser=0x%x\n", m_xmlparser);
+{
 	if(m_xmlparser != 0)
 		delete m_xmlparser;
 	if(m_root != 0)
 		delete m_root;
-	}
+	// m_node_factory is a borrowed reference
+}
 
 lib::node* 
 lib::tree_builder::detach() {
@@ -183,10 +188,10 @@ lib::tree_builder::end_document() {
 void 
 lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
-		m_root = m_current = node_factory(qn, qattrs, m_context);
+		m_root = m_current = m_node_factory->new_node(qn, qattrs, m_context);
 	} else if(m_current != 0) {
 		node *p;
-		p = node_factory(qn, qattrs, m_context);
+		p = m_node_factory->new_node(qn, qattrs, m_context);
 		m_current->append_child(p);
 		m_current = p;
 	} else

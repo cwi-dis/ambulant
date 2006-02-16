@@ -659,7 +659,13 @@ void trimmed_output_visitor<Node>::write_end_tag_with_children(const Node*& pe) 
 }
 #endif // AMBULANT_NO_IOSTREAMS
 
-#if WITH_EXTERNAL_DOM
+class builtin_node_factory : public lib::node_factory {
+  public:
+	lib::node *new_node(const char *local_name, const char **attrs, const lib::node_context *ctx);
+	lib::node *new_node(const lib::xml_string& local_name, const char **attrs = 0, const lib::node_context *ctx = 0);
+	lib::node *new_node(const lib::q_name_pair& qn, const lib::q_attributes_list& qattrs, const lib::node_context *ctx = 0);
+	lib::node *new_node(const lib::node* other);
+};
 
 // If we are building a player with an (optional) external DOM implementation
 // we need to define a couple more things:
@@ -667,47 +673,41 @@ void trimmed_output_visitor<Node>::write_end_tag_with_children(const Node*& pe) 
 // - a couple of methods that accept node_interface parameters and do
 //   dynamic typechecks that the arguments are actually node_impl's.
 
-namespace ambulant {
-namespace lib {
 // Factory functions
-lib::node_interface *
-node_factory(const char *local_name, const char **attrs, const node_context *ctx)
+lib::node *
+builtin_node_factory::new_node(const char *local_name, const char **attrs, const lib::node_context *ctx)
 {
-	return new node_impl(local_name, attrs, ctx);
+	return new lib::node_impl(local_name, attrs, ctx);
 }
 
 /// Construct a new, unconnected, node.
 /// Note: attrs are as per expat parser
 /// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-lib::node_interface *
-node_factory(const xml_string& local_name, const char **attrs, const node_context *ctx)
+lib::node *
+builtin_node_factory::new_node(const lib::xml_string& local_name, const char **attrs, const lib::node_context *ctx)
 {
-	return new node_impl(local_name, attrs, ctx);
+	return new lib::node_impl(local_name, attrs, ctx);
 }
 
 /// Construct a new, unconnected, node.
 /// Note: attrs are as per expat parser
 /// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
-lib::node_interface *
-node_factory(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
+lib::node *
+builtin_node_factory::new_node(const lib::q_name_pair& qn, const lib::q_attributes_list& qattrs, const lib::node_context *ctx)
 {
-	return new node_impl(qn, qattrs, ctx);
+	return new lib::node_impl(qn, qattrs, ctx);
 }
 
 // shallow copy from other.
-lib::node_interface *
-node_factory(const lib::node_interface* other)
+lib::node *
+builtin_node_factory::new_node(const lib::node* other)
 {
-	return new node_impl(dynamic_cast<const node_impl*>(other));
+	return new lib::node_impl(dynamic_cast<const lib::node_impl*>(other));
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
-std::ostream& operator<<(std::ostream& os, const lib::node_interface& n)
+lib::node_factory *lib::get_builtin_node_factory()
 {
-	return os << *dynamic_cast<const ambulant::lib::node_impl*>(&n);
+	static builtin_node_factory nf;
+	
+	return &nf;
 }
-#endif
-} // namespace lib
-} // namespace ambulant
-#endif
-

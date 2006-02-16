@@ -268,12 +268,12 @@ plugin_engine::load_plugins(std::string dirname)
 #endif // WITH_XXXX_PLUGINS
 
 void
-plugin_engine::add_plugins(common::factories* factory)
+plugin_engine::add_plugins(common::factories* factory, common::gui_player *player)
 {
     std::vector< initfuncptr >::iterator i;
     for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
         initfuncptr init;
         init = *i;
-        (init)(factory);
+        (init)(AMBULANT_PLUGIN_API_VERSION, factory, player);
     }
 }

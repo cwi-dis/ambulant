@@ -18,6 +18,7 @@ OBJECTS=[
 	"lib/node.h",
 	("node_context", "ambulant::lib::node_context", None),
 	("node", "ambulant::lib::node", None),
+	("node_factory", "ambulant::lib::node_factory", None),
 	
 	"lib/document.h",
 	("document", "ambulant::lib::document", "node_context"),
@@ -50,6 +51,13 @@ OBJECTS=[
 	
 	"common/embedder.h",
 	("embedder", "ambulant::common::embedder", "system_embedder"),
+	
+	"common/factory.h",
+	("factories", "ambulant::common::factories", None),
+	
+	"common/gui_player.h",
+	("gui_screen", "ambulant::common::gui_screen", None),
+	("gui_player", "ambulant::common::gui_player", "factories"),
 	
 	"common/layout.h",
 	("alignment", "ambulant::common::alignment", None),
@@ -113,7 +121,7 @@ for item in OBJECTS:
 	if bname:
 		bname = 'basetype = "%s_Type"\n    baseclass = "%s"' % (bname, bname)
 	else:
-		bname = 'baseclass = None'
+		bname = 'basetype = "pycppbridge_Type"'
 	print >>out, FORMAT % locals()
 	print >>modout, INCLFORMAT % locals()
 	

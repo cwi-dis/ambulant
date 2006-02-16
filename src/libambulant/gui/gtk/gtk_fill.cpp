@@ -144,7 +144,7 @@ gtk_fill_renderer::redraw(const rect &dirty,
 		if (delay < 33) delay = 33; // XXX band-aid
 //		delay = 500;
 		AM_DBG logger::get_logger()->debug("gtk_fill_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, event_processor::low);
+		m_event_processor->add_event(ev, delay, ep_low);
 	}
 	m_lock.leave();
 }

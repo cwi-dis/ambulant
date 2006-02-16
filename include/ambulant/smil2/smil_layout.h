@@ -52,7 +52,7 @@ class smil_layout_manager : public common::layout_manager {
 	~smil_layout_manager();
 	
 #ifdef USE_SMIL21
-	void load_bgimages(common::playable_factory *pf);
+	void load_bgimages(common::factories *factories);
 #endif
 
 	common::surface *get_surface(const lib::node *node);

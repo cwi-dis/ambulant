@@ -38,6 +38,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/common/embedder.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/common/factory.h"
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
@@ -60,23 +61,20 @@ class gtk_mainloop_callback_arg {
 };
 class gtk_gui;
 
-class gtk_mainloop : public ambulant::common::embedder, public ambulant::lib::ref_counted {
+class gtk_mainloop :
+    public common::gui_player,
+    public ambulant::common::embedder
+{
   //  static bool m_done;
   public:
         gtk_mainloop(gtk_gui* parent);
 	~gtk_mainloop();
 	
-	// The callback member function.
-	void player_done_callback() {
-		m_running = false;
-	}
-	
-	void play();
-	void stop();
-	void set_speed(double speed);
-	double get_speed() const { return m_speed; }
-	bool is_running() const;
-	bool is_open() const;
+	void init_playable_factory();
+	void init_datasource_factory();
+	void init_parser_factory();
+
+    bool is_open() const { return m_player != NULL; }
 	
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
@@ -85,30 +83,8 @@ class gtk_mainloop : public ambulant::common::embedder, public ambulant::lib::re
 	bool player_done();
 	void player_start(gchar* document_name, bool start, bool old);
 	
-	long add_ref() {
-		return ++m_refcount;
-	}
-	
-	long release() {
-		if(--m_refcount == 0) {
-			delete this;
-			return 0;
-		}
-		return m_refcount;
-	}
-	
-	long get_ref_count() const {
-		return m_refcount;
-	}
-	int get_cursor() const { 
-		return m_player?m_player->get_cursor():0;
-	};
-
-	void set_cursor(int cursor) { 
-		if (m_player)
-		  m_player->set_cursor(cursor); 
-	}	
- private: 
+ private:
+ #if 0
 	// from dx_player
 	// The frames stack
 	struct frame {
@@ -116,16 +92,13 @@ class gtk_mainloop : public ambulant::common::embedder, public ambulant::lib::re
 	  	ambulant::common::player* player;
 	};
 	std::stack<frame*> m_frames;
+#endif
 
-	ambulant::lib::document *create_document(net::url& url);
 	ambulant::common::player* create_player(const char* filename);
 	// sorted alphabetically on member name
 	document*				m_doc;
- 	common::factories*			m_factory;
 	gtk_gui*				m_gui;
 	lib::logger*				m_logger;
-	player*					m_player;
-	basic_atomic_count<critical_section>	m_refcount;
 	
  	bool					m_running;
 	double					m_speed;

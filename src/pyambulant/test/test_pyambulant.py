@@ -3,7 +3,7 @@ import ambulant
 import unittest
 import time
 
-VERSION="1.5" # Ambulant version
+VERSION="1.7" # Ambulant version
 WELCOME="../../Extras/Welcome/Welcome.smil"
 DOCUMENT="""<?xml version="1.0"?>
 <!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
@@ -26,6 +26,20 @@ class TestBasics(unittest.TestCase):
 
     def setUp(self):
         pass
+        
+    def _getfactories(self):
+        rf = ambulant.get_global_playable_factory()
+        wf = ambulant.none_window_factory()
+        df = ambulant.datasource_factory()
+        pf = ambulant.get_parser_factory()
+        nf = ambulant.get_builtin_node_factory()
+        factories = ambulant.factories()
+        factories.set_playable_factory(rf)
+        factories.set_window_factory(wf)
+        factories.set_datasource_factory(df)
+        factories.set_parser_factory(pf)
+        factories.set_node_factory(nf)
+        return factories
         
     def test_01_getversion(self):
         version = ambulant.get_version()
@@ -71,23 +85,15 @@ class TestBasics(unittest.TestCase):
         del evp
         
     def test_04_document(self):
-        rf = ambulant.get_global_playable_factory()
-        wf = ambulant.none_window_factory()
-        df = ambulant.datasource_factory()
-        pf = ambulant.get_parser_factory()
-        factories = (rf, wf, df, pf)
+        factories = self._getfactories()
         doc = ambulant.create_from_string(factories, "<smil></smil>", "file:///test.smil")
         self.assert_(type(doc) is ambulant.document)
         root = doc.get_root()
         self.assert_(type(root) is ambulant.node)
         self.assertEqual(root.size(), 1)
         
-    def test_05_baddocument(self):
-        rf = None #ambulant.get_global_playable_factory()
-        wf = None #ambulant.none_window_factory()
-        df = None #ambulant.datasource_factory()
-        pf = None #ambulant.get_parser_factory()
-        factories = (rf, wf, df, pf)
+    def x_test_05_baddocument(self):
+        factories = self._getfactories()
         doc = ambulant.create_from_string(factories, "<smil></smil>", "file:///test.smil")
         self.assert_(type(doc) is ambulant.document)
         root = doc.get_root()
@@ -95,11 +101,7 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(root.size(), 1)
         
     def test_06_node(self):
-        rf = ambulant.get_global_playable_factory()
-        wf = ambulant.none_window_factory()
-        df = ambulant.datasource_factory()
-        pf = ambulant.get_parser_factory()
-        factories = (rf, wf, df, pf)
+        factories = self._getfactories()
         doc = ambulant.create_from_string(factories, DOCUMENT, "file:///testdir/test.smil")
         self.assert_(doc)
         root = doc.get_root()
@@ -109,7 +111,31 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(p1.get_local_name(), "par")
         self.assertEqual(p1.get_attribute_1("id"), "par1")
         self.assertEqual(p1.get_attribute_2("id"), "par1")
- #       self.assertEqual(p1.get_attribute_1("src"), "img1.gif")
+
+        self.assertEqual(p1.get_root(), root)
+        self.assertNotEqual(p1, root)
+
+        p1_path = p1.get_path_display_desc()
+        self.assertEqual(p1_path, "smil/body/par:par1")
+        self.assertEqual(root.locate_node("body/par"), p1)
+
+    def test_07_node_factory(self):
+        class MyNodeFactory:
+            def new_node(self, tag, arglist, context):
+                orig_nf = ambulant.get_builtin_node_factory()
+                return orig_nf.new_node_1(tag, arglist, context)
+
+        factories = self._getfactories()
+        factories.set_node_factory(MyNodeFactory())
+        doc = ambulant.create_from_string(factories, DOCUMENT, "file:///testdir/test.smil")
+        self.assert_(doc)
+        root = doc.get_root()
+        self.assertEqual(root.get_local_name(), "smil")
+        self.assertEqual(root.size(), 8)
+        p1 = doc.get_node("par1")
+        self.assertEqual(p1.get_local_name(), "par")
+        self.assertEqual(p1.get_attribute_1("id"), "par1")
+        self.assertEqual(p1.get_attribute_2("id"), "par1")
 
         self.assertEqual(p1.get_root(), root)
         self.assertNotEqual(p1, root)
@@ -119,11 +145,7 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(root.locate_node("body/par"), p1)
         
     def x_test_07_mmsplayer(self):
-        rf = ambulant.get_global_playable_factory()
-        wf = ambulant.none_window_factory()
-        df = ambulant.datasource_factory()
-        pf = ambulant.get_parser_factory()
-        factories = (rf, wf, df, pf)
+        factories = self._getfactories()
         doc = ambulant.create_from_file(factories, WELCOME)
         self.assert_(doc)
         player = ambulant.create_mms_player(doc, factories)
@@ -134,11 +156,7 @@ class TestBasics(unittest.TestCase):
     def x_test_08_smil2player(self):
         class MyEmbedder:
             pass
-        rf = ambulant.get_global_playable_factory()
-        wf = ambulant.none_window_factory()
-        df = ambulant.datasource_factory()
-        pf = ambulant.get_parser_factory()
-        factories = (rf, wf, df, pf)
+        factories = self._getfactories()
         doc = ambulant.create_from_file(factories, WELCOME)
         self.assert_(doc)
         embedder = MyEmbedder()

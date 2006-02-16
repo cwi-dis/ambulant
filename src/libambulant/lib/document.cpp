@@ -36,6 +36,13 @@
 
 using namespace ambulant;
 
+lib::document::document()
+:	m_root(NULL),
+	m_root_owned(false)
+{
+}
+
+#if 0
 lib::document::document(node *root, bool owned) 
 :	m_root(root),
 	m_root_owned(owned)
@@ -46,11 +53,13 @@ lib::document::document(node *root, bool owned)
 
 lib::document::document(node *root, const net::url& src_url) 
 :	m_root(root),
-	m_src_url(src_url) {
+	m_root_owned(xxx),
+	m_src_url(src_url)
+{
 	build_id2node_map();
 	read_custom_attributes();
 }
-
+#endif
 
 lib::document::~document() {
 	if (m_root_owned) delete m_root;
@@ -74,7 +83,7 @@ lib::document::get_root() const {
 lib::document* 
 lib::document::create_from_file(common::factories* factory, const std::string& filename) {
 	document *d = new document();
-	tree_builder builder(d);
+	tree_builder builder(factory->get_node_factory(), d);
 	if(!builder.build_tree_from_file(filename.c_str())) {
 		// build_tree_from_file has reported the error already
 		// logger::get_logger()->error(gettext("%s: Not a valid XML document"), filename.c_str());
@@ -99,7 +108,7 @@ lib::document::create_from_file(common::factories* factory, const std::string& f
 lib::document* 
 lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
-	tree_builder builder(d);
+	tree_builder builder(factory->get_node_factory(), d);
 	char *data;
 	size_t datasize;
 	if (!net::read_data_from_url(u, factory->get_datasource_factory(), &data, &datasize)) {
@@ -128,7 +137,7 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 lib::document* 
 lib::document::create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id) {
 	document *d = new document();
-	tree_builder builder(d, src_id.c_str());
+	tree_builder builder(factory->get_node_factory(), d, src_id.c_str());
 	if(!builder.build_tree_from_str(smil_src)) {
 		logger::get_logger()->error(gettext("%s: Not a valid XML document"), src_id.c_str());
 		delete d;
@@ -143,6 +152,7 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 	return d;
 }
 
+#if 0
 //static 
 lib::document* 
 lib::document::create_from_tree(common::factories* factory, lib::node *root, const net::url& u) {
@@ -155,6 +165,7 @@ lib::document::create_from_tree(common::factories* factory, lib::node *root, con
 	d->set_src_url(u);
 	return d;
 }
+#endif
 
 void 
 lib::document::set_prefix_mapping(const std::string& prefix, const std::string& uri) {
@@ -180,10 +191,15 @@ lib::document::resolve_url(const net::url& rurl) const {
 
 void lib::document::set_root(node* n) {
 	if(m_root_owned && m_root != n) delete m_root;
-	// XXX Should we reset m_root_owned??
+	m_root_owned = true;
 	m_root = n;
 	build_id2node_map();
 	read_custom_attributes();
+}
+
+void
+lib::document::tree_changed() {
+	set_root(m_root);
 }
 
 void lib::document::build_id2node_map() {

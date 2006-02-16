@@ -48,8 +48,36 @@ class BackModule(BackGeneratorGroup):
 
         if self.includestuff:
             Output("%s", self.includestuff)
+            
+        self.generateBridgeDeclarations()
     
         BackGeneratorGroup.generateDeclaration(self)
+        
+    def generateBridgeDeclarations(self):
+        OutHeader1("Glue classes to maintain object identity")
+        Output("class cpppybridge {")
+        Output("  public:")
+        Output("    virtual ~cpppybridge() {};")
+        Output("};")
+        Output()
+        Output("#if 1")
+        Output("extern PyTypeObject pycppbridge_Type;")
+        Output()
+        Output("extern cpppybridge *pycppbridge_getwrapper(PyObject *o);")
+        Output("extern void pycppbridge_setwrapper(PyObject *o, cpppybridge *w);")
+        Output()
+        Output("inline bool pycppbridge_Check(PyObject *x)")
+        OutLbrace()
+        Output("return PyObject_TypeCheck(x, &pycppbridge_Type);")
+        OutRbrace()
+        Output()
+        Output("#else")
+        Output("inline bool pycppbridge_Check(PyObject *x) { return false; };")
+        Output("inline cpppybridge *pycppbridge_getwrapper(PyObject *o) { return NULL; };")
+        Output("inline void pycppbridge_setwrapper(PyObject *o, cpppybridge *w) {};")
+        Output("#endif")
+        Output()
+        
         
     def generate(self):
         if not self.checkgenerate():
@@ -67,6 +95,7 @@ class BackModule(BackGeneratorGroup):
         OutHeader1("End callbacks module " + self.name)
 
 class BackObjectDefinition(BackGeneratorGroup):
+    baseclass = None   # Can be overridden by subclasses
 
     def __init__(self, name, dummy, itselftype):
         """ObjectDefinition constructor.  May be extended, but do not override.
@@ -119,7 +148,7 @@ class BackObjectDefinition(BackGeneratorGroup):
         if self.baseclass:
             baseclass = "public %s, " % self.baseclass
         else:
-            baseclass = ""
+            baseclass = "public cpppybridge, "
         Output("class %s : %spublic %s {", self.name, baseclass, self.itselftype)
         self.generateConDesDeclaration()        
 
@@ -134,8 +163,14 @@ class BackObjectDefinition(BackGeneratorGroup):
         DedentLevel()
         Output("};")
         Output("#define BGEN_BACK_SUPPORT_%s", self.name)
-        Output("inline %s *Py_WrapAs_%s(PyObject *o) { return new %s(o); }", 
-                self.name, self.name, self.name)
+        Output("inline %s *Py_WrapAs_%s(PyObject *o)", self.name, self.name)
+        OutLbrace()
+        Output("%s *rv = dynamic_cast<%s*>(pycppbridge_getwrapper(o));", self.name, self.name)
+        Output("if (rv) return rv;")
+        Output("rv = new %s(o);", self.name)
+        Output("pycppbridge_setwrapper(o, rv);")
+        Output("return rv;")
+        OutRbrace()
         Output()
         
     def generateConDesDeclaration(self):
@@ -327,7 +362,7 @@ class BackMethodGenerator:
             namedecl = "void %s" % name
         argdecllist = []
         for arg in self.argumentList:
-            argdecllist = argdecllist + arg.getArgDeclarations(constmode=True)
+            argdecllist = argdecllist + arg.getArgDeclarations(fullmodes=True)
         argdecl = ', '.join(argdecllist)
         return "%s(%s)%s" % (namedecl, argdecl, self.const)
         

@@ -19,9 +19,8 @@
 
 #include "ambulant/common/factory.h"
 #include "ambulant/common/renderer.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/unix/unix_mtsync.h"
-#include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/arts/arts_audio.h"
 #include "ambulant/version.h"
 
@@ -84,8 +83,16 @@ arts_plugin_factory::new_playable(
 
 
 
-extern "C" void initialize(ambulant::common::factories* factory)
-{	
+extern "C" void initialize(   
+    int api_version,
+    ambulant::common::factories* factory,
+    ambulant::common::gui_player *player)
+{
+    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+        lib::logger::get_logger()->warn("xerces_plugin: built for plugin-api version %d, current %d. Skipping.", 
+            AMBULANT_PLUGIN_API_VERSION, api_version);
+        return;
+    }
     if ( !ambulant::check_version() )
         lib::logger::get_logger()->warn("arts_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	AM_DBG lib::logger::get_logger()->debug("arts_plugin::initialize registering factory function");

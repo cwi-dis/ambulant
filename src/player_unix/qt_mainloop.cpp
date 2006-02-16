@@ -83,84 +83,14 @@ open_web_browser(const std::string &href)
 	}
 }
 
-qt_mainloop::qt_mainloop(qt_gui* gui) :
-	m_factory(NULL),
-	m_doc(NULL),
-	m_gui(gui),
-	m_player(NULL),
- 	m_refcount(1),
- 	m_running(false),
-	m_speed(1.0)
+qt_mainloop::qt_mainloop(qt_gui* gui, ambulant::common::window_factory *wf)
+:	m_gui(gui)
 {
  	m_logger = lib::logger::get_logger();
-
-    // Create the factories	
-	common::global_playable_factory *rf = common::get_global_playable_factory();
-	qt_window_factory *wf = new qt_window_factory(m_gui, 
-					      m_gui->get_o_x(),
-					      m_gui->get_o_y());
-	net::datasource_factory *df = new net::datasource_factory();
-	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();	
-	m_factory = new common::factories(rf, wf, df, pf);
-
-    // Populate the parser factory
-#ifdef WITH_XERCES_BUILTIN
-	pf->add_factory(new lib::xerces_factory());
-	AM_DBG m_logger->debug("mainloop::mainloop: add xerces_factory");
-#endif
-
-    // Populate the datasource factory
-#ifdef WITH_LIVE	
-	AM_DBG m_logger->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(new net::live_video_datasource_factory());
-	df->add_audio_factory(new net::live_audio_datasource_factory()); 
-#endif
-#ifdef WITH_FFMPEG
-    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: add ffmpeg_audio_parser_finder");
-	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
-    AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: add ffmpeg_audio_filter_finder");
-	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
-	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
-	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
-	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
-#endif
-
-#ifdef WITH_STDIO_DATASOURCE
-	// This is for debugging only, really: the posix datasource
-	// should always perform better, and is always available on OSX.
-	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
-	// however.
-    AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: add stdio_datasource_factory");
-	df->add_raw_factory(new net::stdio_datasource_factory());
-#endif
-    AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: add posix_datasource_factory");
-	df->add_raw_factory(new net::posix_datasource_factory());
-
-    
-	AM_DBG m_logger->debug("qt_mainloop::qt_mainloop: Starting the plugin engine");
-	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
-	plf->add_plugins(m_factory);
-#ifdef WITH_SDL
-	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	rf->add_factory( new sdl::sdl_renderer_factory(m_factory) );
-AM_DBG logger::get_logger()->debug("add factory for SDL done");
-#endif
-
-#ifdef WITH_ARTS
-	rf->add_factory(new arts::arts_renderer_factory(m_factory));
-#endif 
-
-	rf->add_factory(new qt_renderer_factory(m_factory));
-	
-	AM_DBG m_logger->debug("mainloop::mainloop: added qt_video_factory");		
- 	rf->add_factory(new qt_video_factory(m_factory));
-		AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");		
-
-	rf->add_factory(new none::none_video_factory(m_factory));
-
+ 	set_embedder(this);
+ 	m_window_factory = wf;
+ 	init_factories();
+ 	init_plugins();
 	
 	const char *filename = m_gui->filename();
 	net::url url = net::url::from_filename(filename);
@@ -176,9 +106,9 @@ qt_mainloop::create_player(const char* filename) {
 	bool is_mms = strcmp(".mms", filename+strlen(filename)-4) == 0;
 	ambulant::common::player* player;
 	if (is_mms) {
-		player = create_mms_player(m_doc, m_factory);
+		player = create_mms_player(m_doc, this);
 	} else {
-		player = create_smil2_player(m_doc, m_factory, this);
+		player = create_smil2_player(m_doc, this, m_embedder);
 	}
 #ifdef USE_SMIL21
 	player->initialize();
@@ -186,93 +116,67 @@ qt_mainloop::create_player(const char* filename) {
 	return player;
 }
 
-lib::document *
-qt_mainloop::create_document(net::url& url)
+void
+qt_mainloop::init_playable_factory()
 {
-	char *data;
-	AM_DBG m_logger->debug("qt_mainloop::create_document(\"%s\")", url.get_url().c_str());
-	// Correct for relative pathnames for local files
-	if (url.is_local_file() && !url.is_absolute()) {
-#if 0
-		// Not implemented yet for posix
-		net::url cwd_url(lib::filesys::getcwd());
-#else
-		char cwdbuf[1024];
-		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
-			strcpy(cwdbuf, ".");
-		strcat(cwdbuf, "/");
-		net::url cwd_url = net::url::from_filename(cwdbuf);
+	m_playable_factory = common::get_global_playable_factory();
+
+	m_playable_factory->add_factory(new qt_renderer_factory(this));
+	AM_DBG m_logger->debug("qt_mainloop: adding qt_video_factory");		
+ 	m_playable_factory->add_factory(new qt_video_factory(this));
+
+#ifdef WITH_SDL
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
+	m_playable_factory->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
+#endif // WITH_SDL
+#ifdef WITH_ARTS
+	m_playable_factory->add_factory(new arts::arts_renderer_factory(this));
+#endif 
+}
+
+void
+qt_mainloop::init_datasource_factory()
+{
+	m_datasource_factory = new net::datasource_factory();
+#ifndef NONE_PLAYER
+#ifdef WITH_LIVE	
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add live_audio_datasource_factory");
+	m_datasource_factory->add_video_factory(new net::live_video_datasource_factory());
+	m_datasource_factory->add_audio_factory(new net::live_audio_datasource_factory()); 
 #endif
-		url = url.join_to_base(cwd_url);
-		AM_DBG m_logger->debug("mainloop::create_document: URL is now \"%s\"", url.get_url().c_str());
-	}
-	size_t size;
-	bool result = net::read_data_from_url(url, m_factory->get_datasource_factory(), &data, &size);
-	if (!result)	{
-		// No error message needed, has been done by passive_datasoure::activate()
-		//		m_logger->error("Cannot open %s", filename);
-		return NULL;
-	}
-	std::string docdata(data, size);
-	free(data);
-	lib::document *rv = lib::document::create_from_string(m_factory,docdata, url.get_url().c_str());
-	if (rv) rv->set_src_url(url);
-	return rv;
-}	
-
-qt_mainloop::~qt_mainloop()
-{
-//  m_doc will be cleaned up by the smil_player.
-//	if (m_doc) delete m_doc;
-//	m_doc = NULL;
-	AM_DBG m_logger->debug("qt_mainloop::~qt_mainloop() m_player=0x%x", m_player);
-	if (m_player) {
-		delete m_player;
-	}
-	m_player = NULL;
-	delete m_factory;
+#ifdef WITH_FFMPEG
+#ifdef WITH_FFMPEG_VIDEO
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
+	m_datasource_factory->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+#endif // WITH_FFMPEG_VIDEO
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_datasource_factory");
+	m_datasource_factory->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_parser_finder");
+	m_datasource_factory->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_filter_finder");
+	m_datasource_factory->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_raw_datasource_factory");
+	m_datasource_factory->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+#endif // WITH_FFMPEG
+#endif // NONE_PLAYER
+#ifdef WITH_STDIO_DATASOURCE
+	// This is for debugging only, really: the posix datasource
+	// should always perform better, and is always available on OSX.
+	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
+	// however.
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add stdio_datasource_factory");
+	m_datasource_factory->add_raw_factory(net::get_stdio_datasource_factory());
+#endif
+    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add posix_datasource_factory");
+	m_datasource_factory->add_raw_factory(net::get_posix_datasource_factory());
 }
 
 void
-qt_mainloop::play()
+qt_mainloop::init_parser_factory()
 {
-	m_running = true;
-	m_player->start();
-	AM_DBG m_logger->debug("qt_mainloop::run(): returning");
+	m_parser_factory = lib::global_parser_factory::get_parser_factory();	
 }
 
-void
-qt_mainloop::stop()
-{
-	if (m_player)
-		m_player->stop();
-	AM_DBG m_logger->debug("qt_mainloop::stop(): returning");
-}
-
-void
-qt_mainloop::set_speed(double speed)
-{
-	m_speed = speed;
-	if (m_player) {
-		if (speed == 0.0)
-			m_player->pause();
-		else
-			m_player->resume();
-	}
-}
-
-bool
-qt_mainloop::is_running() const
-{
-	if (!m_running || !m_player) return false;
-	return !m_player->is_done();
-}
-
-bool
-qt_mainloop::is_open() const
-{
-	return m_doc && m_player;
-}
 
 void
 qt_mainloop::show_file(const net::url &url)
@@ -295,6 +199,7 @@ qt_mainloop::player_done()
 //TBD	m_timer->pause();
 //TBD	m_update_event = 0;
 //TBD	clear_transitions();
+#if 0
 	if(!m_frames.empty()) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
@@ -305,6 +210,7 @@ qt_mainloop::player_done()
 //TBD		m_player->need_redraw();
 		return false;
 	}
+#endif
 	return true;
 }
 
@@ -347,6 +253,7 @@ qt_mainloop::player_start(QString document_name, bool start, bool old)
 			m_player->start();
 		return;
 	}
+#if 0
 	if(m_player) {
 	// Push the old frame on the stack
 		m_player->pause();
@@ -357,6 +264,7 @@ qt_mainloop::player_start(QString document_name, bool start, bool old)
 		m_player = NULL;
 		m_frames.push(pf);
 	}
+#endif
 	
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s",

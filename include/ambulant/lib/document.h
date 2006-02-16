@@ -70,12 +70,14 @@ class document : public node_context {
 	/// The src_id argument is used in error messages only
 	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
 	
+#if 0
 	/// A document factory function.
 	/// Creates a document from a given DOM tree.
 	/// The tree is not freed when the document is, and the caller is
 	/// responsible for keeping it alive.
 	static document* create_from_tree(common::factories* factory, lib::node *root, const net::url& u);
-	
+#endif
+
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.
 	virtual ~document();
@@ -84,6 +86,9 @@ class document : public node_context {
 	/// The document remains the owner of the root unless detach is true.
 	node* get_root(bool detach = false);
 	const node* get_root() const;
+	
+	/// Signal to the document that the underlying tree has changed.
+	void tree_changed();
 	
 	/// Locate a node with a given path.
 	node* locate_node(const char *path) {
@@ -115,8 +120,9 @@ class document : public node_context {
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
   protected:
-	document(node *root = 0, bool owned=true);
-	document(node *root, const net::url& src_url);
+	document();
+//	document(node *root = 0, bool owned=true);
+//	document(node *root, const net::url& src_url);
 	
 	void set_root(node* n);
 //	void set_src_base(ambulant::net::url u) { m_src_base = u;}

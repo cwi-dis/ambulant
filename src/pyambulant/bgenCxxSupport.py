@@ -272,7 +272,7 @@ class CxxScanner(Scanner):
         
         self.sym_pat = r"^[ \t]*(?P<name>[a-zA-Z0-9_]+)[ \t]*=" + \
                        r"[ \t]*(?P<defn>[-0-9_a-zA-Z'\"\(][^\t\n,;}]*),?"
-        self.asplit_pat = r"^(?P<type>[^=]*[^a-zA-Z0-9_])(?P<name>[a-zA-Z0-9_]+)(?P<array>\[\])?(?P<initializer>\s*=[a-zA-Z0-9_ ]+)?$"
+        self.asplit_pat = r"^(?P<type>[^=]*[^=a-zA-Z0-9_])(?P<name>[a-zA-Z0-9_]+)(?P<array>\[\])?(?P<initializer>\s*=[a-zA-Z0-9_ ]+)?$"
         self.comment1_pat = r"(?P<rest>.*)//.*"
         # note that the next pattern only removes comments that are wholly within one line
         self.comment2_pat = r"(?P<rest1>.*)/\*.*\*/(?P<rest2>.*)"

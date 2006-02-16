@@ -29,6 +29,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/gui_player.h"
 #ifdef USE_SMIL21
 #include "ambulant/smil2/transition.h"
 #endif
@@ -95,6 +96,19 @@ class cocoa_renderer_factory : public common::playable_factory {
 		net::audio_datasource *src);
   private:
     common::factories *m_factory;
+};
+
+class cocoa_gui_screen : public common::gui_screen {
+  public:
+	cocoa_gui_screen(void *view)
+	:	m_view(view)
+	{}
+	void get_size(int *width, int *height);
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
+	bool set_overlay(const char *type, const char *data, size_t size);
+	bool clear_overlay();
+  private:
+	void *m_view;
 };
 
 } // namespace cocoa

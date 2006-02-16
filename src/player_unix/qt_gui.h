@@ -82,14 +82,6 @@ class qt_mainloop;
 	~qt_gui();
 	bool is_busy() { return m_busy; }
 
-	int  get_o_x() {
-		return m_o_x;
-	}
-
- 	int  get_o_y() {
-		return m_o_y;
-	}
-
 	const char* filename() { 
 		return m_smilfilename.ascii();
 	}
@@ -105,7 +97,9 @@ class qt_mainloop;
 	void player_start(QString,bool,bool);
 
 /*TMP*/	qt_mainloop* m_mainloop;
-   private:
+  private:
+    void _update_menus();
+    
 	bool	     m_busy;
 	QPushButton* m_cancel_pb; // for Settings window
 	QPopupMenu*  m_filemenu;
@@ -113,17 +107,15 @@ class qt_mainloop;
 	QPopupMenu*  m_helpmenu;
 	QMenuBar*    m_menubar;
 	QPushButton* m_ok_pb;	  // for Settings window
-	int	     m_o_x;	  // x coord of origin play window
-	int	     m_o_y;	  // y coord of origin play window
 	int          m_pause_id;
-	bool         m_pausing;
 	int          m_play_id;
-	bool         m_playing;
+	int          m_stop_id;
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	qt_settings* m_settings; // the Settings window
 	QString      m_smilfilename;
 	QPopupMenu*  m_viewmenu;
+	int          m_menubar_height; // Hack: top Y position of player widget
 
 #define	TRY_LOCKING
 #ifdef	TRY_LOCKING

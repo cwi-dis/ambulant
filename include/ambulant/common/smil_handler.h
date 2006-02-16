@@ -70,7 +70,7 @@ class smil_handler :
 
   ///////////////
   public:
-	smil_handler();
+	smil_handler(node_factory *nf);
 	~smil_handler();
 
 	// get a pointer to the root node
@@ -150,14 +150,16 @@ class smil_handler :
 	node *m_root;
 	node *m_current;
 	nscontext m_nscontext;	
+	node_factory *m_node_factory;
 };
 
 /////////////////////////////////////
 // implementation
 
-inline smil_handler::smil_handler()
+inline smil_handler::smil_handler(node_factory *nf)
 :	m_root(0),
-	m_current(0) {
+	m_current(0),
+	m_node_factory(nf) {
 	
 	REG_ELEMENT_HANDLER(smil);
 	REG_ELEMENT_HANDLER(head);
@@ -182,6 +184,7 @@ inline smil_handler::smil_handler()
 inline smil_handler::~smil_handler() {
 	if(m_root != 0)
 		delete m_root;
+	// m_node_factory is a borrowed reference
 }
 
 inline  void smil_handler::start_document() {

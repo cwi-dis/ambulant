@@ -26,6 +26,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/lib/node.h"
 
 namespace ambulant {
 
@@ -33,41 +34,35 @@ namespace common {
 	
 class factories {
 public:
-	factories(
-		ambulant::common::playable_factory *_rf = NULL,
-		ambulant::common::window_factory *_wf = NULL,
-		ambulant::net::datasource_factory *_df = NULL,
-		ambulant::lib::global_parser_factory *_pf = NULL
-	)
-	:	rf(_rf),
-		wf(_wf),
-		df(_df),
-		pf(_pf) {};
-	~factories() {
-		delete rf;
-		// wf is owned by parent;
-		delete df;
-		// delete pf; Singleton
-	}
-	ambulant::common::playable_factory *get_playable_factory() const { return rf; }
-	ambulant::common::window_factory *get_window_factory() const { return wf; }
-	ambulant::net::datasource_factory *get_datasource_factory() const { return df; }
-	ambulant::lib::global_parser_factory *get_parser_factory() const { return pf; }
-private:
-	ambulant::common::playable_factory *rf;
-	ambulant::common::window_factory *wf;
-	ambulant::net::datasource_factory *df;
-	ambulant::lib::global_parser_factory *pf;
+	factories();
+	virtual ~factories();
+	void init_factories();
+	virtual void init_playable_factory();
+	virtual void init_window_factory();
+	virtual void init_datasource_factory();
+	virtual void init_parser_factory();
+	virtual void init_node_factory();
+	
+	playable_factory *get_playable_factory() const { return m_playable_factory; }
+	window_factory *get_window_factory() const { return m_window_factory; }
+	net::datasource_factory *get_datasource_factory() const { return m_datasource_factory; }
+	lib::global_parser_factory *get_parser_factory() const { return m_parser_factory; }
+	lib::node_factory *get_node_factory() const { return m_node_factory; }
+	
+	void set_playable_factory(global_playable_factory *pf) { delete m_playable_factory; m_playable_factory = pf; }
+	void set_window_factory(window_factory *wf) { m_window_factory = wf; }
+	void set_datasource_factory(net::datasource_factory *df) { delete m_datasource_factory; m_datasource_factory = df; }
+	void set_parser_factory(lib::global_parser_factory *pf) { m_parser_factory = pf; }
+	void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
+
+protected:
+	global_playable_factory *m_playable_factory;
+	window_factory *m_window_factory;
+	net::datasource_factory *m_datasource_factory;
+	lib::global_parser_factory *m_parser_factory;
+	lib::node_factory *m_node_factory;
 };
 
-
 } // end namespaces
 } // end namespaces
-
-
-	
-
-
-	
-
 #endif /* _FACTORY_H */

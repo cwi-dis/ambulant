@@ -4,7 +4,8 @@
 /*
 ** Parse/generate various objects
 */
-PyObject *bool_New(bool itself)
+PyObject *
+bool_New(bool itself)
 {
     if (itself) {
         Py_RETURN_TRUE;
@@ -21,7 +22,8 @@ bool_Convert(PyObject *v, bool *p_itself)
     return 1;
 }
 
-PyObject *ambulant_url_New(const ambulant::net::url& itself)
+PyObject *
+ambulant_url_New(const ambulant::net::url& itself)
 {
     return PyString_FromString(itself.get_url().c_str());
 }
@@ -32,13 +34,14 @@ ambulant_url_Convert(PyObject *v, ambulant::net::url *p_itself)
     char *cstr = PyString_AsString(v);
     if (cstr == NULL) return 0;
     std::string cxxstr = cstr;
-    ambulant::net::url url(cxxstr);
+    ambulant::net::url url = ambulant::net::url::from_url(cxxstr);
     *p_itself = url;
     return 1;
 }
 
 
-PyObject *ambulant_region_dim_New(const ambulant::common::region_dim& itself)
+PyObject *
+ambulant_region_dim_New(const ambulant::common::region_dim& itself)
 {
     if (itself.absolute())
         return Py_BuildValue("sl", "auto", 0);
@@ -84,7 +87,8 @@ ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself)
 }
 
 
-PyObject *ambulant_rect_New(const ambulant::lib::rect& itself)
+PyObject *
+ambulant_rect_New(const ambulant::lib::rect& itself)
 {
     return Py_BuildValue("llll", itself.left(), itself.top(), itself.right(), itself.bottom());
 }
@@ -102,7 +106,8 @@ ambulant_rect_Convert(PyObject *v, ambulant::lib::rect *p_itself)
     return 1;
 }
 
-PyObject *ambulant_point_New(const ambulant::lib::point& itself)
+PyObject *
+ambulant_point_New(const ambulant::lib::point& itself)
 {
     return Py_BuildValue("ll", itself.x, itself.y);
 }
@@ -115,7 +120,8 @@ ambulant_point_Convert(PyObject *v, ambulant::lib::point *p_itself)
     return 1;
 }
 
-PyObject *ambulant_size_New(const ambulant::lib::size& itself)
+PyObject *
+ambulant_size_New(const ambulant::lib::size& itself)
 {
     return Py_BuildValue("ll", itself.w, itself.h);
 }
@@ -125,6 +131,59 @@ ambulant_size_Convert(PyObject *v, ambulant::lib::size *p_itself)
 {
     if (!PyArg_ParseTuple(v, "ll", &p_itself->w, &p_itself->h))
         return 0;
+    return 1;
+}
+
+PyObject *
+ambulant_attributes_list_New(const ambulant::lib::q_attributes_list& itself)
+{
+    int nitems = itself.size();
+    PyObject *rv = PyList_New(nitems);
+    if (!rv) return NULL;
+    int pos = 0;
+    ambulant::lib::q_attributes_list::const_iterator i;
+    for(i=itself.begin(); i!= itself.end(); i++) {
+        const ambulant::lib::q_attribute_pair& item = *i;
+        PyObject *pitem = Py_BuildValue("(ss)s", 
+            item.first.first.c_str(),
+            item.first.second.c_str(),
+            item.second.c_str());
+        if (!pitem) goto fail;
+        if (PyList_SetItem(rv, pos, pitem) < 0) {
+            Py_DECREF(pitem);
+            goto fail;
+        }
+        pos++;
+    }
+    return rv;
+fail:
+    Py_DECREF(rv);
+    return NULL;
+}
+
+int
+ambulant_attributes_list_Convert(PyObject *v, ambulant::lib::q_attributes_list *p_itself)
+{
+    if (!PySequence_Check(v)) return 0;
+    int i;
+    int size = PySequence_Size(v);
+    for (i=0; i<size; i++) {
+        PyObject *item = PySequence_GetItem(v, i);
+        if (item==NULL) return 0;
+        char *attrns=NULL, *attrname=NULL, *attrvalue=NULL;
+        if (!PyArg_ParseTuple(item, "(ss)s", &attrns, &attrname, &attrvalue)) {
+            Py_DECREF(item);
+            return 0;
+        }
+        Py_DECREF(item);
+        ambulant::lib::q_attribute_pair citem = 
+            ambulant::lib::q_attribute_pair(
+                ambulant::lib::q_name_pair(
+                    ambulant::lib::xml_string(attrns),
+                    ambulant::lib::xml_string(attrname)),
+                ambulant::lib::xml_string(attrvalue));
+        p_itself->push_back(citem);
+    }
     return 1;
 }
 
