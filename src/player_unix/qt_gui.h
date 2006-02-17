@@ -80,7 +80,6 @@ class qt_mainloop;
    public:
   	qt_gui(const char* title, const char* initfile);
 	~qt_gui();
-	bool is_busy() { return m_busy; }
 
 	const char* filename() { 
 		return m_smilfilename.ascii();
@@ -100,7 +99,6 @@ class qt_mainloop;
   private:
     void _update_menus();
     
-	bool	     m_busy;
 	QPushButton* m_cancel_pb; // for Settings window
 	QPopupMenu*  m_filemenu;
 	QHBox* 	     m_finish_hb; // for Settings window
@@ -110,6 +108,7 @@ class qt_mainloop;
 	int          m_pause_id;
 	int          m_play_id;
 	int          m_stop_id;
+	int          m_reload_id;
 	QPopupMenu*  m_playmenu;
 	const char*  m_programfilename;
 	qt_settings* m_settings; // the Settings window

@@ -96,7 +96,6 @@ qt_gui::qt_gui(const char* title,
 #else /*WITH_QT_HTML_WIDGET*/
 	QWidget(),  
 #endif/*WITH_QT_HTML_WIDGET*/
-        m_busy(true),
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	m_cursor_shape(Qt::ArrowCursor),
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
@@ -135,7 +134,7 @@ qt_gui::qt_gui(const char* title,
 		assert(m_filemenu);
 		int open_id = m_filemenu->insertItem(gettext("&Open..."), this, SLOT(slot_open()));
 		int url_id = m_filemenu->insertItem(gettext("Open &URL..."), this, SLOT(slot_open_url()));
-		int reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
+		m_reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
 #ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
 		// Disable unavailable menu entries
 		m_filemenu->setItemEnabled(open_id, true);
@@ -189,6 +188,7 @@ qt_gui::qt_gui(const char* title,
 	}
 	QObject::connect(this, SIGNAL(signal_player_done()),
 			    this, SLOT(slot_player_done()));
+	_update_menus();
 }
 
 qt_gui::~qt_gui() {
@@ -205,7 +205,7 @@ qt_gui::~qt_gui() {
 	DELETE(m_playmenu)
 	DELETE(m_viewmenu)
 	DELETE(m_menubar)
-	m_smilfilename = (char*) NULL;
+	m_smilfilename = (char *)NULL;
 }
 
 void 
@@ -447,7 +447,6 @@ qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 
 void 
 qt_gui::player_done() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "player_done");
 	emit signal_player_done();
 }
 
@@ -458,34 +457,23 @@ no_fileopen_infodisplay(QWidget* w, const char* caption) {
 
 void 
 qt_gui::slot_play() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_play");
-	if (m_smilfilename == NULL || m_mainloop == NULL || ! m_mainloop->is_open()) {
-		no_fileopen_infodisplay(this, m_programfilename);
-		return;
-	}
+    assert(m_mainloop);
 	m_mainloop->play();
 	_update_menus();
 }
 
 void 
 qt_gui::slot_pause() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_pause");
-		if (m_smilfilename == NULL || m_mainloop == NULL || ! m_mainloop->is_open()) {
-		no_fileopen_infodisplay(this, m_programfilename);
-		return;
-	}
+    assert(m_mainloop);
     m_mainloop->pause();
     _update_menus();
 }
 
 void 
 qt_gui::slot_reload() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_reload");
-	if (openSMILfile(m_smilfilename, IO_ReadOnly)) {
-		slot_play();
-	} else {
-		no_fileopen_infodisplay(this, m_programfilename);
-	}
+    assert(m_mainloop);
+    m_mainloop->restart();
+    _update_menus();
 }
 
 void 
@@ -532,7 +520,6 @@ qt_gui::slot_quit() {
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
-	m_busy = false;
 	qApp->quit();
 }
 
@@ -632,6 +619,7 @@ qt_gui::_update_menus()
     m_playmenu->setItemChecked(m_pause_id, m_mainloop && m_mainloop->is_pause_active());
     m_playmenu->setItemEnabled(m_stop_id, m_mainloop && m_mainloop->is_stop_enabled());
     m_playmenu->setItemChecked(m_stop_id, m_mainloop && m_mainloop->is_stop_active());
+    m_filemenu->setItemEnabled(m_reload_id, (m_mainloop != NULL));
 }
 
 int

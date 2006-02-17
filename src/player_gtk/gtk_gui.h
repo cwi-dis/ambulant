@@ -41,15 +41,6 @@ class gtk_gui : public GtkWidget{
    public:
   	gtk_gui(const char* title, const char* initfile);
 	~gtk_gui();
-	bool is_busy() { return m_busy; }
-
-	int  get_o_x() {
-		return m_o_x;
-	}
-
- 	int  get_o_y() {
-		return m_o_y;
-	}
 
 	const char* filename() { 
 		return m_smilfilename;
@@ -73,11 +64,6 @@ class gtk_gui : public GtkWidget{
 /*TMP*/	gtk_mainloop* m_mainloop;
 
    private:
-	bool	     m_busy;
-	int	     m_o_x;	  // x coord of origin play window
-	int	     m_o_y;	  // y coord of origin play window
-	bool         m_pausing;
-	bool         m_playing;
 	const char*  m_programfilename;
 	const char*  m_smilfilename;
 	gtk_settings* m_settings;
@@ -134,6 +120,8 @@ class gtk_gui : public GtkWidget{
 	void do_internal_message(gtk_message_event* e);
 
 	void unsetCursor();
+	
+	void _update_menus();
 	
 	GMainLoop* main_loop;
 

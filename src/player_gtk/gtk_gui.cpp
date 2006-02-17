@@ -246,13 +246,8 @@ find_datafile(const char **locations)
 gtk_gui::gtk_gui(const char* title,
 	       const char* initfile)
  :
-        m_busy(true),
 	m_file_chooser(NULL),
 	m_settings_chooser(NULL),
-	m_o_x(0),	 
-	m_o_y(0),	 
-	m_pausing(),
-	m_playing(),
 	m_programfilename(),
 #ifdef	TRY_LOCKING
 	m_gui_thread(0),
@@ -304,9 +299,6 @@ gtk_gui::gtk_gui(const char* title,
 	if (initfile != NULL && initfile != "")
 		m_smilfilename = initfile;
 
-	m_playing = false;
-	m_pausing = false;
-		
 	/*Initialization of the Main Window */
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
@@ -391,49 +383,24 @@ gtk_gui::gtk_gui(const char* title,
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
 	
-	/* Old Menu bar */	
-/*
-	m_menubar = (GtkMenuBar*)gtk_menu_bar_new();
-	gtk_widget_show ((GtkWidget*)m_menubar);
-	//gtk_box_pack_start(GTK_BOX (m_guicontainer), GTK_WIDGET (m_menubar), FALSE, FALSE, 0);	
-*/
-	/* Old File  Menu*/
-/*
-	m_filemenu = (GtkMenuItem*)gtk_menu_item_new_with_mnemonic("_File");
-	gtk_widget_show ((GtkWidget*)m_filemenu);
-	gtk_container_add(GTK_CONTAINER (m_menubar), GTK_WIDGET (m_filemenu));
-	GtkWidget* m_filemenu_submenu = gtk_menu_new();
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM (m_filemenu), m_filemenu_submenu);
-		
-	GtkWidget* m_filemenu_submenu_open = gtk_menu_item_new_with_label("Open...");
-	gtk_widget_show ((GtkWidget*)m_filemenu_submenu_open);
-	gtk_container_add(GTK_CONTAINER (m_filemenu_submenu), GTK_WIDGET (m_filemenu_submenu_open));
-	g_signal_connect_swapped (GTK_OBJECT (m_filemenu_submenu_open), "activate",  G_CALLBACK (gtk_C_callback_open), (void *) this );	
-*/
-	m_o_x = 0;
-#ifndef GTK_NO_FILEDIALOG	/* Assume plain GTK */
-	//m_o_y = 27;
-#else /*GTK_NO_FILEDIALOG*/	/* Assume embedded GTK */
-	//m_o_y = 20;
-#endif/*QT_NO_FILEDIALOG*/
-	
 }
 
 
 gtk_gui::~gtk_gui() {
 
-#define DELETE(X) if (X) { delete X; X = NULL; }
 	AM_DBG printf("%s0x%X\n", "gtk_gui::~gtk_gui(), m_mainloop=",m_mainloop);
 	gtk_widget_destroy(GTK_WIDGET (m_file_chooser));
 	gtk_widget_destroy(GTK_WIDGET (m_settings_chooser));
-	DELETE(m_actions);
+	delete m_actions;
+	m_actions = NULL;
 //	gtk_widget_destroy(GTK_WIDGET (m_filemenu));
 //	gtk_widget_destroy(GTK_WIDGET (m_playmenu));
 //	gtk_widget_destroy(GTK_WIDGET (m_viewmenu));
 //	gtk_widget_destroy(GTK_WIDGET (m_menubar));
 	//DELETE(m_mainloop)
-	m_mainloop->release();
-	m_smilfilename = (char*) NULL;
+	delete m_mainloop;
+	m_mainloop = NULL;
+	m_smilfilename = NULL;
 }
 
 GtkWindow*
@@ -564,14 +531,11 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 	m_smilfilename = smilfilename;
 //	free(filename);
 
-	if (m_mainloop != NULL){
-		m_mainloop->release();
- 	}
 
+    delete m_mainloop;
+    
 	m_mainloop = new gtk_mainloop(this);
-	m_playing = false;
-	m_pausing = false;
-
+    _update_menus();
 	return m_mainloop->is_open();
 }
 
@@ -609,7 +573,7 @@ gtk_gui::do_open(){
 
 void gtk_gui::do_file_selected() {
 	const gchar *smilfilename  = gtk_file_chooser_get_filename (m_file_chooser);
-	if (openSMILfile(smilfilename, 0)){
+	if (openSMILfile(smilfilename, 0)) {
 		do_play();
 	}
 }
@@ -637,7 +601,7 @@ gtk_gui::do_settings_selected() {
 
 void 
 gtk_gui::do_load_settings() {
-	if (m_playing)
+	if (m_mainloop && m_mainloop->is_open())
 		do_stop();
 	
 	m_settings_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new("Please, select a settings file", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
@@ -713,7 +677,7 @@ gtk_gui::do_open_url() {
 void gtk_gui::do_url_selected() {
 	const gchar *smilfilename  = gtk_entry_get_text(m_url_text_entry);
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
-	if (openSMILfile(smilfilename, 0)){		
+	if (openSMILfile(smilfilename, 0)) {		
 		do_play();
 	}
 }
@@ -721,13 +685,7 @@ void gtk_gui::do_url_selected() {
 void 
 gtk_gui::do_player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "do_player_done");
-	if (m_mainloop == NULL){
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), false);
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), true);
-		m_playing = false;
-	}else if ((m_mainloop->player_done())) {
-
-	}
+    _update_menus();
 }
 
 void 
@@ -759,44 +717,23 @@ no_fileopen_infodisplay(gtk_gui* w, const char* caption) {
 
 void 
 gtk_gui::do_play() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_play");
-	if (m_smilfilename == NULL || m_mainloop == NULL || ! m_mainloop->is_open()) {
-		no_fileopen_infodisplay(this, m_programfilename);
-		return;
-	}
-	if (!m_playing) {
-		m_playing = true;
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), false);
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), true);
-		m_mainloop->play();
-	}
-	if (m_pausing) {
-		m_pausing = false;
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), true);
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), false);
-		m_mainloop->set_speed(1);
-	}
+    assert(m_mainloop);
+    m_mainloop->play();
+    _update_menus();
 }
 
 void 
 gtk_gui::do_pause() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_pause");
-	if (! m_pausing) {
-		m_pausing = true;
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), false);
-		gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), true);
-		m_mainloop->set_speed(0);
-	}
+	assert(m_mainloop);
+    m_mainloop->pause();
+    _update_menus();
 }
 
 void 
 gtk_gui::do_reload() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_reload");
-	if (openSMILfile(m_smilfilename, 0)) {
-		do_play();
-	} else {
-		no_fileopen_infodisplay(this, m_programfilename);
-	}
+    assert(m_mainloop);
+    m_mainloop->restart();
+    _update_menus();
 }
 
 void 
@@ -804,9 +741,7 @@ gtk_gui::do_stop() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "do_stop");
 	if(m_mainloop)
 		m_mainloop->stop();
-	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), false);
-	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), true);
-	m_playing = false;
+    _update_menus();
 }
 
 void 
@@ -829,11 +764,9 @@ gtk_gui::do_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "do_quit");
 	if (m_mainloop)	{
 		m_mainloop->stop();
-		m_mainloop->release();
+		delete m_mainloop;
 		m_mainloop = NULL;
 	}
-	m_busy = false;
-//	gtk_main_quit();
 	g_main_loop_quit (main_loop);	
 }
 
@@ -942,6 +875,26 @@ gtk_gui::internal_message(int level, char* msg) {
 	}
 #endif /*TRY_LOCKING*/
 }
+
+void
+gtk_gui::_update_menus()
+{
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
+        m_mainloop && m_mainloop->is_play_enabled());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
+        m_mainloop && m_mainloop->is_play_active());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
+        m_mainloop && m_mainloop->is_pause_enabled());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
+        m_mainloop && m_mainloop->is_pause_active());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
+        m_mainloop && m_mainloop->is_stop_enabled());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
+        m_mainloop && m_mainloop->is_stop_active());
+    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "reload"),
+        (m_mainloop != NULL));
+}
+
 
 #ifdef	WITH_NOKIA770
 #include <libosso.h>
