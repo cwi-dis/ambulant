@@ -1,3 +1,12 @@
+2006-02-16 17:08  jackjansen
+
+	* Merging exp-jack-playerobj branch: - Moved lots of functionality
+	  from the various mainloop objects to a   common baseclass
+	  gui_player.  - Added support for plugins written in Python.  -
+	  Tweaked many interfaces to allow better access from Python.
+
+	  This checkin may well break builds for a few days.
+
 2006-02-15 18:18  p_cesar
 
 	* I think the problem with the reload function is because the
