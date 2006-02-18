@@ -1,3 +1,10 @@
+2006-02-17 14:19  jackjansen
+
+	* More bits and pieces of getting gtk_player and qt_player back in
+	  shape.
+
+	  qt_player should work, gtk_player is still broken.
+
 2006-02-16 17:08  jackjansen
 
 	* Merging exp-jack-playerobj branch: - Moved lots of functionality
