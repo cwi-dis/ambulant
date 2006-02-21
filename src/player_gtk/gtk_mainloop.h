@@ -63,7 +63,8 @@ class gtk_gui;
 
 class gtk_mainloop :
     public common::gui_player,
-    public ambulant::common::embedder
+    public ambulant::common::embedder,
+	public ambulant::common::gui_screen
 {
   public:
     gtk_mainloop(gtk_gui* parent);
@@ -82,7 +83,13 @@ class gtk_mainloop :
 	void open(net::url newdoc, bool start, common::player *old=NULL);
 	bool player_done();
 	void player_start(gchar* document_name, bool start, bool old);
+	ambulant::common::gui_screen *get_gui_screen();
 	
+	void get_size(int *width, int *height);
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
+	bool set_overlay(const char *type, const char *data, size_t size);
+	bool clear_overlay();
+
  private:
  #if 0
 	// from dx_player
@@ -99,5 +106,10 @@ class gtk_mainloop :
 	gtk_gui *m_gui;
 	lib::logger *m_logger;
  	bool m_running;
+	ambulant::common::gui_screen *m_gui_screen;
+	int m_screenshot_width;
+	int m_screenshot_height;
+	gchar ** m_buffer;
+	gsize *m_buffer_size;
 };
 #endif/*__GTK_MAINLOOP_H__*/

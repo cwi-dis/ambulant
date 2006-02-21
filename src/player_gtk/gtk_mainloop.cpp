@@ -83,7 +83,8 @@ open_web_browser(const std::string &href)
 
 gtk_mainloop::gtk_mainloop(gtk_gui* gui)
 :	m_gui(gui),
- 	m_running(false)
+ 	m_running(false),
+	m_gui_screen(NULL)
 {
 	m_logger = lib::logger::get_logger();
 	set_embedder(this);
@@ -104,6 +105,7 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui)
 gtk_mainloop::~gtk_mainloop()
 {
 	AM_DBG m_logger->debug("gtk_mainloop::~gtk_mainloop() m_player=0x%x", m_player);
+	delete m_gui_screen;
 	if (m_player) {
 		delete m_player;
 	}
@@ -113,7 +115,7 @@ gtk_mainloop::~gtk_mainloop()
 void
 gtk_mainloop::init_window_factory()
 {
-	m_window_factory = new gtk_window_factory(m_gui->get_gui_container(), 
+	m_window_factory = new gtk_window_factory(m_gui->get_document_container(), 
 						0, // XXX
 						0, // XXX
 						m_gui->main_loop);
@@ -295,4 +297,40 @@ gtk_mainloop::player_start(gchar* document_name, bool start, bool old)
 	if(start) {
 		m_player->start();
 	}
+}
+
+void gtk_mainloop::get_size(int *width, int *height){
+	width = &m_screenshot_width;
+	height = &m_screenshot_height;
+}
+
+bool gtk_mainloop::get_screenshot(const char *type, char **out_data, size_t *out_size){
+	type = "jpeg";
+	out_data= m_buffer;
+	out_size = m_buffer_size;
+}
+
+bool gtk_mainloop::set_overlay(const char *type, const char *data, size_t size){
+return FALSE;
+}
+bool gtk_mainloop::clear_overlay(){
+return FALSE;
+}
+
+
+ambulant::common::gui_screen* 
+gtk_mainloop::get_gui_screen(){
+
+	GError *error = NULL;
+	gdk_drawable_get_size(m_gui->get_document_container()->window, &m_screenshot_width, &m_screenshot_height);
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_gui->get_document_container()->window, 0, 0, 0, 0, 0, m_screenshot_width, m_screenshot_height);
+//	gdk_pixbuf_save(pixbuf, "myscreenshot.jpg", "jpeg", &error, "quality", "100", 0);
+	gdk_pixbuf_save_to_buffer(pixbuf, m_buffer, m_buffer_size, "jpeg", &error, "quality", "100", 0);
+	return this;
+/*
+	if (!m_gui_screen){
+		m_gui_screen = new gui::gtk::gtk_gui_screen();
+	}
+	return m_gui_screen;
+*/
 }

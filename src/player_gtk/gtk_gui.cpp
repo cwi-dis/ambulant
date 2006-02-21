@@ -376,9 +376,9 @@ gtk_gui::gtk_gui(const char* title,
 
 
 	/* Creation of the document area */
-//	m_documentcontainer = gtk_drawing_area_new();
-//	gtk_widget_hide(m_documentcontainer);
-//	gtk_box_pack_start (GTK_BOX (m_toplevelcontainer), m_documentcontainer, TRUE, TRUE, 0);
+	m_documentcontainer = gtk_drawing_area_new();
+	gtk_widget_hide(m_documentcontainer);
+	gtk_box_pack_start (GTK_BOX (m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
 
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
@@ -409,6 +409,8 @@ gtk_gui::get_toplevel_container()
 	return this->m_toplevelcontainer;
 }
 
+
+
 GtkWidget*
 gtk_gui::get_gui_container()
 {
@@ -420,7 +422,6 @@ gtk_gui::get_document_container()
 {
 	return this->m_documentcontainer;
 }
-
 
 void 
 gtk_gui::do_about() {

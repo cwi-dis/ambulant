@@ -181,6 +181,13 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 //	}
 }
 
+/*
+ambulant::common::gui_screen* 
+gtk_window::get_gui_screen(){
+	return m_gui_screen;
+}
+*/
+
 GdkPixmap* 
 ambulant_gtk_window::get_ambulant_pixmap()
 {
@@ -361,6 +368,19 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 			r.left(), r.top(), 
 			r.left(), r.top(),
 			r.width(), r.height());
+	
+
+	// Get the screenshot of the last drawing
+/*
+	GError *error = NULL;
+	gint width; gint height;
+	gsize *buffer_size;
+	gchar **buffer;
+	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_ambulant_widget->get_gtk_widget()->window, 0, 0, 0, 0, 0, width, height);
+//	gdk_pixbuf_save(pixbuf, "myscreenshot.jpg", "jpeg", &error, "quality", "100", 0);
+	gdk_pixbuf_save_to_buffer(pixbuf, buffer, buffer_size, "jpeg", &error, "quality", "100", 0);
+*/
 	g_object_unref (G_OBJECT (gc));
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
@@ -384,8 +404,8 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 	GtkWidget* parent_widget)
 :	m_gtk_window(NULL)
 {
-	m_widget = gtk_drawing_area_new();
-//	m_widget = parent_widget;
+//	m_widget = gtk_drawing_area_new();
+	m_widget = parent_widget;
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",
 		(void *)this,
 		(void*)  parent_widget,
@@ -396,7 +416,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 
 	gtk_widget_set_size_request(GTK_WIDGET (m_widget), bounds->right(), bounds->bottom());
 
-	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
+//	gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
 	gtk_widget_show(m_widget);
 	
 	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
