@@ -1,6 +1,4 @@
-#gtk_gui-moc.cpp: gtk_gui.h gtk_gui.cpp
-#	$(GTK_PREFIX)/bin/moc -o $@ $<
-
+#------------------------------------------------------
 if WITH_LIVE
 extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
 liveincludes = -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
@@ -18,7 +16,83 @@ extra_live_DEFINES=
 extra_live_LDADD =
 liveincludes =
 livelibs =
-endif
+endif # WITH_LIVE
+
+#------------------------------------------------------
+if WITH_SDL
+extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
+extra_sdl_DEFINES=-DWITH_SDL
+extra_sdl_ldflags= `sdl-config --libs`
+else
+extra_sdl_ldflags=
+extra_sdl_DEFINES=
+endif # WITH_SDL
+
+#------------------------------------------------------
+if WITH_ARTS
+extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
+extra_arts_ldflags=`artsc-config --libs`
+extra_arts_DEFINES=-DWITH_ARTS
+else
+extra_arts_LDADD=
+extra_arts_ldflags=
+extra_arts_DEFINES=
+endif # WITH_ARTS
+
+#------------------------------------------------------
+if WITH_DIRAC
+dirac_libraries=`pkg-config --libs dirac`
+else
+dirac_libraries=
+endif # WITH_DIRAC
+
+#------------------------------------------------------
+if WITH_FFMPEG
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_ldflags=$(dirac_libraries)
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
+else
+extra_ffmpeg_LDADD=
+extra_ffmpeg_ldflags=
+extra_ffmpeg_DEFINES=
+endif # WITH_FFMPEG
+
+#------------------------------------------------------
+if WITH_XERCES_BUILTIN
+extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include -DWITH_XERCES_BUILTIN
+extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
+else
+extra_xerces_DEFINES=
+extra_xerces_LDADD=
+endif # WITH_XERCES_BUILTIN
+
+#------------------------------------------------------
+##if USE_NLS
+extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
+##else
+##extra_nls_DEFINES=
+##endif # USE_NLS
+
+#------------------------------------------------------
+if WITH_GTK
+gtk_libs=$(GTK_LIBS)
+gtk_includes=$(GTK_CFLAGS)
+else
+gtk_libs=
+gtk_includes=
+endif # WITH_GTK
+
+#------------------------------------------------------
+if WITH_NOKIA770
+extra_nokia770_DEFINES=-DWITH_NOKIA770 $(HILDON_CFLAGS) $(OSSO_CFLAGS)
+extra_nokia770_LDADD=$(OSSO_LIBS)
+else
+extra_nokia770_DEFINES=
+extra_nokia770_LDADD=
+endif # WITH_NOKIA770
+
+#------------------------------------------------------
+#------------------------------------------------------
 
 bin_PROGRAMS = AmbulantPlayer
 AmbulantPlayer_SOURCES =					\
@@ -33,111 +107,43 @@ AmbulantPlayer_SOURCES =					\
 	unix_preferences.cpp					\
 	unix_preferences.h
 
-
-
-# Conditionals for linux audio support
-if WITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
-extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags= `sdl-config --libs`
-else
-extra_sdl_ldflags=
-extra_sdl_DEFINES=
-endif
-
-if WITH_ARTS
-extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
-extra_arts_ldflags=`artsc-config --libs`
-extra_arts_DEFINES=-DWITH_ARTS
-else
-extra_arts_LDADD=
-extra_arts_ldflags=
-extra_arts_DEFINES=
-endif
-
-if WITH_DIRAC
-dirac_libraries=`pkg-config --libs dirac`
-else
-dirac_libraries=
-endif
-
-if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
-
-extra_ffmpeg_ldflags=$(dirac_libraries)
-extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
-else
-extra_ffmpeg_LDADD=
-extra_ffmpeg_ldflags=
-extra_ffmpeg_DEFINES=
-endif
-
-if WITH_XERCES_BUILTIN
-extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include -DWITH_XERCES_BUILTIN
-extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
-else
-extra_xerces_DEFINES=
-extra_xerces_LDADD=
-endif
-
-#if USE_NLS
-extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
-#else
-#extra_nls_DEFINES=
-#endif
-
-if WITH_GTK
-gtk_libs=$(GTK_LIBS)
-gtk_includes=$(GTK_CFLAGS)
-else
-gtk_libs=
-gtk_includes=
-endif
-
-if WITH_QTOPIA
-qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
-qt_includes=-I$(QT_PREFIX)/include -I$(QT_PREFIX)/include/qpe
-else
-qt_includes=-I$(QT_PREFIX)/include				
-qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
-endif
-
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
-	$(extra_arts_LDADD)					\
-	$(extra_sdl_LDADD)					\
-	$(extra_ffmpeg_LDADD)				\
-	$(extra_xerces_LDADD)				\
-	$(extra_live_LDADD) 				\
+	$(extra_arts_LDADD) \
+	$(extra_sdl_LDADD) \
+	$(extra_ffmpeg_LDADD) \
+	$(extra_xerces_LDADD) \
+	$(extra_live_LDADD)  \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
-	$(EXPAT_PREFIX)/lib/libexpat.a				\
-	$(gtk_libs)					\
-	$(LIBLTDL)  
+	$(EXPAT_PREFIX)/lib/libexpat.a \
+	$(gtk_libs) \
+	$(LIBLTDL) \
+	$(extra_nokia770_LDADD)
 
-AM_LDFLAGS=$(extra_arts_ldflags)				\
-	   $(extra_sdl_ldflags)					\
-	   $(extra_ffmpeg_ldflags)				\
-	   -export-dynamic	  \
+AM_LDFLAGS=$(extra_arts_ldflags) \
+	   $(extra_sdl_ldflags) \
+	   $(extra_ffmpeg_ldflags) \
+	   -export-dynamic \
        $(livelibs)
  
 AM_CPPFLAGS = \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
-		$(extra_arts_DEFINES)				\
-		$(extra_sdl_DEFINES)				\
-		$(extra_ffmpeg_DEFINES)				\
-		$(extra_nls_DEFINES)				\
-		$(extra_xerces_DEFINES)			\
-		$(extra_live_DEFINES)	\
-		-I$(top_builddir)/include				\
-		-I$(top_srcdir)/include				\
-		-I$(top_builddir)/include/ambulant/gui/gtk		\
-		-I$(top_srcdir)/include/ambulant/gui/gtk		\
-	    $(XERCES_INCLUDES) 	                                \
+		$(extra_arts_DEFINES) \
+		$(extra_sdl_DEFINES) \
+		$(extra_ffmpeg_DEFINES) \
+		$(extra_nls_DEFINES) \
+		$(extra_xerces_DEFINES) \
+		$(extra_live_DEFINES) \
+		$(extra_nokia770_DEFINES) \
+		-I$(top_builddir)/include \
+		-I$(top_srcdir)/include \
+		-I$(top_builddir)/include/ambulant/gui/gtk \
+		-I$(top_srcdir)/include/ambulant/gui/gtk \
+	    $(XERCES_INCLUDES) \
 	    $(gtk_includes) \
 	    $(liveincludes)
 	  
-#file generated by "moc"
-#CLEANFILES=gtk_gui-moc.cpp
-#nodist_AmbulantPlayer_SOURCES=gtk_gui-moc.cpp
+#------------------------------------------------------
+# More special case code for the Nokia 770: install the auxiliary files.
 if WITH_NOKIA770
 # The icons
 
@@ -151,26 +157,18 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
 	$(INSTALL_DATA) $(srcdir)/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
 	$(INSTALL_DATA) $(srcdir)/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
-if WITH_NOKIA770
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir);
 	$(INSTALL_DATA) $(srcdir)/ui_manager.xml $(DESTDIR)$(pkgdatadir);
-endif
 
 uninstall-local:
 	i=pkg_AmbulantPlayer-app; \
 	rm $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
 	rm $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
 	rm $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
-if WITH_NOKIA770
 	rm $(DESTDIR)$(pkgdatadir)/ui_manager.xml;
-endif
 
-# The program
 
-# bin_PROGRAMS = AmbulantPlayer
-
-AmbulantPlayer_CXXFLAGS = -DWITH_NOKIA770 $(GTK_CFLAGS) $(HILDON_CFLAGS) $(OSSO_CFLAGS)
-LDADD += $(GTK_LIBS) $(HILDON_CFLAGS) $(OSSO_LIBS)
+# XXXX Jack thinks the rest of this file looks like leftovers from a previous life:
 
 desktopdir = $(datadir)/applications/hildon
 desktop_DATA = AmbulantPlayer.desktop
@@ -181,19 +179,19 @@ service_DATA = com.nokia.AmbulantPlayer_app.service
 
 # The backup/restore configuration
 
-EXTRA_DIST =					\
-        autogen.sh				\
-	ui_manager.xml				\
-        debian/changelog			\
-        debian/compat				\
-        debian/copyright			\
-        debian/control				\
-        debian/rules				\
-        debian/AmbulantPlayer-app.links		\
-        AmbulantPlayer.desktop			\
-        AmbulantPlayer.conf			\
-        com.nokia.AmbulantPlayer_app.service	\
-        pkg_AmbulantPlayer-app.26.png		\
-        pkg_AmbulantPlayer-app.40.png		\
+EXTRA_DIST = \
+        autogen.sh \
+	    ui_manager.xml \
+        debian/changelog \
+        debian/compat \
+        debian/copyright \
+        debian/control \
+        debian/rules \
+        debian/AmbulantPlayer-app.links \
+        AmbulantPlayer.desktop \
+        AmbulantPlayer.conf \
+        com.nokia.AmbulantPlayer_app.service \
+        pkg_AmbulantPlayer-app.26.png \
+        pkg_AmbulantPlayer-app.40.png \
         pkg_AmbulantPlayer-app.64.png
-endif
+endif # WITH_NOKIA770
