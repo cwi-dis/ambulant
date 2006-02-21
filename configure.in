@@ -575,7 +575,7 @@ AC_MSG_RESULT(live555.com library found - $test_live)
 # XXXX FFmpeg installation is quirky. We currently support the following,
 # in (somewhat) preferred order:
 # - a pkg-config enabled ffmpeg, with module name "ffmpeg"
-# - a pre-built ffmpeg 0.4.8 in third_party_packages/ffmpeg-0.4.8
+# - a pre-built ffmpeg from CVS in third_party_packages/ffmpeg-cvs
 # - a pre-built ffmpeg (any version) with the pathname passed to --with-ffmpeg
 # - a redhat/fedora installed one.
 
@@ -602,7 +602,7 @@ dnl
 
 dnl test for slurped version (default cvs, otherwise use --with-ffmpeg argument)
 if test "x$test_ffmpeg" = "xmanual"; then
-    if test "x$withval" = "xyes" -a -f `pwd`/third_party_packages/ffmpeg-cvs/libavcodec/avcodec.h; then
+    if test -f `pwd`/third_party_packages/ffmpeg-cvs/libavcodec/avcodec.h; then
         withval=third_party_packages/ffmpeg-cvs
     fi
 	if test -f ${withval}/libavcodec/avcodec.h; 	then
