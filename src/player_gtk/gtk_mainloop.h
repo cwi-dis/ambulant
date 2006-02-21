@@ -65,11 +65,11 @@ class gtk_mainloop :
     public common::gui_player,
     public ambulant::common::embedder
 {
-  //  static bool m_done;
   public:
-        gtk_mainloop(gtk_gui* parent);
+    gtk_mainloop(gtk_gui* parent);
 	~gtk_mainloop();
 	
+	void init_window_factory();
 	void init_playable_factory();
 	void init_datasource_factory();
 	void init_parser_factory();
@@ -95,13 +95,9 @@ class gtk_mainloop :
 #endif
 
 	ambulant::common::player* create_player(const char* filename);
-	// sorted alphabetically on member name
-	document*				m_doc;
-	gtk_gui*				m_gui;
-	lib::logger*				m_logger;
-	
- 	bool					m_running;
-	double					m_speed;
-	window_factory* 			m_wf;
+
+	gtk_gui *m_gui;
+	lib::logger *m_logger;
+ 	bool m_running;
 };
 #endif/*__GTK_MAINLOOP_H__*/
