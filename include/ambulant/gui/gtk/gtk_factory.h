@@ -27,6 +27,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/none/none_gui.h"
+#include "ambulant/common/gui_player.h"
 
 #include "gtk_includes.h"
 #include "gtk_fill.h"
@@ -55,6 +56,7 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_ambulant_widget(gtk_ambulant_widget* gtkaw);
 	gtk_ambulant_widget* get_ambulant_widget();
 
+
 	void need_redraw(const lib::rect &r);
 	void redraw(const lib::rect &r);
 	void redraw_now();
@@ -62,11 +64,13 @@ class ambulant_gtk_window : public common::gui_window {
 	void mouse_region_changed();
 	void user_event(const lib::point &where, int what=0);
 	void need_events(bool want);
+
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
 	GdkPixmap* get_ambulant_surface();
 	GdkPixmap* get_ambulant_oldpixmap();
 	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
+
 	void reset_ambulant_surface(void);
 	void set_ambulant_surface(GdkPixmap* surf);
 	void delete_ambulant_surface();
@@ -98,11 +102,14 @@ class ambulant_gtk_window : public common::gui_window {
 	GMainLoop* m_main_loop;
 };  // class ambulant_gtk_window
 
-class gtk_ambulant_widget : public GtkWidget {
+
+class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_screen
+{
   public:
-	gtk_ambulant_widget(const std::string &name,
-			   lib::rect* bounds,
-			   GtkWidget* parent_widget);
+//	gtk_ambulant_widget(const std::string &name,
+//			   lib::rect* bounds,
+//			   GtkWidget* parent_widget);
+	gtk_ambulant_widget(GtkWidget* widget);
 	~gtk_ambulant_widget();
 	
 	void set_gtk_window( ambulant_gtk_window* agtkw);
@@ -114,7 +121,19 @@ class gtk_ambulant_widget : public GtkWidget {
 	void gtk_ambulant_widget::do_button_release_event(GdkEventButton *event);
 //	void mouseReleaseEvent(QMouseEvent* e);
 
+	// gui_screen implementation
+	void get_size(int *width, int *height);
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
+	bool set_overlay(const char *type, const char *data, size_t size);
+	bool clear_overlay();
+
+	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
+	gchar * m_screenshot_data;
+	gsize m_screenshot_size;
+
   private:
+//	gchar ** m_screenshot_data;
+//	gsize *m_screenshot_size;
 	ambulant_gtk_window* m_gtk_window;
 	GtkWidget *m_widget;
 
@@ -127,8 +146,8 @@ class gtk_ambulant_widget : public GtkWidget {
 
 class gtk_window_factory : public common::window_factory {
   public:
-	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
-
+//	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
+	gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop);
 //	gtk_window_factory( GtkWidget* parent_widget, int x, int y);		
 		common::gui_window* new_window(
 			const std::string &name,
@@ -137,7 +156,8 @@ class gtk_window_factory : public common::window_factory {
 		common::bgrenderer *new_background_renderer(
 			const common::region_info *src);
   private:
-	GtkWidget* m_parent_widget;
+//	GtkWidget* m_parent_widget;
+	gtk_ambulant_widget* m_parent_widget;
 	lib::point m_p;
 	GMainLoop* m_main_loop;
 };  // class gtk_window_factory

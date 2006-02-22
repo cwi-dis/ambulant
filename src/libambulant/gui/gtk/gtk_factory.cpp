@@ -91,15 +91,25 @@ gtk_renderer_factory::gtk_renderer_factory(common::factories *factory)
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_renderer factory (0x%x)", (void*) this);
 }
-	
-gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop)
+
+gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMainLoop* loop)
 //gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y)
-:	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
+:	m_parent_widget(parent_widget)
 {
 	m_main_loop = loop;
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
 }	
-  
+
+/*
+gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop)
+//gtk_window_factory::gtk_window_factory( GtkWidget* parent_widget, int x, int y)
+//:	m_parent_widget(parent_widget), m_p(lib::point(x,y)) 
+{
+	m_main_loop = loop;
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
+}	
+*/  
+
 ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	   lib::rect* bounds,
 	   common::gui_events *region)
@@ -368,20 +378,25 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 			r.left(), r.top(), 
 			r.left(), r.top(),
 			r.width(), r.height());
-	
+	g_object_unref (G_OBJECT (gc));	
 
-	// Get the screenshot of the last drawing
-/*
 	GError *error = NULL;
 	gint width; gint height;
-	gsize *buffer_size;
-	gchar **buffer;
+//	gsize buffer_size;
+//	gchar *buffer;
+
 	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
+	
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_ambulant_widget->get_gtk_widget()->window, 0, 0, 0, 0, 0, width, height);
-//	gdk_pixbuf_save(pixbuf, "myscreenshot.jpg", "jpeg", &error, "quality", "100", 0);
-	gdk_pixbuf_save_to_buffer(pixbuf, buffer, buffer_size, "jpeg", &error, "quality", "100", 0);
-*/
-	g_object_unref (G_OBJECT (gc));
+//	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
+	if (!gdk_pixbuf_save_to_buffer (pixbuf, &m_ambulant_widget->m_screenshot_data, &m_ambulant_widget->m_screenshot_size, "jpeg", &error, "quality", "100", NULL)) {
+		printf (" Tenemos un error%s", error->message);
+		g_error_free (error);
+		g_object_unref (G_OBJECT (pixbuf));
+	}
+//	m_ambulant_widget->set_screenshot(&buffer, &buffer_size);
+	free(pixbuf);
+	free(error);
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
 
@@ -398,7 +413,25 @@ ambulant_gtk_window::need_events(bool want)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_events(0x%x): want=%d", this, want);
 }
 
+
+gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
+:	m_gtk_window(NULL),
+	m_screenshot_data(NULL),
+	m_screenshot_size(0)
+{
+	m_widget = parent_widget;
+
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x)",
+		(void *)this,
+		(void*) parent_widget);	
+	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
+	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+}
+
 // XXXX
+/*
 gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 	lib::rect* bounds,
 	GtkWidget* parent_widget)
@@ -424,6 +457,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(const std::string &name,
 	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
 	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 }
+*/
 
 gtk_ambulant_widget::~gtk_ambulant_widget()
 {
@@ -487,6 +521,34 @@ gtk_ambulant_widget::set_gtk_window( ambulant_gtk_window* agtkw)
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::set_gtk_window(0x%x): m_gtk_window==0x%x)",
 		(void*) this, (void*) m_gtk_window);
 }
+
+bool gtk_ambulant_widget::set_screenshot(gchar **screenshot_data, gsize *screenshot_size){
+//	m_screenshot_data = screenshot_data;
+//	m_screenshot_size = screenshot_size;
+	return TRUE;
+}
+
+void gtk_ambulant_widget::get_size(int *width, int *height){
+	gdk_drawable_get_size(m_widget->window, width, height);
+}
+
+//bool gtk_ambulant_widget::get_screenshot(const char *type, char **out_data, size_t *out_size){
+bool gtk_ambulant_widget::get_screenshot(const char *type, char **out_data, size_t *out_size){
+	*out_data = NULL;
+	*out_size = 0;
+
+	*out_data= m_screenshot_data;
+	*out_size = m_screenshot_size;
+	return TRUE;
+}
+
+bool gtk_ambulant_widget::set_overlay(const char *type, const char *data, size_t size){
+return FALSE;
+}
+bool gtk_ambulant_widget::clear_overlay(){
+return FALSE;
+}
+
 
 ambulant_gtk_window* 
 gtk_ambulant_widget::gtk_window() {
@@ -557,15 +619,22 @@ gtk_window_factory::new_window (const std::string &name,
 		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, r, region);
 	agtkw->m_main_loop = m_main_loop;
-	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
+
+
+	// We don't create this widget anymore MainLoop does it!!
+	gtk_widget_set_size_request(m_parent_widget->get_gtk_widget(), r->right(), r->bottom());
+	gtk_widget_set_size_request(gtk_widget_get_toplevel (m_parent_widget->get_gtk_widget()), r->right(), r->bottom()+ 25);
+	gtk_widget_show(m_parent_widget->get_gtk_widget());
+//	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
 	
 	// Wrong!!! I need to add the GUI size
-	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (gtkaw->get_gtk_widget())), r->right(), r->bottom()+ 25);
-	agtkw->set_ambulant_widget(gtkaw);
-	
-	gtkaw->set_gtk_window(agtkw);
+//	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (gtkaw->get_gtk_widget())), r->right(), r->bottom()+ 25);
+//	agtkw->set_ambulant_widget(gtkaw);
+	agtkw->set_ambulant_widget(m_parent_widget);
+	m_parent_widget->set_gtk_window(agtkw);
+//	gtkaw->set_gtk_window(agtkw);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window(0x%x): ambulant_widget=0x%x gtk_window=0x%x",
-		(void*) this, (void*) gtkaw, (void*) agtkw);
+		(void*) this, (void*) m_parent_widget, (void*) agtkw);
 	return agtkw;
 }
 

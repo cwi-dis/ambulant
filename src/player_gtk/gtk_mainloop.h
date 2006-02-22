@@ -43,6 +43,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
+#include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/smil2/smil_player.h"
 #include "gtk_gui.h"
 
@@ -63,8 +64,7 @@ class gtk_gui;
 
 class gtk_mainloop :
     public common::gui_player,
-    public ambulant::common::embedder,
-	public ambulant::common::gui_screen
+    public ambulant::common::embedder
 {
   public:
     gtk_mainloop(gtk_gui* parent);
@@ -75,7 +75,7 @@ class gtk_mainloop :
 	void init_datasource_factory();
 	void init_parser_factory();
 
-    bool is_open() const { return m_player != NULL; }
+    	bool is_open() const { return m_player != NULL; }
 	
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
@@ -84,12 +84,6 @@ class gtk_mainloop :
 	bool player_done();
 	void player_start(gchar* document_name, bool start, bool old);
 	ambulant::common::gui_screen *get_gui_screen();
-	
-	void get_size(int *width, int *height);
-	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
-	bool set_overlay(const char *type, const char *data, size_t size);
-	bool clear_overlay();
-
  private:
  #if 0
 	// from dx_player
@@ -106,10 +100,6 @@ class gtk_mainloop :
 	gtk_gui *m_gui;
 	lib::logger *m_logger;
  	bool m_running;
-	ambulant::common::gui_screen *m_gui_screen;
-	int m_screenshot_width;
-	int m_screenshot_height;
-	gchar ** m_buffer;
-	gsize *m_buffer_size;
+	ambulant::gui::gtk::gtk_ambulant_widget *m_gtk_widget;
 };
 #endif/*__GTK_MAINLOOP_H__*/
