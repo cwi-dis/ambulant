@@ -712,10 +712,10 @@ then
        # Trick to determine whether we're using a Mac framework build, in which
        # case we need to specify the library differently.
        case x$PYTHON_INCLUDES in
-       x/Library*)
+       x-I/Library*)
            PYTHON_LIBS="-framework Python" 
            ;;
-       x/System/Library*)
+       x-I/System/Library*)
            PYTHON_LIBS="-framework Python"
            ;;
        *)
