@@ -97,6 +97,7 @@ void
 gui_player::restart(bool reparse)
 {
 	lib::logger::get_logger()->trace("restart not implemented yet");
+	
 }
 
 bool

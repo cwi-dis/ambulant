@@ -197,7 +197,7 @@ gtk_mainloop::create_player(const char* filename) {
 	if (is_mms) {
 		assert(0); //		player = create_mms_player(m_doc, this);
 	} else {
-		player = create_smil2_player(m_doc, this, this);
+		player = create_smil2_player(m_doc, this, get_embedder());
 	}
 #ifdef USE_SMIL21
 	player->initialize();
@@ -298,9 +298,57 @@ gtk_mainloop::player_start(gchar* document_name, bool start, bool old)
 	}
 }
 
+char* gtk_mainloop::convert_data_to_image(const guchar* data, gsize size){
+	GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
+	char* filename = 0;
+	GError *error = NULL;
+	GdkPixbuf *pixbuf;
+	if (gdk_pixbuf_loader_write(loader, (const guchar*) data, (gsize) size, 0))
+	{
+		pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
+	}else{
+		g_message("Could not get Loader working\n");
+		return NULL;
+	}
+	if (!pixbuf) {
+		g_message ("Could not create the pixbuf\n");
+		return NULL;
+	}
+	filename = "mytest.jpeg";
+	gdk_pixbuf_save (pixbuf, filename, "jpeg", &error,
+                 "quality", "100", NULL);
+	return filename;
+}
 
 ambulant::common::gui_screen* 
 gtk_mainloop::get_gui_screen(){
 	return m_gtk_widget;
 }
+
+void
+gtk_mainloop::restart(bool reparse)
+{
+	bool playing = is_play_active();
+	bool pausing = is_pause_active();
+	stop();
+	
+//	delete m_player;
+	m_player = 0;
+	if (reparse) {
+		m_doc = create_document(m_url);
+		if(!m_doc) {
+			lib::logger::get_logger()->show("Failed to parse document %s", m_url.get_url().c_str());
+			return;
+		}
+	}
+	AM_DBG lib::logger::get_logger()->debug("Creating player instance for: %s", m_url.get_url().c_str());
+	// XXXX
+	m_player = common::create_smil2_player(m_doc, this, m_embedder);
+#ifdef USE_SMIL21
+	m_player->initialize();
+#endif
+	if (playing || pausing) play();
+	if (pausing) pause();
+}
+
 

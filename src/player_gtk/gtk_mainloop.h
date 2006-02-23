@@ -84,6 +84,8 @@ class gtk_mainloop :
 	bool player_done();
 	void player_start(gchar* document_name, bool start, bool old);
 	ambulant::common::gui_screen *get_gui_screen();
+	void restart(bool reparse);
+	char* convert_data_to_image(const guchar* m_data, gsize size);
  private:
  #if 0
 	// from dx_player

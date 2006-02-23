@@ -395,8 +395,8 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		g_object_unref (G_OBJECT (pixbuf));
 	}
 //	m_ambulant_widget->set_screenshot(&buffer, &buffer_size);
-	free(pixbuf);
-	free(error);
+//	free(pixbuf);
+//	free(error);
 //XXXX	dumpPixmap(m_pixmap, "top"); //AM_DBG 
 }
 

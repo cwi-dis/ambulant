@@ -733,7 +733,7 @@ gtk_gui::do_pause() {
 void 
 gtk_gui::do_reload() {
     assert(m_mainloop);
-    m_mainloop->restart();
+    m_mainloop->restart(false);
     _update_menus();
 }
 
