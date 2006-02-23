@@ -178,7 +178,8 @@ lib_LTLIBRARIES = \
 
 # AM_CPPFLAGS=-rdynamic
 AM_CPPFLAGS = \
-		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" 
+		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
+		-DAMBULANT_PLUGINDIR=\"$(pkglibdir)\"
 
 AM_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \

@@ -105,9 +105,7 @@ plugin_engine::collect_plugin_directories()
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
 	if(plugin_dir != "")
 		m_plugindirs.push_back(plugin_dir);
-	
-	// XXXX Need to add per-user plugin dir!
-	
+
 #ifdef AMBULANT_PLATFORM_MACOS
 	// On MacOSX add the bundle's plugin dir
 	CFBundleRef main_bundle = CFBundleGetMainBundle();
@@ -122,13 +120,17 @@ plugin_engine::collect_plugin_directories()
 	}
 #elif defined(AMBULANT_PLATFORM_UNIX)
 	// On other unix platforms add the pkglibdir
-	// XXXX Need to parameterize this!
+#ifdef AMBULANT_PLUGINDIR
+	m_plugindirs.push_back(AMBULANT_PLUGINDIR);
+#else
 	m_plugindirs.push_back("/usr/local/lib/ambulant");
-#endif
-#ifdef AMBULANT_PLATFORM_WIN32
+#endif // AMBULANT_PLUGINDIR
+#elif defined(AMBULANT_PLATFORM_WIN32)
 	// XXXX Need to add application directory
+#else
+#error WITH_PLUGINS defined for unknown platform
 #endif
-#endif
+#endif // WITH_PLUGINS
 }
 
 #ifdef WITH_LTDL_PLUGINS
