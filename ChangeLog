@@ -1,3 +1,28 @@
+2006-02-23 16:16  jackjansen
+
+	* Define AMBULANT_PLUGINDIR on the command line, so the plugin
+	  loader can also locate the correct directory if our $prefix isn't
+	  /usr/local.  Should fix #1396102.
+
+2006-02-23 14:41  jackjansen
+
+	* Change build order for plugins and python module, so build with
+	  python plugin can happen in one go.
+
+2006-02-23 14:40  jackjansen
+
+	* Fixed typo in the test for Mac framework Python.
+
+2006-02-22 17:43  p_cesar
+
+	* GTK Ambulant Annotator Server side:	it plays, stop, pause, get
+	  document, and get screenshot GTK Core Architecture:  mainloop
+	  creates a gtk_ambulant_widget  it initializes the window_factory
+	  with that widget	The window_factory creates an
+	  ambulant_gtk_widget	    This way, we have control from the
+	  mainloop over the    actual GTK widget (rendering area or
+	  documentcontainer)	     in order to get screenshots
+
 2006-02-21 18:31  p_cesar
 
 	* First trial to get screenshot from GTK player
