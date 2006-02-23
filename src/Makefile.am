@@ -21,7 +21,12 @@ build_pyambulant=pyambulant
 else
 build_pyambulant=
 endif
-SUBDIRS = libambulant plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx) $(build_pyambulant)
+# NOTE: because of incomplete dependencies the order of building is important:
+# 1. library
+# 2. python module (optional)
+# 3. plugins
+# 4. applications
+SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx)
 DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant
 EXTRA_DIST= \
 	Ambulant-win32.sln \
