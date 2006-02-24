@@ -2362,6 +2362,7 @@ gui_player::gui_player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "is_pause_active")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: is_pause_active");
 		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_cursor");
 		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: set_cursor");
+		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_char");
 		if (!PyObject_HasAttrString(itself, "get_document")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_document");
 		if (!PyObject_HasAttrString(itself, "set_document")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: set_document");
 		if (!PyObject_HasAttrString(itself, "get_embedder")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_embedder");
@@ -2725,6 +2726,24 @@ void gui_player::set_cursor(int cursor)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_cursor);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_player::on_char(int c)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_c = Py_BuildValue("i", c);
+
+	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "on_char", "(O)", py_c);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_player::on_char() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_c);
 
 	PyGILState_Release(_GILState);
 }

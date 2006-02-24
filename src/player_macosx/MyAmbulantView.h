@@ -28,4 +28,5 @@
 {
 	IBOutlet id document;
 }
+- (void) keyDown: (NSEvent *)theEvent;
 @end

@@ -306,4 +306,16 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
 	if (myMainloop) myMainloop->set_cursor(0);
 }
+
+- (void)keyDown: (NSEvent *)ev
+{
+	NSString *chars = [ev characters];
+	
+	if (chars && [chars length] == 1 && myMainloop) {
+		myMainloop->on_char([chars characterAtIndex:0]);
+	} else {
+		/*AM_DBG*/ NSLog(@"MyDocument::keyDown: dropping %@", chars);
+	}
+}
+		
 @end

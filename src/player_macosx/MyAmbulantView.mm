@@ -21,4 +21,13 @@
 
 @implementation MyAmbulantView
 
+- (void) keyDown: (NSEvent *)theEvent
+{
+	if (document) {
+		[document keyDown: theEvent];
+	} else {
+		NSLog(@"MyAmbulantView: keyDown: %@", theEvent);
+	}
+}
+
 @end

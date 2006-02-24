@@ -79,6 +79,8 @@ class gui_player : public factories {
 	virtual int get_cursor() const;
 	virtual void set_cursor(int cursor);
 	
+	virtual void on_char(int c);
+	
 	virtual lib::document *get_document() const { return m_doc; }
 	virtual void set_document(lib::document *doc) { m_doc = doc; }
 	
@@ -91,7 +93,6 @@ class gui_player : public factories {
 	virtual net::url get_url() const { return m_url; }
 	
 	virtual gui_screen *get_gui_screen() { return NULL; }
-	virtual char *convert_data_to_image(const char* m_data, size_t size) { return NULL; }
 	
 	static void load_test_attrs(std::string& filename);
   protected:

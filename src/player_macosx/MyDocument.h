@@ -70,5 +70,6 @@ class document_embedder : public ambulant::common::embedder {
 - (void)close: (id)dummy;
 - (void)fixMouse: (id)dummy;
 - (void)resetMouse: (id)dummy;
+- (void)keyDown: (NSEvent *)ev;
 
 @end

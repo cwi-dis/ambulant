@@ -5435,6 +5435,21 @@ static PyObject *gui_playerObj_set_cursor(gui_playerObject *_self, PyObject *_ar
 	return _res;
 }
 
+static PyObject *gui_playerObj_on_char(gui_playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int c;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &c))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_char(c);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *gui_playerObj_get_document(gui_playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5582,6 +5597,8 @@ static PyMethodDef gui_playerObj_methods[] = {
 	 PyDoc_STR("() -> (int _rv)")},
 	{"set_cursor", (PyCFunction)gui_playerObj_set_cursor, 1,
 	 PyDoc_STR("(int cursor) -> None")},
+	{"on_char", (PyCFunction)gui_playerObj_on_char, 1,
+	 PyDoc_STR("(int c) -> None")},
 	{"get_document", (PyCFunction)gui_playerObj_get_document, 1,
 	 PyDoc_STR("() -> (ambulant::lib::document* _rv)")},
 	{"set_document", (PyCFunction)gui_playerObj_set_document, 1,

@@ -453,6 +453,7 @@ public:
 	bool is_pause_active() const;
 	int get_cursor() const;
 	void set_cursor(int cursor);
+	void on_char(int c);
 	ambulant::lib::document* get_document() const;
 	void set_document(ambulant::lib::document* doc);
 	ambulant::common::embedder* get_embedder() const;

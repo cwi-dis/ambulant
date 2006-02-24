@@ -171,6 +171,14 @@ gui_player::set_cursor(int cursor)
 	m_lock.leave();
 }
 
+void
+gui_player::on_char(int c)
+{
+	m_lock.enter();
+	if(m_player) m_player->on_char(c);
+	m_lock.leave();
+}
+
 lib::document *
 gui_player::create_document(const net::url& url)
 {
