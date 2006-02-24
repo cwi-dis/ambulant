@@ -1,3 +1,7 @@
+2006-02-23 18:53  p_cesar
+
+	* add image from URL
+
 2006-02-23 16:16  jackjansen
 
 	* Define AMBULANT_PLUGINDIR on the command line, so the plugin
