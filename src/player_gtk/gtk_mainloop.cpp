@@ -298,6 +298,7 @@ gtk_mainloop::player_start(gchar* document_name, bool start, bool old)
 	}
 }
 
+/*
 char* gtk_mainloop::convert_data_to_image(const guchar* data, gsize size){
 	GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
 	char* filename = 0;
@@ -319,6 +320,7 @@ char* gtk_mainloop::convert_data_to_image(const guchar* data, gsize size){
                  "quality", "100", NULL);
 	return filename;
 }
+*/
 
 ambulant::common::gui_screen* 
 gtk_mainloop::get_gui_screen(){
