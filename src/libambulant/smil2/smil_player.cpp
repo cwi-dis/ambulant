@@ -210,11 +210,22 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
-	if(np) return np;
-	np = new_playable(n);
-	m_playables_cs.enter();
-	m_playables[n] = np;
-	m_playables_cs.leave();
+	if(np == NULL) {
+		np = new_playable(n);
+		m_playables_cs.enter();
+		m_playables[n] = np;
+		m_playables_cs.leave();
+	}
+	
+	// We also need to remember any accesskey attribute (as opposed to accesskey
+	// value for a timing attribute) because these are global.
+	const char *accesskey = n->get_attribute("accesskey");
+	if (accesskey) {
+		int nid = n->get_numid();
+		// XXX Is this unicode-safe?
+		m_accesskey_map[accesskey[0]] = nid;
+	}
+
 	return np;
 }
 // Request to start the playable of the node.
@@ -461,6 +472,21 @@ void smil_player::unstalled(int n, double t) {
 
 // UI notification for a char event.
 void smil_player::on_char(int ch) {
+	// First check for an anchor node with accesskey attribute
+	std::map<int, int>::iterator p = m_accesskey_map.find(ch);
+	if (p != m_accesskey_map.end()) {
+		// The character was registered, at some point in time.
+		int nid = (*p).second;
+		std::map<int, time_node*>::iterator it = m_dom2tn->find(nid);
+		if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
+			// And the node is alive and still wants the event. Use clicked()
+			// to do the hard work.
+			AM_DBG m_logger->debug("smil_player::on_char() convert to clicked(%d): '%c' [%d]", nid, (char)ch, ch);
+			clicked(nid, 0);
+			return;
+		}
+	}
+
 	typedef std::pair<q_smil_time, int> accesskey;
 	typedef scalar_arg_callback_event<time_node, accesskey> accesskey_cb;
 	q_smil_time timestamp(m_root, m_root->get_simple_time());
