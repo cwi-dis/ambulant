@@ -9426,6 +9426,21 @@ static PyObject *player_feedbackObj_node_stopped(player_feedbackObject *_self, P
 	return _res;
 }
 
+static PyObject *player_feedbackObj_node_focussed(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->node_focussed(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef player_feedbackObj_methods[] = {
 	{"document_started", (PyCFunction)player_feedbackObj_document_started, 1,
 	 PyDoc_STR("() -> None")},
@@ -9434,6 +9449,8 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	{"node_started", (PyCFunction)player_feedbackObj_node_started, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"node_stopped", (PyCFunction)player_feedbackObj_node_stopped, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"node_focussed", (PyCFunction)player_feedbackObj_node_focussed, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{NULL, NULL, 0}
 };
@@ -9775,6 +9792,32 @@ static PyObject *playerObj_on_char(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *playerObj_on_focus_advance(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_focus_advance();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_on_focus_activate(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_focus_activate();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *playerObj_set_feedback(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -9835,6 +9878,10 @@ static PyMethodDef playerObj_methods[] = {
 	 PyDoc_STR("(int cursor) -> None")},
 	{"on_char", (PyCFunction)playerObj_on_char, 1,
 	 PyDoc_STR("(int ch) -> None")},
+	{"on_focus_advance", (PyCFunction)playerObj_on_focus_advance, 1,
+	 PyDoc_STR("() -> None")},
+	{"on_focus_activate", (PyCFunction)playerObj_on_focus_activate, 1,
+	 PyDoc_STR("() -> None")},
 	{"set_feedback", (PyCFunction)playerObj_set_feedback, 1,
 	 PyDoc_STR("(ambulant::common::player_feedback* fb) -> None")},
 	{"goto_node", (PyCFunction)playerObj_goto_node, 1,

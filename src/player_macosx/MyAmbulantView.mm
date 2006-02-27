@@ -19,6 +19,17 @@
 
 #import "MyAmbulantView.h"
 
+void
+set_statusline(void *view, const char *msg)
+{
+	NSString *message = [[NSString stringWithCString: msg] retain];
+	NSObject *delegate = [[NSApplication sharedApplication] delegate];
+	[(id)view performSelectorOnMainThread: @selector(setStatusLine:) 
+		withObject: message waitUntilDone: NO];
+//	[message release];
+}
+
+
 @implementation MyAmbulantView
 
 - (void) keyDown: (NSEvent *)theEvent
@@ -28,6 +39,11 @@
 	} else {
 		NSLog(@"MyAmbulantView: keyDown: %@", theEvent);
 	}
+}
+
+- (void) setStatusLine: (NSString *)message
+{
+	if (document) [document setStatusLine: message];
 }
 
 @end

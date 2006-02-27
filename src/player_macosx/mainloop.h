@@ -27,7 +27,10 @@
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"
 
-class mainloop : public ambulant::common::gui_player {
+class mainloop :
+	public ambulant::common::gui_player,
+	public ambulant::common::player_feedback
+{
   public:
 	mainloop(const char *filename, void *view,
 		bool use_mms, ambulant::common::embedder *app);
@@ -39,6 +42,13 @@ class mainloop : public ambulant::common::gui_player {
 	void init_datasource_factory();
 	void init_parser_factory();
 	ambulant::common::gui_screen *get_gui_screen();
+	
+	void document_started() {};
+	void document_stopped() {};
+	void node_started(const ambulant::lib::node *n) {};
+	void node_stopped(const ambulant::lib::node *n) {};
+	void node_focussed(const ambulant::lib::node *n);
+
   private:
 	void *m_view;
 	ambulant::common::gui_screen *m_gui_screen;

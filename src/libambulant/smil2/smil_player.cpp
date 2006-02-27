@@ -371,8 +371,10 @@ void smil_player::pointed(int n, double t) {
 			m_pointed_node = NULL;
 		}
 		m_pointed_node = (*it).second;
-		if((*it).second->wants_activate_event())
+		if((*it).second->wants_activate_event()) {
 			m_cursorid = 1;
+			node_focussed(m_pointed_node->dom_node());
+		}
 		if (changed_focus) {
 			AM_DBG m_logger->debug("smil_player::pointed: m_pointed_node is now 0x%x %s[%s]",
 				m_pointed_node, 
@@ -414,6 +416,7 @@ void smil_player::pointed(int n, double t) {
 				schedule_event(cb, 0, ep_high);
 			}
 			m_pointed_node = NULL;
+			node_focussed(NULL);
 		}
 	}
 	AM_DBG m_logger->debug("smil_player::pointed: now m_pointed_node=0x%x", m_pointed_node);

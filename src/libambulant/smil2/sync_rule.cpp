@@ -284,7 +284,7 @@ void transout_rule::update_instance(qtime_type timestamp, time_type instance, ti
 
 void trigger_rule::new_instance(qtime_type timestamp, time_type instance) {
 	//m_target->sync_update(timestamp);
-	logger::get_logger()->show("trigger_rule::new_instance");
+	logger::get_logger()->debug("trigger_rule::new_instance");
 }
 
 void trigger_rule::cancel_instance(qtime_type timestamp, time_type instance) {

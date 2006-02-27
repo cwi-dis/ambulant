@@ -172,7 +172,7 @@ void scheduler::activate_media_child(time_node *parent, time_node *child) {
 // Restarts the node
 void scheduler::restart(time_node *tn) {
 	if(!tn->is_active()) {
-		lib::logger::get_logger()->show("Restart while not active");
+		lib::logger::get_logger()->debug("Restart while not active");
 		return;
 	}
 	const time_node::interval_type& i = tn->get_current_interval();

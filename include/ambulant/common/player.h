@@ -50,10 +50,22 @@ enum play_state {ps_idle, ps_playing, ps_pausing, ps_done};
 class player_feedback {
   public:
     virtual ~player_feedback(){}
+	
+	/// Called by the player when the document starts playing
     virtual void document_started() = 0;
+	
+	/// Called by the player when the document stopped playing
 	virtual void document_stopped() = 0;
+	
+	/// Called by the player to signal that the given node starts playing
 	virtual void node_started(const lib::node *n) = 0;
+	
+	/// Called by the player to signal the given node stopped playing
 	virtual void node_stopped(const lib::node *n) = 0;
+	
+	/// Called by the player to signal the given node received focus, either
+	/// through a mouseover event or a tabindex event.
+	virtual void node_focussed(const lib::node *n) = 0;
 };
 
 /// Baseclass for all players.
@@ -101,8 +113,14 @@ class player {
 	/// Set desired cursor.
 	virtual void set_cursor(int cursor) {}
 
-	/// Called by the GUI when the user has pressed a key.
+	/// Call this when the user has pressed a key.
 	virtual void on_char(int ch) {}
+	
+	/// Call this to advance the focus.
+	virtual void on_focus_advance() {}
+	
+	/// Call this to activate/select the current focus.
+	virtual void on_focus_activate() {}
 
 	/// Set the feedback handler.
 	virtual void set_feedback(player_feedback *fb) {}

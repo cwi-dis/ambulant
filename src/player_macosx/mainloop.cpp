@@ -22,6 +22,7 @@
 // none_window and none_playable in stead.
 //#define NONE_PLAYER
 
+#include "MyAmbulantView.h"
 #include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
 #include "mainloop.h"
@@ -81,6 +82,7 @@ mainloop::mainloop(const char *urlstr, void *view,
 #ifdef USE_SMIL21
 	m_player->initialize();
 #endif
+	m_player->set_feedback(this);
 	const std::string& id = url.get_ref();
 	if (id != "") {
 		const ambulant::lib::node *node = m_doc->get_node(id);
@@ -197,3 +199,31 @@ mainloop::get_gui_screen()
 	if (!m_gui_screen) m_gui_screen = new gui::cocoa::cocoa_gui_screen(m_view);
 	return m_gui_screen;
 }
+
+void
+mainloop::node_focussed(const lib::node *n)
+{
+	if (n == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("node_focussed(0)");
+		set_statusline(m_view, "");
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->debug("node_focussed(%s)", n->get_sig().c_str());
+	const char *alt = n->get_attribute("alt");
+	if (alt) {
+		AM_DBG lib::logger::get_logger()->debug("node_focussed: alt=%s", alt);
+		set_statusline(m_view, alt);
+		return;
+	}
+	const char *href = n->get_attribute("href");
+	if (href) {
+		AM_DBG lib::logger::get_logger()->debug("node_focussed: href=%s", href);
+		std::string msg = "Go to ";
+		msg += href;
+		set_statusline(m_view, msg.c_str());
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->debug("node_focussed: nothing to show");
+	set_statusline(m_view, "???");
+}
+			

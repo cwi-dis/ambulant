@@ -49,6 +49,7 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet id pause_button;
 	IBOutlet id ask_url_panel;
 	IBOutlet id url_field;
+	IBOutlet id status_line;
 //    void *window_factory;
 	mainloop *myMainloop;
 	NSTimer *uitimer;
@@ -71,5 +72,6 @@ class document_embedder : public ambulant::common::embedder {
 - (void)fixMouse: (id)dummy;
 - (void)resetMouse: (id)dummy;
 - (void)keyDown: (NSEvent *)ev;
+- (void) setStatusLine: (NSString *)message;
 
 @end

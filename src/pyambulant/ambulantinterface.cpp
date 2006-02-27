@@ -4686,6 +4686,7 @@ player_feedback::player_feedback(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "document_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: document_stopped");
 		if (!PyObject_HasAttrString(itself, "node_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_started");
 		if (!PyObject_HasAttrString(itself, "node_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_stopped");
+		if (!PyObject_HasAttrString(itself, "node_focussed")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_focussed");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -4769,6 +4770,24 @@ void player_feedback::node_stopped(const ambulant::lib::node* n)
 	PyGILState_Release(_GILState);
 }
 
+void player_feedback::node_focussed(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "node_focussed", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::node_focussed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
 /* -------------------------- Class player -------------------------- */
 
 player::player(PyObject *itself)
@@ -4789,6 +4808,8 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_cursor");
 		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_cursor");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_char");
+		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_advance");
+		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
 		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
 		if (!PyObject_HasAttrString(itself, "goto_node")) PyErr_Warn(PyExc_Warning, "player: missing attribute: goto_node");
 	}
@@ -5061,6 +5082,36 @@ void player::on_char(int ch)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_ch);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::on_focus_advance()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "on_focus_advance", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::on_focus_advance() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::on_focus_activate()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "on_focus_activate", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::on_focus_activate() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
 }

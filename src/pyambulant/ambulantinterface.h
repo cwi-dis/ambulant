@@ -864,6 +864,7 @@ public:
 	void document_stopped();
 	void node_started(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
+	void node_focussed(const ambulant::lib::node* n);
   private:
 	PyObject *py_player_feedback;
 
@@ -899,6 +900,8 @@ public:
 	int get_cursor() const;
 	void set_cursor(int cursor);
 	void on_char(int ch);
+	void on_focus_advance();
+	void on_focus_activate();
 	void set_feedback(ambulant::common::player_feedback* fb);
 	bool goto_node(const ambulant::lib::node* n);
   private:

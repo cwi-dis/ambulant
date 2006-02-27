@@ -127,6 +127,7 @@ class dummy_time_node_context : public time_node_context {
 	virtual void document_stopped() {}
 	virtual void node_started(const lib::node *n) {}
 	virtual void node_stopped(const lib::node *n) {}
+	virtual void node_focussed(const lib::node *n) {}
 };
 
 } // namespace smil2

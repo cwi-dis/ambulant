@@ -65,15 +65,16 @@ gui_player::play()
 	assert(m_datasource_factory);
 	assert(m_parser_factory);
 	common::player *p = m_player;
-	m_lock.leave();
+//XXX	if (p->is_playing()) lib::logger::get_logger()->debug("gui_player::play: already playing!");
 	p->start();
 	if (m_goto_node) {
 		bool ok = p->goto_node(m_goto_node);
 		if (!ok)
-			ambulant::lib::logger::get_logger()->trace("gui_player::run: goto_node failed");
+			ambulant::lib::logger::get_logger()->trace("gui_player::play: goto_node failed");
 		m_goto_node = NULL;
 	} 
-	AM_DBG ambulant::lib::logger::get_logger()->debug("gui_player::run(): returning");
+	m_lock.leave();
+	AM_DBG ambulant::lib::logger::get_logger()->debug("gui_player::play: returning");
 }
 
 void
@@ -158,18 +159,18 @@ gui_player::is_pause_active() const
 int
 gui_player::get_cursor() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	int rv = m_player?m_player->get_cursor():0;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 void
 gui_player::set_cursor(int cursor)
 {
-	m_lock.enter();
+//	m_lock.enter();
 	if(m_player) m_player->set_cursor(cursor);
-	m_lock.leave();
+//	m_lock.leave();
 }
 
 void

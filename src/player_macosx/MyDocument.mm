@@ -292,8 +292,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	int cursor = myMainloop->get_cursor();
 	AM_DBG NSLog(@"Fixing mouse to %d", cursor);
 	if (cursor == 0) {
-		if ([NSCursor currentCursor] != [NSCursor arrowCursor])
+		if ([NSCursor currentCursor] != [NSCursor arrowCursor]) {
 			[[NSCursor arrowCursor] set];
+			// XXX This is a bit of a hack: hovering over an anchor
+			// stats the status line, but the reset "never happens"
+			// so we clear the status line here. This should really
+			// be done more intelligently in smil_player.
+			if (status_line) [status_line setStringValue: @""];
+		}
 	} else if (cursor == 1) {
 		if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
 			[[NSCursor pointingHandCursor] set];
@@ -317,5 +323,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		/*AM_DBG*/ NSLog(@"MyDocument::keyDown: dropping %@", chars);
 	}
 }
+
+- (void) setStatusLine: (NSString *)message
+{
+	if (status_line) [status_line setStringValue: message];
+	[message release];
+}
+
+
 		
 @end

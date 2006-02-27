@@ -21,6 +21,9 @@
 
 /* AmbulantView */
 
+void set_statusline(void *view, const char *msg);
+
+#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 
@@ -29,4 +32,6 @@
 	IBOutlet id document;
 }
 - (void) keyDown: (NSEvent *)theEvent;
+- (void) setStatusLine: (NSString *)message;
 @end
+#endif
