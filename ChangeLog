@@ -1,3 +1,14 @@
+2006-02-28 00:25  jackjansen
+
+	* - Added node_focussed call to player_feedback. This is called by
+	  the player   when a node is hovered over.  - Used this
+	  functionality in the Mac player to add a status bar that lists
+	  the url a click will send you to.
+
+2006-02-27 17:14  p_cesar
+
+	* [no log message]
+
 2006-02-24 17:59  jackjansen
 
 	* Implemented accesskey on anchors, by keeping a mapping of
