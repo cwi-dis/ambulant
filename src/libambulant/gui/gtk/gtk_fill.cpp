@@ -236,6 +236,10 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 	}
 }
 
+void gtk_background_renderer::highlight(gui_window *window)
+{
+}
+
 void
 gtk_background_renderer::keep_as_background()
 {
