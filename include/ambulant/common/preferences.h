@@ -87,8 +87,12 @@ class AMBULANTAPI preferences {
 	bool m_prefer_ffmpeg;
 #endif
 
-	/// Do we do strict URL parsing?
+	/// Do we do strict URL parsing (i.e. complain about illegal characters
+	/// in URLs)?
 	bool m_strict_url_parsing;
+	
+	/// Do we allow selection/activation of anchors with tab/newline?
+	bool m_tabbed_links;
 
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();

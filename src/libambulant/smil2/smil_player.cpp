@@ -71,7 +71,8 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_state(common::ps_idle),
 	m_cursorid(0), 
 	m_pointed_node(0), 
-	m_eom_flag(true) {
+	m_eom_flag(true),
+	m_focus(0) {
 	
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player()");
@@ -219,6 +220,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	
 	// We also need to remember any accesskey attribute (as opposed to accesskey
 	// value for a timing attribute) because these are global.
+	// XXX It may be better/cheaper if we simply iterate over the m_playables....
 	const char *accesskey = n->get_attribute("accesskey");
 	if (accesskey) {
 		int nid = n->get_numid();
@@ -281,7 +283,13 @@ void smil_player::start_transition(const lib::node *n, const lib::transition_inf
 // Request to stop the playable of the node.
 void smil_player::stop_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)", (void*)n);
+	if (n == m_focus) {
+		m_focus = NULL;
+		highlight(n, false);
+		node_focussed(NULL);
+	}
 	m_playables_cs.enter();
+		
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	if(it != m_playables.end()) {
@@ -500,6 +508,51 @@ void smil_player::on_char(int ch) {
 	m_scheduler->exec();
 }
 
+void smil_player::on_focus_advance() {
+	AM_DBG m_logger->debug("smil_player::on_focus_advance");
+	m_playables_cs.enter();
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.begin();
+	// First find the current focus
+	if (m_focus != NULL) {
+		while (it != m_playables.end() && (*it).first != m_focus) it++;
+		if (it == m_playables.end()) {
+			m_logger->debug("smil_player::on_focus_advance: current focus unknown");
+			it = m_playables.begin();
+		} else {
+			it++;
+		}
+	}
+	// Now find the next playable that is interested in focus
+	while (it != m_playables.end()) {
+		std::map<int, time_node*>::iterator tit = m_dom2tn->find((*it).first->get_numid());
+		if (tit != m_dom2tn->end()) {
+			time_node *tn = (*tit).second;
+			if (tn && tn->wants_activate_event()) break;
+		}
+		it++;
+	}
+	if (m_focus) highlight(m_focus, false);
+	m_focus = NULL;
+	if (it != m_playables.end()) m_focus = (*it).first;
+	if (m_focus) {
+		highlight(m_focus);
+	} else {
+		m_logger->trace("on_focus_advance: Nothing to focus on");
+	}
+	m_playables_cs.leave();
+	node_focussed(m_focus);	
+}
+
+void smil_player::on_focus_activate() {
+	AM_DBG m_logger->debug("smil_player::on_focus_activate");
+	if (m_focus) {
+		clicked(m_focus->get_numid(), 0);
+	} else {
+		m_logger->trace("on_focus_activate: No current focus");
+	}
+}
+
 // Creates and returns a playable for the node.
 common::playable *
 smil_player::new_playable(const lib::node *n) {
@@ -526,8 +579,6 @@ smil_player::new_playable(const lib::node *n) {
 		} else {
 			AM_DBG m_logger->debug("smil_player::new_playable: surface not set because rend == NULL");
 		}
-
-		
 	}
 	return np;
 }
@@ -594,6 +645,21 @@ bool smil_player::goto_node(const lib::node *target)
 		return true;
 	}
 	return false;
+}
+
+bool
+smil_player::highlight(const lib::node *n, bool on)
+{
+	std::map<const lib::node*, common::playable *>::iterator it = 
+		m_playables.find(n);
+	common::playable *np = (it != m_playables.end())?(*it).second:0;
+	if (np == NULL) return false;
+	common::renderer *rend = np->get_renderer();
+	if (rend == NULL) return false;
+	common::surface *surf = rend->get_surface();
+	if (surf == NULL)  return false;
+	surf->highlight(on);
+	return true;
 }
 
 std::string smil_player::get_pointed_node_str() const {

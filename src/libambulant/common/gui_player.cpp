@@ -181,6 +181,22 @@ gui_player::on_char(int c)
 	m_lock.leave();
 }
 
+void
+gui_player::on_focus_advance()
+{
+	m_lock.enter();
+	if(m_player) m_player->on_focus_advance();
+	m_lock.leave();
+}
+
+void
+gui_player::on_focus_activate()
+{
+	m_lock.enter();
+	if(m_player) m_player->on_focus_activate();
+	m_lock.leave();
+}
+
 lib::document *
 gui_player::create_document(const net::url& url)
 {

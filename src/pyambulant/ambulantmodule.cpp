@@ -5450,6 +5450,32 @@ static PyObject *gui_playerObj_on_char(gui_playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *gui_playerObj_on_focus_advance(gui_playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_focus_advance();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_playerObj_on_focus_activate(gui_playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_focus_activate();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *gui_playerObj_get_document(gui_playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5599,6 +5625,10 @@ static PyMethodDef gui_playerObj_methods[] = {
 	 PyDoc_STR("(int cursor) -> None")},
 	{"on_char", (PyCFunction)gui_playerObj_on_char, 1,
 	 PyDoc_STR("(int c) -> None")},
+	{"on_focus_advance", (PyCFunction)gui_playerObj_on_focus_advance, 1,
+	 PyDoc_STR("() -> None")},
+	{"on_focus_activate", (PyCFunction)gui_playerObj_on_focus_activate, 1,
+	 PyDoc_STR("() -> None")},
 	{"get_document", (PyCFunction)gui_playerObj_get_document, 1,
 	 PyDoc_STR("() -> (ambulant::lib::document* _rv)")},
 	{"set_document", (PyCFunction)gui_playerObj_set_document, 1,
@@ -6878,11 +6908,28 @@ static PyObject *bgrendererObj_keep_as_background(bgrendererObject *_self, PyObj
 	return _res;
 }
 
+static PyObject *bgrendererObj_highlight(bgrendererObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::gui_window* window;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      gui_windowObj_Convert, &window))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->highlight(window);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef bgrendererObj_methods[] = {
 	{"set_surface", (PyCFunction)bgrendererObj_set_surface, 1,
 	 PyDoc_STR("(ambulant::common::surface* destination) -> None")},
 	{"keep_as_background", (PyCFunction)bgrendererObj_keep_as_background, 1,
 	 PyDoc_STR("() -> None")},
+	{"highlight", (PyCFunction)bgrendererObj_highlight, 1,
+	 PyDoc_STR("(ambulant::common::gui_window* window) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -7284,6 +7331,21 @@ static PyObject *surfaceObj_get_renderer_private_data(surfaceObject *_self, PyOb
 	return _res;
 }
 
+static PyObject *surfaceObj_highlight(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool on;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &on))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->highlight(on);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef surfaceObj_methods[] = {
 	{"show", (PyCFunction)surfaceObj_show, 1,
 	 PyDoc_STR("(ambulant::common::gui_events* renderer) -> None")},
@@ -7323,6 +7385,8 @@ static PyMethodDef surfaceObj_methods[] = {
 	 PyDoc_STR("(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data) -> None")},
 	{"get_renderer_private_data", (PyCFunction)surfaceObj_get_renderer_private_data, 1,
 	 PyDoc_STR("(ambulant::common::renderer_private_id idd) -> (ambulant::common::renderer_private_data * _rv)")},
+	{"highlight", (PyCFunction)surfaceObj_highlight, 1,
+	 PyDoc_STR("(bool on) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -9848,6 +9912,21 @@ static PyObject *playerObj_goto_node(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *playerObj_highlight(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->highlight(n);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef playerObj_methods[] = {
 
 #ifdef USE_SMIL21
@@ -9885,6 +9964,8 @@ static PyMethodDef playerObj_methods[] = {
 	{"set_feedback", (PyCFunction)playerObj_set_feedback, 1,
 	 PyDoc_STR("(ambulant::common::player_feedback* fb) -> None")},
 	{"goto_node", (PyCFunction)playerObj_goto_node, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
+	{"highlight", (PyCFunction)playerObj_highlight, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
 	{NULL, NULL, 0}
 };

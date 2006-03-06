@@ -138,6 +138,27 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 }
 
 void
+cocoa_background_renderer::highlight(common::gui_window *window)
+{
+	const rect &r =  m_dst->get_rect();
+	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::highlight(0x%x)", (void *)this);
+	
+	cocoa_window *cwindow = (cocoa_window *)window;
+	AmbulantView *view = (AmbulantView *)cwindow->view();
+	rect dstrect_whole = r;
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+	color_t hicolor = 0x0000ff;
+	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::highlight: framing with color 0x%x", (long)hicolor);
+	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(hicolor)
+				green:greenf(hicolor)
+				blue:bluef(hicolor)
+				alpha:1.0];
+	[cocoa_bgcolor set];
+	NSFrameRect(cocoa_dstrect_whole);
+}
+
+void
 cocoa_background_renderer::keep_as_background()
 {
 	AM_DBG lib::logger::get_logger()->debug("cocoa_background_renderer::keep_as_background() called");

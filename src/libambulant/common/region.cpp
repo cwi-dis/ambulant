@@ -60,6 +60,7 @@ surface_impl::surface_impl(const std::string &name, surface_impl *parent, rect b
 	const region_info *info, bgrenderer *bgrenderer)
 :	m_name(name),
 	m_bounds_inited(true),
+	m_highlighting(false),
 	m_inner_bounds(bounds.innercoordinates(bounds)),
 	m_outer_bounds(bounds),
 	m_window_topleft(bounds.left_top()),
@@ -228,7 +229,7 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		}
 	}
 	
-	// Finally the children regions of this
+	// Then the children regions of this
 	// XXXX Should go per z-order value
 	
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
@@ -241,6 +242,10 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 			}
 		}
 	}
+	// Finally any highlighting needed
+	if (m_highlighting && m_bg_renderer)
+		m_bg_renderer->highlight(window);
+		
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) returning", (void*)this, m_name.c_str());
 	m_children_cs.leave();
 }
@@ -678,6 +683,14 @@ surface_impl::set_renderer_private_data(renderer_private_id idd, renderer_privat
 	m_renderer_data->add_ref();
 	m_renderer_id = idd;
 }
+
+void
+surface_impl::highlight(bool onoff)
+{
+	m_highlighting = onoff;
+	need_redraw(m_inner_bounds);
+}
+	
 
 // toplevel_surface_impl
 

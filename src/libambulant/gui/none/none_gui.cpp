@@ -70,6 +70,12 @@ gui::none::none_background_renderer::redraw(const rect &dirty, gui_window *windo
 }
 
 void
+gui::none::none_background_renderer::highlight(gui_window *window)
+{
+	lib::logger::get_logger()->trace("none_background_renderer.highlight(0x%x) from 0x%x to 0x%x", (void *)this, (void*)m_src, (void*)m_dst);
+}
+
+void
 gui::none::none_background_renderer::keep_as_background()
 {
 	lib::logger::get_logger()->trace("none_background_renderer.keep_as_background(0x%x)", (void *)this);

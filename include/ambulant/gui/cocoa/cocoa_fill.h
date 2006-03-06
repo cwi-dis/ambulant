@@ -67,6 +67,7 @@ class cocoa_background_renderer : public background_renderer {
 	~cocoa_background_renderer();
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void keep_as_background();
+	void highlight(common::gui_window *window);
   private:
 	NSImage *m_bgimage;
 };

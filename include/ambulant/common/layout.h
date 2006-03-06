@@ -161,6 +161,9 @@ class bgrenderer : public gui_events {
 	
 	/// Keep current onscreen bits as background
 	virtual void keep_as_background() = 0;
+	
+	/// Highlight a region
+	virtual void highlight(gui_window *window) = 0;
 };
 
 // These two types enable a renderer to store private data on the surface
@@ -231,6 +234,9 @@ class surface {
 
 	/// Retrieve a per-renderer private data pointer previously stored with set_renderer_data.
 	virtual renderer_private_data* get_renderer_private_data(renderer_private_id idd) = 0;
+	
+	/// Turn highlighting of the region on or off.
+	virtual void highlight(bool on) = 0;
 	
 };
 

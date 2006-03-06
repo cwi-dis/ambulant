@@ -43,6 +43,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: true], @"use_plugins",
 		[NSNumber numberWithBool: false], @"prefer_ffmpeg",
 		[NSNumber numberWithBool: false], @"strict_url_parsing",
+		[NSNumber numberWithBool: false], @"tabbed_links",
 		@"", @"plugin_dir",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
@@ -56,6 +57,7 @@ mypreferences::load_preferences()
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
+	m_tabbed_links = [prefs boolForKey: @"tabbed_links"];
 	save_preferences();
 	return true;
 }
@@ -74,6 +76,7 @@ mypreferences::save_preferences()
 	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
+	[prefs setBool: m_tabbed_links forKey: @"tabbed_links"];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }

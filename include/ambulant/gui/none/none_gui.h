@@ -81,6 +81,7 @@ class none_background_renderer : public common::background_renderer {
 	~none_background_renderer() {}
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void keep_as_background();
+	void highlight(common::gui_window *window);
 };
 
 class common::region_info;

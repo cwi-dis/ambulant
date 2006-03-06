@@ -102,6 +102,8 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	// raw notifications from the UI
 	
 	virtual void on_char(int ch);
+	virtual void on_focus_advance();
+	virtual void on_focus_activate();
 	
 	///////////////////
 	// playable_notification interface
@@ -149,6 +151,8 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	void node_focussed(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_focussed(n); }
 	
 	virtual bool goto_node(const lib::node *n);
+	
+	bool highlight(const lib::node *n, bool on=true);
 
 	// Export the layout functionality for those who need it
 	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
@@ -198,6 +202,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	std::map<const node*, double> m_playables_dur;
 	lib::logger *m_logger;
 	std::map<int, int> m_accesskey_map;
+	const lib::node *m_focus;
 };
 
 } // namespace smil2

@@ -27,6 +27,7 @@
 
 #import "MyDocument.h"
 #import "MyAmbulantView.h"
+#import "ambulant/common/preferences.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -318,7 +319,20 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	NSString *chars = [ev characters];
 	
 	if (chars && [chars length] == 1 && myMainloop) {
-		myMainloop->on_char([chars characterAtIndex:0]);
+		unichar ch = [chars characterAtIndex:0];
+		ambulant::common::preferences* prefs = ambulant::common::preferences::get_preferences();
+
+		if (prefs->m_tabbed_links) {
+			if (ch == '\t') {
+				myMainloop->on_focus_advance();
+				return;
+			}
+			if (ch == '\r' || ch == '\n') {
+				myMainloop->on_focus_activate();
+				return;
+			}
+		}
+		myMainloop->on_char(ch);
 	} else {
 		/*AM_DBG*/ NSLog(@"MyDocument::keyDown: dropping %@", chars);
 	}

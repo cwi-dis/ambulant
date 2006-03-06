@@ -80,6 +80,8 @@ class gui_player : public factories {
 	virtual void set_cursor(int cursor);
 	
 	virtual void on_char(int c);
+	virtual void on_focus_advance();
+	virtual void on_focus_activate();
 	
 	virtual lib::document *get_document() const { return m_doc; }
 	virtual void set_document(lib::document *doc) { m_doc = doc; }

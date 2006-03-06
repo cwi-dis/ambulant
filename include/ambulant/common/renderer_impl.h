@@ -100,7 +100,6 @@ class renderer_playable : public playable_imp, public renderer {
 	void transition_freeze_end(lib::rect r) { m_context->transitioned(m_cookie); }
 	virtual void start(double t);
 	virtual void stop();
-	
   protected:
 	virtual void _init_clip_begin_end();	///< Fill m_clip_begin and m_clip_end
 	surface *m_dest;		///< The surface we should render to.

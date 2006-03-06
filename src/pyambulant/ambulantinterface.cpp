@@ -2363,6 +2363,8 @@ gui_player::gui_player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_cursor");
 		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: set_cursor");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_char");
+		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_focus_advance");
+		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_focus_activate");
 		if (!PyObject_HasAttrString(itself, "get_document")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_document");
 		if (!PyObject_HasAttrString(itself, "set_document")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: set_document");
 		if (!PyObject_HasAttrString(itself, "get_embedder")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_embedder");
@@ -2744,6 +2746,36 @@ void gui_player::on_char(int c)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_c);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_player::on_focus_advance()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "on_focus_advance", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_player::on_focus_advance() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void gui_player::on_focus_activate()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "on_focus_activate", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during gui_player::on_focus_activate() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
 }
@@ -3340,6 +3372,7 @@ bgrenderer::bgrenderer(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "set_surface")) PyErr_Warn(PyExc_Warning, "bgrenderer: missing attribute: set_surface");
 		if (!PyObject_HasAttrString(itself, "keep_as_background")) PyErr_Warn(PyExc_Warning, "bgrenderer: missing attribute: keep_as_background");
+		if (!PyObject_HasAttrString(itself, "highlight")) PyErr_Warn(PyExc_Warning, "bgrenderer: missing attribute: highlight");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -3390,6 +3423,24 @@ void bgrenderer::keep_as_background()
 	PyGILState_Release(_GILState);
 }
 
+void bgrenderer::highlight(ambulant::common::gui_window* window)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_window = Py_BuildValue("O&", gui_windowObj_New, window);
+
+	PyObject *py_rv = PyObject_CallMethod(py_bgrenderer, "highlight", "(O)", py_window);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during bgrenderer::highlight() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_window);
+
+	PyGILState_Release(_GILState);
+}
+
 /* ------------------------- Class surface -------------------------- */
 
 surface::surface(PyObject *itself)
@@ -3413,6 +3464,7 @@ surface::surface(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_gui_window")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_gui_window");
 		if (!PyObject_HasAttrString(itself, "set_renderer_private_data")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: set_renderer_private_data");
 		if (!PyObject_HasAttrString(itself, "get_renderer_private_data")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_renderer_private_data");
+		if (!PyObject_HasAttrString(itself, "highlight")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: highlight");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -3769,6 +3821,24 @@ ambulant::common::renderer_private_data * surface::get_renderer_private_data(amb
 
 	PyGILState_Release(_GILState);
 	return _rv;
+}
+
+void surface::highlight(bool on)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_on = Py_BuildValue("O&", bool_New, on);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "highlight", "(O)", py_on);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::highlight() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_on);
+
+	PyGILState_Release(_GILState);
 }
 
 /* ---------------------- Class window_factory ---------------------- */
@@ -4812,6 +4882,7 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
 		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
 		if (!PyObject_HasAttrString(itself, "goto_node")) PyErr_Warn(PyExc_Warning, "player: missing attribute: goto_node");
+		if (!PyObject_HasAttrString(itself, "highlight")) PyErr_Warn(PyExc_Warning, "player: missing attribute: highlight");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5150,6 +5221,32 @@ bool player::goto_node(const ambulant::lib::node* n)
 	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
 	{
 		PySys_WriteStderr("Python exception during player::goto_node() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool player::highlight(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "highlight", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::highlight() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::highlight() return:\n");
 		PyErr_Print();
 	}
 

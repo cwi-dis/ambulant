@@ -454,6 +454,8 @@ public:
 	int get_cursor() const;
 	void set_cursor(int cursor);
 	void on_char(int c);
+	void on_focus_advance();
+	void on_focus_activate();
 	ambulant::lib::document* get_document() const;
 	void set_document(ambulant::lib::document* doc);
 	ambulant::common::embedder* get_embedder() const;
@@ -601,6 +603,7 @@ public:
 
 	void set_surface(ambulant::common::surface* destination);
 	void keep_as_background();
+	void highlight(ambulant::common::gui_window* window);
 	void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }
 	void user_event(const ambulant::lib::point&, int) { abort(); }
 	void transition_freeze_end(ambulant::lib::rect) { abort(); }
@@ -644,6 +647,7 @@ public:
 	ambulant::common::gui_window* get_gui_window();
 	void set_renderer_private_data(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data);
 	ambulant::common::renderer_private_data * get_renderer_private_data(ambulant::common::renderer_private_id idd);
+	void highlight(bool on);
 	ambulant::common::tile_positions get_tiles(ambulant::lib::size s, ambulant::lib::rect r) const { return surface::get_tiles(s, r); }
   private:
 	PyObject *py_surface;
@@ -904,6 +908,7 @@ public:
 	void on_focus_activate();
 	void set_feedback(ambulant::common::player_feedback* fb);
 	bool goto_node(const ambulant::lib::node* n);
+	bool highlight(const ambulant::lib::node* n);
   private:
 	PyObject *py_player;
 

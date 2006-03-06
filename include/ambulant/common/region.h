@@ -77,7 +77,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void keep_as_background();
 	renderer_private_data* get_renderer_private_data(renderer_private_id idd);
 	void set_renderer_private_data(renderer_private_id idd, renderer_private_data* data);
-	
+	void highlight(bool on);
 	// The gui_events interface:
 	void redraw(const rect &dirty, gui_window *window);
 	void user_event(const point &where, int what = 0);
@@ -98,6 +98,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
   	std::string m_name;					// for debugging
 
 	bool m_bounds_inited;				// True if bounds and topleft initialized
+	bool m_highlighting;
   	rect m_inner_bounds;	// region rectangle (0, 0) based
   	rect m_outer_bounds;	// region rectangle in parent coordinate space
 	point m_window_topleft;				// region top-left in window coordinate space
