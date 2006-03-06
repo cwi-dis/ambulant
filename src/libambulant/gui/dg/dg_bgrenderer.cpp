@@ -85,4 +85,6 @@ void gui::dg::dg_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 	}
 }
 
-
+void gui::dg::dg_bgrenderer::highlight(common::gui_window *window)
+{
+}

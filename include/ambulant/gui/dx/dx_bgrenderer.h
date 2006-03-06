@@ -45,6 +45,7 @@ class dx_bgrenderer : public common::background_renderer {
 	dx_bgrenderer(const common::region_info *src);
 	~dx_bgrenderer();
 	void redraw(const lib::rect &dirty, common::gui_window *window);
+	void highlight(common::gui_window *window);
 	void keep_as_background();
 private:
 	IDirectDrawSurface *m_bg_image;
