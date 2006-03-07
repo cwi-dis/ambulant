@@ -1,3 +1,17 @@
+2006-03-06 14:15  jackjansen
+
+	* Added dummy highlight() method.
+
+2006-03-06 11:18  jackjansen
+
+	* Added dummy highlight methods.
+
+2006-03-06 09:03  jackjansen
+
+	* Implemented highlighting (embedder can highlight nodes) and,
+	  while I was at it, using tab/return to navigate over anchors and
+	  hyperlinks and follow them. Only tested on Mac, so far.
+
 2006-02-28 00:25  jackjansen
 
 	* - Added node_focussed call to player_feedback. This is called by
