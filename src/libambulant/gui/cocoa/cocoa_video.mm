@@ -157,6 +157,36 @@ cocoa_video_renderer::stop()
 }
 
 void
+cocoa_video_renderer::pause()
+{
+	m_lock.enter();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::pause()");
+	if (m_movie && m_movie_view) {
+		[m_movie_view stop: NULL];
+	}
+	m_lock.leave();
+}
+
+void
+cocoa_video_renderer::resume()
+{
+	m_lock.enter();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::resume()");
+	if (m_movie && m_movie_view) {
+		[m_movie_view start: NULL];
+	}
+	m_lock.leave();
+}
+
+void
+cocoa_video_renderer::seek(double where)
+{
+	m_lock.enter();
+	lib::logger::get_logger()->debug("cocoa_video_renderer::seek(%f): not implemented", where);
+	m_lock.leave();
+}
+
+void
 cocoa_video_renderer::poll_playing()
 {
 	m_lock.enter();

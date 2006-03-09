@@ -52,7 +52,9 @@ class cocoa_video_renderer :
 	void start(double where);
 //	void freeze() {}
 	void stop();
-	void seek(double t) {}
+	void pause();
+	void resume();
+	void seek(double t);
 
 	common::duration get_dur();
 	

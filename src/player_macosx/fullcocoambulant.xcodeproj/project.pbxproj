@@ -1112,6 +1112,9 @@
 		046B0A46098E75E200A7D964 /* node_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 046B0A40098E75E200A7D964 /* node_impl.h */; };
 		046C3FA50676052300F22EF7 /* cocoa_renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 046C3FA40676052300F22EF7 /* cocoa_renderer.h */; };
 		046C3FA70676062900F22EF7 /* cocoa_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046C3FA60676062900F22EF7 /* cocoa_renderer.mm */; };
+		046E9BD909C066840084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
+		046E9BDA09C066850084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
+		046E9BDB09C066860084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
 		04707B8906DC86B400C3B6BA /* preferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04707B8806DC86B400C3B6BA /* preferences.cpp */; };
 		0471BD6A089E23CF00C44EA0 /* renderer_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD68089E23CF00C44EA0 /* renderer_impl.h */; };
 		0471BD6B089E23CF00C44EA0 /* video_renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD69089E23CF00C44EA0 /* video_renderer.h */; };
@@ -1527,8 +1530,6 @@
 		04D335950992B50200BAEEA7 /* video_renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD69089E23CF00C44EA0 /* video_renderer.h */; };
 		04D335960992B50200BAEEA7 /* cocoa_html.h in Headers */ = {isa = PBXBuildFile; fileRef = 042EBB4408EC849700DB2F0E /* cocoa_html.h */; };
 		04D335970992B50200BAEEA7 /* renderer_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD68089E23CF00C44EA0 /* renderer_impl.h */; };
-		04D335980992B50200BAEEA7 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 04600F270894EB8500B553A2 /* rtsp_datasource.h */; };
-		04D335990992B50200BAEEA7 /* rtsp_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 04600F280894EB8500B553A2 /* rtsp_factory.h */; };
 		04D3359A0992B50200BAEEA7 /* gui_player.h in Headers */ = {isa = PBXBuildFile; fileRef = 047846B60989712000A3E39F /* gui_player.h */; };
 		04D3359B0992B50200BAEEA7 /* node_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 046B0A40098E75E200A7D964 /* node_impl.h */; };
 		04D3359D0992B50200BAEEA7 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
@@ -1630,8 +1631,6 @@
 		04D335FE0992B50200BAEEA7 /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0471BDA1089E25A200C44EA0 /* video_renderer.cpp */; };
 		04D335FF0992B50200BAEEA7 /* demux_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04BD5C09089E6DE000597620 /* demux_datasource.cpp */; };
 		04D336000992B50200BAEEA7 /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */; };
-		04D336010992B50200BAEEA7 /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04600F2B0894EB9800B553A2 /* rtsp_datasource.cpp */; };
-		04D336020992B50200BAEEA7 /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04600F2C0894EB9800B553A2 /* rtsp_factory.cpp */; };
 		04D336030992B50200BAEEA7 /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F8447F0986E7CA00398A72 /* factory.cpp */; };
 		04D336040992B50200BAEEA7 /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 047846AF0989710800A3E39F /* gui_player.cpp */; };
 		04D336060992B50200BAEEA7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -1644,15 +1643,10 @@
 		04D3360D0992B50200BAEEA7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
 		04D3360E0992B50200BAEEA7 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
 		04D3360F0992B50200BAEEA7 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
-		04D336100992B50200BAEEA7 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480D5E907208FB600D39BB5 /* libxerces-c.dylib */; };
 		04D336110992B50200BAEEA7 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
 		04D336120992B50200BAEEA7 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
 		04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
 		04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
-		04D336150992B50200BAEEA7 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F4D0894F7A100B553A2 /* libBasicUsageEnvironment.a */; };
-		04D336160992B50200BAEEA7 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F2F0894EC1100B553A2 /* libliveMedia.a */; };
-		04D336170992B50200BAEEA7 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F560894FA9A00B553A2 /* libUsageEnvironment.a */; };
-		04D336180992B50200BAEEA7 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F540894FA8D00B553A2 /* libgroupsock.a */; };
 		04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		04D336560992CADA00BAEEA7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15AC360486D014006FF6A4 /* Info.plist */; };
 		04D336570992CADB00BAEEA7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15AC360486D014006FF6A4 /* Info.plist */; };
@@ -2256,15 +2250,10 @@
 				04D3360D0992B50200BAEEA7 /* OpenGL.framework in Frameworks */,
 				04D3360E0992B50200BAEEA7 /* ApplicationServices.framework in Frameworks */,
 				04D3360F0992B50200BAEEA7 /* libltdl.a in Frameworks */,
-				04D336100992B50200BAEEA7 /* libxerces-c.dylib in Frameworks */,
 				04D336110992B50200BAEEA7 /* libavformat.a in Frameworks */,
 				04D336120992B50200BAEEA7 /* libavcodec.a in Frameworks */,
 				04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */,
 				04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */,
-				04D336150992B50200BAEEA7 /* libBasicUsageEnvironment.a in Frameworks */,
-				04D336160992B50200BAEEA7 /* libliveMedia.a in Frameworks */,
-				04D336170992B50200BAEEA7 /* libUsageEnvironment.a in Frameworks */,
-				04D336180992B50200BAEEA7 /* libgroupsock.a in Frameworks */,
 				04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3130,6 +3119,7 @@
 				044FD77C08F335A400ED79BF /* rtsp_factory.h in Headers */,
 				047846BC0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A46098E75E200A7D964 /* node_impl.h in Headers */,
+				046E9BDA09C066850084E401 /* smil_handler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3264,6 +3254,7 @@
 				042EBB5A08EC869800DB2F0E /* renderer_impl.h in Headers */,
 				047846BB0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A45098E75E200A7D964 /* node_impl.h in Headers */,
+				046E9BD909C066840084E401 /* smil_handler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3668,10 +3659,9 @@
 				04D335950992B50200BAEEA7 /* video_renderer.h in Headers */,
 				04D335960992B50200BAEEA7 /* cocoa_html.h in Headers */,
 				04D335970992B50200BAEEA7 /* renderer_impl.h in Headers */,
-				04D335980992B50200BAEEA7 /* rtsp_datasource.h in Headers */,
-				04D335990992B50200BAEEA7 /* rtsp_factory.h in Headers */,
 				04D3359A0992B50200BAEEA7 /* gui_player.h in Headers */,
 				04D3359B0992B50200BAEEA7 /* node_impl.h in Headers */,
+				046E9BDB09C066860084E401 /* smil_handler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5286,8 +5276,6 @@
 				04D335FE0992B50200BAEEA7 /* video_renderer.cpp in Sources */,
 				04D335FF0992B50200BAEEA7 /* demux_datasource.cpp in Sources */,
 				04D336000992B50200BAEEA7 /* cocoa_html.mm in Sources */,
-				04D336010992B50200BAEEA7 /* rtsp_datasource.cpp in Sources */,
-				04D336020992B50200BAEEA7 /* rtsp_factory.cpp in Sources */,
 				04D336030992B50200BAEEA7 /* factory.cpp in Sources */,
 				04D336040992B50200BAEEA7 /* gui_player.cpp in Sources */,
 			);
@@ -6890,13 +6878,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WITH_EXTERNAL_DOM=1",
 					"WITH_LTDL_PLUGINS=1",
-					"WITH_LIVE=1",
 					"AM_PREFER_FFMPEG=1",
 					"USE_SMIL21=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
-					"WITH_XERCES_BUILTIN=1",
-					"WITH_XERCES=1",
 					"WITH_EXPAT=1",
 					"WITH_FFMPEG_AVFORMAT=1",
 				);
@@ -6948,6 +6933,7 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
 				);
 				LIBRARY_STYLE = Static;
 				MACOSX_DEPLOYMENT_TARGET = "";
@@ -7038,6 +7024,7 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
 				);
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
@@ -7124,6 +7111,7 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
 				);
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
