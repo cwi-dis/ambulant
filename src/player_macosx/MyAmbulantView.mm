@@ -23,7 +23,6 @@ void
 set_statusline(void *view, const char *msg)
 {
 	NSString *message = [[NSString stringWithCString: msg] retain];
-	NSObject *delegate = [[NSApplication sharedApplication] delegate];
 	[(id)view performSelectorOnMainThread: @selector(setStatusLine:) 
 		withObject: message waitUntilDone: NO];
 //	[message release];

@@ -78,6 +78,18 @@ gui_player::play()
 }
 
 void
+gui_player::goto_node(const lib::node *n)
+{
+	m_lock.enter();
+	if (m_player && m_player->is_playing()) {
+		m_player->goto_node(n);
+	} else {
+		m_goto_node = n;
+	}
+	m_lock.leave();
+}
+
+void
 gui_player::stop()
 {
 	m_lock.enter();

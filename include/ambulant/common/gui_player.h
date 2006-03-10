@@ -64,7 +64,7 @@ class gui_player : public factories {
 	
 	virtual void restart(bool reparse=true);
 	
-	virtual void goto_node(const lib::node *n) { m_goto_node = n; }
+	virtual void goto_node(const lib::node *n);
 
 //	virtual void set_speed(double speed) = 0;
 //	virtual double get_speed() const = 0;
