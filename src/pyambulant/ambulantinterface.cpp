@@ -202,6 +202,7 @@ node::node(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_trimmed_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_trimmed_data");
 		if (!PyObject_HasAttrString(itself, "get_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_attribute");
 		if (!PyObject_HasAttrString(itself, "get_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_attribute");
+		if (!PyObject_HasAttrString(itself, "del_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: del_attribute");
 		if (!PyObject_HasAttrString(itself, "get_url")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_url");
 		if (!PyObject_HasAttrString(itself, "size")) PyErr_Warn(PyExc_Warning, "node: missing attribute: size");
 		if (!PyObject_HasAttrString(itself, "get_path_display_desc")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_path_display_desc");
@@ -1025,6 +1026,24 @@ const char * node::get_attribute(const std::string& name) const
 
 	PyGILState_Release(_GILState);
 	return _rv;
+}
+
+void node::del_attribute(const char* name)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_name = Py_BuildValue("s", name);
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "del_attribute", "(O)", py_name);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::del_attribute() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_name);
+
+	PyGILState_Release(_GILState);
 }
 
 ambulant::net::url node::get_url(const char* attrname) const

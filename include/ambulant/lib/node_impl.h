@@ -226,6 +226,9 @@ class node_impl : public node_interface {
 	/// Return the value for the given attribute.
 	const char *get_attribute(const std::string& name) const;
 	
+	/// Return the value for the given attribute.
+	void del_attribute(const char *name);
+	
 	/// Return the value for the given attribute, interpreted as a URL.
 	/// Relative URLs are resolved against the document base URL, if possible.
 	net::url get_url(const char *attrname) const;

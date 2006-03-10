@@ -406,6 +406,15 @@ lib::node_impl::get_attribute(const std::string& name) const {
 	return get_attribute(name.c_str());
 }
 
+void
+lib::node_impl::del_attribute(const char *name) {
+	if(!name || !name[0]) return;
+	q_attributes_list::const_iterator it;
+	for(it = m_qattrs.begin(); it != m_qattrs.end(); it++)
+		if((*it).first.second == name) m_qattrs.remove(*it);
+	return;
+}
+
 // returns the resolved url of an attribute
 net::url 
 lib::node_impl::get_url(const char *attrname) const {

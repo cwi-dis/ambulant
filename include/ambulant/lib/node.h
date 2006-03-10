@@ -226,6 +226,9 @@ class node_interface {
 	/// Return the value for the given attribute.
 	virtual const char *get_attribute(const std::string& name) const = 0;
 	
+	/// Remove the first occurrence of the given attribute.
+	virtual void del_attribute(const char *name) = 0;
+	
 	/// Return the value for the given attribute, interpreted as a URL.
 	/// Relative URLs are resolved against the document base URL, if possible.
 	virtual net::url get_url(const char *attrname) const = 0;

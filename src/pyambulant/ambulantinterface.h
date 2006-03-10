@@ -117,6 +117,7 @@ public:
 	ambulant::lib::xml_string get_trimmed_data() const;
 	const char * get_attribute(const char* name) const;
 	const char * get_attribute(const std::string& name) const;
+	void del_attribute(const char* name);
 	ambulant::net::url get_url(const char* attrname) const;
 	unsigned int size() const;
 	std::string get_path_display_desc() const;

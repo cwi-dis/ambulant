@@ -948,6 +948,21 @@ static PyObject *nodeObj_get_attribute_2(nodeObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *nodeObj_del_attribute(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->del_attribute(name);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *nodeObj_get_url(nodeObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -1112,6 +1127,8 @@ static PyMethodDef nodeObj_methods[] = {
 	 PyDoc_STR("(char* name) -> (const char * _rv)")},
 	{"get_attribute_2", (PyCFunction)nodeObj_get_attribute_2, 1,
 	 PyDoc_STR("(std::string name) -> (const char * _rv)")},
+	{"del_attribute", (PyCFunction)nodeObj_del_attribute, 1,
+	 PyDoc_STR("(char* name) -> None")},
 	{"get_url", (PyCFunction)nodeObj_get_url, 1,
 	 PyDoc_STR("(char* attrname) -> (ambulant::net::url _rv)")},
 	{"size", (PyCFunction)nodeObj_size, 1,
