@@ -1,3 +1,10 @@
+2006-03-09 16:47  jackjansen
+
+	* - Got rid of xerces and live for the annotator project (they were
+	  causing problems on the intel mac that I don't want to bother
+	  with right now).  - Added pause/resume to the quicktime video
+	  renderer.
+
 2006-03-06 14:15  jackjansen
 
 	* Added dummy highlight() method.
