@@ -1,3 +1,11 @@
+2006-03-10 18:11  jackjansen
+
+	* added a del_attribute() method to nodes.
+
+2006-03-10 16:22  jackjansen
+
+	* Also allow goto_node() while the document is playing.
+
 2006-03-09 16:47  jackjansen
 
 	* - Got rid of xerces and live for the annotator project (they were
