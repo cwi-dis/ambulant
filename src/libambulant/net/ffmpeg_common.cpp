@@ -374,7 +374,7 @@ ffmpeg_demux::run()
 			// Wait until there is room in the buffer
 			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink && sink->buffer_full() && !exit_requested()) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space");
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 				m_lock.leave();
 				sleep(1);   // This is overdoing it
 				m_lock.enter();

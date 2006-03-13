@@ -43,7 +43,7 @@
 // On second thoughts this seems a bad idea, so setting MIN_VIDEO_FRAMES to zero.
 #define MIN_VIDEO_FRAMES 0
 // How many video frames we would like to buffer at most.
-#define MAX_VIDEO_FRAMES 30
+#define MAX_VIDEO_FRAMES 100
 
 // This construction is needed to get the CVS version of ffmpeg to work:
 // AVStream.codec got changed from AVCodecContext to AVCodecContext*
@@ -166,6 +166,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_last_p_pts(0),
 	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
+	m_dropped_count(0),
 	m_elapsed(0),
 	m_start_input(true)
 {	
@@ -186,6 +187,7 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 	stop();
 	if (m_src) delete m_src;
 	m_src = 0;
+	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
 }
 
 void
@@ -251,12 +253,16 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		// immedeately signal our client again
 		if (callbackk) {
 			assert(evp);
+			if (timestamp < 0) timestamp = 0;
 			lib::timer::time_type timestamp_milli = timestamp/1000; // micro to milli
 			lib::timer::time_type now_milli = evp->get_timer()->elapsed();
 			lib::timer::time_type delta_milli = 0;
 			if (now_milli < timestamp_milli)
 				delta_milli = timestamp_milli - now_milli;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d", (int)timestamp_milli, (int)delta_milli, (int)now_milli);
+			// Sanity check: we don't want this to be more than a second into the future
+			if (delta_milli > 1000)
+				lib::logger::get_logger()->trace("ffmpeg_video: %f seconds ahead", delta_milli / 1000.0);
 			evp->add_event(callbackk, delta_milli+1, ambulant::lib::ep_high);
 		} else {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource::start(): no client callback!");
@@ -326,7 +332,7 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t now, bool keepdata)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_done(%d)", (int)now);
 
-	while ( m_frames.size() && m_old_frame.first < now) {
+	while ( m_frames.size() && m_old_frame.first <= now) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_done: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
 		_pop_top_frame();
 	}
@@ -637,10 +643,18 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
 
+#if 1
+	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
+	// renderer (where we can gather statistics)
+	bool firstdrop = true;
 	while ( m_frames.size() && m_old_frame.first < now - frame_duration) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x",m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
+		if (!firstdrop) m_dropped_count++;
+		firstdrop = false;
 	}
+#endif
+
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
 	// are no frames left, or the first frame has a time that is in the future). It also assures that

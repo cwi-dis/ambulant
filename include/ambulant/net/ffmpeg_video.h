@@ -137,6 +137,7 @@ class ffmpeg_video_decoder_datasource:
   	timestamp_t m_last_p_pts;
 	timestamp_t m_video_clock;
   	int m_frame_count;
+	int m_dropped_count;
     lib::critical_section m_lock;
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed

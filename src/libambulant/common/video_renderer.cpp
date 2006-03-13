@@ -117,9 +117,12 @@ video_renderer::start (double where)
 	}
 	m_activated = true;
 
-#if 0
+#if 1
 	m_timer = m_event_processor->get_timer();
 #else
+	// XXX Note: comment below is possibly incorrect, but at  the very least the
+	// code does not work, because video_datasource::start_frame() assumes a shared clock.
+	//
 	// This is a workaround for a bug: the "normal" timer
 	// can be set back in time sometimes, and the video renderer
 	// does not like that. For now use a private timer, will
@@ -257,7 +260,7 @@ video_renderer::data_avail()
 	char *buf = NULL;
 	int size = 0;
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
-	net::timestamp_t frame_ts_micros;
+	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
 	
 	// If we are at the end of the clip we stop and signal the scheduler.
