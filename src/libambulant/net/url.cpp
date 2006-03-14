@@ -533,9 +533,13 @@ net::url::get_local_datafile() const
 			abs_path += "/" + rel_path;
 			if (access(abs_path.c_str(), 0) >= 0) {
 				if (abs_path[0] != '/') {
-				 
+					char buf[1024];
+					if (getcwd(buf, sizeof buf)) {
+						std::string curdir(buf);
+						abs_path = curdir + "/" + abs_path;
+					}
+				}
 				result = abs_path.c_str();
-				if (
 				break;
 			}
 		}
