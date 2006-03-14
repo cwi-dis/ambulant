@@ -58,6 +58,7 @@ qt_video_renderer::show_frame(const char* frame, int size)
 {
 	m_lock.enter();
 	assert(frame);
+	assert(size == (int)(m_size.w*m_size.h*4));
 	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 
     // First copy the data (XXXX Not needed, to be removed later)
@@ -90,7 +91,7 @@ qt_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
     QPainter paint;
     paint.begin(aqw->get_ambulant_pixmap());
 
-    if ( m_data ) {
+    if ( m_image ) {
         lib::size srcsize = lib::size(m_size.w, m_size.h);
         lib::rect srcrect;
         lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
