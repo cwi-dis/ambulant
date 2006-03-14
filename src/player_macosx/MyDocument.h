@@ -43,6 +43,7 @@ class document_embedder : public ambulant::common::embedder {
 
 @interface MyDocument : NSDocument
 {
+	IBOutlet id main_view;
     IBOutlet id view;
 	IBOutlet id play_button;
 	IBOutlet id stop_button;
@@ -54,6 +55,7 @@ class document_embedder : public ambulant::common::embedder {
 	mainloop *myMainloop;
 	NSTimer *uitimer;
 	document_embedder *embedder;
+	NSWindow *saved_window;
 }
 - (void)askForURL: (id)sender;
 - (IBAction)closeURLPanel:(id)sender;
@@ -73,5 +75,7 @@ class document_embedder : public ambulant::common::embedder {
 - (void)resetMouse: (id)dummy;
 - (void)keyDown: (NSEvent *)ev;
 - (void) setStatusLine: (NSString *)message;
-
+- (IBAction)goWindowMode:(id)sender;
+- (IBAction)goFullScreen:(id)sender;
+- (IBAction)toggleFullScreen:(id)sender;
 @end

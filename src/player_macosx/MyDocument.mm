@@ -82,6 +82,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         // If an error occurs here, send a [self release] message and return nil.
     
     }
+	saved_window = nil;
     return self;
 }
 
@@ -200,6 +201,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			[UIItem setState: NSOffState];
 		}
 		return myMainloop->is_pause_enabled();
+	} else if (theAction == @selector(toggleFullScreen:)) {
+		if (saved_window) {
+			[UIItem setState: NSOnState];
+		} else {
+			[UIItem setState: NSOffState];
+		}
+		return YES;
 	}
 	return NO;
 }
@@ -320,6 +328,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 	if (chars && [chars length] == 1 && myMainloop) {
 		unichar ch = [chars characterAtIndex:0];
+		// First, escape will exit fullscreen mode
+		if (ch == '\033') {
+			[self goWindowMode: self];
+			return;
+		}
 		ambulant::common::preferences* prefs = ambulant::common::preferences::get_preferences();
 
 		if (prefs->m_tabbed_links) {
@@ -344,6 +357,111 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[message release];
 }
 
+- (IBAction)goWindowMode:(id)sender
+{
+	if (!saved_window) {
+		NSLog(@"goWindowMode: already in window mode");
+		return;
+	}
+    // Get the screen information.
+    NSScreen* mainScreen = [NSScreen mainScreen]; 
+    NSDictionary* screenInfo = [mainScreen deviceDescription]; 
+    NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 
+    // Release the screen.
+    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
+    CGDisplayErr err = CGDisplayRelease(displayID);
+    if (err != CGDisplayNoErr) {
+		NSLog(@"goFullScreen: CGDisplayRelease failed");
+		return;
+	}
+	
+	// Attach our view to the normal window
+	NSWindow *mScreenWindow = [main_view window];
+	[saved_window setContentView:main_view];
+	[main_view setNeedsDisplay:YES];
+//XXX	[view release];
+
+	// Tell our controller that the normal window is in use again.
+	NSWindowController* winController = [[self windowControllers]
+											 objectAtIndex:0];
+	[winController setWindow:saved_window];
+
+	// Get rid of the fullscreen window
+	[mScreenWindow close];
+	
+	// And clear saved_window, which signals we're in normal mode again.
+	[saved_window release];
+	saved_window = nil;
+}
+
+- (IBAction)goFullScreen:(id)sender
+{
+	if (saved_window) {
+		NSLog(@"goFullScreen: already in fullscreen mode");
+		return;
+	}
+#if 0
+    // Get the screen information.
+    NSScreen* mainScreen = [NSScreen mainScreen]; 
+    NSDictionary* screenInfo = [mainScreen deviceDescription]; 
+    NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+ 
+    // Capture the screen.
+    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
+    CGDisplayErr err = CGDisplayCapture(displayID);
+    if (err != CGDisplayNoErr) {
+		NSLog(@"goFullScreen: CGDisplayCapture failed");
+		return;
+	}
+#endif
+
+	// Create the full-screen window.
+#if 0
+	NSRect winRect = [mainScreen frame];
+#else
+	NSRect winRect = {{0, 0}, {640, 480}};
+#endif
+	NSWindow *mScreenWindow;
+	mScreenWindow = [[NSWindow alloc] initWithContentRect:winRect
+			styleMask:NSBorderlessWindowMask 
+			backing:NSBackingStoreBuffered 
+			defer:NO 
+			screen:[NSScreen mainScreen]];
+
+	// Establish the window attributes.
+//      [mScreenWindow setReleasedWhenClosed:NO];
+	[mScreenWindow setDisplaysWhenScreenProfileChanges:YES];
+	[mScreenWindow setDelegate:self];
+
+	// Remember the old window, and move our view to the fullscreen
+	// window.
+	saved_window = [main_view window];
+	[saved_window retain];
+	[mScreenWindow setContentView:main_view];
+	[main_view setNeedsDisplay:YES];
+//XXX   [view release];
+
+	// Make the screen window the current document window.
+	// Be sure to retain the previous window if you want to  use it again.
+	NSWindowController* winController = [[self windowControllers]
+											 objectAtIndex:0];
+	[winController setWindow:mScreenWindow];
+
+	// The window has to be above the level of the shield window.
+	int32_t     shieldLevel = CGShieldingWindowLevel();
+	[mScreenWindow setLevel:shieldLevel];
+
+	// Show the window.
+	[mScreenWindow makeKeyAndOrderFront:self];
+}
+
+- (IBAction) toggleFullScreen: (id)sender
+{
+	if (saved_window)
+		[self goWindowMode: sender];
+	else
+		[self goFullScreen:sender];
+}
 		
 @end
