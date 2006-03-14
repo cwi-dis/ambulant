@@ -146,11 +146,11 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	if (enc->codec_type != CODEC_TYPE_VIDEO) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
 		return false;
 	}
 	if (avcodec_find_decoder(enc->codec_id) == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported cannot open video codec (codec_id: %d)", enc->codec_id);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: cannot open video codec (codec_id: %d)", enc->codec_id);
 
 		return false;
 	}
