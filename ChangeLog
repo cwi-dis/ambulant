@@ -1,3 +1,10 @@
+2006-03-13 17:40  jackjansen
+
+	* Fixed ffmpeg video timing. Main problem was the use of two
+	  distinct timers in video_renderer and ffmpeg_video_datasource,
+	  with deltas from the one being used to calculate delays for the
+	  other. Also fixed a few minor issues.
+
 2006-03-10 18:11  jackjansen
 
 	* added a del_attribute() method to nodes.
