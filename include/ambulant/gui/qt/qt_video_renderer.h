@@ -32,6 +32,8 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/gui/qt/qt_includes.h"
+
 namespace ambulant {
 
 namespace gui {
@@ -55,11 +57,8 @@ class qt_video_renderer : public common::video_renderer {
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
  private:
-	//QImage *m_image;
- 	//char* m_data;
- 	std::queue< std::pair<int, char*> > m_frames;
- 	long int m_img_displayed;
- 
+	QImage *m_image;
+ 	char* m_data;
 	lib::critical_section m_lock;
 };
 
