@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -168,53 +168,53 @@ void net::url::init_statics() {
 
 	// workaround for g++ 2.95
 	static url_handler_pair h1 = {"n://n:d/", &url::set_from_host_port_uri};
- 	s_handlers.push_back(&h1);
- 	
+	s_handlers.push_back(&h1);
+	
 	static url_handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
- 	s_handlers.push_back(&h1a);
- 	
+	s_handlers.push_back(&h1a);
+	
 	static url_handler_pair h1b = {"n://dn:d/", &url::set_from_numhost_port_uri};
- 	s_handlers.push_back(&h1b);
- 	
+	s_handlers.push_back(&h1b);
+	
 	static url_handler_pair h1c = {"n://dn:d", &url::set_from_numhost_port_uri};
- 	s_handlers.push_back(&h1c);
- 	
+	s_handlers.push_back(&h1c);
+	
 	static url_handler_pair h2 = {"n://n/", &url::set_from_host_uri};
- 	s_handlers.push_back(&h2);
- 	
+	s_handlers.push_back(&h2);
+	
 	static url_handler_pair h2a = {"n://n", &url::set_from_host_uri};
- 	s_handlers.push_back(&h2a);
- 	
+	s_handlers.push_back(&h2a);
+	
 	static url_handler_pair h2b= {"n://dn/", &url::set_from_numhost_uri};
- 	s_handlers.push_back(&h2b);
- 	
+	s_handlers.push_back(&h2b);
+	
 	static url_handler_pair h2c = {"n://dn", &url::set_from_numhost_uri};
- 	s_handlers.push_back(&h2c);
- 	
+	s_handlers.push_back(&h2c);
+	
 	static url_handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
- 	s_handlers.push_back(&h3);
- 	
+	s_handlers.push_back(&h3);
+	
 	static url_handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
- 	s_handlers.push_back(&h4);
+	s_handlers.push_back(&h4);
 
 	static url_handler_pair h4a = { "n:,", &url::set_from_data_uri};
- 	s_handlers.push_back(&h4a);
+	s_handlers.push_back(&h4a);
 
 	static url_handler_pair h5 = {"/n", &url::set_from_absolute_path};
- 	s_handlers.push_back(&h5);
+	s_handlers.push_back(&h5);
 	
 	static url_handler_pair h9 = {"", &url::set_from_relative_path};
- 	s_handlers.push_back(&h9);
+	s_handlers.push_back(&h9);
 	
 	/*
 	typedef std::pair<std::string, HANDLER> pair;
- 	s_handlers.push_back(pair("n://n:n/",&url::set_from_host_port_uri));
-  	s_handlers.push_back(pair("n://n/",&url::set_from_host_uri));
-  	s_handlers.push_back(pair("n:///",&url::set_from_localhost_file_uri));
-   	s_handlers.push_back(pair("/n",&url::set_from_unix_path));
- 	s_handlers.push_back(pair("n:n",&url::set_from_windows_path));
-  	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
-  	*/
+	s_handlers.push_back(pair("n://n:n/",&url::set_from_host_port_uri));
+	s_handlers.push_back(pair("n://n/",&url::set_from_host_uri));
+	s_handlers.push_back(pair("n:///",&url::set_from_localhost_file_uri));
+	s_handlers.push_back(pair("/n",&url::set_from_unix_path));
+	s_handlers.push_back(pair("n:n",&url::set_from_windows_path));
+	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
+	*/
  }
  
 // static
@@ -524,7 +524,7 @@ net::url::get_local_datafile() const
 {
 	const char* result = NULL;
 	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
-	
+		
 	if (! is_absolute()) {
 		string rel_path = get_path();
 		const char **dir;
@@ -532,7 +532,10 @@ net::url::get_local_datafile() const
 			string abs_path(*dir);
 			abs_path += "/" + rel_path;
 			if (access(abs_path.c_str(), 0) >= 0) {
-			  	result = abs_path.c_str();
+				if (abs_path[0] != '/') {
+				 
+				result = abs_path.c_str();
+				if (
 				break;
 			}
 		}
@@ -589,7 +592,7 @@ net::url::get_local_datafile() const
 			path = datafile_directory + *dir;
 			path += rel_path;
 			if (lib::win32::file_exists(path)) {
-			  	result = path.c_str();
+				result = path.c_str();
 				break;
 			}
 		}
