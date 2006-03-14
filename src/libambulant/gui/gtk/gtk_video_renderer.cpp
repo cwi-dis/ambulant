@@ -28,10 +28,10 @@
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
 
-#define AM_DBG
-//#ifndef AM_DBG
-//#define AM_DBG if(0)
-//#endif
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 using namespace gui::gtk;
@@ -57,7 +57,7 @@ gtk_video_renderer::gtk_video_renderer(
 		m_frames.pop();
 	}
 #endif
- //   assert(m_frames.size() == 0);
+   assert(m_frames.size() == 0);
 	
 }
 
