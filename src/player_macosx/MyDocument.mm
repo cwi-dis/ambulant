@@ -376,11 +376,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		return;
 	}
 	
-	// Attach our view to the normal window
-	NSWindow *mScreenWindow = [main_view window];
-	[saved_window setContentView:main_view];
-	[main_view setNeedsDisplay:YES];
-//XXX	[view release];
+	// Attach our view to the normal window. 
+	NSWindow *mScreenWindow = [view window];
+	NSView *savedcontentview = [saved_window contentView];
+	[savedcontentview addSubview: view];
+	[view setFrame: saved_view_rect];
+	[savedcontentview setNeedsDisplay:YES];
 
 	// Tell our controller that the normal window is in use again.
 	NSWindowController* winController = [[self windowControllers]
@@ -401,7 +402,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;
 	}
-#if 0
     // Get the screen information.
     NSScreen* mainScreen = [NSScreen mainScreen]; 
     NSDictionary* screenInfo = [mainScreen deviceDescription]; 
@@ -414,14 +414,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		NSLog(@"goFullScreen: CGDisplayCapture failed");
 		return;
 	}
-#endif
 
 	// Create the full-screen window.
-#if 0
 	NSRect winRect = [mainScreen frame];
-#else
-	NSRect winRect = {{0, 0}, {640, 480}};
-#endif
 	NSWindow *mScreenWindow;
 	mScreenWindow = [[NSWindow alloc] initWithContentRect:winRect
 			styleMask:NSBorderlessWindowMask 
@@ -430,17 +425,29 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			screen:[NSScreen mainScreen]];
 
 	// Establish the window attributes.
-//      [mScreenWindow setReleasedWhenClosed:NO];
-	[mScreenWindow setDisplaysWhenScreenProfileChanges:YES];
 	[mScreenWindow setDelegate:self];
+	[mScreenWindow setBackgroundColor: [NSColor blackColor]];
 
 	// Remember the old window, and move our view to the fullscreen
 	// window.
-	saved_window = [main_view window];
+	saved_window = [view window];
 	[saved_window retain];
-	[mScreenWindow setContentView:main_view];
-	[main_view setNeedsDisplay:YES];
-//XXX   [view release];
+
+	// Create the outer view on the fullscreen window, and insert the
+	// ambulant view within it.
+	NSView *fsmainview = [[NSView alloc] initWithFrame: winRect];
+	
+	id contentview = view;
+	saved_view_rect = [contentview frame];
+	[fsmainview addSubview: contentview];
+	NSRect contentRect = [contentview frame];
+	float xExtra = NSWidth(winRect) - NSWidth(contentRect);
+	float yExtra = NSHeight(winRect) - NSHeight(contentRect);
+	[contentview setFrameOrigin: NSMakePoint(xExtra/2, yExtra/2)];
+	
+	[mScreenWindow setContentView: fsmainview];
+	[fsmainview setNeedsDisplay:YES];
+	[fsmainview release];
 
 	// Make the screen window the current document window.
 	// Be sure to retain the previous window if you want to  use it again.

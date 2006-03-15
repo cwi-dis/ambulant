@@ -43,7 +43,7 @@ class document_embedder : public ambulant::common::embedder {
 
 @interface MyDocument : NSDocument
 {
-	IBOutlet id main_view;
+//	IBOutlet id main_view;
     IBOutlet id view;
 	IBOutlet id play_button;
 	IBOutlet id stop_button;
@@ -56,6 +56,7 @@ class document_embedder : public ambulant::common::embedder {
 	NSTimer *uitimer;
 	document_embedder *embedder;
 	NSWindow *saved_window;
+	NSRect saved_view_rect;
 }
 - (void)askForURL: (id)sender;
 - (IBAction)closeURLPanel:(id)sender;
