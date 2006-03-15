@@ -231,6 +231,9 @@ class AMBULANTAPI url {
 	// pat: "n:,"
 	void set_from_data_uri(ambulant::lib::scanner& sc, const std::string& pat);
 	
+	// pat: "n:"
+	void set_from_scheme(ambulant::lib::scanner& sc, const std::string& pat);
+	
 };
 
 // workaround for g++ 2.95
@@ -257,9 +260,11 @@ inline std::string repr(const ambulant::net::url& u) {
 				((u.get_host()=="localhost")?"":u.get_host());
 		} else if (u.get_protocol() == "data") {
 			os << "data:,";
-		} else {
+		} else if (u.get_host() != "" ) {
 			os << u.get_protocol() << "://" << u.get_host();
 			if(u.get_port() != 0) os << ":" << int(u.get_port());
+		} else {
+			os << u.get_protocol() << ":";
 		}
 	}
 	os << u.get_path();

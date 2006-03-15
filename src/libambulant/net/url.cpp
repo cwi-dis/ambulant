@@ -203,6 +203,9 @@ void net::url::init_statics() {
 	static url_handler_pair h5 = {"/n", &url::set_from_absolute_path};
 	s_handlers.push_back(&h5);
 	
+	static url_handler_pair h6 = {"n:", &url::set_from_scheme};
+	s_handlers.push_back(&h6);
+	
 	static url_handler_pair h9 = {"", &url::set_from_relative_path};
 	s_handlers.push_back(&h9);
 	
@@ -390,6 +393,16 @@ void net::url::set_from_data_uri(lib::scanner& sc, const std::string& pat) {
 	m_host = "";
 	m_port = 0;
 	m_path = sc.join(3);  // Skip data:,
+	if (s_strict) _checkurl();
+}
+
+// pat: "scheme:,"
+void net::url::set_from_scheme(lib::scanner& sc, const std::string& pat) {
+	m_absolute = true;
+	m_protocol = sc.val_at(0);
+	m_host = "";
+	m_port = 0;
+	m_path = sc.join(2);  // Skip scheme:
 	if (s_strict) _checkurl();
 }
 
