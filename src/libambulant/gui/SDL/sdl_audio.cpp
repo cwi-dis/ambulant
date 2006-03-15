@@ -458,7 +458,8 @@ gui::sdl::sdl_audio_renderer::data_avail()
 	m_lock.enter();
 	//assert(m_audio_src);
 	if (!m_audio_src) {				
-		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail:m_audio_src does not exist");
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: m_audio_src already deleted");
+		m_lock.leave();
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: %d bytes available", m_audio_src->size());
