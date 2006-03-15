@@ -1,3 +1,31 @@
+2006-03-15 00:23  jackjansen
+
+	* Started on fullscreen view. Partially working.
+
+2006-03-14 22:44  jackjansen
+
+	* Always return absolute paths from get_local_datafile().
+
+2006-03-14 16:56  jackjansen
+
+	* Fixed some tab/space confusion.
+
+2006-03-14 16:47  jackjansen
+
+	* Sanity checks
+
+2006-03-14 16:13  jackjansen
+
+	* Rationalized code quite a bit, removed unused stuff.
+
+2006-03-14 15:26  jackjansen
+
+	* Getting rid of debug output made gtk video renderer work.
+
+2006-03-14 14:44  jackjansen
+
+	* Qt didn't include ffmpeg video. Fixed.
+
 2006-03-13 17:40  jackjansen
 
 	* Fixed ffmpeg video timing. Main problem was the use of two
