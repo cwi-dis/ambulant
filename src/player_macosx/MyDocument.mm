@@ -397,6 +397,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[view setFrame: saved_view_rect];
 	[savedcontentview setNeedsDisplay:YES];
 	[saved_window makeFirstResponder: view];
+	[saved_window setAcceptsMouseMovedEvents: YES];
 
 	// Tell our controller that the normal window is in use again.
 	NSWindowController* winController = [[self windowControllers]
@@ -465,6 +466,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[fsmainview setNeedsDisplay:YES];
 	[fsmainview release];
 	[mScreenWindow makeFirstResponder: contentview];
+	[mScreenWindow setAcceptsMouseMovedEvents: YES];
 
 	// Make the screen window the current document window.
 	// Be sure to retain the previous window if you want to  use it again.
