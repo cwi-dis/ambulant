@@ -33,6 +33,20 @@
 #define AM_DBG if(0)
 #endif
 
+// Help class for fullscreen windows: normally, windows
+// with style NSBorderlessWindowMask don't get any keyboard input.
+// By overriding canBecomeKeyWindow we fix that.
+@interface FullScreenWindow : NSWindow
+{
+}
+- (BOOL)canBecomeKeyWindow;
+@end
+@implementation FullScreenWindow
+- (BOOL)canBecomeKeyWindow
+{
+	return YES;
+}
+@end
 
 void
 document_embedder::show_file(const ambulant::net::url& href)
@@ -382,6 +396,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[savedcontentview addSubview: view];
 	[view setFrame: saved_view_rect];
 	[savedcontentview setNeedsDisplay:YES];
+	[saved_window makeFirstResponder: view];
 
 	// Tell our controller that the normal window is in use again.
 	NSWindowController* winController = [[self windowControllers]
@@ -390,6 +405,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 	// Get rid of the fullscreen window
 	[mScreenWindow close];
+	[saved_window makeKeyAndOrderFront:self];
 	
 	// And clear saved_window, which signals we're in normal mode again.
 	[saved_window release];
@@ -418,7 +434,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// Create the full-screen window.
 	NSRect winRect = [mainScreen frame];
 	NSWindow *mScreenWindow;
-	mScreenWindow = [[NSWindow alloc] initWithContentRect:winRect
+	mScreenWindow = [[FullScreenWindow alloc] initWithContentRect:winRect
 			styleMask:NSBorderlessWindowMask 
 			backing:NSBackingStoreBuffered 
 			defer:NO 
@@ -448,6 +464,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[mScreenWindow setContentView: fsmainview];
 	[fsmainview setNeedsDisplay:YES];
 	[fsmainview release];
+	[mScreenWindow makeFirstResponder: contentview];
 
 	// Make the screen window the current document window.
 	// Be sure to retain the previous window if you want to  use it again.
