@@ -691,15 +691,15 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 	// private method - no need to lock
 	AVCodec *codec = avcodec_find_decoder_by_name(file_ext);
 	if (codec == NULL) {
-			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"));
+			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
+			lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
 			return false;
 	}
 	m_con = avcodec_alloc_context();
 	
 	if(avcodec_open(m_con,codec) < 0) {
-			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"));
+			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
+			lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
 			return false;
 	}
 	return true;
@@ -727,15 +727,15 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
 
 		if (codec == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), (void*) fmt.parameters);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(),  enc->codec_id);
+				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 				return false;
 		}
 		//m_con = avcodec_alloc_context();
 		
 		if(avcodec_open(m_con,codec) < 0) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), (void*) fmt.parameters);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
+				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 				return false;
 		}
 		if (fmt.width == 0) fmt.width = m_con->width;
@@ -747,16 +747,12 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		AM_DBG lib::logger::get_logger()->debug("ffmpe_video_decoder_datasource::selectdecoder(): audio codec : %s", codec_name);
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
-		m_con = avcodec_alloc_context();	
-		//m_con->width=176;
-		//m_con->height=128;
 		if( !codec) {
-			//lib::logger::get_logger()->error(gettext("%s: Audio codec %d(%s) not supported"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): codec found!");
 		}
-	
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): codec found!");
+
+		m_con = avcodec_alloc_context();		
 		if((avcodec_open(m_con,codec) < 0) ) {
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
