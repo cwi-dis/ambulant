@@ -60,6 +60,10 @@ class embedder : public lib::system_embedder {
 	/// The embedding application could communicate this fact to the end user
 	/// through the GUI.
 	virtual void starting(player *p) {}
+	
+	/// Experimental interface: open a new auxiliary document displayed on
+	/// top of the current document. As long as it 
+	bool aux_open(const ambulant::net::url& href) {return false;}
 };
 
 } // namespace common

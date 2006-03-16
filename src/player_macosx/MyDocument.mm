@@ -87,6 +87,22 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 }
 
+#ifdef WITH_AUX_DOCUMENT
+bool
+document_embedder::aux_open(const ambulant::net::url& auxdoc)
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (auxdoc.get_url() == "") {
+		[m_mydocument closeAuxDocument];
+		return true;
+	}
+	NSString *str_url = [NSString stringWithCString: auxdoc.get_url().c_str()];
+	NSURL *url = [NSURL URLWithString: str_url];
+	BOOL rv = [m_mydocument openAuxDocument: url];
+	[pool release];
+	return (bool)rv;
+}
+#endif // WITH_AUX_DOCUMENT
 
 @implementation MyDocument
 
@@ -299,7 +315,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
-	if (myMainloop) delete myMainloop;
+#ifdef WITH_AUX_MAINLOOP
+	delete myAuxMainloop;
+	myAuxMainloop = NULL;
+#endif
+	delete myMainloop;
 	myMainloop = NULL;
 	delete embedder;
 	embedder = NULL;
@@ -313,8 +333,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)fixMouse: (id)dummy
 {
-	if (!myMainloop) return;
-	int cursor = myMainloop->get_cursor();
+	mainloop *ml = myMainloop;
+#ifdef WITH_AUX_MAINLOOP
+	if (myAuxMainloop) ml = myAuxMainloop;
+#endif
+	if (!ml) return;
+	int cursor = ml->get_cursor();
 	AM_DBG NSLog(@"Fixing mouse to %d", cursor);
 	if (cursor == 0) {
 		if ([NSCursor currentCursor] != [NSCursor arrowCursor]) {
@@ -335,14 +359,22 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)resetMouse: (id)dummy
 {
-	if (myMainloop) myMainloop->set_cursor(0);
+	mainloop *ml = myMainloop;
+#ifdef WITH_AUX_MAINLOOP
+	if (myAuxMainloop) ml = myAuxMainloop;
+#endif
+	if (ml) ml->set_cursor(0);
 }
 
 - (void)keyDown: (NSEvent *)ev
 {
+	mainloop *ml = myMainloop;
+#ifdef WITH_AUX_MAINLOOP
+	if (myAuxMainloop) ml = myAuxMainloop;
+#endif
 	NSString *chars = [ev characters];
 	
-	if (chars && [chars length] == 1 && myMainloop) {
+	if (chars && [chars length] == 1 && ml) {
 		unichar ch = [chars characterAtIndex:0];
 		// First, escape will exit fullscreen mode
 		if (ch == '\033') {
@@ -353,15 +385,15 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 		if (prefs->m_tabbed_links) {
 			if (ch == '\t') {
-				myMainloop->on_focus_advance();
+				ml->on_focus_advance();
 				return;
 			}
 			if (ch == '\r' || ch == '\n') {
-				myMainloop->on_focus_activate();
+				ml->on_focus_activate();
 				return;
 			}
 		}
-		myMainloop->on_char(ch);
+		ml->on_char(ch);
 	} else {
 		/*AM_DBG*/ NSLog(@"MyDocument::keyDown: dropping %@", chars);
 	}
@@ -491,5 +523,22 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	else
 		[self goFullScreen:sender];
 }
-		
+
+#ifdef WITH_AUX_DOCUMENT
+- (BOOL)openAuxDocument: (NSURL *)auxUrl
+{
+//	embedder = new document_embedder(self);
+	delete myAuxMainloop;
+	NSLog(@"openAuxDocument %@", auxUrl);
+	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], view, false, NULL);
+	myAuxMainloop->play();
+}
+
+- (void)closeAuxDocument
+{
+	NSLog(@"closeAuxDocument");
+	delete myAuxMainloop;
+	myAuxMainloop = NULL;
+}
+#endif // WITH_AUX_DOCUMENT
 @end

@@ -28,6 +28,10 @@
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"
 
+// Defining WITH_AUX_DOCUMENT will allow a second document to live
+// in the same window, on top of the normal presentation.
+#define WITH_AUX_DOCUMENT
+
 class document_embedder : public ambulant::common::embedder {
   public:
 	document_embedder(id mydocument)
@@ -37,6 +41,9 @@ class document_embedder : public ambulant::common::embedder {
 	void show_file(const ambulant::net::url& href);
 	void close(ambulant::common::player *p);
 	void open(ambulant::net::url newdoc, bool start, ambulant::common::player *old=NULL);
+#ifdef WITH_AUX_DOCUMENT
+	bool aux_open(const ambulant::net::url& href);
+#endif
   private:
 	id m_mydocument;
 };
@@ -53,6 +60,9 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet id status_line;
 //    void *window_factory;
 	mainloop *myMainloop;
+#ifdef WITH_AUX_DOCUMENT
+	mainloop *myAuxMainloop;
+#endif
 	NSTimer *uitimer;
 	document_embedder *embedder;
 	NSWindow *saved_window;
@@ -79,4 +89,9 @@ class document_embedder : public ambulant::common::embedder {
 - (IBAction)goWindowMode:(id)sender;
 - (IBAction)goFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
+#ifdef WITH_AUX_DOCUMENT
+- (BOOL)openAuxDocument: (NSURL *)auxUrl;
+- (void)closeAuxDocument;
+#endif
+
 @end

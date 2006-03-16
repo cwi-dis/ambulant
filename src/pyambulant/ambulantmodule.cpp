@@ -4371,6 +4371,21 @@ static PyObject *embedderObj_starting(embedderObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *embedderObj_aux_open(embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::url href;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_url_Convert, &href))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->aux_open(href);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef embedderObj_methods[] = {
 	{"close", (PyCFunction)embedderObj_close, 1,
 	 PyDoc_STR("(ambulant::common::player* p) -> None")},
@@ -4380,6 +4395,8 @@ static PyMethodDef embedderObj_methods[] = {
 	 PyDoc_STR("(ambulant::common::player* p) -> None")},
 	{"starting", (PyCFunction)embedderObj_starting, 1,
 	 PyDoc_STR("(ambulant::common::player* p) -> None")},
+	{"aux_open", (PyCFunction)embedderObj_aux_open, 1,
+	 PyDoc_STR("(ambulant::net::url href) -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 

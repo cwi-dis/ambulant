@@ -2017,6 +2017,7 @@ embedder::embedder(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "open")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: open");
 		if (!PyObject_HasAttrString(itself, "done")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: done");
 		if (!PyObject_HasAttrString(itself, "starting")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: starting");
+		if (!PyObject_HasAttrString(itself, "aux_open")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: aux_open");
 	}
 	if (itself == NULL) itself = Py_None;
 
