@@ -93,11 +93,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (auxdoc.get_url() == "") {
+		NSLog(@"aux_open: closing");
 		[m_mydocument closeAuxDocument];
 		return true;
 	}
 	NSString *str_url = [NSString stringWithCString: auxdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
+	NSLog(@"aux_open: open %@", url);
 	BOOL rv = [m_mydocument openAuxDocument: url];
 	[pool release];
 	return (bool)rv;

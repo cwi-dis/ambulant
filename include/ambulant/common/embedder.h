@@ -63,7 +63,7 @@ class embedder : public lib::system_embedder {
 	
 	/// Experimental interface: open a new auxiliary document displayed on
 	/// top of the current document. As long as it 
-	bool aux_open(const ambulant::net::url& href) {return false;}
+	virtual bool aux_open(const ambulant::net::url& href) {return false;}
 };
 
 } // namespace common

@@ -366,6 +366,7 @@ public:
 	void open(ambulant::net::url newdoc, bool start, ambulant::common::player* old);
 	void done(ambulant::common::player* p);
 	void starting(ambulant::common::player* p);
+	bool aux_open(const ambulant::net::url& href);
 	void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }
   private:
 	PyObject *py_embedder;

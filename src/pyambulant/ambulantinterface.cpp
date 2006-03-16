@@ -2111,6 +2111,32 @@ void embedder::starting(ambulant::common::player* p)
 	PyGILState_Release(_GILState);
 }
 
+bool embedder::aux_open(const ambulant::net::url& href)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+	PyObject *py_href = Py_BuildValue("O", ambulant_url_New(href));
+
+	PyObject *py_rv = PyObject_CallMethod(py_embedder, "aux_open", "(O)", py_href);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during embedder::aux_open() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during embedder::aux_open() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_href);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ------------------------ Class factories ------------------------- */
 
 factories::factories(PyObject *itself)
