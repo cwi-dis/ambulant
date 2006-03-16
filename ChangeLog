@@ -1,3 +1,30 @@
+2006-03-16 00:09  jackjansen
+
+	* - Added better handling for URLs with unknown schemes.  - Better
+	  error message in case of linking to an external document that
+	  does not exist.
+
+2006-03-15 23:25  jackjansen
+
+	* Fixed various error messages.
+
+2006-03-15 23:25  jackjansen
+
+	* Fixed a rare race condition (resulting in a hang) during cleanup.
+
+2006-03-15 13:34  jackjansen
+
+	* MouseMoved events also work in fullscreen mode.
+
+2006-03-15 13:31  jackjansen
+
+	* Got fullscreen input to work. Changing the mouse cursor over
+	  links does not work yet, that will have to wait.
+
+2006-03-15 11:46  jackjansen
+
+	* Fullscreen mode works, but no input yet.
+
 2006-03-15 00:23  jackjansen
 
 	* Started on fullscreen view. Partially working.
