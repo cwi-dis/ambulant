@@ -31,6 +31,9 @@
 // Defining WITH_AUX_DOCUMENT will allow a second document to live
 // in the same window, on top of the normal presentation.
 #define WITH_AUX_DOCUMENT
+#ifdef WITH_AUX_DOCUMENT
+#import "MyAmbulantView.h"
+#endif
 
 class document_embedder : public ambulant::common::embedder {
   public:
@@ -62,6 +65,7 @@ class document_embedder : public ambulant::common::embedder {
 	mainloop *myMainloop;
 #ifdef WITH_AUX_DOCUMENT
 	mainloop *myAuxMainloop;
+	MyAmbulantView *myAuxView;
 #endif
 	NSTimer *uitimer;
 	document_embedder *embedder;

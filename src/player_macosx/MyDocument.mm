@@ -531,9 +531,17 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 //	embedder = new document_embedder(self);
 	delete myAuxMainloop;
+	if (myAuxView) {
+		[myAuxView removeFromSuperview];
+		myAuxView = NULL;
+	}
+	myAuxView = [[MyAmbulantView alloc] initWithFrame: [view bounds]];
+	[view addSubview: myAuxView];
+	[[view window] makeFirstResponder: myAuxView];
 	NSLog(@"openAuxDocument %@", auxUrl);
-	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], view, false, NULL);
+	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, false, NULL);
 	myAuxMainloop->play();
+	return true;
 }
 
 - (void)closeAuxDocument
@@ -541,6 +549,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	NSLog(@"closeAuxDocument");
 	delete myAuxMainloop;
 	myAuxMainloop = NULL;
+	if (myAuxView) {
+		[myAuxView removeFromSuperview];
+		myAuxView = NULL;
+		[[view window] makeFirstResponder: view];
+	}
 }
 #endif // WITH_AUX_DOCUMENT
 @end
