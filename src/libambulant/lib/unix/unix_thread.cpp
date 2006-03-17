@@ -40,7 +40,7 @@ lib::unix::thread::thread()
 
 lib::unix::thread::~thread()
 {
-	if (m_running)
+	if (m_running || (m_started && !m_exit_done))
 		stop();
 }
 
@@ -105,7 +105,7 @@ lib::unix::thread::threadproc(void *pParam)
 	assert(!p->m_running);
 	assert(!p->m_exit_done);
 	p->m_running = true;
-	(void)p->run();
+	if (!p->m_exit_requested) (void)p->run();
 	p->m_running = false;
 	pthread_exit(NULL);
 	return NULL;
