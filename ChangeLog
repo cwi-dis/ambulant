@@ -1,3 +1,13 @@
+2006-03-17 00:33  jackjansen
+
+	* Aux_open() wasn't virtual (sigh), fixed.
+
+2006-03-16 17:03  jackjansen
+
+	* Started on experimental support for playing a second (control)
+	  presentation on top of the first one. Does not work yet, but
+	  neither does it appear to break anything:-)
+
 2006-03-16 00:09  jackjansen
 
 	* - Added better handling for URLs with unknown schemes.  - Better
