@@ -1,3 +1,12 @@
+2006-03-17 14:15  jackjansen
+
+	* Auxiliary document is starting to work, somewhat.
+
+2006-03-17 13:39  jackjansen
+
+	* Attempting to delete a thread before it had actually started
+	  caused a crash.  Fixed.
+
 2006-03-17 00:33  jackjansen
 
 	* Aux_open() wasn't virtual (sigh), fixed.
