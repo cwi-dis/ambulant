@@ -673,6 +673,7 @@ public:
 	window_factory(PyObject *itself);
 	virtual ~window_factory();
 
+	ambulant::lib::size get_default_size();
 	ambulant::common::gui_window* new_window(const std::string& name, ambulant::lib::size bounds, ambulant::common::gui_events* handler);
 	ambulant::common::bgrenderer* new_background_renderer(const ambulant::common::region_info* src);
 	void window_done(const std::string& name);

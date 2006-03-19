@@ -3894,6 +3894,7 @@ window_factory::window_factory(PyObject *itself)
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	if (itself)
 	{
+		if (!PyObject_HasAttrString(itself, "get_default_size")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: get_default_size");
 		if (!PyObject_HasAttrString(itself, "new_window")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: new_window");
 		if (!PyObject_HasAttrString(itself, "new_background_renderer")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: new_background_renderer");
 		if (!PyObject_HasAttrString(itself, "window_done")) PyErr_Warn(PyExc_Warning, "window_factory: missing attribute: window_done");
@@ -3913,6 +3914,30 @@ window_factory::~window_factory()
 	PyGILState_Release(_GILState);
 }
 
+
+ambulant::lib::size window_factory::get_default_size()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::size _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_window_factory, "get_default_size", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during window_factory::get_default_size() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_size_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during window_factory::get_default_size() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
 
 ambulant::common::gui_window* window_factory::new_window(const std::string& name, ambulant::lib::size bounds, ambulant::common::gui_events* handler)
 {

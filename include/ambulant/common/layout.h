@@ -30,6 +30,7 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/refcount.h"
+#include "ambulant/common/preferences.h"
 
 namespace ambulant {
 
@@ -248,6 +249,8 @@ class window_factory {
   public:
 	virtual ~window_factory() {}
 	
+	/// Get the default size for a new window
+	virtual lib::size get_default_size() { return lib::size(default_layout_width, default_layout_height); }
 	/// Create a new window.
 	virtual gui_window *new_window(const std::string &name, lib::size bounds, gui_events *handler) = 0;
 	

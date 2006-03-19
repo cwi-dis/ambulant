@@ -7585,6 +7585,19 @@ static void window_factoryObj_dealloc(window_factoryObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *window_factoryObj_get_default_size(window_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::size _rv = _self->ob_itself->get_default_size();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_size_New(_rv));
+	return _res;
+}
+
 static PyObject *window_factoryObj_new_window(window_factoryObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -7641,6 +7654,8 @@ static PyObject *window_factoryObj_window_done(window_factoryObject *_self, PyOb
 }
 
 static PyMethodDef window_factoryObj_methods[] = {
+	{"get_default_size", (PyCFunction)window_factoryObj_get_default_size, 1,
+	 PyDoc_STR("() -> (ambulant::lib::size _rv)")},
 	{"new_window", (PyCFunction)window_factoryObj_new_window, 1,
 	 PyDoc_STR("(std::string name, ambulant::lib::size bounds, ambulant::common::gui_events* handler) -> (ambulant::common::gui_window* _rv)")},
 	{"new_background_renderer", (PyCFunction)window_factoryObj_new_background_renderer, 1,

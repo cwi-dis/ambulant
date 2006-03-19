@@ -200,6 +200,15 @@ cocoa_renderer_factory::new_aux_audio_playable(
 	return NULL;
 }
 
+lib::size
+cocoa_window_factory::get_default_size()
+{
+	if (m_defaultwindow_view == NULL)
+		return lib::size(default_layout_width, default_layout_height);
+	NSSize size = [(AmbulantView *)m_defaultwindow_view bounds].size;
+	return lib::size((int)size.width, (int)size.height);
+}
+
 gui_window *
 cocoa_window_factory::new_window(const std::string &name, size bounds, gui_events *handler)
 {
