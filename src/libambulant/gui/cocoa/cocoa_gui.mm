@@ -230,11 +230,17 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, gui_event
 void
 cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &name, lib::size bounds)
 {
-	// And we need to inform the object about it
 	AmbulantView *view = (AmbulantView *)window->view();
+	// Get the position of our view in window coordinates
+	NSPoint origin = NSMakePoint(0,0);
+	NSView *superview = [view superview];
+	if (superview) {
+		NSRect rect = [superview convertRect: [view frame] toView: nil];
+		origin = rect.origin;
+	}
 	// And set the window size
 	AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
-	NSSize cocoa_size = NSMakeSize(bounds.w + [view frame].origin.x, bounds.h + [view frame].origin.y);
+	NSSize cocoa_size = NSMakeSize(bounds.w + origin.x, bounds.h + origin.y);
 	[[view window] setContentSize: cocoa_size];
 	AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
 	[[view window] makeKeyAndOrderFront: view];

@@ -52,6 +52,10 @@ smil_surface_factory::new_topsurface(
 		rect rect = info->get_rect();
 		bounds = lib::size(rect.width(), rect.height());
 	} else {
+		// XXX This is not the correct place to get the default size, as
+		// any subregion calculation (percentage values, regPoint/regAlign)
+		// will not take the value into account. Should be done in the
+		// smil_layout_manager.
 		bounds = wf->get_default_size();
 	}
 	return new toplevel_surface_impl(info, bounds, bgrend, wf);

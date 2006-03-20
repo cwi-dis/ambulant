@@ -67,11 +67,13 @@ nslog_ostream::write(const char *cstr)
 void
 show_message(int level, const char *format)
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithCString: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:) 
 		withObject: message waitUntilDone: NO];
 //	[message release];
+	[pool release];
 }
 
 bool

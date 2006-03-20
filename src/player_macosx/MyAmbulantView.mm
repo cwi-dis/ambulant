@@ -22,10 +22,11 @@
 void
 set_statusline(void *view, const char *msg)
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithCString: msg] retain];
 	[(id)view performSelectorOnMainThread: @selector(setStatusLine:) 
 		withObject: message waitUntilDone: NO];
-//	[message release];
+	[pool release];
 }
 
 
