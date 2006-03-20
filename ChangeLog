@@ -1,3 +1,10 @@
+2006-03-20 00:02  jackjansen
+
+	* Added a method get_default_size() to window_factory. This allows
+	  auxiliary presentations to use the size of the main presentation
+	  by simply not specifying a root-layout size. It should even allow
+	  centering and such, I hope.
+
 2006-03-17 14:15  jackjansen
 
 	* Auxiliary document is starting to work, somewhat.
