@@ -1,3 +1,7 @@
+2006-03-20 11:37  jackjansen
+
+	* Got rid of a few leaks.
+
 2006-03-20 00:02  jackjansen
 
 	* Added a method get_default_size() to window_factory. This allows
