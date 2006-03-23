@@ -453,8 +453,8 @@ public:
 	bool is_play_active() const;
 	bool is_stop_active() const;
 	bool is_pause_active() const;
-	int get_cursor() const;
-	void set_cursor(int cursor);
+	int after_mousemove();
+	void before_mousemove(int cursor);
 	void on_char(int c);
 	void on_focus_advance();
 	void on_focus_activate();
@@ -904,8 +904,8 @@ public:
 	bool is_playing() const;
 	bool is_pausing() const;
 	bool is_done() const;
-	int get_cursor() const;
-	void set_cursor(int cursor);
+	int after_mousemove();
+	void before_mousemove(int cursor);
 	void on_char(int ch);
 	void on_focus_advance();
 	void on_focus_activate();

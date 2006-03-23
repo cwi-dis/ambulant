@@ -2406,8 +2406,8 @@ gui_player::gui_player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "is_play_active")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: is_play_active");
 		if (!PyObject_HasAttrString(itself, "is_stop_active")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: is_stop_active");
 		if (!PyObject_HasAttrString(itself, "is_pause_active")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: is_pause_active");
-		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_cursor");
-		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: set_cursor");
+		if (!PyObject_HasAttrString(itself, "after_mousemove")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: after_mousemove");
+		if (!PyObject_HasAttrString(itself, "before_mousemove")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: before_mousemove");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_char");
 		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_focus_advance");
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: on_focus_activate");
@@ -2736,21 +2736,21 @@ bool gui_player::is_pause_active() const
 	return _rv;
 }
 
-int gui_player::get_cursor() const
+int gui_player::after_mousemove()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	int _rv;
 
-	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "get_cursor", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "after_mousemove", "()");
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during gui_player::get_cursor() callback:\n");
+		PySys_WriteStderr("Python exception during gui_player::after_mousemove() callback:\n");
 		PyErr_Print();
 	}
 
 	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
 	{
-		PySys_WriteStderr("Python exception during gui_player::get_cursor() return:\n");
+		PySys_WriteStderr("Python exception during gui_player::after_mousemove() return:\n");
 		PyErr_Print();
 	}
 
@@ -2760,15 +2760,15 @@ int gui_player::get_cursor() const
 	return _rv;
 }
 
-void gui_player::set_cursor(int cursor)
+void gui_player::before_mousemove(int cursor)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_cursor = Py_BuildValue("i", cursor);
 
-	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "set_cursor", "(O)", py_cursor);
+	PyObject *py_rv = PyObject_CallMethod(py_gui_player, "before_mousemove", "(O)", py_cursor);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during gui_player::set_cursor() callback:\n");
+		PySys_WriteStderr("Python exception during gui_player::before_mousemove() callback:\n");
 		PyErr_Print();
 	}
 
@@ -4946,8 +4946,8 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "is_playing")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_playing");
 		if (!PyObject_HasAttrString(itself, "is_pausing")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_pausing");
 		if (!PyObject_HasAttrString(itself, "is_done")) PyErr_Warn(PyExc_Warning, "player: missing attribute: is_done");
-		if (!PyObject_HasAttrString(itself, "get_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_cursor");
-		if (!PyObject_HasAttrString(itself, "set_cursor")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_cursor");
+		if (!PyObject_HasAttrString(itself, "after_mousemove")) PyErr_Warn(PyExc_Warning, "player: missing attribute: after_mousemove");
+		if (!PyObject_HasAttrString(itself, "before_mousemove")) PyErr_Warn(PyExc_Warning, "player: missing attribute: before_mousemove");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_char");
 		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_advance");
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
@@ -5168,21 +5168,21 @@ bool player::is_done() const
 	return _rv;
 }
 
-int player::get_cursor() const
+int player::after_mousemove()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	int _rv;
 
-	PyObject *py_rv = PyObject_CallMethod(py_player, "get_cursor", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_player, "after_mousemove", "()");
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during player::get_cursor() callback:\n");
+		PySys_WriteStderr("Python exception during player::after_mousemove() callback:\n");
 		PyErr_Print();
 	}
 
 	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
 	{
-		PySys_WriteStderr("Python exception during player::get_cursor() return:\n");
+		PySys_WriteStderr("Python exception during player::after_mousemove() return:\n");
 		PyErr_Print();
 	}
 
@@ -5192,15 +5192,15 @@ int player::get_cursor() const
 	return _rv;
 }
 
-void player::set_cursor(int cursor)
+void player::before_mousemove(int cursor)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_cursor = Py_BuildValue("i", cursor);
 
-	PyObject *py_rv = PyObject_CallMethod(py_player, "set_cursor", "(O)", py_cursor);
+	PyObject *py_rv = PyObject_CallMethod(py_player, "before_mousemove", "(O)", py_cursor);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during player::set_cursor() callback:\n");
+		PySys_WriteStderr("Python exception during player::before_mousemove() callback:\n");
 		PyErr_Print();
 	}
 
