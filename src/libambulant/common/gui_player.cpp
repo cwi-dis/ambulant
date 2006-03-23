@@ -169,19 +169,19 @@ gui_player::is_pause_active() const
 }
 	
 int
-gui_player::get_cursor() const
+gui_player::after_mousemove()
 {
 //	const_cast<gui_player*>(this)->m_lock.enter();
-	int rv = m_player?m_player->get_cursor():0;
+	int rv = m_player?m_player->after_mousemove():0;
 //	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 void
-gui_player::set_cursor(int cursor)
+gui_player::before_mousemove(int cursor)
 {
 //	m_lock.enter();
-	if(m_player) m_player->set_cursor(cursor);
+	if(m_player) m_player->before_mousemove(cursor);
 //	m_lock.leave();
 }
 

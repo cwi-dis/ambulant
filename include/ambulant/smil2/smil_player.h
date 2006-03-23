@@ -83,8 +83,8 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	
 	common::play_state get_state() const {return m_state;}
 	
-	void set_cursor(int cursorid) { m_cursorid = cursorid;}
-	int get_cursor() const { return m_cursorid;}
+	void before_mousemove(int cursorid);
+	int after_mousemove();
 	std::string get_pointed_node_str() const;
 		
 	//////////////////////
@@ -203,6 +203,8 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	lib::logger *m_logger;
 	std::map<int, int> m_accesskey_map;
 	const lib::node *m_focus;
+	std::set<int> *m_focussed_nodes;
+	std::set<int> *m_new_focussed_nodes;
 };
 
 } // namespace smil2

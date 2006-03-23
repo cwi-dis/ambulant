@@ -108,10 +108,10 @@ class player {
 	virtual bool is_done() const { return false;}
 	
 	/// Return index of desired cursor (arrow or hand).
-	virtual int get_cursor() const { return 0; }
+	virtual int after_mousemove() { return 0; }
 	
 	/// Set desired cursor.
-	virtual void set_cursor(int cursor) {}
+	virtual void before_mousemove(int cursor) {}
 
 	/// Call this when the user has pressed a key.
 	virtual void on_char(int ch) {}

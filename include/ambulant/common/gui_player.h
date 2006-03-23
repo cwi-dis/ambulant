@@ -76,8 +76,8 @@ class gui_player : public factories {
 	virtual bool is_stop_active() const;
 	virtual bool is_pause_active() const;
 	
-	virtual int get_cursor() const;
-	virtual void set_cursor(int cursor);
+	virtual int after_mousemove();
+	virtual void before_mousemove(int cursor);
 	
 	virtual void on_char(int c);
 	virtual void on_focus_advance();

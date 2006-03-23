@@ -340,7 +340,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
 	if (!ml) return;
-	int cursor = ml->get_cursor();
+	int cursor = ml->after_mousemove();
 	AM_DBG NSLog(@"Fixing mouse to %d", cursor);
 	if (cursor == 0) {
 		if ([NSCursor currentCursor] != [NSCursor arrowCursor]) {
@@ -365,7 +365,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #ifdef WITH_AUX_MAINLOOP
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
-	if (ml) ml->set_cursor(0);
+	if (ml) ml->before_mousemove(0);
 }
 
 - (void)keyDown: (NSEvent *)ev

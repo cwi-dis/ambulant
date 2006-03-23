@@ -72,7 +72,9 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_cursorid(0), 
 	m_pointed_node(0), 
 	m_eom_flag(true),
-	m_focus(0) {
+	m_focus(0),
+	m_focussed_nodes(new std::set<int>()),
+	m_new_focussed_nodes(0) {
 	
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player()");
@@ -105,7 +107,9 @@ smil_player::~smil_player() {
 		int rem = (*it).second->release();
 		if (rem) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
 	}
-		
+	
+	delete m_focussed_nodes;
+	delete m_new_focussed_nodes;
 	delete m_event_processor;
 	delete m_timer;
 	delete m_dom2tn;
@@ -352,9 +356,108 @@ void smil_player::clicked(int n, double t) {
 	}
 }
 
+void
+smil_player::before_mousemove(int cursorid)
+{
+	m_cursorid = cursorid;
+	delete m_new_focussed_nodes;
+	m_new_focussed_nodes = new std::set<int>();
+}
+
+int
+smil_player::after_mousemove()
+{
+	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
+	std::set<int>::iterator i;
+
+	m_pointed_node = 0;
+
+	// First we send outOfBounds and focusOut events to all
+	// the nodes that were in the focus but no longer are.
+	for (i=m_focussed_nodes->begin(); i!=m_focussed_nodes->end(); i++) {
+		int n = *i;
+		
+		// If the node is also in the new focus we're done.
+		if (m_new_focussed_nodes->count(n) > 0) continue;
+		
+		// If the node can't be found we're done.
+		std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+		if (it == m_dom2tn->end()) continue;
+		
+		// Otherwise we send it outofbounds and focusout events, if it is interested.
+		time_node *tn = (*it).second;
+		AM_DBG m_logger->debug("after_mousemove: focus lost by %d, 0x%x", n, tn);
+		
+		if (tn->wants_outofbounds_event()) {
+			AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)tn);
+			q_smil_time timestamp(m_root, m_root->get_simple_time());
+			dom_event_cb *cb = new dom_event_cb(tn, 
+				&time_node::raise_outofbounds_event, timestamp);
+			schedule_event(cb, 0, ep_high);
+		}
+		if (tn->wants_focusout_event()) {
+			AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)tn);
+			q_smil_time timestamp(m_root, m_root->get_simple_time());
+			dom_event_cb *cb = new dom_event_cb(tn, 
+				&time_node::raise_focusout_event, timestamp);
+			schedule_event(cb, 0, ep_high);
+		}
+	}
+	
+	// Next we send inbound and focusin events to the nodes that
+	// are now in the focus, and were not there before.
+	for (i=m_new_focussed_nodes->begin(); i!=m_new_focussed_nodes->end(); i++) {
+		int n = *i;
+				
+		// If the node can't be found we're done.
+		std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+		if (it == m_dom2tn->end()) continue;
+
+		// If the node is interested in activate events (clicks) we tell
+		// it that the mouse is over it (it may want to show visual feedback)
+		time_node *tn = (*it).second;
+
+		if(tn->wants_activate_event()) {
+			m_cursorid = 1;
+			node_focussed(tn->dom_node());
+			m_pointed_node = tn;
+		}
+
+		// If the node was also in the old focus we're done.
+		if (m_focussed_nodes->count(n) > 0) continue;
+
+		AM_DBG m_logger->debug("after_mousemove: focus acquired by %d, 0x%x", n, tn);
+
+		// Send it the focusin and inbounds event, if it wants them.
+		if (tn->wants_inbounds_event()) {
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)tn);
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb(tn, 
+					&time_node::raise_inbounds_event, timestamp);
+				schedule_event(cb, 0, ep_high);
+		}
+		if (tn->wants_focusin_event()) {
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)tn);
+				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				dom_event_cb *cb = new dom_event_cb(tn, 
+					&time_node::raise_focusin_event, timestamp);
+				schedule_event(cb, 0, ep_high);
+		}
+	}
+	
+	// Finally juggle the old and new focussed nodes set
+	delete m_focussed_nodes;
+	m_focussed_nodes = m_new_focussed_nodes;
+	m_new_focussed_nodes = NULL;
+	return m_cursorid;
+}
+
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::pointed(%d, %f)", n, t);
+#if 1
+	m_new_focussed_nodes->insert(n);
+#else
+	/*AM_DBG*/ m_logger->debug("smil_player::pointed(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
@@ -363,7 +466,7 @@ void smil_player::pointed(int n, double t) {
 			// XXX We treat outOfBounds and focusOut identical, which is
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
-				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
+				/*AM_DBG*/ m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
@@ -428,6 +531,7 @@ void smil_player::pointed(int n, double t) {
 		}
 	}
 	AM_DBG m_logger->debug("smil_player::pointed: now m_pointed_node=0x%x", m_pointed_node);
+#endif
 }
 
 // Playable notification for a start event.
