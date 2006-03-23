@@ -345,13 +345,27 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void 
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
-	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
-	AM_DBG lib::logger::get_logger()->debug("%s:(%d,%d)\n",
-	       "qt_ambulant_widget::mouseMoveEvent", e->x(),e->y());
-	ambulant::lib::point ap = ambulant::lib::point(e->x()-m_o_x,
-						       e->y()-m_o_y);
+	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
+	ambulant::lib::point ap = ambulant::lib::point(e->x(), e->y());
+#if 0
+    // XXX This code temporarily disabled, because with the current
+    // structure there is no easy way to get at the gui_player, which
+    // is needed to tell the scheduler we're about to start telling it
+    // about pointed() nodes.
+    xxx_gui_player->before_mousemove(0);
 	m_qt_window->user_event(ap, 1);
-	qApp->mainWidget()->unsetCursor(); //XXXX
+	int cursid = xxx_gui_player->after_mousemove();
+	Qt::CursorShape cursor_shape = Qt::ArrowCursor;
+	if (cursid == 0) {
+        ; // pass
+    } else if (cursid == 1) {
+        cursor_shape = Qt::PointingHandCursor;
+    } else {
+        lib::logger::get_logger()->debug("mouseMoveEvent: unknown cursor id %d", cursid);
+    }
+    setCursor(cursor_shape);
+#endif
+   
 }
 #endif/*QT_NO_FILEDIALOG*/
 

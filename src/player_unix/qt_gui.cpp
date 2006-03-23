@@ -523,29 +523,6 @@ qt_gui::slot_quit() {
 	qApp->quit();
 }
 
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
-void
-qt_gui::unsetCursor() { //XXXX Hack
-//	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
-	Qt::CursorShape cursor_shape = m_mainloop->get_cursor() ?
-		Qt::PointingHandCursor : Qt::ArrowCursor;
-	if (cursor_shape != m_cursor_shape) {
-		m_cursor_shape = cursor_shape;
-		setCursor(cursor_shape);
-	}
-#ifdef	QCURSOR_ON_ZAURUS
-	bool pointinghand_cursor = m_mainloop->get_cursor();
-	QCursor cursor_shape = pointinghand_cursor ?
-		pointingHandCursor : arrowCursor;
-	if (m_pointinghand_cursor != pointinghand_cursor) {
-		m_pointinghand_cursor = pointinghand_cursor;
-		setCursor(cursor_shape);
-	}
-#endif/*QCURSOR_ON_ZAURUS*/
-	m_mainloop->set_cursor(0);
-}
-#endif/*QT_NO_FILEDIALOG*/
-
 void
 qt_gui::customEvent(QCustomEvent* e) {
 	char* msg = (char*)e->data();

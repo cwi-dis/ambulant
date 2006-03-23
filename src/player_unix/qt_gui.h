@@ -171,8 +171,5 @@ class qt_mainloop;
 
   protected:
 	void customEvent(QCustomEvent*);
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
-	void unsetCursor(); //XXXX
-#endif/*QT_NO_FILEDIALOG*/
 };
 #endif/*__QT_GUI_H__*/
