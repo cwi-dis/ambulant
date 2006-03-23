@@ -266,9 +266,9 @@ int gui::dx::dx_player::get_cursor(int x, int y, HWND hwnd) {
 	dx_window *dxwin = (dx_window *) get_window(hwnd);
 	if(!dxwin) return 0;
 	region *r = dxwin->get_region();
-	m_player->set_cursor(0);
+	m_player->before_mousemove(0);
 	if(r) r->user_event(pt, common::user_event_mouse_over);
-	return m_player->get_cursor();
+	return m_player->after_mousemove();
 }
 
 std::string gui::dx::dx_player::get_pointed_node_str() {
