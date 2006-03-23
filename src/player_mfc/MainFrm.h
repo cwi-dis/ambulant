@@ -21,7 +21,7 @@
 
 // MainFrm.h : interface of the CMainFrame class
 //
-
+#include <string>
 
 #pragma once
 class CMainFrame : public CFrameWnd
@@ -48,11 +48,16 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+	/// Called by Ambulant code to set the status line
+	void SetStatusLine(std::string message);
 
+	/// Called my MFC when it wants to display the status line
+	LRESULT OnSetMessageString(WPARAM wParam, LPARAM lParam);
+	
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;
 	CToolBar    m_wndToolBar;
-
+	std::string	m_statusline;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

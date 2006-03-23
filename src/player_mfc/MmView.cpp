@@ -295,6 +295,12 @@ void MmView::OnDestroy()
 	CView::OnDestroy();
 }
 
+void MmView::SetStatusLine(std::string message) {
+	CMainFrame *mf = (CMainFrame *)GetTopLevelFrame();
+	if (mf)
+		mf->SetStatusLine(message);
+}
+
 void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	USES_CONVERSION;
 	dg_or_dx_player *dummy = player;
@@ -331,6 +337,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	dummy = create_player_instance(u);
 	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
+	SetStatusLine("Ready");
 	if(autostart || m_autoplay)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
 }

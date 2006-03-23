@@ -21,6 +21,7 @@
 //
 
 #include "stdafx.h"
+#include "afxpriv.h"
 #include "AmbulantPlayer.h"
 
 #include "MainFrm.h"
@@ -36,6 +37,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
+	ON_MESSAGE(WM_SETMESSAGESTRING, OnSetMessageString)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -61,6 +63,8 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
+	SetStatusLine("No document open");
+
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
@@ -119,6 +123,20 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 
 #endif //_DEBUG
+
+void
+CMainFrame::SetStatusLine(std::string message)
+{
+	m_statusline = message;
+}
+
+LRESULT
+CMainFrame::OnSetMessageString(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == AFX_IDS_IDLEMESSAGE)
+		return CFrameWnd::OnSetMessageString(0, (LPARAM)m_statusline.c_str());
+	return CFrameWnd::OnSetMessageString(wParam, lParam);
+}
 
 
 // CMainFrame message handlers
