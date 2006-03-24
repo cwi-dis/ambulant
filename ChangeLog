@@ -1,3 +1,39 @@
+2006-03-23 16:52  jackjansen
+
+	* Added glue code to enable setting the status line.
+
+2006-03-23 16:14  jackjansen
+
+	* Adapted to new before_mousemove()/after_mousemove() API.
+
+2006-03-23 15:25  jackjansen
+
+	* Serious reorganisation: - Group methods by class - Within a
+	  class, group them by function - fixed indentation - rationalized
+	  a couple of defines - rationalized some code too
+
+2006-03-23 14:46  jackjansen
+
+	* Updated python interfaces.
+
+2006-03-23 14:23  jackjansen
+
+	* Temporarily disabled mouseMoved handling to make Qt player work
+	  again.
+
+2006-03-23 13:18  jackjansen
+
+	* Revamped mouseOver handling. The GUI first calls
+	  before_mousemoved(), then passes the event to the layout
+	  structures (which call pointed() for each active region
+	  containing the mouse), then calls after_mousemoved() which can
+	  now correctly compute which nodes have obtained focus anew, or
+	  lost focus.  This gets rid of lots and lots of spurious inBounds,
+	  focusIn, outOfBounds and focusOutEvents, and makes the hand
+	  cursor behave more predictable too.
+
+	  Only tested on mac, so far.
+
 2006-03-20 11:37  jackjansen
 
 	* Got rid of a few leaks.
