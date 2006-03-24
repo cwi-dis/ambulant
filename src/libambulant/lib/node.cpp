@@ -711,7 +711,11 @@ builtin_node_factory::new_node(const lib::q_name_pair& qn, const lib::q_attribut
 lib::node *
 builtin_node_factory::new_node(const lib::node* other)
 {
+#if WITH_EXTERNAL_DOM
 	return new lib::node_impl(dynamic_cast<const lib::node_impl*>(other));
+#else
+	return new lib::node_impl(other);
+#endif
 }
 
 lib::node_factory *lib::get_builtin_node_factory()
