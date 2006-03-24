@@ -30,6 +30,7 @@
 #define new DEBUG_NEW
 #endif
 
+static CMainFrame *theMainFrame;
 
 // CMainFrame
 
@@ -38,6 +39,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_MESSAGE(WM_SETMESSAGESTRING, OnSetMessageString)
+	ON_MESSAGE(WM_APP, OnSetStatusLine)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -54,10 +56,12 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
+	theMainFrame = this;
 }
 
 CMainFrame::~CMainFrame()
 {
+	theMainFrame = NULL;
 }
 
 
@@ -125,9 +129,17 @@ void CMainFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 void
-CMainFrame::SetStatusLine(std::string message)
+CMainFrame::SetStatusLine(char *message)
 {
 	m_statusline = message;
+	CFrameWnd::OnSetMessageString(0, (LPARAM)m_statusline.c_str());
+}
+
+LRESULT
+CMainFrame::OnSetStatusLine(WPARAM wParam, LPARAM lParam)
+{
+	SetStatusLine((char *)lParam);
+	return 0;
 }
 
 LRESULT
@@ -138,6 +150,12 @@ CMainFrame::OnSetMessageString(WPARAM wParam, LPARAM lParam)
 	return CFrameWnd::OnSetMessageString(wParam, lParam);
 }
 
+void
+set_status_line(const char *message)
+{
+	if (theMainFrame)
+		theMainFrame->PostMessage(WM_APP, 0, (LPARAM)message);
+}
 
 // CMainFrame message handlers
 

@@ -449,6 +449,9 @@ smil_player::after_mousemove()
 	delete m_focussed_nodes;
 	m_focussed_nodes = m_new_focussed_nodes;
 	m_new_focussed_nodes = NULL;
+	// And if nothing has focus anymore signal that to the embedding app.
+	if (m_cursorid == 0)
+		node_focussed(NULL);
 	return m_cursorid;
 }
 

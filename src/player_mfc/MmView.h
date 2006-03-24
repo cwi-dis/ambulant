@@ -22,8 +22,9 @@
 // MmView.h : interface of the MmView class
 //
 
-
 #pragma once
+
+#include <string>
 
 class CLogWindow;
 
@@ -39,7 +40,6 @@ public:
 	
 // Operations
 public:
-	void SetStatusLine(std::string message);
 	void SetMMDocument(LPCTSTR lpszPathName, bool autostart);
 	bool LocateWelcomeDoc(LPCTSTR rpath);
 	UINT_PTR m_timer_id;

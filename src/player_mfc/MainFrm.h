@@ -23,6 +23,8 @@
 //
 #include <string>
 
+void set_status_line(const char *message);
+
 #pragma once
 class CMainFrame : public CFrameWnd
 {
@@ -49,7 +51,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 	/// Called by Ambulant code to set the status line
-	void SetStatusLine(std::string message);
+	void SetStatusLine(char *message);
+	/// Called by Ambulant (maybe from other threads)
+	LRESULT OnSetStatusLine(WPARAM wParam, LPARAM lParam);
 
 	/// Called my MFC when it wants to display the status line
 	LRESULT OnSetMessageString(WPARAM wParam, LPARAM lParam);

@@ -118,10 +118,40 @@ void my_player_callbacks::destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
 }
 
+class my_player_feedback : public common::player_feedback {
+  public:
+	void document_started() { set_status_line("Playing"); }
+	void document_stopped() { set_status_line("Stopped"); }
+	void node_started(const lib::node *n) {};
+	void node_stopped(const lib::node *n) {};
+	void node_focussed(const lib::node *n) {
+		if (n == NULL) {
+			set_status_line("");
+			return;
+		}
+		const char *alt = n->get_attribute("alt");
+		if (alt) {
+			set_status_line(alt);
+			return;
+		}
+		const char *href = n->get_attribute("href");
+		if (href) {
+			static std::string msg;
+			msg = "Go to ";
+			msg += href;
+			set_status_line(msg.c_str());
+			return;
+		}
+		set_status_line("???");
+	}
+ 
+};
+
+my_player_feedback s_player_feedback;
 
 static dg_or_dx_player* 
-create_player_instance(const net::url& u) {
-	return new dg_or_dx_player(s_player_callbacks, NULL, u);
+create_player_instance(const net::url& u, common::player_feedback *feedback) {
+	return new dg_or_dx_player(s_player_callbacks, feedback, u);
 }
 
 static dg_or_dx_player *player = 0;
@@ -168,11 +198,11 @@ END_MESSAGE_MAP()
 // MmView construction/destruction
 
 MmView::MmView()
+:
 #ifndef WITHOUT_LOG_WINDOW
-:	m_logwindow(NULL)
+	m_logwindow(NULL)
 #endif // WITHOUT_LOG_WINDOW
 {
-	// TODO: add construction code here
 	m_timer_id = 0;
 	m_cursor_id = 0;
 	m_autoplay = true;
@@ -295,12 +325,6 @@ void MmView::OnDestroy()
 	CView::OnDestroy();
 }
 
-void MmView::SetStatusLine(std::string message) {
-	CMainFrame *mf = (CMainFrame *)GetTopLevelFrame();
-	if (mf)
-		mf->SetStatusLine(message);
-}
-
 void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	USES_CONVERSION;
 	dg_or_dx_player *dummy = player;
@@ -334,10 +358,10 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		lib::logger::get_logger()->error("Cannot play from non-absolute pathname: %s", lpszPathName);
 		return;
 	}
-	dummy = create_player_instance(u);
+	dummy = create_player_instance(u, &s_player_feedback);
 	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
-	SetStatusLine("Ready");
+	set_status_line("Ready");
 	if(autostart || m_autoplay)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
 }
@@ -379,7 +403,7 @@ void MmView::OnFileStop()
 			dummy->stop();
 			delete dummy;
 		}
-		dummy = create_player_instance(u);
+		dummy = create_player_instance(u, &s_player_feedback);
 		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0);
 		InvalidateRect(NULL); 
