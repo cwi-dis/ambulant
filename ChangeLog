@@ -1,3 +1,12 @@
+2006-03-24 16:41  jackjansen
+
+	* Minor fix to make things compile for WinCE.
+
+2006-03-24 15:51  jackjansen
+
+	* Show link destination and some other interesting information in
+	  the status line at the bottom of the window.
+
 2006-03-23 16:52  jackjansen
 
 	* Added glue code to enable setting the status line.
