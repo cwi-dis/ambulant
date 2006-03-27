@@ -57,11 +57,16 @@ public:
 
 	/// Called my MFC when it wants to display the status line
 	LRESULT OnSetMessageString(WPARAM wParam, LPARAM lParam);
-	
+
+	afx_msg void OnViewFullScreen();
+
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;
 	CToolBar    m_wndToolBar;
 	std::string	m_statusline;
+
+	BOOL m_fullScreen;
+	RECT m_origRect;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

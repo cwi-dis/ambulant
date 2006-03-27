@@ -40,6 +40,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_MESSAGE(WM_SETMESSAGESTRING, OnSetMessageString)
 	ON_MESSAGE(WM_APP, OnSetStatusLine)
+	ON_COMMAND(ID_VIEW_FULLSCREEN, OnViewFullScreen)
+
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -54,6 +56,7 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
+:	m_fullScreen(FALSE)
 {
 	// TODO: add member initialization code here
 	theMainFrame = this;
@@ -148,6 +151,50 @@ CMainFrame::OnSetMessageString(WPARAM wParam, LPARAM lParam)
 	if (wParam == AFX_IDS_IDLEMESSAGE)
 		return CFrameWnd::OnSetMessageString(0, (LPARAM)m_statusline.c_str());
 	return CFrameWnd::OnSetMessageString(wParam, lParam);
+}
+
+afx_msg void 
+CMainFrame::OnViewFullScreen()
+{
+	WINDOWPLACEMENT wp;
+	wp.showCmd = SW_SHOWNORMAL;
+#if 0
+	// Disable child window positioning within mainframe, because
+	// apparently I (Jack) don't have a clue what I'm doing.
+	CView *child = GetActiveView();
+	RECT childPos;
+	if (child)
+		child->GetWindowRect(&childPos);
+#endif
+	m_fullScreen = !m_fullScreen;
+
+	if (m_fullScreen) {
+		// Entering fullscreen mode
+        m_wndStatusBar.ShowWindow(SW_HIDE);
+	    m_wndToolBar.ShowWindow(SW_HIDE);
+		
+		// Calculate new frame position
+		GetWindowRect(&m_origRect);
+		::GetWindowRect(::GetDesktopWindow(), &wp.rcNormalPosition);
+		::AdjustWindowRectEx(&wp.rcNormalPosition, GetStyle(), TRUE, GetExStyle());
+
+	} else {
+		// Leaving fullscreen mode
+        m_wndStatusBar.ShowWindow(SW_SHOW);
+	    m_wndToolBar.ShowWindow(SW_SHOW);
+		wp.rcNormalPosition = m_origRect;
+	}
+	SetWindowPlacement(&wp);
+#if 0
+	// Center the child document
+	if (child) {
+		int dx = (wp.rcNormalPosition.right - wp.rcNormalPosition.left) / 2 -
+			(childPos.right - childPos.left) / 2;
+		int dy = (wp.rcNormalPosition.bottom - wp.rcNormalPosition.top) / 2 -
+			(childPos.bottom - childPos.top) / 2;
+		child->SetWindowPos(NULL, dx, dy, 0, 0, SWP_NOZORDER);
+	}
+#endif
 }
 
 void

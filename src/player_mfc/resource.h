@@ -41,13 +41,14 @@
 #define ID_FILE_OPENURL                 32785
 #define ID_FILE_PREFERENCES             32786
 #define ID_HELP_HELP                    32788
+#define ID_VIEW_FULLSCREEN              32790
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        138
-#define _APS_NEXT_COMMAND_VALUE         32789
+#define _APS_NEXT_COMMAND_VALUE         32793
 #define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
