@@ -175,6 +175,8 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_WM_CREATE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_CHAR()
+	ON_COMMAND(ID_PLAY_ADVANCEFOCUS, OnFocusAdvance)
+	ON_COMMAND(ID_PLAY_ACTIVATEFOCUS, OnFocusActivate)
 	ON_COMMAND(ID_VIEW_SOURCE, OnViewSource)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_SOURCE, OnUpdateViewSource)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_LOG, OnUpdateViewLog)
@@ -459,6 +461,16 @@ void MmView::OnMouseMove(UINT nFlags, CPoint point)
 void MmView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if(player) player->on_char(nChar);
 	CView::OnChar(nChar, nRepCnt, nFlags);
+}
+
+void MmView::OnFocusAdvance()
+{
+	if (player) player->on_focus_advance();
+}
+
+void MmView::OnFocusActivate()
+{
+	if (player) player->on_focus_activate();
 }
 
 void MmView::OnViewSource() {

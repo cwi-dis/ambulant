@@ -86,4 +86,12 @@ void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 
 void gui::dx::dx_bgrenderer::highlight(common::gui_window *window)
 {
+	// Find rectangle to highlight
+	rect r = m_dst->get_rect();
+	lib::point pt = m_dst->get_global_topleft();
+	r.translate(pt);
+
+	dx_window *dxwindow = static_cast<dx_window *>(window);
+	viewport *v = dxwindow->get_viewport();
+	v->frame_rect(r);
 }

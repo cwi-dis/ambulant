@@ -105,16 +105,21 @@ BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "Open URL...\tCtrl+L",         ID_FILE_OPENURL
         MENUITEM SEPARATOR
-        MENUITEM "&Play",                       ID_FILE_PLAY
-        MENUITEM "Pa&use",                      ID_FILE_PAUSE
-        MENUITEM "&Stop",                       ID_FILE_STOP
-        MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
         , CHECKED, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Preferences...",              ID_FILE_PREFERENCES
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "Play"
+    BEGIN
+        MENUITEM "&Play",                       ID_FILE_PLAY
+        MENUITEM "Pa&use",                      ID_FILE_PAUSE
+        MENUITEM "&Stop",                       ID_FILE_STOP
+        MENUITEM SEPARATOR
+        MENUITEM "Advance Focus\tTAB",          ID_PLAY_ADVANCEFOCUS
+        MENUITEM "Activate Focus\tRET",         ID_PLAY_ACTIVATEFOCUS
     END
     POPUP "&View"
     BEGIN
@@ -147,20 +152,22 @@ END
 IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_FILE_OPENURL,        VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_FILE_OPENURL,        VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
     "F",            ID_VIEW_FULLSCREEN,     VIRTKEY, CONTROL, NOINVERT
+    VK_TAB,         ID_PLAY_ADVANCEFOCUS,   VIRTKEY, NOINVERT
+    VK_RETURN,      ID_PLAY_ACTIVATEFOCUS,  VIRTKEY, NOINVERT
 END
 
 

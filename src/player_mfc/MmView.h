@@ -84,6 +84,8 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnFocusAdvance();
+	afx_msg void OnFocusActivate();
 	afx_msg void OnViewSource();
 	afx_msg void OnUpdateViewSource(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateViewLog(CCmdUI *pCmdUI);
