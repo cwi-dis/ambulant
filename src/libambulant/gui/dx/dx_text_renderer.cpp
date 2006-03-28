@@ -34,8 +34,8 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
 
-#ifdef _UNICODE
 #include "ambulant/lib/textptr.h"
+#ifdef _UNICODE
 #define STR_TO_TSTR(s) ambulant::lib::textptr(s).c_wstr()
 #else
 #define STR_TO_TSTR(s) (s)
@@ -86,22 +86,6 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 		data = NULL;
 		datalen = 0;
 	}
-#if 0
-	std::basic_string<text_char> text;
-	std::string ustr = ::repr(m_url);
-	if(!lib::starts_with(ustr, "data:")) {
-		lib::memfile mf(m_url);
-		if(!mf.read()) {
-			lib::logger::get_logger()->show("Failed to read data from %s", 
-				m_url.get_url().c_str());
-			return;
-		}
-		lib::databuffer& db = mf.get_databuffer();
-		text.assign(db.begin(), db.end());
-	} else {
-		text.assign(ustr.begin()+6, ustr.end());
-	}
-#endif
 	m_ddsurf = m_viewport->create_surface(m_size);
 	if(!m_ddsurf) {
 		if (data) free(data);
@@ -165,7 +149,8 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 	RECT dstRC = {0, 0, m_size.w, m_size.h};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;
 	if (data) {
-		int res = ::DrawText(hdc, data, (int)datalen, &dstRC, uFormat); 
+		lib::textptr tp(data, datalen);
+		int res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat); 
 		if(res == 0)
 			win_report_last_error("DrawText()");
 		free(data);

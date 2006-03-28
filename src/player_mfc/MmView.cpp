@@ -350,10 +350,10 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	if (is_local_filename) {
 		TCHAR *pFilePart = 0;	
 		GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
-		u = net::url::from_filename(path);
+		u = net::url::from_filename(T2CA(path));
 	} else {
 		_tcscpy(path, lpszPathName);
-		u = net::url::from_url(path);
+		u = net::url::from_url(T2CA(path));
 	}
 	
 	if (!u.is_absolute()) {

@@ -135,7 +135,7 @@ video_renderer::start (double where)
 	// at which we would have played the frame with timestamp 0.
 	assert(m_clip_begin >= 0);
 	assert(where >= 0);
-	m_epoch = m_timer->elapsed() - m_clip_begin/1000 - (int)(where*1000);
+	m_epoch = m_timer->elapsed() - (long)(m_clip_begin/1000) - (int)(where*1000);
 
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, dest=0x%x", where, (void *) this, (void*)m_dest);

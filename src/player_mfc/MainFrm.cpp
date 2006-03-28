@@ -134,8 +134,9 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void
 CMainFrame::SetStatusLine(char *message)
 {
+	USES_CONVERSION;
 	m_statusline = message;
-	CFrameWnd::OnSetMessageString(0, (LPARAM)m_statusline.c_str());
+	CFrameWnd::OnSetMessageString(0, (LPARAM)A2CT(m_statusline.c_str()));
 }
 
 LRESULT
@@ -148,8 +149,9 @@ CMainFrame::OnSetStatusLine(WPARAM wParam, LPARAM lParam)
 LRESULT
 CMainFrame::OnSetMessageString(WPARAM wParam, LPARAM lParam)
 {
+	USES_CONVERSION;
 	if (wParam == AFX_IDS_IDLEMESSAGE)
-		return CFrameWnd::OnSetMessageString(0, (LPARAM)m_statusline.c_str());
+		return CFrameWnd::OnSetMessageString(0, (LPARAM)A2CT(m_statusline.c_str()));
 	return CFrameWnd::OnSetMessageString(wParam, lParam);
 }
 

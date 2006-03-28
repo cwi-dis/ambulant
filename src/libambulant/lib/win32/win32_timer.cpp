@@ -62,7 +62,8 @@ lib::win32::win32_timer::win32_timer()
 // Takes into account speed with a 1% precision.
 lib::win32::win32_timer::time_type
 lib::win32::win32_timer::elapsed() const {
-	DWORD dt = os_time() - m_epoch;
+	assert((DWORD)m_epoch == m_epoch);
+	DWORD dt = os_time() - (DWORD)m_epoch;
 	return time_type(dt);
 }
 

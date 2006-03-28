@@ -63,8 +63,14 @@ class textptr {
 	textptr(const char *pb) 
 	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(-1) {}
 
+	textptr(const char *pb, size_t length) 
+	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(length) {}
+
 	textptr(const wchar_t *pw) 
 	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(-1) {}
+
+	textptr(const wchar_t *pw, size_t length) 
+	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(length) {}
 
 	~textptr() {
 		if(m_pw != NULL) delete[] m_pw;
@@ -75,7 +81,7 @@ class textptr {
 		if(m_pcw != NULL) return const_cast<wchar_ptr>(m_pcw);
 		if(m_pw != NULL) return m_pw;
 		if(m_pcb == NULL) return NULL;
-		m_length = strlen(m_pcb);
+		if (m_length < 0) m_length = strlen(m_pcb);
 		int n = (int)m_length + 1;
 		m_pw = new wchar_t[n];
 #ifdef AMBULANT_PLATFORM_WIN32
@@ -91,7 +97,7 @@ class textptr {
 		if(m_pcb != NULL) return const_cast<char_ptr>(m_pcb);
 		if(m_pb != NULL) return m_pb;
 		if(m_pcw == NULL) return NULL;
-		m_length = wcslen(m_pcw);
+		if (m_length < 0) m_length = wcslen(m_pcw);
 		int n = (int)m_length + 1;
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32

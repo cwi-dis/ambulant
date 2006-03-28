@@ -58,7 +58,7 @@ static std::string
 filepath2urlpath(const std::string& filepath)
 {
 	size_t urlbufsize = filepath.size()*3+7; // Worst case: all characters escaped
-	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize);
+	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize*sizeof(TCHAR));
 	DWORD urlbufsizearg = (DWORD)urlbufsize;
 	assert(urlbuf);
 	urlbuf[0] = 0;
@@ -78,6 +78,7 @@ filepath2urlpath(const std::string& filepath)
 		if (c == '\\') 
 			*i = '/';
 	}
+	free(urlbuf);
 	return rv;
 }
 
@@ -85,11 +86,12 @@ static std::string
 urlpath2filepath(const std::string& urlpath)
 {
 	size_t filebufsize = urlpath.size()+1;
-	LPTSTR filebuf = (LPTSTR)malloc(filebufsize);
+	LPTSTR filebuf = (LPTSTR)malloc(filebufsize*sizeof(TCHAR));
 	DWORD filebufsizearg = (DWORD)filebufsize;
 	assert(filebuf);
 	filebuf[0] = 0;
-	if (!InternetCanonicalizeUrl(lib::textptr(urlpath.c_str()), filebuf, 
+	lib::textptr tp(urlpath.c_str());
+	if (!InternetCanonicalizeUrl(tp, filebuf, 
 			&filebufsizearg, ICU_DECODE | ICU_NO_ENCODE)) {
 		DWORD dw = GetLastError();
 		lib::win32::win_report_error(urlpath.c_str(), dw);
@@ -108,6 +110,7 @@ urlpath2filepath(const std::string& urlpath)
 		if (c == '/') 
 			*i = '\\';
 	}
+	free(filebuf);
 	return rv;
 }
 #else
