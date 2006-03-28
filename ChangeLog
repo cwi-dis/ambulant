@@ -1,3 +1,18 @@
+2006-03-27 14:05  jackjansen
+
+	* Implemented navigation with TAB and RETURN.
+
+2006-03-27 13:11  jackjansen
+
+	* Implemented something resembling fullscreen mode. Still has some
+	  problems, though: - The taskbar doesn't disappear - The content
+	  is topleft, and I can't seem to center it.
+
+2006-03-27 10:18  jackjansen
+
+	* Machine-independent impleentation of memfile using datasources,
+	  replacing win32-specific one.
+
 2006-03-24 16:41  jackjansen
 
 	* Minor fix to make things compile for WinCE.
