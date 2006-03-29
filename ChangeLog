@@ -1,3 +1,10 @@
+2006-03-28 14:13  jackjansen
+
+	* The unicode-based release build had gotten rather broken after a
+	  long time of using only the mbcs-based debug build. Fixed it, and
+	  also set the debug build to use unicode so this shouldn't happen
+	  again in future.
+
 2006-03-27 14:05  jackjansen
 
 	* Implemented navigation with TAB and RETURN.
