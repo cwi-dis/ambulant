@@ -508,7 +508,17 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	// This is not right!!!
 	ambulant::lib::point ap = ambulant::lib::point(e->x,
 						       e->y-25);
+#if 0
+    // XXX This code temporarily disabled, because with the current
+    // structure there is no easy way to get at the gui_player, which
+    // is needed to tell the scheduler we're about to start telling it
+    // about pointed() nodes.
+    xxx_gui_player->before_mousemove(0);
 	m_gtk_window->user_event(ap, 1);
+	int cursid = xxx_gui_player->after_mousemove();
+    // XXX Now set hand cursor of cursid==1, arrow if cursid==0.
+#endif
+
 }
 
 void 

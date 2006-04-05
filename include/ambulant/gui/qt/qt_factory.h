@@ -194,8 +194,7 @@ class qt_ambulant_widget : public QWidget {
 	/// Helper: get our counterpart gui_window.
 	ambulant_qt_window* qt_window();
 	
-	/// QWidget API:
-	
+	// QWidget API:
 	void paintEvent(QPaintEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 #ifndef QT_NO_FILEDIALOG
