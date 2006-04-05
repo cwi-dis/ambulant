@@ -414,8 +414,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		return;
 	}
     // Get the screen information.
-    NSScreen* mainScreen = [NSScreen mainScreen]; 
-    NSDictionary* screenInfo = [mainScreen deviceDescription]; 
+    NSScreen* screen = [[view window] screen];
+	if (screen == NULL) screen = [NSScreen mainScreen]; 
+    NSDictionary* screenInfo = [screen deviceDescription]; 
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 
     // Release the screen.
@@ -456,9 +457,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		return;
 	}
     // Get the screen information.
-    NSScreen* mainScreen = [NSScreen mainScreen]; 
-    NSDictionary* screenInfo = [mainScreen deviceDescription]; 
+    NSScreen* screen = [[view window] screen];
+	if (screen == NULL) screen = [NSScreen mainScreen]; 
+    NSDictionary* screenInfo = [screen deviceDescription]; 
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+	NSLog(@"goFullScreen: screenID = %@", screenID);
  
     // Capture the screen.
     CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
@@ -469,13 +472,20 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
 
 	// Create the full-screen window.
-	NSRect winRect = [mainScreen frame];
+	NSRect winRect = [screen frame];
+#if 1
+	// The (x, y) coordinates are nonzero for a non-primary screen, it appears that
+	// the rect is for the virtual combination of all screens, with (0, 0) rooted
+	// at the origin of the main screen.
+	winRect.origin.x = 0;
+	winRect.origin.y = 0;
+#endif
 	NSWindow *mScreenWindow;
 	mScreenWindow = [[FullScreenWindow alloc] initWithContentRect:winRect
 			styleMask:NSBorderlessWindowMask 
 			backing:NSBackingStoreBuffered 
 			defer:NO 
-			screen:[NSScreen mainScreen]];
+			screen:screen];
 
 	// Establish the window attributes.
 	[mScreenWindow setDelegate:self];
