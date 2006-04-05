@@ -726,11 +726,11 @@ void time_node::seek_playable(time_type offset) {
 	m_context->seek_playable(m_node, time_type_to_secs(offset()));
 }
 
-void time_node::pause_playable() {
+void time_node::pause_playable(common::pause_display d) {
 	if(!is_playable() || m_ffwd_mode) return;
 	AM_DBG m_logger->debug("%s[%s].pause()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
-	m_context->pause_playable(m_node);
+	m_context->pause_playable(m_node, d);
 }
 
 void time_node::resume_playable() {
@@ -1077,7 +1077,7 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
 	
-	if(is_playable()) pause_playable();
+	if(is_playable()) pause_playable(d);
 	if(m_timer) m_timer->pause();
 	
 	m_paused_sync_time = timestamp.as_time_down_to(sync_node());
@@ -1105,7 +1105,7 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	time_node::iterator end_nit = end();
 	for(nit=begin(); nit != end_nit; nit++) {
 		if(!(*nit).first && (*nit).second->is_playable() && (*nit).second->is_active()) 
-			(*nit).second->pause_playable();
+			(*nit).second->pause_playable(d);
 	}
 }
 
@@ -2137,12 +2137,18 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	}
 	
 	// Retrieve priority attrs of active and interrupting nodes
+	assert(interrupting_node->priority() < m_num_classes);
 	priority_attrs *pai = m_priority_attrs[interrupting_node->priority()];
+	assert(pai);
+	assert(active_node->priority() < m_num_classes);
 	priority_attrs *pa = m_priority_attrs[active_node->priority()];
+	assert(pa);
 	
 	// get time attrs for debug printout
 	const time_attrs* ta = active_node->get_time_attrs();
+	assert(ta);
 	const time_attrs* tai = interrupting_node->get_time_attrs();
+	assert(tai);
 	
 	// Set interrupt attrs based on whether the interrupting node is peer, higher or lower
 	interrupt_type what;
@@ -2180,7 +2186,7 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// a node may end while paused
 		// accepts sync_update
 		
-		active_node->pause(timestamp, pai->display);
+		active_node->pause(timestamp, pa->display);
 		m_queue->push_pause(active_node);
 		
 		AM_DBG m_logger->debug("%s[%s] int_pause by %s[%s]", ta->get_tag().c_str(), 

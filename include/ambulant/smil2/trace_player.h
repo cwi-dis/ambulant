@@ -108,7 +108,7 @@ class trace_player : public time_node_context,
 	// Playable commands
 	virtual void start_playable(const lib::node *n, double t);
 	virtual void stop_playable(const lib::node *n);
-	virtual void pause_playable(const lib::node *n);
+	virtual void pause_playable(const lib::node *n, common::pause_display d = common::display_show);
 	virtual void resume_playable(const lib::node *n);
 	
 	// Playable queries

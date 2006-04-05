@@ -117,7 +117,7 @@ class playable : public lib::ref_counted_obj {
 	/// as if pause and then seek to end has been called.
 	/// While paused a start(t) may be called.
 	/// Pause is equivalent to freeze.
-	virtual void pause() = 0;
+	virtual void pause(pause_display d=display_show) = 0;
 	
 	/// Resume playing from the paused state. 
 	virtual void resume() = 0;

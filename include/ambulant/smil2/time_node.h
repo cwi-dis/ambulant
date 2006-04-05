@@ -176,7 +176,7 @@ class time_node : public schedulable {
 	common::playable *create_playable();
 	void start_playable(time_type offset = 0);
 	void seek_playable(time_type offset);
-	void pause_playable();
+	void pause_playable(common::pause_display d = common::display_show);
 	void resume_playable();
 	void repeat_playable();
 	void stop_playable();

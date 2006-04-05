@@ -114,9 +114,9 @@ void trace_player::stop_playable(const node *n) {
 	}
 }
 
-void trace_player::pause_playable(const node *n) {
+void trace_player::pause_playable(const node *n, common::pause_display d) {
 	playable *p = get_playable(n);
-	if(p) p->pause();
+	if(p) p->pause(d);
 }
 
 void trace_player::resume_playable(const node *n) {

@@ -523,7 +523,7 @@ gui::sdl::sdl_audio_renderer::stop()
 }
 
 void
-gui::sdl::sdl_audio_renderer::pause()
+gui::sdl::sdl_audio_renderer::pause(common::pause_display d)
 {
 	m_lock.enter();
 	m_is_paused = true;

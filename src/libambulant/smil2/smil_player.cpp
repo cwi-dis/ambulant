@@ -307,7 +307,7 @@ void smil_player::stop_playable(const lib::node *n) {
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(0x%x)", (void*)n);
 	common::playable *np = get_playable(n);
-	if(np) np->pause();
+	if(np) np->pause(d);
 }
 
 // Request to resume the playable of the node.

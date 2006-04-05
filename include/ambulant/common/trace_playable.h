@@ -61,7 +61,7 @@ class trace_playable : virtual public playable {
 	
 	void stop()  { trace_call("stop");}
 	
-	void pause(){ trace_call("pause");}
+	void pause(pause_display d=display_show){ trace_call("pause");}
 	
 	void resume() { trace_call("resume");}
 	

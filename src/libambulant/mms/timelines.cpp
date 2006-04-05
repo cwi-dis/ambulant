@@ -37,7 +37,7 @@ class dead_playable_class : public common::playable {
   	
 	void stop() {}
 	void start(double t) {};
-	void pause() {};
+	void pause(common::pause_display d=common::display_show) {};
 	void resume() {};
 	void seek(double t) {};
 	void wantclicks(bool want) {};

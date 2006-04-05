@@ -77,7 +77,7 @@ class video_renderer : public common::renderer_playable {
 	void start(double where);
     void stop();
 	void seek(double where);
-    void pause();
+    void pause(pause_display d=display_show);
     void resume();
     void data_avail();
 	duration get_dur();

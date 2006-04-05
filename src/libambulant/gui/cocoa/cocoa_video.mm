@@ -157,12 +157,14 @@ cocoa_video_renderer::stop()
 }
 
 void
-cocoa_video_renderer::pause()
+cocoa_video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
 	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::pause()");
 	if (m_movie && m_movie_view) {
 		[m_movie_view stop: NULL];
+		if (d == display_hide)
+			[m_movie_view setHidden: YES];
 	}
 	m_lock.leave();
 }
@@ -173,6 +175,7 @@ cocoa_video_renderer::resume()
 	m_lock.enter();
 	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::resume()");
 	if (m_movie && m_movie_view) {
+		if ([m_movie_view isHidden]) [m_movie_view setHidden: NO];
 		[m_movie_view start: NULL];
 	}
 	m_lock.leave();

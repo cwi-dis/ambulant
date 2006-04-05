@@ -64,7 +64,7 @@ class playable_imp : public playable {
 	}
 
 	// common::playable methods
-	void pause() {}
+	void pause(pause_display d=display_show) {}
 	void resume() {}
 //	void seek(double where) {}
 	void wantclicks(bool want) { m_wantclicks = want;}

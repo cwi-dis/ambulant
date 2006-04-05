@@ -79,7 +79,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	void start(double where);
 	void stop();
 	void seek(double t);
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 //	void freeze() {};
 //	void speed_changed() {};

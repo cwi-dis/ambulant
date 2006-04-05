@@ -214,12 +214,13 @@ video_renderer::now()
 }
 
 void
-video_renderer::pause()
+video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
+	// XXX if d==display_hide we should hide the content
 	if (m_activated && !m_is_paused) {
 		if (m_audio_renderer) 
-			m_audio_renderer->pause();
+			m_audio_renderer->pause(d);
 		m_is_paused = true;
 		m_paused_epoch = m_timer->elapsed();
 	}

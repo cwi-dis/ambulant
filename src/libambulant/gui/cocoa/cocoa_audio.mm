@@ -139,7 +139,7 @@ cocoa_audio_playable::stop()
 }
 
 void
-cocoa_audio_playable::pause()
+cocoa_audio_playable::pause(pause_display d)
 {
 //    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();

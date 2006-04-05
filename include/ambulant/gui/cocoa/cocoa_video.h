@@ -52,7 +52,7 @@ class cocoa_video_renderer :
 	void start(double where);
 //	void freeze() {}
 	void stop();
-	void pause();
+	void pause(pause_display d=display_show);
 	void resume();
 	void seek(double t);
 
