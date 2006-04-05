@@ -625,12 +625,18 @@ demux_video_datasource::get_audio_datasource()
 	m_lock.enter();
 	if (m_audio_src) {
 		//XXX a factory should take care of getting a decoder ds.
-		audio_datasource *dds = new ffmpeg_decoder_datasource(m_audio_src);
+		audio_format fmt = m_audio_src->get_audio_format();
+		audio_datasource *dds = NULL;
+		if (ffmpeg_decoder_datasource::supported(fmt))
+			dds = new ffmpeg_decoder_datasource(m_audio_src);
 		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_audio_datasource: decoder ds = 0x%x", (void*)dds);
 		if (dds == NULL) {
-			int rem = m_audio_src->release();
-			assert(rem == 0);
+			lib::logger::get_logger()->warn(gettext("%s: Ignoring audio, unsupported encoding"), m_url.get_url().c_str());
+			dds = m_audio_src;
+			m_audio_src = NULL;
 			m_lock.leave();
+			int rem = dds->release();
+			assert(rem == 0);
 			return NULL;
 		}
 		m_lock.leave();
