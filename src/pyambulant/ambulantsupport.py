@@ -445,6 +445,10 @@ includestuff = """
 """
 finalstuff = ""
 execfile("ambulantincludegen.py")
+includestuff += """
+#include "ambulant/lib/node_navigator.h"
+"""
+
 
 class MyGlobalObjectDefinition(BackObjectDefinition):
     pass
@@ -521,7 +525,7 @@ node_context_object.othermethods = [
     "const custom_test_map* get_custom_tests() const { return NULL; }",
 ]
 node_object.othermethods = [
-    "void get_children(const_node_list& l) const {}", # XXX for now
+    "void get_children(const_node_list& l) const {ambulant::lib::node_navigator<const ambulant::lib::node>::get_children(this, l);}", # XXX for now
     "void set_attributes(const char **attrs) { abort(); }", # XXX for now
 ]
 node_factory_object.othermethods = [

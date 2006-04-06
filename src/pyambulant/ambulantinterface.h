@@ -27,6 +27,8 @@
 #include "ambulant/net/stdio_datasource.h"
 #include "ambulant/net/posix_datasource.h"
 
+#include "ambulant/lib/node_navigator.h"
+
 
 /* ============ Glue classes to maintain object identity ============ */
 
@@ -125,7 +127,7 @@ public:
 	ambulant::lib::xml_string xmlrepr() const;
 	const ambulant::lib::node_context* get_context() const;
 	void set_context(ambulant::lib::node_context* c);
-	void get_children(const_node_list& l) const {}
+	void get_children(const_node_list& l) const {ambulant::lib::node_navigator<const ambulant::lib::node>::get_children(this, l);}
 	void set_attributes(const char **attrs) { abort(); }
   private:
 	PyObject *py_node;
