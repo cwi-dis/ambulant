@@ -64,7 +64,7 @@ class audio_player : public common::playable {
 		
 	void start(double t);
 	void stop();
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 	void seek(double t);
 	void endseek(double t);

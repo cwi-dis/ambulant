@@ -66,7 +66,7 @@ class arts_active_audio_renderer : public common::playable_imp {
     int init();
     void start(double where);
     void stop();
-    void pause() ;
+    void pause(common::pause_display d=common::display_show) ;
     void resume() ;
 	void seek(double t) {};
     void speed_changed() {};

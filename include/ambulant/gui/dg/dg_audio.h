@@ -51,7 +51,7 @@ class dg_audio_renderer : public common::renderer_playable {
 	~dg_audio_renderer();
 	void start(double t);
 	void stop();
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 	void seek(double t);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
