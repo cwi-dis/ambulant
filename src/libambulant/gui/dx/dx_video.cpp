@@ -154,7 +154,7 @@ void gui::dx::dx_video_renderer::stop() {
 	m_dxplayer->stopped(this);
 }
 
-void gui::dx::dx_video_renderer::pause() {
+void gui::dx::dx_video_renderer::pause(common::pause_display d) {
 	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer.pause(0x%x)", this);
 	m_update_event = 0;
 	if(m_player) m_player->pause();

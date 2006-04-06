@@ -75,7 +75,7 @@ void gui::dx::video_player::stop() {
 	release_player();
 }
 
-void gui::dx::video_player::pause() {
+void gui::dx::video_player::pause(common::pause_display d) {
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {

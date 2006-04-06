@@ -134,7 +134,7 @@ void gui::dg::dg_audio_renderer::stop() {
 	
 }
 
-void gui::dg::dg_audio_renderer::pause() {
+void gui::dg::dg_audio_renderer::pause(common::pause_display d) {
 	AM_DBG lib::logger::get_logger()->debug("dg_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
 }

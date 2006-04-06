@@ -49,7 +49,7 @@ class audio_player {
 	
 	bool can_play() const;
 	void start(double t);
-	void pause(common::pause_display d=common::display_show);
+	void pause();
 	void resume();
 	void stop();	
 	std::pair<bool, double> get_dur();

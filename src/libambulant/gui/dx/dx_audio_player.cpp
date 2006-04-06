@@ -64,7 +64,7 @@ void gui::dx::audio_player::stop() {
 	release_player();
 }
 
-void gui::dx::audio_player::pause() {
+void gui::dx::audio_player::pause(common::pause_display d) {
 	if(m_media_control == 0) return;
 	HRESULT hr = m_media_control->Pause();
 	if(FAILED(hr)) {
