@@ -1,3 +1,27 @@
+2006-04-05 23:53  jackjansen
+
+	* Mass checkin: enable pause show/hide semantics by adding an
+	  optional parameter to playable::pause(). Currently implemented
+	  only for the Quicktime video renderer, but most other renderers
+	  already accidentally have the right behaviour for 90% of the
+	  documents.
+
+	  Needs work on Linux and Windows.
+
+2006-04-05 23:51  jackjansen
+
+	* Better handling of video files that have an audio stream that is
+	  recognized but for which no codec is available.
+
+2006-04-05 23:50  jackjansen
+
+	* Enable fullscreen mode on secondary screen(s) too. Fixes
+	  #1459157.
+
+2006-04-05 15:06  jackjansen
+
+	* Temporarily disable hand cursor.
+
 2006-03-28 14:13  jackjansen
 
 	* The unicode-based release build had gotten rather broken after a
