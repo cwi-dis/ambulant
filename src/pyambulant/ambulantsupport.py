@@ -121,6 +121,7 @@ time_type = Type("ambulant::lib::timer::time_type", "l")
 tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")
+pause_display = Type("ambulant::common::pause_display", "l")
 
 # This is a bit of a hack. These types are opaque, really.
 renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")

@@ -4346,10 +4346,12 @@ void playable::stop()
 	PyGILState_Release(_GILState);
 }
 
-void playable::pause()
+void playable::pause(ambulant::common::pause_display d)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_playable, "pause", "()");
+	PyObject *py_d = Py_BuildValue("l", d);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "pause", "(O)", py_d);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during playable::pause() callback:\n");
@@ -4357,6 +4359,7 @@ void playable::pause()
 	}
 
 	Py_XDECREF(py_rv);
+	Py_XDECREF(py_d);
 
 	PyGILState_Release(_GILState);
 }

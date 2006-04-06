@@ -8478,10 +8478,12 @@ static PyObject *playableObj_stop(playableObject *_self, PyObject *_args)
 static PyObject *playableObj_pause(playableObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
+	ambulant::common::pause_display d;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &d))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->pause();
+	_self->ob_itself->pause(d);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
@@ -8597,7 +8599,7 @@ static PyMethodDef playableObj_methods[] = {
 	{"stop", (PyCFunction)playableObj_stop, 1,
 	 PyDoc_STR("() -> None")},
 	{"pause", (PyCFunction)playableObj_pause, 1,
-	 PyDoc_STR("() -> None")},
+	 PyDoc_STR("(ambulant::common::pause_display d) -> None")},
 	{"resume", (PyCFunction)playableObj_resume, 1,
 	 PyDoc_STR("() -> None")},
 	{"seek", (PyCFunction)playableObj_seek, 1,

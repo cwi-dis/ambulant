@@ -767,7 +767,7 @@ public:
 
 	void start(double t);
 	void stop();
-	void pause();
+	void pause(ambulant::common::pause_display d);
 	void resume();
 	void seek(double t);
 	void wantclicks(bool want);
