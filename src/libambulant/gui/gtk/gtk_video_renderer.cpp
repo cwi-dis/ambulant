@@ -76,7 +76,6 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 	m_lock.enter();
 	
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
- 
 	if (m_data)
 		free(m_data);	
 	
