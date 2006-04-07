@@ -1,3 +1,20 @@
+2006-04-06 16:44  jackjansen
+
+	* Enabled node::get_children() for Python nodes with a trick: use
+	  the C++ node_navigator. A bit of a hack, but it works.
+
+2006-04-06 15:02  jackjansen
+
+	* More fixes for pause_display
+
+2006-04-06 11:44  jackjansen
+
+	* Added support for pause_display.
+
+2006-04-06 11:39  jackjansen
+
+	* More changes because of implementation of pause_display.
+
 2006-04-05 23:53  jackjansen
 
 	* Mass checkin: enable pause show/hide semantics by adding an
