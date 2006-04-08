@@ -773,6 +773,12 @@ time_node::time_type time_node::get_playable_dur() {
 
 // Prepare children playables without recursion
 void time_node::prepare_playables() {
+#ifdef WITH_AGGRESSIVE_PRELOADING
+	// Note by Jack: this code is temporarily disabled. It has some serious
+	// drawbacks, such as starting all playables for children of a <seq>, which
+	// could (in some documents) cause an incredible number of playables to
+	// be created long before they're actually needed. We need to come up
+	// with a better preloading scheme at some point.
 	if(m_ffwd_mode) return;
 	std::list<time_node*> children;
 	get_children(children);
@@ -780,6 +786,7 @@ void time_node::prepare_playables() {
 	for(it = children.begin(); it != children.end(); it++) {
 		if((*it)->is_playable()) (*it)->create_playable();
 	}
+#endif
 }
 
 //////////////////////////
