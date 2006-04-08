@@ -1,3 +1,14 @@
+2006-04-07 16:03  p_cesar
+
+	* no more debug
+
+2006-04-07 15:47  p_cesar
+
+	* gtk_factory is clean up.
+
+	  Still:  - Overlay images are not supported  - Full screen mode is
+	  not working  - icons (stop/play) are not implemented
+
 2006-04-06 16:44  jackjansen
 
 	* Enabled node::get_children() for Python nodes with a trick: use
