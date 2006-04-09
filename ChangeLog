@@ -1,3 +1,11 @@
+2006-04-09 01:12  jackjansen
+
+	* prepare_playables() did some pretty aggressive preloading of
+	  playables. This creates problems with long sequences. Disabled
+	  the code for the time being.
+
+	  Fixes #1079413.
+
 2006-04-07 16:03  p_cesar
 
 	* no more debug
