@@ -810,6 +810,10 @@
 		043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA590097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA591097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		0440807709E9B8FE00527A4F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807509E9B8FE00527A4F /* libvorbis.a */; };
+		0440807809E9B8FE00527A4F /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807609E9B8FE00527A4F /* libogg.a */; };
+		0440807D09E9B93600527A4F /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807B09E9B93600527A4F /* libvorbisfile.a */; };
+		0440807E09E9B93600527A4F /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807C09E9B93600527A4F /* libvorbisenc.a */; };
 		0442DEB708965537008D10AE /* libdirac_decoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493212708951DF900F38A0A /* libdirac_decoder.a */; };
 		0442DEB80896553B008D10AE /* libdirac_encoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493213C089520B500F38A0A /* libdirac_encoder.a */; };
 		0444D3AC051F2EF00010C447 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0444D320051F2EEF0010C447 /* get_version.cpp */; };
@@ -1943,6 +1947,10 @@
 		04383C7706F4600F006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		04383CCD06F4639B006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		043FA58B097275AB007EA0C2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		0440807509E9B8FE00527A4F /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = /usr/local/lib/libvorbis.a; sourceTree = "<absolute>"; };
+		0440807609E9B8FE00527A4F /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /usr/local/lib/libogg.a; sourceTree = "<absolute>"; };
+		0440807B09E9B93600527A4F /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = /usr/local/lib/libvorbisfile.a; sourceTree = "<absolute>"; };
+		0440807C09E9B93600527A4F /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisenc.a; path = /usr/local/lib/libvorbisenc.a; sourceTree = "<absolute>"; };
 		0444D320051F2EEF0010C447 /* get_version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = get_version.cpp; sourceTree = "<group>"; };
 		0444D325051F2EEF0010C447 /* cocoa_gui.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_gui.mm; sourceTree = "<group>"; };
 		0444D327051F2EEF0010C447 /* none_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = none_gui.cpp; sourceTree = "<group>"; };
@@ -2255,6 +2263,10 @@
 				04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */,
 				04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */,
 				04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */,
+				0440807709E9B8FE00527A4F /* libvorbis.a in Frameworks */,
+				0440807809E9B8FE00527A4F /* libogg.a in Frameworks */,
+				0440807D09E9B93600527A4F /* libvorbisfile.a in Frameworks */,
+				0440807E09E9B93600527A4F /* libvorbisenc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2832,6 +2844,10 @@
 				0493211608951AAE00F38A0A /* libavcodec.a */,
 				0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */,
 				0459E80108DACE8100BF6ED5 /* libavutil.a */,
+				0440807509E9B8FE00527A4F /* libvorbis.a */,
+				0440807609E9B8FE00527A4F /* libogg.a */,
+				0440807B09E9B93600527A4F /* libvorbisfile.a */,
+				0440807C09E9B93600527A4F /* libvorbisenc.a */,
 				0493212708951DF900F38A0A /* libdirac_decoder.a */,
 				0493213C089520B500F38A0A /* libdirac_encoder.a */,
 				04B9F6120700518600B78CC4 /* libltdl.a */,
