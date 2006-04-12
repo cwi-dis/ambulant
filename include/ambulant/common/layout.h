@@ -245,7 +245,7 @@ class surface {
 /// window_factory is subclassed by the various GUI implementations.
 /// It should create a GUI window, and set up for that GUI window to forward
 /// its redraw requests to the given region.
-class window_factory {
+class AMBULANTAPI window_factory {
   public:
 	virtual ~window_factory() {}
 	

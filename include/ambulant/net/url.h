@@ -102,10 +102,10 @@ class AMBULANTAPI url {
 	}
 
 	/// Factory function: create URL given a filename string
-	static AMBULANTAPI url from_filename(const std::string& spec);
+	static url from_filename(const std::string& spec);
  
 	/// Factory function: create URL given a filename string
-	static AMBULANTAPI url from_filename(const char *spec);
+	static  url from_filename(const char *spec);
  
 
 	/// Return the protocol of this URL.
@@ -168,6 +168,9 @@ class AMBULANTAPI url {
 	/// Join a relative URL to a base URL.
 	/// An absolute URL is returned as-is.
 	url join_to_base(const url &base) const;
+
+	/// Return a URL pointing to the directory containing this URL
+	url get_base() const;
 	
 	/// Return true if two URLs refer to the same document.
 	/// In other words, if they only differ in fragment.

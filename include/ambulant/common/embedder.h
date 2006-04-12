@@ -38,7 +38,7 @@ class player;
 /// Interface to be provided by application embedding AmbulantPlayer.
 /// This class has methods that AmbulantPlayer will use to make certain effects
 /// in the "real world" happen: opening and closing windows, etc.
-class embedder : public lib::system_embedder {
+class AMBULANTAPI embedder : public lib::system_embedder {
   public:
   
   	/// Close the window corresponding to player p and free that player.

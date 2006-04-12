@@ -28,6 +28,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer_impl.h"
+#include "ambulant/gui/dx/html_bridge.h"
 
 namespace ambulant {
 
@@ -37,7 +38,7 @@ namespace dx {
 
 class dx_transition;
 
-class dx_playables_context {
+class AMBULANTAPI dx_playables_context {
   public:
 	virtual void stopped(common::playable *p) = 0;
 	virtual void paused(common::playable *p) = 0;
@@ -45,6 +46,7 @@ class dx_playables_context {
 	virtual void set_intransition(common::playable *p, const lib::transition_info *info) = 0;
 	virtual void start_outtransition(common::playable *p, const lib::transition_info *info) = 0; 
 	virtual dx_transition *get_transition(common::playable *p) = 0;
+	virtual html_browser_factory *get_html_browser_factory() { return NULL; }
 };
 
 class dx_renderer_playable : public common::renderer_playable {

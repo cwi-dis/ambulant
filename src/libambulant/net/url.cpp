@@ -30,7 +30,7 @@
 #include "ambulant/lib/string_util.h"
 #include "ambulant/lib/filesys.h"
 #include "ambulant/lib/textptr.h"
- 
+
 #include <string>
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
@@ -71,12 +71,14 @@ filepath2urlpath(const std::string& filepath)
 	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
 	if (rv.substr(0, 7) == "file://" && rv[7] != '/')
 		rv = "file:///" + rv.substr(7);
-	// Finally replace backslashes
+	// Finally replace backslashes and turn everything into lower case
 	std::string::iterator i;
 	for(i=rv.begin(); i!=rv.end(); i++) {
 		char c = *i;
 		if (c == '\\') 
 			*i = '/';
+		else
+			*i = tolower(c);
 	}
 	free(urlbuf);
 	return rv;
@@ -101,7 +103,7 @@ urlpath2filepath(const std::string& urlpath)
 	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
 	if (rv.substr(0, 8) == "file:///")
 		rv = rv.substr(8);
-	else if (rv[0] == '/')
+	else if (rv[0] == '/' && rv[2] == ':')
 		rv = rv.substr(1);
 	// Finally replace slashes by backslashes
 	std::string::iterator i;
@@ -447,6 +449,19 @@ std::string net::url::get_url() const
 	return rv;
 }
 
+net::url net::url::get_base() const
+{
+	std::string path = get_path();
+	std::string basepath = lib::filesys::get_base(path);
+	net::url rv = net::url(
+		get_protocol(),
+		get_host(),
+		get_port(),
+		basepath);
+	if (m_absolute) rv.m_absolute = true;
+	return rv;
+}
+
 net::url net::url::join_to_base(const net::url &base) const
 {
 	// Note: this hasn't been checked against RFCxxxx. We pick up protocol, host, port
@@ -506,6 +521,8 @@ net::url::guesstype() const
 	
 	if (ext == ".htm" || ext == ".HTM" || ext == ".html" || ext == ".HTML")
 		return "text/html";
+	if (ext == ".smi" || ext == ".SMI" || ext == ".smil" || ext == ".SMIL")
+		return "application/smil";
 	return "";
 }
 

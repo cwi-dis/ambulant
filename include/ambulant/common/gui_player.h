@@ -42,7 +42,7 @@ class gui_screen {
 	virtual bool clear_overlay() = 0;
 };
 
-class gui_player : public factories {
+class AMBULANTAPI gui_player : public factories {
   public:
 	gui_player()
 	:	factories(),

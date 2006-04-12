@@ -109,7 +109,8 @@ gui::dx::dx_html_renderer::start(double t) {
 		lib::rect rc = m_dest->get_rect();
 		const lib::point p = m_dest->get_global_topleft();
 		rc.translate(p);
-		html_browser *br = new html_browser(rc.left(), rc.top(), rc.width(), rc.height());
+		html_browser_factory *brf = m_dxplayer->get_html_browser_factory();
+		html_browser *br = brf->new_html_browser(rc.left(), rc.top(), rc.width(), rc.height());
 		assert(br);
 		m_html_browser = new browser_container(br);
 		m_dest->set_renderer_private_data(my_renderer_id, static_cast<common::renderer_private_data*>(m_html_browser));

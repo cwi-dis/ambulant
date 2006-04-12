@@ -50,7 +50,8 @@
 #include "ambulant/lib/string_util.h"
 #include "ambulant/version.h"
 
-#include ".\mmview.h"
+#include "MmView.h"
+#include "HtmlView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -98,24 +99,35 @@ typedef gui::dx::dx_player_callbacks gui_callbacks;
 // The handle of the single window instance
 static HWND s_hwnd;
 
+class html_browser;
+
 // A class with callbacks, also instantiated once
 class my_player_callbacks : public gui_callbacks {
   public:
 	HWND new_os_window();
 	void destroy_os_window(HWND hwnd);
+	html_browser *new_html_browser(int left, int top, int width, int height);
 };
 
 my_player_callbacks s_player_callbacks;
 
-HWND my_player_callbacks::new_os_window() {
+HWND
+my_player_callbacks::new_os_window() {
 	// Return the handle of the single instance for now
 	// This means paint bits of the new window
 	// to the single instance
 	return s_hwnd;
 }
 
-void my_player_callbacks::destroy_os_window(HWND hwnd) {
+void
+my_player_callbacks::destroy_os_window(HWND hwnd) {
 	// none for now; keep the single instance
+}
+
+html_browser *
+my_player_callbacks::new_html_browser(int left, int top, int width, int height)
+{
+	return ::new_html_browser(left, top, width, height);
 }
 
 class my_player_feedback : public common::player_feedback {

@@ -1,27 +1,39 @@
-//#define	WITH_HTML_WIDGET // Project-><project>Properites->C/C++->Preprocessor->PreprocessorDefinitions
-						// to enable/disable html renderer, for <project>=AmbulantPlayer,libambulant_win32.
-#ifdef	JUNK
-#include <string>
-
-void* create_html_widget(std::string url, int left, int top, int width, int height);
-int delete_html_widget(void* ptr);
-void redraw_html_widget(void* ptr);
-#endif // JUNK
-
-#ifdef	WITH_HTML_WIDGET
+/*
+ * This file is part of Ambulant Player, www.ambulantplayer.org.
+ *
+ * Copyright (C) 2003-2005 Stichting CWI, 
+ * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+ *
+ * Ambulant Player is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * Ambulant Player is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Ambulant Player; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+#ifndef AMBULANT_GUI_DX_HTML_BRIDGE_H
+#define AMBULANT_GUI_DX_HTML_BRIDGE_H
 
 #include <string>
 
 class html_browser {
 public:
-	html_browser(int left, int top, int width, int height);
-	~html_browser();
-	void goto_url(std::string url);
-	void show();
-	void hide();
-	void redraw();
-
-private:
-	void* m_browser;
+	virtual ~html_browser() {};
+	virtual void goto_url(std::string url) = 0;
+	virtual void show() = 0;
+	virtual void hide() = 0;
+	virtual void redraw() = 0;
 };
-#endif // WITH_HTML_WIDGET
+
+class html_browser_factory {
+public:
+	virtual html_browser *new_html_browser(int left, int top, int width, int height) = 0;
+};
+#endif

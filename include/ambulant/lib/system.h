@@ -34,7 +34,7 @@ namespace ambulant {
 
 namespace lib {
 
-class system_embedder {
+class AMBULANTAPI system_embedder {
   public:
 	virtual ~system_embedder() {}
 

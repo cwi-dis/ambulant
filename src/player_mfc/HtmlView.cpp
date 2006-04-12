@@ -107,8 +107,7 @@ void HtmlView::Dump(CDumpContext& dc) const
 extern CWnd*  topView;
 //KB HtmlView* s_browser = NULL;
 CWinThread* s_ambulant_thread = NULL;
-
-html_browser::html_browser(int left, int top, int width, int height)
+html_browser_imp::html_browser_imp(int left, int top, int width, int height)
 : m_browser(NULL) {
 	RECT rect;
 	rect.left = left;
@@ -127,11 +126,11 @@ html_browser::html_browser(int left, int top, int width, int height)
 		m_browser = browser;
 		hide();
 	} 
-	AM_DBG lib::logger::get_logger()->debug("html_browser::html_browser(0x%x): LTWH=(%d,%d,%d,%d) m_browser=0x%x", this, left, top, width, height, m_browser);
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::html_browser_imp(0x%x): LTWH=(%d,%d,%d,%d) m_browser=0x%x", this, left, top, width, height, m_browser);
 }
 
-html_browser::~html_browser() {
-	AM_DBG lib::logger::get_logger()->debug("html_browser::~html_browser(0x%x)", this);
+html_browser_imp::~html_browser_imp() {
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::~html_browser_imp(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_HIDE);
 //KB DestroyWindow(browser->m_hWnd);
@@ -140,30 +139,30 @@ html_browser::~html_browser() {
 }
 
 void
-html_browser::goto_url(std::string url) {
+html_browser_imp::goto_url(std::string url) {
 	CString CSurl(url.c_str());
-	AM_DBG lib::logger::get_logger()->debug("html_browser::goto_url(0x%x): url=%s)", this, url.c_str());
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::goto_url(0x%x): url=%s)", this, url.c_str());
 	HtmlView* browser = (HtmlView*) m_browser;
 	browser->Navigate2(CSurl,NULL,_T(""));
 }
 
 void
-html_browser::hide() {
-	AM_DBG lib::logger::get_logger()->debug("html_browser::hide(0x%x)", this);
+html_browser_imp::hide() {
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::hide(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_HIDE);
 }
 
 void
-html_browser::show() {
-	AM_DBG lib::logger::get_logger()->debug("html_browser::show(0x%x)", this);
+html_browser_imp::show() {
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::show(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
 	ShowWindow(browser->m_hWnd, SW_SHOW);
 }
 
 void
-html_browser::redraw() {
-	AM_DBG lib::logger::get_logger()->debug("html_browser::redraw(0x%x)", this);
+html_browser_imp::redraw() {
+	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::redraw(0x%x)", this);
 //	HtmlView* browser = (HtmlView*) m_browser;
 //	ShowWindow(browser->m_hWnd, SW_SHOWNA);
 }

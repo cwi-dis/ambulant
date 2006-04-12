@@ -26,6 +26,7 @@
 #pragma once
 
 #ifdef	WITH_HTML_WIDGET
+#include "ambulant/gui/dx/html_bridge.h"
 
 class HtmlView : public CHtmlView
 {
@@ -64,7 +65,26 @@ protected:
 public:
 };
 
-#endif // WITH_HTML_WIDGET
-#ifdef	WITH_HTML_WIDGET
+// Bridge class
+class html_browser_imp : public html_browser {
+public:
+	html_browser_imp(int left, int top, int width, int height);
+	~html_browser_imp();
+	void goto_url(std::string url);
+	void show();
+	void hide();
+	void redraw();
+private:
+	HtmlView *m_browser;
+};
+
+inline html_browser *new_html_browser(int left, int top, int width, int height)
+{
+	return new html_browser_imp(left, top, width, height);
+}
 #else // WITH_HTML_WIDGET
+inline html_browser *new_html_browser(int left, int top, int width, int height)
+{
+	return NULL;
+}
 #endif // WITH_HTML_WIDGET

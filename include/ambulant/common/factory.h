@@ -32,7 +32,7 @@ namespace ambulant {
 
 namespace common {
 	
-class factories {
+class AMBULANTAPI factories {
 public:
 	factories();
 	virtual ~factories();

@@ -45,6 +45,7 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
+#include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_playable.h"
 
 namespace ambulant {
@@ -74,7 +75,7 @@ class viewport;
 class dx_window;
 class dx_transition;
 
-class dx_player_callbacks {
+class dx_player_callbacks : public html_browser_factory {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
@@ -151,6 +152,7 @@ class AMBULANTAPI dx_player :
 	void close(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL);
 	void done(common::player *p);
+	html_browser_factory *get_html_browser_factory() { return &m_hoster; }
 	
 	////////////////////
 	// Implementation specific artifacts
