@@ -1,3 +1,12 @@
+2006-04-12 00:07  jackjansen
+
+	* If ffmpeg could open the file but not parse the input format it
+	  would leave the AVCodecContext in a partially initialized state.
+	  Fixed.  Partial fix for #1437821 (fixes the crash, but still no
+	  OggVorbis support).
+
+	  The AVCodecContext object was never freed. Fixed.
+
 2006-04-09 01:12  jackjansen
 
 	* prepare_playables() did some pretty aggressive preloading of
