@@ -63,6 +63,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/gtk/Makefile
 	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
+	include/ambulant/gui/gstreamer/Makefile
 	third_party_packages/Makefile
 	Documentation/Makefile
 	Extras/Makefile])
@@ -519,6 +520,33 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_PREFIX)
 AC_MSG_RESULT($test_nokia770)
 
+
+dnl Testing for gstreamer
+dnl ====================================================================
+
+test_gstreamer=false
+AC_MSG_CHECKING(for gstreamer multimedia framework)
+AC_ARG_WITH(gstreamer,
+     [  --with-gstreamer		Enable/disable gstreamer support],
+     [if test "x$withval" = "xyes"; then
+		test_gstreamer=true	
+      fi
+     ])
+if test "x$test_gstreamer" = "xtrue"; then
+dnl	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_gstreamer=true, test_gstreamer=false)
+	if test "x$test_gtk" = "xfalse"; then
+	   AC_MSG_ERROR(--with-gstreamer requires --with-gtk);
+	fi
+	PKG_CHECK_MODULES(GSTREAMER, gstreamer >= 0.8.0, test_gstreamer=true, test_gstreamer=false)
+	AC_SUBST(GSTREAMER_LIBS)
+	AC_SUBST(GSTREAMER_CFLAGS)
+
+ fi
+
+AM_CONDITIONAL(WITH_GSTREAMER, test x$test_gstreamer = xtrue)
+AC_SUBST(GSTREAMER_PREFIX)
+AC_MSG_RESULT($test_gstreamer)
+
 #
 # Test for arts 
 #
@@ -949,6 +977,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build Cocoa frontend:		${cocoa}
 	Build with SDL:			${test_sdl}
 	Build with GTK:			${test_gtk}
+	Build with gstreamer:		${test_gstreamer}
 	Build with NOKIA770:		${test_nokia770}
 	Build with ARTS support:	${test_arts}
 	Build with live555.com RTSP:	${test_live}

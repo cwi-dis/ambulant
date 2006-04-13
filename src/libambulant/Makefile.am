@@ -153,13 +153,44 @@ ffmpegincludes=
 toolkit_ffmpeg_libraries=
 endif
 
+if WITH_GSTREAMER
+toolkit_gstreamer_libraries = libambulant_gstreamer.la
+
+libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.8
+gstreamer_includes = -DWITH_GSTREAMER \
+		-I/usr/include/gstreamer-0.8 \
+		-I/usr/include/glib-2.0	\
+		-I/usr/lib/glib-2.0/include \
+		-I/usr/include/libxml2 \
+		 $(GSTREAMER_CFLAGS)
+
+libambulant_gstreamer_la_SOURCES = 	\
+	        gui/gstreamer/gstreamer_audio_renderer.cpp	\
+	        gui/gstreamer/gstreamer_renderer_factory.cpp	\
+	        gui/gstreamer/gstreamer_player.cpp
+else
+gstreamer_includes=
+toolkit_gstreamer_libraries=
+endif
+
+if WITH_NOKIA770
+nokia770_includes=-DWITH_NOKIA770 #$(HILDON_CFLAGS) $(OSSO_CFLAGS)
+toolkit_nokia770_libraries= #$(OSSO_LIBS)
+else
+nokia770_includes=
+toolkit_nokia770_libraries=
+endif # WITH_NOKIA770
+
+
 INCLUDES = \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	$(EXPAT_INCLUDES) \
 	$(xerces_includes) \
 	$(qtincludes) \
+	$(gstreamer_includes) \
 	$(gtkincludes) \
+	$(nokia770_includes) \
 	$(artsincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
@@ -170,9 +201,11 @@ lib_LTLIBRARIES = \
 	libambulant.la \
 	$(toolkit_cocoa_libraries) \
 	$(toolkit_qt_libraries) \
+	$(toolkit_gstreamer_libraries) \
 	$(toolkit_gtk_libraries) \
 	$(toolkit_arts_libraries) \
 	$(toolkit_sdl_libraries) \
+	$(toolkit_nokia770_libraries) \
 	$(toolkit_ffmpeg_libraries) \
 	$(toolkit_live_libraries)
 
@@ -277,6 +310,7 @@ EXTRA_DIST= \
 	gui/dg \
 	gui/dx \
 	gui/qt \
+	gui/gstreamer \
 	gui/gtk \
 	lib/win32
 

@@ -131,7 +131,6 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 /*		if (m_text_size)
 			gtk_font.setPointSizeFloat(m_text_size);
 */
-	
 		// Foreground Color of the text
 		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
@@ -139,10 +138,9 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		gtk_color.green = greenc(m_text_color)*0x101;
 		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
-
   		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
-		g_object_unref (G_OBJECT (gc));
 		pango_font_description_free(font_desc);
 		g_object_unref(layout);
+		g_object_unref (G_OBJECT (gc));
 	}
 }

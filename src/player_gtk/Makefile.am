@@ -19,6 +19,20 @@ livelibs =
 endif # WITH_LIVE
 
 #------------------------------------------------------
+if WITH_GSTREAMER
+extra_gstreamer_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_gstreamer.a
+extra_gstreamer_CPPFLAGS=-DWITH_GSTREAMER	\
+		-I/usr/include/gstreamer-0.8 \
+		-I/usr/include/glib-2.0	\
+		-I/usr/lib/glib-2.0/include \
+		-I/usr/include/libxml2
+
+extra_gstreamer_ldflags=`pkg-config --libs gstreamer`
+else
+extra_gstreamer_ldflags=
+extra_gstreamer_CFLAGS=
+endif # WITH_GSTREAMER
+#------------------------------------------------------
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
@@ -109,6 +123,7 @@ AmbulantPlayer_SOURCES =					\
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
 	$(extra_arts_LDADD) \
+	$(extra_gstreamer_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_xerces_LDADD) \
@@ -120,12 +135,14 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
 	$(extra_nokia770_LDADD)
 
 AM_LDFLAGS=$(extra_arts_ldflags) \
+	   $(extra_gstreamer_ldflags) \
 	   $(extra_sdl_ldflags) \
 	   $(extra_ffmpeg_ldflags) \
 	   -export-dynamic \
        $(livelibs)
  
 AM_CPPFLAGS = \
+		$(extra_gstreamer_CPPFLAGS) \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
 		$(extra_arts_DEFINES) \
 		$(extra_sdl_DEFINES) \

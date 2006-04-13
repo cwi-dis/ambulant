@@ -27,6 +27,11 @@
 
 #ifndef AMBULANT_NO_TIME_H
 #include <time.h>
+#define KB
+#ifdef  KB
+#include <sys/time.h>
+static long unsigned int s_usec = 0;
+#endif // KB
 #endif
 
 #include <stdarg.h>

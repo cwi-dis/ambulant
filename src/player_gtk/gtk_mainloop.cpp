@@ -20,6 +20,9 @@
 #ifdef WITH_ARTS
 #include "ambulant/gui/arts/arts.h"
 #endif
+#ifdef WITH_GSTREAMER
+#include "ambulant/gui/gstreamer/gstreamer_renderer_factory.h"
+#endif
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_gui.h"
 #endif
@@ -125,6 +128,12 @@ void
 gtk_mainloop::init_playable_factory()
 {
 	m_playable_factory = common::get_global_playable_factory();
+
+#ifdef WITH_GSTREAMER
+	AM_DBG logger::get_logger()->debug("add factory for GStreamer");
+	m_playable_factory->add_factory( new gstreamer::gstreamer_renderer_factory(this) );
+	AM_DBG logger::get_logger()->debug("add factory for GStreamer done");
+#endif
 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->debug("add factory for SDL");
