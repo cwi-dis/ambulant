@@ -1,3 +1,11 @@
+2006-04-12 17:19  jackjansen
+
+	* - Revamped html_browser interface organisation so it can be used
+	  in a setting where Ambulant is in a DLL.  - Added various
+	  AMBULANTAPI keywords, for using Ambulant in a DLL - Got DLL
+	  version of Ambulant to work again.  - Added a couple of methods
+	  tha Amis need to url.
+
 2006-04-12 00:07  jackjansen
 
 	* If ffmpeg could open the file but not parse the input format it
