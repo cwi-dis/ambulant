@@ -502,6 +502,13 @@ net::url net::url::join_to_base(const net::url &base) const
 	return rv;
 }
 
+net::url net::url::get_document() const
+{
+	net::url rv = net::url(m_protocol, m_host, m_port, m_path, m_query, "");
+	rv.m_absolute = m_absolute;
+	return rv;
+}
+
 bool net::url::same_document(const net::url &base) const
 {
 	return (m_protocol == base.m_protocol &&

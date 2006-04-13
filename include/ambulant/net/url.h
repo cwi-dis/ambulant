@@ -172,6 +172,9 @@ class AMBULANTAPI url {
 	/// Return a URL pointing to the directory containing this URL
 	url get_base() const;
 	
+	/// Return a URL with the #fragment stripped.
+	url get_document() const;
+
 	/// Return true if two URLs refer to the same document.
 	/// In other words, if they only differ in fragment.
 	bool same_document(const url &base) const;

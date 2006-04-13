@@ -390,7 +390,7 @@ class video_datasource_factory  {
 /// it will try the various factories in turn.
 /// In addition, for audio_datasources, it will also try to obtain a raw datasource
 /// and stack a parser and filter onto it. 
-class datasource_factory :
+class AMBULANTAPI datasource_factory :
 	public raw_datasource_factory,
 	public audio_datasource_factory,
 	public video_datasource_factory

@@ -69,7 +69,7 @@ class win32_datasource_factory : public raw_datasource_factory {
 	datasource* new_raw_datasource(const url& url);
 };
 
-extern raw_datasource_factory *get_win32_datasource_factory();
+extern AMBULANTAPI raw_datasource_factory *get_win32_datasource_factory();
 
 class win32_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
