@@ -1,3 +1,11 @@
+2006-04-13 16:53  keesblom
+
+	* Merged gstreamer branch (audio for Nokia 770) with trunk
+
+2006-04-13 16:45  jackjansen
+
+	* More changes for amis-ambulant integration.
+
 2006-04-12 17:19  jackjansen
 
 	* - Revamped html_browser interface organisation so it can be used
