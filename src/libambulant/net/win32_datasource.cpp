@@ -101,7 +101,8 @@ open_net_file(const net::url& url, HINTERNET *hinet_p, HINTERNET *hf_p)
 		lib::win32::win_report_last_error("InternetOpen()");
 		return false;
 	}
-	lib::textptr tp(url.get_url().c_str());
+	std::string url_str = url.get_url();
+	lib::textptr tp(url_str.c_str());
 	HINTERNET hf = InternetOpenUrl(hinet, tp,  NULL, 0, INTERNET_FLAG_RAW_DATA, 0);
 	if(!hf) {
 		lib::logger::get_logger()->trace("%s: InternetOpenUrl returned error 0x%x", url.get_url().c_str(), GetLastError());
