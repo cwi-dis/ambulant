@@ -41,6 +41,7 @@ using namespace gui::gtk;
 gtk_image_renderer::~gtk_image_renderer() {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer::~gtk_image_renderer(0x%x)", this);
+	g_object_unref(G_OBJECT (m_image));
 	m_lock.leave();
 }
 	
@@ -144,8 +145,10 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_H = (int)(O_H*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-	gdk_pixbuf_scale(m_image, m_image, N_L, N_T, N_W, N_H, 0, 0, fact_W, fact_H, GDK_INTERP_HYPER);
-	gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
-	g_object_unref (G_OBJECT (gc));
+
+	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR); 
+	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, S_L, S_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+	g_object_unref(G_OBJECT (new_image));
+	g_object_unref(G_OBJECT (gc));
 	m_lock.leave();
 }
