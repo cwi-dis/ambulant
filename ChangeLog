@@ -1,3 +1,13 @@
+2006-04-20 00:08  jackjansen
+
+	* Const in argument dictionaries seems to have disappeared for
+	  Python 2.5a1.
+
+2006-04-19 17:08  keesblom
+
+	* Changed image drawing code to get rid of vague images and memory
+	  leakes
+
 2006-04-18 15:58  jackjansen
 
 	* std::string could be deleted while the c_str() was still in use.
