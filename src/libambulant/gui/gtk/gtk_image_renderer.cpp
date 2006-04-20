@@ -41,7 +41,8 @@ using namespace gui::gtk;
 gtk_image_renderer::~gtk_image_renderer() {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer::~gtk_image_renderer(0x%x)", this);
-	g_object_unref(G_OBJECT (m_image));
+	if (m_image)
+		g_object_unref(G_OBJECT (m_image));
 	m_lock.leave();
 }
 	
@@ -65,6 +66,8 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		{
 			//GError **error;
 			m_image = gdk_pixbuf_loader_get_pixbuf(loader);
+			if (m_image)
+				g_object_ref(G_OBJECT (m_image));
 			//gdk_pixbuf_loader_close(loader, error);
 //			g_object_unref (G_OBJECT (loader));
 		}else
@@ -74,6 +77,10 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 			g_message ("Could not create the pixbuf\n");
 		}else{
 			m_image_loaded = TRUE;
+		}
+		if (loader) {
+			gdk_pixbuf_loader_close(loader, NULL);
+			g_object_unref(G_OBJECT (loader));
 		}
 	}
 	if ( ! m_image_loaded) {

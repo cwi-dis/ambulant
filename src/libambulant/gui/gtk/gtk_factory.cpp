@@ -296,13 +296,19 @@ ambulant_gtk_window::~ambulant_gtk_window()
 		m_ambulant_widget->set_gtk_window(NULL);
 		delete m_ambulant_widget;
 		m_ambulant_widget = NULL;
-		free(m_pixmap);
-		m_pixmap = NULL;
-		if (m_tmppixmap != NULL) {
-			free(m_tmppixmap);
-			m_tmppixmap = NULL;
-		}
 	} 
+	if (m_pixmap != NULL) {
+		g_object_unref(G_OBJECT(m_pixmap));
+		m_pixmap = NULL;
+	}
+	if (m_oldpixmap != NULL) {
+		g_object_unref(G_OBJECT(m_oldpixmap));
+		m_oldpixmap = NULL;
+	}
+	if (m_tmppixmap != NULL) {
+		g_object_unref(G_OBJECT(m_tmppixmap));
+		m_tmppixmap = NULL;
+	}
 }
 
 void
