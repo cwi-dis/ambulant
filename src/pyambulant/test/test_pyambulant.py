@@ -120,7 +120,9 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(root.locate_node("body/par"), p1)
 
     def test_07_node_factory(self):
-        class MyNodeFactory:
+        class MyNodeFactory(ambulant.node_factory):
+            def __init__(self):
+                pass
             def new_node(self, tag, arglist, context):
                 orig_nf = ambulant.get_builtin_node_factory()
                 return orig_nf.new_node_1(tag, arglist, context)
@@ -154,7 +156,7 @@ class TestBasics(unittest.TestCase):
         player.stop()
        
     def x_test_08_smil2player(self):
-        class MyEmbedder:
+        class MyEmbedder(ambulant.embedder):
             pass
         factories = self._getfactories()
         doc = ambulant.create_from_file(factories, WELCOME)
