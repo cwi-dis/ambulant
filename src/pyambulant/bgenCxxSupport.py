@@ -277,7 +277,7 @@ class CxxScanner(Scanner):
         # note that the next pattern only removes comments that are wholly within one line
         self.comment2_pat = r"(?P<rest1>.*)/\*.*\*/(?P<rest2>.*)"
         self.namespace_pat = r"^\s*namespace\s+(?P<name>[a-zA-Z0-9_:]+)\s+{"
-        self.klass_pat = r"^\s*class\s+(?P<name>[a-zA-Z0-9_:]+)\s+[{:]"
+        self.klass_pat = r"^\s*class\s+(AMBULANTAPI\s+)?(?P<name>[a-zA-Z0-9_:]+)\s+[{:]"
         self.visibility_pat = r"^\s*(?P<visibility>protected|private|public)\s*:\s*$"
 
     def donamespace(self, match):
