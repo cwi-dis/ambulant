@@ -2,6 +2,8 @@
 import ambulant
 import unittest
 import time
+import os
+import urllib
 
 VERSION="1.7" # Ambulant version
 WELCOME="../../Extras/Welcome/Welcome.smil"
@@ -167,6 +169,18 @@ class TestBasics(unittest.TestCase):
         player.start()
         time.sleep(5)
         player.stop()
+        
+    def test_09_datasource(self):
+        rdf = ambulant.get_stdio_datasource_factory()
+        df = ambulant.datasource_factory()
+        df.add_raw_factory(rdf)
+        welcome_path = os.path.abspath(os.path.join(os.getcwd(), WELCOME))
+        welcome_url = urllib.pathname2url(welcome_path)
+        ok, data = ambulant.read_data_from_url(welcome_url, df)
+        self.assert_(ok)
+        data_orig = open(WELCOME, 'rb').read()
+        self.assertEqual(len(data), len(data_orig))
+        self.assertEqual(data, data_orig)
        
 def test_main():
     suite = unittest.TestSuite()
