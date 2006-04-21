@@ -162,6 +162,10 @@ renderer_playable_ds::renderer_playable_ds(
 renderer_playable_ds::~renderer_playable_ds()
 {
 	AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
+  	if (m_src) {
+		m_src->release();
+		m_src = NULL;
+	}
 }
 
 void
@@ -193,8 +197,10 @@ renderer_playable_ds::stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x)", (void *)this);
 	renderer_playable::stop();
-	if (m_src)
+	if (m_src) {
 		m_src->stop();
+		m_src->release();
+	}
 	m_src = NULL;
 }
 

@@ -249,16 +249,22 @@ find_datafile(const char **locations)
 gtk_gui::gtk_gui(const char* title,
 	       const char* initfile)
  :
-	m_file_chooser(NULL),
-	m_settings_chooser(NULL),
-	m_programfilename(),
+// initialize all dynamic data pointers in the same order as they are declared
+	m_programfilename(NULL),
+	m_smilfilename(NULL),
+	m_settings(NULL),
+	m_toplevelcontainer(NULL),
+	menubar(NULL),
+	m_guicontainer(NULL),
+	m_documentcontainer(NULL),
+	m_actions(NULL),
 #ifdef	TRY_LOCKING
 	m_gui_thread(0),
 #endif/*TRY_LOCKING*/
-	m_smilfilename(NULL),
-	m_mainloop(NULL),
-//	m_settings(NULL),
-	m_toplevelcontainer()
+	m_file_chooser(NULL),
+	m_settings_chooser(NULL),
+	m_url_text_entry(NULL),
+	m_mainloop(NULL)
 {
 
 	GError *error = NULL;
@@ -392,18 +398,50 @@ gtk_gui::gtk_gui(const char* title,
 gtk_gui::~gtk_gui() {
 
 	AM_DBG printf("%s0x%X\n", "gtk_gui::~gtk_gui(), m_mainloop=",m_mainloop);
-	gtk_widget_destroy(GTK_WIDGET (m_file_chooser));
-	gtk_widget_destroy(GTK_WIDGET (m_settings_chooser));
-	delete m_actions;
-	m_actions = NULL;
-//	gtk_widget_destroy(GTK_WIDGET (m_filemenu));
-//	gtk_widget_destroy(GTK_WIDGET (m_playmenu));
-//	gtk_widget_destroy(GTK_WIDGET (m_viewmenu));
-//	gtk_widget_destroy(GTK_WIDGET (m_menubar));
-	//DELETE(m_mainloop)
-	delete m_mainloop;
-	m_mainloop = NULL;
-	m_smilfilename = NULL;
+
+	// remove all dynamic data in the same order as they are declared
+	// m_programfilename - not dynamic
+	// m_smilfilename - not dynamic or internal to gtk
+	if  (m_settings) {
+		delete m_settings;
+		m_settings = NULL;
+	}
+	if (m_toplevelcontainer) {
+		gtk_widget_destroy(GTK_WIDGET (m_toplevelcontainer));
+		m_toplevelcontainer = NULL;
+	}
+	if (menubar) {
+		gtk_widget_destroy(GTK_WIDGET (menubar));
+		menubar = NULL;
+	}
+	if (m_guicontainer) {
+		gtk_widget_destroy(GTK_WIDGET (m_guicontainer));
+		m_guicontainer = NULL;
+	}
+	if (m_documentcontainer) {
+		gtk_widget_destroy(GTK_WIDGET (m_documentcontainer));
+		m_documentcontainer = NULL;
+	}
+	if (m_actions) {
+		delete m_actions;
+		m_actions = NULL;
+	}
+	if (m_file_chooser) {
+		gtk_widget_destroy(GTK_WIDGET (m_file_chooser));
+		m_file_chooser = NULL;
+	}
+	if (m_settings_chooser) {
+		gtk_widget_destroy(GTK_WIDGET (m_settings_chooser));
+		m_settings_chooser = NULL;
+	}
+	if (m_url_text_entry) {
+		gtk_widget_destroy(GTK_WIDGET (m_url_text_entry));
+		m_url_text_entry = NULL;
+	}
+	if (m_mainloop) {
+		delete m_mainloop;
+		m_mainloop = NULL;
+	}
 }
 
 GtkWindow*
