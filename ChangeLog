@@ -1,3 +1,24 @@
+2006-04-21 00:21  jackjansen
+
+	* added a test to check that (at least the stdio) datasource works.
+
+2006-04-20 23:56  jackjansen
+
+	* Regenerated without the tp_init calls to the baseclass tp_init.
+
+2006-04-20 23:56  jackjansen
+
+	* Python re-implementations should inherit from the abstract
+	  baseclass which they implement.
+
+2006-04-20 17:10  keesblom
+
+	* More cleanup
+
+2006-04-20 16:58  jackjansen
+
+	* AMBULANTAPI is now also used after class sometimes.
+
 2006-04-20 00:08  jackjansen
 
 	* Const in argument dictionaries seems to have disappeared for
