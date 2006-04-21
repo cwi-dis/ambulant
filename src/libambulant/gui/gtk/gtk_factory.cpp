@@ -361,11 +361,17 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_ambulant_widget->get_gtk_widget()->window, 0, 0, 0, 0, 0, width, height);
 //	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
+	if (m_ambulant_widget->m_screenshot_data) {
+		g_free(m_ambulant_widget->m_screenshot_data);
+		m_ambulant_widget->m_screenshot_data = NULL;
+		m_ambulant_widget->m_screenshot_size = 0;
+	}
+
 	if (!gdk_pixbuf_save_to_buffer (pixbuf, &m_ambulant_widget->m_screenshot_data, &m_ambulant_widget->m_screenshot_size, "jpeg", &error, "quality", "100", NULL)) {
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
-		g_object_unref (G_OBJECT (pixbuf));
 	}
+	g_object_unref (G_OBJECT (pixbuf));
 //	m_ambulant_widget->set_screenshot(&buffer, &buffer_size);
 //	free(pixbuf);
 //	free(error);
@@ -660,6 +666,11 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 		m_gtk_window->set_ambulant_widget(NULL);
 		m_gtk_window = NULL;
 	}
+	if (m_screenshot_data) {
+		g_free(m_screenshot_data);
+		m_screenshot_data = NULL;
+		m_screenshot_size = 0;
+	}
 }
 
 void 
@@ -702,8 +713,8 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
 	AM_DBG lib::logger::get_logger()->debug("%s:(%d,%d)\n", "gtk_ambulant_widget::mouseMoveEvent", e->x,e->y);
 	// This is not right!!!
-	ambulant::lib::point ap = ambulant::lib::point(e->x,
-						       e->y-25);
+	ambulant::lib::point ap = ambulant::lib::point((int)e->x,
+						       (int)e->y-25);
 #if 0
     // XXX This code temporarily disabled, because with the current
     // structure there is no easy way to get at the gui_player, which
@@ -725,7 +736,7 @@ gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
 		return;
 	}
 	if (e->type == GDK_BUTTON_RELEASE){
-		lib::point amwhere = lib::point(e->x, e->y);
+	  lib::point amwhere = lib::point((int)e->x, (int)e->y);
 		m_gtk_window->user_event(amwhere);
 	}
 }
