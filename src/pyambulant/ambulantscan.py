@@ -85,6 +85,10 @@ class MyScanner(CxxScanner):
             "stdio_datasource", # We want only the factory and (abstract) interface
             "stdio_datasource_ptr", # Ditto
             "stdio_datasource_factory", # Ditto
+            "filter_datasource_impl", # XXXX
+            "filter_datasource_impl_ptr", # XXXX
+            "raw_filter_finder", # XXXX
+            "raw_filter_finder_ptr", # XXXX
             "Where_we_get_our", # Parser trips over a comment:-)
             "flag_event",  # Holds a reference to a bool, not useful for Python
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python

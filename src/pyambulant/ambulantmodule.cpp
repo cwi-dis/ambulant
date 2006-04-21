@@ -312,6 +312,10 @@ static int node_contextObj_hash(node_contextObject *self)
 }
 static int node_contextObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::node_context* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -1160,6 +1164,10 @@ static int nodeObj_hash(nodeObject *self)
 }
 static int nodeObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::node* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -1368,6 +1376,10 @@ static int node_factoryObj_hash(node_factoryObject *self)
 }
 static int node_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::node_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -1721,6 +1733,10 @@ static int documentObj_hash(documentObject *self)
 }
 static int documentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (node_context_Type.tp_init)
+	{
+		if ( (*node_context_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::document* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -1897,6 +1913,10 @@ static int eventObj_hash(eventObject *self)
 }
 static int eventObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::event* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -2161,6 +2181,10 @@ static int event_processorObj_hash(event_processorObject *self)
 }
 static int event_processorObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::event_processor* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -2337,6 +2361,10 @@ static int parser_factoryObj_hash(parser_factoryObject *self)
 }
 static int parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::parser_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -2515,6 +2543,10 @@ static int global_parser_factoryObj_hash(global_parser_factoryObject *self)
 }
 static int global_parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (parser_factory_Type.tp_init)
+	{
+		if ( (*parser_factory_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::global_parser_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -2699,6 +2731,10 @@ static int xml_parserObj_hash(xml_parserObject *self)
 }
 static int xml_parserObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::xml_parser* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -2877,6 +2913,10 @@ static int system_embedderObj_hash(system_embedderObject *self)
 }
 static int system_embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::system_embedder* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -3053,6 +3093,10 @@ static int timer_eventsObj_hash(timer_eventsObject *self)
 }
 static int timer_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::timer_events* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -3244,6 +3288,10 @@ static int timerObj_hash(timerObject *self)
 }
 static int timerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::timer* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -3578,6 +3626,10 @@ static int timer_controlObj_hash(timer_controlObject *self)
 }
 static int timer_controlObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (timer_Type.tp_init)
+	{
+		if ( (*timer_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::timer_control* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -3927,6 +3979,10 @@ static int timer_control_implObj_hash(timer_control_implObject *self)
 }
 static int timer_control_implObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (timer_control_Type.tp_init)
+	{
+		if ( (*timer_control_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::timer_control_impl* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -4088,6 +4144,10 @@ static int transition_infoObj_hash(transition_infoObject *self)
 }
 static int transition_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::lib::transition_info* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -4358,6 +4418,10 @@ static int embedderObj_hash(embedderObject *self)
 }
 static int embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (system_embedder_Type.tp_init)
+	{
+		if ( (*system_embedder_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::embedder* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -4769,6 +4833,10 @@ static int factoriesObj_hash(factoriesObject *self)
 }
 static int factoriesObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::factories* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -5018,6 +5086,10 @@ static int gui_screenObj_hash(gui_screenObject *self)
 }
 static int gui_screenObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::gui_screen* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -5628,6 +5700,10 @@ static int gui_playerObj_hash(gui_playerObject *self)
 }
 static int gui_playerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (factories_Type.tp_init)
+	{
+		if ( (*factories_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::gui_player* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -5831,6 +5907,10 @@ static int alignmentObj_hash(alignmentObject *self)
 }
 static int alignmentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::alignment* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -6007,6 +6087,10 @@ static int animation_notificationObj_hash(animation_notificationObject *self)
 }
 static int animation_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::animation_notification* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -6217,6 +6301,10 @@ static int gui_windowObj_hash(gui_windowObject *self)
 }
 static int gui_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::gui_window* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -6435,6 +6523,10 @@ static int gui_eventsObj_hash(gui_eventsObject *self)
 }
 static int gui_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::gui_events* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -6679,6 +6771,10 @@ static int rendererObj_hash(rendererObject *self)
 }
 static int rendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (gui_events_Type.tp_init)
+	{
+		if ( (*gui_events_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::renderer* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -6889,6 +6985,10 @@ static int bgrendererObj_hash(bgrendererObject *self)
 }
 static int bgrendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (gui_events_Type.tp_init)
+	{
+		if ( (*gui_events_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::bgrenderer* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -7342,6 +7442,10 @@ static int surfaceObj_hash(surfaceObject *self)
 }
 static int surfaceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::surface* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -7579,6 +7683,10 @@ static int window_factoryObj_hash(window_factoryObject *self)
 }
 static int window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::window_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -7775,6 +7883,10 @@ static int surface_templateObj_hash(surface_templateObject *self)
 }
 static int surface_templateObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (animation_notification_Type.tp_init)
+	{
+		if ( (*animation_notification_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::surface_template* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -7959,6 +8071,10 @@ static int surface_factoryObj_hash(surface_factoryObject *self)
 }
 static int surface_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::surface_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -8188,6 +8304,10 @@ static int layout_managerObj_hash(layout_managerObject *self)
 }
 static int layout_managerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::layout_manager* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -8515,6 +8635,10 @@ static int playableObj_hash(playableObject *self)
 }
 static int playableObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::playable* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -8816,6 +8940,10 @@ static int playable_notificationObj_hash(playable_notificationObject *self)
 }
 static int playable_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::playable_notification* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -9032,6 +9160,10 @@ static int playable_factoryObj_hash(playable_factoryObject *self)
 }
 static int playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::playable_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -9210,6 +9342,10 @@ static int global_playable_factoryObj_hash(global_playable_factoryObject *self)
 }
 static int global_playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (playable_factory_Type.tp_init)
+	{
+		if ( (*playable_factory_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::global_playable_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -9452,6 +9588,10 @@ static int player_feedbackObj_hash(player_feedbackObject *self)
 }
 static int player_feedbackObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::player_feedback* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -9899,6 +10039,10 @@ static int playerObj_hash(playerObject *self)
 }
 static int playerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::player* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -10258,6 +10402,10 @@ static int region_infoObj_hash(region_infoObject *self)
 }
 static int region_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::region_info* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -10621,6 +10769,10 @@ static int animation_destinationObj_hash(animation_destinationObject *self)
 }
 static int animation_destinationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (region_info_Type.tp_init)
+	{
+		if ( (*region_info_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::common::animation_destination* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -10831,6 +10983,10 @@ static int none_windowObj_hash(none_windowObject *self)
 }
 static int none_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (gui_window_Type.tp_init)
+	{
+		if ( (*gui_window_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::gui::none::none_window* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -11052,6 +11208,10 @@ static int none_window_factoryObj_hash(none_window_factoryObject *self)
 }
 static int none_window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (window_factory_Type.tp_init)
+	{
+		if ( (*window_factory_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::gui::none::none_window_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -11303,6 +11463,10 @@ static int datasourceObj_hash(datasourceObject *self)
 }
 static int datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::datasource* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -11464,6 +11628,10 @@ static int audio_datasourceObj_hash(audio_datasourceObject *self)
 }
 static int audio_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (datasource_Type.tp_init)
+	{
+		if ( (*datasource_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::audio_datasource* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -11625,6 +11793,10 @@ static int video_datasourceObj_hash(video_datasourceObject *self)
 }
 static int video_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::video_datasource* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -11824,7 +11996,7 @@ static PyObject *datasource_factoryObj_new_video_datasource(datasource_factoryOb
 	return _res;
 }
 
-static PyObject *datasource_factoryObj_new_filter_datasource(datasource_factoryObject *_self, PyObject *_args)
+static PyObject *datasource_factoryObj_new_audio_filter(datasource_factoryObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	ambulant::net::url url;
@@ -11836,9 +12008,9 @@ static PyObject *datasource_factoryObj_new_filter_datasource(datasource_factoryO
 	                      audio_datasourceObj_Convert, &ds))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_filter_datasource(url,
-	                                                                               fmt,
-	                                                                               ds);
+	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_filter(url,
+	                                                                          fmt,
+	                                                                          ds);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     audio_datasourceObj_New, _rv);
@@ -11927,7 +12099,7 @@ static PyMethodDef datasource_factoryObj_methods[] = {
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::audio_datasource* _rv)")},
 	{"new_video_datasource", (PyCFunction)datasource_factoryObj_new_video_datasource, 1,
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::video_datasource* _rv)")},
-	{"new_filter_datasource", (PyCFunction)datasource_factoryObj_new_filter_datasource, 1,
+	{"new_audio_filter", (PyCFunction)datasource_factoryObj_new_audio_filter, 1,
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::audio_datasource* ds) -> (ambulant::net::audio_datasource* _rv)")},
 	{"add_raw_factory", (PyCFunction)datasource_factoryObj_add_raw_factory, 1,
 	 PyDoc_STR("(ambulant::net::raw_datasource_factory* df) -> None")},
@@ -11960,6 +12132,10 @@ static int datasource_factoryObj_hash(datasource_factoryObject *self)
 }
 static int datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::datasource_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -12146,6 +12322,10 @@ static int raw_datasource_factoryObj_hash(raw_datasource_factoryObject *self)
 }
 static int raw_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::raw_datasource_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -12333,6 +12513,10 @@ static int audio_datasource_factoryObj_hash(audio_datasource_factoryObject *self
 }
 static int audio_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::audio_datasource_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -12517,6 +12701,10 @@ static int video_datasource_factoryObj_hash(video_datasource_factoryObject *self
 }
 static int video_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::video_datasource_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -12701,6 +12889,10 @@ static int audio_parser_finderObj_hash(audio_parser_finderObject *self)
 }
 static int audio_parser_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::audio_parser_finder* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
@@ -12882,6 +13074,10 @@ static int audio_filter_finderObj_hash(audio_filter_finderObject *self)
 }
 static int audio_filter_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
+	if (pycppbridge_Type.tp_init)
+	{
+		if ( (*pycppbridge_Type.tp_init)(_self, _args, _kwds) < 0) return -1;
+	}
 	ambulant::net::audio_filter_finder* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 

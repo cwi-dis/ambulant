@@ -5,8 +5,13 @@ if WITH_DUMMY_PLUGIN
 dummy_plugin = libamplugin_dummy.la
 libamplugin_dummy_la_SOURCES = plugin.cpp
 libamplugin_dummy_la_LDFLAGS = -module
+
+rot13_plugin = libamplugin_rot13.la
+libamplugin_rot13_la_SOURCES = rot13plugin.cpp
+libamplugin_rot13_la_LDFLAGS = -module
 else
 dummy_plugin=
+rot13_plugin =
 endif
 
 # The arts plugin
@@ -58,7 +63,7 @@ endif
 # Now tie it all together.
 # XXXX Need to set install directory
 
-pkglib_LTLIBRARIES = $(dummy_plugin) $(arts_plugin) $(xerces_plugin) $(python_plugin)
+pkglib_LTLIBRARIES = $(dummy_plugin) $(rot13_plugin) $(arts_plugin) $(xerces_plugin) $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	 $(arts_includes) $(xerces_includes) $(python_includes)

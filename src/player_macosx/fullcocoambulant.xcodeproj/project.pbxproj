@@ -810,10 +810,6 @@
 		043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA590097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA591097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
-		0440807709E9B8FE00527A4F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807509E9B8FE00527A4F /* libvorbis.a */; };
-		0440807809E9B8FE00527A4F /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807609E9B8FE00527A4F /* libogg.a */; };
-		0440807D09E9B93600527A4F /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807B09E9B93600527A4F /* libvorbisfile.a */; };
-		0440807E09E9B93600527A4F /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0440807C09E9B93600527A4F /* libvorbisenc.a */; };
 		0442DEB708965537008D10AE /* libdirac_decoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493212708951DF900F38A0A /* libdirac_decoder.a */; };
 		0442DEB80896553B008D10AE /* libdirac_encoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0493213C089520B500F38A0A /* libdirac_encoder.a */; };
 		0444D3AC051F2EF00010C447 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0444D320051F2EEF0010C447 /* get_version.cpp */; };
@@ -2263,10 +2259,6 @@
 				04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */,
 				04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */,
 				04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */,
-				0440807709E9B8FE00527A4F /* libvorbis.a in Frameworks */,
-				0440807809E9B8FE00527A4F /* libogg.a in Frameworks */,
-				0440807D09E9B93600527A4F /* libvorbisfile.a in Frameworks */,
-				0440807E09E9B93600527A4F /* libvorbisenc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

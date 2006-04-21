@@ -31,6 +31,7 @@
 #include "ambulant/lib/thread.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/net/url.h"
+#include "ambulant/net/databuffer.h"
 #ifdef AMBULANT_PLATFORM_UNIX
 #include <stdint.h>
 #include "ambulant/lib/unix/unix_thread.h"
@@ -367,12 +368,22 @@ class audio_parser_finder {
 /// Factory for implementations where the audio_datasource
 /// does only conversion of the audio data provided by the source to the format
 /// wanted by the client.
-class audio_filter_finder  {
+class audio_filter_finder {
   public:
     virtual ~audio_filter_finder() {};
 	
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
   	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
+};
+
+/// Factory for creating raw filters, which can handle things like encryption or
+/// compression of raw streams.
+class raw_filter_finder {
+  public:
+    virtual ~raw_filter_finder() {};
+	
+	/// Return either a new datasource that filters the data, or the original datasource.
+	virtual datasource* new_raw_filter(const net::url& url, datasource *src) = 0;
 };
 
 /// Interface to create a video_datasource for a given URL.
@@ -409,7 +420,7 @@ class AMBULANTAPI datasource_factory :
   	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Semi-private interface: obtain an audio filter datasource.
-	audio_datasource* new_filter_datasource(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
+	audio_datasource* new_audio_filter(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
 	
 	/// Provider interface: add a raw_datasource_factory.
   	void add_raw_factory(raw_datasource_factory *df);
@@ -425,6 +436,9 @@ class AMBULANTAPI datasource_factory :
 	
 	/// Provider interface: add a video_datasource_factory.
 	void add_video_factory(video_datasource_factory *df);
+	
+	/// Provider interface: add a raw_filter_finder. Raw_filter_finders are called iteratively and exhaustively.
+	void add_raw_filter(raw_filter_finder *df);
 		
   private:
 	std::vector<raw_datasource_factory*> m_raw_factories;
@@ -432,6 +446,34 @@ class AMBULANTAPI datasource_factory :
 	std::vector<audio_parser_finder*> m_audio_parser_finders;
 	std::vector<audio_filter_finder*> m_audio_filter_finders;
 	std::vector<video_datasource_factory*> m_video_factories;
+	std::vector<raw_filter_finder*> m_raw_filters;
+};
+
+class filter_datasource_impl : 
+	public datasource,
+	public lib::ref_counted_obj
+{
+  public:
+	filter_datasource_impl(datasource *src);
+	
+	virtual ~filter_datasource_impl();
+
+	/// Override this method: process (data, size) and store the result in m_buffer.
+	virtual size_t _process(char *data, size_t size);
+	
+	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+	void stop();
+    bool end_of_file();
+	char* get_read_ptr();
+	int size() const;		
+    void readdone(int len);
+  protected:
+	void data_avail();
+	datasource *m_src;
+	databuffer m_databuf;
+	lib::event *m_callback;
+	lib::event_processor *m_event_processor;
+	lib::critical_section m_lock;
 };
 
 #ifdef AMBULANT_PLATFORM_UNIX

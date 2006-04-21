@@ -19,7 +19,6 @@
 
 #include "ambulant/common/factory.h"
 #include "ambulant/net/datasource.h"
-#include "ambulant/net/databuffer.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/event_processor.h"
 
@@ -58,6 +57,134 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
   private:
 	databuffer m_databuf;
 };
+
+// *********************** filter_datasource base class
+typedef lib::no_arg_callback<filter_datasource_impl> data_avail_callback;
+
+filter_datasource_impl::filter_datasource_impl(datasource *src)
+:	m_src(src),
+	m_callback(NULL)
+{
+	m_src->add_ref();
+}
+
+filter_datasource_impl::~filter_datasource_impl()
+{
+	stop();
+};
+
+size_t
+filter_datasource_impl::_process(char *data, size_t size)
+{
+	char *optr = m_databuf.get_write_ptr(size);
+	memcpy(optr, data, size);
+	m_databuf.pushdata(size);
+	return size;
+}
+
+void
+filter_datasource_impl::data_avail()
+{
+	m_lock.enter();
+	if (!m_src) {
+		m_lock.leave();
+		return;
+	}
+	// Convert data, if we have space
+	if (!m_databuf.buffer_full()) {
+		size_t sz = m_src->size();
+		char *ptr = m_src->get_read_ptr();
+		size_t bytes_done = _process(ptr, sz);
+		m_src->readdone(bytes_done);
+	}
+	// Restart input, if we have space
+	if (!m_src->end_of_file() && m_event_processor && !m_databuf.buffer_full()) {
+		// Restart input
+		lib::event *ev = new data_avail_callback(this, &filter_datasource_impl::data_avail);
+		m_src->start(m_event_processor, ev);
+	}
+	// If we have data, notify client
+	if (m_event_processor && m_callback && (m_databuf.buffer_not_empty() || !m_src->end_of_file())) {
+		m_event_processor->add_event(m_callback, 0, ambulant::lib::ep_med);
+		m_callback = NULL;
+	}
+	m_lock.leave();
+}
+	
+void
+filter_datasource_impl::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
+{
+	m_lock.enter();
+	assert(m_callback == NULL);
+	// If we have data for the client we immedeately tell it so.
+	if (m_databuf.buffer_not_empty() || !m_src || m_src->end_of_file())
+		evp->add_event(callback, 0, ambulant::lib::ep_med);
+	else {
+		m_callback = callback;
+		m_event_processor = evp;
+	}
+	// Restart input, if possible
+	if (m_src && !m_src->end_of_file() && !m_databuf.buffer_full()) {
+		lib::event *ev = new data_avail_callback(this, &filter_datasource_impl::data_avail);
+		m_src->start(evp, ev);
+	}
+	m_lock.leave();
+}
+
+void
+filter_datasource_impl::stop()
+{
+	m_lock.enter();
+	if (m_src) {
+		m_src->stop();
+		m_src->release();
+	}
+	m_src = NULL;
+	delete m_callback;
+	m_lock.leave();
+}
+
+bool
+filter_datasource_impl::end_of_file()
+{
+	m_lock.enter();
+	bool rv = !m_databuf.buffer_not_empty() &&  m_src->end_of_file();
+	m_lock.leave();
+	return rv;
+}
+
+char*
+filter_datasource_impl::get_read_ptr()
+{
+	m_lock.enter();
+	char *rv = m_databuf.get_read_ptr();
+	m_lock.leave();
+	return rv;
+}
+
+int
+filter_datasource_impl::size() const
+{
+	const_cast <filter_datasource_impl*>(this)->m_lock.enter();
+	int rv = m_databuf.size();
+	const_cast <filter_datasource_impl*>(this)->m_lock.leave();
+	return rv;
+
+}		
+
+void
+filter_datasource_impl::readdone(int len)
+{
+	m_lock.enter();
+	m_databuf.readdone(len);
+	if (!m_src->end_of_file() && m_event_processor && !m_databuf.buffer_full()) {
+		// Restart input
+		lib::event *ev = new data_avail_callback(this, &filter_datasource_impl::data_avail);
+		m_src->start(m_event_processor, ev);
+	}
+	m_lock.leave();
+}
+
 
 // *********************** audio_format_choices ***********************************************
 audio_format_choices::audio_format_choices()
@@ -189,25 +316,45 @@ datasource_factory::add_video_factory(video_datasource_factory *df)
 	m_video_factories.push_back(df);
 }
 
+void
+datasource_factory::add_raw_filter(raw_filter_finder *df)
+{
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_raw_filter(0x%x)", (void*)df);
+	m_raw_filters.push_back(df);
+}	
 
 datasource*
 datasource_factory::new_raw_datasource(const net::url &url)
 {
     std::vector<raw_datasource_factory *>::iterator i;
-    datasource *src;
+    datasource *src = NULL;
     
     for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
         src = (*i)->new_raw_datasource(url);
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
-        if (src) return src;
+        if (src) break;
     }
 	// Check for a data: url
-	if (lib::starts_with(url.get_url(), "data:")) {
+	if (src == NULL && lib::starts_with(url.get_url(), "data:")) {
 		AM_DBG lib::logger::get_logger()->debug("new_raw_datasource: returning mem_datasource");
-		return new mem_datasource(url);
+		src = new mem_datasource(url);
 	}
-	lib::logger::get_logger()->trace(gettext("%s: Cannot open, not supported by any datasource"), repr(url).c_str());
-    return NULL;
+	if (src == NULL) {
+		lib::logger::get_logger()->trace(gettext("%s: Cannot open, not supported by any datasource"), repr(url).c_str());
+		return NULL;
+	}
+	// Apply filters
+	datasource *newsrc = src;
+	do {
+		src = newsrc;
+		std::vector<raw_filter_finder*>::iterator fi;
+		for(fi=m_raw_filters.begin(); fi != m_raw_filters.end(); fi++) {
+			newsrc = (*fi)->new_raw_filter(url, src);
+			// If we found one: exit this loop, so we try from the start for the next filter.
+			if (newsrc != src) break;
+		}
+	} while (newsrc != src);
+	return newsrc;
 }
 
 audio_datasource*
@@ -263,7 +410,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 }
 
 audio_datasource*
-datasource_factory::new_filter_datasource(const net::url& url, const audio_format_choices& fmts, audio_datasource* ds)
+datasource_factory::new_audio_filter(const net::url& url, const audio_format_choices& fmts, audio_datasource* ds)
 {
 	if (!ds) 
 		return NULL;

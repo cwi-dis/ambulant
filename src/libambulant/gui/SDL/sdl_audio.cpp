@@ -277,7 +277,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {
-		net::audio_datasource *resample_ds = factory->get_datasource_factory()->new_filter_datasource(url, supported, ds);
+		net::audio_datasource *resample_ds = factory->get_datasource_factory()->new_audio_filter(url, supported, ds);
 		AM_DBG lib::logger::get_logger ()->debug("sdl_audio_renderer::sdl_audio_renderer() (this =0x%x) got resample datasource 0x%x", (void *) this, resample_ds);
 		if (resample_ds) {
 			m_audio_src = resample_ds;

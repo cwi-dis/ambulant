@@ -367,6 +367,7 @@ url = net_url
 const_ambulant_net_url_ref = net_url
 posix_datasource_ptr = datasource_ptr
 stdio_datasource_ptr = datasource_ptr
+filter_datasource_impl_ptr = datasource_ptr
 lib_global_parser_factory_ptr = global_parser_factory_ptr
 lib_node_factory_ptr = node_factory_ptr
 net_datasource_factory_ptr = datasource_factory_ptr
