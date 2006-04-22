@@ -1,3 +1,21 @@
+2006-04-21 16:51  jackjansen
+
+	* Added raw_filter datasources: a datasource that filters data
+	  coming from another datasource (for things such as compression or
+	  encryption).	Also added a base class for such filters that does
+	  most of the administrative work, and an example filter that does
+	  rot13 decoding (if the URL ends in .rot13).
+
+2006-04-21 16:00  keesblom
+
+	* More cleanup, commandline args do not work yet, but at least
+	  gtk_player doesn't crash
+
+2006-04-21 12:51  keesblom
+
+	* More cleanup, no more Megabytes definitely lost by
+	  gtk_image_renderer
+
 2006-04-21 00:21  jackjansen
 
 	* added a test to check that (at least the stdio) datasource works.
