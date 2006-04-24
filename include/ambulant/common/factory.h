@@ -43,7 +43,7 @@ public:
 	virtual void init_parser_factory();
 	virtual void init_node_factory();
 	
-	playable_factory *get_playable_factory() const { return m_playable_factory; }
+	global_playable_factory *get_playable_factory() const { return m_playable_factory; }
 	window_factory *get_window_factory() const { return m_window_factory; }
 	net::datasource_factory *get_datasource_factory() const { return m_datasource_factory; }
 	lib::global_parser_factory *get_parser_factory() const { return m_parser_factory; }

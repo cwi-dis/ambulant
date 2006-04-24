@@ -18,13 +18,13 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/unix/unix_mtsync.h"
 #include "ambulant/version.h"
-#include "ambulant/common/renderer.h"
 #include "ambulant/common/factory.h"
+#include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -42,6 +42,13 @@ class basic_plugin_factory : public common::playable_factory {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
+
+	common::playable *new_aux_audio_playable(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src) { return NULL; }
   private:
 	common::factories *m_factory;
 	
@@ -136,7 +143,11 @@ bug_workaround(ambulant::common::factories* factory)
 	return factory;
 }
 
-extern "C" void initialize(
+extern "C"
+#ifdef AMBULANT_PLATFORM_WIN32
+__declspec(dllexport)
+#endif
+void initialize(
     int api_version,
     ambulant::common::factories* factory,
     ambulant::common::gui_player *player)
@@ -150,9 +161,10 @@ extern "C" void initialize(
         lib::logger::get_logger()->warn("basic_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
     AM_DBG lib::logger::get_logger()->debug("basic_plugin: loaded.");
-    if (factory->rf) {
+	common::global_playable_factory *pf = factory->get_playable_factory();
+    if (pf) {
     	basic_plugin_factory *bpf = new basic_plugin_factory(factory);
-		factory->rf->add_factory(bpf);
+		pf->add_factory(bpf);
     	AM_DBG lib::logger::get_logger()->trace("basic_plugin: registered");
     }
 }

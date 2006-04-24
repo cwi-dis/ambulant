@@ -127,7 +127,9 @@ plugin_engine::collect_plugin_directories()
 	m_plugindirs.push_back("/usr/local/lib/ambulant");
 #endif // AMBULANT_PLUGINDIR
 #elif defined(AMBULANT_PLATFORM_WIN32)
-	// XXXX Need to add application directory
+	// Add directory containing the main module (either main prog or dll)
+	std::string main_dir = lib::win32::get_module_dir();
+	m_plugindirs.push_back(main_dir);
 #else
 #error WITH_PLUGINS defined for unknown platform
 #endif
@@ -225,12 +227,14 @@ plugin_engine::load_plugins(std::string dirname)
 		dirname +
 		"\\" +
 		PLUGIN_PREFIX +
-		"_*.dll";
+		"*.dll";
 	lib::textptr fp_conv(filepattern.c_str());
 	WIN32_FIND_DATA dirData;
 	HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
     if (dirHandle == INVALID_HANDLE_VALUE) {
-        lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s"), dirname.c_str());
+		DWORD err = GetLastError();
+		if (err != 2) // Don't report "No such file"
+			lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
         return;
     } else {
 		do {
@@ -250,12 +254,14 @@ plugin_engine::load_plugins(std::string dirname)
                 initfuncptr init = (initfuncptr) GetProcAddress(handle,"initialize");
                 if (!init) {
                     lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", pathname.c_str());
-					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), dirData.cFileName);
+					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pathname.c_str());
                 } else {
                     m_initfuncs.push_back(init);
                 }
             } else {
-				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), fn_conv.c_str());
+				DWORD err = GetLastError();
+				lib::logger::get_logger()->trace("plugin_engine: %s: LoadLibrary returned error 0x%x", pathname.c_str(), err);
+				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s"), pathname.c_str());
             }
 
 		} while(FindNextFile(dirHandle, &dirData));
