@@ -35,8 +35,13 @@ using namespace gui::gstreamer;
 // forward decl. of some internal functions
 static void
 mutex_initialize(void);
+
+static void
+mutex_finalize(void);
+
 static void
 mutex_acquire(void* player);
+
 static void
 mutex_release(void* player);
 
@@ -177,9 +182,16 @@ gpointer user_data)
 }
 
 //************************* gstreamer_player ***************************
-void gstreamer_player_initialize(int* argcp, char*** argvp) {
-  	mutex_initialize(); // the sooner the better
+void
+gstreamer_player_initialize(int* argcp, char*** argvp) {
+ 	mutex_initialize(); // the sooner the better
 	gst_init(argcp, argvp);
+}
+
+void
+gstreamer_player_finalize() {
+  	mutex_finalize();
+//	gst_deinit(); // not avail in gstreamer 0.8
 }
 
 gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* rend)
@@ -267,6 +279,16 @@ mutex_initialize(void) {
 	}
 }
 
+static void
+mutex_finalize(void) {
+	if ( ! s_initialized)
+		return;
+ 	mutex_acquire(&s_mutex); // check no-one uses it
+ 	mutex_release(&s_mutex); // lock must be released when destroying iy
+	pthread_mutex_destroy(&s_mutex);
+	s_initialized = false;
+}
+	
 void
 gstreamer_player::mutex_acquire() {
 	if ( ! s_initialized)

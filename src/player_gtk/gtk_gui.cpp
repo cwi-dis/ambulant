@@ -1075,6 +1075,11 @@ main (int argc, char*argv[]) {
 	delete gtk_logger::get_gtk_logger();
 	mywidget->do_quit();
 	gdk_threads_leave ();
+#ifdef	WITH_GSTREAMER
+	/* initialize GStreamer */
+	AM_DBG fprintf(stderr, "finalize GStreamer\n");
+	gstreamer_player_finalize();
+#endif/*WITH_GSTREAMER*/
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

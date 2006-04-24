@@ -47,6 +47,9 @@
 
 #define AMBULANT_MAX_CHANNELS 2
  
+void gstreamer_player_initialize(int* argcp, char*** argvp);
+void gstreamer_player_finalize();
+
 namespace ambulant {
 namespace gui {
 namespace gstreamer {	

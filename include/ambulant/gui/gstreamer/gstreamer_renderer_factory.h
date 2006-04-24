@@ -26,11 +26,13 @@
 
 #define AMBULANT_MAX_CHANNELS 2
  
-  
-extern void 
-gstreamer_player_initialize(int* argcp, char*** argvp)
 // to be called from main thread before any other thread, otherwise unsafe
-;
+extern void 
+gstreamer_player_initialize(int* argcp, char*** argvp);
+
+// to be called from main thread all other thread finished, otherwise unsafe
+extern void 
+gstreamer_player_finalize();
 
 namespace ambulant {
 namespace gui {

@@ -85,10 +85,11 @@ open_web_browser(const std::string &href)
 }
 
 gtk_mainloop::gtk_mainloop(gtk_gui* gui)
-:	m_gui(gui),
+  :	m_gui(gui),
  	m_running(false),
 	m_gtk_widget(NULL)
 {
+	gui_player();
 	m_logger = lib::logger::get_logger();
 	set_embedder(this);
 	init_factories();

@@ -140,6 +140,7 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
   		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
 		pango_font_description_free(font_desc);
+		g_object_unref (G_OBJECT (context));
 		g_object_unref(layout);
 		g_object_unref (G_OBJECT (gc));
 	}
