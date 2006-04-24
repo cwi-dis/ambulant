@@ -29,6 +29,9 @@
 #define IDC_MESSAGE                     1013
 #define IDC_CHECK1                      1014
 #define IDC_CHECK2                      1015
+#define IDC_DO_PLUGINS                  1016
+#define IDC_EDIT1                       1017
+#define IDC_PLUGIN_DIR                  1017
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773
@@ -51,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32795
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

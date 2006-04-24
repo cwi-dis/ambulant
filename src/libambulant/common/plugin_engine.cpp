@@ -20,6 +20,7 @@
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/lib/textptr.h"
 
 //#include<dlfcn.h>
 #include<stdlib.h>
@@ -220,44 +221,44 @@ void
 plugin_engine::load_plugins(std::string dirname)
 {
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
-	char filepattern[1024];
-
-	strncpy(filepattern, dirname.c_str(), sizeof(filepattern));
-	strncpy(filepattern, "\\", sizeof(filepattern));
-	strncpy(filepattern, PLUGIN_PREFIX, sizeof(filepattern));
-	strncpy(filepattern, "_*.dll", sizeof(filepattern));
-
+	std::string filepattern = 
+		dirname +
+		"\\" +
+		PLUGIN_PREFIX +
+		"_*.dll";
+	lib::textptr fp_conv(filepattern.c_str());
 	WIN32_FIND_DATA dirData;
-	HANDLE *dirHandle = FindFirstFile(filepattern, *dirData);
-    if (dirHandle == NULL) {
-        lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s"), filepattern);
+	HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
+    if (dirHandle == INVALID_HANDLE_VALUE) {
+        lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s"), dirname.c_str());
         return;
     } else {
 		do {
             // Construct the full pathname
-		   	char filename[1024];
-			strncpy(filename, dirname.c_str(), sizeof(filename));
- 			strncpy(filename, "\\", sizeof(filename));
-            strncat(filename, dirData.cFileName, sizeof(filename));
-
+			lib::textptr fn_conv(dirData.cFileName);
+			std::string pathname =
+				dirname +
+ 				"\\" +
+				fn_conv.c_str();
+			lib::textptr pn_conv(pathname.c_str());
             // Load the plugin
-            lib::logger::get_logger()->trace("plugin_engine: loading %s", filename);
- 	        HMODULE handle = LoadLibrary(filename);
+            lib::logger::get_logger()->trace("plugin_engine: loading %s", pathname.c_str());
+ 	        HMODULE handle = LoadLibrary(pn_conv);
             if (handle) {
-                AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
+                AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",pathname.c_str());
                 AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
                 initfuncptr init = (initfuncptr) GetProcAddress(handle,"initialize");
                 if (!init) {
-                    lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
+                    lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", pathname.c_str());
 					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), dirData.cFileName);
                 } else {
                     m_initfuncs.push_back(init);
                 }
             } else {
-				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), dirData.cFileName);
+				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), fn_conv.c_str());
             }
 
-		} while(FindNextFile(dirHandle, &dirData);
+		} while(FindNextFile(dirHandle, &dirData));
 	}
  	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
 }

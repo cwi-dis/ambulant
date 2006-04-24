@@ -22,6 +22,21 @@ PreferencesDlg::PreferencesDlg(CWnd* pParent /*=NULL*/)
 	m_do_namespaces = prefs->m_do_namespaces;
 	m_do_schema = prefs->m_do_schema;
 	m_validation_schema_full_checking = prefs->m_validation_schema_full_checking;
+	m_do_plugins = prefs->m_use_plugins;
+	m_plugin_dir = prefs->m_plugin_dir.c_str();
+}
+
+BOOL
+PreferencesDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+#ifdef WITH_WINDOWS_PLUGINS
+	CWnd *item = GetDlgItem(IDC_DO_PLUGINS);
+	item->EnableWindow();
+	item = GetDlgItem(IDC_PLUGIN_DIR);
+	item->EnableWindow();
+#endif
+	return TRUE;
 }
 
 PreferencesDlg::~PreferencesDlg()
@@ -37,6 +52,8 @@ void PreferencesDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_DO_NAMESPACES, m_do_namespaces);
 	DDX_Radio(pDX, IDC_DO_SCHEMA, m_do_schema);
 	DDX_Check(pDX, IDC_VALIDATION_SCHEMA_FULL_CHECKING, m_validation_schema_full_checking);
+	DDX_Check(pDX, IDC_DO_PLUGINS, m_do_plugins);
+	DDX_Text(pDX, IDC_PLUGIN_DIR, m_plugin_dir);
 }
 
 
@@ -44,8 +61,6 @@ BEGIN_MESSAGE_MAP(PreferencesDlg, CDialog)
 //	ON_CBN_SELCHANGE(IDC_COMBO1, OnCbnSelchangeCombo1)
 	ON_BN_CLICKED(IDCANCEL, OnBnClickedCancel)
 	ON_BN_CLICKED(IDOK, OnBnClickedOK)
-	ON_BN_CLICKED(IDC_CHECK1, OnBnClickedCheck1)
-	ON_BN_CLICKED(IDC_CHECK2, OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -62,6 +77,9 @@ void PreferencesDlg::OnBnClickedOK()
 	prefs->m_do_namespaces = (bool)m_do_namespaces;
 	prefs->m_do_schema = (bool)m_do_schema;
 	prefs->m_validation_schema_full_checking = (bool)m_validation_schema_full_checking;
+	prefs->m_use_plugins = m_do_plugins;
+	prefs->m_plugin_dir = T2CA((LPCTSTR)m_plugin_dir);
+	
 	prefs->save_preferences();
 }
 
@@ -69,14 +87,4 @@ void PreferencesDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
 	OnCancel();
-}
-
-void PreferencesDlg::OnBnClickedCheck1()
-{
-	// TODO: Add your control notification handler code here
-}
-
-void PreferencesDlg::OnBnClickedCheck2()
-{
-	// TODO: Add your control notification handler code here
 }

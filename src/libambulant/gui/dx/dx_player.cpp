@@ -36,7 +36,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/transition_info.h"
 
-#include "ambulant/common/plugin_engine.h"
+//#include "ambulant/common/plugin_engine.h"
 
 #include "ambulant/smil2/transition.h"
 
@@ -91,6 +91,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	set_embedder(this);
 	// Fill the factory objects
 	init_factories();
+	init_plugins();
 
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	

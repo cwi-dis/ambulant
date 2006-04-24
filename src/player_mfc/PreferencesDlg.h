@@ -10,7 +10,7 @@ class PreferencesDlg : public CDialog
 public:
 	PreferencesDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~PreferencesDlg();
-
+	BOOL OnInitDialog();
 // Dialog Data
 	enum { IDD = IDD_PREFERENCES };
 
@@ -26,6 +26,8 @@ private:
 	int m_do_schema;
 //	int m_do_dtd;
 	int m_validation_schema_full_checking;
+	int m_do_plugins;
+	CString m_plugin_dir;
 public:
 	afx_msg void OnBnClickedOK();
 	afx_msg void OnBnClickedCancel();
@@ -33,4 +35,6 @@ public:
 	afx_msg void OnCbnSelchangeLogLevel();
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnBnClickedCheck2();
+	afx_msg void OnBnClickedCheck4();
+	afx_msg void OnEnChangePluginDir();
 };

@@ -43,7 +43,7 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/lib/transition_info.h"
 
-#include "ambulant/common/plugin_engine.h"
+//#include "ambulant/common/plugin_engine.h"
 
 #include "ambulant/smil2/transition.h"
 
@@ -82,6 +82,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 {
 	set_embedder(this);	
 	init_factories();
+	init_plugins();
 
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
