@@ -1,3 +1,23 @@
+2006-04-24 16:42  jackjansen
+
+	* Got plugins to actually work on Windows again (in a Shlib build).
+
+	  Added a project to the solution that builds the default dummy
+	  plugin if we're doing a DebugShlib build.
+
+2006-04-24 15:08  jackjansen
+
+	* Windows plugin support had experienced bitrot over the last
+	  months.  Started on fixing it.
+
+	  Also added the plugin uptions to the preferecnes dialog (disabled
+	  if plugin support not configured).
+
+2006-04-24 14:55  keesblom
+
+	* More leaks. AmbulantPlayer now playes NewYork on Nokia770
+	  fluently without oops.
+
 2006-04-21 16:51  jackjansen
 
 	* Added raw_filter datasources: a datasource that filters data
