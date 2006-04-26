@@ -58,6 +58,7 @@ gui_player::play()
 	m_lock.enter();
 	if (!m_player) {
 		ambulant::lib::logger::get_logger()->error(gettext("Cannot play document: no player"));
+		m_lock.leave();
 		return;
 	}
 	assert(m_playable_factory);
@@ -117,27 +118,27 @@ gui_player::restart(bool reparse)
 bool
 gui_player::is_play_enabled() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player != NULL;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 bool
 gui_player::is_stop_enabled() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player != NULL;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 bool
 gui_player::is_pause_enabled() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player && !m_player->is_done();
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
