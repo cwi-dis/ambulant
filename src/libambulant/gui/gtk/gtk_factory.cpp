@@ -319,10 +319,15 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
-
+	// we use the parent window for redraw in case this window has been deleted at the time
+	// the callback function is actually called (e.g. the user selects a different file)
+	GtkWidget* this_widget = m_ambulant_widget->get_gtk_widget();
 	dirty_area_widget* dirty = new dirty_area_widget();
-	dirty->widget = m_ambulant_widget->get_gtk_widget();
+	dirty->widget = gtk_widget_get_parent(this_widget);
 	dirty->area = r;
+	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
+		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
+	}
 	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
 
 //	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
@@ -653,15 +658,21 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x)",
 		(void *)this,
 		(void*) parent_widget);	
-	g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
-	g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
+	m_motion_notify_handler_id = g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	m_button_release_handler_id = g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
 	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 }
 
 gtk_ambulant_widget::~gtk_ambulant_widget()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x", (void*)this, m_gtk_window);
+	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
+		g_signal_handler_disconnect(G_OBJECT (m_widget), m_expose_event_handler_id);
+	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_motion_notify_handler_id))
+		g_signal_handler_disconnect(G_OBJECT (m_widget), m_motion_notify_handler_id);
+	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_button_release_handler_id))
+		g_signal_handler_disconnect(G_OBJECT (m_widget), m_button_release_handler_id);
 	if (m_gtk_window) {
 		m_gtk_window->set_ambulant_widget(NULL);
 		m_gtk_window = NULL;

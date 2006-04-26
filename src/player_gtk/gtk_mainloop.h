@@ -67,7 +67,7 @@ class gtk_mainloop :
     public ambulant::common::embedder
 {
   public:
-    gtk_mainloop(gtk_gui* parent);
+	gtk_mainloop(gtk_gui* parent);
 	~gtk_mainloop();
 	
 	void init_window_factory();

@@ -219,6 +219,9 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
   private:
 	ambulant_gtk_window* m_gtk_window;
 	GtkWidget *m_widget;
+	gulong m_expose_event_handler_id;
+	gulong m_motion_notify_handler_id;
+	gulong m_button_release_handler_id;
 
 #ifndef GTK_NO_FILEDIALOG	/* Assume plain GTK */
   protected:
