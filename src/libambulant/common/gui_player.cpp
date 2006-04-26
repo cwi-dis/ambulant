@@ -144,27 +144,27 @@ gui_player::is_pause_enabled() const
 bool
 gui_player::is_play_active() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player?m_player->is_playing():false;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 bool
 gui_player::is_stop_active() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player?m_player->is_done():false;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 
 bool
 gui_player::is_pause_active() const
 {
-	const_cast<gui_player*>(this)->m_lock.enter();
+//	const_cast<gui_player*>(this)->m_lock.enter();
 	bool rv = m_player?m_player->is_pausing():false;
-	const_cast<gui_player*>(this)->m_lock.leave();
+//	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
 	
@@ -188,25 +188,25 @@ gui_player::before_mousemove(int cursor)
 void
 gui_player::on_char(int c)
 {
-	m_lock.enter();
+//	m_lock.enter();
 	if(m_player) m_player->on_char(c);
-	m_lock.leave();
+//	m_lock.leave();
 }
 
 void
 gui_player::on_focus_advance()
 {
-	m_lock.enter();
+//	m_lock.enter();
 	if(m_player) m_player->on_focus_advance();
-	m_lock.leave();
+//	m_lock.leave();
 }
 
 void
 gui_player::on_focus_activate()
 {
-	m_lock.enter();
+//	m_lock.enter();
 	if(m_player) m_player->on_focus_activate();
-	m_lock.leave();
+//	m_lock.leave();
 }
 
 lib::document *
