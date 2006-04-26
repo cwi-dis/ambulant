@@ -138,7 +138,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL;WITH_WINDOWS_PLUGINS"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="TRUE"

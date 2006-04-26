@@ -109,7 +109,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;AMBULANT_BUILD_DLL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_WINDOWS_PLUGINS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -120,6 +120,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib xerces-c_2.lib"
 				OutputFile="..\..\bin\win32\libambulant_shwin32.dll"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib"

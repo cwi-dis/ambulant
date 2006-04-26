@@ -47,8 +47,11 @@
 #define AM_DBG if(0)
 #endif
 
+#ifdef _DEBUG
+#define PLUGIN_PREFIX "libampluginD_"
+#else
 #define PLUGIN_PREFIX "libamplugin_"
-
+#endif
 
 using namespace ambulant;
 using namespace common;
