@@ -136,6 +136,12 @@ To create the linux source distribution
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
 - make dist
 - Check on a (preferably virgin) machine, again with all options enabled.
+- Check on a Windows machine too! We've had missing windows-only files before:-)
+- Check on a Mac too, but this is probably a bit less important.
+- Do a "diff -qr" between an unpacked new distribution and an unpacked
+  previous distribution. Look at all files that occur only in the old
+  but not in the new distribution (and vice versa). For each of those
+  determine that this is intended.
 
 Creating the third_party_packages-WIN32 distribution
 ====================================================
@@ -234,6 +240,10 @@ bugfix release later (which will cost everyone another 2 days or so of work).
 - The Mac player must definitely be tested on a virgin machine,
   to ensure there are no dependencies on dynamic libraries in /usr/local
   or something like that.
+  
+- The Mac player must also be tested on older MacOS releases (at least the
+  oldest supported), and either be made to run or the minimum required
+  OS version adapted.
   
 - On all platforms, test either on a virgin machine or at least
   clear out preferences before testing (unix: $HOME/.ambulant;
