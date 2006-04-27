@@ -6,6 +6,7 @@ library_include_HEADERS= \
 	dx_audio_player.h \
 	dx_bgrenderer.h \
 	dx_brush.h \
+	dx_html_renderer.h \
 	dx_image_renderer.h \
 	dx_img.h \
 	dx_playable.h \
@@ -21,6 +22,7 @@ library_include_HEADERS= \
 	dx_window.h \
 	dx_wmuser.h \
 	gif_decoder.h \
+	html_bridge.h \
 	img_decoder.h \
 	jpg_decoder.h \
 	png_decoder.h
