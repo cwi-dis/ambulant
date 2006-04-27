@@ -1,3 +1,20 @@
+2006-04-26 14:59  jackjansen
+
+	* Got plugins to work also for ReleaseShLib build.
+
+2006-04-26 14:58  jackjansen
+
+	* More deadlocks.
+
+2006-04-26 14:50  keesblom
+
+	* Solved bug when selecting a second file: some callback functions
+	  could become active with pointers to removed windows
+
+2006-04-26 10:17  jackjansen
+
+	* sigh, more locking had to be commented out because of deadlocks.
+
 2006-04-24 16:42  jackjansen
 
 	* Got plugins to actually work on Windows again (in a Shlib build).
