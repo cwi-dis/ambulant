@@ -43,7 +43,7 @@ namespace lib {
 
 
 /// Interface for reference counted objects.
-class ref_counted {
+class AMBULANTAPI ref_counted {
   public:
 	virtual ~ref_counted(){}
 
@@ -107,7 +107,7 @@ typedef basic_atomic_count<critical_section> atomic_count;
 ///		since the base ref_counted_obj does this by default.
 ///		....
 /// };
-class ref_counted_obj : virtual public ref_counted {
+class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
   public:
 	ref_counted_obj()
 	:	m_refcount(1) {}

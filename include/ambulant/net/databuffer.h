@@ -51,7 +51,7 @@ typedef char bytes;
 /// front), and it is possible to set the maximum size of the
 /// buffer. In addition you can control when to free the unused space
 /// in the buffer.
-class databuffer  
+class AMBULANTAPI databuffer  
 {							
   public:
 	// constructors

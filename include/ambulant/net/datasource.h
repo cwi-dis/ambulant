@@ -194,7 +194,7 @@ class audio_format_choices {
 /// calls size(), get_read_ptr() and end_of_file() to get available data size,
 /// pointer and status. Whenever the consumer has consumed some bytes it calls
 /// read_done().
-class datasource : virtual public ambulant::lib::ref_counted {  	
+class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {  	
   public:
 	virtual ~datasource() {};
 
@@ -329,7 +329,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 };
 
 /// Interface to create a datasource for a given URL.
-class raw_datasource_factory {
+class AMBULANTAPI raw_datasource_factory {
   public: 
     virtual ~raw_datasource_factory() {}; 	
 	
@@ -342,7 +342,7 @@ class raw_datasource_factory {
 /// This class is the client API used to create an audio_datasource for
 /// a given URL, with an extra parameter specifying which audio encodings
 /// the client is able to handle.
-class audio_datasource_factory  {
+class AMBULANTAPI audio_datasource_factory  {
   public: 
     virtual ~audio_datasource_factory() {}; 	
 
@@ -387,7 +387,7 @@ class raw_filter_finder {
 };
 
 /// Interface to create a video_datasource for a given URL.
-class video_datasource_factory  {
+class AMBULANTAPI video_datasource_factory  {
   public: 
     virtual ~video_datasource_factory() {};
 
@@ -449,7 +449,7 @@ class AMBULANTAPI datasource_factory :
 	std::vector<raw_filter_finder*> m_raw_filters;
 };
 
-class filter_datasource_impl : 
+class AMBULANTAPI filter_datasource_impl : 
 	public datasource,
 	public lib::ref_counted_obj
 {
