@@ -1,3 +1,29 @@
+2006-04-27 23:52  jackjansen
+
+	* Make sure xerces_parser.cpp and expat_parser.cpp are included in
+	  a source distribution.
+
+2006-04-27 23:48  jackjansen
+
+	* Added a note about testing the source distribution on Windows.
+	  Added a note about testing the OSX distribution on older
+	  releases.
+
+2006-04-27 16:31  jackjansen
+
+	* Added a couple more AMBULANTAPI flags.
+
+2006-04-27 16:31  jackjansen
+
+	* Temporary patch to forestall AmisAmbulant deadlock: hide HTML
+	  window in-line in stead of scheduling a callback.
+
+2006-04-27 15:21  jackjansen
+
+	* Two files were missing from source distributions, added.
+
+	  Need to backport.
+
 2006-04-26 14:59  jackjansen
 
 	* Got plugins to work also for ReleaseShLib build.
