@@ -34,7 +34,11 @@ using namespace common;
 preferences::preferences()
   :	m_welcome_seen(false),
 	m_log_file(""),
+#ifdef _DEBUG
+	m_log_level(lib::logger::LEVEL_DEBUG),
+#else
 	m_log_level(lib::logger::LEVEL_SHOW),
+#endif
 	m_parser_id("any"),
 	m_validation_scheme("auto"),
 	m_do_namespaces(false),
