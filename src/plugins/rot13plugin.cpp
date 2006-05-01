@@ -84,7 +84,11 @@ bug_workaround(ambulant::common::factories* factory)
 	return factory;
 }
 
-extern "C" void initialize(
+extern "C"
+#ifdef AMBULANT_PLATFORM_WIN32
+__declspec(dllexport)
+#endif
+void initialize(
     int api_version,
     ambulant::common::factories* factory,
     ambulant::common::gui_player *player)

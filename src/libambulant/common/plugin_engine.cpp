@@ -228,7 +228,7 @@ plugin_engine::load_plugins(std::string dirname)
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
 	std::string filepattern = 
 		dirname +
-		"\\" +
+//		"\\" +
 		PLUGIN_PREFIX +
 		"*.dll";
 	lib::textptr fp_conv(filepattern.c_str());

@@ -40,7 +40,7 @@ preferences::preferences()
 	m_do_namespaces(false),
 	m_do_schema(false),
 	m_validation_schema_full_checking(false),
-	m_use_plugins(false),
+	m_use_plugins(true),
 	m_plugin_dir("")
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
