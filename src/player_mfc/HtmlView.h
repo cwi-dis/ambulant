@@ -70,7 +70,7 @@ class html_browser_imp : public html_browser {
 public:
 	html_browser_imp(int left, int top, int width, int height);
 	~html_browser_imp();
-	void goto_url(std::string url);
+	void goto_url(std::string url, ambulant::net::datasource_factory *df);
 	void show();
 	void hide();
 	void redraw();

@@ -51,7 +51,8 @@ class dx_html_renderer : public dx_renderer_playable {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp, 
+		lib::event_processor* evp,
+		common::factories* factories,
 		dx_playables_context *dxplayer);
 	~dx_html_renderer();
 	void start(double t);
@@ -62,6 +63,7 @@ class dx_html_renderer : public dx_renderer_playable {
 //	void set_surface(common::surface *dest);
   private:
 	browser_container *m_html_browser;
+	net::datasource_factory *m_df;
 };
 
 } // namespace dx

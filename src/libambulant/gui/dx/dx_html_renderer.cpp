@@ -92,9 +92,12 @@ gui::dx::dx_html_renderer::dx_html_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
+	common::factories* factory, 
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, dxplayer),
-	m_html_browser(NULL) {
+	m_html_browser(NULL),
+	m_df(factory->get_datasource_factory())
+{
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer(0x%x)", this);
 }
 
@@ -125,7 +128,7 @@ gui::dx::dx_html_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x) html_widget=0x%x", this, it);
 
 	net::url url = m_node->get_url("src");
-	it->goto_url(url);
+	it->goto_url(url, m_df);
 
 	it->show();
 

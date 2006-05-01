@@ -22,11 +22,12 @@
 #define AMBULANT_GUI_DX_HTML_BRIDGE_H
 
 #include <string>
+#include "ambulant/net/datasource.h"
 
 class html_browser {
 public:
 	virtual ~html_browser() {};
-	virtual void goto_url(std::string url) = 0;
+	virtual void goto_url(std::string url, ambulant::net::datasource_factory *df) = 0;
 	virtual void show() = 0;
 	virtual void hide() = 0;
 	virtual void redraw() = 0;

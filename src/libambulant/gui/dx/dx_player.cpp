@@ -420,7 +420,7 @@ gui::dx::dx_playable_factory::new_playable(
 #ifdef	WITH_HTML_WIDGET
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
-			p = new dx_html_renderer(context, cookie, node, evp, m_dxplayer);
+			p = new dx_html_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
 #endif/*WITH_HTML_WIDGET*/

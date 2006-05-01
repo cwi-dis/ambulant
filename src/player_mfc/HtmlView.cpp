@@ -139,7 +139,7 @@ html_browser_imp::~html_browser_imp() {
 }
 
 void
-html_browser_imp::goto_url(std::string url) {
+html_browser_imp::goto_url(std::string url, ambulant::net::datasource_factory *df) {
 	CString CSurl(url.c_str());
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::goto_url(0x%x): url=%s)", this, url.c_str());
 	HtmlView* browser = (HtmlView*) m_browser;
