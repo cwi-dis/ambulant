@@ -1,3 +1,17 @@
+2006-05-01 17:25  jackjansen
+
+	* Pass the datasource factory to html_bridge::goto_url, so the
+	  implementation can choose to use ambulant datasources to load the
+	  html data.
+
+2006-05-01 14:07  jackjansen
+
+	* If _DEBUG is defined, set the default default loglevel to debug.
+
+2006-05-01 12:10  jackjansen
+
+	* Get puglins to link on Windows. Untested.
+
 2006-04-27 23:52  jackjansen
 
 	* Make sure xerces_parser.cpp and expat_parser.cpp are included in
