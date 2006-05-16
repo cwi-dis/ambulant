@@ -76,7 +76,7 @@ class gui::dx::browser_container : public lib::ref_counted_obj {
 		}
 	}
 	void hide(event_processor *evp) {
-#if 1
+#if 0
 		// XXXJack: bug workaround for hang in AmisAmbulant, see AmisHtmlView::html_browser_imp::hide.
 		m_browser->hide();
 #else
