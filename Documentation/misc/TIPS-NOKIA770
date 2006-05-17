@@ -1,0 +1,60 @@
+Here are some pointers how to work with Nokia 770 (2005 Software Edition).
+
+1. For software development, you need a Linux box with root access, download
+   and install scratxhbox as described in: 
+   http://www.maemo.org/platform/docs/tutorials/Maemo_tutorial.html
+   For the scratchbox to work, I had to boot FC4 kernel with  vdso=0.
+
+2. Other useful material is found in:
+   http://www.maemo.org/platform/docs/how-to.html
+
+   Especially the following topics are relevant:
+   - Using the Linux flasher tool and making your own root filesystem
+     (see also: http://www.maemo.org/maemowiki/HowDoiBecomeRoot for a simpler
+     method to get root access on the 770 while keeping the original filesystem intact)
+
+   - Install sshd (http://www.maemo.org/maemowiki/InstallSsh, I use dropbear)
+
+   - Setting up USB networking:
+     http://maemo.org/platform/docs/howtos/howto_usb_networking.html
+
+     or -simpler- if you have FC4:
+     http://maemo.org/maemowiki/HOWTO_Set_up_USB_networking_FC4
+
+3. Creation of a web-installable debian package is described in:
+   http://maemo.org/platform/docs/howtos/howto_making_an_application_package.html
+
+4. Remote debugging is possible as follows (once you have USB networking):
+   a. From the scratchbox (in ARM mode) copy /usr/bin/gdbserver to the Nokia 770
+      device.
+   b. copy libpthread-0.10.so and libthread_db-1.0.so (with their links) from the
+      scratchbox (in ARM mode) to the Nokia 770.
+   c. Compile all sources of your program with -h -O0 flags.
+   d. Copy a stripped version of your program to the device and leave a non-stripped
+      version on the same location on your scratchbox (in ARM mode):
+      if your stripped program on the 770 is located in /home/user/MyProgram, then
+      have the non-stripped version in the scratchbox in  /home/user/MyProgram, or
+      outside the scratchbox in:
+      /scratchbox/users/<yourname>/home/user/MyProgram
+      
+   e. on the Nokia 770, start the the program under gdbserver, e.g.:
+      770> run-standalone.sh gdbserver 192.168.2.15:2222 ./MyProgram
+
+      in the scratchbox (in ARM mode):
+      [sbox-SDK_ARM: ~/]: gdb ./MyProgram
+      gdb> target remote  192.168.2.15:2222
+      gdb> cont
+
+      On the Nokia, you need to restart gdbserver as above each time your program
+      terminates or crashes.
+
+   f. It is also possible to run "ddd". This must be started outside the scratchbox
+      with the command:
+      ddd --debugger '/scratchbox/login gdb'
+      Inside ddd, with  File->Open Program select:
+	 /scratchbox/users/<yourname>/home/user/MyProgram
+      Then in the gdb window type:target remote  192.168.2.15:2222
+      You can now browse sources, define breakpoints etc. before clicking "Cont".
+      Don't use "Run", that doesn't work with gdbserver.
+
+Kees Blom Nay 17, 2006\
