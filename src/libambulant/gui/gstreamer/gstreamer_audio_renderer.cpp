@@ -87,7 +87,7 @@ gstreamer_audio_renderer::~gstreamer_audio_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::~gstreamer_audio_renderer(0x%x) m_url=%s",  this, m_url.get_url().c_str());		
-	if (m_is_playing) {
+	if (m_player && m_is_playing) {
 	//	m_lock.leave();
 		//TBD stop it
 		m_player->stop();
@@ -240,7 +240,11 @@ gstreamer_audio_renderer::start(double where)
 	pause();
 	seek(where);
 	resume(); // turn on playing
+	m_lock.enter();
+	m_context->started(m_cookie, 0);
+	m_lock.leave();
 }
+
 
 void
 gstreamer_audio_renderer::seek(double where)
@@ -253,11 +257,11 @@ gstreamer_audio_renderer::seek(double where)
 	      where += (m_clip_begin / microsec);
 	      where_guint64 = llrint(where)* GST_SECOND;	      
 	      lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() where=%f, where_guint64=%lu", where, where_guint64);
-	      m_player->mutex_acquire();
+	      m_player->mutex_acquire("gstreamer_audio_renderer::seek");
 	      if ( ! gst_element_seek(m_player->gst_player(), (GstSeekType) (GST_SEEK_METHOD_SET | GST_FORMAT_TIME | GST_SEEK_FLAG_FLUSH), where_guint64)) {
 	             lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() failed.");
 	      }
-	      m_player->mutex_release();
+	      m_player->mutex_release("gstreamer_audio_renderer::seek");
        }
        m_lock.leave();
 }
@@ -272,9 +276,9 @@ gstreamer_audio_renderer::get_dur()
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.get_dur(0x%x)", (void *)this);
 	m_lock.enter();
 	if (m_player) {
-	        m_player->mutex_acquire();
+	        m_player->mutex_acquire("gstreamer_audio_renderer::get_dur");
 		gst_element_query(m_player->gst_player(), GST_QUERY_TOTAL, &fmtTime, &length);
-		m_player->mutex_release();
+		m_player->mutex_release("gstreamer_audio_renderer::get_dur");
 	}
 	m_lock.leave();
 

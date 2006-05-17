@@ -399,7 +399,7 @@ if test "x$test_qt" = "xtrue"; then
 	LIBQTPKG="libqt"
 	QT_PREFIX="`pkg-config --variable=exec_prefix qt-mt`"
 elif test "x$QTDIR" != "x"; then
-    # Old-style, Qt directory in QTDIR environment variable
+     AC_MSG_NOTICE([Old-style qt configuration, Qt directory in QTDIR environment variable])
     test_qt=true
 	LIBQT_INCLUDES="$QT_CFLAGS -DHAVE_LIBQT=1"
 	LIBQT_LIBS="$QT_LIBS"
@@ -411,7 +411,7 @@ if test "x$test_qt" = "xtrue"; then
     with_frontend=true
 fi
 
-AC_MSG_RESULT($qtopia)
+AC_MSG_RESULT($test_qt)
 AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
 AC_SUBST(LIBQTPKG)
 AC_SUBST(LIBQT_INCLUDES)
@@ -477,7 +477,7 @@ AC_ARG_WITH(gtk,
      ])
 if test "x$test_gtk" = "xtrue"; then
 	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
-	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.2`"
+	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.0`"
 	if test $test_gtk = false; then
 	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
 	fi

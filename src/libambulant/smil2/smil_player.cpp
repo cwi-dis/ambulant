@@ -217,9 +217,11 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np == NULL) {
 		np = new_playable(n);
+AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
 		m_playables_cs.enter();
 		m_playables[n] = np;
 		m_playables_cs.leave();
+AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
 	
 	// We also need to remember any accesskey attribute (as opposed to accesskey
@@ -292,6 +294,7 @@ void smil_player::stop_playable(const lib::node *n) {
 		highlight(n, false);
 		node_focussed(NULL);
 	}
+AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.enter", (void*)n);
 	m_playables_cs.enter();
 		
 	std::map<const lib::node*, common::playable *>::iterator it = 
@@ -301,6 +304,7 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
+AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
 }
 
 // Request to pause the playable of the node.
@@ -617,6 +621,7 @@ void smil_player::on_char(int ch) {
 
 void smil_player::on_focus_advance() {
 	AM_DBG m_logger->debug("smil_player::on_focus_advance");
+AM_DBG lib::logger::get_logger()->debug("smil_player:::on_focus_advance(0x%x)cs.enter", (void*)this);
 	m_playables_cs.enter();
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.begin();
@@ -648,6 +653,7 @@ void smil_player::on_focus_advance() {
 		m_logger->trace("on_focus_advance: Nothing to focus on");
 	}
 	m_playables_cs.leave();
+AM_DBG lib::logger::get_logger()->debug("smil_player:::on_focus_advance(0x%x)cs.leave", (void*)this);
 	node_focussed(m_focus);	
 }
 

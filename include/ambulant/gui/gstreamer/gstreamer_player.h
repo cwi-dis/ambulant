@@ -56,6 +56,13 @@ namespace gstreamer {
   
 class gstreamer_audio_renderer;
 
+/* The Npkia 770 csn handle only one audio/video at a time.
+   The other mutex protects player data structures as they are access from 
+   different threads.
+*/
+#ifdef  WITH_NOKIA770
+static pthread_mutex_t s_main_nokia770_mutex;
+#endif//WITH_NOKIA770
 static pthread_mutex_t s_mutex;
 static bool s_initialized = false;
 
@@ -71,8 +78,8 @@ class gstreamer_player :  public lib::unix::thread {
 	void pause();
 	void play();
 	void stop_player();
-	void mutex_acquire();
-	void mutex_release();
+	void mutex_acquire(const char* id);
+	void mutex_release(const char* id);
 
   protected:
 	unsigned long run();
@@ -82,7 +89,6 @@ class gstreamer_player :  public lib::unix::thread {
 	gstreamer_audio_renderer* m_audio_renderer;
 	GstElement* m_gst_player;
 	gboolean m_player_done;
-
   };
 
 } // end namespace gstreamer

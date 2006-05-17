@@ -573,8 +573,8 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 	m_smilfilename = smilfilename;
 //	free(filename);
 
-
-    delete m_mainloop;
+	if (m_mainloop)
+		delete m_mainloop;
     
 	m_mainloop = new gtk_mainloop(this);
     _update_menus();
