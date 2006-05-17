@@ -173,8 +173,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)openTheDocument
 {
-    NSString *url = [[self fileURL] path];
-	if ( [[self fileURL] isFileURL] ) {
+    NSString *url = [[self fileURL] absoluteString];
+	// XXX This is incorrect
+	if ( [[self fileURL] isFileURL] && ![[self fileURL] fragment]) {
 		NSString *escapedurl = (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
 			(CFStringRef)url, NULL, NULL, kCFStringEncodingUTF8);
 		//[url release];

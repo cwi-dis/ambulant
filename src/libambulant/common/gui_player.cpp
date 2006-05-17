@@ -229,13 +229,14 @@ gui_player::create_document(const net::url& url)
 #else
 	m_url = url;
 #endif
-	lib::logger::get_logger()->trace("%s: Parsing document...", url.get_url().c_str());
-	lib::document *rv = lib::document::create_from_url(this, url);
+	m_url = m_url.get_document();
+	lib::logger::get_logger()->trace("%s: Parsing document...", m_url.get_url().c_str());
+	lib::document *rv = lib::document::create_from_url(this, m_url);
 	if (rv) {
-		lib::logger::get_logger()->trace("%s: Parser done", url.get_url().c_str());
+		lib::logger::get_logger()->trace("%s: Parser done", m_url.get_url().c_str());
 		rv->set_src_url(url);
 	} else {
-		lib::logger::get_logger()->trace("%s: Failed to parse document ", url.get_url().c_str());
+		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}
 	return rv;
 }	
