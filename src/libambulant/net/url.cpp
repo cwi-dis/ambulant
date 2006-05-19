@@ -522,8 +522,8 @@ bool net::url::same_document(const net::url &base) const
 std::string
 net::url::guesstype() const
 {
-	size_t dotpos = m_path.find_last_of(".");
-	if (dotpos <= 0) return "";
+	unsigned int dotpos = m_path.find_last_of(".");
+	if (dotpos == std::string::npos) return "";
 	std::string ext = m_path.substr(dotpos);
 	
 	if (ext == ".htm" || ext == ".HTM" || ext == ".html" || ext == ".HTML")
