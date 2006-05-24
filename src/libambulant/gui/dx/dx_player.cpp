@@ -101,12 +101,12 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 		// message already logged
 		return;
 	}
-#ifdef TEMPORARILY_REMOVED_BECAUSE_IT_IS_BROKEN
+#ifndef TEMPORARILY_REMOVED_BECAUSE_IT_IS_BROKEN
 	// If there's a fragment ID remember the node it points to,
 	// and when we first start playback we'll go there.
 	const std::string& idd = u.get_ref();
 	if (idd != "") {
-		const lib::node *node = doc->get_node(idd);
+		const lib::node *node = m_doc->get_node(idd);
 		if (node) {
 			m_goto_node = node;
 		} else {
