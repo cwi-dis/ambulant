@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = AmbulantPlayer
-PROJECT_NUMBER         = 1.0.1
+PROJECT_NUMBER         = 1.7.99
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -77,40 +77,78 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../../include/ambulant/common/embedder.h \
-                         ../../include/ambulant/common/factory.h \
-                         ../../include/ambulant/common/layout.h \
-                         ../../include/ambulant/common/playable.h \
-                         ../../include/ambulant/common/player.h \
-                         ../../include/ambulant/common/plugin_engine.h \
-                         ../../include/ambulant/common/preferences.h \
-                         ../../include/ambulant/common/region_dim.h \
-                         ../../include/ambulant/common/region_info.h \
-                         ../../include/ambulant/common/renderer.h \
-                         ../../include/ambulant/common/smil_alignment.h \
-                         ../../include/ambulant/lib/callback.h \
-                         ../../include/ambulant/lib/delta_timer.h \
-                         ../../include/ambulant/lib/document.h \
-                         ../../include/ambulant/lib/event.h \
-                         ../../include/ambulant/lib/event_processor.h \
-                         ../../include/ambulant/lib/gtypes.h \
-                         ../../include/ambulant/lib/logger.h \
-                         ../../include/ambulant/lib/mtsync.h \
-                         ../../include/ambulant/lib/node.h \
-                         ../../include/ambulant/lib/node_iterator.h \
-                         ../../include/ambulant/lib/node_navigator.h \
-                         ../../include/ambulant/lib/nscontext.h \
-                         ../../include/ambulant/lib/refcount.h \
-                         ../../include/ambulant/lib/sax_handler.h \
-                         ../../include/ambulant/lib/sax_types.h \
-                         ../../include/ambulant/lib/system.h \
-                         ../../include/ambulant/lib/thread.h \
-                         ../../include/ambulant/lib/timer.h \
-                         ../../include/ambulant/lib/transition_info.h \
-                         ../../include/ambulant/lib/tree_builder.h \
-                         ../../include/ambulant/net/datasource.h \
-                         ../../include/ambulant/net/databuffer.h \
-                         ../../include/ambulant/net/url.h
+INPUT                  = ../../include/ambulant/common/embedder.h	\
+                         ../../include/ambulant/common/factory.h	\
+                         ../../include/ambulant/common/layout.h		\
+                         ../../include/ambulant/common/gui_player.h	\
+                         ../../include/ambulant/common/playable.h	\
+                         ../../include/ambulant/common/player.h		\
+                         ../../include/ambulant/common/plugin_engine.h	\
+                         ../../include/ambulant/common/preferences.h	\
+                         ../../include/ambulant/common/region_dim.h	\
+                         ../../include/ambulant/common/region_eval.h	\
+                         ../../include/ambulant/common/region.h		\
+                         ../../include/ambulant/common/region_info.h	\
+                         ../../include/ambulant/common/renderer_impl.h	\
+                         ../../include/ambulant/common/smil_alignment.h	\
+                         ../../include/ambulant/common/smil_handler.h	\
+                         ../../include/ambulant/common/trace_playable.h	\
+                         ../../include/ambulant/common/video_renderer.h	\
+                         ../../include/ambulant/lib/abstract_mtsync.h	\
+                         ../../include/ambulant/lib/amstream.h		\
+                         ../../include/ambulant/lib/asb.h		\
+                         ../../include/ambulant/lib/basic_types.h	\
+                         ../../include/ambulant/lib/byte_buffer.h	\
+                         ../../include/ambulant/lib/callback.h		\
+                         ../../include/ambulant/lib/colors.h		\
+                         ../../include/ambulant/lib/delta_timer.h	\
+                         ../../include/ambulant/lib/document.h		\
+                         ../../include/ambulant/lib/event.h		\
+                         ../../include/ambulant/lib/event_processor.h	\
+                         ../../include/ambulant/lib/expat_parser.h	\
+                         ../../include/ambulant/lib/filesys.h		\
+                         ../../include/ambulant/lib/gpaths.h		\
+                         ../../include/ambulant/lib/gtypes.h		\
+                         ../../include/ambulant/lib/logger.h		\
+                         ../../include/ambulant/lib/memfile.h		\
+                         ../../include/ambulant/lib/mtsync.h		\
+                         ../../include/ambulant/lib/nfa.h		\
+                         ../../include/ambulant/lib/node_dummy.h	\
+                         ../../include/ambulant/lib/node.h		\
+                         ../../include/ambulant/lib/node_impl.h		\
+                         ../../include/ambulant/lib/node_iterator.h	\
+                         ../../include/ambulant/lib/node_navigator.h	\
+                         ../../include/ambulant/lib/nscontext.h		\
+                         ../../include/ambulant/lib/parselets.h		\
+                         ../../include/ambulant/lib/parser_factory.h	\
+                         ../../include/ambulant/lib/refcount.h		\
+                         ../../include/ambulant/lib/sax_handler.h	\
+                         ../../include/ambulant/lib/sax_types.h		\
+                         ../../include/ambulant/lib/string_util.h	\
+                         ../../include/ambulant/lib/system.h		\
+                         ../../include/ambulant/lib/textptr.h		\
+                         ../../include/ambulant/lib/thread.h		\
+                         ../../include/ambulant/lib/timer.h		\
+                         ../../include/ambulant/lib/transition_info.h	\
+                         ../../include/ambulant/lib/tree_builder.h	\
+                         ../../include/ambulant/lib/xerces_parser.h	\
+                         ../../include/ambulant/net/connection.h	\
+                         ../../include/ambulant/net/databuffer.h	\
+                         ../../include/ambulant/net/datasource.h	\
+                         ../../include/ambulant/net/demux_datasource.h	\
+                         ../../include/ambulant/net/ffmpeg_audio.h	\
+                         ../../include/ambulant/net/ffmpeg_common.h	\
+                         ../../include/ambulant/net/ffmpeg_factory.h	\
+                         ../../include/ambulant/net/ffmpeg_raw.h	\
+                         ../../include/ambulant/net/ffmpeg_video.h	\
+                         ../../include/ambulant/net/posix_datasource.h	\
+                         ../../include/ambulant/net/raw_video_datasource.h	\
+                         ../../include/ambulant/net/rtsp_datasource.h	\
+                         ../../include/ambulant/net/rtsp_factory.h	\
+                         ../../include/ambulant/net/socket.h		\
+                         ../../include/ambulant/net/stdio_datasource.h	\
+                         ../../include/ambulant/net/url.h		\
+                         ../../include/ambulant/net/win32_datasource.h
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
