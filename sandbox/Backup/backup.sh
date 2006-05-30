@@ -1,5 +1,6 @@
 #!/bin/bash -
 # script to be run as user ambulant on apps.cwi.nl
+PATH=/cwi/bin:$PATH
 
 # Debug level: 0=nothing 1=mail errors 2=mail succes 3=trace this script
 #
