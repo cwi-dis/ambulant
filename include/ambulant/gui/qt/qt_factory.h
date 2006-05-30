@@ -24,6 +24,7 @@
 
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/common/gui_player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/none/none_gui.h"
@@ -59,9 +60,16 @@ class qt_window_factory : public common::window_factory {
         common::bgrenderer *new_background_renderer(
         const common::region_info *src);
         
+	/// Helper: set our top-level gui_player.
+	void set_gui_player(gui_player* gpl);
+	
+	/// Helper: get our top-level gui_player.
+	gui_player* get_gui_player();
+	
   private:
 	QWidget* m_parent_widget;
 	int m_top_offset;
+	gui_player* m_gui_player;
 };
 
 /// Qt implementation of playable_factory
@@ -194,6 +202,12 @@ class qt_ambulant_widget : public QWidget {
 	/// Helper: get our counterpart gui_window.
 	ambulant_qt_window* qt_window();
 	
+	/// Helper: set our top-level gui_player.
+	void set_gui_player(gui_player* gpl);
+	
+	/// Helper: get our top-level gui_player.
+	gui_player* get_gui_player();
+	
 	// QWidget API:
 	void paintEvent(QPaintEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
@@ -203,6 +217,7 @@ class qt_ambulant_widget : public QWidget {
 
   private:
 	ambulant_qt_window* m_qt_window;
+	gui_player* m_gui_player;
 };
 
 } // namespace qt

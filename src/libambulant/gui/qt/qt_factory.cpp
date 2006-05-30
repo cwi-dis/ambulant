@@ -31,7 +31,7 @@
 #endif/*WITH_QT_HTML_WIDGET*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"
-
+#include "qcursor.h"
 
 using namespace ambulant;
 using namespace gui::qt;
@@ -142,6 +142,18 @@ qt_window_factory::qt_window_factory( QWidget* parent_widget, int top_offset)
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory (0x%x)", (void*) this);
 }	
 
+void
+qt_window_factory::set_gui_player(gui_player* gpl)
+{
+	m_gui_player = gpl;
+}
+	
+gui_player* 
+qt_window_factory::get_gui_player()
+{
+	return m_gui_player;
+}
+	
 common::gui_window *
 qt_window_factory::new_window (const std::string &name,
     lib::size bounds,
@@ -165,8 +177,8 @@ qt_window_factory::new_window (const std::string &name,
 
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
-	
- 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x", (void*) this, (void*) qaw, (void*) aqw);
+	qaw->set_gui_player(m_gui_player);
+ 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x gui_player=0x%x", (void*) this, (void*) qaw, (void*) aqw, (void*) m_gui_player);
 	qaw->show();
 	return aqw;
 }
@@ -513,6 +525,7 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 	lib::rect* bounds,
 	QWidget* parent_widget)
 :	QWidget(parent_widget,"qt_ambulant_widget",0),
+	m_gui_player(NULL),
 	m_qt_window(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",
@@ -535,6 +548,18 @@ qt_ambulant_widget::~qt_ambulant_widget()
 		m_qt_window->set_ambulant_widget(NULL);
 		m_qt_window = NULL;
 	}
+}
+
+void
+qt_ambulant_widget::set_gui_player(gui_player* gpl)
+{
+	m_gui_player = gpl;
+}
+	
+gui_player* 
+qt_ambulant_widget::get_gui_player()
+{
+	return m_gui_player;
 }
 	
 void
@@ -571,23 +596,28 @@ void
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x(), e->y());
-#if 0
-    // XXX This code temporarily disabled, because with the current
+#if 1
+    // XXX This code was temporarily disabled, because with the current
     // structure there is no easy way to get at the gui_player, which
     // is needed to tell the scheduler we're about to start telling it
     // about pointed() nodes.
-    xxx_gui_player->before_mousemove(0);
+	gui_player* pl = get_gui_player();
+	if (pl)
+		pl->before_mousemove(0);
 	m_qt_window->user_event(ap, 1);
-	int cursid = xxx_gui_player->after_mousemove();
-	Qt::CursorShape cursor_shape = Qt::ArrowCursor;
+	int cursid = 0;
+	if (pl)
+		cursid = pl->after_mousemove();
+	QCursor cursor(ArrowCursor);
 	if (cursid == 0) {
         ; // pass
-    } else if (cursid == 1) {
-        cursor_shape = Qt::PointingHandCursor;
-    } else {
-        lib::logger::get_logger()->debug("mouseMoveEvent: unknown cursor id %d", cursid);
-    }
-    setCursor(cursor_shape);
+	} else if (cursid == 1) {
+                cursor = PointingHandCursor;
+	} else {
+                lib::logger::get_logger()->debug("mouseMoveEvent: unknown cursor id %d", cursid);
+	}
+	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent(0x%x): cursid=%d)",cursid);
+	setCursor(cursor);
 #endif
    
 }
