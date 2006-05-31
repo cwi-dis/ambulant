@@ -33,9 +33,18 @@ namespace ambulant {
 
 namespace common {
 
-/// Pointer to the initialize function in the plugin.
 extern "C" {
+	/// Pointer to the initialize function in the plugin. The initialize function
+	/// should be a C function (not C++) and it should be called "initialize".
 	typedef void (*initfuncptr)(int api_version, common::factories* factory, common::gui_player *player);
+
+	/// Structure for extra information a plugin may want to expose to
+	/// Ambulant or Ambulant extensions. If available it must be called
+	/// "plugin_extra_data".
+	struct plugin_extra_data {
+		char *m_plugin_name;
+		void *m_plugin_extra;
+	};
 };
 
 /// Plugin loader.
@@ -43,7 +52,7 @@ extern "C" {
 /// loads them. Subsequently, when a new player is created, it calls the init
 /// routines of the plugins to all them to register themselves with the correct
 /// global factories.
-class plugin_engine {
+class AMBULANTAPI plugin_engine {
   public:
 
   	/// Return the singleton plugin_engine object.
@@ -51,6 +60,9 @@ class plugin_engine {
     
     /// Add plugins to the given global factories.
     void add_plugins(common::factories *factory, common::gui_player *player = 0);
+
+	/// Get extra-data for a named plugin, if available.
+	void *get_extra_data(std::string name);
     
   private:
     
@@ -68,6 +80,8 @@ class plugin_engine {
   	/// The list of initialize functions to call.
   	std::vector< initfuncptr > m_initfuncs;
 
+	/// All available extra data.
+	std::map< std::string, plugin_extra_data* > m_extra_data;
     static plugin_engine *s_singleton;
 };
 

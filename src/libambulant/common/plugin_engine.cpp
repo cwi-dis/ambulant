@@ -207,6 +207,11 @@ plugin_engine::load_plugins(std::string dirname)
                     } else {
                         m_initfuncs.push_back(init);
                     }
+					plugin_extra_data *extra = (plugin_extra_data *)lt_dlsym(handle, "plugin_extra_data");
+					if (extra) {
+						std::string name = extra->m_plugin_name;
+						m_extra_data[name] = extra;
+					}
                 } else {
                     lib::logger::get_logger()->trace("plugin_engine: lt_dlopen(%s) failed: %s",filename, lt_dlerror());
 					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pluginname);
@@ -254,14 +259,19 @@ plugin_engine::load_plugins(std::string dirname)
             if (handle) {
                 AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",pathname.c_str());
                 AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
-                initfuncptr init = (initfuncptr) GetProcAddress(handle,"initialize");
+                initfuncptr init = (initfuncptr) GetProcAddress(handle, "initialize");
                 if (!init) {
                     lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", pathname.c_str());
 					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pathname.c_str());
                 } else {
                     m_initfuncs.push_back(init);
                 }
-            } else {
+				plugin_extra_data *extra = (plugin_extra_data *)GetProcAddress(handle, "plugin_extra_data");
+				if (extra) {
+					std::string name = extra->m_plugin_name;
+					m_extra_data[name] = extra;
+				}
+	       } else {
 				DWORD err = GetLastError();
 				lib::logger::get_logger()->trace("plugin_engine: %s: LoadLibrary returned error 0x%x", pathname.c_str(), err);
 				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s"), pathname.c_str());
@@ -288,4 +298,12 @@ plugin_engine::add_plugins(common::factories* factory, common::gui_player *playe
         init = *i;
         (init)(AMBULANT_PLUGIN_API_VERSION, factory, player);
     }
+}
+
+void *
+plugin_engine::get_extra_data(std::string name)
+{
+	if (m_extra_data.count(name) == 0)
+		return NULL;
+	return m_extra_data[name]->m_plugin_extra;
 }
