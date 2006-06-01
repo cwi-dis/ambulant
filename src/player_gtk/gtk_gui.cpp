@@ -281,7 +281,7 @@ gtk_gui::gtk_gui(const char* title,
 	// Play Menu
 	{ "PlayMenu", "<alt>Y", "Pla_y"},
 	{ "play", GTK_STOCK_MEDIA_PLAY, "Pla_y", "<alt>Y", "Play document", NULL},
-	{ "pause", GTK_STOCK_MEDIA_PAUSE, "_Pause", "<alt>P", "Pause document", G_CALLBACK (gtk_C_callback_pause)},
+	{ "pause", GTK_STOCK_MEDIA_PAUSE, "_Pause", "<alt>P", "Pause document", NULL},
 	{ "stop", GTK_STOCK_MEDIA_STOP, "_Stop", "<alt>S", "Stop document", NULL},
 	// View Menu
 	{ "ViewMenu", "<alt>V", "_View"},
@@ -353,8 +353,6 @@ gtk_gui::gtk_gui(const char* title,
 	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "open"), true);
 	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "openurl"), false);
 #endif
-	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "play"), false);
-	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "pause"), false);
 
 	// The actual activation calls
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",  G_CALLBACK (gtk_C_callback_open), (void *) this );	
@@ -364,7 +362,7 @@ gtk_gui::gtk_gui(const char* title,
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "quit"), "activate",  G_CALLBACK (gtk_C_callback_quit), (void*)this);		
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "play"), "activate",  G_CALLBACK (gtk_C_callback_play), (void*)this);
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "pause"), "activate",  G_CALLBACK (gtk_C_callback_pause), (void *) this );	
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "pause"), "activate",  G_CALLBACK (gtk_C_callback_pause), (void*)this );	
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "stop"), "activate",  G_CALLBACK (gtk_C_callback_stop), (void*)this);
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "fullscreen"), "activate",  G_CALLBACK (gtk_C_callback_full_screen), (void*)this);
@@ -391,7 +389,7 @@ gtk_gui::gtk_gui(const char* title,
 
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
-	
+	_update_menus();
 }
 
 
@@ -564,9 +562,6 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 			fileError(smilfilename);
 			return false;
 		}
-
-	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"), false);
-	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"), true);
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
 
 	char* filename = strdup(smilfilename);
@@ -577,7 +572,7 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 		delete m_mainloop;
     
 	m_mainloop = new gtk_mainloop(this);
-    _update_menus();
+	_update_menus();
 	return m_mainloop->is_open();
 }
 
@@ -759,31 +754,35 @@ no_fileopen_infodisplay(gtk_gui* w, const char* caption) {
 
 void 
 gtk_gui::do_play() {
-    assert(m_mainloop);
-    m_mainloop->play();
-    _update_menus();
+	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_play", m_mainloop);
+ 	assert(m_mainloop);
+ 	m_mainloop->play();
+ 	_update_menus();
 }
 
 void 
 gtk_gui::do_pause() {
-	assert(m_mainloop);
-    m_mainloop->pause();
-    _update_menus();
+	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_pause", m_mainloop);
+ 	assert(m_mainloop);
+ 	m_mainloop->pause();
+ 	_update_menus();
 }
 
 void 
 gtk_gui::do_reload() {
-    assert(m_mainloop);
-    m_mainloop->restart(false);
-    _update_menus();
+	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_reload", m_mainloop);
+     	assert(m_mainloop);
+     	m_mainloop->restart(false);
+     	_update_menus();
 }
 
 void 
 gtk_gui::do_stop() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_stop");
+	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_stop", m_mainloop);
+ 	assert(m_mainloop);
 	if(m_mainloop)
 		m_mainloop->stop();
-    _update_menus();
+ 	_update_menus();
 }
 
 void 
@@ -921,18 +920,13 @@ gtk_gui::internal_message(int level, char* msg) {
 void
 gtk_gui::_update_menus()
 {
+    AM_DBG printf("gtk_gui::_update_menus(0x%x) play_enabled=%d play_active=%d pause_enabled=%d pause_active=%d stop_enabled=%d stop_active=%d \n", this, m_mainloop->is_play_enabled(), m_mainloop->is_play_active(), m_mainloop->is_pause_enabled(), m_mainloop->is_pause_active(), m_mainloop->is_stop_enabled(), m_mainloop->is_stop_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
-        m_mainloop && m_mainloop->is_play_enabled());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
-        m_mainloop && m_mainloop->is_play_active());
+        m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
-        m_mainloop && m_mainloop->is_pause_enabled());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
-        m_mainloop && m_mainloop->is_pause_active());
+        m_mainloop && m_mainloop->is_pause_enabled() && ! m_mainloop->is_pause_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
-        m_mainloop && m_mainloop->is_stop_enabled());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
-        m_mainloop && m_mainloop->is_stop_active());
+        m_mainloop && m_mainloop->is_stop_enabled() && ! m_mainloop->is_stop_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "reload"),
         (m_mainloop != NULL));
 }
