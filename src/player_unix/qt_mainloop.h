@@ -41,6 +41,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/player.h"
 #include "ambulant/gui/none/none_gui.h"
+#include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/smil2/smil_player.h"
 #include "ambulant/net/url.h"
@@ -63,7 +64,7 @@ class qt_mainloop :
 {
   //  static bool m_done;
   public:
-    qt_mainloop(qt_gui* parent, window_factory *wf);
+    qt_mainloop(qt_gui* parent, qt_window_factory *wf);
 	
 	void init_playable_factory();
 	void init_datasource_factory();

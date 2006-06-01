@@ -291,7 +291,7 @@ qt_gui::openSMILfile(const QString smilfilename, int mode) {
 	m_smilfilename = smilfilename;
 	if (m_mainloop != NULL)
 		delete m_mainloop;
-	ambulant::common::window_factory *wf = new ambulant::gui::qt::qt_window_factory(this, m_menubar_height);
+	qt_window_factory *wf = new ambulant::gui::qt::qt_window_factory(this, m_menubar_height);
  	m_mainloop = new qt_mainloop(this, wf);
 	return m_mainloop->is_open();
 }

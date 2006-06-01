@@ -83,13 +83,13 @@ open_web_browser(const std::string &href)
 	}
 }
 
-qt_mainloop::qt_mainloop(qt_gui* gui, ambulant::common::window_factory *wf)
+qt_mainloop::qt_mainloop(qt_gui* gui, qt_window_factory* wf)
 :	m_gui(gui)
 {
  	m_logger = lib::logger::get_logger();
  	set_embedder(this);
  	m_window_factory = wf;
-	((qt_window_factory*)wf)->set_gui_player (this);
+	wf->set_gui_player (this);
  	init_factories();
  	init_plugins();
 	
