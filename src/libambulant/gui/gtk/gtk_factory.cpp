@@ -32,7 +32,6 @@
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 
-
 using namespace ambulant;
 using namespace gui::gtk;
 using namespace net;
@@ -176,12 +175,29 @@ gtk_renderer_factory::new_aux_audio_playable(
 //
 
 gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMainLoop* loop)
-:	m_parent_widget(parent_widget)
+:	m_gui_player(NULL),
+	m_parent_widget(parent_widget)
 {
 	m_main_loop = loop;
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
-}	
+	m_arrow_cursor = gdk_cursor_new(GDK_ARROW);
+	m_hand1_cursor = gdk_cursor_new(GDK_HAND1);
+	m_hand2_cursor = gdk_cursor_new(GDK_HAND2);
+}
+	
+gtk_window_factory::~gtk_window_factory( )
+{
+	gdk_cursor_unref(m_arrow_cursor);
+	gdk_cursor_unref(m_hand1_cursor);
+	gdk_cursor_unref(m_hand2_cursor);
+}
 
+void
+gtk_window_factory::set_gui_player(common::gui_player* gpl)
+{
+	m_gui_player = gpl;
+}
+ 
 common::gui_window *
 gtk_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
@@ -208,6 +224,10 @@ gtk_window_factory::new_window (const std::string &name,
 //	gtkaw->set_gtk_window(agtkw);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window(0x%x): ambulant_widget=0x%x gtk_window=0x%x",
 		(void*) this, (void*) m_parent_widget, (void*) agtkw);
+	agtkw->set_gui_player(m_gui_player);
+	agtkw->set_gdk_cursor(GDK_ARROW, m_arrow_cursor);
+	agtkw->set_gdk_cursor(GDK_HAND1, m_hand1_cursor);
+	agtkw->set_gdk_cursor(GDK_HAND2, m_hand2_cursor);
 	return agtkw;
 }
 
@@ -271,8 +291,12 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	   common::gui_events *region)
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
+	m_gui_player(NULL),
 	m_oldpixmap(NULL),
 	m_tmppixmap(NULL),
+	m_arrow_cursor(NULL),
+	m_hand1_cursor(NULL),
+	m_hand2_cursor(NULL),
 #ifdef USE_SMIL21
 	m_fullscreen_count(0),
 	m_fullscreen_prev_pixmap(NULL),
@@ -308,6 +332,29 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_tmppixmap != NULL) {
 		g_object_unref(G_OBJECT(m_tmppixmap));
 		m_tmppixmap = NULL;
+	}
+}
+
+void
+ambulant_gtk_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gdk_cursor)
+{
+	switch (gdk_cursor_type) {
+	case GDK_ARROW:	m_arrow_cursor = gdk_cursor;
+	case GDK_HAND1:	m_hand1_cursor = gdk_cursor;
+	case GDK_HAND2:	m_hand2_cursor = gdk_cursor;
+	default:	return;
+	}
+
+}
+
+GdkCursor*
+ambulant_gtk_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
+{
+	switch (gdk_cursor_type) {
+	case GDK_ARROW:	return m_arrow_cursor;
+	case GDK_HAND1:	return m_hand1_cursor;
+	case GDK_HAND2:	return m_hand2_cursor;
+	default:	return NULL;
 	}
 }
 
@@ -462,6 +509,18 @@ ambulant_gtk_window::get_ambulant_pixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::ambulant_pixmap(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
 	return m_pixmap;
+}
+
+void
+ambulant_gtk_window::set_gui_player(gui_player* gpl)
+{
+	m_gui_player = gpl;
+}
+	
+gui_player*
+ambulant_gtk_window::get_gui_player()
+{
+	return m_gui_player;
 }
 
 GdkPixmap*
@@ -726,17 +785,22 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	// This is not right!!!
 	ambulant::lib::point ap = ambulant::lib::point((int)e->x,
 						       (int)e->y-25);
-#if 0
-    // XXX This code temporarily disabled, because with the current
-    // structure there is no easy way to get at the gui_player, which
-    // is needed to tell the scheduler we're about to start telling it
-    // about pointed() nodes.
-    xxx_gui_player->before_mousemove(0);
-	m_gtk_window->user_event(ap, 1);
-	int cursid = xxx_gui_player->after_mousemove();
-    // XXX Now set hand cursor of cursid==1, arrow if cursid==0.
-#endif
+	gui_player* gui_player =  m_gtk_window->get_gui_player();
+	if (gui_player) {
+		gui_player->before_mousemove(0);
+		m_gtk_window->user_event(ap, 1);
+	}
+	int cursid = 0;
+	if (gui_player)
+		cursid = gui_player->after_mousemove();
 
+	// Set hand cursor if cursid==1, arrow if cursid==0.
+	GdkCursor* cursor;
+	// gdk cursors need to be cached by the window factory
+	cursor =  cursid == 0 ? m_gtk_window->get_gdk_cursor(GDK_ARROW) 
+	                      : m_gtk_window->get_gdk_cursor(GDK_HAND1);
+	if (cursor)
+		gdk_window_set_cursor (m_widget->window, cursor);
 }
 
 void

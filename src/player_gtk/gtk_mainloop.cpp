@@ -121,7 +121,9 @@ void
 gtk_mainloop::init_window_factory()
 {
 	m_gtk_widget = new gtk_ambulant_widget(m_gui->get_document_container());
-	m_window_factory = new gtk_window_factory(m_gtk_widget, m_gui->main_loop);
+	gtk_window_factory* gtk_wf = new gtk_window_factory(m_gtk_widget, m_gui->main_loop);
+	m_window_factory = gtk_wf;
+	gtk_wf->set_gui_player (this);
 }
 
 

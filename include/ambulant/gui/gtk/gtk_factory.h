@@ -73,18 +73,24 @@ class gtk_window_factory : public common::window_factory {
   public:
 //	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
 	gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop);
-//	gtk_window_factory( GtkWidget* parent_widget, int x, int y);		
-		common::gui_window* new_window(
-			const std::string &name,
-			lib::size bounds,
-			common::gui_events *region);
-		common::bgrenderer *new_background_renderer(
-			const common::region_info *src);
+//	gtk_window_factory( GtkWidget* parent_widget, int x, int y);	
+	~gtk_window_factory();
+	common::gui_window* new_window(const std::string &name, lib::size bounds,
+				       common::gui_events *region);
+	common::bgrenderer *new_background_renderer(const common::region_info *src);
+		
+	/// Helper: set our top-level gui_player.
+	void set_gui_player(common::gui_player* gpl);
+
   private:
 //	GtkWidget* m_parent_widget;
 	gtk_ambulant_widget* m_parent_widget;
 	lib::point m_p;
 	GMainLoop* m_main_loop;
+	gui_player* m_gui_player;
+	GdkCursor* m_arrow_cursor;
+	GdkCursor* m_hand1_cursor;
+	GdkCursor* m_hand2_cursor;
 };  // class gtk_window_factory
 
 
@@ -140,6 +146,18 @@ class ambulant_gtk_window : public common::gui_window {
 	/// Get the GTK widget corresponding to this ambulant window.
 	gtk_ambulant_widget* get_ambulant_widget();
 
+	/// Set our top-level gui_player.
+	void set_gui_player(gui_player* gpl);
+	
+	/// Get our top-level gui_player.
+	gui_player* get_gui_player();
+
+	/// Initialize a GDK cached cursortype
+	void set_gdk_cursor(GdkCursorType, GdkCursor*);
+
+	/// Return any of GDK cached cursortypes
+	GdkCursor* get_gdk_cursor(GdkCursorType);
+
 	// XXX These need to be documented...
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
@@ -164,6 +182,10 @@ class ambulant_gtk_window : public common::gui_window {
 	GdkPixmap* m_pixmap;
 	GdkPixmap* m_oldpixmap;
 	GdkPixmap* m_surface;
+	gui_player* m_gui_player;
+	GdkCursor* m_arrow_cursor;
+	GdkCursor* m_hand1_cursor;
+	GdkCursor* m_hand2_cursor;
 #ifdef USE_SMIL21
 	int m_fullscreen_count;
 	GdkPixmap* m_fullscreen_prev_pixmap;
