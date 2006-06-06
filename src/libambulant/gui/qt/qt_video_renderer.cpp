@@ -89,6 +89,9 @@ qt_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 
     ambulant_qt_window* aqw = (ambulant_qt_window*) w;
     QPainter paint;
+	//XXXX locking at this point may result in deadly embrace with internal lock,
+	//XXXX but as far as we know this has never happened
+	m_lock.enter();
     paint.begin(aqw->get_ambulant_pixmap());
 
     if ( m_image ) {
@@ -110,4 +113,5 @@ qt_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
     }
     paint.flush();
     paint.end();
+	m_lock.leave();
 }
