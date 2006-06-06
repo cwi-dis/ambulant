@@ -63,10 +63,12 @@ gtk_video_renderer::gtk_video_renderer(
 
 gtk_video_renderer::~gtk_video_renderer()
 {
+	m_lock.enter();
 	if (m_data)
 		free(m_data);
 	if(m_image)
 		g_object_unref (G_OBJECT (m_image));
+	m_lock.leave();
 }
 
 void 
@@ -99,8 +101,10 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 void
 gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w) 
 {
+	//XXXX locking at this point may result in deadly embrace with internal lock,
+	//XXXX but as far as we know this has never happened
+	m_lock.enter();
 	if (m_data){
-		//m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x)",(void*) this);
 
 		const lib::point p = m_dest->get_global_topleft();
@@ -156,6 +160,6 @@ gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
 			g_object_unref (G_OBJECT (gc));			
 		}
-	//m_lock.leave();
 	}
+	m_lock.leave();
 }
