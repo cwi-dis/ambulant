@@ -44,13 +44,18 @@ qt_video_renderer::qt_video_renderer(
 		lib::event_processor *const evp,
     	common::factories *factory)
 :	 common::video_renderer(context, cookie, node, evp, factory),
-    m_image(NULL),
-  	m_data(NULL)
+	 m_image(NULL),
+  	m_datasize(1)
 {
+	m_data =(uchar*) malloc(1);
 }
 
 qt_video_renderer::~qt_video_renderer()
 {
+	m_lock.enter();
+    if (m_data) free(m_data);
+	if ( m_image) delete m_image;
+	m_lock.leave();
 }
 
 void 
@@ -59,21 +64,23 @@ qt_video_renderer::show_frame(const char* frame, int size)
 	m_lock.enter();
 	assert(frame);
 	assert(size == (int)(m_size.w*m_size.h*4));
-	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 
     // First copy the data (XXXX Not needed, to be removed later)
-    if (m_data) free(m_data);
-    m_data = (char*) malloc(size);
-    if (!m_data) {
+	// NOTE: data given to QImage should remain valid during the life of the image
+	if (size > m_datasize) {
+		m_data = (uchar*) realloc((void*) m_data, size);
+		if (!m_data) {
         lib::logger::get_logger()->trace("qt_video_renderer.show_frame: out of memory");
         return;
-    }
-
+		}
+		m_datasize = size;
+	}
     memcpy(m_data, frame, size);
     
-    delete m_image;
-    m_image = new QImage((uchar*) m_data, m_size.w, m_size.h, 32, NULL, 0, QImage::IgnoreEndian);
+    if (m_image) delete m_image;
+    m_image = new QImage(m_data,  m_size.w, m_size.h, 32, NULL, 0, QImage::IgnoreEndian);
 
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.show_frame(0x%x): frame=0x%x, size=%d, m_image=0x%x", (void*) this, (void*)frame, size, m_image);
     assert(m_dest);
 	m_dest->need_redraw();	
 
@@ -103,12 +110,11 @@ qt_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
             T = dstrect.top(),
             W = dstrect.width(),
             H = dstrect.height();
-        AM_DBG lib::logger::get_logger()->debug(" qt_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
+        AM_DBG lib::logger::get_logger()->debug(" qt_video_renderer.redraw(0x%x): drawImage 0x%x at (L=%d,T=%d,W=%d,H=%d)", (void *)this,m_image,L,T,W,H);
         // XXX This is wrong: it does not take srcrect into account, and hence it
         // does not scale the video.
         paint.drawImage(L,T,*m_image,0,0,W,H);
     } else {
-//		AM_DBG lib::logger::get_logger()->error("qt_video_renderer.redraw(0x%x): no m_image", (void *) this);
         AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x): no m_image", (void *) this);
     }
     paint.flush();

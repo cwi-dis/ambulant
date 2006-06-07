@@ -58,7 +58,8 @@ class qt_video_renderer : public common::video_renderer {
 	void start_outtransition(const lib::transition_info *info) {};
  private:
 	QImage *m_image;
- 	char* m_data;
+ 	uchar* m_data;
+	int   m_datasize;
 	lib::critical_section m_lock;
 };
 
