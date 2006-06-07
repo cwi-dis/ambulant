@@ -172,7 +172,7 @@ inline std::string repr(const ambulant::lib::custom_test& t) {
 }
 inline std::string repr(const ambulant::lib::document& d) {
 	std::string s;
-	return s << "document(" << &d << ", " << d.get_src_url() << ")";
+	return s << "document(" << &d << ", " << d.get_src_url().get_url() << ")";
 }
 
 #else

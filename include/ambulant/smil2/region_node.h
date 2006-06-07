@@ -73,7 +73,7 @@ class region_node : public common::animation_destination {
 	virtual ~region_node();
 	
 	// Initialize body subregion nodes from their real region node.
-	void region_node::fix_from_region_node(const region_node *parent);
+	void fix_from_region_node(const region_node *parent);
 	
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();

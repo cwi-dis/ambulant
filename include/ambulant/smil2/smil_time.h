@@ -142,7 +142,7 @@ class smil_time {
 	}
 	
 	smil_time f_rem(const smil_time& m) const {
-		assert(false);// not impl
+	  //assert(false);// not impl
 		return 0; 
 	}
 	
@@ -159,7 +159,7 @@ class smil_time {
 	}
 	
 	T f_mod(const smil_time& m) const { 
-		assert(false); // not impl
+	        //assert(false); // not impl
 		return 0; 
 	}
 	

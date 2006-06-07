@@ -221,9 +221,9 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	GtkWidget* get_gtk_widget();	
 
 	// GTKWidget API:
-	void gtk_ambulant_widget::do_paint_event (GdkEventExpose * event);
-	void gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *event);
-	void gtk_ambulant_widget::do_button_release_event(GdkEventButton *event);
+	void do_paint_event (GdkEventExpose * event);
+	void do_motion_notify_event(GdkEventMotion *event);
+	void do_button_release_event(GdkEventButton *event);
 //	void mouseReleaseEvent(QMouseEvent* e);
 
 	// gui_screen implementation
