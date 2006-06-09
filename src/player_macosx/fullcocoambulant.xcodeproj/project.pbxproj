@@ -1089,8 +1089,6 @@
 		04600F010894E6B000B553A2 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB3670625518E00A75828 /* QuickTime.framework */; };
 		04600F020894E6B000B553A2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
 		04600F030894E6B000B553A2 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
-		04600F040894E6B000B553A2 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0427B21F0625FCF20071CD58 /* libavcodec.a */; };
-		04600F050894E6B000B553A2 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0427B2210625FD160071CD58 /* libavformat.a */; };
 		04600F060894E6B000B553A2 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
 		04600F070894E6B000B553A2 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480D5E907208FB600D39BB5 /* libxerces-c.dylib */; };
 		04600F290894EB8500B553A2 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 04600F270894EB8500B553A2 /* rtsp_datasource.h */; };
@@ -1383,6 +1381,9 @@
 		0498476A058DE47100D855A9 /* string_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04984769058DE47100D855A9 /* string_util.cpp */; };
 		049F6F4C061430590082B27A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049F6F4B061430590082B27A /* libz.dylib */; };
 		04A107730748E0A6002EA347 /* factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A107720748E0A6002EA347 /* factory.h */; };
+		04A4F66E0A35CF4E004099A9 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
+		04A4F66F0A35CF54004099A9 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
+		04A4F6700A35CF62004099A9 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
 		04AC5D0B05FF6C04003CD4DC /* document.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04AC5D0A05FF6C04003CD4DC /* document.cpp */; };
 		04AD6626060A5A9200487334 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AD6622060A5A9200487334 /* pause.png */; };
 		04AD6627060A5A9200487334 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AD6623060A5A9200487334 /* play.png */; };
@@ -1798,46 +1799,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXBuildStyle section */
-		4A9504D0FFE6A4CB11CA0CBA /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = cocoambulant_Prefix.pch;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = NO;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				MACOSX_DEPLOYMENT_TARGET = "";
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		4A9504D1FFE6A4CB11CA0CBA /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
 		041485070532E37A001276A4 /* timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timer.cpp; sourceTree = "<group>"; };
 		04161467072078C400A8B0B6 /* cocoambulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cocoambulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2203,8 +2164,6 @@
 				04600F010894E6B000B553A2 /* QuickTime.framework in Frameworks */,
 				04600F020894E6B000B553A2 /* OpenGL.framework in Frameworks */,
 				04600F030894E6B000B553A2 /* ApplicationServices.framework in Frameworks */,
-				04600F040894E6B000B553A2 /* libavcodec.a in Frameworks */,
-				04600F050894E6B000B553A2 /* libavformat.a in Frameworks */,
 				04600F060894E6B000B553A2 /* libltdl.a in Frameworks */,
 				04600F070894E6B000B553A2 /* libxerces-c.dylib in Frameworks */,
 				04600F300894EC1100B553A2 /* libliveMedia.a in Frameworks */,
@@ -2213,6 +2172,9 @@
 				04600F570894FA9A00B553A2 /* libUsageEnvironment.a in Frameworks */,
 				048399E108ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				04A4F66E0A35CF4E004099A9 /* libavformat.a in Frameworks */,
+				04A4F66F0A35CF54004099A9 /* libavcodec.a in Frameworks */,
+				04A4F6700A35CF62004099A9 /* libavutil.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3823,54 +3785,6 @@
 			buildRules = (
 				04161466072078C400A8B0B6 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"USE_SMIL21=",
-					"WITH_LTDL_PLUGINS=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_EXPAT=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-noxerces-nolive";
@@ -3892,87 +3806,6 @@
 			buildRules = (
 				041655DF08F331530017F91F /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_LIVE=",
-					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES_BUILTIN=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/ffmpeg-cvs/libavutil",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
-					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
-					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
-					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat",
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavformat",
-					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavutil",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-ffmpeg-cvs-live";
@@ -3994,86 +3827,6 @@
 			buildRules = (
 				0427F7F20898352F0022C4EC /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES_BUILTIN=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/ffmpeg-cvs/libavutil",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
-					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
-					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
-					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat",
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavformat",
-					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavutil",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-ffmpeg-cvs";
@@ -4095,80 +3848,6 @@
 			buildRules = (
 				04600F080894E6B000B553A2 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES_BUILTIN=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-					"WITH_LIVE=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
-					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
-					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
-					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = cocoambulant;
@@ -4190,82 +3869,6 @@
 			buildRules = (
 				0493210F089519EF00F38A0A /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES_BUILTIN=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"../../third_party_packages/ffmpeg-0.4.9-pre1/libavformat",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-0.4.9-pre1/libavformat",
-					"../../third_party_packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
-					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
-					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
-					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat",
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-dirac-nolive";
@@ -4287,87 +3890,6 @@
 			buildRules = (
 				04D3361B0992B50200BAEEA7 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_LIVE=",
-					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES_BUILTIN=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/ffmpeg-cvs/libavutil",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
-					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
-					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
-					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat",
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavformat",
-					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavutil",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-pyplugin";
@@ -4388,71 +3910,6 @@
 			buildRules = (
 				04508B280507E0A700F0FD74 /* PBXBuildRule */,
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"USE_SMIL21=",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_XERCES=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
-				);
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib/gcc/darwin/3.3,
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/xerces-unix/lib",
-					"/Users/jack/src/ambulant/third_party_packages/xerces-c-src_2_5_0/lib",
-				);
-				LIBRARY_STYLE = Static;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = cocoambulant;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-Wl,-Y",
-					"-Wl,10",
-				);
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = "cocoambulant-nolive";
@@ -4467,12 +3924,6 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 048AE6D40931D8CC00637C32 /* Build configuration list for PBXProject "fullcocoambulant" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				4A9504D0FFE6A4CB11CA0CBA /* Development */,
-				4A9504D1FFE6A4CB11CA0CBA /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -5891,7 +5342,13 @@
 					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
 					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
 					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
 				LIBRARY_STYLE = Static;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -5974,7 +5431,13 @@
 					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
 					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
 					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -6053,7 +5516,13 @@
 					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
 					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
 					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

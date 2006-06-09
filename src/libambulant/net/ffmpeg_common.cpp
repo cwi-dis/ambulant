@@ -85,6 +85,7 @@ ffmpeg_codec_id::get_codec_id(const char* codec_name)
 	std::map<std::string, CodecID>::iterator i;
 	i = m_codec_id.find(str);
 	if (i != m_codec_id.end()) {
+		/*AM_DBG*/lib::logger::get_logger()->debug("get_codec_id(%s) -> %d", str.c_str(), i->second);
 		return i->second;
 	}
 	
@@ -102,6 +103,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("X-MP3-DRAFT-00", CODEC_ID_MP3);
 	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
 	add_codec("L16", CODEC_ID_PCM_S16LE);
+	add_codec("MP4V-ES", CODEC_ID_MPEG4);
 	
 }
 

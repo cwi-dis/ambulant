@@ -144,8 +144,9 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 		else break;
 	}
 	for(it = beginit; it != children.end(); it++) {
-		activate_node(*it);
-		if(*it == child) break;
+		time_node *itt = *it;
+		activate_node(itt);
+		if(itt == child) break;
 	}
 	for(it = beginit; it != children.end(); it++) {
 		if(*it != child) set_ffwd_mode(*it, false);
@@ -216,8 +217,10 @@ scheduler::time_type scheduler::exec(time_type now) {
 	if(now >= next) {
 		time_traits::qtime_type timestamp(m_root, next);
 		std::list<time_node*>::iterator nit;
-		for(nit=elist.begin();nit!=elist.end();nit++)
-			(*nit)->exec(timestamp);
+		for(nit=elist.begin();nit!=elist.end();nit++) {
+			time_node *nitp = *nit;
+			nitp->exec(timestamp);
+		}
 		m_horizon = next;
 		if(m_timer) m_timer->set_time(next);
 		eit++;

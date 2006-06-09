@@ -715,12 +715,12 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 
 		if (enc == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 				return false;
 		}
 		if (enc->codec_type != CODEC_TYPE_VIDEO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-video stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
+				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 				return false;
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec_id);
@@ -744,7 +744,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 	} else if (fmt.name == "live") {
 		const char* codec_name = (char*) fmt.parameters;
 	
-		AM_DBG lib::logger::get_logger()->debug("ffmpe_video_decoder_datasource::selectdecoder(): audio codec : %s", codec_name);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): video codec : %s", codec_name);
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
 		if( !codec) {
@@ -754,7 +754,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 
 		m_con = avcodec_alloc_context();		
 		if((avcodec_open(m_con,codec) < 0) ) {
-			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
+			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
