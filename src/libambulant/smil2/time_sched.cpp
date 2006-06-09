@@ -41,7 +41,8 @@ std::numeric_limits<scheduler::time_type>::max();
 scheduler::scheduler(time_node *root, lib::timer_control *timer)
 :	m_root(root), 
 	m_timer(timer), 
-	m_horizon(0) {
+	m_horizon(0),
+	m_locked(false) {
 }
 
 scheduler::~scheduler() {
@@ -81,7 +82,7 @@ void scheduler::start(time_node *tn) {
 void scheduler::activate_node(time_node *tn) {
 	timer::time_type next = m_timer->elapsed();
 	while(m_root->is_active() && !tn->is_active()) {
-		next = exec(next);
+		next = _exec(next);
 		if(next == infinity) break;
 	}
 }
@@ -108,7 +109,7 @@ void scheduler::goto_next(time_node *tn) {
 // Starts a hyperlink target that has played. 
 void scheduler::goto_previous(time_node *tn) {
 	// restart root
-	reset_document();
+	_reset_document();
 	m_root->start();
 	if(tn == m_root) return;
 	
@@ -189,19 +190,32 @@ void scheduler::restart(time_node *tn) {
 scheduler::time_type scheduler::exec() {
 	if(locked()) return idle_resolution;
 	lock();
-	time_type now = m_timer->elapsed();
-	time_type next = exec(now);
-	//while(next == now) next = exec(now);
-	time_type waitdur = next - now;
+	scheduler::time_type rv = _exec();
 	unlock();
-	AM_DBG lib::logger::get_logger()->debug("scheduler::exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
+	return rv;
+}
+
+scheduler::time_type scheduler::_exec() {
+	time_type now = m_timer->elapsed();
+	time_type next = _exec(now);
+#if 1
+	// This line was taken out a long time ago (rev 1.10, dec 2004) because it seemed to be
+	// soaking up CPU cycles. I'm now putting it back in, tentatively, to see if that fixes
+	// the seek problems we have:
+	// - After a seek some documents will end immediately
+	// - Some documents cannot seek, if you try it they'll start at the beginning anyway.
+	while(next == now) next = _exec(now);
+#endif
+	time_type waitdur = next - now;
+	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
 	if (waitdur < 0) waitdur = 0;
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
 
 // Executes some of the current events
 // Returns the time of the next event or infinity 
-scheduler::time_type scheduler::exec(time_type now) {
+scheduler::time_type scheduler::_exec(time_type now) {
+	assert(locked());
 	time_type next = infinity;
 	m_events.clear();
 	if(!m_root->is_active())
@@ -243,6 +257,13 @@ void scheduler::set_ffwd_mode(time_node *tn, bool b) {
 
 // Resets the document
 void scheduler::reset_document() {
+	lock();
+	_reset_document();
+	unlock();
+}
+
+void scheduler::_reset_document() {
+	assert(locked());
 	time_node::iterator nit;
 	time_node::iterator end = m_root->end();
 	for(nit=m_root->begin(); nit != end; nit++) {
@@ -289,12 +310,31 @@ bool scheduler::has_resolved_end(time_node *tn) {
 	scheduler shed(tn, 0);
 	tn->start();
 	timer::time_type next = 0;
+	shed.lock(); // XXXJack: correct?
 	while(tn->is_active() && next != infinity)
-		next = shed.exec(next);
+		next = shed._exec(next);
+	shed.unlock(); // XXXJack: correct?
 	bool finished = tn->get_state()->sig() == 'c';
 	reset(tn);
 	set_context(tn, oldctx);
 	delete algoctx;
 	return finished;
+}
+
+void
+scheduler::lock()
+{
+	/*AM_DBG*/ if (m_locked) lib::logger::get_logger()->debug("scheduler::lock(): potential deadlock ahead");
+	m_lock.enter();
+	assert(!m_locked);
+	m_locked = true;
+}
+
+void
+scheduler::unlock()
+{
+	assert(m_locked);
+	m_locked = false;
+	m_lock.leave();
 }
 

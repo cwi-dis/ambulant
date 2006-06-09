@@ -47,7 +47,6 @@ class scheduler {
 	~scheduler();
 	
 	time_type exec();
-	time_type exec(time_type now);
 	void reset_document();
 	void start(time_node *tn);
 	
@@ -57,6 +56,10 @@ class scheduler {
 	static std::string get_state_sig(time_node *tn);
 	
   private:
+	void _reset_document();
+	time_type _exec();
+	time_type _exec(time_type now);
+
 	void goto_next(time_node *tn);
 	void goto_previous(time_node *tn);
 	void restart(time_node *tn);
@@ -72,8 +75,9 @@ class scheduler {
 	time_type m_horizon;
 	
 	bool m_locked;
-	void lock() { m_locked = true;}
-	void unlock() { m_locked = false;}
+	lib::critical_section m_lock;
+	void lock();
+	void unlock();
 	bool locked() const { return m_locked;}
 	
 	typedef std::map<time_node::time_type, std::list<time_node*> > event_map_t;
