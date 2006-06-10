@@ -244,6 +244,17 @@ std::string time_node::to_string() const {
 	return get_type_as_str();
 }
 
+std::string time_node::get_sig() const {
+	std::string rv = "time_node(" + to_string() + ", ";
+	const lib::node *domnode = dom_node();
+	if (domnode)
+		rv += domnode->get_sig();
+	else
+		rv += "NULL";
+	rv += ")";
+	return rv;
+}
+
 // Returns the implicit duration of this node. 
 // This is an implementation for a leaf-node.
 // e.g. it queries playable for the implicit dur.
@@ -696,7 +707,6 @@ bool time_node::is_animation() const {
 // Playables shell
 
 void time_node::start_playable(time_type offset) {
-	if(m_ffwd_mode) return;
 	if(!is_playable() || m_ffwd_mode) return;
 	qtime_type timestamp(this, offset);
 	AM_DBG m_logger->debug("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
@@ -768,6 +778,14 @@ time_node::time_type time_node::get_playable_dur() {
 	common::duration dur_pair = m_context->get_dur(m_node);
 	if(dur_pair.first && dur_pair.second>0)
 		return secs_to_time_type(dur_pair.second)();
+#if 0
+	// Attempted fix by Jack: if we're fast-forwarding we return zero for
+	// things we can't figure out the duration for.
+	if (m_ffwd_mode) {
+		m_logger->trace("fast-forward: ignoring unknown duration for %s", get_sig().c_str());
+		return secs_to_time_type(0)();
+	}
+#endif
 	return time_type::unresolved;
 }
 
@@ -836,6 +854,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 }
 
 void time_node::exec(qtime_type timestamp) {
+	AM_DBG m_logger->debug("time_node::exec(%ld) for %s ffwd %d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode);
 	if(!is_alive()) {
 		// check for transOut
 		return;
@@ -881,6 +900,7 @@ void time_node::exec(qtime_type timestamp) {
 	
 	// Check for the EOI event
 	if(end_cond(timestamp)) {
+		AM_DBG m_logger->debug("exec: end_cond() returned true");
 		// This node should go postactive
 		time_type reftime;
 		if(m_interval.end.is_definite()) reftime = m_interval.end;
@@ -1984,8 +2004,10 @@ bool time_container::end_sync_cond() const {
 	} else if(esr == esr_last) {
 		// if any child has a valid current interval, wait it to finish (return false)
 		// this is the default for par, excl, media_cond
-		// the current interval may not be the first [(*it)->played() maybe true] 
+		// the current interval may not be the first [(*it)->played() maybe true]
+		// (path by Jack) If we're fast-forwarding we ignore continuous-media children
 		for(it=cl.begin();it!=cl.end();it++) {
+			if ((*it)->is_cmedia()) continue;
 			const interval_type& i = (*it)->get_current_interval();
 			if(i.is_valid()) return false;
 		}

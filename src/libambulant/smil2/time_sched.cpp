@@ -98,12 +98,14 @@ void scheduler::goto_next(time_node *tn) {
 		time_node *parent = *it; cit = it;
 		time_node *child = *++cit;
 		assert(cit != tnpath.end());
+		AM_DBG lib::logger::get_logger()->debug("goto_next: parent=%s child=%s", parent->get_sig().c_str(), child->get_sig().c_str());
 		if(parent->is_seq()) activate_seq_child(parent, child);
 		else if(parent->is_par()) activate_par_child(parent, child);
 		else if(parent->is_excl()) activate_excl_child(parent, child);
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
 	}
+	AM_DBG lib::logger::get_logger()->debug("goto_next: finished");
 }
 
 // Starts a hyperlink target that has played. 
@@ -137,16 +139,23 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	std::list<time_node*>::iterator it, beginit;
 	
 	// locate first active
-	for(it = children.begin(); it != children.end() && !(*it)->is_active(); it++);
+	for(it = children.begin(); it != children.end() && !(*it)->is_active(); it++) {
+		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip inactive %s", (*it)->get_sig().c_str());
+	}
 	beginit = it;
 	
 	for(it = beginit; it != children.end(); it++) {
-		if(*it != child) set_ffwd_mode(*it, true);
-		else break;
+		if(*it != child) {
+			set_ffwd_mode(*it, true);
+			AM_DBG lib::logger::get_logger()->debug("activate_seq_child: ffwd earlier %s", (*it)->get_sig().c_str());
+		} else {
+			break;
+		}
 	}
 	for(it = beginit; it != children.end(); it++) {
 		time_node *itt = *it;
 		activate_node(itt);
+		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
 		if(itt == child) break;
 	}
 	for(it = beginit; it != children.end(); it++) {
@@ -324,7 +333,7 @@ bool scheduler::has_resolved_end(time_node *tn) {
 void
 scheduler::lock()
 {
-	/*AM_DBG*/ if (m_locked) lib::logger::get_logger()->debug("scheduler::lock(): potential deadlock ahead");
+	AM_DBG if (m_locked) lib::logger::get_logger()->debug("scheduler::lock(): potential deadlock ahead");
 	m_lock.enter();
 	assert(!m_locked);
 	m_locked = true;

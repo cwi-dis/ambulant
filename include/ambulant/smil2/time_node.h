@@ -364,7 +364,8 @@ class time_node : public schedulable {
 	time_type calc_current_interval_end();
 		
 	std::string to_string() const;
-		
+	
+	std::string get_sig() const;
 	// Verifier
  	static int get_node_counter() {return node_counter;}
  	
