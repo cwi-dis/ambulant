@@ -292,6 +292,23 @@ time_node::get_implicit_dur() {
 	return m_impldur;
 }
 
+void
+time_node::set_ffwd_mode(bool b)
+{
+	AM_DBG m_logger->debug("set_ffwd_mode(%d) for %s", (int)b, get_sig().c_str());
+	m_ffwd_mode = b;
+	if (m_ffwd_mode && is_playable()) {
+		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable()");
+		stop_playable();
+	}
+	std::list<time_node*> children;
+	get_children(children);
+	std::list<time_node*>::iterator it;
+	for(it = children.begin(); it != children.end(); it++) {
+		(*it)->set_ffwd_mode(b);
+	}
+}
+
 // This function calculates the simple duration of this node.
 // See spec: "Defining the simple duration" 
 // The last calculated simple duration is stored in the variable m_last_cdur.

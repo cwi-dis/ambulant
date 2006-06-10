@@ -348,7 +348,7 @@ class time_node : public schedulable {
 	void set_deferred(bool b) { m_deferred = b;}
 	
 	// fast forward mode
-	void set_ffwd_mode(bool b) { m_ffwd_mode = b;}
+	void set_ffwd_mode(bool b);
 	
 	////////////////////////
 	// Time calculations
