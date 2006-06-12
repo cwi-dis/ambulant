@@ -119,12 +119,15 @@ gui::dx::dx_html_renderer::start(double t) {
 		rc.translate(p);
 		html_browser_factory *brf = m_dxplayer->get_html_browser_factory();
 		html_browser *br = brf->new_html_browser(rc.left(), rc.top(), rc.width(), rc.height());
-		assert(br);
+		if (!br) {
+			lib::logger::get_logger()->fatal("html_renderer: HtmlWidget not configured in main program");
+		}
 		m_html_browser = new browser_container(br);
 		m_dest->set_renderer_private_data(my_renderer_id, static_cast<common::renderer_private_data*>(m_html_browser));
 	}
 	assert(m_html_browser);
 	html_browser *it = m_html_browser->show();
+	assert(it);
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x) html_widget=0x%x", this, it);
 
 	net::url url = m_node->get_url("src");
