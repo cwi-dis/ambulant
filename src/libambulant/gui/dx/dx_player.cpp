@@ -101,19 +101,19 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 		// message already logged
 		return;
 	}
-#ifndef TEMPORARILY_REMOVED_BECAUSE_IT_IS_BROKEN
+
 	// If there's a fragment ID remember the node it points to,
 	// and when we first start playback we'll go there.
 	const std::string& idd = u.get_ref();
 	if (idd != "") {
 		const lib::node *node = m_doc->get_node(idd);
 		if (node) {
-			m_goto_node = node;
+			goto_node(node);
 		} else {
 			m_logger->warn(gettext("%s: node ID not found"), idd.c_str());
 		}
 	}
-#endif
+
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(m_doc, this, m_embedder);
