@@ -57,7 +57,7 @@
 using namespace ambulant;
 using namespace gui::gtk;
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -338,31 +338,3 @@ ambulant::common::gui_screen*
 gtk_mainloop::get_gui_screen(){
 	return m_gtk_widget;
 }
-
-void
-gtk_mainloop::restart(bool reparse)
-{
-	bool playing = is_play_active();
-	bool pausing = is_pause_active();
-	stop();
-	
-//	delete m_player;
-	m_player = 0;
-	if (reparse) {
-		m_doc = create_document(m_url);
-		if(!m_doc) {
-			lib::logger::get_logger()->show("Failed to parse document %s", m_url.get_url().c_str());
-			return;
-		}
-	}
-	AM_DBG lib::logger::get_logger()->debug("Creating player instance for: %s", m_url.get_url().c_str());
-	// XXXX
-	m_player = common::create_smil2_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
-	m_player->initialize();
-#endif
-	if (playing || pausing) play();
-	if (pausing) pause();
-}
-
-

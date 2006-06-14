@@ -111,8 +111,28 @@ gui_player::pause()
 void
 gui_player::restart(bool reparse)
 {
-	lib::logger::get_logger()->trace("restart not implemented yet");
+//	lib::logger::get_logger()->trace("restart not implemented yet");
+	bool playing = is_play_active();
+	bool pausing = is_pause_active();
+	stop();
 	
+       	delete m_player;
+	m_player = 0;
+	if (reparse) {
+		m_doc = create_document(m_url);
+		if(!m_doc) {
+			lib::logger::get_logger()->show("Failed to parse document %s", m_url.get_url().c_str());
+			return;
+		}
+	}
+	AM_DBG lib::logger::get_logger()->debug("Creating player instance for: %s", m_url.get_url().c_str());
+	// XXXX
+	m_player = common::create_smil2_player(m_doc, this, m_embedder);
+#ifdef USE_SMIL21
+	m_player->initialize();
+#endif
+	if (playing || pausing) play();
+	if (pausing) pause();
 }
 
 bool

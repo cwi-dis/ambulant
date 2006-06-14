@@ -18,7 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -318,7 +318,8 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
 		m_ambulant_widget->set_gtk_window(NULL);
-		delete m_ambulant_widget;
+//XXXX next delete Reload crashes with gtk, not with qt
+//		delete m_ambulant_widget;
 		m_ambulant_widget = NULL;
 	} 
 	if (m_pixmap != NULL) {
