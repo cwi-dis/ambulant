@@ -88,7 +88,7 @@ class qt_mainloop;
 	bool openSMILfile(const QString smilfilename, int mode);
 
 	// send a QEvent to the gui thread
-	void internal_message(int level, char* msg);
+	void internal_message(int level, const char* msg);
 
 	// signal interfaces
 	void need_redraw(const void*, void*, const void*);
@@ -97,7 +97,7 @@ class qt_mainloop;
 
 /*TMP*/	qt_mainloop* m_mainloop;
   private:
-    void _update_menus();
+        void _update_menus();
     
 	QPushButton* m_cancel_pb; // for Settings window
 	QPopupMenu*  m_filemenu;

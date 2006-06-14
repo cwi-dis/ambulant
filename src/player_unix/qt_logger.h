@@ -85,7 +85,10 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 };
 
 class qt_message_event : public QCustomEvent {
-  public:
-	qt_message_event(int type, char* message); 
+ public:
+	qt_message_event(int type, const char* message);
+	~qt_message_event();
+ private:
+	char* _message;
 };
 #endif/*__QT_LOGGER_H__*/

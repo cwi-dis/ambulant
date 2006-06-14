@@ -151,14 +151,12 @@ qt_logger::log(QString logstring) {
  	if (m_log_FILE != NULL) {
 		fprintf(m_log_FILE, "%s", (const char*)logstring);
 	}
-	char* message = strdup(logstring.ascii());
-	s_qt_logger->m_gui->internal_message(-1, message);
+	s_qt_logger->m_gui->internal_message(-1, logstring);
 }
 
 void
 qt_logger::show_message(int level, const char *msg) {
-	char* message = strdup(msg);
-	s_qt_logger->m_gui->internal_message(level, message);
+	s_qt_logger->m_gui->internal_message(level, msg);
 }
 
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
@@ -169,7 +167,15 @@ qt_logger::get_logger_window()
 }
 #endif/*QT_NO_FILEDIALOG*/
 
-qt_message_event::qt_message_event(int level, char *msg)
- : QCustomEvent((QEvent::Type)level, (void*) msg)
+qt_message_event::qt_message_event(int level, const char *message)
+  : _message(strdup(message)),
+    QCustomEvent((QEvent::Type)level)
 {
+	setData(_message);
+}
+
+qt_message_event::~qt_message_event()
+{
+	free(_message);
+
 }

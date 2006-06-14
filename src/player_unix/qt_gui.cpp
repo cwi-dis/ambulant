@@ -563,11 +563,10 @@ qt_gui::customEvent(QCustomEvent* e) {
 		pthread_mutex_unlock(&m_lock_message);
 	}
 #endif/*TRY_LOCKING*/
-	free(msg);
 }
 
 void
-qt_gui::internal_message(int level, char* msg) {
+qt_gui::internal_message(int level, const char* msg) {
 	int msg_id = level+qt_logger::CUSTOM_OFFSET;
   	qt_message_event* qme = new qt_message_event(msg_id, msg);
 #ifdef	QT_THREAD_SUPPORT
