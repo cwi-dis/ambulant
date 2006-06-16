@@ -386,7 +386,8 @@ AC_MSG_CHECKING(for --with-qt)
 test_qt=true
 AC_ARG_WITH(qt,[  --with-qt		Enable/disable Qt frontend],
      [if test "x$withval" = "xno"; then
-		test_qt=false
+	      unset QTDIR
+	      test_qt=false
 	fi
      ])
 if test "x$test_qt" = "xtrue"; then
