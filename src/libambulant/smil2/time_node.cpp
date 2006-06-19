@@ -297,11 +297,11 @@ time_node::set_ffwd_mode(bool b)
 {
 	AM_DBG m_logger->debug("set_ffwd_mode(%d) for %s", (int)b, get_sig().c_str());
 	m_ffwd_mode = b;
-#if 0
 	if (m_ffwd_mode && is_playable()) {
 		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable()");
 		stop_playable();
 	}
+#if 0
 	std::list<time_node*> children;
 	get_children(children);
 	std::list<time_node*>::iterator it;
