@@ -160,7 +160,7 @@ void
 cocoa_video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::pause()");
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_video_renderer::pause(%s)", m_node->get_sig().c_str());
 	if (m_movie && m_movie_view) {
 		[m_movie_view stop: NULL];
 		if (d == display_hide)

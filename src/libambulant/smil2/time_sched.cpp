@@ -333,7 +333,7 @@ bool scheduler::has_resolved_end(time_node *tn) {
 void
 scheduler::lock()
 {
-	AM_DBG if (m_locked) lib::logger::get_logger()->debug("scheduler::lock(): potential deadlock ahead");
+	if (m_locked) lib::logger::get_logger()->debug("scheduler::lock(): potential deadlock ahead");
 	m_lock.enter();
 	assert(!m_locked);
 	m_locked = true;

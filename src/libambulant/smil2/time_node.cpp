@@ -297,6 +297,7 @@ time_node::set_ffwd_mode(bool b)
 {
 	AM_DBG m_logger->debug("set_ffwd_mode(%d) for %s", (int)b, get_sig().c_str());
 	m_ffwd_mode = b;
+#if 0
 	if (m_ffwd_mode && is_playable()) {
 		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable()");
 		stop_playable();
@@ -307,6 +308,7 @@ time_node::set_ffwd_mode(bool b)
 	for(it = children.begin(); it != children.end(); it++) {
 		(*it)->set_ffwd_mode(b);
 	}
+#endif
 }
 
 // This function calculates the simple duration of this node.
@@ -2024,7 +2026,7 @@ bool time_container::end_sync_cond() const {
 		// the current interval may not be the first [(*it)->played() maybe true]
 		// (path by Jack) If we're fast-forwarding we ignore continuous-media children
 		for(it=cl.begin();it!=cl.end();it++) {
-			if ((*it)->is_cmedia()) continue;
+			if (m_ffwd_mode && (*it)->is_cmedia()) continue;
 			const interval_type& i = (*it)->get_current_interval();
 			if(i.is_valid()) return false;
 		}

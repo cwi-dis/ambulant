@@ -1799,6 +1799,23 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXBuildStyle section */
+		04C055950A46BD030050711E /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		04C055960A46BD030050711E /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXFileReference section */
 		041485070532E37A001276A4 /* timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timer.cpp; sourceTree = "<group>"; };
 		04161467072078C400A8B0B6 /* cocoambulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cocoambulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3924,6 +3941,12 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 048AE6D40931D8CC00637C32 /* Build configuration list for PBXProject "fullcocoambulant" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				04C055950A46BD030050711E /* Development */,
+				04C055960A46BD030050711E /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
