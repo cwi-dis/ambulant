@@ -32,8 +32,6 @@ using namespace ambulant;
 
 #ifdef	WITH_HTML_WIDGET
 
-#define AM_DBG
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -132,10 +130,12 @@ html_browser_imp::html_browser_imp(int left, int top, int width, int height)
 html_browser_imp::~html_browser_imp() {
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::~html_browser_imp(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
+#if 0
 	ShowWindow(browser->m_hWnd, SW_HIDE);
-//KB DestroyWindow(browser->m_hWnd);
-//KB delete browser;
-//KB s_browser = NULL;
+#else
+	browser->PostMessage(WM_SHOWWINDOW, FALSE, 0);
+#endif
+
 }
 
 void
@@ -143,6 +143,8 @@ html_browser_imp::goto_url(std::string url, ambulant::net::datasource_factory *d
 	CString CSurl(url.c_str());
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::goto_url(0x%x): url=%s)", this, url.c_str());
 	HtmlView* browser = (HtmlView*) m_browser;
+	// XXXJack: AmisAmbulant does this via the event loop, in the main thread.
+	// Should we do the same here?
 	browser->Navigate2(CSurl,NULL,_T(""));
 }
 
@@ -150,14 +152,22 @@ void
 html_browser_imp::hide() {
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::hide(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
+#if 0
 	ShowWindow(browser->m_hWnd, SW_HIDE);
+#else
+	browser->PostMessage(WM_SHOWWINDOW, FALSE, 0);
+#endif
 }
 
 void
 html_browser_imp::show() {
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::show(0x%x)", this);
 	HtmlView* browser = (HtmlView*) m_browser;
+#if 0
 	ShowWindow(browser->m_hWnd, SW_SHOW);
+#else
+	browser->PostMessage(WM_SHOWWINDOW, TRUE, 0);
+#endif
 }
 
 void
