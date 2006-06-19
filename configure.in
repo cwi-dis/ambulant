@@ -77,6 +77,16 @@ with_frontend=false
 
 #
 #
+# Do we have pkg-config?
+#
+#AC_MSG_CHECKING(for pkg-config)
+#PKG_CHECK_MODULES(pkg-config,[pkg-config >= 0.18], pkg_config=true, pkg_config=false)
+#AM_CONDITIONAL(WITH_PKG_CONFIG, test $pkg_config = true)
+#AC_MSG_RESULT($pkg_config)
+AC_CHECK_PROG(PKG_CONFIG,pkg-config,`which pkg-config`)
+
+#
+#
 # Do we want plugin support?
 #
 AC_MSG_CHECKING(for --with-ltdl-plugins)
@@ -482,7 +492,6 @@ if test "x$test_gtk" = "xtrue"; then
 	if test $test_gtk = false; then
 	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
 	fi
-	  
 fi
 
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk = xtrue)
