@@ -127,6 +127,8 @@ bool gui::dx::audio_player::is_playing() {
 	if(hr == E_ABORT) return true;
 	else if(hr == S_OK) return false;
 	else if(FAILED(hr)) {
+		// XXXJack: this error occurs all the time...
+		if (hr == 0x80040227) return false;
 		win_trace_error("IMediaEvent::WaitForCompletion()", hr);	
 		return false;
 	}

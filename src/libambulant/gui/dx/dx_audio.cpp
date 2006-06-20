@@ -206,6 +206,7 @@ void gui::dx::dx_audio_renderer::stop() {
 	p->stop();
 	delete p;
 	m_activated = false;
+	m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_audio_renderer::pause() {

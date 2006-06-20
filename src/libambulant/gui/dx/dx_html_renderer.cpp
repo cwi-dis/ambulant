@@ -140,6 +140,8 @@ gui::dx::dx_html_renderer::start(double t) {
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
+	m_context->started(m_cookie);
+
 }
 
 void
@@ -152,6 +154,7 @@ gui::dx::dx_html_renderer::stop() {
 	m_activated = false;
 	m_dxplayer->stopped(this);
 	m_html_browser->hide(m_event_processor);
+	m_context->stopped(m_cookie);
 }
 
 void

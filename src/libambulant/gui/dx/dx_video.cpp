@@ -152,6 +152,7 @@ void gui::dx::dx_video_renderer::stop() {
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
+	m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_video_renderer::pause(common::pause_display d) {
