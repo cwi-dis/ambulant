@@ -25,6 +25,12 @@ Here are some pointers how to work with Nokia 770 (2005 Software Edition).
 
 3. Creation of a web-installable debian package is described in:
    http://maemo.org/platform/docs/howtos/howto_making_an_application_package.html
+   In the ambulant home directory, there exists a directory debian which contains
+   the necessary control files to build a downloadable and installable debian package
+   for the Nokia 770 (2005 Software Edition). In the scratchbox ambualnfd home directory,
+   use the command:  dpkg-buildpackage -rfakeroot -b
+   The resulting file ../ambulantplayer-app_0.2_arm.deb can be installed on the Nokia 770
+   by its Application Installer e.g. by copying this file to a web-visible location.
 
 4. Remote debugging is possible as follows (once you have USB networking):
    a. From the scratchbox (in ARM mode) copy /usr/bin/gdbserver to the Nokia 770
@@ -59,4 +65,4 @@ Here are some pointers how to work with Nokia 770 (2005 Software Edition).
       You can now browse sources, define breakpoints etc. before clicking "Cont".
       Don't use "Run", that doesn't work with gdbserver.
 
-Kees Blom Nay 17, 2006\
+Kees Blom Nay 17, 2006.
