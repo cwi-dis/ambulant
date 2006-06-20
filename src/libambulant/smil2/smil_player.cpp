@@ -464,7 +464,7 @@ void smil_player::pointed(int n, double t) {
 #if 1
 	m_new_focussed_nodes->insert(n);
 #else
-	/*AM_DBG*/ m_logger->debug("smil_player::pointed(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::pointed(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
@@ -473,7 +473,7 @@ void smil_player::pointed(int n, double t) {
 			// XXX We treat outOfBounds and focusOut identical, which is
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
-				/*AM_DBG*/ m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
+				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
 				q_smil_time timestamp(m_root, m_root->get_simple_time());
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);

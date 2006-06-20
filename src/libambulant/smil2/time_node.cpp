@@ -298,7 +298,7 @@ time_node::set_ffwd_mode(bool b)
 	AM_DBG m_logger->debug("set_ffwd_mode(%d) for %s", (int)b, get_sig().c_str());
 	m_ffwd_mode = b;
 	if (m_ffwd_mode && is_playable()) {
-		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable()");
+		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable(%s)", get_sig().c_str());
 		stop_playable();
 	}
 #if 0
@@ -726,7 +726,13 @@ bool time_node::is_animation() const {
 // Playables shell
 
 void time_node::start_playable(time_type offset) {
-	if(!is_playable() || m_ffwd_mode) return;
+	if(m_ffwd_mode) {
+		AM_DBG m_logger->debug("start_playable(%ld): ffwd skip %s", offset(), get_sig().c_str());
+		return;
+	}
+	if(!is_playable() ) {
+		return;
+	}
 	qtime_type timestamp(this, offset);
 	AM_DBG m_logger->debug("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
@@ -919,7 +925,7 @@ void time_node::exec(qtime_type timestamp) {
 	
 	// Check for the EOI event
 	if(end_cond(timestamp)) {
-		AM_DBG m_logger->debug("exec: end_cond() returned true");
+		AM_DBG m_logger->debug("exec: end_cond() returned true for %s", get_sig().c_str());
 		// This node should go postactive
 		time_type reftime;
 		if(m_interval.end.is_definite()) reftime = m_interval.end;

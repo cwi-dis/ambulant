@@ -85,6 +85,7 @@ void scheduler::activate_node(time_node *tn) {
 		next = _exec(next);
 		if(next == infinity) break;
 	}
+	AM_DBG lib::logger::get_logger()->debug("activate_node: leave next=%d tn->is_active %d", next, tn->is_active());
 }
 
 // Starts a hyperlink target that has not played yet. 
@@ -154,8 +155,9 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	}
 	for(it = beginit; it != children.end(); it++) {
 		time_node *itt = *it;
-		activate_node(itt);
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
+		activate_node(itt);
+		// XXXJack: why is this not always true??? assert(itt->is_active());
 		if(itt == child) break;
 	}
 	for(it = beginit; it != children.end(); it++) {
