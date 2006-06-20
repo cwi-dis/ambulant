@@ -158,6 +158,7 @@ video_renderer::stop()
 		m_lock.leave();
 		return;
 	}
+	m_context->stopped(m_cookie, 0);
 	m_activated = false;
 	if (m_dest) {
 		m_dest->renderer_done(this);
@@ -169,6 +170,7 @@ video_renderer::stop()
 		m_audio_renderer = NULL;
 	}
 	if (m_src) {
+		m_src->stop();
 		m_src->release();
 		m_src = NULL;
 	}

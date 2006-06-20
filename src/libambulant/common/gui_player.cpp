@@ -83,6 +83,7 @@ gui_player::goto_node(const lib::node *n)
 {
 	m_lock.enter();
 	if (m_player && m_player->is_playing()) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("gui_player::goto_node(%s)", n->get_sig().c_str());
 		m_player->goto_node(n);
 	} else {
 		m_goto_node = n;
