@@ -113,8 +113,9 @@ gtk_mainloop::~gtk_mainloop()
 	delete m_gtk_widget;
 	if (m_player) {
 		delete m_player;
+		m_player = NULL;
 	}
-	m_player = NULL;
+	delete m_window_factory;
 }
 
 void

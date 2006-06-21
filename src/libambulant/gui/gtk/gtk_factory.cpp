@@ -1,4 +1,4 @@
-// This file is part of Ambulant Player, www.ambulantplayer.org.
+/// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2005 Stichting CWI, 
 // Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
@@ -18,7 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -714,25 +714,27 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
 	m_screenshot_size(0)
 {
 	m_widget = parent_widget;
+	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x)",
 		(void *)this,
 		(void*) parent_widget);	
 	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-	m_motion_notify_handler_id = g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
-	m_button_release_handler_id = g_signal_connect_swapped (G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	m_motion_notify_handler_id = g_signal_connect_swapped (toplevel_widget, "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	m_button_release_handler_id = g_signal_connect_swapped (toplevel_widget, "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
 	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 }
 
 gtk_ambulant_widget::~gtk_ambulant_widget()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x", (void*)this, m_gtk_window);
+	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
 		g_signal_handler_disconnect(G_OBJECT (m_widget), m_expose_event_handler_id);
-	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_motion_notify_handler_id))
-		g_signal_handler_disconnect(G_OBJECT (m_widget), m_motion_notify_handler_id);
-	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_button_release_handler_id))
-		g_signal_handler_disconnect(G_OBJECT (m_widget), m_button_release_handler_id);
+	if (g_signal_handler_is_connected (toplevel_widget, m_motion_notify_handler_id))
+		g_signal_handler_disconnect(toplevel_widget, m_motion_notify_handler_id);
+	if (g_signal_handler_is_connected (toplevel_widget, m_button_release_handler_id))
+		g_signal_handler_disconnect(toplevel_widget, m_button_release_handler_id);
 	if (m_gtk_window) {
 		m_gtk_window->set_ambulant_widget(NULL);
 		m_gtk_window = NULL;
@@ -782,8 +784,9 @@ void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 void 
 gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
-	AM_DBG lib::logger::get_logger()->debug("%s:(%d,%d)\n", "gtk_ambulant_widget::mouseMoveEvent", e->x,e->y);
-	// This is not right!!!
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseMoveEvent(0x%x) e=(%d,%d) m_gtk_window=0x%x\n", this, e->x,e->y, m_gtk_window);
+	if (! m_gtk_window) return;
+	//XXXX This is not right!!!
 	ambulant::lib::point ap = ambulant::lib::point((int)e->x,
 						       (int)e->y-25);
 	gui_player* gui_player =  m_gtk_window->get_gui_player();
