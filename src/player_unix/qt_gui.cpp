@@ -274,7 +274,7 @@ qt_gui::fileError(QString smilfilename) {
 }
 
 bool 
-qt_gui::openSMILfile(const QString smilfilename, int mode) {
+qt_gui::openSMILfile(QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
 #if 0
@@ -285,6 +285,13 @@ qt_gui::openSMILfile(const QString smilfilename, int mode) {
 #endif
 	char* filename = strdup(smilfilename);
 	setCaption(basename(filename));
+	if (*filename != '/') {
+		// make the filename absolute pathname
+		char buf[PATH_MAX];
+		getcwd(buf, PATH_MAX);
+		strcat(buf,"/");
+		smilfilename.prepend(buf);
+	}
 	free(filename);
 	m_playmenu->setItemEnabled(m_pause_id, false);
 	m_playmenu->setItemEnabled(m_play_id, true);

@@ -42,7 +42,7 @@ class gtk_gui : public GtkWidget{
   	gtk_gui(const char* title, const char* initfile);
 	~gtk_gui();
 
-	const char* filename() { 
+	char* filename() { 
 		return m_smilfilename;
 	}
 
@@ -65,7 +65,7 @@ class gtk_gui : public GtkWidget{
 
    private:
 	const char*  m_programfilename;
-	const char*  m_smilfilename;
+	char*  m_smilfilename;
 	gtk_settings* m_settings;
 	GtkWindow*   m_toplevelcontainer; // the actual top level window
 	GtkWidget*   menubar;		 // The UI (menubar)	

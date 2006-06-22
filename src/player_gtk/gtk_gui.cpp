@@ -306,7 +306,7 @@ gtk_gui::gtk_gui(const char* title,
 	m_gui_thread = pthread_self();
 #endif/*TRY_LOCKING*/
 	if (initfile != NULL && initfile != "")
-		m_smilfilename = initfile;
+	  m_smilfilename = strdup(initfile);
 
 	/*Initialization of the Main Window */
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
@@ -399,7 +399,11 @@ gtk_gui::~gtk_gui() {
 
 	// remove all dynamic data in the same order as they are declared
 	// m_programfilename - not dynamic
-	// m_smilfilename - not dynamic or internal to gtk
+
+	if  (m_smilfilename) {
+		delete m_smilfilename;
+		m_smilfilename = NULL;
+	}
 	if  (m_settings) {
 		delete m_settings;
 		m_settings = NULL;
@@ -564,9 +568,20 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 		}
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
 
-	char* filename = strdup(smilfilename);
-	m_smilfilename = smilfilename;
-//	free(filename);
+	char* filename;
+	if (*smilfilename != '/') {
+		// make the filename absolute pathname
+		char buf[PATH_MAX];
+		getcwd(buf, PATH_MAX);
+		strcat(buf,"/");
+		strcat(buf, smilfilename);
+		filename = strdup(buf);
+	} else {
+		filename = strdup(smilfilename);
+	}
+	if (m_smilfilename)
+		free(m_smilfilename);
+	m_smilfilename = filename;
 
 	if (m_mainloop)
 		delete m_mainloop;
