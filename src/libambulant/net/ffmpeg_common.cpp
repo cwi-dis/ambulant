@@ -85,7 +85,7 @@ ffmpeg_codec_id::get_codec_id(const char* codec_name)
 	std::map<std::string, CodecID>::iterator i;
 	i = m_codec_id.find(str);
 	if (i != m_codec_id.end()) {
-		/*AM_DBG*/lib::logger::get_logger()->debug("get_codec_id(%s) -> %d", str.c_str(), i->second);
+		AM_DBG lib::logger::get_logger()->debug("get_codec_id(%s) -> %d", str.c_str(), i->second);
 		return i->second;
 	}
 	

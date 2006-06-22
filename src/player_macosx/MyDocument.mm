@@ -398,7 +398,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		}
 		ml->on_char(ch);
 	} else {
-		/*AM_DBG*/ NSLog(@"MyDocument::keyDown: dropping %@", chars);
+		AM_DBG NSLog(@"MyDocument::keyDown: dropping %@", chars);
 	}
 }
 
