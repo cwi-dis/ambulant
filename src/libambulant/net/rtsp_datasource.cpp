@@ -58,7 +58,7 @@ ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context->sinks[stream_index] == 0);
 	m_context->sinks[stream_index] = parent;
-	m_context->nstream++;
+	m_context->nsinks++;
 }
 
 void
@@ -67,8 +67,8 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context->sinks[stream_index] != 0);
 	m_context->sinks[stream_index] = 0;
-	m_context->nstream--;
-	if (m_context->nstream <= 0) cancel();
+	m_context->nsinks--;
+	if (m_context->nsinks <= 0) cancel();
 }
 
 rtsp_context_t::~rtsp_context_t()
@@ -109,6 +109,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->eof = false;
 	context->need_video = true;
 	context->need_audio = true;
+	context->nsinks = 0;
 	
 	memset(context->sinks, 0, sizeof context->sinks);
 	
@@ -196,11 +197,11 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		}
 		context->nstream++;
 		
-		
+#if 0 // XXXJack: Corresponding code in live playCommon.cpp is prety different...
 		int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 		int buf_size = increaseReceiveBufferTo(*context->env, rtp_sock_num, desired_buf_size);
 		(void)buf_size; // Forestall compiler warning
-		
+#endif
 		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false)) {
 			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url) failed to send setup command to subsesion");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
@@ -265,11 +266,14 @@ ambulant::net::rtsp_demux::run()
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
 	
 
-	while(!m_context->eof) {
+	while(!m_context->eof && !exit_requested()) {
+		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
+#if 0 // XXXJack: suspect...
 		if (!m_clip_begin_set) {
 			set_position(m_clip_begin);
 			m_clip_begin_set = true;
 		}
+#endif
 		MediaSubsession* subsession;
 		MediaSubsessionIterator iter(*m_context->media_session);
 		// Only audio/video session need to apply for a job !
@@ -278,7 +282,7 @@ ambulant::net::rtsp_demux::run()
 				if(m_context->need_audio) {
 					assert(!m_context->audio_packet);
 					m_context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
-					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an audio frame");
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an audio frame");
 					m_context->need_audio = false;
 					subsession->readSource()->getNextFrame(m_context->audio_packet, MAX_RTP_FRAME_SIZE, after_reading_audio, m_context,  on_source_close ,m_context);
 				}
@@ -287,7 +291,7 @@ ambulant::net::rtsp_demux::run()
 					assert(!m_context->video_packet);
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					//std::cout << " MAX_RTP_FRAME_SIZE = " << MAX_RTP_FRAME_SIZE;
-					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
 					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video, m_context, on_source_close,m_context);
@@ -304,6 +308,14 @@ ambulant::net::rtsp_demux::run()
 	}
 	return 0;
 	
+}
+
+void
+ambulant::net::rtsp_demux::cancel()
+{
+	if (is_running())
+		stop();
+	release();
 }
 
 static void 
@@ -335,7 +347,7 @@ after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval 
 static void 
 after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
-	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called data = 0x%x, sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", data, sz, truncated, pts.tv_sec, pts.tv_usec, duration);
 	rtsp_context_t* context = (rtsp_context_t*) data;
 	if (context) {
 		if (context->first_sync_time.tv_sec == 0 && context->first_sync_time.tv_usec == 0 ) {

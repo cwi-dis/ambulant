@@ -89,6 +89,7 @@ struct rtsp_context_t {
 	audio_format audio_fmt;	
 	video_format video_fmt;
 	demux_datasink *sinks[MAX_STREAMS];
+	int nsinks;
 };
 	
 class rtsp_demux : public abstract_demux {
@@ -99,7 +100,6 @@ class rtsp_demux : public abstract_demux {
 	
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
-	void cancel() {};
   	int audio_stream_nr() { return m_context->audio_stream; };
 	int video_stream_nr() { return m_context->video_stream; };  
 	int nstreams() { return m_context->nstream; };
@@ -108,6 +108,7 @@ class rtsp_demux : public abstract_demux {
 	video_format& get_video_format() { return m_context->video_fmt; };
 	void seek(timestamp_t time);
 	void set_position(timestamp_t time);
+	void cancel();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
