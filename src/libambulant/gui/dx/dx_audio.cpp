@@ -209,7 +209,7 @@ void gui::dx::dx_audio_renderer::stop() {
 	m_context->stopped(m_cookie);
 }
 
-void gui::dx::dx_audio_renderer::pause() {
+void gui::dx::dx_audio_renderer::pause(common::pause_display d) {
 	AM_DBG lib::logger::get_logger()->debug("dx_audio_renderer.pause(0x%x)", this);
 	if(m_player) m_player->pause();
 }

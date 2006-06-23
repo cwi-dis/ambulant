@@ -53,7 +53,7 @@ class dx_audio_renderer : public common::renderer_playable {
 	void start(double t);
 	void stop();
 	void seek(double t);
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	common::duration get_dur();
