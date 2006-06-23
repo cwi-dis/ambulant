@@ -567,21 +567,7 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 			return false;
 		}
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
-
-	char* filename;
-	if (*smilfilename != '/') {
-		// make the filename absolute pathname
-		char buf[PATH_MAX];
-		getcwd(buf, PATH_MAX);
-		strcat(buf,"/");
-		strcat(buf, smilfilename);
-		filename = strdup(buf);
-	} else {
-		filename = strdup(smilfilename);
-	}
-	if (m_smilfilename)
-		free(m_smilfilename);
-	m_smilfilename = filename;
+	m_smilfilename = smilfilename;
 
 	if (m_mainloop)
 		delete m_mainloop;

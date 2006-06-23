@@ -255,7 +255,7 @@ gui_player::create_document(const net::url& url)
 	lib::document *rv = lib::document::create_from_url(this, m_url);
 	if (rv) {
 		lib::logger::get_logger()->trace("%s: Parser done", m_url.get_url().c_str());
-		rv->set_src_url(url);
+		rv->set_src_url(m_url);
 	} else {
 		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}
