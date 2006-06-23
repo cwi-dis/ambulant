@@ -204,11 +204,20 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_
 bool
 ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 {
-	if (fmt.name != "ffmpeg") return false;
-	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-	if (enc->codec_type != CODEC_TYPE_AUDIO) return false;
-	if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
-	return true;
+	if (fmt.name == "ffmpeg"){
+		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		if (enc->codec_type != CODEC_TYPE_AUDIO) return false;
+		if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+		return true;
+	}
+	if (fmt.name == "live"){
+		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		//Ishan : Basically for some reason here the format parameters donot seem to be set. Set this before calling here.
+		
+		//if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+		return true;
+	}
+	return false;
 }
 
 // Hack, hack. Get extension of a URL.
