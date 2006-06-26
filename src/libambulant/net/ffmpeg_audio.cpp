@@ -31,7 +31,7 @@
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -211,10 +211,16 @@ ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 		return true;
 	}
 	if (fmt.name == "live"){
-		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-		//Ishan : Basically for some reason here the format parameters donot seem to be set. Set this before calling here.
+		//AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		const char* codec_name = (char*) fmt.parameters;
+	
+		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
+		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
 		
-		//if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+		if( !codec) {
+			return false;
+		}
+	
 		return true;
 	}
 	return false;
