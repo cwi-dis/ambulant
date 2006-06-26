@@ -29,7 +29,7 @@
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -104,6 +104,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
 	add_codec("L16", CODEC_ID_PCM_S16LE);
 	add_codec("MP4V-ES", CODEC_ID_MPEG4);
+	add_codec("MPEG4-GENERIC", CODEC_ID_MPEG4AAC);
 	
 }
 
