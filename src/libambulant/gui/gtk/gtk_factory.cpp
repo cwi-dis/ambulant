@@ -415,7 +415,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_ambulant_widget->get_gtk_widget()->window, 0, 0, 0, 0, 0, width, height);
 //	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
 	if (m_ambulant_widget->m_screenshot_data) {
-		g_free(m_ambulant_widget->m_screenshot_data);
+		//g_free(m_ambulant_widget->m_screenshot_data);
 		m_ambulant_widget->m_screenshot_data = NULL;
 		m_ambulant_widget->m_screenshot_size = 0;
 	}
