@@ -408,6 +408,13 @@ void net::url::set_from_scheme(lib::scanner& sc, const std::string& pat) {
 	m_host = "";
 	m_port = 0;
 	m_path = sc.join(2);  // Skip scheme:
+	// Unsure: should we do #fragment processing for unknown URLs?
+	// initially I thought not, but the ambulantpdbt: scheme needs it...
+	int hpos = m_path.find('#');
+	if (hpos != std::string::npos) {
+		m_ref = m_path.substr(hpos+1);
+		m_path = m_path.substr(0, hpos);
+	}
 	if (s_strict) _checkurl();
 }
 
