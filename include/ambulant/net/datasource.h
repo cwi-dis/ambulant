@@ -36,6 +36,10 @@
 #include <stdint.h>
 #include "ambulant/lib/unix/unix_thread.h"
 #endif
+#ifdef _MSC_VER
+#pragma warning(disable : 4251)
+#endif
+
 namespace ambulant {
 
 namespace net {

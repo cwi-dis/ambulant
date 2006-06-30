@@ -37,6 +37,10 @@
 
 #include "ambulant/lib/mtsync.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable : 4251)
+#endif
+
 namespace ambulant {
 
 namespace lib {
@@ -93,7 +97,7 @@ class basic_atomic_count {
 };
 
 /// An atomic counter using the standard critical_section for locking.
-typedef basic_atomic_count<critical_section> atomic_count;
+typedef AMBULANTAPI basic_atomic_count<critical_section> atomic_count;
 
 /// An implementation of the ref_counted interface.
 /// The ref_counted_obj class maybe used as a mixin for classes

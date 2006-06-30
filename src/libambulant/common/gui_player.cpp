@@ -69,6 +69,7 @@ gui_player::play()
 //XXX	if (p->is_playing()) lib::logger::get_logger()->debug("gui_player::play: already playing!");
 	p->start();
 	if (m_goto_node) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("play: goto %s", m_goto_node->get_sig().c_str());
 		bool ok = p->goto_node(m_goto_node);
 		if (!ok)
 			ambulant::lib::logger::get_logger()->trace("gui_player::play: goto_node failed");
