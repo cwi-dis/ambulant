@@ -219,7 +219,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		    H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
+		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, agtkw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)agtkw,L,T,W,H);
 		GdkColor bgc;
 		bgc.red = redc(bgcolor)*0x101;
 		bgc.blue = bluec(bgcolor)*0x101;

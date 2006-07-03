@@ -57,7 +57,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: info=0x%x",info);
+	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,info);
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 	if (m_data && !m_image_loaded) {

@@ -134,32 +134,34 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_transition_dest->get_rect();
-	ambulant_gtk_window* aqw = (ambulant_gtk_window*) window;
-	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,aqw->get_ambulant_pixmap());
-/*
-	QPixmap *surf = NULL;
+	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
+
+	GdkPixmap* surf = NULL;
 	// See whether we're in a transition
 	if (m_trans_engine
 #ifdef USE_SMIL21
 	    && !m_fullscreen
 #endif
 	    ) {
-		QPixmap *qpm = aqw->get_ambulant_pixmap();
-		surf = aqw->get_ambulant_surface();
-		if (surf == NULL)
-			surf = aqw->new_ambulant_surface();
+		GdkPixmap* gpm = agw->get_ambulant_pixmap();
+		surf = agw->get_ambulant_surface();
+		if (surf == NULL) 
+			surf = agw->new_ambulant_surface();
 		if (surf != NULL) {
 			// Copy the background pixels
 			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			bitBlt(surf, dstrect.left(),dstrect.top(),
-			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			GdkGC *gc = gdk_gc_new (surf);
+			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
+					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			g_object_unref (G_OBJECT (gc));
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
-			aqw->set_ambulant_surface(surf);
+			agw->set_ambulant_surface(surf);
 		}
+
 	}
-*/
 	m_lock.leave();
 }
 
@@ -167,19 +169,20 @@ void
 gtk_transition_renderer::redraw_post(gui_window *window)
 {
 	m_lock.enter();
-/*
-	ambulant_gtk_window* aqw = (ambulant_gtk_window*) window;
-	QPixmap *surf = aqw->get_ambulant_surface();
+
+	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+	GdkPixmap* surf = agw->get_ambulant_surface();
 	
 	if (surf != NULL) {
-		aqw->reset_ambulant_surface();
+		agw->reset_ambulant_surface();
 	}
+
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
 #ifdef USE_SMIL21
 			if (m_fullscreen)
-				aqw->screenTransitionStep(NULL, 0);
+				agw->screenTransitionStep(NULL, 0);
 			else
 				m_trans_engine->step(now);
 #else
@@ -187,13 +190,13 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 #endif
 			typedef lib::no_arg_callback<gtk_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &gtk_transition_renderer::stop);
-			m_event_processor->add_event(ev, 0, lib::event_processor::med);
-		} else {*/
-//			if ( 1 /* XXX was: surf */) {
-/*				AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to view");
+			m_event_processor->add_event(ev, 0, lib::ep_med);
+		} else {
+			if ( 1 /* XXX was: surf */) {
+				AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to view");
 #ifdef USE_SMIL21
 				if (m_fullscreen) {
-					aqw->screenTransitionStep (m_trans_engine, now);
+					agw->screenTransitionStep (m_trans_engine, now);
 				} else {
 					m_trans_engine->step(now);
 				}
@@ -206,11 +209,10 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 				if (delay < 33) delay = 33; // XXX band-aid
 	//				delay = 1000;
 				AM_DBG logger::get_logger()->debug("gtk_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
-				m_event_processor->add_event(ev, delay, event_processor::low);
+				m_event_processor->add_event(ev, delay, lib::ep_low);
 			}
 		}
 	}
-*/
 	m_lock.leave();
 }
 

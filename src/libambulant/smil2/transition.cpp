@@ -245,7 +245,55 @@ void
 transition_engine_bowtiewipe::compute()
 {
 	lib::rect dstrect = m_dst->get_rect();
-	lib::logger::get_logger()->trace("transitiontype bowTieWipe not yet implemented");
+	int x0 = dstrect.left();
+	int y0 = dstrect.top();
+	int x1 = dstrect.right();
+	int y1 = dstrect.bottom();
+	int xmid = (x0 + x1)/2;
+	int ymid = (y0 + y1)/2;
+	int width = x1 - x0;
+	int height = y1 - y0;
+	
+	if (m_progress <= 0.5) {
+		int xleft, xright, ytop, ybot;
+		std::vector<lib::point> poly;
+		double deltax = m_progress*width;
+		xleft  = static_cast<int>(round(xmid - deltax));
+		xright = static_cast<int>(round(xmid + deltax));
+		double deltay = m_progress*height;
+		ytop   = static_cast<int>(round(y0   + deltay));
+		ybot   = static_cast<int>(round(y1   - deltay));
+		poly.push_back(lib::point(xleft,  y0));
+		poly.push_back(lib::point(xright, y0));
+		poly.push_back(lib::point(xmid,   ytop));
+		m_newpolygonlist.push_back(poly);
+		poly.clear();
+		poly.push_back(lib::point(xleft,  y1));
+		poly.push_back(lib::point(xright, y1));
+		poly.push_back(lib::point(xmid,   ybot));
+		m_newpolygonlist.push_back(poly);
+	} else {
+		lib::transition_info::progress_type value = m_progress - 0.5;
+		int xleft, xright, ytop, ybot;
+		std::vector<lib::point> poly;
+		double deltax = value*width;
+		xleft  = static_cast<int>(round(xmid - deltax));
+		xright = static_cast<int>(round(xmid + deltax));
+		double deltay = value*width;
+		ytop   = static_cast<int>(round(y0   + deltay));
+		ybot   = static_cast<int>(round(y1   - deltay));
+		poly.push_back(lib::point(x0,  y0));
+		poly.push_back(lib::point(x0,  ytop));
+		poly.push_back(lib::point(xleft, ymid));
+		poly.push_back(lib::point(x0,  ybot));
+		poly.push_back(lib::point(x0,  y1));
+		poly.push_back(lib::point(x1,  y1));
+		poly.push_back(lib::point(x1,  ybot));
+		poly.push_back(lib::point(xright, ymid));
+		poly.push_back(lib::point(x1,  ytop));
+		poly.push_back(lib::point(x1,  y0));
+		m_newpolygonlist.push_back(poly);
+	}
 }
 
 // series 2: iris wipes
