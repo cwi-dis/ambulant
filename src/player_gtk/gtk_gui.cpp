@@ -773,7 +773,7 @@ void
 gtk_gui::do_reload() {
 	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_reload", m_mainloop);
      	assert(m_mainloop);
-     	m_mainloop->restart(false);
+     	m_mainloop->restart(true);
      	_update_menus();
 }
 

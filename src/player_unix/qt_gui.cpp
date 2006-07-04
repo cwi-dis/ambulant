@@ -472,7 +472,7 @@ qt_gui::slot_pause() {
 void 
 qt_gui::slot_reload() {
     assert(m_mainloop);
-    m_mainloop->restart();
+    m_mainloop->restart(true);
     _update_menus();
 }
 
