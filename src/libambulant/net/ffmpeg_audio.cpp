@@ -31,7 +31,7 @@
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 

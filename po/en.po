@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2005-12-09 13:34+0100\n"
+"POT-Creation-Date: 2006-07-03 17:09+0200\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -43,13 +43,15 @@ msgstr ""
 msgid "%s: cannot open"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:79
+#: src/libambulant/lib/document.cpp:94 src/libambulant/lib/document.cpp:128
+#: src/libambulant/lib/document.cpp:147 src/libambulant/lib/document.cpp:160
 #, c-format
-msgid "%s: Could not build DOM tree"
+msgid "%s: Not a SMIL document"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:109
-msgid "Could not build DOM tree for the provided string"
+#: src/libambulant/lib/document.cpp:115 src/libambulant/lib/document.cpp:142
+#, c-format
+msgid "%s: Not a valid XML document"
 msgstr ""
 
 #: src/libambulant/lib/transition_info.cpp:47
@@ -72,26 +74,16 @@ msgstr ""
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:94
-#, c-format
-msgid "Failed to read file: %s"
-msgstr ""
-
-#: src/libambulant/lib/tree_builder.cpp:111
-#, c-format
-msgid "Failed to read URL: %s"
-msgstr ""
-
-#: src/libambulant/lib/tree_builder.cpp:116
+#: src/libambulant/lib/tree_builder.cpp:130
 #, c-format
 msgid "Failed to parse document: %s"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:159
+#: src/libambulant/lib/tree_builder.cpp:174
 msgid "Could not create any XML parser (configuration error?)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:218
+#: src/libambulant/lib/tree_builder.cpp:233
 #, c-format
 msgid "%s: Error parsing document"
 msgstr ""
@@ -127,28 +119,28 @@ msgstr ""
 msgid "MMS Player: dur attribute must be of form \"1000ms\""
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:208
+#: src/libambulant/net/datasource.cpp:343
 #, c-format
 msgid "%s: Cannot open, not supported by any datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:241
+#: src/libambulant/net/datasource.cpp:389
 #, c-format
 msgid "%s: Cannot open, no compatible parser"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:260
-#: src/libambulant/net/datasource.cpp:285
+#: src/libambulant/net/datasource.cpp:408
+#: src/libambulant/net/datasource.cpp:433
 #, c-format
 msgid "%s: Cannot open, cannot find conversion filter"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:300
+#: src/libambulant/net/datasource.cpp:448
 #, c-format
 msgid "%s: Cannot open, not supported by any video datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:377
+#: src/libambulant/net/datasource.cpp:525
 msgid "datasource_reader: out of memory"
 msgstr ""
 
@@ -160,26 +152,27 @@ msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:130
 #: src/libambulant/net/demux_datasource.cpp:188
-#: src/libambulant/net/ffmpeg_audio.cpp:314
-#: src/libambulant/net/ffmpeg_audio.cpp:363
-#: src/libambulant/net/ffmpeg_audio.cpp:426
-#: src/libambulant/net/ffmpeg_audio.cpp:597
-#: src/libambulant/net/ffmpeg_audio.cpp:602
-#: src/libambulant/net/ffmpeg_audio.cpp:608
-#: src/libambulant/net/ffmpeg_audio.cpp:615
-#: src/libambulant/net/ffmpeg_audio.cpp:753
-#: src/libambulant/net/ffmpeg_audio.cpp:791
-#: src/libambulant/net/ffmpeg_audio.cpp:959
-#: src/libambulant/net/ffmpeg_video.cpp:694
-#: src/libambulant/net/ffmpeg_video.cpp:699
-#: src/libambulant/net/ffmpeg_video.cpp:707
-#: src/libambulant/net/ffmpeg_video.cpp:714
+#: src/libambulant/net/ffmpeg_audio.cpp:327
+#: src/libambulant/net/ffmpeg_audio.cpp:376
+#: src/libambulant/net/ffmpeg_audio.cpp:439
+#: src/libambulant/net/ffmpeg_audio.cpp:765
+#: src/libambulant/net/ffmpeg_audio.cpp:803
+#: src/libambulant/net/ffmpeg_audio.cpp:971
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:405
-#: src/libambulant/net/ffmpeg_video.cpp:261
+#: src/libambulant/net/ffmpeg_video.cpp:269
+#: src/libambulant/net/ffmpeg_video.cpp:718
+#: src/libambulant/net/ffmpeg_video.cpp:723
+#: src/libambulant/net/ffmpeg_video.cpp:731
+#: src/libambulant/net/ffmpeg_video.cpp:738
 msgid "Programmer error encountered during video playback"
+msgstr ""
+
+#: src/libambulant/net/demux_datasource.cpp:634
+#, c-format
+msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
 
 #: src/libambulant/net/ffmpeg_audio.cpp:158
@@ -193,20 +186,18 @@ msgstr ""
 msgid "No support for %d-bit audio, only 16"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:246
+#: src/libambulant/net/ffmpeg_audio.cpp:261
 #, c-format
 msgid "%s: audio decoder \"%s\" not supported"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:263
+#: src/libambulant/net/ffmpeg_audio.cpp:278
 #, c-format
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:576
-#: src/libambulant/net/ffmpeg_audio.cpp:583
-#: src/libambulant/net/ffmpeg_video.cpp:671
-#: src/libambulant/net/ffmpeg_video.cpp:678
+#: src/libambulant/net/ffmpeg_audio.cpp:588
+#: src/libambulant/net/ffmpeg_audio.cpp:595
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
@@ -220,13 +211,19 @@ msgstr ""
 msgid "Programmer error encountered"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:176
+#: src/libambulant/net/ffmpeg_video.cpp:179
 #, c-format
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:526
+#: src/libambulant/net/ffmpeg_video.cpp:542
 msgid "error decoding video frame"
+msgstr ""
+
+#: src/libambulant/net/ffmpeg_video.cpp:695
+#: src/libambulant/net/ffmpeg_video.cpp:702
+#, c-format
+msgid "No support for \"%s\" video"
 msgstr ""
 
 #: src/libambulant/net/posix_datasource.cpp:175
@@ -234,17 +231,17 @@ msgstr ""
 msgid "Error encountered while reading file %s"
 msgstr ""
 
-#: src/libambulant/net/url.cpp:193
+#: src/libambulant/net/url.cpp:320
 #, c-format
 msgid "%s: Cannot parse URL"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:530
+#: src/libambulant/smil2/smil_player.cpp:723
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:536
+#: src/libambulant/smil2/smil_player.cpp:729
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
@@ -254,179 +251,170 @@ msgstr ""
 msgid "While loading settings: %s: Could not create DOM tree"
 msgstr ""
 
-#: src/player_macosx/mainloop.cpp:160
+#: src/player_macosx/mainloop.cpp:75
 #, c-format
 msgid "%s: Cannot build DOM tree"
 msgstr ""
 
-#: src/player_macosx/mainloop.cpp:177
+#: src/player_macosx/mainloop.cpp:90
 #, c-format
 msgid "%s: node ID not found"
 msgstr ""
 
-#: src/player_macosx/mainloop.cpp:206
-#, c-format
-msgid "%s: Cannot open"
-msgstr ""
-
-#: src/player_macosx/mainloop.cpp:243
-msgid "Cannot play document: no player"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:146
+#: src/player_unix/qt_gui.cpp:135
 msgid "&Open..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:147
+#: src/player_unix/qt_gui.cpp:136
 msgid "Open &URL..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:148
+#: src/player_unix/qt_gui.cpp:137
 msgid "&Reload..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:156
+#: src/player_unix/qt_gui.cpp:145
 msgid "&Settings"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:159
+#: src/player_unix/qt_gui.cpp:148
 msgid "&Quit"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:160
+#: src/player_unix/qt_gui.cpp:149
 msgid "&File"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:165 src/player_unix/qt_gui.cpp:170
+#: src/player_unix/qt_gui.cpp:154 src/player_unix/qt_gui.cpp:159
 msgid "Pla&y"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:167
+#: src/player_unix/qt_gui.cpp:156
 msgid "&Pause"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:169
+#: src/player_unix/qt_gui.cpp:158
 msgid "&Stop"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:174
+#: src/player_unix/qt_gui.cpp:163
 msgid "&Full Screen"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:175
+#: src/player_unix/qt_gui.cpp:164
 msgid "&Window"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:177
+#: src/player_unix/qt_gui.cpp:166
 msgid "&Load settings..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:180
+#: src/player_unix/qt_gui.cpp:169
 msgid "&Log Window..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:182
+#: src/player_unix/qt_gui.cpp:171
 msgid "&View"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:187
+#: src/player_unix/qt_gui.cpp:176
 msgid "&About AmbulantPlayer"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:188
+#: src/player_unix/qt_gui.cpp:177
 msgid "AmbulantPlayer &Help"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:190
+#: src/player_unix/qt_gui.cpp:179
 msgid "AmbulantPlayer &Website..."
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:191
+#: src/player_unix/qt_gui.cpp:180
 msgid "&Play Welcome Document"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:192
+#: src/player_unix/qt_gui.cpp:181
 msgid "&Help"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:224
+#: src/player_unix/qt_gui.cpp:213
 msgid "About AmbulantPlayer"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:226 src/player_unix/qt_gui.cpp:535
+#: src/player_unix/qt_gui.cpp:215 src/player_unix/qt_gui.cpp:492
 msgid "OK"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:244
+#: src/player_unix/qt_gui.cpp:233
 msgid "Cannot find Welcome.smil document"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:256
+#: src/player_unix/qt_gui.cpp:245
 msgid "Cannot find Ambulant Player Help"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:282
+#: src/player_unix/qt_gui.cpp:271
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:317
+#: src/player_unix/qt_gui.cpp:305
 msgid ""
 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any "
 "file (*)"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:319
+#: src/player_unix/qt_gui.cpp:307
 msgid "open file dialog"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:320
+#: src/player_unix/qt_gui.cpp:308
 msgid "Double Click a file to open"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:395
+#: src/player_unix/qt_gui.cpp:383
 msgid "Settings files (*.xml)"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:397
+#: src/player_unix/qt_gui.cpp:385
 msgid "open settings file dialog"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:398
+#: src/player_unix/qt_gui.cpp:386
 msgid "Double Click a settings file to open"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:432
+#: src/player_unix/qt_gui.cpp:420
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:444
+#: src/player_unix/qt_gui.cpp:432
 msgid "Open URL not implemented for Embedded Qt"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:475
+#: src/player_unix/qt_gui.cpp:455
 msgid "No file open: Please first select File->Open"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:537
+#: src/player_unix/qt_gui.cpp:494
 msgid "Cancel"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:713 src/player_macosx/MyAppDelegate.mm:138
+#: src/player_unix/qt_gui.cpp:656 src/player_macosx/MyAppDelegate.mm:140
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:714
+#: src/player_unix/qt_gui.cpp:657
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/Qt"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:716
+#: src/player_unix/qt_gui.cpp:659
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:755
+#: src/player_unix/qt_gui.cpp:698
 msgid "Cannot open: "
 msgstr ""
 
@@ -479,7 +467,7 @@ msgstr ""
 msgid "Plugin directory:\n"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_gui.mm:208
+#: src/libambulant/gui/cocoa/cocoa_gui.mm:220
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr ""
 
@@ -493,30 +481,30 @@ msgstr ""
 msgid "%s: cannot open movie"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:139
+#: src/player_macosx/MyAppDelegate.mm:141
 #, c-format
 msgid "Ambulant Player: built on %s for Macintosh/Cocoa"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:141
+#: src/player_macosx/MyAppDelegate.mm:143
 #, c-format
 msgid "Ambulant Player: localization enabled (english; user requested %s)"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:181
-#: src/player_macosx/MyAppDelegate.mm:222
+#: src/player_macosx/MyAppDelegate.mm:185
+#: src/player_macosx/MyAppDelegate.mm:226
 msgid "No Welcome.smil in application bundle"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:219
+#: src/player_macosx/MyAppDelegate.mm:223
 msgid "Welcome.smil could not be opened"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:234
+#: src/player_macosx/MyAppDelegate.mm:238
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 
-#: src/player_macosx/MyDocument.mm:45
+#: src/player_macosx/MyDocument.mm:60 src/player_macosx/MyDocument.mm:83
 #, c-format
 msgid "Cannot open: %s"
 msgstr ""

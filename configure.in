@@ -16,6 +16,7 @@ dnl ================================================================
 AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_LN_S
 AC_STDC_HEADERS
 LT_AC_PROG_SED
 am__api_version="1.9"

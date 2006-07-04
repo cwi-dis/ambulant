@@ -108,8 +108,8 @@ endif # WITH_NOKIA770
 #------------------------------------------------------
 #------------------------------------------------------
 
-bin_PROGRAMS = AmbulantPlayer
-AmbulantPlayer_SOURCES =					\
+bin_PROGRAMS = AmbulantPlayer_gtk
+AmbulantPlayer_gtk_SOURCES =					\
 	gtk_gui.cpp						\
 	gtk_gui.h 						\
 	gtk_logger.cpp						\
