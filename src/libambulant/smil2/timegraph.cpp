@@ -36,7 +36,6 @@
 #include <cstdlib>
 
 //#define AM_DBG if(1)
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

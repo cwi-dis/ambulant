@@ -26,6 +26,7 @@
 #include "ambulant/smil2/time_node.h"
 #include <list>
 
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -48,7 +49,11 @@ sync_rule_impl::sync_rule_impl(time_node *syncbase, sync_event se)
 	m_syncbase_event(se),
 	m_refnode(0),
 	m_locked(false),
+#ifdef AM_DBG
+	m_trace(true) {}
+#else
 	m_trace(false) {}
+#endif
 
 void sync_rule_impl::set_target(time_node *tn, rule_type rt) { 
 	m_target = tn; 
