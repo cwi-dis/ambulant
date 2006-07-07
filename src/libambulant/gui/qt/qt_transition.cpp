@@ -300,19 +300,19 @@ qt_transition_blitclass_polylist::update()
 //	QImage img1 = qpm->convertToImage();
 	QImage img2 = npm->convertToImage();
 	QRegion clip_region;
-	logger::get_logger()->debug("qt_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
+	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
 	std::vector< std::vector<point> >::iterator partpolygon;
 	for (partpolygon=m_newpolygonlist.begin(); 
 	     partpolygon!=m_newpolygonlist.end(); partpolygon++) {
 		std::vector<point>::iterator newpoint;
-		logger::get_logger()->debug("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
+		AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
 		QPointArray qpa;
 		int idx = 0;
 		for( newpoint=partpolygon->begin();
 		     newpoint != partpolygon->end(); newpoint++) {
 			point p = *newpoint + dst_global_topleft;
 			qpa.putPoints(idx++, 1, p.x, p.y);
-			logger::get_logger()->debug("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
+			AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
 		}
 		QRegion qreg(qpa, true);
 		clip_region += qreg;

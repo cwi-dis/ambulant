@@ -60,16 +60,16 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,info);
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
-	if (m_data && !m_image_loaded) {
+	if (m_data && !m_image_loaded && m_data_size > 0) {
 		GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
 		if (gdk_pixbuf_loader_write(loader, (const guchar*) m_data, (gsize) m_data_size, 0))
 		{
-			//GError **error;
+	       		// for small files (m_data_size < 128) gdk_pixbuf_loader_close() is needed
+			// otherwise gdk_pixbuf_loader_get_pixbuf() doesn't get an image
+			gdk_pixbuf_loader_close(loader, NULL);
 			m_image = gdk_pixbuf_loader_get_pixbuf(loader);
 			if (m_image)
 				g_object_ref(G_OBJECT (m_image));
-			//gdk_pixbuf_loader_close(loader, error);
-//			g_object_unref (G_OBJECT (loader));
 		}else
 			g_message("Could not get Loader working\n");
 
@@ -79,7 +79,6 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 			m_image_loaded = TRUE;
 		}
 		if (loader) {
-			gdk_pixbuf_loader_close(loader, NULL);
 			g_object_unref(G_OBJECT (loader));
 		}
 	}
@@ -154,7 +153,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 
 	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR); 
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, S_L, S_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, 0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 	g_object_unref(G_OBJECT (new_image));
 	g_object_unref(G_OBJECT (gc));
 	m_lock.leave();
