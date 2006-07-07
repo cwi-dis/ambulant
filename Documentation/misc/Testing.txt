@@ -1,0 +1,132 @@
+Ambulant Acceptance testing.
+---------------------------
+
+This document attempts to lists all tests that need to be passed
+before an Ambulant distribution can be considered thustworty.
+Since this goal ("all tests") can never be fully achieved, please add 
+new tests to cover new features / bugs, or replace inadequate
+tests with more appropriate ones.
+
+Try to make these new tests as concise, yet complete as possible.
+
+Platforms and variants.
+-----------------------
+
+All tests are applicable to all platforms and variants, except as
+noted. 
+
+Currently these platforms are:
+
+Mac OS 10
+Linux Fedora Core 4
+Windows XP
+Windows CE
+(Nokia 770 2005 Edition)
+(Nokia 770 2006 Edition)
+
+Currently the variants are:
+
+AmbulantPlayer program
+AmbulantPlayer plugin for Firefox (Windws XP only)
+
+Tests (for each platform/variant).
+----------------------------------
+
+1. Download/Install/Run on a virgin machine:
+   Welcome should play.
+   Check if the menu's work properly.
+   File->Open
+       ->Open URL
+       ->Reload
+       ->Settings
+       ->Quit
+   Play->Play
+       ->Pause
+       ->Stop
+   View->Full Screen (not yet implemented)
+       ->Window
+       ->Load Settings
+       ->Log Window
+   Help->About AmbulantPlayer
+       ->AmbulantPlayer Help
+       ->AmbulantPlayer Website
+       ->Play Welcome Document
+   Click on the link "www.ambulantplayer.org", an external
+   web browser should start (on Linux, the environment
+   variable BROWSER must be set, e.g. export BROWSER=firefox").
+
+2. Download/Install/Run on a non-virgin machine (update).
+   Select: "Help->Play Welcome Document" and repeat the
+   menu check under 1. above.
+
+3. Run with argument .../Extras/DemoPresentation/NYC-SMIL2.smil
+   Let it run completely.
+   Try "View->Load Settings" select MultiAudio.xml, and select
+   Play->Stop,  Play->Play
+   You should hear a background music now.
+
+4. Select File->Open: NYC-MMS.smil
+   The presentation is now done using lower quality audio and images.
+
+5. Download and extract from www.ambulantplayer.org->Ambulant Player Demos
+   Birthday Zip File
+   Euros Zip File
+   Flashlight Zip File
+   News Zip File
+
+6. Run the demo's:
+
+   Birthday/HappyBirthday.smil
+   Birthday/HappyBirthday-Big.smil
+   Birthday/HappyCE.smil
+      Try selection by clicking on one of the small pictures.
+      The last one should also be playable on a device without video support.
+
+   Euros/EUROshow.smil
+   EURO-CE.smil
+      Try selection by clicking on Next/Back buttons.
+
+   Flashlight/Flashlight-Desktop.smil
+      Try selection by clicking on the buttons in the left column.
+   Flashlight/Flashlight-CE.smil
+      Try selection by clicking on the buttons in the bottom row.
+      Try "View->Load settings" and select USA-Market.xml
+      You should hear a different voice and see different images where
+      e.g. the word "Flashlight" is used instead of "Torch"
+
+   News/Danes2-Desktop.smil
+      Try select any news item by clicking on an image. Note that when
+      one of the bottom row images is selected, and the corresponding
+      video is playing, clicking on another image only has effect after
+      the current bottom-row video has completed (15s) because the bottom row
+      video's are contained within a <priorityClass peers="defer"> element.
+      Using "View->Load Settings" allows 4 different presentation styles:
+         Broadband-EN.xml (English captions, Slovakian videos)
+         Broadband-SL.xml (Slovakian captions, Slovakian videos)
+	 Web-EN.xml (English captions, images and Slovakian audios, bottom row videos)
+	 Web-SI.xml (Slovakian captions, images and Slovakian audio, bottom row videos) 
+
+   News/Danes2-CE.smil
+      Small news presentation with images and Slovakian audio only.
+
+7. Download and extract from www.ambulantplayer.org->SMIL 2.1 Tests the
+   test suite covering new features only (4MB download). This contains
+   about 70 small tests. These can be examined most easily by opening the file 
+   NewS21functionalities.html an a Web browser after the browser has been setup
+   to use the installed AmbulantPlayer for files with .smil extension.
+   Then open each individual test as SMIL, it will play in a separate window.
+   On all platforms keyboard shortcuts are available.
+
+9. Nokia documents (external linkage).
+   Available in mmdocuments/ambulant-tests/nokia (on oratrix.oratrix.com)
+
+8. SMIL21 Features not implemented / tested
+
+   This section lists known features not implemented by AmbulantPlayer and/or not tested
+   by any of the demos/tests above. When any item listed here has been done, it should be
+   removed from this sectio (and moved to any of the sections above).
+
+   - Not all transitions are implemented
+   - None of the transition subtypes are implemented, there is no framework for subtype support
+   - wallclock time specification is not implemented
+
