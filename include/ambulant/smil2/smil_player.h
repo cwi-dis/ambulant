@@ -144,6 +144,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	
 	// Feedback stuff
 	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
+	void document_loaded(lib::document *doc) { if (m_feedback_handler) m_feedback_handler->document_loaded(doc); }
 	void document_started() { if (m_feedback_handler) m_feedback_handler->document_started(); }
 	void document_stopped() { if (m_feedback_handler) m_feedback_handler->document_stopped(); }
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }

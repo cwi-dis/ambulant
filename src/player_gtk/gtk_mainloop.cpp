@@ -212,9 +212,9 @@ gtk_mainloop::create_player(const char* filename) {
 	} else {
 		player = create_smil2_player(m_doc, this, get_embedder());
 	}
-#ifdef USE_SMIL21
+
 	player->initialize();
-#endif
+
 	return player;
 }
 

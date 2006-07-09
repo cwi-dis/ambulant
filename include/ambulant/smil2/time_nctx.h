@@ -123,6 +123,7 @@ class dummy_time_node_context : public time_node_context {
 	// Notifications
 	virtual void started_playback() {}
 	virtual void done_playback(){}
+	virtual void document_loaded(lib::document *doc) {}
 	virtual void document_started() {}
 	virtual void document_stopped() {}
 	virtual void node_started(const lib::node *n) {}

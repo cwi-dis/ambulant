@@ -4826,6 +4826,7 @@ player_feedback::player_feedback(PyObject *itself)
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	if (itself)
 	{
+		if (!PyObject_HasAttrString(itself, "document_loaded")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: document_loaded");
 		if (!PyObject_HasAttrString(itself, "document_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: document_started");
 		if (!PyObject_HasAttrString(itself, "document_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: document_stopped");
 		if (!PyObject_HasAttrString(itself, "node_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_started");
@@ -4847,6 +4848,24 @@ player_feedback::~player_feedback()
 	PyGILState_Release(_GILState);
 }
 
+
+void player_feedback::document_loaded(ambulant::lib::document* doc)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_doc = Py_BuildValue("O&", documentObj_New, doc);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "document_loaded", "(O)", py_doc);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::document_loaded() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_doc);
+
+	PyGILState_Release(_GILState);
+}
 
 void player_feedback::document_started()
 {

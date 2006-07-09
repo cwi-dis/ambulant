@@ -79,10 +79,10 @@ mainloop::mainloop(const char *urlstr, void *view,
 		m_player = common::create_mms_player(m_doc, this);
 	else
 		m_player = common::create_smil2_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
-	m_player->initialize();
-#endif
+
 	m_player->set_feedback(this);
+	m_player->initialize();
+
 	const std::string& id = url.get_ref();
 	if (id != "") {
 		const ambulant::lib::node *node = m_doc->get_node(id);
@@ -186,9 +186,10 @@ mainloop::restart(bool reparse)
 	AM_DBG lib::logger::get_logger()->debug("Creating player instance for: %s", m_url.get_url().c_str());
 	// XXXX
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
+
+	m_player->set_feedback(this);
 	m_player->initialize();
-#endif
+
 	if (playing || pausing) play();
 	if (pausing) pause();
 }

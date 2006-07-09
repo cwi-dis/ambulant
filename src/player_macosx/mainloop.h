@@ -43,6 +43,7 @@ class mainloop :
 	void init_parser_factory();
 	ambulant::common::gui_screen *get_gui_screen();
 	
+	void document_loaded(ambulant::lib::document *doc) {};
 	void document_started() {};
 	void document_stopped() {};
 	void node_started(const ambulant::lib::node *n) {};

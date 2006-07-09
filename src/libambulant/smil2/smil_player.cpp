@@ -74,24 +74,25 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_eom_flag(true),
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
-	m_new_focussed_nodes(0) {
+	m_new_focussed_nodes(0)
+{
 	
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player()");
+}
+
+void
+smil_player::initialize()
+{
+	document_loaded(m_doc);
+	
 	m_event_processor = event_processor_factory(m_timer);
 	// build the layout (we need the top-level layout)
 	build_layout();
 	// Build the timegraph using the current filter
 	build_timegraph();
-}
-
-#ifdef USE_SMIL21
-void
-smil_player::initialize()
-{
 	m_layout_manager->load_bgimages(m_factory);
 }
-#endif
 
 smil_player::~smil_player() {
 	AM_DBG m_logger->debug("smil_player::~smil_player()");

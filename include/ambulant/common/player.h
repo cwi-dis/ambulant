@@ -51,6 +51,11 @@ class player_feedback {
   public:
     virtual ~player_feedback(){}
 	
+	/// Called by the player when the document is loaded, but before the
+	/// timegraph is created. At this time the embedding application can
+	/// modify the document, if it needs to.
+	virtual void document_loaded(lib::document *doc) = 0;
+	
 	/// Called by the player when the document starts playing
     virtual void document_started() = 0;
 	
@@ -75,10 +80,8 @@ class player {
   public:
 	virtual ~player() {};
 	
-#ifdef USE_SMIL21
 	/// Do any initializations necessary
 	virtual void initialize() = 0;
-#endif
 
 	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;

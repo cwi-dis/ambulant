@@ -117,10 +117,9 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
 	m_player = new smil2::smil_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
-	m_player->initialize();
-#endif
+
 	if (feedback) m_player->set_feedback(feedback);
+	m_player->initialize();
 	
 	// Create a worker processor instance
 }
