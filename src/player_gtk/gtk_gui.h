@@ -73,12 +73,12 @@ class gtk_gui : public GtkWidget{
 	GtkWidget*   m_documentcontainer; // The drawable area
 	GtkActionGroup *m_actions;
 
-#define	TRY_LOCKING
-#ifdef	TRY_LOCKING
+#define	LOCK_MESSAGE
+#ifdef	LOCK_MESSAGE
 	pthread_cond_t	  m_cond_message;
 	pthread_mutex_t   m_lock_message;
 	unsigned long int m_gui_thread;
-#endif/*TRY_LOCKING*/
+#endif/*LOCK_MESSAGE*/
 	bool         m_pointinghand_cursor; //XXXX
 	GtkFileChooser* m_file_chooser;
 	GtkFileChooser* m_settings_chooser;

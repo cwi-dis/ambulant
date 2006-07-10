@@ -1,4 +1,4 @@
-// This file is part of Ambulant Player, www.ambulantplayer.org.
+/// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2005 Stichting CWI, 
 // Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
@@ -258,9 +258,9 @@ gtk_gui::gtk_gui(const char* title,
 	m_guicontainer(NULL),
 	m_documentcontainer(NULL),
 	m_actions(NULL),
-#ifdef	TRY_LOCKING
+#ifdef	LOCK_MESSAGE
 	m_gui_thread(0),
-#endif/*TRY_LOCKING*/
+#endif/*LOCK_MESSAGE*/
 	m_file_chooser(NULL),
 	m_settings_chooser(NULL),
 	m_url_text_entry(NULL),
@@ -300,11 +300,11 @@ gtk_gui::gtk_gui(const char* title,
 	int n_entries = G_N_ELEMENTS(entries);
 
 	m_programfilename = title;
-#ifdef	TRY_LOCKING
+#ifdef	LOCK_MESSAGE
 	pthread_cond_init(&m_cond_message, NULL);
 	pthread_mutex_init(&m_lock_message, NULL);
 	m_gui_thread = pthread_self();
-#endif/*TRY_LOCKING*/
+#endif/*LOCK_MESSAGE*/
 	if (initfile != NULL && initfile != "")
 	  m_smilfilename = strdup(initfile);
 
@@ -859,7 +859,22 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 		}
 		break;
 	case gtk_logger::CUSTOM_LOGMESSAGE:
+#ifdef	LOCK_MESSAGE
+		if (pthread_mutex_lock(&m_lock_message) != 0){
+			printf("pthread_mutex_lock(&m_lock_message) sets errno to %d.\n", errno);
+			abort();
+		}
+#endif /*LOCK_MESSAGE*/
+		/* mutex lcoking is required for calling gtk_text_buffer_insert_at_cursor()
+		 * Otherwiser GTK+ may crash with a cd $Ecryptic message suck as:
+		 * Gtk-WARNING **: Invalid text buffer iterator: either the iterator is
+		 * uninitialized, or the characters/pixbufs/widgets in the buffer have been
+		 * modified since the iterator was created.
+		 */
 		gtk_text_buffer_insert_at_cursor(GTK_TEXT_BUFFER (gtk_logger::get_gtk_logger()->get_logger_buffer()), msg, strlen(msg));
+#ifdef	LOCK_MESSAGE
+		pthread_mutex_unlock(&m_lock_message);
+#endif /*LOCK_MESSAGE*/
 		break;
 	case ambulant::lib::logger::LEVEL_FATAL:
 		dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
@@ -890,13 +905,13 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
  		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	}
-#ifdef	TRY_LOCKING
+#ifdef	LOCK_MESSAGE
 	if (level >= ambulant::lib::logger::LEVEL_WARN) {
 		pthread_mutex_lock(&m_lock_message);
 		pthread_cond_signal(&m_cond_message);
 		pthread_mutex_unlock(&m_lock_message);
 	}
-#endif/*TRY_LOCKING*/
+#endif/*LOCK_MESSAGE*/
 	free(msg);
 }
 
@@ -907,7 +922,7 @@ gtk_gui::internal_message(int level, char* msg) {
 	gtk_message_event* event = new gtk_message_event(msg_id, msg);
 	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_internal_message_id, 0, event);
 
-#ifdef	TRY_LOCKING
+#ifdef	LOCK_MESSAGE
 	if (level >= ambulant::lib::logger::LEVEL_WARN
 	    && pthread_self() != m_gui_thread) {
 	  // wait until the message as been OK'd by the user
@@ -915,7 +930,7 @@ gtk_gui::internal_message(int level, char* msg) {
 		pthread_cond_wait(&m_cond_message, &m_lock_message);
 		pthread_mutex_unlock(&m_lock_message);
 	}
-#endif /*TRY_LOCKING*/
+#endif /*LOCK_MESSAGE*/
 }
 
 void
