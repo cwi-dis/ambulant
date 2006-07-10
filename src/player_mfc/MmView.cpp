@@ -132,6 +132,7 @@ my_player_callbacks::new_html_browser(int left, int top, int width, int height)
 
 class my_player_feedback : public common::player_feedback {
   public:
+	  void document_loaded(lib::document *doc) {}
 	void document_started() { set_status_line("Playing"); }
 	void document_stopped() { set_status_line("Stopped"); }
 	void node_started(const lib::node *n) {};

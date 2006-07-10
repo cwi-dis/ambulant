@@ -26,6 +26,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/smil2/transition.h"
 #include <math.h>
+#define round(x) ((int)((x)+0.5))
 
 // It seems M_PI isn't defined for VC++
 #ifndef M_PI
