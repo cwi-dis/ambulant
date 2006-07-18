@@ -128,7 +128,8 @@ win32_datasource_factory::new_raw_datasource(const url& url)
 		HANDLE hf = open_local_file(url);
 		if (hf)
 			return new win32_file_datasource(url, hf);
-	} else {
+	// Check for a data: url
+	} else if ( ! lib::starts_with(url.get_url(), "data:")){
 		HINTERNET hinet, hf;
 		if (open_net_file(url, &hinet, &hf))
 			return new win32_net_datasource(url, hinet, hf);

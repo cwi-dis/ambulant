@@ -35,7 +35,8 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
   public:
 	mem_datasource(const net::url &url)
 	{
-		const char *data = url.get_url().c_str() + 6; // strlen("data:,")
+		std::string str_url = url.get_url();
+		const char *data = str_url.c_str() + 6; // strlen("data:,")
 		size_t datalen = strlen(data);
 		if (datalen) {
 			char *ptr = m_databuf.get_write_ptr((int)datalen);
