@@ -27,7 +27,11 @@
 
 
 #include "ambulant/lib/parser_factory.h"
-#include "ambulant/lib/expat_parser.h"  
+#ifdef WITH_EXPAT
+#include "ambulant/lib/expat_parser.h"
+#elif WITH_XERCES_BUILTIN
+#include "ambulant/lib/xerces_parser.h"
+#endif
 #include "ambulant/common/preferences.h"
 
  using namespace ambulant;
@@ -56,8 +60,13 @@ global_parser_factory::global_parser_factory()
 :	m_warned(false),
 	m_default_factory(NULL)
 {
-	
+#ifdef WITH_EXPAT
 	m_default_factory = new lib::expat_factory();
+#elif WITH_XERCES_BUILTIN
+	m_default_factory = new lib::xerces_factory();
+#else
+#error No default XML parser specified
+#endif
 }
 
 global_parser_factory::~global_parser_factory()
