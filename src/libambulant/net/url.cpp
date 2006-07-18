@@ -42,8 +42,9 @@ bool ambulant::net::url::s_strict = false;
 const std::string url_delim = ":/?#,";
 // Characters to be escaped in pathnames. Note that ~ and ? have special meanings in
 // http: urls, but not specifically in file: urls.
-const std::string file_url_escape_reqd = " <>#{}|\\^[]`";
+const std::string file_url_escape_reqd = " <>{}|\\^[]`";
 const std::string file_url_escape = file_url_escape_reqd + "%";
+const std::string file_url_escape_frag = file_url_escape + "#";
 
 //
 // Helper routines to convert local file pathnames to url-style paths
@@ -55,13 +56,24 @@ const std::string file_url_escape = file_url_escape_reqd + "%";
 #include <wininet.h>
 
 static std::string
-filepath2urlpath(const std::string& filepath)
+filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 {
+	std::string filepath = fparg;
 	size_t urlbufsize = filepath.size()*3+7; // Worst case: all characters escaped
 	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize*sizeof(TCHAR));
 	DWORD urlbufsizearg = (DWORD)urlbufsize;
 	assert(urlbuf);
 	urlbuf[0] = 0;
+	std::string fragment;
+	if (handle_frag) {
+		// Unfortunately passing ICU_BROWSER_MODE to ICU doesn't work:-(
+		// Remove the fragment by hand, re-apply it later.
+		size_t fragpos = filepath.find('#');
+		if (fragpos != std::string::npos) {
+			fragment = filepath.substr(fragpos);
+			filepath = filepath.substr(0, fragpos-1);
+		}
+	}
 	if (!InternetCanonicalizeUrl(lib::textptr(filepath.c_str()), urlbuf, &urlbufsizearg, 0)) {
 		DWORD dw = GetLastError();
 		lib::win32::win_report_error(filepath.c_str(), dw);
@@ -71,7 +83,7 @@ filepath2urlpath(const std::string& filepath)
 	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
 	if (rv.substr(0, 7) == "file://" && rv[7] != '/')
 		rv = "file:///" + rv.substr(7);
-	// Finally replace backslashes and turn everything into lower case
+	// Now replace backslashes and turn everything into lower case
 	std::string::iterator i;
 	for(i=rv.begin(); i!=rv.end(); i++) {
 		char c = *i;
@@ -81,6 +93,10 @@ filepath2urlpath(const std::string& filepath)
 			*i = tolower(c);
 	}
 	free(urlbuf);
+	// Finally re-apply the fragment id, if there is one
+	if (fragment != "") {
+		rv = rv + fragment;
+	}
 	return rv;
 }
 
@@ -118,10 +134,12 @@ urlpath2filepath(const std::string& urlpath)
 #else
 // Unix implementation
 static std::string
-filepath2urlpath(const std::string& filepath)
+filepath2urlpath(const std::string& filepath, bool handle_frag=false)
 {
 	std::string::const_iterator i;
 	std::string rv;
+	const std::string &esc = file_url_escape;
+	if (handle_frag) esc = file_url_escape_frag;
 	for(i=filepath.begin(); i!=filepath.end(); i++) {
 		char c = *i;
 		if ( file_url_escape.find(c) != std::string::npos ) {
@@ -227,16 +245,16 @@ void net::url::init_statics() {
  
 // static
 AMBULANTAPI net::url 
-net::url::from_filename(const std::string& spec)
+net::url::from_filename(const std::string& spec, bool handle_frag)
 {
-	return net::url(filepath2urlpath(spec));
+	return net::url(filepath2urlpath(spec, handle_frag));
 }
 
 // static
 AMBULANTAPI net::url
-net::url::from_filename(const char *spec)
+net::url::from_filename(const char *spec, bool handle_frag)
 {
-	return net::url(filepath2urlpath(spec));
+	return net::url(filepath2urlpath(spec, handle_frag));
 }
 
 // Private: check URL for character escaping
