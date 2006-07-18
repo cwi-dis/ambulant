@@ -292,7 +292,6 @@ void
 qt_transition_blitclass_polylist::update()
 {
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist::update(%f)", m_progress);
-	logger::get_logger()->debug("qt_transition_blitclass_polylist: not yet tested");
 	ambulant_qt_window *aqw = (ambulant_qt_window *)m_dst->get_gui_window();
 	QPixmap *npm, *qpm;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
