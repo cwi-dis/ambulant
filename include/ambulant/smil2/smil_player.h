@@ -64,9 +64,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	typedef time_traits::value_type time_value_type;
 	
 	smil_player(lib::document *doc, common::factories *factory, common::embedder *sys = 0);
-#ifdef USE_SMIL21
 	void initialize();
-#endif
 	~smil_player();
 		
 	///////////////////

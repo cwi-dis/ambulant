@@ -46,9 +46,7 @@ class lib::document;
 class mms_player : public common::player, public lib::ref_counted_obj {
   public:
 	mms_player(lib::document *doc, common::factories* factory);
-#ifdef USE_SMIL21
 	void initialize() {}
-#endif
 	~mms_player();
 
 	virtual lib::timer* get_timer() { return m_event_processor->get_timer(); }
