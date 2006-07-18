@@ -180,15 +180,6 @@ class polylist_adapter : public transition_blitclass_polylist {
 	std::vector< std::vector<lib::point> >& get_point_lists() { return m_newpolygonlist;}
 };
 
-// Hack to make rects public
-class r1r2r3r4_adapter : public transition_blitclass_r1r2r3r4 {
-  public:
-	lib::rect& get_old_src_rect() { return m_oldsrcrect;}
-	lib::rect& get_old_dst_rect() { return m_olddstrect;}
-	lib::rect& get_src_rect() { return m_newsrcrect;}
-	lib::rect& get_dst_rect() { return m_newdstrect;}
-};
-
 
 // Empty region used on error conditions
 inline HRGN empty_region() {return CreateRectRgn(0, 0, 0, 0);}
@@ -298,7 +289,7 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::rect& src, lib::rect& dst) {
 	smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 	assert(p);
-	r1r2r3r4_adapter *dummy = (r1r2r3r4_adapter*)p;	
+	gui::dx::r1r2r3r4_adapter *dummy = (gui::dx::r1r2r3r4_adapter*)p;	
 	lib::rect& r3 = dummy->get_src_rect(); r3.translate(src.left_top());
 	lib::rect& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
 	src &= r3;

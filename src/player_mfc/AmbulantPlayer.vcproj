@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="AmbulantPlayer"
 	ProjectGUID="{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}"
+	RootNamespace="AmbulantPlayer"
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -266,7 +267,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib;libexpat.lib;libpng.lib;zlib.lib"
+				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib"
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32"

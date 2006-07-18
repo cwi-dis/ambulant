@@ -176,6 +176,15 @@ class dx_transition_engine : public dx_transition {
 	lib::timer_control *m_timer;
 };
 
+// Hack to make rects public
+class r1r2r3r4_adapter : public smil2::transition_blitclass_r1r2r3r4 {
+  public:
+	lib::rect& get_old_src_rect() { return m_oldsrcrect; }
+	lib::rect& get_old_dst_rect() { return m_olddstrect; }
+	lib::rect& get_src_rect() { return m_newsrcrect; }
+	lib::rect& get_dst_rect() { return m_newdstrect; }
+	common::surface* get_dst() { return m_dst; }
+};
 
 } // namespace dx
 

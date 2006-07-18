@@ -54,12 +54,12 @@ class transition_engine {
 	void step(lib::transition_info::time_type now);
 	bool is_done();
 	lib::transition_info::time_type next_step_delay();
+	common::surface *m_dst;
   protected:
 //	virtual void resized() {};
 	virtual void compute() = 0;
 	virtual void update() = 0;
 
-	common::surface *m_dst;
 	bool m_outtrans;
 	const lib::transition_info *m_info;
 	lib::transition_info::time_type m_begin_time;

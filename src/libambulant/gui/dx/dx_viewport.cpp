@@ -795,10 +795,24 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	smil2::blitter_type bt = tr->get_blitter_type();
 	
 	if(bt == smil2::bt_r1r2r3r4) {
+		smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
+		r1r2r3r4_adapter *r1r2r3r4 = (r1r2r3r4_adapter*)p;
+		assert(r1r2r3r4);
+		// copy rectangle of old pixels away were the new ones go
+		lib::rect old_src = r1r2r3r4->get_old_src_rect();
+		old_src.translate(r1r2r3r4->get_dst()->get_global_topleft());
+		lib::rect old_dst = r1r2r3r4->get_old_dst_rect();
+		old_dst.translate(r1r2r3r4->get_dst()->get_global_topleft());
+		draw(m_surface, old_src, old_dst, keysrc, m_surface);
+		// copy new pixels in place of the old pixels
+		lib::rect new_src = r1r2r3r4->get_src_rect();
+		lib::rect new_dst = r1r2r3r4->get_dst_rect();
 		lib::rect src_rc_v = src_rc;
 		lib::rect dst_rc_v = dst_rc;
-		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
-		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
+		src_rc_v &= new_src;
+		dst_rc_v &= new_dst;
+		dst_rc_v.w = src_rc_v.w; //XXXX
+		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);		
 		return;
 	} else if(bt == smil2::bt_fade) {
 		IDirectDrawSurface* s1 = create_surface();
