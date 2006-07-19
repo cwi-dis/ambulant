@@ -123,7 +123,9 @@ _get_html_view(common::surface *surf)
 {
 	wvc_container *wvc = reinterpret_cast<wvc_container *>(surf->get_renderer_private_data(my_renderer_id));
 	if (wvc == NULL) {
-		const rect& amrect = surf->get_rect();
+		rect amrect = surf->get_rect();
+		const lib::point p = surf->get_global_topleft();
+		amrect.translate(p);
 		NSRectHolder *crect = [[NSRectHolder alloc] initWithRect: NSMakeRect(amrect.left(), amrect.top(), amrect.width(), amrect.height())];
 		[crect autorelease];
 		WebViewController *ctrl = [[[WebViewController alloc] init] retain];
