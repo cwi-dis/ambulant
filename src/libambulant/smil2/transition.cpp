@@ -199,6 +199,7 @@ transition_engine_diagonalwipe::compute()
 	lib::rect dstrect = m_dst->get_rect();
 	int xmin = dstrect.left() - 2*dstrect.width();
 	int xcur = xmin + (int)(m_progress*2*dstrect.width());
+	clear();
 	m_stepcount = 2*dstrect.width();
 	
 	m_newpolygon.push_back(lib::point(xcur, dstrect.top()));

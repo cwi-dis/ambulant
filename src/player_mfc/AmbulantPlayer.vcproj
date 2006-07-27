@@ -272,7 +272,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreAllDefaultLibraries="FALSE"
-				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib;LIBCMT.lib;mscrtd.lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				TargetMachine="1"/>

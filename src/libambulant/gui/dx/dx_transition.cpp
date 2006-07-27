@@ -71,13 +71,14 @@ struct transition_factories {
 	
 	add(lib::bowTieWipe, new trfact<default_class>, bt_default);
 	
+	add(lib::diagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
 	add(lib::miscDiagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
 	
 	add(lib::veeWipe, new trfact<default_class>, bt_default);
 	add(lib::barnVeeWipe, new trfact<default_class>, bt_default);
 	add(lib::zigZagWipe, new trfact<default_class>, bt_default);
 	add(lib::barnZigZagWipe, new trfact<default_class>, bt_default);
-	add(lib::irisWipe, new trfact<default_class>, bt_default);
+	add(lib::irisWipe, new trfact<transition_engine_iriswipe>, bt_poly);
 	add(lib::arrowHeadWipe, new trfact<default_class>, bt_default);
 	add(lib::pentagonWipe, new trfact<default_class>, bt_default);
 	add(lib::hexagonWipe, new trfact<default_class>, bt_default);
