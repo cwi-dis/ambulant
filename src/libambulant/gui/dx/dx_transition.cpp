@@ -69,7 +69,7 @@ struct transition_factories {
 	add(lib::fourBoxWipe, new trfact<transition_engine_fourboxwipe>, bt_rectlist);
 	add(lib::barnDoorWipe, new trfact<transition_engine_barndoorwipe>, bt_rect);
 	
-	add(lib::bowTieWipe, new trfact<default_class>, bt_default);
+	add(lib::bowTieWipe, new trfact<transition_engine_bowtiewipe>, bt_polylist);
 	
 	add(lib::diagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
 	add(lib::miscDiagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
