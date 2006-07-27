@@ -79,9 +79,10 @@ struct transition_factories {
 	add(lib::zigZagWipe, new trfact<default_class>, bt_default);
 	add(lib::barnZigZagWipe, new trfact<default_class>, bt_default);
 	add(lib::irisWipe, new trfact<transition_engine_iriswipe>, bt_poly);
-	add(lib::arrowHeadWipe, new trfact<default_class>, bt_default);
-	add(lib::pentagonWipe, new trfact<default_class>, bt_default);
-	add(lib::hexagonWipe, new trfact<default_class>, bt_default);
+	add(lib::triangleWipe, new trfact<transition_engine_trianglewipe>, bt_poly);
+	add(lib::arrowHeadWipe, new trfact<transition_engine_arrowheadwipe>, bt_poly);
+	add(lib::pentagonWipe, new trfact<transition_engine_pentagonwipe>, bt_poly);
+	add(lib::hexagonWipe, new trfact<transition_engine_hexagonwipe>, bt_poly);
 	add(lib::ellipseWipe, new trfact<default_class>, bt_default);
 	add(lib::eyeWipe, new trfact<default_class>, bt_default);
 	add(lib::roundRectWipe, new trfact<default_class>, bt_default);
@@ -102,7 +103,7 @@ struct transition_factories {
 	
 	add(lib::spiralWipe, new trfact<default_class>, bt_default);
 	add(lib::parallelSnakesWipe, new trfact<default_class>, bt_default);
-	
+	add(lib::boxSnakesWipe, new trfact<default_class>, bt_default);
 	add(lib::waterfallWipe, new trfact<transition_engine_waterfallwipe>, bt_rectlist);
 	
 	add(lib::pushWipe, new trfact<transition_engine_pushwipe>, bt_r1r2r3r4);
