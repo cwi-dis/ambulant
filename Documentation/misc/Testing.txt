@@ -124,9 +124,11 @@ Tests (for each platform/variant).
 
    This section lists known features not implemented by AmbulantPlayer and/or not tested
    by any of the demos/tests above. When any item listed here has been done, it should be
-   removed from this sectio (and moved to any of the sections above).
+   removed from this section (and moved to any of the sections above).
 
    - Not all transitions are implemented
    - None of the transition subtypes are implemented, there is no framework for subtype support
    - wallclock time specification is not implemented
-
+   - Full screen transitions other than clockWipe
+   - smil animation
+   - Python interface

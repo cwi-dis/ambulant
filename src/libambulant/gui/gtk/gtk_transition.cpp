@@ -127,6 +127,7 @@ gtk_transition_blitclass_rect::update()
 	g_object_unref (G_OBJECT (gc));
 	finalize_transition(m_outtrans, agw, m_dst);
 }
+
 void
 gtk_transition_blitclass_r1r2r3r4::update()
 {

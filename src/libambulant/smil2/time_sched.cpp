@@ -82,10 +82,11 @@ void scheduler::start(time_node *tn) {
 void scheduler::activate_node(time_node *tn) {
 	timer::time_type next = m_timer->elapsed();
 	while(m_root->is_active() && !tn->is_active()) {
+		AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s) next=%d ", tn->get_sig().c_str(), next);
 		next = _exec(next);
 		if(next == infinity) break;
 	}
-	AM_DBG lib::logger::get_logger()->debug("activate_node: leave next=%d tn->is_active %d", next, tn->is_active());
+	AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
 }
 
 // Starts a hyperlink target that has not played yet. 
@@ -238,6 +239,7 @@ scheduler::time_type scheduler::_exec(time_type now) {
 	event_map_t::iterator eit = m_events.begin();
 	next = (*eit).first();
 	std::list<time_node*>& elist = (*eit).second;
+	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d next=%d ", now, next);
 	next = std::max(m_horizon, next);
 	if(now >= next) {
 		time_traits::qtime_type timestamp(m_root, next);

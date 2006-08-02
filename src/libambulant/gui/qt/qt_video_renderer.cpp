@@ -43,9 +43,9 @@ qt_video_renderer::qt_video_renderer(
 		const lib::node *node,
 		lib::event_processor *const evp,
     	common::factories *factory)
-:	 common::video_renderer(context, cookie, node, evp, factory),
-	 m_image(NULL),
-  	m_datasize(1)
+:	qt_renderer<common::video_renderer>(context, cookie, node, evp, factory),
+	m_image(NULL),
+	m_datasize(1)
 {
 	m_data =(uchar*) malloc(1);
 }
@@ -90,7 +90,7 @@ qt_video_renderer::show_frame(const char* frame, int size)
 
 
 void
-qt_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w) 
+qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) 
 {
     AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x)",(void*) this);
 

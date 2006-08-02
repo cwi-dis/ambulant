@@ -44,7 +44,7 @@ gtk_video_renderer::gtk_video_renderer(
 		const lib::node *node,
 		lib::event_processor *const evp,
     	common::factories *factory)
-:	 common::video_renderer(context, cookie, node, evp, factory),
+:	gtk_renderer<common::video_renderer>(context, cookie, node, evp, factory),
  	m_image(NULL),
   	m_data(NULL),
 	m_img_displayed(0)
@@ -99,7 +99,7 @@ gtk_video_renderer::show_frame(const char* frame, int size)
 
 
 void
-gtk_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w) 
+gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) 
 {
 	//XXXX locking at this point may result in deadly embrace with internal lock,
 	//XXXX but as far as we know this has never happened

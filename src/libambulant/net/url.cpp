@@ -138,8 +138,8 @@ filepath2urlpath(const std::string& filepath, bool handle_frag=false)
 {
 	std::string::const_iterator i;
 	std::string rv;
-	const std::string &esc = file_url_escape;
-	if (handle_frag) esc = file_url_escape_frag;
+	const std::string &esc = handle_frag ?  file_url_escape_frag : file_url_escape;
+
 	for(i=filepath.begin(); i!=filepath.end(); i++) {
 		char c = *i;
 		if ( file_url_escape.find(c) != std::string::npos ) {
