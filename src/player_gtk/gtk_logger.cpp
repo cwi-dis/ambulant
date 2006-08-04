@@ -133,7 +133,9 @@ gtk_logger::gtk_logger()
 gtk_logger::~gtk_logger() {
 	if(m_log_FILE) fclose (m_log_FILE);
 	m_log_FILE = NULL;
+#ifndef WITH_NOKIA770
 	if(m_logger_window) free(m_logger_window);
+#endif/*WITH_NOKIA770*/
 	m_logger_window = NULL;
 }
 

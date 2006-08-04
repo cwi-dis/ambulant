@@ -1,16 +1,16 @@
-AmbulantPlayer-app (0.2) unstable; urgency=low
+ambulantplayer-app (0.2) unstable; urgency=low
 
   * With control panel applet and status bar plugin now.
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Fri,  9 Sep 2005 12:14:29 +0300
 
-AmbulantPlayer-app (0.1) unstable; urgency=low
+ambulantplayer-app (0.1) unstable; urgency=low
 
   * Intermediate release with icons and a shared library.
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 17 Aug 2005 15:56:13 +0300
 
-AmbulantPlayer-app (0.0) unstable; urgency=low
+ambulantplayer-app (0.0) unstable; urgency=low
 
   * Initial Release.
 
