@@ -24,7 +24,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --with-qt=no --with-gtk --with-nokia770
+	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --with-qt=no --with-gtk --with-nokia770 --host=i386 --with-gstreamer
 	touch configure-stamp
 
 

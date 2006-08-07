@@ -50,7 +50,7 @@
 #ifdef  WITH_NOKIA770
 #ifdef  AMBULANT_DATADIR  //KB XXXX
 #undef  AMBULANT_DATADIR
-#define AMBULANT_DATADIR "/var/lib/install/usr/share/ambulant"
+#define AMBULANT_DATADIR "/usr/share/ambulant"
 #endif/*AMBULANT_DATADIR*/
 #define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
 #else /*WITH_NOKIA770*/

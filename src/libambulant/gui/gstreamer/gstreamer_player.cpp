@@ -50,7 +50,7 @@ extern "C" {
 /* from sanbox/Nokia770/AudioPlayer/mp3player.c */
 
 static gboolean
-bus_callback (GstBus *bus, GstMessage *msg, gpointer data);
+gstbus_callback (GstBus *bus, GstMessage *msg, gpointer data);
 
 int
 gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gstreamer_player, gboolean* player_done_p)
@@ -60,7 +60,7 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
   char **files = NULL;
   const char* id = "gst_mp3_player";
   void gstreamer_audio_renderer_pipeline_store(void* player, GstElement* p);
-  g_main_loop_run (NULL, FALSE);
+  loop = g_main_loop_new (NULL, FALSE);
 
   AM_DBG g_print ("%s: %s=0x%x\n", id, "starting, gst_player_p", gst_player_p);
 #ifdef  WITH_NOKIA770
@@ -135,13 +135,7 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
   AM_DBG g_print ("%s: %s\n", id, "iterate");
    /* iterate */
   AM_DBG if ( ! *player_done_p) g_print ("Now playing %s ...", uri);
-  while ( ! *player_done_p) {
-    mutex_acquire(gstreamer_player,"gst_bin_iterate"); 
-    gst_bin_iterate (GST_BIN(pipeline));
-    mutex_release(gstreamer_player,"gst_bin_iterate");
-  }
-  AM_DBG if (player_done_p) g_print (" done !\n"); 
-
+  g_main_loop_run (loop);
   mutex_acquire(gstreamer_player, "gst_object_unref"); // to be released by the caller
 
   /* stop the pipeline */
@@ -162,7 +156,7 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 static gboolean
 gstbus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 {
-  GMainLoop *loop = data;
+  GMainLoop* loop = (GMainLoop*) data;
 
   switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_EOS:
@@ -252,8 +246,8 @@ void
 gstreamer_player::stop_player() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::stop_player(0x%x)m_uri=%s", (void*)this, m_uri);
 	mutex_acquire("gstreamer_player::stop_player"); 
-	if (m_gst_player)
-		mp3player_eos_cb(m_gst_player, &m_player_done);
+//XXX   if (m_gst_player)
+//XXX		mp3player_eos_cb(m_gst_player, &m_player_done);
 	mutex_release("gstreamer_player::stop_player"); 
 }
 

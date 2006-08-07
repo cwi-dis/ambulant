@@ -258,7 +258,7 @@ gstreamer_audio_renderer::seek(double where)
 	      where_guint64 = llrint(where)* GST_SECOND;	      
 	      lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() where=%f, where_guint64=%lu", where, where_guint64);
 	      m_player->mutex_acquire("gstreamer_audio_renderer::seek");
-	      if ( ! gst_element_seek(m_player->gst_player(), (GstSeekType) (GST_SEEK_METHOD_SET | GST_FORMAT_TIME | GST_SEEK_FLAG_FLUSH), where_guint64)) {
+	      if ( ! gst_element_seek(m_player->gst_player(), 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
 	             lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() failed.");
 	      }
 	      m_player->mutex_release("gstreamer_audio_renderer::seek");
@@ -277,7 +277,7 @@ gstreamer_audio_renderer::get_dur()
 	m_lock.enter();
 	if (m_player) {
 	        m_player->mutex_acquire("gstreamer_audio_renderer::get_dur");
-		gst_element_query(m_player->gst_player(), GST_QUERY_TOTAL, &fmtTime, &length);
+		gst_element_query_duration(m_player->gst_player(), &fmtTime, &length);
 		m_player->mutex_release("gstreamer_audio_renderer::get_dur");
 	}
 	m_lock.leave();

@@ -548,7 +548,7 @@ dnl	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_gstreamer=true, test_gstream
 	if test "x$test_gtk" = "xfalse"; then
 	   AC_MSG_ERROR(--with-gstreamer requires --with-gtk);
 	fi
-	PKG_CHECK_MODULES(GSTREAMER, gstreamer >= 0.8.0, test_gstreamer=true, test_gstreamer=false)
+	PKG_CHECK_MODULES(GSTREAMER, gstreamer-0.10 >= 0.10.0, test_gstreamer=true, test_gstreamer=false)
 	AC_SUBST(GSTREAMER_LIBS)
 	AC_SUBST(GSTREAMER_CFLAGS)
 
