@@ -49,12 +49,8 @@ extern "C" {
 
 /* from sanbox/Nokia770/AudioPlayer/mp3player.c */
 
-static void
-mp3player_eos_cb (GstElement * bin, gpointer user_data);
-static void
-mp3player_error_cb (GstElement * bin, GstElement * error_element,
-		    GError * error,  const gchar * debug_msg,
-		    gpointer user_data);
+static gboolean
+bus_callback (GstBus *bus, GstMessage *msg, gpointer data);
 
 int
 gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gstreamer_player, gboolean* player_done_p)
@@ -64,6 +60,8 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
   char **files = NULL;
   const char* id = "gst_mp3_player";
   void gstreamer_audio_renderer_pipeline_store(void* player, GstElement* p);
+  g_main_loop_run (NULL, FALSE);
+
   AM_DBG g_print ("%s: %s=0x%x\n", id, "starting, gst_player_p", gst_player_p);
 #ifdef  WITH_NOKIA770
   if (pthread_mutex_lock(&s_main_nokia770_mutex) < 0) {
@@ -99,12 +97,6 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 			      "gst_element_factory_make", "playbin");
 #endif//WITH_NOKIA770
     g_print ("\n");
-#ifdef  WITH_NOKIA770
-    if (pthread_mutex_unlock(&s_main_nokia770_mutex) < 0) {
-      lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
-      abort();
-    }
-#endif//WITH_NOKIA770
     return -1;
   }
   AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
@@ -133,14 +125,9 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 //gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PAUSED);
 
   AM_DBG g_print ("%s: %s\n", id, "add call-back message handler for eos");
-  /* add call-back message handlers to check for eos and errors */
-  g_signal_connect (GST_BIN(pipeline), "eos",
-		    G_CALLBACK (mp3player_eos_cb), player_done_p);
-  AM_DBG g_print ("%s: %s\n", id, "add call-back message handler for error");
-  g_signal_connect (GST_BIN(pipeline), "error",
-		    G_CALLBACK (mp3player_error_cb), player_done_p);
-
-  AM_DBG g_print ("%s: %s\n", id, "wait for start");
+  /* add call-back message handler to check for eos and errors */
+  gst_bus_add_watch (gst_pipeline_get_bus (GST_PIPELINE (pipeline)),
+		     gstbus_callback, loop);
 
   gstreamer_audio_renderer_pipeline_store(gstreamer_player, pipeline);
   mutex_release(gstreamer_player, "gstreamer_player initialized");
@@ -172,32 +159,35 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 
   return 0;
 }
-
-static void
-mp3player_eos_cb (GstElement *pipeline,gpointer user_data)
+static gboolean
+gstbus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 {
-  const char* id = "mp3player_eos_cb";
-  gboolean *p_player_done = (gboolean *) user_data;
+  GMainLoop *loop = data;
 
-  AM_DBG g_print ("%s: %s\n", id, "called");
-  *p_player_done = TRUE;
+  switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_EOS:
+      g_print ("End-of-stream\n");
+      g_main_loop_quit (loop);
+      break;
+    case GST_MESSAGE_ERROR: {
+      gchar *debug;
+      GError *err;
+
+      gst_message_parse_error (msg, &err, &debug);
+      g_free (debug);
+
+      g_print ("Error: %s\n", err->message);
+      g_error_free (err);
+
+      g_main_loop_quit (loop);
+      break;
+    }
+    default:
+      break;
+  }
+  return TRUE;
 }
-
-static void
-mp3player_error_cb (GstElement *pipeline, GstElement *error_element,
-		    GError *error, const gchar *debug_msg,
-gpointer user_data)
-{
-  const char* id = "mp3player_error_cb";
-  gboolean *p_player_done = (gboolean *) user_data;
-
-  AM_DBG g_print ("%s: %s\n", id, "called");
-  if (error)
-    g_printerr ("Error: %s\n", error->message);
-
-  *p_player_done = TRUE;
-}
-}
+} /* extern "C" */
 
 //************************* gstreamer_player ***************************
 void
