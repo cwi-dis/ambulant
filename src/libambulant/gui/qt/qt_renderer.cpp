@@ -50,20 +50,16 @@ void
 qt_transition_renderer::set_surface(common::surface *dest)
 { 
 	m_transition_dest = dest;
-#ifdef USE_SMIL21
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
-#endif
 }
 	
 void
 qt_transition_renderer::set_intransition(const lib::transition_info *info)
 {
 	m_intransition = info;
-#ifdef USE_SMIL21
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
-#endif
 }
 
 void
@@ -76,12 +72,10 @@ qt_transition_renderer::start(double where)
 		m_trans_engine = qt_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine) {
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-#ifdef USE_SMIL21
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
 				((ambulant_qt_window*)m_view)->startScreenTransition();
 			}
-#endif
 		}
 	}
 	m_lock.leave();
@@ -98,12 +92,10 @@ qt_transition_renderer::start_outtransition(const lib::transition_info *info)
 	if (m_transition_dest && m_trans_engine) {
 		m_view = m_transition_dest->get_gui_window();
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-#ifdef USE_SMIL21
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
 			((ambulant_qt_window*)m_view)->startScreenTransition();
 		}
-#endif
 	}
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->need_redraw();
@@ -119,11 +111,9 @@ qt_transition_renderer::stop()
     }
 	delete m_trans_engine;
 	m_trans_engine = NULL;
-#ifdef USE_SMIL21
 	if (m_fullscreen && m_view) {
 		((ambulant_qt_window*)m_view)->endScreenTransition();
 	}
-#endif
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 	m_view = NULL;
@@ -139,11 +129,7 @@ qt_transition_renderer::redraw_pre(gui_window *window)
 
 	QPixmap *surf = NULL;
 	// See whether we're in a transition
-	if (m_trans_engine
-#ifdef USE_SMIL21
-	    && !m_fullscreen
-#endif
-	    ) {
+	if (m_trans_engine && !m_fullscreen) {
 		QPixmap *qpm = aqw->get_ambulant_pixmap();
 		surf = aqw->get_ambulant_surface();
 		if (surf == NULL)
@@ -175,29 +161,21 @@ qt_transition_renderer::redraw_post(gui_window *window)
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
-#ifdef USE_SMIL21
 			if (m_fullscreen)
 				aqw->screenTransitionStep(NULL, 0);
 			else
 				m_trans_engine->step(now);
-#else
-			m_trans_engine->step(now);
-#endif
 			typedef lib::no_arg_callback<qt_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &qt_transition_renderer::stop);
 			m_event_processor->add_event(ev, 0, lib::ep_med);
 		} else {
 			if ( 1 /* XXX was: surf */) {
 				AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to view");
-#ifdef USE_SMIL21
 				if (m_fullscreen) {
 					aqw->screenTransitionStep (m_trans_engine, now);
 				} else {
 					m_trans_engine->step(now);
 				}
-#else
-				m_trans_engine->step(now);
-#endif
 				typedef no_arg_callback<qt_transition_renderer>transition_callback;
 				event *ev = new transition_callback (this, &qt_transition_renderer::transition_step);
 				transition_info::time_type delay = m_trans_engine->next_step_delay();

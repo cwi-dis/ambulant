@@ -54,19 +54,15 @@ void
 cocoa_transition_renderer::set_surface(common::surface *dest)
 {
 	m_transition_dest = dest;
-#ifdef USE_SMIL21
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
-#endif
 }
 
 void
 cocoa_transition_renderer::set_intransition(const lib::transition_info *info) {
 	m_intransition = info;
-#ifdef USE_SMIL21
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
-#endif
 }
 
 void
@@ -82,12 +78,10 @@ cocoa_transition_renderer::start(double where)
 			AmbulantView *view = (AmbulantView *)cwindow->view();
 			[view incrementTransitionCount];
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-#ifdef USE_SMIL21
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
 				[view startScreenTransition];
 			}
-#endif
 		}
 	}
 	m_lock.leave();
@@ -107,12 +101,10 @@ cocoa_transition_renderer::start_outtransition(const lib::transition_info *info)
 		AmbulantView *view = (AmbulantView *)cwindow->view();
 		[view incrementTransitionCount];
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-#ifdef USE_SMIL21
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
 			[view startScreenTransition];
 		}
-#endif
 	}
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->need_redraw();
@@ -132,11 +124,9 @@ cocoa_transition_renderer::stop()
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	[view decrementTransitionCount];
-#ifdef USE_SMIL21
 	if (m_fullscreen) {
 		[view endScreenTransition];
 	}
-#endif
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 }
@@ -179,15 +169,11 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 	if (surf) {
 		[surf unlockFocus];
 		AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw: drawing to view");
-#ifdef USE_SMIL21
 		if (m_fullscreen)
 			[view screenTransitionStep: m_trans_engine
 				elapsed: m_event_processor->get_timer()->elapsed()];
 		else
 			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-#else
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-#endif
 		typedef lib::no_arg_callback<cocoa_transition_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &cocoa_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
@@ -203,10 +189,8 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 		typedef lib::no_arg_callback<cocoa_transition_renderer> stop_transition_callback;
 		lib::event *ev = new stop_transition_callback(this, &cocoa_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::ep_med);
-#ifdef USE_SMIL21
 		if (m_fullscreen)
 			[view screenTransitionStep: NULL elapsed: 0];
-#endif
 	}
 	m_lock.leave();
 }

@@ -113,19 +113,6 @@ class MyScanner(CxxScanner):
 
     def makegreylist(self):
         return [
-            ('#ifdef USE_SMIL21',
-              [
-                'get_top_surface',
-                'is_tiled',
-                'get_tiles',
-                'get_soundalign',
-                'get_tiling',
-                'get_bgimage',
-                'initialize',
-                'get_region_soundalign',
-                'set_region_soundalign',
-              ]
-            ),
         ]
 
     def makerepairinstructions(self):

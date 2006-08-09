@@ -57,9 +57,7 @@ void gui::dx::dx_window::need_redraw(const lib::rect &r) {
 	// clip rect to this window since the layout does not do this
 	lib::rect rc = r;
 	rc &= m_viewrc;
-#ifdef USE_SMIL21
 	m_viewport->set_fullscreen_transition(NULL);
-#endif
 	m_rgn->redraw(rc, this);
 	if(!m_locked)
 		m_viewport->redraw(rc);

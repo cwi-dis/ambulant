@@ -7187,8 +7187,6 @@ static PyObject *surfaceObj_get_info(surfaceObject *_self, PyObject *_args)
 	return _res;
 }
 
-#ifdef USE_SMIL21
-
 static PyObject *surfaceObj_get_top_surface(surfaceObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -7201,9 +7199,6 @@ static PyObject *surfaceObj_get_top_surface(surfaceObject *_self, PyObject *_arg
 	                     surfaceObj_New, _rv);
 	return _res;
 }
-#endif
-
-#ifdef USE_SMIL21
 
 static PyObject *surfaceObj_is_tiled(surfaceObject *_self, PyObject *_args)
 {
@@ -7217,7 +7212,6 @@ static PyObject *surfaceObj_is_tiled(surfaceObject *_self, PyObject *_args)
 	                     bool_New, _rv);
 	return _res;
 }
-#endif
 
 static PyObject *surfaceObj_get_gui_window(surfaceObject *_self, PyObject *_args)
 {
@@ -7303,16 +7297,10 @@ static PyMethodDef surfaceObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::size src_size, ambulant::common::alignment* align) -> (ambulant::lib::rect _rv, ambulant::lib::rect out_src_rect)")},
 	{"get_info", (PyCFunction)surfaceObj_get_info, 1,
 	 PyDoc_STR("() -> (const ambulant::common::region_info* _rv)")},
-
-#ifdef USE_SMIL21
 	{"get_top_surface", (PyCFunction)surfaceObj_get_top_surface, 1,
 	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
-#endif
-
-#ifdef USE_SMIL21
 	{"is_tiled", (PyCFunction)surfaceObj_is_tiled, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
-#endif
 	{"get_gui_window", (PyCFunction)surfaceObj_get_gui_window, 1,
 	 PyDoc_STR("() -> (ambulant::common::gui_window* _rv)")},
 	{"set_renderer_private_data", (PyCFunction)surfaceObj_set_renderer_private_data, 1,
@@ -9608,8 +9596,6 @@ static void playerObj_dealloc(playerObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
-#ifdef USE_SMIL21
-
 static PyObject *playerObj_initialize(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -9622,7 +9608,6 @@ static PyObject *playerObj_initialize(playerObject *_self, PyObject *_args)
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyObject *playerObj_get_timer(playerObject *_self, PyObject *_args)
 {
@@ -9856,11 +9841,8 @@ static PyObject *playerObj_highlight(playerObject *_self, PyObject *_args)
 }
 
 static PyMethodDef playerObj_methods[] = {
-
-#ifdef USE_SMIL21
 	{"initialize", (PyCFunction)playerObj_initialize, 1,
 	 PyDoc_STR("() -> None")},
-#endif
 	{"get_timer", (PyCFunction)playerObj_get_timer, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},
 	{"get_evp", (PyCFunction)playerObj_get_evp, 1,
@@ -10172,8 +10154,6 @@ static PyObject *region_infoObj_get_soundlevel(region_infoObject *_self, PyObjec
 	return _res;
 }
 
-#ifdef USE_SMIL21
-
 static PyObject *region_infoObj_get_soundalign(region_infoObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10186,9 +10166,6 @@ static PyObject *region_infoObj_get_soundalign(region_infoObject *_self, PyObjec
 	                     _rv);
 	return _res;
 }
-#endif
-
-#ifdef USE_SMIL21
 
 static PyObject *region_infoObj_get_tiling(region_infoObject *_self, PyObject *_args)
 {
@@ -10202,9 +10179,6 @@ static PyObject *region_infoObj_get_tiling(region_infoObject *_self, PyObject *_
 	                     _rv);
 	return _res;
 }
-#endif
-
-#ifdef USE_SMIL21
 
 static PyObject *region_infoObj_get_bgimage(region_infoObject *_self, PyObject *_args)
 {
@@ -10218,7 +10192,6 @@ static PyObject *region_infoObj_get_bgimage(region_infoObject *_self, PyObject *
 	                     _rv);
 	return _res;
 }
-#endif
 
 static PyMethodDef region_infoObj_methods[] = {
 	{"get_name", (PyCFunction)region_infoObj_get_name, 1,
@@ -10239,21 +10212,12 @@ static PyMethodDef region_infoObj_methods[] = {
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"get_soundlevel", (PyCFunction)region_infoObj_get_soundlevel, 1,
 	 PyDoc_STR("() -> (double _rv)")},
-
-#ifdef USE_SMIL21
 	{"get_soundalign", (PyCFunction)region_infoObj_get_soundalign, 1,
 	 PyDoc_STR("() -> (ambulant::common::sound_alignment _rv)")},
-#endif
-
-#ifdef USE_SMIL21
 	{"get_tiling", (PyCFunction)region_infoObj_get_tiling, 1,
 	 PyDoc_STR("() -> (ambulant::common::tiling _rv)")},
-#endif
-
-#ifdef USE_SMIL21
 	{"get_bgimage", (PyCFunction)region_infoObj_get_bgimage, 1,
 	 PyDoc_STR("() -> (const char * _rv)")},
-#endif
 	{NULL, NULL, 0}
 };
 
@@ -10484,8 +10448,6 @@ static PyObject *animation_destinationObj_get_region_soundlevel(animation_destin
 	return _res;
 }
 
-#ifdef USE_SMIL21
-
 static PyObject *animation_destinationObj_get_region_soundalign(animation_destinationObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10500,7 +10462,6 @@ static PyObject *animation_destinationObj_get_region_soundalign(animation_destin
 	                     _rv);
 	return _res;
 }
-#endif
 
 static PyObject *animation_destinationObj_set_region_dim(animation_destinationObject *_self, PyObject *_args)
 {
@@ -10572,8 +10533,6 @@ static PyObject *animation_destinationObj_set_region_soundlevel(animation_destin
 	return _res;
 }
 
-#ifdef USE_SMIL21
-
 static PyObject *animation_destinationObj_set_region_soundalign(animation_destinationObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10588,7 +10547,6 @@ static PyObject *animation_destinationObj_set_region_soundalign(animation_destin
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyMethodDef animation_destinationObj_methods[] = {
 	{"get_region_dim", (PyCFunction)animation_destinationObj_get_region_dim, 1,
@@ -10599,11 +10557,8 @@ static PyMethodDef animation_destinationObj_methods[] = {
 	 PyDoc_STR("(bool fromdom) -> (ambulant::common::zindex_t _rv)")},
 	{"get_region_soundlevel", (PyCFunction)animation_destinationObj_get_region_soundlevel, 1,
 	 PyDoc_STR("(bool fromdom) -> (double _rv)")},
-
-#ifdef USE_SMIL21
 	{"get_region_soundalign", (PyCFunction)animation_destinationObj_get_region_soundalign, 1,
 	 PyDoc_STR("(bool fromdom) -> (ambulant::common::sound_alignment _rv)")},
-#endif
 	{"set_region_dim", (PyCFunction)animation_destinationObj_set_region_dim, 1,
 	 PyDoc_STR("(std::string which, ambulant::common::region_dim rd) -> None")},
 	{"set_region_color", (PyCFunction)animation_destinationObj_set_region_color, 1,
@@ -10612,11 +10567,8 @@ static PyMethodDef animation_destinationObj_methods[] = {
 	 PyDoc_STR("(ambulant::common::zindex_t z) -> None")},
 	{"set_region_soundlevel", (PyCFunction)animation_destinationObj_set_region_soundlevel, 1,
 	 PyDoc_STR("(double level) -> None")},
-
-#ifdef USE_SMIL21
 	{"set_region_soundalign", (PyCFunction)animation_destinationObj_set_region_soundalign, 1,
 	 PyDoc_STR("(ambulant::common::sound_alignment sa) -> None")},
-#endif
 	{NULL, NULL, 0}
 };
 

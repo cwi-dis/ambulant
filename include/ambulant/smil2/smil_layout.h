@@ -51,9 +51,7 @@ class smil_layout_manager : public common::layout_manager {
 	smil_layout_manager(common::factories *factory, lib::document *doc);
 	~smil_layout_manager();
 	
-#ifdef USE_SMIL21
 	void load_bgimages(common::factories *factories);
-#endif
 
 	common::surface *get_surface(const lib::node *node);
 	common::alignment *get_alignment(const lib::node *node);
@@ -85,9 +83,7 @@ class smil_layout_manager : public common::layout_manager {
 	std::map<std::string, lib::node*> m_id2regpoint;
 	std::map<std::string, std::list<region_node*> > m_name2region;
 	std::map<const lib::node*, region_node*> m_node2region;
-#ifdef USE_SMIL21
 	bool m_uses_bgimages;
-#endif
 };
 
 } // namespace smil2

@@ -62,14 +62,10 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	const rect& get_rect() const { return m_inner_bounds; }
 	virtual const point &get_global_topleft() const;
 	rect get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
-#ifdef USE_SMIL21
 	bool is_tiled() const;
 	tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const;
-#endif
 	const region_info *get_info() const { return m_info; }	
-#ifdef USE_SMIL21
 	surface *get_top_surface() { return m_parent->get_top_surface(); }
-#endif
 	gui_window *get_gui_window() { return m_parent->get_gui_window(); }
 
 	void transition_done() { transition_done(m_inner_bounds); }
@@ -129,9 +125,7 @@ class toplevel_surface_impl : public surface_impl {
 	void need_redraw(const rect &r);
 	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
-#ifdef USE_SMIL21
 	surface *get_top_surface() { return this; }
-#endif
 	gui_window *get_gui_window() { return m_gui_window; }
   protected:
 	void transition_done(lib::rect area) { transition_freeze_end(area); }

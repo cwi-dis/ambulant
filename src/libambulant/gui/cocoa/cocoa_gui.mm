@@ -363,12 +363,10 @@ cocoa_gui_screen::clear_overlay()
 	transition_surface = NULL;
 	transition_tmpsurface = NULL;
 	transition_count = 0;
-#ifdef USE_SMIL21
 	fullscreen_count = 0;
 	fullscreen_previmage = NULL;
 	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
-#endif
 	return self;
 }
 
@@ -429,13 +427,9 @@ cocoa_gui_screen::clear_overlay()
 		// If we have seen transitions we always redraw the whole view
 		if (transition_count) rect = [self bounds];
         ambulant::lib::rect arect = [self ambulantRectForNSRect: &rect];
-#ifdef USE_SMIL21
 		[self _screenTransitionPreRedraw];
-#endif
         ambulant_window->redraw(arect);
-#ifdef USE_SMIL21
 		[self _screenTransitionPostRedraw];
-#endif
 #ifdef DUMP_REDRAW
 		// Debug code: dump the contents of the view into an image
 		[self dumpToImageID: "redraw"];
@@ -606,10 +600,8 @@ cocoa_gui_screen::clear_overlay()
 
 - (NSImage *)getTransitionOldSource
 {
-#ifdef USE_SMIL21
 	if (fullscreen_count && fullscreen_oldimage)
 		return fullscreen_oldimage;
-#endif
 	return [self _getOnScreenImage];
 }
 
@@ -630,7 +622,6 @@ cocoa_gui_screen::clear_overlay()
 	return rv;
 }
 
-#ifdef USE_SMIL21
 - (void) startScreenTransition
 {
 	AM_DBG NSLog(@"startScreenTransition");
@@ -716,6 +707,5 @@ cocoa_gui_screen::clear_overlay()
 	}
 }
 
-#endif
 @end
 #endif // __OBJC__

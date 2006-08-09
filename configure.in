@@ -135,21 +135,6 @@ AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
 #
-# Do we want SMIL 2.1 support?
-#
-AC_MSG_CHECKING(for if smil21 should be enabled)
-AC_ARG_ENABLE([smil21],[
-    AC_HELP_STRING([--disable-smil21],
-                   [Only support SMIL 2.0, not SMIL 2.1(LC)])
-    ],[enable_smil21=${enableval}], [enable_smil21=yes])
-if test "x$enable_smil21" = xyes;
-then
-    AC_DEFINE(USE_SMIL21, 1, [Define to enable SMIL 2.1 support])
-    test_smil21=true
-fi
-AC_MSG_RESULT($enable_smil21)
-
-#
 # Do we want external DOM tree support?
 #
 test_dom=false
@@ -976,7 +961,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	targeted prefix:                ${prefix}
 	compiler:                       ${CC}
 
-	Enable SMIL21 support:		${test_smil21}
 	Enable external DOM:		${test_dom}
 	Use expat XML library:		${test_expat}	${expat_path}
 	Use xerces XML library:		${test_xerces}	${xerces_path}

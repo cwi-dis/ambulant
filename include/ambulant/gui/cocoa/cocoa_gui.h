@@ -30,9 +30,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/gui_player.h"
-#ifdef USE_SMIL21
 #include "ambulant/smil2/transition.h"
-#endif
 #ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
 #endif
@@ -134,13 +132,11 @@ class cocoa_gui_screen : public common::gui_screen {
 	NSImage *transition_surface;
 	NSImage *transition_tmpsurface;
 	int transition_count;
-#ifdef USE_SMIL21
 	int fullscreen_count;
 	NSImage *fullscreen_previmage;
 	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
-#endif
 }
 
 - (id)initWithFrame:(NSRect)frameRect;
@@ -192,7 +188,6 @@ class cocoa_gui_screen : public common::gui_screen {
 // Return part of the onscreen image
 - (NSImage *)getOnScreenImageForRect: (NSRect)bounds;
 
-#ifdef USE_SMIL21
 - (void) startScreenTransition;
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
@@ -200,7 +195,6 @@ class cocoa_gui_screen : public common::gui_screen {
 		
 - (void) _screenTransitionPreRedraw;
 - (void) _screenTransitionPostRedraw;
-#endif
 @end
 
 #endif // __OBJC__

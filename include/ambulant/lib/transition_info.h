@@ -70,18 +70,14 @@ enum transition_type {
 	pushWipe,
 	slideWipe,
 	fade,
-#ifdef USE_SMIL21
 	audioFade,
 	audioVisualFade,
-#endif
 };
 
-#ifdef USE_SMIL21
 enum transition_scope {
 	scope_region,
 	scope_screen
 };
-#endif
 
 std::string repr(transition_type t);
 	
@@ -97,9 +93,7 @@ class transition_info {
 	progress_type m_endProgress;
 	bool m_reverse;
 	lib::color_t m_color;
-#ifdef USE_SMIL21
 	transition_scope m_scope;
-#endif
 	// We should also have the <param> contents here
 
 	transition_info() { }

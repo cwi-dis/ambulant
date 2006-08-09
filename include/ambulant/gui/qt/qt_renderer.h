@@ -50,9 +50,7 @@ class qt_transition_renderer : public ref_counted_obj {
 		m_view(NULL),
 		m_intransition(NULL),
 		m_outtransition(NULL),
-#ifdef USE_SMIL21
 		m_fullscreen(false),
-#endif
 		m_trans_engine(NULL) {};
 	~qt_transition_renderer();
 
@@ -73,9 +71,7 @@ class qt_transition_renderer : public ref_counted_obj {
 	void* m_view; //ambulant_qt_window* 
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
-#ifdef USE_SMIL21
 	bool m_fullscreen;
-#endif
 	smil2::transition_engine* m_trans_engine;
 	critical_section m_lock;
 };

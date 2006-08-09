@@ -93,7 +93,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	size srcsize = size(width, height);
 	rect srcrect;
 	rect dstrect;
-#ifdef USE_SMIL21
+
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
@@ -124,7 +124,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		m_lock.leave();
 		return;
 	}
-#endif
+
 	srcrect = rect(size(0,0));
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	dstrect.translate(m_dest->get_global_topleft());

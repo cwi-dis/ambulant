@@ -315,13 +315,11 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	m_arrow_cursor(NULL),
 	m_hand1_cursor(NULL),
 	m_hand2_cursor(NULL),
-#ifdef USE_SMIL21
 	m_fullscreen_count(0),
 	m_fullscreen_prev_pixmap(NULL),
 	m_fullscreen_old_pixmap(NULL),
 	m_fullscreen_engine(NULL),
 	m_fullscreen_now(0),
-#endif
 	m_surface(NULL)
 {
 	m_pixmap = NULL;
@@ -410,14 +408,10 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
-#ifdef USE_SMIL21
 	_screenTransitionPreRedraw();
-#endif
 	m_handler->redraw(r, this);
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
-#ifdef USE_SMIL21
 	_screenTransitionPostRedraw(r);
-#endif
 	gdk_pixmap_bitblt(m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
 	GError *error = NULL;
 	gint width; gint height;
@@ -554,11 +548,9 @@ GdkPixmap*
 ambulant_gtk_window::get_ambulant_oldpixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
-#ifdef USE_SMIL21
 	if (m_fullscreen_count && m_fullscreen_old_pixmap)
 		return m_fullscreen_old_pixmap;
-#endif
-        return m_oldpixmap;
+    return m_oldpixmap;
 }
 
 GdkPixmap*
@@ -602,8 +594,6 @@ ambulant_gtk_window::delete_ambulant_surface()
 
 // Transitions
   
-#ifdef USE_SMIL21
-
 void 
 ambulant_gtk_window::startScreenTransition()
 {
@@ -690,7 +680,6 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_engine = NULL;
 	}
 }
-#endif
 
 //
 // gtk_ambulant_widget

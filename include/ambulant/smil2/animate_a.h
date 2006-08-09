@@ -79,9 +79,7 @@ class animate_attrs {
 	void get_values(std::vector<common::region_dim>& v);
 	void get_values(std::vector<lib::color_t>& v);
 	void get_values(std::vector<lib::point>& v);
-#ifdef USE_SMIL21
 	void get_values(std::vector<common::sound_alignment>& v);
-#endif
 	
   private:
 	

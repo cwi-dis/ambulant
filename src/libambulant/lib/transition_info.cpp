@@ -86,10 +86,8 @@ transition_info::from_node(const node *n)
 	else if (type == "pushWipe") rv->m_type = pushWipe;
 	else if (type == "slideWipe") rv->m_type = slideWipe;
 	else if (type == "fade") rv->m_type = fade;
-#ifdef USE_SMIL21
 	else if (type == "audioFade") rv->m_type = audioFade;
 	else if (type == "audioVisualFade") rv->m_type = audioVisualFade;
-#endif
 	else {
 		lib::logger::get_logger()->error(gettext("transition: unknown type=\"%s\""), ctype);
 		delete rv;
@@ -108,7 +106,6 @@ transition_info::from_node(const node *n)
 	rv->m_endProgress = get_progress(n, "endProgress", 1.0);
 	rv->m_reverse = false;
 
-#ifdef USE_SMIL21
 	rv->m_scope = scope_region;
 	const char *scope = n->get_attribute("scope");
 	if (scope) {
@@ -116,7 +113,6 @@ transition_info::from_node(const node *n)
 		else if (strcmp(scope, "screen") == 0) rv->m_scope = scope_screen;
 		else lib::logger::get_logger()->error(gettext("transition: unknown scope=\"%s\""), scope);
 	}
-#endif
 	return rv;
 }
 
@@ -161,10 +157,8 @@ ambulant::lib::repr(transition_type t)
 	case pushWipe: return "pushWipe";
 	case slideWipe: return "slideWipe";
 	case fade: return "fade";
-#ifdef USE_SMIL21
 	case audioFade: return "audioFade";
 	case audioVisualFade: return "audioVisualFade";
-#endif
 	default: return "<unknown transition type>";
 	}
 }

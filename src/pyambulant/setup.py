@@ -3,7 +3,6 @@ import sys
 import os
 
 DEFS =  [
-    ('USE_SMIL21', '1'),
     ('WITH_EXTERNAL_DOM', '1'),
     ('ENABLE_NLS', '1'),
     ]

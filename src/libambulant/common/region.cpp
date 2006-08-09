@@ -398,14 +398,12 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 		// Scale to make smallest edge fit (showing some background color)
 		scale = std::min(scale_width, scale_height);
 		break;
-#ifdef USE_SMIL21
 	  case fit_meetbest:
 		// Scale to make smallest edge fit (showing some background color),
 		// but never scale up
 		scale = std::min(scale_width, scale_height);
 		if (scale > 1.0) scale = 1.0;
 		break;
-#endif // USE_SMIL21
 	  case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale = std::max(scale_width, scale_height);
@@ -501,14 +499,12 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		// Scale to make smallest edge fit (showing some background color)
 		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
 		break;
-#ifdef USE_SMIL21
 	  case fit_meetbest:
 		// Scale to make smallest edge fit (showing some background color)
 		scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
 		if (scale_vertical > 1.0) scale_vertical = 1.0;
 		scale_horizontal = scale_vertical;
 		break;
-#endif
 	  case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
@@ -566,7 +562,6 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		size(x_region_for_image_right-x_region_for_image_left, y_region_for_image_bottom-y_region_for_image_top));
 }
 
-#ifdef USE_SMIL21
 bool
 surface_impl::is_tiled() const
 {
@@ -604,7 +599,6 @@ surface_impl::get_tiles(lib::size image_size, lib::rect surface_rect) const
 	}
 	return rv;
 }
-#endif
 
 void 
 surface_impl::transition_done(lib::rect area)

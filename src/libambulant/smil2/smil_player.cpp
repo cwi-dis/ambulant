@@ -91,9 +91,7 @@ smil_player::initialize()
 	build_layout();
 	// Build the timegraph using the current filter
 	build_timegraph();
-#ifdef USE_SMIL21
 	m_layout_manager->load_bgimages(m_factory);
-#endif
 }
 
 smil_player::~smil_player() {

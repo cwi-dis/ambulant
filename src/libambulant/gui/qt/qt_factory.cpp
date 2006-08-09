@@ -242,13 +242,11 @@ ambulant_qt_window::ambulant_qt_window(const std::string &name,
 	m_pixmap(NULL),
 	m_oldpixmap(NULL),
 	m_tmppixmap(NULL),
-#ifdef USE_SMIL21
 	m_fullscreen_count(0),
 	m_fullscreen_prev_pixmap(NULL),
 	m_fullscreen_old_pixmap(NULL),
 	m_fullscreen_engine(NULL),
 	m_fullscreen_now(0),
-#endif
 	m_surface(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::ambulant_qt_window(0x%x)",(void *)this);
@@ -315,13 +313,9 @@ void
 ambulant_qt_window::redraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
-#ifdef USE_SMIL21
 	_screenTransitionPreRedraw();
-#endif
 	m_handler->redraw(r, this);
-#ifdef USE_SMIL21
 	_screenTransitionPostRedraw(r);
-#endif
 	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
     DUMPPIXMAP(m_pixmap, "top");
 }
@@ -402,10 +396,8 @@ QPixmap*
 ambulant_qt_window::get_ambulant_oldpixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
-#ifdef USE_SMIL21
 	if (m_fullscreen_count && m_fullscreen_old_pixmap)
 		return m_fullscreen_old_pixmap;
-#endif
         return m_oldpixmap;
 }
 
@@ -431,9 +423,6 @@ ambulant_qt_window::delete_ambulant_surface()
 	delete m_surface;
 	m_surface = NULL;
 }
-
-
-#ifdef USE_SMIL21
 
 void 
 ambulant_qt_window::startScreenTransition()
@@ -515,7 +504,6 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_engine = NULL;
 	}
 }
-#endif
 
 //
 // qt_ambulant_widget

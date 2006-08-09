@@ -40,24 +40,17 @@ using namespace ambulant::lib;
 
 /// Type that represents the allowable SMIL 2.0 fit values.
 enum fit_t {fit_default, fit_hidden, fit_fill, fit_meet,
-#ifdef USE_SMIL21
-			fit_meetbest,
-#endif
-			fit_scroll, fit_slice };
+			fit_meetbest, fit_scroll, fit_slice };
 
 /// Type that represents a SMIL 2.0 z-index value.
 typedef int zindex_t;
 
-
-#ifdef USE_SMIL21
 /// Type that represents where audio is panned
 enum sound_alignment {sa_default, sa_both, sa_left, sa_right};
 
 /// Type that represents image tiling
 enum tiling { tiling_default, tiling_none, tiling_inherit,
 		tiling_horizontal, tiling_vertical, tiling_both};
-#endif // USE_SMIL21
-
 
 /// Interface to a class that holds all SMIL 2.0 layout information for a region.
 /// This is the read-only interface, used to construct windows and such.
@@ -92,7 +85,6 @@ class region_info {
 	/// Return audio volume
 	virtual double get_soundlevel() const = 0;
 	
-#ifdef USE_SMIL21
 	/// Return audio placement
 	virtual sound_alignment get_soundalign() const = 0;
 	
@@ -101,7 +93,6 @@ class region_info {
 
 	/// Return the background image
 	virtual const char *get_bgimage() const = 0;
-#endif
 };
 
 /// Interface to animate region information.
@@ -133,12 +124,10 @@ class animation_destination : public region_info {
 	/// value (as animated by previous set_ calls).
 	virtual double get_region_soundlevel(bool fromdom = false) const = 0;
   
-#ifdef USE_SMIL21
 	/// Get the audio volume of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual sound_alignment get_region_soundalign(bool fromdom = false) const = 0;
-#endif
   
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
@@ -154,10 +143,8 @@ class animation_destination : public region_info {
 	/// Set the region audio volume to a new value.
 	virtual void set_region_soundlevel(double level) = 0;
 
-#ifdef USE_SMIL21
 	/// Set the region audio volume to a new value.
 	virtual void set_region_soundalign(sound_alignment sa) = 0;
-#endif
 };
 
 } // namespace common

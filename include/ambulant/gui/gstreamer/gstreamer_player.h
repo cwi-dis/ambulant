@@ -34,10 +34,8 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/event_processor.h"
-#ifdef USE_SMIL21
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/transition_info.h"
-#endif
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/unix/unix_thread.h"
 

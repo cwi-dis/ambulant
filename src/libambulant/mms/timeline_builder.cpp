@@ -63,11 +63,9 @@ class mms_region_info : public common::region_info {
 	bool get_transparent() const { return true; }
 	common::zindex_t get_zindex() const { return 0; }
 	double get_soundlevel() const { return 1.0; }
-#ifdef USE_SMIL21
 	common::sound_alignment get_soundalign() const { return common::sa_both; }
 	common::tiling get_tiling() const { return common::tiling_default; }
 	const char *get_bgimage() const { return NULL; }
-#endif
 	bool get_showbackground() const { return false; }
 	bool is_subregion() const { return false; }
   private:

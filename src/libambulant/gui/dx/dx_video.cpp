@@ -224,12 +224,10 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 	m_msg_rect |= vid_reg_rc_dirty;
 	
 	dx_transition *tr = get_transition();
-#ifdef USE_SMIL21
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
 		tr = NULL;
 	}
-#endif // USE_SMIL21
 
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());

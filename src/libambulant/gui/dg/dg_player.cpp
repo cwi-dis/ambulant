@@ -96,9 +96,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = new smil2::smil_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
 	m_player->initialize();
-#endif
 
 	// Create the worker processor
 	m_worker_processor = event_processor_factory(m_timer);

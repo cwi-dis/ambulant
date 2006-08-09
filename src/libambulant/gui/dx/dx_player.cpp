@@ -479,9 +479,7 @@ gui::dx::dx_player::set_transition(common::playable *p,
 	dx_transition *tr = make_transition(info->m_type, p, timer);
 	m_trmap[p] = tr;
 	common::surface *surf = p->get_renderer()->get_surface();
-#ifdef USE_SMIL21
 	if (info->m_scope == lib::scope_screen) surf = surf->get_top_surface();
-#endif
 	tr->init(surf, is_outtransition, info);
 	return tr;
 }

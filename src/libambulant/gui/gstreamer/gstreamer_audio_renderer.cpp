@@ -49,15 +49,12 @@ gstreamer_audio_renderer::gstreamer_audio_renderer(
 	m_is_playing(false),
 	m_is_paused(false),
 	m_read_ptr_called(false),
-	m_volcount(0)
-#ifdef USE_SMIL21
-	,
+	m_volcount(0),
 	m_intransition(NULL),
 	m_outtransition(NULL),
 	m_transition_engine(NULL)
-#endif                                   
 {
-        init_player(node);
+    init_player(node);
 }
 
 gstreamer_audio_renderer::gstreamer_audio_renderer(
@@ -72,13 +69,10 @@ gstreamer_audio_renderer::gstreamer_audio_renderer(
 	m_pipeline(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
-	m_read_ptr_called(false)
-#ifdef USE_SMIL21
-	,
+	m_read_ptr_called(false),
 	m_intransition(NULL),
 	m_outtransition(NULL),
 	m_transition_engine(NULL)
-#endif                                   
 {
         init_player(node);
 }
@@ -93,12 +87,10 @@ gstreamer_audio_renderer::~gstreamer_audio_renderer()
 		m_player->stop();
 	//	m_lock.enter();
 	}	
-#ifdef USE_SMIL21
 	if (m_transition_engine) {
 		delete m_transition_engine;
 		m_transition_engine = NULL;
 	}
-#endif                                   
 	m_is_playing = false;
 	if (m_player) delete m_player;
 	m_player = NULL;
@@ -124,7 +116,6 @@ gstreamer_audio_renderer::init_player(const lib::node *node) {
 	m_context->started(m_cookie, 0);
 	//KB	if (gst_player failed)m_context->stopped(m_cookie, 0);
 }
-#ifdef USE_SMIL21
 
 void
 gstreamer_audio_renderer::set_intransition(const lib::transition_info* info) {
@@ -143,7 +134,6 @@ gstreamer_audio_renderer::start_outtransition(const lib::transition_info* info) 
 	m_transition_engine = new smil2::audio_transition_engine();
 	m_transition_engine->init(m_event_processor, true, info);
 }
-#endif
 
 bool
 gstreamer_audio_renderer::is_supported(const lib::node *node)

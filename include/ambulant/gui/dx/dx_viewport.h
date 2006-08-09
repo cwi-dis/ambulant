@@ -151,9 +151,7 @@ class viewport {
 	int get_height() const { return m_height;}
 	HWND get_hwnd() { return m_hwnd;}
 	
-#ifdef USE_SMIL21
 	void set_fullscreen_transition(dx_transition *tr) { m_fstransition = tr; }
-#endif
   private:
 	
 	RECT* to_screen_rc_ptr(RECT& r);
@@ -165,10 +163,8 @@ class viewport {
 	IDirectDraw* m_direct_draw;
 	IDirectDrawSurface* m_primary_surface;
 	IDirectDrawSurface* m_surface;
-#ifdef USE_SMIL21
 	IDirectDrawSurface* m_fstr_surface;
 	dx_transition* m_fstransition;
-#endif
 	std::list<IDirectDrawSurface*> m_surfaces;
 	
 	int m_width, m_height;

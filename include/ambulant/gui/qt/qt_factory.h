@@ -158,14 +158,12 @@ class ambulant_qt_window : public common::gui_window {
 	void set_ambulant_surface(QPixmap* surf);
 	void delete_ambulant_surface();
 	
-#ifdef USE_SMIL21
 	void startScreenTransition();
 	void endScreenTransition();
 	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
 		
 	void _screenTransitionPreRedraw();
 	void _screenTransitionPostRedraw(const lib::rect &r);
-#endif
 	
   private:
 	qt_ambulant_widget* m_ambulant_widget;
@@ -174,13 +172,11 @@ class ambulant_qt_window : public common::gui_window {
 	QPixmap* m_oldpixmap;
 	QPixmap* m_surface;
 	
-#ifdef USE_SMIL21
 	int m_fullscreen_count;
 	QPixmap* m_fullscreen_prev_pixmap;
 	QPixmap* m_fullscreen_old_pixmap;
 	smil2::transition_engine* m_fullscreen_engine;
 	lib::transition_info::time_type m_fullscreen_now;
-#endif
 
  public:
 	QPixmap* m_tmppixmap;

@@ -108,12 +108,10 @@ void gui::dx::dx_brush::redraw(const lib::rect &dirty, common::gui_window *windo
 	rc.translate(pt);
 	
 	dx_transition *tr = get_transition();
-#ifdef USE_SMIL21
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
 		tr = NULL;
 	}
-#endif // USE_SMIL21
 	v->clear(rc, m_color, tr);
 }
  

@@ -120,10 +120,8 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "int_tuple";
 	} else if(m_attrname == "color") {
 		m_attrtype = "color";
-#ifdef USE_SMIL21
 	} else if (m_attrname == "soundAlign") {
 		m_attrtype = "soundAlign";
-#endif
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
 			m_tag.c_str(), m_id.c_str(), m_attrname.c_str());
@@ -433,7 +431,6 @@ void animate_attrs::get_values(std::vector<lib::color_t>& v) {
 	}
 }
 
-#ifdef USE_SMIL21
 void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	common::sound_alignment sa = common::sa_default;
 	if(m_animtype == "to") {
@@ -456,7 +453,6 @@ void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	}
 	v.push_back(sa);
 }
-#endif // USE_SMIL21
 
 // point := S? (? x S? , S? y S? )?
 lib::point animate_attrs::to_point(const std::string& s) {

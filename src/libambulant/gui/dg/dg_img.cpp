@@ -145,7 +145,7 @@ void gui::dg::dg_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 	lib::size srcsize = m_image->get_size();
-#ifdef USE_SMIL21
+
 	// This code could be neater: it could share quite a bit with the
 	// code below (for non-tiled images). Also, support for tiled images
 	// is specifically geared toward background images: stuff like the
@@ -167,7 +167,6 @@ void gui::dg::dg_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
-#endif
 
 	// Get fit rectangles
 	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);

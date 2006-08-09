@@ -642,12 +642,8 @@ public:
 	const ambulant::lib::point& get_global_topleft() const;
 	ambulant::lib::rect get_fit_rect(const ambulant::lib::size& src_size, ambulant::lib::rect* out_src_rect, const ambulant::common::alignment* align) const;
 	const ambulant::common::region_info* get_info() const;
-#ifdef USE_SMIL21
 	ambulant::common::surface* get_top_surface();
-#endif
-#ifdef USE_SMIL21
 	bool is_tiled() const;
-#endif
 	ambulant::common::gui_window* get_gui_window();
 	void set_renderer_private_data(ambulant::common::renderer_private_id idd, ambulant::common::renderer_private_data * data);
 	ambulant::common::renderer_private_data * get_renderer_private_data(ambulant::common::renderer_private_id idd);
@@ -895,9 +891,7 @@ public:
 	player(PyObject *itself);
 	virtual ~player();
 
-#ifdef USE_SMIL21
 	void initialize();
-#endif
 	ambulant::lib::timer* get_timer();
 	ambulant::lib::event_processor* get_evp();
 	void start();
@@ -944,15 +938,9 @@ public:
 	bool get_showbackground() const;
 	bool is_subregion() const;
 	double get_soundlevel() const;
-#ifdef USE_SMIL21
 	ambulant::common::sound_alignment get_soundalign() const;
-#endif
-#ifdef USE_SMIL21
 	ambulant::common::tiling get_tiling() const;
-#endif
-#ifdef USE_SMIL21
 	const char * get_bgimage() const;
-#endif
   private:
 	PyObject *py_region_info;
 
@@ -977,16 +965,12 @@ public:
 	ambulant::lib::color_t get_region_color(const std::string& which, bool fromdom) const;
 	ambulant::common::zindex_t get_region_zindex(bool fromdom) const;
 	double get_region_soundlevel(bool fromdom) const;
-#ifdef USE_SMIL21
 	ambulant::common::sound_alignment get_region_soundalign(bool fromdom) const;
-#endif
 	void set_region_dim(const std::string& which, const ambulant::common::region_dim& rd);
 	void set_region_color(const std::string& which, ambulant::lib::color_t clr);
 	void set_region_zindex(ambulant::common::zindex_t z);
 	void set_region_soundlevel(double level);
-#ifdef USE_SMIL21
 	void set_region_soundalign(ambulant::common::sound_alignment sa);
-#endif
 	std::string get_name() const { return region_info::get_name(); }
 	ambulant::lib::rect get_rect() const { return region_info::get_rect(); }
 	ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }

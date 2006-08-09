@@ -166,12 +166,10 @@ void gui::dx::dx_text_renderer::redraw(const lib::rect& dirty, common::gui_windo
 	reg_rc.translate(pt);
 		
 	dx_transition *tr = get_transition();
-#ifdef USE_SMIL21
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
 		tr = NULL;
 	}
-#endif // USE_SMIL21
 		
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	v->draw(m_text->get_ddsurf(), text_rc, reg_rc, true, tr);

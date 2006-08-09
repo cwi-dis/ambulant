@@ -51,9 +51,7 @@ struct animate_registers {
 	common::zindex_t zi;
 	int iv;
 	double dv;
-#ifdef USE_SMIL21
 	common::sound_alignment sa;
-#endif
 };
 
 // An animate_node is the base class for all animation node flavors
@@ -82,9 +80,7 @@ class animate_node : public time_node {
 	static animate_node* new_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	static animate_node* new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	// XXXX Need to add soundlevel animation (similar to zindex)
-#ifdef USE_SMIL21
 	static animate_node* new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
-#endif
   protected:
 	// The set of animation related attributes of this node.
 	// Attributes parsing helper

@@ -30,9 +30,7 @@
 #include "ambulant/lib/event.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/lib/mtsync.h"
-#ifdef USE_SMIL21
 #include "ambulant/smil2/transition.h"
-#endif
 
 namespace ambulant {
 
@@ -66,12 +64,10 @@ class dx_audio_renderer : public common::renderer_playable {
 	audio_player *m_player;
  	lib::event *m_update_event;
 	double m_level;
-#ifdef USE_SMIL21
 	int m_balance;
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
-#endif
  	lib::critical_section m_cs;
 };
 

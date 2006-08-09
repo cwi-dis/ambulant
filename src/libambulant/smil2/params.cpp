@@ -39,7 +39,6 @@ params::for_node(const lib::node *n)
 {
 	const lib::node *paramchild = n->get_first_child("param");
 	const lib::node *paramcontainerchild = NULL;
-#ifdef USE_SMIL21
 	const char *pname = n->get_attribute("paramGroup");
 	if (pname) {
 		const lib::node_context *ctx = n->get_context();
@@ -50,7 +49,6 @@ params::for_node(const lib::node *n)
 			lib::logger::get_logger()->trace("param=\"%s\": ID not found", pname);
 		}
 	}
-#endif
 	if (paramchild || paramcontainerchild) {
 		params *rv = new params();
 		if (paramcontainerchild) rv->addparamnodes(paramcontainerchild);

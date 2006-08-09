@@ -53,10 +53,8 @@ common::create_smil2_layout_manager(common::factories *factory,lib::document *do
 smil_layout_manager::smil_layout_manager(common::factories *factory,lib::document *doc)
 :   m_schema(common::schema::get_instance()),
 	m_surface_factory(common::create_smil_surface_factory()),
-	m_layout_tree(NULL)
-#ifdef USE_SMIL21
-	,m_uses_bgimages(false)
-#endif
+	m_layout_tree(NULL),
+	m_uses_bgimages(false)
 {
 	// First find the correct layout section to use.
 	m_layout_section = get_document_layout(doc);
@@ -214,10 +212,8 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 				m_name2region[pname].push_back(rn);
 			}
 			
-#ifdef USE_SMIL21
 			// See if the node uses background images
 			if (n->get_attribute("backgroundImage")) m_uses_bgimages = true;
-#endif
 			// And finally into the node->region mapping (for animate)
 			m_node2region[n] = rn;
 
@@ -520,7 +516,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 	const char *raname = "regAlign";
 	regPoint = n->get_attribute("regPoint");
 	regAlign = n->get_attribute("regAlign");
-#ifdef USE_SMIL21
+	
 	const char *mediaAlign = n->get_attribute("mediaAlign");
 	if (mediaAlign && regPoint == NULL) {
 		regPoint = mediaAlign;
@@ -530,26 +526,22 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		regAlign = mediaAlign;
 		raname = "mediaAlign";
 	}
-#endif // USE_SMIL21
+	
 	if (regPoint == NULL || regAlign == NULL) {
 		const region_node *rrn = get_region_node_for(n, false);
 		if (rrn == NULL) return NULL;
 		const lib::node *rn = rrn->dom_node();
 		if (regPoint == NULL) {
 			regPoint = rn->get_attribute("regPoint");
-#ifdef USE_SMIL21
 			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
 			if (regPoint == NULL)
 				regPoint = rn->get_attribute("mediaAlign");
-#endif // USE_SMIL21
 		}
 		if (regAlign == NULL) {
 			regAlign = rn->get_attribute("regAlign");
-#ifdef USE_SMIL21
 			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
 			if (regAlign == NULL)
 				regAlign = rn->get_attribute("mediaAlign");
-#endif // USE_SMIL21
 		}
 	}
 	if (regPoint == NULL && regAlign == NULL) return NULL;
@@ -594,7 +586,6 @@ smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	return m_rootsurfaces[0]->activate();
 }
 
-#ifdef USE_SMIL21
 class bgimage_loader : public lib::ref_counted_obj, public common::playable_notification {
   public:
 	bgimage_loader(const lib::node *layout_root, common::factories *factories);
@@ -766,6 +757,4 @@ bgimage_loader::stopped(cookie_type n, double t)
 	}
 	m_lock.leave();
 }
-#endif 
-
 

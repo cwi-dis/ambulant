@@ -3747,7 +3747,6 @@ const ambulant::common::region_info* surface::get_info() const
 	return _rv;
 }
 
-#ifdef USE_SMIL21
 ambulant::common::surface* surface::get_top_surface()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3771,9 +3770,7 @@ ambulant::common::surface* surface::get_top_surface()
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
-#ifdef USE_SMIL21
 bool surface::is_tiled() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3797,7 +3794,6 @@ bool surface::is_tiled() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
 ambulant::common::gui_window* surface::get_gui_window()
 {
@@ -4993,7 +4989,6 @@ player::~player()
 }
 
 
-#ifdef USE_SMIL21
 void player::initialize()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5008,7 +5003,6 @@ void player::initialize()
 
 	PyGILState_Release(_GILState);
 }
-#endif
 
 ambulant::lib::timer* player::get_timer()
 {
@@ -5604,7 +5598,6 @@ double region_info::get_soundlevel() const
 	return _rv;
 }
 
-#ifdef USE_SMIL21
 ambulant::common::sound_alignment region_info::get_soundalign() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5628,9 +5621,7 @@ ambulant::common::sound_alignment region_info::get_soundalign() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
-#ifdef USE_SMIL21
 ambulant::common::tiling region_info::get_tiling() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5654,9 +5645,7 @@ ambulant::common::tiling region_info::get_tiling() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
-#ifdef USE_SMIL21
 const char * region_info::get_bgimage() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5680,7 +5669,6 @@ const char * region_info::get_bgimage() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
 /* ------------------ Class animation_destination ------------------- */
 
@@ -5825,7 +5813,6 @@ double animation_destination::get_region_soundlevel(bool fromdom) const
 	return _rv;
 }
 
-#ifdef USE_SMIL21
 ambulant::common::sound_alignment animation_destination::get_region_soundalign(bool fromdom) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5851,7 +5838,6 @@ ambulant::common::sound_alignment animation_destination::get_region_soundalign(b
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
 void animation_destination::set_region_dim(const std::string& which, const ambulant::common::region_dim& rd)
 {
@@ -5929,7 +5915,6 @@ void animation_destination::set_region_soundlevel(double level)
 	PyGILState_Release(_GILState);
 }
 
-#ifdef USE_SMIL21
 void animation_destination::set_region_soundalign(ambulant::common::sound_alignment sa)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -5947,7 +5932,6 @@ void animation_destination::set_region_soundalign(ambulant::common::sound_alignm
 
 	PyGILState_Release(_GILState);
 }
-#endif
 
 /* ------------------------ Class datasource ------------------------ */
 

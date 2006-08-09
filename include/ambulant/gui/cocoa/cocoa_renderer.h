@@ -65,9 +65,7 @@ class cocoa_transition_renderer : public ref_counted_obj {
 	const lib::transition_info *m_intransition;
 	const lib::transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
-#ifdef USE_SMIL21
 	bool m_fullscreen;
-#endif
 	critical_section m_lock;
 };
 

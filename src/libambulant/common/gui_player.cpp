@@ -130,9 +130,7 @@ gui_player::restart(bool reparse)
 	AM_DBG lib::logger::get_logger()->debug("Creating player instance for: %s", m_url.get_url().c_str());
 	// XXXX
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
-#ifdef USE_SMIL21
 	m_player->initialize();
-#endif
 	if (playing || pausing) play();
 	if (pausing) pause();
 }

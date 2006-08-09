@@ -35,10 +35,8 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/url.h"
 #include "ambulant/lib/event_processor.h"
-#ifdef USE_SMIL21
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/transition_info.h"
-#endif
 #include "ambulant/lib/asb.h"
 
 
@@ -89,13 +87,8 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 //	void transition_freeze_end(lib::rect area) {}		  
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}
-#ifdef USE_SMIL21
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
-#else
-	void set_intransition(const lib::transition_info* info) {}
-	void start_outtransition(const lib::transition_info* info) {}
-#endif
 	GstElement* m_pipeline;
 
   private:
@@ -110,11 +103,9 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	bool m_audio_started;
 	int m_volcount;
 	float m_volumes[AMBULANT_MAX_CHANNELS];
-#ifdef USE_SMIL21
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
-#endif
 	// class methods and attributes:
 };
 

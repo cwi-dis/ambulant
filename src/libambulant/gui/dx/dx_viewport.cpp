@@ -260,10 +260,8 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	m_direct_draw(NULL),
 	m_primary_surface(NULL),
 	m_surface(NULL),
-#ifdef USE_SMIL21
 	m_fstr_surface(NULL),
 	m_fstransition(NULL),
-#endif
 	m_hwnd(hwnd?hwnd:GetDesktopWindow()),
 	bits_size(24),
 	red_bits(8), green_bits(8), blue_bits(8),
@@ -361,7 +359,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		return;
 	}
 	m_surfaces.push_back(surf);
-#ifdef USE_SMIL21
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
@@ -373,7 +370,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
-#endif // USE_SMIL21
 }
 
 gui::dx::viewport::~viewport() {
@@ -383,9 +379,7 @@ gui::dx::viewport::~viewport() {
 	RELEASE(m_surface);
 	RELEASE(m_primary_surface);
 	RELEASE(m_direct_draw);
-#ifdef USE_SMIL21
 	RELEASE(m_fstr_surface);
-#endif
 	if(palette_entries != 0)
 		delete[] palette_entries;
 	RedrawWindow(m_hwnd, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN);
@@ -440,7 +434,7 @@ void gui::dx::viewport::redraw() {
 	RECT dst_rc = {0, 0, m_width, m_height};
 	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
-#ifdef USE_SMIL21
+
 	if (m_fstransition) {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
 		// Create a temp surface, determine bg/fg surfaces and copy the background
@@ -519,9 +513,6 @@ void gui::dx::viewport::redraw() {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt() m_fstr_surface", hr);
 		}
 	}
-#else
-	primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
-#endif
 }
 
 void gui::dx::viewport::redraw(const lib::rect& rc) {
@@ -543,7 +534,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 	// Blit:
 	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = DDBLT_WAIT;
-#ifdef USE_SMIL21
+
 	if (m_fstransition) {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
 		// Create a temp surface, determine bg/fg surfaces and copy the background
@@ -622,9 +613,6 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 		}
 	}
-#else
-	primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
-#endif
 }
 
 // Clears the back buffer using this viewport bgd color

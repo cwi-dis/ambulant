@@ -43,9 +43,7 @@ static char *subregionattrs[] = {
 	"transparent",
 	"fit",
 	"soundLevel",
-#ifdef USE_SMIL21
 	"soundAlign",
-#endif
 	NULL
 };
 
@@ -99,11 +97,9 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_zindex(0),
 	m_bgcolor(lib::to_color(0,0,0)),
 	m_soundlevel(1.0),
-#ifdef USE_SMIL21
 	m_soundalign(common::sa_default),
 	m_bgimage(NULL),
 	m_tiling(common::tiling_default),
-#endif
 	m_transparent(true),
 	m_showbackground(true),
 	m_inherit_bgcolor(false),
@@ -123,9 +119,7 @@ void
 region_node::fix_from_region_node(const region_node *parent)
 {
 	set_soundlevel(parent->get_soundlevel());
-#ifdef USE_SMIL21
 	set_soundalign(parent->get_soundalign());
-#endif
 }
 
 bool
@@ -201,9 +195,7 @@ region_node::fix_from_dom_node()
 		if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
 		else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;
 		else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
-#ifdef USE_SMIL21
 		else if (strcmp(fit_attr, "meetBest") == 0) fit = common::fit_meetbest;
-#endif // USE_SMIL21
 		else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
 		else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
 		else {
@@ -246,7 +238,6 @@ region_node::fix_from_dom_node()
 	}
 	set_soundlevel(sl);
 	
-#ifdef USE_SMIL21
 	// soundAlign
 	const char *soundalign_attr = m_node->get_attribute("soundAlign");
 	common::sound_alignment sa = m_soundalign;
@@ -297,7 +288,6 @@ region_node::fix_from_dom_node()
 	}
 	// Don't need to set changed
 	
-#endif // USE_SMIL21
 	return changed;
 }
 
@@ -364,7 +354,6 @@ region_node::get_showbackground() const
 	return m_showbackground;
 }
 
-#ifdef USE_SMIL21
 common::tiling
 region_node::get_tiling() const
 {
@@ -403,8 +392,6 @@ region_node::get_bgimage() const
 		bgimage = NULL;
 	return bgimage;
 }
-
-#endif // USE_SMIL21
 
 void
 region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) { 
@@ -473,11 +460,9 @@ double region_node::get_region_soundlevel(bool fromdom) const {
 	return fromdom?m_soundlevel:m_display_soundlevel;
 }
 
-#ifdef USE_SMIL21
 common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 	return fromdom?m_soundalign:m_display_soundalign;
 }
-#endif
 
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
@@ -510,9 +495,7 @@ void region_node::set_region_soundlevel(double level) {
 	m_display_soundlevel = level;
 }
 
-#ifdef USE_SMIL21
 void region_node::set_region_soundalign(common::sound_alignment sa) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_soundalign()");
 	m_display_soundalign = sa;
 }
-#endif

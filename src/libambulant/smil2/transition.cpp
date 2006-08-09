@@ -763,7 +763,6 @@ transition_engine_fade::compute()
 	m_stepcount = 256;
 }
 
-#ifdef USE_SMIL21
 
 audio_transition_engine::audio_transition_engine()
 :	m_start_time(0),
@@ -813,4 +812,3 @@ const bool
 audio_transition_engine::is_done(lib::transition_info::time_type now) {
 	return now >= m_start_time + m_dur;
 }
-#endif                                   
