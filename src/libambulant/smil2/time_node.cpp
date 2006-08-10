@@ -879,7 +879,6 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 
 void time_node::exec(qtime_type timestamp) {
 	AM_DBG m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
-	char* node_id = strdup(get_sig().c_str());
 	if(!is_alive()) {
 		// check for transOut
 		return;
@@ -895,15 +894,13 @@ void time_node::exec(qtime_type timestamp) {
 	
 	if(!is_active()) {
 		// in this state, activation is the only interesting activity
-		AM_DBG m_logger->debug("time_node::exec(%ld) for %s m_interval=(%ld,%ld) deferred=%d", timestamp.second(), node_id, m_interval.begin(), m_interval.end(), deferred());
+		AM_DBG m_logger->debug("time_node::exec(%ld) for %s m_interval=(%ld,%ld) deferred=%d", timestamp.second(), get_sig().c_str(), m_interval.begin(), m_interval.end(), deferred());
 		if(begin_cond(timestamp)) {
 			if(deferred()) defer_interval(timestamp);
 			else set_state_ex(ts_active, timestamp);
 		}
-		free(node_id);
 		return;
 	}
-	free(node_id);
 	// The following code applies to active nodes
 	assert(is_active());
 	
