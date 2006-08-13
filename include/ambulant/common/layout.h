@@ -107,7 +107,7 @@ enum user_event_type {
 /// API for receiving GUI events.
 /// The pure virtual baseclass for both toplevel ambulant windows (as
 /// seen from the GUI code) and renderers.
-/// It is used to commmunicate redraw requests and mouse ckicks
+/// It is used to commmunicate redraw requests and mouse clicks
 /// and such from the GUI window all the way down to
 /// the renderer.
 class gui_events  {
@@ -117,21 +117,26 @@ class gui_events  {
   	/// Request to redraw a certain area.
 	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;
 	
-	/// Signals a ouse click or move.
+	/// Signals a mouse click or mouse move.
 	virtual void user_event(const lib::point &where, int what = 0) = 0;
 	
 	/// Signals that a transition in the given area has started.
+	/// This event goes through the gui_events interface because SMIL
+	/// semantics dictate that fill=transition ends on underlying
+	/// areas when a new transition starts.
 	virtual void transition_freeze_end(lib::rect area) = 0;
 };
 
 /// 
-/// renderer is an pure virtual baseclass for renderers that
+/// renderer is an interface for playables that
 /// render to a region (as opposed to audio renderers, etc).
 class renderer : public gui_events {
   public:
 	virtual ~renderer() {};
 	
 	/// Render to a specific surface.
+	/// Called (by the scheduler) after the playable is created, to
+	/// tell it where to render to.
 	virtual void set_surface(surface *destination) = 0;
 	
 	/// Use alignment align for image display.
@@ -143,7 +148,7 @@ class renderer : public gui_events {
 	/// Start an outTransition now.
 	virtual void start_outtransition(const lib::transition_info *info) = 0;
 	
-	// XXXX This is a hack.
+	/// XXXX This is a hack.
 	virtual surface *get_surface() = 0;
 
 };
@@ -227,6 +232,11 @@ class surface {
 	virtual gui_window *get_gui_window() = 0;
 
 	/// Save a per-renderer private data pointer on the surface.
+	/// Renderer implementations that want to cache things between instantiations
+	/// on the same surface can use this to do so. As an example, various
+	/// HTML renderers use this to forestall having to destroy and immediately
+	/// re-create HTML widgets (which is not only time-consuming but also
+	/// causes a lot of flashing).
 	virtual void set_renderer_private_data(renderer_private_id idd, renderer_private_data* data) = 0;
 
 	/// Retrieve a per-renderer private data pointer previously stored with set_renderer_data.

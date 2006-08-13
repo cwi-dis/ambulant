@@ -43,11 +43,11 @@ namespace lib {
 /// Information on custom test used in the document.
 class custom_test {
   public:
-	std::string idd;
-	std::string title;
-	bool state;
-	bool override;
-	std::string uid;
+	std::string idd;   /// XML id of the customTest
+	std::string title; /// title attribute value
+	bool state;    /// Current state (on/off) of the custom test
+	bool override; /// True if custom test can be overridden thru player GUI
+	std::string uid;   /// uid attribute value
 };
 
 /// A class respresenting an XML document.
@@ -67,7 +67,8 @@ class document : public node_context {
 	
 	/// A document factory function.
 	/// Creates documents from source strings.
-	/// The src_id argument is used in error messages only
+	/// The src_id argument is used in error messages only, the caller
+	/// needs to call set_str_url() itself.
 	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
 	
 #if 0

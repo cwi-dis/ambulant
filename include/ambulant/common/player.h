@@ -74,8 +74,13 @@ class player_feedback {
 };
 
 /// Baseclass for all players.
-/// This is the API an embedding program would use to control the
+/// This is the API an embedding program could use to control the
 /// player, to implement things like the "Play" command in the GUI.
+/// As of AmbulantPlayer 1.8, however, most embedding applications will
+/// use the gui_player class which contains aditional functionality such
+/// as storing the document and all factories, and which contains
+/// convenience methods to call most common player methods. But some
+/// methods, such as set_feedback(), are not available in gui_player.
 class player {
   public:
 	virtual ~player() {};

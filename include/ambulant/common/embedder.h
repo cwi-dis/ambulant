@@ -37,7 +37,9 @@ class player;
 
 /// Interface to be provided by application embedding AmbulantPlayer.
 /// This class has methods that AmbulantPlayer will use to make certain effects
-/// in the "real world" happen: opening and closing windows, etc.
+/// in the "real world" happen: opening and closing windows, etc. In addition,
+/// ambulant player will use provide some feedback on document playback
+/// starting and finishing.
 class AMBULANTAPI embedder : public lib::system_embedder {
   public:
   
@@ -62,7 +64,9 @@ class AMBULANTAPI embedder : public lib::system_embedder {
 	virtual void starting(player *p) {}
 	
 	/// Experimental interface: open a new auxiliary document displayed on
-	/// top of the current document. As long as it 
+	/// top of the current document. This document will get all mouse and
+	/// keyboard input, and has some limited control over playback of the
+	/// underlying document. 
 	virtual bool aux_open(const ambulant::net::url& href) {return false;}
 };
 

@@ -1,4 +1,4 @@
-# Doxyfile 1.3.8
+# Doxyfile 1.4.7
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -32,11 +32,13 @@ JAVADOC_AUTOBRIEF      = YES
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
-DISTRIBUTE_GROUP_DOC   = NO
+SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
+BUILTIN_STL_SUPPORT    = NO
+DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
 #---------------------------------------------------------------------------
 # Build related configuration options
@@ -65,6 +67,8 @@ GENERATE_DEPRECATEDLIST= NO
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
+SHOW_DIRECTORIES       = NO
+FILE_VERSION_FILTER    = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -72,83 +76,32 @@ QUIET                  = NO
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           = 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../../include/ambulant/common/embedder.h	\
-                         ../../include/ambulant/common/factory.h	\
-                         ../../include/ambulant/common/layout.h		\
-                         ../../include/ambulant/common/gui_player.h	\
-                         ../../include/ambulant/common/playable.h	\
-                         ../../include/ambulant/common/player.h		\
-                         ../../include/ambulant/common/plugin_engine.h	\
-                         ../../include/ambulant/common/preferences.h	\
-                         ../../include/ambulant/common/region_dim.h	\
-                         ../../include/ambulant/common/region_eval.h	\
-                         ../../include/ambulant/common/region.h		\
-                         ../../include/ambulant/common/region_info.h	\
-                         ../../include/ambulant/common/renderer_impl.h	\
-                         ../../include/ambulant/common/smil_alignment.h	\
-                         ../../include/ambulant/common/smil_handler.h	\
-                         ../../include/ambulant/common/trace_playable.h	\
-                         ../../include/ambulant/common/video_renderer.h	\
-                         ../../include/ambulant/lib/abstract_mtsync.h	\
-                         ../../include/ambulant/lib/amstream.h		\
-                         ../../include/ambulant/lib/asb.h		\
-                         ../../include/ambulant/lib/basic_types.h	\
-                         ../../include/ambulant/lib/byte_buffer.h	\
-                         ../../include/ambulant/lib/callback.h		\
-                         ../../include/ambulant/lib/colors.h		\
-                         ../../include/ambulant/lib/delta_timer.h	\
-                         ../../include/ambulant/lib/document.h		\
-                         ../../include/ambulant/lib/event.h		\
-                         ../../include/ambulant/lib/event_processor.h	\
-                         ../../include/ambulant/lib/expat_parser.h	\
-                         ../../include/ambulant/lib/filesys.h		\
-                         ../../include/ambulant/lib/gpaths.h		\
-                         ../../include/ambulant/lib/gtypes.h		\
-                         ../../include/ambulant/lib/logger.h		\
-                         ../../include/ambulant/lib/memfile.h		\
-                         ../../include/ambulant/lib/mtsync.h		\
-                         ../../include/ambulant/lib/nfa.h		\
-                         ../../include/ambulant/lib/node_dummy.h	\
-                         ../../include/ambulant/lib/node.h		\
-                         ../../include/ambulant/lib/node_impl.h		\
-                         ../../include/ambulant/lib/node_iterator.h	\
-                         ../../include/ambulant/lib/node_navigator.h	\
-                         ../../include/ambulant/lib/nscontext.h		\
-                         ../../include/ambulant/lib/parselets.h		\
-                         ../../include/ambulant/lib/parser_factory.h	\
-                         ../../include/ambulant/lib/refcount.h		\
-                         ../../include/ambulant/lib/sax_handler.h	\
-                         ../../include/ambulant/lib/sax_types.h		\
-                         ../../include/ambulant/lib/string_util.h	\
-                         ../../include/ambulant/lib/system.h		\
-                         ../../include/ambulant/lib/textptr.h		\
-                         ../../include/ambulant/lib/thread.h		\
-                         ../../include/ambulant/lib/timer.h		\
-                         ../../include/ambulant/lib/transition_info.h	\
-                         ../../include/ambulant/lib/tree_builder.h	\
-                         ../../include/ambulant/lib/xerces_parser.h	\
-                         ../../include/ambulant/net/connection.h	\
-                         ../../include/ambulant/net/databuffer.h	\
-                         ../../include/ambulant/net/datasource.h	\
-                         ../../include/ambulant/net/demux_datasource.h	\
-                         ../../include/ambulant/net/ffmpeg_audio.h	\
-                         ../../include/ambulant/net/ffmpeg_common.h	\
-                         ../../include/ambulant/net/ffmpeg_factory.h	\
-                         ../../include/ambulant/net/ffmpeg_raw.h	\
-                         ../../include/ambulant/net/ffmpeg_video.h	\
-                         ../../include/ambulant/net/posix_datasource.h	\
-                         ../../include/ambulant/net/raw_video_datasource.h	\
-                         ../../include/ambulant/net/rtsp_datasource.h	\
-                         ../../include/ambulant/net/rtsp_factory.h	\
-                         ../../include/ambulant/net/socket.h		\
-                         ../../include/ambulant/net/stdio_datasource.h	\
-                         ../../include/ambulant/net/url.h		\
-                         ../../include/ambulant/net/win32_datasource.h
+INPUT                  = ../../include/ambulant/lib/node.h \
+                         ../../include/ambulant/lib/document.h \
+                         ../../include/ambulant/lib/event.h \
+                         ../../include/ambulant/lib/event_processor.h \
+                         ../../include/ambulant/lib/parser_factory.h \
+                         ../../include/ambulant/lib/sax_handler.h \
+                         ../../include/ambulant/lib/system.h \
+                         ../../include/ambulant/lib/timer.h \
+                         ../../include/ambulant/lib/transition_info.h \
+                         ../../include/ambulant/common/embedder.h \
+                         ../../include/ambulant/common/factory.h \
+                         ../../include/ambulant/common/gui_player.h \
+                         ../../include/ambulant/common/layout.h \
+                         ../../include/ambulant/common/playable.h \
+                         ../../include/ambulant/common/player.h \
+                         ../../include/ambulant/common/region_dim.h \
+                         ../../include/ambulant/gui/none/none_gui.h \
+                         ../../include/ambulant/net/datasource.h \
+                         ../../include/ambulant/net/stdio_datasource.h \
+                         ../../include/ambulant/common/embedder.h
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -205,6 +158,8 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
+REFERENCES_LINK_SOURCE = YES
+USE_HTAGS              = NO
 VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
@@ -310,18 +265,23 @@ HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
+GROUP_GRAPHS           = YES
 UML_LOOK               = NO
 TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = NO
+CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
+DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
 DOT_PATH               = /Applications/Doxygen.app/Contents/Resources/
 DOTFILE_DIRS           = 
 MAX_DOT_GRAPH_WIDTH    = 1024
 MAX_DOT_GRAPH_HEIGHT   = 1024
 MAX_DOT_GRAPH_DEPTH    = 1000
+DOT_TRANSPARENT        = NO
+DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
