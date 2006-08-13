@@ -32,19 +32,6 @@
 using namespace ambulant;
 using namespace gui::gstreamer;
 
-// forward decl. of some internal functions
-static void
-mutex_initialize(void);
-
-static void
-mutex_finalize(void);
-
-static void
-mutex_acquire(void* player, const char* id);
-
-static void
-mutex_release(void* player, const char* id);
-
 extern "C" {
 
 /* from sanbox/Nokia770/AudioPlayer/mp3player.c */
@@ -53,7 +40,7 @@ static gboolean
 gstbus_callback (GstBus *bus, GstMessage *msg, gpointer data);
 
 int
-gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gstreamer_player, gboolean* player_done_p)
+gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gstreamer_player, GMainLoop** mainloop_p)
 {
   GMainLoop *loop;
   GstElement *source=NULL,*sink=NULL, *pipeline=NULL;
@@ -61,8 +48,8 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
   const char* id = "gst_mp3_player";
   void gstreamer_audio_renderer_pipeline_store(void* player, GstElement* p);
   loop = g_main_loop_new (NULL, FALSE);
-
-  AM_DBG g_print ("%s: %s=0x%x\n", id, "starting, gst_player_p", gst_player_p);
+  if (mainloop_p) *mainloop_p = loop;
+  AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, gst_player_p", gst_player_p,"loop=",loop);
 #ifdef  WITH_NOKIA770
   if (pthread_mutex_lock(&s_main_nokia770_mutex) < 0) {
     lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_lock(s_main_nokia770_mutex) failed: %s", strerror(errno));
@@ -130,13 +117,18 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 		     gstbus_callback, loop);
 
   gstreamer_audio_renderer_pipeline_store(gstreamer_player, pipeline);
-  mutex_release(gstreamer_player, "gstreamer_player initialized");
+
+ /* start playback */
+  AM_DBG g_print ("%s: %s\n", id, "start play");
+  gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PLAYING);
 
   AM_DBG g_print ("%s: %s\n", id, "iterate");
    /* iterate */
-  AM_DBG if ( ! *player_done_p) g_print ("Now playing %s ...", uri);
+  AM_DBG g_print("Now playing %s ...", uri);
   g_main_loop_run (loop);
-  mutex_acquire(gstreamer_player, "gst_object_unref"); // to be released by the caller
+//KB if (mainloop_p) *mainloop_p = NULL;
+//KB if (gst_player_p) *gst_player_p = NULL;
+  AM_DBG g_print ("done !\n");
 
   /* stop the pipeline */
   gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_NULL);
@@ -160,7 +152,7 @@ gstbus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 
   switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_EOS:
-      g_print ("End-of-stream\n");
+      AM_DBG g_print ("End-of-stream\n");
       g_main_loop_quit (loop);
       break;
     case GST_MESSAGE_ERROR: {
@@ -186,18 +178,17 @@ gstbus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 //************************* gstreamer_player ***************************
 void
 gstreamer_player_initialize(int* argcp, char*** argvp) {
- 	mutex_initialize(); // the sooner the better
 	gst_init(argcp, argvp);
 }
 
 void
 gstreamer_player_finalize() {
-  	mutex_finalize();
-//	gst_deinit(); // not avail in gstreamer 0.8
+	gst_deinit(); // not avail in gstreamer 0.8
 }
 
 gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* rend)
   : m_gst_player(NULL),
+    m_gst_mainloop(NULL),
     m_audio_renderer(NULL),
     m_uri(NULL) {
 	m_uri = strdup(uri);
@@ -224,110 +215,50 @@ gstreamer_player::gst_player() {
 unsigned long
 gstreamer_player::run() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::run(0x%x)m_uri=%s", (void*)this, m_uri);
-	gst_mp3_player (m_uri, &m_gst_player, this, &m_player_done);
+	gst_mp3_player (m_uri, &m_gst_player, this, &m_gst_mainloop);
 	m_gst_player = NULL;
-	mutex_release("run"); // lock was acquired by gst_mp3_player()
+	m_gst_mainloop = NULL;
 	// inform the scheduler that the gstreamer player has terminated
-	m_audio_renderer->stop();
+	if (m_audio_renderer)
+		m_audio_renderer->stop();
 }
 
 unsigned long
 gstreamer_player::init() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::init(0x%x)m_uri=%s", (void*)this, m_uri);
-	mutex_acquire("gstreamer_player::init"); // lock will be released by gst_mp3_player()
-	m_player_done = FALSE;
 	start();	 // starts run() in separate thread
-	mutex_acquire("gstreamer_player::init"); // wait until gst_mp3_player() has initialized
-	mutex_release("gstreamer_player::init");
 	return 0;
 }
 
 void
 gstreamer_player::stop_player() {
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::stop_player(0x%x)m_uri=%s", (void*)this, m_uri);
-	mutex_acquire("gstreamer_player::stop_player"); 
-//XXX   if (m_gst_player)
-//XXX		mp3player_eos_cb(m_gst_player, &m_player_done);
-	mutex_release("gstreamer_player::stop_player"); 
+  AM_DBG lib::logger::get_logger()->debug("gstreamer_player::stop_player(0x%x)m_uri=%s, m_gst_mainloop=0x%x", (void*)this, m_uri, m_gst_mainloop);
+	if (m_gst_player) {
+		gst_element_set_state (m_gst_player, GST_STATE_NULL);
+		m_gst_player = NULL;
+	}
+	if (m_gst_mainloop) {
+		g_main_loop_quit (m_gst_mainloop);
+//KN		g_main_context_wakeup(g_main_loop_get_context(m_gst_mainloop));
+		m_gst_mainloop = NULL;
+	}
+	if (m_audio_renderer) {
+		gstreamer_audio_renderer* audio_renderer = m_audio_renderer;
+		m_audio_renderer = NULL;
+		audio_renderer->stop();
+	}
 }
 
 void
 gstreamer_player::pause() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::pause(0x%x)m_uri=%s", (void*)this, m_uri);
-	mutex_acquire("gstreamer_player::pause"); 
 	if (m_gst_player)
 		gst_element_set_state (m_gst_player, GST_STATE_PAUSED);
-	mutex_release("gstreamer_player::pause"); 
 }
 
 void
 gstreamer_player::play() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::play(0x%x)m_uri=%s", (void*)this, m_uri);
-	mutex_acquire("gstreamer_player::play"); 
 	if (m_gst_player)
 		gst_element_set_state (m_gst_player, GST_STATE_PLAYING);
-	mutex_release("gstreamer_player::play"); 
-}
-
-static void
-mutex_initialize(void) {
-	// next test is not completely safe unless there are no other competing threads
-	if ( ! s_initialized) {
-		s_initialized = true;
-		if (pthread_mutex_init(&s_main_nokia770_mutex, NULL) < 0 
-		    || pthread_mutex_init(&s_mutex, NULL) < 0){
-                	printf("gstreamer_player:::mutex_acquire() pthread_mutex_init failed: %s\n", strerror(errno));
-			abort();
-		}
-	}
-}
-
-static void
-mutex_finalize(void) {
-	if ( ! s_initialized)
-		return;
- 	mutex_acquire(&s_mutex, "mutex_finalize"); // assure no-one hass it
- 	mutex_release(&s_mutex, "mutex_finalize"); // lock must be released when destroying iy
-	pthread_mutex_destroy(&s_mutex);
- 	mutex_release(&s_main_nokia770_mutex, "mutex_finalize"); // lock must be released when destroying iy
-	pthread_mutex_destroy(&s_main_nokia770_mutex);
-	s_initialized = false;
-}
-	
-void
-gstreamer_player::mutex_acquire(const char* id) {
-	if ( ! s_initialized)
-		mutex_initialize();
-	if (pthread_mutex_lock(&s_mutex) < 0) {
-                lib::logger::get_logger()->fatal("gstreamer_player::mutex_acquire(): pthread_mutex_lock failed: %s", strerror(errno));
-	}
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::mutex_acquire(0x%x): called by \"%s()\". m_uri=%s", this, id, m_uri);
-}
-
-void
-gstreamer_player::mutex_release(const char* id) {
-	if ( ! s_initialized) {
-                lib::logger::get_logger()->fatal("gstreamer_player::mutex_release() called while not initialized");
-	}
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::mutex_release(0x%x): called  by \"%s()\".", this, id);
-	if (pthread_mutex_unlock(&s_mutex) < 0) {
-             	lib::logger::get_logger()->fatal("gstreamer_player::mutex_release() pthread_mutex_unlock failed: %s", strerror(errno));
-	}
-}
-
-
-static void
-mutex_acquire(void* obj, const char* id) {
-        gstreamer_player* player = (gstreamer_player*) obj;
-        if (player) {
-	        player->mutex_acquire(id);
-        }
-}
-
-static void
-mutex_release(void* obj, const char* id) {
-        gstreamer_player* player = (gstreamer_player*) obj;
-        if (player) {
-	        player->mutex_release(id);
-        }
 }

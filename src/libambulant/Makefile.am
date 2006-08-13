@@ -156,9 +156,9 @@ endif
 if WITH_GSTREAMER
 toolkit_gstreamer_libraries = libambulant_gstreamer.la
 
-libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.8
+libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.10
 gstreamer_includes = -DWITH_GSTREAMER \
-		-I/usr/include/gstreamer-0.8 \
+		-I/usr/include/gstreamer-0.10 \
 		-I/usr/include/glib-2.0	\
 		-I/usr/lib/glib-2.0/include \
 		-I/usr/include/libxml2 \

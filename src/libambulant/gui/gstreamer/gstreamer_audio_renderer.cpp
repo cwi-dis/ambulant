@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//#define AM_DBG
+//define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -82,10 +82,10 @@ gstreamer_audio_renderer::~gstreamer_audio_renderer()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::~gstreamer_audio_renderer(0x%x) m_url=%s",  this, m_url.get_url().c_str());		
 	if (m_player && m_is_playing) {
-	//	m_lock.leave();
-		//TBD stop it
-		m_player->stop();
-	//	m_lock.enter();
+		//stop it
+		m_lock.leave();
+		stop();
+		m_lock.enter();
 	}	
 	if (m_transition_engine) {
 		delete m_transition_engine;
@@ -113,7 +113,9 @@ gstreamer_audio_renderer::init_player(const lib::node *node) {
 	_init_clip_begin_end();
 	m_player = new gstreamer_player(m_url.get_url().c_str(), this);
 	m_player->init();
+	m_lock.enter();
 	m_context->started(m_cookie, 0);
+	m_lock.leave();
 	//KB	if (gst_player failed)m_context->stopped(m_cookie, 0);
 }
 
@@ -182,20 +184,22 @@ gstreamer_audio_renderer::is_playing()
 	return rv;
 }
 
-
 void
 gstreamer_audio_renderer::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stop(0x%x)",(void*)this);
-	if (m_player && m_is_playing) {
+	if (m_player) {
 		m_lock.leave();
 		m_player->stop_player();
 		m_lock.enter();
-		// XXX Should we call stopped_callback?
-		m_context->stopped(m_cookie, 0);
+		m_player = NULL;
 	}
-	m_is_playing = false;
+	if (m_is_playing) {
+		// inform scheduler 
+		m_context->stopped(m_cookie, 0);
+		m_is_playing = false;
+	}
 	m_lock.leave();
 }
 
@@ -239,7 +243,8 @@ gstreamer_audio_renderer::start(double where)
 void
 gstreamer_audio_renderer::seek(double where)
 {
-       lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f)", where);
+       lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
+       if (1) return;
        m_lock.enter();
        if (m_player) {
               double microsec = 1e6;
@@ -266,9 +271,7 @@ gstreamer_audio_renderer::get_dur()
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.get_dur(0x%x)", (void *)this);
 	m_lock.enter();
 	if (m_player) {
-	        m_player->mutex_acquire("gstreamer_audio_renderer::get_dur");
 		gst_element_query_duration(m_player->gst_player(), &fmtTime, &length);
-		m_player->mutex_release("gstreamer_audio_renderer::get_dur");
 	}
 	m_lock.leave();
 

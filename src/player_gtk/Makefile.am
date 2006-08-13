@@ -22,12 +22,12 @@ endif # WITH_LIVE
 if WITH_GSTREAMER
 extra_gstreamer_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_gstreamer.a
 extra_gstreamer_CPPFLAGS=-DWITH_GSTREAMER	\
-		-I/usr/include/gstreamer-0.8 \
+		-I/usr/include/gstreamer-0.10 \
 		-I/usr/include/glib-2.0	\
 		-I/usr/lib/glib-2.0/include \
 		-I/usr/include/libxml2
 
-extra_gstreamer_ldflags=`pkg-config --libs gstreamer`
+extra_gstreamer_ldflags=`pkg-config --libs gstreamer-0.10`
 else
 extra_gstreamer_ldflags=
 extra_gstreamer_CFLAGS=

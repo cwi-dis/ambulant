@@ -86,8 +86,8 @@ class gstreamer_player :  public lib::unix::thread {
 	char* m_uri;
 	gstreamer_audio_renderer* m_audio_renderer;
 	GstElement* m_gst_player;
-	gboolean m_player_done;
-  };
+	GMainLoop* m_gst_mainloop;
+ };
 
 } // end namespace gstreamer
 } // end namespace gui
