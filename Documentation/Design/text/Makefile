@@ -5,8 +5,8 @@ ALL_LATEX=objects.latex overall.latex walkthrough.latex organisation.latex
 REST=/Users/jack/tmp/docutils/tools
 REST2HTML=$(REST)/rst2html.py
 REST2LATEX=$(REST)/rst2latex.py
-PDFLATEX=/usr/local/teTeX/bin/powerpc-apple-darwin-current/pdflatex
-MAKEINDEX=/usr/local/teTeX/bin/powerpc-apple-darwin-current/makeindex
+PDFLATEX=/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex
+MAKEINDEX=/usr/local/teTeX/bin/i386-apple-darwin-current/makeindex
 PYTHON=python
 
 .SUFFIXES: .txt .html .tex .pdf

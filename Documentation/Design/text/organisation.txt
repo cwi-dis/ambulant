@@ -4,7 +4,7 @@
 Ambulant source code organisation
 =================================
 
-Last updated for Ambulant version 1.1.
+Last updated for Ambulant version 1.8.
 
 
 directory organisation
@@ -24,12 +24,12 @@ At the toplevel we have a number of subdirectories:
   low-level documentation of classes, methods, etc.
 - ``include`` has all the C++ header files.
 - ``src`` has all the sources, with the engine built as a library
-  from the ``libambulant`` subdirectory, and driver programs in ``player_macos``,
-  ``player_mfc``, etc.
+  from the ``libambulant`` subdirectory, driver programs in ``player_macos``,
+  ``player_mfc``, Python bridge in ``pyambulant``, etc.
 - ``third_party_packages`` holds the source to third party packages we use,
   such as James Clark's ``expat`` XML parser, the IJG libjpeg library and more.
-- ``Extras`` has the two included presentations: Welcome and the DemoPresentation
-  on New York.
+- ``Extras`` has the DTD cache files and the
+  two included presentations, Welcome and DemoPresentation.
 - ``po`` has the files used to create localisations. This uses the
   GNU gettext library.
 - ``m4`` has extra macros for automake.
@@ -57,13 +57,15 @@ to use:
 - Code that is tightly-coupled to an external framework (such as GUI code)
   may relax the previous rules and adhere to the conventions of the external
   framework.
-- we have a toplevel namespace ambulant, with a second level of namespaces
-  under that
 - semi-private classes go into into a namespace named "detail".
 - Template type parameters start with an upper case letter
   (as in: ``template <class A> {}``)
+- Interface classes are not flagged in a special way, but the default
+  implementations of such an interface are: they have the interface name with
+  ``_impl`` appended.
 - Header files need to include any header files on which they depend, and
-  they guard against multiple inclusion with a preprocessor construct.	
+  they guard against multiple inclusion with a preprocessor construct.
+- All files, headers and source, start with the copyright notice and license.
 - Header files are all in an "ambulant" directory, and are included by full
   path, as in::
   

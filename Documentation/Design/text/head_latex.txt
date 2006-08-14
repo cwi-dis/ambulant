@@ -10,7 +10,7 @@
    {\Large AmbulantPlayer - Design Documentation}
    
    \vspace*{1cm}
-   {\large Version 1.1, 10-Oct-04}
+   {\large Version 1.8, 14-Aug-06}
    
    \vspace*{1cm}
    

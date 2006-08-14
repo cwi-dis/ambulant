@@ -4,7 +4,15 @@
 Ambulant design, overall
 ========================
 
-Last updated for Ambulant version 1.1.
+Last updated for Ambulant version 1.8.
+
+Introduction
+------------
+
+This chapter gives a quick overview of various of the design criteria
+underlying the Ambulant Player. It actually started life as that design criteria
+document, hence it also has information on solutions we decided not to use, plus
+the reasons why we made those choices.
 
 Design process
 --------------
@@ -51,19 +59,17 @@ Replaceable components
 ----------------------
 
 AmbulantPlayer is intended to be a research system, and therefore all components
-should be easy to replace with interfering with the rest of the system. This
+should be easy to replace without interfering with the rest of the system. This
 allows a researcher to concentrate on one issue, such as network protocols or
 scheduling algorithms, while the rest of the system is usable as-is.
 
-This replacability is incorporated in the design through two means:
+This replaceability is incorporated in the design through two means:
 
 - Clear well-defined APIs between the various parts of the system;
 - Factory functions to create most objects.
 
-In the current implementation there are two main objects for which this
-has not been implemented (the DOM tree and the low-level event scheduler),
-this will be done at a later stage. All other functionality (media playback,
-data retrieval, parsing, layout, scheduling) does follow this pattern.
+In addition, the whole external API is also available in Python, to facilitate
+rapid prototyping.
 
 run-time system
 ---------------
@@ -73,7 +79,7 @@ we cannot rely on refcounting or garbage collection in the underlying runtime.
 lib/refcount.h has a simple refcounting implementation that is used for
 garbage collection.
 
-Ref-counting should be used when it is absolutely needed, it adds an
+Ref-counting should only be used when it is absolutely needed, it adds an
 overhead and some complexity since it can not happen automatically. On
 the other hand there are some cases where it simplifies the code  a lot.
 If I judge from my code and the code of others I have seen, only very
@@ -127,7 +133,7 @@ There are various factories that follow a common pattern. There is a client
 interface, called something like ``playable_factory``, that can be used to create
 ``playable`` objects. If the factory cannot create the object it returns ``NULL``.
 
-This interface is implemented by all the providers of objects that have the
+This factory interface is implemented by all the providers of objects that have the
 ``playable`` interface. For example, the implementation of a video renderer 
 for Cocoa on MacOSX will consist of a ``cocoa_video_playable`` implementation and
 a ``cocoa_video_playable_factory`` implementation.
@@ -188,6 +194,10 @@ when applicable, but no work on this has been done yet.
 Other languages
 ---------------
 
-It is our intention to eventually allow bridging of Ambulant Player to other languages
-such as Python or Java. An effort has been made to keep the APIs clean enough
-to allow this, and work has started on a Python API, but this is not finished yet.
+The full Ambulant Player API is also available in Python, with full two-way bridging
+between the languages (allowing not only method calls back and forth, but also
+subclassing C++ baseclasses in Python as well as Python baseclasses in C++).
+
+Bridging to other languages (Java, C#) is not currently on our agenda, but
+given the Python bridge it should not be too difficult. We are always open to
+helping people interested in doing the work...

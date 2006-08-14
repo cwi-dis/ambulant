@@ -4,7 +4,7 @@
 How does the AmbulantPlayer play a SMIL document?
 =================================================
 
-Last updated for Ambulant version 1.1.
+Last updated for Ambulant version 1.8.
 
 Introduction
 ------------
@@ -31,7 +31,11 @@ it can obtain media data, create windows, and more.
 
 Most player implementations (the Windows player is an exception) have a
 class with a name like ``mainloop`` to handle this. Such a mainloop is created
-per SMIL document. This mainloop object will first create the various factories
+per SMIL document. Actually, Ambulant provides a class ``gui_player`` which
+can be used as a skeleton for such a mainloop class, handling most of the bookkeeping
+sketched below.
+
+The mainloop object should first create the various factories
 and populate them:
 
 - A ``window_factory`` is usually implemented by the main program itself. The
@@ -51,21 +55,28 @@ and populate them:
   are supported and such. Partially, because some media items (audio and video,
   notably) may be rendered by simply passing the URL to some underlying media
   infrastructure such as DirectX or QuickTime.
+  
+- A ``parser_factory`` is created and populated with the default XML parser.
 
-Next the factories are put together in a ``factories`` struct, and if the
+- A ``node_factory`` used to create the DOM tree nodes.
+
+Next ``init_plugins`` is called, and if the
 architecture supports dynamically loadable plugins we get the ``plugin_engine``
 singleton object and ask it to load the plugins. This will search the plugin
 directories for dynamic objects with the correct naming convention, load them,
-and call their ``initialize`` routine. The ``factories`` object is passed to
+and call their ``initialize`` routine. The ``factories`` object (another interface
+usually implemented by ``gui_player``) and ``gui_player`` object are passed to
 the ``initialize`` routine, so the plugin itself can register any factories
-it wants.
+it wants. Additionally, a plugin could modify the ``gui_player`` to allow
+it to get controllater, during playback of the document.
 
 The next step is to create the DOM tree. One way to do this is to use
 ``read_data_from_url`` to read the data from the document, and then pass this
 data to ``document::create_from_string``. This will return a ``document`` object.
 This object contains the DOM tree itself (implemented by the ``node`` object) and
 some context information (XML namespace information, original URL for resolving
-relative URLs used in the document, a mapping from XML IDs to node objects).
+relative URLs used in the document, a mapping from XML IDs to node objects). There is a
+convenience function ``create_document`` that does all this for you.
 
 The final step is to create a ``player`` object. This is done through
 ``create_smil2_player``, passing the ``document``, the ``factories`` and one
@@ -85,14 +96,14 @@ to facilitate playback later on:
   used for low-level scheduling. Whenever the high-level scheduler wants some
   code to be executed it will add an ``event`` to the ``event_processor``, possibly
   with a timeout and a priority. The event processor runs in a separate thread,
-  waits for events in it runqueue to become elegible and then runs them.
+  waits for events in its runqueue to become elegible and then runs them.
   This mechanism is the underlying engine that makes the whole player work,
   anything that needs to wait doesn't do so inline but uses the event processor
   to get a callback at a later stage: the scheduler, renderers needing input data,
   etc.
   
 - A ``layout_manager`` is created, which will be used to find where media
-  items should be displayed. The smil_layout_manager reads the ``<layout>`` section
+  items should be displayed. The ``smil_layout_manager`` reads the ``<layout>`` section
   of the DOM tree and builds a parallel layout tree (which also contains information
   on some of the body media nodes, the ones that have layout information themselves)
   of ``region_node`` objects. Then this tree of ``region_node`` objects is

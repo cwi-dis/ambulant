@@ -3,19 +3,299 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>How does the AmbulantPlayer play a SMIL document?</title>
-<link rel="stylesheet" href="default.css" type="text/css" />
+<style type="text/css">
+
+/*
+:Author: David Goodger
+:Contact: goodger@python.org
+:Date: $Date$
+:Revision: $Revision$
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
 </head>
 <body>
 <div class="document" id="how-does-the-ambulantplayer-play-a-smil-document">
+<span id="walkthrough-section"></span>
 <h1 class="title">How does the AmbulantPlayer play a SMIL document?</h1>
+
 <!-- This document is prepended when we generate HTML. It contains the links
 used by the other documents, implemented as hyperlinks. An alternative
 head document is available for LaTeX generation. -->
-<a class="target" id="walkthrough-section" name="walkthrough-section"></a><p>Last updated for Ambulant version 1.1.</p>
-<div class="section" id="introduction">
-<h1><a name="introduction">Introduction</a></h1>
+<p>Last updated for Ambulant version 1.8.</p>
+<div class="section">
+<h1><a id="introduction" name="introduction">Introduction</a></h1>
 <p>This section attempts to explain the basic structure of the Ambulant Player by
 loosely explaining what happens when you run it and play a document.</p>
 <p>There is an informal <a class="reference" href="../models/overall.pdf">overall structure diagram</a> that tries to put the whole
@@ -26,15 +306,18 @@ of this main program are skipped here (and they can actually vary quite a bit
 for the platforms we support), but at some point after the program has started
 the GUI is put on the screen, with the usual set of menus for Open, Play, etc.</p>
 </div>
-<div class="section" id="opening-a-document">
-<h1><a name="opening-a-document">Opening a document</a></h1>
+<div class="section">
+<h1><a id="opening-a-document" name="opening-a-document">Opening a document</a></h1>
 <p>When the user selects Open (or Open URL, or double-clicks or drags a document)
 we need to get the data, parse the document into a DOM tree and create a
 player to play that DOM tree. In addition, we need to tell the player how
 it can obtain media data, create windows, and more.</p>
 <p>Most player implementations (the Windows player is an exception) have a
 class with a name like <tt class="docutils literal"><span class="pre">mainloop</span></tt> to handle this. Such a mainloop is created
-per SMIL document. This mainloop object will first create the various factories
+per SMIL document. Actually, Ambulant provides a class <tt class="docutils literal"><span class="pre">gui_player</span></tt> which
+can be used as a skeleton for such a mainloop class, handling most of the bookkeeping
+sketched below.</p>
+<p>The mainloop object should first create the various factories
 and populate them:</p>
 <ul class="simple">
 <li>A <tt class="docutils literal"><span class="pre">window_factory</span></tt> is usually implemented by the main program itself. The
@@ -52,28 +335,33 @@ determine how data is retrieved over the net, which protocols and formats
 are supported and such. Partially, because some media items (audio and video,
 notably) may be rendered by simply passing the URL to some underlying media
 infrastructure such as DirectX or QuickTime.</li>
+<li>A <tt class="docutils literal"><span class="pre">parser_factory</span></tt> is created and populated with the default XML parser.</li>
+<li>A <tt class="docutils literal"><span class="pre">node_factory</span></tt> used to create the DOM tree nodes.</li>
 </ul>
-<p>Next the factories are put together in a <tt class="docutils literal"><span class="pre">factories</span></tt> struct, and if the
+<p>Next <tt class="docutils literal"><span class="pre">init_plugins</span></tt> is called, and if the
 architecture supports dynamically loadable plugins we get the <tt class="docutils literal"><span class="pre">plugin_engine</span></tt>
 singleton object and ask it to load the plugins. This will search the plugin
 directories for dynamic objects with the correct naming convention, load them,
-and call their <tt class="docutils literal"><span class="pre">initialize</span></tt> routine. The <tt class="docutils literal"><span class="pre">factories</span></tt> object is passed to
+and call their <tt class="docutils literal"><span class="pre">initialize</span></tt> routine. The <tt class="docutils literal"><span class="pre">factories</span></tt> object (another interface
+usually implemented by <tt class="docutils literal"><span class="pre">gui_player</span></tt>) and <tt class="docutils literal"><span class="pre">gui_player</span></tt> object are passed to
 the <tt class="docutils literal"><span class="pre">initialize</span></tt> routine, so the plugin itself can register any factories
-it wants.</p>
+it wants. Additionally, a plugin could modify the <tt class="docutils literal"><span class="pre">gui_player</span></tt> to allow
+it to get controllater, during playback of the document.</p>
 <p>The next step is to create the DOM tree. One way to do this is to use
 <tt class="docutils literal"><span class="pre">read_data_from_url</span></tt> to read the data from the document, and then pass this
 data to <tt class="docutils literal"><span class="pre">document::create_from_string</span></tt>. This will return a <tt class="docutils literal"><span class="pre">document</span></tt> object.
 This object contains the DOM tree itself (implemented by the <tt class="docutils literal"><span class="pre">node</span></tt> object) and
 some context information (XML namespace information, original URL for resolving
-relative URLs used in the document, a mapping from XML IDs to node objects).</p>
+relative URLs used in the document, a mapping from XML IDs to node objects). There is a
+convenience function <tt class="docutils literal"><span class="pre">create_document</span></tt> that does all this for you.</p>
 <p>The final step is to create a <tt class="docutils literal"><span class="pre">player</span></tt> object. This is done through
 <tt class="docutils literal"><span class="pre">create_smil2_player</span></tt>, passing the <tt class="docutils literal"><span class="pre">document</span></tt>, the <tt class="docutils literal"><span class="pre">factories</span></tt> and one
 final object, <tt class="docutils literal"><span class="pre">embedder</span></tt>. This object is again implemented by the main program,
 and implements a small number of auxiliary functions, such as opening an
 external webbrowser or opening a new SMIL document.</p>
 </div>
-<div class="section" id="creating-the-player">
-<h1><a name="creating-the-player">Creating the player</a></h1>
+<div class="section">
+<h1><a id="creating-the-player" name="creating-the-player">Creating the player</a></h1>
 <p>When the <tt class="docutils literal"><span class="pre">smil_player</span></tt> object is created it gets the <tt class="docutils literal"><span class="pre">document</span></tt>, <tt class="docutils literal"><span class="pre">factories</span></tt>
 and <tt class="docutils literal"><span class="pre">embedder</span></tt> arguments. It now needs to create its internal data structures
 to facilitate playback later on:</p>
@@ -83,13 +371,13 @@ for the presentation, and the event processor is a runqueue object that is
 used for low-level scheduling. Whenever the high-level scheduler wants some
 code to be executed it will add an <tt class="docutils literal"><span class="pre">event</span></tt> to the <tt class="docutils literal"><span class="pre">event_processor</span></tt>, possibly
 with a timeout and a priority. The event processor runs in a separate thread,
-waits for events in it runqueue to become elegible and then runs them.
+waits for events in its runqueue to become elegible and then runs them.
 This mechanism is the underlying engine that makes the whole player work,
 anything that needs to wait doesn't do so inline but uses the event processor
 to get a callback at a later stage: the scheduler, renderers needing input data,
 etc.</li>
 <li>A <tt class="docutils literal"><span class="pre">layout_manager</span></tt> is created, which will be used to find where media
-items should be displayed. The smil_layout_manager reads the <tt class="docutils literal"><span class="pre">&lt;layout&gt;</span></tt> section
+items should be displayed. The <tt class="docutils literal"><span class="pre">smil_layout_manager</span></tt> reads the <tt class="docutils literal"><span class="pre">&lt;layout&gt;</span></tt> section
 of the DOM tree and builds a parallel layout tree (which also contains information
 on some of the body media nodes, the ones that have layout information themselves)
 of <tt class="docutils literal"><span class="pre">region_node</span></tt> objects. Then this tree of <tt class="docutils literal"><span class="pre">region_node</span></tt> objects is
@@ -100,12 +388,12 @@ The layout manager also contains mappings to be able to get from a <tt class="do
 corresponding <tt class="docutils literal"><span class="pre">region_node</span></tt> to the <tt class="docutils literal"><span class="pre">surface_template</span></tt>, and this will be used
 during playback to play media items in the correct location.</li>
 <li>A <tt class="docutils literal"><span class="pre">timegraph</span></tt> is created. This is the internal representation of the <tt class="docutils literal"><span class="pre">&lt;body&gt;</span></tt>
-part of the DOM tree that will be used to play back the document. In addition 
+part of the DOM tree that will be used to play back the document. In addition
 a <tt class="docutils literal"><span class="pre">scheduler</span></tt> is created, which will interpret the data in the <tt class="docutils literal"><span class="pre">timegraph</span></tt>.</li>
 </ul>
 </div>
-<div class="section" id="starting-playback">
-<h1><a name="starting-playback">Starting playback</a></h1>
+<div class="section">
+<h1><a id="starting-playback" name="starting-playback">Starting playback</a></h1>
 <p>When the user selects Play we call the <tt class="docutils literal"><span class="pre">start</span></tt> method of the <tt class="docutils literal"><span class="pre">player</span></tt> object.
 This will invoke <tt class="docutils literal"><span class="pre">start</span></tt> on the scheduler. This will start playing the root
 node of the tree. The scheduler will now do all the SMIL 2 magic, whereby events
@@ -134,8 +422,8 @@ the user clicked the mouse, etc) it invokes a corresponding method on its
 notifications are how the scheduler gets informed that it can start scheduling new things,
 etc.</p>
 </div>
-<div class="section" id="where-next">
-<h1><a name="where-next">Where next?</a></h1>
+<div class="section">
+<h1><a id="where-next" name="where-next">Where next?</a></h1>
 <p>If you haven't already done so, a good place to continue reading is the
 <a class="reference" href="overall.html">Overall design</a> document, which gives an overview of the design principles
 and explains some of the choices made. Then continue

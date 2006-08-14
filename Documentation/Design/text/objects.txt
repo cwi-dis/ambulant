@@ -4,7 +4,7 @@
 Ambulant design, main objects 
 =============================
 
-Last updated for Ambulant version 1.1.
+Last updated for Ambulant version 1.8.
 
 Introduction
 ------------
@@ -37,16 +37,19 @@ AmbulantPlayer interfaces
 AmbulantPlayer Objects
 ----------------------
 
+- `Gui_player`. Convenience object wrapping a document and player.
 - `Clocks`_. These advance a virtual time.
 - `Event processor`_. This is the mainloop plus the event/callback mechanism.
 - `Document`_. The representation of a SMIL document.
 - `Node`_. The representation of the DOM tree.
 - `Transitions`_. Classes to do visual transitions.
 - `Timeline`_. This is a description of another scheduler: the MMS scheduler.
-  This scheduler has a much simpler structure than the SMIL 2.0 scheduler.
+  This scheduler has a much simpler structure than the SMIL 2.1 scheduler.
   
-You may notice that the core of the player, the SMIL 2.0 scheduler, is not
-mentioned here. Unfortunately it is not documented yet.
+You may notice that the core of the player, the SMIL 2.1 scheduler, is not
+mentioned here. It is not documented, but (a) it is hardly ever necessary to
+modify it, and (b) it follows the pseudocode in the W3C SMIL standard
+fairly closely.
 
 There are also additional low-level objects like ``thread`` and ``critical_section``
 that are not described here. See the `API documentation`_ for details.
@@ -76,12 +79,18 @@ Player implementations
 ----------------------
 
 There are currently two implementations of the player interface: ``smil_player`` and
-``mms_player``. The first one is the all-singing-all-dancing SMIL 2.0 player,
+``mms_player``. The first one is the all-singing-all-dancing SMIL 2.1 player,
 the second one can play MMS documents, which use a very restricted subset of SMIL 1.0.
 
 A concise walkthrough of how the ``smil_player`` operates is given in the `walkthrough`_
 document.
 
+Gui_player
+----------
+
+A convenience class that can be used as the framework for implementing the
+mainloop class of an embedding application. It holds the document datastructures,
+the player and the factories needed.
 
 Parser interface
 ----------------
@@ -191,7 +200,7 @@ There is a `UML diagram for layout`_ showing how these classes relates to each o
 Layout implementation
 ---------------------
 
-The SMIL 2.0 implementation of ``surface``, ``surface_template`` and ``surface_factory``
+The SMIL 2.1 implementation of ``surface``, ``surface_template`` and ``surface_factory``
 are the classes ``passive_region`` and ``passive_root_layout``.
 
 There is a `UML diagram for region`_ showing how these classes relates to each other.
@@ -213,7 +222,7 @@ Animation interface
 -------------------
 
 The animation interfaces are ``animation_destination`` and ``animation_notification``.
-The SMIL 2.0 playable uses these interfaces to change parameters and send notification
+The SMIL 2.1 playable uses these interfaces to change parameters and send notification
 of those changes, respectively.
 
 There is a `UML diagram for animation`_ showing how these classes relates to each other.
@@ -221,18 +230,20 @@ There is a `UML diagram for animation`_ showing how these classes relates to eac
 Clocks
 ------
 
-All clocks adhere to the ``abstract_timer`` interface. This interface
-allows you to get the current time and set the speed of the clock.
+All clocks adhere to the ``timer`` interface. This interface
+allows you to get the current time and the speed of the clock.
 
-There is a companion interface ``abstract_timer_client`` (which is actually
-a base class of ``abstract_timer``) that allows objects to get notification
+An extended interface ``timer_control`` is also available, which
+allows control over the clock: setting the speed and epoch of the timer,
+pausing and restarting it, etc.
+
+There is a companion interface ``timer_events`` that allows objects to get notification
 of changes in timer speed.
 
-Currently there are two implementations of the ``abstract_timer`` interface:
-the operating-system specific realtime clock (of which you cannot set the
-speed) and ``timer``, which implements a new zero-based clock
-based on another ``abstract_timer``. Its speed is settable
-with ``set_speed``, but it is tightly synchronized with its parent clock.
+A machine-dependent implementation of ``timer`` can be obtained through
+the ``realtime_timer_factory`` method.
+
+An implementation of ``timer_control`` is also available: ``timer_control_impl``.
 
 Eventually there may be other implementations of ``timer``,
 such as clocks that are allowed to slip synchronization and other such
