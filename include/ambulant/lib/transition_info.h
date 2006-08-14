@@ -32,7 +32,8 @@
 namespace ambulant {
 	
 namespace lib {
-	
+
+/// Type of transition, as per the SMIL 2.1 standard.
 enum transition_type {
 	barWipe,
 	boxWipe,
@@ -74,31 +75,34 @@ enum transition_type {
 	audioVisualFade,
 };
 
+/// Determines area to which transition will apply.
 enum transition_scope {
-	scope_region,
-	scope_screen
+	scope_region,  ///< Apply to the media region only.
+	scope_screen   ///< Apply to the whole window.
 };
 
 std::string repr(transition_type t);
-	
+
+/// Stores all information regarind a specific transition.
 class transition_info {
   public:
 	typedef int time_type;
 	typedef double progress_type;
 	
-	transition_type m_type;
-	std::string m_subtype;
-	time_type m_dur; // XXX Time value
-	progress_type m_startProgress;
-	progress_type m_endProgress;
-	bool m_reverse;
-	lib::color_t m_color;
-	transition_scope m_scope;
+	transition_type m_type;    ///< SMIL 2.1 transition type.
+	std::string m_subtype;     ///< SMIL 2.1 transition subtype.
+	time_type m_dur;           ///< Transition duration (Unit???)
+	progress_type m_startProgress; ///< Starting point of transition.
+	progress_type m_endProgress;   ///< Ending point of transition.
+	bool m_reverse;            ///< True if transition orientation is reversed.
+	lib::color_t m_color;      ///< Color, if transition needs it.
+	transition_scope m_scope;  ///< Should transition be region or whole-window?
 	// We should also have the <param> contents here
 
 	transition_info() { }
 	transition_info(transition_info* info) { *this = *info; }
 	
+	/// Factory function: obtain transition_info object from DOM node.
 	static transition_info *from_node(const node *n);
 
  private:

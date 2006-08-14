@@ -36,6 +36,7 @@ namespace gui {
 
 namespace none {
 
+/// Dummy implementation of gui_window.
 class none_window : public common::gui_window {
   public:
   	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
@@ -46,6 +47,7 @@ class none_window : public common::gui_window {
 	void redraw_now() {};
 };
 
+/// Implementation of window_factory that returns none_window objects.
 class none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
@@ -54,6 +56,7 @@ class none_window_factory : public common::window_factory {
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
 };
 
+/// Dummy implementation of playable.
 class none_playable : public common::playable_imp {
   public:
 	none_playable(
@@ -74,6 +77,7 @@ class none_playable : public common::playable_imp {
 	void seek(double where) {}
 };
 
+/// Dummy implementation of background_renderer.
 class none_background_renderer : public common::background_renderer {
   public:
 	none_background_renderer(const common::region_info *src)
@@ -86,6 +90,7 @@ class none_background_renderer : public common::background_renderer {
 
 class common::region_info;
 
+/// Implementation of playable_factory that returns none_playable objects.
 class none_playable_factory : public common::playable_factory {
   public:
   	none_playable_factory() {}

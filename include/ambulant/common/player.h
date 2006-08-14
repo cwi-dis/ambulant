@@ -42,7 +42,12 @@ class playable_factory;
 class embedder;
 
 /// Current state of the player.
-enum play_state {ps_idle, ps_playing, ps_pausing, ps_done};
+enum play_state {
+    ps_idle,    ///< The player has not started yet
+    ps_playing, ///< The player is playing
+    ps_pausing, ///< The player is paused
+    ps_done     ///< The player has finished playing the document
+};
 
 /// Interface for getting feedback from the player.
 /// The player will call methods here so a UI can synchronise
@@ -51,7 +56,8 @@ class player_feedback {
   public:
     virtual ~player_feedback(){}
 	
-	/// Called by the player when the document is loaded, but before the
+	/// Called by the player when the document is loaded.
+	/// Called after parsing, but before the
 	/// timegraph is created. At this time the embedding application can
 	/// modify the document, if it needs to.
 	virtual void document_loaded(lib::document *doc) = 0;
@@ -68,8 +74,8 @@ class player_feedback {
 	/// Called by the player to signal the given node stopped playing
 	virtual void node_stopped(const lib::node *n) = 0;
 	
-	/// Called by the player to signal the given node received focus, either
-	/// through a mouseover event or a tabindex event.
+	/// Called by the player to signal the given node received focus.
+	/// This can happen either through a mouseover event or a tabindex event.
 	virtual void node_focussed(const lib::node *n) = 0;
 };
 
@@ -85,7 +91,7 @@ class player {
   public:
 	virtual ~player() {};
 	
-	/// Do any initializations necessary
+	/// Do any initializations necessary.
 	virtual void initialize() = 0;
 
 	/// Return the timer this player uses.

@@ -48,8 +48,8 @@ class surface; // forward
 class gui_events; // forward
 class factories;
 
-typedef std::pair<lib::rect, lib::rect > tile_position;
-typedef std::vector<tile_position> tile_positions;
+typedef std::pair<lib::rect, lib::rect > tile_position; ///< Source and destination rect for a tile.
+typedef std::vector<tile_position> tile_positions; ///< List of tile_position
 
 /// Determine how to align an image in a region.
 class alignment {
@@ -127,9 +127,9 @@ class gui_events  {
 	virtual void transition_freeze_end(lib::rect area) = 0;
 };
 
-/// 
-/// renderer is an interface for playables that
-/// render to a region (as opposed to audio renderers, etc).
+/// Interface for playables that actually render something.
+/// Implemented by playable implementations that render to a region
+/// (as opposed to SMIL animation playables, etc).
 class renderer : public gui_events {
   public:
 	virtual ~renderer() {};
@@ -267,9 +267,10 @@ class AMBULANTAPI window_factory {
 	virtual void window_done(const std::string &name) {} 
 };
 
+/// Interface for storing SMIL layout information.
 /// surface_template is an abstract baseclass used by the SMIL2 and MMS layout managers
 /// to create subregions in the region hierarchy. During playback it is also the destination
-/// for animation nofitications.
+/// for animation notifications.
 class surface_template : public animation_notification {
   public:
 	virtual ~surface_template() {}
@@ -282,8 +283,9 @@ class surface_template : public animation_notification {
 };
 
 
-/// surface_template is an abstract baseclass used by the SMIL2 and MMS layout managers
-/// to create toplevel regions for the region hierarchy.
+/// Interface for storing SMIL layout information.
+/// Used by the SMIL2 layout_manager implementation to create
+/// surface_template objects for the toplevel windows.
 class surface_factory {
   public:
 	virtual ~surface_factory() {}
@@ -312,9 +314,10 @@ class layout_manager {
 };
 
 
-// XXX These should be elsewhere
+/// Factory function for a SMIL2 layout_manager.
 AMBULANTAPI layout_manager *create_smil2_layout_manager(common::factories *factory,lib::document *doc);
 //layout_manager *create_mms_layout_manager();
+/// Factory function for a surface_factory implementation.
 AMBULANTAPI surface_factory *create_smil_surface_factory();
 	
 } // namespace common

@@ -62,7 +62,8 @@ class timer {
 	virtual double get_realtime_speed() const = 0;
 };
 
-/// Controller interface to timer objects: augments the base class
+/// Controller interface to timer objects.
+/// Augments the base class
 /// with methods to start and stop the timer, and set its speed.
 
 class timer_control : public timer {
@@ -133,13 +134,13 @@ class timer_control : public timer {
 };
 
 
-/// A timer class able to fulfill SMIL 2.0 timing requirements.
-/// The timer can be 
+/// An implementation of timer_control.
 class timer_control_impl : public timer_control, public timer_events {
   public:	
-	/// Creates a timer with the provided parent, 
-	/// ticking at the speed specified and
-	/// initially running or paused as specified. 
+	/// Creates a timer.
+	/// Pass the parent timer, 
+	/// the relative speed and
+	/// initial run/pause status. 
 	timer_control_impl(timer *parent, double speed = 1.0, bool run = true);
 	
 	~timer_control_impl();
@@ -223,7 +224,7 @@ class timer_control_impl : public timer_control, public timer_events {
 	std::set<timer_events *> *m_listeners;
 };
 
-// A (machine-dependent) routine to create a timer object
+/// Factory function that returns a machine-dependent timer implementation.
 AMBULANTAPI timer *realtime_timer_factory();
 
 } // namespace lib

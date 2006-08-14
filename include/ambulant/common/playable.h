@@ -47,9 +47,14 @@ namespace common {
 class renderer;
 
 /// Display mode when the playable is paused.
-enum pause_display {display_disable, display_hide, display_show};
+enum pause_display {
+    display_disable,    ///< ???
+    display_hide,       ///< Do not show media while paused
+    display_show        ///< Continue showing media while paused
+};
 
-/// Duration of a node or media item. The first item is true for
+/// Duration of a node or media item.
+/// The first item is true for
 /// known, false for unknown; the second item is the duration in
 /// seconds (if known).
 typedef std::pair<bool, double> duration;
@@ -93,7 +98,12 @@ class playable : public lib::ref_counted_obj {
 
   public:
   
-	enum playable_state {ps_not_playing, ps_playing, ps_frozen};
+    /// States a playable can be in.
+	enum playable_state {
+        ps_not_playing, ///< Not playing.
+        ps_playing,     ///< Playing in its SMIL2 active duration.
+        ps_frozen       ///< Frozen (in its SMIL2 fill period).
+	};
 	
 	/// An id identifying this playable to the client code.
 	typedef int cookie_type;
@@ -130,7 +140,7 @@ class playable : public lib::ref_counted_obj {
 	/// Specifies whether this playable should send notifications for clicks.
 	virtual void wantclicks(bool want) = 0;
 	
-	/// Starts prerolling adjusting if possible the process to the provided hint.
+	/// Start preloading data.
 	/// when: the estimated time when this playable start() will be called
 	/// where: where playing will start in media time
 	/// how_much: the duration of the media that will be played
@@ -153,6 +163,7 @@ class playable : public lib::ref_counted_obj {
 	/// The cookie is usually provided to this playable when it was constructed.
 	virtual cookie_type get_cookie() const = 0;
 	
+	/// Return the renderer interface of this playable, or NULL.
 	virtual renderer *get_renderer() { return (renderer *)NULL; }
 };
 
@@ -218,6 +229,9 @@ class playable_factory {
 		net::audio_datasource *src) = 0;	
 };
 
+/// Provider interface to playable_factory.
+/// Extends the base class with a method that can be used to register new
+/// factories.
 class global_playable_factory : public playable_factory {
   public:
     virtual ~global_playable_factory() {}
@@ -226,7 +240,7 @@ class global_playable_factory : public playable_factory {
     virtual void add_factory(playable_factory *rf) = 0;
 };
 
-/// Factory function:
+/// Factory function to get a (singleton?) global_playable_factory object.
 AMBULANTAPI global_playable_factory *get_global_playable_factory();
 
 

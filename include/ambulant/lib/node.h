@@ -280,28 +280,26 @@ class node_context {
     
     virtual ~node_context(){}
 	
-	virtual void 
-	set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
+	/// Add a prefix/URI combination for XML namespaces.
+	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
 	
-	virtual const char* 
-	get_namespace_prefix(const xml_string& uri) const = 0;
+	/// Return the default XML namespace URI for the document.
+	virtual const char*get_namespace_prefix(const xml_string& uri) const = 0;
 	
 	/// Resolve relative URLs.
-	virtual net::url 
-	resolve_url(const net::url& rurl) const = 0;
+	virtual net::url resolve_url(const net::url& rurl) const = 0;
 	
 	/// Returns name-indexed mapping of all custom tests used.
-	virtual const custom_test_map*
-	get_custom_tests() const = 0;
+	virtual const custom_test_map* get_custom_tests() const = 0;
 
-	/// Return the root of the document
+	/// Return the root of the document.
 	virtual const node* get_root() const = 0;
 
 	/// Return node with a given ID.
-	virtual const node* 
-	get_node(const std::string& idd) const = 0;
+	virtual const node* get_node(const std::string& idd) const = 0;
 };
 
+/// Interface for factory class that creates node objects.
 class node_factory {
   public:
 	virtual ~node_factory() {}
@@ -322,6 +320,7 @@ class node_factory {
 	virtual node *new_node(const node* other) = 0;
 };
 
+/// Return singleton node_factory object that returns node_impl nodes.
 AMBULANTAPI node_factory *get_builtin_node_factory();
 
 } // namespace lib

@@ -46,9 +46,9 @@ namespace net {
 
 	
 #ifdef AMBULANT_HAS_LONG_LONG
-  	typedef long long int timestamp_t; // microseconds
+  	typedef long long int timestamp_t; ///< Time value in microseconds.
 #else
-	typedef INT64 timestamp_t;
+	typedef INT64 timestamp_t; ///< Time value in microseconds.
 #endif
 	
 /// This struct completely describes an audio format.
@@ -58,7 +58,7 @@ namespace net {
 /// format, parameters points to format-specific data
 /// and samplerate/channels/bits are not meaningful.
 struct audio_format {	
-	std::string mime_type;
+	std::string mime_type; ///< Mimetype of the format, or "audio/unknown"
 	std::string name;	///< Name of the format, or empty for linear samples
 	void *parameters;	///< For a named format, pointer to parameters
 	int samplerate;		///< For linear samples: the samplerate
@@ -74,7 +74,7 @@ struct audio_format {
 		channels(0),
 		bits(0) {};
 		
-	/// Constructor for linear samples.
+	/// Constructor for linear samples, pass samplerate, number of channels, bits per sample.
 	audio_format(int s, int c, int b)
 	:   mime_type("audio/unknown"),
 		name(""),
@@ -83,7 +83,7 @@ struct audio_format {
 		channels(c),
 		bits(b) {};
 	
-	/// Constructor for named audio_format.
+	/// Constructor for named audio_format, optionally pass extra format-dependent info.
 	audio_format(const std::string &n, void *p=(void *)0)
 	:   mime_type("audio/unknown"),
 		name(n),
@@ -92,7 +92,7 @@ struct audio_format {
 		channels(0),
 		bits(0) {};
 		
-	/// Constructor for named audio format.
+	/// Constructor for named audio_format, optionally pass extra format-dependent info.
 	audio_format(const char *n, void *p=(void *)0)
 	:   mime_type("audio/unknown"),
 		name(n),
@@ -102,16 +102,19 @@ struct audio_format {
 		bits(0) {};
 };
 
+/// This struct completely describes a video format.
+/// If name is "" the format is a sequence of uncompressed images.
+/// Parameters may be 0 if the values are not known.
 struct video_format {
 	
-	std::string mime_type;
-	std::string name;			///< Name of the format, or empty for linear samples
+	std::string mime_type;      ///< Mimetype of the format, or "video/unknown"
+	std::string name;			///< Name of the format
 	void *parameters;			///< For a named format, pointer to parameters
 	timestamp_t frameduration;	///< For linear samples: the samplerate
 	int width;					/// The width of the video
 	int height;					///	The height of the video
 	
-	/// Default constructor: creates unknown audio_format.
+	/// Default constructor: creates unknown video_format.
 	video_format()
 	:   mime_type("video/unknown"),
 		name("unknown"),
@@ -226,24 +229,26 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 
 /// Interface to an object that supplies audio data to a consumer.
 /// Audio_datasource extends the datasource protocol with methods to obtain
-/// information on the way the audio data is encoded. 
+/// information on the way the audio data is encoded and methods to support
+/// temporal clipping of the audio.
 class audio_datasource : virtual public datasource {
   public:
 	virtual ~audio_datasource() {};
 	/// Returns the native format of the audio data.
 	virtual audio_format& get_audio_format() = 0;
-	// Tells the datasource to start reading data starting from time t.
+	/// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0; 
-	// At what point in time does the audio playback stop. (-1 plays the audio until the end)
+	/// At what timestamp value should the audio playback stop?
 	virtual timestamp_t get_clip_end() = 0;
-	// returns m_clip_begin, the timestamp where the video is suppossed to start	
+	/// At what timestamp value should audio playback start?	
 	virtual timestamp_t get_clip_begin() = 0;
-	// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
+	/// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
 	virtual timestamp_t get_start_time() = 0;
-	// Return the duration of the audio data, if known.
+	/// Return the duration of the audio data, if known.
 	virtual common::duration get_dur() = 0;
 };
 
+/// Implementation of audio_datasource that reads raw audio data from a datasource.
 class raw_audio_datasource: 
 	virtual public audio_datasource,
 	virtual public lib::ref_counted_obj
@@ -288,7 +293,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
   public:
   	virtual ~video_datasource() {};
 
-	// Return the duration of the audio data, if known.
+	/// Return the duration of the video data, if known.
 	virtual common::duration get_dur() = 0;
 
 	/// Returns true if the video stream contains audio data too.
@@ -325,9 +330,13 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// timestamp match is not freed.
   	virtual void frame_done(timestamp_t timestamp, bool keepdata) = 0;
 	
+	/// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0; 
+	/// At what timestamp value should the video playback stop?
 	virtual timestamp_t get_clip_end() = 0;
+	/// At what timestamp value should the audio playback start?
 	virtual timestamp_t get_clip_begin() = 0;
+	/// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
 	virtual timestamp_t get_start_time() = 0;
 
 };
@@ -357,6 +366,7 @@ class AMBULANTAPI audio_datasource_factory  {
   	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
+/// Factory for finding an audio format parser.
 /// Factory for implementations where the audio_datasource
 /// does only parsing, using a datasource to obtain raw data. The audio_format_choices
 /// is only a hint, it may be the case that the audio_datasource returns
@@ -369,6 +379,7 @@ class audio_parser_finder {
 	virtual audio_datasource* new_audio_parser(const net::url& url, const audio_format_choices& hint, audio_datasource *src) = 0;
 };
 
+/// Factory for finding an audio converter.
 /// Factory for implementations where the audio_datasource
 /// does only conversion of the audio data provided by the source to the format
 /// wanted by the client.
@@ -380,8 +391,10 @@ class audio_filter_finder {
   	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
+/// Factory for finding a raw data filter.
 /// Factory for creating raw filters, which can handle things like encryption or
-/// compression of raw streams.
+/// compression of raw streams. The implementations of this interface are responsible
+/// for not applying multiple copies of a filter to the stream.
 class raw_filter_finder {
   public:
     virtual ~raw_filter_finder() {};
@@ -453,6 +466,7 @@ class AMBULANTAPI datasource_factory :
 	std::vector<raw_filter_finder*> m_raw_filters;
 };
 
+/// Convenience class that implements the framework for a filtering datasource.
 class AMBULANTAPI filter_datasource_impl : 
 	public datasource,
 	public lib::ref_counted_obj
@@ -481,8 +495,11 @@ class AMBULANTAPI filter_datasource_impl :
 };
 
 #ifdef AMBULANT_PLATFORM_UNIX
-/// Abstract helper class for abstract_demux. This is the interface
-/// A file demultiplexer expects from its sink.
+/// Interface for clients of abstract_demux.
+/// Abstract_demux implementations will read a stream and split it into its
+/// constituent substreams (usually one audio stream and one video stream). The
+/// data for these substreams is then sent to demux_datasink objects for further
+/// processing.
 class demux_datasink {
   public:
     virtual ~demux_datasink(){}
@@ -491,12 +508,12 @@ class demux_datasink {
 	/// before returning.
     virtual void data_avail(timestamp_t pts, const uint8_t *data, int size) = 0;
 	
-	/// Return true if no more data should be pushed (through data_avail).
+	/// Return true if no more data should be pushed right now.
 	virtual bool buffer_full() = 0;
 };
 
-/// Interface for an object that splits a multiplexed A/V stream into its
-/// constituent streams. A demultiplexer will feed stream data into multiple
+/// Interface for objects that demultiplex audio/video streams.
+/// A demultiplexer will feed stream data into multiple
 /// objects with the demux_datasink interface.
 /// Expected use is that these sink objects will also provide a datasource
 /// (or audio_datasource or video_datasource) interface to their clients.
@@ -554,7 +571,7 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 #endif // AMBULANT_PLATFORM_UNIX
 
 
-/// convenience function: read a whole document through any raw datasource.
+/// Convenience function: read a whole document through any raw datasource.
 /// Returns true on success, and pointer to malloc()ed data plus its size.
 AMBULANTAPI bool read_data_from_url(const net::url &url, datasource_factory *df, char **result, size_t *sizep);
 

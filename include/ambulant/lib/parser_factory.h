@@ -32,24 +32,26 @@ namespace ambulant {
 
 namespace lib {
 
-
+/// Interface to create XML parsers.
 class parser_factory {
   public:
 	  
 	virtual ~parser_factory() {};
+	/// Create an XML parser that will feed the given content and error handlers.
 	virtual xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler) = 0;
 	virtual std::string get_parser_name() { return "none"; };
 };
 
-
+/// Implementation of parser_factory plus provider interface.
 class global_parser_factory : public parser_factory {
   public:
-    
+    /// Returns (singleton?) global_parser_factory object.
   	static global_parser_factory* get_parser_factory();
     ~global_parser_factory();
     
+    /// Provider interface: add new parser factory implementation.
     void add_factory(parser_factory *pf);
    
     xml_parser* new_parser(

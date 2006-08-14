@@ -34,6 +34,7 @@ namespace ambulant {
 
 namespace lib {
 
+/// Baseclass for embedder that will implement external commands.
 class AMBULANTAPI system_embedder {
   public:
 	virtual ~system_embedder() {}

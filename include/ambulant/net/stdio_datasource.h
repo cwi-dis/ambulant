@@ -63,15 +63,17 @@ namespace ambulant {
 
 namespace net {
 
-
+/// Implementation of raw_datasource_factory that creates stdio_datasource objects.
 class stdio_datasource_factory : public raw_datasource_factory {
   public:
 	~stdio_datasource_factory() {};
 	datasource* new_raw_datasource(const url& url);
 };
 
+/// Return singleton stdio_datasource_factory object.
 extern raw_datasource_factory *get_stdio_datasource_factory();
 
+/// Implementation of datasource that uses stdio to access local files.
 class stdio_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	stdio_datasource();
