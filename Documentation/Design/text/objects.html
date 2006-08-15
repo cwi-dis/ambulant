@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Ambulant design, main objects</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger
+:Contact: goodger@python.org
+:Date: $Date$
+:Revision: $Revision$
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="ambulant-design-main-objects">
+<span id="objects-section"></span>
+<h1 class="title">Ambulant design, main objects</h1>
+
+<!-- This document is prepended when we generate HTML. It contains the links
+used by the other documents, implemented as hyperlinks. An alternative
+head document is available for LaTeX generation. -->
+<p>Last updated for Ambulant version 1.8.</p>
+<div class="section">
+<h1><a id="introduction" name="introduction">Introduction</a></h1>
+<p>This document describes the function of various of the more important
+objects and interfaces in the Ambulant Player. If you haven't already done
+so it is probably a good idea to first read the <a class="reference" href="overall.html">Overall design</a> and
+<a class="reference" href="walkthrough.html">walkthrough</a> documents. The first one explains the design principles and
+some of the choices made, the second one is a brief walkthrough of how the
+player loads, parses and plays a SMIL document.</p>
+<p>The nitty-gritty details of these objects, on a level interesting to
+developers, are available too, in the <a class="reference" href="../../API/html/index.html">API documentation</a>. This document
+may need to be regenerated, see the README file in the <a class="reference" href="../..">documentation
+directory</a> if it doesn't seem to exist.</p>
+</div>
+<div class="section">
+<h1><a id="ambulantplayer-interfaces" name="ambulantplayer-interfaces">AmbulantPlayer interfaces</a></h1>
+<ul class="simple">
+<li><a class="reference" href="#refcounting-protocol">Refcounting protocol</a>. A lowlevel interface shared by many objects.</li>
+<li><a class="reference" href="#player-interface">Player Interface</a>. This is the toplevel object.</li>
+<li><a class="reference" href="#parser-interface">Parser Interface</a>. Describes the interfaces to the XML parser.</li>
+<li><a class="reference" href="#datasource-interface">Datasource interface</a>. The interface used to get external data into the program.</li>
+<li><a class="reference" href="#playable-interface">Playable interface</a>. This interface makes media items appear on the screen.</li>
+<li><a class="reference" href="#layout-interface">Layout interface</a>. This interface is used to determine where those media
+items show up.</li>
+<li><a class="reference" href="#gui-window-interface">GUI window interface</a>. This interface is used to create new windows.</li>
+<li><a class="reference" href="#animation-interface">Animation interface</a>. The interface used for SMIL animation.</li>
+</ul>
+</div>
+<div class="section">
+<h1><a id="ambulantplayer-objects" name="ambulantplayer-objects">AmbulantPlayer Objects</a></h1>
+<ul class="simple">
+<li><a class="reference" href="#gui-player">Gui_player</a>. Convenience object wrapping a document and player.</li>
+<li><a class="reference" href="#clocks">Clocks</a>. These advance a virtual time.</li>
+<li><a class="reference" href="#event-processor">Event processor</a>. This is the mainloop plus the event/callback mechanism.</li>
+<li><a class="reference" href="#document">Document</a>. The representation of a SMIL document.</li>
+<li><a class="reference" href="#node">Node</a>. The representation of the DOM tree.</li>
+<li><a class="reference" href="#transitions">Transitions</a>. Classes to do visual transitions.</li>
+<li><a class="reference" href="timeline.html">Timeline</a>. This is a description of another scheduler: the MMS scheduler.
+This scheduler has a much simpler structure than the SMIL 2.1 scheduler.</li>
+</ul>
+<p>You may notice that the core of the player, the SMIL 2.1 scheduler, is not
+mentioned here. It is not documented, but (a) it is hardly ever necessary to
+modify it, and (b) it follows the pseudocode in the W3C SMIL standard
+fairly closely.</p>
+<p>There are also additional low-level objects like <tt class="docutils literal"><span class="pre">thread</span></tt> and <tt class="docutils literal"><span class="pre">critical_section</span></tt>
+that are not described here. See the <a class="reference" href="../../API/html/index.html">API documentation</a> for details.</p>
+</div>
+<div class="section">
+<h1><a id="refcounting-protocol" name="refcounting-protocol">Refcounting protocol</a></h1>
+<p>The <cite>refcounting protocol</cite> is contained in the file <tt class="docutils literal"><span class="pre">lib/refcount.h</span></tt>. It needs to
+be implemented only by objects that are truly shared, i.e. any object whose
+lifetime is not predetermined by some other object. New instances of refcounted
+objects are created using the operator new. Any object that needs to share
+a particular instance calls <tt class="docutils literal"><span class="pre">add_ref()</span></tt> against this instance. The creator
+of the refcounted object and any sharer are responsible to call the <tt class="docutils literal"><span class="pre">release()</span></tt>
+method of the object when they don't need the object any more.</p>
+</div>
+<div class="section">
+<h1><a id="player-interface" name="player-interface">Player Interface</a></h1>
+<p>The player is the top-level object. When it is created you pass a DOM tree,
+a <tt class="docutils literal"><span class="pre">factories</span></tt> structure containing references to the <tt class="docutils literal"><span class="pre">playable_factory</span></tt>,
+<tt class="docutils literal"><span class="pre">datasource_factory</span></tt> and <tt class="docutils literal"><span class="pre">window_factory</span></tt> and an embedder object used for
+callbacks to the GUI (on state changes, opening of external documents, etc).</p>
+<p>There is a <a class="reference" href="../models/player.pdf">UML diagram for player</a> showing how the player relates to various other objects.</p>
+</div>
+<div class="section">
+<h1><a id="player-implementations" name="player-implementations">Player implementations</a></h1>
+<p>There are currently two implementations of the player interface: <tt class="docutils literal"><span class="pre">smil_player</span></tt> and
+<tt class="docutils literal"><span class="pre">mms_player</span></tt>. The first one is the all-singing-all-dancing SMIL 2.1 player,
+the second one can play MMS documents, which use a very restricted subset of SMIL 1.0.</p>
+<p>A concise walkthrough of how the <tt class="docutils literal"><span class="pre">smil_player</span></tt> operates is given in the <a class="reference" href="walkthrough.html">walkthrough</a>
+document.</p>
+</div>
+<div class="section">
+<h1><a id="gui-player" name="gui-player">Gui_player</a></h1>
+<p>A convenience class that can be used as the framework for implementing the
+mainloop class of an embedding application. It holds the document datastructures,
+the player and the factories needed.</p>
+<p>There is a <a class="reference" href="../models/gui_player.pdf">UML diagram for gui_player</a> showing this class and its relations.</p>
+</div>
+<div class="section">
+<h1><a id="parser-interface" name="parser-interface">Parser interface</a></h1>
+<p>The XML parser roughly follows a SAX interface. To use it you provide it with objects
+having the <tt class="docutils literal"><span class="pre">sax_content_handler</span></tt> and <tt class="docutils literal"><span class="pre">sax_error_handler</span></tt> interfaces. You then
+feed your document to the parser and it will call back through those interfaces.</p>
+<p>There is a <a class="reference" href="../models/parser.pdf">UML diagram for parser</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="parser-implementations" name="parser-implementations">Parser implementations</a></h1>
+<p>There are currently two parser implementations, <tt class="docutils literal"><span class="pre">expat_parser</span></tt> uses James Clark's
+<cite>expat</cite> parser, which is a fast and lean no-frills parser. <tt class="docutils literal"><span class="pre">xerces_parser</span></tt> uses
+the Apache <cite>Xerces</cite> library, which is at the other extreme of the spectrum: it can do
+document validation with both DTDs and Schemas and lots of other wonderful things. But
+this comes at the price of a rather hefty memory footprint.</p>
+</div>
+<div class="section">
+<h1><a id="datasource-interface" name="datasource-interface">Datasource interface</a></h1>
+<p>There are actually a couple of these interfaces, but they are similar. Their function
+is to implement URL retrieval schemes or file I/O and get external data to media
+handlers and other modules requiring data access.</p>
+<p>The general interface is that a datasource is acquired through a <tt class="docutils literal"><span class="pre">datasource_factory</span></tt>
+interface, which passes the URL to the various implementations until one is found that
+can handle it and returns a <tt class="docutils literal"><span class="pre">datasource</span></tt> object. The client then calls the <tt class="docutils literal"><span class="pre">start</span></tt>
+method on this object, passing a callback routine, and the datasource will arrange for the
+callback to be called as soon as data is available. No new callbacks will be done
+until a new call to <tt class="docutils literal"><span class="pre">start()</span></tt> is made, and the datasource has a buffer that can be limited,
+so this design allows for flow control over the net, if required.</p>
+<p>There are specialised datasource interfaces for audio and video, that can handle extra things
+like converting audio from mp3 format to linear samples, or demultiplexing an audio/video
+stream.</p>
+<p>There is a <a class="reference" href="../models/datasource.pdf">UML diagram for datasource</a> showing how these classes relates to each other
+and a <a class="reference" href="../models/demux_datasource.pdf">UML diagram for demux datasource</a> extending that for classes that demultiplex audio
+and video.</p>
+<p>There is also a <a class="reference" href="../models/datasource_state.pdf">UML state diagram for datasource</a> showing the state machine that a
+datasource should adhere to.</p>
+</div>
+<div class="section">
+<h1><a id="playable-interface" name="playable-interface">Playable interface</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">playable</span></tt> interface is implemented by what are usually called a media handlers
+or media renderers: it is this interface the scheduler uses to make things appear
+on the screen (or sound out of the speakers, or otherwise do their thing).</p>
+<p>Playables are created through <tt class="docutils literal"><span class="pre">global_playable_factory</span></tt>, which has references to
+all playable implementations and asks them in order whether they can handle playback
+of this specific DOM node, until one matches.</p>
+<p>When the playable is started it is provided with a <tt class="docutils literal"><span class="pre">playable_notification</span></tt> object
+(implemented by the scheduler), which is where it can send its status messages (such
+as <tt class="docutils literal"><span class="pre">stopped()</span></tt> when the media is finished, or <tt class="docutils literal"><span class="pre">clicked()</span></tt> when the user clicks the mouse
+over the media item).</p>
+<p>Most playables have an accompanying interface, <tt class="docutils literal"><span class="pre">renderer</span></tt>, which controls where the
+media item is rendered (non-rendering items such as SMIL animations are the exception
+to this rule).</p>
+<p>There is a <a class="reference" href="../models/playable.pdf">UML diagram for playable</a> showing how these classes relates to each other.</p>
+<p>There is also a <a class="reference" href="../models/playable_state.pdf">UML state diagram for playable</a> showing the state machine that a
+playable should adhere to.</p>
+</div>
+<div class="section">
+<h1><a id="playable-implementations" name="playable-implementations">Playable implementations</a></h1>
+<p>While some media handlers implement the playable from scratch (an example is the
+aforementioned SMIL animation handler) there are a number of convenience classes
+that implement functionality shared by many media handlers. These are:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">playable_imp</span></tt> which handles some bookkeeping having to do with the <tt class="docutils literal"><span class="pre">playable_notification</span></tt>
+and <tt class="docutils literal"><span class="pre">event_processor</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">renderer_playable</span></tt> which augments that with a <tt class="docutils literal"><span class="pre">renderer</span></tt> interface and the
+bookkeeping required for that.</li>
+<li><tt class="docutils literal"><span class="pre">renderer_playable_ds</span></tt> which adds <tt class="docutils literal"><span class="pre">datasource</span></tt> creation and bookkeeping to that.</li>
+<li><tt class="docutils literal"><span class="pre">renderer_playable_dsall</span></tt> which builds on that again and collects all data before
+requiring further action.</li>
+</ul>
+<p>There is a <a class="reference" href="../models/renderer.pdf">UML diagram for renderer_playable</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="layout-interface" name="layout-interface">Layout interface</a></h1>
+<p>The layout manager determines where media items appear, and also governs things like
+z-ordering, background colors for regions and such.</p>
+<p>The central interface is the <tt class="docutils literal"><span class="pre">surface</span></tt>, which is the object passed to a <tt class="docutils literal"><span class="pre">renderer</span></tt>.
+Whenever a renderer has something new to show it calls <tt class="docutils literal"><span class="pre">need_redraw()</span></tt> on this
+interface. Whenever it is time to actually redraw something the <tt class="docutils literal"><span class="pre">surface</span></tt> calls
+<tt class="docutils literal"><span class="pre">redraw()</span></tt> on the <tt class="docutils literal"><span class="pre">renderer</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">layout_manager</span></tt> interface maps DOM nodes to the <tt class="docutils literal"><span class="pre">surface</span></tt> objects on which they
+should play back.</p>
+<p>There are two more auxiliary interfaces that are not strictly necessary but used
+by the layout implementation for historical reasons: <tt class="docutils literal"><span class="pre">surface_template</span></tt>
+and <tt class="docutils literal"><span class="pre">surface_factory</span></tt>. These interfaces are used to create subregions and toplevel
+windows, respectively.</p>
+<p>There is a <a class="reference" href="../models/layout.pdf">UML diagram for layout</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="layout-implementation" name="layout-implementation">Layout implementation</a></h1>
+<p>The SMIL 2.1 implementation of <tt class="docutils literal"><span class="pre">surface</span></tt>, <tt class="docutils literal"><span class="pre">surface_template</span></tt> and <tt class="docutils literal"><span class="pre">surface_factory</span></tt>
+are the classes <tt class="docutils literal"><span class="pre">passive_region</span></tt> and <tt class="docutils literal"><span class="pre">passive_root_layout</span></tt>.</p>
+<p>There is a <a class="reference" href="../models/region.pdf">UML diagram for region</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="gui-window-interface" name="gui-window-interface">GUI window interface</a></h1>
+<p>This is the abstract interface used to create new windows and tie them to the
+layout implementation. The implementation is machine-dependent, obviously, and usually
+supplied by the hosting application.</p>
+<p>In addition there is the <tt class="docutils literal"><span class="pre">gui_events</span></tt> interface which goes the other way:
+it is exposed by the layout implementation, and used by the machine dependent
+window implementation to communicate things like redraw requests.</p>
+<p>There is a <a class="reference" href="../models/windows.pdf">UML diagram for window</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="animation-interface" name="animation-interface">Animation interface</a></h1>
+<p>The animation interfaces are <tt class="docutils literal"><span class="pre">animation_destination</span></tt> and <tt class="docutils literal"><span class="pre">animation_notification</span></tt>.
+The SMIL 2.1 playable uses these interfaces to change parameters and send notification
+of those changes, respectively.</p>
+<p>There is a <a class="reference" href="../models/animation.pdf">UML diagram for animation</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="clocks" name="clocks">Clocks</a></h1>
+<p>All clocks adhere to the <tt class="docutils literal"><span class="pre">timer</span></tt> interface. This interface
+allows you to get the current time and the speed of the clock.</p>
+<p>An extended interface <tt class="docutils literal"><span class="pre">timer_control</span></tt> is also available, which
+allows control over the clock: setting the speed and epoch of the timer,
+pausing and restarting it, etc.</p>
+<p>There is a companion interface <tt class="docutils literal"><span class="pre">timer_events</span></tt> that allows objects to get notification
+of changes in timer speed.</p>
+<p>A machine-dependent implementation of <tt class="docutils literal"><span class="pre">timer</span></tt> can be obtained through
+the <tt class="docutils literal"><span class="pre">realtime_timer_factory</span></tt> method.</p>
+<p>An implementation of <tt class="docutils literal"><span class="pre">timer_control</span></tt> is also available: <tt class="docutils literal"><span class="pre">timer_control_impl</span></tt>.</p>
+<p>Eventually there may be other implementations of <tt class="docutils literal"><span class="pre">timer</span></tt>,
+such as clocks that are allowed to slip synchronization and other such
+semantics as required by SMIL.</p>
+<p>There is a <a class="reference" href="../models/clocks.pdf">UML diagram for clocks</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="event-processor" name="event-processor">Event processor</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">event_processor</span></tt> is the low-level scheduler of the system. It is a
+priority runqueue with methods to add callbacks, with an optional delay until
+the callback becomes elegible.</p>
+<p>There is a <a class="reference" href="../models/event_processor.pdf">UML diagram for event processor</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="document" name="document">Document</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">document</span></tt> class contains the DOM tree and some auxiliary data:</p>
+<ul class="simple">
+<li>the <tt class="docutils literal"><span class="pre">node_context</span></tt> which can be used to lookup nodes by XML ID and to
+resolve relative URLs, and</li>
+<li>the <tt class="docutils literal"><span class="pre">nscontext</span></tt> which stores information on the use of XML namespaces.</li>
+</ul>
+<p>There is a <a class="reference" href="../models/document.pdf">UML diagram for document</a> showing how the document class relates to various other objects.</p>
+</div>
+<div class="section">
+<h1><a id="node" name="node">Node</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">node</span></tt> class represents a node in the DOM tree. Actually, our tree isn't
+100% compatible with DOM, but close enough. The <tt class="docutils literal"><span class="pre">node</span></tt> objects store the tag,
+attributes and data pertaining to the XML node. There are basic methods
+to access the parent, next sibling and first child, to insert or remove nodes into a tree
+and more.</p>
+<p>In the actual code there is a compile-time switch <tt class="docutils literal"><span class="pre">WITH_EXTERNAL_DOM</span></tt> that governs
+whether the <tt class="docutils literal"><span class="pre">node</span></tt> class is abstract or not. If defined, <tt class="docutils literal"><span class="pre">node</span></tt> is
+equivalent to <tt class="docutils literal"><span class="pre">node_interface</span></tt>, the abstract API, and <tt class="docutils literal"><span class="pre">node_impl</span></tt> is one possible
+implementation of it. If not defined <tt class="docutils literal"><span class="pre">node</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">node_impl</span></tt>, which
+leads to a more efficient implementation with inline methods and such. This
+helps on low-power machines.</p>
+<p>There are two auxiliary classes that augment the node functionality using only
+these interfaces:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">node_navigator</span></tt> uses the basic <tt class="docutils literal"><span class="pre">up()/down()/next()</span></tt> methods of node to
+build more complex navigation.</li>
+<li><tt class="docutils literal"><span class="pre">node_iterator</span></tt> is an iterator that allows you to iterate over a subtree.</li>
+</ul>
+<p>There is a <a class="reference" href="../models/node.pdf">UML diagram for node</a> showing how these classes relates to each other.</p>
+</div>
+<div class="section">
+<h1><a id="transitions" name="transitions">Transitions</a></h1>
+<p>The implementation of SMIL transitions is fairly complex, because there are very
+many transition types and they also need to be implemented efficiently on
+multiple platforms. The current implementation is fully based on inheritance,
+a model with delegation would probably result in a cleaner design.</p>
+<p>The central object is the <tt class="docutils literal"><span class="pre">transition_engine</span></tt>, which also supplies to interface
+used by clients. It has <tt class="docutils literal"><span class="pre">begin()</span></tt>, <tt class="docutils literal"><span class="pre">end()</span></tt>, <tt class="docutils literal"><span class="pre">step()</span></tt> and <tt class="docutils literal"><span class="pre">next_step_delay()</span></tt>
+methods, which the client (usually a media renderer) uses to control the transition.
+<tt class="docutils literal"><span class="pre">next_step_delay()</span></tt> needs an explanation: it returns the delay until the engine
+would like to get the next call to <tt class="docutils literal"><span class="pre">step()</span></tt> from the renderer.</p>
+<p>On top of this central object there is a multiple inheritance graph where one leg
+is machine dependent, and does the actual bitblit operation to combine two images.
+The other leg is machine independent, but dependent on the actual transition type,
+and computes the parameters for the bitblit. These two then come together in a stub
+class that has all the functionality for a specific transition type on a specific
+platform.</p>
+<p>There is a <a class="reference" href="../models/transition.pdf">UML diagram for transitions</a> showing how these classes relates to each other.</p>
+</div>
+</div>
+</body>
+</html>

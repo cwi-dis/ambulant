@@ -37,7 +37,7 @@ AmbulantPlayer interfaces
 AmbulantPlayer Objects
 ----------------------
 
-- `Gui_player`. Convenience object wrapping a document and player.
+- `Gui_player`_. Convenience object wrapping a document and player.
 - `Clocks`_. These advance a virtual time.
 - `Event processor`_. This is the mainloop plus the event/callback mechanism.
 - `Document`_. The representation of a SMIL document.
@@ -92,6 +92,8 @@ A convenience class that can be used as the framework for implementing the
 mainloop class of an embedding application. It holds the document datastructures,
 the player and the factories needed.
 
+There is a `UML diagram for gui_player`_ showing this class and its relations.
+
 Parser interface
 ----------------
 
@@ -129,7 +131,9 @@ There are specialised datasource interfaces for audio and video, that can handle
 like converting audio from mp3 format to linear samples, or demultiplexing an audio/video
 stream.
 
-There is a `UML diagram for datasource`_ showing how these classes relates to each other.
+There is a `UML diagram for datasource`_ showing how these classes relates to each other
+and a `UML diagram for demux datasource`_ extending that for classes that demultiplex audio
+and video.
 
 There is also a `UML state diagram for datasource`_ showing the state machine that a
 datasource should adhere to.

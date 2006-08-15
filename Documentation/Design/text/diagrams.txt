@@ -40,6 +40,18 @@ UML diagram for player
 
 .. comment to work around rest bug
 
+UML diagram for gui_player
+--------------------------
+
+.. _UML-diagram-for-gui_player-section:
+
+.. raw:: latex
+
+   \includegraphics[width=\linewidth]{../models/gui_player.pdf}
+   %
+
+.. comment to work around rest bug
+
 UML diagram for parser
 ----------------------
 
@@ -60,6 +72,18 @@ UML diagram for datasource
 .. raw:: latex
 
    \includegraphics[width=\linewidth]{../models/datasource.pdf}
+   %
+
+.. comment to work around rest bug
+
+UML diagram for demux_datasource
+--------------------------------
+
+.. _UML-diagram-for-demux_datasource-section:
+
+.. raw:: latex
+
+   \includegraphics[width=\linewidth]{../models/demux_datasource.pdf}
    %
 
 .. comment to work around rest bug

@@ -44,8 +44,10 @@
 .. _overall structure diagram: overall-structure-diagram-section_
 .. _dataflow diagram: dataflow-diagram-section_
 .. _UML diagram for player: UML-diagram-for-player-section_
+.. _UML diagram for gui_player: UML-diagram-for-gui_player-section_
 .. _UML diagram for parser: UML-diagram-for-parser-section_
 .. _UML diagram for datasource: UML-diagram-for-datasource-section_
+.. _UML diagram for demux datasource: UML-diagram-for-demux_datasource-section_
 .. _UML state diagram for datasource: UML-state-diagram-for-datasource-section_
 .. _UML diagram for playable: UML-diagram-for-playable-section_
 .. _UML state diagram for playable: UML-state-diagram-for-playable-section
