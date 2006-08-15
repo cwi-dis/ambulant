@@ -664,7 +664,7 @@ cocoa_gui_screen::clear_overlay()
 		// Take a snapshot of the screen and return.
 		if (fullscreen_previmage) [fullscreen_previmage release];
 		fullscreen_previmage = [[self _getOnScreenImage] retain];
-		/*DBG*/	[self dump: fullscreen_previmage toImageID: "fsprev"];
+		/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
 	if (fullscreen_oldimage == NULL) {
