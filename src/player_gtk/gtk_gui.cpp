@@ -306,7 +306,7 @@ gtk_gui::gtk_gui(const char* title,
 	m_gui_thread = pthread_self();
 #endif/*LOCK_MESSAGE*/
 	if (initfile != NULL && initfile != "")
-	  m_smilfilename = strdup(initfile);
+		m_smilfilename = strdup(initfile);
 
 	/*Initialization of the Main Window */
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
@@ -401,7 +401,7 @@ gtk_gui::~gtk_gui() {
 	// m_programfilename - not dynamic
 
 	if  (m_smilfilename) {
-		delete m_smilfilename;
+		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
 	}
 	if  (m_settings) {
@@ -425,7 +425,7 @@ gtk_gui::~gtk_gui() {
 		m_documentcontainer = NULL;
 	}
 	if (m_actions) {
-		delete m_actions;
+		g_object_unref(G_OBJECT (m_actions));
 		m_actions = NULL;
 	}
 	if (m_file_chooser) {
@@ -489,7 +489,7 @@ gtk_gui::do_welcome() {
 	const char *welcome_doc = find_datafile(welcome_locations);
 	
 	if (welcome_doc) {
-		if( openSMILfile(welcome_doc, 0)) {
+	  if( openSMILfile(welcome_doc, 0, true)) {
 			do_play();
 		}
 	} else {
@@ -556,7 +556,7 @@ gtk_gui::fileError(const gchar* smilfilename) {
 }
 
 bool 
-gtk_gui::openSMILfile(const char *smilfilename, int mode) {
+gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 
 	if (smilfilename==NULL)
 		return false;
@@ -567,7 +567,8 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode) {
 			return false;
 		}
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
-	m_smilfilename = smilfilename;
+	if (dupFlag)
+		m_smilfilename = strdup(smilfilename);
 
 	if (m_mainloop)
 		delete m_mainloop;
@@ -611,7 +612,8 @@ gtk_gui::do_open(){
 
 void gtk_gui::do_file_selected() {
 	const gchar *smilfilename  = gtk_file_chooser_get_filename (m_file_chooser);
-	if (openSMILfile(smilfilename, 0)) {
+	if (openSMILfile(smilfilename, 0, true)) {
+		g_free((void*)smilfilename);
 		do_play();
 	}
 }
@@ -621,7 +623,7 @@ void gtk_gui::do_file_selected() {
 void
 gtk_gui::setDocument(const char* smilfilename) {
 #ifdef	GTK_NO_FILEDIALOG	/* Assume embedded GTK */
-	if (openSMILfile(smilfilename, 0))
+	if (openSMILfile(smilfilename, 0, true))
 		do_play();
 #endif/*GTK_NO_FILEDIALOG*/
 }
@@ -632,7 +634,7 @@ gtk_gui::do_settings_selected() {
 	const gchar *settings_filename  = gtk_file_chooser_get_filename (m_settings_chooser);
 	if ( settings_filename != NULL) {
 		smil2::test_attrs::load_test_attrs(settings_filename);
-		if (openSMILfile(m_smilfilename, 0))
+		if (openSMILfile(m_smilfilename, 0, false))
 			do_play();
 	}
 }
@@ -713,9 +715,11 @@ gtk_gui::do_open_url() {
 }
 
 void gtk_gui::do_url_selected() {
+	/* Next string points to internally allocated storage in the widget
+	   and must not be freed, modified or stored.*/
 	const gchar *smilfilename  = gtk_entry_get_text(m_url_text_entry);
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
-	if (openSMILfile(smilfilename, 0)) {		
+	if (openSMILfile(smilfilename, 0, true)) {		
 		do_play();
 	}
 }
@@ -1049,7 +1053,7 @@ main (int argc, char*argv[]) {
 		|| strcmp(&last[1], ".smi") == 0
 	  	|| strcmp(&last[1], ".sml") == 0) {
  			if (mywidget->openSMILfile(argv[argc-1],
-						   0)
+						   0, true)
 			    && (exec_flag = true)){
 				mywidget->do_play();
 			}
@@ -1060,7 +1064,7 @@ main (int argc, char*argv[]) {
 			const char *welcome_doc = find_datafile(welcome_locations);
 			if (welcome_doc
 			&& mywidget->openSMILfile(welcome_doc,
-						  0)) {
+						  0, true)) {
 				mywidget->do_play();
 				prefs->m_welcome_seen = true;
 			}
@@ -1084,9 +1088,10 @@ main (int argc, char*argv[]) {
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
 	mywidget->do_quit();
+	delete mywidget;
 	gdk_threads_leave ();
 #ifdef	WITH_GSTREAMER
-	/* initialize GStreamer */
+	/* finalize GStreamer */
 	AM_DBG fprintf(stderr, "finalize GStreamer\n");
 	gstreamer_player_finalize();
 #endif/*WITH_GSTREAMER*/

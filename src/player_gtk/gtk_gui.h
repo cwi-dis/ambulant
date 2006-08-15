@@ -46,7 +46,7 @@ class gtk_gui : public GtkWidget{
 		return m_smilfilename;
 	}
 
-	bool openSMILfile(const char *smilfilename, int mode);
+	bool openSMILfile(const char *smilfilename, int mode, bool dupFlag);
 
 	// send an event to the gui thread
 	void internal_message(int level, char* msg);
