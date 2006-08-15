@@ -423,6 +423,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 	
 	// Get the input data
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
+	/*AM_DBG*/ {
+		static int fd = 0;
+		if (fd == 0) fd = creat("/tmp/testlive.mp4", 0666);
+		write(fd, inbuf, sz);
+	}
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
 	if(sz == 0 && !m_src->end_of_file() ) {

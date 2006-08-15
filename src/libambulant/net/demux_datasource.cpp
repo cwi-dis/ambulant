@@ -116,7 +116,7 @@ demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::start(): m_client_callback already set!");
+		/*AM_DBG*/ lib::logger::get_logger()->debug("demux_audio_datasource::start(): m_client_callback already set!");
 	}
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
@@ -461,7 +461,7 @@ demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 	m_lock.enter();
 
 	m_src_end_of_file = (sz == 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
 		//m_frame_nr++;
 		//write_data(m_frame_nr, (char*) inbuf, sz);
