@@ -71,7 +71,7 @@
 #endif
 //
 // Jack checked 4.0 with boost configure and it seems fine:
-#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 0))
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 1))
 #  if defined(AMBULANT_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else
