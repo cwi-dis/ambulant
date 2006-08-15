@@ -107,13 +107,13 @@ gstreamer_audio_renderer_pipeline_store(void* obj, GstElement*pipeline) {
 
 void
 gstreamer_audio_renderer::init_player(const lib::node *node) {
+	m_lock.enter();
 	assert (node);
 	m_url = node->get_url("src");
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::init_player(0x%x) url=",  this, m_url.get_url().c_str());
 	_init_clip_begin_end();
 	m_player = new gstreamer_player(m_url.get_url().c_str(), this);
 	m_player->init();
-	m_lock.enter();
 	m_context->started(m_cookie, 0);
 	m_lock.leave();
 	//KB	if (gst_player failed)m_context->stopped(m_cookie, 0);
