@@ -174,6 +174,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)openTheDocument
 {
     NSString *url = [[self fileURL] absoluteString];
+#if 0
 	// XXX This is incorrect
 	if ( [[self fileURL] isFileURL] && ![[self fileURL] fragment]) {
 		NSString *escapedurl = (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
@@ -181,6 +182,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		//[url release];
 		url = escapedurl;
 	}
+#endif
 	bool use_mms = ([[url pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, use_mms, embedder);
