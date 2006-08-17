@@ -1,3 +1,5 @@
+import ambulant
+
 class Glue:
     def __init__(self, filename, widget):
         self.widget = widget
