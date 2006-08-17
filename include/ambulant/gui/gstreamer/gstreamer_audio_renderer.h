@@ -92,6 +92,11 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	GstElement* m_pipeline;
 
   private:
+	void _start(double where);
+	void _stop();
+	void _seek(double t);
+	void _pause();
+	void _resume();
 	void init_player( const lib::node *node);
 	gstreamer_player* m_player;
 	net::url m_url;

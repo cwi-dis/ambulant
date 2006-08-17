@@ -44,10 +44,15 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 {
   GMainLoop *loop;
   GstElement *source=NULL,*sink=NULL, *pipeline=NULL;
+  GstStateChangeReturn gst_state_changed;
   char **files = NULL;
   const char* id = "gst_mp3_player";
   void gstreamer_audio_renderer_pipeline_store(void* player, GstElement* p);
   loop = g_main_loop_new (NULL, FALSE);
+  if ( ! loop || ! mainloop_p) {
+    g_print("g_main_loop_new (NULL, FALSE)fails: loop=0x%x,  mainloop_p=0x%x\n", loop, mainloop_p);
+    abort();
+  }
   if (mainloop_p) *mainloop_p = loop;
   AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, gst_player_p", gst_player_p,"loop=",loop);
 #ifdef  WITH_NOKIA770
@@ -103,24 +108,42 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
 
 #ifdef  WITH_NOKIA770
   /* link the elements */
-  gst_element_link (source, sink);
+  if ( ! gst_element_link (source, sink)) {
+    g_print ("gst_element_link (source=%s, sink%s) failed\n", source, sink);
+    abort();
+  }
 #endif//WITH_NOKIA770
 
 
   /* wait for start */
-  gst_element_set_state (pipeline, GST_STATE_PAUSED);
-//gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PAUSED);
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_READY);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_READY", gst_state_changed);
+  }
 
   AM_DBG g_print ("%s: %s\n", id, "add call-back message handler for eos");
   /* add call-back message handler to check for eos and errors */
   gst_bus_add_watch (gst_pipeline_get_bus (GST_PIPELINE (pipeline)),
 		     gstbus_callback, loop);
 
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PAUSED);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    if (gst_state_changed == GST_STATE_CHANGE_ASYNC) {
+      gst_state_changed = gst_element_get_state (GST_ELEMENT(pipeline), NULL, NULL, GST_CLOCK_TIME_NONE);
+    }
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_PAUSED", gst_state_changed);
+  }
   gstreamer_audio_renderer_pipeline_store(gstreamer_player, pipeline);
 
  /* start playback */
   AM_DBG g_print ("%s: %s\n", id, "start play");
-  gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PLAYING);
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PLAYING);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    if (gst_state_changed == GST_STATE_CHANGE_ASYNC) {
+      gst_state_changed = gst_element_get_state (GST_ELEMENT(pipeline), NULL, NULL, GST_CLOCK_TIME_NONE);
+    }
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_PLAYING", gst_state_changed);
+  }
 
   AM_DBG g_print ("%s: %s\n", id, "iterate");
    /* iterate */
@@ -131,12 +154,28 @@ gst_mp3_player(const char* uri, GstElement** gst_player_p, gstreamer_player* gst
   AM_DBG g_print ("done !\n");
 
   /* stop the pipeline */
-  gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_NULL);
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_PAUSED);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    if (gst_state_changed == GST_STATE_CHANGE_ASYNC) {
+      gst_state_changed = gst_element_get_state (GST_ELEMENT(pipeline), NULL, NULL, GST_CLOCK_TIME_NONE);
+    }
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_PAUSED", gst_state_changed);
+  }
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_READY);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_REA", gst_state_changed);
+  }
+  gst_state_changed = gst_element_set_state (GST_ELEMENT(pipeline), GST_STATE_NULL);
+  if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+    g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
+  }
 
   /* cleanup */
   gst_object_unref (GST_OBJECT(pipeline));
 
 #ifdef  WITH_NOKIA770
+  //KB experimental 10 sec delay
+  //usleep(10000000);
   if (pthread_mutex_unlock(&s_main_nokia770_mutex) < 0) {
     lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
     abort();
@@ -169,6 +208,7 @@ gstbus_callback (GstBus* bus, GstMessage *msg, gpointer data)
       break;
     }
     default:
+      g_print("Unhandled Message type=%s received\n",GST_MESSAGE_TYPE_NAME(msg));
       break;
   }
   return TRUE;
@@ -187,10 +227,11 @@ gstreamer_player_finalize() {
 }
 
 gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* rend)
-  : m_gst_player(NULL),
-    m_gst_mainloop(NULL),
-    m_audio_renderer(NULL),
-    m_uri(NULL) {
+  : 	m_gst_player(NULL),
+	m_gst_mainloop(NULL),
+	m_audio_renderer(NULL),
+	m_uri(NULL)
+{
 	m_uri = strdup(uri);
 	m_audio_renderer = rend;
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player(0x%x) uri=%s", (void*)this, uri);
