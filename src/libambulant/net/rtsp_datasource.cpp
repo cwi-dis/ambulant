@@ -291,8 +291,8 @@ ambulant::net::rtsp_demux::run()
 						//For MP4V-ES video format we need to insert a header into the RTSP stream which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 						firstTime=1;		
-						if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)
-						{
+						//if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)//Optional check(therefore removed), since it should not matter for other formats.
+						//{
 							AM_DBG lib::logger::get_logger()->debug("Came here good %s", m_context->video_codec_name);
 							unsigned configLen;
 		    				unsigned char* configData 
@@ -300,7 +300,7 @@ ambulant::net::rtsp_demux::run()
 							m_context->configData = configData;
 							m_context->configDataLen = configLen;
 							
-						}
+						//}
 
 					}		
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
@@ -378,7 +378,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	
 	// Send the data to our sink, which is responsible for copying/saving it before returning.
 	if(context->sinks[context->video_stream]) {
-		if(context->configDataLen > 0)
+		if(context->configDataLen > 0)//Required by MP4V-ES 
 			context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->configData , context->configDataLen);
 		context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
 	}
@@ -386,6 +386,10 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	// Tell the main demux loop that we're ready for another packet.
 	context->need_video = true;
 	free(context->video_packet);
+	if(context->configDataLen > 0){
+		free(context->configData);
+		context->configData = NULL;
+	}
 	context->video_packet  = NULL;
 	context->blocking_flag = ~0;
 	//XXX Do we need to free data here ?
