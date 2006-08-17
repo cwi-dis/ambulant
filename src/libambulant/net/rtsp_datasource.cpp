@@ -73,11 +73,20 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 
 rtsp_context_t::~rtsp_context_t()
 {
-	//delete media_session;
-	//delete rtsp_client;
-	//delete env;
+	//Have to tear down session here, so that the server is not left hanging till timeout.
+	rtsp_client->teardownMediaSession(*media_session);//Just to be sure
+	//deleting stuff
+	free(scheduler);
 	delete scheduler;
+	free(sdp);
 	delete sdp;
+	free(sinks);
+	delete sinks;
+	free(media_session);//has destructor 
+	delete video_packet;//should already be free
+	delete audio_packet;
+	free(rtsp_client);//has destructor
+	
 }
 
 rtsp_context_t*
