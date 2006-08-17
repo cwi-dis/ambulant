@@ -120,7 +120,7 @@ class qt_mainloop;
 #ifdef	TRY_LOCKING
 	pthread_cond_t	  m_cond_message;
 	pthread_mutex_t   m_lock_message;
-	unsigned long int m_gui_thread;
+	pthread_t m_gui_thread;
 #endif/*TRY_LOCKING*/
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;
