@@ -71,6 +71,10 @@ struct rtsp_context_t {
 	char* sdp;
 	int audio_stream;
 	int video_stream;
+	
+	unsigned char* configData; //required for MP4V-ES "VOL header"
+	int configDataLen;
+	
 	unsigned char* audio_packet;
 	unsigned char* video_packet;
 	timestamp_t last_pts;
