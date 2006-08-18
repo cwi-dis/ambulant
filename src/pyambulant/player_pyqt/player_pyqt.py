@@ -38,6 +38,7 @@ class MyMainWidget(qt.QWidget):
             "Open Presentation",
             "Double-click a file to open it")
         if filename:
+            filename = str(filename)
             self.open_document(filename)
         
     def do_play(self):

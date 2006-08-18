@@ -1,35 +1,63 @@
 import ambulant
 
-class Glue:
+class jaja:
+    pass
+    
+class Glue(ambulant.gui_player, ambulant.factories):
+
     def __init__(self, filename, widget):
+        ambulant.gui_player.__init__(self)
         self.widget = widget
-        self.filename = filename
-        print "Glue(%s)", filename
+
+        #
+        # Initialize the gui_player infrastructure
+        #
+        self.init_factories()
+        # XXX The init_*_factory methods should have been called
+        # by init_factories, but they aren't???
+        self.init_window_factory()
+        self.init_playable_factory()
+        self.init_datasource_factory()
+        self.init_parser_factory()
+        self.init_plugins()
         
-    def play(self):
-        print "Glue.play()"
+        #
+        # Parse the document, create and initialize the player
+        #
+        self.document = ambulant.create_from_file(self, filename)
+        player = ambulant.create_smil2_player(self.document, self, None)
+        player.initialize()
+        self.set_player(player)
+    
+    #
+    # Initialization methods - create the various factories
+    #
+    
+    def init_window_factory(self):
+        wf = ambulant.none_window_factory()
+        self.set_window_factory(wf)
         
-    def stop(self):
-        print "Glue.stop()"
+    def init_playable_factory(self):
+        pf = ambulant.get_global_playable_factory()
+        self.set_playable_factory(pf)
         
-    def pause(self):
-        print "Glue.pause()"
+    def init_datasource_factory(self):
+        df = ambulant.datasource_factory()
+        self.set_datasource_factory(df)
         
-    def is_play_enabled(self):
-        return True
+    def init_parser_factory(self):
+        pf = ambulant.get_parser_factory()
+        self.set_parser_factory(pf)
+                
+class GlueWindowFactory(ambulant.pycppbridge):
+    def __init__(self, widget):
+        self.widget = widget
         
-    def is_stop_enabled(self):
-        return True
+    def new_window(self, *args):
+        print 'new_window', `args`
+        return None
         
-    def is_pause_enabled(self):
-        return True
-        
-    def is_play_active(self):
-        return False
-        
-    def is_stop_active(self):
-        return True
-        
-    def is_pause_active(self):
-        return False
+    def new_background_renderer(self, *args):
+        print 'new_background_renderer', `args`
+        return None
         

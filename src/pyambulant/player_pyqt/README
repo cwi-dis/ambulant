@@ -40,7 +40,14 @@ Next you need to build the prerequisites (and maybe install them too):
   XXXX - Edit ambulant/src/player_unix/Makefile, replace "-lqt-mt" with "-lqt -lintl".
   XXXX - Edit qt-mac-free-3.3.6/lib/libqt.la and set "dependency_libs='-lz'"
 
-  Explain about installing...
+  If you really don't want to install this version you can skip that step, but you need
+  to set a couple of environment variables:
+  
+    amsrc=$HOME/src/ambulant  # or whatever
+    ambld=$amsrc/build-qt  # or whatever
+    PYTHONPATH=$PYTHONPATH:$amsrc/src/pyambulant/build/lib.*
+    DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$ambld/src/libambulant/.libs
+    export PYTHONPATH DYLD_LIBRARY_PATH
   
   Testing Ambulant on Linux is easy: run player_unix/AmbulantPlayer_qt
   Testing Ambulant on MacOSX is a bit more difficult because our Makefile for
@@ -48,3 +55,11 @@ Next you need to build the prerequisites (and maybe install them too):
   way to do a simple test is copy the Qt example hello.app somewhere, copy AmbulantPlayer_qt
   to hello.app/Contents/MacOSX/hello and run the resulting hello.app.
   
+  Testing the Ambulant Python interface is also fairly simple:
+  
+    python
+    >>> import ambulant
+    >>> print ambulant.get_version()
+    '1.7'
+    >>>
+    
