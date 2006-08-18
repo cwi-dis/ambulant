@@ -146,33 +146,36 @@ gui::dx::dx_player::~dx_player() {
 void
 gui::dx::dx_player::init_playable_factory()
 {
-	m_playable_factory = common::get_global_playable_factory();
+	common::global_playable_factory *pf = common::get_global_playable_factory();
+	set_playable_factory(pf);
 	// Add the playable factory
-	m_playable_factory->add_factory(new dx_playable_factory(this, m_logger, this));
+	pf->add_factory(new dx_playable_factory(this, m_logger, this));
 }
 
 void
 gui::dx::dx_player::init_window_factory()
 {
-		m_window_factory = this; 
+		set_window_factory(this); 
 }
 
 void
 gui::dx::dx_player::init_datasource_factory()
 {
-	m_datasource_factory = new net::datasource_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	set_datasource_factory(df);
 	// Add the datasource factories. For now we only need a raw
 	// datasource factory.
-	m_datasource_factory->add_raw_factory(net::get_win32_datasource_factory());
+	df->add_raw_factory(net::get_win32_datasource_factory());
 }
 
 void
 gui::dx::dx_player::init_parser_factory()
 {
-	m_parser_factory = lib::global_parser_factory::get_parser_factory();
+	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();
+	set_parser_factory(pf);
 	// Add the xerces parser, if available
 #ifdef WITH_XERCES_BUILTIN
-	m_parser_factory->add_factory(new lib::xerces_factory());
+	pf->add_factory(new lib::xerces_factory());
 #endif
 }
 
