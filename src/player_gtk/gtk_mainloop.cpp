@@ -115,7 +115,7 @@ gtk_mainloop::~gtk_mainloop()
 		delete m_player;
 		m_player = NULL;
 	}
-	delete m_window_factory;
+	//delete m_window_factory;
 }
 
 void
@@ -123,7 +123,7 @@ gtk_mainloop::init_window_factory()
 {
 	m_gtk_widget = new gtk_ambulant_widget(m_gui->get_document_container());
 	gtk_window_factory* gtk_wf = new gtk_window_factory(m_gtk_widget, m_gui->main_loop);
-	m_window_factory = gtk_wf;
+	set_window_factory(gtk_wf);
 	gtk_wf->set_gui_player (this);
 }
 
@@ -131,28 +131,29 @@ gtk_mainloop::init_window_factory()
 void
 gtk_mainloop::init_playable_factory()
 {
-	m_playable_factory = common::get_global_playable_factory();
+	common::global_playable_factory *pf = common::get_global_playable_factory();
+	set_playable_factory(pf);
 
 #ifdef WITH_GSTREAMER
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer");
-	m_playable_factory->add_factory( new gstreamer::gstreamer_renderer_factory(this) );
+	pf->add_factory( new gstreamer::gstreamer_renderer_factory(this) );
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer done");
 #endif
 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	m_playable_factory->add_factory( new sdl::sdl_renderer_factory(this) );
+	pf->add_factory( new sdl::sdl_renderer_factory(this) );
 	AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
 
 #ifdef WITH_ARTS
-	m_playable_factory->add_factory(new arts::arts_renderer_factory(this));
+	pf->add_factory(new arts::arts_renderer_factory(this));
 #endif 
 	
-	m_playable_factory->add_factory(new gtk_renderer_factory(this));
-	m_playable_factory->add_factory(new gtk_video_factory(this));
+	pf->add_factory(new gtk_renderer_factory(this));
+	pf->add_factory(new gtk_video_factory(this));
 	AM_DBG m_logger->debug("mainloop::mainloop: added gtk_video_factory");			
-	//m_playable_factory->add_factory(new none::none_video_factory(this));	
+	//pf->add_factory(new none::none_video_factory(this));	
 	//AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");
 	
 }
@@ -160,23 +161,24 @@ gtk_mainloop::init_playable_factory()
 void
 gtk_mainloop::init_datasource_factory()
 {
-	m_datasource_factory = new net::datasource_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	set_datasource_factory(df);
 #ifdef WITH_LIVE	
 	AM_DBG m_logger->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	m_datasource_factory->add_video_factory(new net::live_video_datasource_factory());
-	m_datasource_factory->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(new net::live_video_datasource_factory());
+	df->add_audio_factory(new net::live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
     	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	m_datasource_factory->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_parser_finder");
-	m_datasource_factory->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
     	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
-	m_datasource_factory->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
-	m_datasource_factory->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
     	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif
 
 #ifdef WITH_STDIO_DATASOURCE
@@ -186,18 +188,19 @@ gtk_mainloop::init_datasource_factory()
 	// however.
 
     	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
-	m_datasource_factory->add_raw_factory(new net::stdio_datasource_factory());
+	df->add_raw_factory(new net::stdio_datasource_factory());
 #endif
 	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add posix_datasource_factory");
-	m_datasource_factory->add_raw_factory(new net::posix_datasource_factory());
+	df->add_raw_factory(new net::posix_datasource_factory());
 }
 
 void
 gtk_mainloop::init_parser_factory()
 {
-	m_parser_factory = lib::global_parser_factory::get_parser_factory();	
+	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();
+	set_parser_factory(pf);
 #ifdef WITH_XERCES_BUILTIN
-	m_parser_factory->add_factory(new lib::xerces_factory());
+	pf->add_factory(new lib::xerces_factory());
 	AM_DBG m_logger->debug("mainloop::mainloop: add xerces_factory");
 #endif
 }

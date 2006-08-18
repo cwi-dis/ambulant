@@ -140,6 +140,7 @@ void
 qt_mainloop::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
+	set_datasource_factory(df);
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add live_audio_datasource_factory");
