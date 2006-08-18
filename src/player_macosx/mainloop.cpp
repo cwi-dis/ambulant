@@ -95,12 +95,13 @@ mainloop::mainloop(const char *urlstr, void *view,
 void
 mainloop::init_playable_factory()
 {
-	m_playable_factory = common::get_global_playable_factory();
+	common::global_playable_factory *pf = common::get_global_playable_factory();
+	set_playable_factory(pf);
 #ifndef NONE_PLAYER
-	m_playable_factory->add_factory(new gui::cocoa::cocoa_renderer_factory(this));
+	pf->add_factory(new gui::cocoa::cocoa_renderer_factory(this));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
-	m_playable_factory->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
+	pf->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
 #endif // WITH_SDL
 #endif // NONE_PLAYER
 }
@@ -110,35 +111,36 @@ mainloop::init_window_factory()
 {
 #ifdef NONE_PLAYER
 	// Replace the real window factory with a none_window_factory instance.
-	m_window_factory = new gui::none::none_window_factory();
+	set_window_factory(new gui::none::none_window_factory());
 #else
-	m_window_factory = new gui::cocoa::cocoa_window_factory(m_view);
+	set_window_factory(new gui::cocoa::cocoa_window_factory(m_view));
 #endif // NONE_PLAYER
 }
 
 void
 mainloop::init_datasource_factory()
 {
-	m_datasource_factory = new net::datasource_factory();
+	net::datasource_factory *df = new net::datasource_factory();
+	set_datasource_factory(df);
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	m_datasource_factory->add_video_factory(new net::live_video_datasource_factory());
-	m_datasource_factory->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(new net::live_video_datasource_factory());
+	df->add_audio_factory(new net::live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
-	m_datasource_factory->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
 #endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
-	m_datasource_factory->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_parser_finder");
-	m_datasource_factory->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
-	m_datasource_factory->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG
 #endif // NONE_PLAYER
 #ifdef WITH_STDIO_DATASOURCE
@@ -147,16 +149,16 @@ mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_stdio_datasource_factory());
+	df->add_raw_factory(net::get_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_posix_datasource_factory());
+	df->add_raw_factory(net::get_posix_datasource_factory());
 }
 
 void
 mainloop::init_parser_factory()
 {
-	m_parser_factory = lib::global_parser_factory::get_parser_factory();	
+	set_parser_factory(lib::global_parser_factory::get_parser_factory());	
 }
 
 mainloop::~mainloop()
@@ -164,7 +166,7 @@ mainloop::~mainloop()
 	delete m_doc;
 	m_doc = NULL;
 	delete m_gui_screen;
-	delete m_window_factory;
+	// delete m_window_factory;
 }
 
 void

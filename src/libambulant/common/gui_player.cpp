@@ -61,10 +61,10 @@ gui_player::play()
 		m_lock.leave();
 		return;
 	}
-	assert(m_playable_factory);
-	assert(m_window_factory);
-	assert(m_datasource_factory);
-	assert(m_parser_factory);
+	assert(get_playable_factory());
+	assert(get_window_factory());
+	assert(get_datasource_factory());
+	assert(get_parser_factory());
 	common::player *p = m_player;
 //XXX	if (p->is_playing()) lib::logger::get_logger()->debug("gui_player::play: already playing!");
 	p->start();

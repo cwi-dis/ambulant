@@ -390,11 +390,22 @@ public:
 	factories(PyObject *itself);
 	virtual ~factories();
 
+	void init_factories();
 	void init_playable_factory();
 	void init_window_factory();
 	void init_datasource_factory();
 	void init_parser_factory();
 	void init_node_factory();
+	ambulant::common::global_playable_factory* get_playable_factory() const;
+	ambulant::common::window_factory* get_window_factory() const;
+	ambulant::net::datasource_factory* get_datasource_factory() const;
+	ambulant::lib::global_parser_factory* get_parser_factory() const;
+	ambulant::lib::node_factory* get_node_factory() const;
+	void set_playable_factory(ambulant::common::global_playable_factory* pf);
+	void set_window_factory(ambulant::common::window_factory* wf);
+	void set_datasource_factory(ambulant::net::datasource_factory* df);
+	void set_parser_factory(ambulant::lib::global_parser_factory* pf);
+	void set_node_factory(ambulant::lib::node_factory* nf);
   private:
 	PyObject *py_factories;
 
@@ -455,8 +466,8 @@ public:
 	bool is_play_active() const;
 	bool is_stop_active() const;
 	bool is_pause_active() const;
-	int after_mousemove();
 	void before_mousemove(int cursor);
+	int after_mousemove();
 	void on_char(int c);
 	void on_focus_advance();
 	void on_focus_activate();

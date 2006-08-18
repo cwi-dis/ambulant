@@ -45,7 +45,7 @@ class custom_test {
   public:
 	std::string idd;   /// XML id of the customTest
 	std::string title; /// title attribute value
-	bool state;    /// Current state (on/off) of the custom test
+	bool state;    /// Current state of the custom test
 	bool override; /// True if custom test can be overridden thru player GUI
 	std::string uid;   /// uid attribute value
 };

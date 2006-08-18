@@ -5369,19 +5369,6 @@ static PyObject *gui_playerObj_is_pause_active(gui_playerObject *_self, PyObject
 	return _res;
 }
 
-static PyObject *gui_playerObj_after_mousemove(gui_playerObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	int _rv = _self->ob_itself->after_mousemove();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("i",
-	                     _rv);
-	return _res;
-}
-
 static PyObject *gui_playerObj_before_mousemove(gui_playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5394,6 +5381,19 @@ static PyObject *gui_playerObj_before_mousemove(gui_playerObject *_self, PyObjec
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
+	return _res;
+}
+
+static PyObject *gui_playerObj_after_mousemove(gui_playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->after_mousemove();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
 	return _res;
 }
 
@@ -5581,10 +5581,10 @@ static PyMethodDef gui_playerObj_methods[] = {
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"is_pause_active", (PyCFunction)gui_playerObj_is_pause_active, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
-	{"after_mousemove", (PyCFunction)gui_playerObj_after_mousemove, 1,
-	 PyDoc_STR("() -> (int _rv)")},
 	{"before_mousemove", (PyCFunction)gui_playerObj_before_mousemove, 1,
 	 PyDoc_STR("(int cursor) -> None")},
+	{"after_mousemove", (PyCFunction)gui_playerObj_after_mousemove, 1,
+	 PyDoc_STR("() -> (int _rv)")},
 	{"on_char", (PyCFunction)gui_playerObj_on_char, 1,
 	 PyDoc_STR("(int c) -> None")},
 	{"on_focus_advance", (PyCFunction)gui_playerObj_on_focus_advance, 1,

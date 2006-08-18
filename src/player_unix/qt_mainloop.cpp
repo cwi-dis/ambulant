@@ -88,7 +88,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui, qt_window_factory* wf)
 {
  	m_logger = lib::logger::get_logger();
  	set_embedder(this);
- 	m_window_factory = wf;
+ 	set_window_factory(wf);
 	wf->set_gui_player (this);
  	init_factories();
  	init_plugins();
@@ -120,43 +120,44 @@ qt_mainloop::create_player(const char* filename) {
 void
 qt_mainloop::init_playable_factory()
 {
-	m_playable_factory = common::get_global_playable_factory();
+	common::global_playable_factory *pf = common::get_global_playable_factory();
+	set_playable_factory(pf);
 
-	m_playable_factory->add_factory(new qt_renderer_factory(this));
+	pf->add_factory(new qt_renderer_factory(this));
 	AM_DBG m_logger->debug("qt_mainloop: adding qt_video_factory");		
- 	m_playable_factory->add_factory(new qt_video_factory(this));
+ 	pf->add_factory(new qt_video_factory(this));
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
-	m_playable_factory->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
+	pf->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
 #endif // WITH_SDL
 #ifdef WITH_ARTS
-	m_playable_factory->add_factory(new arts::arts_renderer_factory(this));
+	pf->add_factory(new arts::arts_renderer_factory(this));
 #endif 
 }
 
 void
 qt_mainloop::init_datasource_factory()
 {
-	m_datasource_factory = new net::datasource_factory();
+	net::datasource_factory *df = new net::datasource_factory();
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add live_audio_datasource_factory");
-	m_datasource_factory->add_video_factory(new net::live_video_datasource_factory());
-	m_datasource_factory->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(new net::live_video_datasource_factory());
+	df->add_audio_factory(new net::live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
-	m_datasource_factory->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
 #endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_datasource_factory");
-	m_datasource_factory->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_parser_finder");
-	m_datasource_factory->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_filter_finder");
-	m_datasource_factory->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_raw_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // NONE_PLAYER
 #ifdef WITH_STDIO_DATASOURCE
 	// This is for debugging only, really: the posix datasource
@@ -164,16 +165,16 @@ qt_mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add stdio_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_stdio_datasource_factory());
+	df->add_raw_factory(net::get_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add posix_datasource_factory");
-	m_datasource_factory->add_raw_factory(net::get_posix_datasource_factory());
+	df->add_raw_factory(net::get_posix_datasource_factory());
 }
 
 void
 qt_mainloop::init_parser_factory()
 {
-	m_parser_factory = lib::global_parser_factory::get_parser_factory();	
+	set_parser_factory(lib::global_parser_factory::get_parser_factory());	
 }
 
 
