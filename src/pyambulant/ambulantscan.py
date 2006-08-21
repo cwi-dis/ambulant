@@ -109,6 +109,7 @@ class MyScanner(CxxScanner):
             "none_background_renderer",
             "none_background_renderer_ptr",
             "tile_positions",    # We don't do lists, for now
+            "QWidget_ptr"
             
         ]
 
@@ -182,7 +183,14 @@ class MyScanner(CxxScanner):
               ], [
                 ('lib_rect', 'out_src_rect', 'OutMode'),
               ]
-            )
+            ),
+            ('create_qt_window_factory_unsafe',
+              [
+                ('void_ptr', '*', 'InMode'),
+              ], [
+                ('pycobject', '*', 'InMode'),
+              ]
+            ),
 
         ]        
 if __name__ == "__main__":

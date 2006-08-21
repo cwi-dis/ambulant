@@ -33,11 +33,11 @@ namespace gui {
 namespace qt {
 
 #ifdef Q_DEFINED_QWIDGET
-common::window_factory *create_qt_window_factory(QWidget *parent_widget, int top_offset, common::gui_player *gpl);
+AMBULANTAPI common::window_factory *create_qt_window_factory(QWidget *parent_widget, int top_offset, common::gui_player *gpl);
 #endif
-common::window_factory *create_qt_window_factory_unsafe(void *parent_widget, int top_offset, common::gui_player *gpl);
-common::playable_factory *create_qt_playable_factory(common::factories *factory);
-common::playable_factory *create_qt_video_factory(common::factories *factory);
+AMBULANTAPI common::window_factory *create_qt_window_factory_unsafe(void *parent_widget, int top_offset, common::gui_player *gpl);
+AMBULANTAPI common::playable_factory *create_qt_playable_factory(common::factories *factory);
+AMBULANTAPI common::playable_factory *create_qt_video_factory(common::factories *factory);
 
 } // namespace qt
 

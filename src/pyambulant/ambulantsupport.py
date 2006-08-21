@@ -33,6 +33,7 @@ includestuff = includestuff + """
 
 extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
+extern int cobject_Convert(PyObject *v, void **p_itself);
 
 /* Workaround for "const" added in Python 2.5. But removed before 2.5a1? */
 #if PY_VERSION_HEX >= 0x02050000 && PY_VERSION_HEX < 0x020500a1
@@ -122,6 +123,8 @@ tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")
 pause_display = Type("ambulant::common::pause_display", "l")
+
+pycobject = OpaqueByValueType("void*", "cobject")
 
 # This is a bit of a hack. These types are opaque, really.
 renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")
@@ -347,6 +350,9 @@ common_region_info_ptr = region_info_ptr
 common_gui_window_ptr = gui_window_ptr
 common_gui_events_ptr = gui_events_ptr
 common_bgrenderer_ptr = bgrenderer_ptr
+common_gui_player_ptr = gui_player_ptr
+common_playable_factory_ptr = playable_factory_ptr
+common_window_factory_ptr = window_factory_ptr
 lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr

@@ -38,6 +38,7 @@
 
 extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
+extern int cobject_Convert(PyObject *v, void **p_itself);
 
 /* Workaround for "const" added in Python 2.5. But removed before 2.5a1? */
 #if PY_VERSION_HEX >= 0x02050000 && PY_VERSION_HEX < 0x020500a1
@@ -13468,6 +13469,60 @@ static PyObject *PyAm_create_smil2_player(PyObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *PyAm_create_qt_window_factory_unsafe(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::window_factory* _rv;
+	void* parent_widget;
+	int top_offset;
+	ambulant::common::gui_player* gpl;
+	if (!PyArg_ParseTuple(_args, "O&iO&",
+	                      cobject_Convert, &parent_widget,
+	                      &top_offset,
+	                      gui_playerObj_Convert, &gpl))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::qt::create_qt_window_factory_unsafe(parent_widget,
+	                                                         top_offset,
+	                                                         gpl);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     window_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_qt_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::qt::create_qt_playable_factory(factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::qt::create_qt_video_factory(factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+
 static PyObject *PyAm_read_data_from_url(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -13572,6 +13627,12 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory) -> (ambulant::common::player* _rv)")},
 	{"create_smil2_player", (PyCFunction)PyAm_create_smil2_player, 1,
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory, ambulant::common::embedder* sys) -> (ambulant::common::player* _rv)")},
+	{"create_qt_window_factory_unsafe", (PyCFunction)PyAm_create_qt_window_factory_unsafe, 1,
+	 PyDoc_STR("(void* parent_widget, int top_offset, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+	{"create_qt_playable_factory", (PyCFunction)PyAm_create_qt_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+	{"create_qt_video_factory", (PyCFunction)PyAm_create_qt_video_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 	{"read_data_from_url", (PyCFunction)PyAm_read_data_from_url, 1,
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::datasource_factory* df, Buffer result) -> (bool _rv, Buffer result)")},
 	{"read_data_from_datasource", (PyCFunction)PyAm_read_data_from_datasource, 1,

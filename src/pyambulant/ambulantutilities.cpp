@@ -22,6 +22,14 @@ bool_Convert(PyObject *v, bool *p_itself)
     return 1;
 }
 
+int
+am_CObject_Convert(PyObject *v, void **p_itself)
+{
+    if (!PyCObject_Check(v)) return 0;
+    *p_itself = PyCObject_AsVoidPtr(v);
+    return 1;
+}
+
 PyObject *
 ambulant_url_New(const ambulant::net::url& itself)
 {
