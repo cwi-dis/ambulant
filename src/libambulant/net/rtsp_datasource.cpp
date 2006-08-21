@@ -48,6 +48,10 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
+	m_context->vbuffer = (unsigned char*)malloc(20000);
+	m_context->vbufferlen = 0;
+	
+	
 }
 
 
@@ -86,6 +90,8 @@ rtsp_context_t::~rtsp_context_t()
 	delete video_packet;//should already be free
 	delete audio_packet;
 	free(rtsp_client);//has destructor
+	free(vbuffer);
+	delete(vbuffer);
 	
 }
 
@@ -379,20 +385,50 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	// our zero-based timestamps.
 	if (context->first_sync_time.tv_sec == 0 && context->first_sync_time.tv_usec == 0 ) {
 		context->first_sync_time.tv_sec = pts.tv_sec;
-		context->first_sync_time.tv_usec = pts.tv_usec; 
+		context->first_sync_time.tv_usec = pts.tv_usec;
+		context->last_pts=0;
+		if(context->configDataLen > 0)//Required by MP4V-ES. Only required for the first packet.
+			context->sinks[context->video_stream]->data_avail(0, (uint8_t*) context->configData , context->configDataLen);
 		
+		//memcpy(context->vbuffer, context->video_packet, sz);
+		//context->vbufferlen=sz;
 	}
 	timestamp_t rpts =  (pts.tv_sec - context->first_sync_time.tv_sec) * 1000000  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
 	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
 	
-	// Send the data to our sink, which is responsible for copying/saving it before returning.
-	if(context->sinks[context->video_stream]) {
-		if(context->configDataLen > 0)//Required by MP4V-ES 
-			context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->configData , context->configDataLen);
-		context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->video_packet , sz);
-	}
+	
+	//Frame alignment for large frames, Live doesn't seem to do it.
+	//If the frame is bigger than 20kb display the rest next time
+	 if (rpts == context->last_pts) {
+		 if((sz + context->vbufferlen)>20000)
+		 {
+			 lib::logger::get_logger()->error("Frame too large to display");
+			 context->vbufferlen=0;
+		 }else{
+		 
+			memcpy((context->vbuffer + context->vbufferlen), context->video_packet, sz);
+			context->vbufferlen += sz;
+		 }
+	 }else{		 
 
-	// Tell the main demux loop that we're ready for another packet.
+
+		// Send the data to our sink, which is responsible for copying/saving it before returning.
+		if(context->sinks[context->video_stream]) {
+			lib::logger::get_logger()->debug("Video packet length %d", context->vbufferlen);
+			context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->vbuffer , context->vbufferlen);
+		}
+		
+		context->last_pts=rpts;
+		//copy the first packet of the next frame
+		memcpy(context->vbuffer, context->video_packet, sz);
+		context->vbufferlen=sz;
+	} 
+
+
+
+
+
+		 // Tell the main demux loop that we're ready for another packet.
 	context->need_video = true;
 	free(context->video_packet);
 	if(context->configDataLen > 0){
