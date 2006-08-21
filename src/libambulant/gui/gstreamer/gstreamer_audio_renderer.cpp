@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -94,26 +94,16 @@ gstreamer_audio_renderer::~gstreamer_audio_renderer()
 	m_lock.leave();
 }
 
-extern "C" {
-void
-gstreamer_audio_renderer_pipeline_store(void* obj, GstElement*pipeline) {
-	gstreamer_audio_renderer* rend = (gstreamer_audio_renderer*) obj;
-	if (rend) rend->m_pipeline = pipeline;
-}
-}
-
 void
 gstreamer_audio_renderer::init_player(const lib::node *node)
 {
 	m_lock.enter();
 	assert (node);
 	m_url = node->get_url("src");
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::init_player(0x%x) url=",  this, m_url.get_url().c_str());
+	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::init_player(0x%x) url=%s",  this, m_url.get_url().c_str());
 	_init_clip_begin_end();
 	m_player = new gstreamer_player(m_url.get_url().c_str(), this);
-	m_player->init();
 	m_lock.leave();
-	//KB	if (gst_player failed)m_context->stopped(m_cookie, 0);
 }
 
 void
