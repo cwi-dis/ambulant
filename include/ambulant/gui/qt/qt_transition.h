@@ -28,7 +28,7 @@
 
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_includes.h" // TMP 
 namespace ambulant {
 

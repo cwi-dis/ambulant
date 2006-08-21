@@ -28,6 +28,15 @@ class Glue(ambulant.gui_player, ambulant.factories):
         player = ambulant.create_smil2_player(self.document, self, None)
         player.initialize()
         self.set_player(player)
+        
+        print 'QWidget', widget
+        import pdb ; pdb.set_trace()
+        import sip
+        vptr = sip.voidptr(widget)
+        print 'sip.voidptr', vptr
+        print 'int', int(vptr)
+        w2 = qt.QWidget(vptr)
+        print 'QWidget 2', w2
     
     #
     # Initialization methods - create the various factories

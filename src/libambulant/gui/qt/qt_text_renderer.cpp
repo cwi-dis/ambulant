@@ -22,7 +22,7 @@
  */
 
 #include "ambulant/gui/qt/qt_includes.h"
-#include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/smil2/params.h"

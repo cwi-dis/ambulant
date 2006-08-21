@@ -30,6 +30,7 @@ def main():
         AMBULANT+ "common/player.h",
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "gui/none/none_gui.h",
+        AMBULANT+ "gui/qt/qt_factory.h",
         AMBULANT+ "net/datasource.h",
         AMBULANT+ "net/posix_datasource.h",
         AMBULANT+ "net/stdio_datasource.h",

@@ -34,6 +34,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/version.h"
+#include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory.h"
 
 //#define AM_DBG
@@ -291,8 +292,7 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	m_smilfilename = smilfilename;
 	if (m_mainloop != NULL)
 		delete m_mainloop;
-	qt_window_factory *wf = new ambulant::gui::qt::qt_window_factory(this, m_menubar_height);
- 	m_mainloop = new qt_mainloop(this, wf);
+ 	m_mainloop = new qt_mainloop(this, m_menubar_height);
 	return m_mainloop->is_open();
 }
 

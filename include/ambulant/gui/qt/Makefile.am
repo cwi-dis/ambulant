@@ -7,4 +7,5 @@ library_include_HEADERS=		\
 	qt_text_renderer.h		\
 	qt_transition.h		\
 	qt_video_renderer.h		\
-	qt_factory.h
+	qt_factory.h \
+	qt_factory_impl.h

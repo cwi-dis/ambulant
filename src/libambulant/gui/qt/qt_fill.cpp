@@ -19,7 +19,7 @@
 
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
-#include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_fill.h"
 #include "ambulant/gui/qt/qt_transition.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"

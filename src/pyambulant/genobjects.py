@@ -106,6 +106,8 @@ OBJECTS=[
 	
 	"net/stdio_datasource.h",
 	"net/posix_datasource.h",
+	
+	"gui/qt/qt_factory.h"
 ]
 
 out = open('ambulantobjgen.py', 'w')

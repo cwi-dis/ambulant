@@ -23,8 +23,8 @@
 #define AM_DBG if(0)
 #endif
  
-#include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_includes.h"
+#include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #ifdef	WITH_QT_HTML_WIDGET
 #include "ambulant/gui/qt/qt_html_renderer.h"
@@ -37,6 +37,40 @@ using namespace ambulant;
 using namespace gui::qt;
 using namespace net;
 
+//---------------------------------------------------------------------------
+// External interfaces
+common::window_factory *
+ambulant::gui::qt::create_qt_window_factory(QWidget *parent_widget, int top_offset, gui_player *gpl)
+{
+    return new qt_window_factory(parent_widget, top_offset, gpl);
+}
+
+common::window_factory *
+ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_offset, gui_player *gpl)
+{
+    QWidget *qw = reinterpret_cast<QWidget*>(parent_widget);
+    if (qw == NULL) {
+        lib::logger::get_logger()->fatal("create_qt_window_factory: Not a QWidget!");
+        return NULL;
+    }
+    return new qt_window_factory(qw, top_offset, gpl);
+}
+
+common::playable_factory *
+ambulant::gui::qt::create_qt_playable_factory(common::factories *factory)
+{
+    return new qt_renderer_factory(factory);
+}
+
+common::playable_factory *
+ambulant::gui::qt::create_qt_video_factory(common::factories *factory)
+{
+    return new qt_video_factory(factory);
+}
+
+
+//---------------------------------------------------------------------------
+// Internal implementations
 //
 // Auxiliary/debug code to dump pixmaps at various stages of transitions and
 // such. Enable by defining WITH_DUMPPIXMAP
@@ -135,25 +169,14 @@ qt_renderer_factory::new_aux_audio_playable(
 // qt_window_factory
 //
 
-qt_window_factory::qt_window_factory( QWidget* parent_widget, int top_offset)
+qt_window_factory::qt_window_factory( QWidget* parent_widget, int top_offset, gui_player *gpl)
 :	m_parent_widget(parent_widget),
-    m_top_offset(top_offset)
+    m_top_offset(top_offset),
+    m_gui_player(gpl)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory (0x%x)", (void*) this);
 }	
 
-void
-qt_window_factory::set_gui_player(gui_player* gpl)
-{
-	m_gui_player = gpl;
-}
-	
-gui_player* 
-qt_window_factory::get_gui_player()
-{
-	return m_gui_player;
-}
-	
 common::gui_window *
 qt_window_factory::new_window (const std::string &name,
     lib::size bounds,
@@ -178,7 +201,7 @@ qt_window_factory::new_window (const std::string &name,
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
 	qaw->set_gui_player(m_gui_player);
- 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x gui_player=0x%x", (void*) this, (void*) qaw, (void*) aqw, (void*) m_gui_player);
+ 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x", (void*) this, (void*) qaw, (void*) aqw);
 	qaw->show();
 	return aqw;
 }
@@ -513,7 +536,7 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 	lib::rect* bounds,
 	QWidget* parent_widget)
 :	QWidget(parent_widget,"qt_ambulant_widget",0),
-	m_gui_player(NULL),
+    m_gui_player(NULL),
 	m_qt_window(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",

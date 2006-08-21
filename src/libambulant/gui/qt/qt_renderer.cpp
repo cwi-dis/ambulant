@@ -18,7 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/gui/qt/qt_includes.h"
-#include "ambulant/gui/qt/qt_renderer.h"
+#include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_transition.h"
 
 //#define AM_DBG

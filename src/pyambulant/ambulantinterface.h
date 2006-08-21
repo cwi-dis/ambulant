@@ -26,6 +26,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/stdio_datasource.h"
 #include "ambulant/net/posix_datasource.h"
+#include "ambulant/gui/qt/qt_factory.h"
 
 #include "ambulant/lib/node_navigator.h"
 

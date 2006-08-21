@@ -34,6 +34,7 @@
 #include "ambulant/net/ffmpeg_factory.h"
 #endif
 #include "ambulant/gui/none/none_factory.h"
+#include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/parser_factory.h"
@@ -83,13 +84,14 @@ open_web_browser(const std::string &href)
 	}
 }
 
-qt_mainloop::qt_mainloop(qt_gui* gui, qt_window_factory* wf)
+qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 :	m_gui(gui)
 {
  	m_logger = lib::logger::get_logger();
  	set_embedder(this);
+	common::window_factory *wf = create_qt_window_factory(m_gui, mbheight, this);
+	assert(wf);
  	set_window_factory(wf);
-	wf->set_gui_player (this);
  	init_factories();
  	init_plugins();
 	
@@ -123,9 +125,9 @@ qt_mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
-	pf->add_factory(new qt_renderer_factory(this));
+	pf->add_factory(create_qt_playable_factory(this));
 	AM_DBG m_logger->debug("qt_mainloop: adding qt_video_factory");		
- 	pf->add_factory(new qt_video_factory(this));
+ 	pf->add_factory(create_qt_video_factory(this));
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
