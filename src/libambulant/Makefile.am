@@ -214,7 +214,7 @@ AM_CPPFLAGS = \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
 		-DAMBULANT_PLUGINDIR=\"$(pkglibdir)\"
 
-AM_LDFLAGS= \
+libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expatlibs) \
 	$(livelibs) \
