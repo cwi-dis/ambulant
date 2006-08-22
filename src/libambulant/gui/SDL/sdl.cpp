@@ -24,7 +24,7 @@
 
 // SDL.h is needed here to solve a compile problem with gcc 4.0
 #include <SDL.h>
-#include "ambulant/gui/sdl/sdl_factory.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
 
