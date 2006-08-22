@@ -43,9 +43,9 @@ ambulant::gui::gtk::create_gtk_renderer_factory(common::factories *factory)
 }
 
 common::window_factory *
-ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop)
+ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl)
 {
-    return new gtk_window_factory(gtk_widget, loop);
+    return new gtk_window_factory(gtk_widget, loop, gpl);
 }
 
 common::playable_factory *
@@ -210,8 +210,8 @@ gtk_renderer_factory::new_aux_audio_playable(
 // gtk_window_factory
 //
 
-gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMainLoop* loop)
-:	m_gui_player(NULL),
+gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMainLoop* loop, common::gui_player* gpl)
+:	m_gui_player(gpl),
 	m_parent_widget(parent_widget)
 {
 	m_main_loop = loop;
@@ -228,12 +228,6 @@ gtk_window_factory::~gtk_window_factory( )
 	gdk_cursor_unref(m_hand2_cursor);
 }
 
-void
-gtk_window_factory::set_gui_player(common::gui_player* gpl)
-{
-	m_gui_player = gpl;
-}
- 
 common::gui_window *
 gtk_window_factory::new_window (const std::string &name,
 			       lib::size bounds,

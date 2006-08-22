@@ -73,16 +73,12 @@ class gtk_renderer_factory : public common::playable_factory {
 /// GTK implementation of window_factory
 class gtk_window_factory : public common::window_factory {
   public:
-//	gtk_window_factory( GtkWidget* parent_widget, int x, int y, GMainLoop* loop);
-	gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop);
-//	gtk_window_factory( GtkWidget* parent_widget, int x, int y);	
+	gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl);
 	~gtk_window_factory();
 	common::gui_window* new_window(const std::string &name, lib::size bounds,
 				       common::gui_events *region);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
 		
-	/// Helper: set our top-level gui_player.
-	void set_gui_player(common::gui_player* gpl);
 
   private:
 //	GtkWidget* m_parent_widget;
@@ -251,7 +247,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 };  // class gtk_ambulant_widget
 
 AMBULANTAPI common::playable_factory *create_gtk_renderer_factory(common::factories *factory);
-AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop);
+AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl);
 AMBULANTAPI common::playable_factory *create_gtk_video_factory(common::factories *factory);
 
 } // namespace gtk

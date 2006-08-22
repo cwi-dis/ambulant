@@ -24,7 +24,7 @@ EXTRA_DIST=setup.py \
 
 if WITH_QT
 extra_qt_cflags=-DWITH_QT
-extra_qt_ldflags=-lambulant_qt -L$(QT_PREFIX)/lib -lqt
+extra_qt_ldflags=-lambulant_qt -L$(QT_PREFIX)/lib -lqt-mt
 else
 extra_qt_cflags=
 extra_qt_ldflags=
