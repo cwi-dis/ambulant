@@ -32,7 +32,8 @@ namespace gui {
 
 namespace qt {
 
-#ifdef Q_DEFINED_QWIDGET
+#if defined(Q_DEFINED_QWIDGET) || defined(QWIDGET_H)
+// Only define this if the QT includes are in scope
 AMBULANTAPI common::window_factory *create_qt_window_factory(QWidget *parent_widget, int top_offset, common::gui_player *gpl);
 #endif
 AMBULANTAPI common::window_factory *create_qt_window_factory_unsafe(void *parent_widget, int top_offset, common::gui_player *gpl);

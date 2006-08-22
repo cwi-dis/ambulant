@@ -22,10 +22,10 @@
 #ifndef QT_FACTORY_IMPL_H
 #define QT_FACTORY_IMPL_H
 
-#include "ambulant/gui/qt/qt_factory.h"
 
 #include "qt_includes.h"
 #include "qt_fill.h"
+#include "ambulant/gui/qt/qt_factory.h"
 
 namespace ambulant {
 
