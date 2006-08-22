@@ -247,7 +247,6 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
-	net::timestamp_t frame_duration = 33000; // XXX For now: assume 30fps
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (!m_activated || !m_src) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: returning (already shutting down)");
@@ -265,6 +264,7 @@ video_renderer::data_avail()
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
+	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
 	
 	// If we are at the end of the clip we stop and signal the scheduler.
 	if (m_src->end_of_file() || (m_clip_end > 0 && frame_ts_micros > m_clip_end)) {
@@ -281,12 +281,12 @@ video_renderer::data_avail()
 	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);	
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
+	lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
 
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
-	if (buf && frame_ts_micros <= now_micros + frame_duration && frame_ts_micros >= m_clip_begin-frame_duration) {
+	if (buf && (frame_ts_micros <= now_micros + (2*frame_duration)) && (frame_ts_micros >= m_clip_begin-frame_duration)) {
 		// It could be we're displaying this frame already. In that case there's no point in
 		// re-displaying.
 		if (frame_ts_micros > m_last_frame_timestamp ) {
@@ -301,8 +301,9 @@ video_renderer::data_avail()
 		m_src->frame_done(frame_ts_micros, true);
 		// Now we need to decide when we want the next callback, by computing what the timestamp
 		// of the next frame is expected to be.
-		frame_ts_micros += frame_duration;						
-	} else if (frame_ts_micros <= now_micros+frame_duration) {
+		if(!(frame_ts_micros <  (now_micros - frame_duration)))//if the current frames time was older than one frameduration don't increment the time to callback
+			frame_ts_micros += frame_duration;						
+	} else if (frame_ts_micros <= now_micros - frame_duration) {
 		m_frame_late++;
 		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now+dur=%lld", frame_ts_micros, now_micros+frame_duration);
 	} else if (frame_ts_micros >= m_clip_begin-frame_duration) {

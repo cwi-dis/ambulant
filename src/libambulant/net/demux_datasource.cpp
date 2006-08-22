@@ -604,6 +604,12 @@ demux_video_datasource::height()
 	return fmt.height;
 }
 
+int
+demux_video_datasource::frameduration()
+{//STUB CODE, not to be used currently
+	
+	return 0;
+}
 bool 
 demux_video_datasource::has_audio()
 {

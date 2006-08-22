@@ -81,17 +81,11 @@ rtsp_context_t::~rtsp_context_t()
 	rtsp_client->teardownMediaSession(*media_session);//Just to be sure
 	//deleting stuff
 	free(scheduler);
-	delete scheduler;
 	free(sdp);
-	delete sdp;
 	free(sinks);
-	delete sinks;
 	free(media_session);//has destructor 
-	delete video_packet;//should already be free
-	delete audio_packet;
 	free(rtsp_client);//has destructor
 	free(vbuffer);
-	delete(vbuffer);
 	
 }
 
@@ -202,7 +196,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
-				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
+				lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
 
 			}
 		} else {
@@ -397,12 +391,13 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
 	
 	
-	//Frame alignment for large frames, Live doesn't seem to do it.
+	//Frame alignment for Mpeg1 or 2 frames, Live doesn't do it.
 	//If the frame is bigger than 20kb display the rest next time
+	//TODO display what I have currently as well : the impartial frame.
 	 if (rpts == context->last_pts) {
 		 if((sz + context->vbufferlen)>20000)
 		 {
-			 lib::logger::get_logger()->error("Frame too large to display");
+			 lib::logger::get_logger()->trace("Frame too large to display");
 			 context->vbufferlen=0;
 		 }else{
 		 
@@ -415,7 +410,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		// Send the data to our sink, which is responsible for copying/saving it before returning.
 		if(context->sinks[context->video_stream]) {
 			lib::logger::get_logger()->debug("Video packet length %d", context->vbufferlen);
-			context->sinks[context->video_stream]->data_avail(rpts, (uint8_t*) context->vbuffer , context->vbufferlen);
+			context->sinks[context->video_stream]->data_avail(context->last_pts, (uint8_t*) context->vbuffer , context->vbufferlen);
 		}
 		
 		context->last_pts=rpts;

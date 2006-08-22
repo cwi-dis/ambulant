@@ -362,6 +362,14 @@ ffmpeg_video_decoder_datasource::height()
 	return m_fmt.height;
 }
 
+int ffmpeg_video_decoder_datasource::frameduration()
+{
+	if(m_fmt.frameduration <=0)
+		_need_fmt_uptodate();
+	if(m_fmt.frameduration <= 0)
+		m_fmt.frameduration = 33000;
+	return m_fmt.frameduration;
+}
 void
 ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 {
@@ -632,13 +640,10 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
 	assert(m_frames.size() > 0 || _end_of_file());
-	if(m_fmt.frameduration  <= 0) {
-		_need_fmt_uptodate();
-	}
 	
-	timestamp_t frame_duration = m_fmt.frameduration; 
+	timestamp_t frame_duration = frameduration(); 
 	assert (frame_duration > 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+	lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
 
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
@@ -647,8 +652,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
 	// renderer (where we can gather statistics)
 	bool firstdrop = true;
-	while ( m_frames.size() && m_old_frame.first < now - frame_duration) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x",m_old_frame.first,now, m_old_frame.second);
+	while ( m_frames.size() && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
+		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
 		if (!firstdrop) m_dropped_count++;
 		firstdrop = false;
@@ -668,7 +674,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 		lib::logger::get_logger()->debug("go figure...");
 	}
 #endif
-	assert(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration);
+	assert(m_frames.size() == 0 || m_frames.top().first >= now-(2*frame_duration));
 	
 	 
 	if (timestamp_p) *timestamp_p = m_old_frame.first;
