@@ -325,6 +325,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// Returns the height of the image returned by get_frame.
 	virtual int height() = 0;
 	
+	virtual int frameduration() = 0;
 	/// Called by the client to indicate all frames up to timestamp are consumed.
 	/// If keepdata is set the actual storage for a frame with an exact
 	/// timestamp match is not freed.

@@ -96,6 +96,7 @@ class ffmpeg_video_decoder_datasource:
 	bool has_audio();
     int width();
   	int height();
+  int frameduration();
 	audio_datasource *get_audio_datasource();
 
     void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);  
