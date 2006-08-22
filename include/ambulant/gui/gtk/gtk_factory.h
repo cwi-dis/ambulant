@@ -31,8 +31,6 @@
 #include "gtk_includes.h"
 #include "gtk_fill.h"
 #include <gtk/gtk.h>
-#include "ambulant/gtk_factory.h"
-
 
 namespace ambulant {
 
@@ -254,7 +252,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 
 AMBULANTAPI common::playable_factory *create_gtk_renderer_factory(common::factories *factory);
 AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop);
-AMBULANTAPI common::playable_factory *create_gtk_video_factory(common::factories *factory)
+AMBULANTAPI common::playable_factory *create_gtk_video_factory(common::factories *factory);
 
 } // namespace gtk
 
