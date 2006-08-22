@@ -53,6 +53,18 @@ namespace gui {
 
 namespace cocoa {
 
+common::window_factory *
+create_cocoa_window_factory(void *view)
+{
+    return new cocoa_window_factory(view);
+}
+
+common::playable_factory *
+create_cocoa_renderer_factory(common::factories *factory)
+{
+    return new cocoa_renderer_factory(factory);
+}
+
 cocoa_window::~cocoa_window()
 {
 	if (m_view) {

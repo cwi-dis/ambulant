@@ -30,7 +30,7 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #ifdef WITH_SDL
-#include "ambulant/gui/SDL/sdl_gui.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #ifdef NONE_PLAYER
 #include "ambulant/gui/none/none_gui.h"
@@ -98,10 +98,10 @@ mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 #ifndef NONE_PLAYER
-	pf->add_factory(new gui::cocoa::cocoa_renderer_factory(this));
+	pf->add_factory(gui::cocoa::create_cocoa_renderer_factory(this));
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
-	pf->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
 #endif // WITH_SDL
 #endif // NONE_PLAYER
 }
@@ -111,9 +111,9 @@ mainloop::init_window_factory()
 {
 #ifdef NONE_PLAYER
 	// Replace the real window factory with a none_window_factory instance.
-	set_window_factory(new gui::none::none_window_factory());
+	set_window_factory(gui::none::create_none_window_factory());
 #else
-	set_window_factory(new gui::cocoa::cocoa_window_factory(m_view));
+	set_window_factory(gui::cocoa::create_cocoa_window_factory(m_view));
 #endif // NONE_PLAYER
 }
 
@@ -125,8 +125,8 @@ mainloop::init_datasource_factory()
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(new net::live_video_datasource_factory());
-	df->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(net::create_live_video_datasource_factory());
+	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
 #ifdef WITH_FFMPEG_VIDEO
@@ -149,10 +149,10 @@ mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
-	df->add_raw_factory(net::get_stdio_datasource_factory());
+	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
-	df->add_raw_factory(net::get_posix_datasource_factory());
+	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
 void

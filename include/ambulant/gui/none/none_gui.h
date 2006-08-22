@@ -109,6 +109,8 @@ class none_playable_factory : public common::playable_factory {
 		net::audio_datasource *src);
 };
 
+AMBULANTAPI common::window_factory *create_none_window_factory();
+
 } // namespace none
 
 } // namespace gui

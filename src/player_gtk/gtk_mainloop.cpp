@@ -24,7 +24,7 @@
 #include "ambulant/gui/gstreamer/gstreamer_renderer_factory.h"
 #endif
 #ifdef WITH_SDL
-#include "ambulant/gui/SDL/sdl_gui.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #include "ambulant/lib/document.h"
 #include "ambulant/net/datasource.h"
@@ -122,7 +122,7 @@ void
 gtk_mainloop::init_window_factory()
 {
 	m_gtk_widget = new gtk_ambulant_widget(m_gui->get_document_container());
-	gtk_window_factory* gtk_wf = new gtk_window_factory(m_gtk_widget, m_gui->main_loop);
+	gtk_window_factory* gtk_wf = create_gtk_window_factory(m_gtk_widget, m_gui->main_loop);
 	set_window_factory(gtk_wf);
 	gtk_wf->set_gui_player (this);
 }
@@ -136,24 +136,24 @@ gtk_mainloop::init_playable_factory()
 
 #ifdef WITH_GSTREAMER
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer");
-	pf->add_factory( new gstreamer::gstreamer_renderer_factory(this) );
+	pf->add_factory(gui::gstreamer::create_gstreamer_renderer_factory(this));
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer done");
 #endif
 
 #ifdef WITH_SDL
 	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	pf->add_factory( new sdl::sdl_renderer_factory(this) );
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 	AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
 
 #ifdef WITH_ARTS
-	pf->add_factory(new arts::arts_renderer_factory(this));
+	pf->add_factory(gui::arts::create_arts_renderer_factory(this));
 #endif 
 	
-	pf->add_factory(new gtk_renderer_factory(this));
-	pf->add_factory(new gtk_video_factory(this));
+	pf->add_factory(create_gtk_renderer_factory(this));
+	pf->add_factory(create_gtk_video_factory(this));
 	AM_DBG m_logger->debug("mainloop::mainloop: added gtk_video_factory");			
-	//pf->add_factory(new none::none_video_factory(this));	
+	//pf->add_factory(create_none_video_factory(this));	
 	//AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");
 	
 }
@@ -165,8 +165,8 @@ gtk_mainloop::init_datasource_factory()
 	set_datasource_factory(df);
 #ifdef WITH_LIVE	
 	AM_DBG m_logger->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(new net::live_video_datasource_factory());
-	df->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(net::create_live_video_datasource_factory());
+	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
     	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
@@ -188,10 +188,10 @@ gtk_mainloop::init_datasource_factory()
 	// however.
 
     	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
-	df->add_raw_factory(new net::stdio_datasource_factory());
+	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
 	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add posix_datasource_factory");
-	df->add_raw_factory(new net::posix_datasource_factory());
+	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
 void

@@ -36,6 +36,24 @@ using namespace ambulant;
 using namespace gui::gtk;
 using namespace net;
 
+common::playable_factory *
+ambulant::gui::gtk::create_gtk_renderer_factory(common::factories *factory)
+{
+    return new gtk_renderer_factory(factory);
+}
+
+common::window_factory *
+ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop)
+{
+    return new gtk_window_factory(gtk_widget, loop);
+}
+
+common::playable_factory *
+ambulant::gui::gtk::create_gtk_video_factory(common::factories *factory)
+{
+    return new gtk_video_factory(factory);
+}
+
 // under construction
 
 // structure to keep track of the dirty area

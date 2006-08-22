@@ -32,6 +32,11 @@
 using namespace ambulant;
 using namespace gui::gstreamer;
 
+common::playable_factory *
+ambulant::gui::gstreamer::create_gstreamer_renderer_factory(common::factories *factory)
+{
+    return new gstreamer_renderer_factory(factory);
+}
 
 // ***************** gstreamer_renderer_factory ************************
 

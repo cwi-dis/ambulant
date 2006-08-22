@@ -35,7 +35,7 @@ using namespace ambulant;
 using namespace net;
 
 raw_datasource_factory *
-ambulant::net::get_stdio_datasource_factory()
+ambulant::net::create_stdio_datasource_factory()
 {
     return new stdio_datasource_factory();
 }

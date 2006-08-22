@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __SDL__
-#define __SDL__
+#ifndef AMBULANT_GUI_SDL_GUI_H
+#define AMBULANT_GUI_SDL_GUI_H
 
 #include <iostream>
 
@@ -65,4 +65,4 @@ class sdl_renderer_factory : public common::playable_factory {
 } // end namespace ambulant
 
 
-#endif
+#endif // AMBULANT_GUI_SDL_GUI_H

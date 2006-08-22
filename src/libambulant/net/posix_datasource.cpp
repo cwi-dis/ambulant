@@ -36,7 +36,7 @@ using namespace ambulant;
 using namespace net;
 
 raw_datasource_factory *
-ambulant::net::get_posix_datasource_factory()
+ambulant::net::create_posix_datasource_factory()
 {
     return new posix_datasource_factory();
 }

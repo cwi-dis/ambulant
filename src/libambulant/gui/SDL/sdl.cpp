@@ -23,12 +23,19 @@
 #endif
 
 // SDL.h is needed here to solve a compile problem with gcc 4.0
-#include <SDL.h> 
+#include <SDL.h>
+#include "ambulant/gui/sdl/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
 
 using namespace ambulant;
 using namespace gui::sdl;
+
+common::playable_factory *
+ambulant::gui::sdl::create_sdl_playable_factory(common::factories *factory)
+{
+    return new sdl_renderer_factory(factory);
+}
 
 sdl_renderer_factory::~sdl_renderer_factory()
 {

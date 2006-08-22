@@ -21,7 +21,7 @@
 #include "ambulant/gui/arts/arts.h"
 #endif
 #ifdef WITH_SDL
-#include "ambulant/gui/SDL/sdl_gui.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #include "ambulant/lib/document.h"
 #include "ambulant/net/datasource.h"
@@ -131,10 +131,10 @@ qt_mainloop::init_playable_factory()
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
-	pf->add_factory( new gui::sdl::sdl_renderer_factory(this) );      
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
 #endif // WITH_SDL
 #ifdef WITH_ARTS
-	pf->add_factory(new arts::arts_renderer_factory(this));
+	pf->add_factory(arts::create_arts_renderer_factory(this));
 #endif 
 }
 
@@ -146,8 +146,8 @@ qt_mainloop::init_datasource_factory()
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE	
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(new net::live_video_datasource_factory());
-	df->add_audio_factory(new net::live_audio_datasource_factory()); 
+	df->add_video_factory(net::create_live_video_datasource_factory());
+	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
@@ -168,10 +168,10 @@ qt_mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add stdio_datasource_factory");
-	df->add_raw_factory(net::get_stdio_datasource_factory());
+	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add posix_datasource_factory");
-	df->add_raw_factory(net::get_posix_datasource_factory());
+	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
 void

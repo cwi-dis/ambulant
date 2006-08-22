@@ -26,17 +26,15 @@
 #include "ambulant/config/config.h"
 #include "ambulant/net/datasource.h"
 
-namespace ambulant
-{
+namespace ambulant {
 
-namespace net
-{  
+namespace net {  
 
-raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
-video_datasource_factory *get_ffmpeg_video_datasource_factory();
-audio_datasource_factory *get_ffmpeg_audio_datasource_factory();
-audio_parser_finder *get_ffmpeg_audio_parser_finder();
-audio_filter_finder *get_ffmpeg_audio_filter_finder();
+AMBULANTAPI raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
+AMBULANTAPI video_datasource_factory *get_ffmpeg_video_datasource_factory();
+AMBULANTAPI audio_datasource_factory *get_ffmpeg_audio_datasource_factory();
+AMBULANTAPI audio_parser_finder *get_ffmpeg_audio_parser_finder();
+AMBULANTAPI audio_filter_finder *get_ffmpeg_audio_filter_finder();
 
 }	// end namespace net
 }	// end namespace ambulant

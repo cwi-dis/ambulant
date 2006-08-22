@@ -63,6 +63,7 @@ class gstreamer_renderer_factory : public common::playable_factory {
 	
 };
 
+AMBULANTAPI common::playable_factory *create_gstreamer_renderer_factory(common::factories *factory);
 
 } // end namespace gstreamer
 } // end namespace gui

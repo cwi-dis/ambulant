@@ -29,6 +29,12 @@
 using namespace ambulant;
 using namespace gui::none;
 
+common::playable_factory *
+ambulant::gui::none::create_none_video_factory(common::factories *factory)
+{
+    return new none_video_factory(factory);
+}
+
 none_video_factory::~none_video_factory()
 {
 }

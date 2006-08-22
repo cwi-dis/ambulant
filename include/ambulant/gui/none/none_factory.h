@@ -51,6 +51,7 @@ class none_video_factory : public common::playable_factory {
 	
 };
 
+AMBULANTAPI common::playable_factory *create_none_video_factory(common::factories *factory);
 }
 }
 }

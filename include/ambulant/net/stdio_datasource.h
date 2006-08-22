@@ -110,6 +110,8 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 	lib::critical_section m_lock;
 };
 
+AMBULANTAPI raw_datasource_factory *create_stdio_datasource_factory();
+
 } // end namespace net
 
 } //end namespace ambulant

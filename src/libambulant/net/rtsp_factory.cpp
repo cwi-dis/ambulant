@@ -32,8 +32,17 @@ using namespace net;
 #define AM_DBG if(0)
 #endif
 
+video_datasource_factory *
+ambulant::net::create_live_video_datasource_factory()
+{
+    return new live_video_datasource_factory();
+}
 
-
+audio_datasource_factory *
+ambulant::net::create_live_audio_datasource_factory()
+{
+    return new live_audio_datasource_factory();
+}
 
 audio_datasource* 
 live_audio_datasource_factory::new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)

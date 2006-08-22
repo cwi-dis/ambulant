@@ -29,25 +29,31 @@ class Glue(ambulant.gui_player, ambulant.factories):
         player.initialize()
         self.set_player(player)
         
+    def qwidget_to_ambulant(self, widget):
+        """Hack: convert QWidget to CObject (which Ambulant can handle)"""
         print 'QWidget', widget
-        import pdb ; pdb.set_trace()
         import sip
-        vptr = sip.voidptr(widget)
-        print 'sip.voidptr', vptr
-        print 'int', int(vptr)
-        w2 = qt.QWidget(vptr)
-        print 'QWidget 2', w2
+        widget_address = sip.unwrapinstance(widget)
+        print 'address', hex(widget_address)
+        widget_vptr = sip.voidptr(widget_address)
+        print 'voidptr', widget_vptr
+        widget_cobj = widget_vptr.ascobject()
+        print 'cobject', widget_cobj
+        return widget_cobj
     
     #
     # Initialization methods - create the various factories
     #
     
     def init_window_factory(self):
-        wf = ambulant.none_window_factory()
+        qwa = self.qwidget_to_ambulant(self.widget)
+        wf = ambulant.create_qt_window_factory_unsafe(qwa, 20, self)
         self.set_window_factory(wf)
         
     def init_playable_factory(self):
         pf = ambulant.get_global_playable_factory()
+        qt_pf = ambulant.create_qt_playable_factory(self)
+        pf.add_factory(qt_pf)
         self.set_playable_factory(pf)
         
     def init_datasource_factory(self):

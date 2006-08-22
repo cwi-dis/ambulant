@@ -28,6 +28,12 @@
 using namespace ambulant;
 using namespace gui::arts;
 
+common::playable_factory *
+ambulant::gui::arts::create_arts_playable_factory(common::factories *f)
+{
+    return new arts_renderer_factory(f);
+}
+
 common::playable *
 gui::arts::arts_renderer_factory::new_playable(
 		common::playable_notification *context,

@@ -13469,6 +13469,20 @@ static PyObject *PyAm_create_smil2_player(PyObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *PyAm_create_none_window_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::window_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::none::create_none_window_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     window_factoryObj_New, _rv);
+	return _res;
+}
+
 #ifdef WITH_QT
 
 static PyObject *PyAm_create_qt_window_factory_unsafe(PyObject *_self, PyObject *_args)
@@ -13532,6 +13546,25 @@ static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
 }
 #endif
 
+#ifdef WITH_SDL
+
+static PyObject *PyAm_create_sdl_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_playable_factory(factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
 static PyObject *PyAm_read_data_from_url(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -13579,14 +13612,14 @@ static PyObject *PyAm_read_data_from_datasource(PyObject *_self, PyObject *_args
 	return _res;
 }
 
-static PyObject *PyAm_get_posix_datasource_factory(PyObject *_self, PyObject *_args)
+static PyObject *PyAm_create_posix_datasource_factory(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	ambulant::net::raw_datasource_factory* _rv;
 	if (!PyArg_ParseTuple(_args, ""))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::net::get_posix_datasource_factory();
+	_rv = ambulant::net::create_posix_datasource_factory();
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     raw_datasource_factoryObj_New, _rv);
@@ -13606,6 +13639,139 @@ static PyObject *PyAm_get_stdio_datasource_factory(PyObject *_self, PyObject *_a
 	                     raw_datasource_factoryObj_New, _rv);
 	return _res;
 }
+
+static PyObject *PyAm_create_stdio_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::raw_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::create_stdio_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     raw_datasource_factoryObj_New, _rv);
+	return _res;
+}
+
+#ifdef WITH_FFMPEG
+
+static PyObject *PyAm_get_ffmpeg_raw_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::raw_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_ffmpeg_raw_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     raw_datasource_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_FFMPEG
+
+static PyObject *PyAm_get_ffmpeg_video_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::video_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_ffmpeg_video_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     video_datasource_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_FFMPEG
+
+static PyObject *PyAm_get_ffmpeg_audio_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_ffmpeg_audio_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasource_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_FFMPEG
+
+static PyObject *PyAm_get_ffmpeg_audio_parser_finder(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_parser_finder* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_ffmpeg_audio_parser_finder();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_parser_finderObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_FFMPEG
+
+static PyObject *PyAm_get_ffmpeg_audio_filter_finder(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_filter_finder* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::get_ffmpeg_audio_filter_finder();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_filter_finderObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_LIVE
+
+static PyObject *PyAm_create_live_video_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::video_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::create_live_video_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     video_datasource_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_LIVE
+
+static PyObject *PyAm_create_live_audio_datasource_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::audio_datasource_factory* _rv;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::net::create_live_audio_datasource_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     audio_datasource_factoryObj_New, _rv);
+	return _res;
+}
+#endif
 
 static PyMethodDef PyAm_methods[] = {
 	{"get_version", (PyCFunction)PyAm_get_version, 1,
@@ -13636,6 +13802,8 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory) -> (ambulant::common::player* _rv)")},
 	{"create_smil2_player", (PyCFunction)PyAm_create_smil2_player, 1,
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory, ambulant::common::embedder* sys) -> (ambulant::common::player* _rv)")},
+	{"create_none_window_factory", (PyCFunction)PyAm_create_none_window_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::window_factory* _rv)")},
 
 #ifdef WITH_QT
 	{"create_qt_window_factory_unsafe", (PyCFunction)PyAm_create_qt_window_factory_unsafe, 1,
@@ -13651,14 +13819,56 @@ static PyMethodDef PyAm_methods[] = {
 	{"create_qt_video_factory", (PyCFunction)PyAm_create_qt_video_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
+
+#ifdef WITH_SDL
+	{"create_sdl_playable_factory", (PyCFunction)PyAm_create_sdl_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
 	{"read_data_from_url", (PyCFunction)PyAm_read_data_from_url, 1,
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::datasource_factory* df, Buffer result) -> (bool _rv, Buffer result)")},
 	{"read_data_from_datasource", (PyCFunction)PyAm_read_data_from_datasource, 1,
 	 PyDoc_STR("(ambulant::net::datasource* src, Buffer result) -> (bool _rv, Buffer result)")},
-	{"get_posix_datasource_factory", (PyCFunction)PyAm_get_posix_datasource_factory, 1,
+	{"create_posix_datasource_factory", (PyCFunction)PyAm_create_posix_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
 	{"get_stdio_datasource_factory", (PyCFunction)PyAm_get_stdio_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+	{"create_stdio_datasource_factory", (PyCFunction)PyAm_create_stdio_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+
+#ifdef WITH_FFMPEG
+	{"get_ffmpeg_raw_datasource_factory", (PyCFunction)PyAm_get_ffmpeg_raw_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+#endif
+
+#ifdef WITH_FFMPEG
+	{"get_ffmpeg_video_datasource_factory", (PyCFunction)PyAm_get_ffmpeg_video_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::video_datasource_factory* _rv)")},
+#endif
+
+#ifdef WITH_FFMPEG
+	{"get_ffmpeg_audio_datasource_factory", (PyCFunction)PyAm_get_ffmpeg_audio_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::audio_datasource_factory* _rv)")},
+#endif
+
+#ifdef WITH_FFMPEG
+	{"get_ffmpeg_audio_parser_finder", (PyCFunction)PyAm_get_ffmpeg_audio_parser_finder, 1,
+	 PyDoc_STR("() -> (ambulant::net::audio_parser_finder* _rv)")},
+#endif
+
+#ifdef WITH_FFMPEG
+	{"get_ffmpeg_audio_filter_finder", (PyCFunction)PyAm_get_ffmpeg_audio_filter_finder, 1,
+	 PyDoc_STR("() -> (ambulant::net::audio_filter_finder* _rv)")},
+#endif
+
+#ifdef WITH_LIVE
+	{"create_live_video_datasource_factory", (PyCFunction)PyAm_create_live_video_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::video_datasource_factory* _rv)")},
+#endif
+
+#ifdef WITH_LIVE
+	{"create_live_audio_datasource_factory", (PyCFunction)PyAm_create_live_audio_datasource_factory, 1,
+	 PyDoc_STR("() -> (ambulant::net::audio_datasource_factory* _rv)")},
+#endif
 	{NULL, NULL, 0}
 };
 

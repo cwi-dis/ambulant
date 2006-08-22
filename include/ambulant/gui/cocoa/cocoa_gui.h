@@ -110,6 +110,9 @@ class cocoa_gui_screen : public common::gui_screen {
 	void *m_view;
 };
 
+AMBULANTAPI common::window_factory *create_cocoa_window_factory(void *view);
+AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::factories *factory);
+
 } // namespace cocoa
 
 } // namespace gui

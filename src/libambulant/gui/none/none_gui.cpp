@@ -31,6 +31,12 @@ using namespace ambulant;
 using namespace lib;
 using namespace common;
 
+common::window_factory *
+ambulant::gui::none::create_none_window_factory()
+{
+    return new none_window_factory();
+}
+
 gui::none::none_playable::none_playable(
 	common::playable_notification *context,
 #ifdef AMBULANT_PLATFORM_WIN32_WCE

@@ -25,11 +25,9 @@
 #ifndef AMBULANT_NET_RTSP_FACTORY_H
 #define AMBULANT_NET_RTSP_FACTORY_H
 
-namespace ambulant
-{
+namespace ambulant {
 
-namespace net
-{
+namespace net {
 	
 
 class live_audio_datasource_factory : public audio_datasource_factory {
@@ -43,6 +41,9 @@ class live_video_datasource_factory : public video_datasource_factory {
 	~live_video_datasource_factory() {};
 	video_datasource* new_video_datasource(const net::url& url,timestamp_t clip_begin, timestamp_t clip_end);
 };
+
+AMBULANTAPI video_datasource_factory *create_live_video_datasource_factory();
+AMBULANTAPI audio_datasource_factory *create_live_audio_datasource_factory();
 
 }
 } //endofnamespaces

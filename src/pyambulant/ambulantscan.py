@@ -31,9 +31,12 @@ def main():
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "gui/qt/qt_factory.h",
+        AMBULANT+ "gui/SDL/sdl_factory.h",
         AMBULANT+ "net/datasource.h",
         AMBULANT+ "net/posix_datasource.h",
         AMBULANT+ "net/stdio_datasource.h",
+        AMBULANT+ "net/ffmpeg_factory.h",
+        AMBULANT+ "net/rtsp_factory.h",
             ]
     if DO_SCAN:
         output = "ambulantgen.py"
@@ -88,6 +91,8 @@ class MyScanner(CxxScanner):
             "stdio_datasource_factory", # Ditto
             "filter_datasource_impl", # XXXX
             "filter_datasource_impl_ptr", # XXXX
+            "live_audio_datasource_factory",
+            "live_video_datasource_factory",
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
             "Where_we_get_our", # Parser trips over a comment:-)
@@ -118,9 +123,26 @@ class MyScanner(CxxScanner):
             ('#ifdef WITH_QT', [
                 'create_qt_window_factory_unsafe',
                 'create_qt_playable_factory',
-                'create_qt_video_factory'
+                'create_qt_video_factory',
                 ]
-            )
+            ),
+            ('#ifdef WITH_SDL', [
+                'create_sdl_playable_factory',
+                ]
+            ),
+            ('#ifdef WITH_FFMPEG', [
+                'get_ffmpeg_raw_datasource_factory',
+                'get_ffmpeg_video_datasource_factory',
+                'get_ffmpeg_audio_datasource_factory',
+                'get_ffmpeg_audio_parser_finder',
+                'get_ffmpeg_audio_filter_finder',
+                ]
+            ),
+            ('#ifdef WITH_LIVE', [
+                'create_live_video_datasource_factory',
+                'create_live_audio_datasource_factory',
+                ]
+            ),
         ]
 
     def makerepairinstructions(self):
