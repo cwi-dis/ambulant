@@ -20,6 +20,20 @@ EXTRA_DIST=setup.py \
     ambulantmodule.h ambulantmodule.cpp \
     ambulantinterface.h ambulantinterface.cpp
     
+# Various flags for optional features
+
+if WITH_QT
+extra_qt_cflags=-DWITH_QT
+extra_qt_ldflags=-lambulant_qt -L$(QT_PREFIX)/lib -lqt
+else
+extra_qt_cflags=
+extra_qt_ldflags=
+endif
+
+# Get all the extra bits together
+# XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
+EXTRA_CFLAGS=$(extra_qt_cflags)
+
 # These targets are magic for automake
 
 all-am: build-pyambulant
@@ -54,7 +68,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LDFLAGS="-L$$a" $(PYTHON) setup.py build ; \
+	  LDFLAGS="-L$$a $(extra_qt_ldflags)" CFLAGS="$(EXTRA_CFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:

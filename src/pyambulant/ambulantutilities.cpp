@@ -23,7 +23,7 @@ bool_Convert(PyObject *v, bool *p_itself)
 }
 
 int
-am_CObject_Convert(PyObject *v, void **p_itself)
+cobject_Convert(PyObject *v, void **p_itself)
 {
     if (!PyCObject_Check(v)) return 0;
     *p_itself = PyCObject_AsVoidPtr(v);

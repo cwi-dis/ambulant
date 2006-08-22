@@ -13469,6 +13469,8 @@ static PyObject *PyAm_create_smil2_player(PyObject *_self, PyObject *_args)
 	return _res;
 }
 
+#ifdef WITH_QT
+
 static PyObject *PyAm_create_qt_window_factory_unsafe(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -13490,6 +13492,9 @@ static PyObject *PyAm_create_qt_window_factory_unsafe(PyObject *_self, PyObject 
 	                     window_factoryObj_New, _rv);
 	return _res;
 }
+#endif
+
+#ifdef WITH_QT
 
 static PyObject *PyAm_create_qt_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -13506,6 +13511,9 @@ static PyObject *PyAm_create_qt_playable_factory(PyObject *_self, PyObject *_arg
 	                     playable_factoryObj_New, _rv);
 	return _res;
 }
+#endif
+
+#ifdef WITH_QT
 
 static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
 {
@@ -13522,6 +13530,7 @@ static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
 	                     playable_factoryObj_New, _rv);
 	return _res;
 }
+#endif
 
 static PyObject *PyAm_read_data_from_url(PyObject *_self, PyObject *_args)
 {
@@ -13627,12 +13636,21 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory) -> (ambulant::common::player* _rv)")},
 	{"create_smil2_player", (PyCFunction)PyAm_create_smil2_player, 1,
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory, ambulant::common::embedder* sys) -> (ambulant::common::player* _rv)")},
+
+#ifdef WITH_QT
 	{"create_qt_window_factory_unsafe", (PyCFunction)PyAm_create_qt_window_factory_unsafe, 1,
 	 PyDoc_STR("(void* parent_widget, int top_offset, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+#endif
+
+#ifdef WITH_QT
 	{"create_qt_playable_factory", (PyCFunction)PyAm_create_qt_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_QT
 	{"create_qt_video_factory", (PyCFunction)PyAm_create_qt_video_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
 	{"read_data_from_url", (PyCFunction)PyAm_read_data_from_url, 1,
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::datasource_factory* df, Buffer result) -> (bool _rv, Buffer result)")},
 	{"read_data_from_datasource", (PyCFunction)PyAm_read_data_from_datasource, 1,

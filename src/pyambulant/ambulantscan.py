@@ -115,6 +115,12 @@ class MyScanner(CxxScanner):
 
     def makegreylist(self):
         return [
+            ('#ifdef WITH_QT', [
+                'create_qt_window_factory_unsafe',
+                'create_qt_playable_factory',
+                'create_qt_video_factory'
+                ]
+            )
         ]
 
     def makerepairinstructions(self):
