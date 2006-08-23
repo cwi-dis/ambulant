@@ -155,13 +155,10 @@ gstreamer_player::run() {
 	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
 	/* create elements */
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
-	if ( !( m_gst_player && source && sink)) {
+	source   = gst_element_factory_make ("playbin", "playbin"); 
+	if ( !( m_gst_player && source)) {
 		g_print ("%s:", "gst_mp3_player");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
-	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
-	source   = gst_element_factory_make ("playbin", "playbin"); 
-	if ( !( m_gst_player && source && sink)) {
-		g_print ("%s:", "gst_mp3_player");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
 		if ( ! source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "playbin");
 		g_print ("\n");
@@ -246,11 +243,7 @@ gstreamer_player::stop_player() {
 	pthread_mutex_lock(&m_gst_player_mutex);
 	if (m_gst_mainloop) {
 		g_main_loop_quit (m_gst_mainloop);
-	}
-	if (m_audio_renderer) {
-		gstreamer_audio_renderer* audio_renderer = m_audio_renderer;
-		m_audio_renderer = NULL;
-		audio_renderer->stop();
+		m_gst_mainloop = NULL;
 	}
 	pthread_mutex_unlock(&m_gst_player_mutex);
 }

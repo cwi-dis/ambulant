@@ -264,12 +264,7 @@ gstreamer_audio_renderer::_stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_player) {
-		gstreamer_player* gstreamer_player = m_player;
-		m_player = NULL;
-		m_lock.leave(); // next call may recurse
-		gstreamer_player->stop_player();
-		m_lock.enter();
-		m_player = NULL;
+		m_player->stop_player();
 	}
 	if (m_is_playing) {
 		// inform scheduler 

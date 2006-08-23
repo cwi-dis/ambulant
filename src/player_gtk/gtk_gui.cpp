@@ -567,9 +567,10 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 			return false;
 		}
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
-	if (dupFlag)
+	if (dupFlag) {
+	  if (m_smilfilename) free ((void*)m_smilfilename);
 		m_smilfilename = strdup(smilfilename);
-
+	}
 	if (m_mainloop)
 		delete m_mainloop;
     
