@@ -1074,6 +1074,7 @@ main (int argc, char*argv[]) {
 	}	
 	g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
 	g_main_loop_run(mywidget->main_loop);
+	g_main_loop_unref(mywidget->main_loop);
 //	if (exec_flag){
 //		gtk_main();
 //		g_main_loop_run(mywidget->main_loop);	

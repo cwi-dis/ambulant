@@ -198,6 +198,7 @@ gstreamer_player::run() {
 
 	/* lock for cleanup */
 	pthread_mutex_lock(&m_gst_player_mutex);
+	g_main_loop_unref(m_gst_mainloop);
 	m_gst_mainloop = NULL;
 
 	/* stop the pipeline */
@@ -235,6 +236,7 @@ gstreamer_player::run() {
 	// inform the scheduler that the gstreamer player has terminated
 	if (m_audio_renderer)
 		m_audio_renderer->stop();
+	pthread_exit(NULL);
 }
 
 void
