@@ -410,8 +410,16 @@ void
 lib::node_impl::del_attribute(const char *name) {
 	if(!name || !name[0]) return;
 	q_attributes_list::const_iterator it;
-	for(it = m_qattrs.begin(); it != m_qattrs.end(); it++)
-		if((*it).first.second == name) m_qattrs.remove(*it);
+	// Cannot use a for loop here because we may modify the list
+	it = m_qattrs.begin();
+	while (it != m_qattrs.end()) {
+		if((*it).first.second == name) {
+			m_qattrs.remove(*it);
+			it = m_qattrs.begin();
+		} else {
+			it++;
+		}
+	}
 	return;
 }
 
