@@ -235,6 +235,8 @@ void active_state::enter(qtime_type timestamp) {
 				prev->remove(timestamp);
 		 }
 	}
+	// Send feedback to the upper layers about what we're doing
+	m_self->node_started();
 		
 	// The timestamp in parent simple time
 	// Children should convert it to their parent

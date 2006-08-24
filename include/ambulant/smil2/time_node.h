@@ -107,7 +107,10 @@ class time_node : public schedulable {
 	// Begin and end conditions evaluator
 	virtual bool begin_cond(qtime_type timestamp);
 	virtual bool end_cond(qtime_type timestamp);
-	
+
+	// Feedback
+	void time_node::node_started();
+
 	// Forced transitions
 	virtual void reset(qtime_type timestamp, time_node *oproot);
 	virtual void reset_children(qtime_type timestamp, time_node *oproot);
@@ -246,7 +249,17 @@ class time_node : public schedulable {
 	bool is_seq() const { return m_type == tc_seq;}
 	bool is_par() const { return m_type == tc_par;}
 	bool is_excl() const { return m_type == tc_excl;}
+#if 0
+	// Handling discrete media different than continuous media
+	// is a bad idea from a SMIL point of view (the tag name
+	// really is documentary only), and practically it
+	// caused problems with AmisAmbulant, which wants to
+	// pause after putting up a text node to allow the screen
+	// reader to do its thing.
 	bool is_discrete() const { return m_discrete;}
+#else
+	bool is_discrete() const { return false;}
+#endif
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
 	bool is_area() const { return m_attrs.get_tag() == "area";}

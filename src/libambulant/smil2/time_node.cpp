@@ -1438,16 +1438,19 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 		timestamp.as_doc_time_value());
 	assert(timestamp.first == sync_node());
 	on_add_instance(timestamp, tn_begin_event, timestamp.second);
-	
-	// Send feedback to the upper layers about what we're doing
-	if(is_root()) m_context->started_playback();
-	m_context->node_started(m_node);
-	
+		
 	// Simulate a timegraph-sampling implementation
 	// For a time container we know that more info will be available
 	// immediately after it starts.  
 	if(down() && m_interval.end == time_type::indefinite)
 		raise_update_event(timestamp);
+}
+
+// Send feedback to the upper layers about what we're doing
+void time_node::node_started()
+{
+	if(is_root()) m_context->started_playback();
+	m_context->node_started(m_node);
 }
 
 // Called when this node repeats.
