@@ -31,6 +31,7 @@ public:
 	virtual void show() = 0;
 	virtual void hide() = 0;
 	virtual void redraw() = 0;
+	virtual bool uses_screen_reader() = 0;
 };
 
 class html_browser_factory {

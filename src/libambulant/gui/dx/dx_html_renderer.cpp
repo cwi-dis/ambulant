@@ -141,7 +141,18 @@ gui::dx::dx_html_renderer::start(double t) {
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 	m_context->started(m_cookie);
+	if (!it->uses_screen_reader()) m_context->stopped(m_cookie); // XXXJack
+}
 
+common::duration
+gui::dx::dx_html_renderer::get_dur()
+{
+	if (m_html_browser) {
+		html_browser *it = m_html_browser->show();
+		if (it && it->uses_screen_reader())
+			return common::duration(false, 0);
+	}
+	return common::duration(true, 0);
 }
 
 void
