@@ -54,7 +54,7 @@ class custom_test {
 ///
 /// This class is reachable from node objects.
 /// and provides context services to them.
-class document : public node_context {
+class AMBULANTAPI document : public node_context {
 
   public:
 	/// A document factory function.
